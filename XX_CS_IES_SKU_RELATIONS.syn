@@ -1,0 +1,41 @@
+ -- +========================================================================+
+   -- |                  Office Depot - Project Simplify                       |
+   -- |                  Office Depot                                          |
+   -- +========================================================================+
+   -- | Name  :      XX_CS_IES_SKU_RELATIONS.syn                               |
+   -- | Description:  This file creates the synonym for apps to access the     |
+   -- |               custom table XX_CS_IES_SKU_RELATIONS                     |
+   -- |                                                                        |
+   -- |Change Record:                                                          |
+   -- |===============                                                         |
+   -- |Version Date        Author           Remarks                            |
+   -- |======= =========== ===============  ===================================|
+   -- |1.0     11-jun-2010 Raj Jagarlamudi    Initial draft Version            |
+ -- +==========================================================================+
+
+SET VERIFY    OFF;
+SET TERM      OFF;
+SET FEEDBACK  OFF;
+SET SHOW      OFF;
+SET ECHO      OFF; 
+SET TAB       OFF; 
+
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating synonym XX_CS_IES_SKU_RELATIONS
+PROMPT
+
+CREATE OR REPLACE PUBLIC SYNONYM XX_CS_IES_SKU_RELATIONS FOR XXOM.XX_CS_IES_SKU_RELATIONS;  
+
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

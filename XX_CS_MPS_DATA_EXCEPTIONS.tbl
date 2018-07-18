@@ -1,0 +1,39 @@
+--------------------------------------------------------
+--  DDL for Table XX_CS_MPS_DATA_EXCEPTIONS
+--------------------------------------------------------
+
+CREATE TABLE XXOM.XX_CS_MPS_DATA_EXCEPTIONS 
+(  EXCEPTION_ID         NUMBER 
+  ,AOPS_CUST_NUMBER     VARCHAR2(17) 
+  ,DEVICE_ID            VARCHAR2(150) 
+  ,EXCEPTION            VARCHAR2(2000) 
+  ,EXCEPTION_DATE       DATE 
+  ,EXCEPTION_LOGGED_BY  NUMBER
+);
+
+--------------------------------------------------------
+--  DDL for Index XX_CS_MPS_DATA_EXCEPTIONS_N1
+--------------------------------------------------------
+
+CREATE INDEX XXOM.XX_CS_MPS_DATA_EXCEPTIONS_N1 ON XXOM.XX_CS_MPS_DATA_EXCEPTIONS (EXCEPTION_ID);
+
+--------------------------------------------------------
+--  DDL for Index XX_CS_MPS_DATA_EXCEPTIONS_N2
+--------------------------------------------------------
+
+CREATE INDEX XXOM.XX_CS_MPS_DATA_EXCEPTIONS_N2 ON XXOM.XX_CS_MPS_DATA_EXCEPTIONS (AOPS_CUST_NUMBER);
+
+--------------------------------------------------------
+--  DDL for Index XX_CS_MPS_DATA_EXCEPTIONS_N3
+--------------------------------------------------------
+
+CREATE INDEX XXOM.XX_CS_MPS_DATA_EXCEPTIONS_N3 ON XXOM.XX_CS_MPS_DATA_EXCEPTIONS (DEVICE_ID);
+
+--------------------------------------------------------
+--  DDL for Index XX_CS_MPS_DATA_EXCEPTIONS_N4
+--------------------------------------------------------
+
+CREATE INDEX XXOM.XX_CS_MPS_DATA_EXCEPTIONS_N4 ON XXOM.XX_CS_MPS_DATA_EXCEPTIONS (EXCEPTION_DATE);
+
+GRANT ALL ON XXOM.XX_CS_MPS_DATA_EXCEPTIONS TO APPS WITH GRANT OPTION;
+

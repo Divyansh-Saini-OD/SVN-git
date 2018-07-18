@@ -1,0 +1,20 @@
+-- +=============================================================================================+
+-- |                       Office Depot - TDS                                                    |
+-- |                                                                                             |
+-- +=============================================================================================+
+-- | Name         : ALT_TAB_XX_CS_TDS_PARTS_QUOTES.sql                                           |
+-- | Description  : This Script is used to add the additional columns to the                     |
+-- |                XX_CS_TDS_PARTS table                                                        |
+-- |                                                                                             |
+-- |Change Record:                                                                               |
+-- |===============                                                                              |
+-- |Version      Date          Author           Remarks                                          |
+-- |=======   ==========   ===============      =================================================|
+-- |DRAFT 1A  0                           |
+-- +=============================================================================================+
+
+ALTER TABLE XXOM.XX_CS_TDS_PARTS_QUOTES ADD (LAST_UPDATED_BY VARCHAR2(50));
+
+SHOW ERRORS;
+
+EXIT;

@@ -1,0 +1,46 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : ALTER_XX_CS_SR_EXCEPTIONS.tbl                                          |
+-- | Rice Id      :                                                                       | 
+-- | Description  :            |    	 
+-- | Purpose      : MODIFY Custom Table XX_CS_SR_EXCEPTIONS	                                |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   27-OCT-2007   Manish Chavan        Initial Version                               |
+-- |                                                                                            |
+-- +============================================================================================+
+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+
+
+PROMPT
+PROMPT MODIFYING the Table XX_CS_SR_EXCEPTIONS.....
+PROMPT
+
+ALTER TABLE XX_CS_SR_EXCEPTIONS MODIFY
+    ( MODULE_NAME VARCHAR2(250)
+    )
+/
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

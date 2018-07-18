@@ -1,0 +1,62 @@
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+
+PROMPT
+PROMPT CREATING the Table XX_CS_SR_EXCEPTIONS.....
+PROMPT
+
+
+CREATE TABLE XX_CS_SR_EXCEPTIONS( 
+ EXCEPTION_ID                         NUMBER PRIMARY KEY
+,PROCESS_NAME                         VARCHAR2(100)
+,PROCESS_ID                           VARCHAR2(100)
+,MODULE_NAME                          VARCHAR2(20)
+,EXCEPTION_LOCATION                   VARCHAR2(100)
+,EXCEPTION_MSG_COUNT                  NUMBER
+,EXCEPTION_MSG_CODE                   VARCHAR2(3)
+,EXCEPTION_MSG                        CLOB
+,EXCEPTION_MSG_SEVERITY               VARCHAR2(10)
+,EXCEPTION_STATUS_FLAG                VARCHAR2(10)
+,NOTIFY_FLAG                          VARCHAR2(3)
+,EXCEPTION_PAYLOAD                    XMLType
+,REPROCESS_FLAG                       VARCHAR2(3)
+,REPROCESSED                          VARCHAR2(3)
+,REPROCESSED_DATE                     DATE
+,ATTRIBUTE1                           VARCHAR2(240)                                                                                                                                                                                 
+,ATTRIBUTE2                           VARCHAR2(240)                                                                                                                                                                                 
+,ATTRIBUTE3                           VARCHAR2(240)                                                                                                                                                                                 
+,ATTRIBUTE4                           VARCHAR2(240)                                                                                                                                                                                 
+,ATTRIBUTE5                           VARCHAR2(240)                                                                                                                                                                                 
+,ATTRIBUTE6                           VARCHAR2(240)                                                                                                                                                                                 
+,ATTRIBUTE7                           VARCHAR2(240)                                                                                                                                                                                 
+,ATTRIBUTE8                           VARCHAR2(240)                                                                                                                                                                                 
+,ATTRIBUTE9                           VARCHAR2(240)                                                                                                                                                                                 
+,ATTRIBUTE10                          VARCHAR2(240)                                                                                                                                                                                 
+,ATTRIBUTE11                          VARCHAR2(240)                                                                                                                                                                                 
+,ATTRIBUTE12                          VARCHAR2(240)                                                                                                                                                                                 
+,ATTRIBUTE13                          VARCHAR2(240)                                                                                                                                                                                 
+,ATTRIBUTE14                          VARCHAR2(240)                                                                                                                                                                                 
+,ATTRIBUTE15                          VARCHAR2(240)                                                                                                                                                                                 
+,CREATION_DATE                        DATE                                                                                                                                                                                          
+,CREATED_BY                           NUMBER                                                                                                                                                                                        
+,LAST_UPDATE_DATE                     DATE                                                                                                                                                                                          
+,LAST_UPDATE_LOGIN                    NUMBER                                                                                                                                                                                        
+,LAST_UPDATED_BY                      NUMBER 
+);
+
+
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

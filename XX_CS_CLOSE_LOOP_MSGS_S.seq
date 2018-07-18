@@ -1,0 +1,39 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET TAB OFF;
+SET ECHO OFF;
+SET FEEDBACK OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name             : XX_PO_ORG_VEND_CONTACT_LINKS_S.seq                    |
+-- | Rice ID          : E2009 VendorContact_Maintenance                       |
+-- | Description      : This script creates the sequence for us in the table  |
+-- |                    XX_CS_CLOSE_LOOP_MSGS_S                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version Date        Author           Remarks                              |
+-- |======= =========== ===============  =====================================|
+-- |1.0     30-Dec-2009 Bala E		 Initial Version                      |
+-- |                                                                          |
+-- +==========================================================================+
+
+--PROMPT
+--PROMPT Dropping existing sequence XX_CS_CLOSE_LOOP_BPEL_MSG_S
+--PROMPT
+
+--DROP SEQUENCE XX_CS_CLOSE_LOOP_MSGS_S;
+
+PROMPT
+PROMPT Creating sequence XXCRM.XX_CS_CLOSE_LOOP_BPEL_MSG_S
+PROMPT
+
+
+
+CREATE SEQUENCE XXCRM.XX_CS_CLOSE_LOOP_BPEL_MSG_S INCREMENT BY 1 START WITH 1 NOCACHE;  
+
+SHOW ERROR

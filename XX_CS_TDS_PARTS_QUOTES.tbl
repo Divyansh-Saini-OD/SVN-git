@@ -1,0 +1,38 @@
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+
+PROMPT
+PROMPT Creating the Table XXOM.XX_CS_TDS_PARTS_QUOTES......
+PROMPT
+CREATE TABLE XXOM.XX_CS_TDS_PARTS_QUOTES
+  (
+    REQUEST_NUMBER   VARCHAR2(25),
+    STORE_NUMBER     VARCHAR2(25),
+    QUOTE_NUMBER     VARCHAR2(25),
+    STORE_ASSOCIATE  VARCHAR2(150),
+    CREATION_DATE     DATE,
+    CREATED_BY       VARCHAR2(25),
+    LAST_UDATE_DATE  DATE,
+    MANUFACTURER     VARCHAR2(50),
+    MODEL            VARCHAR2(50), 
+    SERIAL_NUMBER    VARCHAR2(50),
+    SCRIPT_ID        NUMBER,
+    LAST_UPDATE_DATE DATE,
+    ATTRIBUTE1       VARCHAR2(250),
+    ATTRIBUTE2       VARCHAR2(250),
+    ATTRIBUTE3       VARCHAR2(250),
+    ATTRIBUTE4       VARCHAR2(250),
+    ATTRIBUTE5       VARCHAR2(250)
+  );
+
+
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

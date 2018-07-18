@@ -1,0 +1,27 @@
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify                                           |
+-- +============================================================================================+
+-- | Name        : ALTER_XX_CS_MPS_DEVICE_B.tbl                                                 |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        29-May-2013     Sreedhar Mohan        Initial version                            |
+-- +============================================================================================+
+ALTER TABLE APPS.XX_CS_MPS_DEVICE_B ADD (
+    USAGE_SEND_LEAD_DAYS      NUMBER(2,0), 
+    USAGE_DATA_SENT_DATE      DATE,
+    PERIOD_COVERED_ST_DATE    DATE,
+    PERIOD_COVERED_END_DATE   DATE 
+  );
+SHOW ERRORS;
+
+--ALTER TABLE APPS.XX_CS_MPS_DEVICE_B  DROP COLUMN USAGE_DATA_DUE_DAY;
+
+--ALTER TABLE APPS.XX_CS_MPS_DEVICE_B  DROP COLUMN USAGE_VENDOR_INV_NUMBER;
+
+--ALTER TABLE APPS.XX_CS_MPS_DEVICE_B  DROP COLUMN USAGE_SEND_LEAD_DAYS;
+
+--ALTER TABLE APPS.XX_CS_MPS_DEVICE_B  DROP COLUMN USAGE_DATA_SENT_DATE;

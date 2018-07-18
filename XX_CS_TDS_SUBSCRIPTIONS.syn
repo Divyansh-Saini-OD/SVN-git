@@ -1,0 +1,47 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XX_CS_TDS_SUBSCRIPTIONS                                                    |--                                                                                          |--
+--| Program Name   : XX_CS_TDS_SUBSCRIPTIONS.tbl                                                |--
+--|                                                                                             |--
+--| Purpose        : TDS Subscription                                                       	|--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              20-Jun-2010       Raj Jagarlamudi                  Initial Draft           |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+
+PROMPT
+PROMPT Creating synonym XX_CS_TDS_SUBSCRIPTIONS
+PROMPT
+
+CREATE OR REPLACE PUBLIC SYNONYM XX_CS_TDS_SUBSCRIPTIONS FOR XXOM.XX_CS_TDS_SUBSCRIPTIONS;  
+
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+  
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

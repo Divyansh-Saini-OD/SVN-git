@@ -1,0 +1,16 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- ----------------------------------------------------------------------------
+--      Create Custom Sequence XX_CS_MPS_DATA_EXCEPTION_S.
+-- ----------------------------------------------------------------------------
+
+CREATE SEQUENCE XXOM.XX_CS_MPS_DATA_EXCEPTION_S
+ START WITH     1000
+ INCREMENT BY   1
+ NOCACHE
+ NOCYCLE;
+
+show errors;
+exit;

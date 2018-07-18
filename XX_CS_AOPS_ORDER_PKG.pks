@@ -1,0 +1,16 @@
+create or replace
+PACKAGE XX_CS_AOPS_ORDER_PKG AS 
+
+ PROCEDURE MAIN_PROC(P_HDR_REC    IN OUT NOCOPY XX_CS_ORDER_HDR_REC,
+                     P_LINE_TBL     IN OUT NOCOPY XX_CS_ORDER_LINES_TBL,
+                     P_REQUEST_NUMBER IN VARCHAR2,
+                     X_RETURN_STATUS IN OUT NOCOPY VARCHAR2,
+                     X_RETURN_MSG    IN OUT NOCOPY VARCHAR2);
+                     
+PROCEDURE GET_RES(P_REQUEST_NUMBER  IN VARCHAR2,
+                  P_RESP            IN XMLTYPE,
+                  X_RETURN_STATUS   IN OUT VARCHAR2,
+                  X_RETURN_MSG      IN OUT VARCHAR2);
+
+END XX_CS_AOPS_ORDER_PKG;
+/

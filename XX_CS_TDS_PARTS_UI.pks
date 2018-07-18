@@ -1,0 +1,9 @@
+create or replace
+PACKAGE XX_CS_TDS_PARTS_UI AS 
+
+PROCEDURE MAIN_PROC (P_SR_NUMBER IN VARCHAR2,
+                     X_RETURN_STATUS IN OUT VARCHAR2,
+                     X_RETURN_MSG     IN OUT VARCHAR2);
+
+END XX_CS_TDS_PARTS_UI;
+/

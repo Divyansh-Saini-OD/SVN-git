@@ -1,0 +1,37 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET TAB OFF;
+SET ECHO OFF;
+SET FEEDBACK OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name             : XX_PO_ORG_VEND_CONTACT_LINKS_S.syn                    |
+-- | Rice ID          :                      |
+-- | Description      : This scipt creates synonym for the table              |
+-- |                    XX_CS_CLOSE_LOOP_AUDIT_TRAIL in APPS schema           |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version Date        Author           Remarks                              |
+-- |======= =========== ===============  =====================================|
+-- |1.0     30-Dec-2009 Bala E           Initial Version                      |
+-- |                                                                          |
+-- +==========================================================================+
+
+--PROMPT
+--PROMPT Dropping existing synonym XX_CS_CLOSE_LOOP_AUDIT_TRAIL
+--PROMPT
+
+--DROP SYNONYM XX_CS_CLOSE_LOOP_AUDIT_TRAIL;
+
+PROMPT
+PROMPT Creating synonym XX_CS_CLOSE_LOOP_AUDIT_ALL
+PROMPT
+
+CREATE SYNONYM XX_CS_CLOSE_LOOP_AUDIT_ALL FOR XXCRM.XX_CS_CLOSE_LOOP_AUDIT_ALL;  
+
+SHOW ERROR
