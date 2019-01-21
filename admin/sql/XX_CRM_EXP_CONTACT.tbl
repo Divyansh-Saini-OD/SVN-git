@@ -1,0 +1,50 @@
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify                                           |
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_CONTACT.tbl                                                       |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        26-Aug-2011     Indra Varada        Initial version                              |
+-- +============================================================================================+
+
+CREATE TABLE "XXCRM"."XX_CRM_EXP_CONTACT" 
+   (	"ACCOUNT_ID" NUMBER, 
+	"LAST_NAME" VARCHAR2(240 CHAR), 
+	"FIRST_NAME" VARCHAR2(240 CHAR), 
+	"SALUTATION" VARCHAR2(20 CHAR), 
+	"FULL_NAME" VARCHAR2(480 CHAR), 
+	"PHONE" VARCHAR2(240 CHAR), 
+	"MOBILE" VARCHAR2(240 CHAR), 
+	"EMAIL" VARCHAR2(240 CHAR), 
+	"TITLE" VARCHAR2(255 CHAR), 
+	"LAST_MODIFIED_DATE" VARCHAR2(50 CHAR), 
+	"LAST_MODIFIED_BYID" VARCHAR2(50 CHAR), 
+	"CREATED_DATE" VARCHAR2(50 CHAR), 
+	"CREATED_BYID" VARCHAR2(20 CHAR), 
+	"SITE" NUMBER, 
+	"ROLE" VARCHAR2(1000 CHAR), 
+	"AOPS_CONTACT_NUMBER" VARCHAR2(50 CHAR), 
+	"PRIMARY_CONTACT" VARCHAR2(20 CHAR), 
+	"ORACLE_CONTACTID" NUMBER, 
+	"ORACLE_PARTYID" NUMBER, 
+	"AOPS_ACCOUNT_NUMBER" VARCHAR2(20 CHAR), 
+	"STATUS" VARCHAR2(20 CHAR), 
+	"OWNER_ID" VARCHAR2(50 CHAR), 
+	"BATCH_ID" NUMBER, 
+	"RECORD_ID" NUMBER, 
+	"LOAD_STATUS" VARCHAR2(20 CHAR), 
+	"ERROR_MSG" VARCHAR2(4000 CHAR), 
+	"FAX" VARCHAR2(50 BYTE)
+   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)
+  TABLESPACE "XXOD_TS_DATA" ;
+
+ GRANT ALL ON XXCRM.XX_CRM_EXP_CONTACT TO APPS;
+  
+ SHOW ERRORS;

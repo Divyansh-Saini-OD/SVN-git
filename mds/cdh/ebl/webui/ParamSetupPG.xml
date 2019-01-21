@@ -1,0 +1,135 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.12_1330" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="PageRN" amDefName="od.oracle.apps.xxcrm.cdh.ebl.server.EbillingParamAM" windowTitle="OD Ebill default values" title="OD Ebill Parameters">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:query id="ParamRN" controllerClass="od.oracle.apps.xxcrm.cdh.ebl.webui.ParamCO" dispSimple="true" mode="resultsBasedSearch" customizePanelTitle="Parameter Search" customizeInstrTexts="" simpleSearchInstrTexts="Select parameter and click &quot;Go&quot; button to see the result">
+               <ui:contents>
+                  <oa:advancedTable id="ParamTable" viewName="EbillingParamSetupVO1">
+                     <ui:contents>
+                        <oa:column id="ParamName">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="ParamNameHeader" prompt="Parameter"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageChoice id="ParamNameItem" pickListViewName="ParamVO1" pickListDispAttr="ParamDescription" pickListValAttr="ParamName" viewAttr="ParamName" queryable="true"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="ParamValue">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="ParamValueHeader" prompt="Parameter Value"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageTextInput id="ParamValueItem" viewAttr="ParamValue"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="SiteLevel">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="SiteLevelHeader" prompt="Site Level"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageCheckBox id="SiteLevelItem" viewAttr="Site" checkedValue="1" unCheckedValue="0" dataType="NUMBER"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="UserLevel">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="UserLevelHeader" prompt="User Level"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageLovInput id="UserLevelItem" viewAttr="UserName">
+                                 <lovContents>
+                                    <oa:listOfValues id="UserLevelLOV" amDefName="od.oracle.apps.xxcrm.cdh.ebl.lov.server.ParamLovAM">
+                                       <ui:contents>
+                                          <oa:table name="UserLevelLOV" id="UserVO1" amDefName="od.oracle.apps.xxcrm.cdh.ebl.lov.server.ParamLovAM">
+                                             <ui:contents>
+                                                <oa:formValue id="UserId" dataType="NUMBER" prompt="UserId" viewName="UserVO1" viewAttr="UserId"/>
+                                                <oa:messageStyledText id="UserName" dataType="VARCHAR2" prompt="UserName" viewName="UserVO1" viewAttr="UserName" maximumLength="100" queryable="true"/>
+                                             </ui:contents>
+                                          </oa:table>
+                                       </ui:contents>
+                                    </oa:listOfValues>
+                                 </lovContents>
+                                 <lovMappings>
+                                    <lovMap id="lovMap1" lovItem="UserId" resultTo="UserIDVal" criteriaFrom="UserIDVal"/>
+                                    <lovMap id="lovMap2" lovItem="UserName" resultTo="UserLevelItem" criteriaFrom="UserLevelItem"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:formValue id="UserIDVal" viewAttr="Userid" dataType="NUMBER"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="ApplicationLevel">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="ApplicationLevelHeader" prompt="Application Level"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageLovInput id="ApplicationLevelItem" viewAttr="ApplicationName">
+                                 <lovContents>
+                                    <oa:listOfValues id="ApplicationLevelLOV" amDefName="od.oracle.apps.xxcrm.cdh.ebl.lov.server.ParamLovAM">
+                                       <ui:contents>
+                                          <oa:table name="ApplicationLevelLOV" id="ApplicationVO1">
+                                             <ui:contents>
+                                                <oa:formValue id="ApplicationId" dataType="NUMBER" prompt="ApplicationId" viewName="ApplicationVO1" viewAttr="ApplicationId"/>
+                                                <oa:messageStyledText id="ApplicationName" dataType="VARCHAR2" prompt="ApplicationName" viewName="ApplicationVO1" viewAttr="ApplicationName" maximumLength="240" queryable="true"/>
+                                             </ui:contents>
+                                          </oa:table>
+                                       </ui:contents>
+                                    </oa:listOfValues>
+                                 </lovContents>
+                                 <lovMappings>
+                                    <lovMap id="lovMap3" lovItem="ApplicationId" resultTo="ApplicationIDVal" criteriaFrom="ApplicationIDVal"/>
+                                    <lovMap id="lovMap4" lovItem="ApplicationName" resultTo="ApplicationLevelItem" criteriaFrom="ApplicationLevelItem"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:formValue id="ApplicationIDVal" viewAttr="Applicationid" dataType="NUMBER"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="ResponsibilityLevel">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="ResponsibilityLevelHeader" prompt="Responsibility Level"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageLovInput id="ResponsibilityLevelItem" viewAttr="ResponsibilityName">
+                                 <lovContents>
+                                    <oa:listOfValues id="ResponsibilityLevelLOV" amDefName="od.oracle.apps.xxcrm.cdh.ebl.lov.server.ParamLovAM">
+                                       <ui:contents>
+                                          <oa:table name="ResponsibilityLevelLOV" id="ResponsibilityVO1">
+                                             <ui:contents>
+                                                <oa:formValue id="ResponsibilityId" dataType="NUMBER" prompt="ResponsibilityId" viewName="ResponsibilityVO1" viewAttr="ResponsibilityId"/>
+                                                <oa:messageStyledText id="ResponsibilityName" dataType="VARCHAR2" prompt="ResponsibilityName" viewName="ResponsibilityVO1" viewAttr="ResponsibilityName" maximumLength="100" queryable="true"/>
+                                             </ui:contents>
+                                          </oa:table>
+                                       </ui:contents>
+                                    </oa:listOfValues>
+                                 </lovContents>
+                                 <lovMappings>
+                                    <lovMap id="lovMap5" lovItem="ResponsibilityId" resultTo="ResponsibilityIDVal" criteriaFrom="ResponsibilityIDVal"/>
+                                    <lovMap id="lovMap6" lovItem="ResponsibilityName" resultTo="ResponsibilityLevelItem" criteriaFrom="ResponsibilityLevelItem"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:formValue id="ResponsibilityIDVal" viewAttr="Responsibilityid" dataType="NUMBER"/>
+                           </ui:contents>
+                        </oa:column>
+                     </ui:contents>
+                     <ui:tableSelection>
+                        <oa:multipleSelection id="multipleSelection1" viewAttr="SelectFlag"/>
+                     </ui:tableSelection>
+                     <ui:footer>
+                        <oa:tableFooter id="tableFooter1">
+                           <ui:contents>
+                              <oa:addTableRow id="addTableRow1"/>
+                              <oa:submitButton id="DeleteButton" text="Delete Selected Rows" prompt="Delete Selected Rows"/>
+                              <oa:submitButton id="SaveButton" text="Save Changes" prompt="Save Changes"/>
+                           </ui:contents>
+                        </oa:tableFooter>
+                     </ui:footer>
+                  </oa:advancedTable>
+               </ui:contents>
+            </oa:query>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

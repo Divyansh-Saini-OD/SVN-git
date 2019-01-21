@@ -1,0 +1,27 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XX_CDH_GP_REL_HIST.syn                             |
+-- | Description      : Synonym for XX_CDH_GP_REL_HIST                     |
+-- |                                                                       |
+-- |                    Note:This script will be executed from             |
+-- |                    APPS schema                                        |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      30-Jun-2011 Indra Varada       Initial version                |
+-- +=======================================================================+
+
+---------------------------------------------------------
+-- Creating synonym APPS.XX_CDH_GP_REL_HIST --
+---------------------------------------------------------
+CREATE OR REPLACE SYNONYM APPS.XX_CDH_GP_REL_HIST FOR XXCRM.XX_CDH_GP_REL_HIST;
+
+SHOW ERRORS;

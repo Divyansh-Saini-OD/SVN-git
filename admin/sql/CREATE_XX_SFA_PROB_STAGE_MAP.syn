@@ -1,0 +1,33 @@
+-- $Id:$
+-- $Rev:$
+-- $HeadURL:$
+-- $Author:$
+-- $Date:$
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_SFA_PROB_STAGE_MAP.syn               |
+-- | Description      :Synonym to XX_SFA_PROB_STAGE_MAP Table         |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |1.0       12-SEP-2010  Lokesh Kumar    Initial draft                |
+-- +=======================================================================+
+
+
+
+CREATE OR REPLACE SYNONYM APPS.XX_SFA_PROB_STAGE_MAP FOR XXCRM.XX_SFA_PROB_STAGE_MAP;
+
+SHOW ERRORS;
+EXIT;

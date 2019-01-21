@@ -1,0 +1,28 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_CDH_ACCT_SITE_EXT_B.tbl                   |
+-- | Description      :Account Site Extension base table                   |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |DRAFT 1A  09-May-2007  Sathya Prabha Rani   Initial draft version      |
+-- +=======================================================================+
+-- -----------------------------------------------------
+--      DROP Custom Table XX_CDH_ACCT_SITE_EXT_B    --
+-- -----------------------------------------------------
+DROP TABLE  XXCRM.XX_CDH_ACCT_SITE_EXT_B ;
+
+
+SHOW ERRORS;

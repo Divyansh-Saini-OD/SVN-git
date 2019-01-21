@@ -1,0 +1,27 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XX_TM_NAM_TERR_ENTITY_DTLS.tbl                     |
+-- | Description      : Named Account Territory Definitions                |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |DRAFT 1A  21-Aug-2007  Sreekanth          Initial draft version        |
+-- |  1       09-Oct-2007  Ankur              Create a new DROP script     |
+-- +=======================================================================+
+-- -----------------------------------------------------
+--      DROP Custom Table XX_TM_NAM_TERR_ENTITY_DTLS  --
+-- -----------------------------------------------------
+DROP TABLE  XXCRM.XX_TM_NAM_TERR_ENTITY_DTLS;
+
+SHOW ERRORS;

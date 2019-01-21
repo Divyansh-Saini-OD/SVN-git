@@ -1,0 +1,10 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+SET TERM ON
+
+grant execute on  APPS.XX_JTF_PROXY_ASSIGN_WEB_PKG to XXADF_USRADMIN;
+commit;

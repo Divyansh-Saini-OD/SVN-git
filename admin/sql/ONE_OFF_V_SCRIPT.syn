@@ -1,0 +1,10 @@
+set feedback off;
+SET SCAN OFF; 
+ 
+update apps.xxtps_site_requests set effective_date ='25-OCT-14'
+where request_status_code ='QUEUED';
+
+commit;
+
+SHOW ERRORS;
+EXIT;

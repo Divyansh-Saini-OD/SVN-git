@@ -1,0 +1,33 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :XX_CDH_CUST_ACCT_EXT_TL.syn                         |
+-- | Description      :Account Extn Table                                  |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      08-Aug-2007 Rajeev Kamath      Support table name changes     |
+-- +=======================================================================+
+------------------------------------------------------
+-- Dropping the existing synonym and creating new.  --
+------------------------------------------------------
+drop synonym apps.XX_CDH_SITE_USES_EXT_VL;
+drop synonym apps.XX_CDH_SITE_USES_EXT_TL;
+drop synonym apps.XX_CDH_SITE_USES_EXT_B;
+drop synonym apps.XX_CDH_CUST_ACCT_EXT_VL;
+drop synonym apps.XX_CDH_CUST_ACCT_EXT_TL;
+drop synonym apps.XX_CDH_CUST_ACCT_EXT_B;
+drop synonym apps.XX_CDH_ACCT_SITE_EXT_VL;
+drop synonym apps.XX_CDH_ACCT_SITE_EXT_TL;
+drop synonym apps.XX_CDH_ACCT_SITE_EXT_B;
+
+
+SHOW ERRORS;

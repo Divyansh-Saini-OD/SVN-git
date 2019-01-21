@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<JavaBean xmlns="http://xmlns.oracle.com/adfm/beanmodel" version="11.1.1.56.60"
+          id="GetCustPastDueInfoOutput" Package="model.CustInfo.process_Result"
+          BeanClass="model.CustInfo.process_Result.GetCustPastDueInfoOutput"
+          isJavaBased="false">
+  <Attribute Name="DueDate" IsUpdateable="0" IsNotNull="false"
+             Type="java.sql.Date"/>
+  <Attribute Name="AmountDueOriginal" IsUpdateable="0" IsNotNull="false"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="AmountDueRemaining" IsUpdateable="0" IsNotNull="false"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="AcctdAmoundDueRemaining" IsUpdateable="0" IsNotNull="false"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="AmountApplied" IsUpdateable="0" IsNotNull="false"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="AmountAdjusted" IsUpdateable="0" IsNotNull="false"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="AmountInDispute" IsUpdateable="0" IsNotNull="false"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="AmountCredited" IsUpdateable="0" IsNotNull="false"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="InCollection" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+  <Attribute Name="ActiveClaimFlag" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+  <Attribute Name="DiscountOriginal" IsUpdateable="0" IsNotNull="false"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="DiscountRemaining" IsUpdateable="0" IsNotNull="false"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="DiscountTakenEarned" IsUpdateable="0" IsNotNull="false"
+             Type="java.math.BigDecimal"/>
+</JavaBean>

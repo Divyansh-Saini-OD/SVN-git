@@ -1,0 +1,27 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :XX_CDH_TDS_CUSTOMER_STG.syn                         |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |1.0       25-May-2016  Havish Kasina      Initial draft                |
+-- +=======================================================================+
+
+------------------------------------------------------
+-- creating new synonym  --
+------------------------------------------------------
+
+CREATE OR REPLACE SYNONYM APPS.XX_CDH_TDS_CUSTOMER_STG FOR XXCRM.XX_CDH_TDS_CUSTOMER_STG;
+
+SHOW ERRORS;
+EXIT;

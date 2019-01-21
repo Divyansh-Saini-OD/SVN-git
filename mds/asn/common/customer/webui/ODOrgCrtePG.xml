@@ -1,0 +1,312 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_1028" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="PageLayoutRN" amDefName="od.oracle.apps.xxcrm.asn.common.customer.server.ODOrgCreateAM" controllerClass="od.oracle.apps.xxcrm.asn.common.customer.webui.ODOrgCreateCO" function="ASN_ORGCREATEPG" windowTitle="Create Prospect" title="Create Prospect">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:pageButtonBar id="ASNPageButtonRN">
+               <ui:contents>
+                  <oa:submitButton id="ASNPageCnclBtn" use="/oracle/apps/fnd/attributesets/Buttons/Cancel" serverUnvalidated="true" unvalidated="true"/>
+                  <oa:submitButton id="ASNPageSvAddMoreDetBtn" use="/oracle/apps/asn/common/attributesets/Buttons/SaveAndAddMoreDetails" unvalidated="true"/>
+                  <oa:submitButton id="ASNPageApyCrteAnotherBtn" use="/oracle/apps/asn/common/attributesets/Buttons/ApplyAndCreateAnother" unvalidated="true"/>
+                  <oa:submitButton id="ASNPageApyBtn" use="/oracle/apps/fnd/attributesets/Buttons/Apply" unvalidated="true"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+            <!--<oa:stackLayout id="ASNOrgCreateRN" extends="/oracle/apps/ar/hz/components/composition/webui/HzPuiOrgCreateComposite" rendered="true"/>-->
+            <oa:stackLayout id="OrgCreateCompositeRN">
+               <ui:contents>
+                  <oa:rowLayout id="OrgRow1">
+                     <ui:contents>
+                        <oa:cellFormat id="OrgInfoCell1" width="75" controllerClass="oracle.apps.ar.hz.components.composition.webui.HzPuiOrgCreateCompositeCO" amDefName="oracle.apps.ar.hz.components.composition.server.HzPuiCompositionAM" vAlign="top" hAlign="left">
+                           <ui:contents>
+                              <oa:spacer id="OrgSpacer1" height="10"/>
+                              <oa:rowLayout id="OrgRow">
+                                 <ui:contents>
+                                    <oa:defaultSingleColumn id="OrgInfoRN" amDefName="oracle.apps.ar.hz.components.party.organization.server.HzPuiOrganizationProfileQuickAM" controllerClass="oracle.apps.ar.hz.components.party.organization.webui.HzPuiOrgProfileQuickCO" text="Prospect Organization Information">
+                                       <ui:contents>
+                                          <oa:messageComponentLayout id="OrgInfo">
+                                             <ui:contents>
+                                                <oa:messageTextInput id="OrgName" viewName="HzPuiOrganizationProfileQuickVO" viewAttr="OrganizationName" prompt="Prospect Name" required="yes"/>
+                                                <oa:messageLayout id="PhoneLayout" prompt="Phone Number">
+                                                   <ui:contents>
+                                                      <oa:rowLayout id="PhoneRow">
+                                                         <ui:contents>
+                                                            <oa:cellFormat id="PhCountryCell">
+                                                               <ui:contents>
+                                                                  <oa:messageChoice id="OrgPhoneCountryCode" use="/oracle/apps/ar/hz/attributesets/HzPuiContactPoint/PhoneCountryCode" viewName="HzPuiOrganizationQuickPhoneVO" viewAttr="PhoneCountryCode" pickListViewName="HzPuiPhoneCountryCodeVO" pickListViewDef="oracle.apps.ar.hz.components.lookup.server.HzPuiPhoneCountryCodeVO" pickListDispAttr="Country" pickListValAttr="PhoneCountryCode" shortDesc="Phone Country Code" prompt="" required="yes"/>
+                                                               </ui:contents>
+                                                            </oa:cellFormat>
+                                                            <oa:cellFormat id="PhAreaCell">
+                                                               <ui:contents>
+                                                                  <oa:messageTextInput id="PhoneAreaCode" use="/oracle/apps/ar/hz/attributesets/HzPuiContactPoint/PhoneAreaCode" viewName="HzPuiOrganizationQuickPhoneVO" viewAttr="PhoneAreaCode" maximumLength="10" columns="5" shortDesc="Phone Area Code" prompt="" required="yes"/>
+                                                               </ui:contents>
+                                                            </oa:cellFormat>
+                                                            <oa:cellFormat id="PhCell">
+                                                               <ui:contents>
+                                                                  <oa:messageTextInput id="PhoneNumber" use="/oracle/apps/ar/hz/attributesets/HzPuiContactPoint/PhoneTelexNumber" viewName="HzPuiOrganizationQuickPhoneVO" viewAttr="PhoneNumber" maximumLength="40" columns="12" shortDesc="Phone Number" prompt="" required="yes"/>
+                                                               </ui:contents>
+                                                            </oa:cellFormat>
+                                                         </ui:contents>
+                                                      </oa:rowLayout>
+                                                   </ui:contents>
+                                                </oa:messageLayout>
+                                                <oa:messageTextInput id="OrgPhoneExtension" use="/oracle/apps/ar/hz/attributesets/HzPuiContactPoint/PhoneExtension" viewName="HzPuiOrganizationQuickPhoneVO" viewAttr="PhoneExtension" maximumLength="20" columns="8" prompt="Phone Ext"/>
+                                                <oa:messageLayout id="flexMessageLayout">
+                                                   <ui:contents>
+                                                      <oa:flex id="OrgProfileQuickFlex" flexFieldAppShortName="AR" flexName="HZ_PARTIES" viewName="HzPuiOrganizationProfileQuickVO" rendered="true" segmentList="Global Data Elements|Market Segment|Customer/Prospect Flag($RO$)||US|Revenue Band||CA|Revenue Band"/>
+                                                   </ui:contents>
+                                                </oa:messageLayout>
+                                             </ui:contents>
+                                          </oa:messageComponentLayout>
+                                       </ui:contents>
+                                    </oa:defaultSingleColumn>
+                                 </ui:contents>
+                              </oa:rowLayout>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="OrgSpacerCell">
+                           <ui:contents>
+                              <oa:spacer id="OrgInfoSpacer1" width="10"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="OrgInfoCell2" vAlign="top" hAlign="left">
+                           <ui:contents>
+                              <oa:rowLayout id="AddrRow">
+                                 <ui:contents>
+                                    <oa:defaultSingleColumn id="OrgAddrRN" controllerClass="oracle.apps.ar.hz.components.address.webui.HzPuiAddressCreateUpdateCO" text="Prospect Site Information" amDefName="oracle.apps.ar.hz.components.address.server.HzPuiAddressAM" amUsageName="HzPuiAddressAM">
+                                       <ui:contents>
+                                          <oa:messageComponentLayout id="OrgAddr">
+                                             <ui:contents>
+                                                <oa:messageLayout id="AddressStyleFlexRN" rendered="true">
+                                                   <ui:contents>
+                                                      <oa:flex id="HzAddressStyleFlex" viewName="HzPuiLocationVO" prompt="Address Style" shortDesc="Address Style" flexName="Remit Address HZ" flexFieldAppShortName="AR" segmentList="Global Data Elements||AS_DEFAULT|Address1|Address2|City|State|Postal Code"/>
+                                                   </ui:contents>
+                                                </oa:messageLayout>
+                                                <oa:messageTextInput id="ODWcw" dataType="NUMBER" prompt="OD White Collar Workers" translatableDefaultValue="0"/>
+                                                <oa:messageLovInput id="SicCode" prompt="OD Vertical Market">
+                                                   <lovContents>
+                                                      <oa:listOfValues id="SicCodeRN" amDefName="od.oracle.apps.xxcrm.asn.common.customer.lov.server.ODOrgLovAM">
+                                                         <ui:contents>
+                                                            <oa:table name="SicCodeRN" id="SicCodeTable">
+                                                               <ui:contents>
+                                                                  <oa:messageStyledText id="DisplayCode" viewName="ODSicCodeLovVO1" viewAttr="DisplayCode" prompt="Display Name" queryable="true"/>
+                                                                  <oa:messageStyledText id="SicDesc" viewName="ODSicCodeLovVO1" viewAttr="Meaning" prompt="Description" queryable="true"/>
+                                                               </ui:contents>
+                                                            </oa:table>
+                                                         </ui:contents>
+                                                      </oa:listOfValues>
+                                                   </lovContents>
+                                                   <lovMappings>
+                                                      <lovMap id="SicMap" lovItem="SicDesc" resultTo="SicCode" criteriaFrom="SicCode"/>
+                                                      <lovMap id="SicCodeHiddenMap" lovItem="DisplayCode" resultTo="SicCodeHidden"/>
+                                                   </lovMappings>
+                                                </oa:messageLovInput>
+                                                <oa:messageLayout id="messageLayout1">
+                                                   <ui:contents>
+                                                      <oa:formValue id="SicCodeHidden"/>
+                                                   </ui:contents>
+                                                </oa:messageLayout>
+                                             </ui:contents>
+                                          </oa:messageComponentLayout>
+                                       </ui:contents>
+                                    </oa:defaultSingleColumn>
+                                 </ui:contents>
+                              </oa:rowLayout>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="OrgRow3">
+                     <ui:contents>
+                        <oa:cellFormat id="OrgNotesCell" width="75" hAlign="left" vAlign="top">
+                           <ui:contents>
+                              <oa:rowLayout id="OrgRowNotes">
+                                 <ui:contents>
+                                    <oa:cellFormat id="NotesCell">
+                                       <ui:contents>
+                                          <oa:defaultSingleColumn id="NotesRN" amDefName="oracle.apps.asn.common.server.ASNNotesAM" text="Prospect Notes">
+                                             <ui:contents>
+                                                <oa:messageTextInput id="ASNNotesNewText" maximumLength="2000" rows="5" columns="50" prompt=""/>
+                                             </ui:contents>
+                                          </oa:defaultSingleColumn>
+                                       </ui:contents>
+                                    </oa:cellFormat>
+                                 </ui:contents>
+                              </oa:rowLayout>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="NoteSpaceCell">
+                           <ui:contents>
+                              <oa:spacer id="SpacerNote" width="154"/>
+                              <oa:stackLayout id="SiteDetailsRN" controllerClass="od.oracle.apps.xxcrm.asn.common.customer.webui.ODOrgCrteSiteDetailsCO" prompt=""/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="SiteCell" hAlign="left" vAlign="top">
+                           <ui:contents>
+                              <oa:rowLayout id="ContactRow">
+                                 <ui:contents>
+                                    <oa:defaultSingleColumn id="ContactDetails" text="Prospect Contact Information" amDefName="od.oracle.apps.xxcrm.asn.common.customer.server.ODCtctCreateAM" controllerClass="od.oracle.apps.xxcrm.asn.common.customer.webui.ODCtctCrteCO">
+                                       <ui:contents>
+                                          <oa:stackLayout id="ContactStackLayout" controllerClass="oracle.apps.ar.hz.components.composition.webui.HzPuiPersonQCreateCompositeCO">
+                                             <ui:contents>
+                                                <oa:messageComponentLayout id="ContDetailsLayout" amDefName="oracle.apps.ar.hz.components.party.person.server.HzPuiQuickCreatePersonAM" controllerClass="od.oracle.apps.xxcrm.asn.common.customer.webui.ODHzPuiQuickCreatePersonSpecialCO">
+                                                   <ui:contents>
+                                                      <oa:messageCheckBox id="NoSiteAssoc" text="Do not associate the contact to the above address" prompt="Do not associate the contact to the above address" rendered="false"/>
+                                                      <oa:messageChoice id="PersonPreNameAdjunct" use="/oracle/apps/ar/hz/attributesets/HzPuiPersonProfile/Prefix" viewName="HzPuiPerQuickCreateProfileVO" viewAttr="PersonPreNameAdjunct" pickListViewDef="oracle.apps.ar.hz.components.lookup.server.HzPuiLookupVO" pickListViewName="HzPuiPrefixVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode"/>
+                                                      <oa:messageTextInput id="PersonFirstName" use="/oracle/apps/ar/hz/attributesets/HzPuiPersonProfile/FirstName" viewName="HzPuiPerQuickCreateProfileVO" viewAttr="PersonFirstName" maximumLength="150" required="no"/>
+                                                      <oa:messageTextInput id="PersonMiddleName" use="/oracle/apps/ar/hz/attributesets/HzPuiPersonProfile/MiddleName" viewName="HzPuiPerQuickCreateProfileVO" viewAttr="PersonMiddleName" maximumLength="60"/>
+                                                      <oa:messageTextInput id="PersonLastName" use="/oracle/apps/ar/hz/attributesets/HzPuiPersonProfile/LastName" viewName="HzPuiPerQuickCreateProfileVO" viewAttr="PersonLastName" maximumLength="150" required="no"/>
+                                                      <oa:messageTextInput id="EmailAddress" use="/oracle/apps/ar/hz/attributesets/HzPuiContactPoint/EmailAddress" viewName="HzPuiPerQuickCreateEmailVO" viewAttr="EmailAddress" maximumLength="2000"/>
+                                                      <oa:messageLayout id="PhoneMessageLayout" prompt="Phone Number">
+                                                         <ui:contents>
+                                                            <oa:rowLayout id="PhoneRow1">
+                                                               <ui:contents>
+                                                                  <oa:cellFormat id="PhoneCountryCell">
+                                                                     <ui:contents>
+                                                                        <oa:messageChoice id="PerPhoneCountryCode" use="/oracle/apps/ar/hz/attributesets/HzPuiContactPoint/PhoneCountryCode" viewName="HzPuiContactPointPhoneVO" viewAttr="PhoneCountryCode" pickListViewName="HzPuiPhoneCountryCodeVO" pickListViewDef="oracle.apps.ar.hz.components.lookup.server.HzPuiPhoneCountryCodeVO" pickListDispAttr="Country" pickListValAttr="PhoneCountryCode" shortDesc="Phone Country Code" prompt=""/>
+                                                                     </ui:contents>
+                                                                  </oa:cellFormat>
+                                                                  <oa:cellFormat id="PhoneAreaCell">
+                                                                     <ui:contents>
+                                                                        <oa:messageTextInput id="PhoneAreaCode1" use="/oracle/apps/ar/hz/attributesets/HzPuiContactPoint/Phone" viewName="HzPuiContactPointPhoneVO" viewAttr="PhoneAreaCode" maximumLength="10" shortDesc="Phone Area Code" columns="5" prompt=""/>
+                                                                     </ui:contents>
+                                                                  </oa:cellFormat>
+                                                                  <oa:cellFormat id="PhoneCell">
+                                                                     <ui:contents>
+                                                                        <oa:messageTextInput id="PhoneNumber1" use="/oracle/apps/ar/hz/attributesets/HzPuiContactPoint/Phone" viewName="HzPuiContactPointPhoneVO" viewAttr="PhoneNumber" maximumLength="40" shortDesc="Phone Number" columns="12" prompt=""/>
+                                                                     </ui:contents>
+                                                                  </oa:cellFormat>
+                                                               </ui:contents>
+                                                            </oa:rowLayout>
+                                                         </ui:contents>
+                                                      </oa:messageLayout>
+                                                      <oa:messageTextInput id="PhoneExtension" use="/oracle/apps/ar/hz/attributesets/HzPuiContactPoint/Phone" viewName="HzPuiContactPointPhoneVO" viewAttr="PhoneExtension" maximumLength="20" prompt="Phone Ext" columns="8"/>
+                                                   </ui:contents>
+                                                </oa:messageComponentLayout>
+                                             </ui:contents>
+                                          </oa:stackLayout>
+                                       </ui:contents>
+                                    </oa:defaultSingleColumn>
+                                 </ui:contents>
+                              </oa:rowLayout>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="OrgRow2">
+                     <ui:contents>
+                        <oa:cellFormat id="TerrRulesRN" width="75" vAlign="top" hAlign="left">
+                           <ui:contents>
+                              <oa:rowLayout id="TerrRow">
+                                 <ui:contents>
+                                    <oa:defaultSingleColumn id="TerrRules" text="Prospect Assignment Information">
+                                       <ui:contents>
+                                          <oa:rowLayout id="Row2">
+                                             <ui:contents>
+                                                <oa:cellFormat id="Cell2">
+                                                   <ui:contents>
+                                                      <oa:messageRadioButton id="ApplyTerrRules" defaultValue="Y" checkedValue="Y" unCheckedValue="N" prompt="Apply Territory Rules" disabled="false">
+                                                         <ui:primaryClientAction>
+                                                            <ui:firePartialAction event="disableProspect"/>
+                                                         </ui:primaryClientAction>
+                                                      </oa:messageRadioButton>
+                                                   </ui:contents>
+                                                </oa:cellFormat>
+                                                <oa:cellFormat id="Cell3">
+                                                   <ui:contents>
+                                                      <oa:spacer id="Spacer1"/>
+                                                   </ui:contents>
+                                                </oa:cellFormat>
+                                             </ui:contents>
+                                          </oa:rowLayout>
+                                          <oa:rowLayout id="Row3">
+                                             <ui:contents>
+                                                <oa:cellFormat id="Cell4">
+                                                   <ui:contents>
+                                                      <oa:messageRadioButton id="HardAssign" defaultValue="N" checkedValue="Y" unCheckedValue="N" prompt="Assign Prospect to" disabled="false">
+                                                         <ui:primaryClientAction>
+                                                            <ui:firePartialAction event="disableProspect"/>
+                                                         </ui:primaryClientAction>
+                                                      </oa:messageRadioButton>
+                                                   </ui:contents>
+                                                </oa:cellFormat>
+                                                <oa:cellFormat id="Cell5">
+                                                   <ui:contents>
+                                                      <oa:messageLovInput id="GeneralSalesreps" disabled="${oa.ODTerrRulesPVO.DisableProspect}">
+                                                         <lovContents>
+                                                            <oa:listOfValues id="GeneralReps" amDefName="od.oracle.apps.xxcrm.asn.common.customer.lov.server.ODOrgLovAM">
+                                                               <ui:contents>
+                                                                  <oa:table name="GeneralReps" id="GeneralRepsTable">
+                                                                     <ui:contents>
+                                                                        <oa:formValue id="ResId" viewName="ODSalesrepsLovVO1" viewAttr="ResourceId" queryable="false" prompt="Resource Number"/>
+                                                                        <oa:messageStyledText id="ResName" queryable="true" viewName="ODSalesrepsLovVO1" viewAttr="Name" prompt="Name"/>
+                                                                        <oa:messageStyledText id="JobTitle" queryable="true" viewName="ODSalesrepsLovVO1" viewAttr="SourceJobTitle" prompt="Job Title"/>
+                                                                        <oa:messageStyledText id="SalesGrp" queryable="true" viewName="ODSalesrepsLovVO1" viewAttr="GroupName" prompt="Sales Group"/>
+                                                                        <oa:formValue id="SalesGroupId" viewName="ODSalesrepsLovVO1" viewAttr="GroupId"/>
+                                                                        <oa:messageStyledText id="SourcePhone" queryable="true" viewName="ODSalesrepsLovVO1" viewAttr="SourcePhone" prompt="Phone"/>
+                                                                        <oa:messageStyledText id="SourceEmail" queryable="true" viewName="ODSalesrepsLovVO1" viewAttr="SourceEmail" prompt="Email"/>
+                                                                        <oa:messageStyledText id="SalesRole" queryable="true" viewName="ODSalesrepsLovVO1" viewAttr="RoleName" prompt="Role"/>
+                                                                        <oa:formValue id="SalesRoleId" viewName="ODSalesrepsLovVO1" viewAttr="RoleId"/>
+                                                                     </ui:contents>
+                                                                  </oa:table>
+                                                               </ui:contents>
+                                                            </oa:listOfValues>
+                                                         </lovContents>
+                                                         <lovMappings>
+                                                            <lovMap id="ResNameMap" lovItem="ResName" resultTo="GeneralSalesreps" criteriaFrom="GeneralSalesreps"/>
+                                                            <lovMap id="ResIdMap" lovItem="ResId" resultTo="GeneralRepId"/>
+                                                            <lovMap id="ResRoleMap" lovItem="SalesRoleId" resultTo="GenRoleId"/>
+                                                            <lovMap id="ResGroupId" lovItem="SalesGroupId" resultTo="GenGroupId"/>
+                                                         </lovMappings>
+                                                      </oa:messageLovInput>
+                                                      <oa:formValue id="GeneralRepId"/>
+                                                      <oa:formValue id="GenRoleId"/>
+                                                      <oa:formValue id="GenGroupId"/>
+                                                   </ui:contents>
+                                                </oa:cellFormat>
+                                             </ui:contents>
+                                          </oa:rowLayout>
+                                       </ui:contents>
+                                    </oa:defaultSingleColumn>
+                                 </ui:contents>
+                              </oa:rowLayout>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="SpacerCell" vAlign="top">
+                           <ui:contents>
+                              <oa:spacer id="Spacer2" width="75"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="ContactCell" vAlign="top" hAlign="left"/>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:stackLayout>
+            <oa:stackLayout id="ASNReqEvtRN" extends="/oracle/apps/asn/common/fwk/webui/ASNReqEvtRN"/>
+            <oa:stackLayout id="ASNReqCtxtRN" extends="/oracle/apps/asn/common/fwk/webui/ASNReqCtxtRN"/>
+            <!--<oa:stackLayout id="ExtensionRN" extends="/oracle/apps/ar/hz/components/extension/webui/HzPuiPartySiteExtRN" controllerClass="od.oracle.apps.xxcrm.ar.hz.components.extension.webui.ODHzPuiPartySiteExtCO"/>-->
+            <oa:header id="HeaderRN" text="Warning" rendered="false">
+               <ui:contents>
+                  <oa:staticStyledText id="WarningText"/>
+                  <oa:rowLayout id="WarningRow">
+                     <ui:contents>
+                        <oa:cellFormat id="YesCell">
+                           <ui:contents>
+                              <oa:submitButton id="YesBtn" text="Yes" prompt="Yes"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="NoCell">
+                           <ui:contents>
+                              <oa:submitButton id="NoBtn" text="No" prompt="No"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:header>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

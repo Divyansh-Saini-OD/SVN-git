@@ -1,0 +1,31 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                                     Office Depot                                           |
+-- +============================================================================================+
+-- | Name        : ALTER_XX_CDH_EBL_MAIN.tbl                                                    |
+-- | Description : eTXT Summary Bill Changes Defect#38962                                       |
+-- | Rice Id     : I2186                                                                        |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        21-MAR-2017     Suresh N             Initial version                             |
+-- +============================================================================================+
+
+PROMPT
+PROMPT Altering the Table XX_CDH_EBL_MAIN .....
+PROMPT
+
+ALTER TABLE XXCRM.XX_CDH_EBL_MAIN 
+ADD (SUMMARY_BILL   VARCHAR2(1));
+
+PROMPT
+PROMPT Altering the Table XX_CDH_EBL_MAIN is done.
+PROMPT
+
+SHOW ERRORS;
+EXIT;

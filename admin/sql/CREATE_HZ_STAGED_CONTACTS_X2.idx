@@ -1,0 +1,29 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |      Oracle NAIO/Office Depot/Consulting Organization                 |
+-- +=======================================================================+
+-- | Name             :CREATE_HZ_STAGED_CONTACTS_X2.idx                    |
+-- | Description      :Index on CREATE_HZ_STAGED_CONTACTS DQM performance  | 
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      28-Mar-2008 Rajeev Kamath      Initial Version                |
+-- +=======================================================================+
+
+
+-- ---------------------------------------------------
+-- Create index HZ_STAGED_CONTACTS_N2
+-- ---------------------------------------------------
+
+create index XXCRM.HZ_STAGED_CONTACTS_N2 on AR.HZ_STAGED_CONTACTS (PARTY_ID, TX22)  NOLOGGING PARALLEL;
+;
+
+EXIT;
+/

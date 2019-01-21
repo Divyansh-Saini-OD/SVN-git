@@ -1,0 +1,29 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |      Oracle NAIO/Office Depot/Consulting Organization                 |
+-- +=======================================================================+
+-- | Name             :XX_CDH_CUST_ACCT_EXT_B_N2.idx                       |
+-- | Description      :XX_CDH_CUST_ACCT_EXT_B_N2 performance index         | 
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      20-Mar-2007 Rajeev Kamath      Initial Version                |
+-- +=======================================================================+
+
+
+-- ---------------------------------------------------
+-- Dropping existing index XX_CDH_CUST_ACCT_EXT_B_N2
+-- ---------------------------------------------------
+
+CREATE INDEX XXCRM.XX_CDH_CUST_ACCT_EXT_B_N2
+ON XXCRM.XX_CDH_CUST_ACCT_EXT_B(N_EXT_ATTR1);
+
+EXIT;
+/

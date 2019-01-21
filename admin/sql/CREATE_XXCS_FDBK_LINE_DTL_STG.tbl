@@ -1,0 +1,87 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XXCS_FDBK_LINE_DTL_STG Table                                               |--                                                           --|                                                                                             |--
+--| Program Name   : CREATE_XXCS_FDBK_LINE_DTL_STG.tbl                                          |--
+--|                                                                                             |--
+--| Purpose        : Staging      Table for feedback line information.                          |--
+--|                                                                                             |--
+--| Change History :                                                                            |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              25-Mar-2009       Kalyan                  Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Table XXCRM.XXCS_FDBK_LINE_DTL_STG......
+PROMPT
+
+ CREATE TABLE XXCRM.XXCS_FDBK_LINE_DTL_STG 
+   (	FDBK_LINE_ID 		NUMBER, 
+	FDBK_ID 		NUMBER, 
+	FDK_CODE 		VARCHAR2(2500), 
+	FDK_VALUE 		VARCHAR2(2500), 
+	FDK_TXT 		VARCHAR2(2500), 
+	FDK_DATE 		DATE, 
+	FDK_PICK_VALUE 		VARCHAR2(100), 
+	LAST_UPDATED_EMP 	VARCHAR2(100), 
+	LANGUAGE 		VARCHAR2(30), 
+	SOURCE_LANG 		VARCHAR2(30), 
+	CREATED_BY 		NUMBER, 
+	CREATION_DATE 		DATE, 
+	LAST_UPDATED_BY 	NUMBER, 
+	LAST_UPDATE_DATE 	DATE, 
+	LAST_UPDATE_LOGIN 	NUMBER, 
+	REQUEST_ID 		NUMBER, 
+	PROGRAM_APPLICATION_ID 	NUMBER, 
+	PROGRAM_ID 		NUMBER, 
+	PROGRAM_UPDATE_DATE 	DATE, 
+	ATTRIBUTE_CATEGORY 	VARCHAR2(30), 
+	ATTRIBUTE1 		VARCHAR2(2500), 
+	ATTRIBUTE2 		VARCHAR2(2500), 
+	ATTRIBUTE3 		VARCHAR2(2500), 
+	ATTRIBUTE4 		VARCHAR2(2500), 
+	ATTRIBUTE5 		VARCHAR2(2500), 
+	ATTRIBUTE6 		VARCHAR2(2500), 
+	ATTRIBUTE7 		VARCHAR2(2500), 
+	ATTRIBUTE8 		VARCHAR2(2500), 
+	ATTRIBUTE9 		VARCHAR2(2500), 
+	ATTRIBUTE10 		VARCHAR2(2500), 
+	ATTRIBUTE11 		VARCHAR2(2500), 
+	ATTRIBUTE12 		VARCHAR2(2500), 
+	ATTRIBUTE13 		VARCHAR2(2500), 
+	ATTRIBUTE14 		VARCHAR2(2500), 
+	ATTRIBUTE15 		VARCHAR2(2500), 
+	ATTRIBUTE16 		VARCHAR2(2500), 
+	ATTRIBUTE17 		VARCHAR2(2500), 
+	ATTRIBUTE18 		VARCHAR2(2500), 
+	ATTRIBUTE19 		VARCHAR2(2500), 
+	ATTRIBUTE20 		VARCHAR2(2500)
+   );
+
+
+GRANT ALL ON XXCRM.XXCS_FDBK_LINE_DTL_STG TO APPS;
+
+GRANT ALL ON XXCRM.XXCS_FDBK_LINE_DTL_STG TO XXDATA_STAGE;
+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

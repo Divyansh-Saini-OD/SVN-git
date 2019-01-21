@@ -1,0 +1,41 @@
+-- +================================================================================+
+-- |                  Office Depot - Project Simplify                               |
+-- |                Oracle NAIO Consulting Organization                             |
+-- +================================================================================+
+-- | Name        : DROP_XX_JTF_GROUP_ID_S.seq                                       |
+-- | Rice ID     : I0405_Territories_Terralign_Inbound_Interface                    |
+-- | Description : XX_JTF_GROUP_ID_S Sequence Drop Script                           |
+-- |                                                                                |
+-- |                                                                                |
+-- |Change Record:                                                                  |
+-- |===============                                                                 |
+-- |Version   Date         Author                 Remarks                           |
+-- |========  ===========  =============          ===============================   |
+-- |DRAFT 1A  12-OCT-2007  Mohan Kalyanasundaram  Initial draft version             |
+-- |DRAFT 1B  07-JAN-2007  Hema Chikkanna         Incorporated changes as per OD    |
+-- |                                              Standards                         |
+-- +================================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+SET TERM ON
+
+PROMPT
+PROMPT Dropping Existing SEQUENCE XX_JTF_GROUP_ID_S
+PROMPT
+
+DROP SEQUENCE XXCRM.xx_jtf_group_id_s;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

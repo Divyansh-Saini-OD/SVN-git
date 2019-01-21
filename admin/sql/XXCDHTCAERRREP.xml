@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?> 
+   <dataTemplate name="TCA_Entities_Error_Count" description="TCA Entities Error Count" defaultPackage="" Version="1.0">
+      <parameters>
+         <parameter name="pEntity" dataType="character" />
+         <parameter name="pStdate" dataType="character" />
+         <parameter name="pEnddate" dataType="character" />
+      </parameters>
+      <dataQuery>   
+         <sqlStatement name="TCAEntInfo">
+            <![CDATA[
+               SELECT summary_name
+                      ,DECODE(group_name4, 'Creates', 1, 'Updates', 2, 'Deletes', 3) sort
+		          ,group_name4
+                      ,SUM(DECODE(group_name2,'BO_API',value,0)) BPEL
+                      ,SUM(DECODE(group_name2,'XXCONV',value,0)) Conversion
+                      ,SUM(DECODE(group_name2,'XXCONV',0,'BO_API',0,VALUE)) Other
+                      ,SUM(value) Total
+               FROM   XXCRM.xx_cdh_tca_entity_stat_info
+               WHERE  summary_name = DECODE(:pEntity, 'ALL', summary_name, :pEntity)
+               AND    TO_DATE(group_name3, 'DD-MON-YYYY HH24:MI:SS') BETWEEN TO_DATE(:pStdate,'YYYY/MM/DD HH24:MI:SS')
+                                                                     AND     TO_DATE(:pEnddate,'YYYY/MM/DD HH24:MI:SS')
+               GROUP BY summary_name
+                        ,group_name4
+               ORDER BY DECODE(group_name4, 'Creates', 1, 'Updates', 2, 'Deletes', 3)
+               ]]>
+          </sqlStatement>
+
+	  <sqlStatement name="pDate">
+            <![CDATA[
+               SELECT :pEntity pEnt
+                      ,TO_DATE(:pStdate,'YYYY/MM/DD HH24:MI:SS') pStart
+                      ,TO_DATE(:pEnddate,'YYYY/MM/DD HH24:MI:SS') pEnd
+               FROM   dual
+               ]]>
+          </sqlStatement>
+       </dataQuery>
+
+       <dataStructure>
+          <group name ="TCAENTINF" source="TCAEntInfo">
+             <element name ="SUMNAME" value="summary_name"/>
+             <element name="GRNAME4" value="group_name4"/>
+             <element name="SBPEL" value="BPEL"/>
+             <element name="SCONV" value="Conversion"/>
+             <element name="SOTHER" value="Other"/>
+             <element name="TOT" value="Total"/>
+          </group>
+          <group name ="PARAM" source="pDate">
+             <element name ="PENT" value="pEnt"/>
+             <element name="PSTART" value="pStart"/>
+             <element name="PEND" value="pEnd"/>
+          </group>
+
+       </dataStructure>
+    </dataTemplate>

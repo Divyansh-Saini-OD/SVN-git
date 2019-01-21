@@ -1,0 +1,61 @@
+--+=====================================================================+
+--|                   Office Depot - Project FIT                        |
+--|          Capgemini/Office Depot/Consulting Organization             |
+--+=====================================================================+
+--|                                                                     |
+--|Rice        : 106313                                                 |
+--|File Name   : XX_CRM_WC_CUST_DCCA_INT.tbl                            |
+--|File Path   : $XXCRM_TOP/admin/sql                                   |
+--|Schema      : XXCRM                                                  |
+--|                                                                     |
+--|Version    Date           Author                       Remarks       |
+--|=======   ======        ====================          =========      |
+--| 1.0    03-Nov-2011     Balakrishna Bolikonda       Initial version  |
+--|                                                                     |
+--+=====================================================================+
+
+SET VERIFY OFF
+WHENEVER SQLERROR CONTINUE
+                  
+CREATE TABLE XXCRM.XX_CRM_WC_CUST_DCCA_INT
+(
+ site_use_id                    NUMBER(15)
+,org_id                         NUMBER(15)
+,customer_number                VARCHAR2(30)
+,site_orig_system_refe          VARCHAR2(240)
+,collector_name                 VARCHAR2(30)
+,collector_id                   NUMBER(15)
+,contact_id                     NUMBER(15)
+,contact_last_name              VARCHAR2(150)
+,contact_first_name             VARCHAR2(150)
+,job_title                      VARCHAR2(60)
+,email_address                  VARCHAR2(240)
+,contact_role                   VARCHAR2(60)
+,contact_role_primary_flag      VARCHAR2(1)
+,phone_purpose                  VARCHAR2(60)
+,phone_country_code             VARCHAR2(10)
+,phone_area_code                VARCHAR2(10)
+,phone_number                   VARCHAR2(15)
+,extension                      VARCHAR2(10)
+,contact_point_primary_flag     VARCHAR2(1)
+,contact_start_date             VARCHAR2(22)
+,contact_end_date               VARCHAR2(22)
+,fax_country_code               VARCHAR2(10)
+,fax_area_code                  VARCHAR2(10)
+,fax_number                     VARCHAR2(15)
+,webcollect_contact_id          VARCHAR2(240)
+,email_purpose                  VARCHAR2(60)
+,fax_purpose                    VARCHAR2(60)
+,email_osr                      VARCHAR2(30)
+,phone_osr                      VARCHAR2(30)
+,fax_osr                        VARCHAR2(30)
+,process_status                 VARCHAR2(100)
+,process_flag                   VARCHAR2(2)
+,batch_id                       NUMBER(15)   
+,creation_date                  DATE
+,created_by                     NUMBER(15)
+,last_updated_by                NUMBER(15)
+,last_update_login              NUMBER(15)
+,request_id                     NUMBER(15)
+,last_update_date               DATE
+);

@@ -1,0 +1,36 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XX_TM_NAM_TERR_DEFN_N4.idx                         |
+-- | Description      : Unique Index for custom table                      |
+   |                    XX_TM_NAM_TERR_DEFN                                |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |1       21-Aug-2011   Prasad devar        Initial Version                |
+-- +=======================================================================+
+
+------------------------------------------------------
+-- Drop existing Index XX_TM_NAM_TERR_DEFN_N4       --
+------------------------------------------------------
+
+--DROP INDEX XX_TM_NAM_TERR_DEFN_N4;
+
+------------------------------------------------------
+-- Create Index XX_TM_NAM_TERR_DEFN_N4              --
+------------------------------------------------------
+
+CREATE INDEX XXCRM.XX_TM_NAM_TERR_DEFN_N4 
+ON XXCRM.XX_TM_NAM_TERR_DEFN(LAST_UPDATE_DATE)
+NOLOGGING;
+
+
+SHOW ERRORS;
+

@@ -1,0 +1,11 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- ----------------------------------------------------------------------------
+--      Create Custom Synonym XX_CDH_CUST_BO_EXCEPTIONS_S.
+-- ----------------------------------------------------------------------------
+
+CREATE OR REPLACE SYNONYM XX_CDH_CUST_BO_EXCEPTIONS_S FOR XXCRM.XX_CDH_CUST_BO_EXCEPTIONS_S;
+/
+SHOW ERRORS;

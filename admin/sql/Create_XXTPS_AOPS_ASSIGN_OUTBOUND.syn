@@ -1,0 +1,19 @@
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |                       Oracle AMS                                      |
+-- +=======================================================================+
+-- | Name             : XXTPS_AOPS_ASSIGN_OUTBOUND.syn                     |
+-- | Description      : Custom synonym       |
+-- |                                                                       |
+-- |                    Note:This script will be executed from             |
+-- |                    APPS schema                                        |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      17-Sep-2015 Himanshu Kathuria                                 |
+-- +=======================================================================+
+
+CREATE OR REPLACE SYNONYM APPS.XXTPS_AOPS_ASSIGN_OUTBOUND FOR XXCRM.XXTPS_AOPS_ASSIGN_OUTBOUND;

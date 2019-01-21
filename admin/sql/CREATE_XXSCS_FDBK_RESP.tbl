@@ -1,0 +1,111 @@
+-- $Id$
+-- $Rev$
+-- $HeadURL$
+-- $Author$
+-- $Date$
+
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XXSCS_FDBK_RESP Table                                                      |--                                                           --|                                                                                             |--
+--| Program Name   : CREATE_XXSCS_FDBK_RESP.tbl                                                 |--
+--|                                                                                             |--
+--| Purpose        : Table for feedback responses.                                              |--
+--|                                                                                             |--
+--| Change History :                                                                            |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              25-Mar-2009       Kalyan                  Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Table XXCRM.XXSCS_FDBK_RESP......
+PROMPT
+
+ 
+  CREATE TABLE XXCRM.XXSCS_FDBK_RESP
+   (	
+	FDBK_RESP_ID 		NUMBER, 
+	FDBK_QSTN_ID 		NUMBER, 
+	FDK_CODE 		VARCHAR2(30), 
+	FDK_VALUE 		VARCHAR2(30), 
+	FDK_VALUE_DESC 		VARCHAR2(1000), 
+	FDK_GDW_CODE 		VARCHAR2(30), 
+	FDK_GDW_VALUE 		VARCHAR2(30), 
+	FDK_GDW_VALUE_DESC 	VARCHAR2(1000), 
+	EFFECTIVE_START_DT 	DATE, 
+	EFFECTIVE_END_DT 	DATE, 
+	LANGUAGE 		VARCHAR2(30), 
+	SOURCE_LANG 		VARCHAR2(30), 
+	CREATED_BY 		NUMBER, 
+	CREATION_DATE 		DATE, 
+	LAST_UPDATED_BY 	NUMBER, 
+	LAST_UPDATE_DATE 	DATE, 
+	LAST_UPDATE_LOGIN 	NUMBER, 
+	REQUEST_ID 		NUMBER, 
+	PROGRAM_APPLICATION_ID 	NUMBER, 
+	PROGRAM_ID 		NUMBER, 
+	PROGRAM_UPDATE_DATE 	DATE, 
+	ATTRIBUTE_CATEGORY 	VARCHAR2(30), 
+	ATTRIBUTE1 		VARCHAR2(2500), 
+	ATTRIBUTE2 		VARCHAR2(2500), 
+	ATTRIBUTE3 		VARCHAR2(2500), 
+	ATTRIBUTE4 		VARCHAR2(2500), 
+	ATTRIBUTE5 		VARCHAR2(2500), 
+	ATTRIBUTE6 		VARCHAR2(2500), 
+	ATTRIBUTE7 		VARCHAR2(2500), 
+	ATTRIBUTE8 		VARCHAR2(2500), 
+	ATTRIBUTE9 		VARCHAR2(2500), 
+	ATTRIBUTE10 		VARCHAR2(2500), 
+	ATTRIBUTE11 		VARCHAR2(2500), 
+	ATTRIBUTE12 		VARCHAR2(2500), 
+	ATTRIBUTE13 		VARCHAR2(2500), 
+	ATTRIBUTE14 		VARCHAR2(2500), 
+	ATTRIBUTE15 		VARCHAR2(2500), 
+	ATTRIBUTE16 		VARCHAR2(2500), 
+	ATTRIBUTE17 		VARCHAR2(2500), 
+	ATTRIBUTE18 		VARCHAR2(2500), 
+	ATTRIBUTE19		VARCHAR2(2500), 
+	ATTRIBUTE20 		VARCHAR2(2500), 
+	ORA_PICK_FLAG 		VARCHAR2(1), 
+	GDW_PICK_FLAG 		VARCHAR2(1), 
+	ACTION_CODE 		VARCHAR2(50), 
+	OPPORTUNITY 		VARCHAR2(1), 
+	LEAD 			VARCHAR2(1), 
+	ACTION_STATUS 		VARCHAR2(30), 
+	ACTION_TYPE 		VARCHAR2(50), 
+	ORA_SEQ 		NUMBER, 
+	ENTITY_STATUS 		VARCHAR2(30), 
+	ENTITY_REASON 		VARCHAR2(100),
+	FDK_VALUE_CODE		VARCHAR2(100), 
+	PRECEDENCE 		NUMBER, 
+	ENTITY_RANK		VARCHAR2(50), 
+	EXTRACT_DATE		DATE
+   ) ;
+ 
+ 
+GRANT ALL ON XXCRM.XXSCS_FDBK_RESP TO APPS;
+
+GRANT ALL ON XXCRM.XXSCS_FDBK_RESP TO XXDATA_STAGE;
+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

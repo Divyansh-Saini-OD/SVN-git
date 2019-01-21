@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XX_CDH_ADDN_ATTR" description="OD: CDH Additional Attributes Prevalidation" Version="1.0">
+<parameters/>
+<dataQuery>
+<sqlStatement name="Q_CDH_TABLES">
+<![CDATA[
+SELECT 'XX_CDH_ACCT_SITE_EXT_B' as TABLE_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                          ELSE 'N'
+                                            END as DOES_EXIST
+FROM  all_tables ALT
+WHERE ALT.table_name = 'XX_CDH_ACCT_SITE_EXT_B'
+AND   ALT.owner      = 'XXCRM'
+UNION ALL
+SELECT 'XX_CDH_ACCT_SITE_EXT_TL' as TABLE_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                          ELSE 'N'
+                                            END as DOES_EXIST
+FROM  all_tables ALT
+WHERE ALT.table_name = 'XX_CDH_ACCT_SITE_EXT_TL'
+AND   ALT.owner      = 'XXCRM'
+UNION ALL
+SELECT 'XX_CDH_SITE_USES_EXT_B' as TABLE_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                          ELSE 'N'
+                                            END as DOES_EXIST
+FROM  all_tables ALT
+WHERE ALT.table_name = 'XX_CDH_SITE_USES_EXT_B'
+AND   ALT.owner      = 'XXCRM' 
+UNION ALL
+SELECT 'XX_CDH_SITE_USES_EXT_TL' as TABLE_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                          ELSE 'N'
+                                            END as DOES_EXIST
+FROM  all_tables ALT
+WHERE ALT.table_name = 'XX_CDH_SITE_USES_EXT_TL'
+AND   ALT.owner      = 'XXCRM'
+UNION ALL
+SELECT 'XX_CDH_CUST_ACCT_EXT_B' as TABLE_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                          ELSE 'N'
+                                            END as DOES_EXIST
+FROM  all_tables ALT
+WHERE ALT.table_name = 'XX_CDH_CUST_ACCT_EXT_B'
+AND   ALT.owner      = 'XXCRM'
+UNION ALL
+SELECT 'XX_CDH_CUST_ACCT_EXT_TL' as TABLE_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                          ELSE 'N'
+                                            END as DOES_EXIST
+FROM  all_tables ALT
+WHERE ALT.table_name = 'XX_CDH_CUST_ACCT_EXT_TL'
+AND   ALT.owner      = 'XXCRM'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_INDEXES">
+<![CDATA[
+SELECT 'XX_CDH_CUST_ACCT_EXT_B_U1' as INDEX_NAME,
+                                     CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                   ELSE 'N'
+                                     END as DOES_EXIST
+FROM  all_indexes ALI
+WHERE ALI.index_name = 'XX_CDH_CUST_ACCT_EXT_B_U1'
+AND   ALI.owner      = 'XXCRM'
+AND   ALI.status     = 'VALID'
+UNION ALL
+SELECT 'XX_CDH_CUST_ACCT_EXT_B_N1' as INDEX_NAME,
+                                     CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                   ELSE 'N'
+                                     END as DOES_EXIST
+FROM  all_indexes ALI
+WHERE ALI.index_name = 'XX_CDH_CUST_ACCT_EXT_B_N1'
+AND   ALI.owner      = 'XXCRM'
+AND   ALI.status     = 'VALID'
+UNION ALL
+SELECT 'XX_CDH_CUST_ACCT_EXT_TL_U1' as INDEX_NAME,
+                                     CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                   ELSE 'N'
+                                     END as DOES_EXIST
+FROM  all_indexes ALI
+WHERE ALI.index_name = 'XX_CDH_CUST_ACCT_EXT_TL_U1'
+AND   ALI.owner      = 'XXCRM'
+AND   ALI.status     = 'VALID'
+UNION ALL
+SELECT 'XX_CDH_CUST_ACCT_EXT_TL_N1' as INDEX_NAME,
+                                     CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                   ELSE 'N'
+                                     END as DOES_EXIST
+FROM  all_indexes ALI
+WHERE ALI.index_name = 'XX_CDH_CUST_ACCT_EXT_TL_N1'
+AND   ALI.owner      = 'XXCRM'
+AND   ALI.status     = 'VALID'
+UNION ALL
+SELECT 'XX_CDH_ACCT_SITE_EXT_B_U1' as INDEX_NAME,
+                                     CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                   ELSE 'N'
+                                     END as DOES_EXIST
+FROM  all_indexes ALI
+WHERE ALI.index_name = 'XX_CDH_ACCT_SITE_EXT_B_U1'
+AND   ALI.owner      = 'XXCRM'
+AND   ALI.status     = 'VALID'
+UNION ALL
+SELECT 'XX_CDH_ACCT_SITE_EXT_B_N1' as INDEX_NAME,
+                                     CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                   ELSE 'N'
+                                     END as DOES_EXIST
+FROM  all_indexes ALI
+WHERE ALI.index_name = 'XX_CDH_ACCT_SITE_EXT_B_N1'
+AND   ALI.owner      = 'XXCRM'
+AND   ALI.status     = 'VALID'
+UNION ALL
+SELECT 'XX_CDH_ACCT_SITE_EXT_TL_U1' as INDEX_NAME,
+                                     CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                   ELSE 'N'
+                                     END as DOES_EXIST
+FROM  all_indexes ALI
+WHERE ALI.index_name = 'XX_CDH_ACCT_SITE_EXT_TL_U1'
+AND   ALI.owner      = 'XXCRM'
+AND   ALI.status     = 'VALID'
+UNION ALL
+SELECT 'XX_CDH_ACCT_SITE_EXT_TL_N1' as INDEX_NAME,
+                                     CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                   ELSE 'N'
+                                     END as DOES_EXIST
+FROM  all_indexes ALI
+WHERE ALI.index_name = 'XX_CDH_ACCT_SITE_EXT_TL_N1'
+AND   ALI.owner      = 'XXCRM'
+AND   ALI.status     = 'VALID'
+UNION ALL
+SELECT 'XX_CDH_SITE_USES_EXT_B_U1' as INDEX_NAME,
+                                     CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                   ELSE 'N'
+                                     END as DOES_EXIST
+FROM  all_indexes ALI
+WHERE ALI.index_name = 'XX_CDH_SITE_USES_EXT_B_U1'
+AND   ALI.owner      = 'XXCRM'
+AND   ALI.status     = 'VALID'
+UNION ALL
+SELECT 'XX_CDH_SITE_USES_EXT_B_N1' as INDEX_NAME,
+                                     CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                   ELSE 'N'
+                                     END as DOES_EXIST
+FROM  all_indexes ALI
+WHERE ALI.index_name = 'XX_CDH_SITE_USES_EXT_B_N1'
+AND   ALI.owner      = 'XXCRM'
+AND   ALI.status     = 'VALID'
+UNION ALL
+SELECT 'XX_CDH_SITE_USES_EXT_TL_U1' as INDEX_NAME,
+                                     CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                   ELSE 'N'
+                                     END as DOES_EXIST
+FROM  all_indexes ALI
+WHERE ALI.index_name = 'XX_CDH_SITE_USES_EXT_TL_U1'
+AND   ALI.owner      = 'XXCRM'
+AND   ALI.status     = 'VALID'
+UNION ALL
+SELECT 'XX_CDH_SITE_USES_EXT_TL_N1' as INDEX_NAME,
+                                     CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                   ELSE 'N'
+                                     END as DOES_EXIST
+FROM  all_indexes ALI
+WHERE ALI.index_name = 'XX_CDH_SITE_USES_EXT_TL_N1'
+AND   ALI.owner      = 'XXCRM'
+AND   ALI.status     = 'VALID'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_VIEWS">
+<![CDATA[
+SELECT 'XX_CDH_CUST_ACCT_EXT_VL' as VIEW_NAME, CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                          ELSE 'N'
+                                            END as DOES_EXIST
+FROM  all_views ALV
+WHERE ALV.view_name = 'XX_CDH_CUST_ACCT_EXT_VL'
+AND   ALV.owner     = 'APPS'
+UNION ALL
+SELECT 'XX_CDH_ACCT_SITE_EXT_VL' as VIEW_NAME, CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                          ELSE 'N'
+                                            END as DOES_EXIST
+FROM  all_views ALV
+WHERE ALV.view_name = 'XX_CDH_ACCT_SITE_EXT_VL'
+AND   ALV.owner     = 'APPS'
+UNION ALL
+SELECT 'XX_CDH_SITE_USES_EXT_VL' as VIEW_NAME, CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                          ELSE 'N'
+                                            END as DOES_EXIST
+FROM  all_views ALV
+WHERE ALV.view_name = 'XX_CDH_SITE_USES_EXT_VL'
+AND   ALV.owner     = 'APPS'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_SEQUENCES">
+<![CDATA[
+SELECT 'XX_CDH_CUST_DOC_ID_S' as SEQUENCE_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                             ELSE 'N' END as DOES_EXIST
+FROM  all_sequences ALS
+WHERE ALS.sequence_name = 'XX_CDH_CUST_DOC_ID_S'
+AND   ALS.sequence_owner = 'XXCRM'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_SYNONYMS">
+<![CDATA[
+SELECT 'XX_CDH_CUST_ACCT_EXT_B' AS SYNONYM_NAME,
+                                      CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                    ELSE 'N'
+                                      END as DOES_EXIST
+FROM  all_synonyms ALS
+WHERE ALS.synonym_name = 'XX_CDH_CUST_ACCT_EXT_B'
+AND   ALS.owner = 'APPS'
+UNION ALL
+SELECT 'XX_CDH_CUST_ACCT_EXT_TL' AS SYNONYM_NAME,
+                                      CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                    ELSE 'N'
+                                      END as DOES_EXIST
+FROM  all_synonyms ALS
+WHERE ALS.synonym_name = 'XX_CDH_CUST_ACCT_EXT_TL'
+AND   ALS.owner = 'APPS'
+UNION ALL
+SELECT 'XX_CDH_ACCT_SITE_EXT_B' AS SYNONYM_NAME,
+                                      CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                    ELSE 'N'
+                                      END as DOES_EXIST
+FROM  all_synonyms ALS
+WHERE ALS.synonym_name = 'XX_CDH_ACCT_SITE_EXT_B'
+AND   ALS.owner = 'APPS'
+UNION ALL
+SELECT 'XX_CDH_ACCT_SITE_EXT_TL' AS SYNONYM_NAME,
+                                      CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                    ELSE 'N'
+                                      END as DOES_EXIST
+FROM  all_synonyms ALS
+WHERE ALS.synonym_name = 'XX_CDH_ACCT_SITE_EXT_TL'
+AND   ALS.owner = 'APPS'
+UNION ALL
+SELECT 'XX_CDH_SITE_USES_EXT_B' AS SYNONYM_NAME,
+                                      CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                    ELSE 'N'
+                                      END as DOES_EXIST
+FROM  all_synonyms ALS
+WHERE ALS.synonym_name = 'XX_CDH_SITE_USES_EXT_B'
+AND   ALS.owner = 'APPS'
+UNION ALL
+SELECT 'XX_CDH_SITE_USES_EXT_TL' AS SYNONYM_NAME,
+                                      CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                    ELSE 'N'
+                                      END as DOES_EXIST
+FROM  all_synonyms ALS
+WHERE ALS.synonym_name = 'XX_CDH_SITE_USES_EXT_TL'
+AND   ALS.owner = 'APPS'
+UNION ALL
+SELECT 'XX_CDH_CUST_DOC_ID_S' AS SYNONYM_NAME,
+                                      CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                    ELSE 'N'
+                                      END as DOES_EXIST
+FROM  all_synonyms ALS
+WHERE ALS.synonym_name = 'XX_CDH_CUST_DOC_ID_S'
+AND   ALS.owner = 'APPS'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_VALUESETS">
+<![CDATA[
+SELECT 'XXOD_CDH_BILLDOCS_COMBO_TYPE' as VALUE_SET,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                      ELSE 'N'
+                                        END AS DOES_EXIST
+FROM  fnd_flex_value_sets FFV
+WHERE FFV.flex_value_set_name = 'XXOD_CDH_BILLDOCS_COMBO_TYPE'
+UNION ALL
+SELECT 'XXOD_CDH_BILLDOCS_DELIVERY_METHOD' as VALUE_SET,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                      ELSE 'N'
+                                        END AS DOES_EXIST
+FROM  fnd_flex_value_sets FFV
+WHERE FFV.flex_value_set_name = 'XXOD_CDH_BILLDOCS_DELIVERY_METHOD'
+UNION ALL
+SELECT 'XXOD_CDH_BILLDOCS_DOCUMENT_ID' as VALUE_SET,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                      ELSE 'N'
+                                        END AS DOES_EXIST
+FROM  fnd_flex_value_sets FFV
+WHERE FFV.flex_value_set_name = 'XXOD_CDH_BILLDOCS_DOCUMENT_ID'
+UNION ALL
+SELECT 'XXOD_CDH_BILLDOCS_DOC_TYPE' as VALUE_SET,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                      ELSE 'N'
+                                        END AS DOES_EXIST
+FROM  fnd_flex_value_sets FFV
+WHERE FFV.flex_value_set_name = 'XXOD_CDH_BILLDOCS_DOC_TYPE'
+UNION ALL
+SELECT 'XXOD_CDH_SPC_CREDIT_CODE' as VALUE_SET,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                      ELSE 'N'
+                                        END AS DOES_EXIST
+FROM  fnd_flex_value_sets FFV
+WHERE FFV.flex_value_set_name = 'XXOD_CDH_SPC_CREDIT_CODE'
+UNION ALL
+SELECT 'XXOD_CDH_SPC_TENDER_CODE' as VALUE_SET,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                      ELSE 'N'
+                                        END AS DOES_EXIST
+FROM  fnd_flex_value_sets FFV
+WHERE FFV.flex_value_set_name = 'XXOD_CDH_SPC_TENDER_CODE'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_PACKAGES">
+<![CDATA[
+SELECT 'PACKAGE SPECIFICATION' as TYPE, 'XX_CDH_HZ_EXTENSIBILITY_PUB.pks' as PACKAGE_NAME,
+                                         CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                       ELSE 'N'
+                                         END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_CDH_HZ_EXTENSIBILITY_PUB'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID' 
+AND   DBO.owner       = 'APPS'
+UNION ALL
+SELECT 'PACKAGE BODY' as TYPE, 'XX_CDH_HZ_EXTENSIBILITY_PUB.pkb' as PACKAGE_NAME,
+                                         CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                       ELSE 'N'
+                                         END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_CDH_HZ_EXTENSIBILITY_PUB'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID' 
+AND   DBO.owner       = 'APPS'
+UNION ALL
+SELECT 'PACKAGE SPECIFICATION' as TYPE, 'XX_CDH_ADD_ATTR_ENT_REG.pks' as PACKAGE_NAME,
+                                         CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                       ELSE 'N'
+                                         END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_CDH_ADD_ATTR_ENT_REG'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID' 
+AND   DBO.owner       = 'APPS'
+UNION ALL
+SELECT 'PACKAGE BODY' as TYPE, 'XX_CDH_ADD_ATTR_ENT_REG.pkb' as PACKAGE_NAME,
+                                         CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                       ELSE 'N'
+                                         END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_CDH_ADD_ATTR_ENT_REG'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID' 
+AND   DBO.owner       = 'APPS'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_CONC_PROGS">
+<![CDATA[
+SELECT 'OD: Register Entity for Extended Attributes' as CONC_PROG, CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                             ELSE 'N'
+                                                                               END as DOES_EXIST
+FROM  fnd_concurrent_programs FCP
+WHERE FCP.concurrent_program_name = 'XXCDHADDATTRENTREG'
+AND   FCP.enabled_flag = 'Y'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_EGO_TABLE_DEPENDENCY">
+<![CDATA[
+SELECT 'XX_CDH_CUST_ACCT_EXT_B' as TABLE_NAME,
+                             CASE COUNT(1) WHEN 1 THEN 'Y'
+                                           ELSE 'N' END as DOES_EXIST
+FROM  ego_object_ext_tables_b EET
+WHERE EET.ext_table_name IN ('XX_CDH_CUST_ACCT_EXT_B')
+UNION ALL
+SELECT 'XX_CDH_CUST_ACCT_EXT_TL' as TABLE_NAME,
+                             CASE COUNT(1) WHEN 1 THEN 'Y'
+                                           ELSE 'N' END as DOES_EXIST
+FROM  ego_object_ext_tables_b EET
+WHERE EET.ext_table_name IN ('XX_CDH_CUST_ACCT_EXT_TL')
+UNION ALL
+SELECT 'XX_CDH_ACCT_SITE_EXT_B' as TABLE_NAME,
+                             CASE COUNT(1) WHEN 1 THEN 'Y'
+                                           ELSE 'N' END as DOES_EXIST
+FROM  ego_object_ext_tables_b EET
+WHERE EET.ext_table_name IN ('XX_CDH_ACCT_SITE_EXT_B')
+UNION ALL
+SELECT 'XX_CDH_ACCT_SITE_EXT_TL' as TABLE_NAME,
+                             CASE COUNT(1) WHEN 1 THEN 'Y'
+                                           ELSE 'N' END as DOES_EXIST
+FROM  ego_object_ext_tables_b EET
+WHERE EET.ext_table_name IN ('XX_CDH_ACCT_SITE_EXT_TL')
+UNION ALL
+SELECT 'XX_CDH_SITE_USES_EXT_B' as TABLE_NAME,
+                             CASE COUNT(1) WHEN 1 THEN 'Y'
+                                           ELSE 'N' END as DOES_EXIST
+FROM  ego_object_ext_tables_b EET
+WHERE EET.ext_table_name IN ('XX_CDH_SITE_USES_EXT_B')
+UNION ALL
+SELECT 'XX_CDH_SITE_USES_EXT_TL' as TABLE_NAME,
+                             CASE COUNT(1) WHEN 1 THEN 'Y'
+                                           ELSE 'N' END as DOES_EXIST
+FROM  ego_object_ext_tables_b EET
+WHERE EET.ext_table_name IN ('XX_CDH_SITE_USES_EXT_TL')
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_EGO_LKP_CODE_DEPENDENCY">
+<![CDATA[
+SELECT 'XX_CDH_CUST_ACCOUNT' as LOOKUP_CODE,
+                             CASE COUNT(1) WHEN 1 THEN 'Y'
+                                           ELSE 'N' END as DOES_EXIST
+FROM  fnd_lookup_values FLV
+WHERE FLV.lookup_type = 'EGO_EF_DATA_LEVEL' 
+AND   FLV.lookup_code IN ('XX_CDH_CUST_ACCOUNT')
+AND   FLV.enabled_flag = 'Y'
+UNION ALL
+SELECT 'XX_CDH_CUST_ACCT_SITE' as LOOKUP_CODE,
+                             CASE COUNT(1) WHEN 1 THEN 'Y'
+                                           ELSE 'N' END as DOES_EXIST
+FROM  fnd_lookup_values FLV
+WHERE FLV.lookup_type = 'EGO_EF_DATA_LEVEL' 
+AND   FLV.lookup_code IN ('XX_CDH_CUST_ACCT_SITE')
+AND   FLV.enabled_flag = 'Y'
+UNION ALL
+SELECT 'XX_CDH_ACCT_SITE_USES' as LOOKUP_CODE,
+                             CASE COUNT(1) WHEN 1 THEN 'Y'
+                                           ELSE 'N' END as DOES_EXIST
+FROM  fnd_lookup_values FLV
+WHERE FLV.lookup_type = 'EGO_EF_DATA_LEVEL' 
+AND   FLV.lookup_code IN ('XX_CDH_ACCT_SITE_USES')
+AND   FLV.enabled_flag = 'Y'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_STD_TABLES">
+<![CDATA[
+SELECT 'XX_CDH_CUST_ACCOUNT',
+                             CASE COUNT(1) WHEN 1 THEN 'Y'
+                                           ELSE 'N' END as DOES_EXIST
+FROM  fnd_objects FOB
+WHERE FOB.obj_name IN ('XX_CDH_CUST_ACCOUNT')
+UNION ALL
+SELECT 'XX_CDH_CUST_ACCT_SITE',
+                             CASE COUNT(1) WHEN 1 THEN 'Y'
+                                           ELSE 'N' END as DOES_EXIST
+FROM  fnd_objects FOB
+WHERE FOB.obj_name IN ('XX_CDH_CUST_ACCT_SITE')
+UNION ALL
+SELECT 'XX_CDH_ACCT_SITE_USES',
+                             CASE COUNT(1) WHEN 1 THEN 'Y'
+                                           ELSE 'N' END as DOES_EXIST
+FROM  fnd_objects FOB
+WHERE FOB.obj_name IN ('XX_CDH_ACCT_SITE_USES')
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_STD_PACKAGES">
+<![CDATA[
+SELECT 'PACKAGE SPECIFICATION' as TYPE, 'EGO_USER_ATTRS_DATA_PUB.pks' as PACKAGE_NAME,
+                                         CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                       ELSE 'N'
+                                         END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'EGO_USER_ATTRS_DATA_PUB'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID' 
+AND   DBO.owner       = 'APPS'
+UNION ALL
+SELECT 'PACKAGE BODY' as TYPE, 'EGO_USER_ATTRS_DATA_PUB.pkb' as PACKAGE_NAME,
+                                         CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                       ELSE 'N'
+                                         END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'EGO_USER_ATTRS_DATA_PUB'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID' 
+AND   DBO.owner       = 'APPS'
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_CDH_TABLES" source="Q_CDH_TABLES">
+<element name="TABLE_NAME" value="TABLE_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_CDH_INDEXES" source="Q_CDH_INDEXES">
+<element name="INDEX_NAME" value="INDEX_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_CDH_VIEWS" source="Q_CDH_VIEWS">
+<element name="VIEW_NAME" value="VIEW_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_CDH_SEQUENCES" source="Q_CDH_SEQUENCES">
+<element name="SEQUENCE_NAME" value="SEQUENCE_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_CDH_SYNONYMS" source="Q_CDH_SYNONYMS">
+<element name="SYNONYM_NAME" value="SYNONYM_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_CDH_VALUESETS" source="Q_CDH_VALUESETS">
+<element name="VALUE_SET" value="VALUE_SET" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_CDH_PACKAGES" source="Q_CDH_PACKAGES">
+<element name="TYPE" value="TYPE" />
+<element name="PACKAGE_NAME" value="PACKAGE_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_CDH_CONC_PROGS" source="Q_CDH_CONC_PROGS">
+<element name="CONC_PROG" value="CONC_PROG" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_CDH_EGO_TABLE_DEPENDENCY" source="Q_CDH_EGO_TABLE_DEPENDENCY">
+<element name="TABLE_NAME" value="TABLE_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_CDH_EGO_LKP_CODE_DEPENDENCY" source="Q_CDH_EGO_LKP_CODE_DEPENDENCY">
+<element name="LOOKUP_CODE" value="LOOKUP_CODE" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_CDH_STD_TABLES" source="Q_CDH_STD_TABLES">
+<element name="TABLE_NAME" value="TABLE_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_CDH_STD_PACKAGES" source="Q_CDH_STD_PACKAGES">
+<element name="TYPE" value="TYPE" />
+<element name="PACKAGE_NAME" value="PACKAGE_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+</dataStructure>
+</dataTemplate>
+

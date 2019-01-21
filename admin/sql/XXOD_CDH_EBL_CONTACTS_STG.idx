@@ -1,0 +1,48 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify						|
+-- +============================================================================================+
+-- | Name        : XXOD_CDH_EBL_CONTACTS_STG.idx                                               |
+-- | Description : ePDF Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        07/07/12       Devendra Petkar        Initial version                            |
+-- +============================================================================================+
+
+
+--------------------------------------------------------------------
+----------------------XXOD_CDH_EBL_CONTACTS_STG---------------------
+--------------------------------------------------------------------
+
+
+
+PROMPT CREATE INDEX xxcrm.XXOD_CDH_EBL_CONTACTS_STG_BATC
+
+CREATE INDEX xxcrm.XXOD_CDH_EBL_CONTACTS_STG_BATC ON xxcrm.XXOD_CDH_EBL_CONTACTS_STG
+(batch_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+PROMPT CREATE INDEX xxcrm.XXCRM_EBL_CONT_UPLOADS
+
+CREATE INDEX xxcrm.XXCRM_EBL_CONT_UPLOADS_FILEID ON xxcrm.XXCRM_EBL_CONT_UPLOADS
+(file_upload_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+
+
+SHOW ERROR;
+
+EXIT;

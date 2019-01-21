@@ -1,0 +1,104 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XXCS_FDBK_RESP Table                                                       |--                                                           --|                                                                                             |--
+--| Program Name   : CREATE_XXCS_FDBK_RESP.tbl                                                  |--
+--|                                                                                             |--
+--| Purpose        : Table for feedback responses.                                              |--
+--|                                                                                             |--
+--| Change History :                                                                            |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              25-Mar-2009       Kalyan                  Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Table XXCRM.XXCS_FDBK_RESP......
+PROMPT
+
+  DROP TABLE "XXCRM"."XXCS_FDBK_RESP"; 
+   CREATE TABLE "XXCRM"."XXCS_FDBK_RESP" 
+   (	"FDBK_RESP_ID" NUMBER, 
+	"FDBK_QSTN_ID" NUMBER, 
+	"FDK_CODE" VARCHAR2(30 BYTE), 
+	"FDK_VALUE" VARCHAR2(30 BYTE), 
+	"FDK_VALUE_DESC" VARCHAR2(1000 BYTE), 
+	"FDK_GDW_CODE" VARCHAR2(30 BYTE), 
+	"FDK_GDW_VALUE" VARCHAR2(30 BYTE), 
+	"FDK_GDW_VALUE_DESC" VARCHAR2(1000 BYTE), 
+	"EFFECTIVE_START_DT" DATE, 
+	"EFFECTIVE_END_DT" DATE, 
+	"LANGUAGE" VARCHAR2(30 BYTE), 
+	"SOURCE_LANG" VARCHAR2(30 BYTE), 
+	"CREATED_BY" NUMBER, 
+	"CREATION_DATE" DATE, 
+	"LAST_UPDATED_BY" NUMBER, 
+	"LAST_UPDATE_DATE" DATE, 
+	"LAST_UPDATE_LOGIN" NUMBER, 
+	"REQUEST_ID" NUMBER, 
+	"PROGRAM_APPLICATION_ID" NUMBER, 
+	"PROGRAM_ID" NUMBER, 
+	"PROGRAM_UPDATE_DATE" DATE, 
+	"ATTRIBUTE_CATEGORY" VARCHAR2(30 BYTE), 
+	"ATTRIBUTE1" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE2" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE3" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE4" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE5" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE6" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE7" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE8" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE9" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE10" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE11" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE12" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE13" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE14" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE15" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE16" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE17" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE18" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE19" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE20" VARCHAR2(2500 BYTE), 
+	"ORA_PICK_FLAG" VARCHAR2(1 BYTE), 
+	"GDW_PICK_FLAG" VARCHAR2(1 BYTE), 
+	"ACTION_CODE" VARCHAR2(50 BYTE), 
+	"OPPORTUNITY" VARCHAR2(1 BYTE), 
+	"LEAD" VARCHAR2(1 BYTE), 
+	"ACTION_STATUS" VARCHAR2(30 BYTE), 
+	"ACTION_TYPE" VARCHAR2(50 BYTE), 
+	"ORA_SEQ" NUMBER, 
+	"ENTITY_STATUS" VARCHAR2(30 BYTE), 
+	"ENTITY_REASON" VARCHAR2(100 BYTE), 
+	"FDK_VALUE_CODE" VARCHAR2(100 BYTE), 
+	"PRECEDENCE" NUMBER, 
+	"ENTITY_RANK" VARCHAR2(50 BYTE), 
+	 CONSTRAINT "FDBK_RESP_PK" PRIMARY KEY ("FDBK_RESP_ID")
+   ) ;
+ 
+ 
+GRANT ALL ON XXCRM.XXCS_FDBK_RESP TO APPS;
+
+GRANT ALL ON XXCRM.XXCS_FDBK_RESP TO XXDATA_STAGE;
+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

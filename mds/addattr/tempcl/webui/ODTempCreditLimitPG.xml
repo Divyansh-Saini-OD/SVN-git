@@ -1,0 +1,112 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_1312" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="PageLayoutRN" amDefName="od.oracle.apps.xxcrm.addattr.tempcl.server.ODTempCreditLimitAM" windowTitle="Temporary Credit Limit" controllerClass="od.oracle.apps.xxcrm.addattr.tempcl.webui.ODTempCreditLimitCO" title="Temporary Credit Limit">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:header id="SearchHeader" text="Temporary Credit Limit" rendered="true">
+               <ui:contents>
+                  <oa:messageComponentLayout id="CustomSimpleSearch">
+                     <ui:contents>
+                        <oa:messageStyledText id="AccountNumber" dataType="VARCHAR2" prompt="Account Number" viewName="ODCurrencyVO" viewAttr="AccountNumber" styleClass="OraDataText"/>
+                        <oa:messageChoice id="CurrencyCode" dataType="VARCHAR2" prompt="Currency" viewName="ODCurrencyVO" pickListViewName="ODCurrencyVO" pickListDispAttr="CurrencyCode" pickListValAttr="CustAcctProfileAmtId" viewAttr="CurrencyCode" allowBlankValue="false" styleClass="OraDataText"/>
+                        <oa:messageLayout id="ButtonLayout12">
+                           <ui:contents>
+                              <oa:spacer id="Spacer111" height="50"/>
+                              <oa:submitButton id="Go" text="Go" prompt="Go" hAlign="center" unvalidated="true">
+                                 <ui:primaryClientAction>
+                                    <ui:fireAction event="Go" id="fireAction4"/>
+                                 </ui:primaryClientAction>
+                              </oa:submitButton>
+                           </ui:contents>
+                        </oa:messageLayout>
+                        <oa:formValue id="CustAccountId" viewName="ODCurrencyVO" viewAttr="CustAccountId" dataType="NUMBER"/>
+                        <oa:formValue id="CustAccountProfileId" viewName="ODCurrencyVO" viewAttr="CustAccountProfileId" dataType="NUMBER"/>
+                        <oa:formValue id="CustAcctProfileAmtId" viewName="ODCurrencyVO" viewAttr="CustAcctProfileAmtId" dataType="NUMBER"/>
+                     </ui:contents>
+                  </oa:messageComponentLayout>
+               </ui:contents>
+            </oa:header>
+            <oa:spacer id="Spacer2" height="10"/>
+            <oa:separator id="seperator"/>
+            <oa:advancedTable id="CreditLimitRN" text="" viewName="ODTempCreditLimitVO" width="100%" blockSize="50">
+               <ui:contents>
+                  <oa:column id="TempCLCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeaderTCL" prompt="Temporary Credit Limit" required="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageTextInput id="TempCL" dataType="NUMBER" viewName="ODTempCreditLimitVO1" viewAttr="NExtAttr2" required="yes" showRequired="false" disabled="${oa.current.TclEnabledFlag}" prompt="Temporary Credit Limit" readOnly="false"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="OrigCLCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeaderOCL" prompt="Original Credit Limit"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="OrigCL" dataType="NUMBER" viewName="ODTempCreditLimitVO1" viewAttr="NExtAttr3" prompt="Original Credit Limit"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="StartDateCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeaderSD" prompt="Start Date" required="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageTextInput id="StartDate" dataType="DATE" viewName="ODTempCreditLimitVO1" viewAttr="DExtAttr1" required="yes" showRequired="true" disabled="${oa.current.EnabledFlag}" prompt="Start Date"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="EndDateCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeaderED" prompt="End Date" required="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageTextInput id="EndDate" dataType="DATE" viewName="ODTempCreditLimitVO1" viewAttr="DExtAttr2" disabled="${oa.current.InactiveFlag}" prompt="End Date" maximumLength="10" required="yes"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="StatusCol" rendered="false">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeaderStatus" prompt="Status"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="Status" dataType="VARCHAR2" viewAttr="Status" prompt="Status"/>
+                     </ui:contents>
+                  </oa:column>
+               </ui:contents>
+               <ui:tableActions>
+                  <oa:flowLayout id="ButtonLayout">
+                     <ui:contents>
+                        <oa:submitButton id="AddRowId" text="Add Row" prompt="Add Row" disabled="${oa.ODTempCreditLimitPPRVO.NotAuthResp}" rendered="${oa.ODTempCreditLimitPPRVO.RenderedFlag}">
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="AddRow" id="fireAction1"/>
+                           </ui:primaryClientAction>
+                        </oa:submitButton>
+                        <oa:submitButton id="SaveId" text="Save" prompt="Save" disabled="${oa.ODTempCreditLimitPPRVO.NotAuthResp}">
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="Save" id="fireAction2"/>
+                           </ui:primaryClientAction>
+                        </oa:submitButton>
+                        <oa:button id="CancelId" text="Cancel" prompt="Cancel" disabled="${oa.ODTempCreditLimitPPRVO.NotAuthResp}" serverUnvalidated="true">
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="Cancel" unvalidated="true" id="fireAction3"/>
+                           </ui:primaryClientAction>
+                        </oa:button>
+                     </ui:contents>
+                  </oa:flowLayout>
+               </ui:tableActions>
+               <ui:footer>
+                  <oa:tableFooter id="tableFooter1">
+                     <ui:contents>
+                        <oa:rawText id="item1" text="* Indicates Required Field"/>
+                     </ui:contents>
+                  </oa:tableFooter>
+               </ui:footer>
+            </oa:advancedTable>
+         </ui:contents>
+         <ui:returnNavigation>
+            <oa:link id="ReturnLink" destination="/OA_HTML/OA.jsp?page=/oracle/apps/ar/cusstd/acctoview/webui/AcctOviewPG&amp;retainAM=Y&amp;CustAccountId={!CustAccountId}&amp;CustAccountProfileId={!CustAccountProfileId}" text="Return Link" viewName="ODCurrencyVO"/>
+         </ui:returnNavigation>
+      </oa:pageLayout>
+   </content>
+</page>

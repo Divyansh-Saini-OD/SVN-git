@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XX_CRM_CONC_JOBS" description="OD: CRM Concurrent Programs failing the Minimum Specified Threshold" Version="1.0">
+<parameters/>
+<dataQuery>
+<sqlStatement name="Q_CRM_SHORT_CONC_JOBS">
+<![CDATA[
+SELECT cjd.request_id request_id, cjd.job_name job_name,
+       cjd.module_sub_appl module_sub_appl, cjd.argument_text argument_text,
+       to_char(cjd.date_started,'DD-MON-RRRR') date_started, TRUNC(cjd.DURATION,2) DURATION,
+       cjd.request_status request_status,
+       cjd.request_phase request_phase,
+       cjd.description description
+  FROM xx_crm_conc_jobs_details cjd
+ WHERE cjd.overdue_flag = 'U'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CRM_NORM_CONC_JOBS">
+<![CDATA[
+SELECT cjd.request_id request_id, cjd.job_name job_name,
+       cjd.module_sub_appl module_sub_appl, cjd.argument_text argument_text,
+       to_char(cjd.date_started,'DD-MON-RRRR') date_started, TRUNC(cjd.DURATION,2) DURATION,
+       cjd.request_status request_status,
+       cjd.request_phase request_phase,
+       cjd.description description
+  FROM xx_crm_conc_jobs_details cjd
+ WHERE cjd.overdue_flag = 'N'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CRM_LONG_CONC_JOBS">
+<![CDATA[
+SELECT cjd.request_id request_id, cjd.job_name job_name,
+       cjd.module_sub_appl module_sub_appl, cjd.argument_text argument_text,
+       to_char(cjd.date_started,'DD-MON-RRRR') date_started, TRUNC(cjd.DURATION,2) DURATION,
+       cjd.request_status request_status,
+       cjd.request_phase request_phase,
+       cjd.description description
+  FROM xx_crm_conc_jobs_details cjd
+ WHERE cjd.overdue_flag = 'Y'
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_CRM_SHORT_CONC_JOBS" source="Q_CRM_SHORT_CONC_JOBS">
+<element name="REQUEST_ID" value="REQUEST_ID" />
+<element name="JOB_NAME" value="JOB_NAME" />
+<element name="MODULE_SUB_APPL" value="MODULE_SUB_APPL" />
+<element name="ARGUMENT_TEXT" value="ARGUMENT_TEXT" />
+<element name="DATE_STARTED" value="DATE_STARTED" />
+<element name="DURATION" value="DURATION" />
+<element name="REQUEST_STATUS" value="REQUEST_STATUS" />
+<element name="REQUEST_PHASE" value="REQUEST_PHASE" />
+<element name="DESCRIPTION" value="DESCRIPTION" />
+</group>
+<group name="G_CRM_NORM_CONC_JOBS" source="Q_CRM_NORM_CONC_JOBS">
+<element name="REQUEST_ID" value="REQUEST_ID" />
+<element name="JOB_NAME" value="JOB_NAME" />
+<element name="MODULE_SUB_APPL" value="MODULE_SUB_APPL" />
+<element name="ARGUMENT_TEXT" value="ARGUMENT_TEXT" />
+<element name="DATE_STARTED" value="DATE_STARTED" />
+<element name="DURATION" value="DURATION" />
+<element name="REQUEST_STATUS" value="REQUEST_STATUS" />
+<element name="REQUEST_PHASE" value="REQUEST_PHASE" />
+<element name="DESCRIPTION" value="DESCRIPTION" />
+</group>
+<group name="G_CRM_LONG_CONC_JOBS" source="Q_CRM_LONG_CONC_JOBS">
+<element name="REQUEST_ID" value="REQUEST_ID" />
+<element name="JOB_NAME" value="JOB_NAME" />
+<element name="MODULE_SUB_APPL" value="MODULE_SUB_APPL" />
+<element name="ARGUMENT_TEXT" value="ARGUMENT_TEXT" />
+<element name="DATE_STARTED" value="DATE_STARTED" />
+<element name="DURATION" value="DURATION" />
+<element name="REQUEST_STATUS" value="REQUEST_STATUS" />
+<element name="REQUEST_PHASE" value="REQUEST_PHASE" />
+<element name="DESCRIPTION" value="DESCRIPTION" />
+</group>
+</dataStructure>
+</dataTemplate>
+

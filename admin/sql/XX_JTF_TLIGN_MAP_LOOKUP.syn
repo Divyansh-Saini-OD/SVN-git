@@ -1,0 +1,45 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : XX_JTF_TLIGN_MAP_LOOKUP.syn                         |
+-- | Rice ID     : I0405_Territories_Terralign_Inbound_Interface       |
+-- | Description : TerrAlign Territory Qualifiers Rule Custom Table    |
+-- |               Synonym Creation Script                             |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1a 11-Oct-2007  Mohan            Initial draft version       |
+-- |Draft 1b 23-Oct-2007  Mohan            Changes due to input file   |
+-- |                                       change                      |
+-- |1.0      05-Jan-2008  Hema Chikkanna   As per Office DEPOT Code    |
+-- |                                       Standards                   |
+-- |1.1      05-Feb-2008  Hema Chikkanna   Removed the APPS prefix     |
+-- |                                                                   |
+-- +===================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+SET TERM ON
+
+PROMPT
+PROMPT Creating Synonym XX_JTF_TLIGN_MAP_LOOKUP
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_JTF_TLIGN_MAP_LOOKUP FOR XXCRM.XX_JTF_TLIGN_MAP_LOOKUP;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

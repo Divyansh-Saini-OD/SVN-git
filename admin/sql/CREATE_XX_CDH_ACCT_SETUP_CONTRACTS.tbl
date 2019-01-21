@@ -1,0 +1,46 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_CDH_ACCT_SETUP_CONTRACTS.tbl              |
+-- | Description      :Account request details                             |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |DRAFT 1A  09-May-2007  V Jayamohan          Initial draft version      |
+-- |1.0       30-Nov-2007  Sreekanth Rao      Moved Drop to seperate file  |
+-- +=======================================================================+
+-- ---------------------------------------------------------------------
+--      Create Custom Table XX_CDH_ACCT_SETUP_CONTRACTS    --
+-- ---------------------------------------------------------------------
+CREATE TABLE XXCRM.XX_CDH_ACCT_SETUP_CONTRACTS
+  (
+  SETUP_CONTRACT_ID     NUMBER(15),         
+  ACCOUNT_REQUEST_ID    NUMBER(15),
+  CONTRACT_NUMBER       VARCHAR2(50 BYTE),
+  CONTRACT_DESCRIPTION  VARCHAR2(150 BYTE),
+  PRIORITY              VARCHAR2(50 BYTE),
+  CUSTOM                VARCHAR2(50 BYTE),
+  CREATED_BY            NUMBER(15)              NOT NULL,
+  CREATION_DATE         DATE                    NOT NULL,
+  LAST_UPDATED_BY       NUMBER(15)              NOT NULL,
+  LAST_UPDATE_DATE      DATE                    NOT NULL,
+  LAST_UPDATE_LOGIN     NUMBER(15),
+  DELETE_FLAG                VARCHAR2(1 BYTE)
+);
+------------------------------------------------------
+-- Adding Grants to APPS.                           --
+------------------------------------------------------
+GRANT ALL ON XXCRM.XX_CDH_ACCT_SETUP_CONTRACTS TO APPS;
+
+SHOW ERRORS;

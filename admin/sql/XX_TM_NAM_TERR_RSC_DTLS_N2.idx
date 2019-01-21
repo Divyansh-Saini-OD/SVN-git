@@ -1,0 +1,29 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XX_TM_NAM_TERR_RSC_DTLS_N2.idx                     |
+-- | Description      : Index for custom table                             |
+   |                    XX_TM_NAM_TERR_RSC_DTLS                            |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |1.0      20-Mar-2008   Abhradip Ghosh   Initial Version                |
+-- |1.1      26-Mar-2008   Abhradip Ghosh   Included the NOLOGGING clause  |
+-- +=======================================================================+
+
+------------------------------------------------------------------------
+-- Create non unique Index XX_TM_NAM_TERR_RSC_DTLS_N2                 --
+------------------------------------------------------------------------
+
+CREATE INDEX XXCRM.XX_TM_NAM_TERR_RSC_DTLS_N2
+ON XXCRM.XX_TM_NAM_TERR_RSC_DTLS(NAMED_ACCT_TERR_ID)
+NOLOGGING;
+
+SHOW ERRORS;

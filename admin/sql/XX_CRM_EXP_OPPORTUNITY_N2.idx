@@ -1,0 +1,23 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify                                           |
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_OPPORTUNITY_N2.idx                                                    |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        26-Aug-2011     Prasad Devar       Initial version                              |
+-- +============================================================================================+
+
+  CREATE INDEX "XXCRM"."XX_CRM_EXP_OPPORTUNITY_N2" 
+  ON "XXCRM"."XX_CRM_EXP_OPPORTUNITY" ("RECORD_ID");
+
+
+EXIT;

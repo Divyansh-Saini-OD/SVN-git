@@ -1,0 +1,273 @@
+-- $Id: XX_SFDC_SALES_CONV_PVT.pkb 90515 2010-01-12 18:03:44Z Prasad Devar $
+-- $Rev: 90515 $
+-- $HeadURL: https://svn.na.odcorp.net/od/crm/trunk/xxcrm/admin/sql/XX_SFDC_SALES_CONV_PVT.pkb $
+-- $Author: Prasad Devar $
+-- $Date: 2010-01-12 13:03:44 -0500 (Tue, 12 Jan 2010) $
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+create or replace
+PACKAGE BODY XX_SFDC_SALES_CONV_PVT AS
+-- +=========================================================================================+
+-- |                  Office Depot - Project Simplify                                        |
+-- +=========================================================================================+
+-- | Name        : XX_SFDC_SALES_CONV_PVT                                                       |
+-- | Description : Custom package for data migration.                                        |
+-- |                                                                                         |
+-- |                                                                                         |
+-- |Change Record:                                                                           |
+-- |===============                                                                          |
+-- |Version     Date           Author               Remarks                                  |
+-- |=======    ==========      ================     =========================================|
+-- |1.0        08-Apr-2009     Prasad Devar               Initial version                          |
+-- |1.1       18-May-2016   Shubashree R     Removed the schema reference for GSCC compliance QC#37898|
+-- +=========================================================================================+
+
+--procedure for Assignments
+    PROCEDURE  insert_xx_crm_exp_assignment(
+     BATCH_ID                  NUMBER,
+	ORACLE_ENTITY_ID          VARCHAR2,
+      ACCOUNT_TYPE               VARCHAR2,
+	ACCOUNT_ID               VARCHAR2,
+	PRIMARY_EMP_ID               VARCHAR2,
+	PRIMARY_SPID               VARCHAR2,
+	PRIMARY_RRLID              VARCHAR2,
+	OVRLY_EMP_ID1               VARCHAR2,
+	OVRLY_SPID1               VARCHAR2,
+      OVRLY_EMP_ID2               VARCHAR2,
+	OVRLY_SPID2               VARCHAR2,
+      OVRLY_EMP_ID3               VARCHAR2,
+	OVRLY_SPID3               VARCHAR2,
+      OVRLY_EMP_ID4               VARCHAR2,
+	OVRLY_SPID4               VARCHAR2,
+      OVRLY_EMP_ID5               VARCHAR2,
+	OVRLY_SPID5               VARCHAR2,
+      OVRLY_EMP_ID6               VARCHAR2,
+	OVRLY_SPID6               VARCHAR2,
+      OVRLY_EMP_ID7               VARCHAR2,
+	OVRLY_SPID7               VARCHAR2,
+      OVRLY_EMP_ID8               VARCHAR2,
+	OVRLY_SPID8               VARCHAR2,
+      OVRLY_EMP_ID9               VARCHAR2,
+	OVRLY_SPID9               VARCHAR2,
+      OVRLY_EMP_ID10               VARCHAR2,
+	OVRLY_SPID10               VARCHAR2,
+      OSR                        VARCHAR2,
+      ENTITY_TYPE              VARCHAR2,          
+      OVRLY_EMP_ID11               VARCHAR2,
+      OVRLY_SPID11               VARCHAR2, 
+      OVRLY_EMP_ID12               VARCHAR2, 
+      OVRLY_SPID12               VARCHAR2,
+	OVRLY_EMP_ID13               VARCHAR2,
+      OVRLY_SPID13               VARCHAR2,
+	OVRLY_EMP_ID14               VARCHAR2,
+      OVRLY_SPID14                VARCHAR2,
+	OVRLY_EMP_ID15                VARCHAR2,
+      OVRLY_SPID15                VARCHAR2,
+OVRLY_EMP_ID21               VARCHAR2,
+	OVRLY_SPID21               VARCHAR2,
+      OVRLY_EMP_ID22               VARCHAR2,
+	OVRLY_SPID22               VARCHAR2,
+      OVRLY_EMP_ID23               VARCHAR2,
+	OVRLY_SPID23               VARCHAR2,
+      OVRLY_EMP_ID24               VARCHAR2,
+	OVRLY_SPID24               VARCHAR2,
+      OVRLY_EMP_ID25               VARCHAR2,
+	OVRLY_SPID25               VARCHAR2,
+      OVRLY_EMP_ID26               VARCHAR2,
+	OVRLY_SPID26               VARCHAR2,
+      OVRLY_EMP_ID27               VARCHAR2,
+	OVRLY_SPID27               VARCHAR2,
+      OVRLY_EMP_ID28               VARCHAR2,
+	OVRLY_SPID28               VARCHAR2,
+      OVRLY_EMP_ID29               VARCHAR2,
+	OVRLY_SPID29               VARCHAR2,
+      OVRLY_EMP_ID30               VARCHAR2,
+	OVRLY_SPID30               VARCHAR2, 
+OVRLY_EMP_ID16               VARCHAR2,
+	OVRLY_SPID16               VARCHAR2,
+      OVRLY_EMP_ID17               VARCHAR2,
+	OVRLY_SPID17               VARCHAR2,
+      OVRLY_EMP_ID18               VARCHAR2,
+	OVRLY_SPID18              VARCHAR2,
+      OVRLY_EMP_ID19               VARCHAR2,
+	OVRLY_SPID19               VARCHAR2,
+      OVRLY_EMP_ID20               VARCHAR2,
+	OVRLY_SPID20            VARCHAR2,
+        x_ret_status           OUT   VARCHAR2,
+    x_ret_msg              OUT   VARCHAR2
+  ) IS
+ BEGIN
+     x_ret_msg := 'S';
+
+   INSERT INTO XX_CRM_EXP_ASSIGNMENTS
+               (
+                   BATCH_ID , 
+                   RECORD_ID , 
+                   ORACLE_ENTITY_ID , 
+                   ACCOUNT_TYPE ,
+                   ACCOUNT_ID ,
+                   PRIMARY_EMP_ID ,
+                   PRIMARY_SPID , 
+			 PRIMARY_RRLID , 
+                   OVRLY_EMP_ID1 ,
+                   OVRLY_SPID1 , 
+			 OVRLY_EMP_ID2 , 
+                   OVRLY_SPID2 , 
+			 OVRLY_EMP_ID3 , 
+                   OVRLY_SPID3 , 
+			 OVRLY_EMP_ID4 ,
+                   OVRLY_SPID4 ,
+			 OVRLY_EMP_ID5 ,
+                   OVRLY_SPID5 , 
+			 OVRLY_EMP_ID6 , 
+                   OVRLY_SPID6 ,
+			 OVRLY_EMP_ID7 ,
+                   OVRLY_SPID7 ,
+			 OVRLY_EMP_ID8 ,
+                   OVRLY_SPID8 ,
+			 OVRLY_EMP_ID9 , 
+                   OVRLY_SPID9 ,
+			 OVRLY_EMP_ID10 , 
+                   OVRLY_SPID10 ,
+			 ATTRIBUTE1,
+                   ENTITY_ID,
+                   ENTITY_TYPE,  
+                  OVRLY_EMP_ID11 ,
+                   OVRLY_SPID11 , 
+			 OVRLY_EMP_ID12 , 
+                   OVRLY_SPID12 , 
+			 OVRLY_EMP_ID13 , 
+                   OVRLY_SPID13 , 
+			 OVRLY_EMP_ID14 ,
+                   OVRLY_SPID14 ,
+			 OVRLY_EMP_ID15 ,
+                   OVRLY_SPID15 , 
+			 CREATION_DATE             ,
+                  CREATED_BY                ,
+                  LAST_UPDATE_DATE          ,
+                  LAST_UPDATED_BY           ,
+                  LAST_UPDATE_LOGIN         ,
+                   OVRLY_EMP_ID21 ,
+                   OVRLY_SPID21 , 
+			 OVRLY_EMP_ID22 , 
+                   OVRLY_SPID22 , 
+			 OVRLY_EMP_ID23 , 
+                   OVRLY_SPID23 , 
+			 OVRLY_EMP_ID24 ,
+                   OVRLY_SPID24 ,
+			 OVRLY_EMP_ID25 ,
+                   OVRLY_SPID25 , 
+			 OVRLY_EMP_ID26 , 
+                   OVRLY_SPID26 ,
+			 OVRLY_EMP_ID27 ,
+                   OVRLY_SPID27 ,
+			 OVRLY_EMP_ID28 ,
+                   OVRLY_SPID28 ,
+			 OVRLY_EMP_ID29 , 
+                   OVRLY_SPID29 ,
+			 OVRLY_EMP_ID30 , 
+                   OVRLY_SPID30 ,
+			OVRLY_EMP_ID16 ,
+                   OVRLY_SPID16 , 
+			 OVRLY_EMP_ID17 , 
+                   OVRLY_SPID17 , 
+			 OVRLY_EMP_ID18 , 
+                   OVRLY_SPID18 , 
+			 OVRLY_EMP_ID19 ,
+                   OVRLY_SPID19 ,
+			 OVRLY_EMP_ID20 ,
+                   OVRLY_SPID20 ,EXTERNAL_ID  
+           )
+           VALUES
+           (
+                   BATCH_ID                  , 
+                   XXCRM.XX_CRM_EXP_ASSIGN_REC_ID_S.nextval            , 
+                  ORACLE_ENTITY_ID          , 
+                  ACCOUNT_TYPE ,
+                   ACCOUNT_ID ,
+                   PRIMARY_EMP_ID ,
+                   PRIMARY_SPID , 
+                   PRIMARY_RRLID , 
+                   OVRLY_EMP_ID1 ,
+                   OVRLY_SPID1 , 
+                   OVRLY_EMP_ID2 , 
+                   OVRLY_SPID2 ,
+                   OVRLY_EMP_ID3 , 
+                   OVRLY_SPID3 , 
+                   OVRLY_EMP_ID4 ,
+                   OVRLY_SPID4 ,
+                   OVRLY_EMP_ID5 ,
+                   OVRLY_SPID5 , 
+                   OVRLY_EMP_ID6 , 
+                   OVRLY_SPID6 ,
+                   OVRLY_EMP_ID7 ,
+                   OVRLY_SPID7 ,
+                   OVRLY_EMP_ID8 ,
+                   OVRLY_SPID8 ,
+                   OVRLY_EMP_ID9 , 
+                   OVRLY_SPID9 ,
+                   OVRLY_EMP_ID10 , 
+                   OVRLY_SPID10 ,
+                   BATCH_ID,
+                   OSR,
+                   ENTITY_TYPE, 
+			OVRLY_EMP_ID11 ,
+                   OVRLY_SPID11 ,  
+                   OVRLY_EMP_ID12 , 
+                   OVRLY_SPID12 ,  
+                   OVRLY_EMP_ID13 , 
+                   OVRLY_SPID13 ,  
+                   OVRLY_EMP_ID14 ,
+                   OVRLY_SPID14 , 
+                   OVRLY_EMP_ID15 ,
+                   OVRLY_SPID15 , 
+                  SYSDATE                   ,
+                 FND_GLOBAL.USER_ID         ,
+                  SYSDATE                   ,
+                   fnd_global.user_id       ,
+                   fnd_global.user_id      ,
+ OVRLY_EMP_ID21 ,
+                   OVRLY_SPID21 , 
+			 OVRLY_EMP_ID22 , 
+                   OVRLY_SPID22 , 
+			 OVRLY_EMP_ID23 , 
+                   OVRLY_SPID23 , 
+			 OVRLY_EMP_ID24 ,
+                   OVRLY_SPID24 ,
+			 OVRLY_EMP_ID25 ,
+                   OVRLY_SPID25 , 
+			 OVRLY_EMP_ID26 , 
+                   OVRLY_SPID26 ,
+			 OVRLY_EMP_ID27 ,
+                   OVRLY_SPID27 ,
+			 OVRLY_EMP_ID28 ,
+                   OVRLY_SPID28 ,
+			 OVRLY_EMP_ID29 , 
+                   OVRLY_SPID29 ,
+			 OVRLY_EMP_ID30 , 
+                   OVRLY_SPID30 ,
+			OVRLY_EMP_ID16 ,
+                   OVRLY_SPID16 , 
+			 OVRLY_EMP_ID17 , 
+                   OVRLY_SPID17 , 
+			 OVRLY_EMP_ID18 , 
+                   OVRLY_SPID18 , 
+			 OVRLY_EMP_ID19 ,
+                   OVRLY_SPID19 ,
+			 OVRLY_EMP_ID20 ,
+                   OVRLY_SPID20  , ACCOUNT_TYPE || '-' ||ACCOUNT_ID 
+           );
+
+
+  EXCEPTION WHEN OTHERS THEN
+   x_ret_status := 'E';
+   x_ret_msg    := SQLERRM;
+  END;
+
+END XX_SFDC_SALES_CONV_PVT;
+/
+
+SHOW ERRORS;

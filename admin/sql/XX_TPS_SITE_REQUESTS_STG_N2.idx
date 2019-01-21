@@ -1,0 +1,36 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XXCRM.XX_TPS_SITE_REQUESTS_STG_N2.idx              |
+-- | Description      : Non Unique Index for custom table                  |
+-- |                    XXCRM.XX_TPS_SITE_REQUESTS_STG_N2                  |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |Draft 1a  04-Sep-2008  Piyush Khandelwal   Initial Draft Version        |
+-- +=======================================================================+
+
+-------------------------------------------------------------
+-- Drop existing Index for XXCRM.XX_TPS_SITE_REQUESTS_STG_N2   --
+-------------------------------------------------------------
+
+--DROP INDEX XXCRM.XX_TPS_SITE_REQUESTS_STG_N2;
+
+-------------------------------------------------------------
+-- Create Index XXCRM.XX_TPS_SITE_REQUESTS_STG_N2              --
+-------------------------------------------------------------
+
+CREATE INDEX XXCRM.XX_TPS_SITE_REQUESTS_STG_N2 
+ON XXCRM.XX_CRM_TPS_SITE_REQUESTS_STG(TERR_REC_ID)
+NOLOGGING;
+
+
+SHOW ERRORS;
+

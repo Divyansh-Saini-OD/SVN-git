@@ -1,0 +1,40 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :XX_JTF_QUAL_RECORD_ID_INT_S.seq                     |
+-- | Description      :Custom Sequence for I0405_Territories               |
+-- |                   (for Qualifiers table )                             |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author              Remarks                     |
+-- |-------  -----------  -----------------   -----------------------------|
+-- | 1.0    20-Jul-2007   Sathya Prabha Rani   Initial Draft Version       |
+-- |                                                                       |
+-- +=======================================================================+
+
+REM============================================================================================
+REM        Creating Sequence XX_JTF_QUAL_RECORD_ID_INT_S
+REM============================================================================================
+
+
+CREATE SEQUENCE XXCRM.XX_JTF_QUAL_RECORD_ID_INT_S
+START WITH 1 INCREMENT BY 1
+/
+SHOW ERRORS;
+
+EXIT;
+
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================

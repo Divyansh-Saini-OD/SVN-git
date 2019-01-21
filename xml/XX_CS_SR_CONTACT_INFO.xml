@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<dataTemplate name="XX_CS_SR_CONTACT_INFO" description="OD: CS SR CONTACT INFORMATION" Version="1.0">
+<parameters>
+<parameter name="p_sr_type" datatype="character" />
+ <parameter name="p_group_name" datatype="character" />
+<parameter name="p_preferred_contact" datatype="character" />
+ <parameter name="p_status" datatype="character" />
+  <parameter name="p_start_date" datatype="character" />
+ <parameter name="p_end_date" datatype="character" />
+ 
+
+ </parameters>
+<dataQuery>
+<sqlStatement name="Q_MAIN">
+<![CDATA[
+select cb.incident_number "SR_NUMBER",cb.incident_attribute_5 "CONTACT_NAME",cb.incident_attribute_7 "PREFERRED_CONTACT",cb.incident_attribute_8 "EMAIL",incident_attribute_14 "Phone"
+,st.name "STATUS",gp.group_name "GROUP_NAME",cb.incident_attribute_1 "GMIL_ORDER",to_char(cb.creation_date,'DD-Mon-YYYY HH24:MI') "SR_CREATED_ON"
+from cs_incidents_all_b cb,
+cs_Incident_types_vl vt,
+cs_incident_statuses_vl st,
+jtf_rs_groups_vl gp
+where 1=1
+and cb.incident_type_id=vt.incident_type_id
+and (vt.name=:p_sr_type or :p_sr_type is null)
+and (gp.group_id=:p_group_name or :p_group_name is null)
+and cb.owner_group_id=gp.group_id
+and (st.name=:p_status or :p_status is null)
+and (cb.incident_attribute_7=:p_preferred_contact or :p_preferred_contact is null)
+and cb.incident_status_id=st.incident_status_id
+and (cb.creation_date) between to_date(:p_start_date,'YYYY/MM/DD HH24:MI:SS')
+    AND to_date(:p_end_date,'YYYY/MM/DD HH24:MI:SS')
+order by cb.creation_date
+
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="LIST_G_SR_NUMBER" source="Q_MAIN">
+<group name="G_SR_NUMBER" source="Q_MAIN">
+<element name="SR_NUMBER" value="SR_NUMBER" />
+<element name="STATUS" value="STATUS" />
+<element name="CONTACT_NAME" value="CONTACT_NAME" />
+<element name="PREFERRED_CONTACT" value="PREFERRED_CONTACT" />
+<element name="PHONE" value="PHONE" />
+<element name="EMAIL" value="EMAIL" />
+<element name="GROUP_NAME" value="GROUP_NAME" />
+<element name="GMIL_ORDER" value="GMIL_ORDER" />
+<element name="SR_CREATED_ON" value="SR_CREATED_ON" />
+
+</group>
+</group>
+</dataStructure>
+</dataTemplate>
+

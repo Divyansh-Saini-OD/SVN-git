@@ -1,0 +1,78 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.12_1330" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="MainRN" controllerClass="od.oracle.apps.xxcrm.stl.admin.webui.ODRepStoreSrchCO" windowTitle="Rep Store Search" title="Search Rep to Store Map" amDefName="od.oracle.apps.xxcrm.stl.admin.server.ODAdminAM">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:query id="SearchRN" mode="autoCustomizationCriteria">
+               <ui:contents>
+                  <oa:table id="ODRepStoreSrchVO1" blockSize="20">
+                     <ui:contents>
+                        <oa:formValue id="RepStoreId" dataType="NUMBER" prompt="RepStoreId" viewName="ODRepStoreSrchVO1" viewAttr="RepStoreId"/>
+                        <oa:messageStyledText id="ResourceName" dataType="VARCHAR2" prompt="Sales Rep Name" viewName="ODRepStoreSrchVO1" viewAttr="ResourceName" queryable="true"/>
+                        <oa:messageStyledText id="LegacyRepId" dataType="VARCHAR2" prompt="Sales Rep ID" viewName="ODRepStoreSrchVO1" viewAttr="LegacyRepId" queryable="true"/>
+                        <oa:messageStyledText id="email" viewName="ODRepStoreSrchVO1" viewAttr="SourceEmail" prompt="Email Address"/>
+                        <oa:messageStyledText id="StoreId" dataType="VARCHAR2" prompt="OD Store#" viewName="ODRepStoreSrchVO1" viewAttr="StoreId" maximumLength="250" queryable="true"/>
+                        <oa:messageStyledText id="StartDateActive" dataType="DATE" prompt="Start Date" viewName="ODRepStoreSrchVO1" viewAttr="StartDateActive"/>
+                        <oa:messageStyledText id="EndDateActive" dataType="DATE" prompt="End Date" viewName="ODRepStoreSrchVO1" viewAttr="EndDateActive"/>
+                        <oa:switcher id="ActiveRN" viewName="ODRepStoreSrchVO1" viewAttr="Active" prompt="Active" dataType="VARCHAR2" rendered="true">
+                           <ui:case name="A">
+                              <oa:image id="A" source="/OA_MEDIA/completeind_status.gif" serverUnvalidated="true"/>
+                           </ui:case>
+                           <ui:case name="I">
+                              <oa:spacer id="I"/>
+                           </ui:case>
+                        </oa:switcher>
+                        <oa:image id="Update" prompt="Update" destination="OA.jsp?page=/od/oracle/apps/xxcrm/stl/admin/webui/ODRepStoreUptdPG&amp;FrmId={@RepStoreId}" source="/OA_MEDIA/updateicon_enabled.gif"/>
+                        <oa:formValue id="ResourceId" dataType="NUMBER" prompt="ResourceId" viewName="ODRepStoreSrchVO1" viewAttr="ResourceId"/>
+                        <oa:formValue id="RoleId" dataType="NUMBER" prompt="RoleId" viewName="ODRepStoreSrchVO1" viewAttr="RoleId"/>
+                        <oa:formValue id="GroupId" dataType="NUMBER" prompt="GroupId" viewName="ODRepStoreSrchVO1" viewAttr="GroupId"/>
+                        <oa:formValue id="GroupName" dataType="VARCHAR2" prompt="GroupName" viewName="ODRepStoreSrchVO1" viewAttr="GroupName"/>
+                        <oa:formValue id="RoleName" dataType="VARCHAR2" prompt="RoleName" viewName="ODRepStoreSrchVO1" viewAttr="RoleName"/>
+                        <oa:formValue id="Act1" dataType="VARCHAR2" prompt="Act" viewName="ODRepStoreSrchVO1" viewAttr="Active" queryable="false"/>
+                     </ui:contents>
+                     <ui:tableActions>
+                        <oa:flowLayout id="BottonRN">
+                           <ui:contents>
+                              <oa:exportButton id="Export" exportAllRows="true" viewName="ODRepStoreSrchVO1" text="Export"/>
+                              <oa:submitButton id="Create" text="Create" prompt="Create"/>
+                           </ui:contents>
+                        </oa:flowLayout>
+                     </ui:tableActions>
+                  </oa:table>
+               </ui:contents>
+               <oa:simpleSearchPanel>
+                  <oa:header text="Simple Search" id="RepSrchRN">
+                     <ui:contents>
+                        <oa:messageComponentLayout id="RepSrchMSGRN">
+                           <ui:contents>
+                              <oa:messageLovInput id="ResourceName1" dataType="VARCHAR2" prompt="Sales Rep Name" externalListOfValues="/od/oracle/apps/xxcrm/stl/admin/lov/webui/ODRepSrchRN" maximumLength="200" unvalidated="true" tipMessageName="XX_CRM_CPD_REPSRCH_T" tipType="shortTip" tipMessageAppShortName="xxcrm">
+                                 <lovMappings>
+                                    <lovMap id="lovMap1" lovItem="ResourceName" resultTo="ResourceName1" criteriaFrom="ResourceName1" programmaticQuery="false"/>
+                                    <lovMap id="lovMap2" lovItem="LegacySalesId" resultTo="LegacyRepId" criteriaFrom="LegacyRepId"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageLovInput id="StoreId1" dataType="VARCHAR2" prompt="OD Store#" maximumLength="250" externalListOfValues="/od/oracle/apps/xxcrm/stl/admin/lov/webui/ODStoreSrchRN" required="no" unvalidated="true" selectiveSearchCriteria="false" tipType="shortTip" tipMessageAppShortName="xxcrm" tipMessageName="XX_CRM_CPD_STORESRCH_T">
+                                 <lovMappings>
+                                    <lovMap id="lovMap3" lovItem="Value" resultTo="StoreId1" criteriaFrom="StoreId1" useForValidation="default"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageChoice id="Activ" pickListViewName="ODPickListVO1" pickListDispAttr="Value" pickListValAttr="Code" prompt="Active"/>
+                           </ui:contents>
+                        </oa:messageComponentLayout>
+                     </ui:contents>
+                  </oa:header>
+               </oa:simpleSearchPanel>
+               <oa:simpleSearchMappings>
+                  <oa:queryCriteriaMap id="queryCriteriaMap1" criteriaItem="ResourceName1" resultsItem="ResourceName"/>
+                  <oa:queryCriteriaMap id="queryCriteriaMap2" criteriaItem="StoreId1" resultsItem="StoreId"/>
+                  <oa:queryCriteriaMap id="queryCriteriaMap4" criteriaItem="Activ" resultsItem="Act1"/>
+               </oa:simpleSearchMappings>
+            </oa:query>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

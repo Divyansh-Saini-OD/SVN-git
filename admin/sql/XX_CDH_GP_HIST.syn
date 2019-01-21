@@ -1,0 +1,39 @@
+-- $Id: XX_CDH_GP_HIST.syn 69590 2009-04-10 15:32:12Z Naga Kalyan $
+-- $Rev: 69590 $
+-- $HeadURL: https://svn.na.odcorp.net/od/crm/trunk/xxcrm/admin/sql/XX_CDH_GP_HIST.syn $
+-- $Author: Naga Kalyan $
+-- $Date: 2009-04-10 11:32:12 -0400 (Fri, 10 Apr 2009) $
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XX_CDH_GP_HIST.syn                                 |
+-- | Description      : Synonym for XX_CDH_GP_HIST                         |
+-- |                                                                       |
+-- |                    Note:This script will be executed from             |
+-- |                    APPS schema                                        |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      10-May-2011 Kalyan          Initial version                   |
+-- +=======================================================================+
+
+---------------------------------------------------------
+-- Creating synonym APPS.XX_CDH_GP_HIST.syn --
+---------------------------------------------------------
+CREATE OR REPLACE SYNONYM APPS.XX_CDH_GP_HIST FOR XXCRM.XX_CDH_GP_HIST;
+
+SHOW ERRORS;
+
+EXIT;
+
+
+
+

@@ -1,0 +1,37 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath_~PROD_~PATH_~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath_~PROD_mds_directory  -->
+<jrad:page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1550" xml:lang="en-US" >
+   <jrad:content>
+      <oa:pageLayout id="GeneriExtPageLayout" controllerClass="od.oracle.apps.xxcrm.cdh.extension.webui.ODExtAttributeGenericCO" amDefName="oracle.apps.imc.ocong.root.server.ImcRootAM" windowTitle="Additional Attributes" title="Extension"  warnAboutChanges="true">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:pageButtonBar id="ExtButtonBar" controllerClass="od.oracle.apps.xxcrm.cdh.extension.webui.ODExtAttributeButtonBarCO">
+               <ui:contents>
+                  <oa:submitButton id="IMCCANCELBUTTON" use="/oracle/apps/fnd/attributesets/Buttons/Cancel" text="Restore" prompt="Restore" serverUnvalidated="true" unvalidated="true"/>
+                  <oa:submitButton id="IMCAPPLYBUTTON" use="/oracle/apps/fnd/attributesets/Buttons/Apply" text="Save" prompt="Save"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+            <oa:tableLayout id="TableLayout" width="100%">
+
+               <ui:contents>
+                  <oa:rowLayout id="OrgProfileExtRow">
+                     <ui:contents>
+                        <oa:cellFormat id="OrgProfileExtCell">
+                           <ui:contents>
+                              <oa:stackLayout id="OrgAccountExtRN" extends="/od/oracle/apps/xxcrm/cdh/extension/webui/ODAttributeExtRN"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+
+            </oa:tableLayout>
+         </ui:contents>
+         <ui:productBranding>
+            <oa:image id="prodBranding" source="/OA_MEDIA/IMCBRAND.gif" shortDesc="Oracle Customers Online"/>
+         </ui:productBranding>
+      </oa:pageLayout>
+   </jrad:content>
+</jrad:page>

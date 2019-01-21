@@ -1,0 +1,309 @@
+
+-- package specification
+
+create or replace package XX_CDH_GP_MAINT_PKG AS
+
+--Create GrandParent
+
+
+TYPE gp_rec_type IS RECORD (
+
+	 gp_id						NUMBER
+	,gp_name					varchar2(360)
+	,resource_id					varchar2(100)
+      	,role_id					varchar2(100)
+      	,group_id					varchar2(100)
+      	,legacy_rep_id					varchar2(100)
+	,segment                            		VARCHAR2(30)
+	,revenue_band                       		VARCHAR2(30)
+	,w_agreement_flag				VARCHAR2(1)
+	,notes						VARCHAR2(4000)
+	,party_id                           		NUMBER(15)
+	,requestor					NUMBER
+	,status						VARCHAR2(1)
+	,status_update_date				DATE
+	,ATTRIBUTE_CATEGORY             		VARCHAR2(30) 
+	,ATTRIBUTE1                        		VARCHAR2(150)                                                                                                                                                                                 
+	,ATTRIBUTE2                  	   		VARCHAR2(150)                                                                                                                                                                                 
+	,ATTRIBUTE3                         		VARCHAR2(150)                                                                                                                                                                                 
+	,ATTRIBUTE4                        		VARCHAR2(150)                                                                                                                                                                                
+	,ATTRIBUTE5                             	VARCHAR2(150)                                                                                                                                                                                
+	,ATTRIBUTE6                             	VARCHAR2(150)                                                                                                                                                                                 
+	,ATTRIBUTE7                             	VARCHAR2(150)                                                                                                                                                                                 
+	,ATTRIBUTE8                             	VARCHAR2(150)                                                                                                                                                                                 
+	,ATTRIBUTE9                             	VARCHAR2(150)                                                                                                                                                                                 
+	,ATTRIBUTE10                            	VARCHAR2(150)                                                                                                                                                                                 
+	,ATTRIBUTE11                            	VARCHAR2(150)                                                                                                                                                                                 
+	,ATTRIBUTE12                            	VARCHAR2(150)                                                                                                                                                                                 
+	,ATTRIBUTE13                            	VARCHAR2(150)                                                                                                                                                                                 
+	,ATTRIBUTE14                            	VARCHAR2(150)                                                                                                                                                                                 
+	,ATTRIBUTE15                            	VARCHAR2(150)                                                                                                                                                                                 
+	,ATTRIBUTE16                            	VARCHAR2(150)                                                                                                                                                                                 
+	,ATTRIBUTE17                            	VARCHAR2(150)                                                                                                                                                                                 
+	,ATTRIBUTE18                            	VARCHAR2(150)                                                                                                                                                                                 
+	,ATTRIBUTE19                            	VARCHAR2(150)                                                                                                                                                                                 
+	,ATTRIBUTE20                            	VARCHAR2(150)         
+	,OBJECT_VERSION_NUMBER                  	NUMBER
+	,REQUEST_ID                             	NUMBER(15) 
+	,PROGRAM_ID                             	NUMBER(15)                                                                                                                                                                                    
+	,PROGRAM_UPDATE_DATE                    	DATE                                                                                                                                                                                      
+	,PROGRAM_APPLICATION_ID                 	NUMBER(15)                    
+	,CREATION_DATE                          	DATE                                                                                                                                                                                          
+	,CREATED_BY                             	NUMBER                                                                                                                                                                                        
+	,LAST_UPDATE_DATE                       	DATE                                                                                                                                                                                          
+	,LAST_UPDATED_BY                        	NUMBER                                                                              
+	,CREATED_BY_MODULE                      	VARCHAR2(100)
+	,APPLICATION_ID                         	NUMBER 
+);
+
+TYPE gp_hist_rec_type IS RECORD (
+
+	gp_hist_id					NUMBER
+	,gp_id						NUMBER	  
+	,gp_name					varchar2(360)
+	,resource_id					varchar2(100)
+      	,role_id					varchar2(100)
+      	,group_id					varchar2(100)
+      	,legacy_rep_id					varchar2(100)
+	,segment                           	 	VARCHAR2(30)
+	,revenue_band                     		VARCHAR2(30)
+	,w_agreement_flag				VARCHAR2(1)
+	,notes						VARCHAR2(4000)
+	,party_id                       		NUMBER(15)
+	,requestor					NUMBER
+	,status						VARCHAR2(1)
+	,status_update_date				DATE
+	,ATTRIBUTE_CATEGORY               		VARCHAR2(30) 
+	,ATTRIBUTE1                       		VARCHAR2(150)                                                                                                                                                                                  
+	,ATTRIBUTE2                        		VARCHAR2(150)                                                                                                                                                                                  
+	,ATTRIBUTE3                         		VARCHAR2(150)                                                                                                                                                                                  
+	,ATTRIBUTE4                         		VARCHAR2(150)                                                                                                                                                                                 
+	,ATTRIBUTE5                         		VARCHAR2(150)                                                                                                                                                                                 
+	,ATTRIBUTE6                         		VARCHAR2(150)                                                                                                                                                                                  
+	,ATTRIBUTE7                         		VARCHAR2(150)                                                                                                                                                                                  
+	,ATTRIBUTE8                         		VARCHAR2(150)                                                                                                                                                                                  
+	,ATTRIBUTE9                         		VARCHAR2(150)                                                                                                                                                                                  
+	,ATTRIBUTE10                        		VARCHAR2(150)                                                                                                                                                                                  
+	,ATTRIBUTE11                        		VARCHAR2(150)                                                                                                                                                                                  
+	,ATTRIBUTE12                        		VARCHAR2(150)                                                                                                                                                                                  
+	,ATTRIBUTE13                        		VARCHAR2(150)                                                                                                                                                                                  
+	,ATTRIBUTE14                        		VARCHAR2(150)                                                                                                                                                                                  
+	,ATTRIBUTE15                        		VARCHAR2(150)                                                                                                                                                                                  
+	,ATTRIBUTE16                        		VARCHAR2(150)                                                                                                                                                                                  
+	,ATTRIBUTE17                        		VARCHAR2(150)                                                                                                                                                                                  
+	,ATTRIBUTE18                        		VARCHAR2(150)                                                                                                                                                                                  
+	,ATTRIBUTE19                        		VARCHAR2(150)                                                                                                                                                                                  
+	,ATTRIBUTE20                        		VARCHAR2(150)         
+	,OBJECT_VERSION_NUMBER              		NUMBER
+	,REQUEST_ID                         		NUMBER(15) 
+	,PROGRAM_ID                         		NUMBER(15)                                                                                                                                                                                     
+	,PROGRAM_UPDATE_DATE                		DATE                                                                                                                                                                                       
+	,PROGRAM_APPLICATION_ID             		NUMBER(15)                                                                            
+	,CREATION_DATE                      		DATE                                                                                                                                                                                           
+	,CREATED_BY                         		NUMBER                                                                                                                                                                                         
+	,LAST_UPDATE_DATE                   		DATE                                                                                                                                                                                           
+	,LAST_UPDATED_BY                    		NUMBER                                                                               
+	,CREATED_BY_MODULE                  		VARCHAR2(100)
+	,APPLICATION_ID                     		NUMBER 
+
+);
+
+
+PROCEDURE create_gp (
+    p_init_msg_list		IN      	VARCHAR2:= FND_API.G_FALSE,
+    p_gp_rec			IN 		gp_rec_type,
+    x_gp_id                	OUT NOCOPY     	NUMBER,
+    x_party_id                	OUT NOCOPY     	NUMBER,
+    x_return_status             OUT NOCOPY     	VARCHAR2,
+    x_msg_count                 OUT NOCOPY     	NUMBER,
+    x_msg_data                  OUT NOCOPY     	VARCHAR2
+);
+
+PROCEDURE update_gp (
+    p_init_msg_list         	IN		VARCHAR2:= FND_API.G_FALSE,
+    p_gp_rec			IN 		gp_rec_type,	
+    x_return_status             OUT NOCOPY     	VARCHAR2,
+    x_msg_count                 OUT NOCOPY     	NUMBER,
+    x_msg_data                  OUT NOCOPY     	VARCHAR2
+);
+
+
+PROCEDURE record_gp_hist (
+    p_init_msg_list           	IN      	VARCHAR2:= FND_API.G_FALSE,
+    p_gp_hist_rec		IN		gp_hist_rec_type,
+    x_gp_hist_id		OUT NOCOPY      NUMBER
+    x_ret_status               	OUT NOCOPY     	VARCHAR2,
+    x_m_count                  	OUT NOCOPY     	NUMBER,
+    x_m_data                   	OUT NOCOPY     	VARCHAR2
+);
+
+
+end XX_CDH_GP_MAINT_PKG;
+
+
+
+-- package body
+
+create or replace package body XX_CDH_GP_MAINT_PKG AS
+
+
+
+procedure 	do_create_party ( 
+    p_init_msg_list           	IN 		VARCHAR2:= FND_API.G_FALSE,
+    p_gp_rec			IN 		gp_rec_type,
+    x_return_status           	OUT NOCOPY   	VARCHAR2,
+    x_msg_count               	OUT NOCOPY   	NUMBER,
+    x_msg_data                	OUT NOCOPY   	VARCHAR2,
+    x_party_id                	OUT NOCOPY   	NUMBER,
+    x_party_number            	OUT NOCOPY   	VARCHAR2,
+    x_profile_id              	OUT NOCOPY   	NUMBER
+) IS
+
+l_organization_rec		HZ_PARTY_V2PUB.ORGANIZATION_REC_TYPE;
+
+BEGIN
+
+
+
+	l_organization_rec.organization_name := p_gp_rec.gp_name;
+
+	HZ_PARTY_V2PUB.create_organization (
+    		p_init_msg_list    ,
+    		l_organization_rec ,
+   	 	x_return_status    ,
+    		x_msg_count        ,
+    		x_msg_data         ,
+    		x_party_id         ,
+    		x_party_number     ,
+    		x_profile_id       
+	);
+
+
+	if x_return_status <> fnd_api.g_ret_sts_success THEN
+       		RAISE FND_API.G_EXC_ERROR;
+      	end if;
+
+
+END do_create_party ;
+
+
+END do_create_party ;
+
+PROCEDURE create_gp (
+    p_init_msg_list		IN      	VARCHAR2:= FND_API.G_FALSE,
+    p_gp_rec			IN 		gp_rec_type,
+    x_gp_id                	OUT NOCOPY     	NUMBER,
+    x_party_id                	OUT NOCOPY     	NUMBER,
+    x_return_status             OUT NOCOPY     	VARCHAR2,
+    x_msg_count                 OUT NOCOPY     	NUMBER,
+    x_msg_data                  OUT NOCOPY     	VARCHAR2
+) IS
+
+l_api_name             CONSTANT VARCHAR2(100) := 'XX_CDH_GP_MAINT_PKG.create_gp';
+l_party_id                    	HZ_PARTIES.party_id%type ;
+l_party_number           	HZ_PARTIES.party_number%type;
+l_profile_id                	HZ_ORGANIZATION_PROFILES.profile_id%type; 
+l_init_msg_list		      	VARCHAR2(1):= FND_API.G_FALSE;
+l_out_ret_status           	VARCHAR2(1);
+l_out_msg_count               	NUMBER   ;
+l_out_msg_data                	VARCHAR2(2000) ;
+
+BEGIN
+
+	SAVEPOINT create_gp ;
+
+	-- initialize message list if p_init_msg_list is set to TRUE.
+    	IF FND_API.to_Boolean(p_init_msg_list) THEN
+        	FND_MSG_PUB.initialize;
+    	END IF;
+	x_return_status := FND_API.G_RET_STS_SUCCESS;
+
+	-- create party
+
+	do_create_party(
+			 l_init_msg_list,
+                         p_gp_rec,
+			 l_out_ret_status,
+			 l_out_msg_count,
+			 l_out_msg_data,
+			 l_party_id,
+			 l_party_number,
+			 l_profile_id
+			);
+
+
+EXCEPTION WHEN OTHERS THEN
+	ROLLBACK TO create_gp ;
+	x_return_status := FND_API.G_RET_STS_ERROR;
+	FND_MSG_PUB.Count_And_Get(
+                                  p_encoded => FND_API.G_FALSE,
+                                  p_count => x_msg_count,
+                                  p_data  => x_msg_data);
+
+END create_gp ;
+
+PROCEDURE update_gp (
+    p_init_msg_list         	IN		VARCHAR2:= FND_API.G_FALSE,
+    p_gp_rec			IN 		gp_rec_type,	
+    x_return_status             OUT NOCOPY     	VARCHAR2,
+    x_msg_count                 OUT NOCOPY     	NUMBER,
+    x_msg_data                  OUT NOCOPY     	VARCHAR2
+) IS
+
+l_api_name             CONSTANT VARCHAR2(100) := 'XX_CDH_GP_MAINT_PKG.update_gp';
+
+BEGIN
+
+	SAVEPOINT update_gp ;
+
+	-- initialize message list if p_init_msg_list is set to TRUE.
+    	IF FND_API.to_Boolean(p_init_msg_list) THEN
+        	FND_MSG_PUB.initialize;
+    	END IF;
+
+	x_return_status := FND_API.G_RET_STS_SUCCESS;
+
+EXCEPTION WHEN OTHERS THEN
+	ROLLBACK TO update_gp ;
+	x_return_status := FND_API.G_RET_STS_ERROR;
+	FND_MSG_PUB.Count_And_Get(
+                                  p_encoded => FND_API.G_FALSE,
+                                  p_count => x_msg_count,
+                                  p_data  => x_msg_data);
+
+END update_gp ;
+
+
+PROCEDURE record_gp_hist (
+    p_init_msg_list           	IN      	VARCHAR2:= FND_API.G_FALSE,
+    p_gp_hist_rec		IN		gp_hist_rec_type,
+    x_gp_hist_id		OUT NOCOPY      NUMBER
+    x_ret_status               	OUT NOCOPY     	VARCHAR2,
+    x_m_count                  	OUT NOCOPY     	NUMBER,
+    x_m_data                   	OUT NOCOPY     	VARCHAR2
+) IS
+
+l_api_name             CONSTANT VARCHAR2(100) := 'XX_CDH_GP_MAINT_PKG.record_gp_hist';
+
+BEGIN
+
+	SAVEPOINT record_gp_hist ;
+
+	-- initialize message list if p_init_msg_list is set to TRUE.
+    	IF FND_API.to_Boolean(p_init_msg_list) THEN
+        	FND_MSG_PUB.initialize;
+    	END IF;
+
+	x_return_status := FND_API.G_RET_STS_SUCCESS;
+
+EXCEPTION WHEN OTHERS THEN
+	ROLLBACK TO record_gp_hist ;
+	x_return_status := FND_API.G_RET_STS_ERROR;
+	FND_MSG_PUB.Count_And_Get(
+                                  p_encoded => FND_API.G_FALSE,
+                                  p_count => x_msg_count,
+                                  p_data  => x_msg_data);
+
+END record_gp_hist ;
+
+end XX_CDH_GP_MAINT_PKG;

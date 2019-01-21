@@ -1,0 +1,53 @@
+-- $Id$
+-- $Rev:$
+-- $HeadURL:$
+-- $Author:$
+-- $Date:$
+
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XXBI_ACTIVITIES                                                            |--                                                                                          |--
+--| Program Name   : CREATE_XXBI_ACTIVITIES.tbl                                                 |--
+--|                                                                                             |--
+--| Purpose        : Sales Activity Table                                                       |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              20-May-2009       Indra Varada             Initial Draft                   |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Table XXCRM.XXBI_ACTIVITIES......
+PROMPT
+
+CREATE TABLE XXCRM.XXBI_ACTIVITIES
+   (	SOURCE_TYPE                             VARCHAR2(100), 
+	SOURCE_ID                               NUMBER, 
+	LAST_ACTIVITY_DATE                      DATE
+   ) ;
+
+------------------------------------------------------
+-- Adding Grants to APPS.                           --
+------------------------------------------------------
+GRANT ALL ON XXCRM.XXBI_ACTIVITIES TO APPS;
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

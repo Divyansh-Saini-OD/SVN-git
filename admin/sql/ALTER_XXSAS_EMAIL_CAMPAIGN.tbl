@@ -1,0 +1,33 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        : ALTER_XXSAS_EMAIL_CAMPAIGN.tbl                      |
+-- | Description : new columns country, state_province                 |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1a 15-Jun-2010  Indra Varada     Initial draft version       |
+-- +===================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+
+ALTER TABLE XXCRM.XXSAS_EMAIL_CAMPAIGN
+ADD (
+COUNTRY        VARCHAR2(10),
+STATE_PROVINCE VARCHAR2(10)
+);
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+EXIT;

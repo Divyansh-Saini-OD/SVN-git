@@ -1,0 +1,37 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1550" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="SiteContactsRN" controllerClass="od.oracle.apps.xxcrm.asn.common.customer.webui.ODViewAccountSiteContDtlCO" windowTitle="Site Contact  Details" title="Site Contacts Account Details" amDefName="od.oracle.apps.xxcrm.asn.common.customer.server.ODViewAccountSiteContDtlAM">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:stackLayout id="SiteContacts">
+               <ui:contents>
+                  <oa:table id="SiteRoleTBL">
+                     <ui:contents>
+                        <oa:messageStyledText id="Role2" viewName="ODAccContactsRolesVO1" viewAttr="UsageMeaning" prompt="Role(s)"/>
+                        <oa:messageStyledText id="PrimFlag21" viewName="ODAccContactsRolesVO1" viewAttr="PrimaryFlag" prompt="Primary"/>
+                     </ui:contents>
+                  </oa:table>
+                  <oa:separator id="item1"/>
+                  <oa:table id="ContactNumberTBL">
+                     <ui:contents>
+                        <oa:messageStyledText id="ContactNum21" viewName="ODContactNumberVO1" viewAttr="formattedPhone" prompt="Contact Number(s)"/>
+                        <oa:messageStyledText id="PrimFlag22" viewName="ODContactNumberVO1" viewAttr="Primaryflag" prompt="Primary"/>
+                     </ui:contents>
+                  </oa:table>
+                  <oa:separator id="item2"/>
+                  <oa:table id="EmailAddressTBL">
+                     <ui:contents>
+                        <oa:messageStyledText id="EmailAddress21" prompt="Email Address" viewName="ODEmailAddressVO1" viewAttr="EmailAddress"/>
+                        <oa:messageStyledText id="PrimFlag33" prompt="Primary" viewName="ODEmailAddressVO1" viewAttr="Primaryflag"/>
+                     </ui:contents>
+                  </oa:table>
+               </ui:contents>
+            </oa:stackLayout>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

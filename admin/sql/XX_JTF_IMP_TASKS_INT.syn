@@ -1,0 +1,31 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             : XX_JTF_IMP_TASKS_INT.syn                           |
+-- | Description      : Custom synonym for I0801_Load_CDH_Tasks_To_CV      |
+-- |                                                                       |
+-- |                    Note:This script will be executed from             |
+-- |                    APPS schema                                        |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      17-Sep-2007 Bibhubrata Jena                                   |
+-- +=======================================================================+
+
+------------------------------------------------------
+-- Creating synonym APPS.XX_JTF_IMP_TASKS_INT       --
+------------------------------------------------------
+CREATE OR REPLACE SYNONYM APPS.XX_JTF_IMP_TASKS_INT FOR XXCNV.XX_JTF_IMP_TASKS_INT;
+
+
+SHOW ERRORS;
+
+EXIT;

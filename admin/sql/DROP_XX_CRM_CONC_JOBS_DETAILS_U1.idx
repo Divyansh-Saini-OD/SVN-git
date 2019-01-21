@@ -1,0 +1,38 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : DROP_XX_CRM_CONC_JOBS_DETAILS_U1.idx                |
+-- | Rice ID     : R1153_CRM_Concurrent_Monitor_Utilities              |
+-- | Description : XX_CRM_CONC_JOBS_DETAILS Table - Unique Index       |
+-- |               Dropping Script.                                    |
+-- |               Columns :                                           |
+-- |                         REQUEST_ID                                |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |1.1      21-Jan-09    Indra Varada     Drop Unique Index           |
+-- |                                     to accomodate new requirements|
+-- +===================================================================+
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+PROMPT
+PROMPT Dropping INDEX XX_CRM_CONC_JOBS_DETAILS_U1
+PROMPT
+
+DROP INDEX XX_CRM_CONC_JOBS_DETAILS_U1;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

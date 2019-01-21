@@ -1,0 +1,64 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_CDH_ACCT_SITE_EXT_TL.tbl                  |
+-- | Description      :Account Site Extension TL table                     |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |DRAFT 1A  09-May-2007  Sathya Prabha Rani   Initial draft version      |
+-- |1.1      24-Oct-2007 Rajeev Kamath      Removed drop                   |
+-- +=======================================================================+
+
+-- ---------------------------------------------------------------------
+--      Create Custom Table XX_CDH_ACCT_SITE_EXT_TL    --
+-- ---------------------------------------------------------------------
+CREATE TABLE XXCRM.XX_CDH_ACCT_SITE_EXT_TL
+			( EXTENSION_ID             NUMBER(15)           NOT NULL,
+			  CUST_ACCT_SITE_ID        NUMBER(15)           NOT NULL,
+			  ATTR_GROUP_ID            NUMBER(15)           NOT NULL,
+			  SOURCE_LANG              VARCHAR2(4 BYTE)     NOT NULL,
+			  LANGUAGE                 VARCHAR2(4 BYTE)     NOT NULL,
+			  CREATED_BY               NUMBER(15)           NOT NULL,
+			  CREATION_DATE            DATE                 NOT NULL,
+			  LAST_UPDATED_BY          NUMBER(15)           NOT NULL,
+			  LAST_UPDATE_DATE         DATE                 NOT NULL,
+			  LAST_UPDATE_LOGIN        NUMBER(15),
+			  TL_EXT_ATTR1             VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR2             VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR3             VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR4             VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR5             VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR6             VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR7             VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR8             VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR9             VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR10            VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR11            VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR12            VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR13            VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR14            VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR15            VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR16            VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR17            VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR18            VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR19            VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR20            VARCHAR2(1000 BYTE)
+			);
+------------------------------------------------------
+-- Adding Grants to APPS.                           --
+------------------------------------------------------
+GRANT ALL ON XXCRM.XX_CDH_ACCT_SITE_EXT_TL TO APPS;
+
+SHOW ERRORS;

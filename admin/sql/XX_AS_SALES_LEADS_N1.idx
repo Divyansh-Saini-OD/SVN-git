@@ -1,0 +1,31 @@
+CREATE INDEX XXCRM.XX_AS_SALES_LEADS_N1 ON OSM.AS_SALES_LEADS(CREATION_DATE DESC)
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |      Oracle NAIO/Office Depot/Consulting Organization                 |
+-- +=======================================================================+
+-- | Name             :XX_AS_SALES_LEADS_N1.idx                            |
+-- | Description      :Index on osm.as_sales_leads.creation_date           | 
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  31-JAN-2008 Nabarun Ghosh       Initial Draft Version         |
+-- +=======================================================================+
+
+
+-- -------------------------------------------------
+-- Creating Index XX_CDH_ACCOUNT_SETUP_REQ_N1
+-- -------------------------------------------------
+
+
+CREATE INDEX XXCRM.XX_AS_SALES_LEADS_N1 ON OSM.AS_SALES_LEADS(CREATION_DATE DESC);
+
+EXIT;
+/

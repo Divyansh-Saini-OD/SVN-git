@@ -1,0 +1,37 @@
+-- $Id$
+-- $Rev$
+-- $HeadURL$
+-- $Author$
+-- $Date$
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=============================================================================+
+-- |               Office Depot - Project Simplify                               |
+-- +=============================================================================+
+-- | Name             :CREATE_XXBI_SALES_LEADS_FCT_N2.idx                        |
+-- | Description      :Index on XXBI_SALES_LEADS_FCT                             | 
+-- |                                                                             |
+-- |Change History:                                                              |
+-- |---------------                                                              |
+-- |                                                                             |
+-- |Version  Date        Author             Remarks                              |
+-- |-------  ----------- -----------------  -------------------------------------|
+-- |1.0      13-Mar-2009 Indra Varada       Initial Version                      |
+-- +=============================================================================+
+
+-- ---------------------------------------------------
+-- Create index XXBI_SALES_LEADS_FCT_N2
+-- ---------------------------------------------------
+
+CREATE INDEX XXBI_SALES_LEADS_FCT_N2
+ON
+xxcrm.xxbi_sales_leads_fct
+(
+sales_lead_id
+);
+
+EXIT;
+

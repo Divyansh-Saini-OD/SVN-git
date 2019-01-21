@@ -1,0 +1,46 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |                                                                       |
+-- +=======================================================================+
+-- | Name             :CREATE_XXCRM_CREDIT_FLAG_TEMP.tbl                   |
+-- | Description      :Custom table for OD: AR Credit Flag Report          |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |DRAFT 1A  17-JUN-2010  Renupriya          Initial draft version        |
+-- +=======================================================================+
+
+-- ---------------------------------------------------------------------
+--      Create Custom Table XXCRM_CREDIT_FLAG_TEMP   --
+-- ---------------------------------------------------------------------
+CREATE  TABLE XXCRM.XXCRM_CREDIT_FLAG_TEMP
+(
+   AOPS_ACCOUNT_NUMBER                     VARCHAR2(20)     PRIMARY KEY,                                                                                                                                                                                  
+   AOPS_CUST_TYPE                          VARCHAR2(20),                                                                                                                                                                                  
+   AOPS_CUST_NAME                          VARCHAR2(100),                                                                                                                                                                                 
+   AOPS_CUST_STATUS                        VARCHAR2(10),                                                                                                                                                                                  
+   PROCESS_STATUS                          VARCHAR2(2),                                                                                                                                                                                   
+   ATTRIBUTE1                              VARCHAR2(50),                                                                                                                                                                                  
+   ATTRIBUTE2                              VARCHAR2(50),                                                                                                                                                                                  
+   ATTRIBUTE3                              VARCHAR2(50), 
+   ATTRIBUTE4                              VARCHAR2(50),
+   ATTRIBUTE5                              VARCHAR2(50),
+   AOPS_CREDIT_FLAG                        VARCHAR2(10),                                                                                                                                                                                 
+   PROCESS_DATE                            DATE                                                                                                                                                                                          
+);
+------------------------------------------------------
+-- Adding Grants to APPS.                           --
+------------------------------------------------------
+GRANT ALL ON XXCRM.XXCRM_CREDIT_FLAG_TEMP TO APPS;
+
+SHOW ERRORS;

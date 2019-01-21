@@ -1,0 +1,286 @@
+create or replace
+PACKAGE xxcrm_task_dashboard_helper AS
+  -- +====================================================================+
+  -- | Name        : xxcrm_task_dashboard_helper                          |
+  -- | Author      : Mohan Kalyanasundaram                                |
+  -- | Description : This package is used for getting task dashboard      |
+  -- |               related data                                         |
+  -- | Date        : February 22, 2010 --> New Version Started by Mohan   |
+  -- +====================================================================+
+--
+--
+-- +====================================================================+
+    FUNCTION get_current_year_id
+            RETURN NUMBER;  
+-- +====================================================================+
+    FUNCTION get_current_week_number
+            RETURN NUMBER;  
+-- +====================================================================+
+    FUNCTION get_task_week_desc(
+            p_date date)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_task_week_number(
+            p_date date)
+            RETURN NUMBER;
+-- +====================================================================+
+    FUNCTION get_task_week_id(
+            p_date date)
+            RETURN NUMBER;
+-- +====================================================================+
+    FUNCTION get_task_year_id(
+            p_date date)
+            RETURN NUMBER;
+-- +====================================================================+
+    FUNCTION get_site_use(
+            p_party_site_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_org_type(
+            p_party_site_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_site_orig_sys_ref(
+            p_party_site_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_party_site_name(
+            p_party_site_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_org_number(
+            p_party_site_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_user_resource_id(
+            p_user NUMBER)
+            RETURN NUMBER;
+-- +====================================================================+
+    FUNCTION get_user_resource_name(
+            p_user NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_user_m1_user_id(
+            p_user NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_user_m1_res_id(
+            p_user NUMBER)
+            RETURN NUMBER;
+-- +====================================================================+
+    FUNCTION get_user_m1_res_name(
+            p_user NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_user_m2_user_id(
+            p_user NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_user_m2_res_id(
+            p_user NUMBER)
+            RETURN NUMBER;
+-- +====================================================================+
+    FUNCTION get_user_m2_res_name(
+            p_user NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_user_m3_user_id(
+            p_user NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_user_m3_res_id(
+            p_user NUMBER)
+            RETURN NUMBER;
+-- +====================================================================+
+    FUNCTION get_user_m3_res_name(
+            p_user NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_user_m4_user_id(
+            p_user NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_user_m4_res_id(
+            p_user NUMBER)
+            RETURN NUMBER;
+-- +====================================================================+
+    FUNCTION get_user_m4_res_name(
+            p_user NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_m1_user_id(
+            p_source_object_type VARCHAR2,
+            p_source_object_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_m1_resource_id(
+            p_source_object_type VARCHAR2,
+            p_source_object_id NUMBER)
+            RETURN NUMBER;
+-- +====================================================================+
+    FUNCTION get_m1_resource_name(
+            p_source_object_type VARCHAR2,
+            p_source_object_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_m2_user_id(
+            p_source_object_type VARCHAR2,
+            p_source_object_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_m2_resource_id(
+            p_source_object_type VARCHAR2,
+            p_source_object_id NUMBER)
+            RETURN NUMBER;
+-- +====================================================================+
+    FUNCTION get_m2_resource_name(
+            p_source_object_type VARCHAR2,
+            p_source_object_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_m3_user_id(
+            p_source_object_type VARCHAR2,
+            p_source_object_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_m3_resource_id(
+            p_source_object_type VARCHAR2,
+            p_source_object_id NUMBER)
+            RETURN NUMBER;
+-- +====================================================================+
+    FUNCTION get_m3_resource_name(
+            p_source_object_type VARCHAR2,
+            p_source_object_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_m4_user_id(
+            p_source_object_type VARCHAR2,
+            p_source_object_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_m4_resource_id(
+            p_source_object_type VARCHAR2,
+            p_source_object_id NUMBER)
+            RETURN NUMBER;
+-- +====================================================================+
+    FUNCTION get_m4_resource_name(
+            p_source_object_type VARCHAR2,
+            p_source_object_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_owner_user_id(
+            p_owner_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_owner_m1_user_id(
+            p_owner_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_owner_resource_name(
+            p_owner_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_owner_m1_resource_id(
+            p_owner_id NUMBER)
+            RETURN NUMBER;
+-- +====================================================================+
+    FUNCTION get_owner_m1_resource_name(
+            p_owner_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_owner_m2_resource_id(
+            p_owner_id NUMBER)
+            RETURN NUMBER;
+-- +====================================================================+
+    FUNCTION get_owner_m2_user_id(
+            p_owner_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_owner_m2_resource_name(
+            p_owner_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_owner_m3_user_id(
+            p_owner_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_owner_m3_resource_id(
+            p_owner_id NUMBER)
+            RETURN NUMBER;
+-- +====================================================================+
+    FUNCTION get_owner_m3_resource_name(
+            p_owner_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_owner_m4_user_id(
+            p_owner_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_owner_m4_resource_id(
+            p_owner_id NUMBER)
+            RETURN NUMBER;
+-- +====================================================================+
+    FUNCTION get_owner_m4_resource_name(
+            p_owner_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_site_address
+        ( p_address1 IN VARCHAR2,
+          p_city IN VARCHAR2,
+          p_state IN VARCHAR2,
+          p_postal_code IN VARCHAR2
+        )
+          RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_party_id(
+            p_source_object_type VARCHAR2,
+            p_source_object_id NUMBER)
+            RETURN NUMBER;
+-- +====================================================================+
+    FUNCTION get_party_name(
+            p_source_object_type VARCHAR2,
+            p_source_object_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_party_site_id(
+            p_source_object_type VARCHAR2,
+            p_source_object_id NUMBER)
+            RETURN NUMBER;
+-- +====================================================================+
+    FUNCTION get_party_site_address(
+            p_source_object_type VARCHAR2,
+            p_source_object_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_assigned_resource_id(
+            p_source_object_type VARCHAR2,
+            p_source_object_id NUMBER)
+            RETURN NUMBER;
+-- +====================================================================+
+    FUNCTION get_assigned_resource_name(
+            p_source_object_type VARCHAR2,
+            p_source_object_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_assigned_user_id(
+            p_source_object_type VARCHAR2,
+            p_source_object_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_assigned_role_id(
+            p_source_object_type VARCHAR2,
+            p_source_object_id NUMBER)
+            RETURN NUMBER;
+-- +====================================================================+
+    FUNCTION get_assigned_role_name(
+            p_source_object_type VARCHAR2,
+            p_source_object_id NUMBER)
+            RETURN VARCHAR2;
+-- +====================================================================+
+    FUNCTION get_assigned_group_id(
+            p_source_object_type VARCHAR2,
+            p_source_object_id NUMBER)
+            RETURN NUMBER;
+-- +====================================================================+
+END xxcrm_task_dashboard_helper;
+/

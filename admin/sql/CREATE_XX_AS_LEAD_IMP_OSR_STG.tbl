@@ -1,0 +1,49 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_AS_LEAD_IMP_OSR_STG.tbl                   |
+-- | Description      :Custom table for I0809_LeadInterface                |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  13-JUN-2007 Ashok Kumar T J    Initial Draft Version          |
+-- |Draft1b  25-Jun-2007 Ashok Kumar T J    Removed synonym creation script|
+-- |                                                                       |
+-- +=======================================================================+
+
+
+-- -------------------------------------------------------
+--      Create Custom Table XX_AS_LEAD_IMP_ORS_STG    --
+-- -------------------------------------------------------
+
+CREATE TABLE XXCRM.xx_as_lead_imp_osr_stg
+        (    import_interface_id                    NUMBER         NOT NULL
+            ,party_orig_system                      VARCHAR2(30)
+            ,party_orig_system_reference            VARCHAR2(240)
+            ,pty_site_orig_system                   VARCHAR2(30)
+            ,pty_site_orig_system_reference         VARCHAR2(240)
+            ,contact_orig_system                    VARCHAR2(30)
+            ,contact_orig_system_reference          VARCHAR2(240)
+            ,cnt_pnt_orig_system                    VARCHAR2(30)
+            ,cnt_pnt_orig_system_reference          VARCHAR2(240)
+            ,status                                 VARCHAR2(30)
+            ,created_by                             NUMBER
+            ,creation_date                          DATE
+            ,last_update_date                       DATE
+            ,last_update_login                      NUMBER
+            ,last_updated_by                        NUMBER
+        );
+
+/
+SHOW ERRORS;
+
+EXIT;

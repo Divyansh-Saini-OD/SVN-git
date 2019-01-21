@@ -1,0 +1,487 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<oa:query version="9.0.3.8.13_1550" xml:lang="en-US" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:ui="http://xmlns.oracle.com/uix/ui" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header: ASNOpptyQryRN.xml 115.41.115200.3 2005/10/12 00:07:17 pdelaney ship $" amDefName="oracle.apps.asn.opportunity.server.ASNOpptyQryAM" controllerClass="oracle.apps.asn.opportunity.webui.ASNOpptyQryCO" dispSimple="true" dispAdvanced="true" dispCustomized="true" customizePanelTitle="Views" defaultPanel="customized" simpleSearchInstrTexts="Status Category is a required field.  It is not required if you enter an Opportunity Number." mode="autoCustomizationCriteria" advancedSearchInstrTexts="Status Category is a required field.  It is not required if you enter an Opportunity Number." regionName="Opportunity Query Region" customizeInstrTexts="Select a view from the list and click Go to display the results. To create or update your own views, click, Personalize.">
+   <ui:contents>
+      <oa:table id="ASNOpptyLstTb" width="100%" blockSize="10" shortDesc="Opportunities" controllerClass="oracle.apps.asn.opportunity.webui.ASNOpptyLstCO" userCustomizable="true" regionName="Opportunity Search Results">
+         <ui:contents>
+            <oa:messageStyledText id="ASNOpptyLstNm" sortState="yes" viewName="OpptySearchVO1" viewAttr="Description" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/Description_Opportunity" warnAboutChanges="false" shortDesc="Opportunity" userCustomizable="true">
+               <ui:primaryClientAction>
+                  <ui:fireAction id="ASNOpptyLstNm_fireAction">
+                     <ui:parameters>
+                        <ui:parameter key="ASNReqPgAct" value="OPPTYDET"/>
+                        <ui:parameter key="ASNReqEvtOpptyId" value="${oa.current.LeadId}"/>
+                        <ui:parameter key="ASNReqEvtFuncName" value="ASN_OPPTYDETPG"/>
+                        <ui:parameter key="ASNReqExitPage" value="Y"/>
+                     </ui:parameters>
+                  </ui:fireAction>
+               </ui:primaryClientAction>
+            </oa:messageStyledText>
+            <oa:messageStyledText id="ASNOpptyLstCustNm" prompt="Customer" sortState="yes" viewName="OpptySearchVO1" viewAttr="PartyName" warnAboutChanges="false" shortDesc="Customer" userCustomizable="true">
+               <ui:primaryClientAction>
+                  <ui:fireAction id="ASNOpptyLstCust_fireAction">
+                     <ui:parameters>
+                        <ui:parameter key="ASNReqPgAct" value="CUSTDET"/>
+                        <ui:parameter key="ASNReqEvtCustId" value="${oa.current.CustomerId}"/>
+                        <ui:parameter key="ASNReqEvtFuncName" value="ASN_ORGSECURVIEWPG"/>
+                        <ui:parameter key="ASNReqExitPage" value="Y"/>
+                     </ui:parameters>
+                  </ui:fireAction>
+               </ui:primaryClientAction>
+            </oa:messageStyledText>
+            <oa:messageStyledText id="ASNOpptyLstDate" sortState="yes" dataType="DATE" viewName="OpptySearchVO1" viewAttr="DecisionDate" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/DecisionDate" shortDesc="Close Date" userCustomizable="true"/>
+            <oa:messageStyledText id="ASNOpptyLstStatus" sortState="yes" viewName="OpptySearchVO1" viewAttr="OpptyStatusName" use="/oracle/apps/asn/admin/attributesets/Status/Meaning" shortDesc="Status" userCustomizable="true"/>
+            <oa:messageStyledText id="ASNOpptyLstStage" sortState="yes" viewName="OpptySearchVO1" viewAttr="SalesStageName" use="/oracle/apps/asn/admin/attributesets/SalesStage/SalesStageName" shortDesc="Stage" userCustomizable="true"/>
+            <oa:messageStyledText id="ASNOpptyLstAmt" dataType="NUMBER" sortState="yes" viewName="OpptySearchVO1" viewAttr="TotalAmount" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/TotalAmount" shortDesc="Amount" userCustomizable="true"/>
+            <oa:messageStyledText id="ASNOpptyLstCurr" prompt="Currency" sortState="yes" viewName="OpptySearchVO1" viewAttr="CurrencyName" shortDesc="Currency" userCustomizable="true"/>
+            <oa:messageStyledText id="ASNOpptyLstWinProb" dataType="NUMBER" viewName="OpptySearchVO1" viewAttr="WinProbability" sortState="yes" rendered="false" use="/oracle/apps/asn/admin/attributesets/Probability/ProbabilityValue" shortDesc="Win Probability %" userCustomizable="true"/>
+            <oa:messageStyledText id="ASNOpptyLstNbr" viewName="OpptySearchVO1" viewAttr="LeadNumber" sortState="yes" rendered="false" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/LeadNumber" shortDesc="Opportunity Number" userCustomizable="true"/>
+            <oa:messageStyledText id="ASNOpptyLstLastUpdDate" dataType="DATE" viewName="OpptySearchVO1" viewAttr="LastUpdateDate" sortState="yes" rendered="false" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/LastUpdateDate" shortDesc="Last Update Date" userCustomizable="true"/>
+            <oa:messageStyledText id="ASNOpptyLstCrtedDate" dataType="DATE" viewName="OpptySearchVO1" viewAttr="CreationDate" sortState="yes" rendered="false" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/CreationDate" shortDesc="Creation Date" userCustomizable="true"/>
+            <oa:messageStyledText id="ASNOpptyLstCtctNm" dataType="VARCHAR2" prompt="Primary Contact" viewName="OpptySearchVO1" viewAttr="ContactName" sortState="yes" rendered="false" warnAboutChanges="false" shortDesc="Contact Name" userCustomizable="true">
+               <ui:primaryClientAction>
+                  <ui:fireAction id="ASNOpptyLstCtctNm_fireAction">
+                     <ui:parameters>
+                        <ui:parameter key="ASNReqPgAct" value="CTCTDET"/>
+                        <ui:parameter key="ASNReqEvtCtctId" value="${oa.current.PersonId}"/>
+                        <ui:parameter key="ASNReqEvtCustId" value="${oa.current.CustomerId}"/>
+                        <ui:parameter key="ASNReqEvtRelId" value="${oa.current.RelationShipId}"/>
+                        <ui:parameter key="ASNReqEvtRelPtyId" value="${oa.current.PrimaryContactPartyId}"/>
+                        <ui:parameter key="ASNReqExitPage" value="Y"/>
+                     </ui:parameters>
+                  </ui:fireAction>
+               </ui:primaryClientAction>
+            </oa:messageStyledText>
+            <oa:messageStyledText id="ASNOpptyLstJob" dataType="VARCHAR2" prompt="Contact Title" viewName="OpptySearchVO1" viewAttr="JobTitle" sortState="yes" rendered="false" shortDesc="Contact Job Title" userCustomizable="true"/>
+            <oa:messageStyledText id="ASNOpptyLstPhone" prompt="Contact Phone" viewName="OpptySearchVO1" viewAttr="FormattedPhone" sortState="yes" rendered="false" shortDesc="Contact Phone" userCustomizable="true"/>
+            <oa:messageStyledText id="ASNOpptyLstEmail" dataType="VARCHAR2" prompt="Contact Email" viewName="OpptySearchVO1" viewAttr="EmailAddress" sortState="yes" rendered="false" shortDesc="Contact Email Address" userCustomizable="true" destination="mailto:{#EmailAddress}" maximumLength="2000"/>
+            <oa:messageStyledText id="ASNOpptyLstCity" dataType="VARCHAR2" prompt="Contact City" viewName="OpptySearchVO1" viewAttr="City" sortState="yes" rendered="false" shortDesc="Contact City" userCustomizable="true"/>
+            <oa:messageStyledText id="ASNOpptyLstProv" dataType="VARCHAR2" prompt="Contact Province" viewName="OpptySearchVO1" viewAttr="Province" sortState="yes" rendered="false" shortDesc="Contact Province" userCustomizable="true"/>
+            <oa:messageStyledText id="ASNOpptyLstCnty" dataType="VARCHAR2" prompt="Contact Country" viewName="OpptySearchVO1" viewAttr="Country" sortState="yes" rendered="false" shortDesc="Contact Country" userCustomizable="true"/>
+            <oa:messageStyledText id="ASNOpptyLstState" dataType="VARCHAR2" prompt="Contact State" viewName="OpptySearchVO1" viewAttr="State" sortState="yes" rendered="false" shortDesc="Contact State" userCustomizable="true"/>
+            <oa:messageStyledText id="ASNOpptyLstZip" prompt="Contact Postal Code" viewName="OpptySearchVO1" viewAttr="PostalCode" sortState="yes" rendered="false" shortDesc="Contact Zip Code" userCustomizable="true"/>
+            <oa:messageStyledText id="ASNOpptyLstAddr" dataType="VARCHAR2" prompt="Contact Address" viewName="OpptySearchVO1" viewAttr="Address" sortState="yes" rendered="false" shortDesc="Contact Address/ Location" userCustomizable="true"/>
+            <oa:messageStyledText id="ASNOpptyLstSourcNm" dataType="VARCHAR2" prompt="Source" viewName="OpptySearchVO1" viewAttr="SourceName" sortState="yes" rendered="false" shortDesc="Source" userCustomizable="true"/>
+            <oa:messageStyledText id="ASNOpptyLstChnl" sortState="yes" viewName="OpptySearchVO1" viewAttr="SalesChannel" prompt="Sales Channel" rendered="false" shortDesc="Sales Channel" userCustomizable="true"/>
+            <oa:messageStyledText id="ASNOpptyLstRespChan" prompt="Response Channel" shortDesc="Response Channel" viewName="OpptySearchVO1" viewAttr="VehicleResponseCode" rendered="false" sortState="yes"/>
+            <oa:messageStyledText id="ASNOpptyLstCustState" viewName="OpptySearchVO1" viewAttr="CustState" prompt="Customer State" shortDesc="Customer State" rendered="false" userCustomizable="true" sortState="yes"/>
+            <oa:messageStyledText id="ASNOpptyLstCustCity" viewName="OpptySearchVO1" viewAttr="CustCity" prompt="Customer City" shortDesc="Customer City" rendered="false" userCustomizable="true" sortState="yes"/>
+            <oa:messageStyledText id="ASNOpptyLstCustCnty" viewName="OpptySearchVO1" viewAttr="CustCountry" prompt="Customer Country" shortDesc="Customer Country" rendered="false" userCustomizable="true" sortState="yes"/>
+            <oa:messageStyledText id="ASNOpptyLstCustProv" viewName="OpptySearchVO1" viewAttr="CustProvince" prompt="Customer Province" shortDesc="Customer Province" rendered="false" userCustomizable="true" sortState="yes"/>
+            <oa:messageStyledText id="ASNOpptyLstCustZip" viewName="OpptySearchVO1" viewAttr="CustPostalCode" prompt="Customer Postal Code" shortDesc="Customer Zip Code" rendered="false" userCustomizable="true" sortState="yes"/>
+            <oa:messageStyledText id="ASNOpptyLstCustAddr" viewName="OpptySearchVO1" viewAttr="CustAddress" prompt="Customer Address" shortDesc="Customer Address" rendered="false" userCustomizable="true" sortState="yes"/>
+            <oa:messageStyledText id="ASNOpptyLstUpdatedBy" viewName="OpptySearchVO1" viewAttr="OpptyUpdatedBy" prompt="Updated By" shortDesc="Updated By" userCustomizable="true" rendered="false" sortState="yes"/>
+            <oa:messageStyledText id="ASNOpptyLstCreatedBy" viewName="OpptySearchVO1" viewAttr="OpptyCreatedBy" prompt="Created By" shortDesc="Created By" userCustomizable="true" rendered="false" sortState="yes"/>
+            <oa:messageStyledText id="ASNOpptyLstDispFrcstAmt" dataType="NUMBER" userCustomizable="true" prompt="Total Forecast Amount" shortDesc="Total Forecast Amount" sortState="yes" rendered="false" viewName="OpptySearchVO1" viewAttr="TotalForecastAmount"/>
+            <oa:messageStyledText id="ASNOpptyLstMethNm" sortState="yes" viewName="OpptySearchVO1" viewAttr="MethodologyNm" rendered="false" prompt="Methodology" shortDesc="Methodology" userCustomizable="true"/>
+            <oa:messageStyledText id="ASNOpptyLstClsRsnNm" sortState="yes" prompt="Close Reason" shortDesc="Close Reason" userCustomizable="true" viewName="OpptySearchVO1" viewAttr="CloseReason" rendered="false"/>
+            <oa:messageStyledText id="ASNOpptyLstAssgnStat" sortState="yes" viewName="OpptySearchVO1" viewAttr="AssignmentStatusNm" prompt="Assignment Status" shortDesc="Assignment Status" rendered="false" userCustomizable="true"/>
+            <oa:messageStyledText id="ASNOpptyLstDispRef" sortState="yes" viewName="OpptySearchVO1" viewAttr="ReferralCode" prompt="Referral" shortDesc="Referral" rendered="false" userCustomizable="true"/>
+            <oa:formValue id="ASNOpptyLstCtctFirstNm" userCustomizable="true"/>
+            <oa:formValue id="ASNOpptyLstCtctLastNm" userCustomizable="true"/>
+            <oa:formValue id="ASNOpptyLstFrcstAmt" dataType="NUMBER" userCustomizable="true"/>
+            <oa:formValue id="ASNOpptyLstCntryCode" userCustomizable="true"/>
+            <oa:formValue id="ASNOpptyLstPartnerNm" userCustomizable="true"/>
+            <oa:formValue id="ASNOpptyLstPartnerId" dataType="NUMBER" userCustomizable="true"/>
+            <oa:formValue id="ASNOpptyLstContribNm" userCustomizable="true"/>
+            <oa:formValue id="ASNOpptyLstContribId" dataType="NUMBER" userCustomizable="true"/>
+            <oa:formValue id="ASNOpptyLstFrcstOwnNm" userCustomizable="true"/>
+            <oa:formValue id="ASNOpptyLstFrcstOwnId" dataType="NUMBER" userCustomizable="true"/>
+            <oa:formValue id="ASNOpptyLstRefCode" userCustomizable="true"/>
+            <oa:formValue id="ASNOpptyLstAssgnStatCode" userCustomizable="true"/>
+            <oa:formValue id="ASNOpptyLstSlsRepId" dataType="NUMBER" userCustomizable="true"/>
+            <oa:formValue id="ASNOpptyLstSlsGrpNm" userCustomizable="true"/>
+            <oa:formValue id="ASNOpptyLstSlsGrpId" dataType="NUMBER" userCustomizable="true"/>
+            <oa:formValue id="ASNOpptyLstClsRsnCode" userCustomizable="true"/>
+            <oa:formValue id="ASNOpptyLstFrcst" userCustomizable="true"/>
+            <oa:formValue id="ASNOpptyLstStCatgCode" userCustomizable="true"/>
+            <oa:formValue id="ASNOpptyLstMeth" dataType="NUMBER" userCustomizable="true"/>
+            <oa:formValue id="ASNOpptyLstPrdNm" userCustomizable="true"/>
+            <oa:formValue id="ASNOpptyLstPrdCatgId" dataType="NUMBER" userCustomizable="true"/>
+            <oa:formValue id="ASNOpptyLstInvItem" dataType="NUMBER" userCustomizable="true"/>
+            <oa:formValue id="ASNOpptyLstOrgId" dataType="NUMBER" userCustomizable="true"/>
+            <oa:formValue id="ASNOpptyLstRscNm" userCustomizable="true"/>
+            <oa:formValue id="ASNOpptyLstRscId" userCustomizable="true"/>
+            <oa:formValue id="ASNOpptyLstStageId" userCustomizable="true" dataType="NUMBER"/>
+            <oa:formValue id="ASNOpptyLstSrc" userCustomizable="true" dataType="NUMBER"/>
+            <oa:formValue id="ASNOpptyLstDateRange" userCustomizable="true"/>
+			<oa:formValue id="ASNOpptyStoreNo" dataType="VARCHAR2" userCustomizable="true" queryable="false"/>
+         </ui:contents>
+         <ui:tableSelection>
+            <oa:singleSelection id="ASNOpptyUwqSelection" viewName="OpptySearchVO1" viewAttr="SelectFlag">
+               <ui:primaryClientAction>
+                  <ui:firePartialAction id="firePartialAction1">
+                     <ui:parameters>
+                        <ui:parameter key="ASNReqPgAct" value="OPPTYRDOBTNCHG"/>
+                        <ui:parameter key="ASNReqEvtOpptyId" value="${oa.current.LeadId}"/>
+                     </ui:parameters>
+                  </ui:firePartialAction>
+               </ui:primaryClientAction>
+            </oa:singleSelection>
+         </ui:tableSelection>
+         <ui:tableActions>
+            <oa:flowLayout id="ASNPageCrteButtonFlow" userCustomizable="false">
+               <ui:contents>
+                  <oa:submitButton id="ASNOpptyLstFuLstButton" text="Full List" prompt="Full List" shortDesc="Full List Button"/>
+                  <oa:submitButton id="ASNPageCrteButton" use="/oracle/apps/fnd/attributesets/Buttons/Create" text="Create Opportunity" prompt="Create Opportunity" shortDesc="Create Opportunity" unvalidated="true"/>
+                  <oa:exportButton id="ASNOpptyLstExptButton" exportAllRows="true" text="Export" comment="Export View Button" unvalidated="true" viewName="OpptySearchVO1"/>
+               </ui:contents>
+            </oa:flowLayout>
+         </ui:tableActions>
+      </oa:table>
+      <oa:stackLayout id="ASNOpptySortRN" regionName="Opportunity Hidden Region" controllerClass="oracle.apps.asn.opportunity.webui.ASNOpptySortCO" adminCustomizable="false"/>
+   </ui:contents>
+   <oa:simpleSearchPanel>
+      <oa:header text="Simple Search" id="ASNOpptympSrchHdrRN" regionName="Simple Search Header">
+         <ui:contents>
+            <oa:messageComponentLayout id="ASNOpptympSrchRN" columns="3" regionName="Simple Search Panel" rows="3">
+               <ui:contents>
+                  <oa:messageTextInput id="ASNOpptySmpSrchNm" shortDesc="Opportunity Name" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/Description_OpportunityName" selectiveSearchCriteria="true"/>
+                  <oa:messageTextInput id="ASNOpptySmpSrchNbr" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/Opportunity_Number" shortDesc="Opportunity Number" selectiveSearchCriteria="true"/>
+                  <oa:messageTextInput id="ASNOpptySmpSrchCust" prompt="Customer Name" shortDesc="Customer" selectiveSearchCriteria="true"/>
+                  <oa:messageChoice id="ASNOpptySmpSrchMeth" use="/oracle/apps/asn/admin/attributesets/SalesMethodology/SalesMethodologyName" shortDesc="Methodology" pickListViewDef="oracle.apps.asn.common.poplist.server.SalesMethodologiesVO" pickListDispAttr="SalesMethodologyName" pickListValAttr="SalesMethodologyId"/>
+                  <oa:messageChoice id="ASNOpptySmpSrchStg" use="/oracle/apps/asn/admin/attributesets/SalesStage/SalesStageName" shortDesc="Stage" pickListDispAttr="SalesStageName" pickListValAttr="SalesStageId" pickListViewDef="oracle.apps.asn.opportunity.poplist.server.OpportunitySalesStagesVO" selectiveSearchCriteria="true"/>
+                  <oa:messageChoice id="ASNOpptySmpSrchChnl" shortDesc="Sales Channel" pickListViewDef="oracle.apps.asn.common.poplist.server.SalesChannelsVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode" prompt="Sales Channel"/>
+                  <oa:messageChoice id="ASNOpptySmpSrchStatus" use="/oracle/apps/asn/admin/attributesets/Status/Meaning" shortDesc="Opportunity Status" pickListViewDef="oracle.apps.asn.opportunity.poplist.server.OpportunityStatusesVO" pickListDispAttr="Meaning" pickListValAttr="StatusCode" selectiveSearchCriteria="true"/>
+                  <oa:messageChoice id="ASNOpptySmpOpenClsStatus" shortDesc="Open/Close" pickListDispAttr="Meaning" pickListValAttr="LookupCode" prompt="Status Category" pickListViewDef="oracle.apps.asn.common.poplist.server.StatusCategoriesVO"/>
+                  <oa:messageLovInput id="ASNOpptySmpSrchSlsRscNm" shortDesc="Sales Person Name" selectiveSearchCriteria="true" externalListOfValues="/oracle/apps/asn/common/lov/webui/RscLovRN" prompt="Sales Person" rendered="false">
+                     <lovMappings>
+                        <lovMap id="ASNSmpSrchRscLovNmToLovNm" lovItem="ASNRscLovNm" criteriaFrom="ASNOpptySmpSrchSlsRscNm" programmaticQuery="true"/>
+                        <lovMap id="ASNSmpSrchLovNmToRscLovNm" lovItem="ASNRscLovNm" resultTo="ASNOpptySmpSrchSlsRscNm"/>
+                        <lovMap id="ASNSmpSrchLovRscIdToRscId" lovItem="ASNRscLovRscId" resultTo="ASNOpptySmpSrchSlsRscId"/>
+                     </lovMappings>
+                  </oa:messageLovInput>
+                  <oa:messageLovInput id="ASNOpptySmpSrchPartNm" shortDesc="Partner Name" externalListOfValues="/oracle/apps/pv/partner/lov/webui/PvPrtnrForCMLOV" prompt="Partner Name" rendered="false" selectiveSearchCriteria="true">
+                     <lovMappings>
+                        <lovMap id="ASNSmpSrchPartNmLovNmToLovNm" lovItem="Partyname" criteriaFrom="ASNOpptySmpSrchPartNm" resultTo="ASNOpptySmpSrchPartNm"/>
+                        <lovMap id="ASNSmpSrchLovPartNmIdToRscId" lovItem="Partnerid" resultTo="ASNOpptySmpSrchPartId"/>
+                     </lovMappings>
+                  </oa:messageLovInput>
+                  <oa:messageLovInput id="ASNOpptySmpSrchSrcNm" shortDesc="Source Name" externalListOfValues="/oracle/apps/asn/common/lov/webui/SrcLovRN" prompt="Source" rendered="false">
+                     <lovMappings>
+                        <lovMap id="ASNSmpSrchSrcLovNmToLov" lovItem="ASNSrcLovNm" criteriaFrom="ASNOpptySmpSrchSrcNm"/>
+                        <lovMap id="ASNSmpSrchLovNmToSrcNmLovNm" lovItem="ASNSrcLovNm" resultTo="ASNOpptySmpSrchSrcNm"/>
+                        <lovMap id="ASNSmpSrchLovSrcIdToSrcId" lovItem="ASNSrcLovSrcPromId" resultTo="ASNOpptySmpSrchSrcId"/>
+                     </lovMappings>
+                  </oa:messageLovInput>
+                  <oa:messageChoice id="ASNOpptySmpSrchClsRsn" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/CloseReason" shortDesc="Opportunity Close Reason" pickListViewDef="oracle.apps.asn.opportunity.poplist.server.OpportunityCloseReasonsVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode" rendered="false"/>
+                  <oa:messageChoice id="ASNOpptySmpSrchPrdClDate" pickListDispAttr="PeriodName" pickListValAttr="PeriodRange" prompt="Close Date Quarter" shortDesc="Close Date Quarter" rendered="false" pickListViewDef="oracle.apps.asn.opportunity.poplist.server.OpportunityPeriodCloseDateVO"/>
+                  <oa:messageLayout id="ASNOpptySmpFrmVluRN">
+                     <ui:contents>
+                        <oa:formValue id="ASNOpptySmpSrchSrcId" dataType="NUMBER"/>
+                        <oa:formValue id="ASNOpptySmpSrchSlsGrpId" dataType="NUMBER"/>
+                        <oa:formValue id="ASNOpptySmpSrchPartId" dataType="NUMBER"/>
+                        <oa:formValue id="ASNOpptySmpSrchSlsRscId" dataType="NUMBER"/>
+                        <oa:formValue id="ASNOpptySmpSrchOwId" dataType="NUMBER"/>
+                     </ui:contents>
+                  </oa:messageLayout>
+               </ui:contents>
+            </oa:messageComponentLayout>
+         </ui:contents>
+      </oa:header>
+   </oa:simpleSearchPanel>
+   <oa:simpleSearchMappings>
+      <oa:queryCriteriaMap id="ASNOpptySmpSrchCrtMp1" criteriaItem="ASNOpptySmpSrchNm" resultsItem="ASNOpptyLstNm"/>
+      <oa:queryCriteriaMap id="ASNOpptySmpSrchCrtMp2" criteriaItem="ASNOpptySmpSrchNbr" resultsItem="ASNOpptyLstNbr"/>
+      <oa:queryCriteriaMap id="ASNOpptySmpSrchCrtMp3" criteriaItem="ASNOpptySmpSrchCust" resultsItem="ASNOpptyLstCustNm"/>
+      <oa:queryCriteriaMap id="ASNOpptySmpSrchCrtMp4" criteriaItem="ASNOpptySmpSrchMeth" resultsItem="ASNOpptyLstMeth"/>
+      <oa:queryCriteriaMap id="ASNOpptySmpSrchCrtMp6" resultsItem="ASNOpptyLstStageId" criteriaItem="ASNOpptySmpSrchStg"/>
+      <oa:queryCriteriaMap id="ASNOpptySmpSrchCrtMp7" criteriaItem="ASNOpptySmpSrchStatus" resultsItem="ASNOpptyLstStatus"/>
+      <oa:queryCriteriaMap id="ASNOpptySmpSrchCrtMp8" criteriaItem="ASNOpptySmpOpenClsStatus" resultsItem="ASNOpptyLstStCatgCode"/>
+      <oa:queryCriteriaMap id="ASNOpptySmpSrchCrtMp9" criteriaItem="ASNOpptySmpSrchClsRsn" resultsItem="ASNOpptyLstClsRsnCode"/>
+      <oa:queryCriteriaMap id="ASNOpptySmpSrchCrtMp10" criteriaItem="ASNOpptySmpSrchSrcId" resultsItem="ASNOpptyLstSrc"/>
+      <oa:queryCriteriaMap id="ASNOpptySmpSrchCrtMp5" criteriaItem="ASNOpptySmpSrchChnl" resultsItem="ASNOpptyLstChnl"/>
+      <oa:queryCriteriaMap id="ASNOpptySmpSrchCrtMp15" criteriaItem="ASNOpptySmpSrchPartId" resultsItem="ASNOpptyLstPartnerId"/>
+      <oa:queryCriteriaMap id="ASNOpptySmpSrchCrtMp16" criteriaItem="ASNOpptySmpSrchSlsRscId" resultsItem="ASNOpptyLstSlsRepId"/>
+      <oa:queryCriteriaMap id="ASNOpptySmpSrchCrtMp10b" criteriaItem="ASNOpptySmpSrchSrcNm" resultsItem="ASNOpptyLstSourcNm"/>
+      <oa:queryCriteriaMap id="ASNOpptySmpSrchCrtMp15b" criteriaItem="ASNOpptySmpSrchPartNm" resultsItem="ASNOpptyLstPartnerNm"/>
+      <oa:queryCriteriaMap id="ASNOpptySmpSrchCrtMp16b" criteriaItem="ASNOpptySmpSrchSlsRscNm" resultsItem="ASNOpptyLstRscNm"/>
+      <oa:queryCriteriaMap id="ASNOpptySmpSrchCrtMp17" criteriaItem="ASNOpptySmpSrchPrdClDate" resultsItem="ASNOpptyLstDateRange"/>
+   </oa:simpleSearchMappings>
+   <oa:advancedSearchPanel>
+      <oa:header text="Advanced Search" id="ASNOpptyAdvSrchHdrRN" regionName="Advanced Search Header">
+         <ui:contents>
+            <oa:advancedSearch id="ASNOpptyAdvSrchRN" controllerClass="oracle.apps.asn.opportunity.webui.ASNOpptyAdvSrchCO" regionName="Advanced Search Panel">
+               <oa:criteria>
+                  <oa:criteriaRow id="criteriaRow26">
+                     <ui:contents>
+                        <oa:messageStyledText id="item51" prompt="Status Category"/>
+                        <oa:messageChoice id="ASNOpptyrchOpenClsStatus" shortDesc="Status Category" pickListDispAttr="Meaning" pickListValAttr="LookupCode" queryable="true" pickListViewDef="oracle.apps.asn.common.poplist.server.StatusCategoriesVO"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow7">
+                     <ui:contents>
+                        <oa:messageStyledText id="item13" prompt="Status"/>
+                        <oa:messageChoice id="ASNOpptyAdvSrchStatus" use="/oracle/apps/asn/admin/attributesets/Status/Meaning" shortDesc="Opportunity Status" pickListViewDef="oracle.apps.asn.opportunity.poplist.server.OpportunityStatusesVO" pickListDispAttr="Meaning" pickListValAttr="StatusCode" selectiveSearchCriteria="true" queryable="true"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow22">
+                     <ui:contents>
+                        <oa:messageStyledText id="item43" prompt="Stage"/>
+                        <oa:messageChoice id="ASNOpptyAdvSrchStg" shortDesc="Sales Stage" pickListViewDef="oracle.apps.asn.opportunity.poplist.server.OpportunitySalesStagesVO" pickListDispAttr="SalesStageName" pickListValAttr="SalesStageId" selectiveSearchCriteria="true" queryable="true"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow20">
+                     <ui:contents>
+                        <oa:messageStyledText id="item39" prompt="Close Date"/>
+                        <oa:messageTextInput id="ASNOpptyAdvSrchClsDate" shortDesc="Opportunity Close Date" dataType="DATE" queryable="true" selectiveSearchCriteria="true"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow1">
+                     <ui:contents>
+                        <oa:messageStyledText id="item1" prompt="Opportunity Name"/>
+                        <oa:messageTextInput id="ASNOpptyAdvSrchNm" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/Description_OpportunityName" shortDesc="Opportunity Name" selectiveSearchCriteria="true" queryable="true"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow2">
+                     <ui:contents>
+                        <oa:messageStyledText id="item3" prompt="Opportunity Number"/>
+                        <oa:messageTextInput id="ASNOpptyAdvSrchNbr" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/Opportunity_Number" shortDesc="Opportunity Number" selectiveSearchCriteria="true" queryable="true"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow3">
+                     <ui:contents>
+                        <oa:messageStyledText id="item5" prompt="Win Probability %"/>
+                        <oa:messageTextInput id="ASNOpptyAdvSrchWinProb" use="/oracle/apps/asn/admin/attributesets/Probability/ProbabilityValue" shortDesc="Win Probability %" dataType="NUMBER" selectiveSearchCriteria="true" queryable="true"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow4">
+                     <ui:contents>
+                        <oa:messageStyledText id="item7" prompt="Total Actual Amount"/>
+                        <oa:messageTextInput id="ASNOpptyAdvSrchActAmount" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/TotalAmount" shortDesc="Total Actual Amount" dataType="NUMBER" queryable="true"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow5">
+                     <ui:contents>
+                        <oa:messageStyledText id="item9" prompt="Assignment Status"/>
+                        <oa:messageChoice id="ASNOpptyAdvSrchAssnSt" shortDesc="Assignment Status" dataType="VARCHAR2" pickListValAttr="LookupCode" pickListViewDef="oracle.apps.asn.opportunity.poplist.server.OpportunityAssignmentStatusVO" pickListDispAttr="Meaning" queryable="true"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow6">
+                     <ui:contents>
+                        <oa:messageStyledText id="item11" prompt="Source"/>
+                        <oa:messageLovInput id="ASNOpptyAdvSrchSrcNm" shortDesc="Source Name" externalListOfValues="/oracle/apps/asn/common/lov/webui/SrcLovRN" queryable="true">
+                           <lovMappings>
+                              <lovMap id="ASNAdvSrchSrcLovNmToLov" lovItem="ASNSrcLovNm" criteriaFrom="ASNOpptyAdvSrchSrcNm"/>
+                              <lovMap id="ASNAdvSrchLovNmToSrcNmLovNm" lovItem="ASNSrcLovNm" resultTo="ASNOpptyAdvSrchSrcNm"/>
+                              <lovMap id="ASNAdvSrchLovSrcIdToSrcId" lovItem="ASNSrcLovSrcPromId" resultTo="ASNOpptyAdvSrchSrcId"/>
+                           </lovMappings>
+                        </oa:messageLovInput>
+                        <oa:formValue id="ASNOpptyAdvSrchSrcId" dataType="NUMBER"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow9">
+                     <ui:contents>
+                        <oa:messageStyledText id="item17" prompt="Customer Name"/>
+                        <oa:messageTextInput id="ASNOpptyAdvSrchCustNm" shortDesc="Customer Name" selectiveSearchCriteria="true" queryable="true"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow10">
+                     <ui:contents>
+                        <oa:messageStyledText id="item19" prompt="Sales Channel"/>
+                        <oa:messageChoice id="ASNOpptyAdvSrchChnl" shortDesc="Sales Channel" pickListViewDef="oracle.apps.asn.common.poplist.server.SalesChannelsVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode" queryable="true"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow11">
+                     <ui:contents>
+                        <oa:messageStyledText id="item21" prompt="Close Reason"/>
+                        <oa:messageChoice id="ASNOpptyAdvSrchClsRsn" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/CloseReason" shortDesc="Opportunity Close Reason" pickListViewDef="oracle.apps.asn.opportunity.poplist.server.OpportunityCloseReasonsVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode" queryable="true"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow12">
+                     <ui:contents>
+                        <oa:messageStyledText id="item23" prompt="Referral Code"/>
+                        <oa:messageTextInput id="ASNOpptyAdvSrchRefCode" shortDesc="Referral Code" queryable="true"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow13">
+                     <ui:contents>
+                        <oa:messageStyledText id="item25" prompt="Partner Name"/>
+                        <oa:messageLovInput id="ASNOpptyAdvSrchPartNm" shortDesc="Partner Name" externalListOfValues="/oracle/apps/pv/partner/lov/webui/PvPrtnrForCMLOV" queryable="true" selectiveSearchCriteria="true">
+                           <lovMappings>
+                              <lovMap id="ASNAdvSrchPartNmLovNmToLovNm" lovItem="Partyname" criteriaFrom="ASNOpptyAdvSrchPartNm" resultTo="ASNOpptyAdvSrchPartNm"/>
+                              <lovMap id="ASNAdvSrchLovPartNmIdToRscId" lovItem="Partnerid" resultTo="ASNOpptyAdvSrchPartId"/>
+                           </lovMappings>
+                        </oa:messageLovInput>
+                        <oa:formValue id="ASNOpptyAdvSrchPartId" dataType="NUMBER"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow14">
+                     <ui:contents>
+                        <oa:messageStyledText id="item27" prompt="Forecast Owner"/>
+                        <oa:messageLovInput id="ASNOpptyAdvSrchFrcstOwn" shortDesc="Forecast Owner" externalListOfValues="/oracle/apps/asn/common/lov/webui/RscLovRN" queryable="true">
+                           <lovMappings>
+                              <lovMap id="ASNAdvSrchFrcstOwnLovNmToLovNm" lovItem="ASNRscLovNm" criteriaFrom="ASNOpptyAdvSrchFrcstOwn" programmaticQuery="true"/>
+                              <lovMap id="ASNAdvSrchLovNmToFrcstOwnLovNm" lovItem="ASNRscLovNm" resultTo="ASNOpptyAdvSrchFrcstOwn"/>
+                              <lovMap id="ASNAdvSrchLovFrcstOwnIdToRscId" lovItem="ASNRscLovRscId" resultTo="ASNOpptyAdvSrchSlsFrcstOwnId"/>
+                           </lovMappings>
+                        </oa:messageLovInput>
+                        <oa:formValue id="ASNOpptyAdvSrchSlsFrcstOwnId" dataType="NUMBER"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow15">
+                     <ui:contents>
+                        <oa:messageStyledText id="item29" prompt="Contributor"/>
+                        <oa:messageLovInput id="ASNOpptyAdvSrchContrib" shortDesc="Contributor" externalListOfValues="/oracle/apps/asn/common/lov/webui/RscLovRN" queryable="true">
+                           <lovMappings>
+                              <lovMap id="ASNAdvSrchContribLovNmToLovNm" lovItem="ASNRscLovNm" criteriaFrom="ASNOpptyAdvSrchContrib" programmaticQuery="true"/>
+                              <lovMap id="ASNAdvSrchLovNmToContribLovNm" lovItem="ASNRscLovNm" resultTo="ASNOpptyAdvSrchContrib"/>
+                              <lovMap id="ASNAdvSrchLovContribIdToRscId" lovItem="ASNRscLovRscId" resultTo="ASNOpptyAdvSrchSlsContribId"/>
+                           </lovMappings>
+                        </oa:messageLovInput>
+                        <oa:formValue id="ASNOpptyAdvSrchSlsContribId" dataType="NUMBER"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow16">
+                     <ui:contents>
+                        <oa:messageStyledText id="item31" prompt="Created Date"/>
+                        <oa:messageTextInput id="ASNOpptyAdvSrchCrteDate" shortDesc="Opportunity Created Date" dataType="DATE" queryable="true"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow17">
+                     <ui:contents>
+                        <oa:messageStyledText id="item33" prompt="Sales Person"/>
+                        <oa:messageLovInput id="ASNOpptyAdvSrchSlsRscNm" shortDesc="Sales Person Name" selectiveSearchCriteria="true" externalListOfValues="/oracle/apps/asn/common/lov/webui/RscLovRN" queryable="true">
+                           <lovMappings>
+                              <lovMap id="ASNAdvSrchRscLovNmToLovNm" lovItem="ASNRscLovNm" criteriaFrom="ASNOpptyAdvSrchSlsRscNm" programmaticQuery="true"/>
+                              <lovMap id="ASNAdvSrchLovNmToRscLovNm" lovItem="ASNRscLovNm" resultTo="ASNOpptyAdvSrchSlsRscNm"/>
+                              <lovMap id="ASNAdvSrchLovRscIdToRscId" lovItem="ASNRscLovRscId" resultTo="ASNOpptyAdvSrchSlsRscId"/>
+                           </lovMappings>
+                        </oa:messageLovInput>
+                        <oa:formValue id="ASNOpptyAdvSrchSlsRscId" dataType="NUMBER"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow18">
+                     <ui:contents>
+                        <oa:messageStyledText id="item35" prompt="Sales Group"/>
+                        <oa:messageLovInput id="ASNOpptyAdvSrchSlsGrpNm" shortDesc="Sales Group Name" externalListOfValues="/oracle/apps/asn/common/lov/webui/GrpLovRN" queryable="true">
+                           <lovMappings>
+                              <lovMap id="ASNAdvSrchSlsGrpNmToLovNm" lovItem="ASNGrpLovNm" criteriaFrom="ASNOpptyAdvSrchSlsGrpNm"/>
+                              <lovMap id="ASNAdvSrchLovNmToSlsGrpLovNm" lovItem="ASNGrpLovNm" resultTo="ASNOpptyAdvSrchSlsGrpNm"/>
+                              <lovMap id="ASNAdvSrchLovGrpIdToGrpId" lovItem="ASNGrpLovGrpId" resultTo="ASNOpptyAdvSrchSlsGrpId"/>
+                           </lovMappings>
+                        </oa:messageLovInput>
+                        <oa:formValue id="ASNOpptyAdvSrchSlsGrpId" dataType="NUMBER"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow21">
+                     <ui:contents>
+                        <oa:messageStyledText id="item41" prompt="Methodology"/>
+                        <oa:messageChoice id="ASNOpptyAdvSrchMeth" shortDesc="Sales Methodology" pickListViewDef="oracle.apps.asn.common.poplist.server.SalesMethodologiesVO" pickListDispAttr="SalesMethodologyName" pickListValAttr="SalesMethodologyId" queryable="true"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow23">
+                     <ui:contents>
+                        <oa:messageStyledText id="item45" prompt="Product Category"/>
+                        <oa:messageLovInput id="ASNOpptyAdvSrchPrdtCtg" shortDesc="Opportunity Product Category" externalListOfValues="/oracle/apps/asn/common/lov/webui/PrdtLovRN" queryable="true">
+                           <lovMappings>
+                              <lovMap id="ASNAdvSrchPrdtCtgToLovNm" lovItem="ASNPrdtLovNm" criteriaFrom="ASNOpptyAdvSrchPrdtCtg"/>
+                              <lovMap id="ASNAdvSrchLovNmToPrdtCtg" lovItem="ASNPrdtLovNm" resultTo="ASNOpptyAdvSrchPrdtCtg"/>
+                              <lovMap id="ASNAdvSrchLovCatIdToPrdtCtgId" lovItem="ASNPrdtLovCatId" resultTo="ASNOpptyAdvSrchPrdtCtgId"/>
+                              <lovMap id="ASNAdvSrchLovItemIdToItemId" lovItem="ASNPrdtLovInvItemId" resultTo="ASNOpptyAdvSrchInvItemId"/>
+                              <lovMap id="ASNAdvSrchLovOrgIdToOrgId" lovItem="ASNPrdtLovOrgId" resultTo="ASNOpptyAdvSrchOrgId"/>
+                           </lovMappings>
+                        </oa:messageLovInput>
+                        <oa:formValue id="ASNOpptyAdvSrchInvItemId" dataType="NUMBER"/>
+                        <oa:formValue id="ASNOpptyAdvSrchOrgId" dataType="NUMBER"/>
+                        <oa:formValue id="ASNOpptyAdvSrchPrdtCtgId" dataType="NUMBER"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow24">
+                     <ui:contents>
+                        <oa:messageStyledText id="item47" prompt="Currency"/>
+                        <oa:messageChoice id="ASNOpptyAdvSrchCurrNm" shortDesc="Opportunity's Currency" pickListViewDef="oracle.apps.asn.common.poplist.server.CurrenciesVO" pickListDispAttr="CurrencyName" pickListValAttr="CurrencyCode" queryable="true"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow25">
+                     <ui:contents>
+                        <oa:messageStyledText id="item49" prompt="Forecast Amount"/>
+                        <oa:messageTextInput id="ASNOpptyAdvSrchActFrcstAmount" shortDesc="Forecast Amount" dataType="NUMBER" queryable="true"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow27">
+                     <ui:contents>
+                        <oa:messageStyledText id="item53" prompt="Forecastable"/>
+                        <oa:messageChoice id="ASNOpptyrchFrcstable" shortDesc="Forecastable" pickListViewName="FrcstableYesNoVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode" queryable="true"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow8">
+                     <ui:contents>
+                        <oa:messageStyledText id="item15" prompt="Primary Contact First Name"/>
+                        <oa:messageTextInput id="ASNOpptyAdvSrchCtctFrstNm" shortDesc="Primary Contact First Name" queryable="true"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow28">
+                     <ui:contents>
+                        <oa:messageStyledText id="item54" prompt="Primary Contact Last Name"/>
+                        <oa:messageTextInput id="ASNOpptyAdvSrchCtctLstNm" shortDesc="Primary Contact Last Name" queryable="true"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow29">
+                     <ui:contents>
+                        <oa:messageStyledText id="item55" prompt="Customer Country"/>
+                        <oa:messageChoice id="ASNOpptyAdvSrchCustCntry" pickListViewDef="oracle.apps.asn.common.poplist.server.CountriesVO" pickListDispAttr="TerritoryShortName" pickListValAttr="TerritoryCode" queryable="true" shortDesc="Customer Country"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+                  <oa:criteriaRow id="criteriaRow30">
+                     <ui:contents>
+                        <oa:messageStyledText id="item50" prompt="Close Date Quarter"/>
+                        <oa:messageChoice id="ASNOpptyAdvSrchPrdClDate" pickListDispAttr="PeriodName" pickListValAttr="PeriodRange" shortDesc="Close Date Quarter" queryable="true" pickListViewDef="oracle.apps.asn.opportunity.poplist.server.OpportunityPeriodCloseDateVO"/>
+                     </ui:contents>
+                  </oa:criteriaRow>
+				   <oa:criteriaRow id="ASNLeadAdvSrchCtraRow100">
+                     <ui:contents>
+                        <oa:messageStyledText id="item1161" prompt="OD Store #"/>
+                        <oa:messageLovInput id="ASNOpptyAdvSrchStrNo" shortDesc="OD Store #" selectiveSearchCriteria="true" userCustomizable="true" queryable="true" externalListOfValues="/od/oracle/apps/xxcrm/asn/common/lov/webui/ODStoreNumRN">
+                           <lovMappings>
+                              <lovMap id="lovMap1" lovItem="Value" resultTo="ASNOpptyAdvSrchStrNo" criteriaFrom="ASNOpptydAdvSrchStrNo"/>
+                           </lovMappings>
+                        </oa:messageLovInput>
+						</ui:contents>
+						</oa:criteriaRow>
+               </oa:criteria>
+            </oa:advancedSearch>
+         </ui:contents>
+      </oa:header>
+   </oa:advancedSearchPanel>
+   <oa:advancedSearchMappings>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp1" criteriaItem="ASNOpptyAdvSrchNm" resultsItem="ASNOpptyLstNm"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp2" criteriaItem="ASNOpptyAdvSrchNbr" resultsItem="ASNOpptyLstNbr"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp3" criteriaItem="ASNOpptyAdvSrchWinProb" resultsItem="ASNOpptyLstWinProb"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp4" criteriaItem="ASNOpptyAdvSrchActAmount" resultsItem="ASNOpptyLstAmt"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp5" criteriaItem="ASNOpptyAdvSrchAssnSt" resultsItem="ASNOpptyLstAssgnStatCode"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp6" resultsItem="ASNOpptyLstSrc" criteriaItem="ASNOpptyAdvSrchSrcId"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp7" criteriaItem="ASNOpptyAdvSrchStatus" resultsItem="ASNOpptyLstStatus"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp8" resultsItem="ASNOpptyLstCtctFirstNm" criteriaItem="ASNOpptyAdvSrchCtctFrstNm"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp9" criteriaItem="ASNOpptyAdvSrchCustNm" resultsItem="ASNOpptyLstCustNm"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp10" criteriaItem="ASNOpptyAdvSrchChnl" resultsItem="ASNOpptyLstChnl"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp11" criteriaItem="ASNOpptyAdvSrchClsRsn" resultsItem="ASNOpptyLstClsRsnCode"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp12" criteriaItem="ASNOpptyAdvSrchRefCode" resultsItem="ASNOpptyLstRefCode"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp13" criteriaItem="ASNOpptyAdvSrchPartId" resultsItem="ASNOpptyLstPartnerId"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp14" criteriaItem="ASNOpptyAdvSrchSlsFrcstOwnId" resultsItem="ASNOpptyLstFrcstOwnId"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp15" criteriaItem="ASNOpptyAdvSrchSlsContribId" resultsItem="ASNOpptyLstContribId"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp16" criteriaItem="ASNOpptyAdvSrchCrteDate" resultsItem="ASNOpptyLstCrtedDate"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp17" criteriaItem="ASNOpptyAdvSrchSlsRscId" resultsItem="ASNOpptyLstSlsRepId"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp18" criteriaItem="ASNOpptyAdvSrchSlsGrpId" resultsItem="ASNOpptyLstSlsGrpId"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp20" criteriaItem="ASNOpptyAdvSrchClsDate" resultsItem="ASNOpptyLstDate"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp21" criteriaItem="ASNOpptyAdvSrchMeth" resultsItem="ASNOpptyLstMeth"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp22" criteriaItem="ASNOpptyAdvSrchStg" resultsItem="ASNOpptyLstStageId"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp23" criteriaItem="ASNOpptyAdvSrchPrdtCtgId" resultsItem="ASNOpptyLstPrdCatgId"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp24" criteriaItem="ASNOpptyAdvSrchCurrNm" resultsItem="ASNOpptyLstCurr"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp25" criteriaItem="ASNOpptyAdvSrchActFrcstAmount" resultsItem="ASNOpptyLstFrcstAmt"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp26" criteriaItem="ASNOpptyrchOpenClsStatus" resultsItem="ASNOpptyLstStCatgCode"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp27" criteriaItem="ASNOpptyrchFrcstable" resultsItem="ASNOpptyLstFrcst"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp28" criteriaItem="ASNOpptyAdvSrchCtctLstNm" resultsItem="ASNOpptyLstCtctLastNm"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp23b" criteriaItem="ASNOpptyAdvSrchInvItemId" resultsItem="ASNOpptyLstInvItem"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp23c" criteriaItem="ASNOpptyAdvSrchOrgId" resultsItem="ASNOpptyLstOrgId"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp29" criteriaItem="ASNOpptyAdvSrchCustCntry" resultsItem="ASNOpptyLstCustCnty"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp23d" criteriaItem="ASNOpptyAdvSrchPrdtCtg" resultsItem="ASNOpptyLstPrdNm"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp18b" criteriaItem="ASNOpptyAdvSrchSlsGrpNm" resultsItem="ASNOpptyLstSlsGrpNm"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp17b" criteriaItem="ASNOpptyAdvSrchSlsRscNm" resultsItem="ASNOpptyLstRscNm"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp15b" criteriaItem="ASNOpptyAdvSrchContrib" resultsItem="ASNOpptyLstContribNm"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp14b" criteriaItem="ASNOpptyAdvSrchFrcstOwn" resultsItem="ASNOpptyLstFrcstOwnNm"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp13b" criteriaItem="ASNOpptyAdvSrchPartNm" resultsItem="ASNOpptyLstPartnerNm"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp6b" criteriaItem="ASNOpptyAdvSrchSrcNm" resultsItem="ASNOpptyLstSourcNm"/>
+      <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp30" criteriaItem="ASNOpptyAdvSrchPrdClDate" resultsItem="ASNOpptyLstDateRange"/>
+	   <oa:queryCriteriaMap id="ASNOpptyAdvSrchCrtMp35" criteriaItem="ASNOpptyAdvSrchStrNo" resultsItem="ASNOpptyStoreNo"/>
+   </oa:advancedSearchMappings>
+</oa:query>

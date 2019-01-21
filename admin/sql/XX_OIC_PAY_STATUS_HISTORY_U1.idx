@@ -1,0 +1,37 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+
+--|                      Office Depot - Project Simplify                                        |
+--|                Oracle NAIO/Office Depot/Consulting Organization                             |
+--+=============================================================================================+
+--|                                                                                             |
+--| Object Name    : OD,I0607_IncentiveAndBonusToPayroll                                        |
+--|                                                                                             |
+--| Program Name   : XX_OIC_PAY_STATUS_HISTORY_U1.idx                                           |
+--|                                                                                             |
+--| Purpose        : Create Unique index on the Record_id of  XX_OIC_PAY_STATUS_HISTORY         |
+--|                                                                                             |
+--|                                                                                             |
+--| Change History  :                                                                           |
+--| Version           Date             Changed By              Description                      |
+--+=============================================================================================+
+--| 1.0              04-Oct-2007       Gowri Nagarajan         Original                         |
+--| 1.1              09-Oct-2002       Gowri Nagarajan	       Added the schema name            |
+--+=============================================================================================+
+
+
+-- --------------------------------------------
+-- Creating Index XX_OIC_PAY_STATUS_HISTORY_U1
+-- --------------------------------------------
+
+
+CREATE UNIQUE INDEX XXCRM.XX_OIC_PAY_STATUS_HISTORY_U1 
+ON  XX_OIC_PAY_STATUS_HISTORY(RECORD_ID);
+
+
+EXIT;

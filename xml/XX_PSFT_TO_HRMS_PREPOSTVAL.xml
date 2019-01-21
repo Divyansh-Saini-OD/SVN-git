@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XX_PSFT_TO_HRMS_PREPOSTVAL" description="OD Peoplesoft to HRMS Pre and Post Validation" Version="1.0">
+<parameters>
+ <parameter name="P_EMPLOYEE_NUMBER" dataType="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_COUNT_PSFT_TO_HRMS">
+<![CDATA[
+SELECT   
+          COUNT(*)                                AS  TOTAL_NO_OF_PSFT_EMP
+         ,(CASE psft.empl_status
+		  WHEN 'T' THEN
+		       'TERMINATED'
+	      WHEN 'L' THEN
+		       'ON LEAVE'
+		  ELSE
+		       'EXISTING EMPLOYEE'
+		  END)                             AS PSFT_EMPL_STATUS
+	 ,COUNT(papf.employee_number)              AS NO_OF_PSFT_EMP_IN_HRMS 	 	
+	 ,(COUNT(*) - COUNT(papf.employee_number)) AS NO_OF_PSFT_EMP_NOT_IN_HRMS 
+	 ,:P_EMPLOYEE_NUMBER                       AS PSFT_SUPERVISOR_EMP_NUM
+FROM       
+       (  SELECT  *
+          FROM    ps_od_fin_conv@pshr PFT
+          WHERE   ( (NVL(pft.last_date_worked,SYSDATE+1) < SYSDATE) OR (NVL(pft.last_date_worked,SYSDATE+1) > SYSDATE))
+          START   WITH pft.emplid       = :P_EMPLOYEE_NUMBER
+          CONNECT BY PRIOR pft.emplid   = pft.supervisor_id
+       ) PSFT
+       ,(SELECT * 
+         FROM   per_all_people_f 
+	 WHERE SYSDATE BETWEEN NVL(effective_start_date,SYSDATE) AND NVL(effective_end_date,SYSDATE+1) 
+	) PAPF
+WHERE   psft.emplid = papf.employee_number(+)
+AND EXISTS (
+            SELECT 1
+            FROM   per_jobs PJ
+                 , jtf_rs_job_roles JRRR
+                 , jtf_rs_roles_vl JRRV
+            WHERE pj.name = UPPER(psft.setid_jobcode||':'||psft.jobcode||':'||psft.descr)
+            AND   pj.job_id = jrrr.job_id
+            AND   jrrr.role_id = jrrv.role_id
+            AND   jrrv.role_type_code in ('SALES', 'COLLECTIONS')
+           )
+GROUP BY (CASE psft.empl_status
+	  WHEN 'T' THEN
+	       'TERMINATED'
+	  WHEN 'L' THEN
+	       'ON LEAVE'
+	  ELSE
+	       'EXISTING EMPLOYEE'
+	  END)
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PSFT_EMP_HRMS_RM">
+<![CDATA[
+ SELECT   
+         COUNT(*)                               AS NO_OF_PSFT_EMP_IN_HRMS
+        ,COUNT(jrre.source_number)              AS NO_OF_PSFT_EMP_IN_RM 	 	
+	,(COUNT(*) - COUNT(jrre.source_number)) AS NO_OF_PSFT_EMP_NOT_IN_RM 	
+	,:P_EMPLOYEE_NUMBER                     AS PSFT_SUPERVISOR_EMP_NUM	 
+ FROM       
+       ( SELECT *
+         FROM  ps_od_fin_conv@pshr PFT
+         WHERE   ( (NVL(pft.last_date_worked,SYSDATE+1) < SYSDATE) OR (NVL(pft.last_date_worked,SYSDATE+1) > SYSDATE))
+         START WITH pft.emplid       = :P_EMPLOYEE_NUMBER
+         CONNECT BY PRIOR pft.emplid = pft.supervisor_id
+       ) PSFT
+      ,(SELECT * 
+	FROM   per_all_people_f 
+	WHERE   SYSDATE BETWEEN NVL(effective_start_date,SYSDATE) AND NVL(effective_end_date,SYSDATE+1) 
+       ) PAPF
+      ,(SELECT *
+        FROM   jtf_rs_resource_extns JRE
+        WHERE  SYSDATE BETWEEN NVL(jre.start_date_active,SYSDATE) AND NVL(jre.end_date_active,SYSDATE+1)
+       )                         JRRE
+where   psft.emplid = papf.employee_number
+and     psft.emplid = jrre.source_number(+) 
+and exists (
+            select 1
+            from   per_jobs PJ
+                 , jtf_rs_job_roles JRRR
+                 , jtf_rs_roles_vl JRRV
+            where pj.name = upper(psft.setid_jobcode||':'||psft.jobcode||':'||psft.descr)
+            and   pj.job_id = jrrr.job_id
+            and   jrrr.role_id = jrrv.role_id
+            and   jrrv.role_type_code in ('SALES', 'COLLECTIONS')
+           )
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PSFT_EMP_HRMS_RM_ROLE">
+<![CDATA[
+SELECT COUNT(*)                   AS  NO_OF_PSFT_EMP_IN_HRMS_RM
+      ,DECODE (SIGN(count(*)),0
+               ,'NOS. OF PSFT EMPLOYEES EXISTS IN HRMS & RM BUT NO VALID ROLE'
+               , ' NOS. OF PSFT EMPLOYEES EXISTS IN HRMS & RM HAVING VALID ROLE' 
+              )	                  AS PSFT_EMP_STATUS 
+FROM       
+       (  SELECT  *
+          FROM    ps_od_fin_conv@pshr PFT
+          WHERE   ( (NVL(pft.last_date_worked,SYSDATE+1) < SYSDATE) OR (NVL(pft.last_date_worked,SYSDATE+1) > SYSDATE))
+          START   WITH pft.emplid       = :P_EMPLOYEE_NUMBER
+          CONNECT BY PRIOR pft.emplid = pft.supervisor_id
+       ) PSFT
+       ,(SELECT * 
+         FROM per_all_people_f 
+	 WHERE SYSDATE BETWEEN NVL(effective_start_date,SYSDATE) AND NVL(effective_end_date,SYSDATE+1) 
+	) PAPF
+WHERE   psft.emplid = papf.employee_number
+AND   EXISTS
+             (
+               SELECT 1
+               FROM   per_jobs          PJ
+                     ,jtf_rs_job_roles  JRRR
+                     ,jtf_rs_roles_vl   JRRV
+               WHERE pj.name         = UPPER(psft.setid_jobcode||':'||psft.jobcode||':'||psft.descr)
+               AND   pj.job_id       = jrrr.job_id
+               AND   jrrr.role_id    = jrrv.role_id
+               AND   jrrv.role_type_code IN ('SALES', 'COLLECTIONS')
+             )
+AND EXISTS
+             (
+               SELECT 1
+               FROM   jtf_rs_resource_extns JRRE
+                    , jtf_rs_role_relations JRRR 
+                    , jtf_rs_roles_vl       JRRV
+                    , jtf_rs_salesreps      JRS
+               WHERE jrrr.role_id            = jrrv.role_id
+               AND   jrrr.role_resource_type = 'RS_INDIVIDUAL' 
+               AND   jrre.resource_id        = jrs.resource_id
+               AND   jrre.source_number      = psft.emplid
+               AND   SYSDATE BETWEEN NVL(jrre.start_date_active,SYSDATE) AND NVL(jrre.end_date_active,SYSDATE+1)
+              )
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PSFT_HRMS_EMP_RMROLEGRP">
+<![CDATA[
+select  COUNT(*)                                        AS NO_OF_PSFT_EMP_IN_HRMS
+       ,COUNT(ROLE_GRPS.source_number)                  AS COUNT_PSFTHRM_EMP_IN_RMROLEGRP 	 	
+	   ,(COUNT(*) - COUNT(ROLE_GRPS.source_number)) AS COUNT_PSFTHRM_EMP_NO_RMROLEGRP 		
+	   ,:P_EMPLOYEE_NUMBER                          AS PSFT_SUPERVISOR_EMP_NUM
+from       
+       (  SELECT   
+	               *
+          FROM     ps_od_fin_conv@pshr PFT
+          WHERE   ( (NVL(pft.last_date_worked,SYSDATE+1) < SYSDATE) OR (NVL(pft.last_date_worked,SYSDATE+1) > SYSDATE))
+          START WITH pft.emplid       = :P_EMPLOYEE_NUMBER
+          CONNECT BY PRIOR pft.emplid = pft.supervisor_id
+       ) PSFT
+	   ,(SELECT * 
+	     from per_all_people_f 
+		 where sysdate between nvl(effective_start_date,sysdate) and nvl(effective_end_date,sysdate+1) 
+		) PAPF
+		,(
+          select jrre.source_number
+          from jtf_rs_resource_extns JRRE
+             , jtf_rs_salesreps         JRS
+             , jtf_rs_group_mbr_role_vl JRGM
+          where jrre.resource_id = jrs.resource_id
+          and jrgm.resource_id = jrre.resource_id
+          and sysdate between nvl(jrre.start_date_active,sysdate) and nvl(jrre.end_date_active,sysdate+1)
+         ) ROLE_GRPS		 
+where psft.emplid = papf.employee_number
+and   psft.emplid = ROLE_GRPS.source_number(+) 
+and   exists
+(
+select 1
+from PER_JOBS PJ
+, JTF_RS_JOB_ROLES JRRR
+, JTF_RS_ROLES_VL JRRV
+where pj.name = upper(psft.setid_jobcode||':'||psft.jobcode||':'||psft.descr)
+and pj.job_id = jrrr.job_id
+and jrrr.role_id = jrrv.role_id
+and jrrv.role_type_code in ('SALES', 'COLLECTIONS')
+)
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_COUNT_PSFT_TO_HRMS" source="Q_COUNT_PSFT_TO_HRMS">
+<element name="TOTAL_NO_OF_PSFT_EMP"       value="TOTAL_NO_OF_PSFT_EMP" />
+<element name="PSFT_EMPL_STATUS"           value="PSFT_EMPL_STATUS" />
+<element name="NO_OF_PSFT_EMP_IN_HRMS"     value="NO_OF_PSFT_EMP_IN_HRMS" />
+<element name="NO_OF_PSFT_EMP_NOT_IN_HRMS" value="NO_OF_PSFT_EMP_NOT_IN_HRMS" />
+<element name="PSFT_SUPERVISOR_EMP_NUM"    value="PSFT_SUPERVISOR_EMP_NUM" />
+</group>
+<group name="G_PSFT_EMP_HRMS_RM" source="Q_PSFT_EMP_HRMS_RM">
+<element name="NO_OF_PSFT_EMP_IN_HRMS"     value="NO_OF_PSFT_EMP_IN_HRMS" />
+<element name="NO_OF_PSFT_EMP_IN_RM"       value="NO_OF_PSFT_EMP_IN_RM" />
+<element name="NO_OF_PSFT_EMP_NOT_IN_RM"   value="NO_OF_PSFT_EMP_NOT_IN_RM" />
+<element name="PSFT_SUPERVISOR_EMP_NUM"    value="PSFT_SUPERVISOR_EMP_NUM" />
+</group>
+<group name="G_PSFT_EMP_HRMS_RM_ROLE" source="Q_PSFT_EMP_HRMS_RM_ROLE">
+<element name="NO_OF_PSFT_EMP_IN_HRMS_RM"  value="NO_OF_PSFT_EMP_IN_HRMS_RM" />
+<element name="PSFT_EMP_STATUS"            value="PSFT_EMP_STATUS" />
+</group>
+
+<group name="G_PSFT_HRMS_EMP_RMROLEGRP" source="Q_PSFT_HRMS_EMP_RMROLEGRP">
+<element name="NO_OF_PSFT_EMP_IN_HRMS"         value="NO_OF_PSFT_EMP_IN_HRMS" />
+<element name="COUNT_PSFTHRM_EMP_IN_RMROLEGRP" value="COUNT_PSFTHRM_EMP_IN_RMROLEGRP" />
+<element name="COUNT_PSFTHRM_EMP_NO_RMROLEGRP" value="COUNT_PSFTHRM_EMP_NO_RMROLEGRP" />
+<element name="PSFT_SUPERVISOR_EMP_NUM"        value="PSFT_SUPERVISOR_EMP_NUM" />
+</group>
+</dataStructure>
+</dataTemplate>
+

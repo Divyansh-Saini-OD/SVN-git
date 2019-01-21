@@ -1,0 +1,106 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===========================================================================+
+-- |                  Office Depot - eBilling Project                          |
+-- |                         WIPRO/Office Depot                                |
+-- +===========================================================================+
+-- | Name        : CREATE_XX_CDH_EBL_TRANSMISSION_DTL.tbl                      |
+-- | Description : Tranmission Details table to store Tranmission details for  |
+-- |               eBilling.                                                   |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author        Remarks            	               |
+-- |======== =========== ============= ========================================|
+-- |DRAFT 1A 15-MAR-2010 Srini Ch      Initial draft version                   |
+-- |                                                                           |
+-- |                                                                           |
+-- |                                                                           |
+-- +===========================================================================+
+
+-- ----------------------------------------------------------------------------
+--      Create Custom Table XX_CDH_EBL_TRANSMISSION_DTL
+-- ----------------------------------------------------------------------------
+
+CREATE TABLE XXCRM.XX_CDH_EBL_TRANSMISSION_DTL 
+    ( 
+     CUST_DOC_ID NUMBER (15)  NOT NULL , 
+     EMAIL_SUBJECT VARCHAR2 (256) , 
+     EMAIL_STD_MESSAGE VARCHAR2 (4000) , 
+     EMAIL_CUSTOM_MESSAGE VARCHAR2 (4000) , 
+     EMAIL_STD_DISCLAIMER VARCHAR2 (2000) , 
+     EMAIL_SIGNATURE VARCHAR2 (2000) , 
+     EMAIL_LOGO_REQUIRED VARCHAR2 (1) , 
+     EMAIL_LOGO_FILE_NAME VARCHAR2 (256) , 
+     FTP_DIRECTION VARCHAR2 (30) , 
+     FTP_TRANSFER_TYPE VARCHAR2 (30) , 
+     FTP_DESTINATION_SITE VARCHAR2 (256) , 
+     FTP_DESTINATION_FOLDER VARCHAR2 (256) , 
+     FTP_USER_NAME VARCHAR2 (30) , 
+     FTP_PASSWORD VARCHAR2 (30) , 
+     FTP_PICKUP_SERVER VARCHAR2 (256) , 
+     FTP_PICKUP_FOLDER VARCHAR2 (256) , 
+     FTP_CUST_CONTACT_NAME VARCHAR2 (256) , 
+     FTP_CUST_CONTACT_EMAIL VARCHAR2 (256) , 
+     FTP_CUST_CONTACT_PHONE VARCHAR2 (256) , 
+     FTP_NOTIFY_CUSTOMER VARCHAR2 (1) , 
+     FTP_CC_EMAILS VARCHAR2 (4000) , 
+     FTP_EMAIL_SUB VARCHAR2 (256) , 
+     FTP_EMAIL_CONTENT VARCHAR2 (4000) , 
+     FTP_SEND_ZERO_BYTE_FILE VARCHAR2 (1) , 
+     FTP_ZERO_BYTE_FILE_TEXT VARCHAR2 (2000) , 
+     FTP_ZERO_BYTE_NOTIFICATION_TXT VARCHAR2 (4000) , 
+     CD_FILE_LOCATION VARCHAR2 (2000) , 
+     CD_SEND_TO_ADDRESS VARCHAR2 (1000) , 
+     COMMENTS VARCHAR2 (4000) , 
+     ATTRIBUTE1 VARCHAR2 (150) , 
+     ATTRIBUTE2 VARCHAR2 (150) , 
+     ATTRIBUTE3 VARCHAR2 (150) , 
+     ATTRIBUTE4 VARCHAR2 (150) , 
+     ATTRIBUTE5 VARCHAR2 (150) , 
+     ATTRIBUTE6 VARCHAR2 (150) , 
+     ATTRIBUTE7 VARCHAR2 (150) , 
+     ATTRIBUTE8 VARCHAR2 (150) , 
+     ATTRIBUTE9 VARCHAR2 (150) , 
+     ATTRIBUTE10 VARCHAR2 (150) , 
+     ATTRIBUTE11 VARCHAR2 (150) , 
+     ATTRIBUTE12 VARCHAR2 (150) , 
+     ATTRIBUTE13 VARCHAR2 (150) , 
+     ATTRIBUTE14 VARCHAR2 (150) , 
+     ATTRIBUTE15 VARCHAR2 (150) , 
+     ATTRIBUTE16 VARCHAR2 (150) , 
+     ATTRIBUTE17 VARCHAR2 (150) , 
+     ATTRIBUTE18 VARCHAR2 (150) , 
+     ATTRIBUTE19 VARCHAR2 (150) , 
+     ATTRIBUTE20 VARCHAR2 (150) , 
+     LAST_UPDATE_DATE DATE  NOT NULL , 
+     LAST_UPDATED_BY NUMBER (15)  NOT NULL , 
+     CREATION_DATE DATE  NOT NULL , 
+     CREATED_BY NUMBER (15)  NOT NULL , 
+     LAST_UPDATE_LOGIN NUMBER (15)  NOT NULL , 
+     REQUEST_ID NUMBER (15) , 
+     PROGRAM_APPLICATION_ID NUMBER (15) , 
+     PROGRAM_ID NUMBER (15) , 
+     PROGRAM_UPDATE_DATE DATE , 
+     WH_UPDATE_DATE DATE 
+    );
+
+-- ----------------------------------------------------------------------------
+-- Creating Index on XX_CDH_EBL_TRANSMISSION_DTL.
+-- ----------------------------------------------------------------------------
+
+CREATE UNIQUE INDEX XXCRM.XX_CDH_EBL_TRANSM_DTL__UIDX01 ON XXCRM.XX_CDH_EBL_TRANSMISSION_DTL 
+    ( 
+     CUST_DOC_ID ASC
+    );
+    
+-- ----------------------------------------------------------------------------
+-- Adding Grants to APPS.
+-- ----------------------------------------------------------------------------
+
+GRANT ALL ON XXCRM.XX_CDH_EBL_TRANSMISSION_DTL TO APPS;
+
+SHOW ERRORS;

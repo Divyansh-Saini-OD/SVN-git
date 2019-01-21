@@ -1,0 +1,30 @@
+-- $Id$
+-- $Rev$
+-- $HeadURL$
+-- $Author$
+-- $Date$
+
+declare
+hdr_seq  number;
+line_dtl number;
+begin
+
+for i in 1..1000 loop
+
+ select  XXSCS_FDBK_ID_S.nextval into  hdr_seq from dual;
+ select  XXSCS_FDBK_LINE_ID_S.nextval into line_dtl from dual;
+ select  XXSCS_FDBK_QSTN_ID_S.nextval into  hdr_seq from dual;
+ select  XXSCS_FDBK_RESP_ID_S.nextval into line_dtl from dual;
+ select  XXSCS_POTENTIAL_ID_S.nextval into  hdr_seq from dual;
+ select  XXSCS_FDBK_LINE_ID_S.nextval into line_dtl from dual;
+ select  XXSCS_POTENTIAL_NEW_RANK_S.nextval into  hdr_seq from dual;
+ select  XXSCS_POTENTIAL_REP_ID_S.nextval into line_dtl from dual;
+
+end loop;
+
+exception when others then
+
+fnd_file.put_line(fnd_file.log,sqlerrm);
+
+end;
+/

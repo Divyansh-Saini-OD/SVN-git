@@ -1,0 +1,39 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XXSAS_PROCESSED_FILES.tbl                          |
+-- | Description      : SAS Behavioral email table                         |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |DRAFT 1A  09-Mar-2010  Indra Varada       Initial draft version        |
+-- +=======================================================================+
+
+-- ---------------------------------------------------------------------
+--      Create Custom Table xxcrm.XXSAS_PROCESSED_FILES    --
+-- ---------------------------------------------------------------------
+CREATE TABLE XXCRM.XXSAS_PROCESSED_FILES
+    (
+      FILE_NAME                               VARCHAR2(80)
+     ,HVOP_PROCESS_DATE                       DATE                                                                                                                                                                                  
+     ,CREATION_DATE                           DATE                                                                                                                                                                                          
+     ,POS_STATUS                              VARCHAR2(10)                                                                                                                                                                                  
+     ,REGULAR_STATUS                          VARCHAR2(10)                                                                                                                                                                                  
+     ,LAST_UPDATE_DATE                        DATE    
+    );
+------------------------------------------------------
+-- Adding Grants to APPS                            --
+------------------------------------------------------
+GRANT ALL ON XXCRM.XXSAS_PROCESSED_FILES TO APPS;
+
+SHOW ERRORS;

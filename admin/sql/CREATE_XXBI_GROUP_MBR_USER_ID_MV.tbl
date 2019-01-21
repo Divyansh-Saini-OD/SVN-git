@@ -1,0 +1,141 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XXBI_CONTACTS_MV MV                                                  |--                                                          
+ --|                                                                                             |--
+--| Program Name   : CREATE_XXBI_CONTACTS_MV.tbl                                              |--
+--|                                                                                             |--
+--| Purpose        : Contacts MV.                                      |--
+--|                                                                                             |--
+--| Change History :     
+-- | Subversion Info:                                                          |
+-- | $HeadURL:  $                                                               |
+-- | $Rev:  $                                                                   |
+-- | $Date: $                                         |
+-- |                                                                           |
+-- |                                                                           |                                                           
+--   |
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              14-Apr-2010       Prasad                  Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the MV XXCRM.XXBI_CONTACTS_MV......
+PROMPT
+
+
+  CREATE MATERIALIZED VIEW XXCRM.XXBI_GROUP_MBR_USER_ID_MV
+  TABLESPACE "APPS_TS_TX_DATA" 
+  BUILD DEFERRED
+  USING INDEX 
+  REFRESH FORCE ON DEMAND
+  DISABLE QUERY REWRITE
+  AS 
+select distinct  user_id user_id ,user_id map_user_id, rsd_user_id  from
+xxcrm.XXBI_GROUP_MBR_INFO_MV
+union 
+select distinct  m1_user_id user_id,user_id map_user_id, rsd_user_id from
+xxcrm.XXBI_GROUP_MBR_INFO_MV
+union
+select distinct  m2_user_id user_id,user_id map_user_id, rsd_user_id from
+xxcrm.XXBI_GROUP_MBR_INFO_MV
+union
+select distinct  m3_user_id user_id,user_id map_user_id, rsd_user_id from
+xxcrm.XXBI_GROUP_MBR_INFO_MV
+union
+select distinct  m4_user_id user_id,user_id map_user_id, rsd_user_id from
+xxcrm.XXBI_GROUP_MBR_INFO_MV
+union
+select distinct  m5_user_id user_id,user_id map_user_id, rsd_user_id  from
+xxcrm.XXBI_GROUP_MBR_INFO_MV
+union
+select distinct  m6_user_id user_id,user_id map_user_id, rsd_user_id from
+xxcrm.XXBI_GROUP_MBR_INFO_MV
+union 
+select distinct  m1_user_id user_id,m1_user_id map_user_id, rsd_user_id from
+xxcrm.XXBI_GROUP_MBR_INFO_MV
+union
+select distinct  m2_user_id user_id,m1_user_id map_user_id, rsd_user_id from
+xxcrm.XXBI_GROUP_MBR_INFO_MV
+union
+select distinct  m3_user_id user_id,m1_user_id map_user_id, rsd_user_id from
+xxcrm.XXBI_GROUP_MBR_INFO_MV
+union
+select distinct  m4_user_id user_id,m1_user_id map_user_id, rsd_user_id from
+xxcrm.XXBI_GROUP_MBR_INFO_MV
+union
+select distinct  m5_user_id user_id,m1_user_id map_user_id, rsd_user_id  from
+xxcrm.XXBI_GROUP_MBR_INFO_MV
+union
+select distinct  m6_user_id user_id,m1_user_id map_user_id, rsd_user_id from
+xxcrm.XXBI_GROUP_MBR_INFO_MV
+union
+select distinct  m2_user_id user_id,m2_user_id map_user_id, rsd_user_id from
+xxcrm.XXBI_GROUP_MBR_INFO_MV
+union
+select distinct  m3_user_id user_id,m2_user_id map_user_id, rsd_user_id from
+xxcrm.XXBI_GROUP_MBR_INFO_MV
+union
+select distinct  m4_user_id user_id,m2_user_id map_user_id, rsd_user_id from
+xxcrm.XXBI_GROUP_MBR_INFO_MV
+union
+select distinct  m5_user_id user_id,m2_user_id map_user_id, rsd_user_id  from
+xxcrm.XXBI_GROUP_MBR_INFO_MV
+union
+select distinct  m6_user_id user_id,m2_user_id map_user_id, rsd_user_id from
+xxcrm.XXBI_GROUP_MBR_INFO_MV
+union
+select distinct  m3_user_id user_id,m3_user_id map_user_id, rsd_user_id from
+xxcrm.XXBI_GROUP_MBR_INFO_MV
+union
+select distinct  m4_user_id user_id,m3_user_id map_user_id, rsd_user_id from
+xxcrm.XXBI_GROUP_MBR_INFO_MV
+union
+select distinct  m5_user_id user_id,m3_user_id map_user_id, rsd_user_id  from
+xxcrm.XXBI_GROUP_MBR_INFO_MV
+union
+select distinct  m6_user_id user_id, m3_user_id map_user_id, rsd_user_id from
+xxcrm.XXBI_GROUP_MBR_INFO_MV
+union
+select distinct  m4_user_id user_id,m4_user_id map_user_id, rsd_user_id from
+xxcrm.XXBI_GROUP_MBR_INFO_MV
+union
+select distinct  m5_user_id user_id, m4_user_id map_user_id, rsd_user_id  from
+xxcrm.XXBI_GROUP_MBR_INFO_MV
+union
+select distinct  m6_user_id user_id, m4_user_id map_user_id, rsd_user_id from
+xxcrm.XXBI_GROUP_MBR_INFO_MV
+union
+select distinct  m5_user_id user_id, m5_user_id map_user_id, rsd_user_id  from
+xxcrm.XXBI_GROUP_MBR_INFO_MV
+union
+select distinct  m6_user_id user_id, m5_user_id map_user_id, rsd_user_id from
+xxcrm.XXBI_GROUP_MBR_INFO_MV
+union
+select distinct  m6_user_id user_id, m6_user_id map_user_id, rsd_user_id from
+xxcrm.XXBI_GROUP_MBR_INFO_MV;
+
+GRANT ALL ON XXCRM.XXBI_GROUP_MBR_USER_ID_MV TO APPS;
+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

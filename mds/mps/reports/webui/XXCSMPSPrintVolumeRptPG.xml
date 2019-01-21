@@ -1,0 +1,139 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_1312" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="PrintVolumeRptRN" amDefName="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSPrintvolumeRptAM" windowTitle="MPS Print Volume Report" title="MPS Print Volume Report" controllerClass="od.oracle.apps.xxcrm.mps.reports.webui.XXCSMPSPrintVolumeRptCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:messageComponentLayout id="SearchRN">
+               <ui:contents>
+                  <oa:messageLovInput id="txtPName" prompt="Customer Name">
+                     <lovContents>
+                        <oa:listOfValues id="region1">
+                           <ui:contents>
+                              <oa:table name="region1" id="MPSPartyName">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="PartyName" viewName="XXCSMPSPartyNameVO1" viewAttr="PartyName" prompt="PartyName" queryable="true"/>
+                                    <oa:messageStyledText id="AopsCustNumber" viewName="XXCSMPSPartyNameVO1" viewAttr="AopsCustNumber" prompt="AopsCustNumber"/>
+                                 </ui:contents>
+                              </oa:table>
+                           </ui:contents>
+                        </oa:listOfValues>
+                     </lovContents>
+                     <lovMappings>
+                        <lovMap id="lovMap1" resultTo="txtPName" criteriaFrom="txtPName" lovItem="PartyName"/>
+                     </lovMappings>
+                  </oa:messageLovInput>
+                  <oa:messageChoice id="ProgramTypeParam" pickListViewDef="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSProgramTypeVO" pickListViewName="XXCSMPSProgramTypeVO1" pickListDispAttr="ProgramType" pickListValAttr="ProgramType" prompt="Program Type"/>
+                  <oa:messageTextInput id="StartDate" dataType="DATE" prompt="Start Date"/>
+                  <oa:messageTextInput id="EndDate" dataType="DATE" prompt="End Date"/>
+                  <oa:messageTextInput id="ManagedStatusInput" prompt="Managed Status"/>
+                  <oa:messageTextInput id="ActiveStatusInput" prompt="Active Status"/>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:rowLayout id="ButtonRN">
+               <ui:contents>
+                  <oa:submitButton id="SubmitBtn" text="Search" prompt="Search"/>
+                  <oa:spacer id="Spacer1"/>
+                  <oa:submitButton id="ClearBtn" text="Clear" prompt="Clear"/>
+                  <oa:spacer id="Spacer2"/>
+                  <oa:separator id="Separator1"/>
+               </ui:contents>
+            </oa:rowLayout>
+            <oa:advancedTable id="ResultsRN" viewName="XXCSMPSPrintvolumeRptVO1">
+               <ui:contents>
+                  <oa:column id="PartyNameCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortablePartyName" sortByViewAttr="PartyName" prompt="PartyName" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="CustomerName" viewAttr="PartyName"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="UpperMbModelCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableModel" sortByViewAttr="Model" prompt="Model" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="UpperMbModel" viewAttr="Model"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ProgramTypeCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableProgramType" sortByViewAttr="ProgramType" prompt="ProgramType" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ProgramType" viewAttr="ProgramType"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="PeriodCoveredStDateCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortablePeriodCoveredStDate" prompt="Start Date" sortByViewAttr="PeriodCoveredStDate" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="PeriodCoveredStDate" viewAttr="PeriodCoveredStDate"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="PeriodCoveredEndDateCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortablePeriodCoveredEndDate" sortByViewAttr="PeriodCoveredEndDate" prompt="End Date" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="PeriodCoveredEndDate" viewAttr="PeriodCoveredEndDate"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="TotalcountCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableTotalcount" sortByViewAttr="Totalcount" prompt="Total Usage" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="Totalcount" viewAttr="Totalcount"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="TotalblackcountCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableTotalblackcount" sortByViewAttr="Totalblackcount" prompt="Mono Usage" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="TOTALBLACKCOUNT" viewAttr="Totalblackcount"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="TotalcolorcountCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableTotalcolorcount" prompt="Color Usage" sortByViewAttr="Totalcolorcount" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="Totalcolorcount" viewAttr="Totalcolorcount"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ManagedStatusCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ManagedStatusHdr" prompt="Managed Status"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ManagedStatus" viewAttr="ManagedStatus"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ActiveStatusCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ActiveStatusHdr" prompt="Active Status"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ActiveStatus" viewAttr="ActiveStatus"/>
+                     </ui:contents>
+                  </oa:column>
+               </ui:contents>
+               <ui:tableActions>
+                  <oa:rowLayout id="ExportEN">
+                     <ui:contents>
+                        <oa:exportButton id="ExportButton" exportAllRows="true" text="Export to CSV" viewName="XXCSMPSPrintvolumeRptVO1"/>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:tableActions>
+            </oa:advancedTable>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

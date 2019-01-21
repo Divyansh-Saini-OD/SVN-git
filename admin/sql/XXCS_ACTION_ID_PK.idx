@@ -1,0 +1,28 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :XXCS_ACTION_ID_PK.idx                               |
+-- | Description      :Unique Index for feedback action Table              |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author              Remarks                     |
+-- |-------  ----------- -----------------    -----------------------------|
+-- | 1.0     25-MAR-2009  Kalyan        Initial Draft Version              |
+-- +=======================================================================+
+
+
+REM==============================================================================
+REM        Creating Index ACTION_ID_PK
+REM==============================================================================
+
+ALTER TABLE XXCRM.XXCS_ACTIONS ADD CONSTRAINT ACTION_ID_PK PRIMARY KEY(ACTION_ID);
+
+EXIT;
+

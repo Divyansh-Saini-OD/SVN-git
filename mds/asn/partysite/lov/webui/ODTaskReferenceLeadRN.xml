@@ -1,0 +1,18 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<oa:listOfValues version="9.0.3.8.13_1550" xml:lang="en-US" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:ui="http://xmlns.oracle.com/uix/ui" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header: OpptyLovRN.xml 115.0 2004/12/07 20:20:27 kichan ship $" scope="/" amDefName="od.oracle.apps.xxcrm.asn.partysite.lov.server.ODLeadLovAM" controllerClass="od.oracle.apps.xxcrm.asn.partysite.lov.webui.ODLeadLovCO">
+   <ui:contents>
+      <oa:table name="LeadLovRN" id="ODLeadLovTBL" regionName="Lead LOV Table">
+         <ui:contents>
+            <oa:messageStyledText id="ODLeadLovName" queryable="true" viewName="ODLeadLovVO" viewAttr="LeadName" selectiveSearchCriteria="true" prompt="Lead Name" sortState="yes"/>
+            <oa:messageStyledText id="ASnLeadLovStatus" prompt="Status" sortState="yes" viewName="ODLeadLovVO" viewAttr="Status"/>
+            <oa:messageStyledText id="ODLeadLovNum" viewName="ODLeadLovVO" viewAttr="Leadnumber" selectiveSearchCriteria="true" prompt="Lead Number" sortState="yes" queryable="true"/>
+            <oa:messageStyledText id="ODLeadLovName2" viewName="ODLeadLovVO" viewAttr="LeadName" selectiveSearchCriteria="true" prompt="Lead Name" rendered="false"/>
+            <oa:messageStyledText id="ASNLeadLovCust" sortState="yes" viewName="ODLeadLovVO" viewAttr="Party" prompt="Party"/>
+            <oa:messageStyledText id="ASNLeadLovAmt" prompt="Amount" sortState="yes" dataType="NUMBER" viewName="ODLeadLovVO" viewAttr="Amount"/>
+            <oa:messageStyledText id="ASNLeadLovCurr" sortState="yes" viewName="ODLeadLovVO" viewAttr="Currency" prompt="Currency"/>
+            <oa:formValue id="ODLeadLovId" prompt="Lead Id" dataType="NUMBER" queryable="false" selectiveSearchCriteria="false" viewName="ODLeadLovVO" viewAttr="Leadid" rendered="true"/>
+         </ui:contents>
+      </oa:table>
+   </ui:contents>
+</oa:listOfValues>

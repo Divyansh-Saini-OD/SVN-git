@@ -1,0 +1,19 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+drop synonym  xxcrm_custmast_head_int ;
+drop synonym  xx_cdhar_int_log ;
+drop synonym  xxcrm_wcelg_cust ;
+drop synonym  xxar_adjustment_delta ;
+drop synonym  xxcrm_contpoint_delta ;
+drop synonym  xxcrm_cust_acct_sites_delta ;
+drop synonym  xxcrm_cust_profile_amts_delta ;
+drop synonym  xxcrm_cust_site_uses_delta ;
+drop synonym  xxcrm_CUSTOMER_PROFILES_delta ;
+drop synonym  xxcrm_org_contacts_delta  ;
+drop synonym  xxcrm_party_sites_delta ;
+drop synonym  xxcrm_rs_group_members_delta ;
+drop synonym  xxcrm_rs_resource_extns ;
+drop synonym  xxcrm_TM_NAM_DTLS_delta ;
+drop synonym  xxcrm_party_delta ;

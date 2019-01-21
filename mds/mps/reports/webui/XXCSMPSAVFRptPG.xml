@@ -1,0 +1,85 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_1312" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <!--*[Enter Javadoc like developer documentation, delete this line once you fill the included template.] [Put a one line description of the region here.] [Put a brief description of the usage of the region here.] @param [Parameter_name] [Put parameter use here.] @param [Parameter_name] [Put parameter use here.] @see [Put any additional links apart from controller class and BC4J objects directly referenced by this region]-->
+      <oa:pageLayout id="MPSAVFReportRN" amDefName="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSAVFRptAM" controllerClass="od.oracle.apps.xxcrm.mps.reports.webui.XXCSMPSAVFRptCO" windowTitle="Asset Verification Report" title="Asset Verification Report">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:messageComponentLayout id="CustomerSearchRN" rows="1" columns="2">
+               <ui:contents>
+                  <oa:messageLovInput id="PartyName" queryable="true" prompt="Party Name">
+                     <lovContents>
+                        <oa:listOfValues id="PartyNameRN">
+                           <ui:contents>
+                              <oa:table name="PartyNameRN" id="PartyNameLOVRN">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="PartyName1" dataType="VARCHAR2" prompt="Party Name" viewName="XXCSMPSPartyNameVO" viewAttr="PartyName" maximumLength="250" queryable="true"/>
+                                    <oa:formValue id="PartyId" dataType="NUMBER" prompt="PartyId" viewName="XXCSMPSPartyNameVO" viewAttr="PartyId"/>
+                                 </ui:contents>
+                              </oa:table>
+                           </ui:contents>
+                        </oa:listOfValues>
+                     </lovContents>
+                     <lovMappings>
+                        <lovMap id="PartyNamelovMap" lovItem="PartyName1" resultTo="PartyName" criteriaFrom="PartyName"/>
+                        <lovMap id="PartyIdlovMap" lovItem="PartyId" resultTo="PartyIDFV"/>
+                     </lovMappings>
+                  </oa:messageLovInput>
+                  <oa:messageTextInput id="SerialNo" prompt="Serial No"/>
+                  <oa:messageTextInput id="ManagedStatusInput" prompt="Managed Status"/>
+                  <oa:messageTextInput id="ActiveStatusInput" prompt="Active Status"/>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:formValue id="PartyIDFV"/>
+            <oa:rowLayout id="SearchButtonRN" hAlign="center">
+               <ui:contents>
+                  <oa:submitButton id="Search" prompt="Search"/>
+                  <oa:spacer id="SpacerBTRN" width="10"/>
+                  <oa:submitButton id="Clear" text="Clear" prompt="Clear"/>
+               </ui:contents>
+            </oa:rowLayout>
+            <oa:table id="XXCSMPSAVFRptVO" blockSize="50">
+               <ui:contents>
+                  <oa:messageStyledText id="SiteContact" dataType="VARCHAR2" prompt="SiteContact" viewName="XXCSMPSAVFRptVO" viewAttr="SiteContact" maximumLength="250"/>
+                  <oa:messageStyledText id="SiteContactPhone" dataType="VARCHAR2" prompt="SiteContactPhone" viewName="XXCSMPSAVFRptVO" viewAttr="SiteContactPhone" maximumLength="25"/>
+                  <oa:messageStyledText id="SiteAddress1" dataType="VARCHAR2" prompt="SiteAddress1" viewName="XXCSMPSAVFRptVO" viewAttr="SiteAddress1" maximumLength="250"/>
+                  <oa:messageStyledText id="SiteAddress2" dataType="VARCHAR2" prompt="SiteAddress2" viewName="XXCSMPSAVFRptVO" viewAttr="SiteAddress2" maximumLength="250"/>
+                  <oa:messageStyledText id="SiteCity" dataType="VARCHAR2" prompt="SiteCity" viewName="XXCSMPSAVFRptVO" viewAttr="SiteCity" maximumLength="100"/>
+                  <oa:messageStyledText id="SiteState" dataType="VARCHAR2" prompt="SiteState" viewName="XXCSMPSAVFRptVO" viewAttr="SiteState" maximumLength="100"/>
+                  <oa:messageStyledText id="SiteZipCode" dataType="VARCHAR2" prompt="SiteZipCode" viewName="XXCSMPSAVFRptVO" viewAttr="SiteZipCode" maximumLength="50"/>
+                  <oa:messageStyledText id="ShipSeq" viewName="XXCSMPSAVFRptVO" viewAttr="Attribute5" prompt="ShipSeq"/>
+                  <oa:messageStyledText id="DeviceFloor" dataType="VARCHAR2" prompt="DeviceFloor" viewName="XXCSMPSAVFRptVO" viewAttr="DeviceFloor" maximumLength="150"/>
+                  <oa:messageStyledText id="DeviceRoom" dataType="VARCHAR2" prompt="DeviceRoom" viewName="XXCSMPSAVFRptVO" viewAttr="DeviceRoom" maximumLength="150"/>
+                  <oa:messageStyledText id="DeviceLocation1" dataType="VARCHAR2" prompt="DeviceLocation" viewName="XXCSMPSAVFRptVO" viewAttr="DeviceLocation" maximumLength="150"/>
+                  <oa:messageStyledText id="DeviceCostCenter" dataType="VARCHAR2" prompt="DeviceCostCenter" viewName="XXCSMPSAVFRptVO" viewAttr="DeviceCostCenter" maximumLength="150"/>
+                  <oa:messageStyledText id="IpAddress" dataType="VARCHAR2" prompt="IpAddress" viewName="XXCSMPSAVFRptVO" viewAttr="IpAddress" maximumLength="100"/>
+                  <oa:messageStyledText id="Manufacturer1" dataType="VARCHAR2" prompt="Manufacturer" viewName="XXCSMPSAVFRptVO" viewAttr="Manufacturer" maximumLength="150"/>
+                  <oa:messageStyledText id="Model1" dataType="VARCHAR2" prompt="Model" viewName="XXCSMPSAVFRptVO" viewAttr="Model" maximumLength="250"/>
+                  <oa:messageStyledText id="SerialNo1" dataType="VARCHAR2" prompt="SerialNo" viewName="XXCSMPSAVFRptVO" viewAttr="SerialNo" maximumLength="100"/>
+                  <oa:messageStyledText id="MpsRepComments" dataType="VARCHAR2" prompt="MpsRepComments" viewName="XXCSMPSAVFRptVO" viewAttr="MpsRepComments" maximumLength="250"/>
+                  <oa:messageStyledText id="DeviceJit" dataType="VARCHAR2" prompt="DeviceJit" viewName="XXCSMPSAVFRptVO" viewAttr="DeviceJit" maximumLength="5"/>
+                  <oa:messageStyledText id="ProgramType1" dataType="VARCHAR2" prompt="ProgramType" viewName="XXCSMPSAVFRptVO" viewAttr="ProgramType" maximumLength="150"/>
+                  <oa:messageStyledText id="ManagedStatus1" dataType="VARCHAR2" prompt="ManagedStatus" viewName="XXCSMPSAVFRptVO" viewAttr="ManagedStatus" maximumLength="50"/>
+                  <oa:messageStyledText id="SupportCoverage1" dataType="VARCHAR2" prompt="SupportCoverage" viewName="XXCSMPSAVFRptVO" viewAttr="SupportCoverage" maximumLength="150"/>
+                  <oa:messageStyledText id="SlaCoverage" dataType="VARCHAR2" prompt="SlaCoverage" viewName="XXCSMPSAVFRptVO" viewAttr="SlaCoverage" maximumLength="150"/>
+                  <oa:messageStyledText id="BsdRepComments" dataType="VARCHAR2" prompt="BsdRepComments" viewName="XXCSMPSAVFRptVO" viewAttr="BsdRepComments" maximumLength="250"/>
+                  <oa:messageStyledText id="PoNumber" dataType="VARCHAR2" prompt="PoNumber" viewName="XXCSMPSAVFRptVO" viewAttr="PoNumber" maximumLength="250"/>
+                  <oa:messageStyledText id="DeviceContact" dataType="VARCHAR2" prompt="DeviceContact" viewName="XXCSMPSAVFRptVO" viewAttr="DeviceContact" maximumLength="100"/>
+                  <oa:messageStyledText id="DevicePhone" dataType="VARCHAR2" prompt="DevicePhone" viewName="XXCSMPSAVFRptVO" viewAttr="DevicePhone" maximumLength="40"/>
+                  <oa:messageStyledText id="ActiveStatusCol" viewName="XXCSMPSAVFRptVO" viewAttr="ActiveStatus" prompt="Active Status"/>
+               </ui:contents>
+               <ui:tableActions>
+                  <oa:flowLayout id="region1">
+                     <ui:contents>
+                        <oa:exportButton id="Export" exportAllRows="true" text="Export to CSV" viewName="XXCSMPSAVFRptVO"/>
+                     </ui:contents>
+                  </oa:flowLayout>
+               </ui:tableActions>
+            </oa:table>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

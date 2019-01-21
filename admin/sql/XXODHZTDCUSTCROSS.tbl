@@ -1,0 +1,49 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | 		Name  :    XXODHZTDCUSTCROSS.tbl                              |
+-- |                      Table Script to create the following object         |
+-- |                      The file creates tables used for maintaining        |
+-- |                      TechDepot and Oracle Customer cross reference       |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     2014-02-03   Avinash Baddam       Initial version               |
+-- +==========================================================================+
+
+CREATE TABLE XXCRM.XXOD_HZ_TD_CUST_XREF_STG(
+ BATCH_ID            NUMBER(15) 	NOT NULL ENABLE
+,RECORD_ID           NUMBER(15) 	NOT NULL ENABLE
+,AOPS_CUSTNO         VARCHAR2(60)
+,AOPS_CUSTNAME       VARCHAR2(240)
+,TD_CUSTNO           VARCHAR2(60) 	
+,CRMFUSION_MFDELETION VARCHAR2(30)
+,CRMFUSION_SELECTSET  VARCHAR2(30)
+,START_DATE          DATE
+,END_DATE            DATE       	
+,INTERFACE_STATUS    VARCHAR2(10)
+,ERROR_DESC          VARCHAR2(100)
+,CREATED_BY          NUMBER(15) NOT NULL ENABLE
+,CREATION_DATE       DATE       NOT NULL ENABLE
+,LAST_UPDATED_BY     NUMBER(15) NOT NULL ENABLE
+,LAST_UPDATE_DATE    DATE 	NOT NULL ENABLE
+,LAST_UPDATE_LOGIN   NUMBER(15) NOT NULL ENABLE 
+,CONSTRAINT XXOD_HZ_TD_CUST_XREF_STG_PK PRIMARY KEY(RECORD_ID)
+);
+
+CREATE TABLE XXCRM.XXOD_HZ_TD_CUST_XREF(
+ CROSS_REF_ID        NUMBER(15) 	NOT NULL ENABLE
+,TD_CUSTNO           VARCHAR2(60) 	NOT NULL ENABLE
+,AOPS_CUSTNO         VARCHAR2(60)	
+,CUST_ACCOUNT_ID        NUMBER(15)         
+,ACCOUNT_NUMBER      VARCHAR2(30)       
+,END_DATE            DATE       	
+,CREATED_BY          NUMBER(15) NOT NULL ENABLE
+,CREATION_DATE       DATE       NOT NULL ENABLE
+,LAST_UPDATED_BY     NUMBER(15) NOT NULL ENABLE
+,LAST_UPDATE_DATE    DATE 	NOT NULL ENABLE
+,LAST_UPDATE_LOGIN   NUMBER(15) NOT NULL ENABLE 
+,CONSTRAINT XXOD_HZ_TD_CUST_XREF_PK PRIMARY KEY(CROSS_REF_ID)
+);

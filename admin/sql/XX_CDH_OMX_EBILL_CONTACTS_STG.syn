@@ -1,0 +1,40 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- +===================================================================+
+-- |                        Office Depot                               |
+-- |                                                                   |
+-- +===================================================================+
+-- | Synonym Name:  XX_CDH_OMX_EBILL_CONTACTS_STG.syn                  |
+-- | Rice Id     :  700                                                |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author             Remarks                  |
+-- |=======   ===========  =================  =========================|
+-- |1.0      17-Mar-2015  Havish Kasina       Initial draft version    |
+-- |2.0      20-MAR-2015  Havish Kasina       Review Changes           |
+-- +===================================================================+
+
+PROMPT
+PROMPT Synonym XX_CDH_OMX_EBILL_CONTACTS_STG
+PROMPT    
+
+CREATE OR REPLACE SYNONYM APPS.XX_CDH_OMX_EBILL_CONTACTS_STG FOR XXCRM.XX_CDH_OMX_EBILL_CONTACTS_STG; 
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

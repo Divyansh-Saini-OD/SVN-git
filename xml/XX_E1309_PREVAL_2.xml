@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XX_E1309_PREVAL_2" description="OD: Autonamed Account Creation Prevalidation-2" Version="1.0">
+<parameters>
+ <parameter name="P_CONVERSION_GRP_ID" dataType="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_ORG_COUNT">
+<![CDATA[
+SELECT COUNT(1)  AS Organization_Count
+     ,(CASE hp.attribute13 
+      WHEN 'PROSPECT' THEN 
+           'PROSPECT' 
+      WHEN 'CUSTOMER' THEN
+       'CUSTOMER' 
+      ELSE
+       'OTHERS' 
+      END )  AS Organization_Type
+FROM  APPS.hz_parties     HP, 
+      APPS.hz_party_sites HPS
+WHERE HP.party_id = hps.party_id
+AND   HP.party_type='ORGANIZATION'
+GROUP BY (CASE HP.attribute13 
+      WHEN 'PROSPECT' THEN 
+           'PROSPECT' 
+      WHEN 'CUSTOMER' THEN
+           'CUSTOMER' 
+      ELSE
+           'OTHERS' 
+      END )
+]]>
+</sqlStatement>
+<sqlStatement name="Q_COUNT_CONTRACT_NONCONTRACT_CUST">
+<![CDATA[
+ SELECT COUNT(1) AS Organization_Count, 
+        (CASE HCA.attribute18 
+         WHEN 'CONTRACT' THEN 
+              'CONTRACT' 
+         ELSE 'NON-CONTRACT' 
+         END )  AS Organization_Type 
+ FROM  APPS.hz_party_sites   HPS, 
+       APPS.hz_cust_accounts HCA 
+ WHERE HPS.party_id   = HCA.party_id 
+ AND   HCA.status     = 'A' 
+ AND   EXISTS 
+             (SELECT 1 
+              FROM  APPS.hz_parties   HP 
+              WHERE HP.attribute13='CUSTOMER' 
+              AND   HP.party_id = hps.party_id 
+             ) 
+ GROUP BY (CASE HCA.attribute18 
+           WHEN 'CONTRACT' THEN 
+                'CONTRACT' 
+           ELSE 'NON-CONTRACT' 
+           END)
+]]>
+</sqlStatement>
+<sqlStatement name="Q_COUNT_PROS_EXTENTIONS">
+<![CDATA[
+ SELECT 'PROSPECT' AS Organization_Type
+        ,COUNT(1) AS Extention_Data_Count
+ FROM   apps.hz_parties           hp, 
+        apps.hz_party_sites       hps,
+        apps.hz_party_sites_ext_b hpseb
+ WHERE  hp.party_id         = hps.party_id
+ AND    hp.party_type       ='ORGANIZATION'
+ AND    hpseb.party_site_id = hps.party_site_id
+ AND    hpseb.attr_group_id = 161
+ AND    hp.attribute13      ='PROSPECT'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_COUNT_CUST_EXTENTIONS">
+<![CDATA[
+SELECT 'CUSTOMER' AS Organization_Type
+       ,COUNT(1) AS Extention_Data_Count 
+FROM   apps.hz_parties             hp, 
+       apps.hz_party_sites         hps,
+       apps.hz_party_sites_ext_b   hpseb,
+       apps.hz_cust_accounts       hca, 
+       apps.hz_cust_acct_sites_all hcasa
+WHERE  hp.party_id         = hps.party_id
+AND    hp.party_type       ='ORGANIZATION'
+AND    hpseb.party_site_id = hps.party_site_id 
+AND    hpseb.attr_group_id = 161
+AND    hca.party_id        = hp.party_id 
+AND    hcasa.party_site_id = hps.party_site_id 
+AND    hca.attribute18     ='CONTRACT'
+AND    hp.attribute13      ='CUSTOMER'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_COUNT_PROS_GDW_ENRICH">
+<![CDATA[
+SELECT 'PROSPECT' AS Organization_Type
+       ,COUNT(1)  AS GDW_Enrichment_Count
+FROM   apps.hz_parties            hp, 
+       apps.hz_party_sites        hps,
+       apps.hz_party_sites_ext_b  hpseb,
+       apps.hz_imp_batch_summary  hibs
+WHERE  hp.party_id          = hps.party_id
+AND    hp.party_type        = 'ORGANIZATION'
+AND    hpseb.party_site_id  = hps.party_site_id 
+AND    hpseb.attr_group_id  = 161
+AND    hpseb.n_ext_attr20   = hibs.batch_id 
+AND    hibs.original_system = 'GDW'
+AND    hp.attribute13       = 'PROSPECT'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_COUNT_CONT_CUST_GDW_ENRICH">
+<![CDATA[
+SELECT 'CONTARCT CUSTOMER' AS Organization_Type
+       ,COUNT(1)           AS GDW_Enrichment_Count
+FROM    apps.hz_parties             hp, 
+        apps.hz_party_sites         hps,
+        apps.hz_party_sites_ext_b   hpseb,
+        apps.hz_imp_batch_summary   hibs,
+        apps.hz_cust_accounts       hca, 
+        apps.hz_cust_acct_sites_all hcasa
+WHERE   hp.party_id            = hps.party_id
+AND     hp.party_type          ='ORGANIZATION'
+AND     hpseb.party_site_id    = hps.party_site_id 
+AND     hpseb.attr_group_id    = 161
+AND     hpseb.n_ext_attr20     = hibs.batch_id 
+AND     hibs.original_system   = 'GDW'
+AND     hca.party_id           = hp.party_id 
+AND     hcasa.party_site_id    = hps.party_site_id 
+AND     hca.attribute18        ='CONTRACT'
+AND     hp.attribute13         ='CUSTOMER'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_COUNT_GDW_PROS_NULL_WCW">
+<![CDATA[
+SELECT 'GDW ENRICHED PROSPECT' AS Organization_Type
+       ,COUNT(1)               AS Count_WCW
+FROM    apps.hz_parties              hp, 
+        apps.hz_party_sites          hps,
+        apps.hz_party_sites_ext_b    hpseb,
+        apps.hz_imp_batch_summary    hibs
+WHERE   hp.party_id            = hps.party_id
+AND     hp.party_type          ='ORGANIZATION'
+AND     hpseb.party_site_id    = hps.party_site_id 
+AND     hpseb.attr_group_id    = 161
+AND     hpseb.n_ext_attr20     = hibs.batch_id 
+AND     hibs.original_system   = 'GDW'
+AND     hp.attribute13         ='PROSPECT'
+AND     hpseb.n_ext_attr8 IS NULL
+]]>
+</sqlStatement>
+<sqlStatement name="Q_COUNT_GDW_CUST_NULL_WCW">
+<![CDATA[
+SELECT 'GDW ENRICHED CONTRACT CUSTOMER' AS Organization_Type
+       ,COUNT(1)                        AS Count_WCW
+FROM    apps.hz_parties             hp, 
+        apps.hz_party_sites         hps,
+        apps.hz_party_sites_ext_b   hpseb,
+        apps.hz_imp_batch_summary   hibs,
+        apps.hz_cust_accounts       hca, 
+        apps.hz_cust_acct_sites_all hcasa
+WHERE   hp.party_id           = hps.party_id
+AND     hp.party_type         ='ORGANIZATION'
+AND     hpseb.party_site_id   = hps.party_site_id 
+AND     hpseb.attr_group_id   = 161
+AND     hpseb.n_ext_attr20    = hibs.batch_id 
+AND     hibs.original_system  = 'GDW'
+AND     hpseb.n_ext_attr8 IS NULL
+AND     hca.party_id          = hp.party_id 
+AND     hcasa.party_site_id   = hps.party_site_id 
+AND     hca.attribute18       ='CONTRACT'
+AND     hp.attribute13        ='CUSTOMER'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_COUNT_PROS_NULL_WCW_SIC">
+<![CDATA[
+SELECT 'GDW ENRICHED PROSPECT' AS Organization_Type
+       ,COUNT(1)               AS Count_WCW_And_SIC
+from   apps.hz_parties hp, 
+apps.hz_party_sites hps,
+apps.hz_party_sites_ext_b hpseb,
+apps.hz_imp_batch_summary hibs
+where hp.party_id = hps.party_id
+and hp.party_type='ORGANIZATION'
+and hp.attribute13 = 'PROSPECT'
+and hpseb.party_site_id = hps.party_site_id 
+and hpseb.attr_group_id = 161
+and hpseb.n_ext_attr20 = hibs.batch_id 
+and hibs.original_system= 'GDW'
+and hpseb.n_ext_attr8 is null
+and hpseb.c_ext_attr10 is null
+and hp.attribute13='PROSPECT'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_COUNT_CUST_NULL_WCW_SIC">
+<![CDATA[
+SELECT 'GDW ENRICHED CONTRACT CUSTOMER' AS Organization_Type
+       ,COUNT(1)               AS Count_WCW_And_SIC
+from apps.hz_parties hp, 
+apps.hz_party_sites hps,
+apps.hz_party_sites_ext_b hpseb,
+apps.hz_imp_batch_summary hibs,
+apps.hz_cust_accounts hca, 
+apps.hz_cust_acct_sites_all hcasa
+where hp.party_id = hps.party_id
+and hp.party_type='ORGANIZATION'
+and hpseb.party_site_id = hps.party_site_id 
+and hpseb.attr_group_id = 161
+and hpseb.n_ext_attr20 = hibs.batch_id 
+and hibs.original_system= 'GDW'
+and hpseb.n_ext_attr8 is null
+and hpseb.c_ext_attr10 is null
+and hca.party_id = hp.party_id 
+and hcasa.party_site_id = hps.party_site_id 
+and hca.attribute18='CONTRACT'
+and hp.attribute13='CUSTOMER'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_COUNT_RSD_PROS">
+<![CDATA[
+SELECT 'RSD PROSPECTS' AS Organization_Type
+       ,COUNT(hp.party_id)   AS Count_RSD_Prospect
+from hz_parties hp       
+where hp.orig_system_reference IN
+(SELECT /*+ ordered full(XCSS) parallel(XCSS 4) */
+            lpad(xcss.internid,10,'0') || '-00001-S0' AS orig_system_reference
+      FROM XXCNV.xx_cdh_solar_siteimage xcss ,
+           XXCNV.xx_cdh_solar_state_country X1 ,
+           XXCNV.xx_cdh_solar_state_country X2 ,
+           FND_LOOKUP_VALUES FLV
+     WHERE UPPER(xcss.SITE_TYPE) IN ('PROSPECT','TARGET')
+       AND xcss.STATUS = 'ACTIVE'
+       AND EXISTS (SELECT /*+ index(XCSCG) */ 1
+                     FROM xxcnv.xx_cdh_solar_conversion_group XCSCG
+                    WHERE XCSCG.conversion_group_id = :P_CONVERSION_GRP_ID
+                      AND XCSCG.conversion_rep_id = XCSS.conversion_rep_id
+                      AND (SYSDATE BETWEEN NVL(XCSCG.start_date_active,SYSDATE)
+                                       AND NVL(XCSCG.end_date_active,SYSDATE + 1)))
+       AND XCSS.STATE       = X1.STATE (+)
+       AND XCSS.ALT_STATE   = X2.STATE (+)
+       AND FLV.LOOKUP_TYPE  = 'XX_CRM_REV_BAND_TYPES'
+       AND FLV.ENABLED_FLAG = 'Y'
+       AND FLV.LANGUAGE     = 'US'
+       AND FLV.LOOKUP_CODE  = UPPER(XCSS.REV_BAND)
+       AND SYSDATE BETWEEN NVL( FLV.START_DATE_ACTIVE,SYSDATE - 1) AND NVL(FLV.END_DATE_ACTIVE,SYSDATE + 1))
+and hp.attribute13 = 'PROSPECT'
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_ORG_COUNT" source="Q_ORG_COUNT">
+<element name="ORGANIZATION_COUNT" value="ORGANIZATION_COUNT" />
+<element name="ORGANIZATION_TYPE"  value="ORGANIZATION_TYPE" />
+</group>
+<group name="G_COUNT_CONTRACT_NONCONTRACT_CUST" source="Q_COUNT_CONTRACT_NONCONTRACT_CUST">
+<element name="ORGANIZATION_COUNT" value="ORGANIZATION_COUNT" />
+<element name="ORGANIZATION_TYPE"  value="ORGANIZATION_TYPE" />
+</group>
+<group name="G_COUNT_PROS_EXTENTIONS" source="Q_COUNT_PROS_EXTENTIONS">
+<element name="ORGANIZATION_TYPE" value="ORGANIZATION_TYPE" />
+<element name="EXTENTION_DATA_COUNT" value="EXTENTION_DATA_COUNT" />
+</group>
+<group name="G_COUNT_CUST_EXTENTIONS" source="Q_COUNT_CUST_EXTENTIONS">
+<element name="ORGANIZATION_TYPE" value="ORGANIZATION_TYPE" />
+<element name="EXTENTION_DATA_COUNT" value="EXTENTION_DATA_COUNT" />
+</group>
+<group name="G_COUNT_PROS_GDW_ENRICH" source="Q_COUNT_PROS_GDW_ENRICH">
+<element name="ORGANIZATION_TYPE" value="ORGANIZATION_TYPE" />
+<element name="GDW_ENRICHMENT_COUNT" value="GDW_ENRICHMENT_COUNT" />
+</group>
+<group name="G_COUNT_CONT_CUST_GDW_ENRICH" source="Q_COUNT_CONT_CUST_GDW_ENRICH">
+<element name="ORGANIZATION_TYPE" value="ORGANIZATION_TYPE" />
+<element name="GDW_ENRICHMENT_COUNT" value="GDW_ENRICHMENT_COUNT" />
+</group>
+<group name="G_COUNT_GDW_PROS_NULL_WCW" source="Q_COUNT_GDW_PROS_NULL_WCW">
+<element name="ORGANIZATION_TYPE" value="ORGANIZATION_TYPE" />
+<element name="COUNT_WCW" value="COUNT_WCW" />
+</group>
+<group name="G_COUNT_GDW_CUST_NULL_WCW" source="Q_COUNT_GDW_CUST_NULL_WCW">
+<element name="ORGANIZATION_TYPE" value="ORGANIZATION_TYPE" />
+<element name="COUNT_WCW" value="COUNT_WCW" />
+</group>
+<group name="G_COUNT_PROS_NULL_WCW_SIC" source="Q_COUNT_PROS_NULL_WCW_SIC">
+<element name="ORGANIZATION_TYPE" value="ORGANIZATION_TYPE" />
+<element name="COUNT_WCW_AND_SIC" value="COUNT_WCW_AND_SIC" />
+</group>
+<group name="G_COUNT_CUST_NULL_WCW_SIC" source="Q_COUNT_CUST_NULL_WCW_SIC">
+<element name="ORGANIZATION_TYPE" value="ORGANIZATION_TYPE" />
+<element name="COUNT_WCW_AND_SIC" value="COUNT_WCW_AND_SIC" />
+</group>
+<group name="G_COUNT_RSD_PROS" source="Q_COUNT_RSD_PROS">
+<element name="ORGANIZATION_TYPE" value="ORGANIZATION_TYPE" />
+<element name="COUNT_RSD_PROSPECT" value="COUNT_RSD_PROSPECT" />
+</group>
+</dataStructure>
+</dataTemplate>
+

@@ -1,0 +1,41 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : XXBI_REP_MGR_RESP_MAPPINGS.syn                      |
+-- | Description : Synonym for XXBI_REP_MGR_RESP_MAPPINGS              |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1a 19-Feb-2010  Sarah Justina    Initial draft version       |
+-- +===================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+SET TERM ON
+
+PROMPT
+PROMPT Creating SYNONYM XXBI_REP_MGR_RESP_MAPPINGS
+PROMPT
+
+Grant all on XXCRM.XXBI_REP_MGR_RESP_MAPPINGS  to APPS;
+INSERT INTO "XXCRM"."XXBI_REP_MGR_RESP_MAPPINGS" (RESP_KEY, REP_MGR) VALUES ('XX_US_ASN_SALES_MGR', 'M');
+INSERT INTO "XXCRM"."XXBI_REP_MGR_RESP_MAPPINGS" (RESP_KEY, REP_MGR) VALUES ('XX_US_ASN_SALES_REP', 'R');
+INSERT INTO "XXCRM"."XXBI_REP_MGR_RESP_MAPPINGS" (RESP_KEY, REP_MGR) VALUES ('XX_CA_ASN_SALES_MGR', 'M');
+INSERT INTO "XXCRM"."XXBI_REP_MGR_RESP_MAPPINGS" (RESP_KEY, REP_MGR) VALUES ('XX_CA_ASN_SALES_REP', 'R');
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

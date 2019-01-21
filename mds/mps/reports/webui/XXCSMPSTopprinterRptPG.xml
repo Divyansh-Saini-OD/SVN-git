@@ -1,0 +1,113 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_1312" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="TopprinterPgLtRN" amDefName="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSTopprinterAM" windowTitle="MARS Top Printer Report" title="MARS Top Printer Report" controllerClass="od.oracle.apps.xxcrm.mps.reports.webui.XXCSMPSTopprinterCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:messageComponentLayout id="SearchRN">
+               <ui:contents>
+                  <oa:messageLovInput id="txtPName" prompt="Customer Name">
+                     <lovContents>
+                        <oa:listOfValues id="region1">
+                           <ui:contents>
+                              <oa:table name="region1" id="MPSPartyName">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="PartyName" viewName="XXCSMPSPartyNameVO1" prompt="PartyName" viewAttr="PartyName" queryable="true"/>
+                                    <oa:messageStyledText id="AopsCustNumber" viewName="XXCSMPSPartyNameVO1" prompt="AopsCustNumber" viewAttr="AopsCustNumber"/>
+                                 </ui:contents>
+                              </oa:table>
+                           </ui:contents>
+                        </oa:listOfValues>
+                     </lovContents>
+                     <lovMappings>
+                        <lovMap id="lovMap1" lovItem="PartyName" resultTo="txtPName" criteriaFrom="txtPName"/>
+                     </lovMappings>
+                  </oa:messageLovInput>
+                  <oa:messageChoice id="ProgramTypeParam" pickListViewDef="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSProgramTypeVO" pickListViewName="XXCSMPSProgramTypeVO1" pickListDispAttr="ProgramType" pickListValAttr="ProgramType" prompt="Program Type"/>
+                  <oa:messageTextInput id="ManagedStatusInput" prompt="Managed Status"/>
+                  <oa:messageTextInput id="ActiveStatusInput" prompt="Active Status"/>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:rowLayout id="SearchBtnRN" hAlign="end">
+               <ui:contents>
+                  <oa:submitButton id="SubmitBtn" text="Search" prompt="Search"/>
+                  <oa:spacer id="Spacer"/>
+                  <oa:submitButton id="ClearBtn" text="Clear" prompt="Clear"/>
+                  <oa:spacer id="Spacer1"/>
+                  <oa:separator id="separator"/>
+               </ui:contents>
+            </oa:rowLayout>
+            <oa:advancedTable id="ResultsRN" viewName="XXCSMPSTopprinterRptVO1">
+               <ui:contents>
+                  <oa:column id="ModelCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableModel" prompt="Model" sortState="yes" sortByViewAttr="Model"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="Model" viewAttr="Model"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ProgramTypeCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableProgramType" prompt="ProgramType" sortByViewAttr="ProgramType" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ProgramType" viewAttr="ProgramType"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="SumNvlTotalCount0Col">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableSumNvlTotalCount" sortByViewAttr="Totalcount" prompt="Total Count" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="SumNvlTotalCount0" viewAttr="Totalcount"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="SumNvlTotalBlackCount0Col">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableSumNvlTotalBlackCount0" sortByViewAttr="Totalblackcount" prompt="Total Black Count" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="SumNvlTotalBlackCount0" viewAttr="Totalblackcount"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="SumNvlTotalColorCount0Col">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableSumNvlTotalColorCount0" sortByViewAttr="Totalcolorcount" prompt="Total Color Count" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="SumNvlTotalColorCount0" viewAttr="Totalcolorcount"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ManagedStatusCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ManagedStatusHdr" prompt="Managed Status"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ManagedStatus" viewAttr="ManagedStatus"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ActiveStatusCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ActiveStatusHdr" prompt="Active Status"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ActiveStatus" viewAttr="ActiveStatus"/>
+                     </ui:contents>
+                  </oa:column>
+               </ui:contents>
+               <ui:tableActions>
+                  <oa:rowLayout id="exportRN">
+                     <ui:contents>
+                        <oa:exportButton id="ExportButton" exportAllRows="true" viewName="XXCSMPSTopprinterRptVO1" text="Export to CSV"/>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:tableActions>
+            </oa:advancedTable>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

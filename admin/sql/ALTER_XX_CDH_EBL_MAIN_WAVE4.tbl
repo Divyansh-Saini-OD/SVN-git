@@ -1,0 +1,40 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                                     Office Depot                                           |
+-- +============================================================================================+
+-- | Name        : ALTER_XX_CDH_EBL_MAIN.tbl                                                    |
+-- | Description : eTXT Summary Bill Changes Defect#27146                                       |
+-- | Rice Id     : I2186                                                                        |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        21-MAY-2018     Thilak CG             Initial version                             |
+-- +============================================================================================+
+
+PROMPT
+PROMPT Altering the Table XX_CDH_EBL_MAIN and TXT tables.....
+PROMPT
+
+ALTER TABLE XXCRM.XX_CDH_EBL_MAIN 
+ADD(PARENT_DOC_ID NUMBER);
+
+ALTER TABLE XXCRM.XX_CDH_EBL_TEMPL_HDR_TXT
+ADD (DB_CR_SEPERATOR varchar2(25));
+
+ALTER TABLE XXCRM.XX_CDH_EBL_TEMPL_DTL_TXT
+ADD (DB_CR_SEPERATOR varchar2(25));
+
+ALTER TABLE XXCRM.XX_CDH_EBL_TEMPL_TRL_TXT
+ADD (DB_CR_SEPERATOR varchar2(25));
+
+PROMPT
+PROMPT Altering the Table XX_CDH_EBL_MAIN and TXT tables are done.
+PROMPT
+
+SHOW ERRORS;
+EXIT;

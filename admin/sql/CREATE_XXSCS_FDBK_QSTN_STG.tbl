@@ -1,0 +1,114 @@
+-- $Id$
+-- $Rev$
+-- $HeadURL$
+-- $Author$
+-- $Date$
+
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XXSCS_FDBK_QSTN_STG Table                                                  |--                                                           --|                                                                                             |--
+--| Program Name   : CREATE_XXSCS_FDBK_QSTN_STG.tbl                                             |--
+--|                                                                                             |--
+--| Purpose        : Staging Table for feedback questions.                                      |--
+--|                                                                                             |--
+--| Change History :                                                                            |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              25-Mar-2009       Kalyan                  Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Table XXCRM.XXSCS_FDBK_QSTN_STG......
+PROMPT
+
+ CREATE TABLE XXCRM.XXSCS_FDBK_QSTN_STG
+   (
+	FDBK_QSTN_ID 		NUMBER, 
+	FDK_CODE 		VARCHAR2(30), 
+	FDK_CODE_DESC 		VARCHAR2(1000), 
+	FDK_GDW_CODE 		VARCHAR2(30), 
+	FDK_GDW_CODE_DESC 	VARCHAR2(1000), 
+	EFFECTIVE_START_DT 	DATE, 
+	EFFECTIVE_END_DT 	DATE, 
+	FDK_TYPE 		VARCHAR2(100), 
+	SORT_SEQ 		NUMBER, 
+	LANGUAGE 		VARCHAR2(30), 
+	SOURCE_LANG 		VARCHAR2(30), 
+	CREATED_BY 		NUMBER, 
+	CREATION_DATE 		DATE, 
+	LAST_UPDATED_BY 	NUMBER, 
+	LAST_UPDATE_DATE 	DATE, 
+	LAST_UPDATE_LOGIN 	NUMBER, 
+	REQUEST_ID 		NUMBER, 
+	PROGRAM_APPLICATION_ID NUMBER, 
+	PROGRAM_ID 		NUMBER, 
+	PROGRAM_UPDATE_DATE 	DATE, 
+	ATTRIBUTE_CATEGORY 	VARCHAR2(30), 
+	ATTRIBUTE1 		VARCHAR2(2500), 
+	ATTRIBUTE2 		VARCHAR2(2500), 
+	ATTRIBUTE3 		VARCHAR2(2500), 
+	ATTRIBUTE4 		VARCHAR2(2500), 
+	ATTRIBUTE5 		VARCHAR2(2500), 
+	ATTRIBUTE6 		VARCHAR2(2500), 
+	ATTRIBUTE7 		VARCHAR2(2500), 
+	ATTRIBUTE8 		VARCHAR2(2500), 
+	ATTRIBUTE9 		VARCHAR2(2500), 
+	ATTRIBUTE10 		VARCHAR2(2500), 
+	ATTRIBUTE11 		VARCHAR2(2500), 
+	ATTRIBUTE12 		VARCHAR2(2500), 
+	ATTRIBUTE13 		VARCHAR2(2500), 
+	ATTRIBUTE14	 	VARCHAR2(2500), 
+	ATTRIBUTE15 		VARCHAR2(2500), 
+	ATTRIBUTE16 		VARCHAR2(2500), 
+	ATTRIBUTE17 		VARCHAR2(2500), 
+	ATTRIBUTE18 		VARCHAR2(2500), 
+	ATTRIBUTE19 		VARCHAR2(2500), 
+	ATTRIBUTE20 		VARCHAR2(2500), 
+	FRM_CODE 		VARCHAR2(30), 
+	GDW_PICK_FLAG 		VARCHAR2(1), 
+	ORA_SEQ 		NUMBER, 
+	FDK_PICK_VALUE 		VARCHAR2(30), 
+	FDK_HDR_FLAG 		VARCHAR2(1), 
+	ORA_PICK_FLAG 		VARCHAR2(1), 
+	ACTION_CODE 		VARCHAR2(50), 
+	REQUIRED 		VARCHAR2(1), 
+	OPPORTUNITY 		VARCHAR2(1), 
+	LEAD 			VARCHAR2(1), 
+	ACTION_STATUS 		VARCHAR2(50), 
+	ACTION_TYPE 		VARCHAR2(50), 
+	MIN_RANGE 		NUMBER, 
+	MAX_RANGE 		NUMBER, 
+	NUMBER_ONLY 		VARCHAR2(1), 
+	ENTITY_STATUS 		VARCHAR2(30), 
+	ENTITY_REASON 		VARCHAR2(100), 
+	MULTI_RESULT 		VARCHAR2(1)
+   );
+ 
+
+
+GRANT ALL ON XXCRM.XXSCS_FDBK_QSTN_STG TO APPS;
+
+GRANT ALL ON XXCRM.XXSCS_FDBK_QSTN_STG TO XXDATA_STAGE;
+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

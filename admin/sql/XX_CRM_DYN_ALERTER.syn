@@ -1,0 +1,38 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : XX_CRM_DYN_ALERTER.syn                              |
+-- | Description : Dynamic Report Generation Program                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1a  21-JUL-09    Sarah Justina    Initial Version            |
+-- +===================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+SET TERM ON
+
+PROMPT
+PROMPT Creating SYNONYM XX_CRM_DYN_ALERTER
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_CRM_DYN_ALERTER FOR XXCRM.XX_CRM_DYN_ALERTER;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

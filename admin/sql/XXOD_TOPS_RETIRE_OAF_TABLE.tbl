@@ -1,0 +1,33 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name :XXFIN.XXOD_TOPS_RETIRE_TABLE                                       |
+-- | Description : Create the staging table for Tops Retirement Project       |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     11-May-2016  Shubhashree Rajanna  Initial version               |
+-- | V1.1     16-May-2016  Shubhashree Rajanna  Added more columns            |
+-- |                                                                          |
+-- +==========================================================================+
+
+   SET SHOW         OFF
+   SET VERIFY       OFF
+   SET ECHO         OFF
+   SET TAB          OFF
+   SET FEEDBACK     ON
+   
+  CREATE TABLE XXCRM.XXOD_TOPS_RETIRE_OAF_TABLE
+                         (PAGE_NAME VARCHAR2(200),
+                          PAGE_TYPE VARCHAR2(2), --P for personalization, C for Custom Page
+                          DROP_FLAG  VARCHAR2(2),
+                          REQUEST_ID NUMBER,
+                          STATUS VARCHAR2(10),
+                          COMMENTS   VARCHAR2(2000));
+                            
+                         
+ SHOW ERRORS;    

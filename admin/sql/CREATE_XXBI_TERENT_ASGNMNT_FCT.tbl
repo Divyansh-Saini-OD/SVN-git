@@ -1,0 +1,74 @@
+-- $Id: CREATE_XXBI_TERENT_ASGNMNT_FCT.tbl 69444 2009-04-09 14:44:38Z Indra Varada $
+-- $Rev: 69444 $
+-- $HeadURL: https://svn.na.odcorp.net/od/crm/trunk/xxcrm/admin/sql/CREATE_XXBI_TERENT_ASGNMNT_FCT.tbl $
+-- $Author: Kishore Jena $
+-- $Date: 2010-04-15 10:44:38 -0400 (Thu, 09 Apr 2009) $
+
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XXBI_TERENT_ASGNMNT_FCT Table                                              |--                                                                                          |--
+--| Program Name   : CREATE_XXBI_TERENT_ASGNMNT_FCT.tbl                                         |--
+--|                                                                                             |--
+--| Purpose        : Table for Entity Assignment on demand as needed                            |--
+--|                                                                                             |--
+--| Change History :                                                                            |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              05-Apr-2010       Kishore Jena            Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Table XXCRM.XXBI_TERENT_ASGNMNT_FCT......
+PROMPT
+
+
+CREATE TABLE XXCRM.XXBI_TERENT_ASGNMNT_FCT(
+NAMED_ACCT_TERR_ID                                 NUMBER(15),
+NAMED_ACCT_TERR_NAME                               VARCHAR2(240),
+NAMED_ACCT_TERR_DESC                               VARCHAR2(4000),
+SOURCE_TERRITORY_ID                                VARCHAR2(150),
+TERR_DEFN_START_DATE                               DATE,
+TERR_DEFN_END_DATE                                 DATE,
+NAMED_ACCT_TERR_RSC_ID                             NUMBER(15),
+RESOURCE_ID                                        NUMBER(15),
+ROLE_ID                                            NUMBER(15),
+GROUP_ID                                           NUMBER(15),
+TERR_RSC_EXTRACTED                                 VARCHAR2(150),
+TERR_RSC_START_DATE                                DATE,
+TERR_RSC_END_DATE                                  DATE,
+ACCESS_ID                                          NUMBER(15),
+ENTITY_TYPE                                        VARCHAR2(50),
+ENTITY_ID                                          NUMBER(15),
+TERR_ENT_START_DATE                                DATE,
+TERR_ENT_END_DATE                                  DATE,
+TERR_ENT_ASGNMNT_SOURCE                            VARCHAR2(150),
+TERR_ENT_EXTRACTED                                 VARCHAR2(150)
+);
+
+GRANT ALL ON XXCRM.XXBI_TERENT_ASGNMNT_FCT TO APPS;
+
+GRANT ALL ON XXCRM.XXBI_TERENT_ASGNMNT_FCT TO XXDATA_STAGE;
+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+--EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

@@ -1,0 +1,43 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                  WIPRO Technologies                               |
+-- +===================================================================+
+-- | Name        : ALTER_XXTPS_TEMPLATE_FILE_UPLOADS.TBL               |
+-- | CR          : CR769                                               |
+-- | Description : Custom Table Alter Script for Bulk Import Tool      |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1a 29-Jun-2010  Mangalasundari K Initial draft version       |
+-- +===================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Altering the Table XXTPS_TEMPLATE_FILE_UPLOADS .....
+PROMPT
+
+
+ALTER TABLE xxtps.xxtps_template_file_uploads ADD ( out_additional_col    VARCHAR2(4000)
+						   ,error_additional_col VARCHAR2(4000)
+						   ,template_csv         CLOB
+						   ,help_file            CLOB
+						  );
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

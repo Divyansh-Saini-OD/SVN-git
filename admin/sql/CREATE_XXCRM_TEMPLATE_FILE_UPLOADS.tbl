@@ -1,0 +1,71 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :CREATE_XXCRM_TEMPLATE_FILE_UPLOADS.tbl              |
+-- | Description      :File Uploads Table                                  |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author               Remarks                    |
+-- |=======   ===========  =================  =============================|
+-- |DRAFT 1A  04-Oct-2016  Shubhashree Rajanna  Initial draft version      |
+-- +=======================================================================+
+
+-- ---------------------------------------------------------------------
+--      Create Custom Table XXCRM_TEMPLATE_FILE_UPLOADS    --
+-- ---------------------------------------------------------------------
+CREATE TABLE XXCRM.XXCRM_TEMPLATE_FILE_UPLOADS
+(
+	TEMPLATE_FILE_UPLOAD_ID  		  NUMBER         NOT NULL ,
+	PROGRAM                  		  VARCHAR2(30)   ,
+	CREATED_BY               		  NUMBER         NOT NULL ,
+	CREATION_DATE            		  DATE           NOT NULL ,
+	LAST_UPDATED_BY          		  NUMBER         NOT NULL ,
+	LAST_UPDATE_DATE         		  DATE           NOT NULL ,
+	TEMPLATE_CODE                     VARCHAR2(30)   ,
+	TEMPLATE_NAME                     VARCHAR2(100)  ,
+	TEMPLATE_DESC                     VARCHAR2(200)  ,
+	ATTRIBUTES                        VARCHAR2(4000) ,
+	STATEMENT                         VARCHAR2(4000) ,
+	OUT_ADDITIONAL_COL                VARCHAR2(4000) ,
+	ERROR_ADDITIONAL_COL              VARCHAR2(4000) ,
+	TEMPLATE_CSV                      CLOB           ,
+	HELP_FILE                         CLOB           ,
+	PRE_PROCESSING_FUNCTION           VARCHAR2(4000) ,
+	POST_PROCESSING_FUNCTION          VARCHAR2(4000) ,
+	ATTRIBUTE1                        VARCHAR2(150)  ,
+	ATTRIBUTE2                        VARCHAR2(150)  ,
+	ATTRIBUTE3                        VARCHAR2(150)  ,
+	ATTRIBUTE4                        VARCHAR2(150)  ,
+	ATTRIBUTE5                        VARCHAR2(150)  ,
+	ATTRIBUTE6                        VARCHAR2(150)  ,
+	ATTRIBUTE7                        VARCHAR2(150)  ,
+	ATTRIBUTE8                        VARCHAR2(150)  ,
+	ATTRIBUTE9                        VARCHAR2(150)  ,
+	ATTRIBUTE10                       VARCHAR2(150)  ,
+	ATTRIBUTE11                       VARCHAR2(150)  ,
+	ATTRIBUTE12                       VARCHAR2(150)  ,
+	ATTRIBUTE13                       VARCHAR2(150)  ,
+	ATTRIBUTE14                       VARCHAR2(150)  ,
+	ATTRIBUTE15                       VARCHAR2(150)  , 
+	ATTRIBUTE16                       VARCHAR2(150)  ,
+	ATTRIBUTE17                       VARCHAR2(150)  ,
+	ATTRIBUTE18                       VARCHAR2(150)  ,
+	ATTRIBUTE19                       VARCHAR2(150)  ,
+	ATTRIBUTE20                       VARCHAR2(150)
+  );
+------------------------------------------------------
+-- Adding Grants to APPS.                           --
+------------------------------------------------------
+GRANT ALL ON XXCRM.XXCRM_TEMPLATE_FILE_UPLOADS TO APPS;
+
+SHOW ERRORS;

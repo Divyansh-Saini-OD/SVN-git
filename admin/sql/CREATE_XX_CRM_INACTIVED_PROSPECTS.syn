@@ -1,0 +1,23 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : CREATE_XX_CRM_INACTIVED_PROSPECTS_S.syn            |
+-- | Description      : Synonyms for XX_CRM_INACTIVED_PROSPECTS          |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |1.0      19-May-2016  Shubhashree R   Initial Version                |
+-- +=======================================================================+
+------------------------------------------------------
+-- Dropping the existing synonym and creating new.  --
+------------------------------------------------------
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_INACTIVED_PROSPECTS FOR XXCRM.XX_CRM_INACTIVED_PROSPECTS;
+
+SHOW ERRORS;

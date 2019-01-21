@@ -1,0 +1,42 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XX_PURGE_TABLES.tbl                                |
+-- | Description      : Archive/Purge metadata table                       |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |DRAFT 1A  26-Nov-2007  Binoy              Initial draft version        |
+-- +=======================================================================+
+
+-- ---------------------------------------------------------------------
+--      Create Custom Table XX_PURGE_TABLES    --
+-- ---------------------------------------------------------------------
+CREATE TABLE XXCRM.XX_PURGE_TABLES
+    (
+     MODULE_NAME    VARCHAR2(30) ,
+     PURGE_GROUP    VARCHAR2(30) ,
+     SOURCE_TABLE   VARCHAR2(30) ,
+     SOURCE_SCHEMA  VARCHAR2(30) ,
+     TARGET_TABLE   VARCHAR2(30) ,
+     INSERT_ORDER   NUMBER(3)    ,
+     WHERE_CLAUSE   VARCHAR2(2000),
+     CREATED_BY     NUMBER(15),
+     CREATED_DATE   DATE
+    );
+------------------------------------------------------
+-- Adding Grants to APPS                            --
+------------------------------------------------------
+GRANT ALL ON XXCRM.XX_PURGE_TABLES TO APPS;
+
+SHOW ERRORS;

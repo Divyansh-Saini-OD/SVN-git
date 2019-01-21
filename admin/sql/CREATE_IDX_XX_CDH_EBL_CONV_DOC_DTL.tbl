@@ -1,0 +1,35 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===========================================================================+
+-- |                  Office Depot - eBilling Project                          |
+-- |                         WIPRO/Office Depot                                |
+-- +===========================================================================+
+-- | Name        : CREATE_IDX_XX_CDH_EBL_CONV_DOC_DTL.tbl                      |
+-- | Description : To create index on new_doc_status and creation date columns |
+-- |               in XX_CDH_EBL_CONV_DOC_DTL table.                           |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author          Remarks            	               |
+-- |======= =========== ================ ======================================|
+-- |DRAFT 1 18-FEB-2011 Devi Viswanathan Initial draft version                 |
+-- |                                                                           |
+-- |                                                                           |
+-- |                                                                           |
+-- +===========================================================================+
+
+
+
+--  ERROR: Index name length exceeds maximum allowed length(30) 
+CREATE INDEX XXCRM.XX_CDH_EBL_CONV_DOC_DTL_S_IDX ON XXCRM.XX_CDH_EBL_CONV_DOC_DTL 
+    ( 
+     new_doc_status, creation_date ASC 
+    ) 
+;
+
+
+
+SHOW ERRORS;

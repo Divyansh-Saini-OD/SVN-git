@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<JavaBean xmlns="http://xmlns.oracle.com/adfm/beanmodel" version="11.1.1.56.60"
+          id="GetSumForTopOrdersOutput"
+          Package="model.CustOrderInfo.process_Result"
+          BeanClass="model.CustOrderInfo.process_Result.GetSumForTopOrdersOutput"
+          isJavaBased="false">
+  <Attribute Name="ITEM_GROUP_NM" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="NET_SALES_POTENTIAL_52WEEK_AMT" IsUpdateable="0"
+             IsNotNull="true" Type="java.math.BigDecimal" PrecisionRule="false"
+             Precision="0" Scale="0">
+    <Properties>
+      <CustomProperties>
+      </CustomProperties>
+    </Properties>
+  </Attribute>
+</JavaBean>

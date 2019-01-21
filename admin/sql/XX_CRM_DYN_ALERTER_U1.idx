@@ -1,0 +1,36 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : XX_CRM_DYN_ALERTER_U1.idx                           |
+-- | Description : XX_CRM_DYN_ALERTER Table - Unique Index             |
+-- |               Creation Script.                                    |
+-- |               Columns :                                           |
+-- |                         REQUEST_ID (Primary Key)                  |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1a  21-JUL-09    Sarah Justina    Initial Version            |
+-- +===================================================================+
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+PROMPT
+PROMPT Creating Unique INDEX XX_CRM_DYN_ALERTER_U1
+PROMPT
+
+CREATE UNIQUE INDEX XX_CRM_DYN_ALERTER_U1 ON XX_CRM_DYN_ALERTER( REQUEST_ID );
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

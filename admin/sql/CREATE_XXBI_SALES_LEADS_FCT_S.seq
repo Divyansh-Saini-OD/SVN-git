@@ -1,0 +1,44 @@
+-- $Id$
+-- $Rev$
+-- $HeadURL$
+-- $Author$
+-- $Date$
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :XX_CRM_TPS_Record_Id_S.seq	                   |
+-- | Description      :CRM Tops Request table seq	                   |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  12-Mar-2009 Indra Varada  Initial Draft Version               |
+-- +=======================================================================+
+
+-- -----------------------------------------------
+-- Create Custom Sequence xxbi_sales_leads_fct_S   --
+-- -----------------------------------------------
+
+CREATE SEQUENCE xxcrm.xxbi_sales_leads_fct_S
+START WITH 1000 
+NOMAXVALUE
+INCREMENT BY 1
+CACHE 20;
+
+------------------------------------------------------
+-- Grants to APPS                                   --
+------------------------------------------------------
+
+GRANT ALL ON xxcrm.xxbi_sales_leads_fct_S TO APPS;
+
+SHOW ERRORS;
+EXIT;

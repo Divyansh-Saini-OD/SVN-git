@@ -1,0 +1,79 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1579" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="MainRN" windowTitle="Daily Toner Order Placed Report" amDefName="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSTonerOrderRptAM" controllerClass="od.oracle.apps.xxcrm.mps.reports.webui.XXCSMPSTonerOrderRptCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:messageComponentLayout id="SearchRN" rows="2" columns="2">
+               <ui:contents>
+                  <oa:messageTextInput id="CustomerNameParam" prompt="Customer Name"/>
+                  <oa:messageTextInput id="FromDeliveryDateParam" prompt="From Delivery Date" dataType="DATE"/>
+                  <oa:messageTextInput id="ToDeliveryDateParam" prompt="To Delivery Date" dataType="DATE"/>
+                  <oa:messageTextInput id="SuppliesLabelParam" prompt="Supplies Label"/>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:rowLayout id="SearchButtonRN" hAlign="center">
+               <ui:contents>
+                  <oa:submitButton id="Search" prompt="Search"/>
+                  <oa:spacer id="SpacerBTRN" width="10"/>
+                  <oa:submitButton id="Clear" text="Clear" prompt="Clear"/>
+               </ui:contents>
+            </oa:rowLayout>
+            <oa:advancedTable id="MPSTonerOrderResultsRN" viewName="XXCSMPSTonerOrderVO" width="100%">
+               <ui:contents>
+                  <oa:column id="CustomerNameCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="CustomerNamesortableHeader" prompt="Customer Name"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="CustomerName" viewAttr="PartyName"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="OrderNumberCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="OrderNumbersortableHeader" prompt="Order Number"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="OrderNumber" viewAttr="OrderNo"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="DeliveryDateCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="DeliveryDatesortableHeader" prompt="Delivery Date"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="DeliveryDate" viewAttr="DeliveryDate"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ItemCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ItemsortableHeader" prompt="Customer Name"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="Item" viewAttr="Item"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="SuppliesLabelCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="SuppliesLabelsortableHeader" prompt="Supplies Label"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="SuppliesLabel" viewAttr="SuppliesLabel"/>
+                     </ui:contents>
+                  </oa:column>
+               </ui:contents>
+               <ui:tableActions>
+                  <oa:rowLayout id="region1">
+                     <ui:contents>
+                        <oa:exportButton id="Export" exportAllRows="true" text="Export" viewName="XXCSMPSTonerOrderVO" rendered="true"/>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:tableActions>
+            </oa:advancedTable>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

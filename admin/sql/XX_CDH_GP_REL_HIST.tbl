@@ -1,0 +1,71 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +===========================================================================+
+-- | Name        : XX_CDH_GP_REL_HIST.tbl          	                       |
+-- | Description : GP Relationship master table                                |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author        Remarks            	               |
+-- |======== =========== ============= ========================================|
+-- |DRAFT 1A 30-Jun-2010 Indra Varada      Initial draft version               |
+-- |                                                                           |
+-- |                                                                           |
+-- |                                                                           |
+-- +===========================================================================+
+
+-- ----------------------------------------------------------------------------
+--      Create Custom Table XX_CDH_GP_REL_HIST
+-- ----------------------------------------------------------------------------
+  
+  CREATE TABLE "XXCRM"."XX_CDH_GP_REL_HIST" 
+   (	"REL_HIST_PK" NUMBER NOT NULL ENABLE, 
+	"RELATIONSHIP_ID" NUMBER NOT NULL ENABLE, 
+	"START_DATE" DATE NOT NULL ENABLE, 
+	"END_DATE" DATE, 
+	"REQUESTOR" NUMBER, 
+	"NOTES" VARCHAR2(4000 BYTE), 
+	"CREATION_DATE" DATE, 
+	"CREATED_BY" NUMBER, 
+	"LAST_UPDATE_DATE" DATE, 
+	"LAST_UPDATED_BY" NUMBER, 
+	"ATTRIBUTE1" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE2" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE3" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE4" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE5" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE6" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE7" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE8" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE9" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE10" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE11" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE12" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE13" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE14" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE15" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE16" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE17" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE18" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE19" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE20" VARCHAR2(150 BYTE), 
+	"STATUS" VARCHAR2(1 BYTE), 
+	"STATUS_UPDATED" VARCHAR2(1 BYTE), 
+	 CONSTRAINT "XX_CDH_GP_REL_HIST_PK" PRIMARY KEY ("REL_HIST_PK")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)
+  TABLESPACE "XXOD_TS_DATA"  ENABLE
+   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)
+  TABLESPACE "XXOD_TS_DATA" ;
+  
+GRANT ALL ON XXCRM.XX_CDH_GP_REL_HIST TO APPS;
+  
+SHOW ERRORS;
+  

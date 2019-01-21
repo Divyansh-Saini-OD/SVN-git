@@ -1,0 +1,30 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                                                                   |
+-- +===================================================================+
+-- | Name        :  CREATE_XXCRM_FILE_UPLOADS.syn                      |
+-- | Description :  XXCRM_FILE_UPLOADS synonym                         |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author             Remarks                   |
+-- |=======   ==========  ================== ==========================|
+-- |1.0       04-Oct-2016 Shubhashree         Initial draft version     |
+-- +===================================================================+
+
+-- -----------------------------------------------------
+--      Create Custom Synonym XXCRM_CREDIT_FLAG_TEMP  --
+-- -----------------------------------------------------
+
+CREATE OR REPLACE SYNONYM APPS.XXCRM_FILE_UPLOADS FOR XXCRM.XXCRM_FILE_UPLOADS;
+
+
+/
+SHOW ERRORS;
+

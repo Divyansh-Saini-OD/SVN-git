@@ -1,0 +1,178 @@
+-- $Id: CREATE_XXBI_USER_SITE_DTL.tbl 69444 2009-04-09 14:44:38Z Indra Varada $
+-- $Rev: 69444 $
+-- $HeadURL: https://svn.na.odcorp.net/od/crm/trunk/xxcrm/admin/sql/CREATE_XXBI_USER_SITE_DTL.tbl $
+-- $Author: Kishore Jena $
+-- $Date: 2010-04-15 10:44:38 -0400 (Thu, 09 Apr 2009) $
+
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XXBI_USER_SITE_DTL_TBL Table                                               |--                                                                                          |--
+--| Program Name   : CREATE_XXBI_USER_SITE_DTL.tbl                                              |--
+--|                                                                                             |--
+--| Purpose        : Table for Party Site Fact, refreshe  on demand as needed                   |--
+--|                                                                                             |--
+--| Change History :                                                                            |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              05-Apr-2010       Kishore Jena            Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Table XXCRM.XXBI_USER_SITE_DTL......
+PROMPT
+
+CREATE TABLE XXCRM.XXBI_USER_SITE_DTL(
+RSD_USER_ID                               NUMBER(15)     NOT NULL,
+SORT_ID                                   NUMBER(15)     NOT NULL,
+USER_ID                                   NUMBER         NOT NULL, 
+M1_USER_ID                                NUMBER         NOT NULL, 
+M2_USER_ID                                NUMBER         NOT NULL, 
+M3_USER_ID                                NUMBER         NOT NULL, 
+ORG_TYPE                                  VARCHAR2(8)    NOT NULL,
+POTENTIAL_TYPE_CD                         VARCHAR2(30)   NOT NULL,
+OD_SITE_FULL_SIC_CODE                     VARCHAR2(150)  NOT NULL,
+OD_SITE_SIC_CODE                          VARCHAR2(30)   NOT NULL,
+OD_SITE_WCW                               NUMBER         NOT NULL,
+OD_SITE_WCW_RANGE                         VARCHAR2(30)   NOT NULL,
+CITY                                      VARCHAR2(60)   NOT NULL,
+STATE_PROVINCE                            VARCHAR2(60)   NOT NULL,
+POSTAL_CODE                               VARCHAR2(60)   NOT NULL,
+CUST_LOYALTY_CODE                         VARCHAR2(30)   NOT NULL,
+PARTY_REVENUE_BAND                        VARCHAR2(60)   NOT NULL,
+SITE_USE_ID                               VARCHAR2(60)   NOT NULL,
+SITE_USE                                  VARCHAR2(60)   NOT NULL,
+ORG_SITE_STATUS                           VARCHAR2(1)    NOT NULL,
+COMPARABLE_POTENTIAL_AMT                  NUMBER,
+ORG_NUMBER                                VARCHAR2(240),
+ORG_NAME                                  VARCHAR2(360),
+ORG_SITE_NUMBER                           VARCHAR2(240),
+SITE_NAME                                 VARCHAR2(560),
+SITE_ADDRESS                              VARCHAR2(1466),
+LAST_ACTIVITY_DATE                        DATE,
+M4_USER_ID                                NUMBER        NOT NULL, 
+M5_USER_ID                                NUMBER        NOT NULL, 
+M6_USER_ID                                NUMBER        NOT NULL,
+PARTY_SITE_ID                             NUMBER(15)    NOT NULL,
+PARTY_ID                                  NUMBER(15)    NOT NULL,
+LOCATION_ID                               NUMBER(15)    NOT NULL,
+SITE_RANK                                 NUMBER        NOT NULL, 
+POTENTIAL_TYPE_NM                         VARCHAR2(100) NOT NULL,
+RESOURCE_NAME                             VARCHAR2(423),
+M1_RESOURCE_ID                            NUMBER,
+M1_RESOURCE_NAME_AND_ROLE                 VARCHAR2(423),
+M2_RESOURCE_ID                            NUMBER,
+M2_RESOURCE_NAME_AND_ROLE                 VARCHAR2(423),
+M3_RESOURCE_ID                            NUMBER,
+M3_RESOURCE_NAME_AND_ROLE                 VARCHAR2(423),
+M4_RESOURCE_ID                            NUMBER,
+M4_RESOURCE_NAME_AND_ROLE                 VARCHAR2(423),
+M5_RESOURCE_ID                            NUMBER,
+M5_RESOURCE_NAME_AND_ROLE                 VARCHAR2(423),
+M6_RESOURCE_ID                            NUMBER,
+M6_RESOURCE_NAME_AND_ROLE                 VARCHAR2(423),
+CUST_ACCOUNT_ID                           NUMBER(15), 
+CUST_ACCT_SITE_ID                         NUMBER(15),
+PARENT_PARTY_ID                           NUMBER(15),
+PARENT_PARTY_NAME                         VARCHAR2(360),
+GPARENT_PARTY_ID                          NUMBER(15),
+GPARENT_PARTY_NAME                        VARCHAR2(360),
+RESOURCE_ID                               NUMBER(15) NOT NULL,
+ROLE_ID                                   NUMBER(15) NOT NULL,
+GROUP_ID                                  NUMBER(15) NOT NULL,
+ROLE_NAME                                 VARCHAR2(60),
+GROUP_NAME                                VARCHAR2(60),
+ACCESS_ID                                 NUMBER(15),
+CREATE_VIEW_LEAD_OPPTY                    VARCHAR2(6),
+CUST_SEGMENT_CODE                         VARCHAR2(30),
+CONTACT_TITLE                             CHAR(60),
+CONTACT_NAME                              VARCHAR2(360),
+CONTACT_PHONE                             VARCHAR2(60),
+POTENTIAL_ID                              NUMBER,
+ORG_CONTACT_ID                            NUMBER,
+REL_PARTY_ID                              NUMBER,
+RELATIONSHIP_ID                           NUMBER,
+PER_PARTY_ID                              NUMBER,
+CONSTRAINT XXBI_USER_SITE_DTL_PK PRIMARY KEY(RSD_USER_ID, SORT_ID, USER_ID, M1_USER_ID, M2_USER_ID, M3_USER_ID, 
+                                             ORG_TYPE, POTENTIAL_TYPE_CD, OD_SITE_SIC_CODE,
+                                             OD_SITE_WCW_RANGE, CITY, STATE_PROVINCE, POSTAL_CODE,
+                                             CUST_LOYALTY_CODE, PARTY_REVENUE_BAND, SITE_USE_ID,
+                                             ORG_SITE_STATUS
+                                            )
+)
+ORGANIZATION INDEX
+--MAPPING TABLE
+TABLESPACE APPS_TS_TX_DATA
+OVERFLOW TABLESPACE APPS_TS_TX_DATA
+PARTITION BY LIST (RSD_USER_ID)
+(
+ PARTITION RSD_10130   VALUES (10130),
+ PARTITION RSD_10793   VALUES (10793),
+ PARTITION RSD_13028   VALUES (13028),
+ PARTITION RSD_19576   VALUES (19576),
+ PARTITION RSD_23144   VALUES (23144),
+ PARTITION RSD_24287   VALUES (24287),
+ PARTITION RSD_2759    VALUES (2759),
+ PARTITION RSD_2778    VALUES (2778),
+ PARTITION RSD_2827    VALUES (2827),
+ PARTITION RSD_2847    VALUES (2847),
+ PARTITION RSD_2902    VALUES (2902),
+ PARTITION RSD_2929    VALUES (2929),
+ PARTITION RSD_29747   VALUES (29747),
+ PARTITION RSD_3073    VALUES (3073),
+ PARTITION RSD_3077    VALUES (3077),
+ PARTITION RSD_3150    VALUES (3150),
+ PARTITION RSD_31634   VALUES (31634),
+ PARTITION RSD_3190    VALUES (3190),
+ PARTITION RSD_3283    VALUES (3283),
+ PARTITION RSD_3542    VALUES (3542),
+ PARTITION RSD_3707    VALUES (3707),
+ PARTITION RSD_3865    VALUES (3865),
+ PARTITION RSD_4503    VALUES (4503),
+ PARTITION RSD_4540    VALUES (4540),
+ PARTITION RSD_4575    VALUES (4575),
+ PARTITION RSD_4793    VALUES (4793),
+ PARTITION RSD_5127    VALUES (5127),
+ PARTITION RSD_5227    VALUES (5227),
+ PARTITION RSD_5512    VALUES (5512),
+ PARTITION RSD_5775    VALUES (5775),
+ PARTITION RSD_5842    VALUES (5842),
+ PARTITION RSD_6398    VALUES (6398),
+ PARTITION RSD_6415    VALUES (6415),
+ PARTITION RSD_6449    VALUES (6449),
+ PARTITION RSD_6454    VALUES (6454),
+ PARTITION RSD_6480    VALUES (6480),
+ PARTITION RSD_6635    VALUES (6635),
+ PARTITION RSD_6665    VALUES (6665),
+ PARTITION RSD_7032    VALUES (7032),
+ PARTITION RSD_7954    VALUES (7954),
+ PARTITION RSD_NULL    VALUES (NULL),
+ PARTITION RSD_UNKNOWN VALUES (DEFAULT)
+);
+
+GRANT ALL ON XXCRM.XXBI_USER_SITE_DTL TO APPS;
+
+GRANT ALL ON XXCRM.XXBI_USER_SITE_DTL TO XXDATA_STAGE;
+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+--EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

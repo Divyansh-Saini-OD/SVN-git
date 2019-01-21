@@ -1,0 +1,31 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |      Oracle NAIO/Office Depot/Consulting Organization                 |
+-- +=======================================================================+
+-- | Name             :XX_OIC_ERROR_HEADER_LINE_N1.idx                     |
+-- | Description      :							   |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      1-Aug-07    Nageswara Rao      Initial Draft Version          |
+-- +=======================================================================+
+
+-- ============================================================================
+-- Create the index's for Error Tables :
+-- ============================================================================
+
+-- Creating index xx_oic_error_lines_n1 . . .
+CREATE INDEX XXCRM.xx_oic_error_lines_n1 
+ON XXCRM.xx_oic_error_lines(program_id)
+/
+-- Creating index xx_oic_error_lines_n2 . . .
+CREATE INDEX XXCRM.xx_oic_error_lines_n2 
+ON XXCRM.xx_oic_error_lines(request_id, program_id)
+/

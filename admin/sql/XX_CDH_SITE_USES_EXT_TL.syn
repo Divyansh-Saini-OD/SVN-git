@@ -1,0 +1,24 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :XX_CDH_SITE_USES_EXT_TL.syn                         |
+-- | Description      :Site uses Extn Table                                  |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |DRAFT 1a 16-Jun-2007 V Jayamohan        Initial draft version          |
+-- +=======================================================================+
+------------------------------------------------------
+-- Dropping the existing synonym and creating new.  --
+------------------------------------------------------
+CREATE OR REPLACE SYNONYM APPS.XX_CDH_SITE_USES_EXT_TL FOR XXCRM.XX_CDH_SITE_USES_EXT_TL;
+
+SHOW ERRORS;

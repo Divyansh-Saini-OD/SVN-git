@@ -1,0 +1,57 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                                     Office Depot                                           |
+-- +============================================================================================+
+-- | Name        : ALTER_XX_CDH_EBL_TEMPL_TXT_W2.tbl                                           |
+-- | Description : For Defects#                                                                 |
+-- | Rice Id     : I2186                                                                        |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        21-Jul-2017     Thilak Kumar E (CG)  Initial version                             |
+-- +============================================================================================+
+
+PROMPT
+PROMPT Altering the Table XX_CDH_EBL_TEMPL_DTL_TXT .....
+PROMPT
+
+ALTER TABLE XXCRM.XX_CDH_EBL_TEMPL_DTL_TXT 
+		ADD(ROWNUMBER NUMBER,
+		    ABSOLUTE_FLAG   VARCHAR2(1),
+			DC_INDICATOR    VARCHAR2(30));
+			
+PROMPT
+PROMPT Altering the Table XX_CDH_EBL_TEMPL_DTL_TXT is done.
+PROMPT
+
+PROMPT
+PROMPT Altering the Table XX_CDH_EBL_TEMPL_HDR_TXT .....
+PROMPT
+
+ALTER TABLE XXCRM.XX_CDH_EBL_TEMPL_HDR_TXT 
+		ADD(ABSOLUTE_FLAG   VARCHAR2(1),
+			DC_INDICATOR    VARCHAR2(30));
+
+PROMPT
+PROMPT Altering the Table XX_CDH_EBL_TEMPL_HDR_TXT is done.
+PROMPT
+
+PROMPT
+PROMPT Altering the Table XX_CDH_EBL_TEMPL_TRL_TXT .....
+PROMPT
+
+ALTER TABLE XXCRM.XX_CDH_EBL_TEMPL_TRL_TXT 
+		ADD(ABSOLUTE_FLAG   VARCHAR2(1),
+			DC_INDICATOR    VARCHAR2(30));
+
+PROMPT
+PROMPT Altering the Table XX_CDH_EBL_TEMPL_TRL_TXT is done.
+PROMPT
+
+SHOW ERRORS;
+EXIT;

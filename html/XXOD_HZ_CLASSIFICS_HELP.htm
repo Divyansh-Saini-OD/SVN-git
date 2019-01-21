@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+  <title>Help about Classification Upload Tool</title>
+</head>
+<body>
+<h1><div align="center">Help about Classification Upload Tool</div></h1>
+<b><u>Upload File Format:</u></b>
+<p>
+The upload file should be of CSV (Comma Separated Values) format. To get this format from an Excel Spread Sheet, follow these steps- 
+</p>
+
+<ol type="1">
+    <li>Click on Save As</li>
+    <li>Select 'Save as type:' as 'CSV (Comma delimited) (*.csv)</li>
+    <li>Click on Save.</li>
+</ol> <p>
+To check this, you can open this file using a "notepad" or "WordPad", and it will look like this, with values separated in a ',' (comma)- 
+</p>
+
+<hr>
+GDW,20102099-00001-A0,SDHC EMPLOYEE ACCT,CUSTOMER_CATEGORY,HIGHER EDUCATION,,Y,XXGDW<br>
+GDW,20128210-00001-A0,BALDWIN CNTY BOARD OF ED,CUSTOMER_CATEGORY,HIGHER EDUCATION,,Y,XXGDW<br>
+GDW,20131405-00001-A0,UNIV OF WY-MOLECULAR BIO,CUSTOMER_CATEGORY,HIGHER EDUCATION,,Y,XXGDW<br>
+GDW,20311589-00001-A0,CATHOLIC UNIV,CUSTOMER_CATEGORY,HIGHER EDUCATION,,Y,XXGDW<br>
+GDW,20316977-00001-A0,CENTRAL FL CHRISTIAN ACAD,CUSTOMER_CATEGORY,HIGHER EDUCATION,,Y,XXGDW<br>
+GDW,20342226-00001-A0,BALT CITY PUBLIC SCHOOLS,CUSTOMER_CATEGORY,HIGHER EDUCATION,,Y,XXGDW<br>
+<hr>
+<b><u>Upload File Values:</u></b>
+<p>The upload file should contain the following values in the following order-
+</p>
+<ol type="a">
+	<li>Party Orig System   </li>
+	<li>Party Orig System Reference   </li>
+	<li>Party Name   </li>
+	<li>Class Category   </li>
+	<li>Class Code   </li>
+	<li>Start Date Active   </li>
+	<li>Primary Flag   </li>
+	<li>Created By Module </li>
+
+</ol> 
+<h3>Please validate for Some of the columns as follows: </h3>
+<ol type="1">
+     <li><b>Class_code: </b></li>
+    <p> - Please note that the class_code should be in the upload file. Keeping a class_code meaning or description in place of class_code is invalid, and the upload will fail.</p>
+    <p> - The Class_category for which the class_codes are assigned must be valid one, which appears in OCO UI.</p>
+    <li><b>Primary_Flag: </b></li>
+    <p>  - The primary_flag should be either .Y. or .N.. Keeping .Yes. and .No. or other values is invalid, and upload fails.</p>
+    <p>  - For a party, and for a class_category, only one class_code can be primary. So, when uploading a file, unless you are sure about it, please make the primary_flag  to .N., so that the upload will be successful.</p>
+    <p>  - If there exist a primary class_code for a given class_category and user tries to upload a class_code with primary_flag as .Y., then, the existing primary code assignment will be made .N. automatically and the new one will be made primary.</p>
+    <p>  - There can be other situation, where in a primary code assignment was end dated; And user tries to upload the same code. This situation is called, .Restoring.. In this situation, if there is already another .active. primary code existing, and user tries to restore the end_dated code assignment (which was primary), application throws error for this record, as "You cannot set this class code as primary because its date range overlaps with an existing primary class code in the same class category."</p>
+</ol> 
+<b><u>Errors, "What it Means?":</u></b>
+<ol type="1">
+    <li>You cannot set this class code as primary because its date range overlaps with an existing primary class code in the same class category. </li>
+    <p><u>Reason:</u> If there is already another .active. primary code existing, and user tries to restore the end dated code assignment (which was primary), application throws this error for this record.</p>
+    <li>End date cannot be earlier than the start date. </li>
+    <p><u>Reason:</u> Self explanatory.</p>
+    <li>The table name or primary key is either not valid or not eligible to be classified by this class category. </li>
+    <p><u>Reason:</u> Classifications can only be assigned  to Organization type parties.</p>
+</ol> 
+</body>
+</html>
+

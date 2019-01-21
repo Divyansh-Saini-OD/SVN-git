@@ -1,0 +1,24 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : drop_xxhz_contact_point_n1.idx                     |
+-- | Description      : Drop Index on table hz_contact_points              |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |DRAFT 1a 30-May-2008   Anirban Chaudhuri     Initial Version           |
+-- +=======================================================================+
+
+------------------------------------------------------
+-- Drop Index xxhz_contact_point_n1               --
+------------------------------------------------------
+DROP INDEX XXCRM.xxhz_contact_point_n1;
+
+show errors;

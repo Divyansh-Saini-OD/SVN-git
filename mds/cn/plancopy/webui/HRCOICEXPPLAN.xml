@@ -1,0 +1,240 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.10_1080" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="PageLayoutRN" amDefName="od.oracle.apps.xxcrm.cn.plancopy.server.HrcOicExpPlanAM" windowTitle="Export Compensation Plans/Rate Tables" title="Export Compensation Plans/Rate Tables" controllerClass="od.oracle.apps.xxcrm.cn.plancopy.server.webui.HrcOicExpPlanCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:stackLayout id="MainRN">
+               <ui:contents>
+                  <oa:messageChoice id="ExportTypeChoice" pickListViewDef="od.oracle.apps.xxcrm.cn.plancopy.poplist.server.ExpTypeVO" pickListViewName="ExpTypeVO1" pickListDispAttr="Exptype" pickListValAttr="Exptype" prompt="Export Type" allowBlankValue="false">
+                     <ui:primaryClientAction>
+                        <ui:firePartialAction event="exportTypeChange"/>
+                     </ui:primaryClientAction>
+                  </oa:messageChoice>
+               </ui:contents>
+            </oa:stackLayout>
+            <oa:header id="DetailRN"/>
+            <oa:tableLayout id="CompPlanRN" rendered="${oa.ExportPVO1.CompPlanRNRender}">
+               <ui:contents>
+                  <oa:rowLayout id="HeaderRow">
+                     <ui:contents>
+                        <oa:cellFormat id="region1">
+                           <ui:contents>
+                              <oa:messageStyledText id="Remove" prompt="Remove"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="region2">
+                           <ui:contents>
+                              <oa:messageStyledText id="CompName" prompt="Name"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="Row1">
+                     <ui:contents>
+                        <oa:cellFormat id="region3">
+                           <ui:contents>
+                              <oa:messageCheckBox id="checkBox1"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="region4">
+                           <ui:contents>
+                              <oa:formValue id="id1" dataType="NUMBER"/>
+                              <oa:messageLovInput id="name1" externalListOfValues="/od/oracle/apps/xxcrm/cn/plancopy/webui/CompPlanRN">
+                                 <lovMappings>
+                                    <lovMap id="compName1Map" lovItem="CompName" resultTo="name1" criteriaFrom="name1"/>
+                                    <lovMap id="compIdMap1" lovItem="CompPlanId" resultTo="id1"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="Row2">
+                     <ui:contents>
+                        <oa:cellFormat id="region5">
+                           <ui:contents>
+                              <oa:messageCheckBox id="checkBox2"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="region6">
+                           <ui:contents>
+                              <oa:messageLovInput id="name2" externalListOfValues="/od/oracle/apps/xxcrm/cn/plancopy/webui/CompPlanRN">
+                                 <lovMappings>
+                                    <lovMap id="compName2Map" lovItem="CompName" resultTo="name2" criteriaFrom="name2"/>
+                                    <lovMap id="compId1" lovItem="CompPlanId" resultTo="id2"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:formValue id="id2" dataType="NUMBER"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="Row3">
+                     <ui:contents>
+                        <oa:cellFormat id="region7">
+                           <ui:contents>
+                              <oa:messageCheckBox id="checkBox3"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="region8">
+                           <ui:contents>
+                              <oa:messageLovInput id="name3" externalListOfValues="/od/oracle/apps/xxcrm/cn/plancopy/webui/CompPlanRN">
+                                 <lovMappings>
+                                    <lovMap id="compName3Map" lovItem="CompName" resultTo="name3" criteriaFrom="name3"/>
+                                    <lovMap id="compIdMap3" lovItem="CompPlanId" resultTo="id3"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:formValue id="id3" dataType="NUMBER"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="Row4">
+                     <ui:contents>
+                        <oa:cellFormat id="region9">
+                           <ui:contents>
+                              <oa:messageCheckBox id="checkBox4"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="region10">
+                           <ui:contents>
+                              <oa:messageLovInput id="name4" externalListOfValues="/od/oracle/apps/xxcrm/cn/plancopy/webui/CompPlanRN">
+                                 <lovMappings>
+                                    <lovMap id="compName4Map" lovItem="CompName" resultTo="name4" criteriaFrom="name4"/>
+                                    <lovMap id="compIdMap4" lovItem="CompPlanId" resultTo="id4"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:formValue id="id4" dataType="NUMBER"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:tableLayout>
+            <oa:tableLayout id="RateTableRN" rendered="${oa.ExportPVO1.RateTableRNRender}">
+               <ui:contents>
+                  <oa:rowLayout id="HeaderRow1">
+                     <ui:contents>
+                        <oa:cellFormat id="region11">
+                           <ui:contents>
+                              <oa:messageStyledText id="Remove1" prompt="Remove"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="region12">
+                           <ui:contents>
+                              <oa:messageStyledText id="CompName1" prompt="Name"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="Row5">
+                     <ui:contents>
+                        <oa:cellFormat id="region13">
+                           <ui:contents>
+                              <oa:messageCheckBox id="checkBox11"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="region14">
+                           <ui:contents>
+                              <oa:messageLovInput id="name5" externalListOfValues="/od/oracle/apps/xxcrm/cn/plancopy/webui/RateTableRN">
+                                 <lovMappings>
+                                    <lovMap id="compName5Map" lovItem="RateScheduleName" resultTo="name5" criteriaFrom="name5"/>
+                                    <lovMap id="compIdMap5" lovItem="RateScheduleId" resultTo="id5"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:formValue id="id5" dataType="NUMBER"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="Row6">
+                     <ui:contents>
+                        <oa:cellFormat id="region15">
+                           <ui:contents>
+                              <oa:messageCheckBox id="checkBox21"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="region16">
+                           <ui:contents>
+                              <oa:messageLovInput id="name6" externalListOfValues="/od/oracle/apps/xxcrm/cn/plancopy/webui/RateTableRN">
+                                 <lovMappings>
+                                    <lovMap id="compName6Map" lovItem="RateScheduleName" resultTo="name6" criteriaFrom="name6"/>
+                                    <lovMap id="compIdMap6" lovItem="RateScheduleId" resultTo="id6"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:formValue id="id6" dataType="NUMBER"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="Row7">
+                     <ui:contents>
+                        <oa:cellFormat id="region17">
+                           <ui:contents>
+                              <oa:messageCheckBox id="checkBox31"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="region18">
+                           <ui:contents>
+                              <oa:messageLovInput id="name7" externalListOfValues="/od/oracle/apps/xxcrm/cn/plancopy/webui/RateTableRN">
+                                 <lovMappings>
+                                    <lovMap id="compName7Map" lovItem="RateScheduleName" resultTo="name7" criteriaFrom="name7"/>
+                                    <lovMap id="compIdMap7" lovItem="RateScheduleId" resultTo="id7"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:formValue id="id7" dataType="NUMBER"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="Row8">
+                     <ui:contents>
+                        <oa:cellFormat id="region19">
+                           <ui:contents>
+                              <oa:messageCheckBox id="checkBox41"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="region20">
+                           <ui:contents>
+                              <oa:messageLovInput id="name8" externalListOfValues="/od/oracle/apps/xxcrm/cn/plancopy/webui/RateTableRN">
+                                 <lovMappings>
+                                    <lovMap id="compName8Map" lovItem="RateScheduleName" resultTo="name8" criteriaFrom="name8"/>
+                                    <lovMap id="compIdMap8" lovItem="RateScheduleId" resultTo="id8"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:formValue id="id8" dataType="NUMBER"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:tableLayout>
+            <oa:pageButtonBar id="ButtonRN">
+               <ui:contents>
+                  <oa:submitButton id="Update" text="Update" prompt="Update"/>
+                  <oa:submitButton id="Restore" text="Restore" prompt="Restore"/>
+                  <oa:submitButton id="Export" text="Export" prompt="Export"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+            <oa:header id="DwnldRN" text="Download"/>
+            <oa:stackLayout id="DownloadRN">
+               <ui:contents>
+                  <oa:messageDownload id="msgDwld" viewName="TransVO1" fileContentType="xml" dataType="CLOB" prompt="Click on link to save" downloadFileName="ODData.xml" viewAttr="XMLcontentAttr" contentViewAttributeName="FileAttr"/>
+               </ui:contents>
+            </oa:stackLayout>
+            <oa:stackLayout id="LogRN" rendered="${oa.ExportPVO1.LogRender}">
+               <ui:contents>
+                  <oa:messageStyledText id="LogStyledText" prompt="Log Messages"/>
+                  <oa:spacer id="LogSeparator" height="10"/>
+                  <oa:richTextEditor id="LogText" readOnly="true" dataType="CLOB" rendered="${oa.ExportPVO1.LogRender}" shortDesc="Log Messages"/>
+                  <oa:spacer id="LogSpacer" height="10"/>
+               </ui:contents>
+            </oa:stackLayout>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

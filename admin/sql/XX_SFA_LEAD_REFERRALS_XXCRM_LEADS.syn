@@ -1,0 +1,23 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |                      Wipro Technologies                               |
+-- +=======================================================================+
+-- | Name             :XX_SFA_LEAD_REFERRALS.syn                           |
+-- | Description      :I2043 Leads_from_WWW_and_Jmillennia                 |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      25-Mar-2008 Sudeept Maharana      Initial version                |
+-- +=======================================================================+
+
+create or replace synonym
+XXCRM_LEADS.XX_SFA_LEAD_REFERRALS for XXCRM.XX_SFA_LEAD_REFERRALS;
+

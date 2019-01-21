@@ -1,0 +1,26 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XX_TM_NAM_TERR_DEFN_U1.idx                         |
+-- | Description      : Unique Index for custom table                      |
+   |                    XX_TM_NAM_TERR_DEFN                                |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |1        09-Oct-2007   Ankur            Created a new script for DROP  |
+-- +=======================================================================+
+
+------------------------------------------------------
+-- Drop existing Index XX_TM_NAM_TERR_DEFN_U1       --
+------------------------------------------------------
+
+--DROP INDEX XX_TM_NAM_TERR_DEFN_U1;
+
+SHOW ERRORS;

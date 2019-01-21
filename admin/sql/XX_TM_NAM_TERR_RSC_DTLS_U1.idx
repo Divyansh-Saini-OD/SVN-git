@@ -1,0 +1,39 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XX_TM_NAM_TERR_RSC_DTLS_U1.idx                     |
+-- | Description      : Unique Index for custom table                      |
+   |                    XX_TM_NAM_TERR_RSC_DTLS                            |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |DRAFT 1a 21-Aug-2007   Sreekanth        Initial Version                |
+-- |1.0      12-Sep-2007   Sreekanth        Replaced Primary Key with      |
+-- |                                        Unique Index                   |
+-- |2.0      09-Oct-2007   Ankur            Created a script for the DROP  |
+-- |3.0      26-Mar-2008   Abhradip Ghosh   Included the NOLOGGING clause  |
+-- +=======================================================================+
+
+-------------------------------------------------------------
+-- Drop existing Index for XX_TM_NAM_TERR_RSC_DTLS_U1      --
+-------------------------------------------------------------
+
+--DROP INDEX XX_TM_NAM_TERR_RSC_DTLS_U1;
+
+-------------------------------------------------------------
+-- Create Index XX_TM_NAM_TERR_RSC_DTLS_U1                 --
+-------------------------------------------------------------
+
+CREATE UNIQUE INDEX XXCRM.XX_TM_NAM_TERR_RSC_DTLS_U1 
+ON XXCRM.XX_TM_NAM_TERR_RSC_DTLS(NAMED_ACCT_TERR_RSC_ID)
+NOLOGGING;
+
+
+SHOW ERRORS;

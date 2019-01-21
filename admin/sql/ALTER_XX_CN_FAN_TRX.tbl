@@ -1,0 +1,40 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : ALTER_XX_CN_FAN_TRX.tbl                             |
+-- | Rice ID     : E1004_Custom_Collections                            |
+-- | Description : FAN Extract Transactions Custom Table Alter Script  |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1a 05-Nov-2007  Vidhya Valantina Initial draft version       |
+-- |1.0      06-Nov-2007  Vidhya Valantina Baselined after testing     |
+-- |                                                                   |
+-- +===================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Altering the Table XX_CN_FAN_TRX .....
+PROMPT
+
+ALTER TABLE xx_cn_fan_trx ADD ( party_site_id  NUMBER(15) NULL );
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

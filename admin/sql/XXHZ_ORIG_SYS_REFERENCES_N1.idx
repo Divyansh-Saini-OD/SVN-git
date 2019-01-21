@@ -1,0 +1,33 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :XXHZ_ORIG_SYS_REFERENCES_N1.idx                     |
+-- | Description      :Index on HZ_ORIG_SYS_REFERENCES                     | 
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      12-Sep-2008 Sreedhar Mohan     initial script                 |
+-- +=======================================================================+
+
+-- -------------------------------------------------
+-- Creating Index XXHZ_ORIG_SYS_REFERENCES_N1
+-- -------------------------------------------------
+
+
+CREATE INDEX XXCNV.XXHZ_ORIG_SYS_REFERENCES_N1 ON AR.HZ_ORIG_SYS_REFERENCES
+(
+  ORIG_SYSTEM_REFERENCE,
+  ORIG_SYSTEM,
+  OWNER_TABLE_NAME,
+  OWNER_TABLE_ID,
+  STATUS
+ ) NOLOGGING PARALLEL
+;
+

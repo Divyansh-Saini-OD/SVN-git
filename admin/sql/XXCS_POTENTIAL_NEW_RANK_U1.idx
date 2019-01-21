@@ -1,0 +1,26 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :XXCS_POTENTIAL_NEW_RANK_U1.idx                      |
+-- | Description      :Unique Index for Custom Table                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |Version  Date          Author              Remarks                     |
+-- |-------  ----------- -----------------    -----------------------------|
+-- | 1.0     15-MAR-2009  Sreekanth Rao       Initial Version              |
+-- +=======================================================================+
+
+
+REM============================================================================================
+REM         Creating Index XXCS_POTENTIAL_NEW_RANK_U1
+REM============================================================================================
+
+ALTER TABLE XXCRM.XXCS_POTENTIAL_NEW_RANK ADD CONSTRAINT XXCS_POTENTIAL_NEW_RANK_PK PRIMARY KEY(POTENTIAL_NEW_RANK_ID);
+
+EXIT;

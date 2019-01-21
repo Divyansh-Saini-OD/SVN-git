@@ -1,0 +1,39 @@
+Rem    NAME
+Rem      XX_JTF_GROUPID_S.seq - 
+Rem
+Rem    DESCRIPTION
+Rem      Script to create the sequence XXCRM.XX_JTF_GROUPID_S
+rem  
+Rem
+Rem    NOTES
+Rem      Comments are added for tables, wherever possible.
+Rem
+Rem    MODIFIED   (MM/DD/YY)
+Rem    Mohan     10/11/2007 - First time creation
+Rem    Mohan     10/23/2007 - Changes due to input file changes
+Rem
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT
+PROMPT CREATE SEQUENCE XXCRM.XX_JTF_GROUPID_S
+PROMPT
+
+CREATE SEQUENCE  "XXCRM"."XX_JTF_GROUPID_S"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 1 CACHE 20 NOORDER  NOCYCLE;
+
+PROMPT
+PROMPT grant all on XXCRM.XX_JTF_GROUPID_S to apps
+PROMPT
+
+grant all on XXCRM.XX_JTF_GROUPID_S to apps;
+
+SHOW ERROR
+
+PROMPT
+PROMPT END of script XX_JTF_GROUPID_S.seq
+PROMPT
+

@@ -1,0 +1,32 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             : CREATE_XX_JTF_NOTES_INT.syn                        |
+-- | Description      : Custom synonym for I1381_Notes_Interface           |
+-- |                                                                       |
+-- |                    Note:This script will be executed from             |
+-- |                    APPS schema                                        |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |DRAFT 1a 27-Jun-2007 Prakash Sowriraj      Initial draft version       |
+-- |    1.0  15-Nov-2007 Bibhubrata Jena                                   |
+-- +=======================================================================+
+
+------------------------------------------------------
+-- Creating synonym APPS.XX_JTF_NOTES_INT  --
+------------------------------------------------------
+CREATE OR REPLACE SYNONYM APPS.XX_JTF_NOTES_INT FOR XXCNV.XX_JTF_NOTES_INT;
+
+
+SHOW ERRORS;
+
+EXIT;

@@ -1,0 +1,260 @@
+-- $Id: CREATE_XXBI_USER_SITE_DTL_TBL.tbl 69444 2009-04-09 14:44:38Z Indra Varada $
+-- $Rev: 69444 $
+-- $HeadURL: https://svn.na.odcorp.net/od/crm/trunk/xxcrm/admin/sql/CREATE_XXBI_USER_SITE_DTL_TBL.tbl $
+-- $Author: Kishore Jena $
+-- $Date: 2010-04-15 10:44:38 -0400 (Thu, 09 Apr 2009) $
+
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XXBI_USER_SITE_DTL_TBL Table                                               |--                                                                                          |--
+--| Program Name   : CREATE_XXBI_USER_SITE_DTL_TBL.tbl                                          |--
+--|                                                                                             |--
+--| Purpose        : Table for Party Site Fact, refreshe  on demand as needed                   |--
+--|                                                                                             |--
+--| Change History :                                                                            |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              05-Apr-2010       Kishore Jena            Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Table XXCRM.XXBI_USER_SITE_DTL_TBL......
+PROMPT
+
+
+CREATE TABLE XXCRM.XXBI_USER_SITE_DTL_TBL AS
+SELECT sdtl.resource_id,       
+       sdtl.role_id,
+       sdtl.group_id,
+       sdtl.party_id,
+       sdtl.party_site_id,
+       sdtl.location_id,
+       sdtl.cust_account_id,
+       sdtl.cust_acct_site_id,
+       sdtl.parent_party_id,
+       sdtl.parent_party_name,
+       sdtl.gparent_party_id,
+       sdtl.gparent_party_name,
+       sdtl.access_id,
+       sdtl.org_number,
+       sdtl.party_id orgname_id,
+       sdtl.party_name org_name,
+       sdtl.org_type org_type_id,
+       sdtl.org_type,
+       sdtl.site_use,
+       sdtl.address_lines_phonetic site_name,
+       (CASE NVL(sdtl.address_style,'-9X9Y9Z') WHEN 'AS_DEFAULT' THEN                
+                             sdtl.address1
+                          || '.'
+                          || sdtl.address2
+                          || '.'
+                          || sdtl.address3
+                          || '.'
+                          || sdtl.address4
+                          || '.'
+                          || sdtl.state
+                          || '.'
+                          || sdtl.county
+                          || '.'
+                          || sdtl.city
+                          || '.'
+                          || sdtl.postal_code                                       
+                     WHEN '-9X9Y9Z' THEN
+                             sdtl.address1
+                          || '.'
+                          || sdtl.address2
+                          || '.'
+                          || sdtl.address3
+                          || '.'
+                          || sdtl.address4
+                          || '.'
+                          || sdtl.state
+                          || '.'
+                          || sdtl.county
+                          || '.'
+                          || sdtl.city
+                          || '.'
+                          || sdtl.postal_code
+                     WHEN 'JP' THEN
+                             sdtl.postal_code
+                          || '.'
+                          || sdtl.state
+                          || '.'
+                          || sdtl.city
+                          || '.'
+                          || sdtl.address1
+                          || '.'
+                          || sdtl.address2
+                          || '.'
+                          || sdtl.address3
+                          || '.'
+                          || sdtl.address_lines_phonetic
+                     WHEN 'NE' THEN
+                             sdtl.address1
+                          || '.'
+                          || sdtl.address2
+                          || '.'
+                          || sdtl.address3
+                          || '.'
+                          || sdtl.state
+                          || '.'
+                          || sdtl.postal_code
+                          || '.'
+                          || sdtl.city
+                     WHEN 'POSTAL_ADDR_DEF' THEN
+                             sdtl.address1
+                          || '.'
+                          || sdtl.address2
+                          || '.'
+                          || sdtl.address3
+                          || '.'
+                          || sdtl.address4
+                          || '.'
+                          || sdtl.city
+                          || '.'
+                          || sdtl.county
+                          || '.'
+                          || sdtl.state
+                          || '.'
+                          || sdtl.province
+                          || '.'
+                          || sdtl.postal_code
+                     WHEN 'POSTAL_ADDR_US' THEN
+                             sdtl.address1
+                          || '.'
+                          || sdtl.address2
+                          || '.'
+                          || sdtl.address3
+                          || '.'
+                          || sdtl.address4
+                          || '.'
+                          || sdtl.city
+                          || '.'
+                          || sdtl.county
+                          || '.'
+                          || sdtl.state
+                          || '.'
+                          || sdtl.postal_code
+                     WHEN 'SA' THEN
+                             sdtl.address1
+                          || '.'
+                          || sdtl.address2
+                          || '.'
+                          || sdtl.address3
+                          || '.'
+                          || sdtl.city
+                          || '.'
+                          || sdtl.province
+                          || '.'
+                          || sdtl.state
+                          || '.'
+                          || sdtl.county
+                          || '.'
+                          || sdtl.postal_code
+                     WHEN 'SE' THEN
+                             sdtl.address1
+                          || '.'
+                          || sdtl.address2
+                          || '.'
+                          || sdtl.address3
+                          || '.'
+                          || sdtl.postal_code
+                          || '.'
+                          || sdtl.city
+                          || '.'
+                          || sdtl.state
+                     WHEN 'UAA' THEN
+                             sdtl.address1
+                          || '.'
+                          || sdtl.address2
+                          || '.'
+                          || sdtl.address3
+                          || '.'
+                          || sdtl.city
+                          || '.'
+                          || sdtl.state
+                          || '.'
+                          || sdtl.postal_code
+                 WHEN 'AS_DEFAULT_CA' THEN
+                             sdtl.address1
+                          || '.'
+                          || sdtl.address2
+                          || '.'
+                          || sdtl.address3
+                          || '.'
+                          || sdtl.city
+                          || '.'
+                          || sdtl.province
+                          || '.'
+                          || sdtl.postal_code
+                 ELSE
+                             sdtl.address1
+                          || '.'
+                          || sdtl.address2
+                          || '.'
+                          || sdtl.address3
+                          || '.'
+                          || sdtl.address4
+                          || '.'
+                          || sdtl.state
+                          || '.'
+                          || sdtl.county
+                          || '.'
+                          || sdtl.city
+                          || '.'
+                          || sdtl.postal_code
+                     END ) site_address,
+       sdtl.create_view_lead_oppty,
+       sdtl.last_activity_date,
+       sdtl.od_site_full_sic_code,
+       sdtl.od_site_sic_code,
+       sdtl.od_site_wcw,
+       sdtl.city,
+       nvl(decode(sdtl.country,'US',sdtl.state,sdtl.province),'XX') state_province,
+       sdtl.postal_code,
+       sdtl.cust_loyalty_code,
+       sdtl.cust_segment_code,       
+       sdtl.party_revenue_band,
+       sdtl.org_site_number,
+       sdtl.org_site_status,
+       sdtl.contact_title,
+       sdtl.contact_name,
+       sdtl.contact_phone,
+       sdtl.potential_id,
+       sdtl.potential_type_cd,
+       NVL(sdtl.potential_type_nm, 'No Model') potential_type_nm,
+       sdtl.comparable_potential_amt,       
+       NVL(xnr.new_rank, sdtl.site_rank) site_rank
+from   xxcrm.xxbi_party_site_asgnmnt_fct_mv sdtl,
+       xxcrm.xxscs_potential_new_rank  xnr       
+where  xnr.party_site_id(+)     = sdtl.party_site_id
+  and  xnr.potential_type_cd(+) = sdtl.potential_type_cd
+order by NVL(xnr.new_rank, sdtl.site_rank) desc, sdtl.comparable_potential_amt desc;
+
+GRANT ALL ON XXCRM.XXBI_USER_SITE_DTL_TBL TO APPS;
+
+GRANT ALL ON XXCRM.XXBI_USER_SITE_DTL_TBL TO XXDATA_STAGE;
+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+--EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

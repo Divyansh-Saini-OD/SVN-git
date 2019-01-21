@@ -1,0 +1,31 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :XX_TM_NAM_TERR_RSC_DTLS.syn                         |
+-- | Description      :Custom synonym for XX_TM_NAM_TERR_HISTORY_DTLS      |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft 1a  11-Jun-2008  Jeevan babu        Initial Draft Version        |
+-- |                                                                       |
+-- +=======================================================================+
+
+------------------------------------------------------
+-- Dropping the existing synonym and creating new.  --
+------------------------------------------------------
+
+CREATE OR REPLACE SYNONYM APPS.XX_TM_NAM_TERR_HISTORY_DTLS FOR XXCRM.XX_TM_NAM_TERR_HISTORY_DTLS;
+
+/
+SHOW ERRORS;
+
+EXIT;

@@ -1,0 +1,21 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : CREATE_XXSAS_EMAIL_CAMPAIGN.syn            |
+-- | Description      : Synonyms for XXSAS_EMAIL_CAMPAIGN       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |1.0      19-May-2016  Shubhashree R   Initial Version                |
+-- +=======================================================================+
+
+CREATE OR REPLACE SYNONYM APPS.XXSAS_EMAIL_CAMPAIGN FOR XXCRM.XXSAS_EMAIL_CAMPAIGN;
+
+SHOW ERRORS;

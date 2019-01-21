@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XX_I0809_PREVAL" description="OD: LeadInterface Prevalidation" Version="1.0">
+<parameters/>
+<dataQuery>
+<sqlStatement name="Q_I0809_TABLES">
+<![CDATA[
+SELECT 'XX_AS_LEAD_IMP_OSR_STG' AS TABLE_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_tables ALT
+WHERE ALT.table_name = 'XX_AS_LEAD_IMP_OSR_STG'
+AND   ALT.owner      = 'XXCRM'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_I0809_INDEXES">
+<![CDATA[
+SELECT 'XX_AS_LEAD_IMP_OSR_STG_U1' AS INDEX_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_indexes ALI
+WHERE ALI.index_name = 'XX_AS_LEAD_IMP_OSR_STG_U1'
+AND   ALI.owner      = 'XXCRM'
+AND   ALI.status     = 'VALID'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_I0809_SYNONYMS">
+<![CDATA[
+SELECT 'XX_AS_LEAD_IMP_OSR_STG' AS SYNONYM_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_synonyms ALS
+WHERE ALS.synonym_name = 'XX_AS_LEAD_IMP_OSR_STG'
+AND   ALS.owner = 'APPS'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_I0809_PROFILES">
+<![CDATA[
+SELECT 'OD: Show Debug Messages for Sales Lead Interface' AS PROFILE_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_profile_options_tl FPO
+WHERE FPO.profile_option_name = 'XX_LEADS_IMPORT_DEBUG'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_I0809_DBPACKAGES">
+<![CDATA[
+SELECT 'Package Specification' AS Type,'XX_SFA_LEADS_PKG.pks' as Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_SFA_LEADS_PKG'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Body' AS Type,'XX_SFA_LEADS_PKG.pkb' as Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_SFA_LEADS_PKG'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_I0809_CONC_PROG">
+<![CDATA[
+SELECT 'OD: SFA Import Sales Leads Inbound' AS CONCURRENT_PROGRAM,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_concurrent_programs FCP
+WHERE FCP.concurrent_program_name = 'XXSFALEADSINT'
+AND   FCP.enabled_flag = 'Y'
+UNION
+SELECT 'Import Sales Leads' AS CONCURRENT_PROGRAM,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_concurrent_programs FCP
+WHERE FCP.concurrent_program_name = 'ASXSLIMP'
+AND   FCP.enabled_flag = 'Y'
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_I0809_TABLES" source="Q_I0809_TABLES">
+<element name="TABLE_NAME" value="TABLE_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_I0809_INDEXES" source="Q_I0809_INDEXES">
+<element name="INDEX_NAME" value="INDEX_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_I0809_SYNONYMS" source="Q_I0809_SYNONYMS">
+<element name="SYNONYM_NAME" value="SYNONYM_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_I0809_PROFILES" source="Q_I0809_PROFILES">
+<element name="PROFILE_NAME" value="PROFILE_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_I0809_DBPACKAGES" source="Q_I0809_DBPACKAGES">
+<element name="TYPE" value="TYPE" />
+<element name="PACKAGE_NAME" value="PACKAGE_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_I0809_CONC_PROG" source="Q_I0809_CONC_PROG">
+<element name="CONCURRENT_PROGRAM" value="CONCURRENT_PROGRAM" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+</dataStructure>
+</dataTemplate>
+

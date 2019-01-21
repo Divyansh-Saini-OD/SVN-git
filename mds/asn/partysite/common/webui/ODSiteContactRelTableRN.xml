@@ -1,0 +1,96 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<oa:defaultSingleColumn version="9.0.3.8.13_1550" xml:lang="en-US" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:ui="http://xmlns.oracle.com/uix/ui" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header: $" amDefName="od.oracle.apps.xxcrm.asn.partysite.common.server.ODSiteContactRelTableAM" controllerClass="od.oracle.apps.xxcrm.asn.partysite.common.webui.ODSiteContactRelTableCO" scope="/" headerDisabled="true">
+   <ui:contents>
+      <oa:header id="ODSiteContactRelTableHdr" text="Contacts">
+         <ui:contents>
+            <oa:table id="ODSiteContactRelTable" shortDesc="Contact Relationship Table">
+               <ui:contents>
+                  <oa:link id="Contact_Name_Link">
+                     <ui:contents>
+                        <oa:messageStyledText id="ContactName" viewName="ODHzSiteContRelTableVO" viewAttr="ContactName" prompt="Contact" shortDesc="Site Contact Relationships" sortState="yes"/>
+                     </ui:contents>
+                     <ui:primaryClientAction>
+                        <ui:fireAction unvalidated="true" event="ContNameLink">
+                           <ui:parameters>
+                              <ui:parameter key="ContRelTableRelPartyId" value="${oa.encrypt.ODHzSiteContRelTableVO.RelPartyId}"/>
+                              <ui:parameter key="ContRelTableSubjectName" value="${oa.encrypt.ODHzSiteContRelTableVO.PartyName}"/>
+                              <ui:parameter key="ContRelTableSubjectPartyId" value="${oa.encrypt.ODHzSiteContRelTableVO.PartyId}"/>
+                              <ui:parameter key="ContRelTableSubjectType" value="${oa.ODHzSiteContRelTableVO.PartyType}"/>
+                              <ui:parameter key="ContRelTableViewEvent" value="VIEW"/>
+                              <ui:parameter key="RelationshipId" value="${oa.encrypt.ODHzSiteContRelTableVO.RelationshipId}"/>
+                           </ui:parameters>
+                        </ui:fireAction>
+                     </ui:primaryClientAction>
+                  </oa:link>
+                  <oa:messageStyledText id="Alisa" dataType="VARCHAR2" prompt="Alias" viewName="ODHzSiteContRelTableVO" viewAttr="Alisa" maximumLength="240"/>
+                  <oa:messageStyledText id="JobTitle" dataType="VARCHAR2" prompt="Job Title" viewName="ODHzSiteContRelTableVO" viewAttr="JobTitle" maximumLength="100" sortState="yes"/>
+                  <oa:messageStyledText id="Department" dataType="VARCHAR2" prompt="Department" viewName="ODHzSiteContRelTableVO" viewAttr="Department" maximumLength="60" sortState="yes"/>
+                  <oa:messageStyledText id="PrimaryPhone" dataType="VARCHAR2" prompt="Phone" viewName="ODHzSiteContRelTableVO" viewAttr="PrimaryPhone" maximumLength="4000"/>
+                  <oa:switcher id="ContactRestriction" viewName="ODHzSiteContRelTableVO" viewAttr="ContactRestriction" prompt="Restriction" sortByViewAttr="ContactRestriction" sortState="yes">
+                     <ui:case name="HasRestriction">
+                        <oa:image id="HasRestriction" source="warningind_active.gif" shortDesc="Restriction Exist" imageHeight="24" imageWidth="24"/>
+                     </ui:case>
+                     <ui:case name="NoRestriction">
+                        <oa:image id="NoRestriction" shortDesc="No Restriction" imageHeight="24" imageWidth="24"/>
+                     </ui:case>
+                  </oa:switcher>
+                  <oa:messageStyledText id="Email" dataType="VARCHAR2" prompt="E-mail" viewName="ODHzSiteContRelTableVO" viewAttr="Email" maximumLength="2000" destination="mailto:{#Email}" sortState="yes"/>
+                  <oa:messageStyledText id="PrimaryAddress" dataType="VARCHAR2" prompt="Address" viewName="ODHzSiteContRelTableVO" viewAttr="PrimaryAddress" maximumLength="4000" rendered="false"/>
+                  <oa:messageStyledText id="StartDate" dataType="DATE" prompt="Start Date" viewName="ODHzSiteContRelTableVO" viewAttr="StartDate" sortState="yes"/>
+                  <oa:messageStyledText id="EndDate" dataType="DATE" prompt="End Date" viewName="ODHzSiteContRelTableVO" viewAttr="EndDate"/>
+                  <oa:switcher id="update_switcher" viewName="ODHzSiteContRelTableVO" viewAttr="UpdateImage" prompt="Update">
+                     <ui:case name="UpdateEnabled">
+                        <oa:image id="UpdateEnabled" shortDesc="Update Enabled" source="updateicon_enabled.gif" imageHeight="24" imageWidth="24">
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="UpdateEvent" id="fireAction1">
+                                 <ui:parameters>
+                                    <ui:parameter key="ContRelTableRelPartyId" value="${oa.encrypt.ODHzSiteContRelTableVO.RelPartyId}"/>
+                                    <ui:parameter key="ContRelTableSubjectName" value="${oa.encrypt.ODHzSiteContRelTableVO.PartyName}"/>
+                                    <ui:parameter key="ContRelTableSubjectPartyId" value="${oa.encrypt.ODHzSiteContRelTableVO.PartyId}"/>
+                                    <ui:parameter key="ContRelTableSubjectType" value="${oa.ODHzSiteContRelTableVO.PartyType}"/>
+                                    <ui:parameter key="ContRelTableUpdateEvent" value="UPDATE"/>
+                                    <ui:parameter key="RelationshipId" value="${oa.encrypt.ODHzSiteContRelTableVO.RelationshipId}"/>
+                                 </ui:parameters>
+                              </ui:fireAction>
+                           </ui:primaryClientAction>
+                        </oa:image>
+                     </ui:case>
+                     <ui:case name="UpdateDisabled">
+                        <oa:image id="UpdateDisabled" source="updateicon_disabled.gif" shortDesc="Update Disabled" imageHeight="24" imageWidth="24"/>
+                     </ui:case>
+                  </oa:switcher>
+                  <oa:switcher id="remove_switcher" viewName="ODHzSiteContRelTableVO" viewAttr="DeleteImage" prompt="Remove">
+                     <ui:case name="DeleteEnabled">
+                        <oa:image id="DeleteEnabled" shortDesc="Remove Enabled" source="remove_enabled.gif" imageHeight="24" imageWidth="24">
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="DeleteEvent" id="fireAction2">
+                                 <ui:parameters>
+                                    <ui:parameter key="ExtensionId" value="${oa.encrypt.ODHzSiteContRelTableVO.ExtensionId}"/>
+                                    <ui:parameter key="ContRelName" value="${oa.encrypt.ODHzSiteContRelTableVO.PartyName}"/>
+                                    <ui:parameter key="ContRelRole" value="${oa.encrypt.ODHzSiteContRelTableVO.RoleMeaningSingular}"/>
+                                    <ui:parameter key="ContRelType" value="${oa.ODHzSiteContRelTableVO.PartyType}"/>
+                                    <ui:parameter key="ContRelTableDeleteEvent" value="RelationshipDelete"/>
+                                 </ui:parameters>
+                              </ui:fireAction>
+                           </ui:primaryClientAction>
+                        </oa:image>
+                     </ui:case>
+                     <ui:case name="DeleteDisabled">
+                        <oa:image id="DeleteDisabled" source="remove_disabled.gif" shortDesc="Remove Disabled" imageHeight="24" imageWidth="24"/>
+                     </ui:case>
+                  </oa:switcher>
+               </ui:contents>
+               <ui:tableActions>
+                  <oa:rowLayout id="ContactTabRL">
+                     <ui:contents>
+                        <oa:submitButton id="ContRelTableAddSiteContEvent" text="Add Site Contact" use="/oracle/apps/fnd/attributesets/Buttons/Create" prompt="Add Site Contact"/>
+                        <oa:submitButton id="ASNCreateCtctBtn" text="Create Contact" prompt="Create Contact"/>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:tableActions>
+            </oa:table>
+         </ui:contents>
+      </oa:header>
+   </ui:contents>
+</oa:defaultSingleColumn>

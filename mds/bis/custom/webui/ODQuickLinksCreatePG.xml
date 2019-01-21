@@ -1,0 +1,40 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_1028" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="ODQuickLinksCreatePG" amDefName="od.oracle.apps.xxcrm.bis.custom.server.ODDashboardQuickLinksAM" windowTitle="Create/Update Quick Links" title="Create/Update Shortcuts" warnAboutChanges="true" controllerClass="od.oracle.apps.xxcrm.bis.custom.webui.ODQuickLinksCreateCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:pageButtonBar id="pageButtons">
+               <ui:contents>
+                  <oa:submitButton id="Cancel" serverUnvalidated="true" unvalidated="true" text="Cancel" prompt="Cancel" shortDesc="Select to cancel the data"/>
+                  <oa:submitButton id="Apply" text="Apply" prompt="Apply" shortDesc="Select to save the data"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+            <oa:messageComponentLayout id="MainRN">
+               <ui:contents>
+                  <oa:messageStyledText id="QuickLinkId" dataType="VARCHAR2" prompt="Quicklink Id" viewName="ODDashboardQuickLinksDisplayVO1" viewAttr="QuicklinkId" maximumLength="100" required="yes" styleClass="OraDataText" columns="50" rendered="false"/>
+                  <oa:messageTextInput id="Label" dataType="VARCHAR2" prompt="Label" viewName="ODDashboardQuickLinksDisplayVO1" viewAttr="Label" maximumLength="100" required="yes" styleClass="OraFieldText" columns="50"/>
+                  <oa:messageTextInput id="Description" dataType="VARCHAR2" prompt="Description" viewName="ODDashboardQuickLinksDisplayVO1" viewAttr="Description" maximumLength="100" required="no" styleClass="OraFieldText" columns="50"/>
+                  <oa:messageTextInput id="OrderOfDisplay" dataType="NUMBER" prompt="Order of Display" viewName="ODDashboardQuickLinksDisplayVO1" viewAttr="OrderOfDisplay" required="yes" styleClass="OraFieldText" columns="50"/>
+                  <oa:messageChoice id="Path" dataType="VARCHAR2" prompt="Path" viewName="ODDashboardQuickLinksDisplayVO1" viewAttr="Path" required="yes" styleClass="OraFieldText" pickListViewName="ODRelativeActualPathVO1" pickListDispAttr="Meaning" pickListValAttr="LookupCode"/>
+                  <oa:messageTextInput id="FullPath" dataType="VARCHAR2" prompt="Full path" viewName="ODDashboardQuickLinksDisplayVO1" viewAttr="FullPath" maximumLength="2000" required="yes" styleClass="OraFieldText" columns="50"/>
+                  <oa:messageLayout id="messageLayout" rendered="false">
+                     <ui:contents>
+                        <oa:formValue id="RespKeyFormValue" viewName="ODDashboardQuickLinksDisplayVO1" viewAttr="RespKeyFv"/>
+                     </ui:contents>
+                  </oa:messageLayout>
+                  <oa:messageChoice id="LinkCategory" pickListViewName="ODLinkCategoriesVO1" pickListDispAttr="Meaning" pickListValAttr="LookupCode" viewName="ODDashboardQuickLinksDisplayVO1" viewAttr="CategoryId" prompt="Category" styleClass="OraFieldText" required="yes"/>
+                  <oa:messageLovInput id="RespKey" externalListOfValues="/od/oracle/apps/xxcrm/bis/custom/lov/webui/RespLovRN" viewName="ODDashboardQuickLinksDisplayVO1" viewAttr="ResponsibilityKey" prompt="Responsibility Key" required="yes">
+                     <lovMappings>
+                        <lovMap id="lovMap3" lovItem="ResponsibilityKey" resultTo="RespKey" criteriaFrom="RespKey" useForValidation="yes"/>
+                        <lovMap id="lovMap4" lovItem="ResponsibilityKey" resultTo="RespKeyFormValue" useForValidation="yes"/>
+                     </lovMappings>
+                  </oa:messageLovInput>
+               </ui:contents>
+            </oa:messageComponentLayout>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

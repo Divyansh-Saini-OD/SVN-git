@@ -1,0 +1,7 @@
+create or replace type XX_CDH_TBL_NAME_TYPE as object (tbl_name varchar2(255));
+/
+SHOW ERRORS;
+GRANT ALL ON xxcrm.xx_cdh_tbl_name_type TO APPS with GRANT option;
+
+SHOW ERRORS;
+EXIT;

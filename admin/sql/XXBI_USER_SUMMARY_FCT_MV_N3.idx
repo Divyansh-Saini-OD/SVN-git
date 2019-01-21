@@ -1,0 +1,35 @@
+-- $Id: XXBI_USER_SUMMARY_FCT_MV_N3.idx 69444 2009-04-09 14:44:38Z Indra Varada $
+-- $Rev: 69444 $
+-- $HeadURL: https://svn.na.odcorp.net/od/crm/trunk/xxcrm/admin/sql/XXBI_USER_SUMMARY_FCT_MV_N3.idx $
+-- $Author: Kishore Jena $
+-- $Date: 2010-04-15 10:44:38 -0400 (Thu, 09 Apr 2009) $
+
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :XXBI_USER_SUMMARY_FCT_MV_N3.idx                     |
+-- | Description      :Non Unique Index for Custom Table                   |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |Version  Date          Author              Remarks                     |
+-- |-------  ----------- -----------------    -----------------------------|
+-- | 1.0     05-APR-2010  Kishore Jena        Initial Version              |
+-- +=======================================================================+
+
+
+REM============================================================================================
+REM         Creating Index XXBI_USER_SUMMARY_FCT_MV_N3
+REM============================================================================================
+
+CREATE BITMAP INDEX XXCRM.XXBI_USER_SUMMARY_FCT_MV_N3 ON 
+XXCRM.XXBI_USER_SUMMARY_FCT_MV(STATE_PROVINCE);
+
+EXIT;
+

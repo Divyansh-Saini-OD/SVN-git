@@ -1,0 +1,22 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :XXCRM.XXBI_ENT_TYPES_DIM_MV.syn                        |
+-- | Description      :Synonym for ent types dim                            |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |Version  Date          Author              Remarks                     |
+-- |-------  ----------- -----------------    -----------------------------|
+-- | 1.0     05-MAY-2010  Mohan Kalyanasundaram        Initial Version              |
+-- +=======================================================================+
+
+
+CREATE OR REPLACE SYNONYM APPS.XXBI_ENT_TYPES_DIM_MV FOR XXCRM.XXBI_ENT_TYPES_DIM_MV;
+
+SHOW ERRORS;

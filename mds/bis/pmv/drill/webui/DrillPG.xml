@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+Subversion Info:
+$HeadURL$
+$Rev$
+$Date$
+-->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.12_1330" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad"
+      file-version="$Header: DrillPG.xml 115.2 2006/01/10 10:38 serao noship $">
+   <content>
+      <oa:pageLayout id="DrillPG" controllerClass="od.oracle.apps.xxcrm.bis.pmv.drill.webui.ODDrillPageCO" amDefName="oracle.apps.bis.pmv.drill.server.DrillPageAM" title="Drill Page" securityMode="selfSecured"
+                     rendered="${oa.FunctionSecurity.BIS_PMV_DRILL_SEC_FUNCTION}">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+      </oa:pageLayout>
+   </content>
+</page>

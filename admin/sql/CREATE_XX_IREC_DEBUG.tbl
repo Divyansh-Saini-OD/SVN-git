@@ -1,0 +1,45 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+/*
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAC Consulting Organization                        |
+-- +=======================================================================+
+-- | Name             : CREATE_XX_IREC_DEBUG.tbl                           |
+-- | Description      : Custom table for E1328_BSD_iReceivables_interface  |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- +=======================================================================+
+*/
+
+-- -------------------------------------------------------
+--      Drop Custom Table XX_EXTERNAL_USERS             --
+-- -------------------------------------------------------
+
+-- DROP TABLE XXCRM.XX_IREC_DEBUG;
+
+-- -------------------------------------------------------
+--      Create Custom Table XXCRM.XX_EXTERNAL_USERS     --
+-- -------------------------------------------------------
+
+CREATE TABLE XXCRM.XX_IREC_DEBUG 
+( MSG		VARCHAR2(2000)
+)
+/
+
+------------------------------------------------------
+-- Adding Grants to APPS.                           --
+------------------------------------------------------
+GRANT ALL ON XXCRM.XX_IREC_DEBUG TO APPS;
+
+SHOW ERRORS;
+/
+
+--EXIT;
+

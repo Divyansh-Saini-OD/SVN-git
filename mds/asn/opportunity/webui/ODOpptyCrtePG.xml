@@ -1,0 +1,73 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<jrad:page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.11_1172" xml:lang="en-US" file-version="$Header: OpptyCrtePG.xml 115.28.115200.2 2005/10/13 00:44:41 sekkiral ship $">
+   <jrad:content>
+      <oa:pageLayout id="PageLayoutRN" amDefName="oracle.apps.asn.opportunity.server.OpptyCrteAM" title="Create Opportunity" controllerClass="od.oracle.apps.xxcrm.asn.opportunity.webui.ODOpptyCrteCO" helpTarget="ASN_OpptyCrtePG" function="ASN_OPPTYCRTEPG" regionName="Create Opportunity">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif" prompt="Oracle"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:pageButtonBar id="ASNPageButtonRN" regionName="Page Buttons">
+               <ui:contents>
+                  <oa:submitButton id="ASNPageCnclButton" use="/oracle/apps/fnd/attributesets/Buttons/Cancel" text="Cancel" unvalidated="true" serverUnvalidated="true"/>
+                  <oa:submitButton id="ASNPageApyButton" use="/oracle/apps/fnd/attributesets/Buttons/Apply" text="Apply"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+            <oa:messageComponentLayout id="ASNOpptyCrteRN" rows="3" columns="3" regionName="Opportunity Attributes">
+               <ui:contents>
+                  <oa:messageTextInput id="ASNOpptyCrteNm" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/Description_OpportunityName" required="yes" maximumLength="240" columns="20" viewName="OpportunityCreateVO1" viewAttr="Description"/>
+                  <oa:messageLayout id="ASNOpptyCrteCustRN" prompt="Customer" required="yes">
+                     <ui:contents>
+                        <oa:rowLayout id="ASNOpptyCrteCustRow" regionName="Customer Attribute">
+                           <ui:contents>
+                              <oa:messageTextInput id="ASNOpptyCrteCust" viewName="OpportunityCreateVO1" viewAttr="PartyName" styleClass="OraDataText" disabled="true" shortDesc="Customer" columns="20"/>
+                              <oa:submitButton id="ASNCustSelButton" text="Select" prompt="Select" serverUnvalidated="true" unvalidated="true"/>
+                           </ui:contents>
+                        </oa:rowLayout>
+                     </ui:contents>
+                  </oa:messageLayout>
+                  <oa:messageLayout id="ASNOppCreateAddrLyt" prompt="Address">
+                     <ui:contents>
+                        <oa:rowLayout id="ASNOppCreateAddrLytRow" regionName="Create Opportunity - Address">
+                           <ui:contents>
+                              <oa:messageTextInput id="ASNOppCreateAddr" disabled="true" viewName="OpportunityCreateVO1" viewAttr="AddressDetails" rows="2" columns="20" styleClass="OraDataText" shortDesc="Address"/>
+                              <oa:submitButton id="ASNAddrSelButton" text="Select" prompt="Select" serverUnvalidated="true" unvalidated="true"/>
+                           </ui:contents>
+                        </oa:rowLayout>
+                     </ui:contents>
+                  </oa:messageLayout>
+                  <oa:messageChoice id="ASNOpptyCrteCurr" pickListViewDef="oracle.apps.asn.common.poplist.server.CurrenciesVO" pickListValAttr="CurrencyCode" pickListDispAttr="CurrencyName" viewName="OpportunityCreateVO1" viewAttr="CurrencyCode" prompt="Currency" required="yes" allowBlankValue="false"/>
+                  <oa:messageLayout id="ASNOpptyCrteSrcPromIdRN">
+                     <ui:contents>
+                        <oa:formValue id="ASNOpptyCrteSrcPromId" viewName="OpportunityCreateVO1" viewAttr="SourcePromotionId" dataType="NUMBER" adminCustomizable="false"/>
+                     </ui:contents>
+                  </oa:messageLayout>
+                  <oa:messageChoice id="ASNOpptyCrteMeth" use="/oracle/apps/asn/admin/attributesets/SalesMethodology/SalesMethodologyName" dataType="NUMBER" pickListViewDef="oracle.apps.asn.common.poplist.server.SalesMethodologiesVO" pickListValAttr="SalesMethodologyId" pickListDispAttr="SalesMethodologyName" viewName="OpportunityCreateVO1" viewAttr="SalesMethodologyId"/>
+                  <oa:messageChoice id="ASNOpptyCrteWinProb" use="/oracle/apps/asn/admin/attributesets/Probability/ProbabilityValue" dataType="NUMBER" viewName="OpportunityCreateVO1" viewAttr="WinProbability" pickListViewDef="oracle.apps.asn.opportunity.poplist.server.OpportunityWinProbabilitiesVO" pickListValAttr="ProbabilityValue" pickListDispAttr="ProbabilityValue" shortDesc="Win Probability" required="yes" allowBlankValue="false"/>
+                  <oa:messageChoice id="ASNOpptyCrteStatus" use="/oracle/apps/asn/admin/attributesets/Status/Meaning" required="yes" pickListViewDef="oracle.apps.asn.opportunity.poplist.server.OpportunityOpenStatusesVO" pickListValAttr="StatusCode" pickListDispAttr="Meaning" viewAttr="Status" viewName="OpportunityCreateVO1" allowBlankValue="false"/>
+                  <oa:messageTextInput id="ASNOpptyCrteDate" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/DecisionDate" dataType="DATE" required="yes" viewName="OpportunityCreateVO1" viewAttr="DecisionDate" tipType="dateFormat"/>
+                  <oa:messageChoice id="ASNOpptyCrteChnl" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/SalesChannel" pickListViewDef="oracle.apps.asn.common.poplist.server.SalesChannelsVO" pickListValAttr="LookupCode" pickListDispAttr="Meaning" viewName="OpportunityCreateVO1" viewAttr="ChannelCode"/>
+                  <oa:messageLovInput id="ASNOpptyCrteAvtNm" prompt="Source" externalListOfValues="/oracle/apps/asn/common/lov/webui/SrcLovRN" viewName="OpportunityCreateVO1" viewAttr="SourceName">
+                     <jrad:lovMappings>
+                        <jrad:lovMap id="ASNSrcNmToLovNm" lovItem="ASNSrcLovNm" criteriaFrom="ASNOpptyCrteAvtNm" requiredForLOV="false" useForValidation="yes"/>
+                        <jrad:lovMap id="ASNLovNmToSrcNm" lovItem="ASNSrcLovNm" resultTo="ASNOpptyCrteAvtNm" useForValidation="yes"/>
+                        <jrad:lovMap id="ASNLovSrcPromIdToSrcPromId" lovItem="ASNSrcLovSrcPromId" resultTo="ASNOpptyCrteSrcPromId" useForValidation="yes"/>
+                     </jrad:lovMappings>
+                  </oa:messageLovInput>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:hideShowHeader id="ASNOpptyCrteFlexRN" shortDesc="Opportunity Create Flex Field" rendered="false" regionName="Additional Information Layout" text="Additional Information">
+               <ui:contents>
+                  <oa:flex id="ASNOpptyCrteFlex" flexFieldAppShortName="AS" flexName="AS_LEADS" viewName="OpportunityCreateVO1" shortDesc="Additional Information"/>
+               </ui:contents>
+            </oa:hideShowHeader>
+            <oa:stackLayout id="ASNReqEvtRN" extends="/oracle/apps/asn/common/fwk/webui/ASNReqEvtRN" regionName="Opportunity Create"/>
+         </ui:contents>
+         <ui:productBranding>
+            <oa:image id="ASNBrandImage" source="ASNBRAND.gif" shortDesc="Sales" prompt="Sales"/>
+         </ui:productBranding>
+         <ui:pageStatus>
+            <oa:tableLayout id="ASNOpptyCrtePageStatusRN" extends="/oracle/apps/fnd/framework/webui/OAReqFieldDescRG" hAlign="start"/>
+         </ui:pageStatus>
+      </oa:pageLayout>
+   </jrad:content>
+</jrad:page>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataTemplate name="XX_CRM_TEMP_CREDIT_LIMIT" defaultPackage="" dataSourceRef="">
+	<properties>
+		<property name="include_parameters" value="true"/>
+		<property name="include_null_Element" value="true"/>
+		<property name="db_fetch_size" value="300"/>
+	</properties>
+	<parameters>
+		<parameter name="P_ORACLE_CUSTOMER_NUMBER" dataType="varchar2" defaultValue=""/>
+		<parameter name="P_OPERATING_UNIT" dataType="number" defaultValue=""/>
+		<parameter name="P_FROM_DATE" dataType="varchar2" defaultValue=""/>
+		<parameter name="P_TO_DATE" dataType="varchar2" defaultValue=""/>
+	</parameters>
+<dataQuery>
+<sqlStatement name="Q_DATA" dataSourceRef="">
+<![CDATA[ SELECT  HCA.ACCOUNT_NUMBER ORACLE_CUSTOMER_NUMBER,
+                  HCA.ACCOUNT_NAME   ORACLE_CUSTOMER_NAME,
+				  XCCA.N_EXT_ATTR2   TEMPORARY_CREDIT_LIMIT,
+                  NVL(XCCA.N_EXT_ATTR3,HCPA.TRX_CREDIT_LIMIT)   ORIGINAL_CREDIT_LIMIT,
+                  XCCA.D_EXT_ATTR1   START_DATE,
+                  XCCA.D_EXT_ATTR2   END_DATE
+            FROM  HZ_CUST_ACCOUNTS HCA,
+                  XX_CDH_CUST_ACCT_EXT_B XCCA,
+                  HZ_CUST_PROFILE_AMTS HCPA
+           WHERE  HCA.CUST_ACCOUNT_ID  = XCCA.CUST_ACCOUNT_ID
+             AND  XCCA.ATTR_GROUP_ID   = (SELECT ATTR_GROUP_ID FROM EGO_ATTR_GROUPS_V 
+                                           WHERE ATTR_GROUP_TYPE = 'XX_CDH_CUST_ACCOUNT' 
+                                             AND ATTR_GROUP_NAME = 'TEMPORARY_CREDITLIMIT')
+             AND  XCCA.N_EXT_ATTR4 = HCPA.CUST_ACCOUNT_PROFILE_ID
+             AND  XCCA.N_EXT_ATTR1 = HCPA.CUST_ACCT_PROFILE_AMT_ID
+			 AND  HCA.STATUS = 'A'
+             AND  HCA.CUST_ACCOUNT_ID = NVL(:P_ORACLE_CUSTOMER_NUMBER,HCA.CUST_ACCOUNT_ID)
+			 AND  HCPA.CURRENCY_CODE = DECODE(:P_OPERATING_UNIT,404,'USD',403,'CAD',NULL)
+             AND  TRUNC(XCCA.D_EXT_ATTR2)    >= TRUNC(to_date(:P_FROM_DATE,'DD-MON-YYYY HH24:MI:SS'))
+			 AND  TRUNC(XCCA.D_EXT_ATTR2)   BETWEEN TRUNC(to_date(:P_FROM_DATE,'DD-MON-YYYY HH24:MI:SS')) AND NVL(TRUNC(to_date(:P_TO_DATE,'DD-MON-YYYY HH24:MI:SS')),TRUNC(XCCA.D_EXT_ATTR2))
+	       ORDER BY XCCA.D_EXT_ATTR2
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_DATA" source="Q_DATA" groupFilter="">
+	 <element name="C_ORACLE_CUSTOMER_NUMBER" value="ORACLE_CUSTOMER_NUMBER" function=""/>
+     <element name="C_ORACLE_CUSTOMER_NAME" value="ORACLE_CUSTOMER_NAME" function=""/>
+	 <element name="C_TEMPORARY_CREDIT_LIMIT" value="TEMPORARY_CREDIT_LIMIT" function=""/>
+	 <element name="C_ORIGINAL_CREDIT_LIMIT" value="ORIGINAL_CREDIT_LIMIT" function=""/> 
+	 <element name="C_START_DATE" value="START_DATE" function=""/>
+	 <element name="C_END_DATE" value="END_DATE" function=""/>
+</group>
+</dataStructure>
+</dataTemplate>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

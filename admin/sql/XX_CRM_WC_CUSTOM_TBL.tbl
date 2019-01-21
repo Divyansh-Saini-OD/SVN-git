@@ -1,0 +1,316 @@
+   SET VERIFY OFF
+   WHENEVER SQLERROR CONTINUE
+                  
+CREATE TABLE xxcrm.xx_crm_wcelg_cust (
+                  party_id                        NUMBER(15)   
+                , cust_account_id                 NUMBER(15)   NOT NULL
+                , account_number                  VARCHAR2(30) 
+                , site_use_id                     NUMBER(15)   
+                , int_source                      VARCHAR2(2)  
+                , extraction_date                 DATE         
+                , cust_mast_head_ext              VARCHAR2(1)
+                , cust_addr_ext                   VARCHAR2(1)
+                , cust_cont_ext                   VARCHAR2(1)
+                , cust_hier_ext                   VARCHAR2(1)
+                , sls_per_ext                     VARCHAR2(1)
+                , ar_trans_ext                    VARCHAR2(1)
+                , rec_app_ext                     VARCHAR2(1)
+                , adj_ext                         VARCHAR2(1)
+                , cash_rec_ext                    VARCHAR2(1)
+                , ps_ext                          VARCHAR2(1)
+                , notes_processed_to_wc           VARCHAR2(1)
+                , last_update_date                DATE         NOT NULL
+                , last_updated_by                 NUMBER(15)   NOT NULL
+                , creation_date                   DATE         NOT NULL
+                , created_by                      NUMBER(15)   NOT NULL
+                , request_id                      NUMBER(15)   
+                , program_id                      NUMBER(15)  
+);
+                  
+CREATE TABLE xxcrm.xx_crm_open_bal_temp (
+                  party_id                        NUMBER(15)   
+                , cust_account_id                 NUMBER(15)   NOT NULL
+                , account_number                  VARCHAR2(30) 
+                , site_use_id                     NUMBER(15)   
+                , int_source                      VARCHAR2(2)  
+                , extraction_date                 DATE         
+                , cust_mast_head_ext              VARCHAR2(1)
+                , cust_addr_ext                   VARCHAR2(1)
+                , cust_cont_ext                   VARCHAR2(1)
+                , cust_hier_ext                   VARCHAR2(1)
+                , sls_per_ext                     VARCHAR2(1)
+                , ar_trans_ext                    VARCHAR2(1)
+                , rec_app_ext                     VARCHAR2(1)
+                , adj_ext                         VARCHAR2(1)
+                , cash_rec_ext                    VARCHAR2(1)
+                , ps_ext                          VARCHAR2(1)
+                , notes_processed_to_wc           VARCHAR2(1)
+                , last_update_date                DATE         NOT NULL
+                , last_updated_by                 NUMBER(15)   NOT NULL
+                , creation_date                   DATE         NOT NULL
+                , created_by                      NUMBER(15)   NOT NULL
+                , request_id                      NUMBER(15)   
+                , program_id                      NUMBER(15)   
+);
+                  
+CREATE TABLE xxcrm.xx_crm_hierarchy_temp (
+                  party_id                        NUMBER(15)   
+                , cust_account_id                 NUMBER(15)   NOT NULL
+                , account_number                  VARCHAR2(30) 
+                , site_use_id                     NUMBER(15)   
+                , int_source                      VARCHAR2(2)  
+                , extraction_date                 DATE         
+                , cust_mast_head_ext              VARCHAR2(1)
+                , cust_addr_ext                   VARCHAR2(1)
+                , cust_cont_ext                   VARCHAR2(1)
+                , cust_hier_ext                   VARCHAR2(1)
+                , sls_per_ext                     VARCHAR2(1)
+                , ar_trans_ext                    VARCHAR2(1)
+                , rec_app_ext                     VARCHAR2(1)
+                , adj_ext                         VARCHAR2(1)
+                , cash_rec_ext                    VARCHAR2(1)
+                , ps_ext                          VARCHAR2(1)
+                , notes_processed_to_wc           VARCHAR2(1)
+                , last_update_date                DATE         NOT NULL
+                , last_updated_by                 NUMBER(15)   NOT NULL
+                , creation_date                   DATE         NOT NULL
+                , created_by                      NUMBER(15)   NOT NULL
+                , request_id                      NUMBER(15)   
+                ,program_id                      NUMBER(15)   
+);
+                  
+CREATE TABLE xxcrm.xx_crm_common_delta 
+                  ( content_type                 VARCHAR2(30)
+                ,party_id                       NUMBER(15)
+                ,cust_account_id                NUMBER(15)
+                ,cust_account_profile_id        NUMBER(15)
+                ,cust_acct_profile_amt_id       NUMBER(15)
+                ,currency_code                  VARCHAR2(15)
+                ,party_site_id                  NUMBER(15)
+                ,location_id                    NUMBER(15)
+                ,party_site_number              VARCHAR2(60)
+                ,cust_acct_site_id              NUMBER(15)
+                ,site_use_id                    NUMBER(15)
+                ,site_use_code                  VARCHAR2(15)
+                ,orig_system_reference          VARCHAR2(60)
+                ,contact_point_id               NUMBER(15)
+                ,org_contact_id                 NUMBER(15)
+                ,group_member_id                NUMBER(15)
+                ,group_id                       NUMBER(15)
+                ,resource_id                    NUMBER(15)
+                ,person_id                      NUMBER(15)
+                ,party_relationship_id          NUMBER(15)
+                ,person_party_id                NUMBER(15)
+                ,named_acct_terr_entity_id      NUMBER(15)
+                ,named_acct_terr_id             NUMBER(15)
+                ,entity_type                    VARCHAR2(60)
+                ,entity_id                      NUMBER(15)
+                ,last_update_date               DATE         NOT NULL
+                ,last_updated_by                NUMBER(15)   NOT NULL
+                ,creation_date                  DATE         NOT NULL
+                ,created_by                     NUMBER(15)   NOT NULL
+                ,request_id                     NUMBER(15)   
+                ,program_id                     NUMBER(15)  
+);
+                  
+CREATE TABLE xxcrm.xx_crm_common_delta_details
+                  (
+                 batch_id              NUMBER(15)
+                ,parent_program_id     NUMBER(15)
+                ,parent_request_id     NUMBER(15)
+                ,thread_num            NUMBER(15)
+                ,child_program_name    VARCHAR2(60)
+                ,child_program_id      NUMBER(15)
+                ,child_request_id      NUMBER(15)
+                ,from_cust_account_id  NUMBER(15)
+                ,to_cust_account_id    NUMBER(15)
+                ,from_run_date         VARCHAR2(20)
+                ,to_run_date           VARCHAR2(20)
+                ,status                VARCHAR2(20)
+                ,last_updated_by       NUMBER(15)
+                ,creation_date         DATE
+                ,created_by            NUMBER(15)
+                ,last_update_date      DATE 
+);
+                  
+CREATE TABLE xxcrm.xx_crm_custmast_head_stg
+                  (
+                   cust_account_id          NUMBER(15)
+                  ,customer_number          VARCHAR2(30)
+                  ,organization_number      VARCHAR2(30)
+                  ,customer_number_aops     VARCHAR2(240)
+                  ,customer_name            VARCHAR2(360)
+                  ,status                   VARCHAR2(2)
+                  ,customer_type            VARCHAR2(30)
+                  ,customer_class_code      VARCHAR2(30)
+                  ,sales_channel_code       VARCHAR2(30)
+                  ,sic_code                 VARCHAR2(30)
+                  ,cust_category_code       VARCHAR2(30)
+                  ,duns_number              NUMBER      
+                  ,sic_code_type            VARCHAR2(30)
+                  ,collector_id             NUMBER(15)  
+                  ,collector_name           VARCHAR2(30)
+                  ,credit_checking          VARCHAR2(150)
+                  ,credit_rating            VARCHAR2(30)
+                  ,account_established_date   VARCHAR2(150)
+                  ,account_credit_limit_usd   NUMBER
+                  ,account_credit_limit_cad   NUMBER
+                  ,order_credit_limit_usd     NUMBER      
+                  ,order_credit_limit_cad     NUMBER      
+                  ,credit_classification     VARCHAR2(30)
+                  ,exposure_analysis_segment VARCHAR2(30)
+                  ,risk_code                 VARCHAR2(30)
+                  ,source_of_creation_for_credit  VARCHAR2(150)
+                  ,po_value                    VARCHAR2(150)
+                  ,po                          VARCHAR2(150)
+                  ,release_value               VARCHAR2(150)
+                  ,release                     VARCHAR2(150)
+                  ,cost_center_value           VARCHAR2(150)
+                  ,cost_center                 VARCHAR2(150)
+                  ,desktop_value               VARCHAR2(150)
+                  ,desktop                     VARCHAR2(150)
+                  ,last_updated_by             NUMBER(15)
+                  ,creation_date               DATE  
+                  ,request_id                  NUMBER(15)
+                  ,created_by                  NUMBER(15)
+                  ,last_update_date            DATE  
+                  ,program_id                  NUMBER(15)
+);
+                  
+CREATE TABLE xxcrm.xx_crmar_int_log
+                  (program_run_id          NUMBER
+                  ,program_name            VARCHAR2(240)
+                  ,program_short_name      VARCHAR2(240)
+                  ,module_name             VARCHAR2(240)
+                  ,Program_run_date        DATE
+                  ,filename                VARCHAR2(100)
+                  ,total_files             NUMBER
+                  ,total_records           NUMBER
+                  ,status                  VARCHAR2(30)
+                  ,message                 VARCHAR2(30)
+);
+
+CREATE TABLE xxcrm.xx_crmar_file_log
+                  (program_id              NUMBER
+                  ,program_name            VARCHAR2(240)
+                  ,Program_run_date        DATE
+                  ,filename                VARCHAR2(100)
+                  ,Total_records           NUMBER
+                  ,status                  VARCHAR2(30)
+);
+ 
+CREATE TABLE xxcrm.xx_crm_custaddr_stg (
+site_use_id                    NUMBER(15)
+,org_id                          NUMBER(15)
+,customer_number                 VARCHAR2(30)
+,address1                        VARCHAR2(240)
+,address2                        VARCHAR2(240)
+,address3                        VARCHAR2(240)
+,address4                        VARCHAR2(240)
+,postal_code                     VARCHAR2(60)
+,city                            VARCHAR2(60)
+,state                           VARCHAR2(60)
+,province                        VARCHAR2(60)
+,country                         VARCHAR2(60)
+,party_site_number               VARCHAR2(30)
+,primary_flag                    VARCHAR2(1)
+,sequence                        VARCHAR2(240)
+,orig_system_reference           VARCHAR2(240)
+,location                        VARCHAR2(40)
+,collector_id                    NUMBER(15)
+,collector_name                  VARCHAR2(30)
+,dunning_letters                 VARCHAR2(1)
+,send_statements                 VARCHAR2(1)
+,credit_limit_usd                NUMBER
+,credit_limit_cad                NUMBER
+,profile_class_name              VARCHAR2(30)
+,consolidated_billing            VARCHAR2(1)
+,cons_billing_formats_type       VARCHAR2(30)
+,bill_in_the_box                 VARCHAR2(150)
+,billing_currency                VARCHAR2(150)
+,dunning_delivery                VARCHAR2(150)
+,statement_delivery              VARCHAR2(150)
+,taxware_entity_code             VARCHAR2(150)
+,remit_to_sales_channel          VARCHAR2(150)
+,edi_location                    VARCHAR2(40)
+,addressee                       VARCHAR2(360)
+,identifying_address             VARCHAR2(1)
+,acct_site_status                VARCHAR2(1)
+,site_use_status                 VARCHAR2(1)
+,site_use_code                   VARCHAR2(30)
+,last_updated_by                 NUMBER(15) NOT NULL
+,creation_date                   DATE       NOT NULL
+,request_id                      NUMBER(15)     
+,created_by                      NUMBER(15) NOT NULL
+,last_update_date                DATE   NOT NULL
+,program_id                      NUMBER(15)
+);
+
+CREATE TABLE xxcrm.xx_crm_custcont_stg
+(
+  contact_id                 NUMBER(15),
+  cust_account_id            NUMBER(15),
+  site_use_id                NUMBER(15),
+  contact_number             VARCHAR2(30),
+  last_name                  VARCHAR2(150),
+  first_name                 VARCHAR2(150),
+  job_title                  VARCHAR2(100),
+  email_address              VARCHAR2(2000),
+  purpose                    VARCHAR2(30),
+  primary_flag               VARCHAR2(1),
+  contact_role               VARCHAR2(30),
+  contact_role_primary_flag  VARCHAR2(1),
+  phone_id                   NUMBER(15),
+  contact_point_type         VARCHAR2(60),
+  phone_type                 VARCHAR2(30),
+  country_code               VARCHAR2(10),
+  area_code                  VARCHAR2(10),
+  phone_number               VARCHAR2(40),
+  extension                  VARCHAR2(20),
+  last_updated_by            NUMBER(15),
+  creation_date              DATE,
+  request_id                 NUMBER(15),
+  created_by                 NUMBER(15),
+  last_update_date           DATE,
+  program_id                 NUMBER(15)
+);                  
+
+CREATE TABLE xxcrm.xx_crm_custhier_stg
+(
+  account_number        VARCHAR2(30),
+  cust_account_id       NUMBER(15),
+  parent_account_number VARCHAR2(30),
+  start_date            DATE,
+  end_date              DATE,
+  "CREATED BY"          VARCHAR2(240),
+  "CREATION DATE"       DATE,
+  "LAST UPDATED BY"     VARCHAR2(240),
+  "LAST UPDATE DATE"    DATE,
+  party_type            VARCHAR2(60),
+  relationship_type     VARCHAR2(60),
+  relation              VARCHAR2(60),
+  directional_flag      VARCHAR2(2),
+  object                VARCHAR2(60),
+  last_updated_by       NUMBER(15),
+  creation_date         DATE,
+  request_id            NUMBER(15),
+  created_by            NUMBER(15),
+  last_update_date      DATE,
+  program_id            NUMBER(15)
+);
+
+CREATE TABLE xxcrm.xx_crm_custsls_stg
+(
+  salesrep_id             NUMBER(15),
+  salesrep_name           VARCHAR2(120),
+  salesrep_email_address  VARCHAR2(60),
+  dsm_name                VARCHAR2(120),
+  dsm_email_adress        VARCHAR2(60),
+  bill_to_site_id         NUMBER(15),
+  last_updated_by         NUMBER(15),
+  creation_date           DATE,
+  request_id              NUMBER(15),
+  created_by              NUMBER(15),
+  last_update_date        DATE,
+  program_id              NUMBER(15)
+);

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<JavaBean xmlns="http://xmlns.oracle.com/adfm/beanmodel" version="11.1.1.56.60"
+          id="ContractPriceResultSet"
+          Package="model.ContractInfo.process_Result"
+          BeanClass="model.ContractInfo.process_Result.ContractPriceResultSet"
+          isJavaBased="false">
+  <Attribute Name="ProductName" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="ProductCode" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="SkuPrice" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="ContractId" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="AddressSeq" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="Message" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="DataSource" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="fetchTime" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+</JavaBean>

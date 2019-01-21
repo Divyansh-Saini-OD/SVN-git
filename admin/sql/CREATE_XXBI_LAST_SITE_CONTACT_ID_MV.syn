@@ -1,0 +1,38 @@
+
+WHENEVER SQLERROR CONTINUE;
+-- $Id:$
+-- $Rev:$
+-- $HeadURL:$
+-- $Author:$
+-- $Date:$
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :XXBI_LAST_SITE_CONTACT_ID_MV.syn               |
+-- | Description      :Synonym to XXBI_LAST_SITE_CONTACT_ID_MV Table         |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |1.0       30-Mar-2010  Prasad Devar    Initial draft                |
+-- +=======================================================================+
+
+
+
+CREATE OR REPLACE SYNONYM APPS.XXBI_LAST_SITE_CONTACT_ID_MV FOR XXCRM.XXBI_LAST_SITE_CONTACT_ID_MV;
+
+SHOW ERRORS;
+EXIT;
+
+EXIT;
+/

@@ -1,0 +1,156 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- $Header: ODOrgViewPG.xml $ -->
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<jrad:page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.9_1057" xml:lang="en-US" file-version="$Header$">
+   <jrad:content>
+      <oa:pageLayout amDefName="od.oracle.apps.xxcrm.asn.common.customer.server.ODOrgViewAM" id="PageLayoutRG" controllerClass="od.oracle.apps.xxcrm.asn.common.customer.webui.ODOrgViewCO" helpTarget="ASN_OrgViewPG" function="ASN_ORGVIEWPG">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:pageButtonBar id="ASNPageButtonRN">
+               <ui:contents>
+                  <oa:submitButton id="ASNPageCnclBtn" text="Cancel" use="/oracle/apps/fnd/attributesets/Buttons/Cancel"/>
+                  <oa:submitButton id="ASNPageFullUpdBtn" text="Update Customer Details" use="/oracle/apps/asn/common/attributesets/Buttons/UpdateCustDetails"/>
+                  <oa:messageChoice id="ASNPageCustAct" prompt="Action" pickListValAttr="LookupCode" pickListDispAttr="Meaning" defaultValue="CREATE_LEAD" pickListViewName="LookupsVO" allowBlankValue="false"/>
+                  <oa:submitButton id="ASNPageGoBtn" text="Go" prompt="Go"/>
+                  <oa:submitButton id="ASNPageApyBtn" text="Apply" use="/oracle/apps/fnd/attributesets/Buttons/Apply"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+            <oa:tableLayout id="ASNOrgViewTLRN" adminCustomizable="true" width="100%">
+               <ui:contents>
+                  <oa:rowLayout id="ASNOrgHdrRow" vAlign="top">
+                     <ui:contents>
+                        <oa:cellFormat id="ASNOrgHdrCustInfoCell" width="50%">
+                           <ui:contents>
+                              <oa:defaultSingleColumn id="ASNOrgHdrCustInfoRN" extends="/oracle/apps/ar/hz/components/party/organization/webui/HzPuiOrgBasicInfo"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="ASNOrgHdrFinInfoCell" width="50%">
+                           <ui:contents>
+                              <oa:defaultSingleColumn id="ASNOrgHdrFinInfoRN" extends="/oracle/apps/ar/hz/components/party/organization/webui/HzPuiOrgFinancialInfo"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="ASNOrgHdrSecRow" vAlign="top">
+                     <ui:contents>
+                        <oa:cellFormat id="ASNOrgHdrCtctInfoCell" width="50%">
+                           <ui:contents>
+                              <oa:defaultSingleColumn id="ASNOrgHdrCtctInfoRG" extends="/oracle/apps/ar/hz/components/party/organization/webui/HzPuiOrgContactInfo" text="Organization Contact Information"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="ASNOrgHdrProfileInfoCell" width="50%">
+                           <ui:contents>
+                              <oa:defaultSingleColumn id="ASNOrgHdrProfileInfoRG" extends="/oracle/apps/ar/hz/components/party/organization/webui/HzPuiOrgProfileInfo"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="ASNOrgCtctsInfoRow" vAlign="top">
+                     <ui:contents>
+                        <oa:cellFormat id="ASNOrgCtctsInfoCell">
+                           <ui:contents>
+                              <oa:header id="ASNOrgCtctsInfoRN" extends="/oracle/apps/ar/hz/components/contact/webui/HzPuiContactRelTableComponent.HzPuiContactRelTableReg"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="ASNOrgAddrBookRow" vAlign="top" rendered="false">
+                     <ui:contents>
+                        <oa:cellFormat id="ASNOrgAddrCell" width="50%">
+                           <ui:contents>
+                              <oa:header id="ASNOrgAddrRN" extends="/oracle/apps/ar/hz/components/address/webui/HzPuiAddressView"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="ASNOrgPhnCell" width="50%">
+                           <ui:contents>
+                              <oa:header id="ASNOrgPhnRN" extends="/oracle/apps/ar/hz/components/contactpoints/webui/HzPuiContactPointPhoneTable"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="ASNOrgNotesRow" vAlign="top">
+                     <ui:contents>
+                        <oa:cellFormat id="ASNOrgNotesCell">
+                           <ui:contents>
+                              <oa:header id="ASNOrgNotesHdrRN" adminCustomizable="false" use="/oracle/apps/asn/common/attributesets/Transient/Notes_Hdr">
+                                 <ui:contents>
+                                    <oa:stackLayout id="ASNOrgNotesRN" extends="/oracle/apps/asn/common/webui/ASNNotesRN"/>
+                                 </ui:contents>
+                              </oa:header>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="ASNProdUnderCntrRow" vAlign="top" rendered="false">
+                     <ui:contents>
+                        <oa:cellFormat id="ASNProdUnderCntrCell">
+                           <ui:contents>
+                              <oa:header id="ASNPrdtUnderCntrRN" extends="/oracle/apps/asn/common/webui/PrdtCntrRN"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="ASNOrgBussActRow" vAlign="top">
+                     <ui:contents>
+                        <oa:cellFormat id="ASNOrgBussActCell">
+                           <ui:contents>
+                              <oa:header id="ASNOrgBussActHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/BusActivities_Hdr">
+                                 <ui:contents>
+                                    <oa:stackLayout id="ASNOrgBussActRN" extends="/oracle/apps/asn/common/customer/webui/BusinessActivitiesRN"/>
+                                 </ui:contents>
+                              </oa:header>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="ASNOrgAttchRow">
+                     <ui:contents>
+                        <oa:cellFormat id="ASNOrgAttchCell">
+                           <ui:contents>
+                              <oa:hideShowHeader id="ASNOrgAttchHdrRN" text="Attachments" disclosed="true">
+                                 <ui:contents>
+                                    <oa:attachmentTable id="ASNOrgAttchTable" viewName="PartyVO" searchRegionRendered="false" text="Attachments">
+                                       <oa:entityMappings>
+                                          <oa:entityMap id="ASNOrgAttchEntityMap" entityId="HZ_PARTIES">
+                                             <oa:primaryKeys>
+                                                <oa:primaryKey id="ASNOrgAttchPrimaryKey" viewAttr="PartyId"/>
+                                             </oa:primaryKeys>
+                                             <oa:categoryMappings>
+                                                <oa:categoryMap id="ASNOrgAttchCategoryMap" categoryName="MISC"/>
+                                             </oa:categoryMappings>
+                                          </oa:entityMap>
+                                       </oa:entityMappings>
+                                    </oa:attachmentTable>
+                                 </ui:contents>
+                              </oa:hideShowHeader>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:stackLayout id="ASNOrgAttchContextHolderRN">
+                     <ui:contents>
+                        <oa:messageComponentLayout id="ASNOrgAttchContextRN" columns="2" rows="2" width="100%">
+                           <ui:contents>
+                              <oa:messageStyledText id="Customer" viewName="PartyVO" viewAttr="PartyName" prompt="Customer" styleClass="OraDataText"/>
+                              <oa:messageStyledText id="Status" viewName="PartyVO" viewAttr="Status" prompt="Status" styleClass="OraDataText"/>
+                              <oa:messageStyledText id="Alias" viewName="PartyVO" viewAttr="Alias" prompt="Alias" styleClass="OraDataText"/>
+                              <oa:messageStyledText id="RegistryId" viewName="PartyVO" viewAttr="RegistryId" prompt="Registry Id" styleClass="OraDataText"/>
+                           </ui:contents>
+                        </oa:messageComponentLayout>
+                     </ui:contents>
+                  </oa:stackLayout>
+               </ui:contents>
+            </oa:tableLayout>
+            <oa:stackLayout id="ASNReqEvtRN" extends="/oracle/apps/asn/common/fwk/webui/ASNReqEvtRN"/>
+         </ui:contents>
+         <ui:productBranding>
+            <oa:image id="ASNBrandImage" source="ASNBRAND.gif" shortDesc="Sales"/>
+         </ui:productBranding>
+         <ui:returnNavigation>
+            <oa:link id="ASNOrgViewRetLnk"/>
+         </ui:returnNavigation>
+      </oa:pageLayout>
+   </jrad:content>
+</jrad:page>

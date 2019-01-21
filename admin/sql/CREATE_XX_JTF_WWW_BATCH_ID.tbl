@@ -1,0 +1,28 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_JTF_WWW_BATCH_ID.tbl                      |
+-- | Description      :I2043 Leads_from_WWW_and_Jmillennia                 |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      15-Feb-2008 David Woods        Initial version                |
+-- +=======================================================================+ 
+
+CREATE TABLE XXCRM.XX_JTF_WWW_BATCH_ID
+  (BATCH_ID         NUMBER
+  ,BATCH_DESCR      VARCHAR2(50)
+  ,CREATE_DATE      DATE
+);
+
+Grant all on XXCRM.XX_JTF_WWW_BATCH_ID to APPS;
+

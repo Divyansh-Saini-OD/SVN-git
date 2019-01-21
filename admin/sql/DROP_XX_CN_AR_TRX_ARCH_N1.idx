@@ -1,0 +1,36 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : DROP_XX_CN_AR_TRX_ARCH_N1.idx                       |
+-- | Rice ID     : E1004G_CustomCollections_(Archiving)                |
+-- | Description : XX_CN_AR_TRX_ARCH Table - Non Unique Index Drop     |
+-- |               Script                                              |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1A 08-Nov-2007  Hema Chikkanna   Initial draft version       |
+-- |                                                                   |
+-- +===================================================================+
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+PROMPT
+PROMPT Dropping Existing Non Unique INDEX XX_CN_AR_TRX_ARCH_N1
+PROMPT
+
+DROP INDEX xx_cn_ar_trx_arch_n1;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

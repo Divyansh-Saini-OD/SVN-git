@@ -1,0 +1,131 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1550" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="PageLayoutRN" controllerClass="od.oracle.apps.xxcrm.customer.account.webui.ODContractTemplateSearchCO" amDefName="od.oracle.apps.xxcrm.customer.account.server.ODContractTemplateAM" windowTitle="Search Contract Template Page" title="Search Contract Template">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:query id="QueryRN" mode="autoCustomizationCriteria">
+               <ui:contents>
+                  <oa:advancedTable id="ResultsTable" viewName="ODContractTemplatesVO1" width="100%">
+                     <ui:contents>
+                        <oa:column id="TempNameCol">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader1" prompt="Template Name"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageStyledText id="TemplateName" viewAttr="TemplateName" queryable="true" destination="OA.jsp?OAFunc=XX_ASN_CONT_TEMP_CU&amp;retainAM=Y&amp;mode=DETAILS&amp;templateId={@ContractTemplateId}"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="RevenueBandCol">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader122" prompt="Pricing Template"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageStyledText id="RevenueBand" viewAttr="Rev" queryable="true"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="SalesRoleCol">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader1221" prompt="Sales Role"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageChoice id="SalesRole" viewAttr="SalesRole" queryable="true" pickListViewDef="od.oracle.apps.xxcrm.asn.common.poplist.server.ODSalesRoleLookupsVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode" readOnly="true"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="OffContractCol">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader1224" prompt="Off Contract %"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageStyledText id="OffContract" viewAttr="OffContractPercent"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="OffWholeSaleCol">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader1223" prompt="Off Wholesale %"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageStyledText id="OffWholeSale" viewAttr="OffWholesalePercent"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="GPFloorCol">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader1222" prompt="GP Floor %"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageStyledText id="GPFloor" viewAttr="GpFloorPercent"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="UpdateCol">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader121" prompt="Update"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:image id="Update" viewAttr="TemplateName" destination="OA.jsp?OAFunc=XX_ASN_CONT_TEMP_CU&amp;retainAM=Y&amp;mode=UPDATE&amp;templateId={@ContractTemplateId}" source="updateicon_enabled.gif"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="DeleteCol">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader12" prompt="Delete"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:image id="Delete" viewAttr="TemplateName" source="deleteicon_enabled.gif">
+                                 <ui:primaryClientAction>
+                                    <ui:fireAction event="DELETE_TEMPLATE">
+                                       <ui:parameters>
+                                          <ui:parameter key="templateId" value="${oa.ODContractTemplatesVO1.ContractTemplateId}"/>
+                                          <ui:parameter key="templateName" value="${oa.ODContractTemplatesVO1.TemplateName}"/>
+                                       </ui:parameters>
+                                    </ui:fireAction>
+                                 </ui:primaryClientAction>
+                              </oa:image>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:formValue id="TemplateId" viewAttr="ContractTemplateId"/>
+                        <oa:formValue id="RevBandCode" queryable="true" viewAttr="RevenueBandCode"/>
+                     </ui:contents>
+                     <ui:tableActions>
+                        <oa:flowLayout id="CancelButtonRN">
+                           <ui:contents>
+                              <oa:button id="Create" text="Create Template" prompt="Create Template" destination="OA.jsp?page=/od/oracle/apps/xxcrm/customer/account/webui/ODContractTemplateCreateUpdatePG&amp;mode=CREATE"/>
+                           </ui:contents>
+                        </oa:flowLayout>
+                     </ui:tableActions>
+                  </oa:advancedTable>
+               </ui:contents>
+               <oa:simpleSearchMappings>
+                  <oa:queryCriteriaMap id="TemplateNameQueryCriteriaMap" criteriaItem="ContractTemplateName" resultsItem="TemplateName"/>
+                  <oa:queryCriteriaMap id="RevBandQueryCriteriaMap" criteriaItem="RevenueBandID" resultsItem="RevBandCode"/>
+                  <oa:queryCriteriaMap id="SalesRoleQueryCriteriaMap" criteriaItem="SalesRolePoplist" resultsItem="SalesRole"/>
+               </oa:simpleSearchMappings>
+               <oa:simpleSearchPanel>
+                  <oa:header id="SimpleSearchRN">
+                     <ui:contents>
+                        <oa:messageComponentLayout id="SimpleSearchMesgComponent">
+                           <ui:contents>
+                              <oa:messageTextInput id="ContractTemplateName" prompt="Contract Template Name" columns="20"/>
+                              <oa:messageLovInput id="RevenueBandLov" externalListOfValues="/od/oracle/apps/xxcrm/asn/common/lov/webui/ODASNRevenueBandLovRN" prompt="Pricing Template" columns="20">
+                                 <lovMappings>
+                                    <lovMap id="RevenueBandCodeLovMap" lovItem="RevenueBandCode" resultTo="RevenueBandID"/>
+                                    <lovMap id="RevenueBandValueLovMap" lovItem="RevenueBandValue" criteriaFrom="RevenueBandLov" resultTo="RevenueBandLov"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageLayout id="messageLayout1">
+                                 <ui:contents>
+                                    <oa:formValue id="RevenueBandID" prompt="Revenue Band Code" dataType="NUMBER"/>
+                                 </ui:contents>
+                              </oa:messageLayout>
+                              <oa:messageChoice id="SalesRolePoplist" viewAttr="SalesRole" queryable="true" pickListViewDef="od.oracle.apps.xxcrm.asn.common.poplist.server.ODSalesRoleLookupsVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode" prompt="Sales Role"/>
+                           </ui:contents>
+                        </oa:messageComponentLayout>
+                     </ui:contents>
+                  </oa:header>
+               </oa:simpleSearchPanel>
+            </oa:query>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

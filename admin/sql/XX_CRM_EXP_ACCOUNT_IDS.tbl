@@ -1,0 +1,28 @@
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify                                           |
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_ACCOUNT_IDS.tbl                                                   |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        26-Aug-2011     Indra Varada        Initial version                              |
+-- +============================================================================================+
+
+  CREATE TABLE "XXCRM"."XX_CRM_EXP_ACCOUNT_IDS" 
+   (	"BATCH_ID" NUMBER NOT NULL ENABLE, 
+	"EBIZ_ACCOUNT_ID" NUMBER NOT NULL ENABLE, 
+	"RECORD_ID" NUMBER NOT NULL ENABLE, 
+	"RECORD_STATUS" VARCHAR2(20 BYTE), 
+	"ERROR_MSG" VARCHAR2(4000 CHAR)
+   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)
+  TABLESPACE "USERS" ;
+ 
+ GRANT ALL ON XXCRM.XX_CRM_EXP_ACCOUNT_IDS TO APPS;
+  
+ SHOW ERRORS;

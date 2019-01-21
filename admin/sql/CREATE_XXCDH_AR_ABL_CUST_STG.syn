@@ -1,0 +1,33 @@
+-- $Id:$
+-- $Rev:$
+-- $HeadURL:$
+-- $Author:$
+-- $Date:$
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :CREATE_XXCDH_AR_ABL_CUST_STG.syn                    |
+-- | Description      :Synonym to XXCDH_AR_ABL_CUST_STG Table              |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |1.0       20-MaY-2009  Indra Varada       Initial draft                |
+-- +=======================================================================+
+
+
+
+CREATE OR REPLACE SYNONYM APPS.XXCDH_AR_ABL_CUST_STG FOR XXCRM.XXCDH_AR_ABL_CUST_STG;
+
+SHOW ERRORS;
+EXIT;

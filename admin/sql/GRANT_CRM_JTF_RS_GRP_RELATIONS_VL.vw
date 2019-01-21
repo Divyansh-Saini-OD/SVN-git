@@ -1,0 +1,1 @@
+grant select  on apps.JTF_RS_GRP_RELATIONS_VL to XXCRM;

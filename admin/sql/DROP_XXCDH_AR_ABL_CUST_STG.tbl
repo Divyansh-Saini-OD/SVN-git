@@ -1,0 +1,39 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :DROP_XXCDH_AR_ABL_CUST_STG.tbl                      |
+-- | Description      :Drop  XXCDH_AR_ABL_CUST_STG Table         |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |1.0       21-Feb-2010  Nabarun       Initial draft                |
+-- +=======================================================================+
+-- -----------------------------------------------------
+--      DROP Custom Table XXCDH_AR_ABL_CUST_STG  --
+-- -----------------------------------------------------
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Dropping the Table XXCRM.XXCDH_AR_ABL_CUST_STG......
+PROMPT
+
+DROP TABLE  XXCRM.xxcdh_ar_abl_cust_stg;
+
+SHOW ERRORS;
+EXIT;

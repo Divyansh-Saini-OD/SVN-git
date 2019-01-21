@@ -1,0 +1,112 @@
+#! /usr/bin/ksh
+#-- +=======================================================================+
+#-- |               Office Depot - Project Simplify                         |
+#-- |             Oracle NAIO Consulting Organization                       |
+#-- +=======================================================================+
+#-- | Name            : XXCRMTLIGNMAP.prog                                  |
+#-- | Rice ID         : I0405_Territories                                   |
+#-- | Description     : Shell script to load the XX_JTF_TLIGN_MAP_LOOKUP    |
+#-- |                   table                                               |
+#-- |                                                                       |
+#-- |Change History:                                                        |
+#-- |---------------                                                        |
+#-- |                                                                       |
+#-- |Version  Date        Author                Remarks                     |
+#-- |-------  ----------- -----------------     --------------------------  |
+#-- |Draft 1A 22-OCT-2007 Mohan Kalyanasundaram Initial Draft version       |
+#-- |1.0      08-JAN-2008 Hema Chikkanna        Included parameters         |
+#-- +=======================================================================+
+
+#Shell Script for fetching the data files and loading them into the staging table.
+
+tempfile="/tmp/tempfile.$$"
+trap "rm -f $tempfile" 0 1 15  # zap tempfile on exit
+
+#Apps default parameters
+FCP_REQID=$4
+
+
+#Data File and Control File Name
+lc_data_file="XXCRMTLIGNMAPS.dat"
+lc_control_file="XX_JTF_TLIGN_MAP_LOOKUPS.ctl"
+lc_log_file="XXCRMTLIGNMAPS.log"
+lc_bad_file="XXCRMTLIGNMAPS.bad"
+
+
+echo "================================================================================" >> $tempfile
+echo "Start Time          : `date`"                         >> $tempfile
+echo "Program Name        : OD: Load Terralign Map Details" >> $tempfile
+echo "Data File Name      : " ${lc_data_file}               >> $tempfile
+echo "Control File Name   : " ${lc_control_file}            >> $tempfile
+echo "================================================================================" >> $tempfile
+
+
+
+lc_custom_top="$XXCRM_DATA"
+
+source_path="$lc_custom_top/inbound/terralign/"
+error_path="$lc_custom_top/error/terralign/"
+archive_path="$lc_custom_top/archive/inbound/terralign/"
+echo "Source Path : " ${source_path}     >> $tempfile
+echo "Error Path : " ${error_path}       >> $tempfile 
+echo "Archived Path : " ${archive_path}  >> $tempfile
+
+#validating the source file
+if [ -f  ${source_path}${lc_data_file} ]
+then
+  echo "" >> $tempfile
+  echo "The Data File Exist" >> $tempfile
+  echo "" >> $tempfile
+  
+else
+  echo "The Data File does not Exist" >> $tempfile
+  echo "Program aborting...." >> $tempfile
+  cat $tempfile >> $APPLCSF/$APPLLOG/l${FCP_REQID}.req
+  exit 1
+fi
+
+lc_ctl_file="$XXCRM_TOP"
+
+control_path="$lc_ctl_file/bin/"
+echo "Control File Path : " ${control_path}  >> $tempfile
+
+#validating the control file
+if [ -f  ${control_path}${lc_control_file} ]
+then
+  echo "" >> $tempfile
+  echo "The Control File Exist" >> $tempfile
+  echo "" >> $tempfile
+  
+else
+  echo "The Control File does not Exist" >> $tempfile
+  echo "Program aborting...." >> $tempfile
+  cat $tempfile >> $APPLCSF/$APPLLOG/l${FCP_REQID}.req
+  exit 1
+fi
+
+
+#Start SQL*Loader script
+
+sqlldr parfile=$HOME/.parfile.XXCRM control=${control_path}${lc_control_file} data=${source_path}${lc_data_file} log=${error_path}${lc_log_file} bad=${error_path}${lc_bad_file} silent=HEADER,FEEDBACK,DISCARDS,PARTITIONS errors=20000
+
+rc="$?"
+
+
+
+if [ "rc" -ne "0" ] && [ "rc" -ne "2" ]; then
+  echo "sqlldr failed! - return code = " ${rc} >> $tempfile
+  exit 1
+fi
+
+#Add the SQL*Loader Logfile to the standard Oracle Applications Logfile
+cat ${error_path}${lc_log_file} >> $tempfile
+
+#Move the data file from the incoming directory to the archive directory
+echo " " >> $tempfile
+echo "Moving file from Source Directory to Archive Directory" >> $tempfile
+echo "Moving ${lc_data_file} from ${source_path} to ${archive_path}" >> $tempfile
+mv ${source_path}${lc_data_file} ${archive_path}
+
+cat $tempfile >> $APPLCSF/$APPLLOG/l${FCP_REQID}.req
+
+exit 0

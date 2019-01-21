@@ -1,0 +1,33 @@
+-- $Id$
+-- $Rev$
+-- $HeadURL$
+-- $Author$
+-- $Date$
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :XXSCS_TOP_CUST_EXST_LEAD_OP_U1.idx               |
+-- | Description      :Unique Index for Custom Table                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |Version  Date          Author              Remarks                     |
+-- |-------  ----------- -----------------    -----------------------------|
+-- | 1.0     08-APR-2009  Kalyan              Initial Version              |
+-- +=======================================================================+
+
+
+REM============================================================================================
+REM         XXSCS_TOP_CUST_EXSTNG_LEAD_OPP_U1
+REM============================================================================================
+
+CREATE UNIQUE INDEX XXCRM.XXSCS_TOP_CUST_EXST_LEAD_OP_U1
+ON XXCRM.XXSCS_TOP_CUST_EXSTNG_LEAD_OPP(POTENTIAL_ID,PARTY_SITE_ID,POTENTIAL_TYPE_CD);
+
+EXIT;

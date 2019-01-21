@@ -1,0 +1,45 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : XXBI_DASHBOARD_DEFAULTS.tbl                         |
+-- | Description : Dashboard Customizations                            |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1a 15-Feb-2010  Sarah Justina    Initial draft version       |
+-- +===================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Table XXBI_DASHBOARD_DEFAULTS .....
+PROMPT
+
+CREATE TABLE XXBI_DASHBOARD_DEFAULTS (
+ REPORT_SHORT_NAME VARCHAR2(30) NOT NULL
+,DIM_SHORT_NAME    VARCHAR2(30) NOT NULL
+,DO_SHORT_NAME     VARCHAR2(30) NOT NULL
+,DEFAULT_ID_VAL    VARCHAR2(4000) NOT NULL
+,REP_MGR           VARCHAR2(8) NOT NULL
+,VIEW_BY           VARCHAR2(1) 
+,ROLE_VALUE        VARCHAR2(150) NOT NULL
+);
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

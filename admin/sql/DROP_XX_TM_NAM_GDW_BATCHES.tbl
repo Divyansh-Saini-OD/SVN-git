@@ -1,0 +1,32 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :DROP_XX_TM_NAM_GDW_BATCHES.tbl                      |
+-- | Description      :Store gdw batch processed by autonamed              |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft 1a     01-Jul-2008  Jeevan Babu      Drop Script                 |
+-- |                                                                       |
+-- |                                                                       |
+-- +=======================================================================+
+
+-- -------------------------------------------------------
+--      Drop Custom Table XX_TM_NAM_GDW_BATCHES      --
+-- -------------------------------------------------------
+
+DROP TABLE XXCRM.XX_TM_NAM_GDW_BATCHES;
+
+/
+SHOW ERRORS;
+
+EXIT;

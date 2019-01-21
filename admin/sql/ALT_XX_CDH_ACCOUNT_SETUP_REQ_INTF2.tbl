@@ -1,0 +1,26 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : ALT_XX_CDH_ACCOUNT_SETUP_REQ_INTF2.tbl             |
+-- | Description      : change employer_id from number to varchar2         |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |1        08-APR-2010   Sreedhar Mohan   Initial Version                |
+-- +=======================================================================+
+
+------------------------------------------------------------------------
+-- change employer_id from number to varchar2                 
+------------------------------------------------------------------------
+
+alter table xxcrm.XX_CDH_ACCOUNT_SETUP_REQ_INTF  drop column employer_id;
+alter table xxcrm.XX_CDH_ACCOUNT_SETUP_REQ_INTF  add (employer_id varchar2(30));
+
+SHOW ERRORS;

@@ -1,0 +1,41 @@
+--+=====================================================================+
+--|                   Office Depot - Project FIT                        |
+--|          Capgemini/Office Depot/Consulting Organization             |
+--+=====================================================================+
+--|                                                                     |
+--|Rice        : 106313                                                 |
+--|File Name   : XX_CRM_WCELG_CUST.tbl                                  |
+--|File Path   : $XXCRM_TOP/admin/sql                                   |
+--|Schema      : XXCRM                                                  |
+--|                                                                     |
+--|Version    Date           Author                       Remarks       |
+--|=======   ======        ====================          =========      |
+--| 1.0    06-Sep-2011     Balakrishna Bolikonda       Initial version  |
+--|                                                                     |
+--+=====================================================================+
+
+SET VERIFY OFF
+WHENEVER SQLERROR CONTINUE
+
+CREATE TABLE XXCRM.XX_CRM_WCELG_CUST (
+                  party_id                        NUMBER(15)
+                , cust_account_id                 NUMBER(15)   NOT NULL
+                , account_number                  VARCHAR2(30)
+                , int_source                      VARCHAR2(2)
+                , extraction_date                 DATE
+                , cust_mast_head_ext              VARCHAR2(1)
+                , cust_addr_ext                   VARCHAR2(1)
+                , cust_cont_ext                   VARCHAR2(1)
+                , cust_hier_ext                   VARCHAR2(1)
+                , sls_per_ext                     VARCHAR2(1)
+                , ar_converted_flag		  VARCHAR2(1)
+                , ar_conv_from_date_full	  DATE
+	        , ar_conv_to_date_full		  DATE
+                , notes_processed_to_wc           VARCHAR2(1)
+                , last_update_date                DATE         NOT NULL
+                , last_updated_by                 NUMBER(15)   NOT NULL
+                , creation_date                   DATE         NOT NULL
+                , created_by                      NUMBER(15)   NOT NULL
+                , request_id                      NUMBER(15)
+                , program_id                      NUMBER(15)
+                );

@@ -1,0 +1,29 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR EXIT FAILURE ROLLBACK;
+WHENEVER OSERROR  EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |                      Wipro Technologies                               |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_SFA_LEAD_REFERRALS_S.seq                  |
+-- | Description      :I2043 Leads_from_WWW_and_Jmillennia                 |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      05-Feb-2008 Rizwan Appees      Initial version                |
+-- +=======================================================================+
+
+CREATE SEQUENCE XXCRM.XX_SFA_LEAD_REFERRALS_S 
+INCREMENT BY 1 
+START WITH 10001 
+NOMAXVALUE
+NOCYCLE;
+
+GRANT ALL ON XXCRM.XX_SFA_LEAD_REFERRALS_S TO APPS;
+
+GRANT ALL ON XXCRM.XX_SFA_LEAD_REFERRALS_S TO xxcrm_leads;

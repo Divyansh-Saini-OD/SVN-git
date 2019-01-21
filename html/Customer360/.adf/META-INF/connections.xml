@@ -1,0 +1,1423 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<References xmlns="http://xmlns.oracle.com/adf/jndi">
+   <Reference name="CustInfo" className="oracle.adf.model.connection.webservice.impl.WebServiceConnectionImpl" xmlns="">
+      <Factory className="oracle.adf.model.connection.webservice.api.WebServiceConnectionFactory"/>
+      <RefAddresses>
+         <XmlRefAddr addrType="WebServiceConnection">
+            <Contents>
+               <wsconnection description="http://esbuat01.na.odcorp.net/orabpel/sfsync/GetCustInfo/GetCustInfo?wsdl" service="{http://xmlns.oracle.com/GetCustInfo}GetCustInfo">
+                  <model name="{http://xmlns.oracle.com/GetCustInfo}GetCustInfo" xmlns="http://oracle.com/ws/model">
+                     <types xmlns="http://oracle.com/oracle/webservices/mdds">
+                        <types-in-elements/>
+                     </types>
+                     <service name="{http://xmlns.oracle.com/GetCustInfo}GetCustInfo">
+                        <port name="GetCustInfoPort" binding="{http://xmlns.oracle.com/GetCustInfo}GetCustInfoBinding" portType="{http://xmlns.oracle.com/GetCustInfo}GetCustInfo">
+                           <soap addressUrl="http://esbuat01.na.odcorp.net/orabpel/sfsync/GetCustInfo/d20110324_t10.46.40_r00131646_p41161.34" xmlns="http://schemas.xmlsoap.org/wsdl/soap/"/>
+                           <operation name="process">
+                              <soap soapAction="process" xmlns="http://schemas.xmlsoap.org/wsdl/soap/"/>
+                              <input name="" message="{http://xmlns.oracle.com/GetCustInfo}GetCustInfoRequestMessage">
+                                 <message style="2" use="1" soapVersion="1" encodingStyle="" docLitWrapped="false" namespace="http://TargetNamespace.com/OD_CUSTOMER" localPart="OD_CUSTOMER" xmlns="http://oracle.com/oracle/webservices/mdds">
+                                    <part name="payload" required="true" xmlns="">
+                                       <type>
+                                          <complexType elementQualified="true">
+                                             <sequence minOccurs="1" maxOccurs="1">
+                                                <part name="ACCOUNT_OSR" required="true" namespace="http://TargetNamespace.com/OD_CUSTOMER" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="long"/>
+                                                </part>
+                                                <part name="PHONE_NUMBER" required="true" namespace="http://TargetNamespace.com/OD_CUSTOMER" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="LOYALTY_ID" required="true" namespace="http://TargetNamespace.com/OD_CUSTOMER" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="long"/>
+                                                </part>
+                                             </sequence>
+                                          </complexType>
+                                       </type>
+                                    </part>
+                                 </message>
+                              </input>
+                              <output name="" message="{http://xmlns.oracle.com/GetCustInfo}GetCustInfoResponseMessage">
+                                 <message style="2" use="1" soapVersion="1" encodingStyle="" docLitWrapped="true" namespace="http://xmlns.oracle.com/GetCustInfo" localPart="GetCustInfoProcessResponse" xmlns="http://oracle.com/oracle/webservices/mdds">
+                                    <part name="payload" required="true" xmlns="">
+                                       <type>
+                                          <complexType elementQualified="true">
+                                             <sequence minOccurs="1" maxOccurs="1">
+                                                <part name="CustInfoCustomerId" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="CustInfoContRetailCode" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type>
+                                                      <simpleType xsdType="string" maxLength="1"/>
+                                                   </type>
+                                                </part>
+                                                <part name="CustInfoBusinessName" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type>
+                                                      <simpleType xsdType="string" maxLength="30"/>
+                                                   </type>
+                                                </part>
+                                                <part name="CustInfoContactName" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type>
+                                                      <simpleType xsdType="string" maxLength="25"/>
+                                                   </type>
+                                                </part>
+                                                <part name="CustInfoPrimaryPhone" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="CustInfoStreetAddress1" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type>
+                                                      <simpleType xsdType="string" maxLength="25"/>
+                                                   </type>
+                                                </part>
+                                                <part name="CustInfoProvince" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type>
+                                                      <simpleType xsdType="string" maxLength="2"/>
+                                                   </type>
+                                                </part>
+                                                <part name="CustInfoZip" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type>
+                                                      <simpleType xsdType="string" maxLength="11"/>
+                                                   </type>
+                                                </part>
+                                                <part name="CustInfoCountryCode" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type>
+                                                      <simpleType xsdType="string" maxLength="3"/>
+                                                   </type>
+                                                </part>
+                                                <part name="CustInfoCustType" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type>
+                                                      <simpleType xsdType="string" maxLength="10"/>
+                                                   </type>
+                                                </part>
+                                                <part name="CustInfoCustSubType" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type>
+                                                      <simpleType xsdType="string" maxLength="10"/>
+                                                   </type>
+                                                </part>
+                                                <part name="CustInfoCity" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type>
+                                                      <simpleType xsdType="string" maxLength="25"/>
+                                                   </type>
+                                                </part>
+                                                <part name="CustInfoState" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type>
+                                                      <simpleType xsdType="string" maxLength="2"/>
+                                                   </type>
+                                                </part>
+                                                <part name="CustInfoStreetAddress2" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type>
+                                                      <simpleType xsdType="string" maxLength="25"/>
+                                                   </type>
+                                                </part>
+                                                <part name="CustInfoPrimaryExtension" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="CustInfoSalutation" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type>
+                                                      <simpleType xsdType="string" maxLength="4"/>
+                                                   </type>
+                                                </part>
+                                                <part name="CustInfoTitleInd" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type>
+                                                      <simpleType xsdType="string" maxLength="1"/>
+                                                   </type>
+                                                </part>
+                                                <part name="CustContactStrategyCycle" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type>
+                                                      <simpleType xsdType="string" maxLength="25"/>
+                                                   </type>
+                                                </part>
+                                                <part name="LoyaltyMemberPurchaseHistoryOutput" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <array dimensions="1" type="2">
+                                                      <type>
+                                                         <complexType elementQualified="true">
+                                                            <sequence minOccurs="1" maxOccurs="1">
+                                                               <part name="LoyaltyMemberPurchaseHistoryOrderDt" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="LoyaltyMemberPurchaseHistoryOrderId" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="LoyaltyMemberPurchaseHistoryPurchaseAmt" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="LoyaltyMemberPurchaseHistoryCat1Reward" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                            </sequence>
+                                                         </complexType>
+                                                      </type>
+                                                   </array>
+                                                </part>
+                                                <part name="LoyaltyMbrEnrollmentInfoMembershipType" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="LoyaltyMbrEnrollmentInfoMemberId" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="LoyaltyMbrEnrollmentInfoEnrollmentType" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="LoyaltyMbrEnrollmentInfoActivated" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="LoyaltyMbrEnrollmentInfoSegmentId" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="LoyaltyMbrEnrollmentInfoFirst_name" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="LoyaltyMbrEnrollmentInfoLast_name" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="LoyaltyMbrEnrollmentInfoCompany" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="LoyaltyMbrEnrollmentInfoAd1" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="LoyaltyMbrEnrollmentInfoAd2" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="LoyaltyMbrEnrollmentInfoCity" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="LoyaltyMbrEnrollmentInfoState" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="LoyaltyMbrEnrollmentInfoZip" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="LoyaltyMbrEnrollmentInfoPhone" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="LoyaltyMbrEnrollmentInfoEmail" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="LoyaltyMbrEnrollmentCelebrateMonth" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="LoyaltyMbrEnrollmentCelebrateDay" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="GetRepAssignmentsOrigSystemReference" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="GetRepAssignmentsPartyName" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="GetRepAssignmentsCity" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="GetRepAssignmentsState" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="GetRepAssignmentsResourceName" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="GetRepAssignmentsRepId" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="GetRepAssignmentsRoleCode" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="GetRepAssignmentsassignmentStartDt" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="GetRepAssignmentsCustAcctType" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="GetTeraDataCustInfoDnbSalesVolume" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="GetTeraDataCustInfoDnbTotalEmployees" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="NotesCustomerInfo" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="NotesLoyaltyInfo" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="BillingFrequency" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="cust_Type" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="ab_billing" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="currency_code" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="trx_credit_limit" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="overall_credit_limit" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="name" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="payterm_frequency" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="payterm_reporting_day" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="payterm_percentage" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="direct_customer" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="bill_payterm" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="bill_delivery_method" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="org_contact_id" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                </part>
+                                                <part name="primary_flag" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="email_address" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="phone_country_code" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="phone_area_code" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="phone_number" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="GetAdditionalCustFinInfoOutput" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <array dimensions="1" type="2">
+                                                      <type>
+                                                         <complexType elementQualified="true">
+                                                            <sequence minOccurs="1" maxOccurs="1">
+                                                               <part name="cust_Type" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="ab_billing" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="currency_code" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="trx_credit_limit" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="overall_credit_limit" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="name" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="payterm_frequency" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="payterm_reporting_day" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="payterm_percentage" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="direct_customer" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="bill_payterm" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="bill_delivery_method" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="org_contact_id" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="primary_flag" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="email_address" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="phone_country_code" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="phone_area_code" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="phone_number" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="AbFlag" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="RA_TermDescription" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="Terms" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="CollectorId" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="BillingFrequency" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="ExposureSegment" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                            </sequence>
+                                                         </complexType>
+                                                      </type>
+                                                   </array>
+                                                </part>
+                                                <part name="GetAP_ContactOutput" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <array dimensions="1" type="2">
+                                                      <type>
+                                                         <complexType elementQualified="true">
+                                                            <sequence minOccurs="1" maxOccurs="1">
+                                                               <part name="contact_point_type" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="email_address" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="phone_area_code" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="phone_country_code" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="PHONE_NUMBER" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                            </sequence>
+                                                         </complexType>
+                                                      </type>
+                                                   </array>
+                                                </part>
+                                                <part name="GetSPC_CardInfoOutput" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <array dimensions="1" type="2">
+                                                      <type>
+                                                         <complexType elementQualified="true">
+                                                            <sequence minOccurs="1" maxOccurs="1">
+                                                               <part name="SPC_CARD_NUM" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="TRANS_LIMIT" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="DAILY_TRANS_LIMIT" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="CREDIT_STATUS" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="TENDER_CODE" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                            </sequence>
+                                                         </complexType>
+                                                      </type>
+                                                   </array>
+                                                </part>
+                                                <part name="GetSIC_CodeOutput" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <array dimensions="1" type="2">
+                                                      <type>
+                                                         <complexType elementQualified="true">
+                                                            <sequence minOccurs="1" maxOccurs="1">
+                                                               <part name="sic_code" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                            </sequence>
+                                                         </complexType>
+                                                      </type>
+                                                   </array>
+                                                </part>
+                                                <part name="GetCustShopChannelOutput" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <array dimensions="1" type="2">
+                                                      <type>
+                                                         <complexType elementQualified="true">
+                                                            <sequence minOccurs="1" maxOccurs="1">
+                                                               <part name="CHANNEL_TYPE" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="CHANNEL_COUNT" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                            </sequence>
+                                                         </complexType>
+                                                      </type>
+                                                   </array>
+                                                </part>
+                                                <part name="GetCustSegmentLoyaltyTierOutput" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <array dimensions="1" type="2">
+                                                      <type>
+                                                         <complexType elementQualified="true">
+                                                            <sequence minOccurs="1" maxOccurs="1">
+                                                               <part name="party_name" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="class_code" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="class_category" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="meaning" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                            </sequence>
+                                                         </complexType>
+                                                      </type>
+                                                   </array>
+                                                </part>
+                                                <part name="LoyRewardStatus" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <array dimensions="1" type="2">
+                                                      <type>
+                                                         <complexType elementQualified="true">
+                                                            <sequence minOccurs="1" maxOccurs="1">
+                                                               <part name="currentAmt" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="carryOverAmt" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="ytdAmt" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="mmbrId" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                            </sequence>
+                                                         </complexType>
+                                                      </type>
+                                                   </array>
+                                                </part>
+                                                <part name="GetAOPS_CustBillingInfoOutput" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <array dimensions="1" type="2">
+                                                      <type>
+                                                         <complexType elementQualified="true">
+                                                            <sequence minOccurs="1" maxOccurs="1">
+                                                               <part name="REPORTING_LOC" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="SALESPERSON_ID" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="AR_FLAG" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="BILL_TO_LIMIT" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="BILL_TO_DOLLARS" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="BILL_TO_DOLLAR_EXPIRE" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="ORDER_LIMIT" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="LINE_LIMIT" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="ORDER_REST_IND" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="ADDR_ORDER_REST_IND" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="BACKORDER_ALLOW_FLAG" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="FREIGHT_CHG_REQ_FLAG" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="CONTRACT_CODE" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="ADDR_CONTRACT_CODE" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="PRODUCT_XREF_NBR" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="PRICE_PLAN" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="PRICE_PLAN_SEQ" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="FILLER" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                            </sequence>
+                                                         </complexType>
+                                                      </type>
+                                                   </array>
+                                                </part>
+                                                <part name="GetTaxExemptInfoOutput" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <array dimensions="1" type="2">
+                                                      <type>
+                                                         <complexType elementQualified="true">
+                                                            <sequence minOccurs="1" maxOccurs="1">
+                                                               <part name="ADDRESS_SEQ" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="ADDRESS_STATE" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="COUNTRY_CODE" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="TAX_CERTIF_NBR" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="EXP_DATE" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="GST_EXEMPT_COMMENT" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="TAX_STATUS" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="ADDR_SEQ_DENLET" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="DENIAL_SEND_DATE" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="dateTime"/>
+                                                               </part>
+                                                               <part name="LETTER_NOTIF" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="FEDERAL_EXEMPT" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                            </sequence>
+                                                         </complexType>
+                                                      </type>
+                                                   </array>
+                                                </part>
+                                                <part name="GetCustPastDueInfoOutput" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <array dimensions="1" type="2">
+                                                      <type>
+                                                         <complexType elementQualified="true">
+                                                            <sequence minOccurs="1" maxOccurs="1">
+                                                               <part name="DueDate" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="dateTime"/>
+                                                               </part>
+                                                               <part name="AmountDueOriginal" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="AmountDueRemaining" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="AcctdAmoundDueRemaining" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="AmountApplied" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="AmountAdjusted" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="AmountInDispute" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="AmountCredited" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="InCollection" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="ActiveClaimFlag" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="DiscountOriginal" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="DiscountRemaining" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="DiscountTakenEarned" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                            </sequence>
+                                                         </complexType>
+                                                      </type>
+                                                   </array>
+                                                </part>
+                                                <part name="PastDueCount" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="GetParentAcctFinInfoOutput" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <array dimensions="1" type="2">
+                                                      <type>
+                                                         <complexType elementQualified="true">
+                                                            <sequence minOccurs="1" maxOccurs="1">
+                                                               <part name="CustAccountId" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="AccountName" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="Status" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                            </sequence>
+                                                         </complexType>
+                                                      </type>
+                                                   </array>
+                                                </part>
+                                                <part name="GetFinHierChildrenOutput" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <array dimensions="1" type="2">
+                                                      <type>
+                                                         <complexType elementQualified="true">
+                                                            <sequence minOccurs="1" maxOccurs="1">
+                                                               <part name="CustAccountId" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="AccountName" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="Status" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                            </sequence>
+                                                         </complexType>
+                                                      </type>
+                                                   </array>
+                                                </part>
+                                                <part name="MetaDatInfo" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type>
+                                                      <complexType elementQualified="true">
+                                                         <sequence minOccurs="1" maxOccurs="1">
+                                                            <part name="AopsCustInfoDataSource" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="AopsCustInfoFetchTime" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="AopsCustOrderInfoDataSource" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="AopsCustOrderInfoFetchTime" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="AopsCustBillingInfoDataSource" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="AopsCustBillingInfoFetchTime" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="GetBillingFreqDataSource" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="GetBillingFreqFetchTime" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="GetCustFinInfoDataSource" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="GetCustFinInfoFetchTime" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="GetCustPastDueInfoDataSource" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="GetCustPastDueInfoFetchTime" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="GetFinHierChildrenDataSource" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="GetFinHierChildrenFetchTime" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="GetParentAcctFinInfoDataSource" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="GetParentAcctFinInfoFetchTime" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="GetRepAssignmentsDataSource" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="GetRepAssignmentsFetchTime" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="GetTaxExemptInfoDataSource" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="GetTaxExemptInfoFetchTime" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="GetTeraDataCustInfoDataSource" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="GetTeraDataCustInfoFetchTime" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="LoyaltyMbrEnrollmentInfoDataSource" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="LoyaltyMbrEnrollmentInfoFetchTime" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="LoyaltyMemberPurchaseHistoryDataSource" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="LoyaltyMemberPurchaseHistoryFetchTime" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="GetAOPS_ContractPricingDataSource" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="GetAOPS_ContractPricingFetchTime" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="GetCDH_CustOrderInfoDataSource" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="GetCDH_CustOrderInfoFetchTime" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="GetOpenCasesDataSource" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="GetOpenCasesFetchTime" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="GetAOPS_ContractPricingDataSource" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="GetAOPS_ContractPricingFetchTime" required="true" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                         </sequence>
+                                                      </complexType>
+                                                   </type>
+                                                </part>
+                                                <part name="custInfoTotalRequestTime" required="false" namespace="http://xmlns.oracle.com/GetCustInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                </part>
+                                             </sequence>
+                                          </complexType>
+                                       </type>
+                                    </part>
+                                 </message>
+                              </output>
+                           </operation>
+                        </port>
+                     </service>
+                  </model>
+               </wsconnection>
+            </Contents>
+         </XmlRefAddr>
+      </RefAddresses>
+   </Reference>
+   <Reference name="CustOrderInfo" className="oracle.adf.model.connection.webservice.impl.WebServiceConnectionImpl" xmlns="">
+      <Factory className="oracle.adf.model.connection.webservice.api.WebServiceConnectionFactory"/>
+      <RefAddresses>
+         <XmlRefAddr addrType="WebServiceConnection">
+            <Contents>
+               <wsconnection description="http://esbuat01.na.odcorp.net/orabpel/sfsync/GetCustOrderInfo/GetCustOrderInfo?wsdl" service="{http://xmlns.oracle.com/GetCustOrderInfo}GetCustOrderInfo">
+                  <model name="{http://xmlns.oracle.com/GetCustOrderInfo}GetCustOrderInfo" xmlns="http://oracle.com/ws/model">
+                     <types xmlns="http://oracle.com/oracle/webservices/mdds">
+                        <types-in-elements/>
+                     </types>
+                     <service name="{http://xmlns.oracle.com/GetCustOrderInfo}GetCustOrderInfo">
+                        <port name="GetCustOrderInfoPort" binding="{http://xmlns.oracle.com/GetCustOrderInfo}GetCustOrderInfoBinding" portType="{http://xmlns.oracle.com/GetCustOrderInfo}GetCustOrderInfo">
+                           <soap addressUrl="http://esbuat01.na.odcorp.net/orabpel/sfsync/GetCustOrderInfo/d20110315_t16.49.39_r00130926_p41161.38" xmlns="http://schemas.xmlsoap.org/wsdl/soap/"/>
+                           <operation name="process">
+                              <soap soapAction="process" xmlns="http://schemas.xmlsoap.org/wsdl/soap/"/>
+                              <input name="" message="{http://xmlns.oracle.com/GetCustOrderInfo}GetCustOrderInfoRequestMessage">
+                                 <message style="2" use="1" soapVersion="1" encodingStyle="" docLitWrapped="false" namespace="http://xmlns.oracle.com/GetCustOrderInfo" localPart="GetCustOrderInfoProcessRequest" xmlns="http://oracle.com/oracle/webservices/mdds">
+                                    <part name="payload" required="true" xmlns="">
+                                       <type>
+                                          <complexType elementQualified="true">
+                                             <sequence minOccurs="1" maxOccurs="1">
+                                                <part name="AOPS_CustID" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="LoyaltyID" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                             </sequence>
+                                          </complexType>
+                                       </type>
+                                    </part>
+                                 </message>
+                              </input>
+                              <output name="" message="{http://xmlns.oracle.com/GetCustOrderInfo}GetCustOrderInfoResponseMessage">
+                                 <message style="2" use="1" soapVersion="1" encodingStyle="" docLitWrapped="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" localPart="GetCustOrderInfoProcessResponse" xmlns="http://oracle.com/oracle/webservices/mdds">
+                                    <part name="payload" required="true" xmlns="">
+                                       <type>
+                                          <complexType elementQualified="true">
+                                             <sequence minOccurs="1" maxOccurs="1">
+                                                <part name="OrderResultSet" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                   <array dimensions="1" type="2">
+                                                      <type>
+                                                         <complexType elementQualified="true">
+                                                            <sequence minOccurs="1" maxOccurs="1">
+                                                               <part name="OrderNumber" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="OrderTotal" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="ShipToRef" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="SalesRepId" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="OrderedDate" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="dateTime"/>
+                                                               </part>
+                                                               <part name="Message" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                            </sequence>
+                                                         </complexType>
+                                                      </type>
+                                                   </array>
+                                                </part>
+                                                <part name="TopFiveOrders" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                   <array dimensions="1" type="2">
+                                                      <type>
+                                                         <complexType elementQualified="true">
+                                                            <sequence minOccurs="1" maxOccurs="1">
+                                                               <part name="OrderNumber" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="OrderTotal" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="ShipToRef" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="SalesRepId" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="OrderedDate" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="dateTime"/>
+                                                               </part>
+                                                               <part name="Message" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                            </sequence>
+                                                         </complexType>
+                                                      </type>
+                                                   </array>
+                                                </part>
+                                                <part name="GetBackOrderInfoOutput" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                   <type>
+                                                      <complexType elementQualified="true">
+                                                         <sequence minOccurs="1" maxOccurs="1">
+                                                            <part name="OrderId" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="TotalOrderAmt" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="BackOrderQty" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="ItemId" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="UnitListPriceAmt" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="UnitOriginalPriceAmt" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="UnitPoCostAmt" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="UnitSellingPriceAmt" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                         </sequence>
+                                                      </complexType>
+                                                   </type>
+                                                </part>
+                                                <part name="GetTopSKUsOrderedOutput" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                   <type>
+                                                      <complexType elementQualified="true">
+                                                         <sequence minOccurs="1" maxOccurs="1">
+                                                            <part name="CUSTOMER_ACCOUNT_ID" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="ADDRESS_ID" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="NET_SALES_52WEEK_AMT" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="ITEM_GROUP_ID" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="ITEM_GROUP_NM" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="SIC_GROUP_CD" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="NET_SALES_POTENTIAL_52WEEK_AMT" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                         </sequence>
+                                                      </complexType>
+                                                   </type>
+                                                </part>
+                                                <part name="GetSumForTopOrdersOutput" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                   <type>
+                                                      <complexType elementQualified="true">
+                                                         <sequence minOccurs="1" maxOccurs="1">
+                                                            <part name="ITEM_GROUP_NM" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="NET_SALES_POTENTIAL_52WEEK_AMT" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                         </sequence>
+                                                      </complexType>
+                                                   </type>
+                                                </part>
+                                                <part name="OrderLimit" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="MetaDatInfo" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                   <type>
+                                                      <complexType elementQualified="true">
+                                                         <sequence minOccurs="1" maxOccurs="1">
+                                                            <part name="topFiveOrderDataSource" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="topFiveOrderFetchTime" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="backOrderDataSource" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="backOrderFetchTime" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="custOrderDataSource" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                            <part name="custOrderFetchTime" required="true" namespace="http://xmlns.oracle.com/GetCustOrderInfo" elementQualified="true">
+                                                               <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                            </part>
+                                                         </sequence>
+                                                      </complexType>
+                                                   </type>
+                                                </part>
+                                             </sequence>
+                                          </complexType>
+                                       </type>
+                                    </part>
+                                 </message>
+                              </output>
+                           </operation>
+                        </port>
+                     </service>
+                  </model>
+               </wsconnection>
+            </Contents>
+         </XmlRefAddr>
+      </RefAddresses>
+   </Reference>
+   <Reference name="CasesInfo" className="oracle.adf.model.connection.webservice.impl.WebServiceConnectionImpl" xmlns="">
+      <Factory className="oracle.adf.model.connection.webservice.api.WebServiceConnectionFactory"/>
+      <RefAddresses>
+         <XmlRefAddr addrType="WebServiceConnection">
+            <Contents>
+               <wsconnection description="http://esbuat01.na.odcorp.net/orabpel/sfsync/GetCustOpenCases/GetCustOpenCases?wsdl" service="{http://xmlns.oracle.com/GetCustOpenCases}GetCustOpenCases">
+                  <model name="{http://xmlns.oracle.com/GetCustOpenCases}GetCustOpenCases" xmlns="http://oracle.com/ws/model">
+                     <types xmlns="http://oracle.com/oracle/webservices/mdds">
+                        <types-in-elements/>
+                     </types>
+                     <service name="{http://xmlns.oracle.com/GetCustOpenCases}GetCustOpenCases">
+                        <port name="GetCustOpenCasesPort" binding="{http://xmlns.oracle.com/GetCustOpenCases}GetCustOpenCasesBinding" portType="{http://xmlns.oracle.com/GetCustOpenCases}GetCustOpenCases">
+                           <soap addressUrl="http://esbuat01.na.odcorp.net/orabpel/sfsync/GetCustOpenCases/d20110310_t14.10.20_r00101347_p41161.37" xmlns="http://schemas.xmlsoap.org/wsdl/soap/"/>
+                           <operation name="process">
+                              <soap soapAction="process" xmlns="http://schemas.xmlsoap.org/wsdl/soap/"/>
+                              <input name="" message="{http://xmlns.oracle.com/GetCustOpenCases}GetCustOpenCasesRequestMessage">
+                                 <message style="2" use="1" soapVersion="1" encodingStyle="" docLitWrapped="false" namespace="http://xmlns.oracle.com/GetCustOpenCases" localPart="GetCustOpenCasesProcessRequest" xmlns="http://oracle.com/oracle/webservices/mdds">
+                                    <part name="payload" required="true" xmlns="">
+                                       <type>
+                                          <complexType elementQualified="true">
+                                             <sequence minOccurs="1" maxOccurs="1">
+                                                <part name="AOPS_CustID" required="true" namespace="http://xmlns.oracle.com/GetCustOpenCases" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="LoyaltyID" required="true" namespace="http://xmlns.oracle.com/GetCustOpenCases" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                             </sequence>
+                                          </complexType>
+                                       </type>
+                                    </part>
+                                 </message>
+                              </input>
+                              <output name="" message="{http://xmlns.oracle.com/GetCustOpenCases}GetCustOpenCasesResponseMessage">
+                                 <message style="2" use="1" soapVersion="1" encodingStyle="" docLitWrapped="true" namespace="http://xmlns.oracle.com/GetCustOpenCases" localPart="GetCustOpenCasesProcessResponse" xmlns="http://oracle.com/oracle/webservices/mdds">
+                                    <part name="payload" required="true" xmlns="">
+                                       <type>
+                                          <complexType elementQualified="true">
+                                             <sequence minOccurs="1" maxOccurs="1">
+                                                <part name="OpenCasesResultSet" required="true" namespace="http://xmlns.oracle.com/GetCustOpenCases" elementQualified="true">
+                                                   <array dimensions="1" type="2">
+                                                      <type>
+                                                         <complexType elementQualified="true">
+                                                            <sequence minOccurs="1" maxOccurs="1">
+                                                               <part name="PartyName" required="true" namespace="http://xmlns.oracle.com/GetCustOpenCases" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="IncidentNumber" required="true" namespace="http://xmlns.oracle.com/GetCustOpenCases" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="Description" required="true" namespace="http://xmlns.oracle.com/GetCustOpenCases" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="IncidentDate" required="true" namespace="http://xmlns.oracle.com/GetCustOpenCases" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="CloseDate" required="true" namespace="http://xmlns.oracle.com/GetCustOpenCases" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="ResolvedDate" required="true" namespace="http://xmlns.oracle.com/GetCustOpenCases" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="Status" required="true" namespace="http://xmlns.oracle.com/GetCustOpenCases" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="CSR" required="true" namespace="http://xmlns.oracle.com/GetCustOpenCases" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="Summary" required="true" namespace="http://xmlns.oracle.com/GetCustOpenCases" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="Creator" required="true" namespace="http://xmlns.oracle.com/GetCustOpenCases" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="Message" required="true" namespace="http://xmlns.oracle.com/GetCustOpenCases" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="DataSource" required="true" namespace="http://xmlns.oracle.com/GetCustOpenCases" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="FetchTime" required="true" namespace="http://xmlns.oracle.com/GetCustOpenCases" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                            </sequence>
+                                                         </complexType>
+                                                      </type>
+                                                   </array>
+                                                </part>
+                                             </sequence>
+                                          </complexType>
+                                       </type>
+                                    </part>
+                                 </message>
+                              </output>
+                           </operation>
+                        </port>
+                     </service>
+                  </model>
+               </wsconnection>
+            </Contents>
+         </XmlRefAddr>
+      </RefAddresses>
+   </Reference>
+   <Reference name="AOPS_Reports" className="oracle.adf.model.connection.webservice.impl.WebServiceConnectionImpl" xmlns="">
+      <Factory className="oracle.adf.model.connection.webservice.api.WebServiceConnectionFactory"/>
+      <RefAddresses>
+         <XmlRefAddr addrType="WebServiceConnection">
+            <Contents>
+               <wsconnection description="http://esbsit01.na.odcorp.net/orabpel/sfsync/SFDC2AOPS_Rpt_Req/d20110509_t10.31.18_r00135836_p41161.63/SFDC2AOPS_Rpt_Req?wsdl" service="{http://xmlns.oracle.com/SFDC2AOPS_Rpt_Req}SFDC2AOPS_Rpt_Req">
+                  <model name="{http://xmlns.oracle.com/SFDC2AOPS_Rpt_Req}SFDC2AOPS_Rpt_Req" xmlns="http://oracle.com/ws/model">
+                     <types xmlns="http://oracle.com/oracle/webservices/mdds">
+                        <complexType elementQualified="true" namespace="http://schemas.xmlsoap.org/ws/2003/03/addressing" localPart="AttributedQName" prefix="wsa" xmlns="">
+                           <content>
+                              <type namespace="http://www.w3.org/2001/XMLSchema" localPart="QName"/>
+                           </content>
+                        </complexType>
+                        <complexType elementQualified="true" namespace="http://schemas.xmlsoap.org/ws/2003/03/addressing" localPart="Relationship" prefix="wsa" xmlns="">
+                           <att name="RelationshipType" required="false">
+                              <type namespace="http://www.w3.org/2001/XMLSchema" localPart="QName"/>
+                           </att>
+                           <content>
+                              <type namespace="http://www.w3.org/2001/XMLSchema" localPart="anyURI"/>
+                           </content>
+                        </complexType>
+                        <complexType elementQualified="true" namespace="http://schemas.xmlsoap.org/ws/2003/03/addressing" localPart="ReferencePropertiesType" prefix="wsa" xmlns="">
+                           <sequence minOccurs="1" maxOccurs="1">
+                              <part name="any" required="false" namespace="http://schemas.xmlsoap.org/ws/2003/03/addressing" elementQualified="true">
+                                 <type>
+                                    <complexType elementQualified="false"/>
+                                 </type>
+                              </part>
+                           </sequence>
+                        </complexType>
+                        <complexType elementQualified="true" namespace="http://schemas.xmlsoap.org/ws/2003/03/addressing" localPart="EndpointReferenceType" prefix="wsa" xmlns="">
+                           <sequence minOccurs="1" maxOccurs="1">
+                              <part name="Address" required="true" namespace="http://schemas.xmlsoap.org/ws/2003/03/addressing" elementQualified="true">
+                                 <type namespace="http://schemas.xmlsoap.org/ws/2003/03/addressing" localPart="AttributedURI" prefix="wsa"/>
+                              </part>
+                              <part name="ReferenceProperties" required="false" namespace="http://schemas.xmlsoap.org/ws/2003/03/addressing" elementQualified="true">
+                                 <type namespace="http://schemas.xmlsoap.org/ws/2003/03/addressing" localPart="ReferencePropertiesType" prefix="wsa"/>
+                              </part>
+                              <part name="PortType" required="false" namespace="http://schemas.xmlsoap.org/ws/2003/03/addressing" elementQualified="true">
+                                 <type namespace="http://schemas.xmlsoap.org/ws/2003/03/addressing" localPart="AttributedQName" prefix="wsa"/>
+                              </part>
+                              <part name="ServiceName" required="false" namespace="http://schemas.xmlsoap.org/ws/2003/03/addressing" elementQualified="true">
+                                 <type namespace="http://schemas.xmlsoap.org/ws/2003/03/addressing" localPart="ServiceNameType" prefix="wsa"/>
+                              </part>
+                              <part name="any" required="false" namespace="http://schemas.xmlsoap.org/ws/2003/03/addressing" elementQualified="true">
+                                 <type>
+                                    <complexType elementQualified="false"/>
+                                 </type>
+                              </part>
+                           </sequence>
+                        </complexType>
+                        <complexType elementQualified="true" namespace="http://schemas.xmlsoap.org/ws/2003/03/addressing" localPart="ServiceNameType" prefix="wsa" xmlns="">
+                           <att name="PortName" required="false">
+                              <type namespace="http://www.w3.org/2001/XMLSchema" localPart="NCName"/>
+                           </att>
+                           <content>
+                              <type namespace="http://www.w3.org/2001/XMLSchema" localPart="QName"/>
+                           </content>
+                        </complexType>
+                        <complexType elementQualified="true" namespace="http://schemas.xmlsoap.org/ws/2003/03/addressing" localPart="AttributedURI" prefix="wsa" xmlns="">
+                           <content>
+                              <type namespace="http://www.w3.org/2001/XMLSchema" localPart="anyURI"/>
+                           </content>
+                        </complexType>
+                        <types-in-elements/>
+                     </types>
+                     <service name="{http://xmlns.oracle.com/SFDC2AOPS_Rpt_Req}SFDC2AOPS_Rpt_Req">
+                        <port name="SFDC2AOPS_Rpt_ReqPort" binding="{http://xmlns.oracle.com/SFDC2AOPS_Rpt_Req}SFDC2AOPS_Rpt_ReqBinding" portType="{http://xmlns.oracle.com/SFDC2AOPS_Rpt_Req}SFDC2AOPS_Rpt_Req">
+                           <soap addressUrl="http://esbsit01.na.odcorp.net/orabpel/sfsync/SFDC2AOPS_Rpt_Req/d20110509_t10.31.18_r00135836_p41161.63" xmlns="http://schemas.xmlsoap.org/wsdl/soap/"/>
+                           <operation name="initiate">
+                              <soap soapAction="initiate" xmlns="http://schemas.xmlsoap.org/wsdl/soap/"/>
+                              <output name=""/>
+                              <input name="" message="{http://xmlns.oracle.com/SFDC2AOPS_Rpt_Req}SFDC2AOPS_Rpt_ReqRequestMessage">
+                                 <message style="2" use="1" soapVersion="1" encodingStyle="" docLitWrapped="false" namespace="http://xmlns.oracle.com/SFDC2AOPS_Rpt_Req" localPart="SFDC2AOPS_Rpt_ReqProcessRequest" xmlns="http://oracle.com/oracle/webservices/mdds">
+                                    <header style="2" use="1" namespace="http://schemas.xmlsoap.org/ws/2003/03/addressing" localPart="ReplyTo" prefix="wsa" elementQualified="false" xmlns="">
+                                       <part name="ReplyTo" required="true" elementQualified="false">
+                                          <type namespace="http://schemas.xmlsoap.org/ws/2003/03/addressing" localPart="EndpointReferenceType" prefix="wsa"/>
+                                       </part>
+                                    </header>
+                                    <header style="2" use="1" namespace="http://schemas.xmlsoap.org/ws/2003/03/addressing" localPart="MessageID" prefix="wsa" elementQualified="false" xmlns="">
+                                       <part name="MessageID" required="true" elementQualified="false">
+                                          <type namespace="http://schemas.xmlsoap.org/ws/2003/03/addressing" localPart="AttributedURI" prefix="wsa"/>
+                                       </part>
+                                    </header>
+                                    <part name="payload" required="true" xmlns="">
+                                       <type>
+                                          <complexType elementQualified="true">
+                                             <sequence minOccurs="1" maxOccurs="1">
+                                                <part name="upDownLoadOption" required="true" namespace="http://xmlns.oracle.com/SFDC2AOPS_Rpt_Req" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="requestType" required="true" namespace="http://xmlns.oracle.com/SFDC2AOPS_Rpt_Req" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="fileExtension" required="true" namespace="http://xmlns.oracle.com/SFDC2AOPS_Rpt_Req" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="fieldDelimiter" required="true" namespace="http://xmlns.oracle.com/SFDC2AOPS_Rpt_Req" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="emailAddress" required="true" namespace="http://xmlns.oracle.com/SFDC2AOPS_Rpt_Req" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                             </sequence>
+                                          </complexType>
+                                       </type>
+                                    </part>
+                                 </message>
+                              </input>
+                           </operation>
+                        </port>
+                     </service>
+                     <service name="{http://xmlns.oracle.com/SFDC2AOPS_Rpt_Req}SFDC2AOPS_Rpt_ReqCallbackService">
+                        <port name="SFDC2AOPS_Rpt_ReqCallbackPort" binding="{http://xmlns.oracle.com/SFDC2AOPS_Rpt_Req}SFDC2AOPS_Rpt_ReqCallbackBinding" portType="{http://xmlns.oracle.com/SFDC2AOPS_Rpt_Req}SFDC2AOPS_Rpt_ReqCallback">
+                           <soap addressUrl="http://set.by.caller" xmlns="http://schemas.xmlsoap.org/wsdl/soap/"/>
+                           <operation name="onResult">
+                              <soap soapAction="onResult" xmlns="http://schemas.xmlsoap.org/wsdl/soap/"/>
+                              <output name=""/>
+                              <input name="" message="{http://xmlns.oracle.com/SFDC2AOPS_Rpt_Req}SFDC2AOPS_Rpt_ReqResponseMessage">
+                                 <message style="2" use="1" soapVersion="1" encodingStyle="" docLitWrapped="false" namespace="http://xmlns.oracle.com/SFDC2AOPS_Rpt_Req" localPart="SFDC2AOPS_Rpt_ReqProcessResponse" xmlns="http://oracle.com/oracle/webservices/mdds">
+                                    <header style="2" use="1" namespace="http://schemas.xmlsoap.org/ws/2003/03/addressing" localPart="RelatesTo" prefix="wsa" elementQualified="false" xmlns="">
+                                       <part name="RelatesTo" required="true" elementQualified="false">
+                                          <type namespace="http://schemas.xmlsoap.org/ws/2003/03/addressing" localPart="Relationship" prefix="wsa"/>
+                                       </part>
+                                    </header>
+                                    <part name="payload" required="true" xmlns="">
+                                       <type>
+                                          <complexType elementQualified="true">
+                                             <sequence minOccurs="1" maxOccurs="1">
+                                                <part name="result" required="true" namespace="http://xmlns.oracle.com/SFDC2AOPS_Rpt_Req" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                             </sequence>
+                                          </complexType>
+                                       </type>
+                                    </part>
+                                 </message>
+                              </input>
+                           </operation>
+                        </port>
+                     </service>
+                  </model>
+               </wsconnection>
+            </Contents>
+         </XmlRefAddr>
+      </RefAddresses>
+   </Reference>
+   <Reference name="ContractInfo" className="oracle.adf.model.connection.webservice.impl.WebServiceConnectionImpl" xmlns="">
+      <Factory className="oracle.adf.model.connection.webservice.api.WebServiceConnectionFactory"/>
+      <RefAddresses>
+         <XmlRefAddr addrType="WebServiceConnection">
+            <Contents>
+               <wsconnection description="http://esbsit01.na.odcorp.net/orabpel/sfsync/GetCustContractInfo/d20110310_t14.09.35_r00101357_p41161.36/GetCustContractInfo?wsdl" service="{http://xmlns.oracle.com/GetCustContractInfo}GetCustContractInfo">
+                  <model name="{http://xmlns.oracle.com/GetCustContractInfo}GetCustContractInfo" xmlns="http://oracle.com/ws/model">
+                     <types xmlns="http://oracle.com/oracle/webservices/mdds">
+                        <types-in-elements/>
+                     </types>
+                     <service name="{http://xmlns.oracle.com/GetCustContractInfo}GetCustContractInfo">
+                        <port name="GetCustContractInfoPort" binding="{http://xmlns.oracle.com/GetCustContractInfo}GetCustContractInfoBinding" portType="{http://xmlns.oracle.com/GetCustContractInfo}GetCustContractInfo">
+                           <soap addressUrl="http://esbsit01.na.odcorp.net/orabpel/sfsync/GetCustContractInfo/d20110310_t14.09.35_r00101357_p41161.36" xmlns="http://schemas.xmlsoap.org/wsdl/soap/"/>
+                           <operation name="process">
+                              <soap soapAction="process" xmlns="http://schemas.xmlsoap.org/wsdl/soap/"/>
+                              <output name="" message="{http://xmlns.oracle.com/GetCustContractInfo}GetCustContractInfoResponseMessage">
+                                 <message style="2" use="1" soapVersion="1" encodingStyle="" docLitWrapped="true" namespace="http://xmlns.oracle.com/GetCustContractInfo" localPart="GetCustContractInfoProcessResponse" xmlns="http://oracle.com/oracle/webservices/mdds">
+                                    <part name="payload" required="true" xmlns="">
+                                       <type>
+                                          <complexType elementQualified="true">
+                                             <sequence minOccurs="1" maxOccurs="1">
+                                                <part name="ContractPriceResultSet" required="true" namespace="http://xmlns.oracle.com/GetCustContractInfo" elementQualified="true">
+                                                   <array dimensions="1" type="2">
+                                                      <type>
+                                                         <complexType elementQualified="true">
+                                                            <sequence minOccurs="1" maxOccurs="1">
+                                                               <part name="ProductName" required="true" namespace="http://xmlns.oracle.com/GetCustContractInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="ProductCode" required="true" namespace="http://xmlns.oracle.com/GetCustContractInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="SkuPrice" required="true" namespace="http://xmlns.oracle.com/GetCustContractInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="ContractId" required="true" namespace="http://xmlns.oracle.com/GetCustContractInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="AddressSeq" required="true" namespace="http://xmlns.oracle.com/GetCustContractInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="Message" required="true" namespace="http://xmlns.oracle.com/GetCustContractInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="DataSource" required="true" namespace="http://xmlns.oracle.com/GetCustContractInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="fetchTime" required="true" namespace="http://xmlns.oracle.com/GetCustContractInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                            </sequence>
+                                                         </complexType>
+                                                      </type>
+                                                   </array>
+                                                </part>
+                                                <part name="ActiveContractsOutput" required="true" namespace="http://xmlns.oracle.com/GetCustContractInfo" elementQualified="true">
+                                                   <array dimensions="1" type="2">
+                                                      <type>
+                                                         <complexType elementQualified="true">
+                                                            <sequence minOccurs="1" maxOccurs="1">
+                                                               <part name="LinkSeq" required="true" namespace="http://xmlns.oracle.com/GetCustContractInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="ContractId" required="true" namespace="http://xmlns.oracle.com/GetCustContractInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="ContractSeq" required="true" namespace="http://xmlns.oracle.com/GetCustContractInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="StatusCode" required="true" namespace="http://xmlns.oracle.com/GetCustContractInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="PriorityCode" required="true" namespace="http://xmlns.oracle.com/GetCustContractInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="PriceCode" required="true" namespace="http://xmlns.oracle.com/GetCustContractInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="OffPricePriceCode" required="true" namespace="http://xmlns.oracle.com/GetCustContractInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="WholesalePriceCode" required="true" namespace="http://xmlns.oracle.com/GetCustContractInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="WholesalePricePriceCode" required="true" namespace="http://xmlns.oracle.com/GetCustContractInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="decimal"/>
+                                                               </part>
+                                                               <part name="DataSource" required="true" namespace="http://xmlns.oracle.com/GetCustContractInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                               <part name="fetchTime" required="true" namespace="http://xmlns.oracle.com/GetCustContractInfo" elementQualified="true">
+                                                                  <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                               </part>
+                                                            </sequence>
+                                                         </complexType>
+                                                      </type>
+                                                   </array>
+                                                </part>
+                                             </sequence>
+                                          </complexType>
+                                       </type>
+                                    </part>
+                                 </message>
+                              </output>
+                              <input name="" message="{http://xmlns.oracle.com/GetCustContractInfo}GetCustContractInfoRequestMessage">
+                                 <message style="2" use="1" soapVersion="1" encodingStyle="" docLitWrapped="false" namespace="http://xmlns.oracle.com/GetCustContractInfo" localPart="GetCustContractInfoProcessRequest" xmlns="http://oracle.com/oracle/webservices/mdds">
+                                    <part name="payload" required="true" xmlns="">
+                                       <type>
+                                          <complexType elementQualified="true">
+                                             <sequence minOccurs="1" maxOccurs="1">
+                                                <part name="AOPS_CustID" required="true" namespace="http://xmlns.oracle.com/GetCustContractInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                                <part name="LoyaltyID" required="true" namespace="http://xmlns.oracle.com/GetCustContractInfo" elementQualified="true">
+                                                   <type namespace="http://www.w3.org/2001/XMLSchema" localPart="string"/>
+                                                </part>
+                                             </sequence>
+                                          </complexType>
+                                       </type>
+                                    </part>
+                                 </message>
+                              </input>
+                           </operation>
+                        </port>
+                     </service>
+                  </model>
+               </wsconnection>
+            </Contents>
+         </XmlRefAddr>
+      </RefAddresses>
+   </Reference>
+</References>

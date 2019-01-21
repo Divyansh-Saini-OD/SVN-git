@@ -1,0 +1,37 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify						|
+-- +============================================================================================+
+-- | Name        : XX_CRM_CUSTADDR_ACCOUNTID_STG.idx                                               |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        06/07/12       Devendra Petkar        Initial version                            |
+-- +============================================================================================+
+
+
+--------------------------------------------------------------------
+-------------XX_CRM_CUSTADDR_ACCOUNTID_ST_I-------------------------
+--------------------------------------------------------------------
+
+
+PROMPT CREATE INDEX xxcrm.XX_CRM_CUSTADDR_ACCOUNTID_ST_I
+
+CREATE UNIQUE INDEX xxcrm.XX_CRM_CUSTADDR_ACCOUNTID_ST_I ON xxcrm.XX_CRM_CUSTADDR_ACCOUNTID_STG
+(record_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+
+SHOW ERROR;
+
+EXIT;

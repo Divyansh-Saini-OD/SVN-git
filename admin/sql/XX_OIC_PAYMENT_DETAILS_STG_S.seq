@@ -1,0 +1,49 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : OD,I0607_IncentiveAndBonusToPayroll                                        |--
+--|                                                                                             |--
+--| Program Name   : XX_OIC_PAYMENT_DETAILS_STG_S.seq                                           |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Sequences .                                                  |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_OIC_PAYMENT_DETAILS_STG_S.(Sequence for generation of record_id)       |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              04-Oct-2007       Gowri Nagarajan         Original                         |--
+--| 1.1              09-Oct-2002       Gowri Nagarajan	       Added the schema name            |--
+--+=============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating Sequence XXCRM.XX_OIC_PAYMENT_DETAILS_STG_S
+PROMPT
+
+CREATE SEQUENCE XXCRM.XX_OIC_PAYMENT_DETAILS_STG_S INCREMENT BY 1 START WITH 1 NOCACHE NOORDER;
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

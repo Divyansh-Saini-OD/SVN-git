@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<JavaBean xmlns="http://xmlns.oracle.com/adfm/beanmodel" version="11.1.1.56.60"
+          id="GetTaxExemptInfoOutput" Package="model.CustInfo.process_Result"
+          BeanClass="model.CustInfo.process_Result.GetTaxExemptInfoOutput"
+          isJavaBased="false">
+  <Attribute Name="ADDRESS_SEQ" IsUpdateable="0" IsNotNull="false"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="ADDRESS_STATE" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+  <Attribute Name="COUNTRY_CODE" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+  <Attribute Name="TAX_CERTIF_NBR" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+  <Attribute Name="EXP_DATE" IsUpdateable="0" IsNotNull="false"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="GST_EXEMPT_COMMENT" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+  <Attribute Name="TAX_STATUS" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+  <Attribute Name="ADDR_SEQ_DENLET" IsUpdateable="0" IsNotNull="false"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="DENIAL_SEND_DATE" IsUpdateable="0" IsNotNull="false"
+             Type="java.sql.Date"/>
+  <Attribute Name="LETTER_NOTIF" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+  <Attribute Name="FEDERAL_EXEMPT" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+</JavaBean>

@@ -1,0 +1,39 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : XX_TM_NAM_TERR_ENTITY_DTLS_U2.idx                   |
+-- | Description : Index Creation Script                               |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |1.0      04-Sep-2008  Nabarun    Initial Draft Version       |
+-- |                                                                   |
+-- +===================================================================+
+
+PROMPT
+PROMPT Creating INDEX XX_TM_NAM_TERR_ENTITY_DTLS_U2
+PROMPT
+
+
+create index XXCRM.XX_TM_NAM_TERR_ENTITY_DTLS_U2 on XXCRM.XX_TM_NAM_TERR_ENTITY_DTLS(NAMED_ACCT_TERR_ID) parallel 8 
+online nologging ;
+
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

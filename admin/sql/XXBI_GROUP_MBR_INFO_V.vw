@@ -1,0 +1,9 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+create or replace view XXBI_GROUP_MBR_INFO_V as
+select mv.* from XXBI_GROUP_MBR_INFO_MV mv where 
+user_id = FND_GLOBAL.USER_ID or m1_user_id = FND_GLOBAL.USER_ID  or  m2_user_id = FND_GLOBAL.USER_ID
+or m3_user_id = FND_GLOBAL.USER_ID or  m4_user_id = FND_GLOBAL.USER_ID or m5_user_id = FND_GLOBAL.USER_ID or m6_user_id = FND_GLOBAL.USER_ID;
+SHOW ERRORS;
+EXIT;

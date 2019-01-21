@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<JavaBean xmlns="http://xmlns.oracle.com/adfm/beanmodel" version="11.1.1.56.60"
+          id="process_Result" Package="model.CustOrderInfo"
+          BeanClass="model.CustOrderInfo.process_Result" isJavaBased="false">
+  <Attribute Name="OrderLimit" IsUpdateable="0" Type="java.lang.String"/>
+  <AccessorAttribute id="OrderResultSet" IsCollection="true"
+                     BeanClass="model.CustOrderInfo.process_Result.OrderResultSet"
+                     CollectionBeanClass="model.CustOrderInfo.process_Result_Operations"/>
+  <AccessorAttribute id="TopFiveOrders" IsCollection="true"
+                     BeanClass="model.CustOrderInfo.process_Result.TopFiveOrders"
+                     CollectionBeanClass="model.CustOrderInfo.process_Result_Operations"/>
+  <AccessorAttribute id="GetBackOrderInfoOutput" IsCollection="false"
+                     BeanClass="model.CustOrderInfo.process_Result.GetBackOrderInfoOutput"/>
+  <AccessorAttribute id="GetTopSKUsOrderedOutput" IsCollection="true"
+                     BeanClass="model.CustOrderInfo.process_Result.GetTopSKUsOrderedOutput"
+                     CollectionBeanClass="model.CustOrderInfo.process_Result_Operations"/>
+  <AccessorAttribute id="GetSumForTopOrdersOutput" IsCollection="true"
+                     BeanClass="model.CustOrderInfo.process_Result.GetSumForTopOrdersOutput"
+                     CollectionBeanClass="model.CustOrderInfo.process_Result_Operations"/>
+  <AccessorAttribute id="MetaDatInfo" IsCollection="false"
+                     BeanClass="model.CustOrderInfo.process_Result.MetaDatInfo"/>
+</JavaBean>

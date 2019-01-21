@@ -1,0 +1,744 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jrad:page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.9_1057" xml:lang="en-US"
+           file-version="$Header: LeadDetPG.xml 115.91.115200.3 2005/06/21 01:12:25 pchalaga ship $" xmlns:user="http://xmlns.oracle.com/jrad/user">
+   <jrad:content>
+      <oa:pageLayout id="PageLayoutRN" amDefName="oracle.apps.asn.lead.server.LeadUwqAM" windowTitle="Update Lead" title="Update Lead" controllerClass="oracle.apps.asn.lead.webui.LeadDetCO" shortDesc="Update Lead" helpTarget="ASN_LeadDetPG"
+                     function="ASN_LEADDETPG" regionName="Lead Details">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif" prompt="Oracle"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:pageButtonBar id="ASNPageButtonRN" rendered="${oa.LeadDetAppPropertiesVO.PAGE_BUTTONS_RENDERED}" regionName="Update Lead">
+               <ui:contents>
+                  <oa:submitButton id="ASNPageHistButton" text="View History" shortDesc="View History" prompt="View History" rendered="false"/>
+                  <oa:submitButton id="ASNPageRankButton" use="/oracle/apps/asn/common/attributesets/Buttons/RankLead" text="Rank Lead" shortDesc="Rank Lead" rendered="${oa.LeadDetAppPropertiesVO.RANK_LEAD_RENDERED}"/>
+                  <oa:submitButton id="ASNPageCnvToOpptyButton" use="/oracle/apps/asn/common/attributesets/Buttons/ConvertToOpportunity" text="Convert to Opportunity" shortDesc="Convert to Opportunity"
+                                   rendered="${oa.LeadDetAppPropertiesVO.BUTTON_RENDERED}"/>
+                  <oa:navigationBar id="ASNPageNavBar" rendered="${oa.LeadDetAppPropertiesVO.NAV_BAR_RENDERED}" regionName="Navigation Bar"/>
+                  <oa:submitButton id="ASNPageSvButton" use="/oracle/apps/fnd/attributesets/Buttons/Save" shortDesc="Save" text="Save" rendered="${oa.LeadDetAppPropertiesVO.BUTTON_RENDERED}"/>
+                  <oa:submitButton id="ASNPageFshButton" use="/oracle/apps/fnd/attributesets/Buttons/Finish" text="Finish" shortDesc="Finish" rendered="${oa.LeadDetAppPropertiesVO.NAV_BAR_RENDERED}"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+            <oa:formattedText id="ASNLeadDetCurrNm" shortDesc="Currency" text="Currency"/>
+            <oa:messageComponentLayout id="ASNLeadDetRN" rendered="${oa.LeadDetAppPropertiesVO.DET_RENDERED}" rows="4" columns="3" promptWidth="10%" fieldWidth="90%" regionName="Update Lead">
+               <ui:contents>
+                  <oa:messageTextInput id="ASNLeadDetNm" use="/oracle/apps/asn/lead/attributesets/Lead/Description_Lead" required="${oa.LeadDetAppPropertiesVO.ITEM_REQUIRED}" viewName="LeadHeaderDetailsVO" viewAttr="Description" shortDesc="Lead"
+                                       maximumLength="240" readOnly="${oa.LeadDetAppPropertiesVO.FIELD_READ_ONLY}" columns="20"/>
+                  <oa:messageStyledText id="ASNLeadDetNumber" viewName="LeadHeaderDetailsVO" viewAttr="LeadNumber" prompt="Lead Number" shortDesc="Lead Number" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="ASNLeadDetCust" required="yes" prompt="Customer" viewName="LeadHeaderDetailsVO" viewAttr="PartyName" shortDesc="Customer" warnAboutChanges="false">
+                     <ui:primaryClientAction>
+                        <ui:fireAction id="ASNLeadDetCust_fireAction">
+                           <ui:parameters>
+                              <ui:parameter key="ASNReqPgAct" value="CUSTDET"/>
+                              <ui:parameter key="ASNReqEvtCustId" value="${oa.current.CustomerId}"/>
+                           </ui:parameters>
+                        </ui:fireAction>
+                     </ui:primaryClientAction>
+                  </oa:messageStyledText>
+                  <oa:messageLayout id="ASNLeadDetAddrLyt" prompt="Address">
+                     <ui:contents>
+                        <oa:rowLayout id="ASNLeadDetAddrLytRow" regionName="Update Lead - Address">
+                           <ui:contents>
+                              <oa:messageTextInput id="ASNLeadDetAddr" disabled="true" viewName="LeadHeaderDetailsVO" viewAttr="Address" rows="2" columns="20" styleClass="OraDataText" readOnly="${oa.LeadDetAppPropertiesVO.ADDRESS_READ_ONLY}"
+                                                   shortDesc="Address"/>
+                              <oa:submitButton id="ASNAddrSelButton" text="Select" prompt="Select" rendered="${oa.LeadDetAppPropertiesVO.ADDRESS_SELBTN_RENDERED}" serverUnvalidated="true" unvalidated="true"/>
+                           </ui:contents>
+                        </oa:rowLayout>
+                     </ui:contents>
+                  </oa:messageLayout>
+                  <oa:messageLayout id="ASNLeadDetAddrSpcrLyt">
+                     <ui:contents>
+                        <oa:spacer id="ASNLeadDetAddrSpcr" height="5"/>
+                     </ui:contents>
+                  </oa:messageLayout>
+                  <oa:messageChoice id="ASNLeadDetMeth" use="/oracle/apps/asn/admin/attributesets/SalesMethodology/SalesMethodologyName" shortDesc="Methodology" pickListValAttr="SalesMethodologyId" pickListDispAttr="SalesMethodologyName"
+                                    viewName="LeadHeaderDetailsVO" viewAttr="SalesMethodologyId" dataType="NUMBER" serverUnvalidated="true" readOnly="${oa.LeadDetAppPropertiesVO.METH_READ_ONLY}" pickListViewName="SalesMethodologiesVO"
+                                    required="${oa.LeadDetAppPropertiesVO.METH_REQUIRED}">
+                     <ui:primaryClientAction>
+                        <ui:firePartialAction id="firePartialAction2" unvalidated="true" event="METHCHG"/>
+                     </ui:primaryClientAction>
+                  </oa:messageChoice>
+                  <oa:messageChoice id="ASNLeadDetStage" use="/oracle/apps/asn/admin/attributesets/SalesStage/SalesStageName" pickListValAttr="SalesStageId" pickListDispAttr="SalesStageName" viewName="LeadHeaderDetailsVO" shortDesc="Stage" rendered="true"
+                                    viewAttr="SalesStageId" pickListViewName="LeadMethSalesStagesVO" required="${oa.LeadDetAppPropertiesVO.STAGE_REQUIRED}" readOnly="${oa.LeadDetAppPropertiesVO.STAGE_READ_ONLY}"/>
+                  <oa:messageChoice id="ASNLeadDetStatus" use="/oracle/apps/asn/admin/attributesets/Status/Meaning" required="${oa.LeadDetAppPropertiesVO.ITEM_REQUIRED}" pickListViewDef="oracle.apps.asn.lead.poplist.server.LeadStatusesVO"
+                                    pickListValAttr="StatusCode" pickListDispAttr="LeadStatus" viewName="LeadHeaderDetailsVO" viewAttr="StatusCode" shortDesc="Status" rendered="${oa.LeadDetAppPropertiesVO.STATUS_RENDERED}"
+                                    readOnly="${oa.LeadDetAppPropertiesVO.FIELD_READ_ONLY}" serverUnvalidated="true">
+                     <ui:primaryClientAction>
+                        <ui:firePartialAction event="detailStatusUpdate" unvalidated="true"/>
+                     </ui:primaryClientAction>
+                  </oa:messageChoice>
+                  <oa:messageChoice id="ASNLeadDetCnvtdStatus" use="/oracle/apps/asn/admin/attributesets/Status/Meaning" pickListViewDef="oracle.apps.asn.lead.poplist.server.LeadAllStatusesVO" pickListDispAttr="LeadStatus" pickListValAttr="StatusCode"
+                                    viewName="LeadHeaderDetailsVO" viewAttr="StatusCode" styleClass="OraDataText" shortDesc="Status" rendered="${oa.LeadDetAppPropertiesVO.CNVTD_STATUS_RENDERED}" readOnly="true"/>
+                  <oa:messageChoice id="ASNLeadDetRsn" use="/oracle/apps/asn/lead/attributesets/Lead/CloseReason" shortDesc="Close Reason" pickListValAttr="LookupCode" pickListDispAttr="Meaning" viewName="LeadHeaderDetailsVO" viewAttr="CloseReason"
+                                    readOnly="${oa.LeadDetAppPropertiesVO.CLSRSN_READ_ONLY}" pickListViewName="LeadDetCloseReasonsVO"/>
+                  <oa:messageChoice id="ASNLeadDetChnl" use="/oracle/apps/asn/lead/attributesets/Lead/SalesChannel" shortDesc="Sales Channel" pickListViewDef="oracle.apps.asn.common.poplist.server.SalesChannelsVO" pickListValAttr="LookupCode"
+                                    pickListDispAttr="Meaning" viewName="LeadHeaderDetailsVO" viewAttr="ChannelCode" readOnly="${oa.LeadDetAppPropertiesVO.FIELD_READ_ONLY}"/>
+                  <oa:messageChoice id="ASNLeadDetRank" use="/oracle/apps/asn/admin/attributesets/Rank/Meaning" pickListViewDef="oracle.apps.asn.lead.poplist.server.LeadRanksVO" pickListValAttr="RankId" pickListDispAttr="Meaning" shortDesc="Rank"
+                                    viewName="LeadHeaderDetailsVO" viewAttr="LeadRankId" readOnly="${oa.LeadDetAppPropertiesVO.FIELD_READ_ONLY}"/>
+                  <oa:messageLovInput id="ASNLeadDetSrcNm" externalListOfValues="/oracle/apps/asn/common/lov/webui/SrcLovRN" shortDesc="Source" viewName="LeadHeaderDetailsVO" viewAttr="SourceName" prompt="Source"
+                                      rendered="${oa.LeadDetAppPropertiesVO.SRC_NM_RENDERED}" columns="25" readOnly="${oa.LeadDetAppPropertiesVO.FIELD_READ_ONLY}">
+                     <jrad:lovMappings>
+                        <jrad:lovMap id="ASNSrcNmToLovNm" lovItem="ASNSrcLovNm" criteriaFrom="ASNLeadDetSrcNm" useForValidation="yes"/>
+                        <jrad:lovMap id="ASNLovNmToSrcNm" lovItem="ASNSrcLovNm" resultTo="ASNLeadDetSrcNm" useForValidation="yes"/>
+                        <jrad:lovMap id="ASNLovSrcPromIdToSrcPromId" lovItem="ASNSrcLovSrcPromId" resultTo="ASNLeadDetSrcPromId" useForValidation="yes"/>
+                     </jrad:lovMappings>
+                  </oa:messageLovInput>
+
+                  <oa:messageLovInput id="ODStoreNumID" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" disabled="false" externalListOfValues="/od/oracle/apps/xxcrm/asn/common/lov/webui/ODStoreNumRN" initSortSeq="none" prompt="OD Store #"
+                             queryable="false" readOnly="false" rendered="true" required="no" rows="1" scope="." selectiveSearchCriteria="false" sortState="no" tipType="none" unvalidated="false" userCustomizable="false" vAlign="middle"
+                             viewAttr="Attribute4" viewName="LeadHeaderDetailsVO" warnAboutChanges="true">
+                     <jrad:lovMappings>
+                        <jrad:lovMap id="ODStoreNumLovMap1" lovItem="Value" criteriaFrom="ODStoreNumID" resultTo="ODStoreNumID" useForValidation="yes"/>
+                        <jrad:lovMap id="ODStoreNoFrmMap" lovItem="Value" programmaticQuery="false" requiredForLOV="false" resultTo="ODStoreNoFrm" scope="." useForValidation="yes"/>
+                     </jrad:lovMappings>
+                  </oa:messageLovInput>
+                  <oa:formValue id="ODStoreNoFrm" adminCustomizable="true" dataType="VARCHAR2" encrypted="false" queryable="false" rendered="false" scope="." securityMode="standard" selectiveSearchCriteria="false" userCustomizable="false"
+                             viewAttr="Attribute4" viewName="LeadHeaderDetailsVO"/>
+                  
+                  <oa:messageStyledText id="ASNLeadDetSrcNmLnk" shortDesc="Source" prompt="Source" viewName="LeadHeaderDetailsVO" viewAttr="SourceName" rendered="${oa.LeadDetAppPropertiesVO.SRC_LNK_RENDERED}" warnAboutChanges="false">
+                     <ui:primaryClientAction>
+                        <ui:fireAction id="ASNLeadDetSrcNmLnk_fireAction">
+                           <ui:parameters>
+                              <ui:parameter key="ASNReqPgAct" value="CSCHDET"/>
+                              <ui:parameter key="ASNReqEvtCschId" value="${oa.current.SourceCodeForId}"/>
+                           </ui:parameters>
+                        </ui:fireAction>
+                     </ui:primaryClientAction>
+                  </oa:messageStyledText>
+                  <oa:messageTextInput id="ASNLeadDetBudgetAmt" viewName="LeadHeaderDetailsVO" viewAttr="BudgetAmount" dataType="NUMBER" prompt="Budget Amount" shortDesc="Budget Amount" rendered="false"
+                                       readOnly="${oa.LeadDetAppPropertiesVO.FIELD_READ_ONLY}"/>
+                  <oa:messageChoice id="ASNLeadDetRespChan" prompt="Response Channel" shortDesc="Response Channel" viewName="LeadHeaderDetailsVO" viewAttr="VehicleResponseCode" pickListDispAttr="Meaning" pickListValAttr="LookupCode" rendered="false"
+                                    readOnly="${oa.LeadDetAppPropertiesVO.FIELD_READ_ONLY}" pickListViewDef="oracle.apps.asn.common.poplist.server.VehicleResponseChannelVO"/>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:subTabLayout id="ASNLeadDetSubtab" rendered="${oa.LeadDetAppPropertiesVO.DET_RENDERED}" regionName="Update Lead">
+               <ui:contents>
+                  <oa:stackLayout id="ASNDetHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/LeadDetails_Subtab" shortDesc="Details" rendered="false" regionName="Update Lead - Details">
+                     <ui:contents>
+                        <oa:hideShowHeader id="ASNDetAnlHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/Analysis_Hdr" shortDesc="Analysis" disclosed="true" regionName="Update Lead - Details Analysis">
+                           <ui:contents>
+                              <oa:tableLayout id="ASNDetAnlHdrTable" width="100%" regionName="Update Lead - Details Analysis">
+                                 <ui:contents>
+                                    <oa:rowLayout id="ASNDetAnlHdrRow" width="100%" regionName="Update Lead - Details Analysis">
+                                       <ui:contents>
+                                          <oa:cellFormat id="ASNPrdtCntrCell" hAlign="start" vAlign="top" width="30%" rendered="false" regionName="Update Lead - Details Products Under Contract">
+                                             <ui:contents>
+                                                <oa:header id="ASNPrdtCntrRN" extends="/oracle/apps/asn/common/webui/PrdtCntrRN"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                          <oa:cellFormat id="ASNCustOpptyLstCell" vAlign="top" width="70%" regionName="Update Lead - Details Recent Opportunities">
+                                             <ui:contents>
+                                                <oa:header id="ASNCustOpptyLstRN" extends="/oracle/apps/asn/common/webui/CustOpptyLstRN" regionName="Update Lead - Details Recent Opportunities"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                 </ui:contents>
+                              </oa:tableLayout>
+                           </ui:contents>
+                        </oa:hideShowHeader>
+                        <oa:hideShowHeader id="ASNDetCtctHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/Contacts_Hdr" shortDesc="Contacts" disclosed="true" regionName="Update Lead - Details Contacts">
+                           <ui:contents>
+                              <oa:header id="ASNSugCtctLstRN" extends="/oracle/apps/asn/common/webui/SugCtctLstRN" rendered="true" shortDesc="Suggested Contacts"/>
+                              <oa:header id="ASNCtctLstRN" text="Selected Contacts" shortDesc="Selected Contacts" regionName="Selected Contacts" controllerClass="oracle.apps.asn.lead.webui.LeadCtctTableCO">
+                                 <ui:contents>
+                                    <oa:advancedTable id="ASNCtctLstTb" width="100%" blockSize="5" viewName="LeadHeaderContactDetailsVO" shortDesc="Contacts" regionName="Selected Contacts">
+                                       <ui:contents>
+                                          <oa:column id="ASNCtctFirstNmCol" rendered="${oa.LeadDetAppPropertiesVO.CTCT_FIRSTNM_RENDERED}">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNCtctFirstNmColHdr" prompt="First Name" shortDesc="First Name"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="ASNCtctFirstNm" dataType="VARCHAR2" prompt="First Name" text="First Name" viewName="LeadHeaderContactDetailsVO" viewAttr="PersonFirstName" maximumLength="150" shortDesc="First Name"
+                                                                     columns="10" rendered="${oa.LeadDetAppPropertiesVO.CTCT_FIRSTNM_RENDERED}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNCtctLastNmCol" rendered="${oa.LeadDetAppPropertiesVO.CTCT_LASTNM_RENDERED}">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNCtctLastNmColHdr" prompt="Last Name" shortDesc="Last Name"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="ASNCtctLastNm" dataType="VARCHAR2" prompt="Last Name" text="Last Name" viewName="LeadHeaderContactDetailsVO" viewAttr="PersonLastName" maximumLength="150" shortDesc="Last Name"
+                                                                     columns="10" rendered="${oa.LeadDetAppPropertiesVO.CTCT_LASTNM_RENDERED}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNCtctNmCol" rendered="${oa.LeadDetAppPropertiesVO.CTCT_NM_RENDERED}">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNCtctNmColHdr" prompt="Name" shortDesc="Name"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageStyledText id="ASNCtctNm" prompt="Name" viewName="LeadHeaderContactDetailsVO" viewAttr="PartyName" rendered="${oa.LeadDetAppPropertiesVO.CTCT_NM_RENDERED}" warnAboutChanges="false">
+                                                   <ui:primaryClientAction>
+                                                      <ui:fireAction id="ASNCtctNm_fireAction">
+                                                         <ui:parameters>
+                                                            <ui:parameter key="ASNReqPgAct" value="CTCTDET"/>
+                                                            <ui:parameter key="ASNReqEvtCustId" value="${oa.current.CustomerId}"/>
+                                                            <ui:parameter key="ASNReqEvtCtctId" value="${oa.current.SubjectId}"/>
+                                                            <ui:parameter key="ASNReqEvtRelPtyId" value="${oa.current.ContactPartyId}"/>
+                                                            <ui:parameter key="ASNReqEvtRelId" value="${oa.current.PartyRelationshipId}"/>
+                                                         </ui:parameters>
+                                                      </ui:fireAction>
+                                                   </ui:primaryClientAction>
+                                                </oa:messageStyledText>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNCtctJobCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNCtctJobColHdr" prompt="Job Title" shortDesc="Job Title"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="ASNCtctJob" dataType="VARCHAR2" prompt="Job Title" text="Job Title" viewName="LeadHeaderContactDetailsVO" viewAttr="JobTitle" maximumLength="100" shortDesc="Job Title" columns="10"
+                                                                     readOnly="${oa.LeadDetAppPropertiesVO.CTCT_FLDS_READ_ONLY}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNCtctPhonCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNCtctPhonColHdr" prompt="Phone"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:flowLayout id="ASNCtctPhonFlow" shortDesc="Phone" prompt="Phone" regionName="Update Lead - Details Selected Contacts Phone">
+                                                   <ui:contents>
+                                                      <oa:messageTextInput id="ASNCtctPhonCntryCd" dataType="VARCHAR2" prompt="Phone" text="Phone" viewName="LeadHeaderContactDetailsVO" viewAttr="PhoneCountryCode" maximumLength="10" columns="2"
+                                                                           shortDesc="Country Code" readOnly="${oa.LeadDetAppPropertiesVO.CTCT_FLDS_READ_ONLY}" rendered="${oa.LeadDetAppPropertiesVO.CTCT_PHONFLDS_RENDERED}"/>
+                                                      <oa:messageTextInput id="ASNCtctPhonAreaCd" dataType="VARCHAR2" viewName="LeadHeaderContactDetailsVO" viewAttr="PhoneAreaCode" maximumLength="10" shortDesc="Area Code" columns="3"
+                                                                           readOnly="${oa.LeadDetAppPropertiesVO.CTCT_FLDS_READ_ONLY}" rendered="${oa.LeadDetAppPropertiesVO.CTCT_PHONFLDS_RENDERED}"/>
+                                                      <oa:messageTextInput id="ASNCtctPhonNbr" dataType="VARCHAR2" viewName="LeadHeaderContactDetailsVO" viewAttr="PhoneNumber" maximumLength="40" shortDesc="Phone Number" columns="7"
+                                                                           readOnly="${oa.LeadDetAppPropertiesVO.CTCT_FLDS_READ_ONLY}" rendered="${oa.LeadDetAppPropertiesVO.CTCT_PHONFLDS_RENDERED}"/>
+                                                      <oa:messageTextInput id="ASNCtctPhonExtn" viewName="LeadHeaderContactDetailsVO" viewAttr="PhoneExtension" shortDesc="Extension" prompt="Ext" columns="3" maximumLength="10"
+                                                                           readOnly="${oa.LeadDetAppPropertiesVO.CTCT_FLDS_READ_ONLY}" rendered="${oa.LeadDetAppPropertiesVO.CTCT_PHONFLDS_RENDERED}"/>
+                                                      <oa:messageStyledText id="ASNCtctFmtdPhon" viewName="LeadHeaderContactDetailsVO" viewAttr="ConcatPhoneNumber" prompt="Phone" rendered="${oa.LeadDetAppPropertiesVO.CTCT_PHONNBRFMTD_RENDERED}"/>
+                                                   </ui:contents>
+                                                </oa:flowLayout>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNCtctEmlCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNCtctEmlColHdr" prompt="Email" shortDesc="Email"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageStyledText id="ASNCtctEml" dataType="VARCHAR2" prompt="Email" text="Email" viewName="LeadHeaderContactDetailsVO" viewAttr="EmailAddress" maximumLength="2000" shortDesc="Email" columns="10"
+                                                                      destination="mailto:{#EmailAddress}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNCtctRoleCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNCtctRoleColHdr" use="/oracle/apps/asn/lead/attributesets/LeadContact/ContactRoleCode"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageChoice id="ASNCtctRole" use="/oracle/apps/asn/lead/attributesets/LeadContact/ContactRoleCode" dataType="VARCHAR2" viewName="LeadHeaderContactDetailsVO" viewAttr="ContactRoleCode" shortDesc="Role"
+                                                                  pickListViewDef="oracle.apps.asn.common.poplist.server.ContactRolesVO" pickListValAttr="LookupCode" pickListDispAttr="Meaning" readOnly="${oa.LeadDetAppPropertiesVO.CTCT_ROLE_READ_ONLY}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNCtctPriCol" columnDataFormat="iconButtonFormat">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNCtctPriColHdr" use="/oracle/apps/asn/lead/attributesets/LeadContact/PrimaryContactFlag"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageCheckBox id="ASNCtctPri" dataType="VARCHAR2" text="Primary" viewName="LeadHeaderContactDetailsVO" viewAttr="PrimaryContactFlag" readOnly="${oa.LeadDetAppPropertiesVO.CTCT_PRIMARY_READ_ONLY}"
+                                                                    shortDesc="Primary Contact"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNCtctRmCol" rendered="${oa.LeadDetAppPropertiesVO.CTCT_REMOVECOL_RENDERED}" columnDataFormat="iconButtonFormat">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNCtctRmColHdr" prompt="Remove" shortDesc="Remove"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:link id="ASNCtctRmLnk" serverUnvalidated="true" rendered="${oa.LeadDetAppPropertiesVO.CTCT_REMOVECOL_RENDERED}">
+                                                   <ui:contents>
+                                                      <oa:image id="ASNCtctRm" rendered="${oa.LeadDetAppPropertiesVO.CTCT_REMOVECOL_RENDERED}" source="remove_enabled.gif" imageHeight="24" imageWidth="24" prompt="Remove Contact"/>
+                                                   </ui:contents>
+                                                   <ui:primaryClientAction>
+                                                      <ui:firePartialAction id="firePartialAction1" unvalidated="true">
+                                                         <ui:parameters>
+                                                            <ui:parameter key="ASNReqPgAct" value="CTCTDEL"/>
+                                                            <ui:parameter key="ASNReqEvtRowId" value="${oa.LeadHeaderContactDetailsVO.LeadContactId}"/>
+                                                            <ui:parameter key="serverValidate" value="0"/>
+                                                         </ui:parameters>
+                                                      </ui:firePartialAction>
+                                                   </ui:primaryClientAction>
+                                                </oa:link>
+                                             </ui:contents>
+                                          </oa:column>
+                                       </ui:contents>
+                                       <ui:tableSelection>
+                                          <oa:singleSelection id="ASNCtctSel" viewAttr="SelectFlag" rendered="${oa.LeadDetAppPropertiesVO.CTCT_SELECTCOL_RENDERED}" shortDesc="Select Contact" text="">
+                                             <ui:contents>
+                                                <oa:rowLayout id="ASNCtctActions" rendered="${oa.LeadDetAppPropertiesVO.CTCT_SELECTCOL_RENDERED}" regionName="Update Lead - Details Selected Contacts">
+                                                   <ui:contents>
+                                                      <oa:messageChoice id="ASNCtctAction" shortDesc="Contact Action" rendered="${oa.LeadDetAppPropertiesVO.CTCT_ACTIONS_RENDERED}" pickListValAttr="LookupCode" pickListDispAttr="Meaning"
+                                                                        defaultValue="CREATE_TASK" pickListViewName="ContactActionsVO" prompt="Select Contact:"/>
+                                                      <oa:submitButton id="ASNCtctGoButton" shortDesc="Go" text="Go" prompt="Go" rendered="${oa.LeadDetAppPropertiesVO.CTCT_ACTIONS_RENDERED}"/>
+                                                   </ui:contents>
+                                                </oa:rowLayout>
+                                             </ui:contents>
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction id="fireAction1" event="ASNLeadCtctSelFA"/>
+                                             </ui:primaryClientAction>
+                                          </oa:singleSelection>
+                                       </ui:tableSelection>
+                                       <ui:tableActions>
+                                          <oa:flowLayout id="ASNCtctTbAct" regionName="Selected Contacts" rendered="${oa.LeadDetAppPropertiesVO.CTCT_ADDBTN_RENDERED}">
+                                             <ui:contents>
+                                                <oa:submitButton id="ASNCtctAddButton" use="/oracle/apps/asn/common/attributesets/Buttons/AddContact" text="Add Contact" shortDesc="Add Contact" hAlign="end"
+                                                                 rendered="${oa.LeadDetAppPropertiesVO.CTCT_ADDBTN_RENDERED}"/>
+                                                <oa:submitButton id="ASNCtctCrteButton" text="Create Contact" hAlign="end" rendered="${oa.LeadDetAppPropertiesVO.CTCT_CRTEBTN_RENDERED}" prompt="Create Contact" shortDesc="Create Contact"/>
+                                             </ui:contents>
+                                          </oa:flowLayout>
+                                       </ui:tableActions>
+                                    </oa:advancedTable>
+                                    <oa:header id="ASNCtctAddInfoHdrRN" text="Additional Information" regionName="Selected Contacts - Additional Information" controllerClass="oracle.apps.asn.lead.webui.LeadCtctAddInfoCO" rendered="false">
+                                       <ui:contents>
+                                          <oa:flex id="ASNCtctAddInfoFF" flexFieldAppShortName="AS" viewName="LeadHeaderContactDetailsVO" flexName="AS_SALES_LEAD_CONTACTS" readOnly="${oa.LeadDetAppPropertiesVO.CTCT_FLEX_READ_ONLY}"
+                                                   shortDesc="Additional Information"/>
+                                       </ui:contents>
+                                    </oa:header>
+                                 </ui:contents>
+                              </oa:header>
+                           </ui:contents>
+                        </oa:hideShowHeader>
+                        <oa:hideShowHeader id="ASNDetPrdtHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/Products_Hdr" shortDesc="Products" disclosed="true" regionName="Products">
+                           <ui:contents>
+                              <oa:header id="ASNPrdtLstRN" controllerClass="oracle.apps.asn.lead.webui.LeadPrdtTableCO" regionName="Products" text="Products">
+                                 <ui:contents>
+                                    <oa:advancedTable id="ASNPrdtLstTb" shortDesc="Products" blockSize="5" width="100%" viewName="LeadHeaderLineDetailsVO" regionName="Products Table">
+                                       <ui:contents>
+                                          <oa:column id="ASNPrdtCtgCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNPrdtCtgColHdr" prompt="Product" shortDesc="Product Category" sortState="yes"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageStyledText id="ASNPrdtCtg" dataType="VARCHAR2" prompt="Product" viewName="LeadHeaderLineDetailsVO" viewAttr="ProductCategory" shortDesc="Product Category" sortState="yes"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNPrdtItmNumCol" rendered="false">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNPrdtItmHdr" sortState="yes" prompt="Item Number" shortDesc="Item Number"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageStyledText id="ASNPrdtItmNum" rendered="true" prompt="Item Number" shortDesc="Item Number" viewAttr="ItemNumber"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNPrdtUomCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNPrdtUomColHdr" prompt="UOM"
+/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:switcher id="ASNPrdtUom" viewName="LeadHeaderLineDetailsVO" viewAttr="ItemNullFlag" prompt="UOM" sortState="no" regionName="Products - UOM">
+                                                   <ui:case id="case1" name="ASNPrdtInvItemNo">
+                                                      <oa:messageChoice id="ASNPrdtInvItemNo" viewName="LeadHeaderLineDetailsVO" viewAttr="UomCode" prompt="UOM" sortState="no" pickListViewDef="oracle.apps.asn.common.poplist.server.UomCodesVO"
+                                                                        pickListDispAttr="Description" pickListValAttr="UomCode" shortDesc="UOM" readOnly="${oa.LeadDetAppPropertiesVO.FIELD_READ_ONLY}"/>
+                                                   </ui:case>
+                                                   <ui:case id="case2" name="ASNPrdtInvItemYes">
+                                                      <oa:messageStyledText id="ASNPrdtInvItemYes" sortState="yes" viewName="LeadHeaderLineDetailsVO" viewAttr="UomCode" shortDesc="UOM"/>
+                                                   </ui:case>
+                                                </oa:switcher>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNPrdtQuanCol" columnDataFormat="numberFormat">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNPrdtQuanColHdr" use="/oracle/apps/asn/lead/attributesets/LeadLine/Quantity" shortDesc="Quantity" sortState="yes"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="ASNPrdtQuan" dataType="NUMBER" viewName="LeadHeaderLineDetailsVO" viewAttr="Quantity" shortDesc="Quantity" sortState="yes" columns="8"
+                                                                     readOnly="${oa.LeadDetAppPropertiesVO.FIELD_READ_ONLY}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNPrdtAmtCol" columnDataFormat="numberFormat">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNPrdtAmtColHdr" use="/oracle/apps/asn/lead/attributesets/LeadLine/BudgetAmount" shortDesc="Amount" sortState="yes"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="ASNPrdtAmt" dataType="NUMBER" viewName="LeadHeaderLineDetailsVO" viewAttr="BudgetAmount" shortDesc="Amount" sortState="yes" columns="6"
+                                                                     readOnly="${oa.LeadDetAppPropertiesVO.FIELD_READ_ONLY}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNPrdtRmCol" rendered="${oa.LeadDetAppPropertiesVO.REMOVE_COLUMN_RENDERED}" columnDataFormat="iconButtonFormat">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNPrdtRmColHdr" prompt="Remove" shortDesc="Remove Product"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:link id="ASNPrdtRmLnk" serverUnvalidated="true">
+                                                   <ui:contents>
+                                                      <oa:image id="ASNPrdtRm" source="remove_enabled.gif" imageHeight="24" imageWidth="24" prompt="Remove Product"/>
+                                                   </ui:contents>
+                                                   <ui:primaryClientAction>
+                                                      <ui:firePartialAction id="firePartialAction4" unvalidated="true">
+                                                         <ui:parameters>
+                                                            <ui:parameter key="ASNReqPgAct" value="PRDTDEL"/>
+                                                            <ui:parameter key="ASNReqEvtRowId" value="${oa.LeadHeaderLineDetailsVO.SalesLeadLineId}"/>
+                                                            <ui:parameter key="serverValidate" value="0"/>
+                                                         </ui:parameters>
+                                                      </ui:firePartialAction>
+                                                   </ui:primaryClientAction>
+                                                </oa:link>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:formValue id="ASNPrdtInvItemId" viewName="LeadHeaderLineDetailsVO" viewAttr="InventoryItemId" dataType="NUMBER" adminCustomizable="false"/>
+                                          <oa:formValue id="ASNPrdtOrgId" viewName="LeadHeaderLineDetailsVO" viewAttr="OrganizationId" dataType="NUMBER" adminCustomizable="false"/>
+                                          <oa:formValue id="ASNPrdtProcInvItemId" viewName="LeadHeaderLineDetailsVO" viewAttr="ProcInventoryItemId" dataType="NUMBER" adminCustomizable="false"/>
+                                          <oa:formValue id="ASNPrdtProcOrgId" viewName="LeadHeaderLineDetailsVO" viewAttr="ProcOrganizationId" dataType="NUMBER" adminCustomizable="false"/>
+                                       </ui:contents>
+                                       <ui:tableActions>
+                                          <oa:flowLayout id="ASNPrdtTbAct" regionName="Products">
+                                             <ui:contents>
+                                                <oa:submitButton id="ASNPrdtAddButton" use="/oracle/apps/asn/common/attributesets/Buttons/AddProduct" text="Add Product" shortDesc="Add Product" hAlign="end"
+                                                                 rendered="${oa.LeadDetAppPropertiesVO.BUTTON_RENDERED}"/>
+                                             </ui:contents>
+                                          </oa:flowLayout>
+                                       </ui:tableActions>
+                                       <ui:tableSelection>
+                                          <oa:singleSelection id="ASNPrdtSel" viewAttr="SelectFlag" rendered="${oa.LeadDetAppPropertiesVO.PRDT_SELECTCOL_RENDERED}" text="Select Product" shortDesc="Select Product">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction id="fireAction2" event="ASNLeadPrdtSelFA"/>
+                                             </ui:primaryClientAction>
+                                          </oa:singleSelection>
+                                       </ui:tableSelection>
+                                    </oa:advancedTable>
+                                    <oa:header id="ASNPrdtAddInfoHdrRN" text="Additional Information" regionName="Products - Additional Information" controllerClass="oracle.apps.asn.lead.webui.LeadPrdtAddInfoCO" rendered="false">
+                                       <ui:contents>
+                                          <oa:flex id="ASNPrdtAddInfoFF" viewName="LeadHeaderLineDetailsVO" flexFieldAppShortName="AS" flexName="AS_SALES_LEAD_LINES" readOnly="${oa.LeadDetAppPropertiesVO.PRDT_FLEX_READ_ONLY}"
+                                                   shortDesc="Additional Information"/>
+                                       </ui:contents>
+                                    </oa:header>
+                                 </ui:contents>
+                              </oa:header>
+                           </ui:contents>
+                        </oa:hideShowHeader>
+                        <oa:hideShowHeader id="ASNDetCustSvcHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/Service_Hdr" shortDesc="Service" disclosed="true" regionName="Service">
+                           <ui:contents>
+                              <oa:stackLayout id="ASNLeadCustSvcRN" extends="/oracle/apps/asn/common/webui/CustomerServiceRN"/>
+                           </ui:contents>
+                        </oa:hideShowHeader>
+                        <oa:hideShowHeader id="ASNDetNoteHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/Notes_Hdr" shortDesc="Notes" disclosed="true" regionName="Notes">
+                           <ui:contents>
+                              <oa:stackLayout id="ASNLeadNoteRN" extends="/oracle/apps/asn/common/webui/ASNNotesRN"/>
+                           </ui:contents>
+                        </oa:hideShowHeader>
+                        <oa:hideShowHeader id="ASNDetTaskHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/Tasks_Hdr" shortDesc="Tasks" disclosed="true" regionName="Tasks">
+                           <ui:contents>
+                              <oa:stackLayout id="ASNLeadTaskRN" extends="/oracle/apps/jtf/cac/task/webui/CacTaskSummRN"/>
+                           </ui:contents>
+                        </oa:hideShowHeader>
+                        <oa:hideShowHeader id="ASNDetAttachHdrRN" text="Attachments" disclosed="true" regionName="Attachments">
+                           <ui:contents>
+                              <oa:attachmentTable id="ASNDetAttachHdrTable" text="Attachments" viewName="LeadHeaderDetailsVO" searchRegionRendered="false" regionName="Attachments">
+                                 <oa:entityMappings>
+                                    <oa:entityMap id="ASNDetAttachHdrEntityMap" entityId="AS_LEAD_ATTCH">
+                                       <oa:primaryKeys>
+                                          <oa:primaryKey id="primaryKey1" viewAttr="SalesLeadId"/>
+                                       </oa:primaryKeys>
+                                       <oa:categoryMappings>
+                                          <oa:categoryMap id="ASNDetAttachHdrCategoryMap" categoryName="MISC"/>
+                                       </oa:categoryMappings>
+                                    </oa:entityMap>
+                                 </oa:entityMappings>
+                              </oa:attachmentTable>
+                           </ui:contents>
+                        </oa:hideShowHeader>
+                        <oa:spacer id="ASNDetHdrSpacer" height="10"/>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:stackLayout id="ASNCustAnlHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/LeadCustomerAnalysis_Subtab" shortDesc="Customer Analysis" regionName="Customer Analysis">
+                     <ui:contents>
+                        <oa:tableLayout id="ASNSubtabCustAnlHdrTable" extends="/oracle/apps/asn/lead/webui/LeadDetPG.ASNDetAnlHdrTable"/>
+                        <oa:stackLayout id="ASNAnlCustSvcRN" extends="/oracle/apps/asn/common/webui/CustomerServiceRN"/>
+                        <oa:spacer id="ASNCustAnlHdrSpacer" height="10"/>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:stackLayout id="ASNNoteTaskHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/LeadNotesAndTasks_Subtab" shortDesc="Notes &amp; Tasks" regionName="Notes and Tasks">
+                     <ui:contents>
+                        <oa:header id="ASNSubtabNoteHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/Notes_Hdr" regionName="Notes">
+                           <ui:contents>
+                              <oa:stackLayout id="ASNSubtabLeadNoteRN" extends="/oracle/apps/asn/common/webui/ASNNotesRN"/>
+                           </ui:contents>
+                        </oa:header>
+                        <oa:header id="ASNSubtabTaskHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/Tasks_Hdr" regionName="Tasks">
+                           <ui:contents>
+                              <oa:stackLayout id="ASNSubtabLeadTaskRN" extends="/oracle/apps/jtf/cac/task/webui/CacTaskSummRN"/>
+                           </ui:contents>
+                        </oa:header>
+                        <oa:hideShowHeader id="ASNSubtabLeadAttachRN" text="Attachments" disclosed="true" regionName="Attachments">
+                           <ui:contents>
+                              <oa:attachmentTable id="ASNSubtabLeadAttachTable" text="Attachments" viewName="LeadHeaderDetailsVO" searchRegionRendered="false" regionName="Attachments">
+                                 <oa:entityMappings>
+                                    <oa:entityMap id="ASNSubtabLeadAttachEntityMap" entityId="AS_LEAD_ATTCH">
+                                       <oa:primaryKeys>
+                                          <oa:primaryKey id="ASNSubtabLeadAttachPrimaryKey" viewAttr="SalesLeadId"/>
+                                       </oa:primaryKeys>
+                                       <oa:categoryMappings>
+                                          <oa:categoryMap id="ASNSubtabLeadAttachCategoryMap" categoryName="MISC"/>
+                                       </oa:categoryMappings>
+                                    </oa:entityMap>
+                                 </oa:entityMappings>
+                              </oa:attachmentTable>
+                           </ui:contents>
+                        </oa:hideShowHeader>
+                        <oa:spacer id="ASNNoteTaskHdrSpacer" height="10"/>
+                        <oa:stackLayout id="ASNLeadAttachContextHolderRN" regionName="Attachments">
+                           <ui:contents>
+                              <oa:messageComponentLayout id="ASNLeadAttachContextRN" rows="3" columns="2" width="100%" regionName="Attachments">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="ASNLeadDetNm1" use="/oracle/apps/asn/lead/attributesets/Lead/Description_Lead" viewName="LeadHeaderDetailsVO" viewAttr="Description" shortDesc="Lead" maximumLength="240" columns="20"
+                                                          styleClass="OraDataText"/>
+                                    <oa:messageStyledText id="ASNLeadDetCust1" prompt="Customer" viewName="LeadHeaderDetailsVO" viewAttr="PartyName" shortDesc="Customer" warnAboutChanges="false" styleClass="OraDataText"/>
+                                    <oa:messageChoice id="ASNLeadDetRank1" use="/oracle/apps/asn/admin/attributesets/Rank/Meaning" pickListViewDef="oracle.apps.asn.lead.poplist.server.LeadRanksVO" pickListValAttr="RankId" pickListDispAttr="Meaning"
+                                                      shortDesc="Rank" viewName="LeadHeaderDetailsVO" viewAttr="LeadRankId" readOnly="true" styleClass="OraDataText"/>
+                                    <oa:messageChoice id="ASNLeadDetStatus1" use="/oracle/apps/asn/admin/attributesets/Status/Meaning" pickListViewDef="oracle.apps.asn.lead.poplist.server.LeadStatusesVO" pickListValAttr="StatusCode"
+                                                      pickListDispAttr="LeadStatus" viewName="LeadHeaderDetailsVO" viewAttr="StatusCode" shortDesc="Status" readOnly="true" styleClass="OraDataText" rendered="${oa.LeadDetAppPropertiesVO.STATUS_RENDERED}"/>
+                                    <oa:messageChoice id="ASNLeadDetCnvtdStatus1" use="/oracle/apps/asn/admin/attributesets/Status/Meaning" pickListViewDef="oracle.apps.asn.lead.poplist.server.LeadAllStatusesVO" pickListDispAttr="LeadStatus"
+                                                      pickListValAttr="StatusCode" viewName="LeadHeaderDetailsVO" viewAttr="StatusCode" styleClass="OraDataText" shortDesc="Status" rendered="${oa.LeadDetAppPropertiesVO.CNVTD_STATUS_RENDERED}"
+                                                      readOnly="true"/>
+                                    <oa:messageChoice id="ASNLeadDetChnl1" use="/oracle/apps/asn/lead/attributesets/Lead/SalesChannel" shortDesc="Sales Channel" pickListViewDef="oracle.apps.asn.common.poplist.server.SalesChannelsVO"
+                                                      pickListValAttr="LookupCode" pickListDispAttr="Meaning" viewName="LeadHeaderDetailsVO" viewAttr="ChannelCode" readOnly="true" styleClass="OraDataText"/>
+                                    <oa:messageStyledText id="ASNLeadDetSrcNmLnk1" shortDesc="Source" prompt="Source" viewName="LeadHeaderDetailsVO" viewAttr="SourceName" warnAboutChanges="false" styleClass="OraDataText"/>
+                                 </ui:contents>
+                              </oa:messageComponentLayout>
+                           </ui:contents>
+                        </oa:stackLayout>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:stackLayout id="ASNCtctHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/LeadContacts_Subtab" shortDesc="Contacts" regionName="Contacts">
+                     <ui:contents>
+                        <oa:header id="ASNSubtabSugCtctLstRN" extends="/oracle/apps/asn/common/webui/SugCtctLstRN" shortDesc="Suggested Contacts"/>
+                        <oa:header id="ASNSubtabCtctRN" extends="/oracle/apps/asn/lead/webui/LeadDetPG.ASNCtctLstRN" use="/oracle/apps/asn/common/attributesets/Transient/SelectedContacts_Hdr"/>
+                        <oa:spacer id="ASNCtctHdrSpacer" height="10"/>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:stackLayout id="ASNPrdtHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/LeadProducts_Subtab" shortDesc="Products" regionName="Products">
+                     <ui:contents>
+                        <oa:spacer id="ASNPrdtHdrTopSpacer" height="10"/>
+                        <oa:header id="ASNSubtabPrdtTable" extends="/oracle/apps/asn/lead/webui/LeadDetPG.ASNPrdtLstRN"/>
+                        <oa:spacer id="ASNPrdtHdrBtmSpacer" height="10"/>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:stackLayout id="ASNSCHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/LeadSalesCycle_Subtab" shortDesc="Sales Cycle" regionName="Sales Cycle">
+                     <ui:contents>
+                        <oa:spacer id="ASNSCHdrTopSpacer" height="10"/>
+                        <oa:stackLayout id="ASNSCStgStack" extends="/oracle/apps/asn/common/webui/SCStgStack"/>
+                        <oa:spacer id="ASNSCHdrBtmSpacer" height="10"/>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:stackLayout id="ASNSTHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/LeadSalesTeam_Subtab" shortDesc="Sales Team" regionName="Sales Team">
+                     <ui:contents>
+                        <oa:header id="ASNLeadIntSTHdrRN" text="Internal Sales Team" regionName="Sales Team - Internal">
+                           <ui:contents>
+                              <oa:advancedTable id="ASNSTLstTb" viewName="LeadHeaderAccessDetailsVO" shortDesc="Internal Sales Team" blockSize="5" width="100%" regionName="Internal Sales Team">
+                                 <ui:contents>
+                                    <oa:column id="ASNSTNmCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNSTNmColHdr" prompt="Name" shortDesc="Name" sortState="yes"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNSTNm" dataType="VARCHAR2" prompt="Name" text="Name" viewName="LeadHeaderAccessDetailsVO" viewAttr="ResourceName" maximumLength="360" shortDesc="Name" sortState="yes"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNSTJobCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNSTJobHdr" prompt="Job Title" shortDesc="Job Title" sortState="yes"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNSTJob" dataType="VARCHAR2" prompt="Job Title" text="Job Title" viewName="LeadHeaderAccessDetailsVO" viewAttr="SourceJobTitle" maximumLength="240" shortDesc="Job Title" sortState="yes"
+                                                                />
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNSTGroupCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNSTGroupColHdr" prompt="Sales Group" shortDesc="Sales Group" required="yes"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageChoice id="ASNSTGroup" dataType="VARCHAR2" prompt="Sales Group" viewName="LeadHeaderAccessDetailsVO" viewAttr="SalesGroupId" shortDesc="Sales Group" sortState="no"
+                                                            pickListViewDef="oracle.apps.asn.common.poplist.server.ResourceGroupsVO" pickListDispAttr="GroupName" pickListValAttr="GroupId" readOnly="${oa.LeadDetAppPropertiesVO.FIELD_READ_ONLY}"
+                                                            required="yes"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNSTPhoneCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNSTPhoneColHdr" prompt="Phone" shortDesc="Phone" sortState="yes"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNSTPhone" dataType="VARCHAR2" prompt="Phone" text="Phone" viewName="LeadHeaderAccessDetailsVO" viewAttr="SourcePhone" maximumLength="2000" shortDesc="Phone" sortState="yes"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNSTEmailCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNSTEmailColHdr" prompt="Email" shortDesc="Email" sortState="yes"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNSTEmail" dataType="VARCHAR2" prompt="Email" text="Email" viewName="LeadHeaderAccessDetailsVO" viewAttr="SourceEmail" maximumLength="2000" shortDesc="Email" sortState="yes"
+                                                                destination="mailto:{#SourceEmail}"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNSTAccCol" columnDataFormat="iconButtonFormat">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNSTAccColHdr" use="/oracle/apps/asn/common/attributesets/Access/TeamLeaderFlag" shortDesc="Full Access Flag"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageCheckBox id="ASNSTAcc" dataType="VARCHAR2" text="Full Access" viewName="LeadHeaderAccessDetailsVO" viewAttr="TeamLeaderFlag" shortDesc="Full Access"
+                                                              readOnly="${oa.LeadDetAppPropertiesVO.FIELD_READ_ONLY}"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNSTKeepCol" columnDataFormat="iconButtonFormat">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNSTKeepColHdr" use="/oracle/apps/asn/common/attributesets/Access/FreezeFlag" shortDesc="Do Not Reassign Flag"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageCheckBox id="ASNSTKeep" dataType="VARCHAR2" text="Do Not Reassign" viewName="LeadHeaderAccessDetailsVO" viewAttr="FreezeFlag" shortDesc="Do Not Reassign"
+                                                              readOnly="${oa.LeadDetAppPropertiesVO.FIELD_READ_ONLY}"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNSTOwCol" columnDataFormat="iconButtonFormat">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNSTOwColHdr" use="/oracle/apps/asn/common/attributesets/Access/OwnerFlag" shortDesc="Owner"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageCheckBox id="ASNSTOw" dataType="VARCHAR2" text="Owner" viewName="LeadHeaderAccessDetailsVO" viewAttr="OwnerFlag" shortDesc="Owner" readOnly="${oa.LeadDetAppPropertiesVO.FIELD_READ_ONLY}"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNSTRmLnkCol" rendered="${oa.LeadDetAppPropertiesVO.REMOVE_COLUMN_RENDERED}" columnDataFormat="iconButtonFormat">
+                                       <ui:contents>
+                                          <oa:link id="ASNSTRmLnk" serverUnvalidated="true">
+                                             <ui:contents>
+                                                <oa:image id="ASNSTRm" source="remove_enabled.gif" imageHeight="24" imageWidth="24" prompt=""/>
+                                             </ui:contents>
+                                             <ui:primaryClientAction>
+                                                <ui:firePartialAction id="firePartialAction3" unvalidated="true">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="ASNReqPgAct" value="RSCDEL"/>
+                                                      <ui:parameter key="ASNReqEvtRowId" value="${oa.LeadHeaderAccessDetailsVO.AccessId}"/>
+                                                      <ui:parameter key="serverValidate" value="0"/>
+                                                   </ui:parameters>
+                                                </ui:firePartialAction>
+                                             </ui:primaryClientAction>
+                                          </oa:link>
+                                       </ui:contents>
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNSTRmLnkColHdr" prompt="Remove" shortDesc="Remove"/>
+                                       </ui:columnHeader>
+                                    </oa:column>
+                                    <oa:formValue id="ASNSTRscId" viewName="LeadHeaderAccessDetailsVO" viewAttr="SalesforceId" adminCustomizable="false"/>
+                                    <oa:formValue id="ASNSTGroupId" viewAttr="SalesGroupId" adminCustomizable="false"/>
+                                 </ui:contents>
+                                 <ui:tableActions>
+                                    <oa:flowLayout id="ASNSTTbAct" regionName="Internal Sales Team">
+                                       <ui:contents>
+                                          <oa:lovActionButton id="ASNSTAddButton" use="/oracle/apps/asn/common/attributesets/Buttons/AddPerson" externalListOfValues="/oracle/apps/asn/common/lov/webui/RscGrpLovRN" shortDesc="Add Person"
+                                                              rendered="${oa.LeadDetAppPropertiesVO.BUTTON_RENDERED}">
+                                             <jrad:lovActionMappings>
+                                                <jrad:lovActionMap id="lovActionMap1" resultTo="ASNSTNm" lovItem="ASNRscGrpLovNm"/>
+                                                <jrad:lovActionMap id="lovActionMap2" resultTo="ASNSTJob" lovItem="ASNRscGrpLovJob"/>
+                                                <jrad:lovActionMap id="lovActionMap3" resultTo="ASNSTGroup" lovItem="ASNRscGrpLovGrpId"/>
+                                                <jrad:lovActionMap id="lovActionMap4" resultTo="ASNSTEmail" lovItem="ASNRscGrpLovEmail"/>
+                                                <jrad:lovActionMap id="lovActionMap5" resultTo="ASNSTPhone" lovItem="ASNRscGrpLovPhone"/>
+                                                <jrad:lovActionMap id="lovActionMap6" resultTo="ASNSTRscId" lovItem="ASNRscGrpLovRscId"/>
+                                             </jrad:lovActionMappings>
+                                          </oa:lovActionButton>
+                                       </ui:contents>
+                                    </oa:flowLayout>
+                                 </ui:tableActions>
+                                 <ui:tableSelection>
+                                    <oa:singleSelection id="ASNSTSel" viewAttr="SelectFlag" rendered="${oa.LeadDetAppPropertiesVO.ST_SELECTCOL_RENDERED}" shortDesc="Select Object">
+                                       <ui:primaryClientAction>
+                                          <ui:fireAction id="fireAction3" event="ASNLeadSTSelFA"/>
+                                       </ui:primaryClientAction>
+                                    </oa:singleSelection>
+                                 </ui:tableSelection>
+                              </oa:advancedTable>
+                              <oa:header id="ASNSTAddInfoHdrRN" text="Additional Information" regionName="Internal Sales Team - Additional Information" controllerClass="oracle.apps.asn.lead.webui.LeadSTAddInfoCO" rendered="false">
+                                 <ui:contents>
+                                    <oa:flex id="ASNSTAddInfoFF" viewName="LeadHeaderAccessDetailsVO" flexFieldAppShortName="AS" flexName="AS_ACCESSES" readOnly="${oa.LeadDetAppPropertiesVO.ST_FLEX_READ_ONLY}" shortDesc="Additional Information"/>
+                                 </ui:contents>
+                              </oa:header>
+                           </ui:contents>
+                        </oa:header>
+                        <oa:flowLayout id="ASNLeadExtSTRN" extends="/oracle/apps/pv/lead/webui/PvLeadPartnerRN" rendered="false"/>
+                        <oa:spacer id="ASNSTHdrBtmSpacer" height="10"/>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:stackLayout id="ASNPrpHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/LeadProposals_Subtab" regionName="Proposals">
+                     <ui:contents>
+                        <oa:spacer id="ASNPrpHdrTopSpacer" height="10"/>
+                        <oa:stackLayout id="ASNPrpStackRN" extends="/oracle/apps/asn/lead/webui/PrpStackRN"/>
+                        <oa:spacer id="ASNPrpHdrBtmSpacer" height="10"/>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:stackLayout id="ASNInfoHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/LeadAdditionalInfo_Subtab" rendered="false" regionName="Additional Information">
+                     <ui:contents>
+                        <oa:spacer id="ASNInfoHdrTopSpacer" height="10"/>
+                        <oa:flex id="ASNLeadFlexfield" viewName="LeadHeaderDetailsVO" flexName="AS_SALES_LEADS" flexFieldAppShortName="AS" readOnly="${oa.LeadDetAppPropertiesVO.FIELD_READ_ONLY}"/>
+                        <oa:spacer id="ASNInfoHdrBtmSpacer" height="10"/>
+                     </ui:contents>
+                  </oa:stackLayout>
+               </ui:contents>
+               <ui:subTabs>
+                  <oa:subTabBar id="ASNLeadDetSubtabBar" shortDesc="Lead Detail Subtabs"
+>
+                     <ui:contents>
+                        <oa:link id="ASNDetHdrLnk" use="/oracle/apps/asn/common/attributesets/Transient/LeadDetails_Subtab" serverUnvalidated="true" rendered="false">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction unvalidated="true"/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="ASNCustAnlHdrLnk" use="/oracle/apps/asn/common/attributesets/Transient/LeadCustomerAnalysis_Subtab" serverUnvalidated="true">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction unvalidated="true"/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="ASNNoteTaskHdrLnk" use="/oracle/apps/asn/common/attributesets/Transient/LeadNotesAndTasks_Subtab" serverUnvalidated="true">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction unvalidated="true"/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="ASNCtctHdrLnk" use="/oracle/apps/asn/common/attributesets/Transient/LeadContacts_Subtab" serverUnvalidated="true">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction unvalidated="true"/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="ASNPrdtHdrLnk" use="/oracle/apps/asn/common/attributesets/Transient/LeadProducts_Subtab" serverUnvalidated="true">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction unvalidated="true"/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="ASNSCHdrLnk" use="/oracle/apps/asn/common/attributesets/Transient/LeadSalesCycle_Subtab" serverUnvalidated="true">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction unvalidated="true"/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="ASNSTHdrLnk" use="/oracle/apps/asn/common/attributesets/Transient/LeadSalesTeam_Subtab" serverUnvalidated="true">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction unvalidated="true"/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="ASNPrpHdrLnk" use="/oracle/apps/asn/common/attributesets/Transient/LeadProposals_Subtab" serverUnvalidated="true">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction unvalidated="true"/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="ASNInfoHdrLnk" use="/oracle/apps/asn/common/attributesets/Transient/LeadAdditionalInfo_Subtab" serverUnvalidated="true" rendered="false">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction unvalidated="true"/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                     </ui:contents>
+                  </oa:subTabBar>
+               </ui:subTabs>
+            </oa:subTabLayout>
+            <oa:stackLayout id="ASNReqEvtRN" extends="/oracle/apps/asn/common/fwk/webui/ASNReqEvtRN"/>
+            <oa:formValue id="ASNLeadDetSrcPromId" viewName="LeadHeaderDetailsVO" viewAttr="SourcePromotionId" adminCustomizable="false"/>
+            <oa:formParameter id="ASNReqEvtCschId" adminCustomizable="false"/>
+         </ui:contents>
+         <ui:productBranding>
+            <oa:image id="ASNPrdtBdngImg" source="ASNBRAND.gif" prompt="Sales"/>
+         </ui:productBranding>
+         <ui:pageStatus>
+            <oa:flowLayout id="ASNLeadDetPageStatusRN" regionName="Update Lead - Page Status">
+               <ui:contents>
+                  <oa:tableLayout id="ASNLeadDetKeyRN" extends="/oracle/apps/fnd/framework/webui/OAReqFieldDescRG" rendered="${oa.LeadDetAppPropertiesVO.DET_RENDERED}"/>
+               </ui:contents>
+            </oa:flowLayout>
+         </ui:pageStatus>
+      </oa:pageLayout>
+   </jrad:content>
+</jrad:page>
+
+

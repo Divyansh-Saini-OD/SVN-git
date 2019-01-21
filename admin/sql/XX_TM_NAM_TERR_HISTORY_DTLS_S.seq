@@ -1,0 +1,44 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XX_TM_NAM_TERR_HISTORY_DTLS_S.seq                  |
+-- | Description      : Sequence for Custom Named Account territories      |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft 1a  11-Jun-2008  Jeevan babu        Initial Draft Version        |
+-- +=======================================================================+
+
+-- -------------------------------------------------------
+-- Drop Custom Sequence XX_TM_NAM_TERR_HISTORY_DTLS_S    --
+-- -------------------------------------------------------
+--DROP SEQUENCE XXCRM.XX_TM_NAM_TERR_HISTORY_DTLS_S ;
+
+-- -------------------------------------------------------
+-- Create Custom Sequence XX_TM_NAM_TERR_HISTORY_DTLS_S  --
+-- -------------------------------------------------------
+
+CREATE SEQUENCE XXCRM.XX_TM_NAM_TERR_HISTORY_DTLS_S
+INCREMENT BY 1 
+START WITH 1000 
+NOMAXVALUE
+NOCYCLE NOCACHE NOORDER;
+
+
+------------------------------------------------------
+-- Grants to APPS                                   --
+------------------------------------------------------
+
+GRANT ALL ON XXCRM.XX_TM_NAM_TERR_HISTORY_DTLS_S TO APPS;
+
+
+SHOW ERRORS;
+EXIT;

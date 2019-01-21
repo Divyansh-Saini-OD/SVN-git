@@ -1,0 +1,38 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+-- +===================================================================+
+-- |                        Office Depot                               |
+-- |                                                                   |
+-- +===================================================================+
+-- | Synonym Name: XX_CRM_TMP_CRD_LMT_STG_REC_S.syn                    |
+-- | Rice Id     : E3512                                               |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author             Remarks                  |
+-- |=======   ===========  =================  =========================|
+-- |1.0       31-Oct-2016  Vasu Raparla        Initial draft version   |
+-- +===================================================================+
+
+PROMPT
+PROMPT Synonym for sequence XX_CDH_TMP_CRD_LMT_STG_REC_S
+PROMPT   
+
+CREATE OR REPLACE SYNONYM APPS.XX_CDH_TMP_CRD_LMT_STG_REC_S FOR XXCRM.XX_CDH_TMP_CRD_LMT_STG_REC_S;            
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

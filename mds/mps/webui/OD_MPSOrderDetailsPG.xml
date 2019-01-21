@@ -1,0 +1,39 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1579" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="MainRN" windowTitle="Order Details" amDefName="od.oracle.apps.xxcrm.mps.server.OD_MPSCustomerContractAM" controllerClass="od.oracle.apps.xxcrm.mps.webui.OD_MPSOrderDetailsCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:spacer id="Spacer" height="5"/>
+            <oa:rowLayout id="OrderDetailsRN" hAlign="center" width="100%">
+               <ui:contents>
+                  <oa:table id="OrderDetails" text="Order Details for Serial No:" width="100%" blockSize="100">
+                     <ui:contents>
+                        <oa:messageStyledText id="OrderNo" prompt="Order No" viewName="OD_MPSOrderDetailsVO" viewAttr="OrderNo"/>
+                        <oa:messageStyledText id="OrderDate" prompt="Order Date" viewName="OD_MPSOrderDetailsVO" viewAttr="OrderDate"/>
+                        <oa:messageStyledText id="RequestNo" prompt="Request No" viewName="OD_MPSOrderDetailsVO" viewAttr="IncidentNumber"/>
+                        <oa:messageStyledText id="Items" prompt="Items" viewName="OD_MPSOrderDetailsVO" viewAttr="Item"/>
+                        <oa:messageStyledText id="ItemDescription" prompt="Item Description" viewName="OD_MPSOrderDetailsVO" viewAttr="ItemDescription"/>
+                        <oa:messageStyledText id="CloseDate" prompt="Close Date" viewName="OD_MPSOrderDetailsVO" viewAttr="CloseDate"/>
+                        <oa:link id="GmillLink" viewName="OD_MPSOrderDetailsVO" viewAttr="GmillLink" text="Gmill Link" destination="${oa.OD_MPSOrderDetailsVO.GmillLink}" targetFrame="_blank"/>
+                     </ui:contents>
+                  </oa:table>
+               </ui:contents>
+            </oa:rowLayout>
+            <oa:spacer id="Spacer1" height="5"/>
+            <oa:rowLayout id="ButtonRN" hAlign="center">
+               <ui:contents>
+                  <oa:button id="Back" prompt="Back" text="Back">
+                     <ui:primaryClientAction>
+                        <ui:firePartialAction event="back" id="firePartialAction1"/>
+                     </ui:primaryClientAction>
+                  </oa:button>
+               </ui:contents>
+            </oa:rowLayout>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

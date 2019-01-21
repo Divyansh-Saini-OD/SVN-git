@@ -1,0 +1,33 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<oa:stackLayout version="9.0.3.8.9_1057" xml:lang="en-US" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:ui="http://xmlns.oracle.com/uix/ui" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" controllerClass="od.oracle.apps.xxcrm.cdh.extension.webui.ODAttributeExtRnCO" amDefName="od.oracle.apps.xxcrm.cdh.extension.server.ODExtAttributeGenericAM" amUsageName="ODExtAttributeGenericAM">
+   <ui:contents>
+      <oa:tableLayout id="HzOrgExtPageTL">
+         <ui:contents>
+            <oa:rowLayout id="ExtSpacerRow">
+               <ui:contents>
+                  <oa:cellFormat id="ExtSpacerCell">
+                     <ui:contents>
+                        <oa:spacer id="ExtSpacer" height="20" width="30"/>
+                     </ui:contents>
+                  </oa:cellFormat>
+               </ui:contents>
+            </oa:rowLayout>
+            <oa:rowLayout id="HzOrgExtPageRow" hAlign="center">
+               <ui:contents>
+                  <oa:cellFormat id="HzOrgExtPageCell">
+                     <ui:contents>
+                        <oa:messageChoice id="HzOrgExtPageList" pickListViewName="HzExtPageListVO" pickListDispAttr="ExtPageName" pickListValAttr="ExtPageId" warnAboutChanges="false" comment="Poplist of Extension Pages" shortDesc="Extension Page" prompt=" Additional Attributes" required="yes" serverUnvalidated="true" allowBlankValue="false">
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="HzExtPagePoplistChange" unvalidated="true" id="fireAction1"/>
+                           </ui:primaryClientAction>
+                        </oa:messageChoice>
+                     </ui:contents>
+                  </oa:cellFormat>
+               </ui:contents>
+            </oa:rowLayout>
+         </ui:contents>
+      </oa:tableLayout>
+      <oa:flowLayout id="HzEgoExtFwkUserFlow" extends="/oracle/apps/ego/extfwk/user/webui/EGOEXTFWKRENDERER"/>
+   </ui:contents>
+</oa:stackLayout>

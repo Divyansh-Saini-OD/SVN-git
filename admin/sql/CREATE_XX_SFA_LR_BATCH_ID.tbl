@@ -1,0 +1,28 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |                     Wipro Technologies                                |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_SFA_LR_BATCH_ID.tbl                       |
+-- | Description      :I2043 Leads_from_WWW_and_Jmillennia                 |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      11-Mar-2008 Rizwan Appees      Initial version                |
+-- +=======================================================================+ 
+
+CREATE TABLE XXCRM.XX_SFA_LR_BATCH_ID
+  (BATCH_ID         NUMBER
+  ,BATCH_DESCR      VARCHAR2(50)
+  ,CREATE_DATE      DATE
+);
+
+Grant all on XXCRM.XX_SFA_LR_BATCH_ID to APPS;
+

@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+Subversion Info:
+$HeadURL$
+$Rev$
+$Date$
+-->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.12_1330" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad"
+      file-version="$Header$">
+   <content>
+      <oa:pageLayout id="PageLayout" amDefName="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSDshbdAM" controllerClass="od.oracle.apps.xxcrm.scs.fdk.webui.ODSCSHomeCO" windowTitle="Additional Details" title="Additional Details">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:defaultSingleColumn headerDisabled="true" id="LinksRegion">
+               <ui:contents>
+			      <oa:messageStyledText id="OrgName" dataType="VARCHAR2" prompt="Prospect/Customer Name: " viewName="ODAdditionalLinkInfoVO" viewAttr="PartyName" styleClass="OraDataText"/>
+				  <oa:messageStyledText id="OrgNumber" dataType="VARCHAR2" prompt="Org Number: " viewName="ODAdditionalLinkInfoVO" viewAttr="PartyNumber" styleClass="OraDataText"/>
+				  <oa:spacer id="Spacer01" height="15"/>
+                  <oa:link id="TaskDetails" text="Task Details">
+                     <ui:primaryClientAction>
+                        <ui:firePartialAction event="TaskDetails"/>
+                     </ui:primaryClientAction>
+                  </oa:link>
+				  <oa:spacer id="Spacer02" height="5"/>
+                  <oa:link id="STARReport" text="STAR Report"/>
+                  <oa:spacer id="Spacer03" height="5"/>
+				  <oa:link id="STARReportPDF" text="STAR Report PDF"/>                     
+				  <oa:spacer id="Spacer04" height="5"/>
+				  <oa:link id="BillingDetail" text="Billing Detail">
+                     <ui:primaryClientAction>
+                        <ui:firePartialAction event="BillingDetail"/>
+                     </ui:primaryClientAction>
+                  </oa:link>
+				  <oa:spacer id="Spacer05" height="5"/>
+				  <oa:link id="PriceCalculator" text="Price Calculator">
+                     <ui:primaryClientAction>
+                        <ui:firePartialAction event="PriceCalculator"/>
+                     </ui:primaryClientAction>
+                  </oa:link>
+				  <oa:spacer id="Spacer06" height="5"/>
+				  <oa:link id="SiteAddressMap" text="Site Address Map"/>                     
+				  <oa:spacer id="Spacer07" height="5"/>
+				  <oa:link id="ServiceRequestSummary" text="Service Request Summary">
+                     <ui:primaryClientAction>
+                        <ui:firePartialAction event="ServiceRequestSummary"/>
+                     </ui:primaryClientAction>
+                  </oa:link>
+				  <oa:spacer id="Spacer08" height="5"/>
+				  <oa:link id="AccountSetupRequest" text="Account Setup Request">
+                     <ui:primaryClientAction>
+                        <ui:firePartialAction event="AccountSetupRequest"/>
+                     </ui:primaryClientAction>
+                  </oa:link>
+               </ui:contents>
+            </oa:defaultSingleColumn>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

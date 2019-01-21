@@ -1,0 +1,251 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<oa:stackLayout version="9.0.3.8.13_1550" xml:lang="en-US" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:ui="http://xmlns.oracle.com/uix/ui" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$" controllerClass="od.oracle.apps.xxcrm.asn.common.customer.webui.ODViewAccountDetCO" amDefName="od.oracle.apps.xxcrm.asn.common.customer.server.ODViewAccountDetAM">
+   <ui:contents>
+      <oa:header id="CustomerAccount" text="Customer Accounts">
+         <ui:contents>
+            <oa:table id="ODHzCustAccounts">
+               <ui:contents>
+                  <oa:messageStyledText id="AccountNumber" dataType="VARCHAR2" prompt="Account Number" viewName="ODHzCustAccountsVO" viewAttr="AccountNumber" maximumLength="30" vAlign="middle"/>
+                  <oa:messageStyledText id="AccountName" dataType="VARCHAR2" prompt="Account Name" viewName="ODHzCustAccountsVO" viewAttr="AccountName" maximumLength="240" vAlign="middle"/>
+                  <oa:messageStyledText id="OrigSystemReference" dataType="VARCHAR2" prompt="Original System Reference" viewName="ODHzCustAccountsVO" viewAttr="OrigSystemReference" maximumLength="240" vAlign="middle"/>
+                  <oa:messageStyledText id="Status" dataType="VARCHAR2" prompt="Status" viewName="ODHzCustAccountsVO" viewAttr="Status" maximumLength="1" vAlign="middle"/>
+                  <oa:messageStyledText id="item5" prompt="No of SPC Cards"/>
+                  <oa:messageStyledText id="item6" prompt="e-Commerce Enabled"/>
+                  <oa:switcher id="DetailsYN" prompt="Account Setup Detail" viewName="ODHzCustAccountsVO" viewAttr="Details">
+                     <ui:case name="DY">
+                        <oa:image id="DY" prompt="Account Setup Detail" source="eyeglasses_24x24_transparent.gif" destination="">
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="update" id="fireAction1">
+                                 <ui:parameters>
+                                    <ui:parameter key="AccDtl" value="ACCOUNTDETAIL"/>
+                                    <ui:parameter key="RequestId" value="${oa.current.RequestId}"/>
+                                    <ui:parameter key="reqPartyid" value="${oa.current.PartyId}"/>
+                                 </ui:parameters>
+                              </ui:fireAction>
+                           </ui:primaryClientAction>
+                        </oa:image>
+                     </ui:case>
+                     <ui:case name="DN">
+                        <oa:image id="DN" prompt="Account Setup Detail" source="eyeglasses_disabled.gif" destination=""/>
+                     </ui:case>
+                  </oa:switcher>
+               </ui:contents>
+               <ui:tableSelection>
+                  <oa:singleSelection id="singleSelection1" viewName="ODHzCustAccountsVO" viewAttr="SelectFlag">
+                     <ui:primaryClientAction>
+                        <ui:firePartialAction event="update">
+                           <ui:parameters>
+                              <ui:parameter key="EventParam1" value="RADIOCHANGE"/>
+                              <ui:parameter key="EventParam2" value="${oa.current.CustAccountId}"/>
+                              <ui:parameter key="EventParam5" value="${oa.current.Billtositeid}"/>
+                           </ui:parameters>
+                        </ui:firePartialAction>
+                     </ui:primaryClientAction>
+                  </oa:singleSelection>
+               </ui:tableSelection>
+            </oa:table>
+            <oa:hideShowHeader id="AccContacts" text="Account Contacts" disclosed="true">
+               <ui:contents>
+                  <oa:advancedTable id="AccountContactsTBL" viewName="ODAccountContactsVO2">
+                     <ui:contents>
+                        <oa:column id="TitleColumn">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="TitleHdr" prompt="Title"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageStyledText id="TitleMeaning" dataType="VARCHAR2" prompt="Title" viewAttr="TitleMeaning" maximumLength="4000"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="NameCol111">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="NameHeader1" prompt="Name"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageStyledText id="Name111" viewAttr="Name"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="JobTitleColumn">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="JobTitleHdr" prompt="Job Code"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageStyledText id="JobTitle" dataType="VARCHAR2" prompt="JobTitle" maximumLength="100" viewAttr="JobTitle"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="JobRoleColumn">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="JobRoleHdr" prompt="Role(s)"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageStyledText id="JobRole" prompt="JobRole" viewAttr="ResponsibilityType"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="ContactNumCol">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="ContactNumHdr" prompt="Contact Number(s)"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageStyledText id="ContactNum" prompt="ContactNum" viewAttr="Formattedphone"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="EmailCol">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="EmailAddrHdr" prompt="Email Address"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageStyledText id="EmailAddress" viewAttr="EmailAddress" prompt="Email Address"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="ButtonCol">
+                           <ui:contents>
+                              <oa:button id="Go1" text="Go" prompt="Go" destination="javascript:window.open('OA.jsp?page=/od/oracle/apps/xxcrm/asn/common/customer/webui/ODViewAccountDetPopUpPG&amp;retainAM=Y&amp;partyId={@PartyId}&amp;custAccRoleId={@ContactId}&amp;isMRTBPopup=Y', 'self', 'resizable=no, width=570,height=375,menubar=no,toolbar=no,statusbar=yes,location=no,locationbar=no,scrollbars=yes');void(0);"/>
+                           </ui:contents>
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="AccountContactsDetails" prompt="Account Contacts Details"/>
+                           </ui:columnHeader>
+                        </oa:column>
+                     </ui:contents>
+                  </oa:advancedTable>
+               </ui:contents>
+            </oa:hideShowHeader>
+            <oa:hideShowHeader id="RelAccounts" text="Related Accounts" disclosed="true">
+               <ui:contents>
+                  <oa:table id="ODRelatedAccount">
+                     <ui:contents>
+                        <oa:messageStyledText id="RelAccountNumber" dataType="VARCHAR2" prompt="Account Number" viewName="ODRelatedAccountVO" viewAttr="AccountNumber" maximumLength="30"/>
+                        <oa:messageStyledText id="RelAccountName" dataType="VARCHAR2" prompt="Account Name" viewName="ODRelatedAccountVO" viewAttr="AccountName" maximumLength="240"/>
+                        <oa:messageStyledText id="RelOrigSystemReference" dataType="VARCHAR2" prompt="Original System Reference" viewName="ODRelatedAccountVO" viewAttr="OrigSystemReference" maximumLength="240"/>
+                        <oa:messageStyledText id="RelStatus" dataType="VARCHAR2" prompt="Status" viewName="ODRelatedAccountVO" viewAttr="Status" maximumLength="1"/>
+                        <oa:messageStyledText id="RelationshipType" dataType="VARCHAR2" prompt="Relationship Type" viewName="ODRelatedAccountVO" viewAttr="RelationshipType" maximumLength="30"/>
+                        <oa:messageStyledText id="BillToFlag" dataType="VARCHAR2" prompt="Bill To" viewName="ODRelatedAccountVO" viewAttr="BillToFlag" maximumLength="1"/>
+                        <oa:messageStyledText id="ShipToFlag" dataType="VARCHAR2" prompt="Ship To" viewName="ODRelatedAccountVO" viewAttr="ShipToFlag" maximumLength="1"/>
+                     </ui:contents>
+                  </oa:table>
+               </ui:contents>
+            </oa:hideShowHeader>
+            <oa:hideShowHeader id="CreditDunning" text="Credit &amp; Dunning" disclosed="true">
+               <ui:contents>
+                  <oa:table id="ODCreditDunning">
+                     <ui:contents>
+                        <oa:messageStyledText id="OverallCreditLimit" dataType="NUMBER" prompt="Credit Limit" viewName="ODCreditDunningVO" viewAttr="OverallCreditLimit"/>
+                        <oa:messageStyledText id="CurrencyCode" dataType="VARCHAR2" prompt="Currency" viewName="ODCreditDunningVO" viewAttr="CurrencyCode" maximumLength="15"/>
+                        <oa:formValue id="CreditAnalystId" dataType="NUMBER" prompt="CreditAnalystId" viewName="ODCreditDunningVO" viewAttr="CreditAnalystId"/>
+                        <oa:messageStyledText id="CollectionAgent" dataType="VARCHAR2" prompt="Collection Agent" viewName="ODCreditDunningVO" viewAttr="CollectionAgent" maximumLength="30"/>
+                        <oa:formValue id="ResourceId" dataType="NUMBER" prompt="ResourceId" viewName="ODCreditDunningVO" viewAttr="ResourceId"/>
+                        <oa:messageStyledText id="SourcePhone" dataType="VARCHAR2" prompt="Contact Number(s)" viewName="ODCreditDunningVO" viewAttr="SourcePhone" maximumLength="2000"/>
+                        <oa:messageStyledText id="SourceEmail" dataType="VARCHAR2" prompt="Email Address" viewName="ODCreditDunningVO" viewAttr="SourceEmail" maximumLength="2000"/>
+                        <oa:formValue id="SourceName" prompt="" viewName="ODCreditDunningVO" viewAttr="SourceName" rendered="false"/>
+                        <oa:messageStyledText id="CreditagentName" viewName="ODCreditDunningVO" viewAttr="Creditagentname" prompt="Credit Agent"/>
+                        <oa:messageStyledText id="CreditagentPhone" viewName="ODCreditDunningVO" viewAttr="Creditagentphone" prompt="Contact Number(s)"/>
+                        <oa:messageStyledText id="CreditagentEmail" viewName="ODCreditDunningVO" viewAttr="Creditagentmail" prompt="Email Address"/>
+                        <oa:image id="item4" source="eyeglasses_24x24_transparent.gif" destination="" prompt="Account Summary" serverUnvalidated="true">
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="accSumclick" unvalidated="true">
+                                 <ui:parameters>
+                                    <ui:parameter key="paramCust" value="${oa.current.CustAccountId}"/>
+                                    <ui:parameter key="paramBillsiteid" value="${oa.current.Billsiteid}"/>
+                                 </ui:parameters>
+                              </ui:fireAction>
+                           </ui:primaryClientAction>
+                        </oa:image>
+                     </ui:contents>
+                  </oa:table>
+               </ui:contents>
+            </oa:hideShowHeader>
+            <oa:hideShowHeader id="AccSites" text="Account Sites" disclosed="true">
+               <ui:contents>
+                  <oa:table id="ODAccountSites">
+                     <ui:contents>
+                        <oa:formValue id="PartySiteId" dataType="NUMBER" prompt="PartySiteId" viewName="ODAccountSitesVO" viewAttr="PartySiteId"/>
+                        <oa:messageStyledText id="PartySiteNumber" dataType="VARCHAR2" prompt="Party Site Number" viewName="ODAccountSitesVO" viewAttr="PartySiteNumber" maximumLength="30"/>
+                        <oa:messageStyledText id="AccSiteOrigSystemRef" dataType="VARCHAR2" prompt="Original System Reference" viewName="ODAccountSitesVO" viewAttr="OrigSystemReference" maximumLength="240"/>
+                        <oa:messageStyledText id="AccSiteStatus" dataType="VARCHAR2" prompt="Status" viewName="ODAccountSitesVO" viewAttr="Status" maximumLength="1"/>
+                        <oa:messageStyledText id="Address" dataType="VARCHAR2" prompt="Address" viewName="ODAccountSitesVO" viewAttr="Address" maximumLength="4000"/>
+                        <oa:messageStyledText id="SiteUseCode" dataType="VARCHAR2" prompt="Site Usage" viewName="ODAccountSitesVO" viewAttr="SiteUseCode" maximumLength="30" rendered="false"/>
+                        <oa:messageStyledText id="PrimaryFlag" dataType="VARCHAR2" prompt="Primary" viewName="ODAccountSitesVO" viewAttr="PrimaryFlag" maximumLength="1" rendered="false"/>
+                        <oa:button id="SiteUse" text="Site Usage Details" prompt="Site Usage Details" destination="javascript:window.open('OA.jsp?page=/od/oracle/apps/xxcrm/asn/common/customer/webui/ODViewAccountDetSitePopupPG&amp;retainAM=Y&amp;CustSiteid={@CustSid}&amp;isMRTBPopup=Y', 'self', 'resizable=no, width=570,height=375,menubar=no,toolbar=no,statusbar=yes,location=no,locationbar=no,scrollbars=yes');void(0);"/>
+                     </ui:contents>
+                     <ui:tableSelection>
+                        <oa:singleSelection id="singleSelection2" viewName="ODAccountSitesVO" viewAttr="SelectFlag2">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction event="update">
+                                 <ui:parameters>
+                                    <ui:parameter key="EventParam3" value="RADIOCHANGE2"/>
+                                    <ui:parameter key="EventParam4" value="${oa.current.CustSid}"/>
+                                 </ui:parameters>
+                              </ui:firePartialAction>
+                           </ui:primaryClientAction>
+                        </oa:singleSelection>
+                     </ui:tableSelection>
+                  </oa:table>
+                  <oa:hideShowHeader id="SiteContacts" text="Site Contacts">
+                     <ui:contents>
+                        <oa:advancedTable id="AccountSiteContactsTBL" viewName="ODAccountSiteContactsVO1">
+                           <ui:contents>
+                              <oa:column id="TitleColumn1">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="TitleHdr1" prompt="Title"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="TitleMeaning2" dataType="VARCHAR2" prompt="Title" viewAttr="TitleMeaning" maximumLength="4000"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="NameCol112">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="NameHdr112" prompt="Name"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Name112" viewAttr="Name"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="JobTitleColumn1">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="JobTitleHdr1" prompt="Job Code"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="JobTitle2" dataType="VARCHAR2" prompt="JobTitle" viewAttr="JobTitle" maximumLength="100"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="JobRoleCol2">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="JobRoleHdr2" prompt="Role(s)"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="JobRole2" viewAttr="ResponsibilityType"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="ContactNumCol2">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="ContactNumHdr2" prompt="Contact Number(s)"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="ContactNumber2" viewAttr="Formattedphone"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="EmailCol2">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="EmailAdrHdr2" prompt="Email Address"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="EmailAddress2" viewAttr="EmailAddress"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="SiteContacts2">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="SiteContactsHdr2" prompt="Account Site Contacts Details"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:button id="Go3" text="Go" prompt="Go" destination="javascript:window.open('OA.jsp?page=/od/oracle/apps/xxcrm/asn/common/customer/webui/ODViewAccountSiteContPopupPG&amp;retainAM=Y&amp;partyId={@PartyId}&amp;custAccRoleId={@ContactId}&amp;isMRTBPopup=Y','self','resizable=no,width=570,height=375,menubar=no,toolbar=no,statusbar=yes,location=no,locationbar=no,scrollbars=yes');void(0);"/>
+                                 </ui:contents>
+                              </oa:column>
+                           </ui:contents>
+                        </oa:advancedTable>
+                     </ui:contents>
+                  </oa:hideShowHeader>
+               </ui:contents>
+            </oa:hideShowHeader>
+         </ui:contents>
+      </oa:header>
+   </ui:contents>
+</oa:stackLayout>

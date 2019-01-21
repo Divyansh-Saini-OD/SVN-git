@@ -1,0 +1,374 @@
+#!/bin/bash
+
+# +============================================================================+
+# |                      Office Depot - Project Simplify                       |
+# +============================================================================+
+# |  Name: XX_CRM_GET_TERRITORY_FILES.prog                                     |
+# |  RICE ID:  n/a                                                             |
+# |                                                                            |
+# | Subversion Info:                                                           |
+# |                                                                            |
+# |   $HeadURL$
+# |       $Rev$
+# |      $Date$
+# |                                                                            |
+# |  Description                                                               |
+# |                                                                            |
+# |  1) Get specified file from internal OD server via FTP.                    |
+# |  2) Add date stamp to file name if parameter requests it.                  |
+# |  3) Run SQL Loader if the control file parameter has a value.              |
+# |                                                                            |
+# |  The file is automatically deleted from the source directory after the     |
+# |  FTP completes successfully.                                               |
+# |                                                                            |
+# |  The FTP login id and password must be configured in the .netrc file.      |
+# |  As a result, the FTP login id or password is not used in this script.     |
+# |                                                                            |
+# |                                                                            |
+# |  Parameters supplied by concurrent manager:                                |
+# |                                                                            |
+# |  $0 = full path name of this script                                        |
+# |  $1 = apps/                 (password is not passed)                       |
+# |  $2 = user_id               (fnd_user.user_id)                             |
+# |  $3 = user_name             (fnd_user.user_name)                           |
+# |  $4 = concurrent request id                                                |
+# |                                                                            |
+# |  User parameters:                                                          |
+# |                                                                            |
+# |  $5 = FTP server name                                                      |
+# |                                                                            |
+# |  $6 = file name to FTP                                                     |
+# |                                                                            |
+# |  $7 = source dir (path to "cd" to after ftp connects to remote system)     |
+# |                                                                            |
+# |  $8 = destination dir relative path.  Example of use:                      |
+# |         - FTP destination dir = $XXCRM_DATA/ftp/in/$7                      |
+# |         - processing dir      = $XXCRM_DATA/inbound/$7                     |
+# |         - archive dir         = $XXCRM_DATA/archive/inbound/$7             |
+# |         - error dir           = $XXCRM_DATA/error/$7                       |
+# |                                                                            |
+# |  $9 = "Y" = add date suffix to file name after FTP.  Format is:            |
+# |             .YYYYMMDD_HHMISS                                               |
+# |               - HH in 24 hour format                                       |
+# |               - zero pad values to maintain fixed length                   |
+# |                                                                            |
+# | $10 = SQL Loader control file.  Environment is $XXCRM_TOP.                 |
+# |       If this parameter has no value, SQL Loader is not performed.         |
+# |                                                                            |
+# |                                                                            |
+# |Change Record:                                                              |
+# |===============                                                             |
+# |Version   Date        Author           Remarks                              |
+# |=======   ==========  =============    =====================================|
+# |1.0      29-JUL-2009  Phil Price       Initial version.                     |
+# |1.1      29-SEP-2009  Phil Price       FTP skipped when FTP_SERVER param is |
+# |                                       empty.                               |
+# |                                                                            |
+# +============================================================================*/
+
+#
+# Subversion keywords
+##
+GC_SVN_HEAD_URL='$HeadURL$'
+GC_SVN_REVISION='$Rev$'
+GC_SVN_DATE='$Date$'
+GC_SVN_FILE_NAME=$(echo ${GC_SVN_HEAD_URL} | sed 's|\(.*/\)\([^/]*\)\( \$\)|\2|')  # extract file name from URL
+GC_SVN_REVISION_FMT=$(echo ${GC_SVN_REVISION} | sed 's|\(.*\)\( \$\)|\1|')         # get rid of trailing " $"
+
+# Display version info
+echo "${GC_SVN_FILE_NAME} ${GC_SVN_REVISION_FMT} ${GC_SVN_DATE}"
+
+FTP_SUCCESS_MSG='226 Transfer complete.'
+FTP_FILE_DELETE_MSG='250 DELE command successful.'
+
+CURR_DT=`date +%Y%m%d_%H%M%S`
+LOG_FILE=/tmp/xxcrm_ftp_${CURR_DT}_$$".log"
+LDR_LOG_FILE=/tmp/xxcrm_sqlldr_${CURR_DT}_$$".log"
+LDR_BAD_FILE=/tmp/xxcrm_sqlldr_${CURR_DT}_$$".bad"
+LDR_DSC_FILE=/tmp/xxcrm_sqlldr_${CURR_DT}_$$".disc"
+
+FTP_SERVER=$5
+FTP_FILE=$6
+SOURCE_DIR=$7
+DEST_REL_DIR=$8
+APPEND_TIME_STAMP=$9
+SQL_LOAD_CTL_FILE=${10}
+
+echo " "
+echo "------------------------------------------------------------------------"
+echo "Parameters: "
+echo "           FTP_SERVER = ${FTP_SERVER}"
+echo "             FTP_FILE = ${FTP_FILE}"
+echo "           SOURCE_DIR = ${SOURCE_DIR}"
+echo "         DEST_REL_DIR = ${DEST_REL_DIR}"
+echo "    APPEND_TIME_STAMP = ${APPEND_TIME_STAMP}"
+echo "    SQL_LOAD_CTL_FILE = ${SQL_LOAD_CTL_FILE}"
+echo " "
+
+echo "FTP info: "
+echo "    File transfer success message: ${FTP_SUCCESS_MSG}"
+echo "      Delete File success message: ${FTP_FILE_DELETE_MSG}"
+echo "                     FTP log file: ${LOG_FILE}"
+echo "------------------------------------------------------------------------"
+echo " "
+
+cd ${XXCRM_DATA}/ftp/in/${DEST_REL_DIR}
+
+#
+# If the ftp server was not specified, skip the ftp operation:
+#   - Assumes the file already exists in DEST_REL_DIR.
+#   - The APPEND_TIME_STAMP is ignored.
+#
+#
+
+if [ ${#FTP_SERVER} -gt 0 ]; then  # for unknown reason, "-n" doesnt work
+  # ftp options:
+  #   -v = verbose
+  #   -i = Turns off interactive prompting during multiple file  transfers
+  #
+  #   "epsv4 off" command avoids the error "500 'EPSV': command not understood"
+  #
+  ftp -v -i $FTP_SERVER 1>$LOG_FILE 2>&1<<EOF
+epsv4 off
+ascii
+cd ${SOURCE_DIR}
+pwd
+dir
+get ${FTP_FILE}
+delete ${FTP_FILE}
+quit
+EOF
+
+  if [ $? -ne 0 ]
+   then
+     echo "ERROR: Fatal error in FTP, log file follows:"
+     echo " "
+     echo "=============== Error: FTP Transfer Log Start ==============="
+     cat ${LOG_FILE}
+     echo "=============== Error: FTP Transfer Log End ================="
+     echo " "
+     exit 1
+  fi
+
+  echo " "
+  echo "=============== FTP Transfer Log Start ==============="
+  cat ${LOG_FILE}
+  echo "=============== FTP Transfer Log End ================="
+  echo " "
+
+
+  echo "Check for successful transfer..."
+  # $? return values from grep:
+  #    0 = one or more matches found
+  #    1 = grep was able to read file but no matches were found
+  #    2 = grep cound not read the file
+  #
+  XFER_CT=`grep -c "$FTP_SUCCESS_MSG" $LOG_FILE`
+  CS_XFER=$?
+  DEL_CT=`grep -c "$FTP_FILE_DELETE_MSG" $LOG_FILE`
+  CS_DEL=$?
+
+
+  if [ ${CS_XFER} -eq 2 -o ${CS_DEL} -eq 2 ]; then
+      echo "2: ERROR: Fatal error while checking for successful transfer in file $LOG_FILE"
+      echo "2: ERROR: CS_XFER=${CS_XFER} CS_DEL=${CS_DEL}"
+      exit 1
+  fi
+
+  if [ ${CS_XFER} -eq 0 -o ${CS_XFER} -eq 1 ] && [ ${CS_DEL} -eq 0 -o ${CS_DEL} -eq 1 ]; then
+
+    # Both CS values are 0 or 1.
+
+    # Reduce XFER_CT by 1 because we have an extra Transfer Complete message from "dir" command
+    let "XFER_CT -= 1"
+
+    # Verify 1 file was transferred
+    if [ ${XFER_CT} -ne 1 ]; then
+      echo "ERROR: No files were transfered"
+      exit 1
+    fi
+
+    # Verify 1 file was deleted
+    if [ ${DEL_CT} -ne 1 ]; then
+      echo "ERROR: No files were deleted"
+
+      echo "Moving file to error dir:  $XXCRM_DATA/error/${DEST_REL_DIR}..."
+      mv ${FTP_FILE} $XXCRM_DATA/error/${DEST_REL_DIR}/.    # attempt to move file to error dir
+
+      CS_MV2=$?
+      if [ ${CS_MV2} -ne 0 ]; then
+        echo "ERROR: Fatal error while moving file to error dir."
+      fi
+      exit 1
+    fi
+
+  else
+    echo "ERROR unknown return command status:  CS_XFER=${CS_XFER} CS_DEL=${CS_DEL}"
+    exit 1
+  fi
+
+  echo "${XFER_CT} file was successfully transferred and deleted."
+  echo " "
+  rm $LOG_FILE
+
+  #
+  # Append date_time stamp to file name if requested.
+  #
+  if [ ${APPEND_TIME_STAMP} == "Y" ]; then
+    echo "Appending date/time stamp to transferred file name."
+    NEW_FTP_FILE=${FTP_FILE}.${CURR_DT}
+
+  else
+    NEW_FTP_FILE=${FTP_FILE}
+  fi
+
+else
+  #
+  # FTP_SERVER was empty so the FTP operation was skipped
+  #
+  echo "FTP server was not provided.  skipping FTP operation."
+  NEW_FTP_FILE=${FTP_FILE}
+fi
+
+#
+# FTP was successful or was not requested.  Move file to processing dir.
+#
+mv ${FTP_FILE} $XXCRM_DATA/inbound/${DEST_REL_DIR}/${NEW_FTP_FILE}
+
+CS_MV=$?
+if [ ${CS_MV} -ne 0 ]; then
+  echo "ERROR: Fatal error while renaming file ${FTP_FILE} to ${NEW_FTP_FILE}"
+  echo "Moving file to error dir:  $XXCRM_DATA/error/${DEST_REL_DIR}..."
+  mv ${FTP_FILE} $XXCRM_DATA/error/${DEST_REL_DIR}/.    # attempt to move file to error dir
+
+  CS_MV2=$?
+  if [ ${CS_MV2} -ne 0 ]; then
+    echo "ERROR: Fatal error while moving file to error dir."
+  fi
+  exit 1
+fi
+
+echo "Moved ftp'ed file to $XXCRM_DATA/inbound/${DEST_REL_DIR}/${NEW_FTP_FILE} for processing."
+echo " "
+
+#
+# Run SQL Loader command if requested.
+#
+if [ -n ${SQL_LOAD_CTL_FILE} ]; then
+  echo "Running SQL Loader using control file: ${SQL_LOAD_CTL_FILE}"
+  echo "  SQL Loader log file: ${LDR_LOG_FILE}"
+#  echo "  SQL Loader bad file: ${LDR_BAD_FILE}"      -- this is reported in SQL Loader log below
+#  echo "  SQL Loader discard file: ${LDR_DSC_FILE}"  -- this is reported in SQL Loader log below
+  echo " "
+
+  #
+  # sqlldr return codes:
+  #   0 = success  EX_SUCC  (all rows loaded successfully)
+  #   1 = error    EX_FAIL  (command line error or Oracle error)
+  #   2 = warning  EX_WARN  (at least one row rejected or discarded)
+  #   3 = fatal    EX_FTL   (OS error such as file open/close, malloc error, etc.)
+  #
+  sqlldr parfile=${HOME}/.parfile.XXCRM \
+       control=${XXCRM_TOP}/bin/${SQL_LOAD_CTL_FILE} \
+       data=${XXCRM_DATA}/inbound/${DEST_REL_DIR}/${NEW_FTP_FILE} \
+       rows=10000 \
+       log=${LDR_LOG_FILE} \
+       bad=${LDR_BAD_FILE} \
+       discard=${LDR_DSC_FILE} \
+       silent=HEADER,FEEDBACK,DISCARDS \
+       errors=20000
+
+  RC_LDR="$?"
+
+  echo " "
+  echo "=============== SQL Loader Log Start ==============="
+  cat ${LDR_LOG_FILE}
+  echo "=============== SQL Loader Log End ================="
+  echo " "
+  rm ${LDR_LOG_FILE}
+
+  if [ -r ${LDR_DSC_FILE} ]; then
+    echo "=============== SQL Loader Discard File Start ==============="
+    cat ${LDR_DSC_FILE}
+    echo "=============== SQL Loader Discard File End ================="
+    echo " "
+    rm ${LDR_DSC_FILE}
+  fi
+
+  if [ -r ${LDR_BAD_FILE} ]; then
+    echo "=============== SQL Loader Bad File Start ==============="
+    cat ${LDR_BAD_FILE}
+    echo "=============== SQL Loader Bad File End ================="
+    echo " "
+    rm ${LDR_BAD_FILE}
+
+    echo "ERROR: Rejected records were found in SQL Loader \"bad\" file."
+
+
+    echo "Moving file to error dir:  $XXCRM_DATA/error/${DEST_REL_DIR}..."
+    mv ${XXCRM_DATA}/inbound/${DEST_REL_DIR}/${NEW_FTP_FILE} $XXCRM_DATA/error/${DEST_REL_DIR}/.
+
+    CS_MV2=$?
+    if [ ${CS_MV2} -ne 0 ]; then
+      echo "ERROR: Fatal error while moving file to error dir."
+    fi
+    exit 1
+  fi
+
+  if [ ${RC_LDR} -eq 0 -o ${RC_LDR} -eq 2 ]; then
+    #
+    # If RC_LDR = 0 there were no rejects or discards in the data.
+    #
+    # If RC_LDR = 2 there were discards and / or rejects in the data.
+    # If there were discards, that's ok.  Example: Column header record at top of file is discarded.
+    # If there were rejects, they would have been caught above when we check if the bad file exists.
+    #
+    echo "SQL Loader completed successfully."
+
+  else
+    if [ ${RC_LDR} -eq 1 ]; then
+      echo "SQL Loader failed with error code = 1 (command line error or Oracle error)"
+
+    elif [ ${RC_LDR} -eq 3 ]; then
+      echo "SQL Loader failed with error code = 3 (OS error)"
+
+    else
+      echo "SQL Loader failed.  Unknown return code = ${RC_LDR}"
+    fi
+
+    echo "Moving file to error dir:  $XXCRM_DATA/error/${DEST_REL_DIR}..."
+    mv ${XXCRM_DATA}/inbound/${DEST_REL_DIR}/${NEW_FTP_FILE} $XXCRM_DATA/error/${DEST_REL_DIR}/.
+
+    CS_MV2=$?
+    if [ ${CS_MV2} -ne 0 ]; then
+      echo "ERROR: Fatal error while moving file to error dir."
+    fi
+    exit 1
+  fi
+
+else
+  echo "SQL Loader was not requested."
+fi
+
+
+#
+# If script is still running all was successful.
+# Move file to archive dir.
+#
+echo "All processing was successful.  Moving file to archive dir: $XXCRM_DATA/archive/inbound/${DEST_REL_DIR}"
+mv $XXCRM_DATA/inbound/${DEST_REL_DIR}/${NEW_FTP_FILE} $XXCRM_DATA/archive/inbound/${DEST_REL_DIR}/.
+
+CS_MV3=$?
+if [ ${CS_MV3} -ne 0 ]; then
+  echo "ERROR: Fatal error while moving file to archive dir"
+  mv ${XXCRM_DATA}/inbound/${DEST_REL_DIR}/${NEW_FTP_FILE} $XXCRM_DATA/error/${DEST_REL_DIR}/.  # attempt to move file to error dir
+
+  CS_MV3=$?
+  if [ ${CS_MV3} -ne 0 ]; then
+    echo "ERROR: Fatal error while moving file to error dir."
+  fi
+  exit 1
+fi
+
+echo "Program completed successfully."
+exit 0

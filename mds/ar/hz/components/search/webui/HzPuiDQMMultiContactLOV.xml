@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<oa:tableLayout version="9.0.3.8.9_1057" xml:lang="en-US" file-version="$Header: HzPuiDQMMultiContactLOV.xml 115.13 2005/03/25 04:07:46 jhuang noship $" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui"
+                xmlns:jrad="http://xmlns.oracle.com/jrad" amUsageName="HzPuiDQMContactLOVAM" amDefName="oracle.apps.ar.hz.components.search.server.HzPuiDQMSrchResultsAM" controllerClass="oracle.apps.ar.hz.components.search.webui.HzPuiDQMContactSearchCO"
+                xmlns:user="http://xmlns.oracle.com/jrad/user">
+   <ui:contents>
+      <oa:spacer id="srchResultSpacer" height="10"/>
+      <oa:separator id="separator"/>
+      <oa:stackLayout id="header">
+         <ui:contents>
+            <oa:tableLayout id="TableLayout" width="100%">
+               <ui:contents>
+                  <oa:rowLayout id="ButtonRow">
+                     <ui:contents>
+                        <oa:cellFormat id="ButtonCell" vAlign="TOP" hAlign="END">
+                           <ui:contents>
+                              <oa:submitButton id="HzPuiCreateContact" text="Create Contact" prompt="Create Contact" warnAboutChanges="true" serverUnvalidated="true" unvalidated="true"/>
+                              <oa:submitButton id="HzPuiSelectExistingContact" text="Use Existing Contact" prompt="Use Existing Contact" rendered="false" warnAboutChanges="false"/>
+                              <oa:exportButton id="HzPuiDQMMultiContactExport" exportAllRows="true" viewName="HzPuiDQMContactsLovVO" text="Export" shortDesc="Export" rendered="false"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="SpacerRow">
+                     <ui:contents>
+                        <oa:cellFormat id="FndCellFormat"/>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="TableRow">
+                     <ui:contents>
+                        <oa:cellFormat id="TableCell" vAlign="TOP">
+                           <ui:contents>
+                              <oa:table id="HzPuiDQMContactsLovVO" unvalidated="false" width="100%" shortDesc="Contact List of Values Table">
+                                 <ui:contents>
+                                    <oa:link id="PersonPartyName_link" warnAboutChanges="true">
+                                       <ui:contents>
+                                          <oa:messageStyledText id="PersonPartyName" dataType="VARCHAR2" prompt="Contact" text="Contact" viewName="HzPuiDQMContactsLovVO" viewAttr="PersonPartyName" maximumLength="360" sortState="ascending"/>
+                                       </ui:contents>
+                                       <ui:primaryClientAction>
+                                          <ui:fireAction event="HzPuiPersonPartyNameLinkEvent" unvalidated="true">
+                                             <ui:parameters>
+                                                <ui:parameter key="HzPuiContactLOVEvent" value="PERSONDETAIL"/>
+                                                <ui:parameter key="HzPuiPersonPartyId" value="${oa.encrypt.HzPuiDQMContactsLovVO.PersonPartyId}"/>
+                                                <ui:parameter key="HzPuiPersonPartyName" value="${oa.encrypt.HzPuiDQMContactsLovVO.PersonPartyName}"/>
+                                                <ui:parameter key="HzPuiRelParyId" value="${oa.encrypt.HzPuiDQMContactsLovVO.RelationshipPartyId}"/>
+                                                <ui:parameter key="HzPuiRelationshipId" value="${oa.encrypt.HzPuiDQMContactsLovVO.RelationshipId}"/>
+                                             </ui:parameters>
+                                          </ui:fireAction>
+                                       </ui:primaryClientAction>
+                                    </oa:link>
+                                    <oa:messageStyledText id="JobTitle" dataType="VARCHAR2" prompt="Job Title" text="Job Title" viewName="HzPuiDQMContactsLovVO" viewAttr="JobTitle" maximumLength="100" sortState="yes"/>
+                                    <oa:messageStyledText id="Address" dataType="VARCHAR2" prompt="Address" text="Address" viewName="HzPuiDQMContactsLovVO" viewAttr="Address" maximumLength="4000"/>
+                                    <oa:messageStyledText id="Country" dataType="VARCHAR2" prompt="Country" text="Country" viewName="HzPuiDQMContactsLovVO" viewAttr="Country" maximumLength="80" sortState="yes"/>
+                                    <oa:messageStyledText id="PrimaryPhone" dataType="VARCHAR2" prompt="Phone" text="Phone" viewName="HzPuiDQMContactsLovVO" viewAttr="PrimaryPhone" maximumLength="4000"/>
+                                    <oa:switcher id="RestrictionSwitcher" viewName="HzPuiDQMContactsLovVO" viewAttr="ContactRestriction" prompt="Restrictions" sortState="yes" sortByViewAttr="ContactRestriction" rendered="false">
+                                       <ui:case name="HasRestriction">
+                                          <oa:image id="HasRestriction" source="warningind_active.gif" shortDesc="Restriction Exist" adminCustomizable="true"/>
+                                       </ui:case>
+                                       <ui:case name="NoRestriction">
+                                          <oa:image id="NoRestriction" shortDesc="No Restriction" adminCustomizable="true"/>
+                                       </ui:case>
+                                    </oa:switcher>
+                                    <oa:messageStyledText id="Email" dataType="VARCHAR2" prompt="Email" text="Email" viewName="HzPuiDQMContactsLovVO" viewAttr="Email" maximumLength="2000" sortState="yes" destination="mailto:{#Email}"/>
+                                    <oa:messageStyledText id="PrimaryUrl" dataType="VARCHAR2" prompt="Url" text="Url" viewName="HzPuiDQMContactsLovVO" viewAttr="PrimaryUrl" maximumLength="2000" rendered="false"/>
+                                    <oa:messageStyledText id="Score" dataType="NUMBER" prompt="Score" text="Score" viewName="HzPuiDQMContactsLovVO" viewAttr="Score" rendered="false"/>
+                                    <oa:messageStyledText id="Percentage" dataType="VARCHAR2" prompt="Percentage" text="Percentage" viewName="HzPuiDQMContactsLovVO" viewAttr="Percentage" maximumLength="41" rendered="false" sortByViewAttr="Percentage"/>
+                                    <oa:messageStyledText id="KnownAs" dataType="VARCHAR2" prompt="Alias" text="Alias" viewName="HzPuiDQMContactsLovVO" viewAttr="KnownAs" maximumLength="240" rendered="false"/>
+                                 </ui:contents>
+                                 <ui:tableSelection>
+                                    <oa:multipleSelection id="HzPuiMultiSelect" viewName="HzPuiDQMContactsLovVO" viewAttr="SelectFlag"/>
+                                 </ui:tableSelection>
+                              </oa:table>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:tableLayout>
+         </ui:contents>
+      </oa:stackLayout>
+      <oa:formParameter id="HzPuiPersonPartyId"/>
+      <oa:formParameter id="HzPuiRelParyId"/>
+      <oa:formParameter id="HzPuiPersonPartyName"/>
+      <oa:formParameter id="HzPuiContactLOVEvent"/>
+      <oa:formParameter id="HzPuiRelationshipId"/>
+   </ui:contents>
+</oa:tableLayout>
+

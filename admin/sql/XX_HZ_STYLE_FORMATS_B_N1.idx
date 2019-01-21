@@ -1,0 +1,42 @@
+-- $Id$
+-- $Rev$
+-- $HeadURL$
+-- $Author$
+-- $Date$
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :XX_HZ_STYLE_FORMATS_B_N1.idx                        |
+-- | Description      :Style Formats N1 Index                              |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |Version  Date          Author              Remarks                     |
+-- |-------  ----------- -----------------    -----------------------------|
+-- | 1.0     29-Jun-2009  Indra Varada        Initial Version              |
+-- +=======================================================================+
+
+CREATE INDEX XXCRM.XX_HZ_STYLE_FORMATS_B_N1 ON AR.HZ_STYLE_FORMATS_B
+(STYLE_FORMAT_CODE, STYLE_CODE)
+LOGGING
+TABLESPACE XXOD_TS_DATA
+PCTFREE    10
+INITRANS   11
+MAXTRANS   255
+STORAGE    (
+            INITIAL          128K
+            NEXT             128K
+            MINEXTENTS       1
+            MAXEXTENTS       2147483645
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL
+COMPUTE STATISTICS;
+
+EXIT;

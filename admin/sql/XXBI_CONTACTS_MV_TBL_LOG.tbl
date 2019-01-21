@@ -1,0 +1,53 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XXBI_CONTACTS_MV_TBL_LOG                                                 |--                                                          
+ --|                                                                                             |--
+--| Program Name   : CREATE_XXBI_CONTACTS_MV_TBL_LOG.tbl                                              |--
+--|                                                                                             |--
+--| Purpose        : Contacts MV.                                      |--
+--|                                                                                             |--
+--| Change History :     
+-- | Subversion Info:                                                          |
+-- | $HeadURL:  $                                                               |
+-- | $Rev:  $                                                                   |
+-- | $Date: $                                         |
+-- |                                                                           |
+-- |                                                                           |                                                           
+--   |
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              14-Apr-2010       Prasad                  Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the MV XXCRM.XXBI_CONTACTS_MV_TBL_LOG......
+PROMPT
+
+
+  
+ 
+  CREATE MATERIALIZED VIEW LOG ON "XXCRM"."XXBI_CONTACT_MV_TBL"
+  WITH ROWID, SEQUENCE ( "CONTACT_POINT_ID", "CONTACT_POINT_TYPE", "C_LAST_DT", "PARTY_SITE_ID", "RELATIONSHIP_ID" ) INCLUDING NEW VALUES;
+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

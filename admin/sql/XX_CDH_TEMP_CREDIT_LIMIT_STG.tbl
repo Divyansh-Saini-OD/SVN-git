@@ -1,0 +1,94 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- +===================================================================+
+-- |                        Office Depot                               |
+-- |                                                                   |
+-- +===================================================================+
+-- | Table Name  :  XX_CDH_TEMP_CREDIT_LIMIT_STG.tbl                   |
+-- | Description :  Table to Hold temporaray credit limit information  |
+-- |                                                                   |
+-- | Rice Id     :  E3512                                              |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author             Remarks                  |
+-- |=======   ===========  =================  =========================|
+-- |1.0       31-Oct-2016  Vasu Raparla        Initial draft version   |
+-- +===================================================================+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET TERM OFF
+
+SET TERM ON
+
+PROMPT
+PROMPT Creating the Table XXCRM.XX_CDH_TEMP_CREDIT_LIMIT_STG 
+PROMPT
+
+CREATE TABLE XXCRM.XX_CDH_TEMP_CREDIT_LIMIT_STG
+       (
+         BATCH_ID                 NUMBER,
+         RECORD_ID                NUMBER,
+         CUSTOMER_NUMBER          VARCHAR2(30),
+         TEMP_CREDIT_LIMIT        NUMBER,
+         START_DATE               DATE,
+         END_DATE                 DATE,
+         CURRENCY                 VARCHAR2(20),
+         REQUEST_ID               NUMBER,
+         STATUS                   VARCHAR2(20),
+         ERROR_MESSAGE            VARCHAR2(4000),
+         ATTRIBUTE1               VARCHAR2(150),
+         ATTRIBUTE2               VARCHAR2(150),
+         ATTRIBUTE3               VARCHAR2(150),
+         ATTRIBUTE4               VARCHAR2(150),
+         ATTRIBUTE5               VARCHAR2(150),
+         CREATION_DATE            DATE,
+         CREATED_BY               VARCHAR2(40),
+         LAST_UPDATE_DATE         DATE,
+         LAST_UPDATED_BY          VARCHAR2(40)
+      )
+/
+
+PROMPT
+PROMPT Grant XX_CDH_TEMP_CREDIT_LIMIT_STG  to ERP_SYSTEM_TABLE_SELECT_ROLE
+PROMPT    
+GRANT SELECT ON XXCRM.XX_CDH_TEMP_CREDIT_LIMIT_STG  TO ERP_SYSTEM_TABLE_SELECT_ROLE
+/
+
+PROMPT
+PROMPT Grant XXCRM.XX_CDH_TEMP_CREDIT_LIMIT_STG  to APPS
+PROMPT   
+GRANT ALL ON XXCRM.XX_CDH_TEMP_CREDIT_LIMIT_STG  TO APPS
+/
+
+PROMPT
+PROMPT Creating Index XX_CDH_TEMP_CRDT_LIMIT_STG_N1
+PROMPT   
+
+CREATE INDEX XX_CDH_TEMP_CRDT_LIMIT_STG_N1 ON XXCRM.XX_CDH_TEMP_CREDIT_LIMIT_STG(BATCH_ID);
+
+PROMPT
+PROMPT Creating Index XX_CDH_TEMP_CRDT_LIMIT_STG_N2
+PROMPT   
+
+CREATE UNIQUE  INDEX XX_CDH_TEMP_CRDT_LIMIT_STG_N2 ON XXCRM.XX_CDH_TEMP_CREDIT_LIMIT_STG(RECORD_ID);
+
+            
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

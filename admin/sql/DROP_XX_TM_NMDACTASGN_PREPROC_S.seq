@@ -1,0 +1,27 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XX_TM_NMDACTASGN_PREPROC_S.seq                |
+-- | Description      : Sequence for Custom Named Account territories      |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft 1a 11-Jun-2008 Nabarun            Initial Draft Version          |
+-- +=======================================================================+
+
+-- --------------------------------------------------
+-- Drop Custom Sequence XX_TM_NAM_TERR_DEFN_S      --
+-- --------------------------------------------------
+DROP SEQUENCE XXCRM.XX_TM_NMDACTASGN_PREPROC_S ;
+
+
+SHOW ERRORS;
+EXIT;

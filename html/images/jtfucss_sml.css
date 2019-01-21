@@ -1,0 +1,516 @@
+/* $Header: jtfucss_sml.css 115.1 2004/01/30 16:35:59 mbaig noship $ */
+/* This first set of styles (from applicationBody to wizardTextSelSub) belong to CRM's Semi CABO Standard and correspond to styles found in the Mona Lisa style sheet. These styles can be used as appropriate on 11i pages. */
+
+HR { color: #CCCC99; height: 1px; }
+
+.applicationBody { background-repeat: no-repeat; background-color: #FFFFFF }
+.applicationName { font-family: Arial, Helvetica, sans-serif; font-size: 12pt; font-weight: bold; color: #336699 }
+.anchorLink { }
+
+.bigLink { font-family: Arial, Helvetica, sans-serif; font-size: 12pt; font-weight: bold; color:#663300 }
+
+.binColumnHeaderCell { background-color: #CCCC99; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; font-weight: bold; text-align: center; color: #336699 }
+.binContentBorder { background-color:#999999 }
+.binContentCell { background-color: #f7f7e7; font-family: Arial, Helvetica, sans-serif; font-size: 9pt }
+.binContentCell2 { background-color: #FFFFFF; font-family: Arial, Helvetica, sans-serif; font-size: 10pt }
+.binContentNumCell { background-color: #f7f7e7; font-family: Arial, Helvetica, sans-serif; font-size: 9pt; text-align: right }
+.binContentNumCellNeg { background-color: #f7f7e7; font-family: Arial, Helvetica, sans-serif; font-size: 9pt; text-align: right; color: #990000 }
+.binContentNumCellPos { background-color: #f7f7e7; font-family: Arial, Helvetica, sans-serif; font-size: 9pt; text-align: right; color: #009900 }
+.binHeaderCell { background-color: #336699; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; font-weight: bold; color: #FFFFFF }
+.binHeaderBG { background-color: #336699 }
+.binHeaderLink { background-color: #336699; font-family: Arial, Helvetica, sans-serif; font-size: 9pt; color: #FFFFFF }
+
+.browseDataCell { background-color: #f7f7e7; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #000000 }
+.browseDataCellC { background-color: #f7f7e7; font-family: Arial, Helvetica, sans-serif; font-size: 
+10pt; color: #336699 }
+.browseGoCriteria { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; font-weight: bold} 
+.browseHeaderText { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; font-weight: normal; color: #f7f7e7 }
+.browseHeaderTitle { background-color: #336699; font-family: Arial, Helvetica, sans-serif; font-size: 12pt; font-weight: bold; color: #CCCC99 }
+.browseSubHeaderCell { background-color: #CCCC99; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #336699 }
+.browseSubHeaderCell2 { background-color: #f7f7e7; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #336699 }
+
+.confirmHeader { background-color: #CCCC99; font-family: Arial, Helvetica, sans-serif; font-size: 16pt; color: #336699 }
+.confirmMessage {background-color: #CCCC99; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #336699 }
+.contentSeparator { background-repeat: repeat-x; background-image : url("/OA_MEDIA/jtfudots.gif") }
+.dataReadOnly { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; font-weight: bold } 
+.debugMessage { background-color: #f7f7e7; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #336699 }
+.errorHeader { background-color: #CCCC99; font-family: Arial, Helvetica, sans-serif; font-size: 16pt; color: #CC0000 }
+.errorMessage { background-color: #CCCC99; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #CC0000 }
+
+.footnote { font-family: Arial, Helvetica, sans-serif; font-size: 9pt; color: #336699 }
+.footnoteHeader { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; font-weight: bold; color: #336699 }
+.formObjReadOnly { background-color: #dddddd }
+.formObjReadOnlyNum { background-color: #dddddd; text-align:right } 
+
+.homeBigHeaderCell { background-color: #336699; font-family: Arial, Helvetica, sans-serif; font-size: 16pt; color: #FFFFFF }
+.homeSubHeaderCell { background-color: #f7f7e7; font-family: Arial, Helvetica, sans-serif; font-size: 12pt; font-weight: bold; color: #999966 }
+.homeSubHeaderLink { background-color: #f7f7e7; font-family: Arial, Helvetica, sans-serif; font-size: 9pt }
+.homeTitle { font-family: Arial, Helvetica, sans-serif; font-weight: bold; color: #336699 }
+
+.infoHeader { background-color: #CCCC99; font-family: Arial, Helvetica, sans-serif; font-size: 16pt; color: #336699 }
+.infoMessage {background-color: #CCCC99; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #336699 }
+
+.jttinvis {position:absolute; top:-100; left:0; color:white; background-color:white;}
+
+.legend { font-family: Arial, Helvetica, sans-serif; font-size: 9pt }
+.key { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; font-weight: bold; color: #336699 }
+
+.navL0TextDeslct { font-family:Arial, Helvetica, Geneva, sans-serif; font-size:8pt; font-weight: 900; color:#999900; text-decoration: none; letter-spacing: -0.05em } 
+.navL0TextSlct { font-family:Arial, Helvetica, Geneva, sans-serif; font-size:8pt; font-weight: 700; color:#336699; text-decoration: none; letter-spacing: -0.04em }
+.navL1TextDeslct { font-family:Arial, Helvetica, Geneva, sans-serif; font-size:8pt; color:#663300; text-align:center } 
+.navL1TextSlct { font-family:Arial, Helvetica, Geneva, sans-serif; font-size:8pt; color:#336699; text-align:center }
+.navL2ShadowBG {  background-color: #f7f7e7; background-image: url(/OA_MEDIA/jtfusbg.gif); background-repeat: repeat-x }
+.navL2ShadowWhiteBG { background-image: url(/OA_MEDIA/jtfuwbg.gif); background-repeat: repeat-x }
+.navL2CellDeslct { background-color: #CCCC99; text-align: center }
+.navL2TextDeslct { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #003366; text-decoration: none }
+.navL2CellSlct { background-color: #336699; text-align: center }
+.navL2TextSlct { font-family: Arial,Helvetica,sans-serif; font-size: 10pt; font-weight: bold; color: #99CCFF; text-decoration: none }
+.navL3Bg { background-color: #336699 }
+.navL3TextDeslct { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #CCCC99; text-decoration: none }
+.navL3TextSlct { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; font-weight: bold; color: #FFFFFF; text-decoration: none }
+
+.navL3Deselected { font-family: Arial, Helvetica, sans-serif; font-size: 12pt; color: #996633; vertical-align: top }
+.navL3Selected { font-family: Arial, Helvetica, sans-serif; font-size: 12pt; font-weight: bold; color: #336699; vertical-align: top }
+.navL4TextDeslct { font-family: Arial, Helvetica, sans-serif; font-size: 12pt; color: #996633 } 
+.navL4TextSlct { font-family: Arial, Helvetica, sans-serif; font-size: 12pt; font-weight: bold; color: #336699 }
+.navSideSubDeslct { font-family: Arial, Helvetica, sans-serif; font-size: 9pt; color: #CCCC99} 
+.navSideSubSlct { font-family: Arial, Helvetica, sans-serif; font-size: 9pt; color: #FFFFFF }
+
+.pageTitle { font-family: Arial, Helvetica, sans-serif; font-size: 16pt; color: #336699 } 
+.pageTotal { font-family: Arial, Helvetica, sans-serif; font-size: 12pt; font-weight: bold; color: #003366; text-align: right }
+.popupBody { background-color: #FFFFFF }
+.prompt { font-family: Arial, Helvetica, sans-serif; font-size: 10pt }
+.promptReadOnly { font-family: Arial, Helvetica, sans-serif; font-size: 10pt }
+.promptSmall { font-family: Arial, Helvetica, sans-serif; font-size: 8pt }
+
+.reportBigLink { font-family: Arial, Helvetica, sans-serif; font-size: 12pt; font-weight: bold } 
+.reportDataCell { background-color: #FFFFFF; font-size: 8pt }
+.reportFootnote { background-color: #FFFFFF; font-family: Arial, Helvetica, sans-serif; font-size: 8pt; color: #336699 }
+.reportGrandTotal { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; font-weight: bold; color: #003366 }
+.reportHeaderCell { background-color: #FFFFFF; font-family: Arial, Helvetica, sans-serif; font-size: 8pt; font-weight: bold }
+.reportPageTitle { font-family: Arial, Helvetica, sans-serif; font-size: 16pt; color: #336699 }
+.reportRowHeaderCell { background-color: #FFFFFF; font-family: Arial, Helvetica, sans-serif; font-size: 8pt; font-weight: bold }
+.reportRowHeaderCell1 { background-color: #f7f7e7; font-family: Arial, Helvetica, sans-serif; font-size: 8pt; font-weight: bold; color: #003366 }
+.reportRowHeaderCellBlack { background-color: #F7F7e7; font-family: Arial, Helvetica, sans-serif; font-size: 8pt; font-weight: bold; color: #000000 }
+.reportTableTotalBlack { background-color: #FFFFFF; font-family: Arial, Helvetica, sans-serif; font-size: 9pt; font-weight: bold }
+.reportTotal1 { font-family: Arial, Helvetica, sans-serif; font-size: 12pt; font-weight: bold; color: #003366; color: #000000 }
+
+.requiredFieldAsterisk { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; font-weight: bold; color: #336699 }
+.requiredFieldPrompt { font-family: Arial, Helvetica, sans-serif; font-size: 10pt }
+
+.searchBar { background-color: #f7f7e7; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; text-align: center; vertical-align: middle }
+.searchBarLink { font-family:Arial, Helvetica, Geneva, sans-serif; font-size:8pt; color:#663300 }
+.searchBarSlctText { font-family:Arial, Helvetica, Geneva, sans-serif; font-size:8pt; color:#336699 }
+
+.sectionHeader1 { font-family: Arial, Helvetica, sans-serif; font-size: 12pt; font-weight: bold; color: #336699 }
+.sectionHeader2 { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; font-weight: bold; color: #336699 }
+.sectionHeaderBlack { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; font-weight: bold; color: #000000 }
+.smallLink { font-family: Arial, Helvetica, sans-serif; font-size: 9pt; font-weight: bold } 
+
+.tableActionText { font-family: Arial, Helvetica, sans-serif; font-size: 9pt } 
+.tableBigHeaderCell { background-color: #CCCC99; font-family: Arial, Helvetica, sans-serif; font-size: 12pt; font-weight: bold; color:#336699 }
+.tableDataCell { background-color: #f7f7e7; font-family: Arial, Helvetica, Geneva, sans-serif; font-size: 9pt }
+.tableDataCellNew { background-color: #f7f7e7; font-family:Arial, Helvetica, Geneva, sans-serif; font-size: 9pt; font-weight: bold }
+.tableDataCellUpdated { background-color: #f7f7e7; font-family: Arial, Helvetica, Geneva, sans-serif; font-size: 9pt; font-weight: bold }
+.tableIndicatorCell { background-color: #f7f7e7; font-family:Arial, Helvetica, Geneva, sans-serif; font-size: 9pt }
+.tableMoreRowsCell { background-color: #f7f7e7 ; font-family: Arial, Helvetica, sans-serif; font-weight: bold; font-size: 9pt }
+.tableRecordNav { font-family: Arial, Helvetica, sans-serif; font-size: 9pt;text-align: center  }
+.tableRowHeader { background-color: #FFFFCC; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; font-weight: bold }
+.tableSmallHeaderCell { background-color: #CCCC99; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; font-weight: bold; color:#336699 }
+.tableSubHeaderCell { background-color: #CCCC99; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #336699 }
+.tableTotal { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; font-weight: bold; text-align: right }
+.topnavBG { background-color: #FFFFFF; text-align: right; vertical-align: bottom }
+
+.warnHeader { background-color: #CCCC99; font-family: Arial, Helvetica, sans-serif; font-size: 16pt; color: #336699 }
+.warnMessage {background-color: #CCCC99; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #336699 }
+
+.wizardTextDeselected { background-color: #f7f7e7; font-family: Arial, Helvetica, sans-serif; font-size: 11pt; font-weight: bold; color: #6699CC }
+.wizardTextSelected { background-color: #FFFFFF; font-family: Arial, Helvetica, sans-serif; font-size: 11pt; font-weight: bold; color: #336699 }
+.wizardTextDeselSub { background-color: #f7f7e7; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #996633 }
+.wizardTextSelSub { background-color: #FFFFFF; font-family: Arial, Helvetica, sans-serif; font-size: 10pt;  color: #336699 }
+.wizardTitle { background-color: #f7f7e7; font-family: Arial, Helvetica, sans-serif; font-size: 14pt; font-weight: bold; color: #336699 }
+
+/* This is the end of the styles belonging to CRM's SemiCABO Standard. */
+/* The following styles come from the central tools team. Product teams should not use them in their application's pages. These styles are only for components that come from the tools team such as the datepicker. */
+
+.container {
+	background-color: purple }
+.COLOR1 {
+	background-color: #000000 }
+.COLOR2 {
+	background-color: #003366 }
+.COLOR3 {
+	background-color: #336699 }
+.COLOR4 {
+	background-color: #6699cc }
+.COLOR5 {
+	background-color: #99ccff }
+.COLOR6 {
+	background-color: #ffffff }
+.COLORG2 {
+	background-color: #333333 }
+.COLORG3 {
+	background-color: #666666 }
+.COLORG4 {
+	background-color: #999999 }
+.COLORG5 {
+	background-color: #CCCCCC }
+.APPSWINDOW {
+	background-color:#FFFFFF }
+.BISWINDOW {
+	background-color:#FFFFFF }
+.PRINTWINDOW {
+	background-color:#FFFFFF }
+.HOMEWINDOW {
+	background-color:#FFFFFF }
+.HIGHLIGHT {
+	background-color:#FFFFFF }
+.SHADOW {
+	background-color:666666 }
+.DARKSHADOW {
+	background-color:333333 }
+.PANEL {
+	background-color:#CCCCCC }
+.SOFTPANEL {
+	background-image:url(FNDBKBLU.gif);
+	background-color:#99CCFF}
+.HELPTEXT {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	color:#000000; 
+	font-size:10pt }
+.PROMPTBLACK {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	color:#000000; 
+	font-size:10pt }
+.PROMPTWHITE {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	color:#FFFFFF; 
+	font-size:10pt }
+.DATABLACK {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	color:#000000; 
+	font-size:10pt;
+	font-weight:bold }
+.DATAWHITE {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	color:#FFFFFF; 
+	font-size:10pt;
+	font-weight:bold }
+.DATATOTALS {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	color:#000000; 
+	font-size:10pt;
+	font-weight:bold }
+.INFOBLACK {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	color:#000000; 
+	font-size:10pt }
+.INFOWHITE {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	color:#FFFFFF; 
+	font-size:10pt }
+.ALERTTEXT {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	color:#000000; 
+	font-size:10pt }
+.ALERTTITLE {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	color:#000000; 
+	font-size:12pt;
+	font-weight:bold }
+.FIELDDATA {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	color:#000000; 
+	font-size:10pt;
+	font-weight:bold }
+.LINK {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	font-size:10pt; }
+.WIDEFIELDDATA {
+	font-family:"Arial narrow", Arial, Helvetica, Geneva, sans-serif; 
+	color:#000000; 
+	font-size:10pt }
+.TABLEHEADER {
+	font-family:Arial, sans-serif; 
+	color:#FFFFFF; 
+	font-size:10pt; 
+	font-weight: bold; 
+	background-color:#6699CC; 
+	vertical-align:bottom }
+.TABLEHEADERCENTER {
+	font-family:Arial, sans-serif; 
+	color:#FFFFFF; 
+	font-size:10pt; 
+	font-weight: bold; 
+	background-color:#6699CC; 
+	text-align:center; 
+	vertical-align:bottom }
+.TABLEHEADERLEFT {
+	font-family:Arial, sans-serif; 
+	color:#FFFFFF; 
+	font-size:10pt; 
+	font-weight: bold; 
+	background-color:#6699CC; 
+	text-align:left; 
+	vertical-align:bottom }
+.TABLEHEADERRIGHT {
+	font-family:Arial, sans-serif; 
+	color:#FFFFFF; 
+	font-size:10pt; 
+	font-weight: bold; 
+	background-color:#6699CC; 
+	text-align:right; 
+	vertical-align:bottom }
+.SORTHEADER {
+	font-family:Arial, sans-serif; 
+	color:#FFFFFF; 
+	font-size:10pt; 
+	font-weight: bold; 
+	text-decoration:none }	
+.TABLECELL {
+	font-family:Arial, Helvetica, Geneva, sans-serif;
+	color:#000000; 
+	font-size:10pt; 
+	background-color:#FFFFFF }
+.TABLEROWHEADER {
+	font-family:Arial, Helvetica, Geneva, sans-serif;
+	color:#FFFFFF; 
+	font-size:10pt; 
+	font-weight: bold; 
+	background-color:#6699CC }
+.TABLECELLSHADED {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	color:#000000; 
+	font-size:10pt;
+	background-color:#99CCFF }
+.TABLECELLGRAYSHADED {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	color:#000000; 
+	font-size:10pt;
+	background-color:#CCCCCC }
+.INPUTCELL {
+	font-family:"Arial narrow", Arial, Helvetica, Geneva, sans-serif;
+	color:#000000; 
+	font-size:10pt; 
+	background-color:#FFFFFF }
+.INPUTCELLSHADED {
+	font-family:"Arial narrow", Arial, Helvetica, Geneva, sans-serif; 
+	color:#000000; 
+	font-size:10pt; 
+	background-color:#99CCFF }
+.TABLESURROUND {
+	background-color:#6699CC }
+.PRINTHEADER {
+	font-family:Arial, sans-serif; 
+	color:#FFFFFF; 
+	font-size:10pt; 
+	font-weight: bold; 
+	background-color:#6699CC; 
+	text-align:center; 
+	vertical-align:bottom }
+.PRINTCELL {
+	font-family:Arial, Helvetica, Geneva, sans-serif;
+	color:#000000; 
+	font-size:10pt; 
+	background-color:#FFFFFF }
+.PRINTROWHEADER {
+	font-family:Arial, Helvetica, Geneva, sans-serif;
+	color:#FFFFFF; 
+	font-size:10pt; 
+	font-weight: bold; 
+	background-color:#6699CC }
+.PRINTCELLSHADED {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	color:#000000; 
+	font-size:10pt;
+	background-color:#99CCFF }
+.PRINTSURROUND {
+	background-color:#6699CC }
+.BISHEADER {
+	font-family:Arial, sans-serif; 
+	color:#FFFFFF; 
+	font-size:10pt; 
+	font-weight: bold; 
+	background-color:#6699CC; 
+	text-align:center; 
+	vertical-align:bottom }
+.BISCELL {
+	font-family:Arial, Helvetica, Geneva, sans-serif;
+	color:#000000; 
+	font-size:10pt; 
+	background-color:#FFFFFF }
+.BISROWHEADER {
+	font-family:Arial, Helvetica, Geneva, sans-serif;
+	color:#FFFFFF; 
+	font-size:10pt; 
+	font-weight: bold; 
+	background-color:#6699CC }
+.BISCELLSHADED {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	color:#000000; 
+	font-size:10pt;
+	background-color:#99CCFF }
+.BISSURROUND {
+	background-color:#6699CC }
+.BUTTON {
+	background-color:#f7f7e7}
+.BUTTONTEXT {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	color:#000000;	
+	font-size:10pt;
+	text-decoration:none }
+.DISABLEDBUTTONTEXT {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	color:#999999;	
+	font-size:10pt;
+	text-decoration:none }
+.TOOLBAR {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	color:#336699;
+	font-size:13PT;
+	font-style:italic;	
+	font-weight:bold;
+	background-color:#CCCCCC }
+.PANELTITLE {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	color:#CCCCCC;
+	font-size:12PT;
+	font-weight:bold;
+	background-color:#003366 }
+.TABTITLE {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	color:#CCCCCC;
+	font-size:12PT;
+	font-weight:bold }
+.CURRENTTAB {
+	background-color:#CCCCCC}
+.CURRENTTABTEXT {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	color:#000000;
+	font-size:10PT;
+	text-decoration:none }
+.OTHERTAB {
+	background-color:#6699CC}
+.OTHERTABTEXT {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	color:#FFFFFF;
+	font-size:10PT;
+	text-decoration:none }
+.DISABLEDTABTEXT {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	color:#CCCCCC;	
+	font-size:10pt;
+	text-decoration:none }
+.WEEKDAYCELL {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	color:#336699;
+	font-size:9PT;
+	font-weight: bold;
+	background-color: #CCCC99 }
+.MONTHDAYCELL {
+	background-color: #f7f7e7 }
+.MONTHDAYCELLSEL {
+	background-color: #999966 }
+.MONTHYEARSWITCH {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 8pt }
+.DAYLINK {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	color: #336699;
+	font-size:9PT }
+.DAYLINKSEL {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	color: #f7f7e7;
+	font-size:9PT;
+	font-weight: bold }
+.DISABLEDDAYLINK {
+	font-family:Arial, Helvetica, Geneva, sans-serif; 
+	color: #999999;
+	font-size:9PT }
+.GROUPBOX {
+	background-color:#333333 }
+.GROUPBOXLAYER {
+	position:absolute;
+	layer-background-color: #FFFFFF; 
+	font-family:Arial, Geneva, arial, sans-serif; 
+	font-size:14pt;
+	color:#000000; 
+	font-weight:bold;
+	visibility:hidden }
+.GROUPBOXTEXT {
+	font-family:Arial, Geneva, arial, sans-serif; 
+	font-size:12pt;
+	color:#000000; 
+	font-weight:bold }
+
+/* This is the end of the OLAF styles belonging to the central tools team. */
+/* CSS file altered Aug 24 10:46 PDT 2000. These are styles from the marlin.css style sheet. They should only be used in the JTF menuRenderer component and for links. */
+
+/* A:link {font-family:Arial, Helvetica, Geneva, sans-serif; font-size:10pt; color:#663300} */
+
+.OraBGColorVeryDark {background-color:#003366}
+
+.OraBGColorDark {background-color:#336699}
+
+.OraBGColorMedium {background-color:#6699cc}
+
+.OraBGColorLight {background-color:#99ccff}
+
+.OraBGGrayVeryDark {background-color:#333333}
+
+.OraBGGrayDark {background-color:#666666}
+
+.OraBGGrayMedium {background-color:#999999}
+
+.OraBGGrayLight {background-color:#cccccc}
+
+.OraBGAccentVeryVeryDark {background-color:#666633}
+
+.OraBGAccentVeryDark {background-color:#999966}
+
+.OraBGAccentDark {background-color:#cccc99}
+
+.OraBGAccentMedium {background-color:#ffffcc}
+
+.OraBGAccentLight {background-color:#f7f7e7}
+
+.OraBGHighlight {background-color:#ffffff}
+
+.OraCopyright {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:8pt;text-align:left;color:#000000}
+
+.OraDataText {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;font-weight:bold;color:#000000} 
+
+.OraLinkText {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;color:#663300}
+
+.OraNav1Selected {font-family:Arial, Helvetica, Geneva, sans-serif; font-size:10pt; color:#ffffff; font-weight:bold; text-decoration:none}
+
+.OraNav1Enabled {font-family:Arial, Helvetica, Geneva, sans-serif; font-size:10pt; background-color:#cccc99; color:#000000; text-decoration:none}
+
+.OraNav1Disabled {font-family:Arial, Helvetica, Geneva, sans-serif; font-size:10pt; background-color:#cccc99; color:#ffffcc; text-decoration:none}
+
+.OraNav2Selected {font-family:Arial, Helvetica, Geneva, sans-serif; font-size:10pt; font-weight:bold; color:#ffffff; text-decoration:none}
+
+.OraNav2Enabled {font-family:Arial, Helvetica, Geneva, sans-serif; font-size:10pt; color:#ffffff; text-decoration:none}
+
+.OraNav2Disabled {font-family:Arial, Helvetica, Geneva, sans-serif; font-size:10pt; color:#6699cc; text-decoration:none}
+
+.OraNav3Selected {font-family:Arial, Helvetica, Geneva, sans-serif; font-size:10pt; font-weight:bold; background-color:#336699; color:#ffffff; text-decoration:none}
+
+.OraNav3Enabled {font-family:Arial, Helvetica, Geneva, sans-serif; font-size:10pt; background-color:#cccc99; color:#003366}
+
+.OraNav3Disabled {font-family:Arial, Helvetica, Geneva, sans-serif; font-size:10pt; background-color:#cccc99; color:#ffffcc; text-decoration:none}
+
+.OraInstructionText {font-family:Arial, Helvetica, Geneva, sans-serif; font-size:10pt; color:#000000}
+
+.OraGlobalHeaderSeparator {font-family:Arial, Helvetica, Geneva, sans-serif; font-size:10pt; color:#99ccff; font-weight:bold; margin:0px 8px}
+
+.OraFieldNumber {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;text-align:right;color:#000000}
+
+.OraTableCellNumber {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:10pt;text-align:right;background-color:#f7f7e7;color:#000000;vertical-align:baseline}
+
+.OraPrivacy {font-family:Arial,Helvetica,Geneva,sans-serif;font-size:8pt;text-align:right;color:#663300}
+
+.start { text-align:left }
+.end { text-align:right }
+
+/* This is the end of the BLAF styles belonging to the marlin.css style sheet. */

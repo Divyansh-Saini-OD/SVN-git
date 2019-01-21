@@ -1,0 +1,26 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                                                                   |
+-- +===================================================================+
+-- | Name        :  CREATE_XXCRM_STAGING_FILE_UPLOAD_ID_SS.syn              |
+-- | Description :  XXCRM_STAGING_FILE_UPLOAD_ID_S synonym                 |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author             Remarks                   |
+-- |=======   ==========  ================== ==========================|
+-- |1.0       04-Oct-2016 Shubhashree         Initial draft version     |
+-- +===================================================================+
+
+ALTER TABLE XXCRM.XXCRM_FILE_UPLOADS
+  ADD CONSTRAINT XXCRM_FILE_UPLOADS_PK
+    PRIMARY KEY (FILE_UPLOAD_ID);
+	
+/
+SHOW ERRORS;	

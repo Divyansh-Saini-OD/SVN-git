@@ -1,0 +1,38 @@
+--+=====================================================================+
+--|                   Office Depot - Project FIT                        |
+--|          Capgemini/Office Depot/Consulting Organization             |
+--+=====================================================================+
+--|                                                                     |
+--|Rice        : 106313                                                 |
+--|File Name   : XX_CRM_COMMON_DELTA_DETAILS.tbl                        |
+--|File Path   : $XXCRM_TOP/admin/sql                                   |
+--|Schema      : XXCRM                                                  |
+--|                                                                     |
+--|Version    Date           Author                       Remarks       |
+--|=======   ======        ====================          =========      |
+--| 1.0    06-Sep-2011     Balakrishna Bolikonda       Initial version  |
+--|                                                                     |
+--+=====================================================================+
+
+SET VERIFY OFF
+WHENEVER SQLERROR CONTINUE
+
+CREATE TABLE XXCRM.XX_CRM_COMMON_DELTA_DETAILS
+                  (
+                 batch_id              NUMBER(15)
+                ,parent_program_id     NUMBER(15)
+                ,parent_request_id     NUMBER(15)
+                ,thread_num            NUMBER(15)
+                ,child_program_name    VARCHAR2(60)
+                ,child_program_id      NUMBER(15)
+                ,child_request_id      NUMBER(15)
+                ,from_cust_account_id  NUMBER(15)
+                ,to_cust_account_id    NUMBER(15)
+                ,from_run_date         VARCHAR2(20)
+                ,to_run_date           VARCHAR2(20)
+                ,status                VARCHAR2(100)
+                ,last_updated_by       NUMBER(15)
+                ,creation_date         DATE
+                ,created_by            NUMBER(15)
+                ,last_update_date      DATE 
+              );

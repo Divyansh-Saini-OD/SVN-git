@@ -1,0 +1,41 @@
+
+ -- +================================================================+
+ -- |                  Office Depot - Project Simplify                               
+ -- +================================================================+
+ -- | Name  :    XXODHZTDCUSTCROSS.seq                                             
+ -- | Description: This file  creates the sequences                              
+ -- |              required for Techdept and Oracle Customer cross 
+ -- |              reference tables  
+ -- |                                                                         
+ -- |                                                                                          
+ -- |                                                                                         
+ -- |Change Record:                                                                     
+ -- |===============                                                              
+ -- |Version   Date          Author              Remarks                            
+ -- |=======   ==========  =============    =========================|
+ -- |V1.0      03-FEB-2014 Avinash Baddam   Initial draft Version    |
+ -- +================================================================+
+
+CREATE SEQUENCE XXCRM.XXOD_CUST_XREF_ID_S
+START WITH 1
+INCREMENT BY 1
+MINVALUE 1
+MAXVALUE 2000000000
+NOCACHE
+NOCYCLE; 
+
+CREATE SEQUENCE XXCRM.XXOD_CUST_XREF_BATCH_ID_S
+START WITH 1
+INCREMENT BY 1
+MINVALUE 1
+MAXVALUE 2000000000
+NOCACHE
+NOCYCLE;
+
+CREATE SEQUENCE XXCRM.XXOD_CUST_XREF_RECORD_ID_S
+START WITH 1
+INCREMENT BY 1
+MINVALUE 1
+MAXVALUE 2000000000
+NOCACHE
+NOCYCLE;

@@ -1,0 +1,31 @@
+-- $Id: DROP_XXBI_SALES_OPPTY_FCT_MV.tbl 69447 2009-04-09 15:04:58Z Indra Varada $
+-- $Rev: 69447 $
+-- $HeadURL: https://svn.na.odcorp.net/od/crm/trunk/xxcrm/admin/sql/DROP_XXBI_SALES_OPPTY_FCT_MV.tbl $
+-- $Author: Indra Varada $
+-- $Date: 2009-04-09 11:04:58 -0400 (Thu, 09 Apr 2009) $
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :XXBI_SALES_OPPTY_FCT_MV.tbl                         |
+-- | Description      :Drop script for custom materialized view            | 
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      21-Mar-2009 Sreekanth Rao      Drop Script                    |
+-- +=======================================================================+
+
+
+-- ---------------------------------------------------
+-- Dropping existing MV XXBI_SALES_OPPTY_FCT_MV
+-- ---------------------------------------------------
+
+DROP MATERIALIZED VIEW XXCRM.XXBI_SALES_OPPTY_FCT_MV;
+

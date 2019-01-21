@@ -1,0 +1,110 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify						|
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_SITE_DELTA.tbl                                               |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        08/07/11       Devendra Petkar        Initial version                            |
+-- +============================================================================================+
+
+
+--------------------------------------------------------------------
+----------------------- Added Drop Table Statement -----------------
+--------------------------------------------------------------------
+
+
+SET time on;
+SET timing on;
+SET serveroutput on;
+SET trimspool on;
+SET feedback on
+SET verify on
+SET echo on
+
+DECLARE
+   v_cnt   NUMBER;
+   v_sqlerrm VARCHAR2(250);
+   TYPE type_droptable IS TABLE OF VARCHAR2(50);
+   rec_droptable type_droptable:=type_droptable('XX_CRM_EXP_CUST_SITE_DELTA', 'XX_CRM_EXP_PROS_SITE_DELTA');
+
+BEGIN
+FOR i IN rec_droptable.first..rec_droptable.last
+LOOP
+BEGIN
+   SELECT COUNT (*)
+     INTO v_cnt
+     FROM user_tables
+    WHERE table_name = rec_droptable(i);
+   IF v_cnt = 1
+   THEN
+      EXECUTE IMMEDIATE    'DROP TABLE '|| rec_droptable(i)
+                        || ' PURGE ';
+         DBMS_OUTPUT.put_line ('Table Drop is '||rec_droptable(i));
+   ELSE
+  DBMS_OUTPUT.put_line ('Table not found for Drop is '||rec_droptable(i));
+   END IF;
+ EXCEPTION
+   WHEN OTHERS THEN
+     v_sqlerrm:= sqlerrm;
+      DBMS_OUTPUT.put_line (v_sqlerrm);
+   ROLLBACK;
+END;
+END LOOP;
+END;
+/
+
+
+
+
+--------------------------------------------------------------------
+-----------------------------XX_CRM_EXP_CUST_SITE_DELTA----------------------------------
+--------------------------------------------------------------------
+
+Prompt CREATE TABLE xxcrm.XX_CRM_EXP_CUST_SITE_DELTA
+
+CREATE TABLE xxcrm.XX_CRM_EXP_CUST_SITE_DELTA
+(
+  batch_id                 NUMBER,
+  record_id                NUMBER,
+  party_site_id		   NUMBER,
+  status                   CHAR(1 BYTE)
+)
+TABLESPACE apps_ts_tx_data
+NOLOGGING
+NOPARALLEL;
+
+--------------------------------------------------------------------
+-----------------------------XX_CRM_EXP_PROS_SITE_DELTA----------------------------------
+--------------------------------------------------------------------
+
+Prompt CREATE TABLE xxcrm.XX_CRM_EXP_PROS_SITE_DELTA
+
+CREATE TABLE xxcrm.XX_CRM_EXP_PROS_SITE_DELTA
+(
+  batch_id                 NUMBER,
+  record_id                NUMBER,
+  party_site_id		   NUMBER,
+  status                   CHAR(1 BYTE)
+)
+TABLESPACE apps_ts_tx_data
+NOLOGGING
+NOPARALLEL;
+
+
+
+ GRANT ALL ON xxcrm.xx_crm_exp_cust_site_delta TO APPS;
+ GRANT ALL ON xxcrm.xx_crm_exp_pros_site_delta TO APPS;
+
+
+
+ SHOW ERROR;
+EXIT;

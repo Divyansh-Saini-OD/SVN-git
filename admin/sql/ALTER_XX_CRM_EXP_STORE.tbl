@@ -1,0 +1,17 @@
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify                                           |
+-- +============================================================================================+
+-- | Name        : ALTER_XX_CRM_EXP_STORE.tbl                                                    |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        26-Aug-2011     Prasad\         Initial version                             |
+-- +============================================================================================+
+
+ALTER TABLE XXCRM.XX_CRM_EXP_STORE add isactive CHAR(1);
+ALTER TABLE XXCRM.XX_CRM_EXP_STORE add LOAD_STATUS VARCHAR2(50 CHAR);
+SHOW ERRORS;

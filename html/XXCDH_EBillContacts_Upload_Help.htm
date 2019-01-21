@@ -1,0 +1,68 @@
+<HTML>
+<TITLE>
+E-Bill Contacts Upload Tool
+</TITLE>
+<BODY>
+<font size="2" face="Verdana">
+<H1>
+E-Bill Contacts Upload Tool
+</H1>
+<BR>
+<h4>
+This is a self service application, where user can upload E-Billing Contacts associated to the customer for a Bill-to site and corresponding Customer Document ID.
+</h4>
+<h4><u>
+Steps in Uploading E-Bill Contacts:
+</u></h4>
+<br>
+1. Prepare an input file, which is of <b>CSV</b> format (Comma Separated Format). This format can be obtained like this-
+<br>
+&nbsp;&nbsp;&nbsp;a).Open an Excel Spread sheet
+<br>
+&nbsp;&nbsp;&nbsp;b).Add all the data in the format mention in the instructions-
+<br>
+&nbsp;&nbsp;&nbsp;----First Column - Contact Last Name
+<br>
+&nbsp;&nbsp;&nbsp;----Second Column - Contact First Name
+<br>
+&nbsp;&nbsp;&nbsp;----Third Column - Contact Email Address
+<br>
+&nbsp;&nbsp;&nbsp;----Fourth Column - Phone Area Code
+<br>
+&nbsp;&nbsp;&nbsp;----Fifth Column - Phone Number
+<br>
+&nbsp;&nbsp;&nbsp;----Sixth Column - Legacy Account Number (8 Digit AOPS Customer ID)
+<br>
+&nbsp;&nbsp;&nbsp;----Seventh Column - Adress Sequence
+<br>
+&nbsp;&nbsp;&nbsp;----Eighth Column - Contact ID
+<br>
+&nbsp;&nbsp;&nbsp;----Ninth Column - Status Flag
+<br>
+&nbsp;&nbsp;&nbsp;----Tenth Column - Customer Document ID
+<br>
+Note that if any of the above columns are null, please leave the value as null. BUT, if you leave the last column also null, then Microsoft Excel does not put the commas as desired and the file format may be wrong and you may get errors in the file upload. After the data is added in Excel spread sheet, save it as "Comma Separated Values" format.
+<br>
+<br>
+So, a typical upload file, which is in CSV format, when opened in a notepad, looks like this-
+<br>
+<br>
+<pre>
+<b>
+Last Name,First Name,Email Address,Area Code,Telephone,Legacy Account Number,Addr Seq,Contact ID,Flag,Cust Doc ID
+last,first,first.last@email.com,561,1119999,46292654,1,,A,11405550
+</b>
+</pre>
+2. Select the file from the local file system, using "Browse" button in the page.
+<br>
+<br>
+3. Click on "Upload E-Bill Contacts" Button in the page.
+<br>
+<br>
+4. That's it!
+<br>
+<br>
+This file will be uploaded into server. Background process will be spawned to read the upload file and insert/update the contact information provided. You can go back to E-Bill Main page to verify the contacts attached to the customer document.
+</font>
+</BODY>
+</HTML>

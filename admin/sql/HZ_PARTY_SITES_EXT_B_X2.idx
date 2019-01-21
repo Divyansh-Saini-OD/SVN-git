@@ -1,0 +1,43 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : HZ_PARTY_SITES_EXT_B_X2.idx                        |
+-- | Description      : Unique Index for custom table                      |
+   |                    HZ_PARTY_SITES_EXT_B_X2                            |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |1.0      14-Jan-2008   Rajeev Kamath    Initial Version                |
+-- |2.0      26-Jun-2008   Rajeev Kamath    Performance Updates            |
+-- +=======================================================================+
+
+
+-- -------------------------------------------------
+-- Creating Index HZ_PARTY_SITES_EXT_B_X2
+-- -------------------------------------------------
+declare
+ct number;
+sql_stmt varchar2 (1000);
+begin
+  sql_stmt := 'drop INDEX XXCRM.HZ_PARTY_SITES_EXT_B_X2';
+  select count(1) into ct
+  from all_indexes where index_name = 'HZ_PARTY_SITES_EXT_B_X2';
+  if (ct >= 1) then
+      execute immediate sql_stmt;
+  end if;
+end;
+/
+
+
+-- -------------------------------------------------
+-- Creating Index HZ_PARTY_SITES_EXT_B_X2
+-- -------------------------------------------------
+Create index XXCRM.HZ_PARTY_SITES_EXT_B_X2 on HZ_PARTY_SITES_EXT_B(N_EXT_ATTR1, ATTR_GROUP_ID, PARTY_SITE_ID);
+

@@ -1,0 +1,29 @@
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+/*
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAC Consulting Organization                        |
+-- +=======================================================================+
+-- | Name             : DROP_XX_IREC_DEBUG.tbl                             |
+-- | Description      : Custom table for E1328_BSD_iReceivables_interface  |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  08-Jan-2008 Yusuf Ali          Initial Draft Version          |
+-- |                                                                       |
+-- +=======================================================================+
+*/
+
+-- -------------------------------------------------------
+--      Drop Custom Table XX_IREC_DEBUG                 --
+-- -------------------------------------------------------
+
+DROP TABLE XXCRM.XX_IREC_DEBUG;
+/

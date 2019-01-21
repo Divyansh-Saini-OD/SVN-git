@@ -1,0 +1,28 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : APPS.XXCS_FDBK_ID_S.syn                            |
+-- | Description      : Synonym for feedback Sequence.                     |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  25-Mar-2009 Kalyan        Initial Draft Version               |
+-- |                                                                       |
+-- +=======================================================================+
+
+---------------------------------------------------------
+-- Creating synonym APPS.XXCS_FDBK_ID_S --
+---------------------------------------------------------
+
+CREATE OR REPLACE SYNONYM APPS.XXCS_FDBK_ID_S FOR XXCRM.XXCS_FDBK_ID_S;
+
+SHOW ERRORS;
+
+EXIT;

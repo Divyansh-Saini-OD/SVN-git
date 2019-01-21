@@ -1,0 +1,28 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        : XX_CRM_WCELG_CUST_B1.idx                            |
+-- |              		                                               |
+-- | Rice ID     : AR I2158 - AR Webcollect Outbound                   |
+-- |              			                                            |
+-- | Description : Index Creation Script                               |
+-- |                                                                   |
+-- |              			                                            |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |1.0      03-Feb-2012  R.Aldridge       Initial Version             |
+-- +===================================================================+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE BITMAP INDEX xxcrm.xx_crm_wcelg_cust_b1 ON xxcrm.xx_crm_wcelg_cust(ar_converted_flag)
+   COMPUTE STATISTICS
+   TABLESPACE APPS_TS_TX_IDX;
+
+
+SHOW ERROR

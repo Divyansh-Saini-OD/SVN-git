@@ -1,0 +1,28 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :XXCS_FDBK_LINE_PK.idx                               |
+-- | Description      :Unique Index for feedback Line Stage Table.         |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author              Remarks                     |
+-- |-------  ----------- -----------------    -----------------------------|
+-- | 1.0     25-MAR-2009  Kalyan        Initial Draft Version              |
+-- +=======================================================================+
+
+
+REM==============================================================================
+REM        Creating Index FDBK_LINE_PK
+REM==============================================================================
+
+ALTER TABLE XXCRM.XXCS_FDBK_LINE_DTL_STG ADD CONSTRAINT FDBK_LINE_PK PRIMARY KEY(FDBK_LINE_ID);
+
+EXIT;
+

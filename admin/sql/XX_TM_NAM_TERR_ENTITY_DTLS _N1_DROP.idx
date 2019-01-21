@@ -1,0 +1,26 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XX_TM_NAM_TERR_ENTITY_DTLS_N1_DROP.idx             |
+-- | Description      : Drop Index XX_TM_NAM_TERR_ENTITY_DTLS_N1           |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |1.0      29-Oct-2007   Sreekanth        Created a new script for DROP  |
+-- +=======================================================================+
+
+-------------------------------------------------------------
+-- Drop existing Index for XX_TM_NAM_TERR_ENTITY_DTLS_N1   --
+-------------------------------------------------------------
+
+DROP INDEX XXCRM.XX_TM_NAM_TERR_ENTITY_DTLS_N1;
+
+SHOW ERRORS;
+

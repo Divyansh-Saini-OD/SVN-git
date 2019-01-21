@@ -1,0 +1,87 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XXBI_CONTACTS_MV_TBL                                                  |--                                                          
+ --|                                                                                             |--
+--| Program Name   : CREATE_XXBI_CONTACTS_MV_TBL.tbl                                              |--
+--|                                                                                             |--
+--| Purpose        : Contacts MV.                                      |--
+--|                                                                                             |--
+--| Change History :     
+-- | Subversion Info:                                                          |
+-- | $HeadURL:  $                                                               |
+-- | $Rev:  $                                                                   |
+-- | $Date: $                                         |
+-- |                                                                           |
+-- |                                                                           |                                                           
+--   |
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              14-Apr-2010       Prasad                  Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the MV XXCRM.XXBI_CONTACTS_MV_TBL......
+PROMPT
+
+
+  
+  CREATE TABLE "XXCRM"."XXBI_CONTACT_MV_TBL" 
+   (	"PARTY_ID" NUMBER(15,0) NOT NULL ENABLE, 
+	"REL_PARTY_ID" NUMBER(15,0), 
+	"PC_ROW_ID" ROWID, 
+	"CONTACT_POINT_ID" NUMBER(15,0) NOT NULL ENABLE, 
+	"C_LAST_DT" DATE NOT NULL ENABLE, 
+	"CONTACT_POINT_TYPE" VARCHAR2(30 BYTE) NOT NULL ENABLE, 
+	"PRIMARY_FLAG" VARCHAR2(1 BYTE), 
+	"EMAIL_ADDRESS" VARCHAR2(2000 BYTE), 
+	"RAW_PHONE_NUMBER" VARCHAR2(60 BYTE), 
+	"PHONE_AREA_CODE" VARCHAR2(10 BYTE), 
+	"PHONE_COUNTRY_CODE" VARCHAR2(10 BYTE), 
+	"PHONE_NUMBER" VARCHAR2(40 BYTE), 
+	"PHONE_EXTENSION" VARCHAR2(20 BYTE), 
+	"PHONE_LINE_TYPE" VARCHAR2(30 BYTE), 
+	"PARTY_NAME" VARCHAR2(360 BYTE) NOT NULL ENABLE, 
+	"PERSON_FIRST_NAME" VARCHAR2(150 BYTE), 
+	"PERSON_MIDDLE_NAME" VARCHAR2(60 BYTE), 
+	"PERSON_LAST_NAME" VARCHAR2(150 BYTE), 
+	"PER_PARTY_ID" NUMBER(15,0) NOT NULL ENABLE, 
+	"PAROWID" ROWID, 
+	"RELRID" ROWID, 
+	"RELATIONSHIP_ID" NUMBER(15,0) NOT NULL ENABLE, 
+	"PSEXTROWID" ROWID, 
+	"SITE_PARTY_SITE_ID" NUMBER(15,0), 
+	"SITE_LAST_UPDATE_DATE" DATE, 
+	"CUST_ACCT_SITE_ID" NUMBER(15,0), 
+	"CUST_ACCOUNT_ID" NUMBER(15,0), 
+	"HC_ROW_ID" ROWID, 
+	"PARTY_SITE_ID" NUMBER, 
+	"JOB_TITLE" VARCHAR2(100 BYTE), 
+	"ORG_CONTACT_ID" NUMBER(15,0), 
+	"CUST_ACCOUNT_ROLE_ID" NUMBER(15,0)
+   ) 
+  TABLESPACE "XXOD_TS_DATA" ; 
+
+GRANT ALL ON XXCRM.XXBI_CONTACT_MV_TBL TO APPS;
+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

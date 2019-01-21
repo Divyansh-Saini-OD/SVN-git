@@ -1,0 +1,191 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1579" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="OD_MPSCustContactMainRN" amDefName="od.oracle.apps.xxcrm.mps.server.OD_MPSCustomerContractAM" windowTitle="Asset Details" controllerClass="od.oracle.apps.xxcrm.mps.webui.OD_MPSCustContactCO" amStateRequired="false">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:messageComponentLayout id="CustomerSearchRN" amDefName="od.oracle.apps.xxcrm.mps.server.OD_MPSCustomerContractAM" rows="2" columns="2">
+               <ui:contents>
+                  <oa:messageLovInput id="PartyName" prompt="Party Name" styleClass="ORADATATEXT" queryable="true">
+                     <lovContents>
+                        <oa:listOfValues id="PartyNameLOVRN" amDefName="od.oracle.apps.xxcrm.mps.server.OD_MPSCustomerContractAM">
+                           <ui:contents>
+                              <oa:table name="PartyNameLOVRN" id="PartyNameRN">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="PartyNameDisp" viewName="OD_MPSPartyNameLOVVO" viewAttr="PartyName" prompt="Party Name" queryable="true"/>
+                                    <oa:messageStyledText id="PartyIdFV" prompt="Party Id" viewName="OD_MPSPartyNameLOVVO" viewAttr="PartyId" queryable="false"/>
+                                    <oa:formValue id="CustomerNumberFV" viewName="OD_MPSPartyNameLOVVO" viewAttr="AopsCustNumber"/>
+                                 </ui:contents>
+                              </oa:table>
+                           </ui:contents>
+                        </oa:listOfValues>
+                     </lovContents>
+                     <lovMappings>
+                        <lovMap id="PartyIdlovMap" lovItem="PartyIdFV" resultTo="PartyId"/>
+                        <lovMap id="PartyNamelovMap" lovItem="PartyNameDisp" resultTo="PartyName" criteriaFrom="PartyName"/>
+                        <lovMap id="PartyIDlovMap" lovItem="PartyIdFV" resultTo="PartyIDFV"/>
+                        <lovMap id="CustomerNumberlovMap" lovItem="CustomerNumberFV" resultTo="CustomerNumber"/>
+                        <lovMap id="CustomernumberlovMap" lovItem="CustomerNumberFV" resultTo="CustomernumberFV"/>
+                     </lovMappings>
+                  </oa:messageLovInput>
+                  <oa:messageStyledText id="PartyId" prompt="Party Id" styleClass="ORADATATEXT" queryable="false"/>
+                  <oa:messageTextInput id="SerialNo" prompt="Serial No"/>
+                  <oa:messageStyledText id="CustomerNumber" prompt="Customer Number" styleClass="ORADATATEXT"/>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:formValue id="CustomernumberFV"/>
+            <oa:formValue id="PartyIDFV"/>
+            <oa:rowLayout id="SearchButtonRN" hAlign="center">
+               <ui:contents>
+                  <oa:submitButton id="Search" prompt="Search"/>
+                  <oa:spacer id="SpacerBTRN" width="10"/>
+                  <oa:submitButton id="Clear" text="Clear" prompt="Clear"/>
+               </ui:contents>
+            </oa:rowLayout>
+            <oa:defaultSingleColumn id="CustomerNameRN" rendered="false">
+               <ui:contents>
+                  <oa:messageStyledText id="CustomerName" prompt="Customer Name" styleClass="ORADATATEXT" viewName="OD_MPSCustContactVO" viewAttr="PartyName"/>
+                  <oa:messageStyledText id="CustomerId" prompt="Customer Id" styleClass="ORADATATEXT" viewName="OD_MPSCustContactVO" viewAttr="PartyId"/>
+               </ui:contents>
+            </oa:defaultSingleColumn>
+            <oa:rowLayout id="Spacer">
+               <ui:contents>
+                  <oa:spacer id="SpacerItem" height="15"/>
+               </ui:contents>
+            </oa:rowLayout>
+            <oa:advancedTable id="CustomerContactRN" viewName="OD_MPSCustContactVO" text="Customer Contact Details" width="100%" blockSize="100">
+               <ui:contents>
+                  <oa:column id="ContactCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ContactsortableHeader" prompt="Contact"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="Contact" prompt="" viewAttr="SiteContact"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="PhoneCol" rendered="true">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="PhonesortableHeader" prompt="Phone"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="Phone" prompt="" viewAttr="SiteContactPhone"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="AddressCol" rendered="true">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="AddresssortableHeader" prompt="Address"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="Address" viewAttr="SiteAddress1"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="CityCol" rendered="true">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="CitysortableHeader" prompt="City"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="City" prompt="" viewAttr="SiteCity"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="StateCol" rendered="true">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="StatesortableHeader" prompt="State"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="State" prompt="" viewAttr="SiteState"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ZipCol" rendered="true">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ZipsortableHeader" prompt="Zip"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="Zip" prompt="" viewAttr="SiteZipCode"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="CostCenterCol" rendered="true">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="CostCentersortableHeader" prompt="Cost Center"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="CostCenter" prompt="" viewAttr="DeviceCostCenter"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="SerialNoCol" rendered="true">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="SerialNosortableHeader1" prompt="Serial No"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:link id="Serialno" viewAttr="SerialNo" destination="">
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="gotoaddress" id="fireAction1">
+                                 <ui:parameters>
+                                    <ui:parameter key="partyId" value="${oa.OD_MPSCustContactVO.PartyId}"/>
+                                    <ui:parameter key="partyName" value="${oa.OD_MPSCustContactVO.PartyName}"/>
+                                    <ui:parameter key="address" value="${oa.OD_MPSCustContactVO.SiteAddress1}"/>
+                                    <ui:parameter key="serialNo" value="${oa.OD_MPSCustContactVO.SerialNo}"/>
+                                 </ui:parameters>
+                              </ui:fireAction>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="LocationCol" rendered="false">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="LocationsortableHeader" prompt="Location"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:link id="Location" viewAttr="DeviceLocation" destination="">
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="gotolocation">
+                                 <ui:parameters>
+                                    <ui:parameter key="location" value="${oa.OD_MPSCustContactVO.DeviceLocation}"/>
+                                    <ui:parameter key="partyId" value="${oa.OD_MPSCustContactVO.PartyId}"/>
+                                    <ui:parameter key="partyName" value="${oa.OD_MPSCustContactVO.PartyName}"/>
+                                 </ui:parameters>
+                              </ui:fireAction>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="DeviceContactCol" rendered="true">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="DeviceContactsortableHeader" prompt="Device Contact"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="DeviceContact" viewAttr="DeviceContact"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="DevicePhoneColl" rendered="true">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="DevicePhonesortableHeader" prompt="Device Phone"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="DevicePhone" viewAttr="DevicePhone"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="SupportCoverageCol" rendered="false">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="SupportCoveragesortableHeader" prompt="Support Coverage"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="SupportCoverage" viewAttr="SupportCoverage"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="SLACoverageCol" rendered="false">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="SLACoveragesortableHeader" prompt="SLA Coverage"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="SLACoverage" viewAttr="SlaCoverage"/>
+                     </ui:contents>
+                  </oa:column>
+               </ui:contents>
+            </oa:advancedTable>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

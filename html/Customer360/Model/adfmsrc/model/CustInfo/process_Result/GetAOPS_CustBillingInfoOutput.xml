@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<JavaBean xmlns="http://xmlns.oracle.com/adfm/beanmodel" version="11.1.1.56.60"
+          id="GetAOPS_CustBillingInfoOutput"
+          Package="model.CustInfo.process_Result"
+          BeanClass="model.CustInfo.process_Result.GetAOPS_CustBillingInfoOutput"
+          isJavaBased="false">
+  <Attribute Name="REPORTING_LOC" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+  <Attribute Name="SALESPERSON_ID" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+  <Attribute Name="AR_FLAG" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+  <Attribute Name="BILL_TO_LIMIT" IsUpdateable="0" IsNotNull="false"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="BILL_TO_DOLLARS" IsUpdateable="0" IsNotNull="false"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="BILL_TO_DOLLAR_EXPIRE" IsUpdateable="0" IsNotNull="false"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="ORDER_LIMIT" IsUpdateable="0" IsNotNull="false"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="LINE_LIMIT" IsUpdateable="0" IsNotNull="false"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="ORDER_REST_IND" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+  <Attribute Name="ADDR_ORDER_REST_IND" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+  <Attribute Name="BACKORDER_ALLOW_FLAG" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+  <Attribute Name="FREIGHT_CHG_REQ_FLAG" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+  <Attribute Name="CONTRACT_CODE" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+  <Attribute Name="ADDR_CONTRACT_CODE" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+  <Attribute Name="PRODUCT_XREF_NBR" IsUpdateable="0" IsNotNull="false"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="PRICE_PLAN" IsUpdateable="0" IsNotNull="false"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="PRICE_PLAN_SEQ" IsUpdateable="0" IsNotNull="false"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="FILLER" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+</JavaBean>

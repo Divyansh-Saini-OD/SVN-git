@@ -1,0 +1,53 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=========================================================================================+
+-- |                  Office Depot - Project Simplify                                        |
+-- +=========================================================================================+
+-- | Name        : XX_OD_CRM_AOPS_DATA_RETRY_BE_RECREATE.abk                                 |
+-- | Description : Anonymous block for creating Business Events for Invoking AOPS            |
+-- |               data retry process                                                        |
+-- |                                                                                         |
+-- |Change Record:                                                                           |
+-- |===============                                                                          |
+-- |Version     Date           Author               Remarks                                  |
+-- |=======    ==========      ================     =========================================|
+-- |1.0        04-Aug-2009     Indra Varada         Anonymous Block; Need to delete existing |
+-- |                                                event and recreate the event.            |
+-- +=========================================================================================+
+
+declare
+eventRowId ROWID;
+
+wf_guid WF_EVENTS.GUID%type;
+
+begin
+
+WF_EVENTS_PKG.g_Mode := 'CUSTOM';
+
+--SELECT guid into wf_guid FROM apps.WF_EVENTS
+--WHERE NAME = 'od.cdh.rty.bpel';
+
+--WF_EVENTS_PKG.DELETE_ROW(
+--  X_GUID               => wf_guid
+--);
+
+
+WF_EVENTS_PKG.INSERT_ROW (
+    X_ROWID => eventRowId,
+    X_GUID => substr(hextoraw(WF_CORE.RANDOM), 1, 20),
+    X_NAME => 'od.cdh.rty.bpel',
+    X_TYPE => 'EVENT',
+    X_STATUS => 'ENABLED',
+    X_GENERATE_FUNCTION => NULL,
+    X_OWNER_NAME => 'AR',
+    X_OWNER_TAG => 'AR',
+    X_DISPLAY_NAME => 'od.cdh.rty.bpel',
+    X_DESCRIPTION => 'Data Retry For AOPS Data',
+    X_CUSTOMIZATION_LEVEL => 'U',
+    X_JAVA_GENERATE_FUNC => NULL
+);
+commit;
+END;
+/

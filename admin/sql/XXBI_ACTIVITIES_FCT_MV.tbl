@@ -1,0 +1,227 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+CREATE MATERIALIZED VIEW XXCRM.XXBI_ACTIVITIES_FCT_MV
+  BUILD DEFERRED
+  REFRESH COMPLETE ON DEMAND
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        :  XXBI_ACTIVITIES_FCT_MV.vw                          |
+-- | Description :  Activities Fact Materialized View(for all reps)    |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author             Remarks                   |
+-- |=======   ==========  =============      ==========================|
+-- |1.0       02/19/2010  Mohan                                        |
+-- |                      Kalyanasundaram    Initial draft version     |
+-- |2.0       03/29/2010  Anirban C          Added a few columns       | 
+-- +===================================================================+
+AS
+SELECT /*+ parallel(t,8) */ 
+t.TASK_ID,t.CREATED_BY,
+apps.xxcrm_task_dashboard_helper.get_user_resource_id(t.created_by) CREATED_RESOURCE_ID,
+apps.xxcrm_task_dashboard_helper.get_user_resource_name(t.created_by) CREATED_RESOURCE_NAME,
+nvl(apps.xxcrm_task_dashboard_helper.get_user_m1_user_id(t.created_by),-1) CREATED_M1_USER_ID,
+apps.xxcrm_task_dashboard_helper.get_user_m1_res_id(t.created_by) CREATED_M1_RESOURCE_ID,
+apps.xxcrm_task_dashboard_helper.get_user_m1_res_name(t.created_by) CREATED_M1_RESOURCE_NAME,
+nvl(apps.xxcrm_task_dashboard_helper.get_user_m2_user_id(t.created_by),-1) CREATED_M2_USER_ID,
+apps.xxcrm_task_dashboard_helper.get_user_m2_res_id(t.created_by) CREATED_M2_RESOURCE_ID,
+apps.xxcrm_task_dashboard_helper.get_user_m2_res_name(t.created_by) CREATED_M2_RESOURCE_NAME,
+nvl(apps.xxcrm_task_dashboard_helper.get_user_m3_user_id(t.created_by),-1) CREATED_M3_USER_ID,
+apps.xxcrm_task_dashboard_helper.get_user_m3_res_id(t.created_by) CREATED_M3_RESOURCE_ID,
+apps.xxcrm_task_dashboard_helper.get_user_m3_res_name(t.created_by) CREATED_M3_RESOURCE_NAME,
+nvl(apps.xxcrm_task_dashboard_helper.get_user_m4_user_id(t.created_by),-1) CREATED_M4_USER_ID,
+apps.xxcrm_task_dashboard_helper.get_user_m4_res_id(t.created_by) CREATED_M4_RESOURCE_ID,
+apps.xxcrm_task_dashboard_helper.get_user_m4_res_name(t.created_by) CREATED_M4_RESOURCE_NAME,
+t.CREATION_DATE,
+apps.xxcrm_task_dashboard_helper.get_task_week_id(t.creation_date) CREATION_WEEK_ID,
+apps.xxcrm_task_dashboard_helper.get_task_year_id(t.creation_date) CREATION_YEAR_ID,
+apps.xxcrm_task_dashboard_helper.get_task_week_number(t.creation_date) CREATION_WEEK_NUMBER,
+apps.xxcrm_task_dashboard_helper.get_task_week_desc(t.creation_date) CREATION_WEEK_DESC,
+cast(to_char(t.CREATION_DATE, 'J') as number) CREATION_DATE_JULIAN,
+t.LAST_UPDATED_BY,
+apps.xxcrm_task_dashboard_helper.get_user_resource_id(t.last_updated_by) LAST_UPDATED_RESOURCE_ID,
+apps.xxcrm_task_dashboard_helper.get_user_resource_name(t.last_updated_by) LAST_UPDATED_RESOURCE_NAME,
+nvl(apps.xxcrm_task_dashboard_helper.get_user_m1_user_id(t.last_updated_by),-1) LAST_UPDATED_M1_USER_ID,
+apps.xxcrm_task_dashboard_helper.get_user_m1_res_id(t.last_updated_by) LAST_UPDATED_M1_RESOURCE_ID,
+apps.xxcrm_task_dashboard_helper.get_user_m1_res_name(t.last_updated_by) LAST_UPDATED_M1_RESOURCE_NAME,
+nvl(apps.xxcrm_task_dashboard_helper.get_user_m2_user_id(t.last_updated_by),-1) LAST_UPDATED_M2_USER_ID,
+apps.xxcrm_task_dashboard_helper.get_user_m2_res_id(t.last_updated_by) LAST_UPDATED_M2_RESOURCE_ID,
+apps.xxcrm_task_dashboard_helper.get_user_m2_res_name(t.last_updated_by) LAST_UPDATED_M2_RESOURCE_NAME,
+nvl(apps.xxcrm_task_dashboard_helper.get_user_m3_user_id(t.last_updated_by),-1) LAST_UPDATED_M3_USER_ID,
+apps.xxcrm_task_dashboard_helper.get_user_m3_res_id(t.last_updated_by) LAST_UPDATED_M3_RESOURCE_ID,
+apps.xxcrm_task_dashboard_helper.get_user_m3_res_name(t.last_updated_by) LAST_UPDATED_M3_RESOURCE_NAME,
+nvl(apps.xxcrm_task_dashboard_helper.get_user_m4_user_id(t.last_updated_by),-1) LAST_UPDATED_M4_USER_ID,
+apps.xxcrm_task_dashboard_helper.get_user_m4_res_id(t.last_updated_by) LAST_UPDATED_M4_RESOURCE_ID,
+apps.xxcrm_task_dashboard_helper.get_user_m4_res_name(t.last_updated_by) LAST_UPDATED_M4_RESOURCE_NAME,
+t.LAST_UPDATE_DATE DUE_DATE,
+apps.xxcrm_task_dashboard_helper.get_task_week_id(t.last_update_date) LAST_UPDATE_WEEK_ID,
+apps.xxcrm_task_dashboard_helper.get_task_year_id(t.last_update_date) LAST_UPDATE_YEAR_ID,
+apps.xxcrm_task_dashboard_helper.get_task_week_number(t.last_update_date) LAST_UPDATE_WEEK_NUMBER,
+apps.xxcrm_task_dashboard_helper.get_task_week_desc(t.last_update_date) LAST_UPDATE_WEEK_DESC,
+cast(to_char(t.last_update_DATE, 'J') as number) LAST_UPDATE_DATE_JULIAN,
+t.TASK_NUMBER,t.TASK_TYPE_ID,p.name TASK_TYPE_NAME,t.TASK_STATUS_ID, s.name TASK_STATUS_NAME,
+t.TASK_PRIORITY_ID,t2.name task_priority_name,t.OWNER_ID,
+nvl(apps.xxcrm_task_dashboard_helper.get_owner_user_id(t.owner_id),-1) OWNER_USER_ID,
+apps.xxcrm_task_dashboard_helper.get_owner_resource_name(t.owner_id) OWNER_RESOURCE_NAME,
+apps.xxcrm_task_dashboard_helper.get_owner_resource_name(t.owner_id) OWNER_RESOURCE_NAME_DUP,
+nvl(apps.xxcrm_task_dashboard_helper.get_owner_m1_user_id(t.owner_id),-1) OWNER_M1_USER_ID,
+apps.xxcrm_task_dashboard_helper.get_owner_m1_resource_id(t.owner_id) OWNER_M1_RESOURCE_ID,
+apps.xxcrm_task_dashboard_helper.get_owner_m1_resource_name(t.owner_id) OWNER_M1_RESOURCE_NAME,
+nvl(apps.xxcrm_task_dashboard_helper.get_owner_m2_user_id(t.owner_id),-1) OWNER_M2_USER_ID,
+apps.xxcrm_task_dashboard_helper.get_owner_m2_resource_id(t.owner_id) OWNER_M2_RESOURCE_ID,
+apps.xxcrm_task_dashboard_helper.get_owner_m2_resource_name(t.owner_id) OWNER_M2_RESOURCE_NAME,
+nvl(apps.xxcrm_task_dashboard_helper.get_owner_m3_user_id(t.owner_id),-1) OWNER_M3_USER_ID,
+apps.xxcrm_task_dashboard_helper.get_owner_m3_resource_id(t.owner_id) OWNER_M3_RESOURCE_ID,
+apps.xxcrm_task_dashboard_helper.get_owner_m3_resource_name(t.owner_id) OWNER_M3_RESOURCE_NAME,
+nvl(apps.xxcrm_task_dashboard_helper.get_owner_m4_user_id(t.owner_id),-1) OWNER_M4_USER_ID,
+apps.xxcrm_task_dashboard_helper.get_owner_m4_resource_id(t.owner_id) OWNER_M4_RESOURCE_ID,
+apps.xxcrm_task_dashboard_helper.get_owner_m4_resource_name(t.owner_id) OWNER_M4_RESOURCE_NAME,
+t.OWNER_TYPE_CODE,
+t.PLANNED_START_DATE,
+t.PARENT_TASK_ID,t.DELETED_FLAG,t.ACTUAL_START_DATE,t.PRIVATE_FLAG,t.PUBLISH_FLAG,
+t.ACTUAL_END_DATE,t.SOURCE_OBJECT_TYPE_CODE ENTITY_TYPE,t.SOURCE_OBJECT_TYPE_CODE ENTITY_TYPE_NAME, 
+t.SOURCE_OBJECT_ID ENTITY_ID,t.SOURCE_OBJECT_NAME, t.PLANNED_END_DATE,t.SCHEDULED_START_DATE,t.SCHEDULED_END_DATE,
+t.CALENDAR_END_DATE, t.TASK_NAME,t.DESCRIPTION, t.OPEN_FLAG,
+apps.xxcrm_task_dashboard_helper.get_party_id(t.source_object_type_code, t.source_object_id) PARTY_ID,
+apps.xxcrm_task_dashboard_helper.get_party_name(t.source_object_type_code, t.source_object_id) PARTY_NAME,
+apps.xxcrm_task_dashboard_helper.get_party_name(t.source_object_type_code, t.source_object_id) PARTY_NAME_DUPLICATE,
+apps.xxcrm_task_dashboard_helper.get_party_site_id(t.source_object_type_code, t.source_object_id) PARTY_SITE_ID,
+apps.xxcrm_task_dashboard_helper.get_party_site_name
+(apps.xxcrm_task_dashboard_helper.get_party_site_id(t.source_object_type_code, t.source_object_id)) PARTY_SITE_NAME,
+apps.xxcrm_task_dashboard_helper.get_party_site_address(t.source_object_type_code, t.source_object_id) PARTY_SITE_ADDRESS,
+nvl(apps.xxcrm_task_dashboard_helper.get_assigned_user_id(t.source_object_type_code, t.source_object_id),-1) ASSIGNED_USER_ID,
+apps.xxcrm_task_dashboard_helper.get_assigned_resource_id(t.source_object_type_code, t.source_object_id) ASSIGNED_RESOURCE_ID,
+apps.xxcrm_task_dashboard_helper.get_assigned_resource_id(t.source_object_type_code, t.source_object_id) ASSIGNED_RESOURCE_ID_DUP,
+apps.xxcrm_task_dashboard_helper.get_assigned_resource_name(t.source_object_type_code, t.source_object_id) ASSIGNED_RESOURCE_NAME,
+apps.xxcrm_task_dashboard_helper.get_assigned_resource_name(t.source_object_type_code, t.source_object_id) ASSIGNED_RESOURCE_NAME_DUP,
+apps.xxcrm_task_dashboard_helper.get_assigned_role_id(t.source_object_type_code, t.source_object_id) ASSIGNED_ROLE_ID,
+apps.xxcrm_task_dashboard_helper.get_assigned_role_name(t.source_object_type_code, t.source_object_id) ASSIGNED_ROLE_NAME,
+apps.xxcrm_task_dashboard_helper.get_assigned_group_id(t.source_object_type_code, t.source_object_id) ASSIGNED_GROUP_ID,
+apps.xxcrm_task_dashboard_helper.get_m1_resource_id(t.source_object_type_code, t.source_object_id) M1_RESOURCE_ID,
+nvl(apps.xxcrm_task_dashboard_helper.get_m1_user_id(t.source_object_type_code, t.source_object_id),-1) M1_USER_ID,
+apps.xxcrm_task_dashboard_helper.get_m1_resource_name(t.source_object_type_code, t.source_object_id) M1_RESOURCE_NAME,
+nvl(apps.xxcrm_task_dashboard_helper.get_m2_user_id(t.source_object_type_code, t.source_object_id),-1) M2_USER_ID,
+apps.xxcrm_task_dashboard_helper.get_m2_resource_id(t.source_object_type_code, t.source_object_id) M2_RESOURCE_ID,
+apps.xxcrm_task_dashboard_helper.get_m2_resource_name(t.source_object_type_code, t.source_object_id) M2_RESOURCE_NAME,
+nvl(apps.xxcrm_task_dashboard_helper.get_m3_user_id(t.source_object_type_code, t.source_object_id),-1) M3_USER_ID,
+apps.xxcrm_task_dashboard_helper.get_m3_resource_id(t.source_object_type_code, t.source_object_id) M3_RESOURCE_ID,
+apps.xxcrm_task_dashboard_helper.get_m3_resource_name(t.source_object_type_code, t.source_object_id) M3_RESOURCE_NAME,
+nvl(apps.xxcrm_task_dashboard_helper.get_m4_user_id(t.source_object_type_code, t.source_object_id),-1) M4_USER_ID,
+apps.xxcrm_task_dashboard_helper.get_m4_resource_id(t.source_object_type_code, t.source_object_id) M4_RESOURCE_ID,
+apps.xxcrm_task_dashboard_helper.get_m4_resource_name(t.source_object_type_code, t.source_object_id) M4_RESOURCE_NAME,
+apps.xxcrm_task_dashboard_helper.get_task_week_id(nvl(t.scheduled_end_date, sysdate)) TASK_WEEK_ID,
+apps.xxcrm_task_dashboard_helper.get_task_year_id(nvl(t.scheduled_end_date, sysdate)) TASK_YEAR_ID,
+apps.xxcrm_task_dashboard_helper.get_task_week_number(nvl(t.scheduled_end_date, sysdate)) TASK_WEEK_NUMBER,
+apps.xxcrm_task_dashboard_helper.get_task_week_desc(nvl(t.scheduled_end_date, sysdate)) TASK_WEEK_DESC,
+apps.xxcrm_task_dashboard_helper.get_org_number
+(apps.xxcrm_task_dashboard_helper.get_party_site_id(t.source_object_type_code, t.source_object_id)) ORG_NUMBER,
+apps.xxcrm_task_dashboard_helper.get_org_number
+(apps.xxcrm_task_dashboard_helper.get_party_site_id(t.source_object_type_code, t.source_object_id)) ORG_NUMBER_DUPLICATE,
+apps.xxcrm_task_dashboard_helper.get_org_type
+(apps.xxcrm_task_dashboard_helper.get_party_site_id(t.source_object_type_code, t.source_object_id)) ORG_TYPE,
+apps.xxcrm_task_dashboard_helper.get_org_type
+(apps.xxcrm_task_dashboard_helper.get_party_site_id(t.source_object_type_code, t.source_object_id)) ORG_TYPE_DUPLICATE,
+apps.xxcrm_task_dashboard_helper.get_site_use
+(apps.xxcrm_task_dashboard_helper.get_party_site_id(t.source_object_type_code, t.source_object_id)) SITE_USE,
+apps.xxcrm_task_dashboard_helper.get_site_use
+(apps.xxcrm_task_dashboard_helper.get_party_site_id(t.source_object_type_code, t.source_object_id)) SITE_USE_DUPLICATE,
+apps.xxcrm_task_dashboard_helper.get_site_orig_sys_ref
+(apps.xxcrm_task_dashboard_helper.get_party_site_id(t.source_object_type_code, t.source_object_id)) SITE_ORIG_SYS_REF,
+'Update' UPDATE_DETAILS, 'Create' CREATE_APPOINTMENT,
+'View Details' VIEW_DETAILS
+FROM apps.jtf_tasks_vl t, apps.jtf_task_statuses_vl s, apps.jtf_task_types_vl p, 
+apps.jtf_task_priorities_vl t2
+WHERE t.task_status_id = s.task_status_id(+)
+and upper(s.name) IN ('COMPLETED', 'CLOSED')
+and t.task_type_id = p.task_type_id(+)
+--and upper (p.name) IN ('IN PERSON VISIT', 'CALL','EMAIL','MAIL','OTHER')
+and t.task_priority_id = t2.task_priority_id(+);
+----------------------------------------------------------
+-- Grant to APPS
+----------------------------------------------------------
+GRANT ALL ON XXCRM.XXBI_ACTIVITIES_FCT_MV TO APPS;
+
+---------------------------------------------------------
+--  NOT null constraints
+---------------------------------------------------------
+alter materialized view xxcrm.XXBI_ACTIVITIES_FCT_MV
+modify 
+(CREATED_M1_USER_ID number default -1,
+ CREATED_M2_USER_ID number default -1,
+ CREATED_M3_USER_ID number default -1,
+ CREATED_M4_USER_ID number default -1,
+ LAST_UPDATED_M1_USER_ID number default -1,
+ LAST_UPDATED_M2_USER_ID number default -1,
+ LAST_UPDATED_M3_USER_ID number default -1,
+ LAST_UPDATED_M4_USER_ID number default -1,
+ OWNER_USER_ID number default -1,
+ OWNER_M1_USER_ID number default -1,
+ OWNER_M2_USER_ID number default -1,
+ OWNER_M3_USER_ID number default -1,
+ OWNER_M4_USER_ID number default -1,
+ ASSIGNED_USER_ID number default -1,
+ M1_USER_ID number default -1,
+ M2_USER_ID number default -1,
+ M3_USER_ID number default -1,
+ M4_USER_ID number default -1,
+ TASK_YEAR_ID number default -1,
+ TASK_WEEK_NUMBER number default -1,
+ CREATED_M1_RESOURCE_ID number default -1,
+ CREATED_M2_RESOURCE_ID number default -1,
+ CREATED_M3_RESOURCE_ID number default -1,
+ CREATED_M4_RESOURCE_ID number default -1,
+ LAST_UPDATED_M1_RESOURCE_ID number default -1,
+ LAST_UPDATED_M2_RESOURCE_ID number default -1,
+ LAST_UPDATED_M3_RESOURCE_ID number default -1,
+ LAST_UPDATED_M4_RESOURCE_ID number default -1,
+ OWNER_ID number default -1,
+ OWNER_M1_RESOURCE_ID number default -1,
+ OWNER_M2_RESOURCE_ID number default -1,
+ OWNER_M3_RESOURCE_ID number default -1,
+ OWNER_M4_RESOURCE_ID number default -1,
+ ASSIGNED_RESOURCE_ID number default -1,
+ CREATED_RESOURCE_NAME                   VARCHAR2(100),                                                                                                                                                                                
+ CREATED_M1_RESOURCE_NAME                VARCHAR2(100),                                                                                                                                                                                
+ CREATED_M2_RESOURCE_NAME                VARCHAR2(100),                                                                                                                                                                                
+ CREATED_M3_RESOURCE_NAME                VARCHAR2(100),                                                                                                                                                                                
+ CREATED_M4_RESOURCE_NAME                VARCHAR2(100),                                                                                                                                                                                
+ CREATION_WEEK_DESC                      VARCHAR2(100),                                                                                                                                                                                
+ LAST_UPDATED_RESOURCE_NAME              VARCHAR2(100),                                                                                                                                                                                
+ LAST_UPDATED_M1_RESOURCE_NAME           VARCHAR2(100),                                                                                                                                                                                
+ LAST_UPDATED_M2_RESOURCE_NAME           VARCHAR2(100),                                                                                                                                                                                
+ LAST_UPDATED_M3_RESOURCE_NAME           VARCHAR2(100),                                                                                                                                                                                
+ LAST_UPDATED_M4_RESOURCE_NAME           VARCHAR2(100),                                                                                                                                                                                
+ LAST_UPDATE_WEEK_DESC                   VARCHAR2(100),                                                                                                                                                                                
+ OWNER_RESOURCE_NAME                     VARCHAR2(100),                                                                                                                                                                                
+ OWNER_RESOURCE_NAME_DUP                 VARCHAR2(100),                                                                                                                                                                                
+ OWNER_M1_RESOURCE_NAME                  VARCHAR2(100),                                                                                                                                                                                
+ OWNER_M2_RESOURCE_NAME                  VARCHAR2(100),                                                                                                                                                                                
+ OWNER_M3_RESOURCE_NAME                  VARCHAR2(100),                                                                                                                                                                                
+ OWNER_M4_RESOURCE_NAME                  VARCHAR2(100),                                                                                                                                                                                
+ PARTY_NAME                              VARCHAR2(100),                                                                                                                                                                                
+ PARTY_NAME_DUPLICATE                    VARCHAR2(100),                                                                                                                                                                                
+ PARTY_SITE_NAME                         VARCHAR2(100),                                                                                                                                                                                
+ PARTY_SITE_ADDRESS                      VARCHAR2(400),                                                                                                                                                                                
+ ASSIGNED_RESOURCE_NAME                  VARCHAR2(100),                                                                                                                                                                                
+ ASSIGNED_RESOURCE_NAME_DUP              VARCHAR2(100),                                                                                                                                                                                
+ ASSIGNED_ROLE_NAME                      VARCHAR2(100),                                                                                                                                                                                
+ M1_RESOURCE_NAME                        VARCHAR2(100),                                                                                                                                                                                
+ M2_RESOURCE_NAME                        VARCHAR2(100),                                                                                                                                                                                
+ M3_RESOURCE_NAME                        VARCHAR2(100),                                                                                                                                                                                
+ M4_RESOURCE_NAME                        VARCHAR2(100),                                                                                                                                                                                
+ TASK_WEEK_DESC                          VARCHAR2(100),
+ ORG_NUMBER                              VARCHAR2(100),                                                                                                                                                                                
+ ORG_NUMBER_DUPLICATE                    VARCHAR2(100),                                                                                                                                                                                
+ ORG_TYPE                                VARCHAR2(100),                                                                                                                                                                                
+ ORG_TYPE_DUPLICATE                      VARCHAR2(100),
+ SITE_USE                                VARCHAR2(100),                                                                                                                                                                                
+ SITE_USE_DUPLICATE                      VARCHAR2(100),                                                                                                                                                                                
+ SITE_ORIG_SYS_REF                       VARCHAR2(100)     
+);
+SHOW ERRORS;
+EXIT;
+

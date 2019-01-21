@@ -1,0 +1,34 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+  ---+============================================================================================+
+  ---|                              Office Depot - Project Simplify                               |
+  ---|                                   Provide Consulting                                       |
+  ---+============================================================================================+
+  ---|    Application  :        AR                                                                |
+  ---|                                                                                            |
+  ---|    Name         :        CREATE_XX_CDH_CUST_ACCT_EXT_BC.syn                                |
+  ---|                                                                                            |
+  ---|    Description  :        Synonym for Bill Complete tracking table 		      		      |
+  ---|                                                                                            |
+  ---|                                                                                            |
+  ---|                                                                                            |
+  ---|    Change Record                                                                           |
+  ---|    ---------------------------------                                                       |
+  ---|    Version         DATE              AUTHOR             DESCRIPTION                        |
+  ---|    ------------    ----------------- ---------------    ---------------------              |
+  ---|    1.0             20-AUG-2018       Sekhar CG          Initial Version                    |
+  ---+============================================================================================+
+
+ 
+
+CREATE OR REPLACE SYNONYM XX_CDH_CUST_ACCT_EXT_B FOR XXCRM.XX_CDH_CUST_ACCT_EXT_B;
+ 
+Show error;

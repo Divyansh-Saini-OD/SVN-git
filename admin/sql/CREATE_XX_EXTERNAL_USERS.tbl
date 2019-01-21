@@ -1,0 +1,71 @@
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+/*
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAC Consulting Organization                        |
+-- +=======================================================================+
+-- | Name             : CREATE_XX_EXTERNAL_USERS.tbl                     |
+-- | Description      : Custom table for E1328_BSD_iReceivables_interface  |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  22-AUG-2007 Ramesh Raghupathi  Initial Draft Version          | 
+-- |	     10-DEC-2007 Yusuf Ali	    Added PERMISSION_FLAG column   |
+-- |                                                                       |
+-- +=======================================================================+
+*/
+
+-- -------------------------------------------------------
+--      Drop Custom Table XX_EXTERNAL_USERS             --
+-- -------------------------------------------------------
+
+-- DROP TABLE XXCRM.XX_EXTERNAL_USERS;
+
+-- -------------------------------------------------------
+--      Create Custom Table XXCRM.XX_EXTERNAL_USERS     --
+-- -------------------------------------------------------
+
+CREATE TABLE XXCRM.XX_EXTERNAL_USERS 
+( EXT_USER_ID             NUMBER(10)    PRIMARY KEY 
+, USERID                  VARCHAR2(100) NOT NULL
+, PASSWORD                VARCHAR2(10)  
+, PERSON_FIRST_NAME       VARCHAR2(150) 
+, PERSON_MIDDLE_NAME      VARCHAR2(60)   
+, PERSON_LAST_NAME        VARCHAR2(150) 
+, EMAIL                   VARCHAR2(100)
+, PARTY_ID                NUMBER(15)
+, IREC_RESPONSIBILITY_ID  VARCHAR2(10)
+, STATUS                  VARCHAR2(1)
+, CONTACT_OSR             VARCHAR2(50)
+, ACCT_SITE_OSR           VARCHAR2(50)
+, BSD_ACCESS_CODE         NUMBER(3)
+, PERMISSION_FLAG	  VARCHAR2(1)
+, SITE_KEY                VARCHAR2(100) NOT NULL
+, END_DATE                DATE
+, LOAD_STATUS             VARCHAR2(30)
+, USER_LOCKED             VARCHAR2(1)
+, CREATED_BY              NUMBER
+, CREATION_DATE           DATE
+, LAST_UPDATE_DATE        DATE
+, LAST_UPDATED_BY         NUMBER
+, LAST_UPDATE_LOGIN       NUMBER
+)
+/
+
+------------------------------------------------------
+-- Adding Grants to APPS.                           --
+------------------------------------------------------
+GRANT ALL ON XXCRM.XX_EXTERNAL_USERS TO APPS;
+
+SHOW ERRORS;
+
+
+--EXIT;
+

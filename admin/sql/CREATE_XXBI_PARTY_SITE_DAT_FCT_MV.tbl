@@ -1,0 +1,265 @@
+-- $Id: create_xxbi_party_site_data_fct_mv.tbl 69444 2010-03-20 10:44:38 -0400Z Kishor Jena $
+-- $Rev:  $
+-- $HeadURL: https://svn.na.odcorp.net/od/crm/trunk/xxcrm/admin/sql/create_xxbi_party_site_data_fct_mv.tbl $
+-- $Author: Kishore Jena $
+-- $Date: 2010-03-20 10:44:38 -0400 (Thu, 09 Apr 2009) $
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        :  CREATE_XXBI_PARTY_SITE_DATA_FCT_MV.TBL             |
+-- | Description :  Party Site Fact MV                                 |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author             Remarks                   |
+-- |=======   ==========  =============      ==========================|
+-- |1.0       20-Mar-2010 Kishore Jena       Initial draft version     |
+-- |                                                                   | 
+-- +===================================================================+
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+CREATE  MATERIALIZED VIEW xxcrm.xxbi_party_site_data_fct_mv
+BUILD DEFERRED
+REFRESH FORCE
+ON DEMAND 
+WITH PRIMARY KEY AS
+SELECT /*+ FULL(x) PARALLEL(x, 8) */ x.*
+FROM (
+SELECT /*+ FULL(hps) FULL(hp) FULL(hpl) FULL(hc) FULL(hcs) FULL(hpl) FULL(hcp) FULL(ral) FULL(rat)
+           FULL(hpse1) FULL(hpse2) FULL(su1) FULL(su2) FULL(hn_prnt) FULL(prnt) FULL(hn_gprnt) FULL(gprnt) FULL(xcc)
+           FULL(act) FULL(loy) FULL(seg) FULL(pot)
+       */
+       hps.party_site_id,
+       hps.party_site_number,
+       hps.party_site_name,
+       hps.orig_system_reference site_orig_sys_ref,
+       substr(hps.orig_system_reference,1,8)  party_site_account,  
+       substr(hps.orig_system_reference,10,5) party_site_sequence,
+       hps.status site_status,
+       hps.identifying_address_flag,
+       hps.start_date_active site_start_dt,
+       hps.end_date_active site_end_dt,
+       hps.creation_date site_create_dt,
+       hps.last_update_date site_last_update_dt,
+       hp.party_id,
+       hp.party_number,
+       hp.party_name,
+       hp.party_type,
+       hp.attribute13 od_party_type,
+       decode(hp.attribute24, NULL,'XX',(hp.attribute_category ||'-'||hp.attribute24)) party_revenue_band,
+       hp.orig_system_reference     party_orig_sys_ref,
+       hp.status                    party_status,
+       hp.category_code             party_sic_code,
+       hp.creation_date             party_create_dt,
+       hp.last_update_date          party_last_update_dt,
+       hpl.location_id,
+       hpl.address1,
+       hpl.address2,
+       hpl.address3,
+       hpl.address4,
+       hpl.city,
+       hpl.county,
+       hpl.state,
+       hpl.province,
+       hpl.postal_code,
+       hpl.country,
+       hpl.address_style,
+       hpl.address_lines_phonetic,
+       hpl.orig_system_reference     loc_orig_sys_ref,
+       hpl.creation_date             loc_create_dt,
+       hpl.last_update_date          loc_last_update_dt,
+       hn_prnt.start_date            parent_start_dt,
+       hn_prnt.end_date              parent_end_dt,    
+       prnt.party_id                 parent_party_id,
+       prnt.party_name               parent_party_name,
+       hn_gprnt.start_date           gparent_start_dt,
+       hn_gprnt.end_date             gparent_end_dt,  
+       gprnt.party_id                gparent_party_id,
+       gprnt.party_name              gparent_party_name,
+       hpse1.extension_id            hpse1_id,
+       hpse1.d_ext_attr1             cust_create_date,
+       hpse2.extension_id            hpse2_id,
+       hpse2.n_ext_attr5             site_wcw,
+       NVL(hpse2.n_ext_attr8, 0)     od_site_wcw,
+       hpse2.n_ext_attr1             site_duns_number,
+       hpse2.c_ext_attr10            od_site_full_sic_code,
+       UPPER(SUBSTR(hpse2.c_ext_attr10,1,INSTR(hpse2.c_ext_attr10,':',1)+4)) od_site_sic_code,
+       su1.party_site_use_id su1_id,
+       su2.party_site_use_id su2_id,
+       decode(su2.site_use_type, NULL, su1.site_use_type,   
+              decode(su1.site_use_type, NULL, su2.site_use_type,   
+                     su2.site_use_type || '_' || su1.site_use_type
+                    )
+             ) site_use,
+       hc.cust_account_id,
+       hc.account_name           acct_name,
+       hc.account_number         orcl_acct_number,
+       hc.customer_type          acct_customer_type,
+       hc.orig_system_reference  acct_osr,
+       substr(hc.orig_system_reference, 1, 8) aops_customer_id,
+       hc.status                 acct_status,
+       hc.attribute18            od_acct_customer_type,
+       decode(hc.cust_account_id, NULL, 'PROSPECT', 'CUSTOMER') org_type,
+       decode(hc.cust_account_id, NULL, hp.party_number, hc.orig_system_reference) org_number,      
+       decode(hc.cust_account_id, NULL, hps.party_site_number, hcs.orig_system_reference) org_site_number,      
+       decode(hc.cust_account_id, NULL, hp.status, hc.status) org_site_status,      
+       hc.creation_date          acct_create_dt,
+       hc.last_update_date       acct_last_update_dt,
+       hcs.cust_acct_site_id,
+       hcs.orig_system_reference acct_site_osr,
+       hcs.status                acct_site_status,
+       hcs.creation_date         acct_site_create_dt,
+       hcs.last_update_date      acct_site_last_update_dt,
+       decode(hcs.party_site_id, NULL, hps.orig_system_reference, hcs.orig_system_reference  )  site_orig_system_reference,
+       substr(decode(hcs.party_site_id, NULL, hps.orig_system_reference, hcs.orig_system_reference),1,8) site_account,  
+       substr(decode(hcs.party_site_id, NULL, hps.orig_system_reference, hcs.orig_system_reference),10,5) site_sequence,
+       hcp.cust_account_profile_id,
+       hcp.site_use_id acct_prof_site_use_id,
+       nvl(hcp.attribute3,'N') ab_flag,
+       hcp.collector_id,
+       hcp.account_status exposure_segment,
+       ral.term_id,       
+       ral.name pmt_term,
+       rat.attribute1 pmt_freq,
+       rat.attribute2 pmt_report_day,
+       ral.language,
+       ral.description pmt_term_descr,
+       xcc.extension_id,       
+       xcc.c_ext_attr3  acct_bldc_dlvry_method,
+       xcc.c_ext_attr6  acct_bldc_freq,
+       xcc.c_ext_attr14 acct_bldc_pmt_term,
+       act.last_activity_date,
+       decode(xtc.party_site_id, hps.party_site_id, 'View', 'Create') create_view_lead_oppty,
+       loy.code_assignment_id loyalty_code_asgnmnt_id,
+       loy.class_code         cust_loyalty_code,
+       seg.code_assignment_id segmnt_code_asgnmnt_id,
+       seg.class_code         cust_segment_code,
+       pot.potential_id,
+       pot.potential_type_cd,
+       pot.potential_type_nm,
+       pot.comparable_potential_amt,
+       pot.account_site_rnk,
+       NVL(pot.account_site_rnk, DECODE(hc.cust_account_id, NULL, -99999999999, 0)) site_rank
+FROM   (select distinct entity_id party_site_id
+        from  xxcrm.xx_tm_nam_terr_entity_dtls 
+        where entity_type = 'PARTY_SITE'
+          and sysdate between start_date_active and nvl(end_date_active, sysdate+1)
+          and status = 'A'
+       ) tent,
+       ar.hz_party_sites            hps,
+       ar.hz_parties                hp,
+       ar.hz_locations              hpl,
+       ar.hz_relationships          hn_prnt,
+       ar.hz_relationships          hn_gprnt,
+       ar.hz_parties                prnt,
+       ar.hz_parties                gprnt,
+       ar.hz_party_sites_ext_b      hpse1,
+       ar.hz_party_sites_ext_b      hpse2,
+       ar.hz_party_site_uses        su1,
+       ar.hz_party_site_uses        su2,
+       ar.hz_cust_accounts          hc,
+       ar.hz_cust_acct_sites_all    hcs,
+       ar.hz_customer_profiles      hcp,
+       ar.ra_terms_b                rat,
+       ar.ra_terms_tl               ral,
+       ar.hz_code_assignments       loy,
+       ar.hz_code_assignments       seg,
+       xxcrm.xx_cdh_cust_acct_ext_b xcc,
+       xxcrm.xxbi_activities        act,
+       xxcrm.xxscs_potential_stg    pot,
+       xxcrm.xxscs_top_cust_exstng_lead_opp xtc
+WHERE  hps.party_site_id = tent.party_site_id 
+  AND  hps.status = 'A'
+  AND  hp.party_id = hps.party_id
+  AND  hp.party_type = 'ORGANIZATION'
+  AND  hpl.location_id = hps.location_id
+  AND  hn_prnt.subject_type(+) = 'ORGANIZATION'
+  AND  hn_prnt.object_type(+)  = 'ORGANIZATION'
+  AND  hn_prnt.subject_table_name(+) = 'HZ_PARTIES'
+  AND  hn_prnt.object_table_name(+)  = 'HZ_PARTIES'
+  AND  hn_prnt.relationship_type(+)  = 'OD_CUST_HIER'
+  AND  hn_prnt.relationship_code(+)  = 'PARENT_COMPANY'
+  AND  hn_prnt.direction_code(+)     = 'P'
+  AND  hn_prnt.start_date(+) <= SYSDATE
+  AND  NVL(hn_prnt.end_date(+), SYSDATE+1) >= SYSDATE
+  AND  NVL(hn_prnt.status(+), 'A') = 'A'
+  AND  hn_prnt.object_id(+)  = hp.party_id
+  AND  hn_gprnt.subject_type(+) = 'ORGANIZATION'
+  AND  hn_gprnt.object_type(+)  = 'ORGANIZATION'
+  AND  hn_gprnt.subject_table_name(+) = 'HZ_PARTIES'
+  AND  hn_gprnt.object_table_name(+)  = 'HZ_PARTIES'
+  AND  hn_gprnt.relationship_type(+)  = 'OD_CUST_HIER'
+  AND  hn_gprnt.relationship_code(+)  = 'GRANDPARENT'
+  AND  hn_gprnt.direction_code(+)     = 'P'
+  AND  hn_gprnt.start_date(+) <= SYSDATE
+  AND  NVL(hn_gprnt.end_date(+), SYSDATE+1) >= SYSDATE
+  AND  NVL(hn_gprnt.status(+), 'A') = 'A'
+  AND  hn_gprnt.object_id(+)  = hp.party_id
+  AND  gprnt.party_id(+) = hn_gprnt.subject_id
+  AND  prnt.party_id(+)  = hn_prnt.subject_id
+  AND  su1.party_site_id(+) = hps.party_site_id
+  AND  su1.status(+)        = 'A'
+  AND  su1.site_use_type(+) = 'SHIP_TO'
+  AND  su2.party_site_id(+) = hps.party_site_id
+  AND  su2.status(+)        = 'A'
+  AND  su2.site_use_type(+) = 'BILL_TO'
+  AND  hpse1.party_site_id(+)  = hps.party_site_id
+  AND  hpse1.attr_group_id(+)  = 168
+  AND  hpse2.party_site_id(+)  = hps.party_site_id
+  AND  hpse2.attr_group_id(+)  = 161
+  AND  hcs.party_site_id(+) = hps.party_site_id
+  AND  hcs.org_id(+) = 404
+  AND  hc.party_id(+)       = hp.party_id
+  AND  hc.attribute18(+)    = 'CONTRACT'
+  AND  NVL(hc.customer_type(+), 'X')  <> 'I'
+  AND  hcp.cust_account_id(+) = hc.cust_account_id
+  AND  hcp.status(+) = 'A'
+  AND  hcp.site_use_id(+) IS NULL
+  AND  rat.term_id(+)  = hcp.standard_terms
+  AND  ral.term_id(+)  = hcp.standard_terms
+  AND  ral.language(+) = 'US'
+  AND  xcc.cust_account_id(+) = hc.cust_account_id
+  AND  xcc.attr_group_id(+) = 166
+  AND  xcc.c_ext_attr2(+) = 'Y'
+  AND  NVL(xcc.c_ext_attr13(+),'CR') = 'CR'
+  AND  NVL(xcc.d_ext_attr1(+), SYSDATE-1) <= SYSDATE
+  AND  NVL(xcc.d_ext_attr2(+), SYSDATE+1) >= SYSDATE
+  AND  loy.owner_table_name(+) = 'HZ_PARTIES'
+  AND  loy.owner_table_id(+)   = hp.party_id
+  AND  loy.class_category(+)   = 'Customer Loyalty'
+  AND  loy.start_date_active(+) <= SYSDATE
+  AND  NVL(loy.end_date_active(+), SYSDATE+1) >= SYSDATE  
+  AND  seg.owner_table_name(+) = 'HZ_PARTIES'
+  AND  seg.owner_table_id(+)   = hp.party_id
+  AND  seg.class_category(+)   = 'Customer Segmentation'
+  AND  seg.start_date_active(+) <= SYSDATE
+  AND  NVL(seg.end_date_active(+), SYSDATE+1) >= SYSDATE
+  AND  pot.party_site_id(+)    = hps.party_site_id
+  AND  act.source_type(+) = 'PARTY SITE'
+  AND  act.source_id(+)   =  hps.party_site_id
+  AND  xtc.party_site_id(+) = pot.party_site_id
+  AND  xtc.potential_id(+)  = pot.potential_id
+  AND  xtc.potential_type_cd(+) = pot.potential_type_cd) x;
+
+
+GRANT ALL ON xxcrm.xxbi_party_site_data_fct_mv TO APPS;
+
+GRANT ALL ON xxcrm.xxbi_party_site_data_fct_mv TO XXDATA_STAGE;
+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+--EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
+

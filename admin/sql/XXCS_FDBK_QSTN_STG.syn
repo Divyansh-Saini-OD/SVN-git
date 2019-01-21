@@ -1,0 +1,29 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XXCS_FDBK_QSTN_STG.syn                             |
+-- | Description      : Custom synonym for XXCS_FDBK_QSTN_STG              |
+-- |                                                                       |
+-- |                    Note:This script will be executed from             |
+-- |                    APPS schema                                        |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      25-Mar-2009 Kalyan          Initial version                   |
+-- +=======================================================================+
+
+---------------------------------------------------------
+-- Creating synonym APPS.XXCS_FDBK_QSTN_STG --
+---------------------------------------------------------
+CREATE OR REPLACE SYNONYM APPS.XXCS_FDBK_QSTN_STG FOR XXCRM.XXCS_FDBK_QSTN_STG;
+
+SHOW ERRORS;
+
+EXIT;

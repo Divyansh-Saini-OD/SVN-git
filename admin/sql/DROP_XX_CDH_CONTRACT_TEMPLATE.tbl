@@ -1,0 +1,31 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XX_CDH_CONTRACT_TEMPLATE.tbl                       |
+-- | Description      : Drop Table for Contract template Definitions       |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  30-NOV-2007 Sreekanth-Rao      Initial Draft Version          |
+-- |                                                                       |
+-- |                                                                       |
+-- +=======================================================================+
+
+-- ----------------------------------------------------
+--      Drop Custom Table XX_CDH_CONTRACT_TEMPLATE   --
+-- ----------------------------------------------------
+
+DROP TABLE XXCRM.XX_CDH_CONTRACT_TEMPLATE;
+
+/
+SHOW ERRORS;
+
+EXIT;

@@ -1,0 +1,48 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XX_STORE_FORTAL_FORM                                                            |--                                                                                          |--
+--| Program Name   : XX_STORE_FORTAL_FORM.tbl                                                 |--
+--|                                                                                             |--
+--| Purpose        : Sales Activity Table                                                       |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              29-May-2009       Rajavel                  Initial Draft                   |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Table XXCRM.XX_STORE_FORTAL_FORM......
+PROMPT
+
+CREATE TABLE XX_STORE_FORTAL_FORM
+(
+SRNUMBER VARCHAR2(50),
+FORM_NAME VARCHAR2(150),
+LAST_UPDATE_BY VARCHAR2(50),
+UPDATE_BY VARCHAR2(50)
+);
+
+
+
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
+
+
+
+

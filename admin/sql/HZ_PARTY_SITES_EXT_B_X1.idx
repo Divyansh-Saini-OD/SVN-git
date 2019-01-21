@@ -1,0 +1,29 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |      Oracle NAIO/Office Depot/Consulting Organization                 |
+-- +=======================================================================+
+-- | Name             :HZ_PARTY_SITES_EXT_B_X1.idx                         |
+-- | Description      :Index on HZ_PARTY_SITES_EXT_B_X1 for DQM performance| 
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      07-Nov-2007 Rajeev Kamath      Initial Version                |
+-- +=======================================================================+
+
+
+-- ---------------------------------------------------
+-- Dropping existing index XX_CDH_CUST_ACCT_EXT_B_U1
+-- ---------------------------------------------------
+
+CREATE INDEX XXCRM.HZ_PARTY_SITES_EXT_B_X1
+ON AR.HZ_PARTY_SITES_EXT_B(ATTR_GROUP_ID);
+
+EXIT;
+/

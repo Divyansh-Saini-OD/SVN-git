@@ -1,0 +1,582 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<!--*[Enter Javadoc like developer documentation, delete this line once you fill the included template.] [Put a one line description of the region here.] [Put a brief description of the usage of the region here.] @param [Parameter_name] [Put parameter use here.] @param [Parameter_name] [Put parameter use here.] @see [Put any additional links apart from controller class and BC4J objects directly referenced by this region]-->
+<oa:pageLayout xmlns:ui="http://xmlns.oracle.com/uix/ui" xmlns:oa="http://xmlns.oracle.com/oa" version="9.0.3.8.12_1330" xml:lang="en-US" xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$" controllerClass="od.oracle.apps.xxcrm.Cust360.webui.Cust360CO" scope="/" windowTitle="Customer360" title="Customer360" amDefName="od.oracle.apps.xxcrm.Cust360.server.Cust360AM" amStateRequired="false">
+   <ui:contents>
+      <oa:flowLayout id="region2">
+         <ui:contents>
+            <oa:tableLayout id="inputRegion">
+               <ui:contents>
+                  <oa:messageTextInput id="AccountReference" prompt="Account Reference" required="no"/>
+                  <oa:messageTextInput id="LoyId" prompt="Loyalty ID"/>
+                  <oa:messageTextInput id="phnum" prompt="Phone Number"/>
+               </ui:contents>
+            </oa:tableLayout>
+            <oa:spacer id="spc1" height="20"/>
+            <oa:submitButton id="Search" text="Search" prompt="Search"/>
+            <oa:spacer id="spc2" height="50"/>
+            <oa:subTabLayout id="region1">
+               <ui:subTabs>
+                  <oa:subTabBar id="subTabBar1">
+                     <ui:contents>
+                        <oa:link id="CustInfo" text="Customer Information">
+                           <ui:primaryClientAction>
+                              <ui:fireAction formSubmitted="true" id="fireAction1"/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="WlrInfo" text="WorkLife Reward Info">
+                           <ui:primaryClientAction>
+                              <ui:fireAction formSubmitted="true" id="fireAction2"/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="RepReg" text="Sales Person Assignment Info">
+                           <ui:primaryClientAction>
+                              <ui:fireAction/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="OrderInfo" text="Order Info">
+                           <ui:primaryClientAction>
+                              <ui:fireAction/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="CaseInfo" text="Cases Info">
+                           <ui:primaryClientAction>
+                              <ui:fireAction/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="PriceInfo" text="Contract Price Info">
+                           <ui:primaryClientAction>
+                              <ui:fireAction/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="ContactStrategyInfo" text="Contact Strategy Info">
+                           <ui:primaryClientAction>
+                              <ui:fireAction/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="EmailCampInfo" text="Email Campaign Info">
+                           <ui:primaryClientAction>
+                              <ui:fireAction/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="FinancialInfo" text="Financial Info">
+                           <ui:primaryClientAction>
+                              <ui:fireAction/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                     </ui:contents>
+                  </oa:subTabBar>
+               </ui:subTabs>
+               <ui:contents>
+                  <oa:stackLayout id="CustReg">
+                     <ui:contents>
+                        <oa:formattedText id="CustInfoBusinessName"/>
+                        <oa:spacer id="s1" height="3"/>
+                        <oa:formattedText id="CustInfoPrimaryPhone"/>
+                        <oa:spacer id="s2" height="3"/>
+                        <oa:formattedText id="CustInfoStreetAddress1"/>
+                        <oa:spacer id="s3" height="3"/>
+                        <oa:formattedText id="CustInfoStreetAddress2"/>
+                        <oa:spacer id="s4" height="3"/>
+                        <oa:formattedText id="CustInfoCity"/>
+                        <oa:spacer id="s5" height="3"/>
+                        <oa:formattedText id="CustInfoState"/>
+                        <oa:spacer id="s6" height="3"/>
+                        <oa:formattedText id="CustomerType"/>
+                        <oa:spacer id="s61" height="20"/>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:stackLayout id="WlrReg">
+                     <ui:contents>
+                        <oa:formattedText id="FirstName"/>
+                        <oa:spacer id="s10" height="3"/>
+                        <oa:formattedText id="LastName"/>
+                        <oa:spacer id="s11" height="3"/>
+                        <oa:formattedText id="InfoCompany"/>
+                        <oa:spacer id="s12" height="3"/>
+                        <oa:formattedText id="Ad1"/>
+                        <oa:spacer id="s13" height="3"/>
+                        <oa:formattedText id="Ad2"/>
+                        <oa:spacer id="s14" height="3"/>
+                        <oa:formattedText id="City"/>
+                        <oa:spacer id="s15" height="3"/>
+                        <oa:formattedText id="State"/>
+                        <oa:spacer id="s16" height="3"/>
+                        <oa:formattedText id="Zip"/>
+                        <oa:spacer id="s17" height="3"/>
+                        <oa:formattedText id="Phone"/>
+                        <oa:spacer id="s18" height="3"/>
+                        <oa:formattedText id="Email"/>
+                        <oa:spacer id="s19" height="3"/>
+                        <oa:formattedText id="MembershipType"/>
+                        <oa:spacer id="s20" height="3"/>
+                        <oa:formattedText id="MemberId"/>
+                        <oa:spacer id="s21" height="3"/>
+                        <oa:formattedText id="EnrollmentType"/>
+                        <oa:spacer id="s22" height="3"/>
+                        <oa:formattedText id="InfoActivated"/>
+                        <oa:spacer id="s23" height="3"/>
+                        <oa:formattedText id="SegmentId"/>
+                        <oa:spacer id="s31" height="15"/>
+                        <oa:table id="LoyReg" width="100%">
+                           <ui:contents>
+                              <oa:messageStyledText id="wlrorderdt" dataType="VARCHAR2" prompt="Order Date" viewName="LoyV" viewAttr="wlrorderdt"/>
+                              <oa:messageStyledText id="wlrorderid" dataType="VARCHAR2" prompt="Order ID" viewName="LoyV" viewAttr="wlrorderid"/>
+                              <oa:messageStyledText id="wlrpuramt" dataType="VARCHAR2" prompt="Purchase Amount" viewName="LoyV" viewAttr="wlrpuramt"/>
+                              <oa:messageStyledText id="wlrcatrwd" dataType="VARCHAR2" prompt="Reward Category" viewName="LoyV" viewAttr="wlrcatrwd"/>
+                           </ui:contents>
+                        </oa:table>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:stackLayout id="AssignReg">
+                     <ui:contents>
+                        <oa:formattedText id="osr"/>
+                        <oa:spacer id="s24" height="3"/>
+                        <oa:formattedText id="ACity"/>
+                        <oa:spacer id="s25" height="3"/>
+                        <oa:formattedText id="AState"/>
+                        <oa:spacer id="s26" height="3"/>
+                        <oa:formattedText id="ResourceName"/>
+                        <oa:spacer id="s27" height="3"/>
+                        <oa:formattedText id="RepId"/>
+                        <oa:spacer id="s28" height="3"/>
+                        <oa:formattedText id="RoleCode"/>
+                        <oa:spacer id="s29" height="3"/>
+                        <oa:formattedText id="StartDt"/>
+                        <oa:spacer id="s30" height="3"/>
+                        <oa:formattedText id="CustAcctType"/>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:stackLayout id="OrdReg">
+                     <ui:contents>
+                        <oa:formattedText id="TotOrder"/>
+                        <oa:spacer id="ordspc" height="15"/>
+                        <oa:table id="OrderReg" width="100%">
+                           <ui:contents>
+                              <oa:messageStyledText id="OrderNumber" dataType="VARCHAR2" prompt="Order Number" viewName="CustV" viewAttr="OrderNumber" sortState="no"/>
+                              <oa:messageStyledText id="OrderTotal" dataType="VARCHAR2" prompt="Order Amount" viewName="CustV" viewAttr="OrderTotal" sortState="no"/>
+                              <oa:messageStyledText id="ShipToRef" dataType="VARCHAR2" prompt="Ship To Reference" viewName="CustV" viewAttr="ShipToRef"/>
+                              <oa:messageStyledText id="SalesRepId" dataType="VARCHAR2" prompt="Sales Person ID" viewName="CustV" viewAttr="SalesRepId"/>
+                              <oa:messageStyledText id="OrderedDate" dataType="VARCHAR2" prompt="Order Date" viewName="CustV" viewAttr="OrderedDate" sortState="no"/>
+                           </ui:contents>
+                        </oa:table>
+                        <oa:spacer id="bckordspc" height="20"/>
+                        <oa:rawText id="item317" text="&lt;b>Back Order Details&lt;/b>"/>
+                        <oa:table id="BackOrderV" width="100%">
+                           <ui:contents>
+                              <oa:messageStyledText id="OrderId" dataType="VARCHAR2" prompt="Order Number" viewName="BackOrderV" viewAttr="OrderId"/>
+                              <oa:messageStyledText id="TotalOrderAmt" dataType="VARCHAR2" prompt="Order Amount" viewName="BackOrderV" viewAttr="TotalOrderAmt"/>
+                              <oa:messageStyledText id="BackOrderQty" dataType="VARCHAR2" prompt="Order Quantity" viewName="BackOrderV" viewAttr="BackOrderQty"/>
+                              <oa:messageStyledText id="ItemId" dataType="VARCHAR2" prompt="Item Number" viewName="BackOrderV" viewAttr="ItemId"/>
+                              <oa:messageStyledText id="UnitListPriceAmt" dataType="VARCHAR2" prompt="Unit List Price Amount" viewName="BackOrderV" viewAttr="UnitListPriceAmt"/>
+                              <oa:messageStyledText id="UnitOriginalPriceAmt" dataType="VARCHAR2" prompt="Unit Original Price Amount" viewName="BackOrderV" viewAttr="UnitOriginalPriceAmt"/>
+                              <oa:messageStyledText id="UnitPoCostAmt" dataType="VARCHAR2" prompt="Unit PO Cost Amount" viewName="BackOrderV" viewAttr="UnitPoCostAmt"/>
+                              <oa:messageStyledText id="UnitSellingPriceAmt" dataType="VARCHAR2" prompt="Unit Selling Price Amount" viewName="BackOrderV" viewAttr="UnitSellingPriceAmt"/>
+                           </ui:contents>
+                        </oa:table>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:table id="CaseReg" width="100%">
+                     <ui:contents>
+                        <oa:messageStyledText id="PartyName" dataType="VARCHAR2" prompt="Party Name" viewName="CaseV" viewAttr="PartyName"/>
+                        <oa:messageStyledText id="IncidentNumber" dataType="VARCHAR2" prompt="Incident Number" viewName="CaseV" viewAttr="IncidentNumber"/>
+                        <oa:messageStyledText id="Description" dataType="VARCHAR2" prompt="Description" viewName="CaseV" viewAttr="Description"/>
+                        <oa:messageStyledText id="IncidentDate" dataType="VARCHAR2" prompt="Incident Date" viewName="CaseV" viewAttr="IncidentDate"/>
+                        <oa:messageStyledText id="CloseDate" dataType="VARCHAR2" prompt="Close Date" viewName="CaseV" viewAttr="CloseDate"/>
+                        <oa:messageStyledText id="ResolvedDate" dataType="VARCHAR2" prompt="Resolved Date" viewName="CaseV" viewAttr="ResolvedDate"/>
+                        <oa:messageStyledText id="Status" dataType="VARCHAR2" prompt="Status" viewName="CaseV" viewAttr="Status"/>
+                        <oa:messageStyledText id="CSR" dataType="VARCHAR2" prompt="CSR" viewName="CaseV" viewAttr="CSR"/>
+                        <oa:messageStyledText id="Sumary" dataType="VARCHAR2" prompt="Summary" viewName="CaseV" viewAttr="Sumary"/>
+                        <oa:messageStyledText id="Creator" dataType="VARCHAR2" prompt="Creator" viewName="CaseV" viewAttr="Creator"/>
+                     </ui:contents>
+                  </oa:table>
+                  <oa:table id="PriceReg" width="100%">
+                     <ui:contents>
+                        <oa:messageStyledText id="ProductCode" dataType="VARCHAR2" prompt="Product Code" viewName="PriceV" viewAttr="ProductCode"/>
+                        <oa:messageStyledText id="ProductName" viewName="PriceV" viewAttr="ProductName" prompt="Product Name"/>
+                        <oa:messageStyledText id="SkuPrice" dataType="VARCHAR2" prompt="SKU Price" viewName="PriceV" viewAttr="SkuPrice"/>
+                        <oa:messageStyledText id="ContractId" dataType="VARCHAR2" prompt="Contract ID" viewName="PriceV" viewAttr="ContractId"/>
+                        <oa:messageStyledText id="AddressSeq" dataType="VARCHAR2" prompt="Address Sequence" viewName="PriceV" viewAttr="AddressSeq"/>
+                     </ui:contents>
+                  </oa:table>
+                  <oa:flowLayout id="region3">
+                     <ui:contents>
+                        <oa:table id="PotentialV">
+                           <ui:contents>
+                              <oa:messageStyledText id="AopsCustId" dataType="NUMBER" prompt="AopsCustId" viewName="PotentialV" viewAttr="AopsCustId"/>
+                              <oa:messageStyledText id="AopsShiptoId" dataType="NUMBER" prompt="AopsShiptoId" viewName="PotentialV" viewAttr="AopsShiptoId"/>
+                              <oa:messageStyledText id="Address" dataType="VARCHAR2" prompt="Address" viewName="PotentialV" viewAttr="Address" maximumLength="1466"/>
+                              <oa:messageStyledText id="PartySiteId1" dataType="NUMBER" prompt="PartySiteId" viewName="PotentialV" viewAttr="PartySiteId" maximumLength="15"/>
+                           </ui:contents>
+                           <ui:tableSelection>
+                              <oa:singleSelection id="singleSelection1" viewName="PotentialV" viewAttr="SelectionAttr">
+                                 <ui:primaryClientAction>
+                                    <ui:fireAction>
+                                       <ui:parameters>
+                                          <ui:parameter key="contactStrategySelect" value="Y"/>
+                                       </ui:parameters>
+                                    </ui:fireAction>
+                                 </ui:primaryClientAction>
+                              </oa:singleSelection>
+                           </ui:tableSelection>
+                        </oa:table>
+                        <oa:defaultFormStack id="PotentialDetV">
+                           <ui:contents>
+                              <oa:tableLayout id="region4">
+                                 <ui:contents>
+                                    <oa:rowLayout id="region515">
+                                       <ui:contents>
+                                          <oa:cellFormat id="region615">
+                                             <ui:contents>
+                                                <oa:rawText id="item315" text="&lt;font size = 2>&lt;b>Party Site ID&lt;/b>"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                          <oa:cellFormat id="region715">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="PartySiteId" dataType="NUMBER" prompt="" viewName="PotentialDetV" viewAttr="PartySiteId"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                    <oa:rowLayout id="region514">
+                                       <ui:contents>
+                                          <oa:cellFormat id="region614">
+                                             <ui:contents>
+                                                <oa:rawText id="item314" text="&lt;font size =2>&lt;b>Effective Fiscal Week ID&lt;/b>"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                          <oa:cellFormat id="region714">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="EffectiveFiscalWeekId" dataType="NUMBER" prompt="" viewName="PotentialDetV" viewAttr="EffectiveFiscalWeekId"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                    <oa:rowLayout id="region513">
+                                       <ui:contents>
+                                          <oa:cellFormat id="region613">
+                                             <ui:contents>
+                                                <oa:rawText id="item313" text="&lt;font size =2>&lt;b>Revenue Band&lt;/b>"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                          <oa:cellFormat id="region713">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="RevenueBand" dataType="VARCHAR2" prompt="" viewName="PotentialDetV" viewAttr="RevenueBand" maximumLength="183"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                    <oa:rowLayout id="region512">
+                                       <ui:contents>
+                                          <oa:cellFormat id="region612">
+                                             <ui:contents>
+                                                <oa:rawText id="item312" text="&lt;font size =2>&lt;b>Last Order Date&lt;/b>"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                          <oa:cellFormat id="region712">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="LastOrderDt" dataType="DATE" prompt="" viewName="PotentialDetV" viewAttr="LastOrderDt"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                    <oa:rowLayout id="region511">
+                                       <ui:contents>
+                                          <oa:cellFormat id="region611">
+                                             <ui:contents>
+                                                <oa:rawText id="item311" text="&lt;font size =2>&lt;b>Likely To Purchase Indicator&lt;/b>"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                          <oa:cellFormat id="region711">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="LikelyToPurchaseInd" dataType="VARCHAR2" prompt="" viewName="PotentialDetV" viewAttr="LikelyToPurchaseInd" maximumLength="1"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                    <oa:rowLayout id="region510">
+                                       <ui:contents>
+                                          <oa:cellFormat id="region610">
+                                             <ui:contents>
+                                                <oa:rawText id="item310" text="&lt;font size =2>&lt;b>Weekly Sales To Standard Indicator&lt;/b>"/>
+                                                <oa:spacer id="item316" width="10"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                          <oa:cellFormat id="region710">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="WeeklySalesToStdInd" dataType="VARCHAR2" prompt="" viewName="PotentialDetV" viewAttr="WeeklySalesToStdInd" maximumLength="1"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                    <oa:rowLayout id="region59">
+                                       <ui:contents>
+                                          <oa:cellFormat id="region69">
+                                             <ui:contents>
+                                                <oa:rawText id="item39" text="&lt;font size =2>&lt;b>Currency Code&lt;/b>"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                          <oa:cellFormat id="region79">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="CurrencyCode" dataType="VARCHAR2" prompt="" viewName="PotentialDetV" viewAttr="CurrencyCode" maximumLength="15"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                    <oa:rowLayout id="region58">
+                                       <ui:contents>
+                                          <oa:cellFormat id="region68">
+                                             <ui:contents>
+                                                <oa:rawText id="item38" text="&lt;font size =2>&lt;b>Site Usage&lt;/b>"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                          <oa:cellFormat id="region78">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="SiteUses" dataType="VARCHAR2" prompt="" viewName="PotentialDetV" viewAttr="SiteUses" maximumLength="4000"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                    <oa:rowLayout id="region57">
+                                       <ui:contents>
+                                          <oa:cellFormat id="region67">
+                                             <ui:contents>
+                                                <oa:rawText id="item37" text="&lt;font size =2>&lt;b>Ship To Sequence&lt;/b>"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                          <oa:cellFormat id="region77">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="AopsShiptoId1" dataType="NUMBER" prompt="" viewName="PotentialDetV" viewAttr="AopsShiptoId"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                    <oa:rowLayout id="region56">
+                                       <ui:contents>
+                                          <oa:cellFormat id="region66">
+                                             <ui:contents>
+                                                <oa:rawText id="item36" text="&lt;font size =2>&lt;b>OD WCW Count&lt;/b>"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                          <oa:cellFormat id="region76">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="OdWcw" dataType="NUMBER" prompt="" viewName="PotentialDetV" viewAttr="OdWcw" maximumLength="22"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                    <oa:rowLayout id="region55">
+                                       <ui:contents>
+                                          <oa:cellFormat id="region65">
+                                             <ui:contents>
+                                                <oa:rawText id="item35" text="&lt;font size =2>&lt;b>WCW Count&lt;/b>"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                          <oa:cellFormat id="region75">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="Wcw" dataType="NUMBER" prompt="" viewName="PotentialDetV" viewAttr="Wcw" maximumLength="22"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                    <oa:rowLayout id="region54">
+                                       <ui:contents>
+                                          <oa:cellFormat id="region64">
+                                             <ui:contents>
+                                                <oa:rawText id="item34" text="&lt;font size =2>&lt;b>Month Sales To Standard Indicator&lt;/b>"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                          <oa:cellFormat id="region74">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="MonthSalesToStdInd" dataType="VARCHAR2" prompt="" viewName="PotentialDetV" viewAttr="MonthSalesToStdInd" maximumLength="1"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                    <oa:rowLayout id="region53">
+                                       <ui:contents>
+                                          <oa:cellFormat id="region63">
+                                             <ui:contents>
+                                                <oa:rawText id="item33" text="&lt;font size =2>&lt;b>OD SIC Code&lt;/b>"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                          <oa:cellFormat id="region73">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="OdSic" dataType="VARCHAR2" prompt="" viewName="PotentialDetV" viewAttr="OdSic" maximumLength="30"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                    <oa:rowLayout id="region52">
+                                       <ui:contents>
+                                          <oa:cellFormat id="region62">
+                                             <ui:contents>
+                                                <oa:rawText id="item32" text="&lt;font size =2>&lt;b>First Order Date&lt;/b>"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                          <oa:cellFormat id="region72">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="FirstOrderDt" dataType="DATE" prompt="" viewName="PotentialDetV" viewAttr="FirstOrderDt"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                    <oa:rowLayout id="region51">
+                                       <ui:contents>
+                                          <oa:cellFormat id="region61">
+                                             <ui:contents>
+                                                <oa:rawText id="item31" text="&lt;font size =2>&lt;b>Potential Type Code&lt;/b>"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                          <oa:cellFormat id="region71">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="PotentialTypeCd" dataType="VARCHAR2" prompt="" viewName="PotentialDetV" viewAttr="PotentialTypeCd" maximumLength="30"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                    <oa:rowLayout id="region5">
+                                       <ui:contents>
+                                          <oa:cellFormat id="region6">
+                                             <ui:contents>
+                                                <oa:rawText id="item3" text="&lt;font size =2>&lt;b>Weekly Order Count To STD Ind&lt;/b>"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                          <oa:cellFormat id="region7">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="WklyOrdrCntToStdInd" dataType="VARCHAR2" prompt="" viewName="PotentialDetV" viewAttr="WklyOrdrCntToStdInd" maximumLength="1"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                 </ui:contents>
+                              </oa:tableLayout>
+                           </ui:contents>
+                        </oa:defaultFormStack>
+                     </ui:contents>
+                  </oa:flowLayout>
+                  <oa:table id="CampV">
+                     <ui:contents>
+                        <oa:messageStyledText id="OrgPartyNum" dataType="VARCHAR2" prompt="Party Number" viewName="CampV" viewAttr="OrgPartyNum"/>
+                        <oa:messageStyledText id="CustTypeCode" dataType="VARCHAR2" prompt="Customer Type" viewName="CampV" viewAttr="CustTypeCode"/>
+                        <oa:messageStyledText id="OrgName" dataType="VARCHAR2" prompt="Customer Name" viewName="CampV" viewAttr="OrgName"/>
+                        <oa:messageStyledText id="PersonPartyNum" dataType="VARCHAR2" prompt="Person Number" viewName="CampV" viewAttr="PersonPartyNum"/>
+                        <oa:messageStyledText id="FirstName1" dataType="VARCHAR2" prompt="First Name" viewName="CampV" viewAttr="FirstName"/>
+                        <oa:messageStyledText id="LastName1" dataType="VARCHAR2" prompt="Last Name" viewName="CampV" viewAttr="LastName"/>
+                        <oa:messageStyledText id="EmailAdd" dataType="VARCHAR2" prompt="Emai Address" viewName="CampV" viewAttr="EmailAdd"/>
+                        <oa:messageStyledText id="EmailCampDt" dataType="VARCHAR2" prompt="Email Campaign Date" viewName="CampV" viewAttr="EmailCampDt"/>
+                        <oa:messageStyledText id="EmailCampSegCode" dataType="VARCHAR2" prompt="Email Camp Seg Code" viewName="CampV" viewAttr="EmailCampSegCode"/>
+                        <oa:messageStyledText id="EmailCampZoneCode" dataType="VARCHAR2" prompt="Email Camp Zone Code" viewName="CampV" viewAttr="EmailCampZoneCode"/>
+                        <oa:messageStyledText id="TelCountryCd" dataType="VARCHAR2" prompt="Phone Country Code" viewName="CampV" viewAttr="TelCountryCd"/>
+                        <oa:messageStyledText id="TelAreaCd" dataType="VARCHAR2" prompt="Phone Area Code" viewName="CampV" viewAttr="TelAreaCd"/>
+                        <oa:messageStyledText id="TelNum" dataType="VARCHAR2" prompt="Phone#" viewName="CampV" viewAttr="TelNum"/>
+                     </ui:contents>
+                  </oa:table>
+                  <oa:flowLayout id="region716">
+                     <ui:contents>
+                        <oa:stackLayout id="region717">
+                           <ui:contents>
+                              <oa:rawText id="FinInfoLabel"/>
+                              <oa:spacer id="s7" height="20"/>
+                              <oa:rawText id="AbFlag"/>
+                              <oa:spacer id="spc11" height="3"/>
+                              <oa:rawText id="RA_TermDescription"/>
+                              <oa:spacer id="spc12" height="3"/>
+                              <oa:rawText id="Terms"/>
+                              <oa:spacer id="spc121" height="3"/>
+                              <oa:rawText id="CollectorId"/>
+                              <oa:spacer id="spc14" height="3"/>
+                              <oa:rawText id="BillingFrequency"/>
+                              <oa:spacer id="spc15" height="3"/>
+                              <oa:rawText id="ExposureSegment"/>
+                              <oa:spacer id="spc16" height="15"/>
+                              <oa:rawText id="item1" prompt="" text="&lt;font size = 2>&lt;i>Parent Information&lt;/i>" rendered="true"/>
+                              <oa:table id="FinParentV" width="50%">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="CustAccountId" dataType="VARCHAR2" prompt="Customer Account Id" viewName="FinParentV" viewAttr="CustAccountId"/>
+                                    <oa:messageStyledText id="AccountName" dataType="VARCHAR2" prompt="Customer Name" viewName="FinParentV" viewAttr="AccountName"/>
+                                    <oa:messageStyledText id="Status1" dataType="VARCHAR2" prompt="Status" viewName="FinParentV" viewAttr="Status"/>
+                                 </ui:contents>
+                              </oa:table>
+                              <oa:spacer id="spc18" height="15"/>
+                              <oa:rawText id="item2" prompt="" text="&lt;font size = 2>&lt;i>Child Information&lt;/i>"/>
+                              <oa:table id="FinChildV" width="50%">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="CustAccountId1" dataType="VARCHAR2" prompt="Customer Account Id" viewName="FinChildV" viewAttr="CustAccountId"/>
+                                    <oa:messageStyledText id="AccountName1" dataType="VARCHAR2" prompt="AccountName" viewName="FinChildV" viewAttr="AccountName"/>
+                                    <oa:messageStyledText id="Status2" dataType="VARCHAR2" prompt="Status" viewName="FinChildV" viewAttr="Status"/>
+                                 </ui:contents>
+                              </oa:table>
+                           </ui:contents>
+                        </oa:stackLayout>
+                        <oa:spacer id="spc181" height="40"/>
+                        <oa:rawText id="BillInfo" text="&lt;b>Customer Billing Information&lt;/b>"/>
+                        <oa:table id="CustBillingInfoV" width="100%">
+                           <ui:contents>
+                              <oa:messageStyledText id="REPORTING_LOC" dataType="VARCHAR2" prompt="Reporting Loc" viewName="CustBillingInfoV" viewAttr="REPORTING_LOC"/>
+                              <oa:messageStyledText id="SALESPERSON_ID" dataType="VARCHAR2" prompt="SalesPerson ID" viewName="CustBillingInfoV" viewAttr="SALESPERSON_ID"/>
+                              <oa:messageStyledText id="AR_FLAG" dataType="VARCHAR2" prompt="AR Flag" viewName="CustBillingInfoV" viewAttr="AR_FLAG"/>
+                              <oa:messageStyledText id="BILL_TO_LIMIT" dataType="VARCHAR2" prompt="Bill To Limit" viewName="CustBillingInfoV" viewAttr="BILL_TO_LIMIT"/>
+                              <oa:messageStyledText id="BILL_TO_DOLLARS" dataType="VARCHAR2" prompt="Bill To Dollars" viewName="CustBillingInfoV" viewAttr="BILL_TO_DOLLARS"/>
+                              <oa:messageStyledText id="BILL_TO_DOLLAR_EXPIRE" dataType="VARCHAR2" prompt="Bill To Dollar Expire" viewName="CustBillingInfoV" viewAttr="BILL_TO_DOLLAR_EXPIRE"/>
+                              <oa:messageStyledText id="ORDER_LIMIT" dataType="VARCHAR2" prompt="Order Limit" viewName="CustBillingInfoV" viewAttr="ORDER_LIMIT"/>
+                              <oa:messageStyledText id="LINE_LIMIT" dataType="VARCHAR2" prompt="Line Limit" viewName="CustBillingInfoV" viewAttr="LINE_LIMIT"/>
+                              <oa:messageStyledText id="ORDER_REST_IND" dataType="VARCHAR2" prompt="Order Rest Ind" viewName="CustBillingInfoV" viewAttr="ORDER_REST_IND"/>
+                              <oa:messageStyledText id="ADDR_ORDER_REST_IND" dataType="VARCHAR2" prompt="Addr Order Rest Ind" viewName="CustBillingInfoV" viewAttr="ADDR_ORDER_REST_IND"/>
+                              <oa:messageStyledText id="BACKORDER_ALLOW_FLAG" dataType="VARCHAR2" prompt="BackOrder Allow Flag" viewName="CustBillingInfoV" viewAttr="BACKORDER_ALLOW_FLAG"/>
+                              <oa:messageStyledText id="FREIGHT_CHG_REQ_FLAG" dataType="VARCHAR2" prompt="Freight Chg Request Flag" viewName="CustBillingInfoV" viewAttr="FREIGHT_CHG_REQ_FLAG"/>
+                              <oa:messageRadioGroup id="CONTRACT_CODE" dataType="VARCHAR2" prompt="Contract Code" viewName="CustBillingInfoV" viewAttr="CONTRACT_CODE"/>
+                              <oa:messageStyledText id="ADDR_CONTRACT_CODE" dataType="VARCHAR2" prompt="Address Contract Code" viewName="CustBillingInfoV" viewAttr="ADDR_CONTRACT_CODE"/>
+                              <oa:messageStyledText id="PRODUCT_XREF_NBR" dataType="VARCHAR2" prompt="Product Xref#" viewName="CustBillingInfoV" viewAttr="PRODUCT_XREF_NBR"/>
+                              <oa:messageStyledText id="PRICE_PLAN" dataType="VARCHAR2" prompt="Price Plan" viewName="CustBillingInfoV" viewAttr="PRICE_PLAN"/>
+                              <oa:messageStyledText id="PRICE_PLAN_SEQ" dataType="VARCHAR2" prompt="Price Plan Sequence" viewName="CustBillingInfoV" viewAttr="PRICE_PLAN_SEQ"/>
+                              <oa:messageStyledText id="FILLER" dataType="VARCHAR2" prompt="Filler" viewName="CustBillingInfoV" viewAttr="FILLER"/>
+                           </ui:contents>
+                        </oa:table>
+                        <oa:spacer id="CustBilinfoSpc" height="20"/>
+                        <oa:rawText id="TaxInfo" text="&lt;b>Tax Exemption Information&lt;/b>"/>
+                        <oa:table id="TaxExemptV" width="100%">
+                           <ui:contents>
+                              <oa:messageStyledText id="ADDRESS_SEQ" dataType="VARCHAR2" prompt="Address Seq#" viewName="TaxExemptV" viewAttr="ADDRESS_SEQ"/>
+                              <oa:messageStyledText id="ADDRESS_STATE" dataType="VARCHAR2" prompt="State" viewName="TaxExemptV" viewAttr="ADDRESS_STATE"/>
+                              <oa:messageStyledText id="COUNTRY_CODE" dataType="VARCHAR2" prompt="Country" viewName="TaxExemptV" viewAttr="COUNTRY_CODE"/>
+                              <oa:messageStyledText id="TAX_CERTIF_NBR" dataType="VARCHAR2" prompt="Tax Certification#" viewName="TaxExemptV" viewAttr="TAX_CERTIF_NBR"/>
+                              <oa:messageStyledText id="EXP_DATE" dataType="VARCHAR2" prompt="Expiry Date" viewName="TaxExemptV" viewAttr="EXP_DATE"/>
+                              <oa:messageStyledText id="GST_EXEMPT_COMMENT" dataType="VARCHAR2" prompt="GST Exempt Comment" viewName="TaxExemptV" viewAttr="GST_EXEMPT_COMMENT"/>
+                              <oa:messageStyledText id="TAX_STATUS" dataType="VARCHAR2" prompt="Tax Status" viewName="TaxExemptV" viewAttr="TAX_STATUS"/>
+                              <oa:messageStyledText id="ADDR_SEQ_DENLET" dataType="VARCHAR2" prompt="Address Seq Denlet" viewName="TaxExemptV" viewAttr="ADDR_SEQ_DENLET"/>
+                              <oa:messageStyledText id="DENIAL_SEND_DATE" dataType="VARCHAR2" prompt="Denial Send Date" viewName="TaxExemptV" viewAttr="DENIAL_SEND_DATE"/>
+                              <oa:messageStyledText id="LETTER_NOTIF" dataType="VARCHAR2" prompt="Letter Notification" viewName="TaxExemptV" viewAttr="LETTER_NOTIF"/>
+                              <oa:messageStyledText id="FEDERAL_EXEMPT" dataType="VARCHAR2" prompt="Federal Exempt" viewName="TaxExemptV" viewAttr="FEDERAL_EXEMPT"/>
+                           </ui:contents>
+                        </oa:table>
+                        <oa:spacer id="TaxExSpc" height="20"/>
+                        <oa:rawText id="PastDueInfo" text="&lt;b>Past Due Information&lt;/b>"/>
+                        <oa:table id="PastDueInfoV" width="100%">
+                           <ui:contents>
+                              <oa:messageStyledText id="DueDate" dataType="VARCHAR2" prompt="Due Date" viewName="PastDueInfoV" viewAttr="DueDate"/>
+                              <oa:messageStyledText id="AmountDueOriginal" dataType="VARCHAR2" prompt="Amount Due Original" viewName="PastDueInfoV" viewAttr="AmountDueOriginal"/>
+                              <oa:messageStyledText id="AmountDueRemaining" dataType="VARCHAR2" prompt="Amount Due Remaining" viewName="PastDueInfoV" viewAttr="AmountDueRemaining"/>
+                              <oa:messageStyledText id="AcctdAmoundDueRemaining" dataType="VARCHAR2" prompt="Acctd Amound Due Remaining" viewName="PastDueInfoV" viewAttr="AcctdAmoundDueRemaining"/>
+                              <oa:messageStyledText id="AmountApplied" dataType="VARCHAR2" prompt="Amount Applied" viewName="PastDueInfoV" viewAttr="AmountApplied"/>
+                              <oa:messageStyledText id="AmountAdjusted" dataType="VARCHAR2" prompt="Amount Adjusted" viewName="PastDueInfoV" viewAttr="AmountAdjusted"/>
+                              <oa:messageStyledText id="AmountInDispute" dataType="VARCHAR2" prompt="Amount In Dispute" viewName="PastDueInfoV" viewAttr="AmountInDispute"/>
+                              <oa:messageStyledText id="AmountCredited" dataType="VARCHAR2" prompt="Amount Credited" viewName="PastDueInfoV" viewAttr="AmountCredited"/>
+                              <oa:messageStyledText id="InCollection" dataType="VARCHAR2" prompt="In Collection" viewName="PastDueInfoV" viewAttr="InCollection"/>
+                              <oa:messageStyledText id="ActiveClaimFlag" dataType="VARCHAR2" prompt="Active Claim Flag" viewName="PastDueInfoV" viewAttr="ActiveClaimFlag"/>
+                              <oa:messageStyledText id="DiscountOriginal" dataType="VARCHAR2" prompt="Discount Original" viewName="PastDueInfoV" viewAttr="DiscountOriginal"/>
+                              <oa:messageStyledText id="DiscountRemaining" dataType="VARCHAR2" prompt="Discount Remaining" viewName="PastDueInfoV" viewAttr="DiscountRemaining"/>
+                              <oa:messageStyledText id="DiscountTakenEarned" dataType="VARCHAR2" prompt="Discount Taken Earned" viewName="PastDueInfoV" viewAttr="DiscountTakenEarned"/>
+                           </ui:contents>
+                        </oa:table>
+                     </ui:contents>
+                  </oa:flowLayout>
+               </ui:contents>
+            </oa:subTabLayout>
+         </ui:contents>
+      </oa:flowLayout>
+   </ui:contents>
+   <ui:corporateBranding>
+      <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+   </ui:corporateBranding>
+</oa:pageLayout>

@@ -1,0 +1,10 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.5.4.89_560" xml:lang="en-US" customizes="/od/oracle/apps/xxcrm/asn/common/customer/webui/ODOrgViewPG">
+   <modifications>
+      <modify element="Customer" prompt="Prospect/Customer"/>
+      <modify element="Alias" rendered="false"/>
+      <modify element="RegistryId" prompt="Party Number"/>
+      <modify element="ASNPageFullUpdBtn" prompt="Update Prospect/Customer Details"/>
+      <modify element="ASNOrgHdrCustInfoRN.RegistryId" prompt="Party Number"/>
+   </modifications>
+</customization>

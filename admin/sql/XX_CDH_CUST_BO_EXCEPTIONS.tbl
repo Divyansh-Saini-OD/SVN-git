@@ -1,0 +1,48 @@
+
+--------------------------------------------------------
+--  DDL for Table XX_CDH_CUST_BO_EXCEPTIONS
+--------------------------------------------------------
+
+  CREATE TABLE XXCRM.XX_CDH_CUST_BO_EXCEPTIONS 
+   (    EXCEPTION_ID             NUMBER, 
+        BO_PROCESS_ID            NUMBER, 
+        BPEL_PROCESS_ID          NUMBER,  
+        BO_OBJECT_NAME           VARCHAR2(60), 
+        LOG_DATE                 DATE, 
+        PACKAGE_NAME             VARCHAR2(60), 
+        PROCEDURE_NAME           VARCHAR2(60), 
+        BO_TABLE_NAME            VARCHAR2(60), 
+        BO_COLUMN_NAME           VARCHAR2(60), 
+        BO_COLUMN_VALUE          VARCHAR2(500), 
+        ORIG_SYSTEM              VARCHAR2(5), 
+        ORIG_SYSTEM_REFERENCE    VARCHAR2(255), 
+        EXCEPTION_LOG            VARCHAR2(2000), 
+        ORACLE_ERROR_CODE        VARCHAR2(10), 
+        ORACLE_ERROR_MSG         VARCHAR2(2000)
+   );
+   
+--------------------------------------------------------
+--  DDL for Index XX_COM_EXCEPTIONS_LOG_CONV_N1
+--------------------------------------------------------
+   
+  CREATE INDEX XXCRM.XX_CDH_CUST_BO_EXCEPTIONS_N1 ON XXCRM.XX_CDH_CUST_BO_EXCEPTIONS (EXCEPTION_ID);
+--------------------------------------------------------
+--  DDL for Index XX_COM_EXCEPTIONS_LOG_CONV_N2
+--------------------------------------------------------
+
+  CREATE INDEX XXCRM.XX_CDH_CUST_BO_EXCEPTIONS_N2 ON XXCRM.XX_CDH_CUST_BO_EXCEPTIONS (EXCEPTION_ID, BO_PROCESS_ID);
+--------------------------------------------------------
+--  DDL for Index XX_COM_EXCEPTIONS_LOG_CONV_N3
+--------------------------------------------------------
+
+  CREATE INDEX XXCRM.XX_CDH_CUST_BO_EXCEPTIONS_N3 ON XXCRM.XX_CDH_CUST_BO_EXCEPTIONS (BO_PROCESS_ID);
+--------------------------------------------------------
+--  DDL for Index XX_COM_EXCEPTIONS_LOG_CONV_N4
+--------------------------------------------------------
+
+  CREATE INDEX XXCRM.XX_CDH_CUST_BO_EXCEPTIONS_N4 ON XXCRM.XX_CDH_CUST_BO_EXCEPTIONS (ORIG_SYSTEM_REFERENCE);
+
+GRANT ALL ON xxcrm.XX_CDH_CUST_BO_EXCEPTIONS TO APPS WITH GRANT OPTION;
+
+show errors
+exit;

@@ -1,0 +1,116 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                        WIPRO Technologies                         |
+-- +===================================================================+
+-- | Name    :          CREATE_XX_CDH_ACCOUNT_SETUP_REQ_INTF.tbl       |
+-- | Rice ID :          E0806_SalesCustomerAccountCreation             |
+-- | Description      : This scipt creates a staging table to hold     |
+-- |                    customer account setup request details         |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |DRAFT 1   14-SEP-2007 Rizwan A         Initial Version             |
+-- |1.0       04-OCT-2007 Rizwan A         Added batch id              |
+-- |1.1       10-DEC-2007 Ramesh           Added new columns           |
+-- |                                       Employer_ID and Contract ID |
+-- |1.2       03-JAN-2007 Rizwan A         Removed DROP stmt.          |
+-- +===================================================================+
+
+CREATE TABLE XXCRM.XX_CDH_ACCOUNT_SETUP_REQ_INTF 
+(REQUEST_ID             NUMBER(15,0)
+,BATCH_ID		NUMBER
+,C_INTERNID             VARCHAR2(30)
+,R_REP_ID               VARCHAR2(150)
+,R_NAME                 VARCHAR2(360)
+,R_PHONE                VARCHAR2(2000)
+,R_DSM_ID               CHAR(100)
+,D_NAME                 CHAR(100)
+,C_NAME                 VARCHAR2(360)
+,C_ADDR1                VARCHAR2(240)
+,C_ADDR2                VARCHAR2(720)
+,C_CITY                 VARCHAR2(60)
+,C_STATE                VARCHAR2(60)
+,C_ZIP                  VARCHAR2(60)
+,C_PHONE                VARCHAR2(80)
+,C_REV_BAND             VARCHAR2(150)
+,C_COUNTRY              VARCHAR2(60)
+,C_DUNS_ID              VARCHAR2(30)
+,C_ID                   VARCHAR2(30)
+,C_SOURCE               VARCHAR2(150)
+,C_FAX                  CHAR(100)
+,C_ALT_ADDR1            VARCHAR2(240)
+,C_ALT_ADDR2            VARCHAR2(720)
+,C_ALT_CITY             VARCHAR2(60)
+,C_ALT_STATE            VARCHAR2(60)
+,C_ALT_ZIP              VARCHAR2(60)
+,C_ALT_COUNTRY          VARCHAR2(60)
+,C_CSC_LOC_CODE         VARCHAR2(150)
+,A_DELDOC_TYPE          VARCHAR2(50)
+,A_PRINT_INV            VARCHAR2(1)
+,A_DISP_BACKORDS        VARCHAR2(1)
+,A_REN_PACK_LIST        VARCHAR2(1)
+,A_DISP_PURCHORD        VARCHAR2(1)
+,A_DISP_PYMT_METHOD     VARCHAR2(1)
+,A_DISP_PRICES          VARCHAR2(1)
+,A_PYMT_METHOD          VARCHAR2(50)
+,A_CREDIT_CARD          VARCHAR2(150)
+,A_PARENT_ID            VARCHAR2(50)
+,A_CHILD                VARCHAR2(150)
+,A_OCAFAX               VARCHAR2(50)
+,A_OCSUBST              VARCHAR2(50)
+,A_OCFAXORD             CHAR(20)
+,A_OCBACKORD            CHAR(20)
+,A_DEFLT_PO             VARCHAR2(50)
+,A_DEFLT_DEPT           VARCHAR2(50)
+,A_DEFLT_RELEASE        VARCHAR2(50)
+,A_DEFLT_DSKTOP         VARCHAR2(50)
+,A_PRICE_PLAN           VARCHAR2(50)
+,A_GPFLOOR_PERCENT      NUMBER
+,A_XREF                 VARCHAR2(50)
+,A_UP_OFF_CONTRACT      CHAR(100)
+,A_OFF_CNTRCT_PERCENT   NUMBER
+,A_UP_OFF_WHOLESALE     CHAR(100)
+,A_WHOLESALE_PERCENT    NUMBER
+,A_ACCTSPAY_CNTCT       CHAR(100)
+,A_SPC                  CHAR(100)
+,A_TAX_EXEMPT           VARCHAR2(1)
+,A_ADDLSHIPTO           CHAR(100)
+,A_INTERNET             CHAR(100)
+,A_EDI                  CHAR(100)
+,A_REN_PO               VARCHAR2(50)
+,A_REN_RELEASE          VARCHAR2(50)
+,A_REN_DEPT             VARCHAR2(50)
+,A_REN_DSKTP            VARCHAR2(50)
+,A_NEEDS_APPROVAL       VARCHAR2(100)
+,A_APPROVED_BY          VARCHAR2(100)
+,A_ADD_SHIPTOS          CHAR(100)
+,C_ORIGINAL_ID          VARCHAR2(100)
+,SHIP_TO_PARTY_ORG_NUM  VARCHAR2(30)
+,BILL_TO_SITE_NUMBER    VARCHAR2(30)
+,SHIP_TO_SITE_NUMBER    VARCHAR2(30)
+,AP_CONTACT_NUM         VARCHAR2(50)
+,PHONE_ID               NUMBER(15,0)
+,FAX_ID                 NUMBER(15,0)
+,COMMENTS               VARCHAR2(4000)
+,STATUS                 VARCHAR2(50)
+,STATUS_TRANSITION_DATE DATE
+,SALES_REP_EMAIL        CHAR(100)
+,PHONE_NUMBER           VARCHAR2(100)
+,FAX_NUMBER             VARCHAR2(100)
+,PHONE_CONTACT_POINT_ID NUMBER
+,FAX_CONTACT_POINT_ID   NUMBER
+,EMPLOYER_ID            NUMBER
+,CONTACT_ID             NUMBER);
+
+SHOW ERRORS;

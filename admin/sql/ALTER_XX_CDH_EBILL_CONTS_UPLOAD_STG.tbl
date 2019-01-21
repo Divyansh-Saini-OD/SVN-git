@@ -1,0 +1,38 @@
+-- +============================================================================+
+-- |                  Office Depot                                              |
+-- +============================================================================+
+-- | Name        : ALTER_XX_CDH_EBILL_CONTS_UPLOAD_STG.tbl                      |
+-- | Rice ID     : E3123                                                        |
+-- | Description : Added new field in the existing XX_CDH_EBILL_CONTS_UPLOAD_STG|
+-- |               table                                                        |
+-- |                                                                            |
+-- |Change Record:                                                              |
+-- |===============                                                             |
+-- |Version   Date        Author           Remarks                              |
+-- |=======  ===========  =============    =====================================|
+-- |1.0      10-SEP-2015  Havish Kasina    Initial Version                      |
+-- +============================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Altering the Table XX_CDH_EBILL_CONTS_UPLOAD_STG .....
+PROMPT
+
+ALTER TABLE XXCRM.XX_CDH_EBILL_CONTS_UPLOAD_STG ADD(CUST_DOC_ID NUMBER);
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;

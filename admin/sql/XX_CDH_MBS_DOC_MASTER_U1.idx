@@ -1,0 +1,35 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :XX_CDH_MBS_DOCUMENT_MASTER_U1                       |
+-- | Description      :Unique Index for Custom Table                       |
+---|                   XX_CDH_MBS_DOCUMENT_MASTER                          | 
+-- |                   as part of E1331_MetaData_Attributes                | 
+-- |                                                                       |
+-- |                    Note:This script should be executed from           |
+-- |                    XXCRM schema                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  15-June-2007 Prakash Sowriraj   Initial Draft Version         |
+-- |Draft1a  26-June-2007 Prakash Sowriraj   Index has been renamed        |
+-- |1.0      05-Dec-2007 Ambarish Mukherjee  Removed Drop Script           |
+-- +=======================================================================+
+
+-- -------------------------------------------------
+-- Creating Index XX_CDH_MBS_DOCUMENT_MASTER_U1
+-- -------------------------------------------------
+
+
+CREATE UNIQUE INDEX XXCRM.XX_CDH_MBS_DOCUMENT_MASTER_U1        
+ON XXCRM.XX_CDH_MBS_DOCUMENT_MASTER(DOCUMENT_ID);
+
+
+EXIT;

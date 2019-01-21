@@ -1,0 +1,37 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+CREATE TABLE XXTPS.XXTPS_SITE_REQUESTS
+   (    SITE_REQUEST_ID          NUMBER        NOT NULL ENABLE, 
+        CREATION_DATE            DATE          NOT NULL ENABLE, 
+        CREATED_BY               NUMBER        NOT NULL ENABLE, 
+        LAST_UPDATE_DATE         DATE          NOT NULL ENABLE, 
+        LAST_UPDATED_BY          NUMBER        NOT NULL ENABLE, 
+        PROGRAM_APPLICATION_ID   NUMBER        NULL, 
+        PROGRAM_ID               NUMBER        NULL, 
+        PROGRAM_UPDATE_DATE      DATE          NULL, 
+        REQUEST_ID               NUMBER        NULL,
+        GOAL_ID                  NUMBER        NOT NULL ENABLE,
+        TO_RESOURCE_ID           NUMBER        NOT NULL ENABLE,
+        TO_ROLE_ID               NUMBER        NOT NULL ENABLE,
+        TO_GROUP_ID              NUMBER        NOT NULL ENABLE,
+        PARTY_SITE_ID            NUMBER        NOT NULL ENABLE, 
+        REQUEST_REASON_CODE      VARCHAR2(30)  NULL, 
+        REQUEST_REASON           VARCHAR2(240) NULL, 
+        EFFECTIVE_DATE           DATE          NOT NULL ENABLE, 
+        REQUEST_STATUS_CODE      VARCHAR2(30)  NOT NULL ENABLE, 
+        REVIEW_COMPLETION_METHOD VARCHAR2(30)  NULL, 
+        REVIEW_COMPLETION_DATE   DATE          NULL, 
+        REJECT_REASON_CODE       VARCHAR2(30)  NULL, 
+        REJECT_REASON            VARCHAR2(240) NULL, 
+        DIRECTION_CODE           VARCHAR2(30)  NOT NULL ENABLE, 
+        TERRITORY_IFACE_DATE     DATE          NULL, 
+        FROM_RESOURCE_ID         NUMBER        NOT NULL ENABLE, 
+        FROM_ROLE_ID             NUMBER        NOT NULL ENABLE, 
+        FROM_GROUP_ID            NUMBER        NOT NULL ENABLE,
+        BULK_REQUEST_ID          NUMBER        NOT NULL ENABLE,
+        TERR_REC_ID              NUMBER        NULL,
+        PREVIOUS_SITE_REQUEST_ID NUMBER        NULL);
+
+grant all on XXTPS.XXTPS_SITE_REQUESTS to APPS;

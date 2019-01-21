@@ -1,0 +1,75 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.12_1330" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header: XXODCDHEblContactsUpload.xml 115.0 2012/07/12 08:40:02 ssmohan noship $">
+   <content>
+      <oa:pageLayout id="XXODCDHEblContactsUpload" title="E-Bill Contacts Upload Tool" amDefName="od.oracle.apps.xxcrm.cdh.uploads.eblContacts.server.XXODCDHUploadEblContactsAM" windowTitle="E-Bill Contacts Upload Tool" controllerClass="od.oracle.apps.xxcrm.cdh.uploads.eblContacts.webui.XXODCDHEblContactsUploadCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:productBranding>
+            <oa:image id="XXODCDHProductBranding" prompt="Custom TCA Applications"/>
+         </ui:productBranding>
+         <ui:copyright>
+            <oa:messageStyledText id="item1"/>
+         </ui:copyright>
+         <ui:privacy>
+            <oa:link id="item2"/>
+         </ui:privacy>
+         <ui:contents>
+            <oa:header id="UploadRegion">
+               <ui:contents>
+            <oa:spacer id="spacer0" height="10"/>
+            <oa:staticStyledText id="msgLabel1" text="Please upload a csv file for uploading E-Bill Contacts." prompt="Please upload a csv file for uploading E-Bill Contacts." styleClass="ORAHEADER"/>
+            <oa:spacer id="spacer1" height="10"/>
+            <oa:tip id="item4" text="The File should contain the following columns in the following order -"/>
+            <oa:spacer id="spacer2" height="10"/>
+            <oa:messageStyledText id="msgLabel2" prompt="- Contact Last Name"/>
+            <oa:messageStyledText id="msgLabel5" prompt="- Contact First Name" />
+            <oa:messageStyledText id="msgLabel6" prompt="- Contact Email Address"/>
+            <oa:messageStyledText id="msgLabel7" prompt="- Phone Number Area Code"/>
+            <oa:messageStyledText id="msgLabel8" prompt="- Phone Number"/>
+            <oa:messageStyledText id="msgLabel9" prompt="- Legacy Account Number "/>
+            <oa:messageStyledText id="msgLabe20" prompt="- Adress Sequence"/>
+            <oa:messageStyledText id="msgLabe2l" prompt="- Contact ID"/>
+            <oa:messageStyledText id="msgLabe22" prompt="- Status Flag"/>
+            <oa:messageStyledText id="msgLabe23" prompt="- Customer Document ID"/>
+                  <oa:defaultSingleColumn id="region1">
+                     <ui:contents>
+            <oa:link id="item811" destination="../XXCRM_HTML/XXCDH_EBillContacts_Upload_Template.csv" text="For a tempate, click here" targetFrame="_blank"/>
+                        <oa:spacer id="spacer4" height="10"/>
+            <oa:link id="item812" destination="../XXCRM_HTML/XXCDH_EBillContacts_Upload_Help.htm" text="For a document to help, click here" targetFrame="_blank"/>
+                     </ui:contents>
+                  </oa:defaultSingleColumn>
+
+			<oa:spacer id="spacer6" height="30"/>
+            <oa:messageFileUpload id="fileSelector" prompt="Upload CSV File" required="yes" dataType="CLOB"/>
+            <oa:spacer id="spacer7" height="10"/>
+            <oa:messageTextInput id="txtFilePath" rendered="false"/>
+
+            <oa:submitButton id="btnSubmit" prompt="Upload E-Bill Contacts"/>
+               </ui:contents>
+            </oa:header>
+            <oa:table id="UploadEblContResults" text="Upload Status"  userCustomizable="true" width="100%">
+              <ui:contents>
+                <oa:messageStyledText id="BatchId" dataType="NUMBER" prompt="BatchId" viewName="XxodCdhEblContactsStgVO" viewAttr="BatchId" maximumLength="15" rendered="false"/>
+                <oa:messageStyledText id="ContactLastName" dataType="VARCHAR2" prompt="Last Name" viewName="XxodCdhEblContactsStgVO" viewAttr="ContactLastName" maximumLength="150"/>
+                <oa:messageStyledText id="ContactFirstName" dataType="VARCHAR2" prompt="First Name" viewName="XxodCdhEblContactsStgVO" viewAttr="ContactFirstName" maximumLength="150"/>
+                <oa:messageStyledText id="EmailAddress" dataType="VARCHAR2" prompt="Email Address" viewName="XxodCdhEblContactsStgVO" viewAttr="EmailAddress" maximumLength="2000"/>
+                <oa:messageStyledText id="PhoneAreaCode" dataType="VARCHAR2" prompt="Area Code" viewName="XxodCdhEblContactsStgVO" viewAttr="PhoneAreaCode" maximumLength="10"/>
+                <oa:messageStyledText id="PhoneNumber" dataType="VARCHAR2" prompt="Phone Number" viewName="XxodCdhEblContactsStgVO" viewAttr="PhoneNumber" maximumLength="40"/>
+                <oa:messageStyledText id="AopsAccountNumber" dataType="VARCHAR2" prompt="Aops Number" viewName="XxodCdhEblContactsStgVO" viewAttr="AopsAccountNumber" maximumLength="20"/>
+                <oa:messageStyledText id="AopsAddressSeq" dataType="VARCHAR2" prompt="Address Seq" viewName="XxodCdhEblContactsStgVO" viewAttr="AopsAddressSeq" maximumLength="20"/>
+                <oa:messageStyledText id="ContactOsr" dataType="VARCHAR2" prompt="Contact ID" viewName="XxodCdhEblContactsStgVO" viewAttr="ContactOsr" maximumLength="40"/>
+                <oa:messageStyledText id="ContactStatus" dataType="VARCHAR2" prompt="Status" viewName="XxodCdhEblContactsStgVO" viewAttr="ContactStatus" maximumLength="1"/>
+                <oa:messageStyledText id="CustDocId" dataType="VARCHAR2" prompt="Cust Doc ID" viewName="XxodCdhEblContactsStgVO" viewAttr="CustDocId" maximumLength="100"/>
+                <oa:messageStyledText id="ProcessFlag" dataType="VARCHAR2" prompt="Process Flag" viewName="XxodCdhEblContactsStgVO" viewAttr="ProcessFlag" maximumLength="1"/>
+                <oa:messageStyledText id="Comments" dataType="VARCHAR2" prompt="Comments" viewName="XxodCdhEblContactsStgVO" viewAttr="Comments" maximumLength="4000"/>
+             </ui:contents>
+           </oa:table>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>
+
+
+

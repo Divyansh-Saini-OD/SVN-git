@@ -1,0 +1,40 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : XX_CN_SITE_REQUESTS_ARCH.syn                        |
+-- | Rice ID     : E1004G_CustomCollections_(Archive)                  |
+-- | Description : XX_CN_SITE_REQUESTS_ARCH Table - Synonym Creation   |
+-- |               Script                                              |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1A 08-Nov-2007  Hema Chikkanna   Initial draft version       |
+-- |                                                                   |
+-- +===================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+SET TERM ON
+
+PROMPT
+PROMPT Creating SYNONYM XX_CN_SITE_REQUESTS_ARCH
+PROMPT
+
+CREATE OR REPLACE SYNONYM xx_cn_site_requests_arch FOR XXCRM.xx_cn_site_requests_arch;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

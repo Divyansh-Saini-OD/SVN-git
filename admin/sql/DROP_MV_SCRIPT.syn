@@ -1,0 +1,30 @@
+-- $Id:$
+-- $Rev:$
+-- $HeadURL:$
+-- $Author:$
+-- $Date:$
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :CREATE_XXCDH_ABL_CUST_PHONE.syn                     |
+-- | Description      :Synonym to XXCDH_ABL_CUST_PHONE Table               |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |1.0       20-MaY-2009  Indra Varada       Initial draft                |
+-- +=======================================================================+
+
+DROP table XXCRM.XXBI_REP_MGR_RESP_MAPPINGS;
+SHOW ERRORS;
+EXIT;

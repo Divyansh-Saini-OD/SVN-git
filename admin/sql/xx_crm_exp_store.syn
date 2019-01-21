@@ -1,0 +1,27 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - sfdc                                     |
+-- +=======================================================================+
+-- | Name             : xx_crm_exp_store.syn                                |
+-- | Description      : Synonym for xx_crm_exp_store                        |
+-- |                                                                       |
+-- |                    Note:This script will be executed from             |
+-- |                    APPS schema                                        |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      26-Aug-2011 Prasad      Initial version                |
+-- +=======================================================================+
+
+---------------------------------------------------------
+-- Creating synonym APPS.xx_crm_exp_store --
+---------------------------------------------------------
+CREATE OR REPLACE SYNONYM APPS.xx_crm_exp_store FOR XXCRM.xx_crm_exp_store;
+
+SHOW ERRORS;

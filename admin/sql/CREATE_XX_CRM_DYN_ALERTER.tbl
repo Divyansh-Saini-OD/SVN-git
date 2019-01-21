@@ -1,0 +1,44 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : CREATE_XX_CRM_DYN_ALERTER.tbl                       |
+-- | Description : Dynamic Report Generation Program                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1a  21-JUL-09    Sarah Justina    Initial Version            |
+-- +===================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Table XX_CRM_DYN_ALERTER .....
+PROMPT
+
+CREATE TABLE XX_CRM_DYN_ALERTER (
+	REQUEST_ID      NUMBER,
+	MODULE_NAME     VARCHAR2(240), 
+	RECORD_COUNT    NUMBER, 
+	ALERT_FLAG      VARCHAR2(1),
+	ERROR_MESSAGE   VARCHAR2(4000),
+	CREATION_DATE   DATE
+);
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

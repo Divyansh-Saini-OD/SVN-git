@@ -1,0 +1,114 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath_~PROD_~PATH_~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath_~PROD_mds_directory  -->
+<oa:tableLayout version="9.0.3.8.9_1032" xml:lang="en-US" file-version="$Header: ODHzPuiDQMPersonSearchResults.xml 115.28 2005/05/11 22:11:06 jhuang noship $" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" xmlns:jrad="http://xmlns.oracle.com/jrad" comment="Search Results component" amDefName="od.oracle.apps.xxcrm.asn.common.customer.server.ODHzPuiDQMSrchResultsAM" controllerClass="od.oracle.apps.xxcrm.asn.common.customer.webui.ODHzPuiDQMPersonSearchCO" amUsageName="HzPuiDQMPersonSrchResultsAM">
+   <ui:contents>
+      <oa:spacer id="srchResultSpacer" height="10"/>
+      <oa:defaultSingleColumn id="header" text="Results">
+         <ui:contents>
+            <oa:tableLayout id="TableLayout" width="100%">
+               <ui:contents>
+                  <oa:cellFormat id="indent">
+                     <ui:contents>
+                        <oa:spacer id="spacer" width="15"/>
+                     </ui:contents>
+                  </oa:cellFormat>
+                  <oa:cellFormat id="resultsRegion">
+                     <ui:contents>
+                        <oa:rowLayout id="SeparatorRow" width="100%">
+                           <ui:contents>
+                              <oa:separator id="separator"/>
+                           </ui:contents>
+                        </oa:rowLayout>
+                        <oa:rowLayout id="ButtonRow" width="100%">
+                           <ui:contents>
+                              <oa:cellFormat id="ButtonCell" hAlign="start">
+                                 <ui:contents>
+                                    <oa:submitButton id="HzPuiSelectPersonButton" text="Use Existing Person" prompt="Use Existing Person" rendered="false" warnAboutChanges="false"/>
+                                    <oa:submitButton id="HzPuiMarkDup" text="Mark Duplicates" prompt="Mark Duplicates" warnAboutChanges="true" serverUnvalidated="true" unvalidated="true"/>
+                                    <oa:submitButton id="HzPuiCreate" text="Create" prompt="Create Person" hAlign="start" warnAboutChanges="true" serverUnvalidated="true" unvalidated="true"/>
+                                    <oa:exportButton id="HzPuiDQMPerSearchExport" exportAllRows="true" viewName="ODHzPuiDQMSrchResultsVO" text="Export" shortDesc="Export" rendered="false"/>
+                                 </ui:contents>
+                              </oa:cellFormat>
+                           </ui:contents>
+                        </oa:rowLayout>
+                        <oa:rowLayout id="SpacerRow">
+                           <ui:contents>
+                              <oa:cellFormat id="FndCellFormat"/>
+                           </ui:contents>
+                        </oa:rowLayout>
+                        <oa:rowLayout id="TableRow" width="100%">
+                           <ui:contents>
+                              <oa:cellFormat id="TableCell" vAlign="TOP">
+                                 <ui:contents>
+                                    <oa:hGrid width="100%" id="HzPuiPersonSearchHGrid" shortDesc="Person Search Results">
+                                       <ui:contents>
+                                          <oa:tree id="region1_tree" usage="hGrid" text="Name">
+                                             <jrad:members>
+                                                <oa:nodeDef id="nodeDef1" viewName="ODHzPuiDQMSrchResultsVO" viewAttr="PartyName" text="Name" rendered="true" destination=""/>
+                                                <oa:childNode id="childNode1" formSubmitted="false" viewLink="HzPuiPerznSrchDtlVL1">
+                                                   <jrad:members>
+                                                      <oa:nodeDef id="nodeDef2" viewName="HzPuiPersnSrchDtlVO" viewAttr="PartyName" destination=""/>
+                                                   </jrad:members>
+                                                </oa:childNode>
+                                             </jrad:members>
+                                          </oa:tree>
+                                          <oa:messageStyledText id="PartyNumber" dataType="VARCHAR2" prompt="Registry ID" text="Party Number" viewName="ODHzPuiDQMSrchResultsVO" viewAttr="PartyNumber" maximumLength="30"/>
+                                          <oa:messageStyledText id="PartySiteNumber" dataType="VARCHAR2" prompt="Site Number" text="Party Site Number" viewName="ODHzPuiDQMSrchResultsVO" viewAttr="PartySiteNumber" maximumLength="30"/>
+                                          <oa:messageStyledText id="TaxRegistration" dataType="VARCHAR2" prompt="Tax Registration" text="Tax Registration" viewName="ODHzPuiDQMSrchResultsVO" viewAttr="TaxRegistration" maximumLength="50" rendered="false"/>
+                                          <oa:messageStyledText id="Address" dataType="VARCHAR2" prompt="Address" text="Address" viewName="ODHzPuiDQMSrchResultsVO" viewAttr="Address" maximumLength="488"/>
+                                          <oa:messageStyledText id="Country" viewName="ODHzPuiDQMSrchResultsVO" viewAttr="Country" prompt="Country"/>
+                                          <oa:messageStyledText id="Score" dataType="NUMBER" prompt="Score" text="Score" viewName="ODHzPuiDQMSrchResultsVO" viewAttr="Score" rendered="false" sortState="descending"/>
+                                          <oa:messageStyledText id="TaxPayerId" dataType="VARCHAR2" prompt="Taxpayer ID" text="Taxpayer ID" viewName="ODHzPuiDQMSrchResultsVO" viewAttr="TaxPayerId" maximumLength="20" rendered="false"/>
+                                          <oa:messageStyledText id="Email" dataType="VARCHAR2" prompt="Email" text="Email" viewName="ODHzPuiDQMSrchResultsVO" viewAttr="Email" maximumLength="2000" destination="mailto:{#Email}"/>
+                                          <oa:messageStyledText id="Phone" dataType="VARCHAR2" prompt="Primary Phone" text="Primary Phone" viewName="ODHzPuiDQMSrchResultsVO" viewAttr="PrimaryPhone" maximumLength="4000"/>
+                                          <oa:messageStyledText id="Organization Name Phonetic" dataType="VARCHAR2" prompt="Organization Name Phonetic" text="OrganizationNamePhonetic" viewName="ODHzPuiDQMSrchResultsVO" viewAttr="OrganizationNamePhonetic" maximumLength="320" rendered="false"/>
+                                          <oa:messageStyledText id="Person First Name Phonetic" dataType="VARCHAR2" prompt="Person First Name Phonetic" text="PersonFirstNamePhonetic" viewName="ODHzPuiDQMSrchResultsVO" viewAttr="PersonFirstNamePhonetic" maximumLength="60" rendered="false"/>
+                                          <oa:messageStyledText id="Person Last Name Phonetic" dataType="VARCHAR2" prompt="Person Last Name Phonetic" text="PersonLastNamePhonetic" viewName="ODHzPuiDQMSrchResultsVO" viewAttr="PersonLastNamePhonetic" maximumLength="60" rendered="false"/>
+                                          <oa:messageStyledText id="DunsNumber" dataType="VARCHAR2" prompt="Duns Number" text="Duns Number" viewName="ODHzPuiDQMSrchResultsVO" viewAttr="DunsNumber" maximumLength="30" rendered="false"/>
+                                          <oa:messageStyledText id="Percentage" dataType="VARCHAR2" prompt="Match%" text="Percentage" viewName="ODHzPuiDQMSrchResultsVO" viewAttr="Percentage" maximumLength="41" sortState="descending"/>
+                                          <oa:switcher id="Update" viewName="ODHzPuiDQMSrchResultsVO" viewAttr="UpdateImage" prompt="Update">
+                                             <ui:case name="UpdateEnabled">
+                                                <oa:link id="UpdateEnabled" warnAboutChanges="true">
+                                                   <ui:contents>
+                                                      <oa:image id="Update_image" source="updateicon_enabled.gif" prompt="Update" adminCustomizable="false" shortDesc="Update Enabled"/>
+                                                   </ui:contents>
+                                                   <ui:primaryClientAction>
+                                                      <ui:fireAction event="HzPuiUpdateEvent" unvalidated="true" id="fireAction4">
+                                                         <ui:parameters>
+                                                            <ui:parameter key="HzPuiEvent" value="UPDATE"/>
+                                                            <ui:parameter key="HzPuiPartyId" value="${oa.encrypt.ODHzPuiDQMSrchResultsVO.PartyId}"/>
+                                                            <ui:parameter key="HzPuiPartyName" value="${oa.encrypt.ODHzPuiDQMSrchResultsVO.PartyName}"/>
+                                                            <ui:parameter key="HzPuiPartyType" value="${oa.ODHzPuiDQMSrchResultsVO.PartyType}"/>
+                                                            <ui:parameter key="HzPuiRelPartyId" value="${oa.encrypt.ODHzPuiDQMSrchResultsVO.RelPartyId}"/>
+                                                         </ui:parameters>
+                                                      </ui:fireAction>
+                                                   </ui:primaryClientAction>
+                                                </oa:link>
+                                             </ui:case>
+                                             <ui:case name="UpdateDisabled">
+                                                <oa:image id="UpdateDisabled" source="updateicon_disabled.gif" shortDesc="Update Disabled"/>
+                                             </ui:case>
+                                          </oa:switcher>
+                                       </ui:contents>
+                                       <ui:tableSelection>
+                                          <oa:singleSelection id="HzPuiPersonSelector" rendered="true" viewName="ODHzPuiDQMSrchResultsVO" viewAttr="SelectFlag"/>
+                                       </ui:tableSelection>
+                                    </oa:hGrid>
+                                 </ui:contents>
+                              </oa:cellFormat>
+                           </ui:contents>
+                        </oa:rowLayout>
+                     </ui:contents>
+                  </oa:cellFormat>
+               </ui:contents>
+            </oa:tableLayout>
+         </ui:contents>
+      </oa:defaultSingleColumn>
+      <oa:formParameter id="HzPuiPartyId"/>
+      <oa:formParameter id="HzPuiRelPartyId"/>
+      <oa:formParameter id="HzPuiPartyName"/>
+      <oa:formParameter id="HzPuiPartyType"/>
+      <oa:formParameter id="HzPuiPersonPartyId" name="HzPuiPersonPartyId"/>
+      <oa:formParameter id="HzPuiEvent"/>
+   </ui:contents>
+</oa:tableLayout>

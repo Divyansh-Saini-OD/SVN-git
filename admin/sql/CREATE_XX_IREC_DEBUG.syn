@@ -1,0 +1,22 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             : CREATE_XX_IREC_DEBUG.syn                           |
+-- | Description      : synonym creation for ERROR tables and sequence     |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0	     08-Jan-08   Yusuf Ali          Initial Draft Version          |
+-- +=======================================================================+
+
+CREATE OR REPLACE SYNONYM APPS.XX_IREC_DEBUG FOR XXCRM.XX_IREC_DEBUG;
+/

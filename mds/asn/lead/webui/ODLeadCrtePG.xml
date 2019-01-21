@@ -1,0 +1,83 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<jrad:page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1550" xml:lang="en-US" file-version="$Header: LeadCrtePG.xml 115.24 2005/02/11 23:19:23 pchalaga ship $" xmlns:user="http://xmlns.oracle.com/jrad/user">
+   <jrad:content>
+      <!--*[Enter Javadoc like developer documentation, delete this line once you fill the included template.] [Put a one line description of the region here.] [Put a brief description of the usage of the region here.] @param [Parameter_name] [Put parameter use here.] @param [Parameter_name] [Put parameter use here.] @see [Put any additional links apart from controller class and BC4J objects directly referenced by this region]-->
+      <oa:pageLayout amDefName="oracle.apps.asn.lead.server.LeadCrteAM" id="PageLayoutRN" windowTitle="Oracle Sales" title="Create Lead" controllerClass="od.oracle.apps.xxcrm.asn.lead.webui.ODLeadCrteCO" shortDesc="Create Lead" helpTarget="ASN_LeadCrtePG" function="ASN_LEADCRTEPG" regionName="Create Lead">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif" prompt="Oracle"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:pageButtonBar id="ASNPageButtonRN" regionName="Create Lead">
+               <ui:contents>
+                  <oa:submitButton id="ASNPageCnclButton" text="Cancel" serverUnvalidated="true" unvalidated="true" use="/oracle/apps/fnd/attributesets/Buttons/Cancel"/>
+                  <oa:submitButton id="ASNPageApyButton" text="Apply" use="/oracle/apps/fnd/attributesets/Buttons/Apply"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+            <oa:messageComponentLayout id="ASNLeadCrteRN" rows="3" columns="3" regionName="Create Lead">
+               <ui:contents>
+                  <oa:messageTextInput id="ASNLeadCrteNm" required="yes" viewName="LeadCreateVO" viewAttr="Description" shortDesc="Lead Name" maximumLength="240" use="/oracle/apps/asn/lead/attributesets/Lead/Description_LeadName" columns="20"/>
+                  <oa:messageLayout id="ASNLeadCrteCustLyt" prompt="Customer" required="yes">
+                     <ui:contents>
+                        <oa:rowLayout id="ASNLeadCrteCustLytRow" regionName="Customer">
+                           <ui:contents>
+                              <oa:messageTextInput id="ASNLeadCrteCust" adminCustomizable="false" viewAttr="PartyName" viewName="LeadCreateVO" styleClass="OraDataText" disabled="true" columns="20" shortDesc="Party Name J"/>
+                              <oa:submitButton id="ASNCustSelButton" text="Select" prompt="Select" serverUnvalidated="true" unvalidated="true"/>
+                           </ui:contents>
+                        </oa:rowLayout>
+                     </ui:contents>
+                  </oa:messageLayout>
+                  <oa:messageLayout id="ODASNLeadCrteAddressLyt" prompt="Address">
+                     <ui:contents>
+                        <oa:rowLayout id="ODASNLeadCrteAddressLytRow" regionName="Address" userCustomizable="true">
+                           <ui:contents>
+                              <oa:messageTextInput id="ODASNLeadCrteAddress" prompt="" userCustomizable="true" shortDesc="Address" styleClass="OraDataText" columns="20" rows="2" disabled="true" viewName="LeadCreateVO" viewAttr="AddressDetails"/>
+                              <oa:submitButton id="ODASNAddressSelButton" text="Select" prompt="Select" userCustomizable="true"/>
+                           </ui:contents>
+                        </oa:rowLayout>
+                     </ui:contents>
+                  </oa:messageLayout>
+                  <oa:messageLayout id="ASNLeadCrteCtctLyt" prompt="Primary Contact">
+                     <ui:contents>
+                        <oa:rowLayout id="ASNLeadCrteCtctLytRow" regionName="Contact">
+                           <ui:contents>
+                              <oa:messageTextInput id="ASNLeadCrteCtct" viewName="LeadCreateVO" viewAttr="ContactName" styleClass="OraDataText" disabled="true" columns="20" shortDesc="Contact Name"/>
+                              <oa:submitButton id="ASNCtctSelButton" shortDesc="Select" text="Select" prompt="Select" serverUnvalidated="true" unvalidated="true"/>
+                           </ui:contents>
+                        </oa:rowLayout>
+                     </ui:contents>
+                  </oa:messageLayout>
+                  <oa:messageChoice id="ASNLeadCrteMeth" pickListViewDef="oracle.apps.asn.common.poplist.server.SalesMethodologiesVO" pickListDispAttr="SalesMethodologyName" pickListValAttr="SalesMethodologyId" shortDesc="Methodology" viewName="LeadCreateVO" viewAttr="SalesMethodologyId" use="/oracle/apps/asn/admin/attributesets/SalesMethodology/SalesMethodologyName"/>
+                  <oa:messageChoice id="ASNLeadCrteStatus" pickListViewDef="oracle.apps.asn.lead.poplist.server.LeadOpenStatusesVO" pickListValAttr="StatusCode" pickListDispAttr="LeadStatus" shortDesc="Status" viewName="LeadCreateVO" viewAttr="StatusCode" required="yes" use="/oracle/apps/asn/admin/attributesets/Status/Meaning"/>
+                  <oa:messageChoice id="ASNLeadCrteRank" shortDesc="Rank" pickListViewDef="oracle.apps.asn.lead.poplist.server.LeadRanksVO" pickListValAttr="RankId" pickListDispAttr="Meaning" viewName="LeadCreateVO" viewAttr="LeadRankId" use="/oracle/apps/asn/admin/attributesets/Rank/Meaning"/>
+                  <oa:messageChoice id="ASNLeadCrteChnl" pickListViewDef="oracle.apps.asn.common.poplist.server.SalesChannelsVO" pickListValAttr="LookupCode" pickListDispAttr="Meaning" shortDesc="Sales Channel" viewName="LeadCreateVO" viewAttr="ChannelCode" use="/oracle/apps/asn/lead/attributesets/Lead/SalesChannel"/>
+                  <oa:messageLovInput id="ASNLeadCrteSrcNm" shortDesc="Source" prompt="Source" externalListOfValues="/oracle/apps/asn/common/lov/webui/SrcLovRN" viewName="LeadCreateVO" viewAttr="SourceName" columns="25">
+                     <jrad:lovMappings>
+                        <jrad:lovMap lovItem="ASNSrcLovNm" id="ASNSrcNmToLovNm" criteriaFrom="ASNLeadCrteSrcNm" useForValidation="yes"/>
+                        <jrad:lovMap lovItem="ASNSrcLovNm" id="ASNLovNmToSrcNm" resultTo="ASNLeadCrteSrcNm" useForValidation="yes"/>
+                        <jrad:lovMap lovItem="ASNSrcLovSrcPromId" id="ASNLovSrcPromIdToSrcPromId" resultTo="ASNLeadCrteSrcPromId" useForValidation="yes"/>
+                     </jrad:lovMappings>
+                  </oa:messageLovInput>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:hideShowHeader id="ASNLeadCrteFlexRN" text="Additional Information" rendered="false" regionName="Additional Information">
+               <ui:contents>
+                  <oa:flex id="ASNLeadCrteFlex" shortDesc="Additional Information" flexFieldAppShortName="AS" flexName="AS_SALES_LEADS" viewName="LeadCreateVO"/>
+               </ui:contents>
+            </oa:hideShowHeader>
+            <oa:stackLayout id="ASNReqEvtRN" extends="/oracle/apps/asn/common/fwk/webui/ASNReqEvtRN"/>
+            <oa:formValue id="ASNLeadCrteSrcPromId" viewAttr="SourcePromotionId" viewName="LeadCreateVO" adminCustomizable="false"/>
+         </ui:contents>
+         <ui:productBranding>
+            <oa:image id="ASNPrdtBdngImg" source="ASNBRAND.gif" shortDesc="Sales"/>
+         </ui:productBranding>
+         <ui:pageStatus>
+            <oa:flowLayout id="ASNLeadCrtePageStatusRN">
+               <ui:contents>
+                  <oa:tableLayout id="ASNLeadCrteKeyRN" extends="/oracle/apps/fnd/framework/webui/OAReqFieldDescRG"/>
+               </ui:contents>
+            </oa:flowLayout>
+         </ui:pageStatus>
+      </oa:pageLayout>
+   </jrad:content>
+</jrad:page>

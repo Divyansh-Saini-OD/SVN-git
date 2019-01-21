@@ -1,0 +1,60 @@
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify                                           |
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_ASSIGNMENTS.tbl                                                          |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        26-Aug-2011     Prasad Devar        Initial version                              |
+-- +============================================================================================+
+
+CREATE TABLE "XXCRM"."XX_CRM_EXP_ASSIGNMENTS" 
+   (	"BATCH_ID" NUMBER, 
+	"RECORD_ID" NUMBER, 
+	"ORACLE_ENTITY_ID" VARCHAR2(240 CHAR), 
+	"ACCOUNT_TYPE" VARCHAR2(240 CHAR), 
+	"ACCOUNT_ID" VARCHAR2(20 CHAR), 
+	"PRIMARY_EMP_ID" VARCHAR2(240 CHAR), 
+	"PRIMARY_SPID" VARCHAR2(240 CHAR),  
+	"OVRLY_EMP_ID1" VARCHAR2(240 CHAR), 
+	"OVRLY_SPID1" VARCHAR2(240 CHAR),
+	"OVRLY_EMP_ID2" VARCHAR2(240 CHAR), 
+	"OVRLY_SPID2" VARCHAR2(240 CHAR),
+	"OVRLY_EMP_ID3" VARCHAR2(240 CHAR), 
+	"OVRLY_SPID3" VARCHAR2(240 CHAR),
+	"OVRLY_EMP_ID4" VARCHAR2(240 CHAR), 
+	"OVRLY_SPID4" VARCHAR2(240 CHAR),
+	"OVRLY_EMP_ID5" VARCHAR2(240 CHAR), 
+	"OVRLY_SPID5" VARCHAR2(240 CHAR),
+	"OVRLY_EMP_ID6" VARCHAR2(240 CHAR), 
+	"OVRLY_SPID6" VARCHAR2(240 CHAR),
+	"OVRLY_EMP_ID7" VARCHAR2(240 CHAR), 
+	"OVRLY_SPID7" VARCHAR2(240 CHAR),
+	"OVRLY_EMP_ID8" VARCHAR2(240 CHAR), 
+	"OVRLY_SPID8" VARCHAR2(240 CHAR),
+	"OVRLY_EMP_ID9" VARCHAR2(240 CHAR), 
+	"OVRLY_SPID9" VARCHAR2(240 CHAR),
+	"OVRLY_EMP_ID10" VARCHAR2(240 CHAR), 
+	"OVRLY_SPID10" VARCHAR2(240 CHAR),
+	"CREATION_DATE" DATE,
+	"CREATED_BY" NUMBER,
+	"LAST_UPDATE_DATE" DATE,
+	"LAST_UPDATED_BY" NUMBER,
+	"LAST_UPDATE_LOGIN" NUMBER,
+      "LOAD_STATUS" VARCHAR2(50 BYTE) DEFAULT 'New',
+      "ERROR_MSG" VARCHAR2(2000 BYTE),
+      "ATTRIBUTE1" VARCHAR2(2000 BYTE),
+      "ATTRIBUTE2" VARCHAR2(2000 BYTE),
+      "ATTRIBUTE3" VARCHAR2(2000 BYTE),
+      "ATTRIBUTE4" VARCHAR2(2000 BYTE),
+      "ATTRIBUTE5" VARCHAR2(2000 BYTE)
+   )
+  TABLESPACE "APPS_TS_TX_DATA" ;
+
+ GRANT ALL ON XXCRM.XX_CRM_EXP_LEAD TO APPS;
+  
+ SHOW ERRORS;

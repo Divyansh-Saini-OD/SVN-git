@@ -1,0 +1,33 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XX_SFA_HZ_CODE_ASSIGNMENTS_N2.idx                  |
+-- | Description      : Index on table HZ_CODE_ASSIGNMENTS                 |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |DRAFT 1a 27-Mar-2008   Anirban          Initial Version                |
+-- +=======================================================================+
+
+------------------------------------------------------
+-- Create Index XX_SFA_HZ_CODE_ASSIGNMENTS_N2       --
+------------------------------------------------------
+
+CREATE INDEX XXCRM.XX_SFA_HZ_CODE_ASSIGNMENTS_N2 
+ON AR.HZ_CODE_ASSIGNMENTS (
+                           OWNER_TABLE_NAME
+                           , OWNER_TABLE_ID 
+                           , CLASS_CATEGORY 
+                           , CLASS_CODE 
+                           , CONTENT_SOURCE_TYPE
+                           )
+NOLOGGING;
+
+SHOW ERRORS;

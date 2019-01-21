@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<JavaBean xmlns="http://xmlns.oracle.com/adfm/beanmodel" version="11.1.1.56.60"
+          id="GetAP_ContactOutput" Package="model.CustInfo.process_Result"
+          BeanClass="model.CustInfo.process_Result.GetAP_ContactOutput"
+          isJavaBased="false">
+  <Attribute Name="contact_point_type" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+  <Attribute Name="email_address" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+  <Attribute Name="phone_area_code" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+  <Attribute Name="phone_country_code" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+  <Attribute Name="PHONE_NUMBER" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+</JavaBean>

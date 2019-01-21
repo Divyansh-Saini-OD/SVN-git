@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<DataControlConfigs xmlns="http://xmlns.oracle.com/adfm/configuration"
+                    version="11.1.1.56.60" id="DataControls" Package="model">
+  <AdapterDataControl id="CustInfo"
+                      FactoryClass="oracle.adf.model.adapter.DataControlFactoryImpl"
+                      ImplDef="oracle.adfinternal.model.adapter.webservice.WSDefinition"
+                      SupportsTransactions="false"
+                      SupportsSortCollection="false" SupportsResetState="false"
+                      SupportsRangesize="false" SupportsFindMode="false"
+                      SupportsUpdates="true" Definition="model.CustInfo"
+                      BeanClass="model.CustInfo"
+                      xmlns="http://xmlns.oracle.com/adfm/datacontrol">
+    <Source>
+      <definition xmlns="http://xmlns.oracle.com/adfm/adapter/webservice"
+                  name="CustInfo" version="1.0"
+                  provider="oracle.adfinternal.model.adapter.webservice.provider.soap.SOAPProvider"
+                  wsdl="http://esbuat01.na.odcorp.net/orabpel/sfsync/GetCustInfo/GetCustInfo?wsdl">
+        <service name="GetCustInfo"
+                 namespace="http://xmlns.oracle.com/GetCustInfo"
+                 connection="CustInfo">
+          <port name="GetCustInfoPort">
+            <operation name="process"/>
+          </port>
+        </service>
+      </definition>
+    </Source>
+  </AdapterDataControl>
+  <AdapterDataControl id="CustOrderInfo"
+                      FactoryClass="oracle.adf.model.adapter.DataControlFactoryImpl"
+                      ImplDef="oracle.adfinternal.model.adapter.webservice.WSDefinition"
+                      SupportsTransactions="false"
+                      SupportsSortCollection="false" SupportsResetState="false"
+                      SupportsRangesize="false" SupportsFindMode="false"
+                      SupportsUpdates="true" Definition="model.CustOrderInfo"
+                      BeanClass="model.CustOrderInfo"
+                      xmlns="http://xmlns.oracle.com/adfm/datacontrol">
+    <Source>
+      <definition xmlns="http://xmlns.oracle.com/adfm/adapter/webservice"
+                  name="CustOrderInfo" version="1.0"
+                  provider="oracle.adfinternal.model.adapter.webservice.provider.soap.SOAPProvider"
+                  wsdl="http://esbuat01.na.odcorp.net/orabpel/sfsync/GetCustOrderInfo/GetCustOrderInfo?wsdl">
+        <service name="GetCustOrderInfo"
+                 namespace="http://xmlns.oracle.com/GetCustOrderInfo"
+                 connection="CustOrderInfo">
+          <port name="GetCustOrderInfoPort">
+            <operation name="process"/>
+          </port>
+        </service>
+      </definition>
+    </Source>
+  </AdapterDataControl>
+  <AdapterDataControl id="CasesInfo"
+                      FactoryClass="oracle.adf.model.adapter.DataControlFactoryImpl"
+                      ImplDef="oracle.adfinternal.model.adapter.webservice.WSDefinition"
+                      SupportsTransactions="false"
+                      SupportsSortCollection="false" SupportsResetState="false"
+                      SupportsRangesize="false" SupportsFindMode="false"
+                      SupportsUpdates="true" Definition="model.CasesInfo"
+                      BeanClass="model.CasesInfo"
+                      xmlns="http://xmlns.oracle.com/adfm/datacontrol">
+    <Source>
+      <definition xmlns="http://xmlns.oracle.com/adfm/adapter/webservice"
+                  name="CasesInfo" version="1.0"
+                  provider="oracle.adfinternal.model.adapter.webservice.provider.soap.SOAPProvider"
+                  wsdl="http://esbuat01.na.odcorp.net/orabpel/sfsync/GetCustOpenCases/GetCustOpenCases?wsdl">
+        <service name="GetCustOpenCases"
+                 namespace="http://xmlns.oracle.com/GetCustOpenCases"
+                 connection="CasesInfo">
+          <port name="GetCustOpenCasesPort">
+            <operation name="process"/>
+          </port>
+        </service>
+      </definition>
+    </Source>
+  </AdapterDataControl>
+  <AdapterDataControl id="AOPS_Reports"
+                      FactoryClass="oracle.adf.model.adapter.DataControlFactoryImpl"
+                      ImplDef="oracle.adfinternal.model.adapter.webservice.WSDefinition"
+                      SupportsTransactions="false"
+                      SupportsSortCollection="false" SupportsResetState="false"
+                      SupportsRangesize="false" SupportsFindMode="false"
+                      SupportsUpdates="true" Definition="model.AOPS_Reports"
+                      BeanClass="model.AOPS_Reports"
+                      xmlns="http://xmlns.oracle.com/adfm/datacontrol">
+    <Source>
+      <definition xmlns="http://xmlns.oracle.com/adfm/adapter/webservice"
+                  name="AOPS_Reports" version="1.0"
+                  provider="oracle.adfinternal.model.adapter.webservice.provider.soap.SOAPProvider"
+                  wsdl="http://esbsit01.na.odcorp.net/orabpel/sfsync/SFDC2AOPS_Rpt_Req/d20110509_t10.31.18_r00135836_p41161.63/SFDC2AOPS_Rpt_Req?wsdl">
+        <service name="SFDC2AOPS_Rpt_Req"
+                 namespace="http://xmlns.oracle.com/SFDC2AOPS_Rpt_Req"
+                 connection="AOPS_Reports">
+          <port name="SFDC2AOPS_Rpt_ReqPort">
+            <operation name="initiate"/>
+          </port>
+        </service>
+      </definition>
+    </Source>
+  </AdapterDataControl>
+  <AdapterDataControl id="ContractInfo"
+                      FactoryClass="oracle.adf.model.adapter.DataControlFactoryImpl"
+                      ImplDef="oracle.adfinternal.model.adapter.webservice.WSDefinition"
+                      SupportsTransactions="false"
+                      SupportsSortCollection="false" SupportsResetState="false"
+                      SupportsRangesize="false" SupportsFindMode="false"
+                      SupportsUpdates="true" Definition="model.ContractInfo"
+                      BeanClass="model.ContractInfo"
+                      xmlns="http://xmlns.oracle.com/adfm/datacontrol">
+    <Source>
+      <definition xmlns="http://xmlns.oracle.com/adfm/adapter/webservice"
+                  name="ContractInfo" version="1.0"
+                  provider="oracle.adfinternal.model.adapter.webservice.provider.soap.SOAPProvider"
+                  wsdl="http://esbsit01.na.odcorp.net/orabpel/sfsync/GetCustContractInfo/d20110310_t14.09.35_r00101357_p41161.36/GetCustContractInfo?wsdl">
+        <service name="GetCustContractInfo"
+                 namespace="http://xmlns.oracle.com/GetCustContractInfo"
+                 connection="ContractInfo">
+          <port name="GetCustContractInfoPort">
+            <operation name="process"/>
+          </port>
+        </service>
+      </definition>
+    </Source>
+  </AdapterDataControl>
+</DataControlConfigs>

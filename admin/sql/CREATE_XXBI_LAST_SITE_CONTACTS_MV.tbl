@@ -1,0 +1,60 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XXBI_LAST_SITE_CONTACTS_MV MV                                                  |--                                                          
+ --|                                                                                             |--
+--| Program Name   : CREATE_XXBI_LAST_SITE_CONTACTS_MV.tbl                                              |--
+--|                                                                                             |--
+--| Purpose        : Contacts MV.                                      |--
+--|                                                                                             |--
+--| Change History :     
+-- | Subversion Info:                                                          |
+-- | $HeadURL:  $                                                               |
+-- | $Rev:  $                                                                   |
+-- | $Date: $                                         |
+-- |                                                                           |
+-- |                                                                           |                                                           
+--   |
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              14-Apr-2010       Prasad                  Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the MV XXCRM.XXBI_LAST_SITE_CONTACTS_MV......
+PROMPT
+
+
+CREATE MATERIALIZED VIEW XXCRM.XXBI_LAST_SITE_CONTACT_MV
+NOCACHE PARALLEL 8 BUILD DEFERRED
+REFRESH ON DEMAND FORCE 
+DISABLE QUERY REWRITE  AS select ct.party_id, ct.party_name, mcp.party_site_id, mcp.contact_point_id, ct.c_last_dt, ct.person_first_name, ct.person_last_name, ct.phone_country_code, ct.phone_area_code, ct.phone_number, ct.phone_extension, ct.raw_phone_number,ct.phone_country_code||''||'('||ct.phone_area_code||')'|| ct.phone_number ||' '||ct.phone_extension as FORMATED_PHONE ,ct.job_title,mcp.rowid mcp_row_id,ct.rowid ct_row_id ,ct.org_contact_id, ct.rel_party_id, ct.relationship_id, ct.per_party_id from
+xxcrm.XXBI_LAST_SITE_CONTACT_ID_MV mcp,
+xxcrm.xxbi_contact_mv_tbl  ct
+where ct.contact_point_id=mcp.contact_point_id
+and ct.relationship_id=mcp.relationship_id
+and ct.party_site_id=mcp.party_site_id;
+
+GRANT ALL ON XXCRM.XXBI_LAST_SITE_CONTACT_MV TO APPS;
+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

@@ -1,0 +1,38 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |      Oracle NAIO/Office Depot/Consulting Organization                 |
+-- +=======================================================================+
+-- | Name             :DROP_XX_JTF_TERRITORIES_INT_N1.idx                  |
+-- | Description      :Drop Unique Index for Custom Table                  |
+---|                   XX_JTF_TERRITORIES_INT                              |
+-- |                   as part of I0405_Territories                        |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author              Remarks                     |
+-- |-------  ----------- -----------------    -----------------------------|
+-- | 1.0    10-OCT-2007   Sathya Prabha Rani   Initial Draft Version       |
+-- +=======================================================================+
+
+
+REM============================================================================================
+REM   Dropping existing index XX_JTF_TERRITORIES_INT_N1
+REM============================================================================================
+
+DROP INDEX XXCRM.XX_JTF_TERRITORIES_INT_N1;
+
+
+EXIT;
+
+REM============================================================================================
+REM                                 End Of Script
+REM============================================================================================

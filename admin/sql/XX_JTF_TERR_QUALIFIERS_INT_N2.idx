@@ -1,0 +1,10 @@
+-- $Id$
+-- $Rev$
+-- $HeadURL$
+-- $Author$
+-- $Date$
+
+create index xxcrm.XX_JTF_TERR_QUALIFIERS_INT_N2
+          on xxcrm.XX_JTF_TERR_QUALIFIERS_INT (LOW_VALUE_CHAR)
+          compute statistics;
+

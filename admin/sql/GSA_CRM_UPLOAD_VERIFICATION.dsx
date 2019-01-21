@@ -1,0 +1,750 @@
+BEGIN HEADER
+   CharacterSet "CP1252"
+   ExportingTool "IBM Websphere DataStage Export"
+   ToolVersion "8"
+   ServerName "DSDEV"
+   ToolInstanceID "CRM_DEV"
+   MDISVersion "1.0"
+   Date "2012-05-13"
+   Time "10.28.04"
+   ServerVersion "8.1"
+END HEADER
+BEGIN DSJOB
+   Identifier "GSA_CRM_UPLOAD_VERIFICATION"
+   DateModified "2012-05-12"
+   TimeModified "14.37.14"
+   BEGIN DSRECORD
+      Identifier "ROOT"
+      OLEType "CJobDefn"
+      Readonly "0"
+      Name "GSA_CRM_UPLOAD_VERIFICATION"
+      NextID "4"
+      Container "V0"
+      JobVersion "50.0.0"
+      ControlAfterSubr "0"
+      Parameters "CParameters"
+      BEGIN DSSUBRECORD
+         Name "GSA_CRM_UPLOAD_PARMETER_SET"
+         Prompt "GSA_CRM_UPLOAD_PARMETER_SET parameters"
+         Default "(As pre-defined)"
+         ParamType "13"
+         ParamLength "0"
+         ParamScale "0"
+      END DSSUBRECORD
+      MetaBag "CMetaProperty"
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "AdvancedRuntimeOptions"
+         Value "#DSProjectARTOptions#"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "TraceMode"
+         Value "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "TraceSeq"
+         Value "1"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "TraceRecords"
+         Value "100"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "TraceSkip"
+         Value "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "TracePeriod"
+         Value "1"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "RecordJobPerformanceData"
+         Value "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "IdentList"
+         Value "Sequential_File_1|Oracle_Enterprise_0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "ClientCodePage"
+         Value "1252"
+      END DSSUBRECORD
+      NULLIndicatorPosition "0"
+      OrchestrateCode =+=+=+=
+#################################################################
+#### STAGE: Sequential_File_1
+## Operator
+export
+## Operator options
+-schema record
+  {final_delim=end, delim=',', quote=double}
+(
+  BATCH_ID:nullable int64 {null_field=''};
+  RECORD_ID:nullable int64 {null_field=''};
+  EMPLOYEE_NUMBER:nullable ustring[max=30] {null_field=''};
+  CREATED_DATE:nullable timestamp {null_field=''};
+  COMMENTS:nullable ustring[max=2000] {null_field=''};
+)
+-file '[&"GSA_CRM_UPLOAD_PARMETER_SET.$GSA_CRM_GSA_VERI_REPORT"]'
+-overwrite
+-rejects continue
+
+## General options
+[ident('Sequential_File_1'); jobmon_ident('Sequential_File_1')]
+## Inputs
+0< [] 'Oracle_Enterprise_0:DSLink0.v'
+;
+
+#################################################################
+#### STAGE: Oracle_Enterprise_0
+## Operator
+oraread
+## Operator options
+-nchar_cs [&DSProjectMapName]
+-db_cs [&DSProjectMapName]
+-dboptions '{user=[&"GSA_CRM_UPLOAD_PARMETER_SET.$GSA_Oracle_GSA_User"],password=[&"GSA_CRM_UPLOAD_PARMETER_SET.$GSA_Oracle_GSA_Pass"]}'
+-query 'select cast (batch_id as NUMBER(15)) batch_id, cast (record_id as NUMBER(15) ) record_id,employee_number,created_date,comments    from [&"GSA_CRM_UPLOAD_PARMETER_SET.$GSA_Oracle_GSA_Schema_Name"].gsa_crm_user_resps_audit_tl 
+where trunc(created_date) >=trunc([&"GSA_CRM_UPLOAD_PARMETER_SET.$GSA_EBS_EXTRACT_DATE"]) order by 1,2,3, rowid '
+-server '[&"GSA_CRM_UPLOAD_PARMETER_SET.$GSA_Oracle_GSA_DSN"]'
+
+## General options
+[ident('Oracle_Enterprise_0'); jobmon_ident('Oracle_Enterprise_0')]
+## Outputs
+0> [modify (
+  BATCH_ID:nullable int64=BATCH_ID;
+  RECORD_ID:nullable int64=RECORD_ID;
+  EMPLOYEE_NUMBER:nullable ustring[max=30]=EMPLOYEE_NUMBER;
+  CREATED_DATE:nullable timestamp=CREATED_DATE;
+  COMMENTS:nullable ustring[max=2000]=COMMENTS;
+keep
+  BATCH_ID,RECORD_ID,EMPLOYEE_NUMBER,CREATED_DATE,
+  COMMENTS;
+)] 'Oracle_Enterprise_0:DSLink0.v'
+;
+
+
+=+=+=+=
+      IsTemplate "0"
+      NLSLocale ",,,,"
+      JobType "3"
+      Category "\\Jobs\\extract"
+      CenturyBreakYear "30"
+      NextAliasID "2"
+      ParameterFileDDName "DD00001"
+      ReservedWordCheck "1"
+      TransactionSize "0"
+      ValidationStatus "0"
+      Uploadable "0"
+      PgmCustomizationFlag "0"
+      JobReportFlag "0"
+      AllowMultipleInvocations "0"
+      Act2ActOverideDefaults "0"
+      Act2ActEnableRowBuffer "0"
+      Act2ActUseIPC "0"
+      Act2ActBufferSize "0"
+      Act2ActIPCTimeout "0"
+      ExpressionSemanticCheckFlag "0"
+      TraceOption "0"
+      EnableCacheSharing "0"
+      RuntimeColumnPropagation "0"
+      RelStagesInJobStatus "-1"
+      WebServiceEnabled "0"
+      MFProcessMetaData "0"
+      MFProcessMetaDataXMLFileExchangeMethod "0"
+      IMSProgType "0"
+      CopyLibPrefix "ARDT"
+      RecordPerformanceResults "0"
+   END DSRECORD
+   BEGIN DSRECORD
+      Identifier "V0"
+      OLEType "CContainerView"
+      Readonly "0"
+      Name "Job"
+      NextID "1"
+      IsTopLevel "0"
+      StageList "V3S0|V3S1"
+      StageXPos "408|144"
+      StageYPos "144|144"
+      StageTypes "CCustomStage|CCustomStage"
+      NextStageID "0"
+      SnapToGrid "1"
+      GridLines "0"
+      ZoomValue "100"
+      StageXSize "48|48"
+      StageYSize "48|48"
+      ContainerViewSizing "0088 0088 0701 0505 0000 0000 0000 0000"
+      StageNames "Sequential_File_1|Oracle_Enterprise_0"
+      StageTypeIDs "PxSequentialFile|PxOracle"
+      LinkNames " |DSLink0"
+      LinkHasMetaDatas " |True"
+      LinkTypes " |1"
+      LinkNamePositionXs " |276"
+      LinkNamePositionYs " |168"
+      TargetStageIDs " |V3S0"
+      SourceStageEffectiveExecutionModes " |1"
+      SourceStageRuntimeExecutionModes " |1"
+      TargetStageEffectiveExecutionModes " |1"
+      TargetStageRuntimeExecutionModes " |1"
+      LinkIsSingleOperatorLookup " |False"
+      LinkIsSortSequential " |False"
+      LinkSortMode " |0"
+      LinkPartColMode " |1"
+      LinkSourcePinIDs " |V3S1P1"
+   END DSRECORD
+   BEGIN DSRECORD
+      Identifier "V3S0"
+      OLEType "CCustomStage"
+      Readonly "0"
+      Name "Sequential_File_1"
+      NextID "2"
+      InputPins "V3S0P1"
+      StageType "PxSequentialFile"
+      AllowColumnMapping "0"
+      NextRecordID "0"
+   END DSRECORD
+   BEGIN DSRECORD
+      Identifier "V3S0P1"
+      OLEType "CCustomInput"
+      Readonly "0"
+      Name "DSLink0"
+      Partner "V3S1|V3S1P1"
+      LinkType "1"
+      ConditionNotMet "fail"
+      LookupFail "fail"
+      Properties "CCustomProperty"
+      BEGIN DSSUBRECORD
+         Name "schema"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "file"
+         Value "\(2)\(2)0\(1)\(3)file\(2)#GSA_CRM_UPLOAD_PARMETER_SET.$GSA_CRM_GSA_VERI_REPORT#\(2)0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "append\\overwrite"
+         Value "overwrite"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "nocleanup"
+         Value " "
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "rejects"
+         Value "continue"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "firstLineColumnNames"
+         Value " "
+      END DSSUBRECORD
+      MetaBag "CMetaProperty"
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "RTColumnProp"
+         Value "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "SchemaFormat"
+         Value "final_delim=end, delim=',', quote=double"
+      END DSSUBRECORD
+      TransactionSize "0"
+      TXNBehaviour "0"
+      EnableTxGroup "0"
+   END DSRECORD
+   BEGIN DSRECORD
+      Identifier "V3S1"
+      OLEType "CCustomStage"
+      Readonly "0"
+      Name "Oracle_Enterprise_0"
+      NextID "2"
+      OutputPins "V3S1P1"
+      StageType "PxOracle"
+      AllowColumnMapping "0"
+      Properties "CCustomProperty"
+      BEGIN DSSUBRECORD
+         Name "nchar_cs"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "db_cs"
+      END DSSUBRECORD
+      NextRecordID "0"
+   END DSRECORD
+   BEGIN DSRECORD
+      Identifier "V3S1P1"
+      OLEType "CCustomOutput"
+      Readonly "0"
+      Name "DSLink0"
+      Partner "V3S0|V3S0P1"
+      Properties "CCustomProperty"
+      BEGIN DSSUBRECORD
+         Name "selection"
+         Value "userquery"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "dboptionssel"
+         Value "\(2)\(2)0\(1)\(3)dboptionssel\(2)auto\(2)0\(1)\(3)\(3)user\(2)#GSA_CRM_UPLOAD_PARMETER_SET.$GSA_Oracle_GSA_User#\(2)0\(1)\(3)\(3)password\(2)#GSA_CRM_UPLOAD_PARMETER_SET.$GSA_Oracle_GSA_Pass#\(2)0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "dboptions"
+         Value "{user=#GSA_CRM_UPLOAD_PARMETER_SET.$GSA_Oracle_GSA_User#,password=#GSA_CRM_UPLOAD_PARMETER_SET.$GSA_Oracle_GSA_Pass#}"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "query"
+         Value =+=+=+=
+select cast (batch_id as NUMBER(15)) batch_id, cast (record_id as NUMBER(15) ) record_id,employee_number,created_date,comments    from #GSA_CRM_UPLOAD_PARMETER_SET.$GSA_Oracle_GSA_Schema_Name#.gsa_crm_user_resps_audit_tl 
+where trunc(created_date) >=trunc(#GSA_CRM_UPLOAD_PARMETER_SET.$GSA_EBS_EXTRACT_DATE#) order by 1,2,3, rowid 
+=+=+=+=
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "sqlBuilderQuery"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "sqlBuilderSyntax"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "server"
+         Value "#GSA_CRM_UPLOAD_PARMETER_SET.$GSA_Oracle_GSA_DSN#"
+      END DSSUBRECORD
+      Columns "COutputColumn"
+      BEGIN DSSUBRECORD
+         Name "BATCH_ID"
+         Description "? Decimal(38,0)"
+         SqlType "-5"
+         Precision "15"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "40"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "PlugIn\\ORAOCI9\\XXCUST360.GSA_CRM_USER_RESPS_AUDIT_TL"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "BATCH_ID"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "RECORD_ID"
+         Description "? Decimal(38,0)"
+         SqlType "-5"
+         Precision "15"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "40"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "PlugIn\\ORAOCI9\\XXCUST360.GSA_CRM_USER_RESPS_AUDIT_TL"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "RECORD_ID"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "EMPLOYEE_NUMBER"
+         Description "<none>"
+         SqlType "12"
+         Precision "30"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "30"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "PlugIn\\ORAOCI9\\XXCUST360.GSA_CRM_USER_RESPS_AUDIT_TL"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "EMPLOYEE_NUMBER"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "1"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "CREATED_DATE"
+         Description "<none>"
+         SqlType "11"
+         Precision "0"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "7"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "PlugIn\\ORAOCI9\\XXCUST360.GSA_CRM_USER_RESPS_AUDIT_TL"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "CREATED_DATE"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "COMMENTS"
+         Description "<none>"
+         SqlType "12"
+         Precision "2000"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "2000"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "PlugIn\\ORAOCI9\\XXCUST360.GSA_CRM_USER_RESPS_AUDIT_TL"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "COMMENTS"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "1"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      MetaBag "CMetaProperty"
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "DiskWriteInc"
+         Value "1048576"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "BufFreeRun"
+         Value "50"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "MaxMemBufSize"
+         Value "3145728"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "QueueUpperSize"
+         Value "0"
+      END DSSUBRECORD
+      LeftTextPos "276"
+      TopTextPos "168"
+   END DSRECORD
+END DSJOB
+BEGIN DSSTAGETYPES
+END DSSTAGETYPES
+BEGIN DSEXECJOB
+   Identifier "GSA_CRM_UPLOAD_VERIFICATION"
+   DateModified "1899-12-30"
+   TimeModified "00.00.01"
+   BEGIN DSRECORD
+      Identifier "GSA_CRM_UPLOAD_VERIFICATION"
+      F1 "JOB"
+      F3 "8.1///55/C"
+      F5 "GSA_CRM_UPLOAD_PARMETER_SET\VGSA_CRM_UPLOAD_PARMETER_SET.$GSA_Oracle_EBS_DSN\VGSA_CRM_UPLOAD_PARMETER_SET.$GSA_Oracle_EBS_User\VGSA_CRM_UPLOAD_PARMETER_SET.$GSA_Oracle_EBS_Pass\VGSA_CRM_UPLOAD_PARMETER_SET.$GSA_Oracle_GSA_DSN\VGSA_CRM_UPLOAD_PARMETER_SET.$GSA_Oracle_GSA_User\VGSA_CRM_UPLOAD_PARMETER_SET.$GSA_Oracle_GSA_Pass\VGSA_CRM_UPLOAD_PARMETER_SET.$GSA_Oracle_GSA_Schema_Name\VGSA_CRM_UPLOAD_PARMETER_SET.$GSA_SHELL_SCRIPT\VGSA_CRM_UPLOAD_PARMETER_SET.$GSA_CRM_GSA_VERI_REPORT\VGSA_CRM_UPLOAD_PARMETER_SET.$GSA_EBS_EXTRACT_DATE"
+      F6 "GSA_CRM_UPLOAD_PARMETER_SET parameters\VGSA_Oracle_EBS_DSN\VXX_DATASTAGE_CRM\VGSA_Oracle_EBS_User\VGSA_Oracle_GSA_DSN\VDSCUST360\VGSA_Oracle_GSA_User\VGSA_Oracle_GSA_Schema_Name\VGSA_SHELL_SCRIPT\VGSA_CRM_GSA_VERI_REPORT\VGSA_EBS_EXTRACT_DATE"
+      F7 "(As pre-defined)\V$PROJDEF\V$PROJDEF\VHDI@IJV8O9JN064IL:JD1K95\V$PROJDEF\V$PROJDEF\VHDI@IJV8O9JN064IL:JD1K95\V$PROJDEF\V$PROJDEF\V$PROJDEF\V$PROJDEF"
+      F9 "13\V0\V0\V1\V0\V0\V1\V0\V0\V0\V0"
+      F10 "V0"
+      F15 "PxOracle\VPxSequentialFile"
+      F18 "(As pre-defined)\V$PROJDEF\V$PROJDEF\VHDI@IJV8O9JN064IL:JD1K95\V$PROJDEF\V$PROJDEF\VHDI@IJV8O9JN064IL:JD1K95\V$PROJDEF\V$PROJDEF\V$PROJDEF\V$PROJDEF"
+      F21 "1\V1\V1\V1\V1\V1\V1\V1\V1\V1\V1"
+      F24 ",,,,"
+      F28 "\\Jobs\\extract"
+      F29 "0"
+      F30 "0"
+      F31 "2012-05-12 14:31:37"
+      F32 "3"
+      F34 "0\V1\VLINUX\V0\V\V#DSProjectARTOptions#\V1252\V\V\V\V\V\V0\V0"
+      F35 "Oracle_Enterprise_0\VSequential_File_1"
+      F36 "dsdev"
+      F37 "CRM_DEV"
+      F38 "0"
+      F39 "GSA_CRM_UPLOAD_VERIFICATION.Sequential_File_1\VGSA_CRM_UPLOAD_VERIFICATION.Oracle_Enterprise_0"
+      F41 "0"
+      F43 ",,,,"
+   END DSRECORD
+   BEGIN DSRECORD
+      Identifier "GSA_CRM_UPLOAD_VERIFICATION.Oracle_Enterprise_0"
+      F1 "STAGE"
+      F2 "CUSTOM"
+      F3 "8.1///55/C"
+      F4 "GSA_CRM_UPLOAD_VERIFICATION"
+      F10 "GSA_CRM_UPLOAD_VERIFICATION.Oracle_Enterprise_0.DSLink0"
+      F13 "nchar_cs\Vdb_cs"
+      F16 "PxOracle"
+      F23 "0\V0"
+      F31 "GSA_CRM_UPLOAD_VERIFICATION.Oracle_Enterprise_0"
+      F32 "-1.-1"
+   END DSRECORD
+   BEGIN DSRECORD
+      Identifier "GSA_CRM_UPLOAD_VERIFICATION.Oracle_Enterprise_0.DSLink0"
+      F1 "INPIN"
+      F3 "8.1///55/C"
+      F5 "5"
+      F16 "GSA_CRM_UPLOAD_VERIFICATION.Oracle_Enterprise_0\VGSA_CRM_UPLOAD_VERIFICATION.Sequential_File_1"
+      F21 "BATCH_ID\VRECORD_ID\VEMPLOYEE_NUMBER\VCREATED_DATE\VCOMMENTS"
+      F22 "0\V0\V0\V0\V0"
+      F25 "-5\V-5\V12\V11\V12"
+      F26 "15\V15\V30\V0\V2000"
+      F27 "0\V0\V0\V0\V0"
+      F28 "40\V40\V30\V7\V2000"
+      F29 "? Decimal(38,0)\V? Decimal(38,0)\V<none>\V<none>\V<none>"
+      F39 "DSLink0"
+      F40 "1\V1\V1\V1\V1"
+      F50 "\V"
+      F79 "DSDEV\\CRM_DEV\\PlugIn\\ORAOCI9\\XXCUST360.GSA_CRM_USER_RESPS_AUDIT_TL"
+   END DSRECORD
+   BEGIN DSRECORD
+      Identifier "GSA_CRM_UPLOAD_VERIFICATION.Sequential_File_1"
+      F1 "STAGE"
+      F2 "CUSTOM"
+      F3 "8.1///55/C"
+      F4 "GSA_CRM_UPLOAD_VERIFICATION"
+      F9 "GSA_CRM_UPLOAD_VERIFICATION.Oracle_Enterprise_0.DSLink0"
+      F16 "PxSequentialFile"
+      F31 "GSA_CRM_UPLOAD_VERIFICATION.Sequential_File_1"
+      F32 "-1.-1"
+   END DSRECORD
+   COMMENT No program sources in executable job
+   COMMENT No program binaries in executable job
+   BEGIN DSSCRIPT
+      Identifier "OshExecuter.sh"
+      TERMINATOR =+=+=+=
+#!/bin/sh
+# Shell script for Datastage to execute an osh script, generated at 2012-05-12 14:31:37
+# Compiler runtime stamp 8.1///55/C
+#
+# Parameters:
+# $1 - Run indicator: R=normal run, P=performance wrappered run
+# $2 - Environment variable file name - dummy
+# $3... - Osh / performance checker command line arguments
+RunIndicator=$1
+DummyEnv=$2
+shift
+shift
+if test ! -x "$APT_ORCHHOME/bin/osh"
+  then echo '##OSHRETVAL NOOSH'
+  exit 1
+fi
+# Test for resource estimation option.
+if test $RunIndicator = P
+  then $APT_ORCHHOME/bin/orchresest "$@" 2>&1 &
+  else $APT_ORCHHOME/bin/osh "$@" 2>&1 &
+fi
+oshpid=$!
+# Write the pid of the conductor process
+echo '##OSHPID' $oshpid
+wait $oshpid
+oshcode=$?
+oshdir=`dirname $0`
+# Write the terminating string
+echo '##OSHRETVAL' $oshcode > $oshdir/$oshpid.retval
+echo '##OSHRETVAL' $oshcode
+# end of script
+=+=+=+=
+   END DSSCRIPT
+   BEGIN DSSCRIPT
+      Identifier "OshScript.osh"
+      TERMINATOR =+=+=+=
+# OSH / orchestrate script for Job GSA_CRM_UPLOAD_VERIFICATION compiled at 14:31:37 12 MAY 2012
+#################################################################
+#### STAGE: Sequential_File_1
+## Operator
+export
+## Operator options
+-schema record
+  {final_delim=end, delim=',', quote=double}
+(
+  BATCH_ID:nullable int64 {null_field=''};
+  RECORD_ID:nullable int64 {null_field=''};
+  EMPLOYEE_NUMBER:nullable ustring[max=30] {null_field=''};
+  CREATED_DATE:nullable timestamp {null_field=''};
+  COMMENTS:nullable ustring[max=2000] {null_field=''};
+)
+-file '[&"GSA_CRM_UPLOAD_PARMETER_SET.$GSA_CRM_GSA_VERI_REPORT"]'
+-overwrite
+-rejects continue
+## General options
+[ident('Sequential_File_1'); jobmon_ident('Sequential_File_1')]
+## Inputs
+0< [] 'Oracle_Enterprise_0:DSLink0.v'
+;
+#################################################################
+#### STAGE: Oracle_Enterprise_0
+## Operator
+oraread
+## Operator options
+-nchar_cs [&DSProjectMapName]
+-db_cs [&DSProjectMapName]
+-dboptions '{user=[&"GSA_CRM_UPLOAD_PARMETER_SET.$GSA_Oracle_GSA_User"],password=[&"GSA_CRM_UPLOAD_PARMETER_SET.$GSA_Oracle_GSA_Pass"]}'
+-query 'select cast (batch_id as NUMBER(15)) batch_id, cast (record_id as NUMBER(15) ) record_id,employee_number,created_date,comments    from [&"GSA_CRM_UPLOAD_PARMETER_SET.$GSA_Oracle_GSA_Schema_Name"].gsa_crm_user_resps_audit_tl 
+where trunc(created_date) >=trunc([&"GSA_CRM_UPLOAD_PARMETER_SET.$GSA_EBS_EXTRACT_DATE"]) order by 1,2,3, rowid '
+-server '[&"GSA_CRM_UPLOAD_PARMETER_SET.$GSA_Oracle_GSA_DSN"]'
+## General options
+[ident('Oracle_Enterprise_0'); jobmon_ident('Oracle_Enterprise_0')]
+## Outputs
+0> [modify (
+  BATCH_ID:nullable int64=BATCH_ID;
+  RECORD_ID:nullable int64=RECORD_ID;
+  EMPLOYEE_NUMBER:nullable ustring[max=30]=EMPLOYEE_NUMBER;
+  CREATED_DATE:nullable timestamp=CREATED_DATE;
+  COMMENTS:nullable ustring[max=2000]=COMMENTS;
+keep
+  BATCH_ID,RECORD_ID,EMPLOYEE_NUMBER,CREATED_DATE,
+  COMMENTS;
+)] 'Oracle_Enterprise_0:DSLink0.v'
+;
+# End of OSH code
+=+=+=+=
+   END DSSCRIPT
+END DSEXECJOB
+BEGIN DSPARAMETERSETS
+   BEGIN DSRECORD
+      Identifier "GSA_CRM_UPLOAD_PARMETER_SET"
+      DateModified "2012-05-12"
+      TimeModified "14.08.57"
+      OLEType "CParameterSet"
+      Readonly "0"
+      Category "\\Jobs\\extract"
+      Description "Parameter set created from job 'CRM_EXTRACT_MASTER_SJOB' in project 'DSDEV/CRM_DEV'"
+      Parameters "CParameters"
+      BEGIN DSSUBRECORD
+         Name "$GSA_Oracle_EBS_DSN"
+         Prompt "GSA_Oracle_EBS_DSN"
+         Default "$PROJDEF"
+         ParamType "0"
+         ParamLength "0"
+         ParamScale "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "$GSA_Oracle_EBS_User"
+         Prompt "XX_DATASTAGE_CRM"
+         Default "$PROJDEF"
+         ParamType "0"
+         ParamLength "0"
+         ParamScale "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "$GSA_Oracle_EBS_Pass"
+         Prompt "GSA_Oracle_EBS_User"
+         Default "HDI@IJV8O9JN064IL:JD1K95"
+         ParamType "1"
+         ParamLength "0"
+         ParamScale "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "$GSA_Oracle_GSA_DSN"
+         Prompt "GSA_Oracle_GSA_DSN"
+         Default "$PROJDEF"
+         ParamType "0"
+         ParamLength "0"
+         ParamScale "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "$GSA_Oracle_GSA_User"
+         Prompt "DSCUST360"
+         Default "$PROJDEF"
+         ParamType "0"
+         ParamLength "0"
+         ParamScale "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "$GSA_Oracle_GSA_Pass"
+         Prompt "GSA_Oracle_GSA_User"
+         Default "HDI@IJV8O9JN064IL:JD1K95"
+         ParamType "1"
+         ParamLength "0"
+         ParamScale "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "$GSA_Oracle_GSA_Schema_Name"
+         Prompt "GSA_Oracle_GSA_Schema_Name"
+         Default "$PROJDEF"
+         ParamType "0"
+         ParamLength "0"
+         ParamScale "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "$GSA_SHELL_SCRIPT"
+         Prompt "GSA_SHELL_SCRIPT"
+         Default "$PROJDEF"
+         ParamType "0"
+         ParamLength "0"
+         ParamScale "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "$GSA_CRM_GSA_VERI_REPORT"
+         Prompt "GSA_CRM_GSA_VERI_REPORT"
+         Default "$PROJDEF"
+         ParamType "0"
+         ParamLength "0"
+         ParamScale "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "$GSA_EBS_EXTRACT_DATE"
+         Prompt "GSA_EBS_EXTRACT_DATE"
+         Default "$PROJDEF"
+         ParamType "0"
+         ParamLength "0"
+         ParamScale "0"
+      END DSSUBRECORD
+   END DSRECORD
+END DSPARAMETERSETS

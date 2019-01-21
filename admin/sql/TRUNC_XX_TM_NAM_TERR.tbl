@@ -1,0 +1,14 @@
+--Backup the autonamed tables and truncate the table for baselining the performance of the autonamed programs
+
+create table xxcrm.XX_TM_NAM_TERR_RSC_DTLS_b as select * from xxcrm.XX_TM_NAM_TERR_RSC_DTLS;
+
+truncate table  xxcrm.XX_TM_NAM_TERR_RSC_DTLS;
+
+create table xxcrm.XX_TM_NAM_TERR_ENTITY_DTLS_b as select * from xxcrm.XX_TM_NAM_TERR_ENTITY_DTLS;
+
+truncate table  xxcrm.XX_TM_NAM_TERR_ENTITY_DTLS;
+
+create table xxcrm.XX_TM_NAM_TERR_DEFN_b as select * from xxcrm.XX_TM_NAM_TERR_DEFN;
+
+truncate table  xxcrm.XX_TM_NAM_TERR_DEFN;
+

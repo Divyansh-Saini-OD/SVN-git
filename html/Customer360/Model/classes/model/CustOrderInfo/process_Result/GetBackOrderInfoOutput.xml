@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<JavaBean xmlns="http://xmlns.oracle.com/adfm/beanmodel" version="11.1.1.56.60"
+          id="GetBackOrderInfoOutput"
+          Package="model.CustOrderInfo.process_Result"
+          BeanClass="model.CustOrderInfo.process_Result.GetBackOrderInfoOutput"
+          isJavaBased="false">
+  <Attribute Name="OrderId" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="TotalOrderAmt" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="BackOrderQty" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="ItemId" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="UnitListPriceAmt" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="UnitOriginalPriceAmt" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="UnitPoCostAmt" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="UnitSellingPriceAmt" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+</JavaBean>

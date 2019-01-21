@@ -1,0 +1,28 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :XX_CDH_DOCUMENT_TEMPLATE_S.syn                      |
+-- | Description      :Admin document template sequence                    |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  25-May-2007 V Jayamohan        Initial Draft Version          |
+-- +=======================================================================+
+
+------------------------------------------------------
+-- Dropping the existing synonym and creating new.  --
+------------------------------------------------------
+
+CREATE OR REPLACE SYNONYM APPS.XX_CDH_DOCUMENT_TEMPLATE_S FOR XXCRM.XX_CDH_DOCUMENT_TEMPLATE_S;
+
+SHOW ERRORS;
+EXIT;

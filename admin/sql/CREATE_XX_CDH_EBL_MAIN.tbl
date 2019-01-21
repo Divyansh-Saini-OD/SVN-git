@@ -1,0 +1,102 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===========================================================================+
+-- |                  Office Depot - eBilling Project                          |
+-- |                         WIPRO/Office Depot                                |
+-- +===========================================================================+
+-- | Name        : CREATE_XX_CDH_EBL_MAIN.tbl                                  |
+-- | Description : Main Details table to store file details for eBilling.      |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author        Remarks            	               |
+-- |======== =========== ============= ========================================|
+-- |DRAFT 1A 15-MAR-2010 Srini Ch      Initial draft version                   |
+-- |                                                                           |
+-- |                                                                           |
+-- |                                                                           |
+-- +===========================================================================+
+
+-- ----------------------------------------------------------------------------
+--      Create Custom Table XX_CDH_EBL_MAIN
+-- ----------------------------------------------------------------------------
+
+CREATE TABLE XXCRM.XX_CDH_EBL_MAIN 
+    ( 
+     CUST_DOC_ID NUMBER (15)  NOT NULL , 
+     CUST_ACCOUNT_ID NUMBER (15)  NOT NULL , 
+     EBILL_TRANSMISSION_TYPE VARCHAR2 (15) DEFAULT 'EMAIL'  NOT NULL , 
+     EBILL_ASSOCIATE VARCHAR2 (256)  NOT NULL , 
+     FILE_PROCESSING_METHOD VARCHAR2 (50) , 
+     FILE_NAME_EXT VARCHAR2 (10) , 
+     MAX_FILE_SIZE NUMBER (15) , 
+     MAX_TRANSMISSION_SIZE NUMBER (15) , 
+     ZIP_REQUIRED VARCHAR2 (1) DEFAULT 'N'  NOT NULL , 
+     ZIPPING_UTILITY VARCHAR2 (80) , 
+     ZIP_FILE_NAME_EXT VARCHAR2 (10) , 
+     OD_FIELD_CONTACT VARCHAR2 (256) , 
+     OD_FIELD_CONTACT_EMAIL VARCHAR2 (256) , 
+     OD_FIELD_CONTACT_PHONE VARCHAR2 (30) , 
+     CLIENT_TECH_CONTACT VARCHAR2 (256) , 
+     CLIENT_TECH_CONTACT_EMAIL VARCHAR2 (256) , 
+     CLIENT_TECH_CONTACT_PHONE VARCHAR2 (256) , 
+     FILE_NAME_SEQ_RESET VARCHAR2 (20) , 
+     FILE_NEXT_SEQ_NUMBER NUMBER (15) , 
+     FILE_SEQ_RESET_DATE DATE , 
+     FILE_NAME_MAX_SEQ_NUMBER NUMBER (15) , 
+     ATTRIBUTE1 VARCHAR2 (150) , 
+     ATTRIBUTE2 VARCHAR2 (150) , 
+     ATTRIBUTE3 VARCHAR2 (150) , 
+     ATTRIBUTE4 VARCHAR2 (150) , 
+     ATTRIBUTE5 VARCHAR2 (150) , 
+     ATTRIBUTE6 VARCHAR2 (150) , 
+     ATTRIBUTE7 VARCHAR2 (150) , 
+     ATTRIBUTE8 VARCHAR2 (150) , 
+     ATTRIBUTE9 VARCHAR2 (150) , 
+     ATTRIBUTE10 VARCHAR2 (150) , 
+     ATTRIBUTE11 VARCHAR2 (150) , 
+     ATTRIBUTE12 VARCHAR2 (150) , 
+     ATTRIBUTE13 VARCHAR2 (150) , 
+     ATTRIBUTE14 VARCHAR2 (150) , 
+     ATTRIBUTE15 VARCHAR2 (150) , 
+     ATTRIBUTE16 VARCHAR2 (150) , 
+     ATTRIBUTE17 VARCHAR2 (150) , 
+     ATTRIBUTE18 VARCHAR2 (150) , 
+     ATTRIBUTE19 VARCHAR2 (150) , 
+     ATTRIBUTE20 VARCHAR2 (150) , 
+     LAST_UPDATE_DATE DATE  NOT NULL , 
+     LAST_UPDATED_BY NUMBER (15)  NOT NULL , 
+     CREATION_DATE DATE  NOT NULL , 
+     CREATED_BY NUMBER (15)  NOT NULL , 
+     LAST_UPDATE_LOGIN NUMBER (15)  NOT NULL , 
+     REQUEST_ID NUMBER (15) , 
+     PROGRAM_APPLICATION_ID NUMBER (15) , 
+     PROGRAM_ID NUMBER (15) , 
+     PROGRAM_UPDATE_DATE DATE , 
+     WH_UPDATE_DATE DATE 
+    );
+
+-- ----------------------------------------------------------------------------
+-- Creating Index on XX_CDH_EBL_MAIN.
+-- ----------------------------------------------------------------------------
+
+CREATE UNIQUE INDEX XXCRM.XX_CDH_EBL_MAIN__UIDX01 ON XXCRM.XX_CDH_EBL_MAIN 
+    ( 
+     CUST_DOC_ID ASC 
+    );
+
+CREATE INDEX XXCRM.XX_CDH_EBL_MAIN__IDX01 ON XXCRM.XX_CDH_EBL_MAIN 
+    ( 
+     CUST_ACCOUNT_ID ASC 
+    );
+    
+-- ----------------------------------------------------------------------------
+-- Adding Grants to APPS.
+-- ----------------------------------------------------------------------------
+
+GRANT ALL ON XXCRM.XX_CDH_EBL_MAIN TO APPS;
+
+SHOW ERRORS;

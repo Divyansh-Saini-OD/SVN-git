@@ -1,0 +1,44 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_CDH_CONTRACTS_ASSIGNED.tbl                |
+-- | Description      :Account request details                             |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |DRAFT 1A  29-Nov-2007  Sudeept Maharana   Initial draft version        |
+-- +=======================================================================+
+
+-- ---------------------------------------------------------------------
+--      Create Custom Table XX_CDH_CONTRACTS_ASSIGNED    --
+-- ---------------------------------------------------------------------
+CREATE TABLE XXCRM.XX_CDH_CONTRACTS_ASSIGNED
+(
+  ASSIGNED_CONTRACT_ID  NUMBER,
+  CONTRACT_TEMPLATE_ID  NUMBER,
+  CONTRACT_NUMBER       VARCHAR2(20 BYTE),
+  CONTRACT_DESCRIPTION  VARCHAR2(80 BYTE),
+  PRIORITY              VARCHAR2(10 BYTE),
+  CREATED_BY            NUMBER(15)              NOT NULL,
+  CREATION_DATE         DATE                    DEFAULT SYSDATE               NOT NULL,
+  LAST_UPDATED_BY       NUMBER(15)              NOT NULL,
+  LAST_UPDATE_DATE      DATE                    DEFAULT SYSDATE               NOT NULL,
+  LAST_UPDATE_LOGIN     NUMBER(15)
+);
+------------------------------------------------------
+-- Adding Grants to APPS.                           --
+------------------------------------------------------
+GRANT ALL ON XXCRM.XX_CDH_CONTRACTS_ASSIGNED TO APPS;
+
+SHOW ERRORS;

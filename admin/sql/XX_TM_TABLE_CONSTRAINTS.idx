@@ -1,0 +1,29 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XX_TM_TABLE_CONSTRAINTS.idx                        |
+-- | Description      : Indices for Custom Named Account Tables            |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |DRAFT 1a 21-Aug-2007   Sreekanth        Initial Version                |
+-- +=======================================================================+
+------------------------------------------------------
+-- Create Indices for Custom Territory Tables       --
+------------------------------------------------------
+
+ALTER TABLE XXCRM.XX_TM_NAM_TERR_DEFN add CONSTRAINT XX_TM_NAM_TERR_DEFN_PK PRIMARY KEY (NAMED_ACCT_TERR_ID);
+
+ALTER TABLE XXCRM.XX_TM_NAM_TERR_ENTITY_DTLS add CONSTRAINT XX_TM_NAM_TERR_ENTITY_DTLS_PK PRIMARY KEY (NAMED_ACCT_TERR_ENTITY_ID);
+
+ALTER TABLE XXCRM.XX_TM_NAM_TERR_RSC_DTLS add CONSTRAINT XX_TM_NAM_TERR_RSC_DTLS_PK PRIMARY KEY (NAMED_ACCT_TERR_RSC_ID);
+
+
+SHOW ERRORS;

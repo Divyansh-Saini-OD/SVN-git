@@ -1,0 +1,124 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                  WIPRO Technologies                               |
+-- +===================================================================+
+-- | Name        : INSERT_XXTPS_TEMPLATE_FILE_UPLOADS.TBL              |
+-- | CR          : CR769                                               |
+-- | Description : Custom Table Insert Script for Bulk Import Tool     |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1a 29-Jun-2010  Mangalasundari K Initial draft version       |
+-- +===================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Inserting records into the Table XXTPS_TEMPLATE_FILE_UPLOADS .....
+PROMPT
+
+DELETE FROM xxtps.xxtps_template_file_uploads
+WHERE TEMPLATE_FILE_UPLOAD_ID
+IN (7,8);
+
+
+INSERT INTO xxtps.xxtps_template_file_uploads VALUES
+        ( 7,NULL,-1,SYSDATE,-1,SYSDATE,
+                'CUSTOMER_LEADS',
+                'Customer leads','Template to upload Customer Leads',
+                '''CUSTOMER_ACCOUNT_NUMBER''' || ',' ||'''SEQUENCE_NUMBER''' || ',' ||
+                 '''LEAD_NAME'''|| ',' || '''LEAD_SOURCE'''
+                || ',' || '''LEAD_RANK''' || ',' || '''LEAD_PRODUCT_NAME'''
+                 || ',' ||'''CONTACT_TITLE''' || ',' || '''CONTACT_FIRST_NAME'''
+                || ',' ||  '''CONTACT_MIDDLE_NAME''' || ',' || '''CONTACT_LAST_NAME'''
+                || ',' || '''CONTACT_JOB_TITLE''' || ',' ||
+                '''CONTACT_PHONE_NUMBER''' || ',' || '''CONTACT_PHONE_EXTENSION'''
+                || ',' || '''CONTACT_EMAIL_ADDRESS''',
+                'XX_CRM_BULK_TEMPLATES_PKG.XX_CRM_CUST_LEADS_TMPLT',
+                '''Customer Account Number''' || ',' ||'''Sequence Number''' || ',' ||
+                 '''Lead Name'''|| ',' || '''Lead Source'''
+                || ',' || '''Lead Rank''' || ',' || '''Lead Product Name'''
+                 || ',' ||'''Contact Title''' || ',' || '''Contact First Name'''
+                || ',' ||  '''Contact Middle Name''' || ',' || '''Contact Last Name'''
+                || ',' || '''Contact Job Title''' || ',' ||
+                '''Contact Phone Number''' || ',' || '''Contact Phone Extension'''
+                || ',' || '''Contact Email Address'''|| ',' ||'''Customer Name'''
+                || ',' || '''Lead Number''' || ',' || '''Sales Person'''|| ',' || '''Status'''
+                || ',' || '''Error Message''',
+                '''Customer Account Number''' || ',' ||'''Sequence Number''' || ',' ||
+                 '''Lead Name'''|| ',' || '''Lead Source'''
+                || ',' || '''Lead Rank''' || ',' || '''Lead Product Name'''
+                 || ',' ||'''Contact Title''' || ',' || '''Contact First Name'''
+                || ',' ||  '''Contact Middle Name''' || ',' || '''Contact Last Name'''
+                || ',' || '''Contact Job Title''' || ',' ||
+                '''Contact Phone Number''' || ',' || '''Contact Phone Extension'''
+                || ',' || '''Contact Email Address'''|| ',' ||'''Customer Name'''
+                || ',' || '''Lead Number''' || ',' || '''Sales Person'''|| ',' || '''Status'''
+                || ',' || '''Error Message''',
+                'Customer Account Number *' || ',' ||'Sequence Number *' || ',' ||
+                 'Lead Name *'|| ',' || 'Lead Source *'
+                || ',' || 'Lead Rank' || ',' || 'Lead Product Name'
+                 || ',' ||'Contact Title' || ',' || 'Contact First Name'
+                || ',' ||  'Contact Middle Name' || ',' || 'Contact Last Name'
+                || ',' || 'Contact Job Title' || ',' ||
+                'Contact Phone Number' || ',' || 'Contact Phone Extension'
+                || ',' || 'Contact Email Address',
+                'The File should contain the following columns in the following order - '
+                || CHR(10) ||
+                '-Customer Account Number *' || CHR(10) ||
+                '-Sequence Number * ' || CHR(10) ||
+                '-Lead Name*' || CHR(10) ||
+                '-Lead Source*' || CHR(10) ||
+                '-Lead Rank' || CHR(10) ||
+                '-Lead Product Name' || CHR(10) ||
+                '-Contact Title' || CHR(10) ||
+                '-Contact First Name' || CHR(10) ||
+                '-Contact Middle Name' || CHR(10) ||
+                '-Contact Last Name' || CHR(10) ||
+                '-Contact Job Title' || CHR(10) ||
+                '-Contact Phone Number ' || CHR(10) ||
+                '-Contact Phone Extension' || CHR(10) ||
+                '-Contact Email Address'
+        );
+
+INSERT INTO xxtps.xxtps_template_file_uploads VALUES (8,NULL,-1,SYSDATE,-1,SYSDATE,
+                                                        'DUNNING_CONTACTS',
+                                                        'Dunning Contacts'
+                                                        ,'Template to upload Dunning Contacts'
+                                                        ,'''LAST_NAME'''|| ',' || '''FIRST_NAME''' || ',' || '''EMAIL_ID'''|| ',' || '''AREA_CODE'''|| ',' || '''TELEPHONE''' || ',' || '''AREA_CODE''' || ',' ||'''FAX''' || ',' || '''LEG_ACC_NUM'''|| ',' ||  '''ADDR_SEQ'''
+                                                        ,'XX_CDH_DUNNING_CONTACTS_PKG.XX_CDH_DUNN_CONT_TMPLT'
+                                                        ,'''Last''' || ',' || '''First''' || ',' || '''Email Address''' || ',' || '''Area Code''' || ',' || '''Telephone''' || ',' || '''Area Code''' || ',' || '''Fax''' || ',' || '''Legacy Account Number''' || ',' || '''Addr Seq''' || ',' || '''Oracle Billing ID Number''' || ',' || '''Status''' || ',' || '''Error'''
+                                                        ,'''Last''' || ',' || '''First''' || ',' || '''Email Address''' || ',' || '''Area Code''' || ',' || '''Telephone''' || ',' || '''Area Code''' || ',' || '''Fax''' || ',' || '''Legacy Account Number''' || ',' || '''Addr Seq''' || ',' || '''Oracle Billing ID Number''' || ',' || '''Status''' || ',' || '''Error'''
+                                                        ,'Last *' || ',' || 'First *' || ',' || 'Email Address '|| ',' || 'Area Code' || ',' || 'Telephone' || ',' || 'Area Code' || ',' ||'Fax' || ',' || 'Legacy Account Number *' || ',' ||  'Addr Seq *'
+                                                        ,'The File should contain the following columns in the following order - '
+                                                        || CHR(10) ||
+                                                        '-Last Name *' || CHR(10) ||
+                                                        '-First Name *' || CHR(10) ||
+                                                        '-Email Address' || CHR(10) ||
+                                                        '-Area Code' || CHR(10) ||
+                                                        '-Telephone' || CHR(10) ||
+                                                        '-Area Code' || CHR(10) ||
+                                                        '-Fax' || CHR(10) ||
+                                                        '-Legacy Account Number *' || CHR(10) ||
+                                                        '-Addr Seq * ');
+
+
+COMMIT;
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

@@ -1,0 +1,33 @@
+-- $Id:$
+-- $Rev:$
+-- $HeadURL:$
+-- $Author:$
+-- $Date:$
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_CDH_CONTRACT_PROG_CODES.syn               |
+-- | Description      :Synonym to XX_CDH_CONTRACT_PROG_CODES Table         |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |1.0       30-Mar-2010  Sreedhar Mohan     Initial draft                |
+-- +=======================================================================+
+
+
+
+CREATE OR REPLACE SYNONYM APPS.XX_CDH_CONTRACT_PROG_CODES FOR XXCRM.XX_CDH_CONTRACT_PROG_CODES;
+
+SHOW ERRORS;
+EXIT;

@@ -1,0 +1,75 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===========================================================================+
+-- |                  Office Depot - eBilling Project                          |
+-- |                         WIPRO/Office Depot                                |
+-- +===========================================================================+
+-- | Name        : CREATE_XX_CDH_EBL_PARAM_SETUP.tbl                           |
+-- | Description : Parameter setup table for eBilling.                         |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author        Remarks            	               |
+-- |======== =========== ============= ========================================|
+-- |DRAFT 1A 20-MAY-2010 Lokesh Kumar  Initial draft version                   |
+-- |                                                                           |
+-- |                                                                           |
+-- |                                                                           |
+-- +===========================================================================+
+
+-- ----------------------------------------------------------------------------
+--      Create Custom Table XX_CDH_EBL_PARAM_SETUP
+-- ----------------------------------------------------------------------------
+
+DECLARE
+
+   ROW_CNT   NUMBER := 0;
+
+BEGIN
+  
+   SELECT COUNT(*) INTO ROW_CNT FROM ALL_TABLES
+   WHERE TABLE_NAME = 'XX_CDH_EBL_PARAM_SETUP' AND OWNER = 'XXCRM';
+
+   IF ROW_CNT=1 THEN
+     EXECUTE IMMEDIATE 'DROP TABLE XXCRM.XX_CDH_EBL_PARAM_SETUP';
+   END IF;
+   
+
+END;
+
+/
+CREATE TABLE XXCRM.XX_CDH_EBL_PARAM_SETUP(PARAM_NAME VARCHAR2(500),         
+                                          PARAM_VALUE VARCHAR2(4000),       
+                                          SITE NUMBER,                      
+					  APPLICATIONID NUMBER,             
+					  RESPONSIBILITYID NUMBER,          
+                                          USERID NUMBER,                    
+					  CREATED_BY NUMBER(15),            
+					  CREATION_DATE DATE,               
+                                          LAST_UPDATED_BY NUMBER(15),       
+					  LAST_UPDATE_DATE DATE,            
+                                          LAST_UPDATE_LOGIN NUMBER(15),     
+					  ATTRIBUTE1 VARCHAR2(150),                                                                                                                                                                         
+                                          ATTRIBUTE2 VARCHAR2(150),                                                                                                                                                                         
+		                          ATTRIBUTE3 VARCHAR2(150),         
+		                          ATTRIBUTE4 VARCHAR2(150),         
+		     			  ATTRIBUTE5 VARCHAR2(150),         
+		     			  ATTRIBUTE6 VARCHAR2(150),         
+		     			  ATTRIBUTE7 VARCHAR2(150),         
+		     			  ATTRIBUTE8 VARCHAR2(150),         
+		     			  ATTRIBUTE9 VARCHAR2(150),         
+		     			  ATTRIBUTE10 VARCHAR2(150),        
+		     			  ATTRIBUTE11 VARCHAR2(150),        
+		     			  ATTRIBUTE12 VARCHAR2(150),        
+		     			  ATTRIBUTE13 VARCHAR2(150),        
+		     			  ATTRIBUTE14 VARCHAR2(150),        
+		     			  ATTRIBUTE15 VARCHAR2(150),        
+		    			  ATTRIBUTE_CATEGORY VARCHAR2(150),
+					  CONSTRAINT PARAM_SITE UNIQUE(PARAM_NAME,SITE,APPLICATIONID,RESPONSIBILITYID,USERID));
+
+GRANT ALL ON XXCRM.XX_CDH_EBL_PARAM_SETUP TO APPS;
+
+SHOW ERRORS;

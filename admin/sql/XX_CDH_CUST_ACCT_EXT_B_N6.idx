@@ -1,0 +1,26 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                                                                          |
+-- +==========================================================================+
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- | INDEX: XX_CDH_CUST_ACCT_EXT_B_N6                                         |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   ================     ==============================|
+-- | V1.0     10-JAN-2016  Rohit Gupta          Initial version               |
+-- |                                                                          |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX XXCRM.XX_CDH_CUST_ACCT_EXT_B_N6 ON XXCRM.XX_CDH_CUST_ACCT_EXT_B(ATTR_GROUP_ID, CUST_ACCOUNT_ID, D_EXT_ATTR1, C_EXT_ATTR1, C_EXT_ATTR2, D_EXT_ATTR2) INVISIBLE TABLESPACE "XXOD_TS_DATA";

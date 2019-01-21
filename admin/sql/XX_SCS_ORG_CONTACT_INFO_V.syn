@@ -1,0 +1,40 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XX_SCS_ORG_CONTACT_INFO_V privileges                                              |--                                                           --|                                                                                             |--
+--| Program Name   : XX_SCS_ORG_CONTACT_INFO_V.syn                                        |--
+--|                                                                                             |--
+--| Purpose        : Privileges                         |--
+--|                                                                                             |--
+--| Change History :                                                                            |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              25-Mar-2009       Kalyan                  Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT GRANT ALL ON APPS.XX_SCS_ORG_CONTACT_INFO_V TO XXDATA_STAGE;
+PROMPT
+
+GRANT ALL ON APPS.XX_SCS_ORG_CONTACT_INFO_V TO XXDATA_STAGE;
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

@@ -1,0 +1,26 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             Table       : XX_CDH_MOD4_SFDC_CUST_STG                      |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     17-OCT-2007  Abhi          Initial Version                         | 
+-- |                                                                          |
+-- +==========================================================================+
+
+PROMPT
+PROMPT Synonym XX_CDH_MOD4_SFDC_CUST_STG
+PROMPT   
+
+CREATE OR REPLACE SYNONYM APPS.XX_CDH_MOD4_SFDC_CUST_STG FOR XXCRM.XX_CDH_MOD4_SFDC_CUST_STG;
+
+
+SHOW ERROR;
+ 

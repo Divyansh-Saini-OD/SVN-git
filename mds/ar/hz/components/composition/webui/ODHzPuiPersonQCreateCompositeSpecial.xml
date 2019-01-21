@@ -1,0 +1,25 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath_~PROD_~PATH_~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath_~PROD_mds_directory  -->
+<oa:stackLayout version="9.0.3.8.13_1550" xml:lang="en-US" file-version="$Header: HzPuiPersonQCreateCompositeSpecial.xml 115.3 2004/01/15 01:19:01 tsli noship $" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" xmlns:jrad="http://xmlns.oracle.com/jrad" controllerClass="oracle.apps.ar.hz.components.composition.webui.HzPuiPersonQCreateCompositeCO">
+   <ui:contents>
+      <oa:tip id="tip" tipMessageAppShortName="AR" tipMessageName="HZ_PUI_ADDR_TIP"/>
+      <oa:tableLayout id="tableLayout">
+         <ui:contents>
+            <oa:rowLayout id="rowLayout">
+               <ui:contents>
+                  <oa:cellFormat id="PersonProfileCell" vAlign="top">
+                     <ui:contents>
+                        <oa:stackLayout id="orgProfileRegion" extends="/oracle/apps/ar/hz/components/party/person/webui/HzPuiQuickCreatePersonSpecial"/>
+                     </ui:contents>
+                  </oa:cellFormat>
+                  <oa:cellFormat id="addressCell" vAlign="top">
+                     <ui:contents>
+                        <oa:header id="addressRegion" extends="/od/oracle/apps/xxcrm/ar/hz/components/address/webui/ODHzPuiAddressCreateUpdate"/>
+                     </ui:contents>
+                  </oa:cellFormat>
+               </ui:contents>
+            </oa:rowLayout>
+         </ui:contents>
+      </oa:tableLayout>
+   </ui:contents>
+</oa:stackLayout>

@@ -1,0 +1,42 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===========================================================================+
+-- |                  Office Depot - eBilling Project                          |
+-- |                         WIPRO/Office Depot                                |
+-- +===========================================================================+
+-- | Name        : CREATE_XX_CDH_EBL_DOC_CONTACT_ID_S.seq                      |
+-- | Description :                                                             |
+-- | File to create sequence for eBilling project, Table: XX_CDH_EBL_CONTACTS. |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author        Remarks            	               |
+-- |======== =========== ============= ========================================|
+-- |DRAFT 1A 25-FEB-2010 Srini Ch      Initial draft version                   |
+-- |                                                                           |
+-- |                                                                           |
+-- |                                                                           |
+-- +===========================================================================+
+
+-- ----------------------------------------------------------------------------
+-- Create Custom Sequence XX_CDH_EBL_DOC_CONTACT_ID_S
+-- ----------------------------------------------------------------------------
+
+CREATE SEQUENCE XXCRM.XX_CDH_EBL_DOC_CONTACT_ID_S 
+INCREMENT BY 1 
+START WITH 1 
+NOMAXVALUE
+NOCYCLE NOCACHE NOORDER;
+
+
+-- ----------------------------------------------------------------------------
+-- Grants to APPS
+-- ----------------------------------------------------------------------------
+
+GRANT ALL ON XXCRM.XX_CDH_EBL_DOC_CONTACT_ID_S TO APPS;
+
+
+SHOW ERRORS;

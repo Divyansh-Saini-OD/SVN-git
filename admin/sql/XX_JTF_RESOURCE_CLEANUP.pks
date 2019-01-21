@@ -1,0 +1,15 @@
+CREATE OR REPLACE
+PACKAGE "XX_JTF_RESOURCE_CLEANUP" AS
+
+PROCEDURE UPDATE_END_DATE( X_ERRBUF      OUT VARCHAR2,
+                            X_RETCODE     OUT NUMBER);
+
+PROCEDURE DELETE_RESOURCE ( X_ERRBUF      OUT VARCHAR2,
+                            X_RETCODE     OUT NUMBER,
+                            P_COMMIT_FLAG IN VARCHAR2);
+
+END;
+/
+show errors;
+exit;
+

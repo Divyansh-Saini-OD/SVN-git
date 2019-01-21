@@ -1,0 +1,45 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : xxsas_email_campaign.tbl                           |
+-- | Description      : SAS Behavioral email table                         |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |DRAFT 1A  09-Mar-2010  Indra Varada       Initial draft version        |
+-- +=======================================================================+
+
+-- ---------------------------------------------------------------------
+--      Create Custom Table xxcrm.xxsas_email_campaign    --
+-- ---------------------------------------------------------------------
+CREATE TABLE xxcrm.xxsas_email_campaign
+    (
+      ORDER_ID                                VARCHAR2(24)                                                                                                                                                                                        
+     ,WLR_ID                                  NUMBER
+     ,EMAIL_ADDRESS                           VARCHAR2(2000)                                                                                                                                                                                
+     ,AOPS_ACCOUNT_ID                         NUMBER
+     ,AOPS_CONTACT_ID                         NUMBER
+     ,ACCOUNT_TYPE                            VARCHAR2(100)                                                                                                                                                                                 
+     ,HVOP_ORDER_FILE                         VARCHAR2(80)                                                                                                                                                                                  
+     ,CREATION_DATE                           DATE                                                                                                                                                                                          
+     ,LAST_UPDATE_DATE                        DATE                                                                                                                                                                                          
+     ,CREATED_BY_MODULE                       VARCHAR2(100)                                                                                                                                                                                 
+     ,ORDERED_DATE                            DATE                                                                                                                                                                                          
+     ,BOOKED_DATE                             DATE 
+    );
+------------------------------------------------------
+-- Adding Grants to APPS                            --
+------------------------------------------------------
+GRANT ALL ON xxcrm.xxsas_email_campaign TO APPS;
+
+SHOW ERRORS;

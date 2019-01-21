@@ -1,0 +1,18 @@
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify                                           |
+-- +============================================================================================+
+-- | Name        : ALTER_XX_CRM_EXP_ACCOUNT.tbl                                                 |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        27-Sep-2011     Indra Varada        Initial version                              |
+-- |1.0        23-Mar-2015     Indra Varada        added legal agreement                        |
+-- +============================================================================================+
+
+  ALTER TABLE XXCRM.XX_CRM_EXP_ACCOUNT ADD (GP_LEGAL_FLAG VARCHAR2(2));
+  
+ SHOW ERRORS;

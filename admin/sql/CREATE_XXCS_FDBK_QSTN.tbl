@@ -1,0 +1,110 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XXCS_FDBK_QSTN Table                                                       |--                                                           --|                                                                                             |--
+--| Program Name   : CREATE_XXCS_FDBK_QSTN.tbl                                                  |--
+--|                                                                                             |--
+--| Purpose        : Table for feedback questions.                                              |--
+--|                                                                                             |--
+--| Change History :                                                                            |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              25-Mar-2009       Kalyan                  Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Table XXCRM.XXCS_FDBK_QSTN......
+PROMPT
+  CREATE TABLE XXCRM.XXCS_FDBK_QSTN 
+   (	"FDBK_QSTN_ID" NUMBER, 
+	"FDK_CODE" VARCHAR2(30 BYTE), 
+	"FDK_CODE_DESC" VARCHAR2(1000 BYTE), 
+	"FDK_GDW_CODE" VARCHAR2(30 BYTE), 
+	"FDK_GDW_CODE_DESC" VARCHAR2(1000 BYTE), 
+	"EFFECTIVE_START_DT" DATE, 
+	"EFFECTIVE_END_DT" DATE, 
+	"FDK_TYPE" VARCHAR2(100 BYTE), 
+	"SORT_SEQ" NUMBER, 
+	"LANGUAGE" VARCHAR2(30 BYTE), 
+	"SOURCE_LANG" VARCHAR2(30 BYTE), 
+	"CREATED_BY" NUMBER, 
+	"CREATION_DATE" DATE, 
+	"LAST_UPDATED_BY" NUMBER, 
+	"LAST_UPDATE_DATE" DATE, 
+	"LAST_UPDATE_LOGIN" NUMBER, 
+	"REQUEST_ID" NUMBER, 
+	"PROGRAM_APPLICATION_ID" NUMBER, 
+	"PROGRAM_ID" NUMBER, 
+	"PROGRAM_UPDATE_DATE" DATE, 
+	"ATTRIBUTE_CATEGORY" VARCHAR2(30 BYTE), 
+	"ATTRIBUTE1" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE2" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE3" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE4" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE5" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE6" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE7" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE8" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE9" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE10" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE11" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE12" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE13" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE14" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE15" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE16" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE17" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE18" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE19" VARCHAR2(2500 BYTE), 
+	"ATTRIBUTE20" VARCHAR2(2500 BYTE), 
+	"FRM_CODE" VARCHAR2(30 BYTE), 
+	"GDW_PICK_FLAG" VARCHAR2(1 BYTE), 
+	"ORA_SEQ" NUMBER, 
+	"FDK_PICK_VALUE" VARCHAR2(30 BYTE), 
+	"FDK_HDR_FLAG" VARCHAR2(1 BYTE), 
+	"ORA_PICK_FLAG" VARCHAR2(1 BYTE), 
+	"ACTION_CODE" VARCHAR2(50 BYTE), 
+	"REQUIRED" VARCHAR2(1 BYTE), 
+	"OPPORTUNITY" VARCHAR2(1 BYTE), 
+	"LEAD" VARCHAR2(1 BYTE), 
+	"ACTION_STATUS" VARCHAR2(50 BYTE), 
+	"ACTION_TYPE" VARCHAR2(50 BYTE), 
+	"MIN_RANGE" NUMBER, 
+	"MAX_RANGE" NUMBER, 
+	"NUMBER_ONLY" VARCHAR2(1 BYTE), 
+	"ENTITY_STATUS" VARCHAR2(30 BYTE), 
+	"ENTITY_REASON" VARCHAR2(100 BYTE), 
+	"MULTI_RESULT" VARCHAR2(1 BYTE), 
+	"DEFAULT_VALUE" VARCHAR2(100 BYTE), 
+	"PRECEDENCE" NUMBER, 
+	"DEPENDENTS" NUMBER, 
+	"LAYOUT" VARCHAR2(50 BYTE), 
+	"ENTITY_RANK" VARCHAR2(50 BYTE)
+   ) ;
+
+
+GRANT ALL ON XXCRM.XXCS_FDBK_QSTN TO APPS;
+
+GRANT ALL ON XXCRM.XXCS_FDBK_QSTN TO XXDATA_STAGE;
+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

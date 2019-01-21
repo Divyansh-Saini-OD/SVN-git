@@ -1,0 +1,133 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<jrad:page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1550" xml:lang="en-US" file-version="$Header: CtctViewPG.xml 115.13 2004/08/05 21:29:15 mkatraga ship $">
+   <jrad:content>
+      <oa:pageLayout amDefName="oracle.apps.asn.common.customer.server.CtctViewAM" id="PageLayoutRN" controllerClass="od.oracle.apps.xxcrm.asn.common.customer.webui.ODCtctViewCO" title="Contact:" helpTarget="ASN_CtctViewPG" function="ASN_CTCTVIEWPG">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:pageButtonBar id="ASNPageButtonRN">
+               <ui:contents>
+                  <oa:submitButton id="ASNPageCnclBtn" text="Cancel" use="/oracle/apps/fnd/attributesets/Buttons/Cancel"/>
+                  <oa:submitButton id="ASNPageFullUpdBtn" text="Full Update" use="/oracle/apps/asn/common/attributesets/Buttons/UpdateCtctDetails"/>
+                  <oa:submitButton id="ASNPageApyBtn" text="Apply" use="/oracle/apps/fnd/attributesets/Buttons/Apply"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+            <oa:tableLayout id="ASNCtctViewTLRN" width="100%">
+               <ui:contents>
+                  <oa:rowLayout id="ASNCtctHdrRow" vAlign="top">
+                     <ui:contents>
+                        <oa:cellFormat id="ASNCtctHdrFirstCell">
+                           <ui:contents>
+                              <oa:defaultSingleColumn id="ASNCtctHdrFirstRN" extends="/oracle/apps/ar/hz/components/contact/webui/HzPuiContactDetails" headerDisabled="true"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="ASNCtctHdrCell">
+                           <ui:contents>
+                              <oa:defaultSingleColumn id="ASNCtctHdrRN" extends="/oracle/apps/ar/hz/components/party/person/webui/HzPuiPersonContactInfo" headerDisabled="true"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="ASNCtctNotesRow" vAlign="top">
+                     <ui:contents>
+                        <oa:cellFormat id="ASNCtctNotesCell">
+                           <ui:contents>
+                              <oa:header id="ASNCtctNotesHdrRN" adminCustomizable="true" use="/oracle/apps/asn/common/attributesets/Transient/Notes_Hdr">
+                                 <ui:contents>
+                                    <oa:stackLayout id="ASNCtctNotesRN" extends="/oracle/apps/asn/common/webui/ASNNotesRN"/>
+                                 </ui:contents>
+                              </oa:header>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="ASNCtctTasksRow" vAlign="top">
+                     <ui:contents>
+                        <oa:cellFormat id="ASNCtctTasksCell">
+                           <ui:contents>
+                              <oa:header id="ASNCtctTasksHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/Tasks_Hdr">
+                                 <ui:contents>
+                                    <oa:stackLayout id="ASNCtctTasksRN" extends="/oracle/apps/jtf/cac/task/webui/CacTaskSummRN"/>
+                                 </ui:contents>
+                              </oa:header>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="ASNCtctAddrBookRow" vAlign="top">
+                     <ui:contents>
+                        <oa:cellFormat id="ASNCtctAddrCell">
+                           <ui:contents>
+                              <oa:header id="ASNCtctAddrRN" extends="/od/oracle/apps/xxcrm/ar/hz/components/address/webui/ODHzPuiAddressView"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="ASNCtctPhnCell">
+                           <ui:contents>
+                              <oa:header id="ASNCtctPhnRN" extends="/oracle/apps/ar/hz/components/contactpoints/webui/HzPuiContactPointPhoneTable"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="ASNCtctBussActRow" vAlign="top">
+                     <ui:contents>
+                        <oa:cellFormat id="ASNCtctBussActCell">
+                           <ui:contents>
+                              <oa:header id="ASNCtctBussActHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/BusActivities_Hdr">
+                                 <ui:contents>
+                                    <oa:stackLayout id="ASNCtctBussActRN" extends="/oracle/apps/asn/common/customer/webui/BusinessActivitiesRN"/>
+                                 </ui:contents>
+                              </oa:header>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="ASNCtctAttchRow">
+                     <ui:contents>
+                        <oa:cellFormat id="ASNCtctAttchCell">
+                           <ui:contents>
+                              <oa:hideShowHeader id="ASNCtctAttchHdrRN" text="Attachments" disclosed="true">
+                                 <ui:contents>
+                                    <oa:attachmentTable id="ASNCtctAttchTable" viewName="OrgContactDetailsVO" searchRegionRendered="false" text="Attachments">
+                                       <oa:entityMappings>
+                                          <oa:entityMap id="ASNCtctAttchEntityMap" entityId="HZ_PARTIES">
+                                             <oa:primaryKeys>
+                                                <oa:primaryKey id="ASNCtctAttchPrimaryKey" viewAttr="RelationshipPartyId"/>
+                                             </oa:primaryKeys>
+                                             <oa:categoryMappings>
+                                                <oa:categoryMap id="ASNCtctAttchCategoryMap" categoryName="MISC"/>
+                                             </oa:categoryMappings>
+                                          </oa:entityMap>
+                                       </oa:entityMappings>
+                                    </oa:attachmentTable>
+                                 </ui:contents>
+                              </oa:hideShowHeader>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:stackLayout id="ASNCtctAttchContextHolderRN">
+                     <ui:contents>
+                        <oa:messageComponentLayout id="ASNCtctAttchContextRN" columns="2" rows="3" width="100%">
+                           <ui:contents>
+                              <oa:messageStyledText id="FirstName" viewName="OrgContactDetailsVO" viewAttr="FirstName" prompt="First Name" styleClass="OraDataText"/>
+                              <oa:messageStyledText id="LastName" viewName="OrgContactDetailsVO" viewAttr="LastName" prompt="Last Name" styleClass="OraDataText"/>
+                              <oa:messageStyledText id="EndDate" viewName="OrgContactDetailsVO" viewAttr="RelationshipEndDate" prompt="End Date" styleClass="OraDataText"/>
+                              <oa:messageStyledText id="JobTitle" viewName="OrgContactDetailsVO" viewAttr="JobTitle" prompt="Job Title" styleClass="OraDataText"/>
+                              <oa:messageStyledText id="Department" viewName="OrgContactDetailsVO" viewAttr="Department" prompt="Department" styleClass="OraDataText"/>
+                              <oa:messageStyledText id="PrimaryPhoneNumber" viewName="OrgContactDetailsVO" viewAttr="PrimaryPhone" prompt="Primary Phone Number" styleClass="OraDataText"/>
+                           </ui:contents>
+                        </oa:messageComponentLayout>
+                     </ui:contents>
+                  </oa:stackLayout>
+               </ui:contents>
+            </oa:tableLayout>
+            <oa:stackLayout id="ASNReqEvtRN" extends="/oracle/apps/asn/common/fwk/webui/ASNReqEvtRN"/>
+         </ui:contents>
+         <ui:productBranding>
+            <oa:image id="ASNBrandImage" source="ASNBRAND.gif" shortDesc="Sales"/>
+         </ui:productBranding>
+      </oa:pageLayout>
+   </jrad:content>
+</jrad:page>

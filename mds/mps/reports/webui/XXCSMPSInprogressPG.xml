@@ -1,0 +1,152 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_1312" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="InprogressRptRN" amDefName="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSInprogressAM" controllerClass="od.oracle.apps.xxcrm.mps.reports.webui.XXCSMPSInprogressCO" windowTitle="Inprogress Report" title="Inprogress Report">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:advancedTable id="ResultsRN" viewName="XXCSMPSInprogresRptVO1">
+               <ui:contents>
+                  <oa:column id="PartyNameCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortablePartyName" prompt="Party Name"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="PartyName" viewAttr="PartyName" prompt=""/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="CreationDateCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableCreationDate" prompt="Creation Date"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="CreationDate" viewAttr="CreationDate"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ShipSeqCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableShipSeq" prompt="Ship Seq"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ShipSeq" viewAttr="ShipSeq"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="Address1Col">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableAddress1" prompt="Address1"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="Address1" viewAttr="Address1"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ZipCodeCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableZipCode" prompt="Zip Code"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ZipCode" viewAttr="ZipCode"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="CityCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableCity" prompt="City"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="City" viewAttr="City"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="StateCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableState" prompt="State"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="State" viewAttr="State"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="SerialNoCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableSerialNo" prompt="Serial No"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="SerialNo" viewAttr="SerialNo"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="SkuOption1Col">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableSkuOption1" prompt="SkuOption1"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="SkuOption1" viewAttr="SkuOption1"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="SkuLengthCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableSkuLength" prompt="SkuLength"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="SkuLength" viewAttr="SkuLength"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="SuppliesLabelCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableSuppliesLabel" prompt="SuppliesLabel"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="SuppliesLabel" viewAttr="SuppliesLabel"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="SuppliesLevelCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableSuppliesLevel" prompt="Supplies Level"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="SuppliesLevel" viewAttr="SuppliesLevel"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="IncidentNumberCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableIncidentNumber" prompt="Incident Number"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="IncidentNumber" viewAttr="IncidentNumber"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ProgramTypeCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableProgramType" prompt="ProgramType"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ProgramType" viewAttr="ProgramType"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ManagedStatusCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ManagedStatusHdr" prompt="Managed Status"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ManagedStatus" viewAttr="ManagedStatus"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ActiveStatusCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ActiveStatusHdr" prompt="Active Status"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ActiveStatus" viewAttr="ActiveStatus"/>
+                     </ui:contents>
+                  </oa:column>
+               </ui:contents>
+               <ui:tableActions>
+                  <oa:rowLayout id="ExportRN">
+                     <ui:contents>
+                        <oa:exportButton id="ExportButton" exportAllRows="true" viewName="XXCSMPSInprogresRptVO1" text="Export to CSV"/>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:tableActions>
+            </oa:advancedTable>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

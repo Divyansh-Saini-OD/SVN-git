@@ -1,0 +1,26 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_CDH_ACCT_SETUP_TMPLCNTRS.syn              |
+-- | Description      :Account request details                             |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |DRAFT 1  22-Apr-2010  Sreedhar Mohan      Initial draft version        |
+-- +=======================================================================+
+------------------------------------------------------
+-- creating the new synonym                        ---
+------------------------------------------------------
+CREATE OR REPLACE SYNONYM APPS.XX_CDH_ACCT_TEMPLATE_CONTRACTS FOR XXCRM.XX_CDH_ACCT_TEMPLATE_CONTRACTS;
+
+SHOW ERRORS;

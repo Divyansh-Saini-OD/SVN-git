@@ -1,0 +1,28 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XX_TM_NAM_TERR_RSC_GRP_N1.idx                     |
+-- | Description      : Non Unique Index for custom table                  |
+   |                    XX_TM_NAM_TERR_RSC_DTLS                            |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |1        23-AUG-2008   Nabarun        Initial Version                  |
+-- +=======================================================================+
+
+------------------------------------------------------------------------
+-- Create non unique Index XX_TM_NAM_TERR_RSC_GRP_N1                 --
+------------------------------------------------------------------------
+
+CREATE INDEX XXCRM.XX_TM_NAM_TERR_RSC_GRP_N1
+ON XXCRM.XX_TM_NAM_TERR_RSC_DTLS(GROUP_ID)
+NOLOGGING;
+
+SHOW ERRORS;

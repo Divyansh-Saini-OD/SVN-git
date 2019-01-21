@@ -1,0 +1,22 @@
+SET VERIFY OFF
+WHENEVER SQLERROR CONTINUE
+
+--+=====================================================================+
+--|                   Office Depot -                                    |
+--+=====================================================================+
+--|                                                                     |
+--|Rice        : I2188                                                  |
+--|File Name   : ALTER_XX_CRM_CUSTMAST_HEAD_STG_COLLECTOR2.tbl          |
+--|File Path   : $XXCRM_TOP/admin/sql                                   |
+--|Schema      : XXCRM                                                  |
+--|                                                                     |
+--|Version    Date           Author                       Remarks       |
+--|=======   ======        ====================          =========      |
+--| 1.0		 3/24/2015     Sreedhar Mohan               Initial version |
+--|                                                                     |
+--+=====================================================================+
+
+ALTER TABLE XXCRM.XX_CRM_CUSTMAST_HEAD_STG ADD OMX_ACCOUNT_NUMBER VARCHAR2(30);
+
+ALTER TABLE XXCRM.XX_CRM_CUSTMAST_HEAD_STG ADD BILLDOCS_DELIVERY_METHOD VARCHAR2(30);
+

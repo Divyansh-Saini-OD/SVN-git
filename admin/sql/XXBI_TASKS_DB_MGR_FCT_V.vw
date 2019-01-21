@@ -1,0 +1,35 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+CREATE OR REPLACE VIEW XXBI_TASKS_DB_MGR_FCT_V
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        :  XXBI_TASKS_DB_MGR_FCT_V.vw                             |
+-- | Description :  Tasks Fact View to restrict data by manager.     |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author             Remarks                   |
+-- |=======   ==========  =============      ==========================|
+-- |1.0       03/04/2010  Mohan                                        |
+-- |                      Kalyanasundaram    Initial draft version     |
+-- |                                                                   | 
+-- +===================================================================+
+AS
+SELECT tfmv.*
+FROM APPS.XXBI_TASKS_FCT_MV tfmv
+WHERE ((tfmv.created_by = fnd_global.user_id) OR
+(tfmv.assigned_resource_id IN 
+(select a.resource_id from apps.jtf_rs_resource_extns_vl a where a.user_id = fnd_global.user_id)) OR
+(tfmv.dsm_resource_id IN 
+(select b.resource_id from apps.jtf_rs_resource_extns_vl b where b.user_id = fnd_global.user_id)) OR
+(tfmv.rsd_resource_id IN 
+(select c.resource_id from apps.jtf_rs_resource_extns_vl c where c.user_id = fnd_global.user_id)) OR
+(tfmv.vp_resource_id IN 
+(select d.resource_id from apps.jtf_rs_resource_extns_vl d where d.user_id = fnd_global.user_id))
+);
+/
+SHOW ERRORS;
+EXIT;

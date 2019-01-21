@@ -1,0 +1,38 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1550" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <!--*[Enter Javadoc like developer documentation, delete this line once you fill the included template.] [Put a one line description of the region here.] [Put a brief description of the usage of the region here.] @param [Parameter_name] [Put parameter use here.] @param [Parameter_name] [Put parameter use here.] @see [Put any additional links apart from controller class and BC4J objects directly referenced by this region]-->
+      <oa:pageLayout id="AccountDetailsRN" windowTitle="Account Detail Additional Info" title="Additional Details" amDefName="od.oracle.apps.xxcrm.asn.common.customer.server.ODAccountAdditionalDetAM" controllerClass="od.oracle.apps.xxcrm.asn.common.customer.webui.ODViewAccountAdDetCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:stackLayout id="AccountDetailsTBL">
+               <ui:contents>
+                  <oa:table id="RoleTBL">
+                     <ui:contents>
+                        <oa:messageStyledText id="JobRole" prompt="Role(s)" viewName="ODAccContactsRolesVO" viewAttr="UsageMeaning"/>
+                        <oa:messageStyledText id="PrimFlag1" prompt="Primary" viewName="ODAccContactsRolesVO" viewAttr="PrimaryFlag"/>
+                     </ui:contents>
+                  </oa:table>
+                  <oa:separator id="item3"/>
+                  <oa:table id="ContactNumTBL">
+                     <ui:contents>
+                        <oa:messageStyledText id="ContactNum" viewName="ODContactNumberVO" viewAttr="formattedPhone" prompt="Contact Number(s)"/>
+                        <oa:messageStyledText id="PrimFlag2" viewName="ODContactNumberVO" viewAttr="Primaryflag" prompt="Primary"/>
+                     </ui:contents>
+                  </oa:table>
+                  <oa:separator id="item4"/>
+                  <oa:table id="EmailTBL">
+                     <ui:contents>
+                        <oa:messageStyledText id="EmailAdr" viewName="ODEmailAddressVO" viewAttr="EmailAddress" prompt="Email Address"/>
+                        <oa:messageStyledText id="PrimFlag3" viewName="ODEmailAddressVO" viewAttr="Primaryflag" prompt="Primary"/>
+                     </ui:contents>
+                  </oa:table>
+               </ui:contents>
+            </oa:stackLayout>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

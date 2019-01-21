@@ -1,0 +1,14 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.5.4.89_560" xml:lang="en-US" customizes="/od/oracle/apps/xxcrm/asn/partysite/webui/ODSiteUpdatePG">
+   <modifications>
+      <modify element="ContactsExtRN.EndDate" rendered="false"/>
+      <modify element="NotesRN.ASNNoteStatusRow" rendered="false"/>
+      <modify element="ODBusinessActHdrRN" text="Site Business Activities"/>
+      <modify element="FullAccessColumn" rendered="false"/>
+      <modify element="ProfileLink" text="Site Profile"/>
+      <modify element="NotesTasksLink" text="Site Notes and Tasks"/>
+      <modify element="ContactsLink" text="Site Contacts"/>
+      <modify element="AddressBookLink" text="Site Address Book"/>
+      <modify element="SalesTeamLink" text="Site Sales Team"/>
+   </modifications>
+</customization>

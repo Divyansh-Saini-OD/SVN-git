@@ -1,0 +1,281 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1566" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="PageLayoutRN" controllerClass="od.oracle.apps.xxcrm.customer.account.webui.ODContractTemplateCreateUpdateCO" amDefName="od.oracle.apps.xxcrm.customer.account.server.ODContractTemplateAM" windowTitle="Contract Template Create / Update" title="Create / Update Contract Template">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:tip id="TipReq" text="* Indicates Required Field"/>
+            <oa:messageComponentLayout id="ContractTemplate" columns="2" rows="5">
+               <ui:contents>
+                  <oa:messageTextInput id="TemplateName" viewName="ODContractTemplatesVO1" viewAttr="TemplateName" prompt="Template Name" columns="20" required="yes" maximumLength="30"/>
+                  <oa:messageLovInput id="RevenueBand" externalListOfValues="/od/oracle/apps/xxcrm/asn/common/lov/webui/ODASNRevenueBandLovRN" prompt="Pricing Template" required="yes" columns="20" viewName="ODContractTemplatesVO1" viewAttr="Rev" readOnly="${oa.ODContTempCUPVO1.ReadOnly}">
+                     <lovMappings>
+                        <lovMap id="RevenueBandCodeLovMap" lovItem="RevenueBandCode" resultTo="RevenueBandID"/>
+                        <lovMap id="RevenueBandValueLovMap" lovItem="RevenueBandValue" criteriaFrom="RevenueBand" resultTo="RevenueBand"/>
+                     </lovMappings>
+                  </oa:messageLovInput>
+                  <oa:messageChoice id="SalesRole" viewAttr="SalesRole" queryable="true" pickListViewDef="od.oracle.apps.xxcrm.asn.common.poplist.server.ODSalesRoleLookupsVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode" readOnly="${oa.ODContTempCUPVO1.ReadOnly}" viewName="ODContractTemplatesVO1" prompt="Sales Role"/>
+                  <oa:messageTextInput id="CustProdXRef" viewName="ODContractTemplatesVO1" viewAttr="CustProdXref" prompt="Cust. Prod. X Ref" columns="20" maximumLength="20" readOnly="${oa.ODContTempCUPVO1.ReadOnly}"/>
+                  <oa:messageTextInput id="ParentId" prompt="Parent ID" columns="20" viewName="ODContractTemplatesVO1" viewAttr="ParentId" maximumLength="8" readOnly="${oa.ODContTempCUPVO1.ReadOnly}" serverUnvalidated="true"/>
+                  <oa:messageLayout id="messageLayout1">
+                     <ui:contents>
+                        <oa:formValue id="TemplateId" prompt="Template Id" viewName="ODContractTemplatesVO1" viewAttr="ContractTemplateId" dataType="NUMBER"/>
+                        <oa:formValue id="RevenueBandID" viewName="ODContractTemplatesVO1" viewAttr="RevenueBandCode" prompt="Revenue Band Code" dataType="NUMBER"/>
+                     </ui:contents>
+                  </oa:messageLayout>
+                  <oa:messageCheckBox id="TemplateLockedFlag" text="Locked By Admin" prompt="Locked By Admin" checked="false" viewName="ODContractTemplatesVO1" viewAttr="TemplateLockedFlag" readOnly="${oa.ODContTempCUPVO1.ReadOnly}"/>
+                  <oa:messageChoice id="OffContractCode" viewAttr="OffContractCode" queryable="true" pickListViewDef="od.oracle.apps.xxcrm.customer.account.poplist.server.ODAccountSetupUpOffVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode" required="yes" readOnly="${oa.ODContTempCUPVO1.ReadOnly}" viewName="ODContractTemplatesVO1" prompt="Off Contract"/>
+                  <oa:messageTextInput id="OffContractPercent" prompt="Off Contract %" viewName="ODContractTemplatesVO1" viewAttr="OffContractPercent" dataType="NUMBER" columns="7" maximumLength="3" required="yes" readOnly="${oa.ODContTempCUPVO1.ReadOnly}" serverUnvalidated="true"/>
+                  <oa:messageChoice id="OffWholeSaleCode" viewAttr="OffWholesaleCode" queryable="true" pickListViewDef="od.oracle.apps.xxcrm.customer.account.poplist.server.ODAccountSetupUpOffVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode" required="yes" readOnly="${oa.ODContTempCUPVO1.ReadOnly}" viewName="ODContractTemplatesVO1" prompt="Off Wholesale"/>
+                  <oa:messageTextInput id="OffWholeSalePercent" prompt="Off Wholesale %" viewName="ODContractTemplatesVO1" viewAttr="OffWholesalePercent" dataType="NUMBER" columns="7" maximumLength="3" required="yes" readOnly="${oa.ODContTempCUPVO1.ReadOnly}" serverUnvalidated="true"/>
+                  <oa:messageTextInput id="GPFloorPercent" prompt="GP Floor %" viewName="ODContractTemplatesVO1" viewAttr="GpFloorPercent" dataType="NUMBER" columns="7" maximumLength="3" required="yes" readOnly="${oa.ODContTempCUPVO1.ReadOnly}"/>
+                  <oa:messageCheckBox id="FreightCharge" viewName="ODContractTemplatesVO1" prompt="Freight Charge" viewAttr="FreightCharge" text="Freight Charge" readOnly="${oa.ODContTempCUPVO1.ReadOnly}"/>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:header id="ContHeader" text="Assigned Contracts">
+               <ui:contents>
+                  <oa:separator id="item2"/>
+                  <oa:messageCheckBox id="AssncontrLockedFlag" text="Locked By Admin" prompt="Locked By Admin" checked="false" viewName="ODContractTemplatesVO1" viewAttr="AssncontrLockedFlag" readOnly="${oa.ODContTempCUPVO1.ReadOnly}" />
+                  <oa:advancedTable id="ContractsTable" viewName="ODContractsAssignedVO1" width="80%">
+                     <ui:contents>
+                        <oa:column id="ContractNumCol" width="30%">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader12" prompt="Contract Number"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageTextInput id="ContractNumber" viewAttr="ContractNumber" columns="30" readOnly="${oa.ODContTempCUPVO1.ReadOnly}" required="uiOnly" maximumLength="50"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="ContractDescCol" width="50%">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader122" prompt="Contract Description"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageTextInput id="ContractDesc" viewAttr="ContractDescription" columns="50" readOnly="${oa.ODContTempCUPVO1.ReadOnly}" maximumLength="80"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="PriorityCol">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader121" prompt="Priority"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageChoice id="Priority" viewAttr="Priority" pickListViewDef="od.oracle.apps.xxcrm.customer.account.poplist.server.ODAcctSetupContractPriorityLovVO" pickListValAttr="LookupCode" pickListDispAttr="Meaning" readOnly="${oa.ODContTempCUPVO1.ReadOnly}" required="yes" allowBlankValue="false"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="DeleteCol" rendered="${oa.ODContTempCUPVO1.Rendered}">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader13" prompt="Delete"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:switcher id="region1" viewAttr="ContDelete">
+                                 <ui:case name="CN">
+                                    <oa:image id="CN" source="deleteicon_disabled.gif"/>
+                                 </ui:case>
+                                 <ui:case name="CY">
+                                    <oa:image id="CY" source="deleteicon_enabled.gif">
+                                       <ui:primaryClientAction>
+                                          <ui:fireAction event="DELETE_CONTRACT" id="fireAction1" unvalidated="true">
+                                             <ui:parameters>
+                                                <ui:parameter key="contAssId" value="${oa.ODContractsAssignedVO1.AssignedContractId}"/>
+                                                <ui:parameter key="contAssNumber" value="${oa.ODContractsAssignedVO1.ContractNumber}"/>
+                                             </ui:parameters>
+                                          </ui:fireAction>
+                                       </ui:primaryClientAction>
+                                    </oa:image>
+                                 </ui:case>
+                              </oa:switcher>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:formValue id="ContractId" dataType="NUMBER" viewAttr="AssignedContractId"/>
+                        <oa:formValue id="TemplateNumber" viewAttr="ContractTemplateId"/>
+                     </ui:contents>
+                     <ui:tableActions>
+                        <oa:flowLayout id="ContractsTableActions">
+                           <ui:contents>
+                              <oa:submitButton id="AddRow" text="Add Row" prompt="Add Row" rendered="${oa.ODContTempCUPVO1.Rendered}"/>
+                           </ui:contents>
+                        </oa:flowLayout>
+                     </ui:tableActions>
+                     <ui:footer>
+                        <oa:tableFooter id="ContractTableFooter">
+                           <ui:contents>
+                              <oa:tip id="PriorityTip" text="Priority cannot be duplicate"/>
+                              <oa:tip id="ContNumTip" text="Do not add more than 4 contracts to the template"/>
+                           </ui:contents>
+                        </oa:tableFooter>
+                     </ui:footer>
+                  </oa:advancedTable>
+               </ui:contents>
+            </oa:header>
+            <oa:header id="PPHeader" text="Price Plans assigned to Template">
+               <ui:contents>
+                  <oa:separator id="item1"/>
+                  <oa:defaultDoubleColumn id="region62">
+                  <ui:contents>
+                  <oa:messageCheckBox id="PriceplanLockedFlag" text="Locked By Admin" prompt="Locked By Admin" checked="false" viewName="ODContractTemplatesVO1" viewAttr="PriceplanLockedFlag" readOnly="${oa.ODContTempCUPVO1.ReadOnly}" />
+                  <oa:messageCheckBox id="PriceplanMandatoryFlag" text="Make Price Plan Non Mandatory" prompt="Make Price Plan Non Mandatory" checked="false" viewName="ODContractTemplatesVO1" viewAttr="PriceplanMandatoryFlag" readOnly="${oa.ODContTempCUPVO1.ReadOnly}" />
+                  </ui:contents>
+                  </oa:defaultDoubleColumn>
+                  <oa:advancedTable id="PricePlanRN" viewName="ODContractsPricePlanVO1">
+                     <ui:contents>
+                        <oa:column id="PricePlanCol">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader123" prompt="Price Plan"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageTextInput id="PricePlan" viewAttr="PricePlan" readOnly="${oa.ODContTempCUPVO1.ReadOnly}" required="uiOnly" maximumLength="30" columns="20"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="DeleteColumn" rendered="${oa.ODContTempCUPVO1.Rendered}">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader124" prompt="Delete"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:switcher id="region11" viewAttr="PPDelete">
+                                 <ui:case name="PN">
+                                    <oa:image id="PN" source="deleteicon_disabled.gif"/>
+                                 </ui:case>
+                                 <ui:case name="PY">
+                                    <oa:image id="PY" source="deleteicon_enabled.gif">
+                                       <ui:primaryClientAction>
+                                          <ui:fireAction event="DELETE_PP" id="fireAction2" unvalidated="true">
+                                             <ui:parameters>
+                                                <ui:parameter key="ppId" value="${oa.ODContractsPricePlanVO1.PricePlanId}"/>
+                                                <ui:parameter key="ppName" value="${oa.ODContractsPricePlanVO1.PricePlan}"/>
+                                             </ui:parameters>
+                                          </ui:fireAction>
+                                       </ui:primaryClientAction>
+                                    </oa:image>
+                                 </ui:case>
+                              </oa:switcher>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:formValue id="PricePlanId" viewAttr="PricePlanId"/>
+                        <oa:formValue id="ContractTemplateId" viewAttr="ContractTemplateId"/>
+                     </ui:contents>
+                     <ui:tableActions>
+                        <oa:flowLayout id="PricePlanTableActions">
+                           <ui:contents>
+                              <oa:submitButton id="AddPricePlanRow" text="Add Row" prompt="Add Row" rendered="${oa.ODContTempCUPVO1.Rendered}"/>
+                           </ui:contents>
+                        </oa:flowLayout>
+                     </ui:tableActions>
+                     <ui:footer>
+                        <oa:tableFooter id="ContractTableFooter">
+                           <ui:contents>
+                              <oa:tip id="PricePlan" text="Price Plan is Mandatory"/>
+                           </ui:contents>
+                        </oa:tableFooter>
+                     </ui:footer>
+                  </oa:advancedTable>
+               </ui:contents>
+            </oa:header>
+            <oa:header id="UniversalPricing" text="Universal Pricing">
+               <ui:contents>
+                  <oa:advancedTable id="UniversalPricing" viewName="ODCdhContractProgCodesVO">
+                     <ui:contents>
+
+                        <oa:column id="ProgCodesCol1">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader411" prompt="Program Codes"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                                                        <oa:messageLovInput id="ProgramCode" viewName="ODCdhContractProgCodesVO" viewAttr="ProgramCode" readOnly="${oa.ODContTempCUPVO1.ReadOnly}">
+                                                           <jrad:lovContents>
+                                                                  <oa:listOfValues id="LOVPage" title="Select Program Code">
+                                                                         <ui:contents>
+                                                                                <oa:table id="LOVResultsTable2" name="LOVPage" regionName="ProgramCodesLOV" shortDesc="Program Code LOV Table">
+                                                                                   <ui:contents>
+                                                                                          <oa:messageStyledText id="itemFlexValue" dataType="VARCHAR2" prompt="Program Code" viewName="ODUnivPriceProgCodesLOVVO" viewAttr="FlexValue" queryable="true"/>
+                                                                                          <oa:messageStyledText id="itemFlexValueMeaning" dataType="VARCHAR2" prompt="Program Code Meaning" text="Program Code Meaning" viewName="ODUnivPriceProgCodesLOVVO" viewAttr="FlexValueMeaning"/>
+                                                                                          <oa:messageStyledText id="itemDescription" dataType="VARCHAR2" prompt="Description" text="Description" viewName="ODUnivPriceProgCodesLOVVO" viewAttr="Description"/>
+                                                                                   </ui:contents>
+                                                                                </oa:table>
+                                                                         </ui:contents>
+                                                                  </oa:listOfValues>
+                                                           </jrad:lovContents>
+                                                           <jrad:lovMappings>
+                                                                  <jrad:lovMap id="lovMap2" lovItem="itemFlexValue" resultTo="ProgramCode" criteriaFrom="ProgramCode"/>
+                                                           </jrad:lovMappings>
+                                                        </oa:messageLovInput>
+                           </ui:contents>
+                        </oa:column>
+
+                        <oa:column id="ProgCodesCol2">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader412" prompt="Discount %" />
+                           </ui:columnHeader>
+                           <ui:contents>
+                             <oa:messageTextInput id="msgTxtDiscount" viewName="ODCdhContractProgCodesVO" viewAttr="DiscountRate" readOnly="${oa.ODContTempCUPVO1.ReadOnly}" />
+                           </ui:contents>
+                        </oa:column>
+
+                        <oa:column id="ProgCodesCol3">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader413" prompt="Exclude"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                             <oa:messageCheckBox id="msgExcludeUP" viewName="ODCdhContractProgCodesVO" viewAttr="ExcludeUnivPricing"  checked="false" readOnly="${oa.ODContTempCUPVO1.ReadOnly}"/>
+                           </ui:contents>
+                        </oa:column>
+
+                        <oa:column id="PCDeleteColumn" rendered="${oa.ODContTempCUPVO1.Rendered}">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader414" prompt="Delete"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:switcher id="region41" viewAttr="PCDelete">
+                                 <ui:case name="UN">
+                                    <oa:image id="UN" source="deleteicon_disabled.gif"/>
+                                 </ui:case>
+                                 <ui:case name="UY">
+                                    <oa:image id="UY" source="deleteicon_enabled.gif">
+                                       <ui:primaryClientAction>
+                                          <ui:fireAction event="DELETE_PC" id="fireAction3" unvalidated="true">
+                                             <ui:parameters>
+                                                <ui:parameter key="pcId" value="${oa.ODCdhContractProgCodesVO.ProgCodeId}"/>
+                                                <ui:parameter key="pcName" value="${oa.ODCdhContractProgCodesVO.ProgramCode}"/>
+                                             </ui:parameters>
+                                          </ui:fireAction>
+                                       </ui:primaryClientAction>
+                                    </oa:image>
+                                 </ui:case>
+                              </oa:switcher>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:formValue id="ProgCodeId" viewAttr="ProgCodeId"/>
+                        <oa:formValue id="ContractTemplateId" viewAttr="ContractTemplateId"/>
+
+
+                     <ui:tableActions>
+                        <oa:flowLayout id="UnivPriceDiscTableActions">
+                           <ui:contents>
+                              <oa:submitButton id="AddProgramCode" text="Add Row" prompt="Add New Program Code" rendered="${oa.ODContTempCUPVO1.Rendered}"/>
+                           </ui:contents>
+                        </oa:flowLayout>
+                     </ui:tableActions>
+                     <ui:footer>
+                        <oa:tableFooter id="ProgramCodesTableFooter">
+                           <ui:contents>
+                              <oa:tip id="ProgramCodesTip1" text="Attach Universal Program Codes to the Contract Template"/>
+                              <oa:tip id="ProgramCodesTip2" text="Exclude from Universal Pricing can not be checked when Discount % applied against Program Code"/>
+                           </ui:contents>
+                        </oa:tableFooter>
+                     </ui:footer>
+                   </ui:contents>
+                  </oa:advancedTable>
+               </ui:contents>
+            </oa:header>
+            <oa:pageButtonBar id="PageButtonBar">
+               <ui:contents>
+                  <oa:button id="Cancel" text="Cancel" prompt="Cancel" destination="OA.jsp?OAFunc=XX_ASN_CONT_TEMP_SRCH"/>
+                  <oa:submitButton id="Apply" text="Apply" prompt="Apply" rendered="${oa.ODContTempCUPVO1.Rendered}"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

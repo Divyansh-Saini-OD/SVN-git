@@ -1,0 +1,35 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :XX_OIC_ERROR_HEADER_LINE_S.seq                 	   |
+-- | Description      :						   	   |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0	     01-Aug-07	 Nageswara rao	     Initial Draft Version	   |
+-- +=======================================================================+
+
+
+
+-- ============================================================================
+-- Droping error sequence
+-- ============================================================================
+
+-- Drop Sequence XXCRM.xx_oic_error_headers_s
+
+DROP SEQUENCE XXCRM.xx_oic_error_headers_s
+/
+
+-- Drop Sequence XXCRM.xx_oic_error_lines_s
+
+DROP SEQUENCE XXCRM.xx_oic_error_lines_s
+/

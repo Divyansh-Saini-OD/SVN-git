@@ -1,0 +1,31 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : DROP_XX_CDH_ACCT_SETUP_DOCUMENTS.tbl               |
+-- | Description      : Table for Account Setup Documents                  |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  30-NOV-2007 Sreekanth-Rao      Initial Draft Version          |
+-- |                                                                       |
+-- |                                                                       |
+-- +=======================================================================+
+
+-- -------------------------------------------------------
+--      Drop Custom Table XX_CDH_ACCT_SETUP_DOCUMENTS   --
+-- -------------------------------------------------------
+
+DROP TABLE XXCRM.XX_CDH_ACCT_SETUP_DOCUMENTS;
+
+/
+SHOW ERRORS;
+
+EXIT;

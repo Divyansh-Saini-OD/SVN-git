@@ -1,0 +1,45 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_CDH_CONTRACT_PROG_CODES.tbl              |
+-- | Description      :Account request details                             |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |1        15-MAR-2010   Sreedhar Mohan   Initial Version                |
+-- +=======================================================================+
+
+-- ---------------------------------------------------------------------
+--      Create Custom Table XX_CDH_CONTRACT_PROG_CODES    --
+-- ---------------------------------------------------------------------
+CREATE TABLE XXCRM.XX_CDH_CONTRACT_PROG_CODES
+  (
+          PROG_CODE_ID            NUMBER,
+          CONTRACT_TEMPLATE_ID       NUMBER,
+          PROGRAM_CODE               VARCHAR2(60),
+          DISCOUNT_RATE              NUMBER(5,2),
+          EXCLUDE_UNIV_PRICING       VARCHAR2(1),
+          LAST_UPDATED_BY            NUMBER(15) NOT NULL,
+          CREATION_DATE              DATE NOT NULL ,      
+          LAST_UPDATE_LOGIN          NUMBER(15),         
+          CREATED_BY                 NUMBER(15) NOT NULL,
+          LAST_UPDATE_DATE           DATE NOT NULL       
+);
+
+------------------------------------------------------
+-- Adding Grants to APPS.                           --
+------------------------------------------------------
+GRANT ALL ON XXCRM.XX_CDH_CONTRACT_PROG_CODES TO APPS;
+
+SHOW ERRORS;

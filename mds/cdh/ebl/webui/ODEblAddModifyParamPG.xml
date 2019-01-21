@@ -1,0 +1,53 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.12_1330" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="PageRN" amDefName="od.oracle.apps.xxcrm.cdh.ebl.server.EbillingParamAM" windowTitle="Parameter Metadata" title="Add and Modify parameters">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:query id="MainRN" mode="resultsBasedSearch" dispSimple="true" controllerClass="od.oracle.apps.xxcrm.cdh.ebl.webui.ParamMapModifyCO">
+               <ui:contents>
+                  <oa:advancedTable id="EbillingParamModifyVO1" viewName="EbillingParamModifyVO1">
+                     <ui:contents>
+                        <oa:column id="ParameterNameCol" width="500">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="ParameterHeader1" prompt="Parameter"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageTextInput id="ParamName" viewAttr="ParamName" prompt="Parameter" maximumLength="500" columns="70" readOnly="${oa.EbillingParamModifyVO1.ReadFlag}"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="ParameterDescriptionCOl" width="500">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="ParameterDisplayHeader" prompt="Parameter Display value"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageTextInput id="ParamDescription" viewAttr="ParamDescription" prompt="Parameter Display Value" queryable="true" maximumLength="100" columns="70"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="DeactiveFlagCol">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="DeactiveFlagHeader" prompt="Inactive Parameters"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageCheckBox id="DeactiveFlag" viewAttr="DeactiveParamFlag" checkedValue="Y"/>
+                           </ui:contents>
+                        </oa:column>
+                     </ui:contents>
+                     <ui:footer>
+                        <oa:tableFooter id="tableFooter1">
+                           <ui:contents>
+                              <oa:addTableRow id="AddParameter" text="Add New Parameter"/>
+                              <oa:submitButton id="SaveButton" text="Save Changes" prompt="Save Changes"/>
+                           </ui:contents>
+                        </oa:tableFooter>
+                     </ui:footer>
+                  </oa:advancedTable>
+               </ui:contents>
+            </oa:query>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

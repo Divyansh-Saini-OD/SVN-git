@@ -1,0 +1,182 @@
+#-- +=======================================================================+
+#-- |               Office Depot - Project Simplify                         |
+#-- |             Oracle NAIO Consulting Organization                       |
+#-- +=======================================================================+
+#-- | Name            : ODOBJIMPANAL.prog                                   |
+#-- | Rice ID         : E2023_CRM_Impact_Analysis_Tool                      |
+#-- | Description     : Shell script to for Anaysis of change impact on     |
+#-- |                   existing objects for a CRM change.                   |
+#-- |                                                                       |
+#-- |Change History:                                                        |
+#-- |---------------                                                        |
+#-- |                                                                       |
+#-- |Version  Date        Author                Remarks                     |
+#-- |-------  ----------- -----------------     --------------------------  |
+#-- |Draft 1A 01-SEP-2008 Satyasrinivas         Initial Draft version       |
+#-- +=======================================================================+
+MACHINE_NAME=0
+PORT_NUMBER=0
+DB_NAME=0
+# --------------------------------------------------------------------
+getPortMachine()
+{
+    MACHINE_NAME=`sqlplus -s $ORA_USER_PASS <<EOF 
+                        set pages 0 
+                        set lines 1023
+                        select host_name from v\\$instance;
+                        exit
+                        EOF`
+                        
+    PORT_NUMBER=`sqlplus -s $ORA_USER_PASS <<EOF 
+                        set pages 0 
+                        set lines 1023 
+                        select fnd_profile.value('CSF_MAP_DB_PORT') from dual; 
+                        exit
+                        EOF`
+                        
+        DB_NAME=`sqlplus -s $ORA_USER_PASS <<EOF 
+                        set pages 0 
+                        set lines 1023  
+                        select instance_name from v\\$instance;
+                        exit
+                        EOF`    
+}
+
+HOME_PATH=`pwd`
+#LOG_FILE=XXODOBJLOG.log
+SQL_DIR=$XXCRM_TOP/sql
+ORA_USER_PASS=$1
+USERID=$2
+USERNAME=$3
+REQUESTID=$4
+p_srch_str=$5
+p_file_name=$6
+p_file_type=$7
+
+LOGDIR=$APPLCSF/$APPLLOG/l$REQUESTID.req
+LOG_FILE=$LOGDIR
+
+echo "OD: CRM Object Impact Analysis Tool"
+echo 1- $ORA_USER_APSS  >> $LOGDIR
+echo 2- $USERID  	>> $LOGDIR
+echo 3- $USERNAME  	>> $LOGDIR
+echo 4- $REQUESTID  	>> $LOGDIR
+#echo 5- $p_srch_str  	>> $LOGDIR
+
+echo `date` >> $LOGDIR
+echo APPCPNAM- $APPCPNAM  >> $LOGDIR
+
+
+getPortMachine
+#getFileWriteLocation
+
+echo "*********************************************" >> $LOG_FILE
+echo Machine Name : $MACHINE_NAME >> $LOG_FILE
+echo "*********************************************" >> $LOG_FILE
+sleep 5
+echo  Port number : $PORT_NUMBER >> $LOG_FILE
+echo "*********************************************" >> $LOG_FILE
+sleep 5
+echo      DB Name : $DB_NAME >> $LOG_FILE
+echo "*********************************************" >> $LOG_FILE
+sleep 5
+echo File Location Directory : /usr/tmp  >> $LOG_FILE
+echo "*********************************************" >> $LOG_FILE
+sleep 5
+
+# --------------------------------------------------------------------
+# Setting the Concurrent Program Output File Name based on $APPCPNAM
+# --------------------------------------------------------------------
+if [ "$APPCPNAM" = "USER.REQUID" ]; then
+    OUTDIR=$APPLCSF/$APPLOUT/$USERNAME.$REQUESTID
+else 
+    OUTDIR=$APPLCSF/$APPLOUT/o$REQUESTID.out
+fi
+
+echo OUTDIR- $OUTDIR  >> $LOGDIR
+
+echo "Search String: $5" >> $OUTDIR
+#-----------------------------------------------------------
+# Function for search
+#------------------------------------------------------------
+#echo "-----------------------------------------------------------------------------------------------------------------------------------------------------" >>$OUTDIR
+#echo  Customized Objects >>$OUTDIR
+#echo "-----------------------------------------------------------------------------------------------------------------------------------------------------">>$OUTDIR
+echo "Object Top	Object and Path	Number of Occurences">>$OUTDIR
+find $CUSTOM_TOP -type f -name '*.*' -exec fgrep  -i -l  "$5" {}  2> /dev/null >>/usr/tmp/tempcust.$4 \;
+lin=`cat /usr/tmp/tempcust.$4 < /dev/zero| wc -l `
+a=1
+while test $a -le $lin
+do
+x=`cat /usr/tmp/tempcust.$4 < /dev/zero | head -$a | tail -1` 
+y=`grep  -i -c "$5" "$x" `
+#z= `grep  -i "$p_srch_str" "$x" |cut -d'/' -f1`
+#echo TOP "\t" PATH "\t" Number Of Occurences
+echo "CUSTOM_TOP	$x	$y" >> $OUTDIR 
+a=`expr $a + 1`
+done
+
+#echo "-----------------------------------------------------------------------------------------------------------------------------------------------------">>$OUTDIR
+#echo  Existing Applications Objects >>$OUTDIR
+#echo "-----------------------------------------------------------------------------------------------------------------------------------------------------">>$OUTDIR
+find $APPL_TOP -type f -name '*.*' -exec fgrep  -i -l  "$5" {}  2> /dev/null >>/usr/tmp/tempappl.$4 \;
+lin=`cat /usr/tmp/tempappl.$4 | wc -l `
+a=1
+while test $a -le $lin
+do
+x=`cat /usr/tmp/tempappl.$4 | head -$a | tail -1` 
+y=`grep  -i -c "$5" "$x" `
+#z= `grep  -i "$p_srch_str" "$x" |cut -d'/' -f1`
+echo "APPL_TOP	$x	$y" >> $OUTDIR 
+a=`expr $a + 1`
+done
+
+#echo "-----------------------------------------------------------------------------------------------------------------------------------------------------">>$OUTDIR
+#echo  Common Objects >>$OUTDIR
+#echo "-----------------------------------------------------------------------------------------------------------------------------------------------------">>$OUTDIR
+find $COMMON_TOP -type f -name '*.*' -exec fgrep  -i -l  "$5" {}  2> /dev/null >>/usr/tmp/tempcomn.$4 \;
+lin=`cat /usr/tmp/tempcomn.$4 | wc -l `
+a=1
+while test $a -le $lin
+do
+x=`cat /usr/tmp/tempcomn.$4 | head -$a | tail -1` 
+y=`grep  -i -c "$5" "$x" `
+#z= `grep  -i "$p_srch_str" "$x" |cut -d'/' -f1`
+echo "COMMON_TOP	$x	$y" >> $OUTDIR 
+a=`expr $a + 1`
+done
+rm /usr/tmp/tempcust.$4 /usr/tmp/tempappl.$4 /usr/tmp/tempcomn.$4 
+
+
+# --------------------------------------------------------------------
+# DB Username and DB Password
+# --------------------------------------------------------------------
+IDX=`expr index $ORA_USER_PASS /`
+LENGTH=`expr length $ORA_USER_PASS`	    	
+if [ "$IDX" == 0 ]; then
+   IDX=`expr length $ORA_USER_PASS`
+else
+    IDX=`expr $IDX - 1`
+   PWD_IDX=`expr $IDX + 2`
+fi
+	    	
+APPS_USER=`expr substr $ORA_USER_PASS 1 $IDX`
+
+APPS_PASSWD=`expr substr $ORA_USER_PASS $PWD_IDX $LENGTH`
+
+echo " " >> $LOG_FILE
+#writeOutputHeader
+#    done
+echo " " >> $OUTDIR
+
+# --------------------------------------------------------------------
+# Unset the variables set for this installation
+# --------------------------------------------------------------------
+unset HOME_PATH
+#unset LOG_FILE
+unset SQL_DIR
+ 
+exit 0
+# --------------------------------------------------------------------
+#  End of Script
+# --------------------------------------------------------------------

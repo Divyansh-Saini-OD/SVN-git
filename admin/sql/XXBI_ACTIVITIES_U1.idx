@@ -1,0 +1,35 @@
+-- $Id$
+-- $Rev:$
+-- $HeadURL:$
+-- $Author:$
+-- $Date:$
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=============================================================================+
+-- |               Office Depot - Project Simplify                               |
+-- +=============================================================================+
+-- | Name             :XXBI_ACTIVITIES_U1.idx                                    |
+-- | Description      :Index on XXBI_ACTIVITIES                                  | 
+-- |                                                                             |
+-- |Change History:                                                              |
+-- |---------------                                                              |
+-- |                                                                             |
+-- |Version  Date        Author             Remarks                              |
+-- |-------  ----------- -----------------  -------------------------------------|
+-- |1.0      13-Mar-2009 Indra Varada       Initial Version                      |
+-- +=============================================================================+
+
+-- ---------------------------------------------------
+-- Create index XXBI_ACTIVITIES_U1
+-- ---------------------------------------------------
+
+CREATE INDEX XXCRM.XXBI_ACTIVITIES_U1
+ON
+XXCRM.XXBI_ACTIVITIES
+(
+source_type,
+source_id
+);

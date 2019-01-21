@@ -1,0 +1,45 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :XX_CRM_TPS_Record_Id_S.seq	                   |
+-- | Description      :CRM Tops Request table seq	                   |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  25-Jul-2008 Piyush Khandelwal  Initial Draft Version          |
+-- +=======================================================================+
+
+-- -----------------------------------------------
+-- Create Custom Sequence XX_CDH_DOC_TEMPLATE_ATRRIB_S    --
+-- -----------------------------------------------
+DROP SEQUENCE XXCRM.XX_CRM_TPS_Record_Id_S ;
+
+-- -----------------------------------------------
+-- Create Custom Sequence XX_CRM_TPS_Record_Id_S   --
+-- -----------------------------------------------
+
+CREATE SEQUENCE XXCRM.XX_CRM_TPS_Record_Id_S 
+INCREMENT BY 1 
+START WITH 1000 
+NOMAXVALUE
+NOCYCLE NOCACHE NOORDER;
+
+
+------------------------------------------------------
+-- Grants to APPS                                   --
+------------------------------------------------------
+
+GRANT ALL ON XXCRM.XX_CRM_TPS_Record_Id_S TO APPS;
+
+
+SHOW ERRORS;
+EXIT;

@@ -1,0 +1,38 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : XXBI_QUICK_LINKS_S.syn                              |
+-- | Description : Synonym for XXBI_QUICK_LINKS_S                      |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1a 19-Feb-2010  Sarah Justina    Initial draft version       |
+-- +===================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+SET TERM ON
+
+PROMPT
+PROMPT Creating SYNONYM XXBI_QUICK_LINKS_S
+PROMPT
+
+CREATE OR REPLACE SYNONYM XXBI_QUICK_LINKS_S FOR XXCRM.XXBI_QUICK_LINKS_S;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

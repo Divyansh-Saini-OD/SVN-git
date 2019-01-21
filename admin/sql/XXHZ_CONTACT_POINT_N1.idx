@@ -1,0 +1,26 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : xxhz_contact_point_n1.idx                          |
+-- | Description      : Index on table hz_contact_points                   |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |DRAFT 1a 27-Mar-2008   Ankur Tandon          Initial Version           |
+-- +=======================================================================+
+
+------------------------------------------------------
+-- Create Index xxhz_contact_point_n1               --
+------------------------------------------------------
+create index xxcrm.xxhz_contact_point_n1 on apps.hz_contact_points (      
+        upper ( PHONE_COUNTRY_CODE||PHONE_AREA_CODE||PHONE_NUMBER||PHONE_EXTENSION ) )
+tablespace xxod nologging;
+
+show errors;

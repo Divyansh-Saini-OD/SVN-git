@@ -1,0 +1,40 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : DROP_XX_CN_SUMM_BATCH_S.seq                         |
+-- | Rice ID     : E1004A_CustomCollections_(TableDesign)              |
+-- | Description : XX_CN_SUM_TRX Table - Sequence Drop Script          |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1a 18-Oct-2007  Sarah Justina    Initial draft version       |
+-- |1.0      18-Oct-2007  Sarah Justina    Baselined after testing     |
+-- |                                                                   |
+-- +===================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+SET TERM ON
+
+PROMPT
+PROMPT Dropping Existing SEQUENCE XX_CN_SUMM_BATCH_S
+PROMPT
+
+DROP SEQUENCE XXCRM.XX_CN_SUMM_BATCH_S;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

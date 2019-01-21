@@ -1,0 +1,115 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify						|
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_ALTER_LOAD_STATUS.tbl                                               |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        08/07/11       Devendra Petkar        Initial version                            |
+-- +============================================================================================+
+
+
+--------------------------------------------------------------------
+----------------------- Added Alter Table Statement -----------------
+--------------------------------------------------------------------
+
+
+SET time on;
+SET timing on;
+SET serveroutput on;
+SET trimspool on;
+SET feedback on
+SET verify on
+SET echo on
+
+
+
+DECLARE
+   v_cnt   NUMBER;
+   v_sqlerrm VARCHAR2(250);
+   TYPE type_droptable IS TABLE OF VARCHAR2(50);
+   rec_droptable type_droptable:=type_droptable('XX_CRM_EXP_OPP_CONTACT', 'XX_CRM_EXP_USER', 'XX_CRM_EXP_SPID');
+
+BEGIN
+FOR i IN rec_droptable.first..rec_droptable.last
+LOOP
+BEGIN
+   SELECT COUNT (*)
+     INTO v_cnt
+     FROM user_tab_columns
+    WHERE table_name = rec_droptable(i)
+	AND column_name='LOAD_STATUS';
+   IF v_cnt = 0
+   THEN
+      EXECUTE IMMEDIATE    'ALTER TABLE '|| rec_droptable(i)
+                        || ' ADD ( load_status VARCHAR2(50 BYTE) DEFAULT ''New'') ';
+         DBMS_OUTPUT.put_line ('Added column load_status in table '||rec_droptable(i));
+  ELSIF  v_cnt = 1 THEN
+	DBMS_OUTPUT.put_line ('Column load_status in already present in table '||rec_droptable(i));
+   ELSE
+  DBMS_OUTPUT.put_line ('Table not found for alter is '||rec_droptable(i));
+   END IF;
+ EXCEPTION
+   WHEN OTHERS THEN
+     v_sqlerrm:= sqlerrm;
+      DBMS_OUTPUT.put_line (v_sqlerrm);
+   ROLLBACK;
+END;
+END LOOP;
+END;
+/
+
+
+
+DECLARE
+   v_cnt   NUMBER;
+   v_sqlerrm VARCHAR2(250);
+   TYPE type_droptable IS TABLE OF VARCHAR2(50);
+   rec_droptable type_droptable:=type_droptable('XX_CRM_EXP_OPP_CONTACT', 'XX_CRM_EXP_USER', 'XX_CRM_EXP_SPID');
+
+BEGIN
+FOR i IN rec_droptable.first..rec_droptable.last
+LOOP
+BEGIN
+   SELECT COUNT (*)
+     INTO v_cnt
+     FROM user_tab_columns
+    WHERE table_name = rec_droptable(i)
+	AND column_name='ERROR_MSG';
+   IF v_cnt = 0
+   THEN
+      EXECUTE IMMEDIATE    'ALTER TABLE '|| rec_droptable(i)
+                        || ' ADD ( error_msg VARCHAR2(2000 BYTE)) ';
+         DBMS_OUTPUT.put_line ('Added column error_msg in table '||rec_droptable(i));
+  ELSIF  v_cnt = 1 THEN
+	DBMS_OUTPUT.put_line ('Column error_msg in already present in table '||rec_droptable(i));
+   ELSE
+  DBMS_OUTPUT.put_line ('Table not found for alter is '||rec_droptable(i));
+   END IF;
+ EXCEPTION
+   WHEN OTHERS THEN
+     v_sqlerrm:= sqlerrm;
+      DBMS_OUTPUT.put_line (v_sqlerrm);
+   ROLLBACK;
+END;
+END LOOP;
+END;
+/
+
+
+
+
+ GRANT ALL ON xxcrm.XX_CRM_EXP_OPP_CONTACT TO APPS;
+ GRANT ALL ON xxcrm.XX_CRM_EXP_USER TO APPS;
+ GRANT ALL ON xxcrm.XX_CRM_EXP_SPID TO APPS;
+
+ SHOW ERROR;
+EXIT;

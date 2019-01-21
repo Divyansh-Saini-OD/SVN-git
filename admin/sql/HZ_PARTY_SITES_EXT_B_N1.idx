@@ -1,0 +1,7 @@
+drop index AR.HZ_PARTY_SITES_EXT_B_N1;
+
+create index AR.HZ_PARTY_SITES_EXT_B_N1 
+  on AR.HZ_PARTY_SITES_EXT_B(PARTY_SITE_ID,ATTR_GROUP_ID) 
+  tablespace APPS_TS_TX_IDX_AR_16M parallel 8;
+
+alter index AR.HZ_PARTY_SITES_EXT_B_N1 noparallel;

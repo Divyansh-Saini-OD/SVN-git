@@ -1,0 +1,34 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                        WIPRO Technologies                         |
+-- +===================================================================+
+-- | Name    :          XXBI_LAST_SITE_CPOINT_MV_N1.idx                   |
+-- | |
+-- | Description      : This scipt creates index                       |
+-- |                    XXBI_LAST_SITE_CPOINT_MV_N1.                      |
+-- |                                                                   |
+-- | Subversion Info:                                                          |
+-- | $HeadURL:  $                                                               |
+-- | $Rev:  $                                                                   |
+-- | $Date: $                                         |
+-- |                                                                           |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |1.0       14-APR-2010 Prasad Initial Version             |
+-- |                                                                   |
+-- |                                                                   |
+-- +===================================================================+
+
+-- ----------------------------------------------------------
+--   CREATE Custom index XXBI_LAST_SITE_CPOINT_MV_N1        --
+-- ----------------------------------------------------------
+
+CREATE INDEX XXCRM.XXBI_LAST_SITE_CPOINT_MV_N1 ON XXCRM.XXBI_LAST_SITE_CPOINT_MV(party_site_id,CONTACT_POINT_ID,relationship_id);
+SHOW ERRORS;

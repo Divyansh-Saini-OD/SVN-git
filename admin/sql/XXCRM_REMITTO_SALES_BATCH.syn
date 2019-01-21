@@ -1,0 +1,34 @@
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify						|
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_NOTE_TASK_BATCH.syn                                               |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        08/07/11       Devendra Petkar        Initial version                            |
+-- +============================================================================================+
+
+
+---------------------------------------------------------
+-- Creating synonym				       --
+---------------------------------------------------------
+
+CREATE OR REPLACE SYNONYM APPS.XXCRM_REMITTO_SALES_BATCH FOR XXCNV.XXCRM_REMITTO_SALES_BATCH ;
+
+CREATE OR REPLACE SYNONYM APPS.XXCRM_REMITTO_SALES_FINANCE FOR XXCNV.XXCRM_REMITTO_SALES_FINANCE ;
+
+CREATE OR REPLACE SYNONYM APPS.XXCRM_REMITTO_SEQ FOR XXCNV.XXCRM_REMITTO_SEQ ;
+
+
+SHOW ERRORS;
+
+EXIT;

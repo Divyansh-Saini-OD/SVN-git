@@ -1,0 +1,23 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XXOD_RETIRED_OBJECTS.syn                   |
+-- | Description      : Synonyms for XXOD_RETIRED_OBJECTS          |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |1.0      26-5-2016   Shubhashree R   Initial Version                |
+-- +=======================================================================+
+------------------------------------------------------
+-- Dropping the existing synonym and creating new.  --
+------------------------------------------------------
+CREATE OR REPLACE SYNONYM APPS.XXOD_RETIRED_OBJECTS FOR XXCRM.XXOD_RETIRED_OBJECTS;
+
+SHOW ERRORS;

@@ -1,0 +1,39 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- +===================================================================+
+-- |                        Office Depot                               |
+-- |                                                                   |
+-- +===================================================================+
+-- | Synonym Name:  XX_CDH_BILLDOCS_UPLOAD_STG.syn                     |
+-- | Rice Id     :                                                     |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author             Remarks                  |
+-- |=======   ===========  =================  =========================|
+-- |1.0      25-JUNE-2015  Arun Gannarapu     Initial draft version    |
+-- +===================================================================+
+
+PROMPT
+PROMPT Synonym XX_CDH_BILLDOCS_UPLOAD_STG
+PROMPT    
+
+CREATE OR REPLACE SYNONYM APPS.XX_CDH_BILLDOCS_UPLOAD_STG FOR XXCRM.XX_CDH_BILLDOCS_UPLOAD_STG; 
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

@@ -1,0 +1,35 @@
+-- $Id$
+-- $Rev$
+-- $HeadURL$
+-- $Author$
+-- $Date$
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=============================================================================+
+-- |               Office Depot - Project Simplify                               |
+-- +=============================================================================+
+-- | Name             :XXBI_CUSTOMER_FCT_MV_N1.idx                               |
+-- | Description      :Index on XXBI_CUSTOMER_FCT_MV                             | 
+-- |                                                                             |
+-- |Change History:                                                              |
+-- |---------------                                                              |
+-- |                                                                             |
+-- |Version  Date        Author             Remarks                              |
+-- |-------  ----------- -----------------  -------------------------------------|
+-- |1.0      13-Mar-2009 Indra Varada       Initial Version                      |
+-- +=============================================================================+
+
+-- ---------------------------------------------------
+-- Create index XXBI_CUSTOMER_FCT_MV_N1
+-- ---------------------------------------------------
+
+CREATE INDEX XXCRM.XXBI_CUSTOMER_FCT_MV_N1
+ON
+APPS.XXBI_CUSTOMER_FCT_MV
+(
+party_site_id,
+customer_type
+);

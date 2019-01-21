@@ -1,0 +1,74 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : CREATE_XXTPS_OVRL_RM_RULES.tbl                     |
+-- | Description      : Overlay RM Rules                                   |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |Draft 1a  25-Apr-2011  Kishore Jena       Initial Draft Version        |
+-- +=======================================================================+
+
+-- ---------------------------------------------------------------------
+--      Create Custom Table XXTPS_OVRL_RM_RULES            --
+-- ---------------------------------------------------------------------
+CREATE TABLE XXTPS.XXTPS_OVRL_RM_RULES
+  (
+        OVRL_RM_RULE_ID			NUMBER(15)	NOT NULL,	
+        OVRL_RESOURCE_ID		NUMBER(15)	NOT NULL,
+        OVRL_ROLE_ID			NUMBER(15)	NOT NULL,
+        OVRL_GROUP_ID			NUMBER(15)	NOT NULL,
+        RESOURCE_ID			NUMBER(15)	NOT NULL,
+        ROLE_ID				NUMBER(15)	NOT NULL,
+        GROUP_ID				NUMBER(15)	NOT NULL,
+        START_DATE_ACTIVE		DATE		NOT NULL,
+        END_DATE_ACTIVE			DATE,	
+        DELETE_FLAG			CHAR(1),	
+        LOCK_FLAG				CHAR(1),	
+        SOURCE_OVRL_RELATIONSHIP_ID	NUMBER(15)	NOT NULL,
+        LAST_PROCESSED_DATE		DATE,
+        CREATED_BY			NUMBER(15)	NOT NULL,
+        CREATION_DATE			DATE		NOT NULL,
+        LAST_UPDATED_BY			NUMBER(15)	NOT NULL,
+        LAST_UPDATE_DATE		DATE		NOT NULL,
+        LAST_UPDATE_LOGIN		NUMBER(15),	
+        REQUEST_ID		     	NUMBER(15),	
+        PROGRAM_APPLICATION_ID     	NUMBER(15),	
+        ATTRIBUTE_CATEGORY         	VARCHAR2(30 BYTE),
+        ATTRIBUTE1                 	VARCHAR2(150 BYTE),
+        ATTRIBUTE2                 	VARCHAR2(150 BYTE),
+        ATTRIBUTE3                 	VARCHAR2(150 BYTE),          
+        ATTRIBUTE4                 	VARCHAR2(150 BYTE),
+        ATTRIBUTE5                 	VARCHAR2(150 BYTE),
+        ATTRIBUTE6                 	VARCHAR2(150 BYTE),          
+        ATTRIBUTE7                 	VARCHAR2(150 BYTE),
+        ATTRIBUTE8                 	VARCHAR2(150 BYTE),
+        ATTRIBUTE9                 	VARCHAR2(150 BYTE),          
+        ATTRIBUTE10                	VARCHAR2(150 BYTE),
+        ATTRIBUTE11                	VARCHAR2(150 BYTE),
+        ATTRIBUTE12                	VARCHAR2(150 BYTE),
+        ATTRIBUTE13                	VARCHAR2(150 BYTE),
+        ATTRIBUTE14                	VARCHAR2(150 BYTE),
+        ATTRIBUTE15                	VARCHAR2(150 BYTE),
+        ATTRIBUTE16                	VARCHAR2(150 BYTE),
+        ATTRIBUTE17                	VARCHAR2(150 BYTE),
+        ATTRIBUTE18                	VARCHAR2(150 BYTE),
+        ATTRIBUTE19                	VARCHAR2(150 BYTE),
+        ATTRIBUTE20                	VARCHAR2(150 BYTE)
+);
+------------------------------------------------------
+-- Adding Grants to APPS                            --
+------------------------------------------------------
+GRANT ALL ON XXTPS.XXTPS_OVRL_RM_RULES TO APPS;
+
+SHOW ERRORS;

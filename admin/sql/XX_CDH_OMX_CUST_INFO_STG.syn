@@ -1,0 +1,23 @@
+-- +==========================================================================+
+-- |                              Office Depot                                     |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             Table       : XX_CDH_OMX_CUST_INFO_STG                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     02-MAR-2015  Abhi                  Initial Version               | 
+-- |                                                                          |
+-- +==========================================================================+
+
+PROMPT
+PROMPT Synonym XX_CDH_OMX_CUST_INFO_STG
+PROMPT   
+
+CREATE OR REPLACE SYNONYM APPS.XX_CDH_OMX_CUST_INFO_STG FOR XXCRM.XX_CDH_OMX_CUST_INFO_STG;
+ 
+SHOW ERROR;

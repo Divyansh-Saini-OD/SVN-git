@@ -1,0 +1,140 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<jrad:page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1550" xml:lang="en-US" file-version="$Header: CustSearchPG.xml 115.16 2005/01/04 02:42:14 rramacha ship $" xmlns:user="http://xmlns.oracle.com/jrad/user">
+   <jrad:content>
+      <oa:pageLayout amDefName="od.oracle.apps.xxcrm.asn.custsrch.common.customer.server.ODCustSearchAM" id="PageLayoutRN" controllerClass="od.oracle.apps.xxcrm.asn.custsrch.common.customer.webui.ODCustSearchCO" title="Customer" helpTarget="ASN_CustSearchPG" function="ASN_CUSTSEARCHPG">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:header id="ASNDQMSearchRN" extends="/oracle/apps/ar/hz/components/search/webui/HzPuiDQMSearchForm"/>
+            <oa:tableLayout id="ASNSrchResultsRN" rendered="${oa.CustSearchPVO1.RenderNonDQMSearch}">
+               <ui:contents>
+                  <oa:spacer id="ASNSrchResultsSpacer" height="10"/>
+                  <oa:defaultSingleColumn id="ASNSrchResultsHdr" text="Results" headerDisabled="true">
+                     <ui:contents>
+                        <oa:tableLayout id="ASNSrchResultsTable" width="100%">
+                           <ui:contents>
+                              <oa:cellFormat id="ASNSrchResultsTableCell">
+                                 <ui:contents>
+                                    <oa:spacer id="ASNSrchResultsTableSpacer" width="20"/>
+                                 </ui:contents>
+                              </oa:cellFormat>
+                              <oa:cellFormat id="ASNSrchResultsCell">
+                                 <ui:contents>
+                                    <oa:rowLayout id="ASNSrchResultsSeparatorRow" width="100%">
+                                       <ui:contents>
+                                          <oa:separator id="ASnSrchResultsSeparator"/>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                    <oa:rowLayout id="ASNSrchResultsButtonRow" width="100%">
+                                       <ui:contents>
+                                          <oa:cellFormat id="ASNSrchResultsButtonCell" hAlign="start">
+                                             <ui:contents>
+                                                <oa:submitButton id="HzPuiCreate" serverUnvalidated="true" unvalidated="true" warnAboutChanges="true" text="Create Organization" prompt="Create Organization" hAlign="start"/>
+                                                <oa:exportButton id="HzPuiDQMSearchExport" exportAllRows="true" text="Export" shortDesc="Export" viewName="ODCustSearchResultsSVO"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                    <oa:rowLayout id="ASNSrchResultsSpacerRow">
+                                       <ui:contents>
+                                          <oa:cellFormat id="ASNSrchResultsSpacerCell"/>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                    <oa:rowLayout id="ASNSrchResultsTbRow" width="100%">
+                                       <ui:contents>
+                                          <oa:cellFormat id="ASNSrchResultsTbCell" width="100%" vAlign="top">
+                                             <ui:contents>
+											    <oa:query id="QueryDefaultRN" mode="autoCustomizationCriteria" dispCustomized="false" dispSimple="false" showCustomizePanelControls="false" defaultPanel="customized">
+                                                <ui:contents>
+											    <oa:table id="ASNSrchResultsTb" regionName="ASNSrchResultsTb" unvalidated="true" shortDesc="Default Search Results" serverUnvalidated="true" viewName="ODCustSearchResultsSVO" userCustomizable="true" name="ASNSrchResultsTb" width="100%">
+                                                   <ui:contents>
+                                                      <oa:link id="Name" userCustomizable="true" warnAboutChanges="true">
+                                                   <ui:contents>
+                                                      <oa:messageStyledText id="HzPuiPartyName1Default" dataType="VARCHAR2" text="PartyName" prompt="Name" viewName="ODCustSearchResultsSVO" viewAttr="PartyName" userCustomizable="true" sortState="yes"/>
+                                                   </ui:contents>
+                                                   <ui:primaryClientAction>
+                                                      <ui:fireAction event="HzPuiPartyName1LinkEvent" unvalidated="true">
+                                                         <ui:parameters>
+                                                            <ui:parameter key="HzPuiEvent" value="PARTYDETAIL"/>
+                                                            <ui:parameter key="HzPuiPartyId" value="${oa.encrypt.ODCustSearchResultsSVO.PartyId}"/>
+                                                            <ui:parameter key="HzPuiPartyName" value="${oa.encrypt.ODCustSearchResultsSVO.PartyName}"/>
+                                                            <ui:parameter key="HzPuiPartyType" value="${oa.ODCustSearchResultsSVO.PartyType}"/>
+                                                         </ui:parameters>
+                                                      </ui:fireAction>
+                                                   </ui:primaryClientAction>
+                                                </oa:link>
+                                                <oa:messageStyledText id="ProspectDefault" prompt="Prospect/ Customer Number" viewAttr="Prospect" viewName="ODCustSearchResultsSVO" sortState="yes" userCustomizable="true"/>							
+												<oa:messageStyledText id="SiteUseTypeDefault" prompt="Site Type" viewAttr="SiteUseType" viewName="ODCustSearchResultsSVO" sortState="yes" userCustomizable="true"/>
+												<oa:messageStyledText id="SiteNumDefault" prompt="Site Number/Site Sequence Number" viewAttr="SiteSeqNum" viewName="ODCustSearchResultsSVO" sortState="yes" userCustomizable="true"/>
+												<oa:messageStyledText id="SourceSystemDefault" prompt="Source System" viewAttr="SourceSystem" viewName="ODCustSearchResultsSVO" sortState="yes" userCustomizable="true"/>
+												<oa:messageStyledText id="KnownAsDefault" prompt="Alias" viewAttr="KnownAs" viewName="ODCustSearchResultsSVO" rendered="true" sortState="yes" userCustomizable="true"/>
+                                                <oa:link id="Address" userCustomizable="true" warnAboutChanges="true">
+                                                   <ui:contents>
+                                                      <oa:messageStyledText id="AddressDefault" dataType="VARCHAR2" text="Address" prompt="Address" viewName="ODCustSearchResultsSVO" viewAttr="Address" userCustomizable="true" sortState="yes"/>
+                                                   </ui:contents>
+                                                       <ui:primaryClientAction>
+                                                          <ui:fireAction event="HzPuiAddressLinkEvent" unvalidated="true">
+                                                              <ui:parameters>
+                                                                 <ui:parameter key="HzPuiAddrEvent" value="ADDRDETAIL"/>
+                                                                 <ui:parameter key="HzPuiAddrPartyId" value="${oa.encrypt.ODCustSearchResultsSVO.PartyId}"/>
+                                                                 <ui:parameter key="HzPuiAddrPartyName" value="${oa.encrypt.ODCustSearchResultsSVO.PartyName}"/>
+                                                                 <ui:parameter key="HzPuiAddrPartyType" value="${oa.ODCustSearchResultsSVO.PartyType}"/>
+			                                                     <ui:parameter key="HzPuiAddrPartySiteId" value="${oa.ODCustSearchResultsSVO.PartySiteId}"/>
+			                                                     <ui:parameter key="HzPuiAddrPartySiteNum" value="${oa.ODCustSearchResultsSVO.PartySiteNumber}"/>
+                                                              </ui:parameters>
+                                                          </ui:fireAction>
+                                                       </ui:primaryClientAction>
+                                                </oa:link>
+										        <oa:messageStyledText id="CountryDefault" viewName="ODCustSearchResultsSVO" viewAttr="Country" prompt="Country" sortState="yes" userCustomizable="true"/>
+                                                <oa:messageStyledText id="PrimaryPhoneDefault" viewName="ODCustSearchResultsSVO" viewAttr="Pphone" prompt="Primary Phone" sortState="yes" rendered="true" userCustomizable="true"/>
+                                                <oa:messageStyledText id="PrimaryURLDefault" prompt="Primary URL" viewName="ODCustSearchResultsSVO" viewAttr="PrimaryUrl" rendered="true" sortState="yes" destination="javascript:oaOpenIMWin('modal','{$PrimaryUrl}')" userCustomizable="true"/>
+                                                <oa:messageStyledText id="MatchPercentageDefault" viewName="ODCustSearchResultsSVO" prompt="Match %" viewAttr="Percentage" rendered="true" sortState="descending" userCustomizable="true"/>
+                                                <oa:messageStyledText id="EmailDefault" viewName="ODCustSearchResultsSVO" prompt="Email" viewAttr="Email" rendered="true" sortState="yes" destination="mailto:{#Email}" userCustomizable="true"/>
+                                                <oa:messageStyledText id="PrimarySalesPersonDefault" prompt="Primary Sales Person" viewAttr="PrimarySalesPerson" viewName="ODCustSearchResultsSVO" rendered="true" sortState="yes" userCustomizable="true"/>
+												<oa:messageStyledText id="CanCrossSellDefault" prompt="Can Cross Sell" viewAttr="CanCrossSell" viewName="ODCustSearchResultsSVO" rendered="true" sortState="yes" userCustomizable="true"/>
+												<oa:messageStyledText id="ConctFreqDefault" prompt="Contact Frequency" viewAttr="ConctFreq" viewName="ODCustSearchResultsSVO" rendered="true" sortState="yes" userCustomizable="true"/>
+												<oa:messageStyledText id="WhiteCollarWrkDefault" prompt="White Collar Workers" viewAttr="WhiteCollarWrk" viewName="ODCustSearchResultsSVO" rendered="true" sortState="yes" userCustomizable="true"/>	
+                                                   </ui:contents>
+                                                </oa:table>
+												</ui:contents>
+                                               </oa:query>
+											</ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                 </ui:contents>
+                              </oa:cellFormat>
+                           </ui:contents>
+                        </oa:tableLayout>
+                     </ui:contents>
+                  </oa:defaultSingleColumn>
+                  <oa:formParameter id="HzPuiPartyId"/>
+				  <oa:formParameter id="HzPuiPartyName"/>
+				  <oa:formParameter id="HzPuiPartyType"/>
+				  <oa:formParameter id="HzPuiEvent"/>
+				  <oa:formParameter id="HzPuiAddrEvent"/>
+				  <oa:formParameter id="HzPuiAddrPartyId"/>
+				  <oa:formParameter id="HzPuiAddrPartyName"/>
+				  <oa:formParameter id="HzPuiAddrPartyType"/>
+				  <oa:formParameter id="HzPuiAddrPartySiteId"/>
+				  <oa:formParameter id="HzPuiAddrPartySiteNum"/>
+               </ui:contents>
+            </oa:tableLayout>
+            <oa:stackLayout id="ASNDQMWrapperRN" rendered="${oa.CustSearchPVO1.RenderDQMSearch}" adminCustomizable="false">
+               <ui:contents>
+                  <oa:tableLayout id="ASNDQMSearchResultsRN" extends="/od/oracle/apps/xxcrm/asn/custsrch/common/customer/webui/ODHzPuiDQMSearchResults"/>
+               </ui:contents>
+            </oa:stackLayout>
+            <oa:stackLayout id="ASNReqEvtRN" extends="/oracle/apps/asn/common/fwk/webui/ASNReqEvtRN"/>
+         </ui:contents>
+         <ui:productBranding>
+            <oa:image id="ASNBrandImage" source="ASNBRAND.gif" shortDesc="Sales"/>
+         </ui:productBranding>
+         <ui:returnNavigation>
+            <oa:link id="ASNCustSrchRetLnk"/>
+         </ui:returnNavigation>
+      </oa:pageLayout>
+   </jrad:content>
+</jrad:page>

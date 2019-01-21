@@ -1,0 +1,53 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_1028" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="ODQuickLinksMaintainPG" windowTitle="Maintain Quick Links" title="Maintain Quick Links" amDefName="od.oracle.apps.xxcrm.bis.custom.server.ODDashboardQuickLinksAM" controllerClass="od.oracle.apps.xxcrm.bis.custom.webui.ODQuickLinksMaintainCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:table id="ODQuickLinksRN" controllerClass="od.oracle.apps.xxcrm.bis.custom.webui.ODQuickLinksMaintainCO">
+               <ui:contents>
+                  <oa:messageStyledText id="QuickLinkId" prompt="Quicklink Id" viewName="ODDashboardQuickLinksDisplayVO1" viewAttr="QuicklinkId" rendered="false"/>
+                  <oa:messageStyledText id="Label" viewName="ODDashboardQuickLinksDisplayVO1" viewAttr="Label" destination=""/>
+                  <oa:messageStyledText id="Description" viewName="ODDashboardQuickLinksDisplayVO1" viewAttr="Description" destination=""/>
+                  <oa:messageStyledText id="OrderOfDisplay" viewName="ODDashboardQuickLinksDisplayVO1" viewAttr="OrderOfDisplay" prompt="Order of Display"/>
+                  <oa:messageStyledText id="Path" viewName="ODDashboardQuickLinksDisplayVO1" viewAttr="Path" prompt="Path"/>
+                  <oa:messageStyledText id="FullPath" viewName="ODDashboardQuickLinksDisplayVO1" viewAttr="FullPath" prompt="Full Path"/>
+                  <oa:messageStyledText id="RespKey" viewName="ODDashboardQuickLinksDisplayVO1" viewAttr="ResponsibilityKey" prompt="Responsibility Key"/>
+                  <oa:messageStyledText id="LinkCategory" viewName="ODDashboardQuickLinksDisplayVO1" viewAttr="Meaning" prompt="Category"/>
+                  <oa:image id="Update" prompt="Update" source="updateicon_enabled.gif" imageHeight="24" imageWidth="24">
+                     <ui:primaryClientAction>
+                        <ui:fireAction id="fireAction1" event="update">
+                           <ui:parameters>
+                              <ui:parameter key="quickLinkId" value="${oa.ODDashboardQuickLinksDisplayVO1.QuicklinkId}"/>
+                           </ui:parameters>
+                        </ui:fireAction>
+                     </ui:primaryClientAction>
+                  </oa:image>
+                  <oa:image id="Delete" prompt="Delete" source="deleteicon_enabled.gif" imageHeight="24" imageWidth="24">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="delete">
+                           <ui:parameters>
+                              <ui:parameter key="quickLinkId" value="${oa.ODDashboardQuickLinksDisplayVO1.QuicklinkId}"/>
+                           </ui:parameters>
+                        </ui:fireAction>
+                     </ui:primaryClientAction>
+                  </oa:image>
+               </ui:contents>
+               <ui:tableActions>
+                  <oa:flowLayout id="ButtonLayout">
+                     <ui:contents>
+                        <oa:submitButton id="Create" text="Create Shortcuts" prompt="Create Quick Links">
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="create"/>
+                           </ui:primaryClientAction>
+                        </oa:submitButton>
+                     </ui:contents>
+                  </oa:flowLayout>
+               </ui:tableActions>
+            </oa:table>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

@@ -1,0 +1,33 @@
+--------------------------------------------------------
+--  DDL for Table XX_CDH_CUSTOMER_BO_LOG
+--------------------------------------------------------
+
+CREATE TABLE XXCRM.XX_CDH_CUSTOMER_BO_LOG 
+(  LOG_ID       NUMBER 
+  ,PROCESS_ID   VARCHAR2(100) 
+  ,LOG_MESSAGE  VARCHAR2(2000) 
+  ,LOG_DATE     DATE 
+  ,LOGGED_BY    NUMBER
+);
+
+--------------------------------------------------------
+--  DDL for Index XX_CDH_CUSTOMER_BO_LOG_N1
+--------------------------------------------------------
+
+CREATE INDEX XXCRM.XX_CDH_CUSTOMER_BO_LOG_N1 ON XXCRM.XX_CDH_CUSTOMER_BO_LOG (LOG_ID);
+
+--------------------------------------------------------
+--  DDL for Index XX_CDH_CUSTOMER_BO_LOG_N2
+--------------------------------------------------------
+
+CREATE INDEX XXCRM.XX_CDH_CUSTOMER_BO_LOG_N2 ON XXCRM.XX_CDH_CUSTOMER_BO_LOG (PROCESS_ID);
+
+--------------------------------------------------------
+--  DDL for Index XX_CDH_CUSTOMER_BO_LOG_N3
+--------------------------------------------------------
+
+CREATE INDEX XXCRM.XX_CDH_CUSTOMER_BO_LOG_N3 ON XXCRM.XX_CDH_CUSTOMER_BO_LOG (LOG_DATE);
+
+GRANT ALL ON xxcrm.XX_CDH_CUSTOMER_BO_LOG TO APPS WITH GRANT OPTION;
+
+

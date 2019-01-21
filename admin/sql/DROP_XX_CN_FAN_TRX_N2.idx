@@ -1,0 +1,41 @@
+-- +====================================================================+
+-- |                  Office Depot - Project Simplify                   |
+-- |                Oracle NAIO Consulting Organization                 |
+-- +====================================================================+
+-- | Name        : DROP_XX_CN_FAN_TRX_N2.idx                            |
+-- | Rice ID     : E1004A_CustomCollections_(TableDesign)               |
+-- | Description : XX_CN_FAN_TRX Table - Non Unique Index Drop Script   |
+-- |                                                                    |
+-- |               Columns :                                            |
+-- |                         Rollup_Date                                |
+-- |                         Ship_To_Address_Id                         |
+-- |                         Trnsfr_Batch_Id                            |
+-- |                                                                    |
+-- |Change Record:                                                      |
+-- |===============                                                     |
+-- |Version   Date        Author           Remarks                      |
+-- |=======  ===========  =============    =============================|
+-- |Draft 1a 03-Oct-2007  Vidhya Valantina Initial draft version        |
+-- |1.0      04-Oct-2007  Vidhya Valantina Baselined after testing      |
+-- |                                                                    |
+-- +====================================================================+
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+PROMPT
+PROMPT Dropping Existing Non Unique INDEX XX_CN_FAN_TRX_N2
+PROMPT
+
+DROP INDEX xx_cn_fan_trx_n2;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

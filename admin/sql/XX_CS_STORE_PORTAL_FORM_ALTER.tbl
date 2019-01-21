@@ -1,0 +1,38 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XX_CS_ISUPPORT_SURVEY                                                            |--                                                                                          |--
+--| Program Name   : XX_CS_ISUPPORT_SURVEY.tbl                                                 |--
+--|                                                                                             |--
+--| Purpose        : Store Portal Form                                                       |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              15-Sep-2010       Rajavel                  Initial Draft                   |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Alter Table XXCRM.XX_CS_ISUPPORT_SURVEY......
+PROMPT
+
+
+ALTER table XXCRM.XX_CS_ISUPPORT_SURVEY MODIFY (ANSWERS VARCHAR2(3000));
+
+commit;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

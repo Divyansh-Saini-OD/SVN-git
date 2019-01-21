@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<dataTemplate name="XXCRMVNDSUBSRPT" description="OD: Vendor Subscription Report" Version="1.0">
+<parameters>
+ <parameter name="START_DATE" datatype="character" />
+ <parameter name="END_DATE" datatype="character" />
+ </parameters>
+<dataQuery>
+<sqlStatement name="Q_MAIN">
+<![CDATA[
+SELECT cb.incident_attribute_1 order_no,
+  xa.item_number,
+  cb.incident_number,
+  to_char(cb.creation_date,'MM-DD-RRRR') creation_date,
+  cb.Incident_attribute_5 customer,
+  cb.Incident_attribute_2 address,
+  cb.Incident_attribute_8 email,
+  cb.Incident_attribute_14 phone_number ,
+  DECODE(cb.incident_status_id, 9100, 'Cancelled', 'Active') active_status
+FROM CS_INCIDENTS_ALL_B cb,
+  xx_cs_sr_items_link xa
+WHERE xa.service_request_id = cb.incident_id
+AND xa.attribute2 IS NOT NULL
+AND xa.attribute5 IN ('STB','VTB')
+AND TRUNC(cb.creation_date) 
+BETWEEN nvl(to_date(:START_DATE,'YYYY/MM/DD HH24:MI:SS'), (trunc(trunc(sysdate,'MM')-1,'MM'))) 
+    AND nvl(to_date(:END_DATE  ,'YYYY/MM/DD HH24:MI:SS'), (trunc(sysdate,'MM')-1))
+ORDER BY cb.creation_date DESC
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_ORDER" source="Q_MAIN">
+<element name="ORDER_NO" value="ORDER_NO" />
+<element name="ITEM_NUMBER" value="ITEM_NUMBER" />
+<element name="INCIDENT_NUMBER" value="INCIDENT_NUMBER" />
+<element name="CREATION_DATE" value="CREATION_DATE" />
+<element name="CUSTOMER" value="CUSTOMER" />
+<element name="ADDRESS" value="ADDRESS" />
+<element name="EMAIL" value="EMAIL" />
+<element name="PHONE_NUMBER" value="PHONE_NUMBER" />
+<element name="ACTIVE_STATUS" value="ACTIVE_STATUS" />
+</group>
+</dataStructure>
+</dataTemplate>

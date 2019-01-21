@@ -1,0 +1,35 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XX_TM_NAM_TERR_ENTITY_DTLS_N2.idx                  |
+-- |                                                                       |
+-- | Description      : Index for custom table XX_TM_NAM_TERR_ENTITY_DTLS  |
+   |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |1.0      26-Mar-2008   Abhradip Ghosh   Initial Version                |
+-- +=======================================================================+
+
+------------------------------------------------------------------------
+-- Create non unique Index XX_TM_NAM_TERR_ENTITY_DTLS_N2              --
+------------------------------------------------------------------------
+
+CREATE INDEX XXCRM.XX_TM_NAM_TERR_ENTITY_DTLS_N2
+ON XXCRM.XX_TM_NAM_TERR_ENTITY_DTLS(
+                                    NAMED_ACCT_TERR_ID
+                                    , ENTITY_TYPE
+                                    , STATUS
+                                    , START_DATE_ACTIVE
+                                    , END_DATE_ACTIVE
+                                   )
+NOLOGGING;
+
+SHOW ERRORS;

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<JavaBean xmlns="http://xmlns.oracle.com/adfm/beanmodel" version="11.1.1.56.60"
+          id="CustOrderInfo" Package="model" BeanClass="model.CustOrderInfo"
+          isJavaBased="false">
+  <AccessorAttribute id="process_parameters" IsCollection="false"
+                     BeanClass="CustOrderInfo.Types.process"/>
+  <MethodAccessor IsCollection="false" Type="model.CustOrderInfo.process"
+                  BeanClass="model.CustOrderInfo.process" id="process"
+                  ReturnNodeName="Return">
+    <ParameterInfo id="payload" Type="java.lang.Object" isStructured="false">
+      <Properties>
+        <Property Name="__SET_INITIAL_VALUE" Value="true"/>
+      </Properties>
+    </ParameterInfo>
+  </MethodAccessor>
+</JavaBean>

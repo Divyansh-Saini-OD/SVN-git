@@ -1,0 +1,39 @@
+-- $Id$
+-- $Rev$
+-- $HeadURL$
+-- $Author$
+-- $Date$
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XXSCS_FDBK_LINE_DTL_STG.syn                        |
+-- | Description      : Synonym for XXSCS_FDBK_LINE_DTL_STG                |
+-- |                                                                       |
+-- |                    Note:This script will be executed from             |
+-- |                    APPS schema                                        |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      25-Mar-2009 Kalyan          Initial version                   |
+-- +=======================================================================+
+
+---------------------------------------------------------
+-- Creating synonym APPS.XXSCS_FDBK_LINE_DTL_STG --
+---------------------------------------------------------
+CREATE OR REPLACE SYNONYM APPS.XXSCS_FDBK_LINE_DTL_STG FOR XXCRM.XXSCS_FDBK_LINE_DTL_STG;
+
+SHOW ERRORS;
+
+EXIT;
+
+
+
+

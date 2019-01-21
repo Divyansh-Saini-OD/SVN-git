@@ -1,0 +1,36 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+
+--|                      Office Depot - Project Simplify                                        |
+--|                Oracle NAIO/Office Depot/Consulting Organization                             |
+--+=============================================================================================+
+--|                                                                                             |
+--| Object Name    : OD,I0607_IncentiveAndBonusToPayroll                                        |
+--|                                                                                             |
+--| Program Name   : DROP_XX_OIC_PAY_STATUS_HISTORY_N1.idx                                      |
+--|                                                                                             |
+--| Purpose        : Drop Non Unique index on the Org_id,Transfer_status                        |
+--|                  of XX_OIC_PAY_STATUS_HISTORY                                               |
+--|                                                                                             |
+--|                                                                                             |
+--| Change History  :                                                                           |
+--| Version           Date             Changed By              Description                      |
+--+=============================================================================================+
+--| 1.0              04-Oct-2007       Gowri Nagarajan         Original                         |
+--| 1.1              09-Oct-2002       Gowri Nagarajan	       Added the schema name            |
+--+=============================================================================================+
+
+
+-- -----------------------------------------------------
+-- Dropping existing index XX_OIC_PAY_STATUS_HISTORY_N1
+-- -----------------------------------------------------
+
+DROP INDEX XXCRM.XX_OIC_PAY_STATUS_HISTORY_N1;
+
+
+EXIT;

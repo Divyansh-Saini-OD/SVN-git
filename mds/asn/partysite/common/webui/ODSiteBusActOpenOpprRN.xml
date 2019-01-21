@@ -1,0 +1,28 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<oa:stackLayout version="9.0.3.8.13_1550" xml:lang="en-US" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:ui="http://xmlns.oracle.com/uix/ui" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header: $" amDefName="od.oracle.apps.xxcrm.asn.partysite.common.server.ODSiteBusActOpenOpprAM" controllerClass="od.oracle.apps.xxcrm.asn.partysite.common.webui.ODSiteBusActOpenOpprCO" scope="/" regionName="Open Opportunities">
+   <ui:contents>
+      <oa:table id="ODSiteOpenOpprTb" shortDesc="Open Opportunities" width="100%" blockSize="3" rendered="${oa.BusActOpportunitiesPVO.RenderOpp}">
+         <ui:contents>
+            <oa:formValue id="LeadId" dataType="NUMBER" viewName="ODSiteOpenOpprVO" viewAttr="LeadId" adminCustomizable="false" encrypted="true"/>
+            <oa:messageStyledText id="Description" dataType="VARCHAR2" viewName="ODSiteOpenOpprVO" viewAttr="Description" maximumLength="240" warnAboutChanges="false" sortState="yes" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/Description_Opportunity">
+               <ui:primaryClientAction>
+                  <ui:fireAction>
+                     <ui:parameters>
+                        <ui:parameter key="ASNReqPgAct" value="OPPTYDET"/>
+                        <ui:parameter key="ASNReqEvtOpptyId" value="${oa.current.LeadId}"/>
+                        <ui:parameter key="ASNReqEvtFuncName" value="ASN_OPPTYDETPG"/>
+                        <ui:parameter key="ASNReqExitPage" value="Y"/>
+                     </ui:parameters>
+                  </ui:fireAction>
+               </ui:primaryClientAction>
+            </oa:messageStyledText>
+            <oa:messageStyledText id="DecisionDate" dataType="DATE" prompt="Close Date" viewName="ODSiteOpenOpprVO" viewAttr="DecisionDate" sortState="yes"/>
+            <oa:messageStyledText id="TotalAmount" dataType="NUMBER" prompt="Amount" viewName="ODSiteOpenOpprVO" viewAttr="TotalAmount" sortState="yes"/>
+            <oa:messageStyledText id="CurrencyName" dataType="VARCHAR2" prompt="Currency" viewName="ODSiteOpenOpprVO" viewAttr="CurrencyName" maximumLength="80" sortState="yes"/>
+            <oa:messageStyledText id="WinProbability" dataType="NUMBER" prompt="Win Probability %" viewName="ODSiteOpenOpprVO" viewAttr="WinProbability"/>
+            <oa:messageStyledText id="SalesStageName" dataType="VARCHAR2" prompt="Stage" viewName="ODSiteOpenOpprVO" viewAttr="SalesStageName" maximumLength="60"/>
+         </ui:contents>
+      </oa:table>
+   </ui:contents>
+</oa:stackLayout>

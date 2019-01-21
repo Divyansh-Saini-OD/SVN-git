@@ -1,0 +1,23 @@
+--+=====================================================================+
+--|                   Office Depot - Project FIT                        |
+--|          Capgemini/Office Depot/Consulting Organization             |
+--+=====================================================================+
+--|                                                                     |
+--|Rice        : 106313                                                 |
+--|File Name   : XX_CRM_WCELG_CUST.idx                                  |
+--|File Path   : $XXCRM_TOP/admin/sql                                   |
+--|Schema      : XXCRM                                                  |
+--|                                                                     |
+--|Version    Date           Author                       Remarks       |
+--|=======   ======        ====================          =========      |
+--| 1.0    06-Sep-2011     Balakrishna Bolikonda       Initial version  |
+--|                                                                     |
+--+=====================================================================+
+
+SET VERIFY OFF
+WHENEVER SQLERROR CONTINUE
+
+CREATE INDEX XXCRM.XX_CRM_WCELG_CUST_N1 ON XX_CRM_WCELG_CUST (CUST_ACCOUNT_ID ) COMPUTE STATISTICS;
+CREATE INDEX XXCRM.XX_CRM_WCELG_CUST_N2 ON XX_CRM_WCELG_CUST (PARTY_ID) COMPUTE STATISTICS;
+CREATE INDEX XXCRM.XX_CRM_WCELG_CUST_N3 ON XX_CRM_WCELG_CUST (CUST_CONT_EXT) COMPUTE STATISTICS;
+CREATE INDEX XXCRM.XX_CRM_WCELG_CUST_N4 ON XX_CRM_WCELG_CUST (SLS_PER_EXT) COMPUTE STATISTICS;

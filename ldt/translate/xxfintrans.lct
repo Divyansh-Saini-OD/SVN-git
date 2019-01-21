@@ -1,0 +1,750 @@
+# $Header: xxfintrans.lct,v 1.1 2006/10/26 12:08:59 sjustina Exp $
+
+# --- Begin Entity Definitions ---
+COMMENT = "dbdrv: exec fnd bin FNDLOAD bin &phase=daa+52 checkfile:~PROD:~PATH:~FILE &ui_apps 0 Y UPLOAD @FND:patch/115/import/odsyscod6_6.lct @~PROD:~PATH/~FILE"
+
+# ==================================================
+# XX_FIN_TRANSLATEDEFINITION
+# ==================================================
+DEFINE XX_FIN_TRANSLATEDEFINITION 
+
+	KEY  TRANSLATION_NAME      VARCHAR2 (25) 
+	KEY  APP_SHORT_NAME        VARCHAR2 (25)
+	BASE SOURCE_SYSTEM         VARCHAR2 (25) 
+	BASE TARGET_SYSTEM         VARCHAR2 (25) 
+	BASE PURPOSE               VARCHAR2 (25) 
+	BASE TRANSLATE_DESCRIPTION VARCHAR2 (240)  
+	BASE SOURCE_FIELD1         VARCHAR2 (25) 
+	BASE SOURCE_FIELD2         VARCHAR2 (25) 
+	BASE SOURCE_FIELD3         VARCHAR2 (25) 
+	BASE SOURCE_FIELD4         VARCHAR2 (25) 
+	BASE SOURCE_FIELD5         VARCHAR2 (25) 
+	BASE SOURCE_FIELD6         VARCHAR2 (25) 
+	BASE SOURCE_FIELD7         VARCHAR2 (25) 
+	BASE TARGET_FIELD1         VARCHAR2 (25) 
+	BASE TARGET_FIELD2         VARCHAR2 (25) 
+	BASE TARGET_FIELD3         VARCHAR2 (25) 
+	BASE TARGET_FIELD4         VARCHAR2 (25) 
+	BASE TARGET_FIELD5         VARCHAR2 (25) 
+	BASE TARGET_FIELD6         VARCHAR2 (25) 
+	BASE TARGET_FIELD7         VARCHAR2 (25) 
+	BASE TARGET_FIELD8         VARCHAR2 (25) 
+	BASE TARGET_FIELD9         VARCHAR2 (25) 
+	BASE TARGET_FIELD10        VARCHAR2 (25) 
+	BASE TARGET_FIELD11        VARCHAR2 (25) 
+	BASE TARGET_FIELD12        VARCHAR2 (25) 
+	BASE TARGET_FIELD13        VARCHAR2 (25) 
+	BASE TARGET_FIELD14        VARCHAR2 (25) 
+	BASE TARGET_FIELD15        VARCHAR2 (25) 
+	BASE TARGET_FIELD16        VARCHAR2 (25) 
+	BASE TARGET_FIELD17        VARCHAR2 (25) 
+	BASE TARGET_FIELD18        VARCHAR2 (25) 
+	BASE TARGET_FIELD19        VARCHAR2 (25) 
+	BASE TARGET_FIELD20        VARCHAR2 (25) 
+	BASE TARGET_FIELD21        VARCHAR2 (25) 
+	BASE TARGET_FIELD22        VARCHAR2 (25) 
+	BASE TARGET_FIELD23        VARCHAR2 (25) 
+	BASE TARGET_FIELD24        VARCHAR2 (25) 
+	BASE TARGET_FIELD25        VARCHAR2 (25) 
+	BASE TARGET_FIELD26        VARCHAR2 (25) 
+	BASE TARGET_FIELD27        VARCHAR2 (25) 
+	BASE TARGET_FIELD28        VARCHAR2 (25) 
+	BASE TARGET_FIELD29        VARCHAR2 (25) 
+	BASE TARGET_FIELD30        VARCHAR2 (25) 
+	CTX  OWNER                 VARCHAR2(4000)
+	BASE LAST_UPDATE_DATE      VARCHAR2(25) 
+	BASE START_DATE_ACTIVE     VARCHAR2(25) 
+	BASE END_DATE_ACTIVE       VARCHAR2(25) 
+	BASE ENABLED_FLAG          VARCHAR2 (2) 
+	BASE SOURCE_FIELD8         VARCHAR2 (25) 
+	BASE SOURCE_FIELD9         VARCHAR2 (25) 
+	BASE SOURCE_FIELD10        VARCHAR2 (25) 
+	BASE DO_NOT_REFRESH        VARCHAR2 (1) 
+
+
+# ==================================================
+# XX_FIN_TRANSLATEVALUES
+# ==================================================
+        DEFINE XX_FIN_TRANSLATEVALUES
+        
+		BASE SOURCE_VALUE1      VARCHAR2 (240) 
+		BASE SOURCE_VALUE2      VARCHAR2 (240) 
+		BASE SOURCE_VALUE3      VARCHAR2 (240) 
+		BASE SOURCE_VALUE4      VARCHAR2 (240) 
+		BASE SOURCE_VALUE5      VARCHAR2 (240) 
+		BASE SOURCE_VALUE6      VARCHAR2 (240) 
+		BASE SOURCE_VALUE7      VARCHAR2 (240) 
+		BASE TARGET_VALUE1      VARCHAR2 (240) 
+		BASE TARGET_VALUE2      VARCHAR2 (240) 
+		BASE TARGET_VALUE3      VARCHAR2 (240) 
+		BASE TARGET_VALUE4      VARCHAR2 (240) 
+		BASE TARGET_VALUE5      VARCHAR2 (240) 
+		BASE TARGET_VALUE6      VARCHAR2 (240) 
+		BASE TARGET_VALUE7      VARCHAR2 (240) 
+		BASE TARGET_VALUE8      VARCHAR2 (240) 
+		BASE TARGET_VALUE9      VARCHAR2 (240) 
+		BASE TARGET_VALUE10     VARCHAR2 (240) 
+		BASE TARGET_VALUE11     VARCHAR2 (240) 
+		BASE TARGET_VALUE12     VARCHAR2 (240) 
+		BASE TARGET_VALUE13     VARCHAR2 (240) 
+		BASE TARGET_VALUE14     VARCHAR2 (240) 
+		BASE TARGET_VALUE15     VARCHAR2 (240) 
+		BASE TARGET_VALUE16     VARCHAR2 (240) 
+		BASE TARGET_VALUE17     VARCHAR2 (240) 
+		BASE TARGET_VALUE18     VARCHAR2 (240) 
+		BASE TARGET_VALUE19     VARCHAR2 (240) 
+		BASE TARGET_VALUE20     VARCHAR2 (240) 
+		BASE TARGET_VALUE21     VARCHAR2 (240) 
+		BASE TARGET_VALUE22     VARCHAR2 (240) 
+		BASE TARGET_VALUE23     VARCHAR2 (240) 
+		BASE TARGET_VALUE24     VARCHAR2 (240) 
+		BASE TARGET_VALUE25     VARCHAR2 (240) 
+		BASE TARGET_VALUE26     VARCHAR2 (240) 
+		BASE TARGET_VALUE27     VARCHAR2 (240) 
+		BASE TARGET_VALUE28     VARCHAR2 (240) 
+		BASE TARGET_VALUE29     VARCHAR2 (240) 
+		BASE TARGET_VALUE30     VARCHAR2 (240) 
+		CTX  OWNER              VARCHAR2(4000)
+		BASE LAST_UPDATE_DATE   VARCHAR2(25) 
+		BASE START_DATE_ACTIVE  VARCHAR2(25) 
+		BASE END_DATE_ACTIVE    VARCHAR2(25) 
+		BASE READ_ONLY_FLAG     VARCHAR2 (2) 
+		BASE ENABLED_FLAG       VARCHAR2 (2) 
+		BASE SOURCE_VALUE8      VARCHAR2 (25) 
+		BASE SOURCE_VALUE9      VARCHAR2 (25) 
+		BASE SOURCE_VALUE10     VARCHAR2 (25) 
+	
+        END XX_FIN_TRANSLATEVALUES
+
+# ==================================================
+# XX_FIN_TRANSLATERESPONSIBILITY
+# ==================================================        
+        DEFINE XX_FIN_TRANSLATERESPONSIBILITY
+
+		KEY  RESP_KEY            VARCHAR2 (30) 
+		KEY  RESP_APP_SHORT_NAME VARCHAR2 (50)
+		BASE READ_ONLY_FLAG      VARCHAR2 (1) 
+		CTX  OWNER               VARCHAR2(4000)
+		BASE LAST_UPDATE_DATE    VARCHAR2(25) 
+        
+        END XX_FIN_TRANSLATERESPONSIBILITY
+	
+END XX_FIN_TRANSLATEDEFINITION 
+
+# --- End Entity Definitions ---
+DOWNLOAD XX_FIN_TRANSLATEDEFINITION
+       "SELECT translation_name, related_module AS app_short_name, source_system,
+       target_system, purpose, translate_description, source_field1,
+       source_field2, source_field3, source_field4, source_field5,
+       source_field6, source_field7, target_field1, target_field2,
+       target_field3, target_field4, target_field5, target_field6,
+       target_field7, target_field8, target_field9, target_field10,
+       target_field11, target_field12, target_field13, target_field14,
+       target_field15, target_field16, target_field17, target_field18,
+       target_field19, target_field20,
+       target_field21, target_field22, target_field23, target_field24,
+       target_field25, target_field26, target_field27, target_field28,
+       target_field29, target_field30,
+       fnd_load_util.owner_name (last_updated_by) owner,
+       TO_CHAR (last_update_date, 'RRRR/MM/DD') last_update_date,
+       TO_CHAR (start_date_active, 'RRRR/MM/DD') start_date_active,
+       TO_CHAR (end_date_active, 'RRRR/MM/DD') end_date_active, enabled_flag,
+       source_field8, source_field9, source_field10, do_not_refresh
+  FROM xx_fin_translatedefinition
+ WHERE (   :app_short_name IS NULL
+        OR (:app_short_name IS NOT NULL 
+		    AND related_module LIKE :app_short_name
+           )
+       )
+   AND (   :translation_name IS NULL
+        OR (    :translation_name IS NOT NULL
+            AND translation_name LIKE :translation_name
+           )
+       )
+   AND enabled_flag = 'Y'
+   AND SYSDATE BETWEEN start_date_active AND NVL (end_date_active, SYSDATE)"
+
+DOWNLOAD XX_FIN_TRANSLATEVALUES
+       "SELECT xftv.source_value1, xftv.source_value2, xftv.source_value3,
+	       xftv.source_value4, xftv.source_value5, xftv.source_value6,
+	       xftv.source_value7, xftv.target_value1, xftv.target_value2,
+	       xftv.target_value3, xftv.target_value4, xftv.target_value5,
+	       xftv.target_value6, xftv.target_value7, xftv.target_value8,
+	       xftv.target_value9, xftv.target_value10, xftv.target_value11,
+	       xftv.target_value12, xftv.target_value13, xftv.target_value14,
+	       xftv.target_value15, xftv.target_value16, xftv.target_value17,
+	       xftv.target_value18, xftv.target_value19, xftv.target_value20,
+           xftv.target_value21,
+	       xftv.target_value22, xftv.target_value23, xftv.target_value24,
+	       xftv.target_value25, xftv.target_value26, xftv.target_value27,
+	       xftv.target_value28, xftv.target_value29, xftv.target_value30,           
+	       fnd_load_util.owner_name (xftv.last_updated_by) owner,
+	       TO_CHAR (xftv.last_update_date, 'RRRR/MM/DD') last_update_date,
+	       TO_CHAR (xftv.start_date_active, 'RRRR/MM/DD') start_date_active,
+	       TO_CHAR (xftv.end_date_active, 'RRRR/MM/DD') end_date_active,
+	       xftv.read_only_flag, xftv.enabled_flag, xftv.source_value8,
+	       xftv.source_value9, xftv.source_value10
+	  FROM xx_fin_translatevalues xftv, xx_fin_translatedefinition xftd
+	 WHERE xftd.translate_id = xftv.translate_id
+	   AND xftd.related_module = :app_short_name
+	   AND xftd.translation_name = :translation_name
+	   AND xftd.enabled_flag = 'Y'
+	   AND SYSDATE BETWEEN xftd.start_date_active
+			   AND NVL (xftd.end_date_active, SYSDATE)
+	   AND xftv.enabled_flag = 'Y'
+	   AND SYSDATE BETWEEN xftv.start_date_active
+			   AND NVL (xftv.end_date_active, SYSDATE)"
+	   
+DOWNLOAD XX_FIN_TRANSLATERESPONSIBILITY
+       "SELECT fr.responsibility_key,
+	       fa.application_short_name AS resp_app_short_name, xft.read_only_flag,
+	       fnd_load_util.owner_name (xft.last_updated_by) owner,
+	       TO_CHAR (xft.last_update_date, 'RRRR/MM/DD') last_update_date
+	  FROM xx_fin_translateresponsibility xft,
+	       fnd_responsibility fr,
+	       fnd_application fa,
+	       xx_fin_translatedefinition xftd
+	 WHERE xftd.translate_id = xft.translate_id
+	   AND xftd.related_module = :app_short_name
+	   AND xftd.enabled_flag = 'Y'
+	   AND SYSDATE BETWEEN xftd.start_date_active
+			   AND NVL (xftd.end_date_active, SYSDATE)
+	   AND fr.responsibility_id = xft.responsibility_id
+	   AND xftd.translation_name = :translation_name
+	   AND fa.application_id = fr.application_id"	   
+	   
+#
+# -- UPLOAD section -- 
+# 
+#   For each entity, specify the pl/sql block to use to upload the 
+#   entity into the database.  Bind names must match DEFINE attribute names.
+#   If the relevant tables have table handlers defined, use the LOAD_ROW
+#   procedure.
+#   
+#   Non-leaf entities must include the BEGIN keyword.
+#
+#   Child entities may use bind names from their parents' definitions.
+#       
+UPLOAD XX_FIN_TRANSLATEDEFINITION
+BEGIN
+"BEGIN
+     DECLARE
+      ld_start_date           DATE;
+      ld_end_date             DATE;
+      ln_last_updated_by      NUMBER;
+      ld_last_update_date     DATE;
+      ln_db_last_updated_by   NUMBER;
+      ld_db_last_update_date  DATE;
+
+      
+     BEGIN   
+        ln_last_updated_by := fnd_load_util.owner_id(:OWNER);
+        ld_last_update_date := nvl(to_date(:LAST_UPDATE_DATE, 'RRRR/MM/DD'), sysdate);
+        ----------------------------------------------------------
+        -- Translate all char Date-Values to date
+        ----------------------------------------------------------
+        ld_start_date        := NVL(TO_DATE(:start_date_active, 'RRRR/MM/DD'), SYSDATE);
+        ld_end_date          := NVL(TO_DATE(:end_date_active,   'RRRR/MM/DD'), NULL);
+        
+        BEGIN
+                 
+                
+		SELECT LAST_UPDATED_BY, LAST_UPDATE_DATE
+		  INTO ln_db_last_updated_by, ld_db_last_update_date
+		  FROM xx_fin_translatedefinition
+		 WHERE translation_name = :TRANSLATION_NAME;
+          
+	  IF (fnd_load_util.upload_test(ln_last_updated_by, 
+				      ld_last_update_date, 
+				      ln_db_last_updated_by,
+				      ld_db_last_update_date, 
+				      :CUSTOM_MODE)
+	    ) THEN
+		      UPDATE XX_FIN_TRANSLATEDEFINITION
+		      SET
+		      source_system          = :source_system, 
+		      target_system          = :target_system, 
+		      purpose                = :purpose,
+		      translate_description  = :translate_description, 
+		      related_module         = :app_short_name, 
+		      source_field1          = :source_field1, 
+		      source_field2 	     = :source_field2,
+		      source_field3 	     = :source_field3, 
+		      source_field4 	     = :source_field4, 
+		      source_field5          = :source_field5, 
+		      source_field6          = :source_field6,                         
+		      source_field7          = :source_field7, 
+		      source_field8          = :source_field8, 
+		      source_field9          = :source_field9, 
+		      source_field10         = :source_field10,	      
+		      target_field1	     = :target_field1,
+		      target_field2	     = :target_field2,
+		      target_field3	     = :target_field3,
+		      target_field4	     = :target_field4,
+		      target_field5	     = :target_field5,
+		      target_field6 	     = :target_field6,
+		      target_field7 	     = :target_field7,
+		      target_field8	     = :target_field8,
+		      target_field9	     = :target_field9,
+		      target_field10	     = :target_field10, 
+		      target_field11	     = :target_field11,
+		      target_field12	     = :target_field12, 
+		      target_field13	     = :target_field13, 
+		      target_field14	     = :target_field14, 
+		      target_field15	     = :target_field15,
+		      target_field16	     = :target_field16, 
+		      target_field17	     = :target_field17, 
+		      target_field18	     = :target_field18, 
+		      target_field19	     = :target_field19,
+		      target_field20	     = :target_field20, 
+		      target_field21	     = :target_field21,
+		      target_field22	     = :target_field22, 
+		      target_field23	     = :target_field23, 
+		      target_field24	     = :target_field24, 
+		      target_field25	     = :target_field25,
+		      target_field26	     = :target_field26, 
+		      target_field27	     = :target_field27, 
+		      target_field28	     = :target_field28, 
+		      target_field29	     = :target_field29,
+		      target_field30	     = :target_field30, 
+		      last_update_date	     = ld_last_update_date,
+		      last_updated_by	     = ln_last_updated_by, 
+		      last_update_login	     = 0, 
+		      start_date_active	     = ld_start_date, 
+		      end_date_active	     = ld_end_date,
+		      enabled_flag	     = :enabled_flag, 
+		      do_not_refresh	     = :do_not_refresh 
+		      WHERE translation_name = :TRANSLATION_NAME
+			AND related_module   = :APP_SHORT_NAME;
+          END IF;
+	EXCEPTION
+          WHEN NO_DATA_FOUND THEN 
+		      INSERT INTO XX_FIN_TRANSLATEDEFINITION
+		      (translate_id, 
+		       translation_name, 
+		       source_system, 
+		       target_system, 
+		       purpose,
+		       translate_description, 
+		       related_module, 
+		       source_field1, 
+		       source_field2,
+		       source_field3, 
+		       source_field4, 
+		       source_field5, 
+		       source_field6,
+		       source_field7,
+               source_field8, 
+		       source_field9, 
+		       source_field10,		       
+		       target_field1, 
+		       target_field2, 
+		       target_field3,
+		       target_field4, 
+		       target_field5, 
+		       target_field6, 
+		       target_field7,
+		       target_field8, 
+		       target_field9, 
+		       target_field10, 
+		       target_field11,
+		       target_field12, 
+		       target_field13, 
+		       target_field14, 
+		       target_field15,
+		       target_field16, 
+		       target_field17, 
+		       target_field18, 
+		       target_field19,
+		       target_field20, 
+		       target_field21,
+		       target_field22, 
+		       target_field23, 
+		       target_field24, 
+		       target_field25,
+		       target_field26, 
+		       target_field27, 
+		       target_field28, 
+		       target_field29,
+		       target_field30, 
+		       creation_date, 
+		       created_by, 
+		       last_update_date,
+		       last_updated_by, 
+		       last_update_login, 
+		       start_date_active, 
+		       end_date_active,
+		       enabled_flag, 
+		       do_not_refresh) 
+		       VALUES(
+		       XX_FIN_TRANSLATEDEFINITION_S.nextval, 
+		       :translation_name, 
+		       :source_system, 
+		       :target_system, 
+		       :purpose,
+		       :translate_description, 
+		       :app_short_name, 
+		       :source_field1, 
+		       :source_field2,
+		       :source_field3, 
+		       :source_field4, 
+		       :source_field5, 
+		       :source_field6,
+		       :source_field7, 
+		       :source_field8, 
+		       :source_field9, 
+		       :source_field10,		       
+		       :target_field1, 
+		       :target_field2, 
+		       :target_field3,
+		       :target_field4, 
+		       :target_field5, 
+		       :target_field6, 
+		       :target_field7,
+		       :target_field8, 
+		       :target_field9, 
+		       :target_field10, 
+		       :target_field11,
+		       :target_field12, 
+		       :target_field13, 
+		       :target_field14, 
+		       :target_field15,
+		       :target_field16, 
+		       :target_field17, 
+		       :target_field18, 
+		       :target_field19,
+		       :target_field20, 
+		       :target_field21,
+		       :target_field22, 
+		       :target_field23, 
+		       :target_field24, 
+		       :target_field25,
+		       :target_field26, 
+		       :target_field27, 
+		       :target_field28, 
+		       :target_field29,
+		       :target_field30, 
+		       sysdate, 
+		       ln_last_updated_by, 
+		       sysdate,
+		       ln_last_updated_by, 
+		       0, 
+		       ld_start_date, 
+		       ld_end_date,
+		       :enabled_flag, 
+		       :do_not_refresh
+		       );
+        END;        
+     END;
+ END;"
+ 
+ 
+UPLOAD XX_FIN_TRANSLATEVALUES
+"BEGIN
+     DECLARE
+      ln_translate_id         NUMBER;
+      ld_start_date           DATE;
+      ld_end_date             DATE;
+      ln_last_updated_by      NUMBER;
+      ld_last_update_date     DATE;
+      ln_db_last_updated_by   NUMBER;      
+      ld_db_last_update_date  DATE;
+
+      
+     BEGIN
+        ln_last_updated_by  := fnd_load_util.owner_id(:OWNER);
+        ld_last_update_date := nvl(to_date(:LAST_UPDATE_DATE, 'RRRR/MM/DD'), sysdate);
+        ----------------------------------------------------------
+        -- Translate all char Date-Values to date
+        ----------------------------------------------------------
+        ld_start_date        := NVL(TO_DATE(:start_date_active, 'RRRR/MM/DD'), SYSDATE);
+        ld_end_date          := NVL(TO_DATE(:end_date_active,   'RRRR/MM/DD'), NULL);
+
+        SELECT translate_id
+	  INTO ln_translate_id
+          FROM XX_FIN_TRANSLATEDEFINITION
+         WHERE translation_name = :translation_name;
+        BEGIN
+	  SELECT LAST_UPDATED_BY, LAST_UPDATE_DATE
+	    INTO ln_db_last_updated_by, ld_db_last_update_date
+	    FROM XX_FIN_TRANSLATEVALUES
+	   WHERE translate_id    =ln_translate_id
+	     AND source_value1||'$#'||source_value2||'$#'||source_value3||'$#'||
+	         source_value4||'$#'||source_value5||'$#'||source_value6||'$#'||
+	         source_value7||'$#'||source_value8||'$#'||source_value9||'$#'||
+	         source_value10
+	         = 
+	         :source_value1||'$#'||:source_value2||'$#'||:source_value3||'$#'||
+	         :source_value4||'$#'||:source_value5||'$#'||:source_value6||'$#'||
+	         :source_value7||'$#'||:source_value8||'$#'||:source_value9||'$#'||
+	         :source_value10
+	     AND target_value1||'$#'||target_value2||'$#'||target_value3||'$#'||
+	         target_value4||'$#'||target_value5||'$#'||target_value6||'$#'||
+	         target_value7||'$#'||target_value8||'$#'||target_value9||'$#'||
+	         target_value10
+	         = 
+	         :target_value1||'$#'||:target_value2||'$#'||:target_value3||'$#'||
+	         :target_value4||'$#'||:target_value5||'$#'||:target_value6||'$#'||
+	         :target_value7||'$#'||:target_value8||'$#'||:target_value9||'$#'||
+	         :target_value10;
+	  IF (fnd_load_util.upload_test(ln_last_updated_by, 
+				        ld_last_update_date, 
+				        ln_db_last_updated_by,
+				        ld_db_last_update_date, 
+				        :CUSTOM_MODE)
+	                               ) 
+	  THEN
+	               UPDATE  XX_FIN_TRANSLATEVALUES
+	               SET			
+		       target_value1 	   =:target_value1, 
+		       target_value2 	   =:target_value2, 
+		       target_value3	   =:target_value3,
+		       target_value4 	   =:target_value4, 
+		       target_value5 	   =:target_value5, 
+		       target_value6	   =:target_value6,
+		       target_value7 	   =:target_value7, 
+		       target_value8 	   =:target_value8, 
+		       target_value9	   =:target_value9,
+		       target_value10      =:target_value10, 
+		       target_value11      =:target_value11, 
+		       target_value12	   =:target_value12,
+		       target_value13      =:target_value13, 
+		       target_value14      =:target_value14, 
+		       target_value15	   =:target_value15,
+		       target_value16      =:target_value16, 
+		       target_value17      =:target_value17, 
+		       target_value18	   =:target_value18,
+		       target_value19      =:target_value19, 
+		       target_value20      =:target_value20, 
+		       target_value21      =:target_value21, 
+		       target_value22	   =:target_value22,
+		       target_value23      =:target_value23, 
+		       target_value24      =:target_value24, 
+		       target_value25	   =:target_value25,
+		       target_value26      =:target_value26, 
+		       target_value27      =:target_value27, 
+		       target_value28	   =:target_value28,
+		       target_value29      =:target_value29, 
+		       target_value30      =:target_value30, 
+		       last_update_date    = ld_last_update_date, 
+		       last_updated_by     = ln_last_updated_by,
+		       last_update_login   = 0, 
+		       start_date_active   =ld_start_date, 
+		       end_date_active     =ld_end_date,
+		       read_only_flag      =:read_only_flag, 
+		       enabled_flag 	   =:enabled_flag 
+		 WHERE translate_id        =ln_translate_id
+		   AND source_value1||'$#'||source_value2||'$#'||source_value3||'$#'||
+		       source_value4||'$#'||source_value5||'$#'||source_value6||'$#'||
+		       source_value7||'$#'||source_value8||'$#'||source_value9||'$#'||
+		       source_value10
+		       = 
+		       :source_value1||'$#'||:source_value2||'$#'||:source_value3||'$#'||
+		       :source_value4||'$#'||:source_value5||'$#'||:source_value6||'$#'||
+		       :source_value7||'$#'||:source_value8||'$#'||:source_value9||'$#'||
+		       :source_value10
+	           AND target_value1||'$#'||target_value2||'$#'||target_value3||'$#'||
+	               target_value4||'$#'||target_value5||'$#'||target_value6||'$#'||
+		       target_value7||'$#'||target_value8||'$#'||target_value9||'$#'||
+		       target_value10
+		       = 
+		       :target_value1||'$#'||:target_value2||'$#'||:target_value3||'$#'||
+		       :target_value4||'$#'||:target_value5||'$#'||:target_value6||'$#'||
+		       :target_value7||'$#'||:target_value8||'$#'||:target_value9||'$#'||
+		       :target_value10;	
+		       
+	  END IF;
+	EXCEPTION
+	  WHEN NO_DATA_FOUND THEN
+	                INSERT INTO XX_FIN_TRANSLATEVALUES
+			(
+			translate_value_id, 
+			translate_id,
+			source_value1,
+			source_value2, 
+			source_value3, 
+			source_value4,
+			source_value5, 
+			source_value6, 
+			source_value7,
+                        source_value8,
+			source_value9, 
+			source_value10,			
+			target_value1, 
+			target_value2, 
+			target_value3,
+			target_value4, 
+			target_value5, 
+			target_value6,
+			target_value7, 
+			target_value8, 
+			target_value9,
+			target_value10, 
+			target_value11, 
+			target_value12,
+			target_value13, 
+			target_value14, 
+			target_value15,
+			target_value16, 
+			target_value17, 
+			target_value18,
+			target_value19, 
+			target_value20, 
+			target_value21, 
+			target_value22,
+			target_value23, 
+			target_value24, 
+			target_value25,
+			target_value26, 
+			target_value27, 
+			target_value28,
+			target_value29, 
+			target_value30, 
+			creation_date,
+			created_by, 
+			last_update_date, 
+			last_updated_by,
+			last_update_login, 
+			start_date_active, 
+			end_date_active,
+			read_only_flag, 
+			enabled_flag
+			) 
+			VALUES(
+			XX_FIN_TRANSLATEVALUES_S.NEXTVAL, 
+			ln_translate_id, 
+			:source_value1,
+			:source_value2, 
+			:source_value3, 
+			:source_value4,
+			:source_value5, 
+			:source_value6, 
+			:source_value7,
+			:source_value8,
+			:source_value9, 
+			:source_value10,
+			:target_value1, 
+			:target_value2, 
+			:target_value3,
+			:target_value4, 
+			:target_value5, 
+			:target_value6,
+			:target_value7, 
+			:target_value8, 
+			:target_value9,
+			:target_value10, 
+			:target_value11, 
+			:target_value12,
+			:target_value13, 
+			:target_value14, 
+			:target_value15,
+			:target_value16, 
+			:target_value17, 
+			:target_value18,
+			:target_value19, 
+			:target_value20, 
+			:target_value21, 
+			:target_value22,
+			:target_value23, 
+			:target_value24, 
+			:target_value25,
+			:target_value26, 
+			:target_value27, 
+			:target_value28,
+			:target_value29, 
+			:target_value30, 
+			sysdate,
+			ln_last_updated_by, 
+			sysdate, 
+			ln_last_updated_by, 
+			0, 
+			ld_start_date, 
+			ld_end_date,
+			:read_only_flag, 
+			:enabled_flag); 
+	END;
+     END;
+ END;"
+
+UPLOAD XX_FIN_TRANSLATERESPONSIBILITY
+"BEGIN
+     DECLARE
+      ln_translate_id         NUMBER;
+      ln_resp_id              NUMBER;
+      ln_last_updated_by      NUMBER;     
+      ld_last_update_date     DATE;
+      ln_db_last_updated_by   NUMBER;      
+      ld_db_last_update_date  DATE;
+      ln_resp_appl_id         NUMBER;
+      
+     BEGIN
+        ln_last_updated_by := fnd_load_util.owner_id(:OWNER);
+        ld_last_update_date := nvl(to_date(:LAST_UPDATE_DATE, 'RRRR/MM/DD'), sysdate);
+
+        SELECT translate_id
+	  INTO ln_translate_id
+          FROM XX_FIN_TRANSLATEDEFINITION
+         WHERE translation_name = :TRANSLATION_NAME;
+         
+        SELECT application_id
+          INTO ln_resp_appl_id
+          FROM FND_APPLICATION
+         WHERE application_short_name=:RESP_APP_SHORT_NAME;
+        
+        SELECT responsibility_id 
+          INTO ln_resp_id
+          FROM FND_RESPONSIBILITY
+         WHERE responsibility_key = :RESP_KEY
+           AND application_id = ln_resp_appl_id;
+             
+        BEGIN
+	 SELECT LAST_UPDATED_BY, LAST_UPDATE_DATE
+	  INTO ln_db_last_updated_by, ld_db_last_update_date
+	  FROM XX_FIN_TRANSLATERESPONSIBILITY
+	 WHERE translate_id       =ln_translate_id
+	   AND responsibility_id  =ln_resp_id;
+
+	  IF (fnd_load_util.upload_test(ln_last_updated_by, 
+				      ld_last_update_date, 
+				      ln_db_last_updated_by,
+				      ld_db_last_update_date, 
+				      :CUSTOM_MODE)
+	    ) THEN
+	    
+                    UPDATE XX_FIN_TRANSLATERESPONSIBILITY
+                    SET
+                    read_only_flag           =  :read_only_flag, 
+		    last_update_date         =  ld_last_update_date, 
+		    last_updated_by          =  ln_last_updated_by, 
+		    last_update_login        =  0
+		    WHERE translate_id       =ln_translate_id
+		      AND responsibility_id  =ln_resp_id;      
+		    
+          END IF;
+        EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+		    INSERT INTO XX_FIN_TRANSLATERESPONSIBILITY
+		    (
+		     security_value_id,
+		     translate_id, 
+		     responsibility_id, 
+		     read_only_flag, 
+		     creation_date, 
+		     created_by,
+		     last_update_date, 
+		     last_updated_by, 
+		     last_update_login
+		    ) 
+		    VALUES(
+		    XX_FIN_TRANSLATERESPONSIBIL_S.NEXTVAL, 
+		    ln_translate_id, 
+		    ln_resp_id,
+		    :read_only_flag, 
+		    sysdate, 
+		    ln_last_updated_by,
+		    sysdate, 
+		    ln_last_updated_by, 
+		    0); 	    
+	END;
+     END;
+ END;"

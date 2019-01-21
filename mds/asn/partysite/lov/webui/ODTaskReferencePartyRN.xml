@@ -1,0 +1,13 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<oa:listOfValues xmlns:ui="http://xmlns.oracle.com/uix/ui" xmlns:oa="http://xmlns.oracle.com/oa" version="9.0.3.8.13_1550" xml:lang="en-US" xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$" controllerClass="od.oracle.apps.xxcrm.asn.partysite.lov.webui.ODPartyCO" amDefName="od.oracle.apps.xxcrm.asn.partysite.lov.server.ODPartyAM">
+   <ui:contents>
+      <oa:table name="ODTaskReferencePartyRN" id="ODPartyTBL">
+         <ui:contents>
+            <oa:messageStyledText id="ODPartyLovNum" viewName="ODPartyLovVO" viewAttr="PartyNumber" prompt="Party Number" queryable="true"/>
+            <oa:messageStyledText id="ODPartyLovName" viewName="ODPartyLovVO" viewAttr="PartyName" prompt="Party Name" queryable="true"/>
+            <oa:formValue id="ODPartyLovId" viewName="ODPartyLovVO" viewAttr="PartyId" dataType="NUMBER" queryable="true"/>
+         </ui:contents>
+      </oa:table>
+   </ui:contents>
+</oa:listOfValues>

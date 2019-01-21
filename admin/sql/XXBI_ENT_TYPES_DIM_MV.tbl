@@ -1,0 +1,34 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+CREATE MATERIALIZED VIEW XXCRM.XXBI_ENT_TYPES_DIM_MV
+  BUILD DEFERRED
+  REFRESH COMPLETE ON DEMAND
+AS
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        :  XXBI_TASKS_USER_ENT_TYPES_DIM_MV.vw                 |
+-- | Description :  Entity Type Dimension View for Task dashboard      |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author             Remarks                   |
+-- |=======   ==========  =============      ==========`================|
+-- |1.0       05/05/2010  Mohan                                        |
+-- |                      Kalyanasundaram    Initial draft version     |
+-- |                                                                   | 
+-- +===================================================================+
+SELECT
+DISTINCT entity_type id, entity_type value
+from xxcrm.XXBI_TASKS_FCT_MV;
+
+----------------------------------------------------------
+-- Grant to APPS
+----------------------------------------------------------
+GRANT ALL ON XXCRM.XXBI_ENT_TYPES_DIM_MV TO APPS;
+
+
+SHOW ERRORS;
+EXIT;

@@ -1,0 +1,36 @@
+-- $Id$
+-- $Rev$
+-- $HeadURL$
+-- $Author$
+-- $Date$
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XXSCS_POTENTIAL_STG.syn                            |
+-- | Description      : Custom synonym for XXCS_POTENTIAL_STG              |
+-- |                                                                       |
+-- |                    Note:This script will be executed from             |
+-- |                    APPS schema                                        |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      19-Mar-2009 Sreekanth          Initial version                |
+-- +=======================================================================+
+
+---------------------------------------------------------
+-- Creating synonym APPS.XXSCS_POTENTIAL_STG --
+---------------------------------------------------------
+CREATE OR REPLACE SYNONYM APPS.XXSCS_POTENTIAL_STG FOR XXCRM.XXSCS_POTENTIAL_STG;
+
+
+SHOW ERRORS;
+
+EXIT;

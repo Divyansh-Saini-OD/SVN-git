@@ -1,0 +1,145 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_1312" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="PageLayoutRN" amDefName="od.oracle.apps.xxcrm.cdh.ebl.exec.server.ODEBillDocExceptionAM" controllerClass="od.oracle.apps.xxcrm.cdh.ebl.exec.webui.ODEBillDocExceptionCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:spacer id="spacer1" height="20" width="100"/>
+            <oa:messageComponentLayout id="HeaderRN" rows="1" columns="5" width="100%" rendered="true">
+               <ui:contents>
+                  <oa:messageStyledText id="CustomerName" viewName="ODEBillDocExcepHRVO" viewAttr="CustomerName" prompt="Customer Name" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="BillingId" viewName="ODEBillDocExcepHRVO" viewAttr="CustomerNumber" prompt="Billing Id" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="CustomerAccountId" viewName="ODEBillDocExcepHRVO" viewAttr="CustAccountId" prompt="Customer Account Id" styleClass="OraDataText" rendered="false"/>
+                  <oa:messageStyledText id="AopsNumber" viewName="ODEBillDocExcepHRVO" viewAttr="AopsNumber" prompt="AOPS Number" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="CustomerType" viewName="ODEBillDocExcepHRVO" viewAttr="CustomerType" prompt="Customer Type" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="ABFlag" viewName="ODEBillDocExcepHRVO" viewAttr="AbFlag" prompt="AB Flag" styleClass="OraDataText"/>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:separator id="Seperator" rendered="true"/>
+            <oa:spacer id="spacer" height="20" width="100"/>
+            <oa:table id="PayDocRN" text="Pay Doc Exceptions">
+               <ui:contents>
+                  <oa:messageStyledText id="SiteOrigSysRef" viewName="ODEBillPayDocVO" viewAttr="SiteOrigSysRef" prompt="Account - ShipTo Seq" maximumLength="40"/>
+                  <oa:messageStyledText id="shiptoloc" viewName="ODEBillPayDocVO" viewAttr="ShipToLocation" prompt="Ship To Location"/>
+                  <oa:messageStyledText id="CustAccountId" viewName="ODEBillPayDocVO" viewAttr="CustAccountId" prompt="Cust Account Id" maximumLength="40" rendered="false"/>
+                  <oa:messageStyledText id="BillToSiteUseId" viewName="ODEBillPayDocVO" viewAttr="BillToSiteUseId" prompt="Bill To Site UseId" maximumLength="40" rendered="false"/>
+                  <oa:messageStyledText id="SiteUseCode" viewName="ODEBillPayDocVO" viewAttr="SiteUseCode" prompt="Site Use Code" maximumLength="40" rendered="false"/>
+                  <oa:messageStyledText id="UseOrigSysRef" viewName="ODEBillPayDocVO" viewAttr="UseOrigSysRef" prompt="BillTo Seq" maximumLength="40"/>
+                  <oa:messageStyledText id="Billtoloc" viewName="ODEBillPayDocVO" viewAttr="BillToLocation" prompt="Bill To Location"/>
+                  <oa:messageStyledText id="SiteUseCode1" viewName="ODEBillPayDocVO" viewAttr="SiteUseCode1" prompt="Site Use Code1" maximumLength="40" rendered="false"/>
+               </ui:contents>
+               <ui:tableActions>
+                  <oa:flowLayout id="tblActions">
+                     <ui:contents>
+                        <oa:button id="payDocDownload" destination=" " text="Download" prompt="Download Pay Doc Exceptions" rendered="true">
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="payDocDownload"/>
+                           </ui:primaryClientAction>
+                        </oa:button>
+                     </ui:contents>
+                  </oa:flowLayout>
+               </ui:tableActions>
+            </oa:table>
+            <oa:spacer id="Spacer" height="20" width="100"/>
+            <oa:advancedTable id="MainRN" viewName="ODEBillDocExceptionVO" alternateText="No Exceptions found" text="Info Doc Exceptions">
+               <ui:contents>
+                  <oa:column id="CustDocIdCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="CustDocIdHdr" prompt="Customer Document Id" required="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageLovInput id="CustDocId" prompt="Customer Document ID" externalListOfValues="/od/oracle/apps/xxcrm/cdh/ebl/lov/webui/ODEBillCustDocIdLOVRN" viewAttr="NExtAttr1" disabled="${oa.current.Readonlyflag}" required="yes">
+                           <lovMappings>
+                              <lovMap id="CustDocIdMap" lovItem="CustDocId" resultTo="CustDocId" requiredForLOV="false" programmaticQuery="false" criteriaFrom="CustDocId" useForValidation="yes"/>
+                              <lovMap id="CustAcntIdMap" lovItem="CustAccountId" criteriaFrom="CustAcctId" useForValidation="default" requiredForLOV="true"/>
+                              <lovMap id="CustDocIdFVMap" lovItem="CustDocId" resultTo="custDocIdFV" useForValidation="yes"/>
+                           </lovMappings>
+                        </oa:messageLovInput>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="FromSiteCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeader2" prompt="From Site" required="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageLovInput id="Fromsite" viewAttr="FromSite" prompt="From Site" queryable="false" externalListOfValues="/od/oracle/apps/xxcrm/cdh/ebl/lov/webui/ODEBillFromSiteLOVRN" disabled="${oa.current.Readonlyflag}" required="yes">
+                           <lovMappings>
+                              <lovMap id="FromSiteMap" lovItem="FromSite" criteriaFrom="Fromsite" resultTo="Fromsite" useForValidation="default"/>
+                              <lovMap id="CustAcctIdMap1" lovItem="CustAcctId" criteriaFrom="CustAcctId" useForValidation="default"/>
+                              <lovMap id="CustAcctSiteMap" lovItem="CustAcctSiteId" resultTo="CustAcctSiteId" useForValidation="default"/>
+                           </lovMappings>
+                        </oa:messageLovInput>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ToSiteCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeader3" prompt="To Site" required="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageLovInput id="Tosite" viewAttr="CExtAttr5" prompt="To Site" disabled="${oa.current.Readonlyflag}" required="yes" externalListOfValues="/od/oracle/apps/xxcrm/cdh/ebl/lov/webui/ODEBillToSiteLOVRN">
+                           <lovMappings>
+                              <lovMap id="ToSiteMap" lovItem="ToSite" resultTo="Tosite" criteriaFrom="Tosite" useForValidation="default" requiredForLOV="false"/>
+                              <lovMap id="CustAcctIdMap3" lovItem="CustAcctId" criteriaFrom="CustAcctId" useForValidation="default" requiredForLOV="true"/>
+                              <lovMap id="ToSiteFVMap" lovItem="ToSite" resultTo="toSiteFV" useForValidation="yes"/>
+                           </lovMappings>
+                        </oa:messageLovInput>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="MailAttentionCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeader4" prompt="Attention"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageTextInput id="Attention" viewAttr="CExtAttr3" prompt="Attention" disabled="${oa.current.Readonlyflag}"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ActivateCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeader5" prompt="Active"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageCheckBox id="Activate" viewAttr="CExtAttr20" prompt="" defaultValue="Y" checkedValue="Y" unCheckedValue="N" checked="true" text=""/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:formValue id="CustAcctId" prompt="" viewAttr="CustAccountId" dataType="NUMBER"/>
+                  <oa:formValue id="custDocIdFV" viewAttr="NExtAttr1" dataType="NUMBER"/>
+                  <oa:formValue id="CustAcctSiteId" viewAttr="CustAcctSiteId"/>
+                  <oa:formValue id="toSiteFV" viewAttr="CExtAttr5"/>
+               </ui:contents>
+               <ui:footer>
+                  <oa:tableFooter id="tableButtons">
+                     <ui:contents>
+                        <oa:submitButton id="Save" text="Save" prompt="Save">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction event="save"/>
+                           </ui:primaryClientAction>
+                        </oa:submitButton>
+                        <oa:submitButton id="AddRow" text="Add Exception" prompt="Add Exception">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction event="AddRow"/>
+                           </ui:primaryClientAction>
+                        </oa:submitButton>
+                        <oa:submitButton id="cancel" text="Cancel" prompt="Cancel" unvalidated="true" serverUnvalidated="true">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction event="cancel"/>
+                           </ui:primaryClientAction>
+                        </oa:submitButton>
+                        <oa:button id="infoDocDownload" destination=" " text="Download" prompt="Download Info Doc Exceptions" rendered="true">
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="infoDocDownload"/>
+                           </ui:primaryClientAction>
+                        </oa:button>
+                     </ui:contents>
+                  </oa:tableFooter>
+               </ui:footer>
+            </oa:advancedTable>
+         </ui:contents>
+         <ui:productBranding>
+            <oa:image id="ProductBrand" shortDesc="OA Framework ToolBox Tutorial" source="ODLOGO.gif"/>
+         </ui:productBranding>
+      </oa:pageLayout>
+   </content>
+</page>

@@ -1,0 +1,53 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_CDH_TCA_ENTITY_STAT_INFO.tbl              |
+-- | Description      :Custom table for TCA Entities statistics            |
+-- |                                                                       |
+-- |                    Note:This script should be executed from           |
+-- |                    XXCRM schema                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |DRAFT 1a 28-AUG-2008 Shabbar Hasan      Initial draft version          |
+-- +=======================================================================+
+
+-- ------------------------------------------------------
+--      Create Custom Table XX_CDH_TCA_ENTITY_STAT_INFO --
+-- ------------------------------------------------------
+CREATE TABLE XXCRM.XX_CDH_TCA_ENTITY_STAT_INFO
+    (
+         summary_name        VARCHAR2(50),
+         group_name1         VARCHAR2(50),
+         group_name2         VARCHAR2(50),
+         group_name3         VARCHAR2(50),
+         group_name4         VARCHAR2(50),
+         group_name5         VARCHAR2(50),
+         value               NUMBER,
+         last_update_date    DATE,
+         last_updated_by     NUMBER(15),
+         creation_date       DATE,
+         created_by          NUMBER(15),
+         last_update_login   NUMBER(15)
+    );
+    
+------------------------------------------------------
+-- Granting to APPS schema.  --
+------------------------------------------------------
+
+
+GRANT ALL ON XXCRM.XX_CDH_TCA_ENTITY_STAT_INFO  TO APPS;
+
+SHOW ERRORS;    
+
+EXIT;
+        
+        
+        

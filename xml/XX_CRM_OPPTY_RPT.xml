@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XX_CRM_OPPTY_RPT" description="OD: SFA All Opportunities Report" Version="1.0">
+<parameters/>
+<dataQuery>
+<sqlStatement name="Q_OPP_DATA">
+<![CDATA[
+SELECT opp.created_by as created_by_id,
+  opp.lead_id lead_id1,
+  res.source_id employee_id,
+  res.source_name as created_by,
+  opp.creation_date creation_date,
+  opp.lead_number as opp_number,
+  replace(opp.description,'&','&amp;') AS opp_name,
+  opp.customer_id,
+  replace(hp.party_name,'&','&amp;') as party_name,
+  hp.attribute13 AS prospect_customer,
+  opp.address_id,
+  hz_format_pub.format_address(hl.location_id, NULL, NULL, ', ', NULL, NULL,NULL, NULL) AS address,
+  opp.source_promotion_id,
+  src.name as source ,
+  opp.total_amount,
+  opp.win_probability,
+  opp.last_update_date,
+  opp.decision_date AS close_date,
+  opp.status,
+  opp.close_reason,
+  contact.party_name AS opp_primary_contact
+FROM as_leads opp,
+  (SELECT amscv.source_code_id AS source_promotion_id,
+    amscv.source_code          AS SourceCode,
+    amscv.name ,
+    flv.meaning AS SourceType
+  FROM
+    (SELECT SOC.SOURCE_CODE_ID,
+      SOC.SOURCE_CODE,
+      SOC.ARC_SOURCE_CODE_FOR SOURCE_TYPE,
+      SOC.SOURCE_CODE_FOR_ID OBJECT_ID,
+      CAMPT.CAMPAIGN_NAME NAME
+    FROM AMS_SOURCE_CODES SOC,
+      AMS_CAMPAIGNS_ALL_TL campt,
+      AMS_CAMPAIGNS_ALL_B campb
+    WHERE SOC.ARC_SOURCE_CODE_FOR = 'CAMP'
+    AND SOC.ACTIVE_FLAG           = 'Y'
+    AND SOC.SOURCE_CODE_FOR_ID    = CAMPB.CAMPAIGN_ID
+    AND CAMPB.CAMPAIGN_ID         = CAMPT.CAMPAIGN_ID
+    AND CAMPB.status_code        IN ('ACTIVE','COMPLETED')
+    AND campt.language            = USERENV('LANG')    
+    UNION ALL    
+    SELECT SOC.SOURCE_CODE_ID,
+      SOC.SOURCE_CODE,
+      SOC.ARC_SOURCE_CODE_FOR SOURCE_TYPE,
+      SOC.SOURCE_CODE_FOR_ID OBJECT_ID,
+      EVEHT.EVENT_HEADER_NAME
+    FROM AMS_SOURCE_CODES SOC,
+      AMS_EVENT_HEADERS_all_b EVEHB,
+      AMS_EVENT_HEADERS_ALL_TL EVEHT
+    WHERE SOC.ARC_SOURCE_CODE_FOR = 'EVEH'
+    AND SOC.ACTIVE_FLAG           = 'Y'
+    AND SOC.SOURCE_CODE_FOR_ID    = EVEHB.EVENT_HEADER_ID
+    AND EVEHB.EVENT_HEADER_ID     = EVEHT.EVENT_HEADER_ID
+    AND EVEHB.system_status_code IN ('ACTIVE','COMPLETED')
+    AND eveht.language            = USERENV('LANG')    
+    UNION ALL    
+    SELECT SOC.SOURCE_CODE_ID,
+      SOC.SOURCE_CODE,
+      SOC.ARC_SOURCE_CODE_FOR SOURCE_TYPE,
+      SOC.SOURCE_CODE_FOR_ID OBJECT_ID,
+      EVEOT.EVENT_OFFER_NAME
+    FROM AMS_SOURCE_CODES SOC,
+      AMS_EVENT_OFFERS_ALL_B EVEOB,
+      AMS_EVENT_OFFERS_ALL_TL EVEOT
+    WHERE SOC.ARC_SOURCE_CODE_FOR IN ('EVEO','EONE')
+    AND SOC.ACTIVE_FLAG            = 'Y'
+    AND SOC.SOURCE_CODE_FOR_ID     = EVEOB.EVENT_OFFER_ID
+    AND EVEOB.EVENT_OFFER_ID       = EVEOT.EVENT_OFFER_ID
+    AND EVEOB.system_status_code  IN ('ACTIVE','COMPLETED')
+    AND eveot.language             = USERENV('LANG')    
+    UNION ALL    
+    SELECT SOC.SOURCE_CODE_ID,
+      SOC.SOURCE_CODE,
+      SOC.ARC_SOURCE_CODE_FOR SOURCE_TYPE,
+      SOC.SOURCE_CODE_FOR_ID OBJECT_ID,
+      CHLST.SCHEDULE_NAME
+    FROM AMS_SOURCE_CODES SOC,
+      ams_campaign_schedules_tl CHLST,
+      ams_campaign_schedules_b CHLSB
+    WHERE SOC.ARC_SOURCE_CODE_FOR = 'CSCH'
+    AND SOC.ACTIVE_FLAG           = 'Y'
+    AND SOC.SOURCE_CODE_FOR_ID    = CHLSB.SCHEDULE_ID
+    AND CHLSB.SCHEDULE_ID         = CHLST.SCHEDULE_ID
+    AND CHLSB.status_code        IN ('ACTIVE','COMPLETED')
+    AND CHLST.language            = USERENV('LANG')
+    ) amscv,
+    fnd_lookup_values flv
+  WHERE flv.lookup_type       = 'AMS_SYS_ARC_QUALIFIER'
+  AND flv.language            = USERENV ('LANG')
+  AND flv.view_application_id = 530
+  AND flv.lookup_code         = amscv.source_type
+  ) src,
+  jtf_rs_resource_extns_vl res,
+  hz_parties hp,
+  hz_party_sites hps,
+  hz_locations hl,
+  (SELECT per.PARTY_name,
+    OpportunityContactEO.LEAD_ID
+  FROM as_lead_contacts_all OpportunityContactEO,
+    hz_person_profiles_cpui_v HzPuiPersonProfileEO,
+    hz_org_contacts_cpui_v HzPuiOrgContactsCpuiEO,
+    hz_contact_points HzPuiContactPointPhoneEO,
+    hz_relationships hr,
+    hz_parties per
+  WHERE OpportunityContactEO.contact_party_id        = HzPuiOrgContactsCpuiEO.relationship_party_id
+  AND HzPuiOrgContactsCpuiEO.object_id               = OpportunityContactEO.customer_id
+  AND HzPuiOrgContactsCpuiEO.object_table_name       = 'HZ_PARTIES'
+  AND HzPuiOrgContactsCpuiEO.subject_id              = HzPuiPersonProfileEO.party_id
+  AND HzPuiOrgContactsCpuiEO.subject_table_name      = 'HZ_PARTIES'
+  AND OpportunityContactEO.contact_party_id          = HzPuiContactPointPhoneEO.owner_table_id(+)
+  AND HzPuiContactPointPhoneEO.owner_table_name(+)   = 'HZ_PARTIES'
+  AND HzPuiContactPointPhoneEO.primary_flag(+)       = 'Y'
+  AND HzPuiContactPointPhoneEO.contact_point_type(+) = 'PHONE'
+  AND OpportunityContactEO.contact_party_id          = hr.party_id
+  AND OpportunityContactEO.customer_id               = hr.object_id
+  AND hr.object_table_name                           = 'HZ_PARTIES'
+  AND OpportunityContactEO.primary_contact_flag      ='Y'
+  AND per.party_id = HzPuiPersonProfileEO.PARTY_ID
+  ) contact
+WHERE 
+    src.source_promotion_id(+)   = opp.source_promotion_id
+AND res.user_id               = opp.created_by
+AND hp.party_id               = opp.customer_id
+AND hps.party_site_id         = opp.address_id
+AND hps.location_id           = hl.location_id
+AND contact.LEAD_ID(+)           = opp.lead_id
+AND opp.lead_id = 1446
+]]>
+</sqlStatement> 
+<sqlStatement name="Q_OPP_PRD_DATA">
+<![CDATA[
+SELECT OpportunityLineEO.lead_id,
+OpportunityLineEO.lead_line_id lead_line_id1,
+  OpportunityLineEO.inventory_item_id,
+  NVL(msit.description,mct.description) AS product_category,
+  mskfv.concatenated_segments           AS item_number
+FROM as_lead_lines_all OpportunityLineEO,
+  mtl_system_items_tl msit,
+  mtl_categories_tl mct,
+  mtl_system_items_b_kfv mskfv
+WHERE OpportunityLineEO.inventory_item_id = msit.inventory_item_id(+)
+AND OpportunityLineEO.organization_id     = msit.organization_id (+)
+AND msit.language (+)                     = USERENV('LANG')
+AND OpportunityLineEO.product_category_id = mct.category_id
+AND mct.language                          = USERENV('LANG')
+AND mskfv.inventory_item_id (+)           = msit.inventory_item_id
+AND mskfv.organization_id (+)             = msit.organization_id
+AND OpportunityLineEO.lead_id                               = :LEAD_ID1
+]]>
+</sqlStatement>
+<sqlStatement name="Q_OPP_COMP_DATA">
+<![CDATA[
+SELECT OpportunityCompProductEO.lead_competitor_prod_id,
+    OpportunityCompProductEO.lead_id,
+    OpportunityCompProductEO.lead_line_id,
+    OpportunityCompProductEO.competitor_product_id,
+    OpportunityCompProductEO.win_loss_status,
+    acpt.competitor_product_name,
+    hp.party_name competitor_name
+  FROM as_lead_comp_products OpportunityCompProductEO,
+    ams_competitor_products_tl acpt,
+    ams_competitor_products_b acpb,
+    hz_parties hp
+  WHERE OpportunityCompProductEO.competitor_product_id = acpt.competitor_product_id
+  AND acpt.competitor_product_id                       = acpb.competitor_product_id
+  AND acpt.language                                    = USERENV( 'LANG')
+  AND acpb.competitor_party_id                         = hp.party_id
+  AND OpportunityCompProductEO.lead_line_id = :LEAD_LINE_ID1
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_OPP_DATA" source="Q_OPP_DATA">
+<element name="CREATED_BY_ID" value="CREATED_BY_ID" />
+<element name="LEAD_ID1" value="LEAD_ID1" />
+<element name="EMPLOYEE_ID" value="EMPLOYEE_ID" />
+<element name="CREATED_BY" value="CREATED_BY" />
+<element name="CREATION_DATE" value="CREATION_DATE" />
+<element name="OPP_NUMBER" value="OPP_NUMBER" />
+<element name="OPP_NAME" value="OPP_NAME" />
+<element name="CUSTOMER_ID" value="CUSTOMER_ID" />
+<element name="PARTY_NAME" value="PARTY_NAME" />
+<element name="PROSPECT_CUSTOMER" value="PROSPECT_CUSTOMER" />
+<element name="ADDRESS_ID" value="ADDRESS_ID" />
+<element name="ADDRESS" value="ADDRESS" />
+<element name="SOURCE_PROMOTION_ID" value="SOURCE_PROMOTION_ID" />
+<element name="SOURCE" value="SOURCE" />
+<element name="TOTAL_AMOUNT" value="TOTAL_AMOUNT" />
+<element name="WIN_PROBABILITY" value="WIN_PROBABILITY" />
+<element name="LAST_UPDATE_DATE" value="LAST_UPDATE_DATE" />
+<element name="CLOSE_DATE" value="CLOSE_DATE" />
+<element name="STATUS" value="STATUS" />
+<element name="CLOSE_REASON" value="CLOSE_REASON" />
+<element name="OPP_PRIMARY_CONTACT" value="OPP_PRIMARY_CONTACT" />
+	<group name="G_OPP_PRD_DATA" source="Q_OPP_PRD_DATA">
+	<element name="LEAD_ID" value="LEAD_ID" />
+	<element name="LEAD_LINE_ID1" value="LEAD_LINE_ID1" />
+	<element name="INVENTORY_ITEM_ID" value="INVENTORY_ITEM_ID" />
+	<element name="PRODUCT_CATEGORY" value="PRODUCT_CATEGORY" />
+	<element name="ITEM_NUMBER" value="ITEM_NUMBER" />
+		<group name="G_OPP_COMP_DATA" source="Q_OPP_COMP_DATA">
+		<element name="LEAD_COMPETITOR_PROD_ID" value="LEAD_COMPETITOR_PROD_ID" />
+		<element name="LEAD_ID" value="LEAD_ID" />
+		<element name="LEAD_LINE_ID" value="LEAD_LINE_ID" />
+		<element name="COMPETITOR_PRODUCT_ID" value="COMPETITOR_PRODUCT_ID" />
+		<element name="WIN_LOSS_STATUS" value="WIN_LOSS_STATUS" />
+		<element name="COMPETITOR_PRODUCT_NAME" value="COMPETITOR_PRODUCT_NAME" />
+		<element name="COMPETITOR_NAME" value="COMPETITOR_NAME" />
+		</group>
+	</group>
+</group>
+</dataStructure>
+</dataTemplate>
+

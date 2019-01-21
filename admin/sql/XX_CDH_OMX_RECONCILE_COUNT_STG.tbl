@@ -1,0 +1,108 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- +===================================================================+
+-- |                        Office Depot                               |
+-- |                                                                   |
+-- +===================================================================+
+-- | Table Name  :  XX_CDH_OMX_RECONCILE_COUNT_STG .tbl                |
+-- | Description :  Table to Hold record count information for all the |
+-- |                extracts from OMX                                  |
+-- | Rice Id     :  700                                                |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author             Remarks                  |
+-- |=======   ===========  =================  =========================|
+-- |1.0      11-Feb-2015  Havish Kasina      Initial draft version     |
+-- |2.0      20-MAR-2015  Havish Kasina      Review Changes            |
+-- +===================================================================+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET TERM OFF
+
+PROMPT
+PROMPT Drop Table XXCRM.XX_CDH_OMX_RECONCILE_COUNT_STG 
+PROMPT
+
+DROP TABLE XXCRM.XX_CDH_OMX_RECONCILE_COUNT_STG
+/
+
+SET TERM ON
+
+PROMPT
+PROMPT Custom Table 
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XXCRM.XX_CDH_OMX_RECONCILE_COUNT_STG  
+PROMPT
+
+CREATE TABLE XXCRM.XX_CDH_OMX_RECONCILE_COUNT_STG 
+                        ( BATCH_ID                    NUMBER            NOT NULL,
+                          RECORD_ID                   NUMBER            NOT NULL,
+                          NO_OF_OMX_EBILL_DOCS        NUMBER,
+                          NO_OF_OMX_EBILL_CONTACTS    NUMBER,
+                          NO_OF_OMX_AP_CONTACTS       NUMBER,
+                          NO_OF_OMX_ADDR_EXCEPTIONS   NUMBER,
+                          NO_OF_OMX_CREDITS           NUMBER,
+                          NO_OF_OMX_DUNNING           NUMBER,
+                          NO_OF_ODS_EBILL_DOCS        NUMBER,
+                          NO_OF_ODS_EBILL_CONTACTS    NUMBER,
+                          NO_OF_ODS_AP_CONTACTS       NUMBER,
+                          NO_OF_ODS_CREDITS           NUMBER,
+                          NO_OF_ODS_ADDR_EXCEPTIONS   NUMBER,
+                          NO_OF_ODS_DUNNING           NUMBER,
+                          STATUS                      VARCHAR2(50),
+                          REQUEST_ID                  NUMBER,
+                          ERROR_MESSAGE               VARCHAR2(4000),
+                          CREATION_DATE               DATE              NOT NULL,
+                          CREATED_BY                  NUMBER            NOT NULL,              
+                          LAST_UPDATED_BY             NUMBER            NOT NULL,
+                          LAST_UPDATE_DATE            DATE              NOT NULL,
+                          LAST_UPDATE_LOGIN           NUMBER            NOT NULL,
+                          RECORD_TYPE                 VARCHAR2(10)
+                        )
+/
+
+PROMPT
+PROMPT Grant XX_CDH_OMX_RECONCILE_COUNT_STG TO ERP_SYSTEM_TABLE_SELECT_ROLE
+PROMPT   
+GRANT SELECT ON XXCRM.XX_CDH_OMX_RECONCILE_COUNT_STG TO ERP_SYSTEM_TABLE_SELECT_ROLE
+/
+
+PROMPT
+PROMPT Grant XX_CDH_OMX_RECONCILE_COUNT_STG to APPS
+PROMPT   
+GRANT ALL ON XXCRM.XX_CDH_OMX_RECONCILE_COUNT_STG TO APPS
+/
+
+PROMPT
+PROMPT Creating Index XX_CDH_OMX_RECONCILE_COUNT_N1
+PROMPT   
+
+CREATE INDEX XX_CDH_OMX_RECONCILE_COUNT_N1 ON XXCRM.XX_CDH_OMX_RECONCILE_COUNT_STG(STATUS);
+
+PROMPT
+PROMPT Creating Index XX_CDH_OMX_RECONCILE_COUNT_N2
+PROMPT   
+
+CREATE INDEX XX_CDH_OMX_RECONCILE_COUNT_N2 ON XXCRM.XX_CDH_OMX_RECONCILE_COUNT_STG(RECORD_ID); 
+            
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

@@ -1,0 +1,37 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+-- +======================================================================================+
+-- |                         Office Depot - Project Simplify                              |
+-- |                          Oracle Consulting Organization                              |
+-- +======================================================================================|
+-- | Name       : XX_CDH_TCA_SEQ_CACHE_RES.seq                                            |
+-- | Description: This script will restore the modified sequences to the original values  | 
+-- |                                                                                      | 
+-- |                                                                                      |
+-- |                                                                                      |
+-- |Change Record:                                                                        |
+-- |===============                                                                       |
+-- |Version   Date         Author           Remarks                                       |
+-- |=======   ===========  =============    ==============================================|
+-- |1.0       21-Aug-2007  Binoy Mathew     Initial Version                               |
+-- +======================================================================================+
+
+PROMPT
+PROMPT Altering Indexes...
+PROMPT
+
+ALTER SEQUENCE AR.HZ_PARTIES_S             CACHE 1000;
+ALTER SEQUENCE AR.HZ_LOCATIONS_S           CACHE 1000;
+ALTER SEQUENCE AR.HZ_RELATIONSHIPS_S       CACHE 1000;
+ALTER SEQUENCE AR.HZ_CONTACT_POINTS_S      CACHE 1000;
+ALTER SEQUENCE AR.HZ_IMP_ERRORS_S          CACHE 1000;
+
+ALTER SEQUENCE AR.HZ_ORG_CONTACT_ROLES_S   CACHE 1000;
+ALTER SEQUENCE AR.HZ_CUST_CONTACT_POINTS_S CACHE 1000;
+
+
+SHOW ERROR;

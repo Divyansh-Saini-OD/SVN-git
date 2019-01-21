@@ -1,0 +1,29 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |      Oracle NAIO/Office Depot/Consulting Organization                 |
+-- +=======================================================================+
+-- | Name             :XX_CDH_HZ_ROLE_RESPON_N2                            |
+-- | Description      :Index for Table HZ_ROLE_RESPONSIBILITY              |
+-- |                   as part of C0024_Customers                          |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  29-Jun-2007 Ambarish Mukherjee Initial Draft Version          |
+-- +=======================================================================+
+
+-- -------------------------------------------------
+-- Creating Index XX_CDH_HZ_ROLE_RESPON_N2
+-- -------------------------------------------------
+
+CREATE INDEX XX_CDH_HZ_ROLE_RESPON_N2
+ON     AR.HZ_ROLE_RESPONSIBILITY (ORIG_SYSTEM_REFERENCE, RESPONSIBILITY_TYPE)
+TABLESPACE xxod;
+
+EXIT;

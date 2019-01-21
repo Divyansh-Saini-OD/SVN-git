@@ -1,0 +1,43 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +=========================================================================+
+-- |                                  ORACLE NAIO                            |
+-- |                                Bangalore, India                         | 
+-- |                               All Rights Reserved                       |
+-- +=========================================================================+
+-- |NAME: CREATE_XX_OIC_ERROR_TABLES.tbl                                     |
+-- |Description: Creation of error tables for Plan copy                      |
+-- |                                                                         |
+-- |                                                                         |
+-- |DESC...: DDL to create xx_oic_error_headers and xx_oic_error_lines tables|
+-- |                                                                         |
+-- |                                                                         |
+-- |                                                                         |
+-- | Change Record:                                                          |
+-- | ===============                                                         |
+-- |   Version   Date          Author                   Remarks              |
+-- |   =======   ===========   =======================  =====================|
+-- |   1.0       01-Aug-07     Nageswara rao            Baseline version     |
+-- +=========================================================================+
+
+
+-- +========================================================================+
+-- drop table if it exists:
+-- =========================================================================+
+
+-- Dropping table XXCRM.xx_oic_error_headers (if any) . . .
+
+DROP TABLE
+   XXCRM.xx_oic_error_headers
+CASCADE CONSTRAINTS
+/
+
+-- Dropping table XXCRM.xx_oic_error_lines (if any) . . .
+
+DROP TABLE
+   XXCRM.xx_oic_error_lines
+CASCADE CONSTRAINTS
+/

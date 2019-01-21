@@ -1,0 +1,33 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.11_1183" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="region1" amDefName="od.oracle.apps.xxcrm.cn.plancopy.export.server.myWorkAM" windowTitle="Plancopy" title="Plancopy">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:submitButton id="Ok" text="OK" prompt="OK"/>
+            <oa:tableLayout id="region2" hAlign="center">
+               <ui:contents>
+                  <oa:rowLayout id="region3">
+                     <ui:contents>
+                        <oa:cellFormat id="region4">
+                           <ui:contents>
+                              <oa:messageRadioButton id="Radio1" checkedValue=""/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="region5">
+                           <ui:contents>
+                              <oa:messageRadioButton id="Radio2"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:tableLayout>
+            <oa:messageRadioGroup id="item1" pickListViewDef="" pickListDispAttr="" pickListValAttr=""/>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

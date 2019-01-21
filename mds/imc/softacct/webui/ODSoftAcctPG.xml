@@ -1,0 +1,78 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1550" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header: /home/cvs/repository/Office_Depot/SRC/CRM/E0102_SoftAccountingFields/3.SourceCode/InstallFiles/ODSoftAcctPG.xml,v 1.1 2007/04/17 07:16:22 srani Exp $">
+   <content>
+      <oa:pageLayout id="PageLayout" controllerClass="od.oracle.apps.xxcrm.imc.softacct.webui.ODSoftAcctCO" amDefName="od.oracle.apps.xxcrm.imc.softacct.server.ODSoftAcctAM" windowTitle="Soft Accounting Flexfield" title="Soft Accounting Flexfield">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:stackLayout id="OverviewHR" adminCustomizable="false">
+               <ui:contents>
+                  <oa:header id="generalInfoHdr" text="General Information" adminCustomizable="false">
+                     <ui:contents>
+                        <oa:tableLayout id="acctTabLayout" width="100%" adminCustomizable="false">
+                           <ui:contents>
+                              <oa:rowLayout id="row2" width="100%" adminCustomizable="false">
+                                 <ui:contents>
+                                    <oa:cellFormat id="cell2" adminCustomizable="false">
+                                       <ui:contents>
+                                          <oa:defaultDoubleColumn id="generalInfo" headerDisabled="true" adminCustomizable="false">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="customerName" prompt="Customer" shortDesc="Customer" styleClass="OraDataText" viewName="ODGeneralInfoVO1" viewAttr="PartyName" adminCustomizable="false"/>
+                                                <oa:messageStyledText id="accountNumber" viewName="ODGeneralInfoVO1" viewAttr="AccountNumber" styleClass="OraDataText" prompt="Account Number" shortDesc="Account Number" adminCustomizable="false"/>
+                                                <oa:messageStyledText id="accountName" viewName="ODGeneralInfoVO1" viewAttr="AccountName" styleClass="OraDataText" prompt="Account Description" shortDesc="Account Description" adminCustomizable="false"/>
+                                                <oa:messageStyledText id="status" viewName="ODGeneralInfoVO1" viewAttr="Status" styleClass="OraDataText" prompt="Status" shortDesc="Status" adminCustomizable="false"/>
+                                                <oa:messageStyledText id="duns" viewName="ODGeneralInfoVO1" viewAttr="DunsNumberC" styleClass="OraDataText" prompt="DUNS Number" shortDesc="DUNS Number" adminCustomizable="false"/>
+                                                <oa:messageStyledText id="taxpayerId" viewName="ODGeneralInfoVO1" viewAttr="TaxpayerId" styleClass="OraDataText" prompt="Taxpayer ID" shortDesc="Taxpayer ID" adminCustomizable="false"/>
+                                                <oa:messageStyledText id="creationDate" viewName="ODGeneralInfoVO1" viewAttr="CreationDate" styleClass="OraDataText" prompt="Creation Date" shortDesc="Creation Date" adminCustomizable="false"/>
+                                                <oa:messageStyledText id="taxRegistrationNumber" viewName="ODGeneralInfoVO1" viewAttr="TaxRegistrationNumber" styleClass="OraDataText" prompt="Tax Registration Number" shortDesc="Tax Registration Number" adminCustomizable="false"/>
+                                                <oa:messageStyledText id="collector" viewName="ODGeneralInfoVO1" viewAttr="Collector" styleClass="OraDataText" prompt="Collector" shortDesc="Collector" adminCustomizable="false"/>
+                                                <oa:messageStyledText id="salesperson" viewName="ODGeneralInfoVO1" viewAttr="Salesperson" styleClass="OraDataText" prompt="Salesperson" shortDesc="Salesperson" dataType="NUMBER" adminCustomizable="false"/>
+                                                <oa:messageStyledText id="profileClass" viewName="ODGeneralInfoVO1" viewAttr="ProfileClass" styleClass="OraDataText" prompt="Profile Class" shortDesc="Profile Class" adminCustomizable="false"/>
+                                                <oa:messageStyledText id="paymentTerms" viewName="ODGeneralInfoVO1" viewAttr="PaymentTerms" styleClass="OraDataText" prompt="Payment Terms" shortDesc="Payment Terms" adminCustomizable="false"/>
+                                                <oa:messageStyledText id="primaryAddress" viewName="ODGeneralInfoVO1" viewAttr="PrimaryAddress" styleClass="OraDataText" prompt="Identifying Address" shortDesc="Identifying Address" adminCustomizable="false"/>
+                                                <oa:messageStyledText id="primaryAccountContact" viewName="ODGeneralInfoVO1" viewAttr="PrimaryAccountContact" styleClass="OraDataText" prompt="Primary Account Contact" shortDesc="Primary Account Contact" adminCustomizable="false"/>
+                                             </ui:contents>
+                                          </oa:defaultDoubleColumn>
+                                       </ui:contents>
+                                    </oa:cellFormat>
+                                 </ui:contents>
+                              </oa:rowLayout>
+                           </ui:contents>
+                        </oa:tableLayout>
+                     </ui:contents>
+                  </oa:header>
+               </ui:contents>
+            </oa:stackLayout>
+            <oa:defaultSingleColumn id="AcctSiteInfoHdr" text="Account Site Information" adminCustomizable="false">
+               <ui:contents>
+                  <oa:messageStyledText id="acctAddr" viewName="ODGeneralInfoVO1" viewAttr="PrimaryAddress" prompt="Address" shortDesc="Address" styleClass="OraDataText" adminCustomizable="false"/>
+                  <oa:messageStyledText id="acctPurpose" viewName="ODAcctSiteVO1" viewAttr="SiteUseCode" prompt="Purpose" styleClass="OraDataText" adminCustomizable="false"/>
+                  <oa:messageStyledText id="acctLoc" viewName="ODAcctSiteVO1" viewAttr="Location" prompt="Location" shortDesc="Location" styleClass="OraDataText" adminCustomizable="false"/>
+                  <oa:messageStyledText id="acctBillLoc" viewName="ODAcctSiteVO1" viewAttr="BillToLocation" prompt="Bill To Location" shortDesc="Bill To Location" styleClass="OraDataText" adminCustomizable="false"/>
+               </ui:contents>
+            </oa:defaultSingleColumn>
+            <oa:header id="AddInfoHdr" text="Additional Information">
+               <ui:contents>
+                  <oa:messageComponentLayout id="FlexfieldInfoRN" adminCustomizable="false">
+                     <ui:contents>
+                        <oa:messageLayout id="messageLayout1" prompt="" adminCustomizable="false">
+                           <ui:contents>
+                              <oa:flex id="FlexfieldInfo" prompt="Addtional Information" flexFieldAppShortName="AR" flexName="RA_SITE_USES_HZ" viewName="ODFlexfieldInfoVO1" displayContextField="false" adminCustomizable="false"/>
+                           </ui:contents>
+                        </oa:messageLayout>
+                     </ui:contents>
+                  </oa:messageComponentLayout>
+               </ui:contents>
+            </oa:header>
+            <oa:pageButtonBar id="PageButtonRN">
+               <ui:contents>
+                  <oa:submitButton id="restore" text="Restore" prompt="Restore"/>
+                  <oa:submitButton id="save" text="Save" prompt="Save"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

@@ -1,0 +1,71 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_JTF_TERRITORIES_INT.tbl                   |
+-- | Description      :Custom Territories table for I0405_Territories      |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author               Remarks                      |
+-- |-------  ----------- -----------------   ------------------------------|
+-- | 1.0     10-OCT-2007 Sathya Prabha Rani    Initial Draft Version       |
+-- |1.1      16-OCT-2007 Ankur Tandon          Removed UNIQUE clause       |
+-- |                                           on column RECORD_ID.        |
+-- +=======================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_JTF_TERRITORIES_INT......
+PROMPT
+
+
+CREATE TABLE XXCRM.XX_JTF_TERRITORIES_INT
+        (    RECORD_ID                              NUMBER         
+            ,GROUP_ID                               NUMBER
+            ,SOURCE_TERRITORY_ID                    VARCHAR2(50)
+            ,SOURCE_SYSTEM                          VARCHAR2(30)
+            ,TERRITORY_CLASSIFICATION               VARCHAR2(30)
+	    ,COUNTRY_CODE                           VARCHAR2(2)
+	    ,SALES_REP_TYPE                         VARCHAR2(30)
+	    ,BUSINESS_LINE                          VARCHAR2(30)
+	    ,VERTICAL_MARKET_CODE                   VARCHAR2(30)
+            ,CREATION_DATE                          DATE
+            ,CREATED_BY                             NUMBER
+            ,LAST_UPDATE_DATE                       DATE
+            ,LAST_UPDATED_BY                        NUMBER
+            ,INTERFACE_STATUS                       VARCHAR2(30)
+            ,START_DATE_ACTIVE                      DATE
+            ,END_DATE_ACTIVE                        DATE
+       );
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

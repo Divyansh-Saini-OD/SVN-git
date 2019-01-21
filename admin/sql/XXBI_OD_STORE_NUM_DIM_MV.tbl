@@ -1,0 +1,53 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating MATERILIZED VIEW XXCRM.XXBI_OD_STORE_NUM_DIM_MV
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name        : XXCRM.XXBI_OD_STORE_NUM_DIM_MV                             |
+-- | Description : Materialized view to store the store number for DBI        |
+-- |               dimension.                                                 |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date          Author               Remarks                      |
+-- |=======   ===========   =============        =============================|
+-- | V1.0     22-Dec-2010   Gokila Tamilselvam   Initial version              |
+-- +==========================================================================+
+
+ CREATE MATERIALIZED VIEW XXCRM.XXBI_OD_STORE_NUM_DIM_MV
+ BUILD IMMEDIATE
+ REFRESH ON DEMAND
+ AS
+ SELECT  HCA.account_name     id
+        ,HCA.account_name     value
+        ,HL.address1
+        ,HL.address2
+        ,HL.address3
+        ,HL.address4
+        ,HL.city
+        ,HL.state
+        ,HL.county
+        ,HL.postal_code
+ FROM    apps.hz_cust_accounts         HCA
+        ,apps.hz_cust_acct_sites_all   HCAS
+        ,apps.hz_party_sites           HPS
+        ,apps.hz_locations             HL
+ WHERE   HCA.customer_type          = 'I'
+ AND     HCA.customer_class_code    = 'TRADE - SH'
+ AND     HCA.cust_account_id        = HCAS.cust_account_id
+ AND     HCAS.party_site_id         = HPS.party_site_id
+ AND     HPS.location_id            = HL.location_id;
+
+SHOW ERRORS
+
+EXIT;

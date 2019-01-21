@@ -1,0 +1,179 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- $Header: ODSiteViewPG.xml $ -->
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1550" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="ODPageLayoutPG" amDefName="od.oracle.apps.xxcrm.asn.partysite.server.ODSiteViewAM" warnAboutChanges="true" regionName="View Customer Site Details Page" securityMode="standard" controllerClass="od.oracle.apps.xxcrm.asn.partysite.webui.ODSiteViewCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:pageButtonBar id="ODPageButtonsRN">
+               <ui:contents>
+                  <oa:submitButton id="Cancel" use="/oracle/apps/fnd/attributesets/Buttons/Cancel" serverUnvalidated="true" unvalidated="true"/>
+                  <oa:submitButton id="UpdateSiteDetails" use="/oracle/apps/fnd/attributesets/Buttons/Update" warnAboutChanges="true" text="Update Site Details" prompt="Update Site Details"/>
+                  <oa:messageChoice id="Action" prompt="Action" pickListViewName="LookupsVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode" allowBlankValue="false"/>
+                  <oa:submitButton id="Go" use="/oracle/apps/fnd/attributesets/Buttons/Go" warnAboutChanges="true"/>
+                  <oa:submitButton id="Apply" use="/oracle/apps/fnd/attributesets/Buttons/Apply"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+            <oa:tableLayout id="ODSiteViewTLRN" width="100%">
+               <ui:contents>
+                  <oa:rowLayout id="ODPartyHeaderRow" vAlign="top" width="100%" rendered="true">
+                     <ui:contents>
+                        <oa:cellFormat id="ODCustHdrInfoCell" rendered="true" width="50%">
+                           <ui:contents>
+                              <oa:defaultSingleColumn id="ODCustHdrInfoRN" text="Basic Party Information">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="OrgName" viewName="ODHZBasicPartyInfoVO" viewAttr="OrgName" prompt="Organization">
+                                       <ui:primaryClientAction>
+                                          <ui:fireAction event="ViewOrgEvt" id="fireAction1"/>
+                                       </ui:primaryClientAction>
+                                    </oa:messageStyledText>
+                                    <oa:messageStyledText id="AccountNumber" dataType="VARCHAR2" prompt="Prospect/Customer #" viewName="ODHZBasicPartyInfoVO" viewAttr="AccountNumber" styleClass="OraDataText"/>
+                                    <oa:messageStyledText id="PrimaryPhone" dataType="VARCHAR2" prompt="Primary Phone" viewName="ODHZBasicPartyInfoVO" viewAttr="PrimaryPhone" styleClass="OraDataText"/>
+                                    <oa:messageStyledText id="PrimaryAddress" dataType="VARCHAR2" prompt="PrimaryAddress" viewName="ODHZBasicPartyInfoVO" viewAttr="PrimaryAddress" styleClass="OraDataText"/>
+                                 </ui:contents>
+                              </oa:defaultSingleColumn>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="ODCustProfileInfoCell" width="50%">
+                           <ui:contents>
+                              <oa:defaultSingleColumn id="ODCustProfileInfoRN" text="Party Profile Information">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="RevenueBand" dataType="VARCHAR2" prompt="Revenue Band" viewName="ODHZBasicPartyInfoVO" viewAttr="RevenueBand" styleClass="OraDataText"/>
+                                    <oa:messageStyledText id="CurrFyPotentialRevenue" dataType="NUMBER" prompt="Current FY Revenue" viewName="ODHZBasicPartyInfoVO" viewAttr="CurrFyPotentialRevenue" styleClass="OraDataText"/>
+                                    <oa:messageStyledText id="NextFyPotentialRevenue" dataType="NUMBER" prompt="Next FY Revenue" viewName="ODHZBasicPartyInfoVO" viewAttr="NextFyPotentialRevenue" styleClass="OraDataText"/>
+                                    <oa:messageStyledText id="OdWhiteCollarWorker" dataType="VARCHAR2" prompt="OD White Collar Worker" viewName="ODHZBasicPartyInfoVO" viewAttr="OdWhiteCollarWorker" styleClass="OraDataText"/>
+                                    <oa:messageStyledText id="WhiteCollarWorker" dataType="VARCHAR2" prompt="White Collar Worker" viewName="ODHZBasicPartyInfoVO" viewAttr="WhiteCollarWorker" styleClass="OraDataText"/>
+                                    <oa:messageStyledText id="PotentialSpend" dataType="NUMBER" prompt="Potential Spend" viewName="ODHZBasicPartyInfoVO" viewAttr="PotentialSpend" styleClass="OraDataText"/>
+                                 </ui:contents>
+                              </oa:defaultSingleColumn>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="ODSiteHeaderRow" vAlign="top" width="100%" rendered="true">
+                     <ui:contents>
+                        <oa:cellFormat id="ODSiteHdrInfoCell" width="50%">
+                           <ui:contents>
+                              <oa:defaultSingleColumn id="ODSiteHdrInfoRN" text="Basic Site Information">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="PartySiteName" dataType="VARCHAR2" prompt="Site Name" viewName="ODHZBasicPtySiteInfoVO" viewAttr="PartySiteName" styleClass="OraDataText"/>
+                                    <oa:messageStyledText id="PartySiteNumber" dataType="VARCHAR2" prompt="Site Number" viewName="ODHZBasicPtySiteInfoVO" viewAttr="PartySiteNumber" styleClass="OraDataText"/>
+                                    <oa:messageStyledText id="OrigSystemReference" dataType="VARCHAR2" prompt="Legacy Site Number" viewName="ODHZBasicPtySiteInfoVO" viewAttr="OrigSystemReference" styleClass="OraDataText"/>
+                                    <oa:messageStyledText id="DunsNumber" dataType="NUMBER" prompt="DUNS Number" viewName="ODHZBasicPtySiteInfoVO" viewAttr="DunsNumber" styleClass="OraDataText"/>
+                                    <oa:messageStyledText id="SiteStatus" dataType="VARCHAR2" prompt="Status" viewName="ODHZBasicPtySiteInfoVO" viewAttr="Status" styleClass="OraDataText"/>
+                                 </ui:contents>
+                              </oa:defaultSingleColumn>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="ODSiteHdrProfileInfoCell" width="50%" rendered="true">
+                           <ui:contents>
+                              <oa:defaultSingleColumn id="ODSiteHdrProfileInfoRN" text="Site Profile Information">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="CerrentFyRevenue" dataType="NUMBER" prompt="Current FY Revenue" viewName="ODHZBasicPtySiteInfoVO" viewAttr="CerrentFyRevenue" styleClass="OraDataText"/>
+                                    <oa:messageStyledText id="NextFyRevenue" dataType="NUMBER" prompt="Next FY Revenue" viewName="ODHZBasicPtySiteInfoVO" viewAttr="NextFyRevenue" styleClass="OraDataText"/>
+                                    <oa:messageStyledText id="SiteOdWhiteCollarWorker" dataType="NUMBER" prompt="OD White Collar Worker" viewName="ODHZBasicPtySiteInfoVO" viewAttr="OdWhiteCollarWorker" styleClass="OraDataText"/>
+                                    <oa:messageStyledText id="SiteWhiteCollarWorker" dataType="NUMBER" prompt="White Collar Worker" viewName="ODHZBasicPtySiteInfoVO" viewAttr="WhiteCollarWorker" styleClass="OraDataText"/>
+                                    <oa:messageStyledText id="SitePotentialSpend" dataType="NUMBER" prompt="Potential Spend" viewName="ODHZBasicPtySiteInfoVO" viewAttr="PotentialSpend" styleClass="OraDataText"/>
+                                 </ui:contents>
+                              </oa:defaultSingleColumn>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="ODSiteHeaderSecRow" vAlign="top" width="100%" rendered="true">
+                     <ui:contents>
+                        <oa:cellFormat id="ODSiteHdrCtctsInfoCell">
+                           <ui:contents>
+                              <oa:defaultSingleColumn id="ODSiteHdrCtctsInfoRN" text="Site Contact Information">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="SitePrimaryPhone" dataType="VARCHAR2" prompt="Primary Phone" viewName="ODHZBasicPtySiteInfoVO" viewAttr="PrimaryPhone" styleClass="OraDataText"/>
+                                    <oa:messageStyledText id="ContactFrequency" dataType="VARCHAR2" prompt="Contact Frequency" viewName="ODHZBasicPtySiteInfoVO" viewAttr="ContactFrequency" styleClass="OraDataText"/>
+                                 </ui:contents>
+                              </oa:defaultSingleColumn>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="ODSiteCtctsRelRow" vAlign="top">
+                     <ui:contents>
+                        <oa:cellFormat id="ODSiteCtctsRelCell" columnSpan="2">
+                           <ui:contents>
+                              <oa:defaultSingleColumn id="ODSiteCtctsRelTableRN" extends="/od/oracle/apps/xxcrm/asn/partysite/common/webui/ODSiteContactRelTableRN"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="ODSiteNotesRow" vAlign="top" rendered="true">
+                     <ui:contents>
+                        <oa:cellFormat id="ODSIteNotesCell" columnSpan="2">
+                           <ui:contents>
+                              <oa:header id="ODSiteNotesHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/Notes_Hdr">
+                                 <ui:contents>
+                                    <oa:stackLayout id="ODSiteNotesRN" extends="/oracle/apps/asn/common/webui/ASNNotesRN"/>
+                                 </ui:contents>
+                              </oa:header>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="ODSiteBusActsRow" rendered="true">
+                     <ui:contents>
+                        <oa:cellFormat id="ODSiteBusActsCell" columnSpan="2">
+                           <ui:contents>
+                              <oa:header id="ODSiteBusActsHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/BusActivities_Hdr">
+                                 <ui:contents>
+                                    <oa:stackLayout id="ODSiteBusActsRN" extends="/od/oracle/apps/xxcrm/asn/partysite/common/webui/ODSiteBusinessActivitiesRN"/>
+                                 </ui:contents>
+                              </oa:header>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:tableLayout>
+            <oa:rowLayout id="ODSiteAttchRow">
+               <ui:contents>
+                  <oa:cellFormat id="ODSiteAttchCell">
+                     <ui:contents>
+                        <oa:hideShowHeader id="ODSiteAttchHdrRN" text="Attachments">
+                           <ui:contents>
+                              <oa:attachmentTable id="ODSiteAttchTable" viewName="ODPartySiteVO" text="Attachments" searchRegionRendered="false">
+                                 <oa:entityMappings>
+                                    <oa:entityMap id="ODSiteAttchEntityMap" entityId="HZ_PARTY_SITES">
+                                       <oa:primaryKeys>
+                                          <oa:primaryKey id="primaryKey1" viewAttr="PartySiteId"/>
+                                       </oa:primaryKeys>
+                                       <oa:categoryMappings>
+                                          <oa:categoryMap id="ODSiteAttchCategoryMap" categoryName="MISC" secured="false"/>
+                                       </oa:categoryMappings>
+                                    </oa:entityMap>
+                                 </oa:entityMappings>
+                              </oa:attachmentTable>
+                           </ui:contents>
+                        </oa:hideShowHeader>
+                     </ui:contents>
+                  </oa:cellFormat>
+               </ui:contents>
+            </oa:rowLayout>
+            <oa:stackLayout id="ODSiteAttchContextHolderRN">
+               <ui:contents>
+                  <oa:messageComponentLayout id="ODSiteAttchContextRN">
+                     <ui:contents>
+                        <oa:messageStyledText id="PartySiteAddress" viewName="ODPartySiteVO" viewAttr="PartySiteAddress" prompt="Site Address" styleClass="OraDataText"/>
+                        <oa:messageStyledText id="RegistryId" dataType="VARCHAR2" prompt="Registry Id" viewName="ODPartySiteVO" viewAttr="RegistryId" maximumLength="30" styleClass="OraDataText"/>
+                        <oa:messageStyledText id="Status" dataType="VARCHAR2" prompt="Status" viewName="ODPartySiteVO" viewAttr="Status" maximumLength="4000" styleClass="OraDataText"/>
+                     </ui:contents>
+                  </oa:messageComponentLayout>
+               </ui:contents>
+            </oa:stackLayout>
+         </ui:contents>
+
+         <ui:productBranding>
+            <oa:image id="ASNBrandImage" source="ASNBRAND.gif" shortDesc="Sales"/>
+         </ui:productBranding>
+      </oa:pageLayout>
+   </content>
+</page>

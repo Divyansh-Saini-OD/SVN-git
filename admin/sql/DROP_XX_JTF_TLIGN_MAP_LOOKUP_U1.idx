@@ -1,0 +1,37 @@
+-- +================================================================================+
+-- |                  Office Depot - Project Simplify                               |
+-- |                Oracle NAIO Consulting Organization                             |
+-- +================================================================================+
+-- | Name        : DROP_XX_JTF_TLIGN_MAP_LOOKUP_U1.idx                              |
+-- | Rice ID     : I0405_Territories_Terralign_Inbound_Interface                    |
+-- | Description : XX_JTF_TLIGN_MAP_LOOKUP_U1 index Drop Script                     |
+-- |                                                                                |
+-- |                                                                                |
+-- |Change Record:                                                                  |
+-- |===============                                                                 |
+-- |Version   Date         Author                 Remarks                           |
+-- |========  ===========  =============          ===============================   |
+-- |DRAFT 1A  12-OCT-2007  Mohan Kalyanasundaram  Initial draft version             |
+-- |DRAFT 1B  07-JAN-2007  Hema Chikkanna         Incorporated changes as per OD    |
+-- |                                              Standards                         |
+-- +================================================================================+
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+PROMPT
+PROMPT Dropping Existing  Unique INDEX XX_JTF_TLIGN_MAP_LOOKUP_U1
+PROMPT
+
+DROP INDEX xx_jtf_tlign_map_lookup_u1;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

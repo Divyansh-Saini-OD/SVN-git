@@ -1,0 +1,7 @@
+truncate table xxcrm.xx_crm_exp_cust_hier;
+
+alter table xxcrm.xx_crm_exp_cust_hier modify
+(
+ORACLE_PARTY_ID VARCHAR2(30),
+PARENT_ID       VARCHAR2(30)
+);

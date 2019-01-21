@@ -1,0 +1,49 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath_~PROD_~PATH_~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath_~PROD_mds_directory  -->
+<jrad:page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1550" xml:lang="en-US" file-version="$Header: EGOMAINTAINUNIQUEKEYPGL.xml 115.5 2004/07/26 22:32:04 amalviya noship $" xmlns:user="http://xmlns.oracle.com/jrad/user">
+   <jrad:content>
+      <oa:pageLayout amDefName="od.oracle.apps.xxcrm.customer.account.server.ODCustomerAccountSetupRequestAM" id="AccountSetupPageBreakShuttleBox" title="Select Document Page Break Options" windowTitle="Select Document Page Breake Options" helpTarget="" function="" scope="" amStateRequired="false" controllerClass="od.oracle.apps.xxcrm.customer.account.webui.ODAcctSetupPageBreakShuttleCO" autoFooter="false" adminCustomizable="false" addForm="true">
+         <ui:contents>
+            <oa:spacer id="spacer"/>
+            <oa:shuttle id="SortShuttle" name="" leadingHeader="Available Values" trailingHeader="Selected Values">
+               <ui:leading>
+                  <oa:list id="AvailableValues" pickListViewName="ODAcctSetupDocSortLokkupVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode" shortDesc="Available Values"/>
+               </ui:leading>
+               <ui:trailing>
+                  <oa:list id="SelectedValues" pickListViewName="ODAcctSetupDocPageBreakShuttleVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode" shortDesc="Selected Values"/>
+               </ui:trailing>
+            </oa:shuttle>
+            <oa:formValue id="cancelDestinationHidden"/>
+            <oa:formValue id="applyDestinationHidden"/>
+            <oa:formValue id="documentID"/>
+            <oa:rowLayout id="CancelApplyRL" width="100%">
+               <ui:contents>
+                  <oa:cellFormat id="ApplyButtonArea" width="100%" hAlign="end">
+                     <ui:contents>
+                        <oa:submitButton id="applyButton" text="Apply" use="/oracle/apps/fnd/attributesets/Buttons/Apply">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction>
+                                 <ui:parameters>
+                                    <ui:parameter key="pageEvent" value="Apply"/>
+                                 </ui:parameters>
+                              </ui:firePartialAction>
+                           </ui:primaryClientAction>
+                        </oa:submitButton>
+                     </ui:contents>
+                  </oa:cellFormat>
+                  <oa:cellFormat id="SpacerCF1" width="100%" height="1">
+                     <ui:contents>
+                        <oa:spacer id="cancelApplyButtonSpacer1" width="5" height="5"/>
+                     </ui:contents>
+                  </oa:cellFormat>
+                  <oa:cellFormat id="CloseButton" width="100%" hAlign="end">
+                     <ui:contents>
+                        <oa:button id="Close" text="Close" destination="javascript:window.close();void(0);" prompt="Close"/>
+                     </ui:contents>
+                  </oa:cellFormat>
+               </ui:contents>
+            </oa:rowLayout>
+         </ui:contents>
+      </oa:pageLayout>
+   </jrad:content>
+</jrad:page>

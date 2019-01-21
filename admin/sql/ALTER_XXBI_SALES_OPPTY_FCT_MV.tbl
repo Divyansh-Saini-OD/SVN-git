@@ -1,0 +1,302 @@
+-- $Id: XXBI_SALES_OPPTY_FCT_MV.tbl 119685 2010-11-08 16:55:18Z Kishore Jena $
+-- $Rev: 119685 $
+-- $HeadURL: https://svn.na.odcorp.net/od/crm/branches/10.4/xxcrm/admin/sql/XXBI_SALES_OPPTY_FCT_MV.tbl $
+-- $Author: Kishore Jena $
+-- $Date: 2010-11-08 11:55:18 -0500 (Mon, 08 Nov 2010) $
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+CREATE MATERIALIZED VIEW "XXCRM"."XXBI_SALES_OPPTY_FCT_MV"
+  BUILD DEFERRED
+  USING INDEX
+  REFRESH FORCE
+  WITH ROWID
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        :  XXBI_SALES_OPPTY_FCT_MV.vw                         |
+-- | Description :  MV for Opportunity Fact for Detailed Reporting     |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date          Author           Remarks                   |
+-- |=======   ==========    =============    ==========================|
+-- |1.0       16-Mar-2009   Sreekanth Rao    Initial version           |
+-- |1.2       14-Apr-2010   Luis Mazuera     fast refresh MV           |
+-- |3.0       21-DEC-2010   Gokila T         Added Store Number extra  |
+-- |                                         Column.                   |
+-- |                                                                   |
+-- +===================================================================+
+AS
+ SELECT
+       OPP.rowid oppty_rowid
+     , OPL.rowid lead_line_rowid
+     , LOC.rowid loc_rowid
+     , ASGN.rowid assig_rowid
+     , ACT.rowid act_rowid
+     , OPP.lead_id opp_id
+     , OPP.lead_number opp_number
+     , OPP.description opp_name
+     , OPP.customer_id
+     , LOC.party_site_id
+     , LOC.party_id
+     , LOC.party_name
+     , LOC.address_lines_phonetic
+     , LOC.site_use site_use_id
+     , OPP.address_id
+     , LOC.org_number
+     , LOC.od_party_type customer_type
+     ,( CASE NVL(LOC.address_style,'-9X9Y9Z') WHEN 'AS_DEFAULT' THEN
+                             LOC.address1
+                          || '.'
+                          || LOC.address2
+                          || '.'
+                          || LOC.address3
+                          || '.'
+                          || LOC.address4
+                          || '.'
+                          || LOC.state
+                          || '.'
+                          || LOC.county
+                          || '.'
+                          || LOC.city
+                          || '.'
+                          || LOC.postal_code
+                     WHEN '-9X9Y9Z' THEN
+                             LOC.address1
+                          || '.'
+                          || LOC.address2
+                          || '.'
+                          || LOC.address3
+                          || '.'
+                          || LOC.address4
+                          || '.'
+                          || LOC.state
+                          || '.'
+                          || LOC.county
+                          || '.'
+                          || LOC.city
+                          || '.'
+                          || LOC.postal_code
+                     WHEN 'JP' THEN
+                             LOC.postal_code
+                          || '.'
+                          || LOC.state
+                          || '.'
+                          || LOC.city
+                          || '.'
+                          || LOC.address1
+                          || '.'
+                          || LOC.address2
+                          || '.'
+                          || LOC.address3
+                          || '.'
+                          || LOC.address_lines_phonetic
+                     WHEN 'NE' THEN
+                             LOC.address1
+                          || '.'
+                          || LOC.address2
+                          || '.'
+                          || LOC.address3
+                          || '.'
+                          || LOC.state
+                          || '.'
+                          || LOC.postal_code
+                          || '.'
+                          || LOC.city
+                     WHEN 'POSTAL_ADDR_DEF' THEN
+                             LOC.address1
+                          || '.'
+                          || LOC.address2
+                          || '.'
+                          || LOC.address3
+                          || '.'
+                          || LOC.address4
+                          || '.'
+                          || LOC.city
+                          || '.'
+                          || LOC.county
+                          || '.'
+                          || LOC.state
+                          || '.'
+                          || LOC.province
+                          || '.'
+                          || LOC.postal_code
+                     WHEN 'POSTAL_ADDR_US' THEN
+                             LOC.address1
+                          || '.'
+                          || LOC.address2
+                          || '.'
+                          || LOC.address3
+                          || '.'
+                          || LOC.address4
+                          || '.'
+                          || LOC.city
+                          || '.'
+                          || LOC.county
+                          || '.'
+                          || LOC.state
+                          || '.'
+                          || LOC.postal_code
+                     WHEN 'SA' THEN
+                             LOC.address1
+                          || '.'
+                          || LOC.address2
+                          || '.'
+                          || LOC.address3
+                          || '.'
+                          || LOC.city
+                          || '.'
+                          || LOC.province
+                          || '.'
+                          || LOC.state
+                          || '.'
+                          || LOC.county
+                          || '.'
+                          || LOC.postal_code
+                     WHEN 'SE' THEN
+                             LOC.address1
+                          || '.'
+                          || LOC.address2
+                          || '.'
+                          || LOC.address3
+                          || '.'
+                          || LOC.postal_code
+                          || '.'
+                          || LOC.city
+                          || '.'
+                          || LOC.state
+                     WHEN 'UAA' THEN
+                             LOC.address1
+                          || '.'
+                          || LOC.address2
+                          || '.'
+                          || LOC.address3
+                          || '.'
+                          || LOC.city
+                          || '.'
+                          || LOC.state
+                          || '.'
+                          || LOC.postal_code
+                 WHEN 'AS_DEFAULT_CA' THEN
+                             LOC.address1
+                          || '.'
+                          || LOC.address2
+                          || '.'
+                          || LOC.address3
+                          || '.'
+                          || LOC.city
+                          || '.'
+                          || LOC.province
+                          || '.'
+                          || LOC.postal_code
+                 ELSE
+                             LOC.address1
+                          || '.'
+                          || LOC.address2
+                          || '.'
+                          || LOC.address3
+                          || '.'
+                          || LOC.address4
+                          || '.'
+                          || LOC.state
+                          || '.'
+                          || LOC.county
+                          || '.'
+                          || LOC.city
+                          || '.'
+                          || LOC.postal_code
+                     END ) address
+     , nvl(OPP.source_promotion_id,-1) source_promotion_id
+     , nvl(opp.status,'XX') status_code
+     , nvl(OPP.channel_code,'XX') channel_code
+     , nvl(opp.close_reason,'XX') close_reason_id
+     , nvl(OPP.currency_code,'XX') currency_code
+     , LOC.address1
+     , LOC.city
+     , LOC.state
+     , LOC.province
+     , decode(LOC.country,'CA',LOC.province,LOC.state) state_province
+     , nvl(substr(LOC.postal_code,1,5),'XX') postal_code
+     , LOC.country
+     , nvl(opp.sales_methodology_id, -1) sales_methodology_id
+     , nvl(opp.sales_stage_id, -1) sales_stage_id
+     , opp.win_probability
+     , 'US' source_lang
+     , nvl(opp.total_amount,0) total_amount
+     , OPP.org_id
+     , OPP.decision_date
+     , TO_CHAR(OPP.decision_date,'YYYYQMM') decision_month
+     , TO_CHAR(OPP.decision_date,'YYYYQ') decision_qtr
+     , TO_CHAR(OPP.decision_date,'YYYY') decision_year
+     , OPP.creation_date oppty_creation_date
+     , OPP.last_update_date oppty_last_update_date
+     , TO_CHAR(OPP.creation_date,'YYYYQMM') oppty_creation_month
+     , TO_CHAR(OPP.creation_date,'YYYYQ') oppty_creation_qtr
+     , TO_CHAR(OPP.creation_date,'YYYY') oppty_creation_year
+     , TO_CHAR(OPP.last_update_date,'YYYYQMM') oppty_updation_month
+     , TO_CHAR(OPP.last_update_date,'YYYYQ') oppty_updation_qtr
+     , TO_CHAR(OPP.last_update_date,'YYYY') oppty_updation_year
+     , ASGN.resource_id
+     , ASGN.role_id
+     , ASGN.group_id
+     , ASGN.TERR_DEFN_START_DATE
+     , ASGN.TERR_DEFN_END_DATE
+     , ASGN.TERR_RSC_START_DATE
+     , ASGN.TERR_RSC_END_DATE
+     , ASGN.TERR_ENT_START_DATE
+     , ASGN.TERR_ENT_END_DATE
+     , ACT.last_activity_date
+     , OPL.lead_line_id
+     , OPL.CREATION_DATE lead_line_creation_date
+     , OPL.LAST_UPDATE_DATE lead_line_last_update_date
+     , OPL.INVENTORY_ITEM_ID
+     , OPL.QUANTITY
+     , nvl(OPL.TOTAL_AMOUNT,0) lead_line_total_amt
+     , OPL.PRICE
+     , OPL.PRICE_VOLUME_MARGIN
+     , OPL.FORECAST_DATE
+     , OPL.ORGANIZATION_ID
+     , nvl(OPL.PRODUCT_CATEGORY_ID, -1) PRODUCT_CATEGORY_ID
+     , OPL.PRODUCT_CAT_SET_ID
+     , OPP.CREATED_BY oppty_created_by
+     , NVL(APPS.XXTPS_UTIL_PUB.TO_NUMBER_OR_NULL(OPL.attribute1),0) srm
+     , nvl(((OPP.win_probability/100) * OPL.total_amount), 0) forecast_amt
+     , NVL(COMP.competitor_party_id, -1) competitor_party_id
+     , COMP.party_name competitor_party_name
+     ,NVL(OPP.attribute4,'NA') store_number            -- Added as part of CPD Lead Referral CR.
+  FROM
+      OSM.AS_LEADS_ALL    OPP
+     ,OSM.AS_LEAD_LINES_ALL OPL
+     ,XXCRM.xxbi_party_site_data_fct_mv  LOC
+     ,XXCRM.XXBI_TERENT_ASGNMNT_FCT_MV ASGN
+     ,XXCRM.XXBI_ACTIVITIES ACT
+     ,APPS.XXBI_LEAD_LINE_COMPTTR_MV COMP  -- XXCRM has been changed to APPS Gokila
+  WHERE
+         OPP.lead_id = OPL.lead_id(+)
+     AND OPP.customer_id = LOC.party_id
+     AND OPP.address_id = LOC.party_site_id
+     AND OPP.lead_id = ASGN.entity_id
+     AND ASGN.entity_type = 'OPPORTUNITY'
+     AND ACT.source_type(+) = 'OPPORTUNITY'
+     AND ACT.source_id(+)   = OPP.lead_id
+     AND OPL.lead_line_id = COMP.lead_line_id(+);
+
+
+
+alter materialized view  XXCRM.XXBI_SALES_OPPTY_FCT_MV
+modify resource_id not null;
+
+alter materialized view  XXCRM.XXBI_SALES_OPPTY_FCT_MV
+modify role_id not null;
+
+alter materialized view  XXCRM.XXBI_SALES_OPPTY_FCT_MV
+modify group_id not null;
+----------------------------------------------------------
+-- Grant to APPS
+----------------------------------------------------------
+GRANT ALL ON XXCRM.XXBI_SALES_OPPTY_FCT_MV TO APPS; -- Should we need to have different file Gokila?
+
+SHOW ERRORS;

@@ -1,0 +1,243 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        :  XX_CDH_ACCT_SITE_EXT_INST.tbl                      |
+-- | Description :  Create custom DB Tables,Views and Indexes for      |
+-- |                Account-Site additional attributes                 |
+-- |                The Objects created are:                           |
+-- |                 1. XX_ACCT_SITE_EXT_B      (Extension Table)      |
+-- |                 2. XX_ACCT_SITE_EXT_B_N1   (Index )               |
+-- |                 3. XX_ACCT_SITE_EXT_B_U1   (Unique Index )        |
+-- |                 4. XX_ACCT_SITE_EXT_TL     (Translation)          |
+-- |                 5. XX_ACCT_SITE_EXT_TL_N1  (Index )               |
+-- |                 6. XX_ACCT_SITE_EXT_TL_U1  (Unique Index )        |
+-- |                 7. XX_ACCT_SITE_EXT_VL     (View)                 |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author             Remarks                  |
+-- |=======   ===========  =================  =========================|
+-- |DRAFT 1A  08-May-2007  Sathya Prabha Rani   Initial draft version  |
+-- +===================================================================+
+
+
+
+PROMPT
+PROMPT Dropping Existing Custom Tables, Indexes and Views...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE;
+
+SET TERM OFF
+
+PROMPT
+PROMPT Drop Table XX_ACCT_SITE_EXT_B
+PROMPT
+
+DROP TABLE XX_ACCT_SITE_EXT_B;
+
+PROMPT
+PROMPT Drop Index XX_ACCT_SITE_EXT_B_N1
+PROMPT
+
+DROP INDEX XX_ACCT_SITE_EXT_B_N1;
+
+PROMPT
+PROMPT Drop Index XX_ACCT_SITE_EXT_B_U1
+PROMPT
+
+DROP INDEX XX_ACCT_SITE_EXT_B_U1;
+
+PROMPT
+PROMPT Drop Table XX_ACCT_SITE_EXT_TL
+PROMPT
+
+DROP TABLE XX_ACCT_SITE_EXT_TL;
+
+PROMPT
+PROMPT Drop Index XX_ACCT_SITE_EXT_TL_N1
+PROMPT
+
+DROP INDEX XX_ACCT_SITE_EXT_TL_N1;
+
+PROMPT
+PROMPT Drop Index XX_ACCT_SITE_EXT_TL_U1
+PROMPT
+
+DROP INDEX XX_ACCT_SITE_EXT_TL_U1;
+
+PROMPT
+PROMPT Drop View XX_ACCT_SITE_EXT_VL
+PROMPT
+
+DROP VIEW XX_ACCT_SITE_EXT_VL;
+
+SET TERM ON
+
+PROMPT
+PROMPT Custom Tables, Indexes and Views...
+PROMPT
+
+WHENEVER SQLERROR EXIT 1;
+
+PROMPT
+PROMPT Creating the Table XX_ACCT_SITE_EXT_B 
+PROMPT
+
+CREATE TABLE XX_ACCT_SITE_EXT_B
+			( EXTENSION_ID             NUMBER(15)           NOT NULL,
+			  CUST_ACCT_SITE_ID        NUMBER(15)           NOT NULL,
+			  ATTR_GROUP_ID            NUMBER(15)           NOT NULL,
+			  CREATED_BY               NUMBER(15)           NOT NULL,
+			  CREATION_DATE            DATE                 NOT NULL,
+			  LAST_UPDATED_BY          NUMBER(15)           NOT NULL,
+			  LAST_UPDATE_DATE         DATE                 NOT NULL,
+			  LAST_UPDATE_LOGIN        NUMBER(15),
+			  C_EXT_ATTR1              VARCHAR2(150 BYTE),
+			  C_EXT_ATTR2              VARCHAR2(150 BYTE),
+			  C_EXT_ATTR3              VARCHAR2(150 BYTE),
+			  C_EXT_ATTR4              VARCHAR2(150 BYTE),
+			  C_EXT_ATTR5              VARCHAR2(150 BYTE),
+			  C_EXT_ATTR6              VARCHAR2(150 BYTE),
+			  C_EXT_ATTR7              VARCHAR2(150 BYTE),
+			  C_EXT_ATTR8              VARCHAR2(150 BYTE),
+			  C_EXT_ATTR9              VARCHAR2(150 BYTE),
+			  C_EXT_ATTR10             VARCHAR2(150 BYTE),
+			  C_EXT_ATTR11             VARCHAR2(150 BYTE),
+			  C_EXT_ATTR12             VARCHAR2(150 BYTE),
+			  C_EXT_ATTR13             VARCHAR2(150 BYTE),
+			  C_EXT_ATTR14             VARCHAR2(150 BYTE),
+			  C_EXT_ATTR15             VARCHAR2(150 BYTE),
+			  C_EXT_ATTR16             VARCHAR2(150 BYTE),
+			  C_EXT_ATTR17             VARCHAR2(150 BYTE),
+			  C_EXT_ATTR18             VARCHAR2(150 BYTE),
+			  C_EXT_ATTR19             VARCHAR2(150 BYTE),
+			  C_EXT_ATTR20             VARCHAR2(150 BYTE),
+			  N_EXT_ATTR1              NUMBER(22,5),
+			  N_EXT_ATTR2              NUMBER(22,5),
+			  N_EXT_ATTR3              NUMBER(22,5),
+			  N_EXT_ATTR4              NUMBER(22,5),
+			  N_EXT_ATTR5              NUMBER(22,5),
+			  N_EXT_ATTR6              NUMBER(22,5),
+			  N_EXT_ATTR7              NUMBER(22,5),
+			  N_EXT_ATTR8              NUMBER(22,5),
+			  N_EXT_ATTR9              NUMBER(22,5),
+			  N_EXT_ATTR10             NUMBER(22,5),
+			  N_EXT_ATTR11             NUMBER(22,5),
+			  N_EXT_ATTR12             NUMBER(22,5),
+			  N_EXT_ATTR13             NUMBER(22,5),
+			  N_EXT_ATTR14             NUMBER(22,5),
+			  N_EXT_ATTR15             NUMBER(22,5),
+			  N_EXT_ATTR16             NUMBER(22,5),
+			  N_EXT_ATTR17             NUMBER(22,5),
+			  N_EXT_ATTR18             NUMBER(22,5),
+			  N_EXT_ATTR19             NUMBER(22,5),
+			  N_EXT_ATTR20             NUMBER(22,5),
+			  D_EXT_ATTR1              DATE,
+			  D_EXT_ATTR2              DATE,
+			  D_EXT_ATTR3              DATE,
+			  D_EXT_ATTR4              DATE,
+			  D_EXT_ATTR5              DATE,
+			  D_EXT_ATTR6              DATE,
+			  D_EXT_ATTR7              DATE,
+			  D_EXT_ATTR8              DATE,
+			  D_EXT_ATTR9              DATE,
+			  D_EXT_ATTR10             DATE
+			)
+/
+
+PROMPT
+PROMPT Grants XX_ACCT_SITE_EXT_B
+PROMPT   
+grant all on XX_ACCT_SITE_EXT_B to apps;
+            
+PROMPT
+PROMPT Creating Index XX_ACCT_SITE_EXT_B_N1
+PROMPT   
+
+CREATE INDEX XX_ACCT_SITE_EXT_B_N1 ON XX_ACCT_SITE_EXT_B(CUST_ACCT_SITE_ID)
+/
+            
+PROMPT
+PROMPT Creating Unique Index XX_ACCT_SITE_EXT_B_U1
+PROMPT   
+
+CREATE UNIQUE INDEX XX_ACCT_SITE_EXT_B_U1 ON XX_ACCT_SITE_EXT_B(EXTENSION_ID)
+/
+
+PROMPT
+PROMPT Creating the Table XX_ACCT_SITE_EXT_TL 
+PROMPT
+
+CREATE TABLE XX_ACCT_SITE_EXT_TL
+			( EXTENSION_ID             NUMBER(15)           NOT NULL,
+			  CUST_ACCT_SITE_ID        NUMBER(15)           NOT NULL,
+			  ATTR_GROUP_ID            NUMBER(15)           NOT NULL,
+			  SOURCE_LANG              VARCHAR2(4 BYTE)     NOT NULL,
+			  LANGUAGE                 VARCHAR2(4 BYTE)     NOT NULL,
+			  CREATED_BY               NUMBER(15)           NOT NULL,
+			  CREATION_DATE            DATE                 NOT NULL,
+			  LAST_UPDATED_BY          NUMBER(15)           NOT NULL,
+			  LAST_UPDATE_DATE         DATE                 NOT NULL,
+			  LAST_UPDATE_LOGIN        NUMBER(15),
+			  TL_EXT_ATTR1             VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR2             VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR3             VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR4             VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR5             VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR6             VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR7             VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR8             VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR9             VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR10            VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR11            VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR12            VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR13            VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR14            VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR15            VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR16            VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR17            VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR18            VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR19            VARCHAR2(1000 BYTE),
+			  TL_EXT_ATTR20            VARCHAR2(1000 BYTE)
+			)
+/
+PROMPT
+PROMPT Grants XX_ACCT_SITE_EXT_TL
+PROMPT   
+grant all on XX_ACCT_SITE_EXT_TL to apps;
+
+            
+PROMPT
+PROMPT Creating Index XX_ACCT_SITE_EXT_TL_N1
+PROMPT   
+
+CREATE INDEX XX_ACCT_SITE_EXT_TL_N1 ON XX_ACCT_SITE_EXT_TL(CUST_ACCT_SITE_ID,LANGUAGE)
+/
+            
+PROMPT
+PROMPT Creating Unique Index XX_ACCT_SITE_EXT_TL_U1
+PROMPT   
+
+CREATE UNIQUE INDEX XX_ACCT_SITE_EXT_TL_U1 ON XX_ACCT_SITE_EXT_TL(EXTENSION_ID,LANGUAGE)
+/
+                                                                    
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

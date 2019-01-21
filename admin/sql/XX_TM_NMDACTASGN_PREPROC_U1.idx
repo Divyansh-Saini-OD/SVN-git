@@ -1,0 +1,31 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XX_TM_NMDACTASGN_PREPROC_U1.idx                    |
+-- |                                                                       |
+-- | Description      : Index for custom table XX_TM_NMDACTASGN_PREPROCESSOR  |
+   |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |1.0      11-Jun-2008   nabarun Ghosh    Initial Version                |
+-- +=======================================================================+
+
+------------------------------------------------------------------------
+-- Create non unique Index XX_TM_NMDACTASGN_PREPROC_U1              --
+------------------------------------------------------------------------
+
+CREATE UNIQUE INDEX XXCRM.XX_TM_NMDACTASGN_PREPROC_U1
+ON XXCRM.XX_TM_NMDACTASGN_PREPROCESSOR(
+                                        PREPROCESSOR_RECORD_ID
+                                      )
+NOLOGGING;
+
+SHOW ERRORS;

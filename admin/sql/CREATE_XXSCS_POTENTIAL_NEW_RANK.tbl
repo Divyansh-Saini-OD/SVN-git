@@ -1,0 +1,64 @@
+-- $Id$
+-- $Rev$
+-- $HeadURL$
+-- $Author$
+-- $Date$
+
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XXSCS_POTENTIAL_NEW_RANK Table                                             |--                                                          --|                                                                                             |--
+--| Program Name   : CREATE_XXSCS_POTENTIAL_NEW_RANK.tbl                                        |--
+--|                                                                                             |--
+--| Purpose        : New Ranks Created during the Contact Strategy.                             |--
+--|                  Life: Till New GDW data is populated.                                      |--
+--|                                                                                             |--
+--| Change History :                                                                            |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              15-Mar-2009       Sreekanth/Prasad        Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Table XXCRM.XXSCS_POTENTIAL_NEW_RANK......
+PROMPT
+
+CREATE TABLE XXCRM.XXSCS_POTENTIAL_NEW_RANK
+   (	
+        POTENTIAL_NEW_RANK_ID  NUMBER,
+        POTENTIAL_ID           NUMBER,
+        PARTY_SITE_ID          NUMBER,
+        POTENTIAL_TYPE_CD      VARCHAR2(30),
+        NEW_RANK               NUMBER,
+	CREATED_BY             NUMBER, 
+	CREATION_DATE          DATE, 
+	LAST_UPDATED_BY        NUMBER, 
+	LAST_UPDATE_DATE       DATE, 
+        LAST_UPDATE_LOGIN      NUMBER,
+	REQUEST_ID             NUMBER
+   ) ;
+ 
+GRANT ALL ON XXCRM.XXSCS_POTENTIAL_NEW_RANK TO APPS;
+
+GRANT ALL ON XXCRM.XXSCS_POTENTIAL_NEW_RANK TO XXDATA_STAGE;
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

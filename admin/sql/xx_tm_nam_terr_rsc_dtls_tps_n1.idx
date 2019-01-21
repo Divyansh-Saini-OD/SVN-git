@@ -1,0 +1,3 @@
+whenever sqlerror exit failure rollback
+CREATE INDEX xxcrm.XX_TM_NAM_TERR_RSC_DTLS_tps_n1 ON xxcrm.XX_TM_NAM_TERR_RSC_DTLS("GROUP_ID",NVL("STATUS",'A')); 
+

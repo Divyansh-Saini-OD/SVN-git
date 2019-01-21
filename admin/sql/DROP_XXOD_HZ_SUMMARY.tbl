@@ -1,0 +1,31 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :DROP_XXOD_HZ_SUMMARY.tbl                          |
+-- | Description      :XXOD HZ Summary table                               |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |1.0       02-Feb-2009  Sreedhar Mohan     Initial draft                |
+-- +=======================================================================+
+
+-- ---------------------------------------------------------------------
+--      Drop Custom Table XXOD_HZ_SUMMARY    --
+-- ---------------------------------------------------------------------
+
+DROP TABLE XXCRM.XXOD_HZ_SUMMARY;
+
+/
+SHOW ERRORS;
+
+EXIT;

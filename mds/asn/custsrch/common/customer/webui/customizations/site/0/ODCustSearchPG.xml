@@ -1,0 +1,11 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.5.4.89_560" xml:lang="en-US" customizes="/od/oracle/apps/xxcrm/asn/custsrch/common/customer/webui/ODCustSearchPG">
+   <modifications>
+      <modify element="ASNDQMSearchRN.searchInst" messageAppShortName="XXCRM" messageName="XXOD_PUI_SEARCH_INSTRUCTION"/>
+      <modify element="KnownAsDefault" rendered="false"/>
+      <modify element="ASNDQMSearchResultsRN.KnownAs" rendered="false"/>
+      <modify element="ASNDQMSearchResultsRN.HzPuiPartyName1" prompt="Prospect/Customer Name"/>
+      <modify element="PageLayoutRN" title="Prospect/Customer"/>
+      <modify element="ASNDQMSearchRN.countryField" defaultValue="US"/>
+   </modifications>
+</customization>

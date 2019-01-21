@@ -1,0 +1,24 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :XX_CDH_CONTRACTS_ASSIGNED.syn                        |
+-- | Description      :Account Request                   |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |DRAFT 1a 29-Nov-2007 Sudeept Maharana   Initial draft version          |
+-- +=======================================================================+
+------------------------------------------------------
+-- Dropping the existing synonym and creating new.  --
+------------------------------------------------------
+CREATE OR REPLACE SYNONYM APPS.XX_CDH_CONTRACTS_ASSIGNED FOR XXCRM.XX_CDH_CONTRACTS_ASSIGNED;
+
+SHOW ERRORS;

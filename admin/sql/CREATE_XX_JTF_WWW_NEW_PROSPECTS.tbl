@@ -1,0 +1,42 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_JTF_WWW_NEW_PROSPECTS.tbl                 |
+-- | Description      :I2043 Leads_from_WWW_and_Jmillennia                 |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      15-Feb-2008 David Woods        Initial version                |
+-- +=======================================================================+ 
+
+Create table XXCRM.XX_JTF_WWW_NEW_PROSPECTS
+  (INTERNID                      NUMBER 
+  ,LOAD_DATE                     DATE          
+  ,ORGANIZATION_NAME             VARCHAR2(50)
+  ,FNAME                         VARCHAR2(32)       
+  ,LNAME                         VARCHAR2(32)       
+  ,CONTACT_TITLE                 VARCHAR2(32)       
+  ,ADDR1                         VARCHAR2(32)       
+  ,CITY                          VARCHAR2(32)       
+  ,STATE                         VARCHAR2(32)       
+  ,POSTAL_CODE                   VARCHAR2(15)   
+  ,COUNTRY                       CHAR(2) 
+  ,REV_BAND                      VARCHAR2(32)       
+  ,NUM_WC_EMP_OD                 NUMBER 
+  ,PHONE                         VARCHAR2(32)       
+  ,VALIDATE_STATUS               VARCHAR2(50)
+  ,VALIDATION_BATCH_ID           NUMBER 
+  ,STAGING_COLUMN_NAME           VARCHAR2(32)
+  ,STAGING_COLUMN_VALUE          VARCHAR2(32)
+  );
+
+Grant all on XXCRM.XX_JTF_WWW_NEW_PROSPECTS to APPS;

@@ -1,0 +1,28 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XX_TM_NAM_TERR_RSC_DTLS_N3.idx                     |
+-- | Description      : Non Unique Index for custom table                  |
+   |                    XX_TM_NAM_TERR_RSC_DTLS                            |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |1        23-AUG-2008   Nabarun        Initial Version                |
+-- +=======================================================================+
+
+------------------------------------------------------------------------
+-- Create non unique Index XX_TM_NAM_TERR_RSC_DTLS_N3                 --
+------------------------------------------------------------------------
+
+CREATE INDEX XXCRM.XX_TM_NAM_TERR_RSC_DTLS_N3
+ON XXCRM.XX_TM_NAM_TERR_RSC_DTLS(RESOURCE_ROLE_ID)
+NOLOGGING;
+
+SHOW ERRORS;

@@ -1,0 +1,77 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_CDH_MBS_DOC_MASTER.tbl                    |
+-- | Description      :Custom table for E1331_CDH_MetaData_Attributes      |
+-- |                                                                       |
+-- |                    Note:This script should be executed from           |
+-- |                    XXCRM schema                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |DRAFT 1a  15-JUN-2007 Prakash Sowriraj  Initial draft version          |
+-- |DRAFT 1b  26-JUN-2007 Prakash Sowriraj  Table name has been renamed    |
+-- |1.0       05-Dec-2007 Ambarish Mukherjee Removed Drop                  |                  
+-- +=======================================================================+
+
+-- ------------------------------------------------------
+--      Create Custom Table XX_CDH_MBS_DOCUMENT_MASTER --
+-- ------------------------------------------------------
+CREATE TABLE XXCRM.XX_CDH_MBS_DOCUMENT_MASTER
+    (
+         DOCUMENT_ID                NUMBER(5)       NOT NULL
+        ,DOC_DETAIL_LEVEL           VARCHAR2(9)
+        ,DOC_TYPE                   VARCHAR2(17)
+        ,DOC_DESC                   VARCHAR2(50)
+        ,DOC_SORT_ORDER             VARCHAR2(12)
+        ,TOTAL_THROUGH_FIELD_ID     VARCHAR2(2)
+        ,PAGE_BREAK_THROUGH_ID      VARCHAR2(2)
+        ,CONTENT_SET                VARCHAR2(60)
+        ,CUSTOM_FLAG                VARCHAR2(1)
+        ,STANDARD_SUITE             VARCHAR2(1) 
+        ,OUTPUT_FORMAT_CODE         VARCHAR2(1)
+        ,INCLUDE_REMIT_FLAG         VARCHAR2(1)
+        ,END_OF_FIELD_INDICATOR     VARCHAR2(1)
+        ,CREATED_BY                 VARCHAR2(15)
+        ,CREATION_DATE              DATE
+        ,LAST_UPDATED_BY            NUMBER(15)
+        ,LAST_UPDATE_DATE           DATE
+        ,ATTRIBUTE_CATEGORY         VARCHAR2(30)
+        ,ATTRIBUTE1                 VARCHAR2(150)
+        ,ATTRIBUTE2                 VARCHAR2(150)
+        ,ATTRIBUTE3                 VARCHAR2(150)
+        ,ATTRIBUTE4                 VARCHAR2(150)
+        ,ATTRIBUTE5                 VARCHAR2(150)
+        ,ATTRIBUTE6                 VARCHAR2(150)
+        ,ATTRIBUTE7                 VARCHAR2(150)
+        ,ATTRIBUTE8                 VARCHAR2(150)
+        ,ATTRIBUTE9                 VARCHAR2(150)
+        ,ATTRIBUTE10                VARCHAR2(150)
+        ,ATTRIBUTE11                VARCHAR2(150)
+        ,ATTRIBUTE12                VARCHAR2(150)
+        ,ATTRIBUTE13                VARCHAR2(150)
+        ,ATTRIBUTE14                VARCHAR2(150)
+        ,ATTRIBUTE15                VARCHAR2(150)
+    );
+    
+------------------------------------------------------
+-- Granting to APPS schema.  --
+------------------------------------------------------
+
+
+GRANT ALL ON XXCRM.XX_CDH_MBS_DOCUMENT_MASTER  TO APPS;
+
+SHOW ERRORS;    
+
+EXIT;
+        
+        
+        

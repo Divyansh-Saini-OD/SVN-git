@@ -1,0 +1,7 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+CREATE INDEX xxcrm.xx_crm_wcelg_cust_n1 ON xx_crm_wcelg_cust (cust_account_id ) COMPUTE STATISTICS;
+CREATE INDEX xxcrm.xx_crm_wcelg_cust_n2 ON xx_crm_wcelg_cust (party_id) COMPUTE STATISTICS;
+CREATE INDEX xxcrm.xx_crm_wcelg_cust_n3 ON xx_crm_wcelg_cust (site_use_id) COMPUTE STATISTICS;

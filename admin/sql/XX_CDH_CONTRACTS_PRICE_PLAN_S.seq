@@ -1,0 +1,41 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :XX_CDH_CONTRACTS_PRICE_PLAN_S.seq                   |
+-- | Description      :Admin contract template sequence                    |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- | 1.0     29-Nov-2007 Sudeept Maharana   Initial Draft Version          |
+-- | 1.1     03-Jan-2008 Sudeept Maharana   Removed Drop                   |
+-- +=======================================================================+
+
+-- -----------------------------------------------
+-- Create Custom Sequence XX_CDH_CONTRACTS_PRICE_PLAN_S   --
+-- -----------------------------------------------
+
+CREATE SEQUENCE XXCRM.XX_CDH_CONTRACTS_PRICE_PLAN_S 
+INCREMENT BY 1 
+START WITH 1000 
+NOMAXVALUE
+NOCYCLE NOCACHE NOORDER;
+
+
+------------------------------------------------------
+-- Grants to APPS                                   --
+------------------------------------------------------
+
+GRANT ALL ON XXCRM.XX_CDH_CONTRACTS_PRICE_PLAN_S TO APPS;
+
+
+SHOW ERRORS;
+EXIT;

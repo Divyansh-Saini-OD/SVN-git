@@ -1,0 +1,34 @@
+-- $Id$
+-- $Rev$
+-- $HeadURL$
+-- $Author$
+-- $Date$
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XXSCS_FDBK_RESP_ID_S.syn                           |
+-- | Description      : Synonym for feedback response  Sequence.           |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  25-Mar-2009 Kalyan        Initial Draft Version               |
+-- |                                                                       |
+-- +=======================================================================+
+
+---------------------------------------------------------
+-- Creating synonym APPS.XXSCS_FDBK_RESP_ID_S --
+---------------------------------------------------------
+
+CREATE OR REPLACE SYNONYM APPS.XXSCS_FDBK_RESP_ID_S FOR XXCRM.XXSCS_FDBK_RESP_ID_S;
+
+SHOW ERRORS;
+
+EXIT;

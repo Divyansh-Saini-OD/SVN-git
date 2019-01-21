@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<JavaBean xmlns="http://xmlns.oracle.com/adfm/beanmodel" version="11.1.1.56.60"
+          id="GetTopSKUsOrderedOutput" Package="model.CustOrderInfo.process_Result"
+          BeanClass="model.CustOrderInfo.process_Result.GetTopSKUsOrderedOutput"
+          isJavaBased="false">
+  <Attribute Name="CUSTOMER_ACCOUNT_ID" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="ADDRESS_ID" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String" PrecisionRule="false" Precision="0"
+             Scale="0"/>
+  <Attribute Name="NET_SALES_52WEEK_AMT" IsUpdateable="0" IsNotNull="true"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="ITEM_GROUP_ID" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="ITEM_GROUP_NM" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="SIC_GROUP_CD" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="NET_SALES_POTENTIAL_52WEEK_AMT" IsUpdateable="0"
+             IsNotNull="true" Type="java.math.BigDecimal"/>
+</JavaBean>

@@ -1,0 +1,5 @@
+update 
+ XXCRM.XXSCS_FDBK_RESP 
+ set entity_status ='IN_PROGRESS',entity_rank=null
+ where entity_status ='INPROGRESS';
+commit;

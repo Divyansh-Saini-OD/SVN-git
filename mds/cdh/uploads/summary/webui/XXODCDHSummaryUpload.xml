@@ -1,0 +1,51 @@
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.12_1330" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header: XXODCDHSummaryUpload.xml 115.0 2009/01/12 08:40:02 ssmohan noship $">
+   <content>
+      <oa:pageLayout id="XXODCDHSummaryUpload" title="Summary Upload Tool" amDefName="od.oracle.apps.xxcrm.cdh.uploads.summary.server.XXODCDHUploadSummaryAM" windowTitle="Summary Upload Tool" controllerClass="od.oracle.apps.xxcrm.cdh.uploads.summary.webui.XXODCDHSummaryUploadCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:productBranding>
+            <oa:image id="XXODCDHProductBranding" prompt="Custom TCA Applications"/>
+         </ui:productBranding>
+         <ui:copyright>
+            <oa:messageStyledText id="item1"/>
+         </ui:copyright>
+         <ui:privacy>
+            <oa:link id="item2"/>
+         </ui:privacy>
+         <ui:contents>
+            <oa:header id="UploadRegion">
+            <ui:contents>
+            <oa:spacer id="spacer0" height="10"/>
+            <oa:staticStyledText id="msgLabel1" text="Please upload a csv file for uploading Hz Summary." prompt="Please upload a csv file for uploading Hz Summary." styleClass="ORAHEADER"/>
+            <oa:spacer id="spacer1" height="10"/>
+            <oa:tip id="item4" text="The File should contain the following columns in the following order -"/>
+            <oa:spacer id="spacer2" height="10"/>
+            <oa:messageStyledText id="msgLabel2" prompt="-SUMMARY ID"/>
+            <oa:messageStyledText id="msgLabel3" prompt="-PARTY ID"/>
+                        <oa:messageStyledText id="msgLabel4" prompt="-OWNER TABLE ID"/>
+                        <oa:messageStyledText id="msgLabel5" prompt="-ACCOUNT ORIG SYSTEM REFERENCE"/>
+            <oa:messageStyledText id="msgLabel6" prompt="-PARTY ORIG SYSTEM (should be the last column)"/>
+            <oa:spacer id="spacer3" height="10"/>
+                        <oa:defaultSingleColumn headerDisabled="true" id="HelpRegion">
+              <ui:contents>
+            <oa:link id="item66666" destination="../XXCRM_HTML/XXOD_HZ_SUMMARY_TEMPLATE.csv" text="For a tempate, click here"/>
+            <oa:spacer id="spacer4" height="6" width="6"/>
+             </ui:contents>
+                        </oa:defaultSingleColumn>
+            <oa:messageFileUpload id="fileSelector" prompt="Upload CSV File" required="yes" dataType="CLOB"/>
+            <oa:spacer id="spacer7" height="10"/>
+            <oa:messageTextInput id="txtFilePath" rendered="false"/>
+            <oa:submitButton id="btnSubmit" prompt="Upload Summary"/>
+            </ui:contents>
+            </oa:header>
+                        <oa:header id="ViewRequestsRegion">
+               <ui:contents>
+                  <oa:submitButton id="btnViewRequests" prompt="ViewRequests"/>
+               </ui:contents>
+            </oa:header>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>
+

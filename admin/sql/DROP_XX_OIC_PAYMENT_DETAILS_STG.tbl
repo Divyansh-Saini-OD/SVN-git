@@ -1,0 +1,58 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : OD,I0607_IncentiveAndBonusToPayroll                                        |--
+--|                                                                                             |--
+--| Program Name   : DROP_XX_OIC_PAYMENT_DETAILS_STG.tbl                                        |--
+--|                                                                                             |--
+--| Purpose        : Drop Custom Tables .                                                       |--
+--|                  The Objects dropped are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_OIC_PAYMENT_DETAILS_STG (OD I0607_IncentiveAndBonusToPayroll Staging   |--
+--|                                                                                 Table)      |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              04-Oct-2007       Gowri Nagarajan         Original                         |--
+--| 1.1              09-Oct-2002       Gowri Nagarajan	       Added the schema name            |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Dropping Existing Custom Tables......
+PROMPT
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Dropping Table XXCRM.XX_OIC_PAYMENT_DETAILS_STG
+PROMPT
+
+DROP TABLE XXCRM.XX_OIC_PAYMENT_DETAILS_STG ;
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
+
+

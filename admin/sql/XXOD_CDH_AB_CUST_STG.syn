@@ -1,0 +1,22 @@
+-- +==========================================================================+
+-- |                              Office Depot                                |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             Table       : XXOD_CDH_AB_CUST_STG                           |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0       16-Sep-16   Poonam Gupta	 	 	Defect #37159	              | 
+-- +==========================================================================+
+
+PROMPT
+PROMPT Synonym XXOD_CDH_AB_CUST_STG
+PROMPT   
+
+CREATE OR REPLACE SYNONYM APPS.XXOD_CDH_AB_CUST_STG FOR XXCRM.XXOD_CDH_AB_CUST_STG;
+ 
+SHOW ERROR;

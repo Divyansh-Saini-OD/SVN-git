@@ -1,0 +1,204 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_1312" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="MainRN" controllerClass="od.oracle.apps.xxcrm.mps.webui.OD_MPSPartyDevicesCO" amDefName="od.oracle.apps.xxcrm.mps.server.OD_MPSPartyDevicesAM" windowTitle="Party Devices">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:formValue id="ContractnumberFV"/>
+            <oa:formValue id="PartyIDFV"/>
+            <oa:messageComponentLayout id="CustomerSearchRN" rows="3" columns="1">
+               <ui:contents>
+                  <oa:messageLovInput id="PartyName" prompt="Party Name" styleClass="ORADATATEXT" queryable="true">
+                     <lovContents>
+                        <oa:listOfValues id="PartyNameLOVRN" amDefName="od.oracle.apps.xxcrm.mps.server.OD_MPSPartyDevicesAM">
+                           <ui:contents>
+                              <oa:table name="PartyNameLOVRN" id="PartyNameRN">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="PartyNameDisp" viewName="OD_MPSPartyListVO" viewAttr="PartyName" prompt="Party Name" queryable="true"/>
+                                    <oa:messageStyledText id="PartyIdFV" prompt="Party Id" viewName="OD_MPSPartyListVO" viewAttr="PartyId" queryable="false"/>
+                                    <oa:messageStyledText id="ContractNumber1" prompt="Contract Number" viewName="OD_MPSPartyListVO" viewAttr="ContractNumber" queryable="false"/>
+                                    <oa:formValue id="ContractNumberFV" viewName="OD_MPSPartyListVO" viewAttr="ContractNumber"/>
+                                 </ui:contents>
+                              </oa:table>
+                           </ui:contents>
+                        </oa:listOfValues>
+                     </lovContents>
+                     <lovMappings>
+                        <lovMap id="PartyIdlovMap" lovItem="PartyIdFV" resultTo="PartyId"/>
+                        <lovMap id="PartyNamelovMap" lovItem="PartyNameDisp" resultTo="PartyName" criteriaFrom="PartyName"/>
+                        <lovMap id="PartyIDlovMap" lovItem="PartyIdFV" resultTo="PartyIDFV"/>
+                        <lovMap id="ContractNumberlovMap" resultTo="ContractNumber" lovItem="ContractNumber1"/>
+                        <lovMap id="ContractnumberlovMap" lovItem="ContractNumberFV" resultTo="ContractnumberFV"/>
+                     </lovMappings>
+                  </oa:messageLovInput>
+                  <oa:messageStyledText id="PartyId" prompt="Party Id" styleClass="ORADATATEXT" queryable="false"/>
+                  <oa:messageTextInput id="SerialNo" prompt="Serial No" rendered="false"/>
+                  <oa:messageStyledText id="ContractNumber" prompt="Contract Number" styleClass="ORADATATEXT"/>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:rowLayout id="SearchButtonRN" hAlign="center">
+               <ui:contents>
+                  <oa:submitButton id="Search" prompt="Search"/>
+                  <oa:spacer id="SpacerBTRN" width="10"/>
+                  <oa:submitButton id="Clear" text="Clear" prompt="Clear"/>
+               </ui:contents>
+            </oa:rowLayout>
+            <oa:header id="region1" styleClass="OraDataText" text="Finance Details"/>
+            <oa:advancedTable id="CustomerContactRN" viewName="OD_MPSPartyDevicesVO" text="" width="100%" blockSize="100">
+               <ui:contents>
+                  <oa:column id="SerialNoCol" rendered="true">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="SerialNosortableHeader1" prompt="Serial No"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:link id="Serialno" viewAttr="SerialNo" destination="">
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="GotoSerialNo" id="fireAction1">
+                                 <ui:parameters>
+                                    <ui:parameter key="partyId" value="${oa.OD_MPSPartyDevicesVO.PartyId}"/>
+                                    <ui:parameter key="partyName" value="${oa.OD_MPSPartyDevicesVO.PartyName}"/>
+                                    <ui:parameter key="address" value="${oa.OD_MPSPartyDevicesVO.SiteAddress1}"/>
+                                    <ui:parameter key="serialNo" value="${oa.OD_MPSPartyDevicesVO.SerialNo}"/>
+                                 </ui:parameters>
+                              </ui:fireAction>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ModelCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ModelsortableHeader" prompt="Model"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="Model" prompt="" viewAttr="Model"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ProgramTypeCol" rendered="true">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ProgramTypesortableHeader" prompt="Type"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ProgramType" viewAttr="ProgramType"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ContractNumberCol" rendered="true">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ContractNumbersortableHeader" prompt="Contract"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="Contractnumber" prompt="" viewAttr="ContractNumber"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="StartDateCol" rendered="true" cellNoWrapFormat="true">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="StartDatesortableHeader" prompt="Start Date"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="StartDate" viewAttr="StartDate"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="EndDateCol" rendered="true" cellNoWrapFormat="true">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="EndDatesortableHeader" prompt="End Date"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="EndDate" viewAttr="EndDate"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="UsageSentLeadDaysCol" rendered="false">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="UsageSentLeadDayssortableHeader" prompt="Usage Sent Lead Days"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="UsageSentLeadDays" viewAttr="UsageSendLeadDays"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="UsageDataSentDateCol" rendered="false">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="UsageDataSentDatesortableHeader" prompt="Usage Data Sent Date"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="UsageDataSentDate" prompt="" viewAttr="UsageDataSentDate"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ExpiredDateCol" rendered="true">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ExpiredDatesortableHeader" prompt="Expired Date"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ExpiredDate" prompt="" viewAttr="ExpiredDate"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="BlackCPCCol" rendered="true">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="BlackCPCsortableHeader" prompt="Black CPC"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="BlackCPC" viewAttr="BlackCpc"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ColorCPCCol" rendered="true">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ColorCPCsortableHeader" prompt="Color CPC"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ColorCPC" viewAttr="ColorCpc"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="AllowancesCol" rendered="true">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="AllowancessortableHeader" prompt="Allow"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="Allowances" viewAttr="Allowances"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ColorAllowancesCol" rendered="true">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ColorAllowancessortableHeader" prompt="Color Allow"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ColorAllowances" prompt="" viewAttr="ColorAllowances"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="OverageCostCol" rendered="true">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="OverageCostsortableHeader" prompt="Over CPC"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="OverageCost" viewAttr="OverageCost"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="FlatRateCol" rendered="true">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="FlatRatesortableHeader" prompt="Flat Rate"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="FlatRate" viewAttr="FlatRate"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ServiceCostCol" rendered="false">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ServiceCostsortableHeader" prompt="Service Cost"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ServiceCost" viewAttr="ServiceCost"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="NotifDateCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeader1" prompt="Bill Date"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="NotifDate" viewAttr="NotificationDate"/>
+                     </ui:contents>
+                  </oa:column>
+               </ui:contents>
+            </oa:advancedTable>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

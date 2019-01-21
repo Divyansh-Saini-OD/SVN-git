@@ -1,0 +1,62 @@
+--+=====================================================================+
+--|                   Office Depot - Project FIT                        |
+--|          Capgemini/Office Depot/Consulting Organization             |
+--+=====================================================================+
+--|                                                                     |
+--|Rice        : 106313                                                 |
+--|File Name   : XX_CRM_CUSTMAST_HEAD_STG.tbl                           |
+--|File Path   : $XXCRM_TOP/admin/sql                                   |
+--|Schema      : XXCRM                                                  |
+--|                                                                     |
+--|Version    Date           Author                       Remarks       |
+--|=======   ======        ====================          =========      |
+--| 1.0    06-Sep-2011     Balakrishna Bolikonda       Initial version  |
+--|                                                                     |
+--+=====================================================================+
+
+SET VERIFY OFF
+WHENEVER SQLERROR CONTINUE
+                  
+CREATE TABLE XXCRM.XX_CRM_CUSTMAST_HEAD_STG
+                  (
+                   cust_account_id          NUMBER(15)         
+                  ,customer_number          VARCHAR2(30)
+                  ,organization_number      VARCHAR2(30)
+                  ,customer_number_aops     VARCHAR2(240)
+                  ,customer_name            VARCHAR2(360)
+                  ,status                   VARCHAR2(2)
+                  ,customer_type            VARCHAR2(30)
+                  ,customer_class_code      VARCHAR2(30)
+                  ,sales_channel_code       VARCHAR2(30)
+                  ,sic_code                 VARCHAR2(30)
+                  ,cust_category_code       VARCHAR2(30)
+                  ,duns_number              NUMBER      
+                  ,sic_code_type            VARCHAR2(30)
+                  ,collector_number         VARCHAR2(30)
+                  ,collector_name           VARCHAR2(240)
+                  ,credit_checking          VARCHAR2(150)
+                  ,credit_rating            VARCHAR2(30)
+                  ,account_established_date   VARCHAR2(150)
+                  ,account_credit_limit_usd   NUMBER
+                  ,account_credit_limit_cad   NUMBER
+                  ,order_credit_limit_usd     NUMBER      
+                  ,order_credit_limit_cad     NUMBER      
+                  ,credit_classification     VARCHAR2(30)
+                  ,exposure_analysis_segment VARCHAR2(30)
+                  ,risk_code                 VARCHAR2(30)
+                  ,source_of_creation_for_credit  VARCHAR2(150)                  
+                  ,po                          VARCHAR2(150)                  
+                  ,release                     VARCHAR2(150)                  
+                  ,cost_center                 VARCHAR2(150)                  
+                  ,desktop                     VARCHAR2(150)
+                  ,po_value                    VARCHAR2(150)
+                  ,release_value               VARCHAR2(150)
+                  ,cost_center_value           VARCHAR2(150)
+                  ,desktop_value               VARCHAR2(150)
+                  ,last_updated_by             NUMBER(15)
+                  ,creation_date               DATE  
+                  ,request_id                  NUMBER(15)
+                  ,created_by                  NUMBER(15)
+                  ,last_update_date            DATE  
+                  ,program_id                  NUMBER(15)
+                 );

@@ -1,0 +1,31 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XX_SFA_HZ_PARTIES_N1.idx                           |
+-- | Description      : Index on table HZ_PARTIES                          |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |DRAFT 1a 27-Mar-2008   Anirban        Initial Version                  |
+-- +=======================================================================+
+
+------------------------------------------------------
+-- Create Index XX_SFA_HZ_PARTIES_N1                --
+------------------------------------------------------
+
+CREATE INDEX XXCRM.XX_SFA_HZ_PARTIES_N1
+ON AR.HZ_PARTIES (
+                   PARTY_TYPE
+                   ,PARTY_ID                    
+                 )
+NOLOGGING;
+
+SHOW ERRORS;
+

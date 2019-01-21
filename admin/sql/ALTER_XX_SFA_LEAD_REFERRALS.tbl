@@ -1,0 +1,26 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : ALTER_XX_SFA_LEAD_REFERRALS.tbl                    |
+-- | Description      : Add Attribute Columns                              |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |2        20-APR-2011   Sathish Silveri       added extra colums        |
+-- +=======================================================================+
+
+ALTER TABLE xxcrm.XX_SFA_LEAD_REFERRALS
+ADD
+( PHONE_COUNTRY_CODE	VARCHAR2(10)
+  ,PHONE_AREA_CODE	VARCHAR2(10)
+  ,PHONE_EXTENSION	VARCHAR2(20));
+
+  SHOW ERRORS;

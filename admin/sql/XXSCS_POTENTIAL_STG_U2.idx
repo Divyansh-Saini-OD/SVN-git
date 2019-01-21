@@ -1,0 +1,35 @@
+-- $Id$
+-- $Rev$
+-- $HeadURL$
+-- $Author$
+-- $Date$
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :XXSCS_POTENTIAL_STG_U2.idx                          |
+-- | Description      :Unique Index for Contact Strategy Potential Table   |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author              Remarks                     |
+-- |-------  ----------- -----------------    -----------------------------|
+-- | 1.0     18-MAR-2009  Sreekanth Rao        Initial Draft Version       |
+-- +=======================================================================+
+
+
+REM==============================================================================
+REM        Creating Index XXSCS_POTENTIAL_STG_U2
+REM==============================================================================
+
+CREATE UNIQUE INDEX XXCRM.XXSCS_POTENTIAL_STG_U2
+ON XXCRM.XXSCS_POTENTIAL_STG (POTENTIAL_ID,POTENTIAL_TYPE_CD,PARTY_SITE_ID);
+
+EXIT;
+

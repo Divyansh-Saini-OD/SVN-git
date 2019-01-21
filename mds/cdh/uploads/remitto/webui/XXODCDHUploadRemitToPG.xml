@@ -1,0 +1,54 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.12_1330" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header: XXODCDHCustProfilesUpload.xml 115.0 2009/01/12 08:40:02 ssmohan noship $">
+   <content>
+      <oa:pageLayout id="XXODCDHRemitToUpload" title="OD Remit To Sales Channel Upload Tool" amDefName="od.oracle.apps.xxcrm.cdh.uploads.remitto.server.XXODCDHUploadRemitToAM" windowTitle="OD Remit To Sales Channel Upload Tool" controllerClass="od.oracle.apps.xxcrm.cdh.uploads.remitto.webui.XXODCDHUploadRemitToCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:productBranding>
+            <oa:image id="XXODCDHProductBranding" prompt="OD Custom Upload Tool Applications"/>
+         </ui:productBranding>
+         <ui:copyright>
+            <oa:messageStyledText id="item1"/>
+         </ui:copyright>
+         <ui:privacy>
+            <oa:link id="item2"/>
+         </ui:privacy>
+         <ui:contents>
+            <oa:header id="UploadRegion">
+               <ui:contents>
+            <oa:spacer id="spacer0" height="10"/>
+            <oa:staticStyledText id="msgLabel1" text="Please upload a csv file for uploading Remit To Sales Channel." prompt="Please upload a csv file for Remit To Sales Channel." styleClass="ORAHEADER"/>
+            <oa:spacer id="spacer1" height="10"/>
+            <oa:tip id="item4" text="The File should contain the following columns in the following order -"/>
+            <oa:spacer id="spacer2" height="10"/>
+            <oa:messageStyledText id="msgLabel2" prompt="- Remit To Sales Channel"/>
+            <oa:messageStyledText id="msgLabe22" prompt="- Account Site Original System Reference"/>
+                  <oa:defaultSingleColumn id="region1">
+                     <ui:contents>
+            <oa:link id="item811" destination="../XXCRM_HTML/XXCDH_RemitTo_Upload_Template.csv" text="For a tempate, click here" targetFrame="_blank"/>
+                        <oa:spacer id="spacer4" height="10"/>
+            <oa:link id="item812" destination="../XXCRM_HTML/XXCDH_RemitTo_Upload_Template.htm" text="For a document to help, click here" targetFrame="_blank"/>
+                     </ui:contents>
+                  </oa:defaultSingleColumn>
+
+			<oa:spacer id="spacer6" height="30"/>
+            <oa:messageFileUpload id="fileSelector" prompt="Upload CSV File" required="yes" dataType="CLOB"/>
+            <oa:spacer id="spacer7" height="10"/>
+            <oa:messageTextInput id="txtFilePath" rendered="false"/>
+
+            <oa:submitButton id="btnSubmit" prompt="Upload RemitTo Sales Channels"/>
+               </ui:contents>
+            </oa:header>
+            <oa:header id="ViewRequestsRegion">
+               <ui:contents>
+                  <oa:submitButton id="btnViewRequests" prompt="ViewRequests"/>
+               </ui:contents>
+            </oa:header>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>
+
+

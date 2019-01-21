@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+Subversion Info:
+$HeadURL$
+$Rev$
+$Date$
+-->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.9_1057" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad"
+      file-version="$Header: ODBISPMVUSERVIEWPAGE.xml 115.3 2005/08/02 00:27 nkishore noship $">
+   <content>
+      <oa:pageLayout id="pageLayoutRegion" amDefName="oracle.apps.bis.pmv.customize.server.CustomizeUIAM" controllerClass="od.oracle.apps.xxcrm.bis.pmv.customize.webui.ODUserViewCO" windowTitle="Update Table" title="Save View">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:pageButtonBar id="buttonBar">
+               <ui:contents>
+                  <oa:submitButton id="cancelButton" use="/oracle/apps/fnd/attributesets/Buttons/Cancel" text="Cancel" unvalidated="true"/>
+                  <oa:submitButton id="applyButton" use="/oracle/apps/fnd/attributesets/Buttons/Apply" text="Apply"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+            <oa:messageComponentLayout id="componentLayoutRegion">
+               <ui:contents>
+                  <oa:messageTextInput id="viewName" required="yes" maximumLength="30" prompt="View Name"/>
+                  <oa:messageTextInput id="viewDesc" prompt="View Description" rows="5" columns="35"/>
+                  <oa:messageCheckBox id="defaultView" text="Default View" prompt="Default View"/>
+               </ui:contents>
+            </oa:messageComponentLayout>
+         </ui:contents>
+         <ui:productBranding>
+            <oa:formattedText id="item1" text="Sales"/>
+         </ui:productBranding>
+         <ui:pageStatus>
+            <oa:flowLayout id="region1">
+               <ui:contents>
+                  <oa:tableLayout id="region2" extends="/oracle/apps/fnd/framework/webui/OAReqFieldDescRG"/>
+               </ui:contents>
+            </oa:flowLayout>
+         </ui:pageStatus>
+      </oa:pageLayout>
+   </content>
+</page>

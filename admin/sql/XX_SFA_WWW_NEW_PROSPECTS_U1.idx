@@ -1,0 +1,22 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :XX_SFA_WWW_NEW_PROSPECTS_U1.idx                     |
+-- | Description      :I2043 Leads_from_WWW_and_Jmillennia                 |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      15-Feb-2008 David Woods        Initial version                |
+-- +=======================================================================+ 
+
+CREATE UNIQUE INDEX XX_SFA_WWW_NEW_PROSPECTS_U1
+                 on XX_SFA_WWW_NEW_PROSPECTS (internid);

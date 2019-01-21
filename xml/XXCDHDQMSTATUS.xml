@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXCDHDQMSTATUS" description="OD: CDH DQM Status Report" Version="1.0">
+<dataQuery>
+<sqlStatement name="Q_CDH_DQM_INT_STATUS">
+<![CDATA[
+select /*+ parallel (a 6) */
+       DECODE(operation,'C','Create','U','Update',operation) operation,
+       entity,
+       DECODE(staged_flag,'Y','Staged','N','Not Processed','P','In Progress','E', 'Error',staged_flag) staged_flag, 
+       DECODE(realtime_sync_flag,'Y','Yes','N','No',realtime_sync_flag) realtime_sync_flag, 
+       count(1) ct
+from   hz_dqm_sync_interface a
+group  by Operation, entity, staged_flag, realtime_sync_flag
+order  by 1, 2, 3, 4
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_DQM_QUEUE_STATUS">
+<![CDATA[
+select current_state, ct from (
+select /*+ parallel (a,8) */ '1. Waiting: ' current_state, count(1) ct from ctxsys.dr$waiting a
+union
+select /*+ parallel (a,8) */ '2. Pending: ' current_state, count(1) ct from ctxsys.dr$pending a
+union
+select /*+ parallel (a,8) */ '3. Delete : ' current_state, count(1) ct from ctxsys.dr$delete a
+) order by 1
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_DQM_PEND_UPDATES">
+<![CDATA[
+select /*+ FULL parallel (i,4) (u,4) */
+       u.username
+       , i.idx_name
+       , count(d.id) ct
+from   ctxsys.dr$index i
+       , dba_users u,
+       (select /*+ parallel (w, 2) */ 
+               w.wtg_cid id 
+        from ctxsys.dr$waiting w
+        UNION ALL
+        select /*+ parallel (p, 2) */ 
+               p.pnd_cid id 
+        from ctxsys.dr$pending p) d
+where   u.user_id=i.idx_owner# 
+and     i.idx_id = d.id
+group by u.username, i.idx_name
+order by 1
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_DQM_PEND_DTL_UPDATES">
+<![CDATA[
+select *
+from   (
+        select /*+ FULL parallel (i,4) (u,4) (p,4) */
+               'exec ctx_ddl.sync_index(IDX_NAME => '''||u.username||'.'||i.idx_name||''',PARALLEL_DEGREE => 4);' sql
+               , count(1) ct
+               , 'PENDING' QueueName
+        from   ctxsys.dr$index i
+               , dba_users u
+               , ctxsys.dr$pending p
+        where  u.user_id=i.idx_owner# 
+        and i.idx_id = p.pnd_cid
+        group by u.username, i.idx_name, p.pnd_cid
+        UNION
+        select /*+ FULL parallel (i,4) (u,4) (w,4) */
+               'exec ctx_ddl.sync_index(IDX_NAME => '''||u.username||'.'||i.idx_name||''',PARALLEL_DEGREE => 4);' sql
+               , count(1) ct
+               , 'WAITING' QueueName
+        from   ctxsys.dr$index i
+               , dba_users u
+               , ctxsys.dr$waiting w
+        where  u.user_id=i.idx_owner# 
+        and i.idx_id = w.wtg_cid
+        group by u.username, i.idx_name, w.wtg_cid)
+order by 1, 2
+]]>
+</sqlStatement>
+
+</dataQuery>
+<dataStructure>
+<group name="G_CDH_DQM_INT_STATUS" source="Q_CDH_DQM_INT_STATUS">
+<element name="OPERATION" value="OPERATION" />
+<element name="ENTITY" value="ENTITY" />
+<element name="STAGED_FLAG" value="STAGED_FLAG" />
+<element name="REALTIME_SYNC_FLAG" value="REALTIME_SYNC_FLAG" />
+<element name="CT" value="CT" />
+</group>
+<group name="G_CDH_DQM_QUEUE_STATUS" source="Q_CDH_DQM_QUEUE_STATUS">
+<element name="CURRENT_STATE" value="CURRENT_STATE" />
+<element name="CT" value="CT" />
+</group>
+<group name="G_CDH_DQM_PEND_UPDATES" source="Q_CDH_DQM_PEND_UPDATES">
+<element name="USERNAME" value="USERNAME" />
+<element name="IDX_NAME" value="IDX_NAME" />
+<element name="CT" value="CT" />
+</group>
+<group name="G_CDH_DQM_PEND_DTL_UPDATES" source="Q_CDH_DQM_PEND_DTL_UPDATES">
+<element name="SQL" value="SQL" />
+<element name="CT"  value="CT" />
+<element name="QUEUENAME" value="QUEUENAME" />
+</group>
+</dataStructure>
+</dataTemplate>
+

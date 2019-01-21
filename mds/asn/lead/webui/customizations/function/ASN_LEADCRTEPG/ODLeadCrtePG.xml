@@ -1,0 +1,31 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.5.4.89_560" xml:lang="en-US" customizes="/od/oracle/apps/xxcrm/asn/lead/webui/ODLeadCrtePG"
+xmlns:oa="http://xmlns.oracle.com/oa" developerMode="true">
+   <modifications>
+      <modify element="ASNLeadCrteChnl" rendered="false"/>
+      <move element="ASNLeadCrteCustLyt" after="ASNLeadCrteNm"/>
+      <move element="ODASNLeadCrteAddressLyt" after="ASNLeadCrteCustLyt"/>
+      <move element="ASNLeadCrteCtctLyt" after="ODASNLeadCrteAddressLyt"/>
+      <move element="ASNLeadCrteMeth" after="ASNLeadCrteCtctLyt"/>
+      <move element="ASNLeadCrteStatus" after="ASNLeadCrteMeth"/>
+      <move element="ASNLeadCrteRank" after="ASNLeadCrteStatus"/>
+      <move element="ASNLeadCrteChnl" after="ASNLeadCrteRank"/>
+      <move element="ASNLeadCrteSrcNm" after="ASNLeadCrteChnl"/>
+      <insert after="ASNLeadCrteSrcNm">
+	     <oa:formValue id="ODStoreNoFrm" adminCustomizable="true" dataType="VARCHAR2" encrypted="false" queryable="false" rendered="false" scope="." securityMode="standard" selectiveSearchCriteria="false" userCustomizable="false"
+                             viewAttr="Attribute4" viewName="LeadCreateVO"/>
+         <oa:messageLovInput id="ODStoreNumID" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" disabled="false" externalListOfValues="/od/oracle/apps/xxcrm/asn/common/lov/webui/ODStoreNumRN" initSortSeq="none" 
+         prompt="OD Store #"
+                             queryable="false" readOnly="false" rendered="true" required="no" rows="1" scope="." selectiveSearchCriteria="false" sortState="no" tipType="none" unvalidated="false" userCustomizable="false" vAlign="middle"
+                             viewAttr="Attribute4" viewName="LeadCreateVO" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa">
+            <lovMappings>
+               <lovMap id="ODStoreNumLovMap1" criteriaFrom="ODStoreNumID" lovItem="Value" programmaticQuery="false" requiredForLOV="false" resultTo="ODStoreNumID" scope="." useForValidation="default"/>
+                <lovMap id="ODStoreNoFrmMap" lovItem="Value" programmaticQuery="false" requiredForLOV="false" resultTo="ODStoreNoFrm" scope="." useForValidation="yes"/>
+            </lovMappings>
+         </oa:messageLovInput>
+      </insert>
+   </modifications>
+</customization>
+
+
+

@@ -1,0 +1,22 @@
+--------------------------------------------------------
+--  DDL for Table XX_CDH_SAVED_BO_ENTITIES_GT
+--------------------------------------------------------
+--DROP  TABLE XXCRM.XX_CDH_SAVED_BO_ENTITIES_GT; 
+CREATE TABLE XXCRM.XX_CDH_SAVED_BO_ENTITIES_GT 
+   (    BO_PROCESS_ID            NUMBER, 
+        BO_ENTITY_NAME           VARCHAR2(60), 
+        BO_TABLE_ID              NUMBER,
+        ORIG_SYSTEM              VARCHAR2(5), 
+        ORIG_SYSTEM_REFERENCE    VARCHAR2(255), 
+        LAST_COMMIT_DATE         DATE, 
+        COMMITTED_BY             NUMBER,
+        TRANS_VALIDATED_FLAG     VARCHAR2(1)
+   );
+
+--------------------------------------------------------
+--  DDL for Index XX_COM_EXCEPTIONS_LOG_CONV_N1
+--------------------------------------------------------
+
+CREATE INDEX XXCRM.XX_CDH_SAVED_BO_ENTITIES_GT_N1 ON XXCRM.XX_CDH_SAVED_BO_ENTITIES_GT (BO_PROCESS_ID);
+
+GRANT ALL ON xxcrm.XX_CDH_SAVED_BO_ENTITIES_GT TO APPS;

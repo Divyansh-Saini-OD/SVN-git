@@ -1,0 +1,34 @@
+SET VERIFY OFF
+WHENEVER SQLERROR CONTINUE
+
+
+CREATE OR REPLACE SYNONYM  xx_ar_recon_open_itm FOR xxfin.xx_ar_recon_open_itm
+/
+CREATE OR REPLACE SYNONYM  xx_crm_wcelg_cust  FOR  xxcrm.xx_crm_wcelg_cust
+/
+CREATE OR REPLACE SYNONYM  xx_crm_open_bal_temp  FOR  xxcrm.xx_crm_open_bal_temp
+/
+CREATE OR REPLACE SYNONYM  xx_crm_hierarchy_temp  FOR  xxcrm.xx_crm_hierarchy_temp
+/
+CREATE OR REPLACE SYNONYM  xx_crm_common_delta  FOR  xxcrm.xx_crm_common_delta
+/
+CREATE OR REPLACE SYNONYM  xx_crm_common_multithread_s  FOR  xxcrm.xx_crm_common_multithread_s
+/
+CREATE OR REPLACE SYNONYM  xx_crm_common_delta_details FOR  xxcrm.xx_crm_common_delta_details
+/
+CREATE OR REPLACE SYNONYM  xx_crm_custmast_head_stg  FOR  xxcrm.xx_crm_custmast_head_stg
+/
+CREATE OR REPLACE SYNONYM  XX_crmar_int_log  FOR  xxcrm.XX_crmar_int_log
+/
+CREATE OR REPLACE SYNONYM  XX_crmar_file_log  FOR  xxcrm.XX_crmar_file_log
+/
+CREATE OR REPLACE SYNONYM  XX_crmar_int_log_s  FOR  xxcrm.XX_crmar_int_log_s
+/
+CREATE OR REPLACE SYNONYM  xx_crm_custaddr_stg  FOR  xxcrm.xx_crm_custaddr_stg
+/
+CREATE OR REPLACE SYNONYM  xx_crm_custcont_stg  FOR xxcrm.xx_crm_custcont_stg
+/
+CREATE OR REPLACE SYNONYM  xx_crm_custhier_stg  FOR xxcrm.xx_crm_custhier_stg
+/
+CREATE OR REPLACE SYNONYM  xx_crm_custsls_stg  FOR xxcrm.xx_crm_custsls_stg
+/

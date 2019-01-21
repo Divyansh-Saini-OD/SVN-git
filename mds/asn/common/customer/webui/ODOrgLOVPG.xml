@@ -1,0 +1,25 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<jrad:page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.6_896" xml:lang="en-US" file-version="$Header: ODOrgLOVPG.xml 115.10 2004/08/04 22:53:37 mkatraga ship $">
+   <jrad:content>
+      <oa:pageLayout amDefName="oracle.apps.asn.common.customer.server.OrgLOVAM" id="PageLayoutRN" controllerClass="od.oracle.apps.xxcrm.asn.common.customer.webui.ODOrgLOVCO" title="Add Customer" helpTarget="ASN_OrgLOVPG" function="ASN_ORGLOVPG">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:pageButtonBar id="ASNPageButtonRN">
+               <ui:contents>
+                  <oa:submitButton id="ASNPageCnclBtn" text="Cancel" use="/oracle/apps/fnd/attributesets/Buttons/Cancel"/>
+                  <oa:submitButton id="ASNPageSelBtn" text="Select" prompt="Select"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+            <oa:header id="ASNDQMSearchRN" extends="/oracle/apps/ar/hz/components/search/webui/HzPuiDQMSearchForm"/>
+            <oa:tableLayout id="ASNDQMSearchResultsRN" extends="/od/oracle/apps/xxcrm/asn/custsrch/common/customer/webui/ODHzPuiDQMSearchResults"/>
+            <oa:stackLayout id="ASNReqCtxtRN" extends="/oracle/apps/asn/common/fwk/webui/ASNReqCtxtRN"/>
+         </ui:contents>
+         <ui:productBranding>
+            <oa:image id="ASNBrandImage" source="ASNBRAND.gif" shortDesc="Sales"/>
+         </ui:productBranding>
+      </oa:pageLayout>
+   </jrad:content>
+</jrad:page>

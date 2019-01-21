@@ -1,0 +1,123 @@
+-- $Id$
+-- $Rev$
+-- $HeadURL$
+-- $Author$
+-- $Date$
+
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XXSCS_POTENTIAL_STG Table                                                  |--                                                           --|                                                                                             |--
+--| Program Name   : CREATE_XXSCS_POTENTIAL_STG.tbl                                             |--
+--|                                                                                             |--
+--| Purpose        : Table for Potentials fed by GDW, refreshed weekly                          |--
+--|                                                                                             |--
+--| Change History :                                                                            |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              15-Mar-2009       Sreekanth/Prasad        Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Table XXCRM.XXSCS_POTENTIAL_STG......
+PROMPT
+
+CREATE TABLE XXCRM.XXSCS_POTENTIAL_STG
+(POTENTIAL_ID                   NUMBER,
+CUSTOMER_ACCOUNT_ID             NUMBER,
+ADDRESS_ID                      NUMBER,
+PARTY_SITE_ID                   NUMBER,
+POTENTIAL_TYPE_CD               VARCHAR2(30),
+POTENTIAL_TYPE_NM               VARCHAR2(100),
+EFFECTIVE_FISCAL_WEEK_ID        NUMBER,
+WEEKLY_SALES_TO_STD_IND         VARCHAR2(1),
+MONTH_SALES_TO_STD_IND          VARCHAR2(1),
+WKLY_ORDR_CNT_TO_STD_IND        VARCHAR2(1),
+LIKELY_TO_PURCHASE_IND          VARCHAR2(1),
+FIRST_ORDER_DT                  DATE,
+LAST_ORDER_DT                   DATE,
+SALE_ORDER_52WEEK_CNT           NUMBER,
+ACCT_BUSINESS_NM                VARCHAR2(360),
+SITE_BUSINESS_NM                VARCHAR2(360),
+COMPARABLE_POTENTIAL_AMT        NUMBER,
+ACCOUNT_SITE_RNK                NUMBER,
+STREET_ADDRESS1                 VARCHAR2(100),
+STREET_ADDRESS2                 VARCHAR2(100),
+CITY_NM                         VARCHAR2(100),
+STATE_CD                        VARCHAR2(10),
+STATE_NM                        VARCHAR2(100),
+ZIP_CD                          VARCHAR2(20),
+COUNTRY                         VARCHAR2(100),
+CALC_WHITE_COLLAR_WORKER_CNT    NUMBER,
+SIC_GROUP_CD                    VARCHAR2(10),
+OD_WHITE_COLLAR_WORKER_CNT      NUMBER,
+OD_SIC_GROUP_CD                 VARCHAR2(10),
+SALES_TRTRY_DESC                VARCHAR2(100),
+SALES_TRTRY_MANAGER_ID          NUMBER,
+SALES_TRTRY_EFCT_START_DT       DATE,
+SALES_TRTRY_EFCT_END_DT         DATE,
+ORG_ID                          NUMBER,
+COST_CENTER                     VARCHAR2(30),
+CHARGE_TO_COST_CENTER           VARCHAR2(15),
+CURRENCY_CODE                   VARCHAR2(15),
+LANGUAGE                        VARCHAR2(30),
+SOURCE_LANG                     VARCHAR2(30),
+CREATED_BY                      NUMBER,
+CREATION_DATE                   DATE,
+LAST_UPDATED_BY                 NUMBER,
+LAST_UPDATE_DATE                DATE,
+LAST_UPDATE_LOGIN               NUMBER,
+REQUEST_ID                      NUMBER,
+PROGRAM_APPLICATION_ID          NUMBER,
+PROGRAM_ID                      NUMBER,
+PROGRAM_UPDATE_DATE             DATE,
+ATTRIBUTE_CATEGORY              VARCHAR2(30),
+ATTRIBUTE1                      VARCHAR2(2500),
+ATTRIBUTE2                      VARCHAR2(2500),
+ATTRIBUTE3                      VARCHAR2(2500),
+ATTRIBUTE4                      VARCHAR2(2500),
+ATTRIBUTE5                      VARCHAR2(2500),
+ATTRIBUTE6                      VARCHAR2(2500),
+ATTRIBUTE7                      VARCHAR2(2500),
+ATTRIBUTE8                      VARCHAR2(2500),
+ATTRIBUTE9                      VARCHAR2(2500),
+ATTRIBUTE10                     VARCHAR2(2500),
+ATTRIBUTE11                     VARCHAR2(2500),
+ATTRIBUTE12                     VARCHAR2(2500),
+ATTRIBUTE13                     VARCHAR2(2500),
+ATTRIBUTE14                     VARCHAR2(2500),
+ATTRIBUTE15                     VARCHAR2(2500),
+ATTRIBUTE16                     VARCHAR2(2500),
+ATTRIBUTE17                     VARCHAR2(2500),
+ATTRIBUTE18                     VARCHAR2(2500),
+ATTRIBUTE19                     VARCHAR2(2500),
+ATTRIBUTE20                     VARCHAR2(2500),
+SIC_GROUP_NM                    VARCHAR2(100),
+SALES_TRTRY_ID                  VARCHAR2(20));
+
+
+GRANT ALL ON XXCRM.XXSCS_POTENTIAL_STG TO APPS;
+
+GRANT ALL ON XXCRM.XXSCS_POTENTIAL_STG TO XXDATA_STAGE;
+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

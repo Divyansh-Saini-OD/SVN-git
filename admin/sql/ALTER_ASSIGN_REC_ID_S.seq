@@ -1,0 +1,28 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : ALTER_XX_CRM_EXP_ASSIGN_REC_ID_S.seq                        |
+-- | Description      : Sequence for SFDC Conv.                      |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  25-Aug-2011 Prasad devar       Initial Draft Version          |
+-- |                                                                       |
+-- +=======================================================================+
+
+--------------------------------------------------------------
+--  Create Custom Sequence XXCRM.XX_CRM_EXP_ASSIGN_REC_ID_S    --
+--------------------------------------------------------------
+
+ALTER SEQUENCE XXCRM.XX_CRM_EXP_ASSIGN_REC_ID_S CACHE 100;
+
+SHOW ERRORS;
+
+EXIT;

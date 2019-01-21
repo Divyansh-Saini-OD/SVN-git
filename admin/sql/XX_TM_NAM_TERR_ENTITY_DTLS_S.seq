@@ -1,0 +1,45 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XX_TM_NAM_TERR_ENTITY_DTLS_S.seq                   |
+-- | Description      : Sequence for Custom Named Account territories      |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  22-Aug-2007 Sreekanth          Initial Draft Version          |
+-- |1        09-Oct-2007 Ankur              Created a new DROP script      |
+-- +=======================================================================+
+
+-- -------------------------------------------------------
+-- Drop Custom Sequence XX_TM_NAM_TERR_ENTITY_DTLS_S    --
+-- -------------------------------------------------------
+--DROP SEQUENCE XXCRM.XX_TM_NAM_TERR_ENTITY_DTLS_S ;
+
+-- -------------------------------------------------------
+-- Create Custom Sequence XX_TM_NAM_TERR_ENTITY_DTLS_S  --
+-- -------------------------------------------------------
+
+CREATE SEQUENCE XXCRM.XX_TM_NAM_TERR_ENTITY_DTLS_S
+INCREMENT BY 1 
+START WITH 1000 
+NOMAXVALUE
+NOCYCLE NOCACHE NOORDER;
+
+
+------------------------------------------------------
+-- Grants to APPS                                   --
+------------------------------------------------------
+
+GRANT ALL ON XXCRM.XX_TM_NAM_TERR_ENTITY_DTLS_S TO APPS;
+
+
+SHOW ERRORS;
+EXIT;

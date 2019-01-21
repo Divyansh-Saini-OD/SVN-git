@@ -1,0 +1,31 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             : CREATE_XX_CDH_MBS_DOC_MASTER.syn                   |
+-- | Description      : Custom synonym for E1331_CDH_MetaData_Attributes   |
+-- |                                                                       |
+-- |                    Note:This script should be executed from           |
+-- |                    APPS schema                                        |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |DRAFT 1a 26-Jun-2007 Prakash Sowriraj      Initial draft version       |
+-- +=======================================================================+
+
+------------------------------------------------------
+-- Dropping the existing synonym and creating new.  --
+------------------------------------------------------
+CREATE OR REPLACE SYNONYM APPS.XX_CDH_MBS_DOCUMENT_MASTER FOR XXCRM.XX_CDH_MBS_DOCUMENT_MASTER;
+
+
+SHOW ERRORS;
+
+EXIT;

@@ -1,0 +1,26 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             : CREATE_XX_OIC_XMLDATA.tbl                          |
+-- | Description      : DDL to create table for OIC Plan Copy object       |
+-- |                    to store data file as well as log data             |                                    
+-- |                                                                       |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |1.0       01-Aug-07    Nageswara Rao        Initial draft version      |
+-- +=======================================================================+
+
+-- Dropping table XX_OIC_xmldata (if any) . . .
+
+DROP TABLE   XXCRM.XX_OIC_xmldata
+/

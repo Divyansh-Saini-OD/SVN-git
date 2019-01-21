@@ -1,0 +1,39 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : CREATE_XX_TM_NAM_GDW_BATCHES.tbl                   |
+-- | Description      : Store gdw batch processed by autonamed             |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |Draft 1a     01-Jul-2008  Jeevan Babu      Initial Draft Version       |
+-- +=======================================================================+
+
+-- ---------------------------------------------------------------------
+--      Create Custom Table XX_TM_NAM_GDW_BATCHES    --
+-- ---------------------------------------------------------------------
+CREATE TABLE XXCRM.XX_TM_NAM_GDW_BATCHES
+(         BATCH_ID                   NUMBER(15),
+	  CREATED_BY                 NUMBER(15)         NOT NULL,
+	  CREATION_DATE              DATE               NOT NULL,
+	  LAST_UPDATED_BY            NUMBER(15)         NOT NULL,
+	  LAST_UPDATE_DATE           DATE               NOT NULL,
+	  LAST_UPDATE_LOGIN          NUMBER(15)
+);
+	  
+------------------------------------------------------
+-- Adding Grants to APPS                            --
+------------------------------------------------------
+GRANT ALL ON XXCRM.XX_TM_NAM_GDW_BATCHES TO APPS;
+
+SHOW ERRORS;

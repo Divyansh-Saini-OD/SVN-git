@@ -1,0 +1,28 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : ALTER_XX_CDH_ACCOUNT_SETUP_REQ_INTF.tbl            |
+-- | Description      : Add Segmentation and Loyalty columns               |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |1        12-AUG-2009   Sreedhar Mohan   Initial Version                |
+-- +=======================================================================+
+
+------------------------------------------------------------------------
+-- Add Segmentation and Loyalty columns                 
+------------------------------------------------------------------------
+
+ALTER TABLE XXCRM.xx_cdh_account_setup_req_intf 
+ADD (customer_loyalty_code VARCHAR2(30),
+     customer_segmentation_code VARCHAR2(30)
+    );
+
+SHOW ERRORS;

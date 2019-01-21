@@ -1,0 +1,28 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : ALT_XX_CDH_ACCOUNT_SETUP_REQ_INTF1.tbl             |
+-- | Description      : Add tin_number and up_prog_codes cols              |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |1        08-APR-2010   Sreedhar Mohan   Initial Version                |
+-- +=======================================================================+
+
+------------------------------------------------------------------------
+-- Add Segmentation and Loyalty columns                 
+------------------------------------------------------------------------
+
+ALTER TABLE XXCRM.xx_cdh_account_setup_req_intf 
+ADD (tin_number    VARCHAR2(30),
+     up_prog_codes VARCHAR2(2000)
+    );
+
+SHOW ERRORS;

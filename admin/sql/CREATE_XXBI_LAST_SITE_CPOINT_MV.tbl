@@ -1,0 +1,67 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XXBI_LAST_SITE_CPOINT_MV MV                                                  |--                                                          
+ --|                                                                                             |--
+--| Program Name   : CREATE_XXBI_LAST_SITE_CPOINT_MV.tbl                                              |--
+--|                                                                                             |--
+--| Purpose        : Contacts MV.                                      |--
+--|                                                                                             |--
+--| Change History :     
+-- | Subversion Info:                                                          |
+-- | $HeadURL:  $                                                               |
+-- | $Rev:  $                                                                   |
+-- | $Date: $                                         |
+-- |                                                                           |
+-- |                                                                           |                                                           
+--   |
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              14-Apr-2010       Prasad                  Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the MV XXCRM.XXBI_LAST_SITE_CPOINT_MV......
+PROMPT
+
+
+  
+  CREATE MATERIALIZED VIEW "XXCRM"."XXBI_LAST_SITE_CPOINT_MV"
+   TABLESPACE "APPS_TS_TX_DATA" 
+  PARALLEL 8 
+  BUILD DEFERRED
+   REFRESH FAST ON COMMIT
+  USING DEFAULT LOCAL ROLLBACK SEGMENT
+  DISABLE QUERY REWRITE
+  AS select f.party_site_id, max(f.contact_point_id) contact_point_id ,max(f.relationship_id) relationship_id
+from
+xxcrm.XXBI_LAST_SITE_CONTACTS_MV x,
+xxcrm.xxbi_contacts_mv_tbl f
+where x.party_site_id=f.party_site_id
+and x.c_last_dt=f.c_last_dt
+group by f.party_site_id;
+ 
+
+GRANT ALL ON XXCRM.XXBI_LAST_SITE_CPOINT_MV TO APPS;
+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

@@ -1,0 +1,58 @@
+# ================================================================================================================ 
+# Name............: XXODCRZIPNOPATH.prog
+#
+# Comments .......: Please donot change the file extension. 
+#                 
+# History
+# ---------------------------------------------------------------------------
+# Date      Rev  Who                Comments
+# --------- ---- ------------------ -----------------------------------------
+# 18-APR-11 1.0  Kishore Jena       Initial Release
+# 
+#============================================================================  
+#
+# APPS Defined Concurrent Program Parameters, Do Not change the below parameters.
+#
+PROGNAME=$0
+FCP_LOGIN=$1
+FCP_USERID=$2
+FCP_USERNAME=$3
+FCP_REQID=$4
+#
+# User Defined Concurrent Program Parameters
+#
+eval FILE_IN_FOLDER=$5
+eval FILE_OUT_FOLDER=$6
+echo "--------------------"
+echo "Parameters:  "
+echo "--------------------" 
+echo "  Inbound File....:"$FILE_IN_FOLDER
+echo "  Outbound Folder...:"$FILE_OUT_FOLDER
+echo "--------------------"  
+echo " "
+if [ ! -f ${FILE_IN_FOLDER} ]
+then
+  echo "File :"$FILE_IN_FOLDER " not found..."
+  exit 1
+fi
+if [ ! -s ${FILE_IN_FOLDER} ]
+then
+  echo "File :"$FILE_IN_FOLDER " size is zero..."
+  exit 1
+fi
+#
+# Create a zip file
+#
+   TEMP_FILE=`basename $FILE_IN_FOLDER`
+   #echo "TEMP File :"$TEMP_FILE
+          my_zip_file=`echo $TEMP_FILE | cut -f1 -d.`".zip"
+          echo "Zip File :"$my_zip_file
+          zip -j ${FILE_OUT_FOLDER}/${my_zip_file} ${FILE_IN_FOLDER}
+            if [ $? -gt 0 ]
+            then
+              echo
+              echo "Failed to create the zip file "$my_zip_file     
+            else
+              echo
+              echo "File "$my_zip_file" successfully created in folder "$FILE_OUT_FOLDER            
+            fi            

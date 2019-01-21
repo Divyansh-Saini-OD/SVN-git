@@ -1,0 +1,53 @@
+-- $Id:$
+-- $Rev:$
+-- $HeadURL:$
+-- $Author:$
+-- $Date:$
+
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XXCDH_ABL_CUST_PHONE                                                       |--                                                                                          |--
+--| Program Name   : CREATE_XXCDH_ABL_CUST_PHONE.tbl                                            |--
+--|                                                                                             |--
+--| Purpose        : Sales Activity Table                                                       |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              03-Feb-2010       Nabarun Ghosh             Initial Draft                   |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Table XXCRM.XXCDH_ABL_CUST_PHONE......
+PROMPT
+
+CREATE TABLE XXCDH_ABL_CUST_PHONE (
+  party_id          NUMBER,
+  job_title         VARCHAR2(150),
+  phone_number      VARCHAR2(50)  
+) PARALLEL (DEGREE 8);
+             
+------------------------------------------------------
+-- Adding Grants to APPS.                           --
+------------------------------------------------------
+GRANT ALL ON XXCRM.XXCDH_ABL_CUST_PHONE TO APPS;
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

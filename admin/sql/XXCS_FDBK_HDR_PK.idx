@@ -1,0 +1,28 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :XXCS_FDBK_HDR_PK.idx                                |
+-- | Description      :Unique Index for feedback Header.                   |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author              Remarks                     |
+-- |-------  ----------- -----------------    -----------------------------|
+-- | 1.0     25-MAR-2009  Kalyan        Initial Draft Version              |
+-- +=======================================================================+
+
+
+REM==============================================================================
+REM        Creating Index FDBK_HDR_PK
+REM==============================================================================
+
+ALTER TABLE XXCRM.XXCS_FDBK_HDR ADD CONSTRAINT FDBK_HDR_PK PRIMARY KEY(FDBK_ID);
+
+EXIT;
+

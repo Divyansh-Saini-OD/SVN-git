@@ -1,0 +1,29 @@
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify                                           |
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_SITE_MASTER.tbl                                                       |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        26-Aug-2011     Indra Varada        Initial version                              |
+-- +============================================================================================+
+
+CREATE TABLE "XXCRM"."XX_CRM_EXP_SITE_MASTER" 
+   (	"PARTY_SITE_ID" NUMBER, 
+	"CUST_ACCOUNT_SITE_ID" NUMBER, 
+	"PARTY_ID" NUMBER, 
+	"CUST_ACCOUNT_ID" NUMBER, 
+	"CREATION_DATE" DATE, 
+	"LAST_UPDATE_DATE" DATE, 
+	"CREATED_BY" NUMBER, 
+	"LAST_UPDATED_BY" NUMBER
+   );
+
+
+GRANT ALL ON XXCRM.XX_CRM_EXP_SITE_MASTER TO APPS;
+
+SHOW ERRORS;

@@ -1,0 +1,25 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : DROP_XXHZ_RELATIONSHIP_TYPES_N6.idx                |
+-- | Description      : Drop Index for table                               |      
+-- |                    HZ_RELATIONSHIP_TYPES                              |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |Draft 1a 28-Mar-2008   Abhradip Ghosh   Initial Draft Version          |
+-- +=======================================================================+
+
+-------------------------------------------------------------
+-- Drop existing Index for XXHZ_RELATIONSHIP_TYPES_N6      --
+-------------------------------------------------------------
+
+DROP INDEX AR.XX_SFA_HZ_RELATIONSHP_TYP_N6
+/

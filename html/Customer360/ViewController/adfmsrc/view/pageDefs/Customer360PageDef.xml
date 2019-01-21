@@ -1,0 +1,650 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel"
+                version="11.1.1.56.60" id="Customer360PageDef"
+                Package="view.pageDefs">
+  <parameters/>
+  <executables>
+    <variableIterator id="variables"/>
+    <iterator Binds="root" RangeSize="25" DataControl="CustInfo"
+              id="CustInfoIterator"/>
+    <accessorIterator MasterBinding="CustInfoIterator"
+                      Binds="process_parameters" RangeSize="25"
+                      DataControl="CustInfo" BeanClass="CustInfo.Types.process"
+                      id="process_parametersIterator"/>
+    <accessorIterator MasterBinding="process_parametersIterator" Binds="payload"
+                      RangeSize="25" DataControl="CustInfo"
+                      BeanClass="CustInfo.process.params.payload"
+                      id="payloadIterator"/>
+    <methodIterator Binds="process.result" DataControl="CustInfo" RangeSize="25"
+                    BeanClass="model.CustInfo.process" id="processIterator"
+                    ChangeEventPolicy="ppr"/>
+    <accessorIterator MasterBinding="processIterator" Binds="process_Result"
+                      RangeSize="25" DataControl="CustInfo"
+                      BeanClass="model.CustInfo.process_Result"
+                      id="process_ResultIterator" ChangeEventPolicy="ppr"/>
+    <accessorIterator MasterBinding="process_ResultIterator"
+                      Binds="GetAOPS_CustBillingInfoOutput" RangeSize="25"
+                      DataControl="CustInfo"
+                      BeanClass="model.CustInfo.process_Result.GetAOPS_CustBillingInfoOutput"
+                      id="GetAOPS_CustBillingInfoOutputIterator"
+                      ChangeEventPolicy="ppr"/>
+    <iterator Binds="root" RangeSize="25" DataControl="CustOrderInfo"
+              id="CustOrderInfoIterator"/>
+    <accessorIterator MasterBinding="CustOrderInfoIterator"
+                      Binds="process_parameters" RangeSize="25"
+                      DataControl="CustOrderInfo"
+                      BeanClass="CustOrderInfo.Types.process"
+                      id="process_parametersIterator1"/>
+    <accessorIterator MasterBinding="process_parametersIterator1"
+                      Binds="payload" RangeSize="25" DataControl="CustOrderInfo"
+                      BeanClass="CustOrderInfo.process.params.payload"
+                      id="payloadIterator1"/>
+    <methodIterator Binds="process1.result" DataControl="CustOrderInfo"
+                    RangeSize="25" BeanClass="model.CustOrderInfo.process"
+                    id="process1Iterator"/>
+    <accessorIterator MasterBinding="process1Iterator" Binds="process_Result"
+                      RangeSize="25" DataControl="CustOrderInfo"
+                      BeanClass="model.CustOrderInfo.process_Result"
+                      id="process_ResultIterator1"/>
+    <accessorIterator MasterBinding="process_ResultIterator1"
+                      Binds="OrderResultSet" RangeSize="5"
+                      DataControl="CustOrderInfo"
+                      BeanClass="model.CustOrderInfo.process_Result.OrderResultSet"
+                      id="OrderResultSetIterator"/>
+    <searchRegion Binds="OrderResultSetIterator" Criteria=""
+                  Customizer="oracle.jbo.uicli.binding.JUSearchBindingCustomizer"
+                  id="OrderResultSetQuery"/>
+    <accessorIterator MasterBinding="process_ResultIterator1"
+                      Binds="GetBackOrderInfoOutput" RangeSize="25"
+                      DataControl="CustOrderInfo"
+                      BeanClass="model.CustOrderInfo.process_Result.GetBackOrderInfoOutput"
+                      id="GetBackOrderInfoOutputIterator"/>
+    <accessorIterator MasterBinding="process_ResultIterator"
+                      Binds="LoyaltyMemberPurchaseHistoryOutput" RangeSize="25"
+                      DataControl="CustInfo"
+                      BeanClass="model.CustInfo.process_Result.LoyaltyMemberPurchaseHistoryOutput"
+                      id="LoyaltyMemberPurchaseHistoryOutputIterator"
+                      ChangeEventPolicy="ppr"/>
+    <accessorIterator MasterBinding="process_ResultIterator1"
+                      Binds="TopFiveOrders" RangeSize="-1"
+                      DataControl="CustOrderInfo"
+                      BeanClass="model.CustOrderInfo.process_Result.TopFiveOrders"
+                      id="TopFiveOrdersIterator"/>
+    <accessorIterator MasterBinding="process_ResultIterator1"
+                      Binds="GetSumForTopOrdersOutput" RangeSize="-1"
+                      DataControl="CustOrderInfo"
+                      BeanClass="model.CustOrderInfo.process_Result.GetSumForTopOrdersOutput"
+                      id="GetSumForTopOrdersOutputIterator"/>
+    <iterator Binds="root" RangeSize="25" DataControl="CasesInfo"
+              id="CasesInfoIterator"/>
+    <accessorIterator MasterBinding="CasesInfoIterator"
+                      Binds="process_parameters" RangeSize="25"
+                      DataControl="CasesInfo"
+                      BeanClass="CasesInfo.Types.process"
+                      id="process_parametersIterator2"/>
+    <accessorIterator MasterBinding="process_parametersIterator2"
+                      Binds="payload" RangeSize="25" DataControl="CasesInfo"
+                      BeanClass="CasesInfo.process.params.payload"
+                      id="payloadIterator2"/>
+    <accessorIterator MasterBinding="process_ResultIterator"
+                      Binds="GetCustPastDueInfoOutput" RangeSize="25"
+                      DataControl="CustInfo"
+                      BeanClass="model.CustInfo.process_Result.GetCustPastDueInfoOutput"
+                      id="GetCustPastDueInfoOutputIterator"
+                      ChangeEventPolicy="ppr"/>
+    <accessorIterator MasterBinding="process_ResultIterator"
+                      Binds="GetCustShopChannelOutput" RangeSize="-1"
+                      DataControl="CustInfo"
+                      BeanClass="model.CustInfo.process_Result.GetCustShopChannelOutput"
+                      id="GetCustShopChannelOutputIterator"
+                      ChangeEventPolicy="ppr"/>
+    <accessorIterator MasterBinding="process_ResultIterator"
+                      Binds="GetCustSegmentLoyaltyTierOutput" RangeSize="25"
+                      DataControl="CustInfo"
+                      BeanClass="model.CustInfo.process_Result.GetCustSegmentLoyaltyTierOutput"
+                      id="GetCustSegmentLoyaltyTierOutputIterator"
+                      ChangeEventPolicy="ppr"/>
+    <accessorIterator MasterBinding="process_ResultIterator"
+                      Binds="GetAdditionalCustFinInfoOutput" RangeSize="25"
+                      DataControl="CustInfo"
+                      BeanClass="model.CustInfo.process_Result.GetAdditionalCustFinInfoOutput"
+                      id="GetAdditionalCustFinInfoOutputIterator"
+                      ChangeEventPolicy="ppr"/>
+    <iterator Binds="root" RangeSize="25" DataControl="AOPS_Reports"
+              id="AOPS_ReportsIterator"/>
+    <accessorIterator MasterBinding="AOPS_ReportsIterator"
+                      Binds="initiate_parameters" RangeSize="25"
+                      DataControl="AOPS_Reports"
+                      BeanClass="AOPS_Reports.Types.initiate"
+                      id="initiate_parametersIterator"/>
+    <accessorIterator MasterBinding="initiate_parametersIterator"
+                      Binds="payload" RangeSize="25" DataControl="AOPS_Reports"
+                      BeanClass="AOPS_Reports.initiate.params.payload"
+                      id="payloadIterator3"/>
+    <methodIterator Binds="process3.result" DataControl="ContractInfo"
+                    RangeSize="25" BeanClass="model.ContractInfo.process"
+                    id="process3Iterator"/>
+    <accessorIterator MasterBinding="process3Iterator" Binds="process_Result"
+                      RangeSize="25" DataControl="ContractInfo"
+                      BeanClass="model.ContractInfo.process_Result"
+                      id="process_ResultIterator2"/>
+    <accessorIterator MasterBinding="process_ResultIterator2"
+                      Binds="ActiveContractsOutput" RangeSize="25"
+                      DataControl="ContractInfo"
+                      BeanClass="model.ContractInfo.process_Result.ActiveContractsOutput"
+                      id="ActiveContractsOutputIterator"/>
+    <searchRegion Binds="ActiveContractsOutputIterator" Criteria=""
+                  Customizer="oracle.jbo.uicli.binding.JUSearchBindingCustomizer"
+                  id="ActiveContractsOutputQuery"/>
+    <iterator Binds="root" RangeSize="25" DataControl="ContractInfo"
+              id="ContractInfoIterator"/>
+    <accessorIterator MasterBinding="ContractInfoIterator"
+                      Binds="process_parameters" RangeSize="25"
+                      DataControl="ContractInfo"
+                      BeanClass="ContractInfo.Types.process"
+                      id="process_parametersIterator3"/>
+    <accessorIterator MasterBinding="process_parametersIterator3"
+                      Binds="payload" RangeSize="25" DataControl="ContractInfo"
+                      BeanClass="ContractInfo.process.params.payload"
+                      id="payloadIterator4"/>
+    <accessorIterator MasterBinding="process_ResultIterator2"
+                      Binds="ContractPriceResultSet" RangeSize="25"
+                      DataControl="ContractInfo"
+                      BeanClass="model.ContractInfo.process_Result.ContractPriceResultSet"
+                      id="ContractPriceResultSetIterator"/>
+    <searchRegion Binds="ContractPriceResultSetIterator" Criteria=""
+                  Customizer="oracle.jbo.uicli.binding.JUSearchBindingCustomizer"
+                  id="ContractPriceResultSetQuery"/>
+    <methodIterator Binds="process2.result" DataControl="CasesInfo"
+                    RangeSize="25" BeanClass="model.CasesInfo.process"
+                    id="process2Iterator"/>
+    <accessorIterator MasterBinding="process2Iterator"
+                      Binds="OpenCasesResultSet" RangeSize="25"
+                      DataControl="CasesInfo"
+                      BeanClass="model.CasesInfo.process.OpenCasesResultSet"
+                      id="OpenCasesResultSetIterator"/>
+    <searchRegion Binds="OpenCasesResultSetIterator" Criteria=""
+                  Customizer="oracle.jbo.uicli.binding.JUSearchBindingCustomizer"
+                  id="OpenCasesResultSetQuery"/>
+  </executables>
+  <bindings>
+    <methodAction id="process" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="process" IsViewObjectMethod="false"
+                  DataControl="CustInfo" InstanceName="CustInfo"
+                  ReturnName="CustInfo.methodResults.process_CustInfo_process_result">
+      <NamedData NDName="payload"
+                 NDValue="${bindings.payloadIterator.currentRow.dataProvider}"
+                 NDType="java.lang.Object"/>
+    </methodAction>
+    <attributeValues IterBinding="payloadIterator" id="ACCOUNT_OSR">
+      <AttrNames>
+        <Item Value="ACCOUNT_OSR"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="payloadIterator" id="LOYALTY_ID">
+      <AttrNames>
+        <Item Value="LOYALTY_ID"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="GetAOPS_CustBillingInfoOutputIterator"
+                     id="AR_FLAG">
+      <AttrNames>
+        <Item Value="AR_FLAG"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="GetAOPS_CustBillingInfoOutputIterator"
+                     id="BILL_TO_LIMIT">
+      <AttrNames>
+        <Item Value="BILL_TO_LIMIT"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="GetAOPS_CustBillingInfoOutputIterator"
+                     id="BILL_TO_DOLLARS">
+      <AttrNames>
+        <Item Value="BILL_TO_DOLLARS"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="process_ResultIterator"
+                     id="CustInfoBusinessName">
+      <AttrNames>
+        <Item Value="CustInfoBusinessName"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="process_ResultIterator"
+                     id="CustInfoContactName">
+      <AttrNames>
+        <Item Value="CustInfoContactName"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="process_ResultIterator"
+                     id="CustInfoPrimaryPhone">
+      <AttrNames>
+        <Item Value="CustInfoPrimaryPhone"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="process_ResultIterator"
+                     id="CustInfoStreetAddress1">
+      <AttrNames>
+        <Item Value="CustInfoStreetAddress1"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="process_ResultIterator" id="CustInfoProvince">
+      <AttrNames>
+        <Item Value="CustInfoProvince"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="process_ResultIterator" id="CustInfoZip">
+      <AttrNames>
+        <Item Value="CustInfoZip"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="process_ResultIterator"
+                     id="CustInfoCountryCode">
+      <AttrNames>
+        <Item Value="CustInfoCountryCode"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="payloadIterator1" id="AOPS_CustID">
+      <AttrNames>
+        <Item Value="AOPS_CustID"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="payloadIterator1" id="LoyaltyID">
+      <AttrNames>
+        <Item Value="LoyaltyID"/>
+      </AttrNames>
+    </attributeValues>
+    <methodAction id="process1" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="process" IsViewObjectMethod="false"
+                  DataControl="CustOrderInfo" InstanceName="CustOrderInfo"
+                  ReturnName="CustOrderInfo.methodResults.process_CustOrderInfo_process_result">
+      <NamedData NDName="payload"
+                 NDValue="${bindings.payloadIterator1.currentRow.dataProvider}"
+                 NDType="java.lang.Object"/>
+    </methodAction>
+    <attributeValues IterBinding="process_ResultIterator" id="CustInfoCity">
+      <AttrNames>
+        <Item Value="CustInfoCity"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="process_ResultIterator" id="CustInfoState">
+      <AttrNames>
+        <Item Value="CustInfoState"/>
+      </AttrNames>
+    </attributeValues>
+    <tree IterBinding="OrderResultSetIterator" id="OrderResultSet">
+      <nodeDefinition DefName="model.CustOrderInfo.process_Result.OrderResultSet"
+                      Name="OrderResultSet0">
+        <AttrNames>
+          <Item Value="OrderNumber"/>
+          <Item Value="OrderTotal"/>
+          <Item Value="OrderedDate"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <attributeValues IterBinding="GetBackOrderInfoOutputIterator" id="OrderId">
+      <AttrNames>
+        <Item Value="OrderId"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="GetBackOrderInfoOutputIterator"
+                     id="TotalOrderAmt">
+      <AttrNames>
+        <Item Value="TotalOrderAmt"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="GetBackOrderInfoOutputIterator"
+                     id="BackOrderQty">
+      <AttrNames>
+        <Item Value="BackOrderQty"/>
+      </AttrNames>
+    </attributeValues>
+    <tree IterBinding="LoyaltyMemberPurchaseHistoryOutputIterator"
+          id="LoyaltyMemberPurchaseHistoryOutput">
+      <nodeDefinition DefName="model.CustInfo.process_Result.LoyaltyMemberPurchaseHistoryOutput"
+                      Name="LoyaltyMemberPurchaseHistoryOutput0">
+        <AttrNames>
+          <Item Value="LoyaltyMemberPurchaseHistoryOrderDt"/>
+          <Item Value="LoyaltyMemberPurchaseHistoryPurchaseAmt"/>
+          <Item Value="LoyaltyMemberPurchaseHistoryCat1Reward"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <attributeValues IterBinding="process_ResultIterator"
+                     id="LoyaltyMbrEnrollmentInfoFirst_name">
+      <AttrNames>
+        <Item Value="LoyaltyMbrEnrollmentInfoFirst_name"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="process_ResultIterator"
+                     id="LoyaltyMbrEnrollmentInfoLast_name">
+      <AttrNames>
+        <Item Value="LoyaltyMbrEnrollmentInfoLast_name"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="process_ResultIterator"
+                     id="LoyaltyMbrEnrollmentInfoEnrollmentType">
+      <AttrNames>
+        <Item Value="LoyaltyMbrEnrollmentInfoEnrollmentType"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="process_ResultIterator"
+                     id="LoyaltyMbrEnrollmentInfoActivated">
+      <AttrNames>
+        <Item Value="LoyaltyMbrEnrollmentInfoActivated"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="process_ResultIterator"
+                     id="LoyaltyMbrEnrollmentInfoMembershipType">
+      <AttrNames>
+        <Item Value="LoyaltyMbrEnrollmentInfoMembershipType"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="process_ResultIterator"
+                     id="LoyaltyMbrEnrollmentInfoMemberId">
+      <AttrNames>
+        <Item Value="LoyaltyMbrEnrollmentInfoMemberId"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="process_ResultIterator"
+                     id="LoyaltyMbrEnrollmentCelebrateMonth">
+      <AttrNames>
+        <Item Value="LoyaltyMbrEnrollmentCelebrateMonth"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="process_ResultIterator"
+                     id="LoyaltyMbrEnrollmentCelebrateDay">
+      <AttrNames>
+        <Item Value="LoyaltyMbrEnrollmentCelebrateDay"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="process_ResultIterator"
+                     id="LoyaltyMbrEnrollmentInfoEmail">
+      <AttrNames>
+        <Item Value="LoyaltyMbrEnrollmentInfoEmail"/>
+      </AttrNames>
+    </attributeValues>
+    <tree IterBinding="TopFiveOrdersIterator" id="TopFiveOrders">
+      <nodeDefinition DefName="model.CustOrderInfo.process_Result.TopFiveOrders"
+                      Name="TopFiveOrders0">
+        <AttrNames>
+          <Item Value="OrderNumber"/>
+          <Item Value="OrderTotal"/>
+          <Item Value="OrderedDate"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <attributeValues IterBinding="GetAOPS_CustBillingInfoOutputIterator"
+                     id="ORDER_LIMIT">
+      <AttrNames>
+        <Item Value="ORDER_LIMIT"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="GetAOPS_CustBillingInfoOutputIterator"
+                     id="BACKORDER_ALLOW_FLAG">
+      <AttrNames>
+        <Item Value="BACKORDER_ALLOW_FLAG"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="GetAOPS_CustBillingInfoOutputIterator"
+                     id="CONTRACT_CODE">
+      <AttrNames>
+        <Item Value="CONTRACT_CODE"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="GetAOPS_CustBillingInfoOutputIterator"
+                     id="PRICE_PLAN">
+      <AttrNames>
+        <Item Value="PRICE_PLAN"/>
+      </AttrNames>
+    </attributeValues>
+    <graph IterBinding="GetSumForTopOrdersOutputIterator"
+           id="GetSumForTopOrdersOutput1"
+           xmlns="http://xmlns.oracle.com/adfm/dvt" type="PIE">
+      <graphDataMap leafOnly="true">
+        <series>
+          <item value="ITEM_GROUP_NM"/>
+        </series>
+        <groups>
+          <data>
+            <item value="NET_SALES_POTENTIAL_52WEEK_AMT" label="Sales"/>
+          </data>
+        </groups>
+      </graphDataMap>
+    </graph>
+    <attributeValues IterBinding="payloadIterator2" id="AOPS_CustID1">
+      <AttrNames>
+        <Item Value="AOPS_CustID"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="payloadIterator2" id="LoyaltyID1">
+      <AttrNames>
+        <Item Value="LoyaltyID"/>
+      </AttrNames>
+    </attributeValues>
+    <methodAction id="process2" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="process" IsViewObjectMethod="false"
+                  DataControl="CasesInfo" InstanceName="CasesInfo"
+                  ReturnName="CasesInfo.methodResults.process_CasesInfo_process_result">
+      <NamedData NDName="payload"
+                 NDValue="${bindings.payloadIterator2.currentRow.dataProvider}"
+                 NDType="java.lang.Object"/>
+    </methodAction>
+    <tree IterBinding="GetCustPastDueInfoOutputIterator"
+          id="GetCustPastDueInfoOutput">
+      <nodeDefinition DefName="model.CustInfo.process_Result.GetCustPastDueInfoOutput"
+                      Name="GetCustPastDueInfoOutput0">
+        <AttrNames>
+          <Item Value="AmountDueOriginal"/>
+          <Item Value="AmountDueRemaining"/>
+          <Item Value="DueDate"/>
+          <Item Value="InCollection"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <graph IterBinding="GetCustShopChannelOutputIterator"
+           id="GetCustShopChannelOutput"
+           xmlns="http://xmlns.oracle.com/adfm/dvt" type="PIE">
+      <graphDataMap leafOnly="true">
+        <series>
+          <item value="CHANNEL_TYPE"/>
+        </series>
+        <groups>
+          <data>
+            <item value="CHANNEL_COUNT" label="Orders"/>
+          </data>
+        </groups>
+      </graphDataMap>
+    </graph>
+    <attributeValues IterBinding="process_ResultIterator"
+                     id="GetRepAssignmentsResourceName">
+      <AttrNames>
+        <Item Value="GetRepAssignmentsResourceName"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="process_ResultIterator"
+                     id="GetRepAssignmentsRepId">
+      <AttrNames>
+        <Item Value="GetRepAssignmentsRepId"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="process_ResultIterator"
+                     id="GetRepAssignmentsRoleCode">
+      <AttrNames>
+        <Item Value="GetRepAssignmentsRoleCode"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="process_ResultIterator"
+                     id="GetRepAssignmentsassignmentStartDt">
+      <AttrNames>
+        <Item Value="GetRepAssignmentsassignmentStartDt"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="process_ResultIterator"
+                     id="GetRepAssignmentsCustAcctType">
+      <AttrNames>
+        <Item Value="GetRepAssignmentsCustAcctType"/>
+      </AttrNames>
+    </attributeValues>
+    <action IterBinding="GetCustSegmentLoyaltyTierOutputIterator" id="First"
+            RequiresUpdateModel="true" Action="first"/>
+    <action id="Last" RequiresUpdateModel="true" Action="last"/>
+    <action IterBinding="GetCustSegmentLoyaltyTierOutputIterator" id="Next"
+            RequiresUpdateModel="true" Action="next"/>
+    <attributeValues IterBinding="GetCustSegmentLoyaltyTierOutputIterator"
+                     id="class_category">
+      <AttrNames>
+        <Item Value="class_category"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="GetCustSegmentLoyaltyTierOutputIterator"
+                     id="meaning">
+      <AttrNames>
+        <Item Value="meaning"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="GetAdditionalCustFinInfoOutputIterator"
+                     id="overall_credit_limit">
+      <AttrNames>
+        <Item Value="overall_credit_limit"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="GetAdditionalCustFinInfoOutputIterator"
+                     id="payterm_frequency">
+      <AttrNames>
+        <Item Value="payterm_frequency"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="GetAdditionalCustFinInfoOutputIterator"
+                     id="payterm_reporting_day">
+      <AttrNames>
+        <Item Value="payterm_reporting_day"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="GetAdditionalCustFinInfoOutputIterator"
+                     id="payterm_percentage">
+      <AttrNames>
+        <Item Value="payterm_percentage"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="GetAdditionalCustFinInfoOutputIterator"
+                     id="bill_delivery_method">
+      <AttrNames>
+        <Item Value="bill_delivery_method"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="GetAdditionalCustFinInfoOutputIterator"
+                     id="RA_TermDescription">
+      <AttrNames>
+        <Item Value="RA_TermDescription"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="GetAdditionalCustFinInfoOutputIterator"
+                     id="ExposureSegment">
+      <AttrNames>
+        <Item Value="ExposureSegment"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="GetAdditionalCustFinInfoOutputIterator"
+                     id="collector_id">
+      <AttrNames>
+        <Item Value="collector_id"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="payloadIterator3" id="upDownLoadOption">
+      <AttrNames>
+        <Item Value="upDownLoadOption"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="payloadIterator3" id="requestType">
+      <AttrNames>
+        <Item Value="requestType"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="payloadIterator3" id="fileExtension">
+      <AttrNames>
+        <Item Value="fileExtension"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="payloadIterator3" id="fieldDelimiter">
+      <AttrNames>
+        <Item Value="fieldDelimiter"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="payloadIterator3" id="emailAddress">
+      <AttrNames>
+        <Item Value="emailAddress"/>
+      </AttrNames>
+    </attributeValues>
+    <methodAction id="initiate" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="initiate" IsViewObjectMethod="false"
+                  DataControl="AOPS_Reports" InstanceName="AOPS_Reports">
+      <NamedData NDName="ReplyTo" NDValue="1" NDType="java.lang.Object"/>
+      <NamedData NDName="MessageID" NDValue="2" NDType="java.lang.String"/>
+      <NamedData NDName="payload"
+                 NDValue="${bindings.payloadIterator3.currentRow.dataProvider}"
+                 NDType="java.lang.Object"/>
+    </methodAction>
+    <methodAction id="process3" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="process" IsViewObjectMethod="false"
+                  DataControl="ContractInfo" InstanceName="ContractInfo"
+                  ReturnName="ContractInfo.methodResults.process_ContractInfo_process_result">
+      <NamedData NDName="payload"
+                 NDValue="${bindings.payloadIterator4.currentRow.dataProvider}"
+                 NDType="java.lang.Object"/>
+    </methodAction>
+    <tree IterBinding="ActiveContractsOutputIterator"
+          id="ActiveContractsOutput">
+      <nodeDefinition DefName="model.ContractInfo.process_Result.ActiveContractsOutput">
+        <AttrNames>
+          <Item Value="LinkSeq"/>
+          <Item Value="ContractId"/>
+          <Item Value="ContractSeq"/>
+          <Item Value="StatusCode"/>
+          <Item Value="PriorityCode"/>
+          <Item Value="PriceCode"/>
+          <Item Value="OffPricePriceCode"/>
+          <Item Value="WholesalePriceCode"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <attributeValues IterBinding="payloadIterator4" id="AOPS_CustID2">
+      <AttrNames>
+        <Item Value="AOPS_CustID"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="payloadIterator4" id="LoyaltyID2">
+      <AttrNames>
+        <Item Value="LoyaltyID"/>
+      </AttrNames>
+    </attributeValues>
+    <tree IterBinding="ContractPriceResultSetIterator"
+          id="ContractPriceResultSet">
+      <nodeDefinition DefName="model.ContractInfo.process_Result.ContractPriceResultSet">
+        <AttrNames>
+          <Item Value="ProductName"/>
+          <Item Value="ProductCode"/>
+          <Item Value="SkuPrice"/>
+          <Item Value="ContractId"/>
+          <Item Value="AddressSeq"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <tree IterBinding="OpenCasesResultSetIterator" id="OpenCasesResultSet">
+      <nodeDefinition DefName="model.CasesInfo.process.OpenCasesResultSet">
+        <AttrNames>
+          <Item Value="PartyName"/>
+          <Item Value="IncidentNumber"/>
+          <Item Value="Description"/>
+          <Item Value="IncidentDate"/>
+          <Item Value="CloseDate"/>
+          <Item Value="ResolvedDate"/>
+          <Item Value="Status"/>
+          <Item Value="CSR"/>
+          <Item Value="Summary"/>
+          <Item Value="Creator"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+  </bindings>
+</pageDefinition>

@@ -1,0 +1,107 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=========================================================================================+
+-- |                  Office Depot - Project Simplify                                        |
+-- +=========================================================================================+
+-- | Name        : XX_CDH_DQM_BE_PSExtUpdate.abk                                             |
+-- | Description : Anonymous block for creating Business Events for specific attribute       |
+-- |               Entity: Party Sites                                                       |
+-- |                                                                                         |
+-- |Change Record:                                                                           |
+-- |===============                                                                          |
+-- |Version     Date           Author               Remarks                                  |
+-- |=======    ==========      ================     =========================================|
+-- |1.0        21-Feb-2008     Rajeev Kamath        Anonymous Block; First version           |
+-- +=========================================================================================+
+
+declare
+    eventSubRowId ROWID;
+    sysGUID RAW(16);
+    eventGUID RAW(16);
+BEGIN
+select guid into sysGUID
+from apps.wf_systems where
+name like (select name||'%' from v$database)
+and rownum = 1;
+
+
+WF_EVENTS_PKG.g_Mode := 'CUSTOM';
+
+-- Get the event id for Site Use Create
+select guid into eventGUID
+from apps.wf_events
+where name ='oracle.apps.ar.hz.CustAcctSiteUse.create';
+
+-- Create the subscription
+WF_EVENT_SUBSCRIPTIONS_PKG.INSERT_ROW
+(
+ X_ROWID => eventSubRowId
+,X_GUID  => substr(hextoraw(WF_CORE.RANDOM), 1, 20)
+,X_SYSTEM_GUID => sysGUID
+,X_SOURCE_TYPE => 'LOCAL'
+,X_SOURCE_AGENT_GUID => NULL
+,X_EVENT_FILTER_GUID => eventGUID
+,X_PHASE => 100
+,X_STATUS => 'ENABLED'
+,X_RULE_DATA => 'MESSAGE'
+,X_OUT_AGENT_GUID => NULL
+,X_TO_AGENT_GUID => NULL
+,X_PRIORITY => 50
+,X_RULE_FUNCTION => 'XX_CDH_DQM_ACQUIRE_PKG.Account_Site_Use_Change'
+,X_WF_PROCESS_TYPE => NULL
+,X_WF_PROCESS_NAME => NULL
+,X_PARAMETERS => NULL
+,X_OWNER_NAME => 'AR'
+,X_OWNER_TAG => 'XXCRM'
+,X_CUSTOMIZATION_LEVEL => 'U'
+,X_DESCRIPTION => NULL
+,X_EXPRESSION => NULL
+,X_ACTION_CODE => 'CUSTOM_RG'
+,X_ON_ERROR_CODE => 'SKIP'
+,X_JAVA_RULE_FUNC => NULL
+,X_MAP_CODE => NULL
+,X_STANDARD_CODE => NULL
+,X_STANDARD_TYPE => NULL
+);
+
+-- Get the event id for Site Use Update
+select guid into eventGUID
+from apps.wf_events
+where name ='oracle.apps.ar.hz.CustAcctSiteUse.update';
+
+-- Create the subscription
+WF_EVENT_SUBSCRIPTIONS_PKG.INSERT_ROW
+(
+ X_ROWID => eventSubRowId
+,X_GUID  => substr(hextoraw(WF_CORE.RANDOM), 1, 20)
+,X_SYSTEM_GUID => sysGUID
+,X_SOURCE_TYPE => 'LOCAL'
+,X_SOURCE_AGENT_GUID => NULL
+,X_EVENT_FILTER_GUID => eventGUID
+,X_PHASE => 100
+,X_STATUS => 'ENABLED'
+,X_RULE_DATA => 'MESSAGE'
+,X_OUT_AGENT_GUID => NULL
+,X_TO_AGENT_GUID => NULL
+,X_PRIORITY => 50
+,X_RULE_FUNCTION => 'XX_CDH_DQM_ACQUIRE_PKG.Account_Site_Use_Change'
+,X_WF_PROCESS_TYPE => NULL
+,X_WF_PROCESS_NAME => NULL
+,X_PARAMETERS => NULL
+,X_OWNER_NAME => 'AR'
+,X_OWNER_TAG => 'XXCRM'
+,X_CUSTOMIZATION_LEVEL => 'U'
+,X_DESCRIPTION => NULL
+,X_EXPRESSION => NULL
+,X_ACTION_CODE => 'CUSTOM_RG'
+,X_ON_ERROR_CODE => 'SKIP'
+,X_JAVA_RULE_FUNC => NULL
+,X_MAP_CODE => NULL
+,X_STANDARD_CODE => NULL
+,X_STANDARD_TYPE => NULL
+);
+COMMIT;
+END;
+/

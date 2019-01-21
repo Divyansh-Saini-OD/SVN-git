@@ -1,0 +1,20 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+drop table xxcrm.xxcrm_custmast_head_int;
+drop table xxcrm.xx_cdhar_int_log;
+drop table xxcrm.xxcrm_wcelg_cust;
+drop table xxcrm.xxar_adjustment_delta;
+drop table xxcrm.xxcrm_contpoint_delta;
+drop table xxcrm.xxcrm_cust_acct_sites_delta;
+drop table xxcrm.xxcrm_cust_profile_amts_delta;
+drop table xxcrm.xxcrm_cust_site_uses_delta;
+drop table xxcrm.xxcrm_CUSTOMER_PROFILES_delta;
+drop table xxcrm.xxcrm_org_contacts_delta;
+drop table xxcrm.xxcrm_party_sites_delta;
+drop table xxcrm.xxcrm_rs_group_members_delta;
+drop table xxcrm.xxcrm_rs_resource_extns;
+drop table xxcrm.xxcrm_TM_NAM_DTLS_delta;
+drop table xxcrm.xxcrm_party_delta;
+DROP TABLE xxcrm.xxcrm_cust_accounts_delta;

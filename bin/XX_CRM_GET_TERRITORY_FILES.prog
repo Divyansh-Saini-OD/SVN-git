@@ -1,0 +1,147 @@
+#!/bin/bash
+
+# +============================================================================+
+# |                      Office Depot - Project Simplify                       |
+# +============================================================================+
+# |  Name: XX_CRM_GET_TERRITORY_FILES.prog                                     |
+# |  RICE ID:  n/a                                                             |
+# |                                                                            |
+# | Subversion Info:                                                           |
+# |                                                                            |
+# |   $HeadURL$
+# |       $Rev$
+# |      $Date$
+# |                                                                            |
+# |  Description                                                               |
+# |                                                                            |
+# |  Get TerrAlign territory definition files from internal OD server via FTP. |
+# |  Files are automatically deleted from the source directory after the       |
+# |  program transfers them.  The files are deleted even if the transfer fails.|
+# |                                                                            |
+# |                                                                            |
+# |  Parameters supplied by concurrent manager:                                |
+# |                                                                            |
+# |  $0 = full path name of this script                                        |
+# |  $1 = apps/                 (password is not passed)                       |
+# |  $2 = user_id               (fnd_user.user_id)                             |
+# |  $3 = user_name             (fnd_user.user_name)                           |
+# |  $4 = concurrent request id                                                |
+# |                                                                            |
+# |  User parameters:                                                          |
+# |                                                                            |
+# |  $5 = path to "cd" to after ftp connects to remote system.                 |
+# |                                                                            |
+# |                                                                            |
+# |Change Record:                                                              |
+# |===============                                                             |
+# |Version   Date        Author           Remarks                              |
+# |=======   ==========  =============    =====================================|
+# |1.0      12-JUN-2009  Phil Price       Initial version.                     |
+# |                                                                            |
+# +============================================================================*/
+
+
+FTP_SERVER=uschfs1
+FTP_DEST_DIR=$XXCRM_DATA/ftp/in/terralign
+FTP_SRC_DIR=$5
+
+HEADER_FILE_PREFIX='HEADER*'
+DETAIL_FILE_PREFIX='Zipcode*'
+FTP_SUCCESS_MSG='226 Transfer complete.'
+FTP_FILE_DELETE_MSG='250 DELE command successful.'
+
+CURR_DT=`date +%Y%m%d_%H%M%S`
+LOG_FILE=/tmp/terralign_${CURR_DT}_$$".log"
+
+echo "----------------------------------------"
+echo "Environment information:"
+echo "LOG_FILE = $LOG_FILE"
+echo "Will get all files that match ${HEADER_FILE_PREFIX} and ${DETAIL_FILE_PREFIX}"
+echo "Will look for files in folder ${FTP_SRC_DIR}"
+echo "Files will be transferred to ${FTP_DEST_DIR}"
+echo "FTP transfer Success message is: $FTP_SUCCESS_MSG"
+echo "FTP File delete message is: $FTP_FILE_DELETE_MSG"
+echo "----------------------------------------"
+echo " "
+
+cd ${FTP_DEST_DIR}
+
+#
+# FTP_SRC_DIR is a temporary directory that contains files to be ftp'ed.
+# The files are deleted after the ftp "mget" operation is attempted, whether
+# the "mget" was successful or not.
+#
+# ftp options:
+#   -v = verbose
+#   -i = Turns off interactive prompting during multiple file  transfers
+#
+#   "epsv4 off" command avoids the error "500 'EPSV': command not understood"
+#
+ftp -v -i $FTP_SERVER 1>$LOG_FILE 2>&1<<EOF
+epsv4 off
+ascii
+cd ${FTP_SRC_DIR}
+pwd
+dir
+mget ${HEADER_FILE_PREFIX}
+mget ${DETAIL_FILE_PREFIX}
+mdelete ${HEADER_FILE_PREFIX}
+mdelete ${DETAIL_FILE_PREFIX}
+quit
+EOF
+
+if [ $? -ne 0 ]
+ then
+   echo "ERROR: Fatal error in FTP, check log $LOG_FILE"
+   exit 1
+fi
+echo " "
+echo "=============== FTP Transfer Log Start ==============="
+cat $LOG_FILE
+echo "=============== FTP Transfer Log End ================="
+echo " "
+
+
+echo "Check for successful transfer..."
+# $? return values from grep:
+#    0 = one or more matches found
+#    1 = grep was able to read file but no matches were found
+#    2 = grep cound not read the file
+#
+XFER_CT=`grep -c "$FTP_SUCCESS_MSG" $LOG_FILE`
+CS_XFER=$?
+DEL_CT=`grep -c "$FTP_FILE_DELETE_MSG" $LOG_FILE`
+CS_DEL=$?
+
+
+if [ ${CS_XFER} -eq 2 -o ${CS_DEL} -eq 2 ]; then
+    echo "2: ERROR: Fatal error while checking for successful transfer in file $LOG_FILE"
+    echo "2: ERROR: CS_XFER=${CS_XFER} CS_DEL=${CS_DEL}"
+    exit 1
+fi
+
+if [ ${CS_XFER} -eq 0 -o ${CS_XFER} -eq 1 ] && [ ${CS_DEL} -eq 0 -o ${CS_DEL} -eq 1 ]; then
+
+  # Both CS values are 0 or 1.
+
+  # Reduce XFER_CT by 1 because we have an extra Transfer Complete message from "dir" command
+  let "XFER_CT -= 1"
+
+  if [ ${XFER_CT} -lt 1 ]; then
+    echo "ERROR: No files were transfered"
+    exit 1
+  fi
+
+  # Verify the number of files transferred matches the number of files deleted
+  if [ ${XFER_CT} -ne ${DEL_CT} ]; then
+    echo "ERROR: Number of files transferred does not match number of files deleted.  Transferred=${XFER_CT} Deleted=${DEL_CT}"
+    exit 1
+  fi
+
+  echo "INFO: ${XFER_CT} files were trnasferred and deleted."
+  rm $LOG_FILE
+  exit 0
+fi
+
+echo "ERROR: Unknown error occurred."
+exit 1

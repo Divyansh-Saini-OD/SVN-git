@@ -1,0 +1,87 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===========================================================================+
+-- |                  Office Depot - eBilling Project                          |
+-- |                         WIPRO/Office Depot                                |
+-- +===========================================================================+
+-- | Name        : CREATE_XX_CDH_EBL_CONV_LOGIN_DTL.tbl                        |
+-- | Description : Table to store login details for                            |
+-- |               for eBill PAPER to ePDF conversion.                         |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author          Remarks            	               |
+-- |======= =========== ================ ======================================|
+-- |DRAFT 1 17-DEC-2010 Devi Viswanathan Initial draft version                 |
+-- |                                                                           |
+-- |                                                                           |
+-- |                                                                           |
+-- +===========================================================================+
+
+-- ----------------------------------------------------------------------------
+--      Create Custom Table XX_CDH_EBL_CONV_LOGIN_DTL
+-- ----------------------------------------------------------------------------
+
+CREATE TABLE XXCRM.XX_CDH_EBL_CONV_LOGIN_DTL 
+    ( 
+     AOPS_NUMBER VARCHAR2 (240)  NOT NULL , 
+     CUSTOMER_NAME VARCHAR2 (4000) ,
+     ZIP_CODE VARCHAR2(240) ,
+     CONTACT_FIRST_NAME VARCHAR2(4000) ,
+     CONTACT_LAST_NAME VARCHAR2(4000) ,
+     EMAIL_ADDRESS VARCHAR2(4000) ,
+     PHONE_AREA_CODE VARCHAR2(400) ,
+     PHONE_NUMBER VARCHAR2(400) ,
+     PHONE_EXTENSION VARCHAR2(400) ,
+     ATTRIBUTE1 VARCHAR2 (150) , 
+     ATTRIBUTE2 VARCHAR2 (150) , 
+     ATTRIBUTE3 VARCHAR2 (150) , 
+     ATTRIBUTE4 VARCHAR2 (150) , 
+     ATTRIBUTE5 VARCHAR2 (150) , 
+     ATTRIBUTE6 VARCHAR2 (150) , 
+     ATTRIBUTE7 VARCHAR2 (150) , 
+     ATTRIBUTE8 VARCHAR2 (150) , 
+     ATTRIBUTE9 VARCHAR2 (150) , 
+     ATTRIBUTE10 VARCHAR2 (150) , 
+     ATTRIBUTE11 VARCHAR2 (150) , 
+     ATTRIBUTE12 VARCHAR2 (150) , 
+     ATTRIBUTE13 VARCHAR2 (150) , 
+     ATTRIBUTE14 VARCHAR2 (150) , 
+     ATTRIBUTE15 VARCHAR2 (150) , 
+     ATTRIBUTE16 VARCHAR2 (150) , 
+     ATTRIBUTE17 VARCHAR2 (150) , 
+     ATTRIBUTE18 VARCHAR2 (150) , 
+     ATTRIBUTE19 VARCHAR2 (150) , 
+     ATTRIBUTE20 VARCHAR2 (150) , 
+     LAST_UPDATE_DATE DATE  NOT NULL , 
+     LAST_UPDATED_BY NUMBER (15)  NOT NULL , 
+     CREATION_DATE DATE  NOT NULL , 
+     CREATED_BY NUMBER (15)  NOT NULL , 
+     LAST_UPDATE_LOGIN NUMBER (15)  NOT NULL , 
+     REQUEST_ID NUMBER (15) , 
+     PROGRAM_APPLICATION_ID NUMBER (15) , 
+     PROGRAM_ID NUMBER (15) , 
+     PROGRAM_UPDATE_DATE DATE , 
+     WH_UPDATE_DATE DATE 
+    ) 
+;
+
+
+
+--  ERROR: Index name length exceeds maximum allowed length(30) 
+CREATE INDEX XXCRM.XX_CDH_EBL_CONV_LOGIN_DTL__IDX ON XXCRM.XX_CDH_EBL_CONV_LOGIN_DTL 
+    ( 
+     AOPS_NUMBER ASC 
+    );
+    
+    
+-- ----------------------------------------------------------------------------
+-- Adding Grants to APPS.
+-- ----------------------------------------------------------------------------
+
+GRANT ALL ON XXCRM.XX_CDH_EBL_CONV_LOGIN_DTL TO APPS;
+
+SHOW ERRORS;

@@ -1,0 +1,38 @@
+---- This file is automatically created while creating business event outbound interface for apps adapter.
+---- Apply is file on target database with apps schema to delete artifacts required to capture event.
+begin
+-- remove subscription
+delete from wf_event_subscriptions where event_filter_guid in(
+select guid from wf_events where name = 'od.cdh.aops.jobs.pub') 
+and out_agent_guid in ( select guid from wf_agents where name = 'WF_BPEL_QAGENT_1');
+
+
+-- remove subscription
+delete from wf_event_subscriptions where event_filter_guid in(
+select guid from wf_events where name = 'od.oracle.apps.ar.hz.AccountCreationRequestBatch.create') 
+and out_agent_guid in ( select guid from wf_agents where name = 'WF_BPEL_QAGENT');
+
+
+-- remove agent
+delete from wf_agents where name = 'WF_BPEL_QAGENT';
+--delete from wf_agents where name = 'WF_BPEL_QAGENT_1';
+
+
+-- remove queue
+
+-- Stop the queue: 
+DBMS_AQADM.STOP_QUEUE (Queue_name => 'WF_BPEL_Q');
+--DBMS_AQADM.STOP_QUEUE (Queue_name => 'WF_BPEL_Q_1');
+ 
+-- Drop the queue: 
+DBMS_AQADM.DROP_QUEUE (Queue_name => 'WF_BPEL_Q');
+--DBMS_AQADM.DROP_QUEUE (Queue_name => 'WF_BPEL_Q_1');
+
+-- remove queue table
+DBMS_AQADM.DROP_QUEUE_TABLE ( queue_table        => 'WF_BPEL_QTAB');
+--DBMS_AQADM.DROP_QUEUE_TABLE ( queue_table        => 'WF_BPEL_QTAB_1');
+
+
+end;
+/
+commit;

@@ -1,0 +1,135 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_1312" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="StalePrinterRptRN" windowTitle="MPS Stale Printer Report" title="MPS Stale Printer Report" amDefName="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSStalePrinterRptAM" controllerClass="od.oracle.apps.xxcrm.mps.reports.webui.XXCSMPSStalePrinterRptCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:messageComponentLayout id="SearchRN">
+               <ui:contents>
+                  <oa:messageLovInput id="txtPName" queryable="true" prompt="Customer Name">
+                     <lovContents>
+                        <oa:listOfValues id="region1">
+                           <ui:contents>
+                              <oa:table name="region1" id="MPSPartyName">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="PartyName" viewName="XXCSMPSPartyNameVO1" viewAttr="PartyName" queryable="true" prompt="PartyName"/>
+                                    <oa:messageStyledText id="AopsCustNumber" viewName="XXCSMPSPartyNameVO1" viewAttr="AopsCustNumber" prompt="AopsCustNumber"/>
+                                 </ui:contents>
+                              </oa:table>
+                           </ui:contents>
+                        </oa:listOfValues>
+                     </lovContents>
+                     <lovMappings>
+                        <lovMap id="lovMap1" lovItem="PartyName" resultTo="txtPName" criteriaFrom="txtPName"/>
+                     </lovMappings>
+                  </oa:messageLovInput>
+                  <oa:messageTextInput id="txtItem" prompt="No Of Days" dataType="NUMBER"/>
+                  <oa:messageTextInput id="ManagedStatusInput" prompt="Managed Status"/>
+                  <oa:messageTextInput id="ActiveStatusInput" prompt="Active Status"/>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:rowLayout id="searchBtnRN">
+               <ui:contents>
+                  <oa:submitButton id="SubmitBtn" text="Search" prompt="Search"/>
+                  <oa:spacer id="Spacer1"/>
+                  <oa:submitButton id="ClearBtn" text="Clear" prompt="Clear"/>
+               </ui:contents>
+            </oa:rowLayout>
+            <oa:advancedTable id="ResultsRN" viewName="XXCSMPSStalePrinterRptVO1">
+               <ui:contents>
+                  <oa:column id="CustomerNameCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableCustomerName" sortByViewAttr="CustomerName" prompt="CustomerName" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="CustomerName" viewAttr="CustomerName"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ManufacturerCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableManufacturer" sortByViewAttr="Manufacturer" prompt="Manufacturer" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="Manufacturer" viewAttr="Manufacturer"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ModelCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableModel" sortByViewAttr="Model" prompt="Model" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="Model" viewAttr="Model"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="SerialNoCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableSerialNo" prompt="SerialNo" sortByViewAttr="SerialNo" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="SerialNo" viewAttr="SerialNo"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="IpAddressCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableIpAddress" sortByViewAttr="IpAddress" prompt="IpAddress" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="IpAddress" viewAttr="IpAddress"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="DeviceNameCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableDeviceName" sortByViewAttr="DeviceName" prompt="DeviceName" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="DeviceName" viewAttr="DeviceName"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="LastActiveCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableLastActive" sortByViewAttr="LastActive" prompt="LastActive" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="LastActive" viewAttr="LastActive"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="SrNumberCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableSrNumber" sortByViewAttr="SrNumber" prompt="SrNumber" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="SrNumber" viewAttr="SrNumber"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ManagedStatusCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ManagedStatusHdr" prompt="Managed Status"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ManagedStatus" viewAttr="ManagedStatus"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ActiveStatusCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ActiveStatusHdr" prompt="Active Status"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ActiveStatus" viewAttr="ActiveStatus"/>
+                     </ui:contents>
+                  </oa:column>
+               </ui:contents>
+               <ui:tableActions>
+                  <oa:rowLayout id="exportRN">
+                     <ui:contents>
+                        <oa:exportButton id="ExportButton" exportAllRows="true" text="Export to CSV" viewName="XXCSMPSStalePrinterRptVO1"/>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:tableActions>
+            </oa:advancedTable>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

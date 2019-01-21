@@ -1,0 +1,95 @@
+-- $Id$
+-- $Rev$
+-- $HeadURL$
+-- $Author$
+-- $Date$
+
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XXSCS_POTENTIAL_REP_STG Table                                              |--                                                           --|                                                                                             |--
+--| Program Name   : CREATE_XXSCS_POTENTIAL_REP_STG.tbl                                         |--
+--|                                                                                             |--
+--| Purpose        : Table for Potentials fed by GDW, refreshed weekly                          |--
+--|                                                                                             |--
+--| Change History :                                                                            |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              15-Mar-2009       Sreekanth/Prasad        Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Table XXCRM.XXSCS_POTENTIAL_REP_STG......
+PROMPT
+
+CREATE TABLE XXCRM.XXSCS_POTENTIAL_REP_STG 
+(POTENTIAL_REP_ID             NUMBER,
+COMPARABLE_POTENTIAL_AMT     NUMBER,
+COMPARABLE_POTENTIAL_PCT     NUMBER,
+SALES_TRTRY_DESC             VARCHAR2(100),
+SALES_TRTRY_MANAGER_ID       NUMBER,
+SALES_TRTRY_EFCT_START_DT    DATE,
+SALES_TRTRY_EFCT_END_DT      DATE,
+ORG_ID                       NUMBER,
+COST_CENTER                  VARCHAR2(30),
+CHARGE_TO_COST_CENTER        VARCHAR2(15),
+CURRENCY_CODE                VARCHAR2(15),
+LANGUAGE                     VARCHAR2(30),
+SOURCE_LANG                  VARCHAR2(30),
+CREATED_BY                   NUMBER,
+CREATION_DATE                DATE,
+LAST_UPDATED_BY              NUMBER,
+LAST_UPDATE_DATE             DATE,
+LAST_UPDATE_LOGIN            NUMBER,
+REQUEST_ID                   NUMBER,
+PROGRAM_APPLICATION_ID       NUMBER,
+PROGRAM_ID                   NUMBER,
+PROGRAM_UPDATE_DATE          DATE,
+ATTRIBUTE_CATEGORY           VARCHAR2(30),
+ATTRIBUTE1                   VARCHAR2(2500),
+ATTRIBUTE2                   VARCHAR2(2500),
+ATTRIBUTE3                   VARCHAR2(2500),
+ATTRIBUTE4                   VARCHAR2(2500),
+ATTRIBUTE5                   VARCHAR2(2500),
+ATTRIBUTE6                   VARCHAR2(2500),
+ATTRIBUTE7                   VARCHAR2(2500),
+ATTRIBUTE8                   VARCHAR2(2500),
+ATTRIBUTE9                   VARCHAR2(2500),
+ATTRIBUTE10                  VARCHAR2(2500),
+ATTRIBUTE11                  VARCHAR2(2500),
+ATTRIBUTE12                  VARCHAR2(2500),
+ATTRIBUTE13                  VARCHAR2(2500),
+ATTRIBUTE14                  VARCHAR2(2500),
+ATTRIBUTE15                  VARCHAR2(2500),
+ATTRIBUTE16                  VARCHAR2(2500),
+ATTRIBUTE17                  VARCHAR2(2500),
+ATTRIBUTE18                  VARCHAR2(2500),
+ATTRIBUTE19                  VARCHAR2(2500),
+ATTRIBUTE20                  VARCHAR2(2500),
+SALES_TRTRY_ID               VARCHAR2(20));
+
+GRANT ALL ON XXCRM.XXSCS_POTENTIAL_REP_STG TO APPS;
+
+GRANT ALL ON XXCRM.XXSCS_POTENTIAL_REP_STG TO XXDATA_STAGE;
+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

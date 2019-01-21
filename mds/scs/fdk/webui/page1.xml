@@ -1,0 +1,40 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.12_1330" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="region1" amDefName="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSDshbdAM" controllerClass="od.oracle.apps.xxcrm.scs.fdk.webui.MyCO" title="Test" windowTitle="Test">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:formValue id="CustId"/>
+            <oa:messageComponentLayout id="region2">
+               <ui:contents>
+                  <oa:messageLovInput id="item1" unvalidated="true" selectiveSearchCriteria="true" queryable="true">
+                     <lovMappings>
+                        <lovMap id="lovMap1" lovItem="ContactFullName" resultTo="item1" criteriaFrom="item1" requiredForLOV="true"/>
+                        <lovMap id="lovMap2" lovItem="ContactId" resultTo="CustId" criteriaFrom="CustId"/>
+                     </lovMappings>
+                     <lovContents>
+                        <oa:listOfValues id="region3">
+                           <ui:contents>
+                              <oa:table name="region3" id="ODSCSContactsVO">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="ContactId" dataType="NUMBER" prompt="ContactId" viewName="ODSCSContactsVO" viewAttr="ContactId" maximumLength="15" queryable="true" selectiveSearchCriteria="false"/>
+                                    <oa:messageStyledText id="ContactFullName" dataType="VARCHAR2" prompt="ContactFullName" viewName="ODSCSContactsVO" viewAttr="ContactFullName" maximumLength="1080" queryable="true" selectiveSearchCriteria="false"/>
+                                    <oa:messageStyledText id="FirstName" dataType="VARCHAR2" prompt="FirstName" viewName="ODSCSContactsVO" viewAttr="FirstName" maximumLength="1080"/>
+                                    <oa:messageStyledText id="LastName" dataType="VARCHAR2" prompt="LastName" viewName="ODSCSContactsVO" viewAttr="LastName" maximumLength="1080"/>
+                                    <oa:messageStyledText id="Phone" dataType="VARCHAR2" prompt="Phone" viewName="ODSCSContactsVO" viewAttr="Phone" maximumLength="62"/>
+                                    <oa:messageStyledText id="EmailAddress" dataType="VARCHAR2" prompt="EmailAddress" viewName="ODSCSContactsVO" viewAttr="EmailAddress" maximumLength="2000"/>
+                                 </ui:contents>
+                              </oa:table>
+                           </ui:contents>
+                        </oa:listOfValues>
+                     </lovContents>
+                  </oa:messageLovInput>
+               </ui:contents>
+            </oa:messageComponentLayout>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

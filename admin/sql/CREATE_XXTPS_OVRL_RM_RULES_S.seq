@@ -1,0 +1,38 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XXTPS_OVRL_RM_RULES_S.seq                          |
+-- | Description      : Sequence for Custom Named RM Rules mapping         |
+-- |                    for Overlay.                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  25-Apr-2010 Kishore Jena       Initial Draft Version          |
+-- +=======================================================================+
+
+-- ------------------------------------------------------------
+-- Create Custom Sequence XXTPS_OVRL_RM_RULES_S              --
+-- ------------------------------------------------------------
+
+CREATE SEQUENCE XXTPS.XXTPS_OVRL_RM_RULES_S
+INCREMENT BY 1 
+START WITH 1 
+NOMAXVALUE
+NOCYCLE NOCACHE NOORDER;
+
+
+------------------------------------------------------
+-- Grants to APPS                                   --
+------------------------------------------------------
+
+GRANT ALL ON XXTPS.XXTPS_OVRL_RM_RULES_S TO APPS;
+
+
+SHOW ERRORS;

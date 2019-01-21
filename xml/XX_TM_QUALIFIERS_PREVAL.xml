@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XX_TM_QUALIFIERS" description="OD: TM Qualifiers Prevalidation" Version="1.0">
+<parameters/>
+<dataQuery>
+<sqlStatement name="Q_TM_PACKAGES">
+<![CDATA[
+SELECT 'PACKAGE SPECIFICATION' as TYPE, 'XX_JTF_CUSTOM_QUALIFIER_PKG.pks' as PACKAGE_NAME,
+                                         CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                       ELSE 'N'
+                                         END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_CUSTOM_QUALIFIER_PKG'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID' 
+UNION ALL
+SELECT 'PACKAGE BODY' as TYPE, 'XX_JTF_CUSTOM_QUALIFIER_PKG.pkb' as PACKAGE_NAME,
+                                         CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                       ELSE 'N'
+                                         END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_CUSTOM_QUALIFIER_PKG'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID'
+UNION ALL
+SELECT 'PACKAGE SPECIFICATION' as TYPE, 'XX_JTF_UPDATE_CUST_ACCT_PKG.pks' as PACKAGE_NAME,
+                                         CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                       ELSE 'N'
+                                         END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_UPDATE_CUST_ACCT_PKG'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID' 
+UNION ALL
+SELECT 'PACKAGE BODY' as TYPE, 'XX_JTF_UPDATE_CUST_ACCT_PKG.pkb' as PACKAGE_NAME,
+                                         CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                       ELSE 'N'
+                                         END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_UPDATE_CUST_ACCT_PKG'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID'
+UNION ALL
+SELECT 'PACKAGE SPECIFICATION' as TYPE, 'XXCRM_JTF_UPD_CUST_ACCOUNT_PKG.pks' as PACKAGE_NAME,
+                                         CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                       ELSE 'N'
+                                         END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XXCRM_JTF_UPD_CUST_ACCOUNT_PKG'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID' 
+UNION ALL
+SELECT 'PACKAGE BODY' as TYPE, 'XXCRM_JTF_UPD_CUST_ACCOUNT_PKG.pkb' as PACKAGE_NAME,
+                                         CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                       ELSE 'N'
+                                         END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XXCRM_JTF_UPD_CUST_ACCOUNT_PKG'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_TM_PROFILES">
+<![CDATA[
+SELECT 'OD: TM Max Party Id' as PROFILE_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                         ELSE 'N'
+                                           END as DOES_EXIST
+FROM  fnd_profile_options_tl FPO
+WHERE FPO.profile_option_name = 'XXCRM_E401_MAX_PARTY_ID'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_TM_CONC_PROGS">
+<![CDATA[
+SELECT 'OD: TM Custom Transaction Qualifiers' as CONC_PROG,
+                           CASE COUNT(1) WHEN 1 THEN 'Y'
+                                         ELSE 'N'
+                           END as DOES_EXIST
+FROM  fnd_concurrent_programs_vl FCPV
+WHERE FCPV.concurrent_program_name = 'XXJTFCUSTQUAL'
+AND   FCPV.enabled_flag            = 'Y'
+UNION ALL
+SELECT 'OD: TM Update Customer/Prospect Flag Master' as CONC_PROG,
+                           CASE COUNT(1) WHEN 1 THEN 'Y'
+                                         ELSE 'N'
+                           END as DOES_EXIST
+FROM  fnd_concurrent_programs_vl FCPV
+WHERE FCPV.concurrent_program_name = 'XXCRMUPDCUSTPROSMST'
+AND   FCPV.enabled_flag            = 'Y'
+UNION ALL
+SELECT 'OD: TM Update Customer/Prospect Flag' as CONC_PROG,
+                           CASE COUNT(1) WHEN 1 THEN 'Y'
+                                         ELSE 'N'
+                           END as DOES_EXIST
+FROM  fnd_concurrent_programs_vl FCPV
+WHERE FCPV.concurrent_program_name = 'XXCRMUPDCUSTPROSPECT'
+AND   FCPV.enabled_flag            = 'Y'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_TM_BUSINESS_SUBSCRIPTIONS">
+<![CDATA[
+SELECT 
+'XX_JTF_UPDATE_CUST_ACCT_PKG.Update_Party_Status' as PACKAGE_NAME,'oracle.apps.ar.hz.CustAccount.create' as BUSINESS_EVENT,
+                 CASE COUNT(1) WHEN 1 THEN 'Y'
+                               ELSE 'N' END as SUBSCRIPTION_STATUS
+FROM   wf_events_vl           WEV
+      ,wf_event_subscriptions WES
+WHERE WEV.guid          = WES.event_filter_guid
+AND   WEV.name          = 'oracle.apps.ar.hz.CustAccount.create' 
+AND   WEV.type          = 'EVENT'
+AND   WEV.status        = 'ENABLED'
+AND   WES.rule_function = 'XX_JTF_UPDATE_CUST_ACCT_PKG.Update_Party_Status'
+UNION ALL
+SELECT 
+'XX_JTF_UPDATE_CUST_ACCT_PKG.Update_Party_Status' as PACKAGE_NAME,'oracle.apps.ar.hz.CustAccount.update' as BUSINESS_EVENT,
+                 CASE COUNT(1) WHEN 1 THEN 'Y'
+                               ELSE 'N' END as SUBSCRIPTION_STATUS
+FROM   wf_events_vl           WEV
+      ,wf_event_subscriptions WES
+WHERE WEV.guid          = WES.event_filter_guid
+AND   WEV.name          = 'oracle.apps.ar.hz.CustAccount.update' 
+AND   WEV.type          = 'EVENT'
+AND   WEV.status        = 'ENABLED'
+AND   WES.rule_function = 'XX_JTF_UPDATE_CUST_ACCT_PKG.Update_Party_Status'
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_TM_PACKAGES" source="Q_TM_PACKAGES">
+<element name="TYPE" value="TYPE" />
+<element name="PACKAGE_NAME" value="PACKAGE_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_TM_PROFILES" source="Q_TM_PROFILES">
+<element name="PROFILE_NAME" value="PROFILE_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_TM_CONC_PROGS" source="Q_TM_CONC_PROGS">
+<element name="CONC_PROG" value="CONC_PROG" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_TM_BUSINESS_SUBSCRIPTIONS" source="Q_TM_BUSINESS_SUBSCRIPTIONS">
+<element name="PACKAGE_NAME" value="PACKAGE_NAME" />
+<element name="BUSINESS_EVENT" value="BUSINESS_EVENT" />
+<element name="SUBSCRIPTION_STATUS" value="SUBSCRIPTION_STATUS" />
+</group>
+</dataStructure>
+</dataTemplate>
+

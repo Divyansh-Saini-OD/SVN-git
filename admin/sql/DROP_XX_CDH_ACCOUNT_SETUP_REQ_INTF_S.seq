@@ -1,0 +1,33 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                        WIPRO Technologies                         |
+-- +===================================================================+
+-- | Name             : DROP_XX_CDH_ACCOUNT_SETUP_REQ_INTF_S.seq       |
+-- | Rice ID          : E0806_SalesCustomerAccountCreation             |
+-- | Description      : This script drop the sequence to generate      |
+-- |                    Batch ID.                                      |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |DRAFT 1   03-JAN-2008 Rizwan A         Initial Version             |
+-- |                                                                   |
+-- |                                                                   |
+-- +===================================================================+
+
+------------------------------------------------------
+-- Dropping the existing sequence.                  --
+------------------------------------------------------
+
+DROP SEQUENCE  XXCRM.XX_CDH_ACCT_SETUP_REQ_INTF_S;
+
+SHOW ERROR

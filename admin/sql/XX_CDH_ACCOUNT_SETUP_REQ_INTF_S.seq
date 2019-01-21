@@ -1,0 +1,38 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                        WIPRO Technologies                         |
+-- +===================================================================+
+-- | Name             : XX_CDH_ACCOUNT_SETUP_REQ_INTF_S.seq            |
+-- | Rice ID          : E0806_SalesCustomerAccountCreation             |
+-- | Description      : This script creates a sequence to generate     |
+-- |                    Batch ID.                                      |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |DRAFT 1   04-OCT-2007 Rizwan A         Initial Version             |
+-- |                                                                   |
+-- |                                                                   |
+-- +===================================================================+
+
+------------------------------------------------------
+-- Creating Sequence XX_CDH_ACCT_SETUP_REQ_INTF_S   --
+------------------------------------------------------
+
+CREATE SEQUENCE XXCRM.XX_CDH_ACCT_SETUP_REQ_INTF_S
+INCREMENT BY 1 
+START WITH 1 
+NOMAXVALUE
+NOCYCLE NOCACHE NOORDER
+/
+
+SHOW ERROR

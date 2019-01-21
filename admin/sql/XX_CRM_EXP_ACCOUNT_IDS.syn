@@ -1,0 +1,27 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - sfdc                                     |
+-- +=======================================================================+
+-- | Name             : XX_CRM_EXP_ACCOUNT_IDS.syn                         |
+-- | Description      : Synonym for XX_CRM_EXP_ACCOUNT_IDS                 |
+-- |                                                                       |
+-- |                    Note:This script will be executed from             |
+-- |                    APPS schema                                        |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      26-Aug-2011 Indra Varada       Initial version                |
+-- +=======================================================================+
+
+---------------------------------------------------------
+-- Creating synonym APPS.XX_CRM_EXP_ACCOUNT_IDS --
+---------------------------------------------------------
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_EXP_ACCOUNT_IDS FOR XXCRM.XX_CRM_EXP_ACCOUNT_IDS;
+
+SHOW ERRORS;

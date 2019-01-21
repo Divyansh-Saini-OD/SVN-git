@@ -1,0 +1,39 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :XX_CDH_GP_REL_S.seq 	                           |
+-- | Description      :Generate GP Rel sequence                            |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft  30-Jun-2011   Indra Varada       Initial Draft Version          |
+-- +=======================================================================+
+
+-- -----------------------------------------------
+-- Create Custom Sequence XX_CDH_CUST_DOC_ID_S.seq    --
+-- -----------------------------------------------
+
+CREATE SEQUENCE XXCRM.XX_CDH_GP_REL_S 
+INCREMENT BY 1 
+START WITH 100 
+NOMAXVALUE
+NOCYCLE NOCACHE NOORDER;
+
+
+------------------------------------------------------
+-- Grants to APPS                                   --
+------------------------------------------------------
+
+GRANT ALL ON XXCRM.XX_CDH_GP_REL_S TO APPS;
+
+
+SHOW ERRORS;
+EXIT;

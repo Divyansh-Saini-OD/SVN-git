@@ -1,0 +1,40 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |      Oracle NAIO/Office Depot/Consulting Organization                 |
+-- +=======================================================================+
+-- | Name             :XX_JTF_TERRITORIES_INT_N2.idx                       |
+-- | Description      :Unique Index for Custom Table                       |
+---|                   XX_JTF_TERRITORIES_INT                              |
+-- |                   as part of I0405_Territories                        |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author              Remarks                     |
+-- |-------  ----------- -----------------    -----------------------------|
+-- | 1.0     20-JUL-2007  Sathya Prabha Rani   Initial Draft Version       |
+-- +=======================================================================+
+
+
+REM============================================================================================
+REM        Creating Index XX_JTF_TERRITORIES_INT_N2
+REM============================================================================================
+
+
+CREATE INDEX XXCRM.XX_JTF_TERRITORIES_INT_N2
+ON XXCRM.XX_JTF_TERRITORIES_INT(COUNTRY_CODE, TERRITORY_CLASSIFICATION, SALES_REP_TYPE, NVL(VERTICAL_MARKET_CODE,'0'));
+
+
+EXIT;
+
+REM============================================================================================
+REM                                 End Of Script
+REM============================================================================================

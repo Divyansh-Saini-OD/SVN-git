@@ -1,0 +1,29 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :CREATE_XXOD_HZ_SUMMARY.tbl                          |
+-- | Description      :XXOD HZ Summary table                               |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |1.0       02-Feb-2009  Sreedhar Mohan     Initial draft                |
+-- +=======================================================================+
+
+------------------------------------------------------
+-- Dropping the existing synonym and creating new.  --
+------------------------------------------------------
+
+CREATE OR REPLACE SYNONYM APPS.XXOD_HZ_SUMMARY FOR XXCRM.XXOD_HZ_SUMMARY;
+
+SHOW ERRORS;
+EXIT;

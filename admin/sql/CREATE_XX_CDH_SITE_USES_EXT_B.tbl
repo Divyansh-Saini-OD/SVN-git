@@ -1,0 +1,92 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_CDH_SITE_USES_EXT_B.tbl                   |
+-- | Description      :Account Extension base table                        |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |DRAFT 1A  09-May-2007  Sathya Prabha Rani   Initial draft version      |
+-- |1.1      24-Oct-2007 Rajeev Kamath      Removed drop                   |
+-- +=======================================================================+
+-- ---------------------------------------------------------------------
+--      Create Custom Table XX_CDH_SITE_USES_EXT_B    --
+-- ---------------------------------------------------------------------
+CREATE TABLE XXCRM.XX_CDH_SITE_USES_EXT_B
+			( EXTENSION_ID             NUMBER(15)           NOT NULL,
+			  SITE_USE_ID		   NUMBER(15)           NOT NULL,
+			  ATTR_GROUP_ID            NUMBER(15)           NOT NULL,
+			  CREATED_BY               NUMBER(15)           NOT NULL,
+			  CREATION_DATE            DATE                 NOT NULL,
+			  LAST_UPDATED_BY          NUMBER(15)           NOT NULL,
+			  LAST_UPDATE_DATE         DATE                 NOT NULL,
+			  LAST_UPDATE_LOGIN        NUMBER(15),
+			  C_EXT_ATTR1              VARCHAR2(150 BYTE),
+			  C_EXT_ATTR2              VARCHAR2(150 BYTE),
+			  C_EXT_ATTR3              VARCHAR2(150 BYTE),
+			  C_EXT_ATTR4              VARCHAR2(150 BYTE),
+			  C_EXT_ATTR5              VARCHAR2(150 BYTE),
+			  C_EXT_ATTR6              VARCHAR2(150 BYTE),
+			  C_EXT_ATTR7              VARCHAR2(150 BYTE),
+			  C_EXT_ATTR8              VARCHAR2(150 BYTE),
+			  C_EXT_ATTR9              VARCHAR2(150 BYTE),
+			  C_EXT_ATTR10             VARCHAR2(150 BYTE),
+			  C_EXT_ATTR11             VARCHAR2(150 BYTE),
+			  C_EXT_ATTR12             VARCHAR2(150 BYTE),
+			  C_EXT_ATTR13             VARCHAR2(150 BYTE),
+			  C_EXT_ATTR14             VARCHAR2(150 BYTE),
+			  C_EXT_ATTR15             VARCHAR2(150 BYTE),
+			  C_EXT_ATTR16             VARCHAR2(150 BYTE),
+			  C_EXT_ATTR17             VARCHAR2(150 BYTE),
+			  C_EXT_ATTR18             VARCHAR2(150 BYTE),
+			  C_EXT_ATTR19             VARCHAR2(150 BYTE),
+			  C_EXT_ATTR20             VARCHAR2(150 BYTE),
+			  N_EXT_ATTR1              NUMBER(22,5),
+			  N_EXT_ATTR2              NUMBER(22,5),
+			  N_EXT_ATTR3              NUMBER(22,5),
+			  N_EXT_ATTR4              NUMBER(22,5),
+			  N_EXT_ATTR5              NUMBER(22,5),
+			  N_EXT_ATTR6              NUMBER(22,5),
+			  N_EXT_ATTR7              NUMBER(22,5),
+			  N_EXT_ATTR8              NUMBER(22,5),
+			  N_EXT_ATTR9              NUMBER(22,5),
+			  N_EXT_ATTR10             NUMBER(22,5),
+			  N_EXT_ATTR11             NUMBER(22,5),
+			  N_EXT_ATTR12             NUMBER(22,5),
+			  N_EXT_ATTR13             NUMBER(22,5),
+			  N_EXT_ATTR14             NUMBER(22,5),
+			  N_EXT_ATTR15             NUMBER(22,5),
+			  N_EXT_ATTR16             NUMBER(22,5),
+			  N_EXT_ATTR17             NUMBER(22,5),
+			  N_EXT_ATTR18             NUMBER(22,5),
+			  N_EXT_ATTR19             NUMBER(22,5),
+			  N_EXT_ATTR20             NUMBER(22,5),
+			  D_EXT_ATTR1              DATE,
+			  D_EXT_ATTR2              DATE,
+			  D_EXT_ATTR3              DATE,
+			  D_EXT_ATTR4              DATE,
+			  D_EXT_ATTR5              DATE,
+			  D_EXT_ATTR6              DATE,
+			  D_EXT_ATTR7              DATE,
+			  D_EXT_ATTR8              DATE,
+			  D_EXT_ATTR9              DATE,
+			  D_EXT_ATTR10             DATE
+			);
+
+------------------------------------------------------
+-- Adding Grants to APPS.                           --
+------------------------------------------------------
+GRANT ALL ON XXCRM.XX_CDH_SITE_USES_EXT_B TO APPS;
+
+SHOW ERRORS;

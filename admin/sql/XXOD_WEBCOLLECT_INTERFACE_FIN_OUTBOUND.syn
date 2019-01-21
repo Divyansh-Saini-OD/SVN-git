@@ -1,0 +1,50 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify						|
+-- +============================================================================================+
+-- | Name        : XXOD_WEBCOLLECT_INTERFACE_FIN_OUTBOUND.syn                                                |
+-- | Description : Webcollect Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        06/07/12       Devendra Petkar        Initial version                            |
+-- +============================================================================================+
+
+
+--         SELECT   'INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,SOURCE_VALUE4,SOURCE_VALUE5,SOURCE_VALUE6,SOURCE_VALUE7,TARGET_VALUE1,TARGET_VALUE2,TARGET_VALUE3,TARGET_VALUE4,TARGET_VALUE5,TARGET_VALUE6,TARGET_VALUE7,TARGET_VALUE8,TARGET_VALUE9,TARGET_VALUE10,TARGET_VALUE11,TARGET_VALUE12,TARGET_VALUE13,TARGET_VALUE14,TARGET_VALUE15,TARGET_VALUE16,TARGET_VALUE17,TARGET_VALUE18,TARGET_VALUE19, TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('''||Source_value1||''','''||Source_value2||''','''||Source_value3||''','''||Source_value4||''','''||Source_value5||''','''||Source_value6||''','''||Source_value7||''','''||target_value1||''','''||target_value2||''','''||target_value3||''','''||target_value4||''','''||target_value5||''','''||target_value6||''','''||target_value7||''','''||target_value8||''','''||target_value9||''','''||target_value10||''','''||target_value11||''','''||target_value12||''','''||target_value13||''','''||target_value14||''','''||target_value15||''','''||target_value16||''','''||target_value17||''','''||target_value18||''','''||target_value19||''',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = ''XXOD_WEBCOLLECT_INTERFACE''), sysdate,-1,sysdate,-1,0,''01-JAN-05'',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,''Y'')'
+--             FROM apps.xx_fin_translatedefinition b,
+--                  apps.xx_fin_translatevalues c
+--            WHERE b.translate_id = c.translate_id
+--              AND b.translation_name = 'XXOD_WEBCOLLECT_INTERFACE';
+
+---------------------------------------------------------
+-- Deleting  				               --
+---------------------------------------------------------
+
+
+DELETE FROM XX_FIN_TRANSLATEVALUES WHERE TRANSLATE_ID IN
+(SELECT TRANSLATE_ID FROM apps.XX_FIN_TRANSLATEDEFINITION  WHERE TRANSLATION_NAME = 'XXOD_WEBCOLLECT_INTERFACE' ) AND SOURCE_VALUE1='XX_CRM_OUTBOUND_NOTIFY';
+
+COMMIT;
+
+
+---------------------------------------------------------
+-- Inserting  				               --
+---------------------------------------------------------
+
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,SOURCE_VALUE4,SOURCE_VALUE5,SOURCE_VALUE6,SOURCE_VALUE7,TARGET_VALUE1,TARGET_VALUE2,TARGET_VALUE3,TARGET_VALUE4,TARGET_VALUE5,TARGET_VALUE6,TARGET_VALUE7,TARGET_VALUE8,TARGET_VALUE9,TARGET_VALUE10,TARGET_VALUE11,TARGET_VALUE12,TARGET_VALUE13,TARGET_VALUE14,TARGET_VALUE15,TARGET_VALUE16,TARGET_VALUE17,TARGET_VALUE18,TARGET_VALUE19, TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('XX_CRM_OUTBOUND_NOTIFY','','','','','','','USCHMSX28.na.odcorp.net','no-reply@officedepot.com','WEBCOLLECT_CONVERSION@officedepot.com','25','sreedhar.mohan@officedepot.com; devendra.petkar@officedepot.com; rick.aldridge@officedepot.com; jaya.karanam@@officedepot.com; jay.gupta@officedepot.com','Webcollect Conversion is Completed in UATGB','','','','','','','','','','','','','',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XXOD_WEBCOLLECT_INTERFACE'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+
+
+SHOW ERRORS;
+
+EXIT;
+

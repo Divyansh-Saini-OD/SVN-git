@@ -1,0 +1,51 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : XX_CN_REV_CLASS_U2.idx                              |
+-- | Rice ID     : E1004A_CustomCollections_(TableDesign)              |
+-- | Description : XX_CN_REV_CLASS Table - Unique Index Creation Script|
+-- |                                                                   |
+-- |               Columns :                                           |
+-- |                         Item_Number                               |
+-- |                         Department                                |
+-- |                         Class                                     |
+-- |                         Order_Source                              |
+-- |                         Collection_Source                         |
+-- |                         Private_Brand_Flag                        |
+-- |                         Division                                  |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1a 03-Oct-2007  Vidhya Valantina Initial draft version       |
+-- |1.0      04-Oct-2007  Vidhya Valantina Baselined after testing     |
+-- |                                                                   |
+-- +===================================================================+
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+PROMPT
+PROMPT Creating Unique INDEX XX_CN_REV_CLASS_U2
+PROMPT
+
+CREATE UNIQUE INDEX xx_cn_rev_class_u2 ON xx_cn_rev_class( item_number
+                                                          ,department
+                                                          ,class
+                                                          ,order_source
+                                                          ,collection_source
+                                                          ,private_brand_flag
+                                                          ,division );
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

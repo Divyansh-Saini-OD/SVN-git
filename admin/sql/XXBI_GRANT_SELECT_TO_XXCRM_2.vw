@@ -1,0 +1,10 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+grant select on apps.XXBI_OPP_FRCST_AMT_RANG_DIM_V to xxcrm;
+grant select on apps.XXBI_OPP_CLOSE_DATE_RANG_DIM_V to xxcrm;
+grant select on apps.XXBI_OPP_SRM_RANG_DIM_V to xxcrm;
+
+SHOW ERRORS;
+EXIT;

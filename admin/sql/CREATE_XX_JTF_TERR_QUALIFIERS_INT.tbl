@@ -1,0 +1,68 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_JTF_TERR_QUALIFIERS_INT.tbl               |
+-- | Description      :Custom Qualifiers table for I0405_Territories       |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author               Remarks                      |
+-- |-------  ----------- -----------------   ------------------------------|
+-- |1.0      10-OCT-2007 Sathya Prabha Rani    Initial Draft Version       |
+-- |1.1      16-OCT-2007 Ankur Tandon          Removed UNIQUE clause       |
+-- |                                           on column RECORD_ID and the |
+-- |                                           REFERENCE clause            |
+-- |1.2      05-NOV-2007 Sathya Prabha Rani    Added a new column          |
+-- |                                           interface_status.           |
+-- +=======================================================================+
+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_JTF_TERR_QUALIFIERS_INT......
+PROMPT
+
+
+CREATE TABLE XXCRM.XX_JTF_TERR_QUALIFIERS_INT
+        (    RECORD_ID                              NUMBER         
+            ,TERRITORY_RECORD_ID                    NUMBER         
+            ,QUALIFIER_NAME                         VARCHAR2(50)
+	    ,COMPARISON_OPERATOR                    VARCHAR2(30)
+            ,LOW_VALUE_CHAR                         VARCHAR2(60)
+            ,HIGH_VALUE_CHAR                        VARCHAR2(60)
+	    ,LOW_VALUE_NUMBER                       VARCHAR2(60)            
+	    ,HIGH_VALUE_NUMBER                      VARCHAR2(60)
+	    ,INTERFACE_STATUS                       VARCHAR2(30)
+        );
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

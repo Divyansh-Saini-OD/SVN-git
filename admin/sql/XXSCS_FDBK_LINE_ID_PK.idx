@@ -1,0 +1,34 @@
+-- $Id$
+-- $Rev$
+-- $HeadURL$
+-- $Author$
+-- $Date$
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :XXSCS_FDBK_LINE_ID_PK.idx                           |
+-- | Description      :Unique Index for feedback Line Table.               |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author              Remarks                     |
+-- |-------  ----------- -----------------    -----------------------------|
+-- | 1.0     25-MAR-2009  Kalyan        Initial Draft Version              |
+-- +=======================================================================+
+
+
+REM==============================================================================
+REM        Creating Index FDBK_LINE_ID_PK
+REM==============================================================================
+
+ALTER TABLE XXCRM.XXSCS_FDBK_LINE_DTL ADD CONSTRAINT FDBK_LINE_ID_PK PRIMARY KEY(FDBK_LINE_ID);
+
+EXIT;
+

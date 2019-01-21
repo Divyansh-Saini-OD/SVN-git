@@ -1,0 +1,37 @@
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify                                           |
+-- +============================================================================================+
+-- | Name        : xx_crm_exp_store.tbl                                                          |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        26-Aug-2011     Prasad         Initial version                             |
+-- +============================================================================================+
+
+CREATE TABLE XXCRM.xx_crm_exp_store 
+   (BATCH_ID          NUMBER, 
+    RECORD_ID         NUMBER,
+    store_id	    VARCHAR2(255),
+    name     	    VARCHAR2(255),
+    store_num         NUMBER,
+    store_code       VARCHAR2(255),
+    Address          VARCHAR2(255),
+    city             VARCHAR2(255),
+    state            VARCHAR2(255),
+    county           VARCHAR2(255),
+    postal_code      VARCHAR2(255),
+    CREATION_DATE     DATE,
+    CREATED_BY        NUMBER,
+    LAST_UPDATE_DATE  DATE,
+    LAST_UPDATED_BY   NUMBER,
+    LAST_UPDATE_LOGIN NUMBER
+   )
+TABLESPACE APPS_TS_TX_DATA;
+
+GRANT ALL ON XXCRM.xx_crm_exp_store TO APPS;
+  
+SHOW ERRORS;

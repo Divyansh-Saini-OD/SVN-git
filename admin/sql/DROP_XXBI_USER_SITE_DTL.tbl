@@ -1,0 +1,44 @@
+-- $Id: DROP_XXBI_USER_SITE_DTL.tbl 69444 2009-04-09 14:44:38Z Indra Varada $
+-- $Rev: 69444 $
+-- $HeadURL: https://svn.na.odcorp.net/od/crm/trunk/xxcrm/admin/sql/DROP_XXBI_USER_SITE_DTL.tbl $
+-- $Author: Kishore Jena $
+-- $Date: 2010-04-15 10:44:38 -0400 (Thu, 09 Apr 2009) $
+
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : DROP_XXBI_USER_SITE_DTL_TBL Table                                          |--                                                                                          |--
+--| Program Name   : CREATE_XXBI_USER_SITE_DTL.tbl                                              |--
+--|                                                                                             |--
+--| Purpose        : Table for Party Site Fact, refreshe  on demand as needed                   |--
+--|                                                                                             |--
+--| Change History :                                                                            |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              05-Apr-2010       Kishore Jena            Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+
+DROP TABLE XXCRM.XXBI_USER_SITE_DTL;
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+--EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

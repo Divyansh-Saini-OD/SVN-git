@@ -1,0 +1,80 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1550" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout xmlns:ui="http://xmlns.oracle.com/uix/ui" xmlns:oa="http://xmlns.oracle.com/oa" version="9.0.3.8.13_1550" xml:lang="en-US" file-version="$Header: CtctMultiLOVPageLayoutRN.xml 115.8 2004/08/04 22:56:24 mkatraga ship $" xmlns:jrad="http://xmlns.oracle.com/jrad" title="Add Site Contact" scope="/" helpTarget="ASN_CtctMultiLOVPageLayoutRN" id="AddSiteCtctPageLayout" amDefName="od.oracle.apps.xxcrm.asn.common.customer.server.ODAddSiteCtctAM" controllerClass="od.oracle.apps.xxcrm.asn.common.customer.webui.ODAddSiteCtctCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:pageButtonBar id="ASNPageButtonRN">
+               <ui:contents>
+                  <oa:submitButton id="ASNCreateCtctBtn" text="Create Contact" prompt="Create Contact"/>
+                  <oa:submitButton id="ASNPageCnclBtn" text="Cancel" use="/oracle/apps/fnd/attributesets/Buttons/Cancel"/>
+                  <oa:submitButton id="ASNPageSelBtn" text="Select" prompt="Select"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+            <oa:stackLayout id="ContactStackRN">
+               <ui:contents>
+                  <oa:tableLayout id="TableLayout" width="100%">
+                     <ui:contents>
+                        <oa:rowLayout id="TableRow">
+                           <ui:contents>
+                              <oa:cellFormat id="TableCell" vAlign="TOP">
+                                 <ui:contents>
+                                    <oa:table id="ODContactListVOTBL" unvalidated="false" width="100%" shortDesc="Contact List of Values Table">
+                                       <ui:contents>
+                                          <oa:link id="Contact_Name_link" warnAboutChanges="true">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="ContactName" dataType="VARCHAR2" prompt="Contact" text="Contact" viewName="ODHzPartySiteContactsVO" viewAttr="ContactName" maximumLength="360" sortState="ascending"/>
+                                             </ui:contents>
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="ContactNameLinkEvt" unvalidated="true">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="HzPuiContactLOVEvent" value="PERSONDETAIL"/>
+                                                      <ui:parameter key="RelPartyId" value="${oa.encrypt.ODHzPartySiteContactsVO.RelPartyId}"/>
+                                                      <ui:parameter key="PartyName" value="${oa.encrypt.ODHzPartySiteContactsVO.PartyName}"/>
+                                                      <ui:parameter key="PartyId" value="${oa.encrypt.ODHzPartySiteContactsVO.PartyId}"/>
+                                                      <ui:parameter key="RelationshipId" value="${oa.encrypt.ODHzPartySiteContactsVO.RelationshipId}"/>
+                                                      <ui:parameter key="ContactNameEvent" value="CONTACTDETAIL"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:link>
+                                          <oa:messageStyledText id="JobTitle" dataType="VARCHAR2" prompt="Job Title" text="Job Title" viewName="ODHzPartySiteContactsVO" viewAttr="JobTitle" maximumLength="100" sortState="yes"/>
+                                          <oa:messageStyledText id="Address" dataType="VARCHAR2" prompt="Address" text="Address" viewName="ODHzPartySiteContactsVO" viewAttr="PrimaryAddress" maximumLength="4000" rendered="false"/>
+                                          <oa:messageStyledText id="Country" dataType="VARCHAR2" prompt="Country" text="Country" viewName="ODHzPartySiteContactsVO" viewAttr="Country" maximumLength="80" sortState="yes" rendered="false"/>
+                                          <oa:messageStyledText id="PrimaryPhone" dataType="VARCHAR2" prompt="Phone" text="Phone" viewName="ODHzPartySiteContactsVO" viewAttr="Phone" maximumLength="4000"/>
+                                          <oa:switcher viewName="ODHzPartySiteContactsVO" viewAttr="ContactRestriction" id="RestrictionSwitcher" prompt="Restrictions" sortState="yes" sortByViewAttr="ContactRestriction" rendered="false">
+                                             <ui:case name="HasRestriction">
+                                                <oa:image source="warningind_active.gif" shortDesc="Restriction Exist" id="HasRestriction" adminCustomizable="true"/>
+                                             </ui:case>
+                                             <ui:case name="NoRestriction">
+                                                <oa:image shortDesc="No Restriction" id="NoRestriction" adminCustomizable="true"/>
+                                             </ui:case>
+                                          </oa:switcher>
+                                          <oa:messageStyledText id="Email" dataType="VARCHAR2" prompt="Email" text="Email" viewName="ODHzPartySiteContactsVO" viewAttr="Email" maximumLength="2000" sortState="yes" destination="mailto:{#Email}"/>
+                                          <oa:messageStyledText id="PrimaryUrl" dataType="VARCHAR2" prompt="Url" text="Url" viewName="ODHzPartySiteContactsVO" viewAttr="City" maximumLength="2000" rendered="false"/>
+                                          <oa:messageStyledText id="KnownAs" dataType="VARCHAR2" prompt="Alias" text="Alias" viewName="ODHzPartySiteContactsVO" viewAttr="KnownAs" maximumLength="240" rendered="true"/>
+                                          <oa:messageStyledText id="Department" prompt="Department" viewName="ODHzPartySiteContactsVO" viewAttr="Department"/>
+                                       </ui:contents>
+                                       <ui:tableSelection>
+                                          <oa:multipleSelection id="HzPuiMultiSelect" viewName="ODHzPartySiteContactsVO" viewAttr="SelectFlag"/>
+                                       </ui:tableSelection>
+                                    </oa:table>
+                                 </ui:contents>
+                              </oa:cellFormat>
+                           </ui:contents>
+                        </oa:rowLayout>
+                     </ui:contents>
+                  </oa:tableLayout>
+               </ui:contents>
+            </oa:stackLayout>
+            <oa:stackLayout id="ASNReqCtxtRN" extends="/oracle/apps/asn/common/fwk/webui/ASNReqCtxtRN"/>
+         </ui:contents>
+         <ui:productBranding>
+            <oa:image id="ASNBrandImage" source="ASNBRAND.gif" shortDesc="Sales"/>
+         </ui:productBranding>
+      </oa:pageLayout>
+   </content>
+</page>

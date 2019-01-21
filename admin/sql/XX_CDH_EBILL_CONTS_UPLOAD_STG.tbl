@@ -1,0 +1,88 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- +===================================================================+
+-- |                        Office Depot                               |
+-- |                                                                   |
+-- +===================================================================+
+-- | Table Name  :  XX_CDH_EBILL_CONTS_UPLOAD_STG.tbl                  |
+-- | Description :  Table to Hold all the OMX eBill contacts           |
+-- |                information                                        |
+-- | Rice Id     :                                                     |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author             Remarks                  |
+-- |=======   ===========  =================  =========================|
+-- |1.0       15-JUN-2015  Havish Kasina      Initial draft version    |
+-- +===================================================================+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET TERM OFF
+
+SET TERM ON
+
+PROMPT
+PROMPT Creating the Table XXCRM.XX_CDH_EBILL_CONTS_UPLOAD_STG 
+PROMPT
+
+CREATE TABLE XXCRM.XX_CDH_EBILL_CONTS_UPLOAD_STG
+			( BATCH_ID                    NUMBER            NOT NULL,
+              RECORD_ID                   NUMBER,
+			  AOPS_CUSTOMER_NUMBER	      VARCHAR2(40),
+              CONTACT_LAST_NAME           VARCHAR2(150),
+              CONTACT_FIRST_NAME          VARCHAR2(150),
+              EMAIL_ADDRESS               VARCHAR2(100),
+			  BILL_TO_CONSIGNEE           VARCHAR2(40),
+              STATUS                      VARCHAR2(20),
+              ERROR_MESSAGE		          VARCHAR2(4000),
+              CREATION_DATE               DATE              NOT NULL,
+			  CREATED_BY                  NUMBER            NOT NULL,			  
+			  LAST_UPDATED_BY             NUMBER            NOT NULL,
+			  LAST_UPDATE_DATE            DATE              NOT NULL,
+			  LAST_UPDATE_LOGIN           NUMBER            NOT NULL
+			)
+/
+
+PROMPT
+PROMPT Grant XX_CDH_EBILL_CONTS_UPLOAD_STG to ERP_SYSTEM_TABLE_SELECT_ROLE
+PROMPT    
+GRANT SELECT ON XXCRM.XX_CDH_EBILL_CONTS_UPLOAD_STG TO ERP_SYSTEM_TABLE_SELECT_ROLE
+/
+
+PROMPT
+PROMPT Grant XXCRM.XX_CDH_EBILL_CONTS_UPLOAD_STG to APPS
+PROMPT   
+GRANT ALL ON XXCRM.XX_CDH_EBILL_CONTS_UPLOAD_STG TO APPS
+/
+
+PROMPT
+PROMPT Creating Index XX_CDH_EBILL_CONTS_UPLOAD_N1
+PROMPT   
+
+CREATE INDEX XX_CDH_EBILL_CONTS_UPLOAD_N1 ON XXCRM.XX_CDH_EBILL_CONTS_UPLOAD_STG(BATCH_ID);
+
+PROMPT
+PROMPT Creating Index XX_CDH_EBILL_CONTS_UPLOAD_N2
+PROMPT   
+
+CREATE INDEX XX_CDH_EBILL_CONTS_UPLOAD_N2 ON XXCRM.XX_CDH_EBILL_CONTS_UPLOAD_STG(RECORD_ID);
+
+            
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

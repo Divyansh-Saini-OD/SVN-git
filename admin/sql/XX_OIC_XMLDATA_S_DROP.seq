@@ -1,0 +1,28 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :XX_OIC_XMLDATA_S.seq                      	   |
+-- | Description      :						   	   |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0	     01-Aug-07	 Nageswara rao	     Initial Draft Version	   |
+-- +=======================================================================+
+
+-- -----------------------------------------------
+-- Create Custom Sequence XX_OIC_XMLDATA_S    --
+-- -----------------------------------------------
+
+-- Drop Sequence XX_OIC_xmldata_s
+
+DROP SEQUENCE XXCRM.XX_OIC_xmldata_s
+/

@@ -1,0 +1,31 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :DROP_XX_CDH_CONTRACT_PROG_CODES.tbl                 |
+-- | Description      :Custom table for XX_CDH_CONTRACT_PROG_CODES         |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft    08-Apr-2010 Sreedhar Mohan     Initial Draft Version          |
+-- |                                                                       |
+-- |                                                                       |
+-- +=======================================================================+
+
+-- -------------------------------------------------------
+--      Drop Custom Table XX_CDH_CONTRACT_PROG_CODES      --
+-- -------------------------------------------------------
+
+DROP TABLE XXCRM.XX_CDH_CONTRACT_PROG_CODES;
+
+/
+SHOW ERRORS;
+
+EXIT;

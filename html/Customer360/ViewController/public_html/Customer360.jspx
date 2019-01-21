@@ -1,0 +1,973 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1"
+          xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:h="http://java.sun.com/jsf/html"
+          xmlns:af="http://xmlns.oracle.com/adf/faces/rich"
+          xmlns:dvt="http://xmlns.oracle.com/dss/adf/faces">
+  <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+  <f:view>
+    <af:document id="d1">
+      <af:messages id="m1"/>
+      <af:form id="f1">
+        <af:group id="g3">
+          <af:outputFormatted value="Customer 360" id="of1"
+                              styleUsage="inContextBranding"
+                              inlineStyle="font-size:30pt; font-weight:bold; color:Background; text-align:center; font-family:'Cooper Black';"/>
+          <af:outputFormatted value="All about the Customer" id="of2"
+                              inlineStyle="font-size:10pt; color:Gray; font-family:'Lucida Handwriting';"/>
+          <af:separator id="s1"
+                        inlineStyle="width:1485px;"/>
+          <af:toolbox id="t2"
+                      inlineStyle="width:1473px; height:22px;">
+            <af:toolbar id="t3"
+                        inlineStyle="background-color:#CCCCCC;">
+              <af:outputFormatted value="Customer Number" id="of3"
+                                  inlineStyle="font-weight:bolder;"/>
+              <af:inputText value="#{bindings.ACCOUNT_OSR.inputValue}"
+                            columns="#{bindings.ACCOUNT_OSR.hints.displayWidth}"
+                            maximumLength="#{bindings.ACCOUNT_OSR.hints.precision}"
+                            shortDesc="#{bindings.ACCOUNT_OSR.hints.tooltip}"
+                            id="it1"
+                            binding="#{pageFlowScope.ServiceBean.aoPS_CustID}"
+                            inlineStyle="font-weight:bolder; font-size:10.0pt;">
+                <f:validator binding="#{bindings.ACCOUNT_OSR.validator}"/>
+                <af:convertNumber groupingUsed="false"
+                                  pattern="#{bindings.ACCOUNT_OSR.format}"/>
+              </af:inputText>
+              <af:spacer width="20" height="10" id="s3"/>
+              <af:outputFormatted value="Loyalty Number" id="of4"
+                                  inlineStyle="font-weight:bolder;"/>
+              <af:inputText value="#{bindings.LOYALTY_ID.inputValue}"
+                            columns="#{bindings.LOYALTY_ID.hints.displayWidth}"
+                            maximumLength="#{bindings.LOYALTY_ID.hints.precision}"
+                            shortDesc="#{bindings.LOYALTY_ID.hints.tooltip}"
+                            id="it2" showRequired="false"
+                            binding="#{pageFlowScope.ServiceBean.loyalty_ID}"
+                            inlineStyle="font-weight:bolder;">
+                <f:validator binding="#{bindings.LOYALTY_ID.validator}"/>
+                <af:convertNumber groupingUsed="false"
+                                  pattern="#{bindings.LOYALTY_ID.format}"/>
+              </af:inputText>
+              <af:spacer width="10" height="10" id="s5"/>
+              <af:commandToolbarButton text="Search"
+                                       disabled="#{!bindings.process.enabled}"
+                                       id="ctb1"
+                                       action="#{pageFlowScope.ServiceBean.ServiceProcess}"
+                                       binding="#{pageFlowScope.ServiceBean.submitB}"/>
+            </af:toolbar>
+            <af:panelFormLayout id="pfl6" rendered="false">
+              <af:inputText value="#{bindings.AOPS_CustID1.inputValue}"
+                            label="#{bindings.AOPS_CustID1.hints.label}"
+                            required="#{bindings.AOPS_CustID1.hints.mandatory}"
+                            columns="#{bindings.AOPS_CustID1.hints.displayWidth}"
+                            maximumLength="#{bindings.AOPS_CustID1.hints.precision}"
+                            shortDesc="#{bindings.AOPS_CustID1.hints.tooltip}"
+                            id="it6"
+                            binding="#{pageFlowScope.ServiceBean.cases_custid}">
+                <f:validator binding="#{bindings.AOPS_CustID1.validator}"/>
+              </af:inputText>
+              <af:inputText value="#{bindings.LoyaltyID1.inputValue}"
+                            label="#{bindings.LoyaltyID1.hints.label}"
+                            required="#{bindings.LoyaltyID1.hints.mandatory}"
+                            columns="#{bindings.LoyaltyID1.hints.displayWidth}"
+                            maximumLength="#{bindings.LoyaltyID1.hints.precision}"
+                            shortDesc="#{bindings.LoyaltyID1.hints.tooltip}"
+                            id="it5">
+                <f:validator binding="#{bindings.LoyaltyID1.validator}"/>
+              </af:inputText>
+            </af:panelFormLayout>
+            <af:panelFormLayout id="pfl3" rendered="false">
+              <af:inputText value="#{bindings.AOPS_CustID.inputValue}"
+                            label="#{bindings.AOPS_CustID.hints.label}"
+                            columns="#{bindings.AOPS_CustID.hints.displayWidth}"
+                            maximumLength="#{bindings.AOPS_CustID.hints.precision}"
+                            shortDesc="#{bindings.AOPS_CustID.hints.tooltip}"
+                            id="it3"
+                            binding="#{pageFlowScope.ServiceBean.order_CustID}"
+                            rendered="true">
+                <f:validator binding="#{bindings.AOPS_CustID.validator}"/>
+              </af:inputText>
+              <af:inputText value="#{bindings.LoyaltyID.inputValue}"
+                            label="#{bindings.LoyaltyID.hints.label}"
+                            columns="#{bindings.LoyaltyID.hints.displayWidth}"
+                            maximumLength="#{bindings.LoyaltyID.hints.precision}"
+                            shortDesc="#{bindings.LoyaltyID.hints.tooltip}"
+                            id="it4" rendered="true">
+                <f:validator binding="#{bindings.LoyaltyID.validator}"/>
+              </af:inputText>
+            </af:panelFormLayout>
+            <af:commandToolbarButton actionListener="#{bindings.process1.execute}"
+                                     text="process1"
+                                     disabled="#{!bindings.process1.enabled}"
+                                     id="ctb2" rendered="false"/>
+          </af:toolbox>
+          <af:separator id="s2" partialTriggers="ctb1"
+                        inlineStyle="width:1485px;"/>
+          <af:statusIndicator id="si1"
+                              shortDesc="Searching, Please wait..........."/>
+        </af:group>
+        <af:panelTabbed id="pt2" inlineStyle="width:1300px;height:2500px;">
+          <af:showDetailItem text="Customer 360" id="sdi15">
+            <af:showDetail disclosed="false" id="sd1"
+                           binding="#{pageFlowScope.ServiceBean.infoshowdetail}"
+                           partialTriggers="ctb1" disclosedText="Search Details"
+                           undisclosedText="Search Details">
+              <af:panelBorderLayout id="pbl1">
+                <f:facet name="start"/>
+                <f:facet name="bottom">
+                  <af:group id="g2">
+                    <af:panelAccordion id="pa3"
+                                       inlineStyle="text-align:left; width:1196px; height:376px;"
+                                       discloseMany="true">
+                      <af:showDetailItem text="Active Contracts" id="sdi22"
+                                         stretchChildren="first"
+                                         disclosed="true">
+                        <af:table value="#{bindings.ActiveContractsOutput.collectionModel}"
+                                  var="row"
+                                  rows="#{bindings.ActiveContractsOutput.rangeSize}"
+                                  emptyText="#{bindings.ActiveContractsOutput.viewable ? 'No data to display.' : 'Access Denied.'}"
+                                  fetchSize="#{bindings.ActiveContractsOutput.rangeSize}"
+                                  rowBandingInterval="0"
+                                  filterModel="#{bindings.ActiveContractsOutputQuery.queryDescriptor}"
+                                  queryListener="#{bindings.ActiveContractsOutputQuery.processQuery}"
+                                  filterVisible="true" varStatus="vs"
+                                  selectedRowKeys="#{bindings.ActiveContractsOutput.collectionModel.selectedRow}"
+                                  selectionListener="#{bindings.ActiveContractsOutput.collectionModel.makeCurrent}"
+                                  rowSelection="single" id="t6" width="1046">
+                          <af:column sortProperty="LinkSeq" filterable="true"
+                                     sortable="true"
+                                     headerText="#{bindings.ActiveContractsOutput.hints.LinkSeq.label}"
+                                     id="c14">
+                            <af:outputText value="#{row.LinkSeq}" id="ot44"/>
+                          </af:column>
+                          <af:column sortProperty="ContractId" filterable="true"
+                                     sortable="true"
+                                     headerText="#{bindings.ActiveContractsOutput.hints.ContractId.label}"
+                                     id="c17">
+                            <af:outputText value="#{row.ContractId}" id="ot48"/>
+                          </af:column>
+                          <af:column sortProperty="ContractSeq"
+                                     filterable="true" sortable="true"
+                                     headerText="#{bindings.ActiveContractsOutput.hints.ContractSeq.label}"
+                                     id="c13">
+                            <af:outputText value="#{row.ContractSeq}"
+                                           id="ot50"/>
+                          </af:column>
+                          <af:column sortProperty="StatusCode" filterable="true"
+                                     sortable="true"
+                                     headerText="#{bindings.ActiveContractsOutput.hints.StatusCode.label}"
+                                     id="c15">
+                            <af:outputText value="#{row.StatusCode}" id="ot46"/>
+                          </af:column>
+                          <af:column sortProperty="PriorityCode"
+                                     filterable="true" sortable="true"
+                                     headerText="#{bindings.ActiveContractsOutput.hints.PriorityCode.label}"
+                                     id="c16">
+                            <af:outputText value="#{row.PriorityCode}"
+                                           id="ot1"/>
+                          </af:column>
+                          <af:column sortProperty="PriceCode" filterable="true"
+                                     sortable="true"
+                                     headerText="#{bindings.ActiveContractsOutput.hints.PriceCode.label}"
+                                     id="c11">
+                            <af:outputText value="#{row.PriceCode}" id="ot51"/>
+                          </af:column>
+                          <af:column sortProperty="OffPricePriceCode"
+                                     filterable="true" sortable="true"
+                                     headerText="#{bindings.ActiveContractsOutput.hints.OffPricePriceCode.label}"
+                                     id="c12">
+                            <af:outputText value="#{row.OffPricePriceCode}"
+                                           id="ot47"/>
+                          </af:column>
+                          <af:column sortProperty="WholesalePriceCode"
+                                     filterable="true" sortable="true"
+                                     headerText="#{bindings.ActiveContractsOutput.hints.WholesalePriceCode.label}"
+                                     id="c10">
+                            <af:outputText value="#{row.WholesalePriceCode}"
+                                           id="ot49"/>
+                          </af:column>
+                        </af:table>
+                        <af:panelFormLayout id="pfl11" rendered="false">
+                          <af:inputText value="#{bindings.AOPS_CustID2.inputValue}"
+                                        label="#{bindings.AOPS_CustID2.hints.label}"
+                                        required="#{bindings.AOPS_CustID2.hints.mandatory}"
+                                        columns="#{bindings.AOPS_CustID2.hints.displayWidth}"
+                                        maximumLength="#{bindings.AOPS_CustID2.hints.precision}"
+                                        shortDesc="#{bindings.AOPS_CustID2.hints.tooltip}"
+                                        id="it7">
+                            <f:validator binding="#{bindings.AOPS_CustID2.validator}"/>
+                          </af:inputText>
+                          <af:inputText value="#{bindings.LoyaltyID2.inputValue}"
+                                        label="#{bindings.LoyaltyID2.hints.label}"
+                                        required="#{bindings.LoyaltyID2.hints.mandatory}"
+                                        columns="#{bindings.LoyaltyID2.hints.displayWidth}"
+                                        maximumLength="#{bindings.LoyaltyID2.hints.precision}"
+                                        shortDesc="#{bindings.LoyaltyID2.hints.tooltip}"
+                                        id="it8">
+                            <f:validator binding="#{bindings.LoyaltyID2.validator}"/>
+                          </af:inputText>
+                        </af:panelFormLayout>
+                      </af:showDetailItem>
+                      <af:showDetailItem text="Contract Pricing" id="sdi23"
+                                         stretchChildren="first"
+                                         disclosed="true">
+                        <af:table value="#{bindings.ContractPriceResultSet.collectionModel}"
+                                  var="row"
+                                  rows="#{bindings.ContractPriceResultSet.rangeSize}"
+                                  emptyText="#{bindings.ContractPriceResultSet.viewable ? 'No data to display.' : 'Access Denied.'}"
+                                  fetchSize="#{bindings.ContractPriceResultSet.rangeSize}"
+                                  rowBandingInterval="0"
+                                  filterModel="#{bindings.ContractPriceResultSetQuery.queryDescriptor}"
+                                  queryListener="#{bindings.ContractPriceResultSetQuery.processQuery}"
+                                  filterVisible="true" varStatus="vs"
+                                  selectedRowKeys="#{bindings.ContractPriceResultSet.collectionModel.selectedRow}"
+                                  selectionListener="#{bindings.ContractPriceResultSet.collectionModel.makeCurrent}"
+                                  rowSelection="single" id="t7" width="1046">
+                          <af:column sortProperty="ProductName"
+                                     filterable="true" sortable="true"
+                                     headerText="#{bindings.ContractPriceResultSet.hints.ProductName.label}"
+                                     id="c22">
+                            <af:outputText value="#{row.ProductName}"
+                                           id="ot68"/>
+                          </af:column>
+                          <af:column sortProperty="ProductCode"
+                                     filterable="true" sortable="true"
+                                     headerText="#{bindings.ContractPriceResultSet.hints.ProductCode.label}"
+                                     id="c18">
+                            <af:outputText value="#{row.ProductCode}"
+                                           id="ot52"/>
+                          </af:column>
+                          <af:column sortProperty="SkuPrice" filterable="true"
+                                     sortable="true"
+                                     headerText="#{bindings.ContractPriceResultSet.hints.SkuPrice.label}"
+                                     id="c21">
+                            <af:outputText value="#{row.SkuPrice}" id="ot67"/>
+                          </af:column>
+                          <af:column sortProperty="ContractId" filterable="true"
+                                     sortable="true"
+                                     headerText="#{bindings.ContractPriceResultSet.hints.ContractId.label}"
+                                     id="c19">
+                            <af:outputText value="#{row.ContractId}" id="ot65"/>
+                          </af:column>
+                          <af:column sortProperty="AddressSeq" filterable="true"
+                                     sortable="true"
+                                     headerText="#{bindings.ContractPriceResultSet.hints.AddressSeq.label}"
+                                     id="c20">
+                            <af:outputText value="#{row.AddressSeq}" id="ot66"/>
+                          </af:column>
+                        </af:table>
+                      </af:showDetailItem>
+                      <af:showDetailItem text="Service Request Information"
+                                         id="sdi8" stretchChildren="first"
+                                         disclosed="true">
+                        <af:table value="#{bindings.OpenCasesResultSet.collectionModel}"
+                                  var="row"
+                                  rows="#{bindings.OpenCasesResultSet.rangeSize}"
+                                  emptyText="#{bindings.OpenCasesResultSet.viewable ? 'No data to display.' : 'Access Denied.'}"
+                                  fetchSize="#{bindings.OpenCasesResultSet.rangeSize}"
+                                  rowBandingInterval="0"
+                                  filterModel="#{bindings.OpenCasesResultSetQuery.queryDescriptor}"
+                                  queryListener="#{bindings.OpenCasesResultSetQuery.processQuery}"
+                                  filterVisible="true" varStatus="vs"
+                                  selectedRowKeys="#{bindings.OpenCasesResultSet.collectionModel.selectedRow}"
+                                  selectionListener="#{bindings.OpenCasesResultSet.collectionModel.makeCurrent}"
+                                  rowSelection="single" id="t8">
+                          <af:column sortProperty="PartyName" filterable="true"
+                                     sortable="true"
+                                     headerText="#{bindings.OpenCasesResultSet.hints.PartyName.label}"
+                                     id="c33">
+                            <af:outputText value="#{row.PartyName}" id="ot74"/>
+                          </af:column>
+                          <af:column sortProperty="IncidentNumber"
+                                     filterable="true" sortable="true"
+                                     headerText="#{bindings.OpenCasesResultSet.hints.IncidentNumber.label}"
+                                     id="c34">
+                            <af:outputText value="#{row.IncidentNumber}"
+                                           id="ot78"/>
+                          </af:column>
+                          <af:column sortProperty="Description"
+                                     filterable="true" sortable="true"
+                                     headerText="#{bindings.OpenCasesResultSet.hints.Description.label}"
+                                     id="c35">
+                            <af:outputText value="#{row.Description}"
+                                           id="ot75"/>
+                          </af:column>
+                          <af:column sortProperty="IncidentDate"
+                                     filterable="true" sortable="true"
+                                     headerText="#{bindings.OpenCasesResultSet.hints.IncidentDate.label}"
+                                     id="c23">
+                            <af:outputText value="#{row.IncidentDate}"
+                                           id="ot71"/>
+                          </af:column>
+                          <af:column sortProperty="CloseDate" filterable="true"
+                                     sortable="true"
+                                     headerText="#{bindings.OpenCasesResultSet.hints.CloseDate.label}"
+                                     id="c32">
+                            <af:outputText value="#{row.CloseDate}" id="ot70"/>
+                          </af:column>
+                          <af:column sortProperty="ResolvedDate"
+                                     filterable="true" sortable="true"
+                                     headerText="#{bindings.OpenCasesResultSet.hints.ResolvedDate.label}"
+                                     id="c30">
+                            <af:outputText value="#{row.ResolvedDate}"
+                                           id="ot76"/>
+                          </af:column>
+                          <af:column sortProperty="Status" filterable="true"
+                                     sortable="true"
+                                     headerText="#{bindings.OpenCasesResultSet.hints.Status.label}"
+                                     id="c31">
+                            <af:outputText value="#{row.Status}" id="ot69"/>
+                          </af:column>
+                          <af:column sortProperty="CSR" filterable="true"
+                                     sortable="true"
+                                     headerText="#{bindings.OpenCasesResultSet.hints.CSR.label}"
+                                     id="c24">
+                            <af:outputText value="#{row.CSR}" id="ot77"/>
+                          </af:column>
+                          <af:column sortProperty="Summary" filterable="true"
+                                     sortable="true"
+                                     headerText="#{bindings.OpenCasesResultSet.hints.Summary.label}"
+                                     id="c25">
+                            <af:outputText value="#{row.Summary}" id="ot72"/>
+                          </af:column>
+                          <af:column sortProperty="Creator" filterable="true"
+                                     sortable="true"
+                                     headerText="#{bindings.OpenCasesResultSet.hints.Creator.label}"
+                                     id="c36">
+                            <af:outputText value="#{row.Creator}" id="ot73"/>
+                          </af:column>
+                        </af:table>
+                      </af:showDetailItem>
+                    </af:panelAccordion>
+                    <af:spacer width="10" height="10" id="s4"/>
+                    <af:panelAccordion id="pa6" inlineStyle="width:1196px;"
+                                       discloseNone="true">
+                      <af:showDetailItem text="D&amp;B Results" id="sdi18"
+                                         partialTriggers="ctb1">
+                        <af:panelStretchLayout id="psl1"
+                                               inlineStyle="width:1163px;">
+                          <f:facet name="bottom"/>
+                          <f:facet name="center">
+                            <af:inlineFrame id="if2"
+                                            source='#{"https://smallbusiness.dnb.com/ePlatform/servlet/IballValidationCmd?storeId=10001&amp;catalogid=70001&amp;searchType=BSF&amp;productId=0&amp;manPartNumber=&amp;state=US&amp;country=US&amp;busName="} #{bindings.CustInfoBusinessName.inputValue}#'/>
+                          </f:facet>
+                          <f:facet name="start"/>
+                          <f:facet name="end"/>
+                          <f:facet name="top"/>
+                        </af:panelStretchLayout>
+                      </af:showDetailItem>
+                      <af:showDetailItem text="GMIL" id="sdi20"
+                                         partialTriggers="ctb1">
+                        <af:panelStretchLayout id="psl3"
+                                               inlineStyle="width:1155px;"
+                                               partialTriggers="ctb1">
+                          <f:facet name="bottom"/>
+                          <f:facet name="center">
+                            <af:inlineFrame id="if4"
+                                            source='#{"https://gmilsqm.uschecomrnd.net/web/service.do?key="}#{bindings.CustInfoBusinessName.inputValue}#{"&amp;customer=1"}'/>
+                          </f:facet>
+                          <f:facet name="start"/>
+                          <f:facet name="end"/>
+                          <f:facet name="top"/>
+                        </af:panelStretchLayout>
+                      </af:showDetailItem>
+                      <af:showDetailItem text="Google Results" id="sdi17"
+                                         partialTriggers="ctb1">
+                        <af:panelStretchLayout id="psl2"
+                                               inlineStyle="width:1155px;">
+                          <f:facet name="bottom"/>
+                          <f:facet name="center">
+                            <af:inlineFrame id="if1"
+                                            source='#{"http://www.google.com/search?q="}#{bindings.CustInfoBusinessName.inputValue}'/>
+                          </f:facet>
+                          <f:facet name="start"/>
+                          <f:facet name="end"/>
+                          <f:facet name="top"/>
+                        </af:panelStretchLayout>
+                      </af:showDetailItem>
+                    </af:panelAccordion>
+                    <af:panelAccordion id="pa8" inlineStyle="width:1196px;"
+                                       discloseNone="true">
+                      <af:showDetailItem text="Locate Customer" id="sdi10">
+                        <af:panelStretchLayout id="psl6"
+                                               inlineStyle="width:1175px;"
+                                               topHeight="0px">
+                          <f:facet name="bottom"/>
+                          <f:facet name="center">
+                            <af:inlineFrame id="if5"
+                                            binding="#{pageFlowScope.ServiceBean.gmap}"
+                                            partialTriggers="ctb1"/>
+                          </f:facet>
+                          <f:facet name="start"/>
+                          <f:facet name="end"/>
+                          <f:facet name="top"/>
+                        </af:panelStretchLayout>
+                      </af:showDetailItem>
+                    </af:panelAccordion>
+                  </af:group>
+                </f:facet>
+                <f:facet name="end"/>
+                <f:facet name="top"/>
+                <f:facet name="right"/>
+                <f:facet name="innerTop"/>
+                <f:facet name="left">
+                  <af:group id="g7">
+                    <af:panelAccordion id="pa4"
+                                       inlineStyle="width:411px; height:310px;">
+                      <af:showDetailItem text="General Customer Information"
+                                         id="sdi7">
+                        <af:panelFormLayout id="pfl1" partialTriggers="ctb1">
+                          <af:panelLabelAndMessage label="Customer Name:"
+                                                   id="plam46">
+                            <af:outputText value="#{bindings.CustInfoBusinessName.inputValue}"
+                                           id="ot25"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label="Contact Name:"
+                                                   id="plam71">
+                            <af:outputText value="#{bindings.CustInfoContactName.inputValue}"
+                                           id="ot109"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label="Primary Phone#:"
+                                                   id="plam89">
+                            <af:outputText value="#{bindings.CustInfoPrimaryPhone.inputValue}"
+                                           id="ot102"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label="Address1:"
+                                                   id="plam100">
+                            <af:outputText value="#{bindings.CustInfoStreetAddress1.inputValue}"
+                                           id="ot14"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label="City:" id="plam3">
+                            <af:outputText value="#{bindings.CustInfoCity.inputValue}"
+                                           id="ot2"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label="State:" id="plam5">
+                            <af:outputText value="#{bindings.CustInfoState.inputValue}"
+                                           id="ot7"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label="Province:"
+                                                   id="plam83">
+                            <af:outputText value="#{bindings.CustInfoProvince.inputValue}"
+                                           id="ot45"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label="Postal Code:"
+                                                   id="plam42">
+                            <af:outputText value="#{bindings.CustInfoZip.inputValue}"
+                                           id="ot85"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label="Country:" id="plam96">
+                            <af:outputText value="#{bindings.CustInfoCountryCode.inputValue}"
+                                           id="ot19"/>
+                          </af:panelLabelAndMessage>
+                        </af:panelFormLayout>
+                        <af:panelFormLayout id="pfl8">
+                          <af:panelLabelAndMessage label="Customer Type:"
+                                                   id="plam25">
+                            <af:outputText value="#{bindings.GetRepAssignmentsCustAcctType.inputValue}"
+                                           id="ot37"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label="Loyalty:" id="plam29">
+                            <af:outputText id="ot39"
+                                           binding="#{pageFlowScope.ServiceBean.loyV}"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label="Segment:" id="plam30">
+                            <af:outputText id="ot38"
+                                           binding="#{pageFlowScope.ServiceBean.segV}"/>
+                          </af:panelLabelAndMessage>
+                        </af:panelFormLayout>
+                        <af:commandLink actionListener="#{bindings.First.execute}"
+                                        text="First"
+                                        disabled="#{!bindings.First.enabled}"
+                                        partialSubmit="true" id="cl1"
+                                        partialTriggers="t6" rendered="false"/>
+                        <af:commandLink actionListener="#{bindings.Last.execute}"
+                                        text="Last"
+                                        disabled="#{!bindings.Last.enabled}"
+                                        partialSubmit="true" id="cl2"
+                                        rendered="false"/>
+                        <af:commandLink actionListener="#{bindings.Next.execute}"
+                                        text="Next"
+                                        disabled="#{!bindings.Next.enabled}"
+                                        partialSubmit="true" id="cl3"
+                                        partialTriggers="t6"
+                                        binding="#{pageFlowScope.ServiceBean.loySegNext}"
+                                        rendered="false"/>
+                        <af:panelFormLayout id="pfl10" rendered="false">
+                          <af:panelLabelAndMessage label="#{bindings.class_category.hints.label}"
+                                                   id="plam31">
+                            <af:outputText value="#{bindings.class_category.inputValue}"
+                                           id="ot58"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label="#{bindings.meaning.hints.label}"
+                                                   id="plam32">
+                            <af:outputText value="#{bindings.meaning.inputValue}"
+                                           id="ot57"/>
+                          </af:panelLabelAndMessage>
+                        </af:panelFormLayout>
+                      </af:showDetailItem>
+                      <af:showDetailItem text="Customer Weather" id="sdi11">
+                        <af:panelStretchLayout id="psl4" topHeight="41px"
+                                               bottomHeight="23px"
+                                               startWidth="0px">
+                          <f:facet name="bottom"/>
+                          <f:facet name="center">
+                            <af:inlineFrame id="if3" partialTriggers="ctb1"
+                                            binding="#{pageFlowScope.ServiceBean.weatherframe}"/>
+                          </f:facet>
+                          <f:facet name="start"/>
+                          <f:facet name="end"/>
+                          <f:facet name="top"/>
+                        </af:panelStretchLayout>
+                      </af:showDetailItem>
+                    </af:panelAccordion>
+                    <af:panelAccordion id="pa5"
+                                       inlineStyle="width:411px; height:331px;">
+                      <af:showDetailItem text="Purchase By Category" id="sdi9">
+                        <dvt:pieGraph id="pieGraph2"
+                                      value="#{bindings.GetSumForTopOrdersOutput1.graphModel}"
+                                      subType="PIE" inlineStyle="width:420px;">
+                          <dvt:background>
+                            <dvt:specialEffects/>
+                          </dvt:background>
+                          <dvt:graphPieFrame/>
+                          <dvt:seriesSet>
+                            <dvt:series/>
+                          </dvt:seriesSet>
+                          <dvt:sliceLabel/>
+                          <dvt:pieLabel rendered="true"/>
+                          <dvt:legendArea automaticPlacement="AP_NEVER"/>
+                        </dvt:pieGraph>
+                      </af:showDetailItem>
+                    </af:panelAccordion>
+                  </af:group>
+                </f:facet>
+                <f:facet name="innerBottom"/>
+                <f:facet name="innerRight">
+                  <af:group id="g1">
+                    <af:panelAccordion id="pa7"
+                                       inlineStyle="width:358px; height:310px;"
+                                       discloseMany="true">
+                      <af:showDetailItem text="SalesRep Data" id="sdi16"
+                                         stretchChildren="first"
+                                         disclosed="true">
+                        <af:panelFormLayout id="pfl7">
+                          <af:panelLabelAndMessage label="Resource Name:"
+                                                   id="plam27">
+                            <af:outputText value="#{bindings.GetRepAssignmentsResourceName.inputValue}"
+                                           id="ot41"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label="Rep ID:" id="plam2">
+                            <af:outputText value="#{bindings.GetRepAssignmentsRepId.inputValue}"
+                                           id="ot40"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label="Role Code:"
+                                                   id="plam28" rendered="false">
+                            <af:outputText value="#{bindings.GetRepAssignmentsRoleCode.inputValue}"
+                                           id="ot42"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label="Start Date:"
+                                                   id="plam26">
+                            <af:outputText value="#{bindings.GetRepAssignmentsassignmentStartDt.inputValue}"
+                                           id="ot43"/>
+                          </af:panelLabelAndMessage>
+                        </af:panelFormLayout>
+                      </af:showDetailItem>
+                      <af:showDetailItem text="Loyalty Information" id="sdi6"
+                                         disclosed="true" displayIndex="-1"
+                                         stretchChildren="first">
+                        <af:panelStretchLayout id="psl5" startWidth="508px"
+                                               inlineStyle="width:1197px;"
+                                               endWidth="343px" topHeight="2px">
+                          <f:facet name="bottom"/>
+                          <f:facet name="center"/>
+                          <f:facet name="start">
+                            <af:panelTabbed id="pt1"
+                                            inlineStyle="width:718px; height:236px;">
+                              <af:showDetailItem text="Enrollment Info"
+                                                 id="sdi2">
+                                <af:panelFormLayout id="pfl5"
+                                                    partialTriggers="ctb1">
+                                  <f:facet name="footer"/>
+                                  <af:panelLabelAndMessage label="First Name:"
+                                                           id="plam12">
+                                    <af:outputText value="#{bindings.LoyaltyMbrEnrollmentInfoFirst_name.inputValue}"
+                                                   id="ot21"/>
+                                  </af:panelLabelAndMessage>
+                                  <af:panelLabelAndMessage label="Last Name:"
+                                                           id="plam13">
+                                    <af:outputText value="#{bindings.LoyaltyMbrEnrollmentInfoLast_name.inputValue}"
+                                                   id="ot22"/>
+                                  </af:panelLabelAndMessage>
+                                  <af:panelLabelAndMessage label="Enrollment Type:"
+                                                           id="plam14">
+                                    <af:outputText value="#{bindings.LoyaltyMbrEnrollmentInfoEnrollmentType.inputValue}"
+                                                   id="ot26"/>
+                                  </af:panelLabelAndMessage>
+                                  <af:panelLabelAndMessage label="Enrollment Info Activated:"
+                                                           id="plam15">
+                                    <af:outputText value="#{bindings.LoyaltyMbrEnrollmentInfoActivated.inputValue}"
+                                                   id="ot27"/>
+                                  </af:panelLabelAndMessage>
+                                  <af:panelLabelAndMessage label="Membership Type:"
+                                                           id="plam16">
+                                    <af:outputText value="#{bindings.LoyaltyMbrEnrollmentInfoMembershipType.inputValue}"
+                                                   id="ot28"/>
+                                  </af:panelLabelAndMessage>
+                                  <af:panelLabelAndMessage label="Member ID:"
+                                                           id="plam17">
+                                    <af:outputText value="#{bindings.LoyaltyMbrEnrollmentInfoMemberId.inputValue}"
+                                                   id="ot29"/>
+                                  </af:panelLabelAndMessage>
+                                  <af:panelLabelAndMessage label="Birth Month:"
+                                                           id="plam18">
+                                    <af:outputText value="#{bindings.LoyaltyMbrEnrollmentCelebrateMonth.inputValue}"
+                                                   id="ot30"/>
+                                  </af:panelLabelAndMessage>
+                                  <af:panelLabelAndMessage label="Birth Day:"
+                                                           id="plam19">
+                                    <af:outputText value="#{bindings.LoyaltyMbrEnrollmentCelebrateDay.inputValue}"
+                                                   id="ot31"/>
+                                  </af:panelLabelAndMessage>
+                                  <af:panelLabelAndMessage label="Email:"
+                                                           id="plam20">
+                                    <af:outputText value="#{bindings.LoyaltyMbrEnrollmentInfoEmail.inputValue}"
+                                                   id="ot32"/>
+                                  </af:panelLabelAndMessage>
+                                </af:panelFormLayout>
+                              </af:showDetailItem>
+                              <af:showDetailItem text="Purchase History"
+                                                 id="sdi3">
+                                <af:table value="#{bindings.LoyaltyMemberPurchaseHistoryOutput.collectionModel}"
+                                          var="row"
+                                          rows="#{bindings.LoyaltyMemberPurchaseHistoryOutput.rangeSize}"
+                                          emptyText="#{bindings.LoyaltyMemberPurchaseHistoryOutput.viewable ? 'No data to display.' : 'Access Denied.'}"
+                                          fetchSize="#{bindings.LoyaltyMemberPurchaseHistoryOutput.rangeSize}"
+                                          rowBandingInterval="0" id="t5"
+                                          width="600" rowSelection="single">
+                                  <af:column sortProperty="LoyaltyMemberPurchaseHistoryOrderDt"
+                                             sortable="false"
+                                             headerText="Orderered Date"
+                                             id="c9">
+                                    <af:outputText value="#{row.LoyaltyMemberPurchaseHistoryOrderDt}"
+                                                   id="ot16"/>
+                                  </af:column>
+                                  <af:column sortProperty="LoyaltyMemberPurchaseHistoryPurchaseAmt"
+                                             sortable="false"
+                                             headerText="Purchase Amount"
+                                             id="c8">
+                                    <af:outputText value="#{row.LoyaltyMemberPurchaseHistoryPurchaseAmt}"
+                                                   id="ot17"/>
+                                  </af:column>
+                                  <af:column sortProperty="LoyaltyMemberPurchaseHistoryCat1Reward"
+                                             sortable="false"
+                                             headerText="Rewards" id="c7">
+                                    <af:outputText value="#{row.LoyaltyMemberPurchaseHistoryCat1Reward}"
+                                                   id="ot18"/>
+                                  </af:column>
+                                </af:table>
+                              </af:showDetailItem>
+                            </af:panelTabbed>
+                          </f:facet>
+                          <f:facet name="end"/>
+                          <f:facet name="top"/>
+                        </af:panelStretchLayout>
+                      </af:showDetailItem>
+                    </af:panelAccordion>
+                    <af:panelAccordion id="pa2"
+                                       inlineStyle="width:358px;height:331px;"
+                                       discloseMany="true">
+                      <af:showDetailItem text="Top 5  Customer Orders" id="sdi5"
+                                         disclosed="true">
+                        <af:table value="#{bindings.TopFiveOrders.collectionModel}"
+                                  var="row"
+                                  rows="#{bindings.TopFiveOrders.rangeSize}"
+                                  emptyText="#{bindings.TopFiveOrders.viewable ? 'No data to display.' : 'Access Denied.'}"
+                                  fetchSize="#{bindings.TopFiveOrders.rangeSize}"
+                                  rowBandingInterval="0" id="t1"
+                                  partialTriggers="ctb1">
+                          <af:column sortProperty="OrderNumber" sortable="false"
+                                     headerText="#{bindings.TopFiveOrders.hints.OrderNumber.label}"
+                                     id="c2">
+                            <af:outputText value="#{row.OrderNumber}" id="ot8"/>
+                          </af:column>
+                          <af:column sortProperty="OrderTotal" sortable="false"
+                                     headerText="#{bindings.TopFiveOrders.hints.OrderTotal.label}"
+                                     id="c1">
+                            <af:outputText value="#{row.OrderTotal}" id="ot10"/>
+                          </af:column>
+                          <af:column sortProperty="OrderedDate" sortable="false"
+                                     headerText="#{bindings.TopFiveOrders.hints.OrderedDate.label}"
+                                     id="c3">
+                            <af:outputText value="#{row.OrderedDate}" id="ot9">
+                              <af:convertDateTime pattern="#{bindings.TopFiveOrders.hints.OrderedDate.format}"/>
+                            </af:outputText>
+                          </af:column>
+                        </af:table>
+                      </af:showDetailItem>
+                      <af:showDetailItem text="General Order Information"
+                                         id="sdi12" stretchChildren="first"
+                                         disclosed="true">
+                        <af:panelTabbed id="pt3"
+                                        inlineStyle="width:1199px; height:535px;">
+                          <af:showDetailItem text="Order Info" id="sdi13"
+                                             inflexibleHeight="100"
+                                             stretchChildren="first">
+                            <af:table value="#{bindings.OrderResultSet.collectionModel}"
+                                      var="row"
+                                      rows="#{bindings.OrderResultSet.rangeSize}"
+                                      emptyText="#{bindings.OrderResultSet.viewable ? 'No data to display.' : 'Access Denied.'}"
+                                      fetchSize="#{bindings.OrderResultSet.rangeSize}"
+                                      rowBandingInterval="0"
+                                      filterModel="#{bindings.OrderResultSetQuery.queryDescriptor}"
+                                      queryListener="#{bindings.OrderResultSetQuery.processQuery}"
+                                      filterVisible="true" varStatus="vs"
+                                      selectedRowKeys="#{bindings.OrderResultSet.collectionModel.selectedRow}"
+                                      selectionListener="#{bindings.OrderResultSet.collectionModel.makeCurrent}"
+                                      rowSelection="single" id="t4" width="342"
+                                      inlineStyle="height:350px;"
+                                      partialTriggers="ctb1">
+                              <af:column sortProperty="OrderNumber"
+                                         filterable="true" sortable="true"
+                                         headerText="Order Number" id="c5">
+                                <af:outputText value="#{row.OrderNumber}"
+                                               id="ot5"/>
+                              </af:column>
+                              <af:column sortProperty="OrderTotal"
+                                         filterable="true" sortable="true"
+                                         headerText="Order Total" id="c6">
+                                <af:outputText value="#{row.OrderTotal}"
+                                               id="ot3"/>
+                              </af:column>
+                              <af:column sortProperty="OrderedDate"
+                                         filterable="true" sortable="true"
+                                         headerText="Ordered Date" id="c4">
+                                <f:facet name="filter">
+                                  <af:inputDate value="#{vs.filterCriteria.OrderedDate}"
+                                                id="id2"/>
+                                </f:facet>
+                                <af:outputText value="#{row.OrderedDate}"
+                                               id="ot4">
+                                  <af:convertDateTime pattern="#{bindings.OrderResultSet.hints.OrderedDate.format}"/>
+                                </af:outputText>
+                              </af:column>
+                            </af:table>
+                          </af:showDetailItem>
+                          <af:showDetailItem text="BackOrder Info" id="sdi14">
+                            <af:panelFormLayout id="pfl4"
+                                                partialTriggers="ctb1">
+                              <af:panelLabelAndMessage label="Order ID:"
+                                                       id="plam9">
+                                <af:outputText value="#{bindings.OrderId.inputValue}"
+                                               id="ot15"/>
+                              </af:panelLabelAndMessage>
+                              <af:panelLabelAndMessage label="Total Ordered Amount:"
+                                                       id="plam11">
+                                <af:outputText value="#{bindings.TotalOrderAmt.inputValue}"
+                                               id="ot13"/>
+                              </af:panelLabelAndMessage>
+                              <af:panelLabelAndMessage label="Back Order Quantity:"
+                                                       id="plam6">
+                                <af:outputText value="#{bindings.BackOrderQty.inputValue}"
+                                               id="ot12"/>
+                              </af:panelLabelAndMessage>
+                            </af:panelFormLayout>
+                          </af:showDetailItem>
+                        </af:panelTabbed>
+                      </af:showDetailItem>
+                    </af:panelAccordion>
+                  </af:group>
+                </f:facet>
+                <f:facet name="innerStart"/>
+                <f:facet name="innerLeft">
+                  <af:group id="g4">
+                    <af:panelAccordion id="pa1" discloseMany="true"
+                                       inlineStyle="height:310px; width:410px;">
+                      <af:showDetailItem text="Financial Information" id="sdi1">
+                        <af:panelFormLayout id="pfl2" partialTriggers="ctb1">
+                          <af:panelLabelAndMessage label="AR Indicator:"
+                                                   id="plam10">
+                            <af:outputText value="#{bindings.AR_FLAG.inputValue}"
+                                           id="ot24"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label="Credit Limit:"
+                                                   id="plam36">
+                            <af:outputText value="#{bindings.overall_credit_limit.inputValue}"
+                                           id="ot59"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label="Collector:"
+                                                   id="plam1">
+                            <af:outputText value="#{bindings.collector_id.inputValue}"
+                                           id="ot11"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label="Exposure Segment:"
+                                                   id="plam34">
+                            <af:outputText value="#{bindings.ExposureSegment.inputValue}"
+                                           id="ot62"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label="Payment Term:"
+                                                   id="plam8">
+                            <af:outputText value="#{bindings.RA_TermDescription.inputValue}"
+                                           id="ot61"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label="Payment Reporting Day:"
+                                                   id="plam33">
+                            <af:outputText value="#{bindings.payterm_reporting_day.inputValue}"
+                                           id="ot63"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label="Payment Frequency:"
+                                                   id="plam38">
+                            <af:outputText value="#{bindings.payterm_frequency.inputValue}"
+                                           id="ot64"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label="Payment%:"
+                                                   id="plam39">
+                            <af:outputText value="#{bindings.payterm_percentage.inputValue}"
+                                           id="ot20"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label="Delivery Method:"
+                                                   id="plam35">
+                            <af:outputText value="#{bindings.bill_delivery_method.inputValue}"
+                                           id="ot60"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label="Price Plan:"
+                                                   id="plam24">
+                            <af:outputText value="#{bindings.PRICE_PLAN.inputValue}"
+                                           id="ot36"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label="Contract Code:"
+                                                   id="plam23">
+                            <af:outputText value="#{bindings.CONTRACT_CODE.inputValue}"
+                                           id="ot35"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label="Bill To Limit:"
+                                                   id="plam4">
+                            <af:outputText value="#{bindings.BILL_TO_LIMIT.inputValue}"
+                                           id="ot6"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label=" Bill To Dollars:"
+                                                   id="plam7">
+                            <af:outputText value="#{bindings.BILL_TO_DOLLARS.inputValue}"
+                                           id="ot23"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label="Order Limit:"
+                                                   id="plam21">
+                            <af:outputText value="#{bindings.ORDER_LIMIT.inputValue}"
+                                           id="ot33"/>
+                          </af:panelLabelAndMessage>
+                          <af:panelLabelAndMessage label="BackOrder Allow Flag:"
+                                                   id="plam22">
+                            <af:outputText value="#{bindings.BACKORDER_ALLOW_FLAG.inputValue}"
+                                           id="ot34"/>
+                          </af:panelLabelAndMessage>
+                        </af:panelFormLayout>
+                      </af:showDetailItem>
+                      <af:showDetailItem text="Past Due Info" id="sdi19">
+                        <af:table value="#{bindings.GetCustPastDueInfoOutput.collectionModel}"
+                                  var="row"
+                                  rows="#{bindings.GetCustPastDueInfoOutput.rangeSize}"
+                                  emptyText="#{bindings.GetCustPastDueInfoOutput.viewable ? 'No Past Dues' : 'Access Denied.'}"
+                                  fetchSize="#{bindings.GetCustPastDueInfoOutput.rangeSize}"
+                                  rowBandingInterval="0" id="t9">
+                          <af:column sortProperty="AmountDueOriginal"
+                                     sortable="false"
+                                     headerText="#{bindings.GetCustPastDueInfoOutput.hints.AmountDueOriginal.label}"
+                                     id="c29">
+                            <af:outputText value="#{row.AmountDueOriginal}"
+                                           id="ot54"/>
+                          </af:column>
+                          <af:column sortProperty="AmountDueRemaining"
+                                     sortable="false"
+                                     headerText="#{bindings.GetCustPastDueInfoOutput.hints.AmountDueRemaining.label}"
+                                     id="c27">
+                            <af:outputText value="#{row.AmountDueRemaining}"
+                                           id="ot55"/>
+                          </af:column>
+                          <af:column sortProperty="DueDate" sortable="false"
+                                     headerText="#{bindings.GetCustPastDueInfoOutput.hints.DueDate.label}"
+                                     id="c26">
+                            <af:outputText value="#{row.DueDate}" id="ot53">
+                              <af:convertDateTime pattern="#{bindings.GetCustPastDueInfoOutput.hints.DueDate.format}"/>
+                            </af:outputText>
+                          </af:column>
+                          <af:column sortProperty="InCollection"
+                                     sortable="false"
+                                     headerText="#{bindings.GetCustPastDueInfoOutput.hints.InCollection.label}"
+                                     id="c28">
+                            <af:outputText value="#{row.InCollection}"
+                                           id="ot56"/>
+                          </af:column>
+                        </af:table>
+                      </af:showDetailItem>
+                    </af:panelAccordion>
+                    <af:panelAccordion id="pa9"
+                                       inlineStyle="width:410px; height:331px;">
+                      <af:showDetailItem text="Purchase Channels" id="sdi4"
+                                         stretchChildren="first"
+                                         disclosed="true">
+                        <dvt:pieGraph id="pieGraph1"
+                                      value="#{bindings.GetCustShopChannelOutput.graphModel}"
+                                      subType="PIE" threeDEffect="true"
+                                      inlineStyle="height:308px; width:407px;">
+                          <dvt:background>
+                            <dvt:specialEffects/>
+                          </dvt:background>
+                          <dvt:graphPieFrame/>
+                          <dvt:seriesSet>
+                            <dvt:series/>
+                          </dvt:seriesSet>
+                          <dvt:sliceLabel/>
+                          <dvt:pieLabel rendered="true"/>
+                          <dvt:legendArea automaticPlacement="AP_NEVER"/>
+                        </dvt:pieGraph>
+                      </af:showDetailItem>
+                    </af:panelAccordion>
+                  </af:group>
+                </f:facet>
+              </af:panelBorderLayout>
+            </af:showDetail>
+          </af:showDetailItem>
+          <af:showDetailItem text="Reports" id="sdi21">
+            <af:panelFormLayout id="pfl9">
+              <af:message id="m2"
+                          binding="#{pageFlowScope.ServiceBean.reportConfirmMsg}"
+                          rendered="false"
+                          message="Request Has Been Successfully Submitted"
+                          messageType="confirmation"/>
+              <af:selectOneChoice label="Upload / Download"
+                                  value="#{bindings.upDownLoadOption.inputValue}"
+                                  id="soc1">
+                <af:selectItem label="Download" value="D" id="si2"/>
+                <af:selectItem label="Upload" value="U" id="si3"/>
+              </af:selectOneChoice>
+              <af:selectOneChoice label="Request Type" id="soc2"
+                                  value="#{bindings.requestType.inputValue}">
+                <af:selectItem label="CSTCONTACT" value="CSTCONTACT" id="si4"/>
+              </af:selectOneChoice>
+              <af:selectOneChoice label="File Extension" id="soc3"
+                                  value="#{bindings.fileExtension.inputValue}">
+                <af:selectItem label="CSV" value="CSV" id="si5"/>
+              </af:selectOneChoice>
+              <af:selectOneChoice label="Field Delimiter" id="soc4"
+                                  value="#{bindings.fieldDelimiter.inputValue}">
+                <af:selectItem label="C" value="C" id="si6"/>
+              </af:selectOneChoice>
+              <af:inputText value="#{bindings.emailAddress.inputValue}"
+                            label="Email Address"
+                            columns="#{bindings.emailAddress.hints.displayWidth}"
+                            maximumLength="#{bindings.emailAddress.hints.precision}"
+                            shortDesc="#{bindings.emailAddress.hints.tooltip}"
+                            id="it11">
+                <f:validator binding="#{bindings.emailAddress.validator}"/>
+              </af:inputText>
+            </af:panelFormLayout>
+            <af:commandButton actionListener="#{bindings.initiate.execute}"
+                              text="Execute"
+                              disabled="#{!bindings.initiate.enabled}"
+                              id="cb1"
+                              action="#{pageFlowScope.ServiceBean.reportExecute}"/>
+          </af:showDetailItem>
+        </af:panelTabbed>
+      </af:form>
+    </af:document>
+  </f:view>
+</jsp:root>

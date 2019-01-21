@@ -1,0 +1,46 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+-- +======================================================================================+
+-- |                                    Office Depot                                      |
+-- +======================================================================================|
+-- | Name       : ALTER_XXOD_OMX_MOD4_BATCH_ID_S.seq                                      |
+-- | Rice Id    : C0700                                                                   | 
+-- |                                                                                      |
+-- |Change Record:                                                                        |
+-- |===============                                                                       |
+-- |Version   Date         Author           Remarks                                       |
+-- |=======   ===========  =============    ==============================================|
+-- |1.0       8-Jul-2015   Havish Kasina    Initial Version                               |
+-- +======================================================================================+
+
+SET TERM ON
+
+PROMPT
+PROMPT Alter Custom Sequence 
+PROMPT
+
+WHENEVER SQLERROR EXIT 1;
+
+PROMPT
+PROMPT Altering the Sequence XXCRM.XXOD_OMX_MOD4_BATCH_ID_S 
+PROMPT
+
+ALTER SEQUENCE XXCRM.XXOD_OMX_MOD4_BATCH_ID_S NOCACHE;
+
+/
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

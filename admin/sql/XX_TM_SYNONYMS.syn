@@ -1,0 +1,27 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XX_TM_SYNONYMS.syn                                 |
+-- | Description      : Synonyms for Custom Named Account Tables           |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |DRAFT 1a 21-Aug-2007   Sreekanth        Initial Version                |
+-- +=======================================================================+
+------------------------------------------------------
+-- Dropping the existing synonym and creating new.  --
+------------------------------------------------------
+CREATE OR REPLACE SYNONYM APPS.XX_TM_NAM_TERR_DEFN FOR XXCRM.XX_TM_NAM_TERR_DEFN;
+
+CREATE OR REPLACE SYNONYM APPS.XX_TM_NAM_TERR_ENTITY_DTLS FOR XXCRM.XX_TM_NAM_TERR_ENTITY_DTLS;
+
+CREATE OR REPLACE SYNONYM APPS.XX_TM_NAM_TERR_RSC_DTLS FOR XXCRM.XX_TM_NAM_TERR_RSC_DTLS;
+
+SHOW ERRORS;

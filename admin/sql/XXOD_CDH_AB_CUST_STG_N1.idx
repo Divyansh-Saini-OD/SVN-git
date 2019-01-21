@@ -1,0 +1,41 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                                                                          |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             INDEX       : XXOD_CDH_AB_CUST_STG_N1                        |
+-- |                           For XXOD_CDH_AB_CUST_STG table                 |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ===========  =============        ==============================|
+-- | 1.0       16-Sep-16   Poonam Gupta	 	 	Defect #37159	              |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+
+  
+  CREATE INDEX XXCRM.XXOD_CDH_AB_CUST_STG_N1 ON XXCRM.XXOD_CDH_AB_CUST_STG
+  (
+    AOPS_NUMBER
+  )
+  TABLESPACE XXOD_TS_DATA;
+  
+    CREATE INDEX XXCRM.XXOD_CDH_AB_CUST_STG_N2 ON XXCRM.XXOD_CDH_AB_CUST_STG
+  (
+    ACCOUNT_TYPE
+  )
+  TABLESPACE XXOD_TS_DATA;
+
+EXIT;

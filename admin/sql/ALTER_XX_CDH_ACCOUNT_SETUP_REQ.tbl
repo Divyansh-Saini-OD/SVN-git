@@ -1,0 +1,25 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : ALTER_XX_CDH_ACCOUNT_SETUP_REQ.tbl                 |
+-- | Description      : Add TIN_NUMBER Column                              |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |1        15-MAR-2010   Sreedhar Mohan   Initial Version                |
+-- +=======================================================================+
+
+------------------------------------------------------------------------
+-- Add locked flags and mandotary flag                 
+------------------------------------------------------------------------
+
+alter table XXCRM.XX_CDH_ACCOUNT_SETUP_REQ add (tin_number varchar2(30));
+
+SHOW ERRORS;

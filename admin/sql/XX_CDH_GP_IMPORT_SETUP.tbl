@@ -1,0 +1,80 @@
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify                                           |
+-- +============================================================================================+
+-- | Name        : XX_CDH_GP_IMPORT_SETUP.tbl                                                   |
+-- | Description : Setup for Grandparent/Relationship Import                                    |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        30-Jun-2011     Indra Varada        Initial version                             |
+-- +============================================================================================+
+
+
+INSERT INTO XXTPS.XXTPS_TEMPLATE_FILE_UPLOADS
+(
+TEMPLATE_FILE_UPLOAD_ID,
+CREATED_BY,
+CREATION_DATE,
+LAST_UPDATED_BY,
+LAST_UPDATE_DATE,
+TEMPLATE_CODE,
+TEMPLATE_NAME,
+TEMPLATE_DESC,
+ATTRIBUTES,
+STATEMENT,
+OUT_ADDITIONAL_COL,
+ERROR_ADDITIONAL_COL
+)
+VALUES
+(
+51,
+-1,
+sysdate,
+-1,
+sysdate,
+'GRANDPARENT_UPLOAD',
+'GRANDPARENT_UPLOAD',
+'Upload of GrandParents',
+'''GP_ID'',''GP_NAME'',''OWNER'',''SEGMENT'',''REVENUE_BAND'',''WRITTEN_AGREEMENT'',''NOTES'',''GP_STATUS''',
+'XX_CDH_GP_IMPORT_PKG.SAVE_GP',
+'''GP_ID'',''GP_NAME'',''OWNER'',''SEGMENT'',''REVENUE_BAND'',''WRITTEN_AGREEMENT'',''NOTES'',''GP_STATUS'',''STATUS'',''ERROR''',
+'''GP_ID'',''GP_NAME'',''OWNER'',''SEGMENT'',''REVENUE_BAND'',''WRITTEN_AGREEMENT'',''NOTES'',''GP_STATUS'',''STATUS'',''ERROR'''
+);
+
+
+INSERT INTO XXTPS.XXTPS_TEMPLATE_FILE_UPLOADS
+(
+TEMPLATE_FILE_UPLOAD_ID,
+CREATED_BY,
+CREATION_DATE,
+LAST_UPDATED_BY,
+LAST_UPDATE_DATE,
+TEMPLATE_CODE,
+TEMPLATE_NAME,
+TEMPLATE_DESC,
+ATTRIBUTES,
+STATEMENT,
+OUT_ADDITIONAL_COL,
+ERROR_ADDITIONAL_COL
+)
+VALUES
+(
+52,
+-1,
+sysdate,
+-1,
+sysdate,
+'GP_RELATIONSHIP_UPLOAD',
+'GP_RELATIONSHIP_UPLOAD',
+'Upload of GrandParent Relationships',
+'''PARENT_ID'',''GP_ID'',''START_DATE'',''END_DATE'',''REQUESTOR'',''NOTES''',
+'XX_CDH_GP_IMPORT_PKG.SAVE_GP_REL',
+'''PARENT_ID'',''GP_ID'',''START_DATE'',''END_DATE'',''REQUESTOR'',''NOTES'',''STATUS'',''ERROR''',
+'''PARENT_ID'',''GP_ID'',''START_DATE'',''END_DATE'',''REQUESTOR'',''NOTES'',''STATUS'',''ERROR'''
+);
+
+
+COMMIT;

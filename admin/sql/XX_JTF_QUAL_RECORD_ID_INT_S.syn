@@ -1,0 +1,40 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :XX_JTF_QUAL_RECORD_ID_INT_S.syn                     |
+-- | Description      :Custom synonym for I0405_Territories                |
+-- |                   (for Qualifiers Custom Sequence)                    |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author              Remarks                     |
+-- |-------  -----------  -----------------   -----------------------------|
+-- | 1.0     20-Jul-2007  Sathya Prabha Rani   Initial Draft Version       |
+-- |                                                                       |
+-- +=======================================================================+
+
+
+REM============================================================================================
+REM        Dropping the existing synonym and creating new for - xx_jtf_qual_record_id_int_s 
+REM============================================================================================
+
+CREATE OR REPLACE SYNONYM APPS.xx_jtf_qual_record_id_int_s FOR XXCRM.xx_jtf_qual_record_id_int_s;
+
+/
+SHOW ERRORS;
+
+EXIT;
+
+REM============================================================================================
+REM                                 End Of Script
+REM============================================================================================

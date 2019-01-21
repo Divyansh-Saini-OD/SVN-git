@@ -1,0 +1,367 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- $Header: ODOrgUpdatePG.xml $ -->
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<jrad:page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1550" xml:lang="en-US" file-version="$Header$">
+   <jrad:content>
+      <oa:pageLayout amDefName="od.oracle.apps.xxcrm.asn.common.customer.server.ODOrgUpdateAM" id="PageLayoutRN" controllerClass="od.oracle.apps.xxcrm.asn.common.customer.webui.ODOrgUpdateCO" title="Update Customer:" helpTarget="ASN_OrgUpdatePG" function="ASN_ORGUPDATEPG">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:pageButtonBar id="ASNPageButtonRN">
+               <ui:contents>
+                  <oa:submitButton id="ASNPageCnclBtn" text="Cancel" use="/oracle/apps/fnd/attributesets/Buttons/Cancel"/>
+                  <oa:submitButton id="ODGoToSItesBtn" use="/oracle/apps/fnd/attributesets/Buttons/Go" comment="OD Go To Site(s)" text="Go To Site(s)" prompt="Go To Site(s)" shortDesc="View Customer Site Details"/>
+                  <oa:messageChoice id="ASNPageCustAct" prompt="Action" pickListValAttr="LookupCode" pickListDispAttr="Meaning" defaultValue="CREATE_LEAD" pickListViewName="LookupsVO" allowBlankValue="false"/>
+                  <oa:submitButton id="ASNPageGoBtn" text="Go" prompt="Go"/>
+                  <oa:submitButton id="ASNPageApyBtn" text="Apply" use="/oracle/apps/fnd/attributesets/Buttons/Apply"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+            <oa:defaultStack id="ASNOrgUpdateHdrRN" extends="/oracle/apps/ar/hz/components/party/organization/webui/HzPuiOrgProfileComponent"/>
+            <oa:subTabLayout id="ASNOrgUpdateSubtabLayoutRN">
+               <ui:contents>
+                  <oa:stackLayout id="ASNProfileTabRN" use="/oracle/apps/asn/common/attributesets/Transient/CustProfile_Subtab">
+                     <ui:contents>
+                        <oa:tableLayout id="ASNProfileTLRN" width="100%">
+                           <ui:contents>
+                              <oa:rowLayout id="ASNProfileRow">
+                                 <ui:contents>
+                                    <oa:cellFormat id="ASNProdUnderCntrCell" vAlign="top" width="30%" rendered="false">
+                                       <ui:contents>
+                                          <oa:header id="ASNPrdtUnderCntrRN" extends="/oracle/apps/asn/common/webui/PrdtCntrRN"/>
+                                       </ui:contents>
+                                    </oa:cellFormat>
+                                    <oa:cellFormat id="ASNCustPrflInfoCell" width="70%" vAlign="top">
+                                       <ui:contents>
+                                          <oa:defaultDoubleColumn id="ASNOrgPrflInfoRN" extends="/oracle/apps/ar/hz/components/party/organization/webui/HzPuiOrgProfileInfoComponent"/>
+                                          <oa:defaultDoubleColumn id="ASNOrgEmplInfoRN" extends="/oracle/apps/ar/hz/components/party/organization/webui/HzPuiEmployeeCreateUpdate"/>
+                                          <oa:defaultDoubleColumn id="ASNOrgFinlInfoRN" extends="/oracle/apps/ar/hz/components/party/organization/webui/HzPuiTaxFinancial"/>
+                                       </ui:contents>
+                                    </oa:cellFormat>
+                                 </ui:contents>
+                              </oa:rowLayout>
+                              <oa:rowLayout id="ASNBusinessActRow" vAlign="top">
+                                 <ui:contents>
+                                    <oa:cellFormat id="ASNBusinessActCell">
+                                       <ui:contents>
+                                          <oa:header id="ASNBusinessActHdrRN" text="Business Activities">
+                                             <ui:contents>
+                                                <oa:stackLayout id="ASNBusinessActRN" extends="/oracle/apps/asn/common/customer/webui/BusinessActivitiesRN"/>
+                                             </ui:contents>
+                                          </oa:header>
+                                       </ui:contents>
+                                    </oa:cellFormat>
+                                 </ui:contents>
+                              </oa:rowLayout>
+                           </ui:contents>
+                        </oa:tableLayout>
+                        <oa:stackLayout id="ASNDetSpacerRN" prompt="Spacer">
+                           <ui:contents>
+                              <oa:tableLayout id="ASNDetSpacerTable">
+                                 <ui:contents>
+                                    <oa:rowLayout id="ASNDetSpacerRow">
+                                       <ui:contents>
+                                          <oa:cellFormat id="ASNDetSpacerCell">
+                                             <ui:contents>
+                                                <oa:spacer id="ASNDetSpacer" height="10"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                 </ui:contents>
+                              </oa:tableLayout>
+                           </ui:contents>
+                        </oa:stackLayout>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:stackLayout id="ASNNotesAndTasksTabRN" use="/oracle/apps/asn/common/attributesets/Transient/CustNotesAndTasks_Subtab">
+                     <ui:contents>
+                        <oa:header id="ASNNotesHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/Notes_Hdr">
+                           <ui:contents>
+                              <oa:stackLayout id="ASNNotesRN" extends="/oracle/apps/asn/common/webui/ASNNotesRN"/>
+                           </ui:contents>
+                        </oa:header>
+                        <oa:header id="ASNTasksHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/Tasks_Hdr">
+                           <ui:contents>
+                              <oa:stackLayout id="ASNTasksRN" extends="/oracle/apps/jtf/cac/task/webui/CacTaskSummRN"/>
+                           </ui:contents>
+                        </oa:header>
+                        <oa:hideShowHeader id="ASNOrgAttchHdr" text="Attachments" disclosed="true">
+                           <ui:contents>
+                              <oa:attachmentTable id="ASNOrgAttchTable" viewName="PartyVO" searchRegionRendered="false" text="Attachments">
+                                 <oa:entityMappings>
+                                    <oa:entityMap id="ASNOrgAttchEntityMap" entityId="HZ_PARTIES">
+                                       <oa:primaryKeys>
+                                          <oa:primaryKey id="ASNOrgAttchPrimaryKey" viewAttr="PartyId"/>
+                                       </oa:primaryKeys>
+                                       <oa:categoryMappings>
+                                          <oa:categoryMap id="ASNOrgAttchCategoryMap" categoryName="MISC"/>
+                                       </oa:categoryMappings>
+                                    </oa:entityMap>
+                                 </oa:entityMappings>
+                              </oa:attachmentTable>
+                           </ui:contents>
+                        </oa:hideShowHeader>
+                        <oa:stackLayout id="ASNOrgAttchContextHolderRN">
+                           <ui:contents>
+                              <oa:messageComponentLayout id="ASNOrgAttchContextRN" columns="2" rows="2" width="100%">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Customer" viewName="PartyVO" viewAttr="PartyName" prompt="Customer" styleClass="OraDataText"/>
+                                    <oa:messageStyledText id="Status" viewName="PartyVO" viewAttr="Status" prompt="Status" styleClass="OraDataText"/>
+                                    <oa:messageStyledText id="Alias" viewName="PartyVO" viewAttr="Alias" prompt="Alias" styleClass="OraDataText"/>
+                                    <oa:messageStyledText id="RegistryId" viewName="PartyVO" viewAttr="RegistryId" prompt="Registry Id" styleClass="OraDataText"/>
+                                 </ui:contents>
+                              </oa:messageComponentLayout>
+                           </ui:contents>
+                        </oa:stackLayout>
+                        <oa:stackLayout id="ASNNotesAndTasksSpacerRN" extends="/od/oracle/apps/xxcrm/asn/common/customer/webui/ODOrgUpdatePG.ASNDetSpacerRN"/>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:stackLayout id="ASNCtctInfoTabRN" use="/oracle/apps/asn/common/attributesets/Transient/CustContacts_Subtab">
+                     <ui:contents>
+                        <oa:stackLayout id="ASNCtctInfoTopSpacerRN" extends="/od/oracle/apps/xxcrm/asn/common/customer/webui/ODOrgUpdatePG.ASNDetSpacerRN"/>
+                        <oa:stackLayout id="ASNCtctInfoRN" extends="/oracle/apps/ar/hz/components/contact/webui/HzPuiContactRelTableComponent.HzPuiContactRelTableSL"/>
+                        <oa:stackLayout id="ASNCtctInfoSpacerRN" extends="/od/oracle/apps/xxcrm/asn/common/customer/webui/ODOrgUpdatePG.ASNDetSpacerRN"/>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:stackLayout id="ASNAddrBookTabRN" use="/oracle/apps/asn/common/attributesets/Transient/CustAddressBook_Subtab">
+                     <ui:contents>
+                        <oa:header id="ASNAddrViewRN" extends="/oracle/apps/ar/hz/components/address/webui/HzPuiAddressView" rendered="false"/>
+                        <oa:header id="ASNPhnViewRN" extends="/oracle/apps/ar/hz/components/contactpoints/webui/HzPuiContactPointPhoneTable"/>
+                        <oa:header id="ASNEmlViewRN" extends="/oracle/apps/ar/hz/components/contactpoints/webui/HzPuiContactPointEmailTable" text="E-mail Addresses"/>
+                        <oa:header id="ASNWebsiteRN" extends="/oracle/apps/ar/hz/components/contactpoints/webui/HzPuiContactPointUrlTable" text="Web Sites"/>
+                        <oa:stackLayout id="ASNAddrBookSpacerRN" extends="/od/oracle/apps/xxcrm/asn/common/customer/webui/ODOrgUpdatePG.ASNDetSpacerRN"/>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:stackLayout id="ASNRelInfoTabRN" use="/oracle/apps/asn/common/attributesets/Transient/CustBusRelationships_Subtab">
+                     <ui:contents>
+                        <oa:stackLayout id="ASNRelInfoTopSpacerRN" extends="/od/oracle/apps/xxcrm/asn/common/customer/webui/ODOrgUpdatePG.ASNDetSpacerRN"/>
+                        <oa:button id="viewHierBtn" adminCustomizable="true" dataType="VARCHAR2" disabled="false" hAlign="start" prompt="View Hierarchy" rendered="true" scope="." serverUnvalidated="false" shortDesc="View Hierarchy" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+                        <oa:stackLayout id="ASNRelInfoRN" extends="/oracle/apps/ar/hz/components/contact/webui/HzPuiPartyRelTableComponent.HzPuiPartyRelTableSL"/>
+                        <oa:stackLayout id="ASNRelInfoSpacerRN" extends="/od/oracle/apps/xxcrm/asn/common/customer/webui/ODOrgUpdatePG.ASNDetSpacerRN"/>
+                        <oa:button id="viewRelaBtn" adminCustomizable="true" dataType="VARCHAR2" disabled="false" hAlign="start" prompt="Visualize Relationships" rendered="true" scope="." serverUnvalidated="false" shortDesc="Visualize Relationships" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:stackLayout id="ASNClsInfoTabRN" use="/oracle/apps/asn/common/attributesets/Transient/CustClassifications_Subtab">
+                     <ui:contents>
+                        <oa:stackLayout id="ASNClsInfoTopSpacerRN" extends="/od/oracle/apps/xxcrm/asn/common/customer/webui/ODOrgUpdatePG.ASNDetSpacerRN"/>
+                        <oa:header id="ASNClsInfoRN" extends="/oracle/apps/ar/hz/components/classification/webui/HzPuiClassificationViewH"/>
+                        <oa:header id="ASNIndClsInfoRN" extends="/oracle/apps/ar/hz/components/classification/webui/HzPuiIndClassificationViewH"/>
+                        <oa:stackLayout id="ASNClsInfoSpacerRN" extends="/od/oracle/apps/xxcrm/asn/common/customer/webui/ODOrgUpdatePG.ASNDetSpacerRN"/>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:stackLayout id="ASNCustSalesTeamHeader" use="/oracle/apps/asn/common/attributesets/Transient/CustSalesTeam_Subtab">
+                     <ui:contents>
+                        <oa:spacer id="ASNCustSalesTeamTopSpacer" height="10"/>
+                        <oa:header id="ASNSalesTeamRN" text="Sales Team">
+                           <ui:contents>
+                              <oa:advancedTable id="ASNSTLstTb" shortDesc="Sales Team" width="100%" blockSize="5" regionName="Sales Team" viewName="ODCustomerAccessesVO">
+                                 <ui:contents>
+                                    <oa:column id="ASNSTNmCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNSTNmHdr" prompt="Name" sortState="yes"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNSTNm" viewAttr="ResourceName" prompt="Name"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNSTJobCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNSTJobHdr" prompt="Job Title" sortState="yes"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNSTJob" viewAttr="SourceJobTitle" prompt="Job Title"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNSTGroupCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNSTGroupHdr" prompt="Sales Group"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageChoice id="ASNSTGroup" viewAttr="SalesGroupId" prompt="Sales Group" required="yes" pickListViewDef="oracle.apps.asn.common.poplist.server.ResourceGroupsVO" pickListDispAttr="GroupName" pickListValAttr="GroupId" readOnly="true"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNSTPhoneCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNSTPhoneHdr" prompt="Phone" sortState="yes"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNSTPhone" viewAttr="SourcePhone" prompt="Phone"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNSTEmailCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNSTEmailHdr" prompt="Email" sortState="yes"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNSTEmail" viewAttr="SourceEmail" prompt="Email" destination="mailto:{@SourceEmail}"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNSTAccCol" columnDataFormat="iconButtonFormat">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNSTAccHdr" use="/oracle/apps/asn/common/attributesets/Access/TeamLeaderFlag"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageCheckBox id="ASNSTAcc" viewAttr="TeamLeaderFlag" text="Full Access" checkedValue="Y" unCheckedValue="N" shortDesc="Full Access" readOnly="true"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNSTKeepCol" columnDataFormat="iconButtonFormat">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNSTKeepHdr" use="/oracle/apps/asn/common/attributesets/Access/FreezeFlag"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageCheckBox id="ASNSTKeep" viewAttr="FreezeFlag" text="Do Not Reassign" checkedValue="Y" unCheckedValue="N" shortDesc="Do Not Reassign" readOnly="true"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNSTRmLinkCol" columnDataFormat="iconButtonFormat" rendered="false">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNSTRmLinkHdr" prompt="Remove"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:link id="ASNSTRmLink" serverUnvalidated="true">
+                                             <ui:contents>
+                                                <oa:image id="ASNSTRm" source="remove_enabled.gif" shortDesc="Remove" serverUnvalidated="true"/>
+                                             </ui:contents>
+                                             <ui:primaryClientAction>
+                                                <ui:firePartialAction unvalidated="true" id="firePartialAction1">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="ASNReqPgAct" value="ST_DELETE"/>
+                                                      <ui:parameter key="ASNReqEvtRowId" value="${oa.ODCustomerAccessesVO.AccessId}"/>
+                                                   </ui:parameters>
+                                                </ui:firePartialAction>
+                                             </ui:primaryClientAction>
+                                          </oa:link>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:formValue id="ASNSTRscId" viewAttr="SalesforceId" encrypted="true" adminCustomizable="false"/>
+                                    <oa:formValue id="ASNSTGroupId" viewAttr="SalesGroupId" adminCustomizable="false" encrypted="true"/>
+                                 </ui:contents>
+                                 <ui:tableActions>
+                                    <oa:flowLayout id="ASNSTBtnRN" regionName="Sales Team" rendered="false">
+                                       <ui:contents>
+                                          <oa:lovActionButton id="ASNSTAddButton" externalListOfValues="/oracle/apps/asn/common/lov/webui/RscGrpLovRN" use="/oracle/apps/asn/common/attributesets/Buttons/AddPerson" shortDesc="Add Person" rendered="false">
+                                             <jrad:lovActionMappings>
+                                                <jrad:lovActionMap id="lovActionMap1" resultTo="ASNSTNm" lovItem="ASNRscGrpLovNm"/>
+                                                <jrad:lovActionMap id="lovActionMap2" resultTo="ASNSTJob" lovItem="ASNRscGrpLovJob"/>
+                                                <jrad:lovActionMap id="lovActionMap3" resultTo="ASNSTGroup" lovItem="ASNRscGrpLovGrpId"/>
+                                                <jrad:lovActionMap id="lovActionMap4" resultTo="ASNSTEmail" lovItem="ASNRscGrpLovEmail"/>
+                                                <jrad:lovActionMap id="lovActionMap5" resultTo="ASNSTPhone" lovItem="ASNRscGrpLovPhone"/>
+                                                <jrad:lovActionMap id="lovActionMap6" resultTo="ASNSTRscId" lovItem="ASNRscGrpLovRscId"/>
+                                             </jrad:lovActionMappings>
+                                          </oa:lovActionButton>
+                                       </ui:contents>
+                                    </oa:flowLayout>
+                                 </ui:tableActions>
+                                 <ui:tableSelection>
+                                    <oa:singleSelection id="ASNCustSTSelectFlag" viewAttr="SelectFlag" text="Select" shortDesc="Select">
+                                       <ui:primaryClientAction>
+                                          <ui:fireAction event="ASNCustSTSelFA"/>
+                                       </ui:primaryClientAction>
+                                    </oa:singleSelection>
+                                 </ui:tableSelection>
+                              </oa:advancedTable>
+                              <oa:stackLayout id="ASNSTStack" controllerClass="oracle.apps.asn.common.customer.webui.OrgSTCO" regionName="Sales Team Hidden Region" adminCustomizable="false"/>
+                              <oa:header id="ASNCustSalesTeamAddInfoHdrRN" text="Additional Information" rendered="false">
+                                 <ui:contents>
+                                    <oa:flex id="ASNCustSalesTeamAddInfoFF" viewName="ODCustomerAccessesVO" flexFieldAppShortName="AS" flexName="AS_ACCESSES" shortDesc="Additional Information"/>
+                                 </ui:contents>
+                              </oa:header>
+                           </ui:contents>
+                        </oa:header>
+                        <oa:flowLayout id="ASNPartnerSalesTeamRN" extends="/oracle/apps/pv/customer/webui/PvCustPartnerRN" rendered="false"/>
+                        <oa:spacer id="ASNCustSalesTeamSpacer" height="10"/>
+                     </ui:contents>
+                  </oa:stackLayout>
+               </ui:contents>
+               <ui:subTabs>
+                  <oa:subTabBar id="ASNOrgUpdateSubtabBar" shortDesc="Customer Full Update Subtabs">
+                     <ui:contents>
+                        <oa:link id="ASNProfileTabLnk" serverUnvalidated="true" use="/oracle/apps/asn/common/attributesets/Transient/CustProfile_Subtab">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction unvalidated="true">
+                                 <ui:parameters>
+                                    <ui:parameter key="HzPuiOrgProfilePartyId" value="${oa.OrgUpdatePPRTransVO.AsnHzPuiOrgProfilePartyId}"/>
+                                    <ui:parameter key="HzPuiOrgProfileEvent" value="${oa.OrgUpdatePPRTransVO.AsnHzPuiOrgProfileEvent}"/>
+                                    <ui:parameter key="HzPuiEmployeePartyId" value="${oa.OrgUpdatePPRTransVO.AsnHzPuiEmployeePartyId}"/>
+                                    <ui:parameter key="HzPuiEmployeeInfoEvent" value="${oa.OrgUpdatePPRTransVO.AsnHzPuiEmployeeInfoEvent}"/>
+                                    <ui:parameter key="HzPuiTaxFinancialPartyId" value="${oa.OrgUpdatePPRTransVO.AsnHzPuiTaxFinancialPartyId}"/>
+                                    <ui:parameter key="HzPuiIncomeEvent" value="${oa.OrgUpdatePPRTransVO.AsnHzPuiIncomeEvent}"/>
+                                 </ui:parameters>
+                              </ui:firePartialAction>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="ASNNotesAndTasksTabLnk" serverUnvalidated="true" use="/oracle/apps/asn/common/attributesets/Transient/CustNotesAndTasks_Subtab">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction unvalidated="true"/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="ASNCtctInfoTabLnk" serverUnvalidated="true" use="/oracle/apps/asn/common/attributesets/Transient/CustContacts_Subtab">
+                           <ui:primaryClientAction>
+                              <ui:fireAction unvalidated="true">
+                                 <ui:parameters>
+                                    <ui:parameter key="HzPuiContRelTableObjectPartyId" value="${oa.OrgUpdatePPRTransVO.AsnHzPuiContRelTableObjectPartyId}"/>
+                                    <ui:parameter key="HzPuiContRelTableObjectPartyType" value="${oa.OrgUpdatePPRTransVO.AsnHzPuiContRelTableObjectPartyType}"/>
+                                    <ui:parameter key="HzPuiContRelTableMode" value="${oa.OrgUpdatePPRTransVO.AsnHzPuiContRelTableMode}"/>
+                                 </ui:parameters>
+                              </ui:fireAction>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="ASNAddrBookTabLnk" serverUnvalidated="true" use="/oracle/apps/asn/common/attributesets/Transient/CustAddressBook_Subtab">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction unvalidated="true">
+                                 <ui:parameters>
+                                    <ui:parameter key="HzPuiAddressPartyId" value="${oa.OrgUpdatePPRTransVO.AsnHzPuiAddressPartyId}"/>
+                                    <ui:parameter key="HzPuiAddressEvent" value="${oa.OrgUpdatePPRTransVO.AsnHzPuiAddressEvent}"/>
+                                    <ui:parameter key="HzPuiOwnerTableId" value="${oa.OrgUpdatePPRTransVO.AsnHzPuiOwnerTableId}"/>
+                                    <ui:parameter key="HzPuiOwnerTableName" value="${oa.OrgUpdatePPRTransVO.AsnHzPuiOwnerTableName}"/>
+                                    <ui:parameter key="HzPuiCPPhoneTableEvent" value="${oa.OrgUpdatePPRTransVO.AsnHzPuiCPPhoneTableEvent}"/>
+                                    <ui:parameter key="HzPuiCPEmailTableEvent" value="${oa.OrgUpdatePPRTransVO.AsnHzPuiCPEmailTableEvent}"/>
+                                    <ui:parameter key="HzPuiCPUrlTableEvent" value="${oa.OrgUpdatePPRTransVO.AsnHzPuiCPUrlTableEvent}"/>
+                                 </ui:parameters>
+                              </ui:firePartialAction>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="ASNRelInfoTabLnk" serverUnvalidated="true" use="/oracle/apps/asn/common/attributesets/Transient/CustBusRelationships_Subtab">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction unvalidated="true">
+                                 <ui:parameters>
+                                    <ui:parameter key="HzPuiPartyRelTableObjectPartyId" value="${oa.OrgUpdatePPRTransVO.AsnHzPuiPartyRelTableObjectPartyId}"/>
+                                    <ui:parameter key="HzPuiPartyRelTableObjectPartyType" value="${oa.OrgUpdatePPRTransVO.AsnHzPuiPartyRelTableObjectPartyType}"/>
+                                    <ui:parameter key="HzPuiPartyRelTableSubjectPartyType" value="${oa.OrgUpdatePPRTransVO.AsnHzPuiPartyRelTableSubjectPartyType}"/>
+                                    <ui:parameter key="HzPuiPartyRelTableMode" value="${oa.OrgUpdatePPRTransVO.AsnHzPuiPartyRelTableMode}"/>
+                                 </ui:parameters>
+                              </ui:firePartialAction>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="ASNClsInfoTabLnk" serverUnvalidated="true" use="/oracle/apps/asn/common/attributesets/Transient/CustClassifications_Subtab">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction unvalidated="true">
+                                 <ui:parameters>
+                                    <ui:parameter key="HzPuiPartyId" value="${oa.OrgUpdatePPRTransVO.AsnHzPuiPartyId}"/>
+                                 </ui:parameters>
+                              </ui:firePartialAction>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="ASNCustSalesTeamHeaderLnk" serverUnvalidated="true" use="/oracle/apps/asn/common/attributesets/Transient/CustSalesTeam_Subtab">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction unvalidated="true"/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                     </ui:contents>
+                  </oa:subTabBar>
+               </ui:subTabs>
+            </oa:subTabLayout>
+            <oa:stackLayout id="ASNReqEvtRN" extends="/oracle/apps/asn/common/fwk/webui/ASNReqEvtRN"/>
+         </ui:contents>
+         <ui:productBranding>
+            <oa:image id="ASNBrandImage" source="ASNBRAND.gif" shortDesc="Sales"/>
+         </ui:productBranding>
+         <ui:pageStatus>
+            <oa:tableLayout id="ASNRequiredFieldRN" extends="/oracle/apps/fnd/framework/webui/OAReqFieldDescRG" hAlign="start"/>
+         </ui:pageStatus>
+         <ui:returnNavigation>
+            <oa:link id="ASNOrgUpdRetLnk"/>
+         </ui:returnNavigation>
+      </oa:pageLayout>
+   </jrad:content>
+</jrad:page>

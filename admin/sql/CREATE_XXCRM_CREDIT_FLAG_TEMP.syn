@@ -1,0 +1,30 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                                                                   |
+-- +===================================================================+
+-- | Name        :  CREATE_XXCRM_CREDIT_FLAG_TEMP.syn                  |
+-- | Description :  Create custom tables for OD:AR Credit Flag report  |
+-- |                The Objects created are:                           |
+-- |                 1. XXCRM_CREDIT_FLAG_TEMP                         |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author             Remarks                   |
+-- |=======   ==========  ================== ==========================|
+-- |DRAFT 1a  17-JUN-2010 Renupriya          Initial draft version     |
+-- +===================================================================+
+
+-- -----------------------------------------------------
+--      Create Custom Synonym XXCRM_CREDIT_FLAG_TEMP  --
+-- -----------------------------------------------------
+
+CREATE OR REPLACE SYNONYM XXCRM_CREDIT_FLAG_TEMP FOR XXCRM.XXCRM_CREDIT_FLAG_TEMP;
+
+
+/
+SHOW ERRORS;
+

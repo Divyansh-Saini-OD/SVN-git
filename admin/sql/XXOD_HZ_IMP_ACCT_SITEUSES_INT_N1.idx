@@ -1,0 +1,30 @@
+-- Indexes
+create index xxcnv.XXOD_HZ_IMP_ACCT_SU_INT_N1 on XXOD_HZ_IMP_ACCT_SITEUSES_INT
+(batch_id, site_use_code, org_id);
+
+
+create index xxcnv.XXOD_HZ_IMP_ADDRESSES_INT_N1 on apps.XXOD_HZ_IMP_ADDRESSES_INT
+(batch_id, SITE_ORIG_SYSTEM_REFERENCE, SITE_ORIG_SYSTEM, country);
+
+create index xxcnv.XXOD_HZ_IMP_AS_INT_N1 on apps.XXOD_HZ_IMP_ACCOUNT_SITES_INT
+(batch_id, SITE_ORIG_SYSTEM_REFERENCE, SITE_ORIG_SYSTEM);
+
+create index xxcnv.XXOD_HZ_IMP_A_INT_N1 on apps.XXOD_HZ_IMP_ACCOUNTS_INT
+(batch_id, ACCOUNT_ORIG_SYSTEM_REFERENCE, ACCOUNT_ORIG_SYSTEM);
+
+create index xxcnv.XXOD_HZ_CUSTOMER_BANKS_INT_N1 on XXOD_HZ_CUSTOMER_BANKS_INT
+(batch_id, ACCOUNT_ORIG_SYSTEM_REFERENCE, ACCOUNT_ORIG_SYSTEM);
+
+create index xxcnv.XXOD_HZ_IMP_ACCT_PROF_INT_n1 on XXOD_HZ_IMP_ACCT_PROFILES_INT
+(batch_id, ACCOUNT_ORIG_SYSTEM_REFERENCE, ACCOUNT_ORIG_SYSTEM);
+
+create index xxcnv.XX_FIN_TRANSLATEDEFINITION_U1 on apps.XX_FIN_TRANSLATEDEFINITION 
+(translate_id, translation_name)  ;
+
+create index xxcnv.XX_FIN_TRANSLATEVALUES_N1 on apps.XX_FIN_TRANSLATEVALUES
+(translate_id, source_value1, source_value2)  ;
+
+create index xxcnv.xxod_hz_imp_asu_int_n2 on xxod_hz_imp_acct_siteuses_int(batch_id, acct_site_orig_system_ref
+, acct_site_orig_system);
+ 
+create index xxcnv.xxod_hz_imp_addresses_int_n4 on xxod_hz_imp_addresses_int(batch_id);

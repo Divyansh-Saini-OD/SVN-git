@@ -1,0 +1,139 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_1312" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="MainRN" amDefName="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSOrderRequestFailureRptAM" controllerClass="od.oracle.apps.xxcrm.mps.reports.webui.XXCSMPSOrderRequestFailureRptCO" title="MARS Order Request Failure Report" windowTitle="MARS Order Requests Failure Report">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:formValue id="PartyIDFV"/>
+            <oa:messageComponentLayout id="CustomerSearchRN" rows="1" columns="2">
+               <ui:contents>
+                  <oa:messageLovInput id="PartyName" queryable="true" prompt="Customer Name">
+                     <lovContents>
+                        <oa:listOfValues id="PartyNameRN">
+                           <ui:contents>
+                              <oa:table name="PartyNameRN" id="PartyNameLOVRN">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="PartyName1" dataType="VARCHAR2" prompt="Party Name" viewName="XXCSMPSPartyNameVO" viewAttr="PartyName" maximumLength="250" queryable="true"/>
+                                    <oa:formValue id="PartyId" dataType="NUMBER" prompt="PartyId" viewName="XXCSMPSPartyNameVO" viewAttr="PartyId"/>
+                                 </ui:contents>
+                              </oa:table>
+                           </ui:contents>
+                        </oa:listOfValues>
+                     </lovContents>
+                     <lovMappings>
+                        <lovMap id="PartyNamelovMap" lovItem="PartyName1" resultTo="PartyName" criteriaFrom="PartyName"/>
+                        <lovMap id="PartyIdlovMap" lovItem="PartyId" resultTo="PartyIDFV"/>
+                     </lovMappings>
+                  </oa:messageLovInput>
+                  <oa:messageTextInput id="SerialNo" prompt="Serial No"/>
+                  <oa:messageTextInput id="txtFromDelDt" dataType="DATE" prompt="From Order Creation Date"/>
+                  <oa:messageTextInput id="txtToDelDt" dataType="DATE" prompt="To Order Creation Date"/>
+                  <oa:messageTextInput id="ManagedStatusInput" prompt="Managed Status"/>
+                  <oa:messageTextInput id="ActiveStatusInput" prompt="Active Status"/>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:rowLayout id="SearchButtonRN" hAlign="center">
+               <ui:contents>
+                  <oa:submitButton id="Search" prompt="Search"/>
+                  <oa:spacer id="SpacerBTRN" width="10"/>
+                  <oa:submitButton id="Clear" text="Clear" prompt="Clear"/>
+               </ui:contents>
+            </oa:rowLayout>
+            <oa:advancedTable id="MPSOrderRequestFialureDetailsRN" viewName="XXCSMPSOrderRequestFailureRptVO" width="100%">
+               <ui:contents>
+                  <oa:column id="SerialNocolumn">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="SerialNosortableHeader" prompt="Serial No" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="SerialNoI" viewAttr="SerialNo"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="PartyNamecolumn">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="PartyNamesortableHeader" prompt="Customer Name"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="PartyNameT" viewAttr="PartyName"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="SRNumberCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="SrNumbersortableHeader" prompt="SR Number"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="SRNumber" prompt="SR Number" viewAttr="SrNumber"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="OrderDatecolumn">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="OrderDatesortableHeader" prompt="Order Date" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="OrderDate" viewAttr="OrderDate"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="Itemcolumn">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ItemsortableHeader" prompt="Item" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="Item" viewAttr="Item"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="Labelcolumn">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="LabelsortableHeader" prompt="Label"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="Label" viewAttr="Label"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="Notescolumn">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="NotessortableHeader" prompt="Notes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="Notes" viewAttr="Notes"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="Detailscolumn">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="DetailssortableHeader" prompt="Details"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="Details" viewAttr="Details"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ManagedStatusCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ManagedStatusHdr" prompt="Managed Status"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ManagedStatus" viewAttr="ManagedStatus"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ActiveStatusCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ActiveStatusHdr" prompt="Active Status"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ActiveStatus" prompt="Active Status" viewAttr="ActiveStatus"/>
+                     </ui:contents>
+                  </oa:column>
+               </ui:contents>
+               <ui:tableActions>
+                  <oa:flowLayout id="region1">
+                     <ui:contents>
+                        <oa:exportButton id="Export" exportAllRows="true" text="Export" viewName="XXCSMPSOrderRequestFailureRptVO" rendered="true"/>
+                     </ui:contents>
+                  </oa:flowLayout>
+               </ui:tableActions>
+            </oa:advancedTable>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

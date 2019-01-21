@@ -1,0 +1,50 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             : CREATE_XX_OIC_XMLDATA.tbl                          |
+-- | Description      : DDL to create table for OIC Plan Copy object       |
+-- |                    to store data file as well as log data             |                                    
+-- |                                                                       |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |1.0       01-Aug-07    Nageswara Rao        Initial draft version      |
+-- +=======================================================================+
+
+-- Dropping table XX_OIC_xmldata (if any) . . .
+
+--DROP TABLE   XXCRM.XX_OIC_xmldata
+--/
+
+-- Creating table XX_OIC_xmldata . . .
+
+CREATE TABLE XXCRM.XX_OIC_xmldata
+   (
+     imp_seq_id  NUMBER,
+     conc_req_id NUMBER,
+     xml_data    CLOB,
+     log_output  CLOB
+   )
+     PCTFREE 10
+     PCTUSED 90
+     STORAGE
+            ( INITIAL     500K
+              NEXT        500K
+              MINEXTENTS  1
+              MAXEXTENTS  505
+              PCTINCREASE 0
+            );
+
+
+-- Creating Grant on the table to apps
+GRANT ALL ON XXCRM.XX_OIC_XMLDATA TO APPS
+/

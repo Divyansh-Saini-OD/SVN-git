@@ -1,0 +1,21 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : CREATE_XXSAS_PROCESSED_FILES.syn            |
+-- | Description      : Synonyms for XXSAS_PROCESSED_FILES       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |1.0      19-May-2016  Shubhashree R   Initial Version                |
+-- +=======================================================================+
+
+CREATE OR REPLACE SYNONYM APPS.XXSAS_PROCESSED_FILES FOR XXCRM.XXSAS_PROCESSED_FILES;
+
+SHOW ERRORS;

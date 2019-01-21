@@ -1,0 +1,125 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify						|
+-- +============================================================================================+
+-- | Name        : XXOD_CDH_EBL_CONTACTS_STG.tbl                                           |
+-- | Description : ePDF enhancement                                                             |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        07/07/12       Devendra Petkar        Initial version                            |
+-- +============================================================================================+
+
+
+--------------------------------------------------------------------
+----------------------- Added Drop Table Statement -----------------
+--------------------------------------------------------------------
+
+
+SET time on;
+SET timing on;
+SET serveroutput on;
+SET trimspool on;
+SET feedback on
+SET verify on
+SET echo on
+
+DECLARE
+   v_cnt   NUMBER;
+   v_sqlerrm VARCHAR2(250);
+   TYPE type_droptable IS TABLE OF VARCHAR2(50);
+   rec_droptable type_droptable:=type_droptable('XXOD_CDH_EBL_CONTACTS_STG','XXCRM_EBL_CONT_UPLOADS');
+
+BEGIN
+FOR i IN rec_droptable.first..rec_droptable.last
+LOOP
+BEGIN
+   SELECT COUNT (*)
+     INTO v_cnt
+     FROM user_tables
+    WHERE table_name = rec_droptable(i);
+   IF v_cnt = 1
+   THEN
+      EXECUTE IMMEDIATE    'DROP TABLE '|| rec_droptable(i)
+                        || ' PURGE ';
+         DBMS_OUTPUT.put_line ('Table Drop is '||rec_droptable(i));
+   ELSE
+  DBMS_OUTPUT.put_line ('Table not found for Drop is '||rec_droptable(i));
+   END IF;
+ EXCEPTION
+   WHEN OTHERS THEN
+     v_sqlerrm:= sqlerrm;
+      DBMS_OUTPUT.put_line (v_sqlerrm);
+   ROLLBACK;
+END;
+END LOOP;
+END;
+/
+
+
+--------------------------------------------------------------------
+--------------------XXOD_CDH_EBL_CONTACTS_INT------------------
+--------------------------------------------------------------------
+
+
+Prompt CREATE TABLE xxcrm.XXCRM_EBL_CONT_UPLOADS
+
+CREATE TABLE XXCRM.XXCRM_EBL_CONT_UPLOADS
+  (
+    FILE_UPLOAD_ID     NUMBER NOT NULL ENABLE,
+    FILE_NAME          VARCHAR2(120 BYTE) NOT NULL ENABLE,
+    FILE_STATUS        VARCHAR2(1 BYTE) NOT NULL ENABLE,
+    FILE_CONTENT_TYPE  VARCHAR2(120 BYTE) NOT NULL ENABLE,
+    FILE_DATA          CLOB,
+    PROGRAM            VARCHAR2(30 BYTE),
+    CREATED_BY         NUMBER,
+    CREATION_DATE      DATE,
+    LAST_UPDATED_BY    NUMBER,
+    LAST_UPDATE_DATE   DATE,
+    LAST_UPDATE_LOGIN  NUMBER,
+    REQUEST_ID         NUMBER
+  )
+TABLESPACE apps_ts_tx_data
+NOLOGGING
+NOPARALLEL;
+
+
+
+Prompt CREATE TABLE xxcrm.XXOD_CDH_EBL_CONTACTS_STG
+
+CREATE TABLE XXCRM.XXOD_CDH_EBL_CONTACTS_STG
+(
+  BATCH_ID                   NUMBER(15),
+  CONTACT_LAST_NAME          VARCHAR2(150),
+  CONTACT_FIRST_NAME         VARCHAR2(150),
+  EMAIL_ADDRESS              VARCHAR2(2000),
+  PHONE_AREA_CODE            VARCHAR2(10),
+  PHONE_NUMBER               VARCHAR2(40),
+  AOPS_ACCOUNT_NUMBER           VARCHAR2(20),
+  AOPS_ADDRESS_SEQ           VARCHAR2(20),
+  CONTACT_OSR                VARCHAR2(40),
+  CONTACT_STATUS             VARCHAR2(1),
+  CUST_DOC_ID                VARCHAR2(150),
+  CREATION_DATE		     DATE DEFAULT SYSDATE,
+  PROCESS_FLAG		     VARCHAR2(1) DEFAULT 'N',
+  COMMENTS		     VARCHAR2(4000)
+)
+TABLESPACE apps_ts_tx_data
+NOLOGGING
+NOPARALLEL;
+
+
+
+ GRANT ALL ON xxcrm.xxod_cdh_ebl_contacts_stg TO APPS;
+ GRANT ALL ON xxcrm.xxcrm_ebl_cont_uploads TO APPS;
+
+
+ SHOW ERROR;
+EXIT;
+

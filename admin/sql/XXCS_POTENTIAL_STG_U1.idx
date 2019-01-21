@@ -1,0 +1,28 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :XXCS_POTENTIAL_STG_U1.idx                           |
+-- | Description      :Unique Index for Contact Strategy Potential Table   |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author              Remarks                     |
+-- |-------  ----------- -----------------    -----------------------------|
+-- | 1.0     18-MAR-2009  Sreekanth Rao        Initial Draft Version       |
+-- +=======================================================================+
+
+
+REM==============================================================================
+REM        Creating Index XXCS_POTENTIAL_STG_U1
+REM==============================================================================
+
+ALTER TABLE XXCRM.XXCS_POTENTIAL_STG ADD CONSTRAINT POTENTIAL_STG_PK PRIMARY KEY(POTENTIAL_ID);
+
+EXIT;
+

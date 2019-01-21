@@ -1,0 +1,11 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- ----------------------------------------------------------------------------
+--      Create Custom Synonym XX_CDH_CUSTOMER_BO_LOG_S.
+-- ----------------------------------------------------------------------------
+
+CREATE OR REPLACE SYNONYM xx_cdh_customer_bo_log_s FOR XXCRM.xx_cdh_customer_bo_log_s;
+/
+SHOW ERRORS;

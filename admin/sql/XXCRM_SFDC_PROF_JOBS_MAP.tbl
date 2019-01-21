@@ -1,0 +1,25 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- ----------------------------------------------------------------------------
+--      Create Custom Table XXCRM_SFDC_PROF_JOBS_MAP
+-- ----------------------------------------------------------------------------
+
+create table XXCRM.XXCRM_SFDC_PROF_JOBS_MAP(
+  map_id Number(15,0),
+  job_name varchar2(700),
+  sfdc_profile_id varchar2(60),
+  created_by Number(15,0),
+  last_updated_by Number(15,0),
+  last_update_date Date,
+  last_update_login Number(15,0),
+  CONSTRAINT "XXCRM_SFDC_PROF_JOBS_MAP_PK" PRIMARY KEY ("MAP_ID")
+);
+
+
+
+GRANT ALL ON XXCRM.XXCRM_SFDC_PROF_JOBS_MAP TO APPS;
+
+SHOW ERRORS;

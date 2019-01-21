@@ -1,0 +1,40 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : XX_CRM_CONC_JOBS_DETAILS.syn                        |
+-- | Rice ID     : R1153_CRM_Concurrent_Monitor_Utilities              |
+-- | Description : XX_CRM_CONC_JOBS_DETAILS Table -                    |
+-- |               Synonym Creation Script                             |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1a 09-FEB-2009  Sarah Justina    Initial draft version       |
+-- +===================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+SET TERM ON
+
+PROMPT
+PROMPT Creating SYNONYM XX_CRM_CONC_JOBS_DETAILS
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_CRM_CONC_JOBS_DETAILS FOR XXCRM.XX_CRM_CONC_JOBS_DETAILS;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

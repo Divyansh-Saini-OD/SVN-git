@@ -1,0 +1,31 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===========================================================================+
+-- |                  Office Depot - eBilling Project                          |
+-- |                         WIPRO/Office Depot                                |
+-- +===========================================================================+
+-- | Name        : CREATE_XX_CDH_EBL_CONV_CONTACT_DTL.syn                      |
+-- | Description : Synonym for XX_CDH_EBL_CONV_CONTACT_DTL Table and this is   |
+-- |               used in eBill PAPER to ePDF conversion.                     |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author        Remarks            	               |
+-- |======= =========== ============= =========================================|
+-- |DRAFT 1 09-NOV-2010 Srini Ch      Initial draft version                    |
+-- |                                                                           |
+-- |                                                                           |
+-- |                                                                           |
+-- +===========================================================================+
+
+-- ----------------------------------------------------------------------------
+--      Create Custom Synonym XX_CDH_EBL_CONV_CONTACT_DTL.
+-- ----------------------------------------------------------------------------
+
+CREATE OR REPLACE SYNONYM XX_CDH_EBL_CONV_CONTACT_DTL FOR XXCRM.XX_CDH_EBL_CONV_CONTACT_DTL;
+
+
+SHOW ERRORS;

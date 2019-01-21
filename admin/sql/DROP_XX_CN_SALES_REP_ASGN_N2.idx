@@ -1,0 +1,41 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : DROP_XX_CN_SALES_REP_ASGN_N2.idx                    |
+-- | Rice ID     : E1004_Custom_Collections                            |
+-- | Description : XX_CN_SALES_REP_ASGN Table - Non Unique Index Drop  |
+-- |               Script                                              |
+-- |                                                                   |
+-- |               Columns :                                           |
+-- |                         Division                                  |
+-- |                         SalesRep_Division                         |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1a 03-Oct-2007  Vidhya Valantina Initial draft version       |
+-- |1.0      04-Oct-2007  Vidhya Valantina Baselined after testing     |
+-- |                                                                   |
+-- +===================================================================+
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+PROMPT
+PROMPT Dropping Existing Unique INDEX XX_CN_SALES_REP_ASGN_N2
+PROMPT
+
+DROP INDEX xx_cn_sales_rep_asgn_n2;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

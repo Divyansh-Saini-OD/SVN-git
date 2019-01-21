@@ -1,0 +1,472 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify						|
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_NOTE_TASK_BATCH.tbl                                               |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        08/07/11       Devendra Petkar        Initial version                            |
+-- +============================================================================================+
+
+
+--------------------------------------------------------------------
+----------------------- Added Drop Table Statement -----------------
+--------------------------------------------------------------------
+
+
+SET time on;
+SET timing on;
+SET serveroutput on;
+SET trimspool on;
+SET feedback on
+SET verify on
+SET echo on
+
+DECLARE
+   v_cnt   NUMBER;
+   v_sqlerrm VARCHAR2(250);
+   TYPE type_droptable IS TABLE OF VARCHAR2(50);
+   rec_droptable type_droptable:=type_droptable('XX_CRM_EXP_TASKS_PARTY', 'XX_CRM_EXP_TASKS_PARTY_SITE', 'XX_CRM_EXP_TASKS_LEAD', 'XX_CRM_EXP_TASKS_OPPORTUNITY', 'XX_CRM_EXP_TASKS_TASK', 'XX_CRM_EXP_NOTES_PARTY', 'XX_CRM_EXP_NOTES_PARTY_SITE', 'XX_CRM_EXP_NOTES_LEAD', 'XX_CRM_EXP_NOTES_OPPORTUNITY', 'XX_CRM_EXP_BATCH', 'XX_CRM_EXP_DATALOADER_ERROR','XX_CRM_EXP_TASKS_ALL','XX_CRM_EXP_NOTES_ALL');
+
+BEGIN
+FOR i IN rec_droptable.first..rec_droptable.last
+LOOP
+BEGIN
+   SELECT COUNT (*)
+     INTO v_cnt
+     FROM user_tables
+    WHERE table_name = rec_droptable(i);
+   IF v_cnt = 1
+   THEN
+      EXECUTE IMMEDIATE    'DROP TABLE '|| rec_droptable(i)
+                        || ' PURGE ';
+         DBMS_OUTPUT.put_line ('Table Drop is '||rec_droptable(i));
+   ELSE
+  DBMS_OUTPUT.put_line ('Table not found for Drop is '||rec_droptable(i));
+   END IF;
+ EXCEPTION
+   WHEN OTHERS THEN
+     v_sqlerrm:= sqlerrm;
+      DBMS_OUTPUT.put_line (v_sqlerrm);
+   ROLLBACK;
+END;
+END LOOP;
+END;
+/
+
+
+--------------------------------------------------------------------
+-----------------------------Tasks----------------------------------
+--------------------------------------------------------------------
+
+Prompt CREATE TABLE xxcrm.xx_crm_exp_tasks_party
+
+CREATE TABLE xxcrm.xx_crm_exp_tasks_party
+(
+  record_id                NUMBER,
+  batch_id                 NUMBER,
+  load_status              VARCHAR2(50 BYTE) Default 'New',
+  error_msg                VARCHAR2(2000 BYTE),
+--  exception_updated_date   DATE,
+  task_id                  NUMBER,
+  task_name                VARCHAR2(80 BYTE),
+  description              CLOB,
+  task_number              VARCHAR2(30 BYTE),
+  source_object_id         NUMBER,
+  source_object_type_code  VARCHAR2(30 BYTE),
+  owner_id                 VARCHAR2(30 BYTE),
+  address_id               NUMBER,
+  cust_account_id          NUMBER,
+  customer_id              NUMBER,
+  task_priority_id         VARCHAR2(30 BYTE),
+  task_status_id           VARCHAR2(30 BYTE),
+  task_type_id             VARCHAR2(30 BYTE),
+  call_disposition	   VARCHAR2(30 BYTE),
+  disposition_code         VARCHAR2(30 BYTE),
+  disposition_date         VARCHAR2(30 BYTE),
+  creation_date            VARCHAR2(30 BYTE),
+  created_by               VARCHAR2(30 BYTE),
+  last_update_date         VARCHAR2(30 BYTE),
+  last_updated_by          VARCHAR2(30 BYTE),
+  planned_end_date         VARCHAR2(30 BYTE),
+  deleted_flag		   VARCHAR2(10 BYTE)
+)
+TABLESPACE apps_ts_tx_data
+NOLOGGING
+NOPARALLEL;
+
+
+Prompt CREATE TABLE xxcrm.xx_crm_exp_tasks_party_site
+
+CREATE TABLE xxcrm.xx_crm_exp_tasks_party_site
+(
+  record_id                NUMBER,
+  batch_id                 NUMBER,
+  load_status              VARCHAR2(50 BYTE) Default 'New',
+  error_msg                VARCHAR2(2000 BYTE),
+--  exception_updated_date   DATE,
+  task_id                  NUMBER,
+  task_name                VARCHAR2(80 BYTE),
+  description              CLOB,
+  task_number              VARCHAR2(30 BYTE),
+  source_object_id         NUMBER,
+  source_object_type_code  VARCHAR2(30 BYTE),
+  owner_id                 VARCHAR2(30 BYTE),
+  address_id               NUMBER,
+  cust_account_id          NUMBER,
+  customer_id              NUMBER,
+  task_priority_id         VARCHAR2(30 BYTE),
+  task_status_id           VARCHAR2(30 BYTE),
+  task_type_id             VARCHAR2(30 BYTE),
+  call_disposition	   VARCHAR2(30 BYTE),
+  disposition_code         VARCHAR2(30 BYTE),
+  disposition_date         VARCHAR2(30 BYTE),
+  creation_date            VARCHAR2(30 BYTE),
+  created_by               VARCHAR2(30 BYTE),
+  last_update_date         VARCHAR2(30 BYTE),
+  last_updated_by          VARCHAR2(30 BYTE),
+  planned_end_date         VARCHAR2(30 BYTE),
+  deleted_flag		   VARCHAR2(10 BYTE)
+)
+TABLESPACE apps_ts_tx_data
+NOLOGGING
+NOPARALLEL;
+
+
+PROMPT CREATE TABLE xxcrm.xx_crm_exp_tasks_lead
+
+CREATE TABLE xxcrm.xx_crm_exp_tasks_lead
+(
+  record_id                NUMBER,
+  batch_id                 NUMBER,
+  load_status              VARCHAR2(50 BYTE) Default 'New',
+  error_msg                VARCHAR2(2000 BYTE),
+--  exception_updated_date   DATE,
+  task_id                  NUMBER,
+  task_name                VARCHAR2(80 BYTE),
+  description              CLOB,
+  task_number              VARCHAR2(30 BYTE),
+  source_object_id         VARCHAR2(240),
+  source_object_type_code  VARCHAR2(30 BYTE),
+  owner_id                 VARCHAR2(30 BYTE),
+  address_id               NUMBER,
+  cust_account_id          NUMBER,
+  customer_id              NUMBER,
+  task_priority_id         VARCHAR2(30 BYTE),
+  task_status_id           VARCHAR2(30 BYTE),
+  task_type_id             VARCHAR2(30 BYTE),
+  call_disposition	   VARCHAR2(30 BYTE),
+  disposition_code         VARCHAR2(30 BYTE),
+  disposition_date         VARCHAR2(30 BYTE),
+  creation_date            VARCHAR2(30 BYTE),
+  created_by               VARCHAR2(30 BYTE),
+  last_update_date         VARCHAR2(30 BYTE),
+  last_updated_by          VARCHAR2(30 BYTE),
+  planned_end_date         VARCHAR2(30 BYTE),
+  deleted_flag		   VARCHAR2(10 BYTE)
+)
+TABLESPACE apps_ts_tx_data
+NOLOGGING
+NOPARALLEL;
+
+
+
+PROMPT CREATE TABLE xxcrm.xx_crm_exp_tasks_opportunity
+
+CREATE TABLE xxcrm.xx_crm_exp_tasks_opportunity
+(
+  record_id                NUMBER,
+  batch_id                 NUMBER,
+  load_status              VARCHAR2(50 BYTE) Default 'New',
+  error_msg                VARCHAR2(2000 BYTE),
+--  exception_updated_date   DATE,
+  task_id                  NUMBER,
+  task_name                VARCHAR2(80 BYTE),
+  description              CLOB,
+  task_number              VARCHAR2(30 BYTE),
+  source_object_id         VARCHAR2(240),
+  source_object_type_code  VARCHAR2(30 BYTE),
+  owner_id                 VARCHAR2(30 BYTE),
+  address_id               NUMBER,
+  cust_account_id          NUMBER,
+  customer_id              NUMBER,
+  task_priority_id         VARCHAR2(30 BYTE),
+  task_status_id           VARCHAR2(30 BYTE),
+  task_type_id             VARCHAR2(30 BYTE),
+  call_disposition	   VARCHAR2(30 BYTE),
+  disposition_code         VARCHAR2(30 BYTE),
+  disposition_date         VARCHAR2(30 BYTE),
+  creation_date            VARCHAR2(30 BYTE),
+  created_by               VARCHAR2(30 BYTE),
+  last_update_date         VARCHAR2(30 BYTE),
+  last_updated_by          VARCHAR2(30 BYTE),
+  planned_end_date         VARCHAR2(30 BYTE),
+  deleted_flag		   VARCHAR2(10 BYTE)
+)
+TABLESPACE apps_ts_tx_data
+NOLOGGING
+NOPARALLEL;
+
+
+PROMPT CREATE TABLE xxcrm.xx_crm_exp_tasks_task
+
+CREATE TABLE xxcrm.xx_crm_exp_tasks_task
+(
+  record_id                NUMBER,
+  batch_id                 NUMBER,
+  load_status              VARCHAR2(50 BYTE) Default 'New',
+  error_msg                VARCHAR2(2000 BYTE),
+--  exception_updated_date   DATE,
+  task_id                  NUMBER,
+  task_name                VARCHAR2(80 BYTE),
+  description              CLOB,
+  task_number              VARCHAR2(30 BYTE),
+  source_object_id         NUMBER,
+  source_object_type_code  VARCHAR2(30 BYTE),
+  owner_id                 VARCHAR2(30 BYTE),
+  address_id               NUMBER,
+  cust_account_id          NUMBER,
+  customer_id              NUMBER,
+  task_priority_id         VARCHAR2(30 BYTE),
+  task_status_id           VARCHAR2(30 BYTE),
+  task_type_id             VARCHAR2(30 BYTE),
+  call_disposition	   VARCHAR2(30 BYTE),
+  disposition_code         VARCHAR2(30 BYTE),
+  disposition_date         VARCHAR2(30 BYTE),
+  creation_date            VARCHAR2(30 BYTE),
+  created_by               VARCHAR2(30 BYTE),
+  last_update_date         VARCHAR2(30 BYTE),
+  last_updated_by          VARCHAR2(30 BYTE),
+  planned_end_date         VARCHAR2(30 BYTE),
+  deleted_flag		   VARCHAR2(10 BYTE)
+)
+TABLESPACE apps_ts_tx_data
+NOLOGGING
+NOPARALLEL;
+
+
+CREATE TABLE xxcrm.xx_crm_exp_tasks_all
+(
+  record_id                NUMBER,
+  batch_id                 NUMBER,
+  load_status              VARCHAR2(50 BYTE) Default 'New',
+  error_msg                VARCHAR2(2000 BYTE),
+--  exception_updated_date   DATE,
+  task_id                  NUMBER,
+  task_name                VARCHAR2(80 BYTE),
+  description              CLOB,
+  task_number              VARCHAR2(30 BYTE),
+  source_object_id         VARCHAR2(240),
+  source_object_type_code  VARCHAR2(30 BYTE),
+  owner_id                 VARCHAR2(30 BYTE),
+  address_id               NUMBER,
+  cust_account_id          NUMBER,
+  customer_id              NUMBER,
+  task_priority_id         VARCHAR2(30 BYTE),
+  task_status_id           VARCHAR2(30 BYTE),
+  task_type_id             VARCHAR2(30 BYTE),
+  call_disposition	   VARCHAR2(30 BYTE),
+  disposition_code         VARCHAR2(30 BYTE),
+  disposition_date         VARCHAR2(30 BYTE),
+  creation_date            VARCHAR2(30 BYTE),
+  created_by               VARCHAR2(30 BYTE),
+  last_update_date         VARCHAR2(30 BYTE),
+  last_updated_by          VARCHAR2(30 BYTE),
+  planned_end_date         VARCHAR2(30 BYTE),
+  deleted_flag		   VARCHAR2(10 BYTE)
+)
+TABLESPACE apps_ts_tx_data
+NOLOGGING
+NOPARALLEL;
+
+--------------------------------------------------------------------
+-----------------------------Notes----------------------------------
+--------------------------------------------------------------------
+
+
+PROMPT CREATE TABLE xxcrm.xx_crm_exp_notes_party
+
+CREATE TABLE xxcrm.xx_crm_exp_notes_party
+(
+  record_id                NUMBER,
+  batch_id                 NUMBER,
+  load_status              VARCHAR2(50 BYTE) Default 'New',
+  error_msg                VARCHAR2(2000 BYTE),
+  jtf_note_id                NUMBER ,
+  source_object_id         NUMBER,
+  source_object_code  VARCHAR2(30 BYTE),
+  status VARCHAR2(10 BYTE),
+  creation_date            VARCHAR2(30 BYTE),
+  created_by               VARCHAR2(30 BYTE),
+  last_update_date         VARCHAR2(30 BYTE),
+  last_updated_by          VARCHAR2(30 BYTE),
+  notes   VARCHAR2(2000 BYTE)  ,
+  notes_detail CLOB
+)
+TABLESPACE apps_ts_tx_data
+NOLOGGING
+NOPARALLEL;
+
+
+PROMPT CREATE TABLE xxcrm.xx_crm_exp_notes_party_site
+
+CREATE TABLE xxcrm.xx_crm_exp_notes_party_site
+(
+  record_id                NUMBER,
+  batch_id                 NUMBER,
+  load_status              VARCHAR2(50 BYTE) Default 'New',
+  error_msg                VARCHAR2(2000 BYTE),
+  jtf_note_id                NUMBER ,
+  source_object_id         NUMBER,
+  source_object_code  VARCHAR2(30 BYTE),
+  status VARCHAR2(10 BYTE),
+  creation_date            VARCHAR2(30 BYTE),
+  created_by               VARCHAR2(30 BYTE),
+  last_update_date         VARCHAR2(30 BYTE),
+  last_updated_by          VARCHAR2(30 BYTE),
+  notes   VARCHAR2(2000 BYTE)  ,
+  notes_detail CLOB
+)
+TABLESPACE apps_ts_tx_data
+NOLOGGING
+NOPARALLEL;
+
+
+PROMPT CREATE TABLE xxcrm.xx_crm_exp_notes_lead
+
+CREATE TABLE xxcrm.xx_crm_exp_notes_lead
+(
+  record_id                NUMBER,
+  batch_id                 NUMBER,
+  load_status              VARCHAR2(50 BYTE) Default 'New',
+  error_msg                VARCHAR2(2000 BYTE),
+  jtf_note_id                NUMBER ,
+  source_object_id         VARCHAR2(240),
+  source_object_code  VARCHAR2(30 BYTE),
+  status VARCHAR2(10 BYTE),
+  creation_date            VARCHAR2(30 BYTE),
+  created_by               VARCHAR2(30 BYTE),
+  last_update_date         VARCHAR2(30 BYTE),
+  last_updated_by          VARCHAR2(30 BYTE),
+  notes   VARCHAR2(2000 BYTE)  ,
+  notes_detail CLOB
+)
+TABLESPACE apps_ts_tx_data
+NOLOGGING
+NOPARALLEL;
+
+
+
+PROMPT CREATE TABLE xxcrm.xx_crm_exp_notes_opportunity
+
+CREATE TABLE xxcrm.xx_crm_exp_notes_opportunity
+(
+  record_id                NUMBER,
+  batch_id                 NUMBER,
+  load_status              VARCHAR2(50 BYTE) Default 'New',
+  error_msg                VARCHAR2(2000 BYTE),
+  jtf_note_id                NUMBER ,
+  source_object_id         VARCHAR2(240),
+  source_object_code      VARCHAR2(30 BYTE),
+  status VARCHAR2(10 BYTE),
+  creation_date            VARCHAR2(30 BYTE),
+  created_by               VARCHAR2(30 BYTE),
+  last_update_date         VARCHAR2(30 BYTE),
+  last_updated_by          VARCHAR2(30 BYTE),
+  notes   VARCHAR2(2000 BYTE)  ,
+  notes_detail CLOB
+)
+TABLESPACE apps_ts_tx_data
+NOLOGGING
+NOPARALLEL;
+
+
+CREATE TABLE xxcrm.xx_crm_exp_notes_all
+(
+  record_id                NUMBER,
+  batch_id                 NUMBER,
+  load_status              VARCHAR2(50 BYTE) Default 'New',
+  error_msg                VARCHAR2(2000 BYTE),
+  jtf_note_id                NUMBER ,
+  source_object_id         VARCHAR2(240),
+  source_object_code      VARCHAR2(30 BYTE),
+  status VARCHAR2(10 BYTE),
+  creation_date            VARCHAR2(30 BYTE),
+  created_by               VARCHAR2(30 BYTE),
+  last_update_date         VARCHAR2(30 BYTE),
+  last_updated_by          VARCHAR2(30 BYTE),
+  notes   VARCHAR2(2000 BYTE)  ,
+  notes_detail CLOB
+)
+TABLESPACE apps_ts_tx_data
+NOLOGGING
+NOPARALLEL;
+
+--------------------------------------------------------------------
+-----------------------------Batch----------------------------------
+--------------------------------------------------------------------
+
+
+PROMPT CREATE TABLE xxcrm.xx_crm_exp_batch
+CREATE TABLE xxcrm.xx_crm_exp_batch
+(
+batch_id     NUMBER,
+batch_name    VARCHAR2(30),
+entity_name    VARCHAR2(30),
+batch_status    VARCHAR2(10) DEFAULT 'New',
+creation_date    DATE	DEFAULT sysdate,
+last_updated_date    DATE DEFAULT sysdate,
+total_record    NUMBER,
+total_success_record    NUMBER,
+total_failed_record NUMBER
+)
+TABLESPACE apps_ts_tx_data
+NOLOGGING
+NOPARALLEL;
+
+
+--------------------------------------------------------------------
+---------------------------Exception--------------------------------
+--------------------------------------------------------------------
+
+PROMPT CREATE TABLE xxcrm.xx_crm_exp_dataloader_error
+
+CREATE TABLE xxcrm.xx_crm_exp_dataloader_error
+(
+batch_id    NUMBER,
+record_id    NUMBER,
+error_msg                VARCHAR2(2000 BYTE),
+creation_date    DATE DEFAULT sysdate
+)
+TABLESPACE apps_ts_tx_data
+NOLOGGING
+NOPARALLEL;
+
+
+
+
+ GRANT ALL ON xxcrm.xx_crm_exp_tasks_party TO APPS;
+ GRANT ALL ON xxcrm.xx_crm_exp_tasks_party_site TO APPS;
+ GRANT ALL ON xxcrm.xx_crm_exp_tasks_lead TO APPS;
+ GRANT ALL ON xxcrm.xx_crm_exp_tasks_opportunity TO APPS;
+ GRANT ALL ON xxcrm.xx_crm_exp_tasks_task TO APPS;
+ GRANT ALL ON xxcrm.xx_crm_exp_notes_party TO APPS;
+ GRANT ALL ON xxcrm.xx_crm_exp_notes_party_site TO APPS;
+ GRANT ALL ON xxcrm.xx_crm_exp_notes_lead TO APPS;
+ GRANT ALL ON xxcrm.xx_crm_exp_notes_opportunity TO APPS;
+ GRANT ALL ON xxcrm.xx_crm_exp_batch TO APPS;
+ GRANT ALL ON xxcrm.xx_crm_exp_dataloader_error TO APPS;
+ GRANT ALL ON xxcrm.xx_crm_exp_tasks_all TO APPS;
+ GRANT ALL ON xxcrm.xx_crm_exp_notes_all TO APPS;
+
+
+ SHOW ERROR;
+EXIT;

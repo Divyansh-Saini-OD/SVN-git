@@ -1,0 +1,61 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : xxod_iSupport_Survey                                                            |--                                                                                          |--
+--| Program Name   : xxod_iSupport_Survey.tbl                                                 |--
+--|                                                                                             |--
+--| Purpose        : Sales Activity Table                                                       |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              20-May-2009       Rajavel                  Initial Draft                   |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Table XXCRM.XX_CS_ISUPPORT_SURVEY......
+PROMPT
+
+create table XXCRM.XX_CS_ISUPPORT_SURVEY
+(
+SRNUMBER VARCHAR2(50),
+QUESTION VARCHAR2(300),
+ANSWERS VARCHAR2(300),
+SRTYPE VARCHAR2(150),
+LAST_UPDATE_DATE VARCHAR2(30),
+LAST_UPDATE_BY VARCHAR2(30)
+);
+
+PROMPT
+PROMPT Creating the Table XXCRM.XX_CS_STORE_FORTAL_FORM......
+PROMPT
+
+create table XXCRM.XX_CS_STORE_FORTAL_FORM
+(
+SRNUMBER VARCHAR2(50),
+FORM_NAME VARCHAR2(150),
+LAST_UPDATE_BY VARCHAR2(50),
+UPDATE_BY VARCHAR2(50)
+);
+
+
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
+
+
+
+

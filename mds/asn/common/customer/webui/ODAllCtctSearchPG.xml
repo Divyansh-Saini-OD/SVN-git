@@ -1,0 +1,18 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.9_1032" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header: ODAllCtctSearchPG.xml 115.1 2004/10/24 03:12:33 rramacha noship $">
+   <content>
+      <oa:pageLayout id="pageLayoutRN" helpTarget="ASN_AllCtctSearchPG" amDefName="oracle.apps.asn.common.customer.server.AllCtctSearchAM" title="Contacts" function="ASN_ALLCTCTSEARCHPG" controllerClass="od.oracle.apps.xxcrm.asn.common.customer.webui.ODAllCtctSearchCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:productBranding>
+            <oa:image id="ASNBrandImage" source="ASNBRAND.gif" shortDesc="Sales"/>
+         </ui:productBranding>
+         <ui:contents>
+            <oa:header id="ASNDqmCtctSearchRN" extends="/oracle/apps/ar/hz/components/search/webui/HzPuiDQMSearchForm"/>
+            <oa:tableLayout id="ASNDqmCtctSearchResultsRN" extends="/od/oracle/apps/xxcrm/asn/common/customer/webui/ODHzPuiDQMPersonSearchResults"/>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

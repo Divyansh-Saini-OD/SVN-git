@@ -1,0 +1,33 @@
+-- $Id:$
+-- $Rev:$
+-- $HeadURL:$
+-- $Author:$
+-- $Date:$
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :CREATE_XXBI_CONTACTS_MV_TBL.syn               |
+-- | Description      :Synonym to XXBI_CONTACTS_MV Table         |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |1.0       30-Mar-2010  Prasad Devar    Initial draft                |
+-- +=======================================================================+
+
+
+
+CREATE OR REPLACE SYNONYM APPS.XXBI_CONTACT_MV_TBL FOR XXCRM.XXBI_CONTACT_MV_TBL;
+
+SHOW ERRORS;
+EXIT;

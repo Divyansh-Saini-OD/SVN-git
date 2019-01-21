@@ -1,0 +1,916 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?> 
+<dataTemplate name="XXCDHPARTYDETAILSREPORT" description="OD: CDH Party Details Report" defaultPackage="XX_CDH_PARTY_REPT" version="1.0">
+<parameters>
+   <parameter name="P_PARTY_NUMBER" dataType="character" /> 
+   <parameter name="P_INACT"        dataType="character" />
+   <parameter name="P_ACCT"         dataType="character" />
+   <parameter name="P_PARTY"        dataType="character" />
+</parameters>
+<dataQuery>
+   <sqlStatement name="Q_PARTY">
+   <![CDATA[
+            SELECT   HP.party_number             PTY_NUM
+                   , HP.party_name               PTY_NAME
+                   , HP.party_type               PTY_TYPE
+                   , HP.orig_system_reference    OSR
+                   , HP.party_id                 PTY_ID
+                   , HP.attribute13              PORC
+                   , HP.attribute24              RB
+                   , HP.status                   ST
+            FROM   hz_parties HP
+            WHERE  HP.party_number = :P_PARTY_NUMBER
+             AND    (CASE :P_INACT 
+                          WHEN 'N' THEN HP.status
+                          ELSE 'Y' 
+                                  END) = (CASE :P_INACT 
+                                               WHEN 'N' THEN 'A' 
+                                               ELSE 'Y' 
+                                                       END)]]>
+  </sqlStatement>
+   <sqlStatement name="Q_PARTY_STAGED">
+   <![CDATA[
+            SELECT CASE count(1) WHEN 0 THEN 'N'
+                                 ELSE 'Y'
+                   END                            S
+            FROM   hz_staged_parties
+            WHERE  party_id = :PTY_ID]]>
+  </sqlStatement>
+  <sqlStatement name="Q_GET_WHERE_CLAUSE">
+  <![CDATA[
+           SELECT XX_CDH_PARTY_REPT.get_where_clause(:PTY_TYPE) SQL1
+           FROM   dual]]>
+  </sqlStatement>
+  <sqlStatement name="Q_PROFILE">
+  <![CDATA[
+           SELECT &p_first_name                               FNAME 
+                , &p_last_name                                LNAME
+                , &p_title                                    TIT
+                , content_source_type 
+                , actual_content_source
+                , TO_CHAR(effective_start_date,'DD/MON/YYYY') ESD
+                , TO_CHAR(effective_end_date,'DD/MON/YYYY')   EED
+                , :PTY_TYPE                                   PTYP
+           FROM  &SQL1 
+           WHERE party_id = :PTY_ID]]>  
+  </sqlStatement>
+  <sqlStatement name="Q_CLASSIFICATION">  
+  <![CDATA[
+           SELECT COD.class_category                             CCAT
+                  , TYPE.description                             DSC
+                  , COD.class_code                               CCO
+                  , LKUP.meaning                                 MN
+                  , TO_CHAR(COD.start_date_active,'DD/MON/YYYY') SDA
+                  , TO_CHAR(COD.end_date_active,'DD/MON/YYYY')   EDA
+                  , COD.status                                   ST
+           FROM   hz_code_assignments COD,
+                  hz_class_categories CAT,
+                  ar_lookup_types TYPE,
+                  ar_lookups LKUP
+           WHERE COD.class_category = CAT.class_category
+           AND   COD.owner_table_name = 'HZ_PARTIES'
+           AND   COD.class_code = LKUP.lookup_code
+           AND   COD.class_category = LKUP.lookup_type
+           AND   COD.class_category = TYPE.lookup_type(+)
+           AND   COD.owner_table_id = :PTY_ID
+           AND   COD.owner_table_name = 'HZ_PARTIES'
+           AND   (CASE :P_INACT 
+                        WHEN 'N' THEN COD.status
+                        ELSE 'Y' 
+                                END) = (CASE :P_INACT 
+                                              WHEN 'N' THEN 'A' 
+                                              ELSE 'Y' 
+                                                       END)
+           AND   LKUP.enabled_flag = 'Y']]>
+  </sqlStatement>
+  <sqlStatement name="Q_RELATIONSHIPS">   
+  <![CDATA[  
+           SELECT ARL.meaning               MEANING
+                , HP.party_name             PARTY_NAME
+                , HP.party_number           PARTY_NUMBER
+                , HP.orig_system_reference  ORIG_SYSTEM_REFERENCE
+                , HP.party_type             PARTY_TYPE
+                , HPR.status                ST
+                , HPR.party_relationship_id PRI
+           FROM   hz_party_relationships HPR
+                , hz_parties HP
+                , ar_lookups ARL
+           WHERE  HPR.object_id = :PTY_ID 
+           AND    HP.party_id = HPR.subject_id
+           AND    ARL.lookup_code = HPR.party_relationship_type
+           AND    ARL.lookup_type = 'PARTY_RELATIONS_TYPE'
+           AND    ARL.enabled_flag = 'Y'
+           AND    (CASE :P_INACT 
+                        WHEN 'N' THEN HPR.status
+                        ELSE 'Y' 
+                                END) = (CASE :P_INACT 
+                                              WHEN 'N' THEN 'A' 
+                                              ELSE 'Y' 
+                                                       END)
+           ORDER BY 1]]>
+  </sqlStatement>
+  <sqlStatement name="Q_RELATIONSHIPS_STAGED">   
+  <![CDATA[
+           SELECT CASE count(1) WHEN 0 THEN 'N'
+                                ELSE 'Y'
+                                        END     S
+           FROM   hz_staged_contacts HSC
+                  , hz_org_contacts  HOC
+           WHERE  HOC.party_relationship_id = :PRI
+           AND    HSC.org_contact_id = HOC.org_contact_id]]>
+  </sqlStatement>  
+  <sqlStatement name="Q_PARTY_SITES">
+  <![CDATA[ 
+           SELECT HPS.orig_system_reference           OSR
+                , HLO.address1 
+                  ||','||HLO.address2
+                  ||','||HLO.city
+                  ||','||HLO.county
+                  ||','||HLO.postal_code
+                  ||','||HLO.state
+                  ||','||HLO.province
+                  ||','||HLO.country                  AD
+                , HPS.party_site_id                   P_SIT_ID
+                , HPS.status                          ST
+           FROM   hz_party_sites HPS
+               ,  hz_locations HLO
+           WHERE  HPS.party_id = :PTY_ID
+           AND    HLO.location_id = HPS.location_id
+           AND    (CASE :P_INACT 
+                         WHEN 'N' THEN HPS.status
+                         ELSE 'Y' 
+                                 END) = (CASE :P_INACT 
+                                               WHEN 'N' THEN 'A' 
+                                               ELSE 'Y' 
+                                                       END)
+           ORDER BY 1]]>
+  </sqlStatement> 
+  <sqlStatement name="Q_PARTY_SITES_STAGED">
+  <![CDATA[ 
+           SELECT CASE COUNT(1) WHEN 0 THEN 'N'
+                                ELSE 'Y'
+                                        END                          S
+           FROM   hz_staged_party_sites
+           WHERE  party_site_id = :P_SIT_ID]]>
+  </sqlStatement> 
+  <sqlStatement name="Q_PARTY_SITE_USE">
+  <![CDATA[ 
+           SELECT ARL.meaning    MN
+                , HPSU.status    ST
+           FROM   hz_party_site_uses HPSU
+                , ar_lookups ARL
+           WHERE  HPSU.party_site_id = :P_SIT_ID
+           AND    ARL.lookup_code = HPSU.site_use_type
+           AND    ARL.lookup_type = 'PARTY_SITE_USE_CODE'
+           AND    ARL.enabled_flag = 'Y'
+           AND    (CASE :P_INACT 
+                         WHEN 'N' THEN HPSU.status
+                         ELSE 'Y' 
+                                 END) = (CASE :P_INACT 
+                                               WHEN 'N' THEN 'A' 
+                                               ELSE 'Y' 
+                                                       END)]]>
+  </sqlStatement>           
+  <sqlStatement name="Q_PARTY_SITE_CONTACTS">  
+  <![CDATA[   
+           SELECT rownum                                            C
+                  , HP.party_name                                   PN
+                  , to_char(A.sitecntct_end_dt,'DD/MON/YYYY')       ED
+           FROM   xx_cdh_s_ext_sitecntct_v A
+                  , hz_party_relationships HPR
+                  , hz_parties HP
+           WHERE  A.party_site_id = :P_SIT_ID
+           AND    HPR.party_relationship_id = A.sitecntct_relationship_id
+           AND    (CASE :P_INACT 
+                         WHEN 'N' THEN HPR.status
+                         ELSE 'Y' 
+                                 END) = (CASE :P_INACT 
+                                               WHEN 'N' THEN 'A' 
+                                               ELSE 'Y' 
+                                                       END)
+           AND    HP.party_id =  HPR.subject_id]]>
+  </sqlStatement>
+  <sqlStatement name="Q_PARTY_SITE_DEMOGRAPHICS">   
+  <![CDATA[     
+           SELECT A.sitedemo_duns      DN 
+                , A.sitedemo_totalemp  TE
+                , A.sitedemo_sic       SIC
+                , A.sitedemo_wcw       W
+                , A.sitedemo_od_wcw    OW
+                , A.sitedemo_naics     NA
+           FROM   xx_cdh_s_ext_sitedemo_v A
+           WHERE  A.party_site_id = :P_SIT_ID]]>
+  </sqlStatement>
+  <sqlStatement name="Q_PARTY_SITE_SPEND_ATTRIBUTES">    
+  <![CDATA[       
+           SELECT A.sitespend_potential   PS
+                , A.sitespend_gross       GM 
+           FROM   xx_cdh_s_ext_sitespend_v A
+           WHERE  A.party_site_id = :P_SIT_ID]]>
+  </sqlStatement>
+  <sqlStatement name="Q_PARTY_SITE_ASSIGNMENTS">    
+  <![CDATA[
+           SELECT B.resource_name  RN
+                , C.group_name     GN
+                , D.role_name      LN
+           FROM   xx_tm_nam_terr_curr_assign_v A
+                , jtf_rs_resource_extns_vl B
+                , jtf_rs_groups_vl C
+                , jtf_rs_roles_vl D
+           WHERE  A.entity_type = 'PARTY_SITE'
+           AND    A.entity_id = :P_SIT_ID
+           AND    A.resource_id = B.resource_id
+           AND    A.group_id = C.group_id
+           AND    A.resource_role_id = D.role_id]]>
+  </sqlStatement>
+  <sqlStatement name="Q_PARTY_CNT_POINTS_PHONE">      
+    <![CDATA[
+             SELECT rownum               CNT
+                  , ARL.meaning          PLT
+                  , ARL1.meaning         CPP             
+                  , HCP.raw_phone_number PN
+                  , HCP.phone_extension  XT
+                  , HCP.status           ST
+                  , HCP.primary_flag     PF
+                  , HCP.contact_point_id PP
+             FROM   hz_contact_points HCP
+                  , ar_lookups ARL
+                  , ar_lookups ARL1
+             WHERE  HCP.owner_table_id = :PTY_ID 
+             AND    HCP.owner_table_name = 'HZ_PARTIES' 
+             AND    (CASE :P_INACT 
+                          WHEN 'N' THEN HCP.status
+                          ELSE 'Y' 
+                                  END) = (CASE :P_INACT 
+                                               WHEN 'N' THEN 'A' 
+                                               ELSE 'Y' 
+                                                       END)             
+             AND    HCP.contact_point_type = 'PHONE'
+             AND    HCP.phone_line_type = ARL.lookup_code(+)
+             AND    ARL.lookup_type(+) = 'PHONE_LINE_TYPE'
+             AND    ARL.enabled_flag = 'Y'
+             AND    HCP.contact_point_purpose = ARL1.lookup_code(+)
+             AND    ARL1.lookup_type(+) = 'CONTACT_POINT_PURPOSE'
+             AND    ARL1.enabled_flag = 'Y']]>
+  </sqlStatement>
+  <sqlStatement name="Q_PARTY_CNT_POINTS_PHONE_STAGED">      
+    <![CDATA[
+             SELECT CASE COUNT(1) WHEN 0 THEN 'N'
+                                  ELSE 'Y'
+                                           END  S
+             FROM   hz_staged_contact_points 
+             WHERE  contact_point_id = :PP]]>
+  </sqlStatement>
+  <sqlStatement name="Q_PARTY_CNT_POINTS_WEB">   
+    <![CDATA[
+             SELECT rownum               CNT
+                  , ARL1.meaning         CPP
+                  , HCP.url              URL
+                  , HCP.status           ST
+                  , HCP.primary_flag     PF
+                  , HCP.contact_point_id PW
+             FROM   hz_contact_points HCP
+                  , ar_lookups ARL1
+             WHERE  HCP.owner_table_id = :PTY_ID 
+             AND    HCP.owner_table_name = 'HZ_PARTIES' 
+             AND    (CASE :P_INACT 
+                          WHEN 'N' THEN HCP.status
+                          ELSE 'Y' 
+                                  END) = (CASE :P_INACT 
+                                               WHEN 'N' THEN 'A' 
+                                               ELSE 'Y' 
+                                                       END)             
+             AND    HCP.contact_point_type = 'WEB'
+             AND    HCP.contact_point_purpose = ARL1.lookup_code(+)
+             AND    ARL1.lookup_type(+) = 'CONTACT_POINT_PURPOSE_WEB'
+             AND    ARL1.enabled_flag = 'Y']]>  
+  </sqlStatement>
+  <sqlStatement name="Q_PARTY_CNT_POINTS_WEB_STAGED"> 
+    <![CDATA[
+             SELECT CASE COUNT(1) WHEN 0 THEN 'N'
+                                  ELSE 'Y'
+                                           END  S
+             FROM   hz_staged_contact_points 
+             WHERE  contact_point_id = :PW]]>
+  </sqlStatement>
+  <sqlStatement name="Q_PARTY_CNT_POINTS_EMAIL">   
+    <![CDATA[
+             SELECT rownum               CNT
+                  , ARL1.meaning         CPP
+                  , HCP.email_address    EML
+                  , HCP.status           ST
+                  , HCP.primary_flag     PF
+                  , HCP.contact_point_id PE
+             FROM   hz_contact_points HCP
+                  , ar_lookups ARL1
+             WHERE  HCP.owner_table_id = :PTY_ID 
+             AND    HCP.owner_table_name = 'HZ_PARTIES' 
+             AND    (CASE :P_INACT 
+                          WHEN 'N' THEN HCP.status
+                          ELSE 'Y' 
+                                  END) = (CASE :P_INACT 
+                                               WHEN 'N' THEN 'A' 
+                                               ELSE 'Y' 
+                                                       END)             
+             AND    HCP.contact_point_type = 'EMAIL'
+             AND    HCP.contact_point_purpose = ARL1.lookup_code(+)
+             AND    ARL1.lookup_type(+) = 'CONTACT_POINT_PURPOSE'
+             AND    ARL1.enabled_flag = 'Y']]>  
+  </sqlStatement> 
+  <sqlStatement name="Q_PARTY_CNT_POINTS_EMAIL_STAGED"> 
+    <![CDATA[
+             SELECT CASE COUNT(1) WHEN 0 THEN 'N'
+                                  ELSE 'Y'
+                                           END  S
+             FROM   hz_staged_contact_points 
+             WHERE  contact_point_id = :PE]]>
+  </sqlStatement>
+  <sqlStatement name="Q_PTY_RLNT_CONTACT">   
+    <![CDATA[
+             SELECT HP.party_name            P_NA
+                    , HPR.party_id           PTY_RLNT_ID
+                    , HPR.status             ST
+             FROM   hz_party_relationships  HPR
+                    , hz_parties HP
+             WHERE  HPR.object_id = :PTY_ID 
+             AND    (CASE :P_INACT 
+                          WHEN 'N' THEN HPR.status
+                          ELSE 'Y' 
+                                  END) = (CASE :P_INACT 
+                                               WHEN 'N' THEN 'A' 
+                                               ELSE 'Y' 
+                                                       END)                          
+             AND    HPR.party_relationship_type = 'CONTACT_OF'
+             AND    HP.party_id = HPR.subject_id]]>
+  </sqlStatement>
+  <sqlStatement name="Q_PTY_RLNT_CTACT_PTS_PHONE">   
+    <![CDATA[  
+             SELECT rownum               CNT
+                  , ARL.meaning          PLT
+                  , ARL1.meaning         CPP             
+                  , HCP.raw_phone_number PN
+                  , HCP.phone_extension  XT
+                  , HCP.status           ST
+                  , HCP.primary_flag     PF
+                  , HCP.contact_point_id RP
+             FROM   hz_contact_points HCP
+                  , ar_lookups ARL
+                  , ar_lookups ARL1
+             WHERE  hcp.owner_table_id  = :PTY_RLNT_ID
+             AND    HCP.owner_table_name = 'HZ_PARTIES'
+             AND    (CASE :P_INACT 
+                          WHEN 'N' THEN HCP.status
+                          ELSE 'Y' 
+                                  END) = (CASE :P_INACT 
+                                               WHEN 'N' THEN 'A' 
+                                               ELSE 'Y' 
+                                                       END)
+             AND    HCP.contact_point_type = 'PHONE'
+             AND    HCP.phone_line_type = ARL.lookup_code(+)
+             AND    ARL.lookup_type(+) = 'PHONE_LINE_TYPE'
+             AND    ARL.enabled_flag = 'Y'
+             AND    HCP.contact_point_purpose = ARL1.lookup_code(+)
+             AND    ARL1.lookup_type(+) = 'CONTACT_POINT_PURPOSE'
+             AND    ARL1.enabled_flag = 'Y']]>
+  </sqlStatement>
+  <sqlStatement name="Q_PTY_RLNT_CTACT_PTS_PHONE_STAGED"> 
+    <![CDATA[
+             SELECT CASE COUNT(1) WHEN 0 THEN 'N'
+                                  ELSE 'Y'
+                                           END  S
+             FROM   hz_staged_contact_points 
+             WHERE  contact_point_id = :RP]]>
+  </sqlStatement>  
+  <sqlStatement name="Q_PTY_RLNT_CTACT_PTS_WEB">   
+    <![CDATA[
+             SELECT rownum               CNT
+                  , ARL1.meaning         CPP
+                  , HCP.url              URL
+                  , HCP.primary_flag     PF
+                  , HCP.status           ST
+                  , HCP.contact_point_id RW
+             FROM  hz_contact_points HCP
+                  , ar_lookups ARL1             
+             WHERE  HCP.owner_table_id  = :PTY_RLNT_ID
+             AND    HCP.owner_table_name = 'HZ_PARTIES'
+             AND    (CASE :P_INACT 
+                          WHEN 'N' THEN HCP.status
+                          ELSE 'Y' 
+                                  END) = (CASE :P_INACT 
+                                               WHEN 'N' THEN 'A' 
+                                               ELSE 'Y' 
+                                                       END)
+             AND    HCP.contact_point_type = 'WEB'
+             AND    HCP.contact_point_purpose = ARL1.lookup_code(+)
+             AND    ARL1.lookup_type(+) = 'CONTACT_POINT_PURPOSE_WEB'
+             AND    ARL1.enabled_flag = 'Y']]>
+  </sqlStatement>
+  <sqlStatement name="Q_PTY_RLNT_CTACT_PTS_WEB_STAGED"> 
+    <![CDATA[
+             SELECT CASE COUNT(1) WHEN 0 THEN 'N'
+                                  ELSE 'Y'
+                                           END  S
+             FROM   hz_staged_contact_points 
+             WHERE  contact_point_id = :RW]]>
+  </sqlStatement>    
+  <sqlStatement name="Q_PTY_RLNT_CTACT_PTS_EMAIL">   
+    <![CDATA[
+             SELECT rownum                 CNT
+                    , ARL1.meaning         CPP
+                    , HCP.email_address    EML
+                    , HCP.status           ST
+                    , HCP.primary_flag     PF
+                    , HCP.contact_point_id RE
+             FROM   hz_contact_points HCP
+                  , ar_lookups ARL1              
+             WHERE  HCP.owner_table_id = :PTY_RLNT_ID 
+             AND    HCP.owner_table_name = 'HZ_PARTIES' 
+             AND    (CASE :P_INACT 
+                          WHEN 'N' THEN HCP.status
+                          ELSE 'Y' 
+                                  END) = (CASE :P_INACT 
+                                               WHEN 'N' THEN 'A' 
+                                               ELSE 'Y' 
+                                                       END)
+             AND    HCP.contact_point_type = 'EMAIL'
+             AND    HCP.contact_point_purpose = ARL1.lookup_code(+)
+             AND    ARL1.lookup_type(+) = 'CONTACT_POINT_PURPOSE'
+             AND    ARL1.enabled_flag = 'Y']]>   
+  </sqlStatement>
+  <sqlStatement name="Q_PTY_RLNT_CTACT_PTS_EMAIL_STAGED"> 
+    <![CDATA[
+             SELECT CASE COUNT(1) WHEN 0 THEN 'N'
+                                  ELSE 'Y'
+                                           END  S
+             FROM   hz_staged_contact_points 
+             WHERE  contact_point_id = :RE]]>
+  </sqlStatement>  
+  <sqlStatement name="Q_ACCOUNTS">   
+    <![CDATA[
+             SELECT HCA.account_number        ACN
+                  , HCA.orig_system_reference OSR
+                  , HCA.status                ST
+                  , HCA.attribute18           CT
+                  , HCA.cust_account_id       CAI
+             FROM   hz_cust_accounts HCA
+             WHERE  HCA.party_id = :PTY_ID
+             AND    (CASE :P_INACT 
+                          WHEN 'N' THEN HCA.status
+                          ELSE 'Y' 
+                                  END) = (CASE :P_INACT 
+                                               WHEN 'N' THEN 'A' 
+                                               ELSE 'Y' 
+                                                       END)]]>
+  </sqlStatement>
+  <sqlStatement name="Q_ACC_BILL_DOCS">   
+    <![CDATA[
+             SELECT A.billdocs_doc_type    DT
+                  , FFVV.description       DM
+                  , FFVV1.description      DF
+                  , RT.description         PT
+             FROM   xx_cdh_a_ext_billdocs_v A
+                  , fnd_flex_value_sets FFV
+                  , fnd_flex_values_vl FFVV
+                  , fnd_flex_value_sets FFV1
+                  , fnd_flex_values_vl FFVV1
+                  , ra_terms RT
+             WHERE  A.cust_account_id = :CAI  
+             AND    A.billdocs_delivery_meth = FFVV.flex_value
+             AND    FFVV.flex_value_set_id = FFV.flex_value_set_id
+             AND    FFV.flex_value_set_name = 'XXOD_CDH_BILLDOCS_DELIVERY_METHOD'
+             AND    A.billdocs_doc_freq = FFVV1.flex_value
+             AND    FFVV1.flex_value_set_id = FFV1.flex_value_set_id
+             AND    FFV1.flex_value_set_name = 'XXOD_CDH_BILLDOCS_DOC_FREQ'
+             AND    A.billdocs_payment_term = RT.name]]>
+  </sqlStatement>
+  <sqlStatement name="Q_SOURCE_AUDIT">   
+    <![CDATA[
+             SELECT TO_CHAR(A.auditacc_create_date,'DD/MON/YYYY')      CD
+                    , TO_CHAR(A.auditacc_last_upd_date,'DD/MON/YYYY')  UD
+             FROM   xx_cdh_a_ext_sourceaud_v A
+             WHERE  A.cust_account_id = :CAI]]>
+  </sqlStatement>  
+  <sqlStatement name="Q_SPC_CARD">   
+    <![CDATA[
+             SELECT A.spc_card_num SCN
+                  , A.trans_limit  TL
+                  , A.tender_code  TC
+             FROM   xx_cdh_a_ext_spc_info_v A
+             WHERE  A.cust_account_id = :CAI]]>
+  </sqlStatement>
+  <sqlStatement name="Q_ACCOUNTS_PROFILE">   
+    <![CDATA[
+             SELECT HCS.orig_system_reference           OSR
+                  , ACP.profile_class_name              PN 
+                  , ACP.collector_name                  C
+                  , ACP.credit_classification_meaning   CC
+                  , ACP.tolerance                       T
+                  , ACP.standard_terms_name             SN
+                  , ACP.statement_cycle_name            CN
+                  , ACP.dunning_letter_set_name         DN
+                  , ACP.lockbox_matching_option_name    LN
+                  , ACP.autocash_hierarchy_name         AN
+                  , ACP.autocash_hierarchy_name_adr     AD
+                  , ACP.customer_profile_id             CPI
+             FROM   ar_customer_profiles_v ACP
+                  , hz_cust_site_uses_all HCSU
+                  , hz_cust_acct_sites_all HCS 
+             WHERE  ACP.customer_id = :CAI
+             AND    HCSU.site_use_id(+) = ACP.site_use_id
+             and    HCS.cust_acct_site_id(+) = HCSU.cust_acct_site_id]]>
+  </sqlStatement>
+  <sqlStatement name="Q_ACCOUNTS_PROFILE_AMT">   
+    <![CDATA[
+             select HCP.currency_code            CU
+                  , HCP.trx_credit_limit         TL
+                  , HCP.overall_credit_limit     OL
+             from   hz_cust_profile_amts HCP
+             where  HCP.cust_account_profile_id = :CPI]]>
+  </sqlStatement>
+  <sqlStatement name="Q_ACCOUNT_SITES">   
+    <![CDATA[
+             SELECT HCAS.orig_system_reference    OSR
+                  , HCAS.cust_acct_site_id        CASI
+                  , HCAS.status                   ST
+                  , HOU.name                      ORG
+             FROM   hz_cust_acct_sites_all     HCAS
+                  , hr_operating_units HOU 
+             WHERE  HCAS.cust_account_id = :CAI
+             AND    HOU.organization_id = HCAS.org_id
+             AND    (CASE :P_INACT 
+                          WHEN 'N' THEN HCAS.status
+                          ELSE 'Y' 
+                                  END) = (CASE :P_INACT 
+                                               WHEN 'N' THEN 'A' 
+                                               ELSE 'Y' 
+                                          END)]]>
+  </sqlStatement>
+  <sqlStatement name="Q_ACCOUNT_SITE_USES">   
+    <![CDATA[
+             SELECT ARL.meaning         MN
+                  , HCSU.primary_flag   PF
+                  , HCSU.status         ST
+                  , HOU.name            ORG
+             FROM   hz_cust_site_uses_all HCSU
+                  , ar_lookups ARL
+                  , hr_operating_units HOU 
+             WHERE  HCSU.cust_acct_site_id = :CASI
+             AND    ARL.lookup_code = HCSU.site_use_code
+             AND    ARL.lookup_type = 'SITE_USE_CODE'
+             AND    HOU.organization_id = HCSU.org_id
+             AND    ARL.enabled_flag = 'Y' 
+             AND    (CASE :P_INACT 
+                          WHEN 'N' THEN HCSU.status
+                          ELSE 'Y' 
+                                  END) = (CASE :P_INACT 
+                                               WHEN 'N' THEN 'A' 
+                                               ELSE 'Y' 
+                                          END)]]>
+  </sqlStatement>
+  <sqlStatement name="Q_ACCOUNT_SITE_BILL_DOCS">   
+    <![CDATA[
+             SELECT A.billdocs_cust_doc_id     I
+                  , A.billdocs_paydoc_ind      P
+                  , A.billdocs_send_to_addr    A
+                  , A.billdocs_atten           T
+                  , A.billdocs_doc_id          D
+                  , A.billdocs_print_loc       L
+                  , A.billdocs_num_copies      C
+                  , A.billdocs_rpt_day         R
+             FROM   XX_CDH_AS_EXT_BILLDOCS_V A   
+             WHERE  A.cust_acct_site_id = :CASI]]>
+  </sqlStatement>
+  <sqlStatement name="Q_ACCOUNT_SITE_CONTACTS">   
+    <![CDATA[
+             SELECT rownum          C
+                  , B.party_name    PN
+                  , A.status        S
+             FROM   hz_parties B 
+                  , (
+                     SELECT distinct HR.object_id
+                          , HCP.status  
+                     FROM   xx_cdh_as_ext_webcts_v A
+                          , hz_contact_points HCP
+                          , hz_party_relationships HR
+                     WHERE  A.cust_acct_site_id = :CASI
+                     AND    A.webcontacts_contact_party_id = HCP.owner_table_id
+                     AND    HR.party_id = HCP.owner_table_id
+                     AND    (CASE :P_INACT 
+                                  WHEN 'N' THEN HCP.status
+                                  ELSE 'Y' 
+                                          END) = (CASE :P_INACT 
+                                                       WHEN 'N' THEN 'A' 
+                                                       ELSE 'Y' 
+                                                              END)
+                    )A 
+             WHERE  B.party_id = A.object_id]]>
+  </sqlStatement> 
+  <sqlStatement name="Q_ACCOUNT_CONTACTS">   
+    <![CDATA[
+             SELECT HCAR.cust_account_role_id    CRI
+                  , HP.party_name                PN
+                  , HCAS.orig_system_reference   OSR
+                  , HCAR.status                  ST
+                  , HCAR.primary_flag            PF
+             FROM   hz_cust_account_roles HCAR 
+                  , hz_parties HP
+                  , hz_party_relationships HPR
+                  , hz_cust_acct_sites_all HCAS
+             WHERE  HCAR.cust_account_id = :CAI
+             AND    HPR.party_id = HCAR.party_id
+             AND    HP.party_id = HPR.subject_id
+             AND    HCAS.cust_acct_site_id(+) = HCAR.cust_acct_site_id
+             AND    (CASE :P_INACT 
+                         WHEN 'N' THEN HCAR.status
+                         ELSE 'Y' 
+                                 END) = (CASE :P_INACT 
+                                             WHEN 'N' THEN 'A' 
+                                             ELSE 'Y' 
+                                                     END)
+             AND       HCAR.role_type = 'CONTACT']]>
+  </sqlStatement> 
+  <sqlStatement name="Q_ACCOUNT_CONTACTS_RESP">   
+    <![CDATA[
+             SELECT ARL.meaning        MN
+                  , HRR.primary_flag   PF
+             FROM   hz_role_responsibility HRR
+                  , ar_lookups ARL
+             WHERE  HRR.cust_account_role_id = :CRI
+             AND    ARL.lookup_code = HRR.responsibility_type
+             AND    ARL.lookup_type = 'CONTACT_ROLE_TYPE'
+             AND    ARl.enabled_flag = 'Y']]>
+  </sqlStatement>
+  <sqlStatement name="Q_ACCOUNT_BANKS">   
+    <![CDATA[
+             SELECT ABA.bank_account_name                 AN
+                  , ABA.bank_account_num                  ANU
+                  , ABA.currency_code                     CUR
+                  , ABU.primary_flag                      PF
+                  , TO_CHAR(ABU.start_date,'DD/MON/YYYY') SD
+                  , TO_CHAR(ABU.end_date,'DD/MON/YYYY')   ED
+                  , ABB.bank_name                         BNA
+                  , ABB.bank_branch_name                  BRN
+                  , ABB.bank_num                          BRNU
+                  , ABB.bank_number                       BNU
+                  , HOU.name                              OU
+             FROM   ap_bank_accounts_all ABA
+                  , ap_bank_account_uses_all ABU
+                  , ap_bank_branches ABB
+                  , hr_operating_units HOU  
+             WHERE  ABA.bank_account_id = ABU.external_bank_account_id
+             AND    ABB.bank_branch_id = ABA.bank_branch_id 
+             AND    HOU.organization_id(+) = ABA.org_id
+             AND    ABU.customer_id = :CAI]]>
+  </sqlStatement>
+</dataQuery>
+<dataStructure>
+   <group name="G_PARTY" source="Q_PARTY">
+      <element name="PTY_NUM" value="PTY_NUM" /> 
+      <element name="PTY_NAME" value="PTY_NAME" /> 
+      <element name="PTY_TYPE" value="PTY_TYPE" /> 
+      <element name="OSR" value="OSR" /> 
+      <element name="PTY_ID" value="PTY_ID" /> 
+      <element name="PORC" value="PORC" /> 
+      <element name="RB" value="RB" /> 
+      <element name="ST" value="ST" />
+      <group name="G_PARTY_STAGED" source="Q_PARTY_STAGED">
+         <element name="S" value="S" />
+      </group>
+      <group name="G_GET_WHERE_CLAUSE" source="Q_GET_WHERE_CLAUSE">
+         <element name="SQL1" value="SQL1" />
+      </group>
+   </group>
+   <group name="G_PROFILE" source="Q_PROFILE">
+      <element name="FNAME" value="FNAME" />
+      <element name="LNAME" value="LNAME" />
+      <element name="TIT" value="TIT" />
+      <element name="CONTENT_SOURCE_TYPE" value="CONTENT_SOURCE_TYPE" />     
+      <element name="ACTUAL_CONTENT_SOURCE" value="ACTUAL_CONTENT_SOURCE" /> 
+      <element name="ESD" value="ESD" />   
+      <element name="EED" value="EED" /> 
+      <element name="PTYP" value="PTYP" />
+   </group>
+   <group name="G_CLASSIFICATION" source="Q_CLASSIFICATION">         
+      <element name="CCAT" value="CCAT" />       
+      <element name="DSC" value="DSC" />   
+      <element name="CCO" value="CCO" />     
+      <element name="MN" value="MN" />
+      <element name="SDA" value="SDA" />
+      <element name="EDA" value="EDA" />
+      <element name="ST" value="ST" />
+   </group>   
+   <group name="G_RELATIONSHIPS" source="Q_RELATIONSHIPS">         
+      <element name="MEANING" value="MEANING" />       
+      <element name="PARTY_NAME" value="PARTY_NAME" />   
+      <element name="PARTY_NUMBER" value="PARTY_NUMBER" />     
+      <element name="ORIG_SYSTEM_REFERENCE" value="ORIG_SYSTEM_REFERENCE" />
+      <element name="PARTY_TYPE" value="PARTY_TYPE" />
+      <element name="ST" value="ST" />
+      <element name="PRI" value="PRI" />
+      <group name="G_RELATIONSHIPS_STAGED" source="Q_RELATIONSHIPS_STAGED">
+            <element name="S" value="S" />
+      </group>
+   </group>
+   <group name="G_PARTY_SITES" source="Q_PARTY_SITES">         
+      <element name="OSR" value="OSR" />       
+      <element name="AD" value="AD" />   
+      <element name="P_SIT_ID" value="P_SIT_ID" />
+      <element name="ST" value="ST" />
+      <group name="G_PARTY_SITES_STAGED" source="Q_PARTY_SITES_STAGED">
+         <element name="S" value="S" />
+      </group>
+      <group name="G_PARTY_SITE_USE" source="Q_PARTY_SITE_USE">         
+         <element name="MN" value="MN" />
+         <element name="ST" value="ST" />
+      </group>
+      <group name="G_PARTY_SITE_CONTACTS" source="Q_PARTY_SITE_CONTACTS">
+         <element name="C" value="C" />   
+         <element name="PN" value="PN" />
+         <element name="ED" value="ED" />
+      </group>
+      <group name="G_PARTY_SITE_DEMOGRAPHICS" source="Q_PARTY_SITE_DEMOGRAPHICS">            
+         <element name="DN" value="DN" />             
+         <element name="TE" value="TE" />         
+         <element name="SIC" value="SIC" />           
+         <element name="W" value="W" />      
+         <element name="OW" value="OW" />
+         <element name="NA" value="NA" />
+      </group>
+      <group name="G_PARTY_SITE_SPEND_ATTRIBUTES" source="Q_PARTY_SITE_SPEND_ATTRIBUTES">       
+         <element name="PS" value="PS" />             
+         <element name="GM" value="GM" />
+      </group>
+      <group name="G_PARTY_SITE_ASSIGNMENTS" source="Q_PARTY_SITE_ASSIGNMENTS"> 
+         <element name="RN" value="RN" />             
+         <element name="GN" value="GN" />
+         <element name="LN" value="LN" />
+      </group>
+   </group>
+   <group name="G_PARTY_CNT_POINTS_PHONE" source="Q_PARTY_CNT_POINTS_PHONE">       
+         <element name="CNT" value="CNT" />             
+         <element name="PLT" value="PLT" />
+         <element name="CPP" value="CPP" />
+         <element name="PN" value="PN" />
+         <element name="XT" value="XT" />
+         <element name="ST" value="ST" />
+         <element name="PF" value="PF" />
+         <element name="PP" value="PP" />
+         <group name="G_PARTY_CNT_POINTS_PHONE_STAGED" source="Q_PARTY_CNT_POINTS_PHONE_STAGED">    
+               <element name="S" value="S" />
+         </group>
+   </group>
+   <group name="G_PARTY_CNT_POINTS_WEB" source="Q_PARTY_CNT_POINTS_WEB">    
+         <element name="CNT" value="CNT" />                
+         <element name="CPP" value="CPP" />   
+         <element name="URL" value="URL" />
+         <element name="ST" value="ST" />   
+         <element name="PF" value="PF" />
+         <element name="PW" value="PW" />
+         <group name="G_PARTY_CNT_POINTS_WEB_STAGED" source="Q_PARTY_CNT_POINTS_WEB_STAGED">    
+               <element name="S" value="S" />
+         </group>         
+   </group>
+   <group name="G_PARTY_CNT_POINTS_EMAIL" source="Q_PARTY_CNT_POINTS_EMAIL">    
+         <element name="CNT" value="CNT" />                
+         <element name="CPP" value="CPP" />   
+         <element name="EML" value="EML" />
+         <element name="ST" value="ST" />
+         <element name="PF" value="PF" />
+         <element name="PE" value="PE" />
+         <group name="G_PARTY_CNT_POINTS_EMAIL_STAGED" source="Q_PARTY_CNT_POINTS_EMAIL_STAGED">    
+               <element name="S" value="S" />
+         </group>                
+   </group>
+   <group name="G_PTY_RLNT_CONTACT" source="Q_PTY_RLNT_CONTACT">    
+         <element name="P_NA" value="P_NA" />                
+         <element name="PTY_RLNT_ID" value="PTY_RLNT_ID" />  
+         <element name="ST" value="ST" />
+         <group name="G_PTY_RLNT_CTACT_PTS_PHONE" source="Q_PTY_RLNT_CTACT_PTS_PHONE">
+            <element name="CNT" value="CNT" />
+            <element name="PLT" value="PLT" />
+            <element name="CPP" value="CPP" />
+            <element name="PN" value="PN" />
+            <element name="XT" value="XT" />
+            <element name="ST" value="ST" />
+            <element name="PF" value="PF" />
+            <element name="RP" value="RP" />
+            <group name="G_PTY_RLNT_CTACT_PTS_PHONE_STAGED" source="Q_PTY_RLNT_CTACT_PTS_PHONE_STAGED">    
+                  <element name="S" value="S" />
+            </group>            
+         </group>
+         <group name="G_PTY_RLNT_CTACT_PTS_WEB" source="Q_PTY_RLNT_CTACT_PTS_WEB">
+            <element name="CNT" value="CNT" />
+            <element name="CPP" value="CPP" />
+            <element name="URL" value="URL" />
+            <element name="ST" value="ST" />
+            <element name="PF" value="PF" />
+            <element name="RW" value="RW" />
+            <group name="G_PTY_RLNT_CTACT_PTS_WEB_STAGED" source="Q_PTY_RLNT_CTACT_PTS_WEB_STAGED">    
+                  <element name="S" value="S" />
+            </group> 
+         </group>
+         <group name="G_PTY_RLNT_CTACT_PTS_EMAIL" source="Q_PTY_RLNT_CTACT_PTS_EMAIL">
+            <element name="CNT" value="CNT" />
+            <element name="CPP" value="CPP" />
+            <element name="EML" value="EML" />
+            <element name="ST" value="ST" />
+            <element name="PF" value="PF" />
+            <element name="RE" value="RE" />
+            <group name="G_PTY_RLNT_CTACT_PTS_EMAIL_STAGED" source="Q_PTY_RLNT_CTACT_PTS_EMAIL_STAGED">    
+                  <element name="S" value="S" />
+            </group>
+         </group>
+   </group>
+   <group name="G_ACCOUNTS" source="Q_ACCOUNTS">
+         <element name="ACN" value="ACN" />
+         <element name="OSR" value="OSR" />
+         <element name="ST" value="ST" />
+         <element name="CT" value="CT" />
+         <element name="CAI" value="CAI" />
+         <group name="G_ACC_BILL_DOCS" source="Q_ACC_BILL_DOCS">
+               <element name="DT" value="DT" />
+               <element name="DM" value="DM" />
+               <element name="DF" value="DF" />
+               <element name="PT" value="PT" />
+         </group>
+         <group name="G_SOURCE_AUDIT" source="Q_SOURCE_AUDIT">    
+               <element name="CD" value="CD" />         
+               <element name="UD" value="UD" />
+         </group> 
+         <group name="G_SPC_CARD" source="Q_SPC_CARD">       
+               <element name="SCN" value="SCN" />             
+               <element name="TL" value="TL" />
+               <element name="TC" value="TC" />
+         </group>
+   </group>
+   <group name="G_ACCOUNTS_PROFILE" source="Q_ACCOUNTS_PROFILE">
+         <element name="OSR" value="OSR" />
+         <element name="PN" value="PN" />
+         <element name="C" value="C" />
+         <element name="CC" value="CC" />
+         <element name="T" value="T" />
+         <element name="SN" value="SN" />
+         <element name="CN" value="CN" />
+         <element name="DN" value="DN" />
+         <element name="LN" value="LN" />
+         <element name="AN" value="AN" />
+         <element name="AD" value="AD" />
+         <element name="CPI" value="CPI" />
+         <group name="G_ACCOUNTS_PROFILE_AMT" source="Q_ACCOUNTS_PROFILE_AMT">
+               <element name="CU" value="CU" />
+               <element name="TL" value="TL" />
+               <element name="OL" value="OL" />
+         </group>
+   </group>
+   <group name="G_ACCOUNT_SITES" source="Q_ACCOUNT_SITES">
+         <element name="OSR" value="OSR" />
+         <element name="CASI" value="CASI" />
+         <element name="ST" value="ST" />
+         <element name="ORG" value="ORG" />
+         <group name="G_ACCOUNT_SITE_USES" source="Q_ACCOUNT_SITE_USES">
+               <element name="MN" value="MN" />
+               <element name="PF" value="PF" />
+               <element name="ST" value="ST" />
+               <element name="ORG" value="ORG" />
+         </group>
+         <group name="G_ACCOUNT_SITE_BILL_DOCS" source="Q_ACCOUNT_SITE_BILL_DOCS">
+               <element name="I" value="I" />
+               <element name="P" value="P" />
+               <element name="A" value="A" />
+               <element name="T" value="T" />
+               <element name="D" value="D" />
+               <element name="L" value="L" />
+               <element name="C" value="C" />
+               <element name="R" value="R" />
+         </group>
+         <group name="G_ACCOUNT_SITE_CONTACTS" source="Q_ACCOUNT_SITE_CONTACTS">
+               <element name="C" value="C" />
+               <element name="PN" value="PN" />
+               <element name="S" value="S" />
+         </group>
+   </group>
+   <group name="G_ACCOUNT_CONTACTS" source="Q_ACCOUNT_CONTACTS">
+         <element name="CRI" value="CRI" />
+         <element name="PN" value="PN" />
+         <element name="OSR" value="OSR" />
+         <element name="ST" value="ST" />
+         <element name="PF" value="PF" />
+         <group name="G_ACCOUNT_CONTACTS_RESP" source="Q_ACCOUNT_CONTACTS_RESP">
+               <element name="MN" value="MN" />
+               <element name="PF" value="PF" />
+         </group>
+   </group>
+   <group name="G_ACCOUNT_BANKS" source="Q_ACCOUNT_BANKS">
+         <element name="AN" value="AN" />
+         <element name="ANU" value="ANU" />
+         <element name="CUR" value="CUR" />
+         <element name="PF" value="PF" />
+         <element name="SD" value="SD" />
+         <element name="ED" value="ED" />
+         <element name="BNA" value="BNA" />
+         <element name="BRN" value="BRN" />
+         <element name="BRNU" value="BRNU" />
+         <element name="BNU" value="BNU" />
+         <element name="OU" value="OU" />
+   </group>
+</dataStructure>
+</dataTemplate>

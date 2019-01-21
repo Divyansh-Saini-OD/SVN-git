@@ -1,0 +1,41 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=========================================================================================+
+-- |                  Office Depot - Project Simplify                                        |
+-- +=========================================================================================+
+-- | Name        : XX_CDH_AOPS_JOBS_PUB_BE_CREATE.abk                                        |
+-- | Description : Anonymous block for creating Business Events for Invoking AOPS            |
+-- |               Procedure                                                                 |
+-- |                                                                                         |
+-- |Change Record:                                                                           |
+-- |===============                                                                          |
+-- |Version     Date           Author               Remarks                                  |
+-- |=======    ==========      ================     =========================================|
+-- |1.0        24-Nov-2008     Indra Varada         Anonymous Block; First version           |
+-- +=========================================================================================+
+
+declare
+eventRowId ROWID;
+begin
+
+WF_EVENTS_PKG.g_Mode := 'CUSTOM';
+
+WF_EVENTS_PKG.INSERT_ROW (
+    X_ROWID => eventRowId,
+    X_GUID => substr(hextoraw(WF_CORE.RANDOM), 1, 20),
+    X_NAME => 'od.cdh.aops.jobs.pub',
+    X_TYPE => 'EVENT',
+    X_STATUS => 'ENABLED',
+    X_GENERATE_FUNCTION => NULL,
+    X_OWNER_NAME => 'AR',
+    X_OWNER_TAG => 'XXCRM',
+    X_DISPLAY_NAME => 'od.cdh.aops.jobs.pub',
+    X_DESCRIPTION => 'od.cdh.aops.jobs.pub - to invoke AOPS Procedures',
+    X_CUSTOMIZATION_LEVEL => 'U',
+    X_JAVA_GENERATE_FUNC => NULL
+);
+commit;
+END;
+/

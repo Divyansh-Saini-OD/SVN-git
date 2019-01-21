@@ -1,0 +1,31 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===========================================================================+
+-- |                  Office Depot - eBilling Project                          |
+-- |                         WIPRO/Office Depot                                |
+-- +===========================================================================+
+-- | Name        : CREATE_XX_CDH_EBL_AGGR_ID_S.syn                             |
+-- | Description : Synonym for Sequence and this is used in eBill.             |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author        Remarks            	               |
+-- |======== =========== ============= ========================================|
+-- |DRAFT 1A 15-MAR-2010 Srini Ch      Initial draft version                   |
+-- |                                                                           |
+-- |                                                                           |
+-- |                                                                           |
+-- +===========================================================================+
+
+-- ----------------------------------------------------------------------------
+--      Create Custom Synonym XX_CDH_EBL_AGGR_ID_S.
+-- ----------------------------------------------------------------------------
+
+CREATE OR REPLACE SYNONYM XX_CDH_EBL_AGGR_ID_S FOR XXCRM.XX_CDH_EBL_AGGR_ID_S;
+
+
+/
+SHOW ERRORS;

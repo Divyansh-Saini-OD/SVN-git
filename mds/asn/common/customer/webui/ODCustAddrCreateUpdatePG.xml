@@ -1,0 +1,29 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<jrad:page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1550" xml:lang="en-US" file-version="$Header: CustAddrCreateUpdatePG.xml 115.11 2004/08/24 15:15:25 mkatraga ship $">
+   <jrad:content>
+      <oa:pageLayout amDefName="oracle.apps.asn.common.customer.server.CustAddrCreateUpdateAM" id="PageLayoutRN" controllerClass="od.oracle.apps.xxcrm.asn.common.customer.webui.ODCustAddrCreateUpdateCO" helpTarget="ASN_CustAddrCreateUpdatePG" function="ASN_CUSTADDRCREATEUPDATEPG" shortDesc="Create/Update Customer Address">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:pageButtonBar id="ASNPageButtonRN">
+               <ui:contents>
+                  <oa:submitButton id="ASNPageCnclBtn" text="Cancel" unvalidated="true" serverUnvalidated="true" use="/oracle/apps/fnd/attributesets/Buttons/Cancel"/>
+                  <oa:submitButton id="ASNPageSvCrteAnotherBtn" text="Save and Create Another" use="/oracle/apps/asn/common/attributesets/Buttons/SaveAndCreateAnother"/>
+                  <oa:submitButton id="ASNPageApyBtn" text="Apply" use="/oracle/apps/fnd/attributesets/Buttons/Apply"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+            <oa:header id="ASNCustAddrRN" extends="/oracle/apps/ar/hz/components/address/webui/HzPuiAddressCreateUpdate"/>
+            <oa:stackLayout id="ASNReqCtxtRN" extends="/oracle/apps/asn/common/fwk/webui/ASNReqCtxtRN"/>
+            <oa:stackLayout id="ExtensionRN" extends="/oracle/apps/ar/hz/components/extension/webui/HzPuiPartySiteExtRN"/>
+         </ui:contents>
+         <ui:productBranding>
+            <oa:image id="ASNBrandImage" source="ASNBRAND.gif" shortDesc="Sales"/>
+         </ui:productBranding>
+         <ui:pageStatus>
+            <oa:tableLayout id="ASNRequiredFieldRN" extends="/oracle/apps/fnd/framework/webui/OAReqFieldDescRG" hAlign="start"/>
+         </ui:pageStatus>
+      </oa:pageLayout>
+   </jrad:content>
+</jrad:page>

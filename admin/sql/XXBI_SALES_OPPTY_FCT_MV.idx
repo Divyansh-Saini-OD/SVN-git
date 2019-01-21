@@ -1,0 +1,14 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+CREATE INDEX XXCRM.XXBI_SALES_OPPTY_FCT_MV_N1 ON XXCRM.XXBI_SALES_OPPTY_FCT_MV
+(resource_id, role_id, group_id, opp_id, party_id, lead_line_id, opp_name, party_name, org_number, customer_type, 
+status_code, source_promotion_id, close_reason_id)
+COMPUTE STATISTICS; 
+
+CREATE INDEX XXCRM.XXBI_SALES_OPPTY_FCT_MV_N2 ON XXCRM.XXBI_SALES_OPPTY_FCT_MV (opp_id)
+COMPUTE STATISTICS; 
+
+SHOW ERRORS;
+EXIT;

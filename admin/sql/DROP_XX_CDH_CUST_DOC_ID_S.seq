@@ -1,0 +1,36 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        : DROP_XX_CDH_CUST_DOC_ID_S.seq                       |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |1.0      19-Jan-2009  Sreedhar Mohan   Baselined after testing     |
+-- |                                                                   |
+-- +===================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+SET TERM ON
+
+PROMPT
+PROMPT Dropping Existing SEQUENCE XX_CDH_CUST_DOC_ID_S
+PROMPT
+
+DROP SEQUENCE XXCRM.XX_CDH_CUST_DOC_ID_S;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

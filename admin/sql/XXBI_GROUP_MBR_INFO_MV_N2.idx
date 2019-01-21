@@ -1,0 +1,9 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+CREATE INDEX xxbi_group_mbr_info_mv_n2 ON apps.XXBI_GROUP_MBR_INFO_MV(resource_id, role_id, group_id, start_date_active,end_date_active);
+
+EXIT;
+

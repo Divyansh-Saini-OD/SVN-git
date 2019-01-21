@@ -1,0 +1,72 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_1312" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="CustomersListRN" amDefName="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSCustomersListAM" windowTitle="MARS Customer List" controllerClass="od.oracle.apps.xxcrm.mps.reports.webui.XXCSMPSCustomersListCO" title="MARS Customer List">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:advancedTable id="ResultsRN" viewName="XXCSMPSCustomersListVO1" amDefName="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSCustomersListAM" controllerClass="od.oracle.apps.xxcrm.mps.reports.webui.XXCSMPSCustomersListCO">
+               <ui:contents>
+                  <oa:column id="AccountNumberCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableAccountNumber" sortByViewAttr="AccountNumber" prompt="Account Number" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="AccountNumber" viewAttr="AccountNumber" prompt=""/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="AopsCustNumberCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableAopsCustNumber" sortByViewAttr="AopsCustNumber" prompt="Aops Cust Number" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="AopsCustNumber" viewAttr="AopsCustNumber"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="PartyNameCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortablePartyName" sortByViewAttr="PartyName" prompt="Customer Name" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="PartyName" viewAttr="PartyName"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ProgramTypeCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeader1" sortByViewAttr="ProgramType" prompt="Program Type" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ProgramType" viewAttr="ProgramType"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ActiveStatusCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableActiveStatus" sortState="yes" sortByViewAttr="ActiveStatus" prompt="Active Status"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ActiveStatus" viewAttr="ActiveStatus"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ManagedStatusCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ManagedStatusHdr" prompt="Managed Status"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ManagedStatus" viewAttr="ManagedStatus"/>
+                     </ui:contents>
+                  </oa:column>
+               </ui:contents>
+               <ui:tableActions>
+                  <oa:rowLayout id="ExportRN">
+                     <ui:contents>
+                        <oa:exportButton id="ExportButton" exportAllRows="true" text="Export to CSV" viewName="XXCSMPSCustomersListVO1"/>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:tableActions>
+            </oa:advancedTable>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

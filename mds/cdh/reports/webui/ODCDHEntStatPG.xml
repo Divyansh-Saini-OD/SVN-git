@@ -1,0 +1,20 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1550" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="MainRN" controllerClass="od.oracle.apps.xxcrm.cdh.reports.webui.ODCDHEntStatCO" windowTitle="OD: CDH TCA Entities Statistical Info Program" title="OD: CDH TCA Entities Statistical Info Program" amDefName="od.oracle.apps.xxcrm.cdh.reports.server.ReportsModuleAM">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:defaultSingleColumn id="statInfoRN">
+               <ui:contents>
+                  <oa:staticStyledText id="text1" text="On click of Run button you will be redirected to concurrent process output." prompt="On click of Run button you will be redirected to concurrent process output."/>
+                  <oa:separator id="Seperator"/>
+                  <oa:submitButton id="RprtBtn" serverUnvalidated="true" unvalidated="true" text="View Request" prompt="View Request" viewName="ODConcRequestsVO1"/>
+               </ui:contents>
+            </oa:defaultSingleColumn>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

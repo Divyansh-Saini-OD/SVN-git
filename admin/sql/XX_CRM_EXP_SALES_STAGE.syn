@@ -1,0 +1,58 @@
+
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify						|
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_SALES_STAGE.syn                                                   |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        08/07/11       Devendra Petkar        Initial version                            |
+-- +============================================================================================+
+
+
+
+---------------------------------------------------------
+-- Deleting  				               --
+---------------------------------------------------------
+
+SET scan off;
+
+
+DELETE FROM XX_FIN_TRANSLATEVALUES WHERE TRANSLATE_ID IN
+(SELECT TRANSLATE_ID FROM apps.XX_FIN_TRANSLATEDEFINITION  WHERE TRANSLATION_NAME = 'XXCRM_SFDC_SALES_LOV') AND SOURCE_VALUE1 IN ('OPPORTUNITY_STAGE');
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,SOURCE_VALUE4,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID, ENABLED_FLAG) VALUES ('OPPORTUNITY_STAGE','0','0%-Lost','',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XXCRM_SFDC_SALES_LOV'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,SOURCE_VALUE4,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID, ENABLED_FLAG) VALUES ('OPPORTUNITY_STAGE','1','1%-Appointment Secured','',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XXCRM_SFDC_SALES_LOV'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,SOURCE_VALUE4,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID, ENABLED_FLAG) VALUES ('OPPORTUNITY_STAGE','25','25%-Initial Approach','',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XXCRM_SFDC_SALES_LOV'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,SOURCE_VALUE4,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID, ENABLED_FLAG) VALUES ('OPPORTUNITY_STAGE','50','50%-Presentation','',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XXCRM_SFDC_SALES_LOV'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,SOURCE_VALUE4,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID, ENABLED_FLAG) VALUES ('OPPORTUNITY_STAGE','75','75%-Negotiate & Finalize','',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XXCRM_SFDC_SALES_LOV'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,SOURCE_VALUE4,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID, ENABLED_FLAG) VALUES ('OPPORTUNITY_STAGE','90','90%-Execute','',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XXCRM_SFDC_SALES_LOV'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,SOURCE_VALUE4,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID, ENABLED_FLAG) VALUES ('OPPORTUNITY_STAGE','100','100%-Closed','',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XXCRM_SFDC_SALES_LOV'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+
+
+SHOW ERRORS;
+
+EXIT;

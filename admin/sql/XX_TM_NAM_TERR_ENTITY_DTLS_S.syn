@@ -1,0 +1,24 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XX_TM_NAM_TERR_ENTITY_DTLS_S.syn                   |
+-- | Description      : Synonyms for XX_TM_NAM_TERR_ENTITY_DTLS_S          |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |1.0      12-Sep-2007   Sreekanth        Initial Version                |
+-- +=======================================================================+
+------------------------------------------------------
+-- Dropping the existing synonym and creating new.  --
+------------------------------------------------------
+CREATE OR REPLACE SYNONYM APPS.XX_TM_NAM_TERR_ENTITY_DTLS_S FOR XXCRM.XX_TM_NAM_TERR_ENTITY_DTLS_S;
+
+SHOW ERRORS;
+

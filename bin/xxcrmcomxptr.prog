@@ -1,0 +1,114 @@
+echo "XPTR Log starts here........................" > /tmp/xxcrm_com_xptr.$$
+echo "Arguments:$*" >> /tmp/xxcrm_com_xptr.$$
+echo "Arguments:$*" >> /tmp/xprinter
+V_SRC_FILE=$2
+V_TITLE=$4
+echo "Printer:$1" >> /tmp/xxcrm_com_xptr.$$
+echo "Source File:$V_SRC_FILE" >> /tmp/xxcrm_com_xptr.$$
+echo "Copies:$3" >> /tmp/xxcrm_com_xptr.$$
+echo "Title:$V_TITLE" >> /tmp/xxcrm_com_xptr.$$
+V_REQUEST_ID=`echo $V_TITLE | cut -d. -f2 `
+echo "Request_id:$V_REQUEST_ID" >> /tmp/xxcrm_com_xptr.$$
+V_RESULT=`echo "set echo off;
+		set heading off;
+		set feedback off;
+		set lines 1000;
+		set trimspool on;
+		set serveroutput on;
+		Declare
+		x_result   varchar2(1000);
+		Begin
+			
+		SELECT 'orclcrm~' || xval.target_value1 || cr.request_id || '~' || cr.logfile_name||'~'||
+			case when cp.concurrent_program_name in 
+			('XXTMRMHIERREPORT','XXCRMRMGROUP','XXTMRMAMSYNCREP','XX_TM_ASSGN_TPS_REPORT','XXRSCACTROLE','XXSFAWORKDESPREP',
+			'XXJTFTERRRSCREPORT','XXCRMHRCRMCONV','XXCRMRMSETUPREP','XX_CS_VND_SUBS_RPT','XX_CS_MKT_RPT','XX_OMX_ASSGN_TPS_REPORT') then 'xls' else 'out' end
+			                       INTO x_result
+			                        FROM apps.xx_fin_translatedefinition xdef,
+			                            apps.xx_fin_translatevalues xval,
+			                            apps.fnd_concurrent_requests cr,
+			                             apps.fnd_concurrent_programs cp
+			                        WHERE xdef.translation_name = 'XXOD_CRM_XPTR'
+			                        AND xdef.translate_id = xval.translate_id
+			                        AND cp.concurrent_program_name = xval.source_value1
+			                        AND cp.concurrent_program_id= cr.concurrent_program_id
+                        AND cr.request_id =(                                                
+                        select 
+                        case when fcp.concurrent_program_name = 'XDOREPPB' then fcr.argument1 else to_char(fcr.request_id) end
+                        from 
+                        fnd_concurrent_programs fcp, 
+                        fnd_concurrent_requests fcr 
+                        where fcp.concurrent_program_id = fcr.concurrent_program_id 
+                        and fcr.request_id = $V_REQUEST_ID);
+                               
+			dbms_output.put_line(x_result);
+		Exception
+		    When others then
+			dbms_output.put_line('OERROR~OTHER~'||substr(sqlerrm,1,255));
+		End;
+/"|sqlplus -s /nolog`
+echo $V_RESULT
+if [ "$?" = 0 ]
+then
+    if [ "$V_RESULT" = "Not connected" ]
+    then
+	echo "Could not access the database. XPTR Exiting!!!" >> /tmp/xxcrm_com_xptr.$$
+	exit 1;
+    else
+	echo "Query successful." >> /tmp/xxcrm_com_xptr.$$
+    fi
+else
+    echo "Could not access the database. XPTR Exiting!!!" >> /tmp/xxcrm_com_xptr.$$
+    exit 1;
+fi
+echo "Query Result:$V_RESULT" >> /tmp/xxcrm_com_xptr.$$
+V_DIR=`echo $V_RESULT | cut -d~ -f1 `
+V_FILE=`echo $V_RESULT | cut -d~ -f2 `
+V_LOGFILE=`echo $V_RESULT | cut -d~ -f3 `
+
+if [ "$V_DIR" = "OERROR" ]
+then
+    echo "Error occurred while querying the database" >> /tmp/xxcrm_com_xptr.$$
+    echo "$V_LOGFILE" >> /tmp/xxcrm_com_xptr.$$
+    echo "XPTR Exiting!!!" >> /tmp/xxcrm_com_xptr.$$
+    exit 1;
+fi
+echo "Target Directory:/app/xptrrs/orarpt/$V_DIR" >> /tmp/xxcrm_com_xptr.$$
+V_EXTN=`echo $V_RESULT | cut -d~ -f4 `
+V_FILENAME=`echo "$V_FILE.$V_EXTN"`
+echo "Target Filename:$V_FILENAME" >> /tmp/xxcrm_com_xptr.$$
+echo "Checking for existence of Target Directory....." >> /tmp/xxcrm_com_xptr.$$
+if test ! -d /app/xptrrs/orarpt/$V_DIR
+then
+    echo "Target Directory does not exist! XPTR Exiting!!!" >> /tmp/xxcrm_com_xptr.$$
+    echo "XPTR Log ends here." >> /tmp/xxcrm_com_xptr.$$
+    cat /tmp/xxcrm_com_xptr.$$ >> $V_LOGFILE
+    if [ "$?" = 0 ]
+    then
+	rm /tmp/xxcrm_com_xptr.$$
+    fi
+    exit 1;
+else
+    if test ! -w /app/xptrrs/orarpt/$V_DIR
+    then
+	echo "Target Directory is not writable! XPTR Exiting!!!" >> /tmp/xxcrm_com_xptr.$$
+	echo "XPTR Log ends here." >> /tmp/xxcrm_com_xptr.$$
+	cat /tmp/xxcrm_com_xptr.$$ >> $V_LOGFILE
+	if [ "$?" = 0 ]
+	then
+	    rm /tmp/xxcrm_com_xptr.$$
+	fi
+	exit 1;
+    fi
+    echo "Target Directory Exists and is Writable!" >> /tmp/xxcrm_com_xptr.$$
+fi
+echo "Copying file $V_SRC_FILE to /app/xptrrs/orarpt/$V_DIR/$V_FILENAME....." >> /tmp/xxcrm_com_xptr.$$
+cp $V_SRC_FILE /app/xptrrs/orarpt/$V_DIR/$V_FILENAME
+if [ "$?" = 0 ]
+then
+    echo "File copied successfully!" >> /tmp/xxcrm_com_xptr.$$
+else
+    echo "File copy failed!!!" >> /tmp/xxcrm_com_xptr.$$
+fi
+echo "XPTR Log ends here." >> /tmp/xxcrm_com_xptr.$$
+cat /tmp/xxcrm_com_xptr.$$ >> $V_LOGFILE

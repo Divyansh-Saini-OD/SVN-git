@@ -1,0 +1,16 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+CREATE OR REPLACE VIEW  APPS.XXBI_LEAD_NAMES_DIM_V 
+AS
+SELECT DISTINCT sales_lead_id id, lead_name value  
+from XXBI_SALES_LEADS_FCT_MV mv,
+APPS.XXBI_GROUP_MBR_INFO_V H
+WHERE 
+  MV.resource_id = h.resource_id
+  AND MV.role_id = h.role_id
+  AND MV.group_id = h.group_id;
+
+SHOW ERRORS;
+EXIT;

@@ -1,0 +1,451 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- $Header: ODSiteUpdatePG.xml $ -->
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1550" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="SiteUpdatePageLayoutRN" windowTitle="Update Customer Site" title="Update Customer Site" amDefName="od.oracle.apps.xxcrm.asn.partysite.server.ODSiteUpdateAM" controllerClass="od.oracle.apps.xxcrm.asn.partysite.webui.ODSiteUpdateCO" warnAboutChanges="true">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:pageButtonBar id="PageButtonBarRN">
+               <ui:contents>
+                  <oa:submitButton id="GoToParty" text="Go To Party" prompt="Go To Party"/>
+                  <oa:submitButton id="Cancel" text="Cancel" use="/oracle/apps/fnd/attributesets/Buttons/Cancel"/>
+                  <oa:messageChoice id="Actions" prompt="Action" pickListDispAttr="Meaning" pickListValAttr="LookupCode" allowBlankValue="false" pickListViewName="ODActionsPoplistVO1" rendered="true"/>
+                  <oa:submitButton id="Go" text="Go" use="/oracle/apps/fnd/attributesets/Buttons/Go" rendered="true"/>
+                  <oa:submitButton id="Apply" text="Apply" use="/oracle/apps/fnd/attributesets/Buttons/Apply" rendered="true"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+            <oa:advancedTable id="SiteAddressesRN" viewName="ODPartySitesAddrVO1" width="100%" text="Addresses">
+               <ui:contents>
+                  <oa:column id="SiteNumberColumn" columnDataFormat="numberFormat">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ColumnHeader2" prompt="Site Number"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="SiteNumber" viewAttr="PartySiteNumber"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="SiteNameColumn">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ColumnHeader21" prompt="Site Name"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="SiteName" prompt="Site Name" viewAttr="PartySiteName"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="StatusColumn">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ColumnHeader211" prompt="Status"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:switcher id="region56" viewAttr="Status">
+                           <ui:case name="A">
+                              <oa:rawText id="A" text="Active"/>
+                           </ui:case>
+                           <ui:case name="I">
+                              <oa:rawText id="I" text="Inactive"/>
+                           </ui:case>
+                        </oa:switcher>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="AddressColumn">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="AddressColumnHeader" prompt="Address"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="Address" viewAttr="Address"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="CountryColumn">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ColumnHeader12" prompt="Country"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="Country" viewAttr="Country"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="PurposeColumn">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ColumnHeader121" prompt="Purpose"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="Purpose" viewAttr="AllPurposes"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="IdentifyingColumn" columnDataFormat="iconButtonFormat">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ColumnHeader1211" prompt="Identifying"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:switcher id="region3" viewAttr="IdentifyingAddressFlag">
+                           <ui:case name="Y">
+                              <oa:image id="Y" source="primary_status.gif"/>
+                           </ui:case>
+                           <ui:case name="N">
+                              <oa:messageStyledText id="N"/>
+                           </ui:case>
+                        </oa:switcher>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="UpdateColumn" columnDataFormat="iconButtonFormat">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ColumnHeader12111" prompt="Update"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:switcher id="region4" viewAttr="Updateyesno">
+                           <ui:case name="Yes">
+                              <oa:image id="Yes" source="updateicon_enabled.gif">
+                                 <ui:primaryClientAction>
+                                    <ui:fireAction event="UPDATE_EVENT">
+                                       <ui:parameters>
+                                          <ui:parameter key="siteID" value="${oa.ODPartySitesAddrVO1.PartySiteId}"/>
+                                       </ui:parameters>
+                                    </ui:fireAction>
+                                 </ui:primaryClientAction>
+                              </oa:image>
+                           </ui:case>
+                           <ui:case name="No">
+                              <oa:image id="No" source="updateicon_disabled.gif"/>
+                           </ui:case>
+                        </oa:switcher>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="RemoveColumn" columnDataFormat="iconButtonFormat">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ColumnHeader121111" prompt="Remove"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:switcher id="region41" viewAttr="Removeyes1no1">
+                           <ui:case name="Yes1">
+                              <oa:image id="Yes1" source="remove_enabled.gif">
+                                 <ui:primaryClientAction>
+                                    <ui:fireAction event="REMOVE_SITE">
+                                       <ui:parameters>
+                                          <ui:parameter key="siteID" value="${oa.ODPartySitesAddrVO1.PartySiteId}"/>
+                                          <ui:parameter key="siteNAME" value="${oa.ODPartySitesAddrVO1.PartySiteName}"/>
+                                          <ui:parameter key="siteAddress" value="${oa.ODPartySitesAddrVO1.Address}"/>
+                                       </ui:parameters>
+                                    </ui:fireAction>
+                                 </ui:primaryClientAction>
+                              </oa:image>
+                           </ui:case>
+                           <ui:case name="No1">
+                              <oa:image id="No1" source="remove_disabled.gif"/>
+                           </ui:case>
+                        </oa:switcher>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:formValue id="PartySiteId" viewAttr="PartySiteId"/>
+                  <oa:formValue id="PartyId" viewAttr="PartyId"/>
+               </ui:contents>
+               <ui:tableSelection>
+                  <oa:singleSelection id="Selection" viewAttr="Selected" text="Select site">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="SELECT_EVENT">
+                           <ui:parameters>
+                              <ui:parameter key="pSiteId" value="${oa.ODPartySitesAddrVO1.PartySiteId}"/>
+                           </ui:parameters>
+                        </ui:fireAction>
+                     </ui:primaryClientAction>
+                  </oa:singleSelection>
+               </ui:tableSelection>
+               <ui:tableActions>
+                  <oa:flowLayout id="region57">
+                     <ui:contents>
+                        <oa:submitButton id="CreateAddress" text="Create Address" prompt="Create Address"/>
+                     </ui:contents>
+                  </oa:flowLayout>
+               </ui:tableActions>
+            </oa:advancedTable>
+            <oa:messageComponentLayout id="SpaceRN">
+               <ui:contents>
+                  <oa:messageLayout id="Space">
+                     <ui:contents>
+                        <oa:spacer id="Spacer"/>
+                     </ui:contents>
+                  </oa:messageLayout>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:subTabLayout id="SubTabLayoutRN">
+               <ui:subTabs>
+                  <oa:subTabBar id="subTabBar1">
+                     <ui:contents>
+                        <oa:link id="ProfileLink" text="Profile"/>
+                        <oa:link id="NotesTasksLink" text="Notes and Tasks"/>
+                        <oa:link id="ContactsLink" text="Contacts"/>
+                        <oa:link id="AddressBookLink" text="Address Book"/>
+                        <oa:link id="SalesTeamLink" text="Sales Team"/>
+                     </ui:contents>
+                  </oa:subTabBar>
+               </ui:subTabs>
+               <ui:contents>
+                  <oa:messageComponentLayout id="ProfileRN">
+                     <ui:contents>
+                        <oa:messageLayout id="messageLayout7">
+                           <ui:contents>
+                              <oa:stackLayout id="ExtensionRN" extends="/oracle/apps/ar/hz/components/extension/webui/HzPuiPartySiteExtRN"/>
+                              <oa:tableLayout id="ODSiteUPDViewTLRN" width="100%">
+                                 <ui:contents>
+                                    <oa:rowLayout id="ODBusinessActRow" vAlign="top">
+                                       <ui:contents>
+                                          <oa:cellFormat id="ODBusinessActCell">
+                                             <ui:contents>
+                                                <oa:header id="ODBusinessActHdrRN" text="Business Activities">
+                                                   <ui:contents>
+                                                      <oa:stackLayout id="BizActivitiesRN" extends="/od/oracle/apps/xxcrm/asn/partysite/common/webui/ODSiteBusinessActivitiesRN"/>
+                                                   </ui:contents>
+                                                </oa:header>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                 </ui:contents>
+                              </oa:tableLayout>
+                           </ui:contents>
+                        </oa:messageLayout>
+                     </ui:contents>
+                  </oa:messageComponentLayout>
+                  <oa:messageComponentLayout id="NotesTasksRN">
+                     <ui:contents>
+                        <oa:messageLayout id="messageLayout1">
+                           <ui:contents>
+                              <oa:stackLayout id="NotesRN" extends="/oracle/apps/asn/common/webui/ASNNotesRN"/>
+                              <oa:header id="ASNTasksHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/Tasks_Hdr">
+                                 <ui:contents>
+                                    <oa:stackLayout id="ASNTasksRN" extends="/oracle/apps/jtf/cac/task/webui/CacTaskSummRN"/>
+                                 </ui:contents>
+                              </oa:header>
+                              <oa:hideShowHeader id="SiteAttchHdrRN" text="Attachments">
+                                 <ui:contents>
+                                    <oa:attachmentTable id="SiteAttchTable" viewName="ODAttachPartySiteVO" text="Attachments" searchRegionRendered="false">
+                                       <oa:entityMappings>
+                                          <oa:entityMap id="SiteAttchEntityMap" entityId="HZ_PARTY_SITES">
+                                             <oa:primaryKeys>
+                                                <oa:primaryKey id="primaryKey1" viewAttr="PartySiteId"/>
+                                             </oa:primaryKeys>
+                                             <oa:categoryMappings>
+                                                <oa:categoryMap id="SiteAttchCategoryMap" categoryName="MISC" secured="false"/>
+                                             </oa:categoryMappings>
+                                          </oa:entityMap>
+                                       </oa:entityMappings>
+                                    </oa:attachmentTable>
+                                 </ui:contents>
+                              </oa:hideShowHeader>
+                              <oa:stackLayout id="SiteAttchContextHolderRN">
+                                 <ui:contents>
+                                    <oa:messageComponentLayout id="SiteAttchContextRN">
+                                       <ui:contents>
+                                          <oa:messageStyledText id="PartySiteAddress" viewName="ODAttachPartySiteVO" viewAttr="Address" prompt="Site Address" styleClass="OraDataText"/>
+                                          <oa:messageStyledText id="RegistryId" dataType="VARCHAR2" prompt="Registry Id" viewName="ODAttachPartySiteVO" viewAttr="PartySiteNumber" maximumLength="30" styleClass="OraDataText"/>
+                                          <oa:messageStyledText id="Status" dataType="VARCHAR2" prompt="Status" viewName="ODAttachPartySiteVO" viewAttr="Status" maximumLength="4000" styleClass="OraDataText"/>
+                                       </ui:contents>
+                                    </oa:messageComponentLayout>
+                                 </ui:contents>
+                              </oa:stackLayout>
+                           </ui:contents>
+                        </oa:messageLayout>
+                     </ui:contents>
+                  </oa:messageComponentLayout>
+                  <oa:messageComponentLayout id="ContactsRN">
+                     <ui:contents>
+                        <oa:messageLayout id="messageLayout6">
+                           <ui:contents>
+                              <oa:defaultSingleColumn id="ContactsExtRN" extends="/od/oracle/apps/xxcrm/asn/partysite/common/webui/ODSiteContactRelTableRN"/>
+                           </ui:contents>
+                        </oa:messageLayout>
+                     </ui:contents>
+                  </oa:messageComponentLayout>
+                  <oa:messageComponentLayout id="AddressBookRN">
+                     <ui:contents>
+                        <oa:messageLayout id="messageLayout3">
+                           <ui:contents>
+                              <oa:advancedTable id="region45" viewName="ODPhoneNumbersVO1" width="90%" text="Phone Numbers">
+                                 <ui:contents>
+                                    <oa:column id="AdBkPurposeColumn">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="sortableHeader51" prompt="Purpose"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="AdBkPurpose" viewAttr="ContactPointPurpose"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="AdBkTypeColumn">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="sortableHeader5" prompt="Type"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="AdBkType" viewAttr="Meaning"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="AdBkPhoneNumbersColumn">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="sortableHeader6" prompt="Phone Number"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="PhoneNumber" viewAttr="PhoneNumber"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="PrimaryColumn" columnDataFormat="iconButtonFormat">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="sortableHeader7" prompt="Primary"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:switcher id="region52" viewAttr="PrimaryFlag">
+                                             <ui:case name="P">
+                                                <oa:image id="P" source="primary_status.gif"/>
+                                             </ui:case>
+                                             <ui:case name="O">
+                                                <oa:messageStyledText id="O"/>
+                                             </ui:case>
+                                          </oa:switcher>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="AdBkDNUColumn">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="sortableHeader511" prompt="Do Not Use"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="AdBkDoNotUse" viewAttr="DoNotUseFlag"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="TimeZoneColumn">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="sortableHeader8" prompt="Time Zone"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="TimeZone" viewAttr="TimeZone"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="AdBkUpdateColumn" columnDataFormat="iconButtonFormat" rendered="${oa.ODAccessRightPVO1.Rendered}">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="sortableHeader9" prompt="Update"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:switcher id="region50" viewAttr="Updateuenudi">
+                                             <ui:case name="UEN">
+                                                <oa:image id="UEN" source="updateicon_enabled.gif">
+                                                   <ui:primaryClientAction>
+                                                      <ui:fireAction event="UPDATE_PHONE">
+                                                         <ui:parameters>
+                                                            <ui:parameter key="contactID" value="${oa.ODPhoneNumbersVO1.ContactPointId}"/>
+                                                         </ui:parameters>
+                                                      </ui:fireAction>
+                                                   </ui:primaryClientAction>
+                                                </oa:image>
+                                             </ui:case>
+                                             <ui:case name="UDI">
+                                                <oa:image id="UDI" source="updateicon_disabled.gif"/>
+                                             </ui:case>
+                                          </oa:switcher>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="AdBkRemoveColumn" columnDataFormat="iconButtonFormat" rendered="${oa.ODAccessRightPVO1.Rendered}">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="sortableHeader10" prompt="Remove"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:switcher id="region51" viewAttr="Removererd">
+                                             <ui:case name="RE">
+                                                <oa:image id="RE" source="remove_enabled.gif">
+                                                   <ui:primaryClientAction>
+                                                      <ui:fireAction event="REMOVE_ADDR">
+                                                         <ui:parameters>
+                                                            <ui:parameter key="contactID" value="${oa.ODPhoneNumbersVO1.ContactPointId}"/>
+                                                            <ui:parameter key="phoneNUMBER" value="${oa.ODPhoneNumbersVO1.PhoneNumber}"/>
+                                                         </ui:parameters>
+                                                      </ui:fireAction>
+                                                   </ui:primaryClientAction>
+                                                </oa:image>
+                                             </ui:case>
+                                             <ui:case name="RD">
+                                                <oa:image id="RD" source="remove_disabled.gif"/>
+                                             </ui:case>
+                                          </oa:switcher>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:formValue id="ContactPointId" viewAttr="ContactPointId"/>
+                                    <oa:formValue id="SiteId" viewAttr="OwnerTableId"/>
+                                 </ui:contents>
+                                 <ui:tableActions>
+                                    <oa:rowLayout id="region54">
+                                       <ui:contents>
+                                          <oa:messageChoice id="Create" prompt="Create" pickListViewName="ODAddrBkTypePoplistVO1" pickListDispAttr="Meaning" pickListValAttr="LookupCode" rendered="${oa.ODAccessRightPVO1.Rendered}" allowBlankValue="false"/>
+                                          <oa:submitButton id="GoBtn" text="Go" prompt="Go" rendered="${oa.ODAccessRightPVO1.Rendered}"/>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                 </ui:tableActions>
+                              </oa:advancedTable>
+                           </ui:contents>
+                        </oa:messageLayout>
+                     </ui:contents>
+                  </oa:messageComponentLayout>
+                  <oa:messageComponentLayout id="SalesTeamRN">
+                     <ui:contents>
+                        <oa:messageLayout id="messageLayout4">
+                           <ui:contents>
+                              <oa:advancedTable id="region46" width="90%" text="Sales Team" viewName="ODSalesTeamVO1">
+                                 <ui:contents>
+                                    <oa:column id="NameColumn">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="sortableHeader11" prompt="Name"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="SalesRepName" viewAttr="ResourceName"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="JobTitleColumn">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="sortableHeader12" prompt="JobTitle"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="JobTitle" viewAttr="SourceJobTitle"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="SalesGroupColumn">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="sortableHeader13" prompt="SalesGroup"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageChoice id="SalesGroup" pickListViewDef="od.oracle.apps.xxcrm.poplist.server.ODSalesGroupPoplistVO" pickListDispAttr="GroupName" pickListValAttr="GroupId" readOnly="true" viewAttr="GroupId"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="PhoneColumn">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="sortableHeader14" prompt="Phone"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="SalesRepPhone" viewAttr="SourcePhone"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="EmailColumn">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="sortableHeader15" prompt="Email"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="Email" viewAttr="SourceEmail"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="FullAccessColumn">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="sortableHeader16" prompt="Full Access"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageCheckBox id="FullAccess" readOnly="true" viewAttr="FullAccessFlag"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:formValue id="NamedAcctTerrRscId" viewAttr="NamedAcctTerrRscId"/>
+                                    <oa:formValue id="SalesTeamAddressId" viewAttr="EntityId"/>
+                                 </ui:contents>
+                              </oa:advancedTable>
+                           </ui:contents>
+                        </oa:messageLayout>
+                     </ui:contents>
+                  </oa:messageComponentLayout>
+               </ui:contents>
+            </oa:subTabLayout>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

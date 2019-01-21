@@ -1,0 +1,28 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK; 
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                        WIPRO Technologies                         |
+-- +===================================================================+
+-- | Name    :          DROP_XX_SFA_LEAD_REFERRALS.tbl                 |
+-- | Rice ID :          Lead Referral                                  |
+-- | Description      : This scipt creates a staging table             |
+-- |                    XX_SFA_LEAD_REFERRALS.                         |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |1.0       17-MAR-2008 Rizwan A         Initial Version             |
+-- |                                                                   |
+-- |                                                                   |
+-- +===================================================================+
+
+-- -----------------------------------------------------
+--  DROP Custom Table XX_SFA_LEAD_REFERRALS  --
+-- -----------------------------------------------------
+DROP TABLE  XXCRM.XX_SFA_LEAD_REFERRALS;
+
+SHOW ERRORS;

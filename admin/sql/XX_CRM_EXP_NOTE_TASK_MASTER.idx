@@ -1,0 +1,115 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify						|
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_NOTE_TASK_MASTER.idx                                               |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        08/07/11       Devendra Petkar        Initial version                            |
+-- +============================================================================================+
+
+
+--------------------------------------------------------------------
+-----------------------------Tasks----------------------------------
+--------------------------------------------------------------------
+
+
+PROMPT CREATE INDEX xxcrm.XX_CRM_EXP_TASKS_PARTY_MAS_I
+
+CREATE INDEX xxcrm.XX_CRM_EXP_TASKS_PARTY_MAS_I ON xxcrm.XX_CRM_EXP_TASKS_PARTY_MASTER
+(task_id, source_object_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+PROMPT CREATE INDEX xxcrm.XX_CRM_EXP_TASKS_SITE_MAS_I
+
+CREATE INDEX xxcrm.XX_CRM_EXP_TASKS_SITE_MAS_I ON xxcrm.XX_CRM_EXP_TASKS_SITE_MASTER
+(task_id, source_object_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+PROMPT CREATE INDEX xxcrm.XX_CRM_EXP_TASKS_LEAD_MAS_I
+
+CREATE INDEX xxcrm.XX_CRM_EXP_TASKS_LEAD_MAS_I ON xxcrm.XX_CRM_EXP_TASKS_LEAD_MASTER
+(task_id, source_object_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+PROMPT CREATE INDEX xxcrm.XX_CRM_EXP_TASKS_OPP_MAS_I
+
+CREATE INDEX xxcrm.XX_CRM_EXP_TASKS_OPP_MAS_I ON xxcrm.XX_CRM_EXP_TASKS_OPP_MASTER
+(task_id, source_object_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+PROMPT CREATE INDEX xxcrm.XX_CRM_EXP_TASKS_TASK_MAS_I
+
+CREATE INDEX xxcrm.XX_CRM_EXP_TASKS_TASK_MAS_I ON xxcrm.XX_CRM_EXP_TASKS_TASK_MASTER
+(task_id, source_object_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+--------------------------------------------------------------------
+-----------------------------Notes----------------------------------
+--------------------------------------------------------------------
+
+
+PROMPT CREATE INDEX xxcrm.XX_CRM_EXP_NOTES_PARTY_MAS_I
+
+CREATE INDEX xxcrm.XX_CRM_EXP_NOTES_PARTY_MAS_I ON xxcrm.XX_CRM_EXP_NOTES_PARTY_MASTER
+(jtf_note_id, source_object_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+PROMPT CREATE INDEX xxcrm.XX_CRM_EXP_NOTES_SITE_MAS_I
+
+CREATE INDEX xxcrm.XX_CRM_EXP_NOTES_SITE_MAS_I ON xxcrm.XX_CRM_EXP_NOTES_SITE_MASTER
+(jtf_note_id, source_object_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+PROMPT CREATE INDEX xxcrm.XX_CRM_EXP_NOTES_LEAD_MAS_I
+
+CREATE INDEX xxcrm.XX_CRM_EXP_NOTES_LEAD_MAS_I ON xxcrm.XX_CRM_EXP_NOTES_LEAD_MASTER
+(jtf_note_id, source_object_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+PROMPT CREATE INDEX xxcrm.XX_CRM_EXP_NOTES_OPP_MAS_I
+
+CREATE INDEX xxcrm.XX_CRM_EXP_NOTES_OPP_MAS_I ON xxcrm.XX_CRM_EXP_NOTES_OPP_MASTER
+(jtf_note_id, source_object_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+
+
+SHOW ERROR;
+
+EXIT;

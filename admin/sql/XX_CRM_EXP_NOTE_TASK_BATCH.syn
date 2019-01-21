@@ -1,0 +1,56 @@
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify						|
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_NOTE_TASK_BATCH.syn                                               |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        08/07/11       Devendra Petkar        Initial version                            |
+-- +============================================================================================+
+
+
+---------------------------------------------------------
+-- Creating synonym				       --
+---------------------------------------------------------
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_EXP_TASKS_PARTY FOR XXCRM.XX_CRM_EXP_TASKS_PARTY ;
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_EXP_TASKS_PARTY_SITE FOR XXCRM.XX_CRM_EXP_TASKS_PARTY_SITE ;
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_EXP_TASKS_LEAD FOR XXCRM.XX_CRM_EXP_TASKS_LEAD ;
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_EXP_TASKS_OPPORTUNITY FOR XXCRM.XX_CRM_EXP_TASKS_OPPORTUNITY ;
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_EXP_TASKS_TASK FOR XXCRM.XX_CRM_EXP_TASKS_TASK ;
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_EXP_NOTES_PARTY FOR XXCRM.XX_CRM_EXP_NOTES_PARTY ;
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_EXP_NOTES_PARTY_SITE FOR XXCRM.XX_CRM_EXP_NOTES_PARTY_SITE ;
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_EXP_NOTES_LEAD FOR XXCRM.XX_CRM_EXP_NOTES_LEAD ;
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_EXP_NOTES_OPPORTUNITY FOR XXCRM.XX_CRM_EXP_NOTES_OPPORTUNITY ;
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_EXP_BATCH FOR XXCRM.XX_CRM_EXP_BATCH ;
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_EXP_DATALOADER_ERROR FOR XXCRM.XX_CRM_EXP_DATALOADER_ERROR ;
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_EXP_BATCH_SEQ FOR XXCRM.XX_CRM_EXP_BATCH_SEQ;
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_EXP_TASKS_ALL FOR XXCRM.XX_CRM_EXP_TASKS_ALL ;
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_EXP_NOTES_ALL FOR XXCRM.XX_CRM_EXP_NOTES_ALL ;
+
+
+SHOW ERRORS;
+
+EXIT;

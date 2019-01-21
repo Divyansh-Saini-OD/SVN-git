@@ -1,0 +1,236 @@
+#! /usr/bin/ksh
+#-- +=======================================================================+
+#-- |                          Office Depot 					            |
+#-- +=======================================================================+
+#-- | Name            : XXOD_CDH_MOD4_SFDC_CUST.prog                       		    |
+#-- | Rice ID         :                            							|
+#-- | Description     : Shell script to load all the MOD4 Files             |
+#-- |                                                                       |
+#-- |Change History:                                                        |
+#-- |---------------                                                        |
+#-- |                                                                       |
+#-- |Version  Date        Author                Remarks                     |
+#-- |-------  ----------- -----------------     --------------------------  |
+#-- |Draft 1A 12-JAN-2014 Abhi Konda         Initial Draft version          |
+#-- |                                                                       |
+#-- +=======================================================================+
+
+#Shell Script for fetching the data files and loading them into the staging table.
+
+#Apps default parameters
+export APPSLOGIN=$FCP_LOGIN
+FCP_USERID=$2
+FCP_USERNAME=$3
+FCP_REQID=$4
+p_application=$5
+p_source=$6
+echo $FCP_REQID 
+
+echo "================================================================================" 
+echo "Start Time          : `date`"                        
+echo "Program Name        : OD CDH Process MOD4 Inbound Files"
+echo "================================================================================" 
+
+lc_custom_top=$p_application
+
+echo "lc_custom_top:"$lc_custom_top
+
+if [ "${p_source}" = "sfdc" ]
+then
+lc_custom_top=$XXCRM_DATA
+lc_check_file="$lc_custom_top/inbound/$p_source/"
+lc_data_file_path="$lc_custom_top/inbound/$p_source/extracts/*.csv"
+archive_path="$lc_custom_top/archive/inbound/$p_source"
+error_path="$lc_custom_top/archive/inbound/$p_source"
+else
+lc_custom_top=$XXCRM_DATA
+lc_check_file="$lc_custom_top/inbound/$p_source/"
+lc_data_file_path="$lc_custom_top/inbound/$p_source/*.txt"
+archive_path="$lc_custom_top/archive/inbound/$p_source"
+error_path="$lc_custom_top/archive/inbound/$p_source"
+fi
+
+# ==========================================================================
+# Check to see if atleast one Data file Name in the soruce path
+# ==========================================================================
+if [ -f  ${lc_data_file_path} ]
+then
+  echo ""
+  echo "The Data File Exist"
+  echo ""
+  
+else
+  echo "The Data File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+
+
+# ====================================================================================
+echo "Loop started to get all the files from the specific directory"
+# ====================================================================================
+for datafile in $lc_data_file_path
+do 
+echo "Data File Path :"$datafile
+filename=`basename $datafile`
+echo "Data File Name :"$filename
+echo "Calling Process XXX_CDH_PROCESS_MOD4_FILES.get_config_info to get the control file name and table name"
+# =====================================================================================
+echo "Get the config details for the the data file:"$filename
+# =====================================================================================
+lc_config=`sqlplus -s $APPSLOGIN<<EOF_SQL
+whenever sqlerror exit 1
+variable retcode number
+Variable ERRBUF  varchar2(200)
+Variable lc_config_details VARCHAR2(2000);
+SET feedback off echo off verify off heading off
+set pagesize 0
+set feedback off
+set serveroutput on size 1000000
+SET linesize  32000
+SET long  50000
+execute XX_CDH_PROCESS_MOD4_FILES.GET_CONFIG_INFO (:retcode,:ERRBUF, '$filename', :lc_config_details);
+exit;
+EOF_SQL`
+
+echo "lc_config :"${lc_config}
+lc_control_file=`echo $lc_config| awk '{ split($0,MODULE,"|"); print MODULE[1] }'`
+lc_data_file_name=`echo $lc_config| awk '{ split($0,MODULE,"|"); print MODULE[2]}'`	
+lc_table_name=`echo $lc_config| awk '{ split($0,MODULE,"|"); print MODULE[3]}'`	
+lc_ctl_file=`echo $lc_config| awk '{ split($0,MODULE,"|"); print MODULE[4]}'`	
+lc_log_msg=`echo $lc_config| awk '{ split($0,MODULE,"|"); print MODULE[5]}'`
+
+control_path="$lc_ctl_file/bin/"
+LOG_FILE="${error_path}xxxodcrmmod4.log"
+BAD_FILE="${error_path}xxodcrmmod4.bad"
+
+echo "control_path : "${control_path}
+echo "Control File Name   : "${lc_control_file}  
+echo "Data File Name   : "${lc_data_file_name}
+echo "Table_name :${lc_table_name}"
+echo "Archived Path : " ${archive_path} 
+echo "lc_Config_log_msg :${lc_log_msg}"
+echo " ${control_path}${lc_control_file} :" ${control_path}${lc_control_file} 
+# ==========================================================================
+#validating the control file
+# ==========================================================================
+if [[ ! -z "$lc_control_file" ]]
+then
+  echo "The Control File Exist"  
+else
+  echo "The Control File does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+# ==========================================================================
+# Check to see if Data file Name is null
+# ==========================================================================
+if [ -f  ${lc_data_file} ]
+then
+  echo "The Data File Name Exist" ${lc_data_file}
+  
+else
+  echo "The Data File Name does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+# ==========================================================================
+#validating the control file
+# ==========================================================================
+if [[ ! -z "$lc_table_name" ]]
+then
+  echo "The Table_name` Exist"  
+else
+  echo "The Table_name does not Exist" 
+  echo "Program aborting...." 
+  exit 1
+fi
+# ==========================================================================
+echo "Start SQL*Loader script" 
+# ==========================================================================
+#Start SQL*Loader script
+
+sqlldr parfile=$HOME/parfile.apps control=${control_path}${lc_control_file} log=$LOG_FILE data=$datafile bad=$BAD_FILE silent=HEADER,FEEDBACK,DISCARDS,PARTITIONS errors=20000
+
+rc="$?"
+
+if [ "rc" -ne "0" ] && [ "rc" -ne "2" ]; then
+  echo "sqlldr failed! - return code = " ${rc} 
+  exit 1
+fi
+# ==========================================================================
+
+echo" =========================================================================="
+#Move the data file from the incoming directory to the archive directory
+echo "Moving file from Source Directory to Archive Directory" 
+cp $datafile $archive_path
+echo "=========================================================================="
+echo "Calling Process XX_CDH_PROCESS_MOD4_FILES.UPDATE_TABLE "
+echo "Below are the parameter's to run the XX_CDH_PROCESS_MOD4_FILES.UPDATE_TABLE "
+  echo "P_TAB_NAME :="$lc_table_name;
+  echo "P_SOURCE :="$p_source;
+  echo "P_FILE_NAME :="$filename;
+  echo "p_request_id :="$FCP_REQID;
+  echo "P_TAB_NAME :="$lc_table_name;
+# ==========================================================================
+lc_batch_id=`sqlplus -s $APPSLOGIN<<EOF_SQL
+whenever sqlerror exit 1
+variable retcode number
+Variable ERRBUF  varchar2(200)
+Variable lc_batch_id VARCHAR2(2000);
+SET feedback off echo off verify off heading off
+set pagesize 0
+set feedback off
+set serveroutput on size 1000000
+SET linesize  32000
+SET long  50000
+execute XX_CDH_PROCESS_MOD4_FILES.UPDATE_TABLE (:retcode,:ERRBUF, '$lc_table_name','$p_source','''$filename''','$FCP_REQID', :lc_batch_id);
+exit;
+EOF_SQL`
+
+echo "Update_LOG:" $lc_batch_id
+
+# ---------------------------------------------------------------------
+# Check for rejected SQLLOAD records for Records
+# if bad file exists then get count of rejected records from log file
+# ---------------------------------------------------------------------
+
+if [ -s ${BAD_FILE} ]; then
+   bad_errs=`grep -c 'Total logical records rejected:         0' \
+                 ${LOG_FILE}`
+
+   echo "Rejected record found"                            
+   
+   if [ "$bad_errs" -ne 1 ]; then
+      echo ""                                                  
+      echo "Rejected records..."                        
+      echo ""                                                  
+      echo "Please correct these Records."                    
+      echo "----------------------------------------------"   
+      cat ${BAD_FILE}
+      echo ""                                                  
+      echo ""                                                  
+      echo "SQLLOAD Log..."                                                  
+      echo ""                                                  
+      cat ${LOG_FILE}
+       
+      # -------------------
+      # Remove the BAD file
+      # -------------------
+
+      #rm -f ${BAD_FILE}
+
+   fi
+
+# --------------------------------------------
+# Continue processing with NO rejected records
+#    (bad file was not found)
+# --------------------------------------------
+
+else
+   echo "-- No rejected Records were found" 
+fi
+   
+echo "------------------------------------------------------------------------------------------------------"
+done
+# exit 0   

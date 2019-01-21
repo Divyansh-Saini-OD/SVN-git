@@ -1,0 +1,9 @@
+#! /usr/bin/ksh
+USER=prodftp
+PASSWD=ftpprod
+ftp -n mfsysa << SCRIPT
+user $USER $PASSWD
+cd ..
+put $XXCRM_DATA/outbound/$5 $6
+bye
+SCRIPT

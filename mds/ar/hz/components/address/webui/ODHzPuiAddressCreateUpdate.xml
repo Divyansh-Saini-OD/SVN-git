@@ -1,0 +1,125 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath_~PROD_~PATH_~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath_~PROD_mds_directory  -->
+<!--*[Enter Javadoc like developer documentation, delete this line once you fill the included template.] [Put a one line description of the region here.] [Put a brief description of the usage of the region here.] @param [Parameter_name] [Put parameter use here.] @param [Parameter_name] [Put parameter use here.] @see [Put any additional links apart from controller class and BC4J objects directly referenced by this region]-->
+<oa:stackLayout version="9.0.3.8.13_1550" xml:lang="en-US" file-version="$Header: HzPuiAddressCreateUpdate.xml 115.32 2005/03/14 23:28:19 geliu noship $" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" xmlns:jrad="http://xmlns.oracle.com/jrad" scope="/" amDefName="od.oracle.apps.xxcrm.asn.common.customer.server.ODHzPuiAddressAM" controllerClass="od.oracle.apps.xxcrm.asn.common.customer.webui.ODHzPuiAddressCreateUpdateCO">
+   <ui:contents>
+      <oa:tableLayout id="tableLayout" hAlign="center">
+         <ui:contents>
+            <oa:rowLayout id="siteRowLayout">
+               <ui:contents>
+                  <oa:cellFormat id="siteCell">
+                     <ui:contents>
+                        <oa:header id="SiteRN" text="Party Site List">
+                           <ui:contents>
+                              <oa:messageComponentLayout id="SiteComponentLayout">
+                                 <ui:contents>
+                                    <oa:messageChoice id="siteList" allowBlankValue="false" pickListViewName="ODPartySiteListVO" pickListDispAttr="PrimaryAddress" pickListValAttr="PartySiteId" serverUnvalidated="true">
+                                       <ui:primaryClientAction>
+                                          <ui:firePartialAction event="CHANGE_SITE_PPR" unvalidated="true"/>
+                                       </ui:primaryClientAction>
+                                    </oa:messageChoice>
+                                 </ui:contents>
+                              </oa:messageComponentLayout>
+                           </ui:contents>
+                        </oa:header>
+                     </ui:contents>
+                  </oa:cellFormat>
+               </ui:contents>
+            </oa:rowLayout>
+            <oa:rowLayout id="addressRowLayout">
+               <ui:contents>
+                  <oa:cellFormat id="addressCell">
+                     <ui:contents>
+                        <oa:header id="AddressRN" text="Address">
+                           <ui:contents>
+                              <oa:stackLayout id="addressCreateUpdateStack">
+                                 <ui:contents>
+                                    <oa:formValue id="HzFlexCountryCode" viewName="HzPuiLocationVO" viewAttr="Country"/>
+                                    <oa:messageComponentLayout id="AddressStyleRN">
+                                       <ui:contents>
+                                          <oa:messageChoice id="addrSuggestionPoplist" prompt="Valid Combinations" pickListViewName="HzPuiAddressSuggestionsVO" pickListDispAttr="Suggestion" pickListValAttr="SuggestionKey" serverUnvalidated="true" rendered="${oa.HzPuiAddressSuggestionTransVO.RenderFlag}">
+                                             <ui:primaryClientAction>
+                                                <ui:firePartialAction event="HzPuiPopulateSuggestion" unvalidated="true" id="firePartialAction1"/>
+                                             </ui:primaryClientAction>
+                                          </oa:messageChoice>
+                                          <oa:messageLovInput id="HzFlexCountry" prompt="Country" externalListOfValues="/oracle/apps/ar/hz/address/webui/HzCountryLOV" required="yes" viewName="HzPuiLocationVO" viewAttr="CountryName" warnAboutChanges="false" shortDesc="Country" readOnly="true" styleClass="OraDataText">
+                                             <jrad:lovMappings>
+                                                <jrad:lovMap id="lovCountryNameMap" lovItem="TerritoryShortName" resultTo="HzFlexCountry" criteriaFrom="HzFlexCountry"/>
+                                                <jrad:lovMap id="lovCountryCodeMap" lovItem="TerritoryCode" resultTo="HzFlexCountryCode"/>
+                                             </jrad:lovMappings>
+                                          </oa:messageLovInput>
+                                          <oa:messageLayout id="AddressStyleFlexRN">
+                                             <ui:contents>
+                                                <oa:flex id="HzAddressStyleFlex" viewName="HzPuiLocationVO" prompt="Address Style" shortDesc="Address Style" flexName="Remit Address HZ" flexFieldAppShortName="AR" readOnly="true" styleClass="OraDataText"/>
+                                             </ui:contents>
+                                          </oa:messageLayout>
+                                          <oa:messageTextInput id="hzPartySiteName" viewName="HzPuiPartySiteVO" viewAttr="PartySiteName" maximumLength="240" shortDesc="Address Description" columns="30" prompt="Address Description" rendered="false"/>
+                                          <oa:messageTextInput id="hzAddressee" viewName="HzPuiPartySiteVO" viewAttr="Addressee" maximumLength="360" shortDesc="Addressee" columns="30" prompt="Addressee" readOnly="true" styleClass="OraDataText"/>
+                                          <oa:messageTextInput id="hzPartySiteGLN" viewName="HzPuiPartySiteVO" viewAttr="GlobalLocationNumber" maximumLength="40" shortDesc="Global Location Number" prompt="Global Location Number" rendered="false"/>
+                                          <oa:messageChoice id="hzPartySiteStatus" pickListViewDef="oracle.apps.ar.hz.components.address.server.HzPuiPartySiteStatusVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode" viewName="HzPuiPartySiteVO" viewAttr="Status" required="yes" shortDesc="Status" prompt="Status" readOnly="true" styleClass="OraDataText"/>
+                                          <oa:messageCheckBox id="hzPartySitePrimary" viewName="HzPuiPartySiteVO" viewAttr="IdentifyingAddressFlag" text="Identifying Address" prompt="Identifying Address" checkedValue="Y" unCheckedValue="N" serverUnvalidated="true" shortDesc="Identifying Address" readOnly="true">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="HzPuiAddressPrimaryCheck" unvalidated="true" id="fireAction2"/>
+                                             </ui:primaryClientAction>
+                                          </oa:messageCheckBox>
+                                          <oa:messageLayout id="PSUseRN">
+                                             <ui:contents>
+                                                <oa:header id="hzPurposeHeader" text="Address Purposes">
+                                                   <ui:contents>
+                                                      <oa:tip id="hzPurposeTip" tipMessageAppShortName="ar" tipMessageName="HZ_PUI_ADDR_PURPOSE_PREF_TIP"/>
+                                                      <oa:table id="hzPartySiteUseTable" text="" shortDesc="Address Purposes" width="50%">
+                                                         <ui:contents>
+                                                            <oa:switcher id="siteUseSwitcher" viewName="HzPuiPartySiteUseVO" viewAttr="Style" prompt="Purpose" shortDesc="Purpose">
+                                                               <ui:case name="case1" id="case1">
+                                                                  <oa:messageChoice id="Updatable" dataType="VARCHAR2" prompt="Purpose" viewName="HzPuiPartySiteUseVO" viewAttr="SiteUseType" pickListViewDef="oracle.apps.ar.hz.components.address.server.HzPuiSiteUseTypeVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode"/>
+                                                               </ui:case>
+                                                               <ui:case name="case2" id="case2">
+                                                                  <oa:messageChoice id="ReadOnly" readOnly="true" pickListViewDef="oracle.apps.ar.hz.components.address.server.HzPuiSiteUseTypeVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode" prompt="Purpose" viewAttr="SiteUseType" viewName="HzPuiPartySiteUseVO" required="no"/>
+                                                               </ui:case>
+                                                            </oa:switcher>
+                                                            <oa:link id="EnabledRemoveIcon" warnAboutChanges="false" serverUnvalidated="true" rendered="false">
+                                                               <ui:contents>
+                                                                  <oa:image id="EnabledRemoveIcon_image" source="remove_enabled.gif" shortDesc="Remove Icon Enabled" prompt="Remove"/>
+                                                               </ui:contents>
+                                                               <ui:primaryClientAction>
+                                                                  <ui:fireAction event="HzPuiEnabledRemoveIconEvent" unvalidated="true" id="fireAction1">
+                                                                     <ui:parameters>
+                                                                        <ui:parameter key="HzPuiPartySiteUseId" value="${oa.encrypt.HzPuiPartySiteUseVO.PartySiteUseId}"/>
+                                                                        <ui:parameter key="HzPuiPartySiteUseType" value="${oa.encrypt.HzPuiPartySiteUseVO.SiteUseType}"/>
+                                                                        <ui:parameter key="HzPuiPsuEvent" value="HzPartySiteUseDelete"/>
+                                                                     </ui:parameters>
+                                                                  </ui:fireAction>
+                                                               </ui:primaryClientAction>
+                                                            </oa:link>
+                                                         </ui:contents>
+                                                      </oa:table>
+                                                   </ui:contents>
+                                                </oa:header>
+                                             </ui:contents>
+                                          </oa:messageLayout>
+                                       </ui:contents>
+                                    </oa:messageComponentLayout>
+                                    <oa:messageComponentLayout id="PSFlexRN">
+                                       <ui:contents>
+                                          <oa:messageLayout id="psInfoFlexRN">
+                                             <ui:contents>
+                                                <oa:flex id="partySiteInformation" flexName="HZ_PARTY_SITES" flexFieldAppShortName="AR" viewName="HzPuiPartySiteVO" readOnly="true" styleClass="OraDataText"/>
+                                             </ui:contents>
+                                          </oa:messageLayout>
+                                       </ui:contents>
+                                    </oa:messageComponentLayout>
+                                    <oa:formParameter id="HzPuiPartySiteUseId"/>
+                                    <oa:formParameter id="HzPuiPsuEvent"/>
+                                    <oa:formParameter id="HzPuiPartySiteUseType"/>
+                                 </ui:contents>
+                              </oa:stackLayout>
+                           </ui:contents>
+                        </oa:header>
+                     </ui:contents>
+                  </oa:cellFormat>
+               </ui:contents>
+            </oa:rowLayout>
+         </ui:contents>
+      </oa:tableLayout>
+   </ui:contents>
+</oa:stackLayout>

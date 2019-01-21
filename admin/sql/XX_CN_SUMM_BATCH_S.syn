@@ -1,0 +1,41 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : XX_CN_SUMM_BATCH_S.syn                              |
+-- | Rice ID     : E1004A_CustomCollections_(TableDesign)              |
+-- | Description : XX_CN_SUMM_BATCH_S Sequence -Synonym Creation Script|
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1a 18-Oct-2007  Sarah Justina    Initial draft version       |
+-- |1.0      18-Oct-2007  Sarah Justina    Baselined after testing     |
+-- |                                                                   |
+-- +===================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+SET TERM ON
+
+PROMPT
+PROMPT Creating SYNONYM XX_CN_SUMM_BATCH_S
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_CN_SUMM_BATCH_S FOR XXCRM.XX_CN_SUMM_BATCH_S;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

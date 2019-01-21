@@ -1,0 +1,61 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : xxod_iSupport_Survey                                                            |--                                                                                          |--
+--| Program Name   : xxod_iSupport_Survey.tbl                                                 |--
+--|                                                                                             |--
+--| Purpose        : Sales Activity Table                                                       |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              20-May-2009       Rajavel                  Initial Draft                   |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Table XXCRM.xxod_iSupport_Survey......
+PROMPT
+
+create table XXCRM.xxod_iSupport_Survey
+(
+SRNUMBER VARCHAR2(50),
+QUESTION VARCHAR2(150),
+ANSWERS VARCHAR2(150),
+SRTYPE VARCHAR2(150)
+);
+
+PROMPT
+PROMPT Creating the Table XXCRM.xxod_iSupport_Survey_new......
+PROMPT
+
+create table XXCRM.xxod_iSupport_Survey_new
+(
+SRNUMBER VARCHAR2(50),
+FORM1 VARCHAR2(150),
+FORM2 VARCHAR2(150),
+FORM3 VARCHAR2(150),
+FORM4 VARCHAR2(150),
+FORM5 VARCHAR2(150)
+);
+
+
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
+
+
+
+

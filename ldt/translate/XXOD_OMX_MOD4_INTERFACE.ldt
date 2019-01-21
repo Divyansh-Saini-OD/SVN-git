@@ -1,0 +1,309 @@
+# $Header$
+
+# dbdrv: exec fnd bin FNDLOAD bin &phase=daa+52 checkfile:~PROD:~PATH:~FILE &ui_apps 0 Y UPLOAD @FND:patch/115/import/odsyscod6_6.lct @~PROD:~PATH/~FILE
+LANGUAGE = "US"
+LDRCONFIG = "xxfintrans.lct,v 1.1"
+
+#Source Database GSIDEV02
+
+#RELEASE_NAME 12.1.3
+
+# -- Begin Entity Definitions -- 
+
+DEFINE XX_FIN_TRANSLATEDEFINITION
+  KEY   TRANSLATION_NAME                VARCHAR2(25)
+  KEY   APP_SHORT_NAME                  VARCHAR2(25)
+  BASE  SOURCE_SYSTEM                   VARCHAR2(25)
+  BASE  TARGET_SYSTEM                   VARCHAR2(25)
+  BASE  PURPOSE                         VARCHAR2(25)
+  BASE  TRANSLATE_DESCRIPTION           VARCHAR2(240)
+  BASE  SOURCE_FIELD1                   VARCHAR2(25)
+  BASE  SOURCE_FIELD2                   VARCHAR2(25)
+  BASE  SOURCE_FIELD3                   VARCHAR2(25)
+  BASE  SOURCE_FIELD4                   VARCHAR2(25)
+  BASE  SOURCE_FIELD5                   VARCHAR2(25)
+  BASE  SOURCE_FIELD6                   VARCHAR2(25)
+  BASE  SOURCE_FIELD7                   VARCHAR2(25)
+  BASE  TARGET_FIELD1                   VARCHAR2(25)
+  BASE  TARGET_FIELD2                   VARCHAR2(25)
+  BASE  TARGET_FIELD3                   VARCHAR2(25)
+  BASE  TARGET_FIELD4                   VARCHAR2(25)
+  BASE  TARGET_FIELD5                   VARCHAR2(25)
+  BASE  TARGET_FIELD6                   VARCHAR2(25)
+  BASE  TARGET_FIELD7                   VARCHAR2(25)
+  BASE  TARGET_FIELD8                   VARCHAR2(25)
+  BASE  TARGET_FIELD9                   VARCHAR2(25)
+  BASE  TARGET_FIELD10                  VARCHAR2(25)
+  BASE  TARGET_FIELD11                  VARCHAR2(25)
+  BASE  TARGET_FIELD12                  VARCHAR2(25)
+  BASE  TARGET_FIELD13                  VARCHAR2(25)
+  BASE  TARGET_FIELD14                  VARCHAR2(25)
+  BASE  TARGET_FIELD15                  VARCHAR2(25)
+  BASE  TARGET_FIELD16                  VARCHAR2(25)
+  BASE  TARGET_FIELD17                  VARCHAR2(25)
+  BASE  TARGET_FIELD18                  VARCHAR2(25)
+  BASE  TARGET_FIELD19                  VARCHAR2(25)
+  BASE  TARGET_FIELD20                  VARCHAR2(25)
+  CTX   OWNER                           VARCHAR2(4000)
+  BASE  LAST_UPDATE_DATE                VARCHAR2(25)
+  BASE  START_DATE_ACTIVE               VARCHAR2(25)
+  BASE  END_DATE_ACTIVE                 VARCHAR2(25)
+  BASE  ENABLED_FLAG                    VARCHAR2(2)
+  BASE  SOURCE_FIELD8                   VARCHAR2(25)
+  BASE  SOURCE_FIELD9                   VARCHAR2(25)
+  BASE  SOURCE_FIELD10                  VARCHAR2(25)
+  BASE  DO_NOT_REFRESH                  VARCHAR2(1)
+
+  DEFINE XX_FIN_TRANSLATERESPONSIBILITY
+    KEY   RESP_KEY                        VARCHAR2(30)
+    KEY   RESP_APP_SHORT_NAME             VARCHAR2(50)
+    BASE  READ_ONLY_FLAG                  VARCHAR2(1)
+    CTX   OWNER                           VARCHAR2(4000)
+    BASE  LAST_UPDATE_DATE                VARCHAR2(25)
+  END XX_FIN_TRANSLATERESPONSIBILITY
+
+    DEFINE XX_FIN_TRANSLATEVALUES
+      BASE  SOURCE_VALUE1                   VARCHAR2(240)
+      BASE  SOURCE_VALUE2                   VARCHAR2(240)
+      BASE  SOURCE_VALUE3                   VARCHAR2(240)
+      BASE  SOURCE_VALUE4                   VARCHAR2(240)
+      BASE  SOURCE_VALUE5                   VARCHAR2(240)
+      BASE  SOURCE_VALUE6                   VARCHAR2(240)
+      BASE  SOURCE_VALUE7                   VARCHAR2(240)
+      BASE  TARGET_VALUE1                   VARCHAR2(240)
+      BASE  TARGET_VALUE2                   VARCHAR2(240)
+      BASE  TARGET_VALUE3                   VARCHAR2(240)
+      BASE  TARGET_VALUE4                   VARCHAR2(240)
+      BASE  TARGET_VALUE5                   VARCHAR2(240)
+      BASE  TARGET_VALUE6                   VARCHAR2(240)
+      BASE  TARGET_VALUE7                   VARCHAR2(240)
+      BASE  TARGET_VALUE8                   VARCHAR2(240)
+      BASE  TARGET_VALUE9                   VARCHAR2(240)
+      BASE  TARGET_VALUE10                  VARCHAR2(240)
+      BASE  TARGET_VALUE11                  VARCHAR2(240)
+      BASE  TARGET_VALUE12                  VARCHAR2(240)
+      BASE  TARGET_VALUE13                  VARCHAR2(240)
+      BASE  TARGET_VALUE14                  VARCHAR2(240)
+      BASE  TARGET_VALUE15                  VARCHAR2(240)
+      BASE  TARGET_VALUE16                  VARCHAR2(240)
+      BASE  TARGET_VALUE17                  VARCHAR2(240)
+      BASE  TARGET_VALUE18                  VARCHAR2(240)
+      BASE  TARGET_VALUE19                  VARCHAR2(240)
+      BASE  TARGET_VALUE20                  VARCHAR2(240)
+      CTX   OWNER                           VARCHAR2(4000)
+      BASE  LAST_UPDATE_DATE                VARCHAR2(25)
+      BASE  START_DATE_ACTIVE               VARCHAR2(25)
+      BASE  END_DATE_ACTIVE                 VARCHAR2(25)
+      BASE  READ_ONLY_FLAG                  VARCHAR2(2)
+      BASE  ENABLED_FLAG                    VARCHAR2(2)
+      BASE  SOURCE_VALUE8                   VARCHAR2(25)
+      BASE  SOURCE_VALUE9                   VARCHAR2(25)
+      BASE  SOURCE_VALUE10                  VARCHAR2(25)
+    END XX_FIN_TRANSLATEVALUES
+END XX_FIN_TRANSLATEDEFINITION
+
+# -- End Entity Definitions -- 
+
+
+BEGIN XX_FIN_TRANSLATEDEFINITION "XXOD_OMX_MOD4_INTERFACE" "XXCOMN"
+  SOURCE_FIELD1 = "Process Type"
+  TARGET_FIELD1 = "Source"
+  TARGET_FIELD2 = "Data File Name"
+  TARGET_FIELD3 = "Control File Name"
+  TARGET_FIELD4 = "Email (Recipients)"
+  TARGET_FIELD5 = "Control File Path"
+  TARGET_FIELD6 = "staging table Name"
+  TARGET_FIELD7 = "Source Directory"
+  TARGET_FIELD8 = "Target Directory"
+  TARGET_FIELD9 = "Archive Directory"
+  TARGET_FIELD10 = "Email (Sender)"
+  TARGET_FIELD11 = "Email Subject"
+  OWNER = "744317"
+  LAST_UPDATE_DATE = "2015/03/16"
+  START_DATE_ACTIVE = "2015/01/28"
+  ENABLED_FLAG = "Y"
+  DO_NOT_REFRESH = "N"
+
+  BEGIN XX_FIN_TRANSLATEVALUES
+    SOURCE_VALUE1 = "Billing Documents"
+    TARGET_VALUE1 = "OMX"
+    TARGET_VALUE2 = "xxod_cdh_omx_bill_docs.txt"
+    TARGET_VALUE3 = "xxod_cdh_omx_bill_docs.ctl"
+    TARGET_VALUE4 = "arun.gannarapu@officedepot.com"
+    TARGET_VALUE5 = "$XXCRM_TOP"
+    TARGET_VALUE6 = "xx_cdh_omx_bill_docs_stg"
+    OWNER = "744317"
+    LAST_UPDATE_DATE = "2015/03/18"
+    START_DATE_ACTIVE = "2015/01/28"
+    ENABLED_FLAG = "Y"
+  END XX_FIN_TRANSLATEVALUES
+  
+  BEGIN XX_FIN_TRANSLATEVALUES
+    SOURCE_VALUE1 = "eBilling Contacts"
+    TARGET_VALUE1 = "OMX"
+    TARGET_VALUE2 = "xxod_cdh_omx_ebill_contacts.dat"
+    TARGET_VALUE3 = "xxod_cdh_omx_ebill_contacts.ctl"
+    TARGET_VALUE4 = "havish.kasina@officedepot.com"
+    TARGET_VALUE5 = "$XXCRM_TOP"
+    TARGET_VALUE6 = "xx_cdh_omx_ebill_contacts_stg"
+    TARGET_VALUE7 = "XX_UTL_FILE_OUT_DIR"
+    TARGET_VALUE8 = "XXMER_OUTBOUND"
+    TARGET_VALUE9 = "XXCRM_OUTBOUND_ARCH"
+    TARGET_VALUE10 = "ebill_mailbox_test@officedepot.com"
+    TARGET_VALUE11 = "ODN Ebill Contacts Exceptions Report for"
+    OWNER = "744317"
+    LAST_UPDATE_DATE = "2015/04/01"
+    START_DATE_ACTIVE = "2015/01/28"
+    ENABLED_FLAG = "Y"
+  END XX_FIN_TRANSLATEVALUES
+  
+  BEGIN XX_FIN_TRANSLATEVALUES
+    SOURCE_VALUE1 = "Address Exceptions"
+    TARGET_VALUE1 = "OMX"
+    TARGET_VALUE2 = "xxod_cdh_omx_addr_exception.txt"
+    TARGET_VALUE3 = "xxod_cdh_omx_addr_exception.ctl"
+    TARGET_VALUE4 = "havish.kasina@officedepot.com"
+    TARGET_VALUE5 = "$XXCRM_TOP"
+    TARGET_VALUE6 = "xx_cdh_omx_addr_exceptions_stg"
+    TARGET_VALUE7 = "XX_UTL_FILE_OUT_DIR"
+    TARGET_VALUE8 = "XXMER_OUTBOUND"
+    TARGET_VALUE9 = "XXCRM_OUTBOUND_ARCH"
+    TARGET_VALUE10 = "ebill_mailbox_test@officedepot.com"
+    TARGET_VALUE11 = "ODN Address Exceptions Report for"
+    OWNER = "744317"
+    LAST_UPDATE_DATE = "2015/04/01"
+    START_DATE_ACTIVE = "2015/01/28"
+    ENABLED_FLAG = "Y"
+  END XX_FIN_TRANSLATEVALUES
+  
+  BEGIN XX_FIN_TRANSLATEVALUES
+    SOURCE_VALUE1 = "AP contacts"
+    TARGET_VALUE1 = "OMX"
+    TARGET_VALUE2 = "xxod_cdh_omx_ap_contacts.txt"
+    TARGET_VALUE3 = "xxod_cdh_omx_ap_contacts.ctl"
+    TARGET_VALUE5 = "$XXCRM_TOP"
+    TARGET_VALUE6 = "xx_cdh_omx_ap_contacts_stg"
+    OWNER = "667766"
+    LAST_UPDATE_DATE = "2015/03/10"
+    START_DATE_ACTIVE = "2015/01/28"
+    ENABLED_FLAG = "Y"
+  END XX_FIN_TRANSLATEVALUES
+  
+  BEGIN XX_FIN_TRANSLATEVALUES
+    SOURCE_VALUE1 = "Dunning"
+    TARGET_VALUE1 = "OMX"
+    TARGET_VALUE2 = "xxod_cdh_omx_dunning.txt"
+    TARGET_VALUE3 = "xxod_cdh_omx_dunning.ctl"
+    TARGET_VALUE5 = "$XXCRM_TOP"
+    TARGET_VALUE6 = "xx_cdh_omx_dunning_stg"
+    OWNER = "667766"
+    LAST_UPDATE_DATE = "2015/03/10"
+    START_DATE_ACTIVE = "2015/01/28"
+    ENABLED_FLAG = "Y"
+  END XX_FIN_TRANSLATEVALUES
+  
+  BEGIN XX_FIN_TRANSLATEVALUES
+    SOURCE_VALUE1 = "Customer Info Statement"
+    TARGET_VALUE1 = "OMX"
+    TARGET_VALUE2 = "xxod_cdh_omx_cust_info.txt"
+    TARGET_VALUE3 = "xxod_cdh_omx_cust_info.ctl"
+    TARGET_VALUE4 = "abhishek.konda@officedepot.com"
+    TARGET_VALUE5 = "$XXCRM_TOP"
+    TARGET_VALUE6 = "xx_cdh_omx_cust_info_stg"
+    TARGET_VALUE7 = "XX_UTL_FILE_OUT_DIR"
+    TARGET_VALUE8 = "XXMER_OUTBOUND"
+    TARGET_VALUE9 = "XXCRM_OUTBOUND_ARCH"
+    TARGET_VALUE10 = "ebill_mailbox_test@officedepot.com"
+    OWNER = "667766"
+    LAST_UPDATE_DATE = "2015/03/22"
+    START_DATE_ACTIVE = "2015/01/28"
+    ENABLED_FLAG = "Y"
+  END XX_FIN_TRANSLATEVALUES
+  
+  BEGIN XX_FIN_TRANSLATEVALUES
+    SOURCE_VALUE1 = "Reconcile Counts"
+    TARGET_VALUE1 = "OMX"
+    TARGET_VALUE4 = "havish.kasina@officedepot.com"
+    TARGET_VALUE5 = "$XXCRM_TOP"
+    TARGET_VALUE10 = "ebill_mailbox_test@officedepot.com"
+    TARGET_VALUE11 = "ODN Reconcile Counts for"
+    OWNER = "744317"
+    LAST_UPDATE_DATE = "2015/04/01"
+    START_DATE_ACTIVE = "2015/01/28"
+    ENABLED_FLAG = "Y"
+  END XX_FIN_TRANSLATEVALUES
+  
+  BEGIN XX_FIN_TRANSLATEVALUES
+    SOURCE_VALUE1 = "sfdc_trigger_file"
+    TARGET_VALUE1 = "SFDC"
+    TARGET_VALUE2 = "xxod_cdh_mod4_sfdc_cust.csv"
+    TARGET_VALUE3 = "xxod_cdh_mod4_sfdc_cust.ctl"
+    TARGET_VALUE5 = "$XXCRM_TOP"
+    TARGET_VALUE6 = "xx_cdh_mod4_sfdc_cust_stg"
+    OWNER = "667766"
+    LAST_UPDATE_DATE = "2015/03/10"
+    START_DATE_ACTIVE = "2015/01/28"
+    ENABLED_FLAG = "Y"
+  END XX_FIN_TRANSLATEVALUES
+  
+  BEGIN XX_FIN_TRANSLATEVALUES
+    SOURCE_VALUE1 = "MOD4 Customers File"
+    TARGET_VALUE1 = "OMX"
+    TARGET_VALUE7 = "XX_UTL_FILE_OUT_DIR"
+    TARGET_VALUE8 = "XXCRM_OUTBOUND"
+    TARGET_VALUE9 = "XXCRM_OUTBOUND_ARCH"
+    OWNER = "744317"
+    LAST_UPDATE_DATE = "2015/03/17"
+    START_DATE_ACTIVE = "2015/03/16"
+    ENABLED_FLAG = "Y"
+  END XX_FIN_TRANSLATEVALUES
+  
+  BEGIN XX_FIN_TRANSLATEVALUES
+    SOURCE_VALUE1 = "sfdc status file"
+    TARGET_VALUE1 = "OMX"
+    TARGET_VALUE7 = "XX_UTL_FILE_OUT_DIR"
+    TARGET_VALUE8 = "XXCRM_OUTBOUND"
+    TARGET_VALUE9 = "XXCRM_OUTBOUND_ARCH"
+    OWNER = "744317"
+    LAST_UPDATE_DATE = "2015/03/19"
+    START_DATE_ACTIVE = "2015/03/16"
+    ENABLED_FLAG = "Y"
+  END XX_FIN_TRANSLATEVALUES
+  
+  BEGIN XX_FIN_TRANSLATEVALUES
+    SOURCE_VALUE1 = "sfdc status report"
+    TARGET_VALUE1 = "OMX"
+    TARGET_VALUE4 = "havish.kasina@officedepot.com"
+    TARGET_VALUE7 = "XX_UTL_FILE_OUT_DIR"
+    TARGET_VALUE8 = "XXMER_OUTBOUND"
+    TARGET_VALUE9 = "XXCRM_OUTBOUND_ARCH"
+    TARGET_VALUE10 = "ebill_mailbox_test@officedepot.com"
+    TARGET_VALUE11 = "ODN Customer Conversion Success / Non-Success Report for"
+    OWNER = "744317"
+    LAST_UPDATE_DATE = "2015/04/01"
+    START_DATE_ACTIVE = "2015/03/16"
+    ENABLED_FLAG = "Y"
+  END XX_FIN_TRANSLATEVALUES
+  
+  BEGIN XX_FIN_TRANSLATEVALUES
+    SOURCE_VALUE1 = "Customer Info Credits"
+    TARGET_VALUE1 = "OMX"
+    TARGET_VALUE4 = "abhishek.konda@officedepot.com"
+    TARGET_VALUE7 = "XX_UTL_FILE_OUT_DIR"
+    TARGET_VALUE8 = "XXMER_OUTBOUND"
+    TARGET_VALUE9 = "XXCRM_OUTBOUND_ARCH"
+    TARGET_VALUE10 = "ebill_mailbox_test@officedepot.com"
+    OWNER = "667766"
+    LAST_UPDATE_DATE = "2015/03/19"
+    START_DATE_ACTIVE = "2015/03/19"
+    ENABLED_FLAG = "Y"
+  END XX_FIN_TRANSLATEVALUES
+  
+
+  BEGIN XX_FIN_TRANSLATERESPONSIBILITY "XX_MAINTAIN_TRANSLATION" "XXFIN"
+    OWNER = "641633"
+    LAST_UPDATE_DATE = "2015/03/24"
+  END XX_FIN_TRANSLATERESPONSIBILITY
+  
+END XX_FIN_TRANSLATEDEFINITION
+

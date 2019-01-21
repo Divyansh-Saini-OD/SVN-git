@@ -1,0 +1,9 @@
+-- $Id$
+-- $Rev$
+-- $HeadURL$
+-- $Author$
+-- $Date$
+
+
+CREATE UNIQUE INDEX XX_JTF_TERR_RESOURCE_XREF_U1
+    ON XX_JTF_TERR_RESOURCE_XREF (region_name, territory_name);

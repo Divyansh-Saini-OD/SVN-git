@@ -1,0 +1,87 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===========================================================================+
+-- |                  Office Depot - eBilling Project                          |
+-- |                         WIPRO/Office Depot                                |
+-- +===========================================================================+
+-- | Name        : CREATE_XX_CDH_EBL_STD_AGGR_DTL.tbl                          |
+-- | Description : Sub total table to store sub total details for eBilling.    |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author        Remarks            	               |
+-- |======== =========== ============= ========================================|
+-- |DRAFT 1A 15-MAR-2010 Srini Ch      Initial draft version                   |
+-- |                                                                           |
+-- |                                                                           |
+-- |                                                                           |
+-- +===========================================================================+
+
+-- ----------------------------------------------------------------------------
+--      Create Custom Table XX_CDH_EBL_STD_AGGR_DTL
+-- ----------------------------------------------------------------------------
+
+CREATE TABLE XXCRM.XX_CDH_EBL_STD_AGGR_DTL 
+    ( 
+     EBL_AGGR_ID NUMBER (15)  NOT NULL , 
+     CUST_DOC_ID NUMBER (15)  NOT NULL , 
+     AGGR_FUN VARCHAR2 (10) DEFAULT 'SUM'  NOT NULL , 
+     AGGR_FIELD_ID NUMBER (15)  NOT NULL , 
+     CHANGE_FIELD_ID NUMBER (15) , 
+     LABEL_ON_FILE VARCHAR2 (2000) , 
+     ATTRIBUTE1 VARCHAR2 (150) , 
+     ATTRIBUTE2 VARCHAR2 (150) , 
+     ATTRIBUTE3 VARCHAR2 (150) , 
+     ATTRIBUTE4 VARCHAR2 (150) , 
+     ATTRIBUTE5 VARCHAR2 (150) , 
+     ATTRIBUTE6 VARCHAR2 (150) , 
+     ATTRIBUTE7 VARCHAR2 (150) , 
+     ATTRIBUTE8 VARCHAR2 (150) , 
+     ATTRIBUTE9 VARCHAR2 (150) , 
+     ATTRIBUTE10 VARCHAR2 (150) , 
+     ATTRIBUTE11 VARCHAR2 (150) , 
+     ATTRIBUTE12 VARCHAR2 (150) , 
+     ATTRIBUTE13 VARCHAR2 (150) , 
+     ATTRIBUTE14 VARCHAR2 (150) , 
+     ATTRIBUTE15 VARCHAR2 (150) , 
+     ATTRIBUTE16 VARCHAR2 (150) , 
+     ATTRIBUTE17 VARCHAR2 (150) , 
+     ATTRIBUTE18 VARCHAR2 (150) , 
+     ATTRIBUTE19 VARCHAR2 (150) , 
+     ATTRIBUTE20 VARCHAR2 (150) , 
+     LAST_UPDATE_DATE DATE  NOT NULL , 
+     LAST_UPDATED_BY NUMBER (15)  NOT NULL , 
+     CREATION_DATE DATE  NOT NULL , 
+     CREATED_BY NUMBER (15)  NOT NULL , 
+     LAST_UPDATE_LOGIN NUMBER (15)  NOT NULL , 
+     REQUEST_ID NUMBER (15) , 
+     PROGRAM_APPLICATION_ID NUMBER (15) , 
+     PROGRAM_ID NUMBER (15) , 
+     PROGRAM_UPDATE_DATE DATE , 
+     WH_UPDATE_DATE DATE  
+    );
+
+-- ----------------------------------------------------------------------------
+-- Creating Index on XX_CDH_EBL_STD_AGGR_DTL.
+-- ----------------------------------------------------------------------------
+
+CREATE UNIQUE INDEX XXCRM.XX_CDH_EBL_STD_AGGR_DL__UIDX01 ON XXCRM.XX_CDH_EBL_STD_AGGR_DTL 
+    ( 
+     EBL_AGGR_ID ASC 
+    );
+
+CREATE INDEX XXCRM.XX_CDH_EBL_STD_AGGR_DL__IDX01 ON XXCRM.XX_CDH_EBL_STD_AGGR_DTL 
+    ( 
+     CUST_DOC_ID ASC 
+    );
+    
+-- ----------------------------------------------------------------------------
+-- Adding Grants to APPS.
+-- ----------------------------------------------------------------------------
+
+GRANT ALL ON XXCRM.XX_CDH_EBL_STD_AGGR_DTL TO APPS;
+
+SHOW ERRORS;

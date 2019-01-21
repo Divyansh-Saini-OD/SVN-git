@@ -1,0 +1,41 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify						|
+-- +============================================================================================+
+-- | Name        : XXHZ_RELATIONSHIPS_N10.idx                                               |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        08/07/11       Devendra Petkar        Initial version                            |
+-- +============================================================================================+
+
+
+--------------------------------------------------------------------
+----------------------HZ_RELATIONSHIPS------------------------------
+--------------------------------------------------------------------
+
+
+PROMPT CREATE INDEX xxcrm.XXHZ_RELATIONSHIPS_N10
+
+CREATE INDEX XXCRM.XXHZ_RELATIONSHIPS_N10 ON AR.HZ_RELATIONSHIPS
+(party_id, subject_type)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+PARALLEL (DEGREE 4);
+
+ALTER INDEX XXCRM.XXHZ_RELATIONSHIPS_N10 NOPARALLEL;
+
+-- Adding analyze
+
+EXEC DBMS_STATS.gather_index_stats('XXCRM', 'XXHZ_RELATIONSHIPS_N10', estimate_percent => 10);
+
+SHOW ERROR;
+
+EXIT;

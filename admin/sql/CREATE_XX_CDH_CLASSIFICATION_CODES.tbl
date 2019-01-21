@@ -1,0 +1,37 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        :  CREATE_XX_CDH_CLASSIFICATION_CODES.tbl             |
+-- | Description :  Create custom tables for I0934_NAICS               |
+-- |                The Objects created are:                           |
+-- |                 1. XX_CDH_CLASSIFICATION_CODES (Staging Table)    |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author             Remarks                   |
+-- |=======   ==========  ================== ==========================|
+-- |DRAFT 1a  09-Apr-2007 Madhukar Salunke   Initial draft version     |
+-- |Draft 1b  02-Jul-2007 Ashok Kumar T J    Changed table and file    |
+-- |                                         name as per new MD040.    |
+-- |1.0       05-Dec-2007 Ambarish Mukherjee Removed Drop Script       | 
+-- +===================================================================+
+
+-- -----------------------------------------------------
+--      Create Custom Table XX_CDH_CLASSIFICATION_CODES    --
+-- -----------------------------------------------------
+
+CREATE TABLE XXCRM.xx_cdh_classification_codes
+   (  code                    VARCHAR2(255)
+     ,title                   VARCHAR2(1000)
+     ,status                  VARCHAR2(100)
+   );
+
+/
+SHOW ERRORS;
+
+EXIT;

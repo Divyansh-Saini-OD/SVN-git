@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<JavaBean xmlns="http://xmlns.oracle.com/adfm/beanmodel" version="11.1.1.56.60"
+          id="ReplyTo" Package="AOPS_Reports.initiate.params"
+          BeanClass="AOPS_Reports.initiate.params.ReplyTo" isJavaBased="false">
+  <Attribute Name="Address" Type="java.lang.String"/>
+  <Attribute Name="PortType" Type="java.lang.String"/>
+  <AccessorAttribute id="ReferenceProperties" IsCollection="false"
+                     BeanClass="AOPS_Reports.initiate.params.ReplyTo.ReferenceProperties"/>
+  <AccessorAttribute id="ServiceName" IsCollection="false"
+                     BeanClass="AOPS_Reports.initiate.params.ReplyTo.ServiceName"/>
+  <AccessorAttribute id="any" IsCollection="false"/>
+</JavaBean>

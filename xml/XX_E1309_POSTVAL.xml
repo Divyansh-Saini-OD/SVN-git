@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XX_E1309_POSTVAL" description="OD: Autonamed Account Creation Postvalidation" Version="1.0">
+<parameters>
+ <parameter name="P_PERSONID" dataType="number" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_ORG_COUNT_PROS">
+<![CDATA[
+SELECT 'PROSPECT' AS Organization_Type
+        ,COUNT(a.entity_id) AS No_Of_Party_Site
+FROM  apps.xx_tm_nam_terr_entity_dtls a, 
+      apps.xx_tm_nam_terr_rsc_dtls b, 
+      apps.xx_tm_nam_terr_defn c ,
+      apps.jtf_rs_resource_extns res 
+WHERE    c.NAMED_ACCT_TERR_ID     = b.NAMED_ACCT_TERR_ID 
+AND a.NAMED_ACCT_TERR_ID = b.NAMED_ACCT_TERR_ID 
+and a.NAMED_ACCT_TERR_ID = c.NAMED_ACCT_TERR_ID 
+and SYSDATE between NVL(a.START_DATE_ACTIVE,SYSDATE-1) and nvl(a.END_DATE_ACTIVE,SYSDATE+1) 
+AND SYSDATE between NVL(b.START_DATE_ACTIVE,SYSDATE-1) and nvl(b.END_DATE_ACTIVE,SYSDATE+1) 
+AND SYSDATE between NVL(c.START_DATE_ACTIVE,SYSDATE-1) and nvl(c.END_DATE_ACTIVE,SYSDATE+1) 
+AND NVL(a.status,'A') = 'A' 
+AND NVL(b.status,'A') = 'A' 
+AND NVL(c.status,'A') = 'A' 
+AND a.entity_type = 'PARTY_SITE' 
+AND res.resource_id = b.resource_id 
+AND EXISTS (SELECT 1 
+            FROM   apps.hz_parties hp
+			      ,apps.hz_party_sites hps
+		    WHERE 	hp.party_id = hps.party_id 
+            AND hp.status = 'A'
+			AND hp.attribute13 = 'PROSPECT' 
+			AND hps.status = 'A' 
+			AND hps.party_site_id  = a.entity_id 	  
+			)
+AND res.source_number IN 
+( 
+ select distinct t.source_number 
+ from 
+        ( 
+        select * 
+        from jtf_rs_resource_extns_vl a, 
+             jtf_rs_role_relations b  , 
+             jtf_rs_role_details_vl c , 
+             (
+			  SELECT  PAAF.person_id           PERSON_ID 
+                     , PAPF.full_name           FULL_NAME 
+                     , PAPF.employee_number     EMPLOYEE_NUMBER 
+                     , TRUNC(TO_DATE(PAAF.ass_attribute10,'DD-MON-RR')) JOB_ASGN_DATE 
+                     , TRUNC(TO_DATE(PAAF.ass_attribute9, 'DD-MON-RR')) MGR_ASGN_DATE 
+                     , PAAF.job_id 
+                     ,PAAF.effective_end_date 
+              FROM    (SELECT * 
+                        FROM per_all_assignments_f p1 
+                        WHERE  trunc(sysdate) BETWEEN p1.effective_start_date 
+                        AND  (CASE (SELECT  system_person_type 
+                                     FROM    per_person_type_usages_f p 
+                                           , per_person_types         ppt 
+                                     WHERE   TRUNC(sysdate) BETWEEN p.effective_start_date AND p.effective_end_date 
+                                     AND     PPT. person_type_id   =  p.person_type_id 
+                                     AND     p.person_id           =  p1.person_id 
+                                     ) 
+                                   WHEN 'EX_EMP'THEN TRUNC(sysdate) WHEN 'EMP' THEN p1.effective_end_date 
+						     END) 
+                          ) PAAF 
+						  ,per_all_people_f  PAPF 
+                          ,  per_person_types         PPT 
+						   ,per_person_type_usages_f PPTU 
+		        WHERE    PAAF.person_id               = PAPF.person_id 
+				AND      sysdate BETWEEN PAAF.effective_start_date AND PAAF.effective_end_date 
+		        AND      PAPF.person_id               = PPTU.person_id 
+				AND      sysdate BETWEEN PPTU.effective_start_date AND PPTU.effective_end_date 
+		        AND      PPT. person_type_id          = PPTU.person_type_id 
+		        AND      PPT.system_person_type       = 'EMP' 
+		        CONNECT BY PRIOR PAAF.person_id       = PAAF.supervisor_id 
+		        START WITH     PAAF.person_id       = :P_PERSONID 
+		     ) k -- personid of the rsd from per_all_people_f 
+        where a.source_number = k.employee_number 
+        and a.resource_id = b.role_resource_id 
+        and b.role_id = c.role_id 
+        ) t 
+ )
+]]>
+</sqlStatement>
+<sqlStatement name="Q_ORG_COUNT_CUST">
+<![CDATA[
+SELECT 'CUSTOMER' AS Organization_Type
+        ,COUNT(hps.party_site_id) AS No_Of_Party_Site
+FROM  apps.xx_tm_nam_terr_entity_dtls a, 
+      apps.xx_tm_nam_terr_rsc_dtls b, 
+      apps.xx_tm_nam_terr_defn c, 
+      apps.hz_parties hp, 
+      apps.hz_locations hl, 
+     apps.hz_party_sites hps, 
+  apps.jtf_rs_resource_extns res 
+WHERE    c.NAMED_ACCT_TERR_ID     = b.NAMED_ACCT_TERR_ID 
+AND a.NAMED_ACCT_TERR_ID = b.NAMED_ACCT_TERR_ID 
+and a.NAMED_ACCT_TERR_ID = c.NAMED_ACCT_TERR_ID 
+and SYSDATE between NVL(a.START_DATE_ACTIVE,SYSDATE-1) and nvl(a.END_DATE_ACTIVE,SYSDATE+1) 
+AND SYSDATE between NVL(b.START_DATE_ACTIVE,SYSDATE-1) and nvl(b.END_DATE_ACTIVE,SYSDATE+1) 
+AND SYSDATE between NVL(c.START_DATE_ACTIVE,SYSDATE-1) and nvl(c.END_DATE_ACTIVE,SYSDATE+1) 
+AND NVL(a.status,'A') = 'A' 
+AND NVL(b.status,'A') = 'A' 
+AND NVL(c.status,'A') = 'A' 
+AND a.entity_type = 'PARTY_SITE' 
+AND a.entity_id = hps.party_site_id 
+AND hps.status = 'A' 
+AND hp.party_id = hps.party_id 
+AND hp.status = 'A' 
+AND hl.location_id = hps.location_id 
+AND res.resource_id = b.resource_id 
+AND hp.attribute13 = 'CUSTOMER'  
+AND res.source_number IN 
+( 
+ select distinct t.source_number 
+ from 
+        ( 
+        select * 
+        from jtf_rs_resource_extns_vl a, 
+             jtf_rs_role_relations b  , 
+             jtf_rs_role_details_vl c , 
+             (SELECT  PAAF.person_id           PERSON_ID 
+                     , PAPF.full_name           FULL_NAME 
+                     , PAPF.employee_number     EMPLOYEE_NUMBER 
+                     , TRUNC(TO_DATE(PAAF.ass_attribute10,'DD-MON-RR')) JOB_ASGN_DATE 
+                     , TRUNC(TO_DATE(PAAF.ass_attribute9, 'DD-MON-RR')) MGR_ASGN_DATE 
+                     , PAAF.job_id 
+                     ,PAAF.effective_end_date 
+              FROM    (SELECT * 
+                        FROM per_all_assignments_f p1 
+                        WHERE  trunc(sysdate) BETWEEN p1.effective_start_date 
+                        AND  (CASE (SELECT  system_person_type 
+                                     FROM    per_person_type_usages_f p 
+                                           , per_person_types         ppt 
+                                     WHERE   TRUNC(sysdate) BETWEEN p.effective_start_date AND p.effective_end_date 
+                                     AND     PPT. person_type_id   =  p.person_type_id 
+                                     AND     p.person_id           =  p1.person_id 
+                                     ) 
+                                   WHEN 'EX_EMP'THEN TRUNC(sysdate) WHEN 'EMP' THEN p1.effective_end_date 
+						     END) 
+                          ) PAAF 
+						  ,per_all_people_f  PAPF 
+                          ,  per_person_types         PPT 
+						   ,per_person_type_usages_f PPTU 
+		        WHERE    PAAF.person_id               = PAPF.person_id 
+				AND      sysdate BETWEEN PAAF.effective_start_date AND PAAF.effective_end_date 
+		        AND      PAPF.person_id               = PPTU.person_id 
+				AND      sysdate BETWEEN PPTU.effective_start_date AND PPTU.effective_end_date 
+		        AND      PPT. person_type_id          = PPTU.person_type_id 
+		        AND      PPT.system_person_type       = 'EMP' 
+		        CONNECT BY PRIOR PAAF.person_id       = PAAF.supervisor_id 
+		        START WITH     PAAF.person_id       = :P_PERSONID 
+		     ) k -- personid of the rsd from per_all_people_f 
+        where a.source_number = k.employee_number 
+        and a.resource_id = b.role_resource_id 
+        and b.role_id = c.role_id 
+        ) t 
+ )
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_ORG_COUNT_PROS" source="Q_ORG_COUNT_PROS">
+<element name="ORGANIZATION_TYPE"  value="ORGANIZATION_TYPE" />
+<element name="NO_OF_PARTY_SITE" value="NO_OF_PARTY_SITE" />
+</group>
+<group name="G_ORG_COUNT_CUST" source="Q_ORG_COUNT_CUST">
+<element name="ORGANIZATION_TYPE"  value="ORGANIZATION_TYPE" />
+<element name="NO_OF_PARTY_SITE" value="NO_OF_PARTY_SITE" />
+</group>
+</dataStructure>
+</dataTemplate>
+

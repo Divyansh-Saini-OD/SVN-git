@@ -1,0 +1,33 @@
+-- $Id:$
+-- $Rev:$
+-- $HeadURL:$
+-- $Author:$
+-- $Date:$
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :CREATE_XXBI_LAST_SITE_CPOINT_MV.syn               |
+-- | Description      :Synonym to XXBI_LAST_SITE_CPOINT_MV Table         |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |1.0       30-Mar-2010  Prasad Devar    Initial draft                |
+-- +=======================================================================+
+
+
+
+CREATE OR REPLACE SYNONYM APPS.XXBI_LAST_SITE_CPOINT_MV FOR XXCRM.XXBI_LAST_SITE_CPOINT_MV;
+
+SHOW ERRORS;
+EXIT;

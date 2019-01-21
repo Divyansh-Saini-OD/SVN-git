@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?> 
+<dataTemplate name="XXCDHCONVBATCHCTREP" description="OD: CDH Conversion Stats Report" version="1.0">
+<parameters>
+   <parameter name="P_FROM_DATE" dataType="character" /> 
+   <parameter name="P_TO_DATE" dataType="character" /> 
+</parameters>
+<dataQuery>
+   <sqlStatement name="Q_BATCH">
+   <![CDATA[
+            SELECT hibs.batch_id         EBI
+                 , hibs.original_system  EBN
+                 , hibs.batch_name       BATCH_NAME
+                 , hosv.orig_system_name ORIG_SYSTEM_NAME
+            FROM   hz_imp_batch_summary hibs
+                 , HZ_ORIG_SYSTEMS_VL hosv
+            WHERE  hosv.orig_system = hibs.original_system
+                   and hibs.creation_date
+                   BETWEEN TO_DATE(:P_FROM_DATE,'YYYY/MM/DD HH24:MI:SS')
+                   AND TO_DATE(:P_TO_DATE,'YYYY/MM/DD HH24:MI:SS')
+            ORDER BY hibs.original_system,hibs.creation_date]]>
+   </sqlStatement>
+   <sqlStatement name="Q_PARTIES_CNT">
+   <![CDATA[
+            SELECT COUNT(1)            PC 
+            FROM   xxod_hz_imp_parties_int 
+            WHERE  batch_id = :EBI]]>
+   </sqlStatement>
+   <sqlStatement name="Q_PARTIES_ST_CNT">
+   <![CDATA[   
+            SELECT NVL2(error_id, 6, 7)  EID
+                 , COUNT(1)              EC
+            FROM   HZ_IMP_PARTIES_INT 
+            WHERE  batch_id = :EBI
+            GROUP BY NVL2(ERROR_ID, 6, 7)]]>
+   </sqlStatement>
+   <sqlStatement name="Q_PARTIES_CLASSIFN_CNT">
+   <![CDATA[   
+            SELECT COUNT(1)          CLC
+            FROM   XXOD_HZ_IMP_CLASSIFICS_INT 
+            WHERE  batch_id = :EBI]]>
+   </sqlStatement>
+   <sqlStatement name="Q_PARTIES_CLASSIFN_ST_CNT">
+   <![CDATA[
+            SELECT NVL2(error_id, 6, 7)   CLCEID
+                 , COUNT(1)               CLCEC
+            FROM   HZ_IMP_CLASSIFICS_INT 
+            WHERE  batch_id = :EBI 
+            GROUP BY NVL2(error_id, 6, 7)]]>
+   </sqlStatement>
+   <sqlStatement name="Q_PARTIES_RELSHIPS_CNT">   
+   <![CDATA[      
+            SELECT COUNT(1)          RC   
+            FROM   XXOD_HZ_IMP_RELSHIPS_INT    
+            WHERE  batch_id = :EBI]]>   
+   </sqlStatement>   
+   <sqlStatement name="Q_PARTIES_RELSHIPS_ST_CNT">   
+   <![CDATA[   
+            SELECT nvl2(error_id, 6, 7)   RCEID   
+                 , COUNT(1)               RCEC   
+            FROM   HZ_IMP_RELSHIPS_INT   
+            WHERE  batch_id = :EBI    
+            GROUP BY NVL2(error_id, 6, 7)]]>   
+   </sqlStatement>   
+   <sqlStatement name="Q_PARTIES_HIER_RELSHIPS_ST_CNT">
+   <![CDATA[
+            SELECT interface_status       REID
+                 , COUNT(1)               REC
+            FROM   XXOD_HZ_IMP_RELSHIPS_STG 
+            WHERE  batch_id = :EBI 
+            GROUP BY interface_status]]>
+   </sqlStatement>
+   <sqlStatement name="Q_ADDRESSES_CNT">      
+   <![CDATA[         
+            SELECT COUNT(1)          AC      
+            FROM   XXOD_HZ_IMP_ADDRESSES_INT       
+            WHERE  batch_id = :EBI]]>      
+   </sqlStatement>      
+   <sqlStatement name="Q_ADDRESSES_ST_CNT">      
+   <![CDATA[      
+            SELECT NVL2(error_id, 6, 7)   ACEID      
+                 , COUNT(1)               ACEC      
+            FROM   HZ_IMP_ADDRESSES_INT      
+            WHERE  batch_id = :EBI       
+            GROUP BY NVL2(error_id, 6, 7)]]>      
+   </sqlStatement>      
+   <sqlStatement name="Q_ADDRESSUSES_CNT">         
+   <![CDATA[            
+            SELECT COUNT(1)          AUC         
+            FROM   XXOD_HZ_IMP_ADDRESSUSES_INT          
+            WHERE  batch_id = :EBI]]>         
+   </sqlStatement>         
+   <sqlStatement name="Q_ADDRESSUSES_ST_CNT">         
+   <![CDATA[         
+            SELECT NVL2(error_id, 6, 7)   AUCEID         
+                 , COUNT(1)               AUCEC         
+            FROM   HZ_IMP_ADDRESSUSES_INT         
+            WHERE  batch_id = :EBI          
+            GROUP BY NVL2(error_id, 6, 7)]]>         
+   </sqlStatement>
+   <sqlStatement name="Q_CONTACTS_CNT">         
+   <![CDATA[            
+            SELECT COUNT(1)          CC         
+            FROM   XXOD_HZ_IMP_CONTACTS_INT          
+            WHERE  batch_id = :EBI]]>         
+   </sqlStatement>         
+   <sqlStatement name="Q_CONTACTS_ST_CNT">       
+   <![CDATA[         
+            SELECT NVL2(error_id, 6, 7)   CCEID         
+                 , COUNT(1)               CCEC         
+            FROM   HZ_IMP_CONTACTS_INT         
+            WHERE  batch_id = :EBI          
+            GROUP BY NVL2(error_id, 6, 7)]]>         
+   </sqlStatement>
+   <sqlStatement name="Q_CONTACTROLES_CNT">        
+   <![CDATA[            
+            SELECT COUNT(1)          CRC         
+            FROM   XXOD_HZ_IMP_CONTACTROLES_INT         
+            WHERE  batch_id = :EBI]]>         
+   </sqlStatement>         
+   <sqlStatement name="Q_CONTACTROLES_ST_CNT">     
+   <![CDATA[         
+            SELECT NVL2(error_id, 6, 7)   CRCEID       
+                 , COUNT(1)               CRCEC        
+            FROM   HZ_IMP_CONTACTROLES_INT         
+            WHERE  batch_id = :EBI          
+            GROUP BY NVL2(error_id, 6, 7)]]>        
+   </sqlStatement>         
+   <sqlStatement name="Q_CONTACTPOINTS_CNT">        
+   <![CDATA[            
+            SELECT COUNT(1)          CPC         
+            FROM   XXOD_HZ_IMP_CONTACTPTS_INT         
+            WHERE  batch_id = :EBI]]>         
+   </sqlStatement>         
+   <sqlStatement name="Q_CONTACTPOINTS_ST_CNT">     
+   <![CDATA[         
+            SELECT NVL2(error_id, 6, 7)   CPCEID       
+                 , COUNT(1)               CPCEC        
+            FROM   HZ_IMP_CONTACTPTS_INT         
+            WHERE  batch_id = :EBI          
+            GROUP BY NVL2(error_id, 6, 7)]]>        
+   </sqlStatement>         
+   <sqlStatement name="Q_CONTACTPOINTS_ST_REL_CNT">     
+   <![CDATA[         
+            SELECT interface_status   CEID       
+                 , COUNT(1)               CEC        
+            FROM   XXOD_HZ_IMP_CONTACTPTS_STG         
+            WHERE  batch_id = :EBI          
+            GROUP BY interface_status]]>        
+   </sqlStatement>         
+   <sqlStatement name="Q_FINNUMBERS_CNT">        
+   <![CDATA[            
+            SELECT COUNT(1)          FNC         
+            FROM   XXOD_HZ_IMP_FINNUMBERS_INT         
+            WHERE  batch_id = :EBI]]>         
+   </sqlStatement>         
+   <sqlStatement name="Q_FINNUMBERS_ST_CNT">     
+   <![CDATA[         
+            SELECT NVL2(error_id, 6, 7)   FNCEID       
+                 , COUNT(1)               FNCEC        
+            FROM   HZ_IMP_FINNUMBERS_INT         
+            WHERE  batch_id = :EBI          
+            GROUP BY NVL2(error_id, 6, 7)]]>        
+   </sqlStatement>         
+   <sqlStatement name="Q_FINREPORTS_CNT">        
+   <![CDATA[            
+            SELECT COUNT(1)          FRC         
+            FROM   XXOD_HZ_IMP_FINREPORTS_INT         
+            WHERE  batch_id = :EBI]]>         
+   </sqlStatement>         
+   <sqlStatement name="Q_FINREPORTS_ST_CNT">     
+   <![CDATA[         
+            SELECT NVL2(error_id, 6, 7)   FRCEID       
+                 , COUNT(1)               FRCEC        
+            FROM   HZ_IMP_FINREPORTS_INT         
+            WHERE  batch_id = :EBI          
+            GROUP BY NVL2(error_id, 6, 7)]]>        
+   </sqlStatement>         
+   <sqlStatement name="Q_CREDITRTNG_CNT">        
+   <![CDATA[            
+            SELECT COUNT(1)          CRDC         
+            FROM   XXOD_HZ_IMP_CREDITRTNGS_INT         
+            WHERE  batch_id = :EBI]]>         
+   </sqlStatement>         
+   <sqlStatement name="Q_CREDITRTNG_ST_CNT">     
+   <![CDATA[         
+            SELECT NVL2(error_id, 6, 7)   CRDCEID       
+                 , COUNT(1)               CRDCEC        
+            FROM   HZ_IMP_CREDITRTNGS_INT         
+            WHERE  batch_id = :EBI          
+            GROUP BY NVL2(error_id, 6, 7)]]>        
+   </sqlStatement>         
+   <sqlStatement name="Q_ACCOUNTS_CNT">        
+   <![CDATA[            
+            SELECT COUNT(1)          ACC         
+            FROM   XXOD_HZ_IMP_ACCOUNTS_INT         
+            WHERE  batch_id = :EBI]]>         
+   </sqlStatement>         
+   <sqlStatement name="Q_ACCOUNTS_ST_CNT">     
+   <![CDATA[         
+            SELECT interface_status       ACCEID       
+                 , COUNT(1)               ACCEC        
+            FROM   XXOD_HZ_IMP_ACCOUNTS_STG         
+            WHERE  batch_id = :EBI          
+            GROUP BY interface_status]]>        
+   </sqlStatement>         
+   <sqlStatement name="Q_ACCOUNT_SITES_CNT">        
+   <![CDATA[            
+            SELECT COUNT(1)          ASIC         
+            FROM   XXOD_HZ_IMP_ACCOUNT_SITES_INT         
+            WHERE  batch_id = :EBI]]>         
+   </sqlStatement>         
+   <sqlStatement name="Q_ACCOUNT_SITES_ST_CNT">     
+   <![CDATA[         
+            SELECT interface_status       ASICEID       
+                 , COUNT(1)               ASICEC        
+            FROM   XXOD_HZ_IMP_ACCT_SITES_STG         
+            WHERE  batch_id = :EBI          
+            GROUP BY interface_status]]>        
+   </sqlStatement>         
+   <sqlStatement name="Q_ACCOUNT_SITE_USES_CNT">        
+   <![CDATA[            
+            SELECT COUNT(1)          ASUC         
+            FROM   XXOD_HZ_IMP_ACCT_SITEUSES_INT         
+            WHERE  batch_id = :EBI]]>         
+   </sqlStatement>         
+   <sqlStatement name="Q_ACCOUNT_SITE_USES_ST_CNT">     
+   <![CDATA[         
+            SELECT interface_status       ASUCEID       
+                 , COUNT(1)               ASUCEC        
+            FROM   XXOD_HZ_IMP_ACCT_SITE_USES_STG         
+            WHERE  batch_id = :EBI          
+            GROUP BY interface_status]]>        
+   </sqlStatement>         
+   <sqlStatement name="Q_ACCOUNT_CONTACTS_CNT">        
+   <![CDATA[            
+            SELECT COUNT(1)          ACNC         
+            FROM   XXOD_HZ_IMP_ACCT_CONTACTS_INT         
+            WHERE  batch_id = :EBI]]>         
+   </sqlStatement>         
+   <sqlStatement name="Q_ACCOUNT_CONTACTS_ST_CNT">     
+   <![CDATA[         
+            SELECT interface_status       ACNCEID       
+                 , COUNT(1)               ACNCEC        
+            FROM   XXOD_HZ_IMP_ACCT_CONTACT_STG         
+            WHERE  batch_id = :EBI          
+            GROUP BY interface_status]]>        
+   </sqlStatement>         
+   <sqlStatement name="Q_ACCOUNT_CONTACT_ROLES_CNT">        
+   <![CDATA[            
+            SELECT COUNT(1)          ACRC         
+            FROM   XXOD_HZ_IMP_ACCT_CNTROLES_INT         
+            WHERE  batch_id = :EBI]]>         
+   </sqlStatement>         
+   <sqlStatement name="Q_ACCOUNT_CONTACT_ROLES_ST_CNT">     
+   <![CDATA[         
+            SELECT interface_status       ACRCEID       
+                 , COUNT(1)               ACRCEC        
+            FROM   XXOD_HZ_IMP_ACCT_CNTTROLES_STG         
+            WHERE  batch_id = :EBI          
+            GROUP BY interface_status]]>        
+   </sqlStatement>         
+   <sqlStatement name="Q_EXT_ATTRIBS_CNT">        
+   <![CDATA[            
+            SELECT COUNT(1)          EAC         
+            FROM   XXOD_HZ_IMP_EXT_ATTRIBS_INT         
+            WHERE  batch_id = :EBI]]>         
+   </sqlStatement>         
+   <sqlStatement name="Q_EXT_ATTRIBS_ST_CNT">     
+   <![CDATA[         
+            SELECT interface_status   EACEID       
+                 , COUNT(1)           EACEC        
+            FROM   XXOD_HZ_IMP_EXT_ATTRIBS_STG         
+            WHERE  batch_id = :EBI          
+            GROUP BY interface_status]]>        
+   </sqlStatement>         
+   <sqlStatement name="Q_ACCOUNT_BANKS_CNT">        
+   <![CDATA[            
+            SELECT COUNT(1)          ABC         
+            FROM   XXOD_HZ_CUSTOMER_BANKS_INT         
+            WHERE  batch_id = :EBI]]>         
+   </sqlStatement>         
+   <sqlStatement name="Q_ACCOUNT_BANKS_ST_CNT">     
+   <![CDATA[         
+            SELECT interface_status       ABCEID       
+                 , COUNT(1)               ABCEC        
+            FROM   XXOD_HZ_IMP_CUSTOMER_BANKS_STG         
+            WHERE  batch_id = :EBI          
+            GROUP BY interface_status]]>        
+   </sqlStatement> 
+   <sqlStatement name="Q_ACCOUNT_PAYMETHODS_CNT">        
+   <![CDATA[            
+            SELECT COUNT(1)          PMC         
+            FROM   XXOD_HZ_IMP_ACCT_PAYMTHD_INT         
+            WHERE  batch_id = :EBI]]>         
+   </sqlStatement>         
+   <sqlStatement name="Q_ACCOUNT_PAYMETHODS_ST_CNT">     
+   <![CDATA[         
+            SELECT interface_status       PMCEID       
+                 , COUNT(1)               PMCEC        
+            FROM   XXOD_HZ_IMP_ACCT_PAYMETH_STG         
+            WHERE  batch_id = :EBI          
+            GROUP BY interface_status]]>        
+   </sqlStatement>         
+   <sqlStatement name="Q_ACCOUNT_PROFILE_CNT">        
+   <![CDATA[            
+            SELECT COUNT(1)          APC         
+            FROM   XXOD_HZ_IMP_ACCT_PROFILES_INT         
+            WHERE  batch_id = :EBI]]>         
+   </sqlStatement>         
+   <sqlStatement name="Q_ACCOUNT_PROFILE_ST_CNT">     
+   <![CDATA[         
+            SELECT interface_status       APCEID       
+                 , COUNT(1)               APCEC        
+            FROM   XXOD_HZ_IMP_ACCOUNT_PROF_STG         
+            WHERE  batch_id = :EBI          
+            GROUP BY interface_status]]>        
+   </sqlStatement>            
+</dataQuery>
+<dataStructure>
+   <group name="G_BATCH_ID" source="Q_BATCH">
+      <element name="EBI" value="EBI" /> 
+      <element name="EBN" value="EBN" /> 
+      <element name="BATCH_NAME" value="BATCH_NAME" /> 
+      <element name="ORIG_SYSTEM_NAME" value="ORIG_SYSTEM_NAME" /> 
+      <group name="G_PARTIES_CNT" source="Q_PARTIES_CNT">
+         <element name="PC" value="PC" /> 
+      </group>
+      <group name="G_PARTIES_ST_CNT" source="Q_PARTIES_ST_CNT">
+         <element name="EID" value="EID" /> 
+         <element name="EC" value="EC" />
+      </group>
+      <group name="G_PARTIES_CLASSIFN_CNT" source="Q_PARTIES_CLASSIFN_CNT">
+         <element name="CLC" value="CLC" /> 
+      </group>
+      <group name="G_PARTIES_CLASSIFN_ST_CNT" source="Q_PARTIES_CLASSIFN_ST_CNT">
+         <element name="CLCEID" value="CLCEID" /> 
+         <element name="CLCEC" value="CLCEC" />
+      </group>
+      <group name="G_PARTIES_RELSHIPS_CNT" source="Q_PARTIES_RELSHIPS_CNT">
+         <element name="RC" value="RC" /> 
+      </group>
+      <group name="G_PARTIES_RELSHIPS_ST_CNT" source="Q_PARTIES_RELSHIPS_ST_CNT">
+         <element name="RCEID" value="RCEID" /> 
+         <element name="RCEC" value="RCEC" />
+      </group>
+      <group name="G_PARTIES_HIER_RELSHIPS_ST_CNT" source="Q_PARTIES_HIER_RELSHIPS_ST_CNT">
+         <element name="REID" value="REID" /> 
+         <element name="REC" value="REC" />
+      </group>
+      <group name="G_ADDRESSES_CNT" source="Q_ADDRESSES_CNT">
+         <element name="AC" value="AC" /> 
+      </group>
+      <group name="G_ADDRESSES_ST_CNT" source="Q_ADDRESSES_ST_CNT">
+         <element name="ACEID" value="ACEID" /> 
+         <element name="ACEC" value="ACEC" />
+      </group>
+      <group name="G_ADDRESSUSES_CNT" source="Q_ADDRESSUSES_CNT">
+         <element name="AUC" value="AUC" /> 
+      </group>
+      <group name="G_ADDRESSUSES_ST_CNT" source="Q_ADDRESSUSES_ST_CNT">
+         <element name="AUCEID" value="AUCEID" /> 
+         <element name="AUCEC" value="AUCEC" />
+      </group>
+      <group name="G_CONTACTS_CNT" source="Q_CONTACTS_CNT">
+         <element name="CC" value="CC" /> 
+      </group>
+      <group name="G_CONTACTS_ST_CNT" source="Q_CONTACTS_ST_CNT">
+         <element name="CCEID" value="CCEID" /> 
+         <element name="CCEC" value="CCEC" />
+      </group>
+      <group name="G_CONTACTROLES_CNT" source="Q_CONTACTROLES_CNT">
+         <element name="CRC" value="CRC" /> 
+      </group>
+      <group name="G_CONTACTROLES_ST_CNT" source="Q_CONTACTROLES_ST_CNT">
+         <element name="CRCEID" value="CRCEID" /> 
+         <element name="CRCEC" value="CRCEC" />
+      </group>
+      <group name="G_CONTACTPOINTS_CNT" source="Q_CONTACTPOINTS_CNT">
+         <element name="CPC" value="CPC" /> 
+      </group>
+      <group name="G_CONTACTPOINTS_ST_CNT" source="Q_CONTACTPOINTS_ST_CNT">
+         <element name="CPCEID" value="CPCEID" /> 
+         <element name="CPCEC" value="CPCEC" />
+      </group>
+      <group name="G_CONTACTPOINTS_ST_REL_CNT" source="Q_CONTACTPOINTS_ST_REL_CNT">
+         <element name="CEID" value="CEID" /> 
+         <element name="CEC" value="CEC" />
+      </group>
+      <group name="G_FINNUMBERS_CNT" source="Q_FINNUMBERS_CNT">
+         <element name="FNC" value="FNC" /> 
+      </group>
+      <group name="G_FINNUMBERS_ST_CNT" source="Q_FINNUMBERS_ST_CNT">
+         <element name="FNCEID" value="FNCEID" /> 
+         <element name="FNCEC" value="FNCEC" />
+      </group>
+      <group name="G_FINREPORTS_CNT" source="Q_FINREPORTS_CNT">
+         <element name="FRC" value="FRC" /> 
+      </group>
+      <group name="G_FINREPORTS_ST_CNT" source="Q_FINREPORTS_ST_CNT">
+         <element name="FRCEID" value="FRCEID" /> 
+         <element name="FRCEC" value="FRCEC" />
+      </group>
+      <group name="G_CREDITRTNG_CNT" source="Q_CREDITRTNG_CNT">
+         <element name="CRDC" value="CRDC" /> 
+      </group>
+      <group name="G_CREDITRTNG_ST_CNT" source="Q_CREDITRTNG_ST_CNT">
+         <element name="CRDCEID" value="CRDCEID" /> 
+         <element name="CRDCEC" value="CRDCEC" />
+      </group>
+      <group name="G_ACCOUNTS_CNT" source="Q_ACCOUNTS_CNT">
+         <element name="ACC" value="ACC" /> 
+      </group>
+      <group name="G_ACCOUNTS_ST_CNT" source="Q_ACCOUNTS_ST_CNT">
+         <element name="ACCEID" value="ACCEID" /> 
+         <element name="ACCEC" value="ACCEC" />
+      </group>
+      <group name="G_ACCOUNT_SITES_CNT" source="Q_ACCOUNT_SITES_CNT">
+         <element name="ASIC" value="ASIC" /> 
+      </group>
+      <group name="G_ACCOUNT_SITES_ST_CNT" source="Q_ACCOUNT_SITES_ST_CNT">
+         <element name="ASICEID" value="ASICEID" /> 
+         <element name="ASICEC" value="ASICEC" />
+      </group>
+      <group name="G_ACCOUNT_SITE_USES_CNT" source="Q_ACCOUNT_SITE_USES_CNT">
+         <element name="ASUC" value="ASUC" /> 
+      </group>
+      <group name="G_ACCOUNT_SITE_USES_ST_CNT" source="Q_ACCOUNT_SITE_USES_ST_CNT">
+         <element name="ASUCEID" value="ASUCEID" /> 
+         <element name="ASUCEC" value="ASUCEC" />
+      </group>
+      <group name="G_ACCOUNT_CONTACTS_CNT" source="Q_ACCOUNT_CONTACTS_CNT">
+         <element name="ACNC" value="ACNC" /> 
+      </group>
+      <group name="G_ACCOUNT_CONTACTS_ST_CNT" source="Q_ACCOUNT_CONTACTS_ST_CNT">
+         <element name="ACNCEID" value="ACNCEID" /> 
+         <element name="ACNCEC" value="ACNCEC" />
+      </group>
+      <group name="G_ACCOUNT_CONTACT_ROLES_CNT" source="Q_ACCOUNT_CONTACT_ROLES_CNT">
+         <element name="ACRC" value="ACRC" /> 
+      </group>
+      <group name="G_ACCOUNT_CONTACT_ROLES_ST_CNT" source="Q_ACCOUNT_CONTACT_ROLES_ST_CNT">
+         <element name="ACRCEID" value="ACRCEID" /> 
+         <element name="ACRCEC" value="ACRCEC" />
+      </group>
+      <group name="G_EXT_ATTRIBS_CNT" source="Q_EXT_ATTRIBS_CNT">
+         <element name="EAC" value="EAC" /> 
+      </group>
+      <group name="G_EXT_ATTRIBS_ST_CNT" source="Q_EXT_ATTRIBS_ST_CNT">
+         <element name="EACEID" value="EACEID" /> 
+         <element name="EACEC" value="EACEC" />
+      </group>
+      <group name="G_ACCOUNT_BANKS_CNT" source="Q_ACCOUNT_BANKS_CNT">
+         <element name="ABC" value="ABC" /> 
+      </group>
+      <group name="G_ACCOUNT_BANKS_ST_CNT" source="Q_ACCOUNT_BANKS_ST_CNT">
+         <element name="ABCEID" value="ABCEID" /> 
+         <element name="ABCEC" value="ABCEC" />
+      </group>
+      <group name="G_ACCOUNT_PAYMETHODS_CNT" source="Q_ACCOUNT_PAYMETHODS_CNT">
+         <element name="PMC" value="PMC" /> 
+      </group>
+      <group name="G_ACCOUNT_PAYMETHODS_ST_CNT" source="Q_ACCOUNT_PAYMETHODS_ST_CNT">
+         <element name="PMCEID" value="PMCEID" /> 
+         <element name="PMCEC" value="PMCEC" />
+      </group>
+      <group name="G_ACCOUNT_PROFILE_CNT" source="Q_ACCOUNT_PROFILE_CNT">
+         <element name="APC" value="APC" /> 
+      </group>
+      <group name="G_ACCOUNT_PROFILE_ST_CNT" source="Q_ACCOUNT_PROFILE_ST_CNT">
+         <element name="APCEID" value="APCEID" /> 
+         <element name="APCEC" value="APCEC" />
+      </group>
+   </group>
+</dataStructure>
+</dataTemplate>
+

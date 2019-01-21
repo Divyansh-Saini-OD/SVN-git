@@ -1,0 +1,7 @@
+create or replace type XX_CDH_TBL_NAME_TYPELIST_T as table of xx_cdh_tbl_name_type;
+/
+SHOW ERRORS;
+GRANT ALL ON xxcrm.xx_cdh_tbl_name_typelist_t TO APPS;
+
+SHOW ERRORS;
+EXIT;

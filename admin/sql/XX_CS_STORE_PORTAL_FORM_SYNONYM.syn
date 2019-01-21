@@ -1,0 +1,37 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : xxod_iSupport_Survey                                                            |--                                                                                          |--
+--| Program Name   : xxod_iSupport_Survey.tbl                                                 |--
+--|                                                                                             |--
+--| Purpose        : Sales Activity Table                                                       |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              20-May-2009       Rajavel                  Initial Draft                   |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+---------------------------------------------------------
+-- Creating synonym APPS.XX_CS_STORE_FORTAL_FORM --
+---------------------------------------------------------
+
+CREATE OR REPLACE PUBLIC SYNONYM XX_CS_ISUPPORT_SURVEY FOR XXCRM.XX_CS_ISUPPORT_SURVEY;
+
+CREATE OR REPLACE PUBLIC SYNONYM XX_CS_STORE_FORTAL_FORM FOR XXCRM.XX_CS_STORE_FORTAL_FORM;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

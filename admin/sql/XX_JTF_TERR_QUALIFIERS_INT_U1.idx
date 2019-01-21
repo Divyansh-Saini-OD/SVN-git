@@ -1,0 +1,39 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |      Oracle NAIO/Office Depot/Consulting Organization                 |
+-- +=======================================================================+
+-- | Name             :XX_JTF_TERR_QUALIFIERS_INT_U1.idx                   |
+-- | Description      :Unique Index for Custom Table                       |
+---|                   XX_JTF_TERR_QUALIFIERS_INT                          |
+-- |                   as part of I0405_Territories                        |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author              Remarks                     |
+-- |-------  ----------- -----------------    -----------------------------|
+-- | 1.0     20-JUL-2007  Sathya Prabha Rani   Initial Draft Version       |
+-- +=======================================================================+
+
+
+REM============================================================================================
+REM         Creating Index XX_JTF_TERR_QUALIFIERS_INT_U1
+REM============================================================================================
+
+CREATE UNIQUE INDEX XXCRM.XX_JTF_TERR_QUALIFIERS_INT_U1
+ON XXCRM.XX_JTF_TERR_QUALIFIERS_INT(RECORD_ID);
+
+
+EXIT;
+
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<JavaBean xmlns="http://xmlns.oracle.com/adfm/beanmodel" version="11.1.1.56.60"
+          id="TopFiveOrders" Package="model.CustOrderInfo.process_Result"
+          BeanClass="model.CustOrderInfo.process_Result.TopFiveOrders"
+          isJavaBased="false">
+  <Attribute Name="OrderNumber" IsUpdateable="0" IsNotNull="true"
+             Type="java.math.BigDecimal" PrecisionRule="false" Precision="0"
+             Scale="0"/>
+  <Attribute Name="OrderTotal" IsUpdateable="0" IsNotNull="true"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="ShipToRef" IsUpdateable="0" IsNotNull="true"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="SalesRepId" IsUpdateable="0" IsNotNull="true"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="OrderedDate" IsUpdateable="0" IsNotNull="true"
+             Type="java.sql.Date"/>
+  <Attribute Name="Message" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+</JavaBean>

@@ -1,0 +1,202 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify						|
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_NOTE_TASK_BATCH.tbl                                               |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        08/07/11       Devendra Petkar        Initial version                            |
+-- +============================================================================================+
+
+
+--------------------------------------------------------------------
+----------------------- Added Drop Table Statement -----------------
+--------------------------------------------------------------------
+
+
+SET time on;
+SET timing on;
+SET serveroutput on;
+SET trimspool on;
+SET feedback on
+SET verify on
+SET echo on
+
+DECLARE
+   v_cnt   NUMBER;
+   v_sqlerrm VARCHAR2(250);
+   TYPE type_droptable IS TABLE OF VARCHAR2(50);
+   rec_droptable type_droptable:=type_droptable('XXCRM_SFDC_JOB_CTL_CUSTOMER', 'XXCRM_SFDC_JOB_CTL','XXCRM_SFDC_JOB_CTL_SITE');
+
+BEGIN
+FOR i IN rec_droptable.first..rec_droptable.last
+LOOP
+BEGIN
+   SELECT COUNT (*)
+     INTO v_cnt
+     FROM user_tables
+    WHERE table_name = rec_droptable(i);
+   IF v_cnt = 1
+   THEN
+      EXECUTE IMMEDIATE    'DROP TABLE '|| rec_droptable(i)
+                        || ' PURGE ';
+         DBMS_OUTPUT.put_line ('Table Drop is '||rec_droptable(i));
+   ELSE
+  DBMS_OUTPUT.put_line ('Table not found for Drop is '||rec_droptable(i));
+   END IF;
+ EXCEPTION
+   WHEN OTHERS THEN
+     v_sqlerrm:= sqlerrm;
+      DBMS_OUTPUT.put_line (v_sqlerrm);
+   ROLLBACK;
+END;
+END LOOP;
+END;
+/
+
+
+--------------------------------------------------------------------
+-----------------------------XXCRM_SFDC_JOB_CTL_CUSTOMER-------------
+--------------------------------------------------------------------
+
+Prompt CREATE TABLE xxcrm.XXCRM_SFDC_JOB_CTL_CUSTOMER
+
+CREATE TABLE XXCRM_SFDC_JOB_CTL_CUSTOMER
+(
+  PARENT_SID      NUMBER,
+  CHILD_SEQ       NUMBER,
+  CHILD_SID       NUMBER,
+  CHILD_JOBID     NUMBER,
+  LOW_VAL         NUMBER,
+  HIGH_VAL        NUMBER,
+  PROCESSED       NUMBER,
+  TIME_TAKEN      NUMBER,
+  TIME_REMAINING  NUMBER,
+  LAST_UPDATE     DATE,
+  ERR_MSG         VARCHAR2(1000 BYTE)
+)
+TABLESPACE apps_ts_tx_data
+NOLOGGING
+NOPARALLEL;
+
+
+--------------------------------------------------------------------
+-----------------------------XXCRM_SFDC_JOB_CTL_CUSTOMER-------------
+--------------------------------------------------------------------
+
+Prompt CREATE TABLE xxcrm.XXCRM_SFDC_JOB_CTL_SITE
+
+CREATE TABLE XXCRM_SFDC_JOB_CTL_SITE
+(
+  PARENT_SID      NUMBER,
+  CHILD_SEQ       NUMBER,
+  CHILD_SID       NUMBER,
+  CHILD_JOBID     NUMBER,
+  LOW_VAL         NUMBER,
+  HIGH_VAL        NUMBER,
+  PROCESSED       NUMBER,
+  TIME_TAKEN      NUMBER,
+  TIME_REMAINING  NUMBER,
+  LAST_UPDATE     DATE,
+  ERR_MSG         VARCHAR2(1000 BYTE)
+)
+TABLESPACE apps_ts_tx_data
+NOLOGGING
+NOPARALLEL;
+
+--------------------------------------------------------------------
+-----------------------------XXCRM_SFDC_JOB_CTL-------------
+--------------------------------------------------------------------
+
+Prompt CREATE TABLE xxcrm.XXCRM_SFDC_JOB_CTL
+
+CREATE TABLE XXCRM_SFDC_JOB_CTL
+   (JOB_NAME    VARCHAR2(240),
+   CURRENT_RUN_DT DATE,
+   LAST_RUN_DT   DATE,
+   PREV_RUN_DT   DATE
+)
+TABLESPACE apps_ts_tx_data
+NOLOGGING
+NOPARALLEL;
+
+
+
+SET SERVEROUTPUT ON
+
+DECLARE
+V_CNT NUMBER;
+BEGIN
+SELECT COUNT(*) INTO v_cnt FROM XXCRM_SFDC_JOB_CTL WHERE  JOB_NAME='CUSTOMER';
+
+IF V_CNT=0 THEN
+Insert into XXCRM_SFDC_JOB_CTL
+   (JOB_NAME, CURRENT_RUN_DT, LAST_RUN_DT, PREV_RUN_DT)
+ Values
+   ('CUSTOMER', SYSDATE,SYSDATE,SYSDATE );
+COMMIT;
+
+	DBMS_OUTPUT.PUT_LINE ('Inserted into Job CTL .');
+ELSE
+	DBMS_OUTPUT.PUT_LINE ('Job CTL already present .');
+END IF;
+
+COMMIT;
+
+EXCEPTION
+WHEN OTHERS THEN
+DBMS_OUTPUT.PUT_LINE ('Contact Dev DBA for Job Ctl .');
+END;
+/
+
+DECLARE
+V_CNT NUMBER;
+BEGIN
+SELECT COUNT(*) INTO v_cnt FROM XXCRM_SFDC_JOB_CTL WHERE  JOB_NAME='SITE';
+
+IF V_CNT=0 THEN
+Insert into XXCRM_SFDC_JOB_CTL
+   (JOB_NAME, CURRENT_RUN_DT, LAST_RUN_DT, PREV_RUN_DT)
+ Values
+   ('SITE', SYSDATE,SYSDATE,SYSDATE );
+COMMIT;
+
+	DBMS_OUTPUT.PUT_LINE ('Inserted into Job CTL .');
+ELSE
+	DBMS_OUTPUT.PUT_LINE ('Job CTL already present .');
+END IF;
+
+COMMIT;
+
+EXCEPTION
+WHEN OTHERS THEN
+DBMS_OUTPUT.PUT_LINE ('Contact Dev DBA for Job Ctl .');
+END;
+/
+
+
+GRANT ALL ON XXCRM.XXCRM_SFDC_JOB_CTL_CUSTOMER TO APPS;
+
+GRANT ALL ON XXCRM.XXCRM_SFDC_JOB_CTL_SITE TO APPS;
+
+GRANT ALL ON XXCRM.XXCRM_SFDC_JOB_CTL TO APPS;
+
+
+SHOW ERROR;
+EXIT;
+
+
+
+
+
+
+
+

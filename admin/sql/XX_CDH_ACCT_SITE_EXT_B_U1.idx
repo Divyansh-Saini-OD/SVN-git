@@ -1,0 +1,26 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |      Oracle NAIO/Office Depot/Consulting Organization                 |
+-- +=======================================================================+
+-- | Name             :XX_CDH_ACCT_SITE_EXT_B_U1.idx                       |
+-- | Description      :Unique Index on XX_CDH_ACCT_SITE_EXT_B              | 
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  25-May-2007 Sathya Prabha Rani Initial Draft Version          |
+-- |1.1      24-Oct-2007 Rajeev Kamath      Removed drop                   |
+-- +=======================================================================+
+
+-- -------------------------------------------------
+-- Creating Index XX_CDH_ACCT_SITE_EXT_B_U1
+-- -------------------------------------------------
+
+CREATE UNIQUE INDEX XXCRM.XX_CDH_ACCT_SITE_EXT_B_U1 ON XXCRM.XX_CDH_ACCT_SITE_EXT_B(EXTENSION_ID);
+

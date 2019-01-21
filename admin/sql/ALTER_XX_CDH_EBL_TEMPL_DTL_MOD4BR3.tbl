@@ -1,0 +1,37 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                                     Office Depot                                           |
+-- +============================================================================================+
+-- | Name        : ALTER_XX_CDH_EBL_TEMPL_DTL_MOD4BR3.tbl                                            |
+-- | Description : MOD4B Release 3                                                               |
+-- | Rice Id     : I2186                                                                        |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        22-DEC-2015     Sridevi K        Initial version                                 |
+-- +============================================================================================+
+
+PROMPT
+PROMPT Altering the Table XX_CDH_EBL_TEMPL_DTL .....
+PROMPT
+
+ALTER TABLE XX_CDH_EBL_TEMPL_DTL  	
+ADD (
+    "CONCATENATE" VARCHAR2(1 BYTE) DEFAULT 'N', 
+	"SPLIT" VARCHAR2(1 BYTE) DEFAULT 'N', 
+	"BASE_FIELD_ID" NUMBER(15,0),
+	"SPLIT_FIELD_ID" NUMBER(15,0)
+     );
+
+PROMPT
+PROMPT Altering the Table XX_CDH_EBL_TEMPL_DTL is done.
+PROMPT
+
+SHOW ERRORS;
+EXIT;
+

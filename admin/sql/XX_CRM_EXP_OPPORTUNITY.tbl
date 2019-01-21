@@ -1,0 +1,59 @@
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify                                           |
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_OPPORTUNITY.tbl                                                          |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        26-Aug-2011     Prasad Devar        Initial version                              |
+-- +============================================================================================+
+
+CREATE TABLE "XXCRM"."XX_CRM_EXP_OPPORTUNITY" 
+   (	"BATCH_ID" NUMBER, 
+	"RECORD_ID" NUMBER, 
+	"ORACLE_ENTITY_ID" VARCHAR2(240 CHAR), 
+	"NAME" VARCHAR2(240 CHAR), 
+	"SOURCE_VALUE" VARCHAR2(20 CHAR), 
+	"STAGE" VARCHAR2(240 CHAR), 
+	"PROBABILITY" VARCHAR2(240 CHAR),  
+	"CLOSEDATE" VARCHAR2(50 CHAR), 
+	"CLOSE_REASON" VARCHAR2(240 CHAR), 
+	"CREATEDDATE" VARCHAR2(50 CHAR), 
+	"CREATEDBYID" VARCHAR2(120 CHAR), 
+	"LASTMODIFIEDDATE" VARCHAR2(50 CHAR), 
+	"LASTMODIFIEDBYID" VARCHAR2(120 CHAR), 
+	"STATUS" VARCHAR2(50 CHAR), 
+	"SITE" VARCHAR2(30 CHAR), 
+	"ACCOUNTID" VARCHAR2(30 CHAR), 
+	"OWNERID" VARCHAR2(20 CHAR), 
+	"OD_STORE_NUMBER" VARCHAR2(120 CHAR), 
+	"AMOUNT" NUMBER,
+	"PRODUCT_CATEGORY" VARCHAR2(50 CHAR), 
+	"IMU" VARCHAR2(120 CHAR), 
+	"SOURCE" VARCHAR2(120 CHAR), 
+	"ORACLE_OPPORTUNITY_NUMBER" VARCHAR2(50 CHAR), 
+	"PRIMARY_COMPETITOR" VARCHAR2(240 CHAR), 
+	"SECONDARY_COMPETITOR" VARCHAR2(240 CHAR), 
+	"CONTACT_ID" VARCHAR2(240 CHAR), 
+	"CREATION_DATE" DATE,
+	"CREATED_BY" NUMBER,
+	"LAST_UPDATE_DATE" DATE,
+	"LAST_UPDATED_BY" NUMBER,
+	"LAST_UPDATE_LOGIN" NUMBER,
+      "LOAD_STATUS" VARCHAR2(50 BYTE) DEFAULT 'New',
+      "ERROR_MSG" VARCHAR2(2000 BYTE),
+      "ATTRIBUTE1" VARCHAR2(2000 BYTE),
+      "ATTRIBUTE2" VARCHAR2(2000 BYTE),
+      "ATTRIBUTE3" VARCHAR2(2000 BYTE),
+      "ATTRIBUTE4" VARCHAR2(2000 BYTE),
+      "ATTRIBUTE5" VARCHAR2(2000 BYTE)
+   )
+  TABLESPACE "APPS_TS_TX_DATA" ;
+
+ GRANT ALL ON XXCRM.XX_CRM_EXP_OPPORTUNITY TO APPS;
+  
+ SHOW ERRORS;

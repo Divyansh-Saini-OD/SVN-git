@@ -1,0 +1,40 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<jrad:page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.9_1057" xml:lang="en-US" file-version="$Header: CustPhnCreateUpdatePG.xml 115.12.115200.2 2005/06/20 04:59:46 vpalaiya ship $" xmlns:user="http://xmlns.oracle.com/jrad/user">
+   <jrad:content>
+      <oa:pageLayout amDefName="od.oracle.apps.xxcrm.asn.partysite.server.ODPartySitePhnCreateUpdateAM" id="PageLayoutRN" controllerClass="od.oracle.apps.xxcrm.asn.partysite.webui.ODPartySitePhnCreateUpdateCO" helpTarget="ASN_CustPhnCreateUpdatePG" function="XX_ASN_SITE_PHN_CREATEUPDATEPG" shortDesc="Create/Update Customer Site Phone Number">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:pageButtonBar id="SitePhonePagePageButtonRN">
+               <ui:contents>
+                  <oa:submitButton id="ASNCancelBtn" text="Cancel" unvalidated="true" use="/oracle/apps/fnd/attributesets/Buttons/Cancel" serverUnvalidated="true"/>
+                  <oa:submitButton id="ASNSavExit" text="Save and Create Another" use="/oracle/apps/asn/common/attributesets/Buttons/SaveAndCreateAnother"/>
+                  <oa:submitButton id="ASNApply" text="Apply" use="/oracle/apps/fnd/attributesets/Buttons/Apply"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+            <oa:tableLayout id="ASNCustPhnTbRN" width="100%">
+               <ui:contents>
+                  <oa:rowLayout id="ASNCustPhnRow">
+                     <ui:contents>
+                        <oa:cellFormat id="ASNCustPhnCell" hAlign="center">
+                           <ui:contents>
+                              <oa:defaultSingleColumn id="SitePhonePageRN" extends="/oracle/apps/ar/hz/components/contactpoints/webui/HzPuiContactPointOrgPhone" headerDisabled="true"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:tableLayout>
+            <oa:stackLayout id="SitePhoneCtxtRN" extends="/oracle/apps/asn/common/fwk/webui/ASNReqCtxtRN"/>
+         </ui:contents>
+         <ui:productBranding>
+            <oa:image id="ASNBrandImage" source="ASNBRAND.gif" shortDesc="Sales"/>
+         </ui:productBranding>
+         <ui:pageStatus>
+            <oa:tableLayout id="ASNRequiredFieldRN" extends="/oracle/apps/fnd/framework/webui/OAReqFieldDescRG" hAlign="start"/>
+         </ui:pageStatus>
+      </oa:pageLayout>
+   </jrad:content>
+</jrad:page>

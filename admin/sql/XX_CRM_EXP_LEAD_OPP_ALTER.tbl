@@ -1,0 +1,46 @@
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify                                           |
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_LEAD_OPP_ALTER.tbl                                                          |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        26-Aug-2011     Prasad Devar        Initial version                              |
+-- +============================================================================================+
+
+UPDATE XXCRM.XX_CRM_EXP_LEAD SET AMOUNT='';
+
+COMMIT;
+
+UPDATE XXCRM.XX_CRM_EXP_OPPORTUNITY SET AMOUNT='';
+
+COMMIT;
+
+
+UPDATE XXCRM.XX_CRM_EXP_LEAD SET SOURCE_VALUE='';
+
+COMMIT;
+
+UPDATE XXCRM.XX_CRM_EXP_OPPORTUNITY SET SOURCE_VALUE='';
+
+COMMIT;
+
+
+ALTER TABLE XXCRM.XX_CRM_EXP_LEAD MODIFY ( AMOUNT VARCHAR2(240));
+
+ALTER TABLE XXCRM.XX_CRM_EXP_OPPORTUNITY  MODIFY ( AMOUNT VARCHAR2(240));
+
+ALTER TABLE XXCRM.XX_CRM_EXP_LEAD MODIFY ( SOURCE_VALUE VARCHAR2(240));
+
+ALTER TABLE XXCRM.XX_CRM_EXP_OPPORTUNITY  MODIFY ( SOURCE_VALUE VARCHAR2(240));
+
+
+ GRANT ALL ON XXCRM.XX_CRM_EXP_LEAD TO APPS;
+
+ GRANT ALL ON XXCRM.XX_CRM_EXP_OPPORTUNITY TO APPS;
+
+ SHOW ERRORS;

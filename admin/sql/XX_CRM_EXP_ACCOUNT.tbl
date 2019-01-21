@@ -1,0 +1,70 @@
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify                                           |
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_ACCOUNT.tbl                                                       |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        26-Aug-2011     Indra Varada        Initial version                              |
+-- +============================================================================================+
+
+  CREATE TABLE "XXCRM"."XX_CRM_EXP_ACCOUNT" 
+      (	"ORACLE_PARTY_ID" NUMBER, 
+	"ACCOUNT_NAME" VARCHAR2(30 CHAR), 
+	"ACCOUNT_LEGAL_NAME" VARCHAR2(240 CHAR), 
+	"AOPS_CUST_ID" VARCHAR2(20 CHAR), 
+	"GPARENT_GPID" VARCHAR2(20 CHAR), 
+	"AOPS_PARENT_CUST_ID" VARCHAR2(20 CHAR), 
+	"SEGMENT" VARCHAR2(120 CHAR), 
+	"DUNS_NUMBER" VARCHAR2(100 CHAR), 
+	"SIC_CODE" VARCHAR2(120 CHAR), 
+	"TOTAL_EMPLOYEES" VARCHAR2(20 CHAR), 
+	"OD_WCW" VARCHAR2(20 CHAR), 
+	"DNB_WCW" VARCHAR2(20 CHAR), 
+	"ACCOUNT_TYPE" VARCHAR2(50 CHAR), 
+	"BILLING_STREET" VARCHAR2(500 CHAR), 
+	"BILLING_CITY" VARCHAR2(240 CHAR), 
+	"BILLING_STATE" VARCHAR2(240 CHAR), 
+	"BILLING_ZIP" VARCHAR2(50 CHAR), 
+	"BILLING_COUNTRY" VARCHAR2(240 CHAR), 
+	"SHIPPING_STREET" VARCHAR2(500 CHAR), 
+	"SHIPPING_CITY" VARCHAR2(240 CHAR), 
+	"SHIPPING_STATE" VARCHAR2(240 CHAR), 
+	"SHIPPING_ZIP" VARCHAR2(50 CHAR), 
+	"SHIPPING_COUNTRY" VARCHAR2(4 CHAR), 
+	"PHONE" VARCHAR2(100 CHAR), 
+	"PHONE_EXT" VARCHAR2(50 CHAR), 
+	"OD_SIC_GROUP" VARCHAR2(100 CHAR), 
+	"DNB_SIC_GROUP" VARCHAR2(100 CHAR), 
+	"CREATED_BY_ID" VARCHAR2(120 CHAR), 
+	"CREATED_DATE" VARCHAR2(50 CHAR), 
+	"OWNER_ID" VARCHAR2(120 CHAR), 
+	"LAST_MODIFIED_BY_ID" VARCHAR2(120 CHAR), 
+	"LAST_MODIFIED_DATE" VARCHAR2(50 CHAR), 
+	"ORACLE_PARTY_NUMBER" VARCHAR2(400 CHAR), 
+	"STATUS" VARCHAR2(30 CHAR), 
+	"REVENUE_BAND" VARCHAR2(120 CHAR), 
+	"LOYALTY_TYPE" VARCHAR2(120 CHAR), 
+	"ERROR_MSG" VARCHAR2(2000 CHAR), 
+	"LOAD_STATUS" VARCHAR2(20 CHAR), 
+	"BATCH_ID" NUMBER, 
+	"PARENT_ID" NUMBER, 
+	"RECORD_ID" VARCHAR2(20 CHAR), 
+	"ORACLE_ACCOUNT_ID" NUMBER, 
+	"ORACLE_PARENT_ACCOUNT_ID" NUMBER, 
+	"RECORD_TYPE_ID" VARCHAR2(100 CHAR), 
+	"SFDC_RECORD_TYPE_ID" VARCHAR2(100 CHAR), 
+	"RECORD_TYPE" VARCHAR2(40 BYTE), 
+	"GP_ID" NUMBER
+   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)
+  TABLESPACE "USERS" ;
+
+ GRANT ALL ON XXCRM.XX_CRM_EXP_ACCOUNT TO APPS;
+  
+ SHOW ERRORS;

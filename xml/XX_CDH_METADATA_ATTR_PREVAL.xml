@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XX_CDH_METADATA_ATTR" description="OD: CDH Metadata Attributes Prevalidation" Version="1.0">
+<parameters/>
+<dataQuery>
+<sqlStatement name="Q_CDH_MD_DOCS">
+<![CDATA[
+select count(1) as COUNT from XX_CDH_MBS_DOCUMENT_MASTER
+]]>
+</sqlStatement> 
+</dataQuery>
+<dataStructure>
+<group name="G_CDH_MD_DOCS" source="Q_CDH_MD_DOCS">
+<element name="COUNT" value="COUNT" />
+</group>
+</dataStructure>
+</dataTemplate>
+

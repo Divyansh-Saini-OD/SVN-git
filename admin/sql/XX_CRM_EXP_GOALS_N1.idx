@@ -1,0 +1,36 @@
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify                                           |
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_GOALS.tbl                                                          |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        26-Aug-2011     Kishore Jena         Initial version                             |
+-- +============================================================================================+
+
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+PROMPT
+PROMPT Creating  INDEX XX_CRM_EXP_GOALS_N1
+PROMPT
+
+CREATE INDEX XX_CRM_EXP_GOALS_N1 ON XX_CRM_EXP_GOALS( source_number
+                                                                    ,site_number );
+ CREATE INDEX XX_CRM_EXP_GOALS_N2 ON XX_CRM_EXP_GOALS( common_id );
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

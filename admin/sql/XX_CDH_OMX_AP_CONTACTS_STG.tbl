@@ -1,0 +1,115 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- +===================================================================+
+-- |                        Office Depot                               |
+-- |                                                                   |
+-- +===================================================================+
+-- | Table Name  :  XX_CDH_OMX_AP_CONTACTS_STG.tbl               |
+-- | Description :  Table to Hold ap_contacts information for all the |
+-- |                extracts from OMX                                  |
+-- | Rice Id     :  C0701                                                |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author             Remarks                  |
+-- |=======   ===========  =================  =========================|
+-- |DRAFT 1.0  19-Feb-2015  Abhi konda       Initial draft version     |
+-- |DRAFT 1.1  24-MAR-2015  Abhi konda       Code Review Changes	   |
+-- +===================================================================+
+
+PROMPT
+PROMPT Dropping Existing Custom Table and Index
+PROMPT
+
+WHENEVER SQLERROR CONTINUE;
+
+SET TERM OFF
+
+PROMPT
+PROMPT Drop Table XXCRM.XX_CDH_OMX_AP_CONTACTS_STG
+PROMPT
+
+DROP TABLE XXCRM.XX_CDH_OMX_AP_CONTACTS_STG
+/
+SET TERM ON
+
+PROMPT
+PROMPT Creating the Table XXCRM.XX_CDH_OMX_AP_CONTACTS_STG 
+PROMPT
+
+CREATE TABLE XXCRM.XX_CDH_OMX_AP_CONTACTS_STG
+(
+  BATCH_ID              NUMBER                  NOT NULL,
+  CONTACT_LAST_NAME     VARCHAR2(150 BYTE),
+  CONTACT_FIRST_NAME    VARCHAR2(150 BYTE),
+  EMAIL_ADDRESS         VARCHAR2(100 BYTE),
+  OMX_ACCOUNT_NUMBER    VARCHAR2(40 BYTE),
+  CUSTOMER_NUMBER       VARCHAR2(40 BYTE),
+  SHIP_CONSINEE_REF     VARCHAR2(40 BYTE),
+  BILL_CONSIGNEE_REF    VARCHAR2(40 BYTE),
+  AOPS_CUSTOMER_NUMBER  VARCHAR2(40 BYTE),
+  PHONE_AREA_CODE       VARCHAR2(20 BYTE),
+  PHONE_NUMBER          VARCHAR2(20 BYTE),
+  FAX_AREA_CODE         VARCHAR2(20 BYTE),
+  FAX_NUMBER            VARCHAR2(20 BYTE),
+  FILE_NAME             VARCHAR2(120 BYTE),
+  CONTACT_TYPE          VARCHAR2(20 BYTE),
+  CONTACT_LEVEL         VARCHAR2(20 BYTE),
+  STATUS                VARCHAR2(20 BYTE),
+  PROCESS_FLAG          VARCHAR2(20 BYTE),
+  RECORD_ID             NUMBER,
+  REQUEST_ID            NUMBER,
+  CREATION_DATE         DATE                    NOT NULL,
+  CREATED_BY            VARCHAR2(20 BYTE)       NOT NULL,
+  LAST_UPDATE_DATE      DATE                    NOT NULL,
+  LAST_UPDATED_BY       NUMBER                  NOT NULL,
+  LAST_UPDATE_LOGIN     NUMBER                  NOT NULL,
+  ERROR_MESSAGE         VARCHAR2(4000 BYTE)
+)
+/
+            
+PROMPT
+PROMPT Creating Index XX_CDH_OMX_AP_CONTACTS_STG_N1
+PROMPT
+  
+CREATE INDEX XX_CDH_OMX_AP_CONTACTS_STG_N1 ON XXCRM.XX_CDH_OMX_AP_CONTACTS_STG(AOPS_CUSTOMER_NUMBER);
+
+PROMPT
+PROMPT Creating Index XX_CDH_OMX_AP_CONTACTS_STG_N2
+PROMPT
+CREATE INDEX XX_CDH_OMX_AP_CONTACTS_STG_N2 ON XXCRM.XX_CDH_OMX_AP_CONTACTS_STG(STATUS);
+
+PROMPT
+PROMPT Creating Index XX_CDH_OMX_AP_CONTACTS_STG_N3
+PROMPT
+CREATE INDEX XX_CDH_OMX_AP_CONTACTS_STG_N3 ON XXCRM.XX_CDH_OMX_AP_CONTACTS_STG(RECORD_ID);   
+
+PROMPT
+PROMPT GRANT SELECT on XXCRM.XX_CDH_OMX_AP_CONTACTS_STG to ERP_SYSTEM_TABLE_SELECT_ROLE
+PROMPT
+GRANT SELECT ON XXCRM.XX_CDH_OMX_AP_CONTACTS_STG TO ERP_SYSTEM_TABLE_SELECT_ROLE
+/
+
+PROMPT
+PROMPT GRANT ALL on XX_CDH_OMX_AP_CONTACTS_STG to APPS
+PROMPT
+GRANT ALL ON XXCRM.XX_CDH_OMX_AP_CONTACTS_STG TO APPS
+/
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

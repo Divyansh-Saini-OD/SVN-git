@@ -1,0 +1,29 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | 		Name  :    XXODHZTDCUSTCROSS.syn                              |
+-- |                      Script to create synonyms for xref table            |
+-- |									      |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     2014-02-03   Avinash Baddam       Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE SYNONYM XXOD_CUST_XREF_ID_S FOR XXCRM.XXOD_CUST_XREF_ID_S;
+
+CREATE SYNONYM XXOD_CUST_XREF_BATCH_ID_S FOR XXCRM.XXOD_CUST_XREF_BATCH_ID_S;
+
+CREATE SYNONYM XXOD_CUST_XREF_RECORD_ID_S FOR XXCRM.XXOD_CUST_XREF_RECORD_ID_S;
+
+CREATE SYNONYM XXOD_HZ_TD_CUST_XREF_STG FOR XXCRM.XXOD_HZ_TD_CUST_XREF_STG;
+
+CREATE SYNONYM XXOD_HZ_TD_CUST_XREF FOR XXCRM.XXOD_HZ_TD_CUST_XREF;

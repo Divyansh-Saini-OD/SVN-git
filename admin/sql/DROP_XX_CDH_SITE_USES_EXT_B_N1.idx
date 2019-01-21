@@ -1,0 +1,25 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |      Oracle NAIO/Office Depot/Consulting Organization                 |
+-- +=======================================================================+
+-- | Name             :XX_CDH_SITE_USES_EXT_B_N1.idx                       |
+-- | Description      :Index on XX_CDH_SITE_USES_EXT_B                     | 
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      24-Oct-2007 Rajeev Kamath      Drop Script                    |
+-- +=======================================================================+
+
+
+-- ---------------------------------------------------
+-- Dropping existing index XX_CDH_SITE_USES_EXT_B_N1
+-- ---------------------------------------------------
+
+DROP INDEX XXCRM.XX_CDH_SITE_USES_EXT_B_N1;

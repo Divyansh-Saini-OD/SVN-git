@@ -1,0 +1,42 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                                     Office Depot                                           |
+-- +============================================================================================+
+-- | Name        : ALTER_XX_CDH_EBL_CONCAT_FIELDS_TXT.tbl                                       |
+-- | Description : MOD4B Release4                                                               |
+-- | Rice Id     : I2186                                                                        |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        26-APR-2016     Sridevi K        Initial version                                 |
+-- +============================================================================================+
+
+PROMPT
+PROMPT Altering the Table XX_CDH_EBL_CONCAT_FIELDS_TXT .....
+PROMPT
+
+ALTER TABLE XXCRM.XX_CDH_EBL_CONCAT_FIELDS_TXT   	
+ADD (
+    "SEQ1" NUMBER(15,0), 
+	"SEQ2" NUMBER(15,0), 
+	"SEQ3" NUMBER(15,0), 
+	"CONC_BASE_FIELD_ID4" NUMBER(15,0), 
+	"CONC_BASE_FIELD_ID5" NUMBER(15,0), 
+	"CONC_BASE_FIELD_ID6" NUMBER(15,0), 
+	"SEQ4" NUMBER(15,0), 
+	"SEQ5" NUMBER(15,0), 
+	"SEQ6" NUMBER(15,0)
+     );
+
+PROMPT
+PROMPT Altering the Table XX_CDH_EBL_CONCAT_FIELDS_TXT is done.
+PROMPT
+
+SHOW ERRORS;
+EXIT;
+

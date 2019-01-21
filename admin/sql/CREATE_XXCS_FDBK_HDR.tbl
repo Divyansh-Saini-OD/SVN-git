@@ -1,0 +1,42 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XXCS_FDBK_HDR Table                                                        |--                                                           --|                                                                                             |--
+--| Program Name   : CREATE_XXCS_FDBK_HDR.tbl                                                   |--
+--|                                                                                             |--
+--| Purpose        : Table for feedback header information.                                     |--
+--|                                                                                             |--
+--| Change History :                                                                            |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              25-Mar-2009       Kalyan                  Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Table XXCRM.XXCS_FDBK_HDR......
+PROMPT
+alter table XXCRM.XXCS_FDBK_HDR  add(
+"ENTITY_ID" NUMBER, 
+	"ENTITY_TYPE" VARCHAR2(30 BYTE), 
+	"ERROR_MESSAGE" VARCHAR2(4000 BYTE));
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

@@ -1,0 +1,426 @@
+TABLE.weeklyPlanner {
+	MARGIN: 15px 0px; BORDER-COLLAPSE: collapse; CLEAR: both
+}
+TABLE.weeklyPlanner TD {
+	BORDER-BOTTOM: #666 1px solid; BORDER-LEFT: #666 1px solid; PADDING-BOTTOM: 3px; BACKGROUND-COLOR: #fff; MARGIN: 0px; PADDING-LEFT: 3px; PADDING-RIGHT: 3px; BORDER-TOP: #666 1px solid; BORDER-RIGHT: #666 1px solid; PADDING-TOP: 3px
+}
+TABLE.weeklyPlanner TH {
+	TEXT-ALIGN: left
+}
+TABLE.weeklyPlanner TD.timeSelected {
+	BACKGROUND-COLOR: #b3e0fd
+}
+.timeNotSelected {
+	BACKGROUND-COLOR: #fff
+}
+.weeklyPlanner .rowHed {
+	PADDING-BOTTOM: 0px; BACKGROUND-COLOR: #999; PADDING-LEFT: 10px; PADDING-RIGHT: 10px; COLOR: #fff; FONT-WEIGHT: bold; PADDING-TOP: 0px
+}
+.weeklyPlanner TH {
+	BACKGROUND-COLOR: #ccc; FONT-WEIGHT: bold
+}
+H4 {
+	BORDER-BOTTOM: #bcd 1px solid; PADDING-BOTTOM: 2px; MARGIN: 10px 0px; FONT: bold 120% "Trebuchet MS",veranda,sans-serif; COLOR: #036
+}
+.sectionHed {
+	BORDER-BOTTOM: #bcd 1px solid; PADDING-BOTTOM: 2px; MARGIN: 10px 0px; FONT: bold 120% "Trebuchet MS",veranda,sans-serif; COLOR: #036
+}
+TABLE.propertyKey {
+	MARGIN: 10px 0px
+}
+.propertyKey {
+	TEXT-TRANSFORM: capitalize; FONT-WEIGHT: bold
+}
+.column {
+	FLOAT: left
+}
+.column SPAN {
+	PADDING-RIGHT: 20px; DISPLAY: block; CLEAR: both; PADDING-TOP: 5px
+}
+.connectHolder {
+	MARGIN-TOP: 15px; FLOAT: none
+}
+.detailSectionHed {
+	LINE-HEIGHT: 25px; BACKGROUND-COLOR: #ccc; MARGIN: 10px 0px 5px; FONT-FAMILY: Arial; FONT-SIZE: 14px; FONT-WEIGHT: bold
+}
+.detailSectionHedRed {
+	BACKGROUND-COLOR: #f9e1e1; COLOR: #b92916
+}
+.statusheader {
+	BORDER-BOTTOM: #bcd 1px solid; POSITION: absolute; PADDING-BOTTOM: 2px; PADDING-LEFT: 10px; PADDING-RIGHT: 10px; FONT: bold 18px arial, helvetica, sans-serif; COLOR: #b92916; TOP: 0px; RIGHT: 15px; PADDING-TOP: 0px
+}
+.callToActionHed {
+	LINE-HEIGHT: 33px; BACKGROUND-COLOR: #f9e1e1; MARGIN: 5px 0px; PADDING-LEFT: 15px; FONT-FAMILY: Arial; COLOR: #b92916; FONT-SIZE: 14px; FONT-WEIGHT: bold
+}
+.detailSectionSubHedRed {
+	BACKGROUND-COLOR: #f9e1e1; COLOR: #b92916
+}
+.detailSectionSubHed {
+	BACKGROUND-COLOR: #f1f1f1; MARGIN: 0px; HEIGHT: 33px
+}
+.detailSectionContainer {
+	BORDER-BOTTOM: #000 1px solid; BORDER-LEFT: #000 1px solid; BACKGROUND-COLOR: #f1f1f1; MARGIN-BOTTOM: 15px; BORDER-TOP: #000 1px solid; BORDER-RIGHT: #000 1px solid
+}
+.detailSectionContainer .propertyName {
+	FONT-WEIGHT: bold; MARGIN-RIGHT: 10px
+}
+.subSkuDetailsDiv {
+	MARGIN-LEFT: 20px
+}
+.recTextCantComplete {
+	COLOR: #b92916; FONT-WEIGHT: bold
+}
+.recText {
+	FONT-WEIGHT: bold
+}
+.dash {
+	WIDTH: 100%
+}
+UL.dash {
+	MARGIN: 0px
+}
+UL.dash LI {
+	PADDING-BOTTOM: 15px; LIST-STYLE-TYPE: none; MARGIN: 5px 0px; FLOAT: left
+}
+UL.dash LI.dashStatus {
+	PADDING-LEFT: 80px
+}
+UL.dash LI.dashStore {
+	PADDING-LEFT: 80px
+}
+.generaldetails {
+	WIDTH: 770px
+}
+.generaldetails .custcolumn {
+	BACKGROUND-COLOR: #ebebeb; FONT-FAMILY: Arial; FONT-SIZE: 14px; FONT-WEIGHT: bold
+}
+.custcolumn TABLE {
+	WIDTH: 230px
+}
+DL.datacolumn {
+	WIDTH: 230px
+}
+DL.datacolumn {
+	FONT-SIZE: 11px; OVERFLOW: hidden; FONT-WEIGHT: normal
+}
+.datacolumn DT {
+	PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 7px; WIDTH: 80px; PADDING-RIGHT: 5px; FLOAT: left; PADDING-TOP: 0px
+}
+DL.datacolumn#addressInfo DT {
+	WIDTH: 100px
+}
+.datacolumn DT.head {
+	PADDING-BOTTOM: 7px; OVERFLOW-Y: hidden; PADDING-LEFT: 7px; WIDTH: 312px; PADDING-RIGHT: 0px; HEIGHT: 25px; FONT-SIZE: 110%; PADDING-TOP: 7px
+}
+.datacolumn DD {
+	WIDTH: 120px; FLOAT: left; FONT-WEIGHT: normal
+}
+.datacolumn DD.nolabel {
+	PADDING-LEFT: 7px; WIDTH: 220px
+}
+.datacolumn DT.hedrow {
+	FONT-WEIGHT: bold; TEXT-DECORATION: underline
+}
+.datacolumn DT.subhedrow {
+	FONT-STYLE: italic; COLOR: #777777; FONT-SIZE: 13px; FONT-WEIGHT: bold
+}
+.spanlink {
+	COLOR: blue; CURSOR: pointer
+}
+.custcolumn DD.description {
+	PADDING-LEFT: 7px; WIDTH: 320px
+}
+.compcolumn DL.datacolumn {
+	WIDTH: 243px
+}
+.compcolumn DL.datacolumn DT.head {
+	WIDTH: 243px
+}
+.compcolumn DL.datacolumn DT {
+	WIDTH: 88px; CLEAR: both
+}
+.compcolumn DL.datacolumn DD {
+	WIDTH: 120px
+}
+.compcolumn DL.datacolumn DD.conditionDescription {
+	WIDTH: 230px; WORD-WRAP: break-word
+}
+.generaldetails .servicescolumn {
+	WIDTH: auto
+}
+.servicescolumn DL.datacolumn {
+	WIDTH: auto
+}
+.servicescolumn DL.datacolumn DT {
+	WIDTH: 190px
+}
+.servicescolumn DL.datacolumn DT.head {
+	WIDTH: 100%
+}
+.servicescolumn DL.datacolumn DT.head SPAN {
+	FLOAT: left
+}
+.servicescolumn DL.datacolumn DD {
+	WIDTH: 75px
+}
+.servicescolumn DL.datacolumn DD.head {
+	WIDTH: 40px; HEIGHT: 18px
+}
+.generaldetails .separatorBar {
+	BACKGROUND-COLOR: #ffffff; WIDTH: 6px; FLOAT: left
+}
+.generaldetails .compcolumn {
+	BACKGROUND-COLOR: #ebebeb; FONT-FAMILY: Arial; FONT-SIZE: 14px; FONT-WEIGHT: bold
+}
+.compcolumn TABLE {
+	WIDTH: 220px
+}
+.generaldetails .servicescolumn {
+	BACKGROUND-COLOR: #ebebeb; FONT-FAMILY: Arial; FONT-SIZE: 14px; FONT-WEIGHT: bold
+}
+.servicescolumn TABLE {
+	WIDTH: 250px
+}
+.generaldetails .head {
+	PADDING-BOTTOM: 6px; BACKGROUND-COLOR: #cccccc; PADDING-LEFT: 10px; DISPLAY: block; FONT-WEIGHT: bold; PADDING-TOP: 5px
+}
+.generaldetails .custlabelcolumn {
+	TEXT-ALIGN: left; PADDING-BOTTOM: 4px; BACKGROUND-COLOR: #ebebeb; PADDING-LEFT: 12px; PADDING-RIGHT: 6px; FONT-FAMILY: Arial; FONT-SIZE: 12px; FONT-WEIGHT: bold; PADDING-TOP: 4px
+}
+.generaldetails .custvaluecolumn {
+	TEXT-ALIGN: left; PADDING-BOTTOM: 4px; BACKGROUND-COLOR: #ebebeb; PADDING-LEFT: 6px; PADDING-RIGHT: 6px; FONT-FAMILY: Arial; FONT-SIZE: 12px; FONT-WEIGHT: normal; PADDING-TOP: 4px
+}
+.generaldetails .complabelcolumn {
+	PADDING-BOTTOM: 4px; BACKGROUND-COLOR: #ebebeb; PADDING-LEFT: 12px; PADDING-RIGHT: 6px; FONT-FAMILY: Arial; FONT-SIZE: 12px; FONT-WEIGHT: bold; PADDING-TOP: 4px
+}
+.generaldetails .compvaluecolumn {
+	PADDING-BOTTOM: 4px; BACKGROUND-COLOR: #ebebeb; PADDING-LEFT: 6px; PADDING-RIGHT: 6px; FONT-FAMILY: Arial; FONT-SIZE: 12px; FONT-WEIGHT: normal; PADDING-TOP: 4px
+}
+.generaldetails .servicelabelcolumn {
+	PADDING-BOTTOM: 4px; BACKGROUND-COLOR: #ebebeb; PADDING-LEFT: 6px; PADDING-RIGHT: 6px; FONT-FAMILY: Arial; FONT-SIZE: 12px; FONT-WEIGHT: normal; PADDING-TOP: 4px
+}
+.detailBlock {
+	PADDING-BOTTOM: 15px; PADDING-LEFT: 15px; PADDING-RIGHT: 15px; PADDING-TOP: 15px
+}
+.bgwhite {
+	BACKGROUND-COLOR: #fff
+}
+.bgalternate {
+	BACKGROUND-COLOR: #f6f6f6
+}
+.comment {
+	LINE-HEIGHT: 25px; MARGIN: 0px
+}
+.olderComments {
+	DISPLAY: none; OVERFLOW: hidden
+}
+H2.userHed {
+	FONT-WEIGHT: bold; TEXT-DECORATION: underline
+}
+.accessFooter {
+	BACKGROUND-COLOR: #fff
+}
+.legendContainer {
+	PADDING-BOTTOM: 2px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; HEIGHT: 20px; PADDING-TOP: 2px
+}
+.accessLegend {
+	BORDER-BOTTOM: #000 1px solid; BORDER-LEFT: #000 1px solid; BACKGROUND-COLOR: #b3e0fd; WIDTH: 60px; DISPLAY: block; FLOAT: left; HEIGHT: 16px; BORDER-TOP: #000 1px solid; MARGIN-RIGHT: 15px; BORDER-RIGHT: #000 1px solid
+}
+.accessLegendText {
+	FLOAT: left
+}
+SPAN.detailItem {
+	WIDTH: 300px; DISPLAY: block; FLOAT: left; HEIGHT: 25px
+}
+UL.diagnosticChecks {
+	PADDING-BOTTOM: 0px; MARGIN: 15px 0px 0px; PADDING-LEFT: 0px; WIDTH: 600px; PADDING-RIGHT: 0px; HEIGHT: 120px; PADDING-TOP: 0px
+}
+UL.diagnosticChecks LI {
+	PADDING-LEFT: 0px; MARGIN-LEFT: 0px
+}
+UL.diagnosticChecks LI.checkSection {
+	PADDING-BOTTOM: 0px; LIST-STYLE-TYPE: none; MARGIN: 0px 20px 0px 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; FLOAT: left; PADDING-TOP: 0px
+}
+UL.diagnosticChecks LI.header {
+	LIST-STYLE-TYPE: none; MARGIN-LEFT: -15px; FONT-WEIGHT: bold
+}
+TEXTAREA.comment {
+	BORDER-BOTTOM: #000 1px solid; BORDER-LEFT: #000 1px solid; WIDTH: 700px; HEIGHT: 100px; OVERFLOW: auto; BORDER-TOP: #000 1px solid; BORDER-RIGHT: #000 1px solid
+}
+TEXTAREA.commentSmall {
+	BORDER-BOTTOM: #000 1px solid; BORDER-LEFT: #000 1px solid; WIDTH: 650px; HEIGHT: 100px; BORDER-TOP: #000 1px solid; BORDER-RIGHT: #000 1px solid
+}
+INPUT.associate {
+	BORDER-BOTTOM: #000 1px solid; BORDER-LEFT: #000 1px solid; LINE-HEIGHT: 20px; WIDTH: 250px; MARGIN-BOTTOM: 15px; HEIGHT: 20px; BORDER-TOP: #000 1px solid; BORDER-RIGHT: #000 1px solid
+}
+.callOutData {
+	WIDTH: 100%; CLEAR: both; OVERFLOW: hidden
+}
+.actionbox {
+	DISPLAY: none
+}
+.callOutData#verifyCallOut {
+	WIDTH: 180px
+}
+.callOutInner {
+	BORDER-BOTTOM: #b3e0fd 2px solid; BORDER-LEFT: #b3e0fd 2px solid; PADDING-BOTTOM: 8px; BACKGROUND-COLOR: #eff8fd; MARGIN-TOP: 10px; PADDING-LEFT: 8px; WIDTH: 652px; PADDING-RIGHT: 8px; BORDER-TOP: #b3e0fd 2px solid; MARGIN-RIGHT: 0px; BORDER-RIGHT: #b3e0fd 2px solid; PADDING-TOP: 8px
+}
+#verifyCallOut .callOutInner {
+	WIDTH: 152px
+}
+.callOutMessage {
+	FONT-WEIGHT: bold
+}
+.callOutDataExtension {
+	BORDER-BOTTOM: #b3e0fd 2px solid; BORDER-LEFT: #b3e0fd 2px solid; PADDING-BOTTOM: 8px; BACKGROUND-COLOR: #eff8fd; PADDING-LEFT: 8px; WIDTH: 150px; PADDING-RIGHT: 8px; FLOAT: left; HEIGHT: 40px; BORDER-TOP: #b3e0fd 2px solid; PADDING-TOP: 8px
+}
+FORM.commentEntry {
+	PADDING-BOTTOM: 15px; BACKGROUND-COLOR: #f1f1f1; PADDING-LEFT: 15px; PADDING-RIGHT: 15px; MARGIN-BOTTOM: 0px; PADDING-TOP: 15px
+}
+P.serviceTitle {
+	MARGIN-TOP: 8px; FLOAT: left
+}
+P.serviceStatus {
+	MARGIN-TOP: 8px; FLOAT: right
+}
+.edit {
+	MARGIN-LEFT: 20px
+}
+.deliveryEdit {
+	HEIGHT: 0px; MARGIN-LEFT: 30px; OVERFLOW: hidden
+}
+#serviceQuetions {
+	BORDER-BOTTOM: red 1px solid; BORDER-LEFT: red 1px solid; WIDTH: 732px; BORDER-TOP: red 1px solid; BORDER-RIGHT: red 1px solid
+}
+.detailsContainer .store {
+	PADDING-BOTTOM: 15px; BACKGROUND-COLOR: #fff; PADDING-LEFT: 2px; PADDING-RIGHT: 2px; WHITE-SPACE: nowrap; PADDING-TOP: 2px
+}
+.callToActionSectionContainer {
+	BORDER-BOTTOM: #e7a7a0 1px solid; BORDER-LEFT: #e7a7a0 1px solid; BORDER-TOP: #e7a7a0 1px solid; BORDER-RIGHT: #e7a7a0 1px solid
+}
+.callOutActionButtons BUTTON {
+	FLOAT: left
+}
+.callOutActionButtons .secondarybutton {
+	FLOAT: right
+}
+.callToActionSectionContainer FORM.form {
+	WIDTH: 640px
+}
+.callToActionSectionContainer .detailSectionSubHed {
+	BACKGROUND-COLOR: #fdf2f2; HEIGHT: auto
+}
+TABLE.statuslist {
+	BORDER-BOTTOM: #ccc 1px solid; BORDER-LEFT: #ccc 1px solid; WIDTH: 100%; BORDER-COLLAPSE: collapse; VERTICAL-ALIGN: text-top; BORDER-TOP: #ccc 0px solid; BORDER-RIGHT: #ccc 0px solid
+}
+TABLE.statuslist .header2 TH {
+	PADDING-BOTTOM: 4px; PADDING-LEFT: 5px; PADDING-RIGHT: 4px; BACKGROUND: url(img/sdcrs_grey-grad-h26_tile.gif) repeat-x; FONT-WEIGHT: bold; PADDING-TOP: 4px
+}
+TABLE.statuslist TD {
+	BORDER-BOTTOM: #ccc 0px solid; BORDER-LEFT: #ccc 0px solid; BORDER-TOP: #ccc 1px solid; BORDER-RIGHT: #ccc 1px solid
+}
+TABLE.statuslist .critical TD {
+	PADDING-BOTTOM: 4px; BACKGROUND-COLOR: #f9e1e1; PADDING-LEFT: 5px; PADDING-RIGHT: 4px; PADDING-TOP: 4px
+}
+TABLE.statuslist .STATUS_CANTCOMPLETE TD.emphasis SPAN {
+	COLOR: #b92916; FONT-WEIGHT: bold
+}
+TABLE.statuslist .critical TD.emphasis SPAN {
+	COLOR: #b92916; FONT-WEIGHT: bold
+}
+TABLE.statuslist .STATUS_CANTCOMPLETE TD {
+	BORDER-BOTTOM-COLOR: #fcd76c; PADDING-BOTTOM: 4px; BACKGROUND-COLOR: #fffebb; BORDER-TOP-COLOR: #fcd76c; PADDING-LEFT: 5px; PADDING-RIGHT: 4px; COLOR: #b92916; BORDER-RIGHT-COLOR: #fcd76c; BORDER-LEFT-COLOR: #fcd76c; PADDING-TOP: 4px
+}
+TABLE.statuslist .STATUS_COMPLETE TD {
+	PADDING-BOTTOM: 4px; BACKGROUND-COLOR: #ffffff; PADDING-LEFT: 5px; PADDING-RIGHT: 4px; PADDING-TOP: 4px
+}
+TABLE.statuslist .normalHover TD {
+	BORDER-BOTTOM-COLOR: #b3e0fd; PADDING-BOTTOM: 4px; BACKGROUND-COLOR: #f0f9fe; BORDER-TOP-COLOR: #b3e0fd; PADDING-LEFT: 5px; PADDING-RIGHT: 4px; BORDER-RIGHT-COLOR: #b3e0fd; BORDER-LEFT-COLOR: #b3e0fd; PADDING-TOP: 4px
+}
+TABLE.hotlist .criticalHover TD {
+	BORDER-BOTTOM-COLOR: #b3e0fd; PADDING-BOTTOM: 4px; BACKGROUND-COLOR: #f0f9fe; BORDER-TOP-COLOR: #b3e0fd; PADDING-LEFT: 5px; PADDING-RIGHT: 4px; BORDER-RIGHT-COLOR: #b3e0fd; BORDER-LEFT-COLOR: #b3e0fd; PADDING-TOP: 4px
+}
+TABLE.statuslist .importantHover TD {
+	BORDER-BOTTOM-COLOR: #b3e0fd; PADDING-BOTTOM: 4px; BACKGROUND-COLOR: #f0f9fe; BORDER-TOP-COLOR: #b3e0fd; PADDING-LEFT: 5px; PADDING-RIGHT: 4px; BORDER-RIGHT-COLOR: #b3e0fd; BORDER-LEFT-COLOR: #b3e0fd; PADDING-TOP: 4px
+}
+TABLE.statuslist .criticalHover TD.emphasis SPAN {
+	FONT-WEIGHT: bold; TEXT-DECORATION: none !important
+}
+TABLE.statuslist .importantHover TD.emphasis SPAN {
+	FONT-WEIGHT: bold; TEXT-DECORATION: none !important
+}
+.SKUNameCol {
+	WIDTH: 250px
+}
+.SKUStatusCol {
+	WIDTH: 210px
+}
+.SKURecCol {
+	WIDTH: 410px
+}
+.quoteButtons {
+	MARGIN: 15px 0px
+}
+.quoteButtons UL.superButton {
+	MARGIN-RIGHT: 15px
+}
+.detailSectionContainer UL.superButton {
+	MARGIN-RIGHT: 15px
+}
+#woHistoryTable {
+	BORDER-BOTTOM: black 1px solid; BORDER-LEFT: black 1px solid; BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid
+}
+#woHistoryTable TR.even {
+	BACKGROUND-COLOR: #eee
+}
+#woHistoryTable TR.odd {
+	BACKGROUND-COLOR: #fff
+}
+#woHistoryTable THEAD TH {
+	BORDER-BOTTOM: black 1px solid; BORDER-LEFT: black 1px solid; PADDING-BOTTOM: 1px; BACKGROUND-COLOR: #eee; PADDING-LEFT: 10px; WIDTH: 100px; PADDING-RIGHT: 1px; HEIGHT: 28px; BORDER-TOP: black 1px solid; FONT-WEIGHT: bold; BORDER-RIGHT: black 1px solid; PADDING-TOP: 1px
+}
+#woHistoryTable TR TD {
+	BORDER-BOTTOM: black 1px solid; BORDER-LEFT: black 1px solid; PADDING-BOTTOM: 1px; PADDING-LEFT: 10px; PADDING-RIGHT: 1px; HEIGHT: 20px; BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; PADDING-TOP: 1px
+}
+#woHistoryTable THEAD TH + TH + TH {
+	BORDER-BOTTOM: red 3px solid; BORDER-LEFT: red 3px solid; BACKGROUND-COLOR: #eee; WIDTH: 100%; BORDER-TOP: red 3px solid; BORDER-RIGHT: red 3px solid
+}
+.commentsSubHead {
+	PADDING-BOTTOM: 0px; BACKGROUND-COLOR: #eee; MARGIN: 8px 0px 5px; PADDING-LEFT: 5px; PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+TABLE.generalInfo {
+	BACKGROUND-COLOR: #fff; BORDER-SPACING: 5px; BORDER-COLLAPSE: separate
+}
+TABLE.generalInfo TR {
+	BACKGROUND-COLOR: #009
+}
+TABLE.generalInfo TD {
+	HEIGHT: 100%; VERTICAL-ALIGN: top
+}
+.partsLog {
+	BORDER-BOTTOM: #000 1px dotted; BORDER-LEFT: #000 1px dotted; BACKGROUND-COLOR: #cce6ff; BORDER-TOP: #000 1px dotted; BORDER-RIGHT: #000 1px dotted
+}
+.partsLog LI {
+	LIST-STYLE-TYPE: none
+}
+.partsLog UL {
+	PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+IMG.expandableMe {
+	MARGIN-RIGHT: 5px
+}
+.inboundMessage {
+	FONT-STYLE: italic; MARGIN: 10px 0px; FONT-SIZE: 14px; FONT-WEIGHT: bold
+}
+.property {
+	MARGIN-TOP: 10px; MARGIN-BOTTOM: 15px
+}
+.property TD {
+	WIDTH: 60px
+}
+.property INPUT {
+	BORDER-BOTTOM: #000 1px solid; BORDER-LEFT: #000 1px solid; WIDTH: 100px; HEIGHT: 16px; BORDER-TOP: #000 1px solid; BORDER-RIGHT: #000 1px solid
+}
+.page {
+	PAGE-BREAK-AFTER: always
+}

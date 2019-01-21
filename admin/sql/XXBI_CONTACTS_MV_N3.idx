@@ -1,0 +1,33 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name    :          XXBI_CONTACTS_MV_N3.idx                   |
+-- | |
+-- | Description      : This scipt creates index                       |
+-- |                    XXBI_CONTACTS_MV_N3.                      |
+-- |                                                                   |
+-- | Subversion Info:                                                          |
+-- | $HeadURL:  $                                                               |
+-- | $Rev:  $                                                                   |
+-- | $Date: $                                         |
+-- |                                                                           |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |1.0       07-Sep-2010 indra varada Initial Version             |
+-- |                                                                   |
+-- |                                                                   |
+-- +===================================================================+
+
+-- ----------------------------------------------------------
+--   CREATE Custom index XXBI_CONTACTS_MV_N1        --
+-- ----------------------------------------------------------
+
+CREATE INDEX "XXCRM"."XXBI_CONTACTS_MV_N3" ON "XXCRM"."XXBI_CONTACTS_MV" ("CONTACT_UPDATE_DATE");
+SHOW ERRORS;

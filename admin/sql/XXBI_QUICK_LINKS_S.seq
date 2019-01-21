@@ -1,0 +1,43 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : XXBI_QUICK_LINKS_S.seq                              |
+-- | Description : Sequence for XXBI_QUICK_LINKS                       |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1a 19-Feb-2010  Sarah Justina    Initial draft version       |
+-- +===================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+SET TERM ON
+
+PROMPT
+PROMPT Creating SEQUENCE XXBI_QUICK_LINKS_S
+PROMPT
+
+CREATE SEQUENCE XXCRM.XXBI_QUICK_LINKS_S
+INCREMENT BY 1
+START WITH 1
+NOCYCLE
+NOCACHE
+NOORDER;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

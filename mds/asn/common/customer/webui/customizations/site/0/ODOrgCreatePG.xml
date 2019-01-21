@@ -1,0 +1,19 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.5.4.89_560" xml:lang="en-US" customizes="/od/oracle/apps/xxcrm/asn/common/customer/webui/ODOrgCreatePG">
+   <modifications>
+      <modify element="ASNOrgCreateRN.orgProfileRegion.organization_name" prompt="Prospect/Customer Name"/>
+      <modify element="ASNOrgCreateRN.orgProfileRegion.alias" rendered="false"/>
+      <modify element="ASNOrgCreateRN.orgProfileRegion.url" prompt="Web Site (include http://)" tipType="none"/>
+      <modify element="ASNOrgCreateRN.orgProfileRegion.PhoneMessageLayout" prompt="Phone Number"/>
+      <modify element="ASNOrgCreateRN.orgProfileRegion.PhoneRow" prompt="Phone Number"/>
+      <modify element="ASNOrgCreateRN.orgProfileRegion.OrgPhoneCountryCode" defaultValue="1" required="yes"/>
+      <modify element="ASNOrgCreateRN.orgProfileRegion.PhoneAreaCode" required="yes"/>
+      <modify element="ASNOrgCreateRN.orgProfileRegion.PhoneNumber" required="yes"/>
+      <move element="ASNRequiredFieldRN.spacer1" after="ASNRequiredFieldRN.RequiredFieldIcon"/>
+      <move element="ASNRequiredFieldRN.RequiredFieldText" after="ASNRequiredFieldRN.spacer1"/>
+      <insert after="ASNRequiredFieldRN.RequiredFieldText">
+         <oa:tip id="XX_OD_ORG_CREATE_REV_BAND_TIP_TXT" adminCustomizable="true" rendered="true" scope="." text="Revenue Band is required." xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <modify element="PageLayoutRN" title="Create Prospect/Customer"/>
+   </modifications>
+</customization>

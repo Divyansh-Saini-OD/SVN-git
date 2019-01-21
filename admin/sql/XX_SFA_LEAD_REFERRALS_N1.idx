@@ -1,0 +1,30 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                        WIPRO Technologies                         |
+-- +===================================================================+
+-- | Name    :          XX_SFA_LEAD_REFERRALS_N1.idx                   |
+-- | Rice ID :          Lead Referral Program                          |
+-- | Description      : This scipt creates index                       |
+-- |                    XX_SFA_LEAD_REFERRALS_N1.                      |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |1.0       20-MAY-2008 Rizwan A         Initial Version             |
+-- |                                                                   |
+-- |                                                                   |
+-- +===================================================================+
+
+-- ----------------------------------------------------------
+--   CREATE Custom index XX_SFA_LEAD_REFERRALS_N1        --
+-- ----------------------------------------------------------
+
+CREATE INDEX XXCRM.XX_SFA_LEAD_REFERRALS_N1 ON XXCRM.XX_SFA_LEAD_REFERRALS ("PROCESS_STATUS"); 
+
+SHOW ERRORS;

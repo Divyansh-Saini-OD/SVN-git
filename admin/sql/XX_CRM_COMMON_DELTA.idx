@@ -1,0 +1,24 @@
+--+=====================================================================+
+--|                   Office Depot - Project FIT                        |
+--|          Capgemini/Office Depot/Consulting Organization             |
+--+=====================================================================+
+--|                                                                     |
+--|Rice        : 106313                                                 |
+--|File Name   : XX_CRM_COMMON_DELTA.idx                                  |
+--|File Path   : $XXCRM_TOP/admin/sql                                   |
+--|Schema      : XXCRM                                                  |
+--|                                                                     |
+--|Version    Date           Author                       Remarks       |
+--|=======   ======        ====================          =========      |
+--| 1.0    06-Sep-2011     Balakrishna Bolikonda       Initial version  |
+--|                                                                     |
+--+=====================================================================+
+
+SET VERIFY OFF
+WHENEVER SQLERROR CONTINUE
+
+CREATE INDEX XXCRM.XX_CRM_COMMON_DELTA_N1 ON 
+XX_CRM_COMMON_DELTA (CUST_ACCOUNT_ID) COMPUTE STATISTICS;
+
+CREATE INDEX XXCRM.XX_CRM_COMMON_DELTA_N2 ON 
+XX_CRM_COMMON_DELTA (CONTENT_TYPE) COMPUTE STATISTICS;

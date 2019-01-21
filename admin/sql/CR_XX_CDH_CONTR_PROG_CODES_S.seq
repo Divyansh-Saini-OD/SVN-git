@@ -1,0 +1,44 @@
+-- $Id: CR_XX_CDH_CONTR_PROG_CODES_S.seq 69590 2009-04-10 15:32:12Z Sreedhar Mohan $
+-- $Rev: 69590 $
+-- $HeadURL: https://svn.na.odcorp.net/od/crm/trunk/xxcrm/admin/sql/CR_XX_CDH_CONTR_PROG_CODES_S.seq $
+-- $Author: Naga Kalyan $
+-- $Date: 2009-04-10 11:32:12 -0400 (Fri, 10 Apr 2009) $
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : CR_XX_CDH_CONTR_PROG_CODES_S.seq                   |
+-- | Description      : Sequence for contracts universal program codes.    |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  30-Mar-2010 Sreedhar           Initial Draft Version          |
+-- |                                                                       |
+-- +=======================================================================+
+
+--------------------------------------------------------------
+--  Create Custom Sequence XXCRM.XXSCS_ACTION_ID_S    --
+--------------------------------------------------------------
+
+CREATE SEQUENCE XXCRM.XX_CDH_CONTRACT_PROG_CODES_S
+INCREMENT BY 1 
+START WITH 1 
+NOMAXVALUE
+NOCYCLE NOCACHE NOORDER;
+
+------------------------------------------------------
+-- Grants to APPS                                   --
+------------------------------------------------------
+
+GRANT ALL ON XXCRM.XX_CDH_CONTRACT_PROG_CODES_S TO APPS;
+
+SHOW ERRORS;
+
+EXIT;

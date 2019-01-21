@@ -1,0 +1,1285 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<jrad:page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1550" xml:lang="en-US" file-version="$Header: OpptyDetPG.xml 115.144.115200.5 2005/10/21 07:17:01 lgupta ship $" xmlns:user="http://xmlns.oracle.com/jrad/user">
+   <jrad:content>
+      <oa:pageLayout amDefName="od.oracle.apps.xxcrm.asn.opportunity.server.ODOpptyDetAM" id="PageLayoutRN" title="Update Opportunity" controllerClass="od.oracle.apps.xxcrm.asn.opportunity.webui.ODOpptyDetCO" helpTarget="ASN_OpptyDetPG" function="ASN_OPPTYDETPG" regionName="Update Opportunity">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif" prompt="Oracle"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:pageButtonBar id="ASNPageButtonRN" regionName="Page Buttons">
+               <ui:contents>
+                  <oa:flowLayout id="ASNPrmStack" extends="/oracle/apps/pv/opportunity/webui/PvAbandonOpptyRN" rendered="false" regionName="Partners Button Layout"/>
+                  <oa:submitButton id="ASNViewHistButton" shortDesc="View History" text="View History" prompt="View History" rendered="false"/>
+                  <oa:submitButton id="ASNPageSvButton" text="Save" prompt="Save" rendered="${oa.OpptyDetAppPropertiesVO1.UPDATE_RENDER}" shortDesc="Save"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+            <oa:formValue id="ASNOpptyDetSrcPromId" viewName="OpportunityDetailsVO1" viewAttr="SourcePromotionId" dataType="NUMBER" adminCustomizable="false"/>
+            <oa:messageComponentLayout id="ASNOpptyDetRN" rows="5" width="100%" regionName="Opportunity Attributes">
+               <ui:contents>
+                  <oa:messageTextInput id="ASNOpptyDetNm" required="${oa.OpptyDetAppPropertiesVO1.ITEM_REQUIRED}" maximumLength="240" columns="20" viewName="OpportunityDetailsVO1" viewAttr="Description" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/Description_OpportunityName" readOnly="${oa.OpptyDetAppPropertiesVO1.NAME_READ_ONLY}" shortDesc="Opportunity Name"/>
+                  <oa:messageStyledText id="ASNOpptyDetNbr" viewName="OpportunityDetailsVO1" viewAttr="LeadNumber" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/Opportunity_Number" shortDesc="Opportunity Number" styleClass="OraDataText" required="no"/>
+                  <oa:messageLayout id="ASNOpptyDetCustRN" prompt="Customer" required="yes">
+                     <ui:contents>
+                        <oa:rowLayout id="ASNOpptyDetCustRow" regionName="Customer Attribute">
+                           <ui:contents>
+                              <oa:messageStyledText id="ASNOpptyDetCust" viewName="OpportunityDetailsVO1" viewAttr="PartyName" warnAboutChanges="false" shortDesc="Customer">
+                                 <ui:primaryClientAction>
+                                    <ui:fireAction id="ASNOpptyDetCust_fireAction">
+                                       <ui:parameters>
+                                          <ui:parameter key="ASNReqPgAct" value="CUSTDET"/>
+                                          <ui:parameter key="ASNReqEvtCustId" value="${oa.current.CustomerId}"/>
+                                          <ui:parameter key="ASNReqEvtFuncName" value="ASN_ORGVIEWPG"/>
+                                       </ui:parameters>
+                                    </ui:fireAction>
+                                 </ui:primaryClientAction>
+                              </oa:messageStyledText>
+                              <oa:submitButton id="ASNCustSelButton" serverUnvalidated="true" unvalidated="true" text="Select" prompt="Select" rendered="${oa.OpptyDetAppPropertiesVO1.ADD_CTCT_RENDER}" shortDesc="Select"/>
+                           </ui:contents>
+                        </oa:rowLayout>
+                     </ui:contents>
+                  </oa:messageLayout>
+                  <oa:messageLayout id="ASNOpptyDetAddrRN" prompt="Address">
+                     <ui:contents>
+                        <oa:rowLayout id="ASNOpptyDetAddrRow" regionName="Address Attribute">
+                           <ui:contents>
+                              <oa:messageTextInput id="ASNOpptyDetAddr" disabled="true" readOnly="${oa.OpptyDetAppPropertiesVO1.ADDR_READ_ONLY}" viewName="OpportunityDetailsVO1" viewAttr="Address" columns="20" rows="2" shortDesc="Address"/>
+                              <oa:submitButton id="ASNAddrSelButton" serverUnvalidated="true" unvalidated="true" text="Select" prompt="Select" rendered="${oa.OpptyDetAppPropertiesVO1.ADD_CTCT_RENDER}" shortDesc="Select"/>
+                           </ui:contents>
+                        </oa:rowLayout>
+                     </ui:contents>
+                  </oa:messageLayout>
+                  <oa:messageTextInput id="ASNOpptyDetDate" required="${oa.OpptyDetAppPropertiesVO1.ITEM_REQUIRED}" dataType="DATE" viewName="OpportunityDetailsVO1" viewAttr="DecisionDate" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/DecisionDate" readOnly="${oa.OpptyDetAppPropertiesVO1.DATE_READ_ONLY}" shortDesc="Close Date" tipType="dateFormat"/>
+                  <oa:messageStyledText id="ASNOpptyDetRefDet" viewName="OpportunityDetailsVO1" viewAttr="PrmReferralCode" shortDesc="Registration" rendered="false" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/Registration">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="update">
+                           <ui:parameters>
+                              <ui:parameter key="ASNReqPgAct" value="REFDET"/>
+                              <ui:parameter key="ASNReqEvtPrmRefCode" value="${oa.current.PrmReferralCode}"/>
+                              <ui:parameter key="ASNReqEvtFuncName" value="PV_OPPTY_REFERRAL_NAVLINK"/>
+                           </ui:parameters>
+                        </ui:fireAction>
+                     </ui:primaryClientAction>
+                  </oa:messageStyledText>
+                  <oa:messageLayout id="ASNOpptyDetSpacerRN">
+                     <ui:contents>
+                        <oa:spacer id="ASNOpptyDetSpacer" width="15" height="25"/>
+                     </ui:contents>
+                  </oa:messageLayout>
+                  <oa:messageChoice id="ASNOpptyDetMeth" dataType="NUMBER" viewName="OpportunityDetailsVO1" viewAttr="SalesMethodologyId" pickListDispAttr="SalesMethodologyName" pickListValAttr="SalesMethodologyId" serverUnvalidated="true" use="/oracle/apps/asn/admin/attributesets/SalesMethodology/SalesMethodologyName" readOnly="${oa.OpptyDetAppPropertiesVO1.METH_READ_ONLY}" pickListViewName="SalesMethodologiesVO1" required="${oa.OpptyDetAppPropertiesVO1.METH_REQUIRED}" shortDesc="Methodology">
+                     <ui:primaryClientAction>
+                        <ui:firePartialAction event="detailMethUpdate" unvalidated="true" id="firePartialAction3"/>
+                     </ui:primaryClientAction>
+                  </oa:messageChoice>
+                  <oa:messageChoice id="ASNOpptyDetStage" dataType="NUMBER" required="${oa.OpptyDetAppPropertiesVO1.STAGE_REQUIRED}" pickListDispAttr="SalesStageName" pickListValAttr="SalesStageId" viewName="OpportunityDetailsVO1" viewAttr="SalesStageId" pickListViewName="OpportunityMethSalesStagesVO1" use="/oracle/apps/asn/admin/attributesets/SalesStage/SalesStageName" readOnly="${oa.OpptyDetAppPropertiesVO1.STAGE_READ_ONLY}" shortDesc="Stage"/>
+                  <oa:messageChoice id="ASNOpptyDetWinProb" dataType="NUMBER" viewName="OpportunityDetailsVO1" viewAttr="WinProbability" pickListViewDef="oracle.apps.asn.opportunity.poplist.server.OpportunityWinProbabilitiesVO" pickListValAttr="ProbabilityValue" pickListDispAttr="ProbabilityValue" readOnly="${oa.OpptyDetAppPropertiesVO1.WINPROB_READ_ONLY}" shortDesc="Win Probability" required="${oa.OpptyDetAppPropertiesVO1.ITEM_REQUIRED}" use="/oracle/apps/asn/admin/attributesets/Probability/ProbabilityValue"/>
+                  <oa:messageChoice id="ASNOpptyDetStatus" viewName="OpportunityDetailsVO1" viewAttr="Status" pickListViewDef="oracle.apps.asn.opportunity.poplist.server.OpportunityStatusesVO" pickListDispAttr="Meaning" pickListValAttr="StatusCode" required="${oa.OpptyDetAppPropertiesVO1.ITEM_REQUIRED}" serverUnvalidated="true" use="/oracle/apps/asn/admin/attributesets/Status/Meaning" readOnly="${oa.OpptyDetAppPropertiesVO1.STATUS_READ_ONLY}">
+                     <ui:primaryClientAction>
+                        <ui:firePartialAction event="detailStatusUpdate" unvalidated="true" id="firePartialAction2"/>
+                     </ui:primaryClientAction>
+                  </oa:messageChoice>
+                  <oa:messageChoice id="ASNOpptyDetRsn" viewName="OpportunityDetailsVO1" viewAttr="CloseReason" pickListValAttr="LookupCode" pickListDispAttr="Meaning" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/CloseReason" readOnly="${oa.OpptyDetAppPropertiesVO1.CLOSEREASON_READ_ONLY}" pickListViewName="OpportunityDetCloseReasonVO1"/>
+                  <oa:messageChoice id="ASNOpptyDetCurr" required="yes" viewName="OpportunityDetailsVO1" viewAttr="CurrencyCode" pickListViewDef="oracle.apps.asn.common.poplist.server.CurrenciesVO" pickListDispAttr="CurrencyName" pickListValAttr="CurrencyCode" prompt="Currency" readOnly="true" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="ASNOpptyDetAmt" dataType="NUMBER" viewName="OpportunityDetailsVO1" viewAttr="TotalAmount" styleClass="OraDataText" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/TotalAmount"/>
+                  <oa:messageTextInput id="ASNOpptyDetFrcstAmt" dataType="NUMBER" viewName="OpportunityDetailsVO1" viewAttr="ForecastAmount" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST1_RENDER}" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/ForecastAmount" readOnly="${oa.OpptyDetAppPropertiesVO1.FORECAST1_READ_ONLY}" serverUnvalidated="true">
+                     <ui:primaryClientAction>
+                        <ui:firePartialAction event="headerFrcstUpdate" id="firePartialAction1" unvalidated="true"/>
+                     </ui:primaryClientAction>
+                  </oa:messageTextInput>
+                  <oa:messageStyledText id="ASNOpptyDetFrcstAmtEx" viewName="OpportunityDetailsVO1" viewAttr="EmptyString" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST2_RENDER}" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/ForecastAmount"/>
+                  <oa:messageChoice id="ASNOpptyDetChnl" viewName="OpportunityDetailsVO1" viewAttr="ChannelCode" pickListViewDef="oracle.apps.asn.common.poplist.server.SalesChannelsVO" pickListValAttr="LookupCode" pickListDispAttr="Meaning" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/SalesChannel" readOnly="${oa.OpptyDetAppPropertiesVO1.CHANNEL_READ_ONLY}"/>
+                  <oa:messageLovInput id="ASNOpptyDetAvtNm" prompt="Source" externalListOfValues="/oracle/apps/asn/common/lov/webui/SrcLovRN" viewName="OpportunityDetailsVO1" viewAttr="SourceName" readOnly="${oa.OpptyDetAppPropertiesVO1.AVT_NM_READ_ONLY}" rendered="${oa.OpptyDetAppPropertiesVO1.AVT_NM1_RENDER}">
+                     <jrad:lovMappings>
+                        <jrad:lovMap lovItem="ASNSrcLovNm" id="ASNSrcNmToLovNm" criteriaFrom="ASNOpptyDetAvtNm" useForValidation="yes"/>
+                        <jrad:lovMap lovItem="ASNSrcLovNm" id="ASNLovNmToSrcNm" resultTo="ASNOpptyDetAvtNm" useForValidation="yes"/>
+                        <jrad:lovMap lovItem="ASNSrcLovSrcPromId" id="ASNLovSrcPromIdToSrcPromId" resultTo="ASNOpptyDetSrcPromId" useForValidation="yes"/>
+                     </jrad:lovMappings>
+                  </oa:messageLovInput>
+                  <oa:messageStyledText id="ASNOpptyDetAvtNmEx" viewName="OpportunityDetailsVO1" prompt="Source" viewAttr="SourceName" rendered="${oa.OpptyDetAppPropertiesVO1.AVT_NM2_RENDER}" warnAboutChanges="false">
+                     <ui:primaryClientAction>
+                        <ui:fireAction id="ASNOpptyDetAvtNmEx_fireAction">
+                           <ui:parameters>
+                              <ui:parameter key="ASNReqPgAct" value="CSCHDET"/>
+                              <ui:parameter key="ASNReqEvtCschId" value="${oa.current.SourceCodeForId}"/>
+                              <ui:parameter key="ASNReqEvtFuncName" value="AMS_WB_SALES_READONLY"/>
+                           </ui:parameters>
+                        </ui:fireAction>
+                     </ui:primaryClientAction>
+                  </oa:messageStyledText>
+                  <oa:messageChoice id="ASNOpptyDetRespChan" prompt="Response Channel" shortDesc="Response Channel" pickListDispAttr="Meaning" pickListValAttr="LookupCode" viewName="OpportunityDetailsVO1" viewAttr="VehicleResponseCode" rendered="false" readOnly="${oa.OpptyDetAppPropertiesVO1.FIELD_READ_ONLY}" pickListViewDef="oracle.apps.asn.common.poplist.server.VehicleResponseChannelVO"/>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:subTabLayout id="ASNOpptyDetSubtab" regionName="Sub Tabs">
+               <ui:contents>
+                  <oa:stackLayout id="ASNDetHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/OppDetails_Subtab" rendered="false" regionName="Details Subtab">
+                     <ui:contents>
+                        <oa:hideShowHeader id="ASNDetAnlHdrRN" disclosed="true" use="/oracle/apps/asn/common/attributesets/Transient/Analysis_Hdr" regionName="Analysis">
+                           <ui:contents>
+                              <oa:tableLayout id="ASNDetAnlHdrTable" width="100%" regionName="Analysis">
+                                 <ui:contents>
+                                    <oa:rowLayout id="ASNDetAnlHdrRow" width="100%" regionName="Analysis">
+                                       <ui:contents>
+                                          <oa:cellFormat id="ASNPrdtCntrCell" vAlign="top" width="30%" rendered="false" regionName="Products Under Contract">
+                                             <ui:contents>
+                                                <oa:header id="ASNPrdtCntrRN" extends="/oracle/apps/asn/common/webui/PrdtCntrRN" regionName="Products Under Contract Header"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                          <oa:cellFormat id="ASNCustOpptyLstCell" vAlign="top" width="70%" regionName="Recent Opportunities">
+                                             <ui:contents>
+                                                <oa:header id="ASNCustOpptyLstRN" extends="/oracle/apps/asn/common/webui/CustOpptyLstRN" regionName="Recent Opportunities Header"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                 </ui:contents>
+                              </oa:tableLayout>
+                           </ui:contents>
+                        </oa:hideShowHeader>
+                        <oa:hideShowHeader id="ASNDetCtctHdrRN" disclosed="true" use="/oracle/apps/asn/common/attributesets/Transient/Contacts_Hdr" regionName="Contacts">
+                           <ui:contents>
+                              <oa:header id="ASNSugCtctLstRN" extends="/oracle/apps/asn/common/webui/SugCtctLstRN" regionName="Suggested Contacts Header"/>
+                              <oa:header id="ASNCtctLstRN" controllerClass="oracle.apps.asn.opportunity.webui.CtctLstCO" use="/oracle/apps/asn/common/attributesets/Transient/SelectedContacts_Hdr" regionName="Selected Contacts">
+                                 <ui:contents>
+                                    <oa:advancedTable id="ASNCtctLstTb" width="100%" blockSize="5" viewName="OpportunityContactDetailsVO1" shortDesc="Contacts" regionName="Selected Contacts">
+                                       <ui:contents>
+                                          <oa:column id="ASNCtctFirstNmCol" rendered="${oa.OpptyDetAppPropertiesVO1.CTCT_NM1_RENDER}">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNCtctFirstNmColHdr" prompt="First Name" shortDesc="First Name"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="ASNCtctFirstNm" viewName="OpportunityContactDetailsVO1" viewAttr="PersonFirstName" prompt="First Name" columns="10" maximumLength="150" rendered="${oa.OpptyDetAppPropertiesVO1.CTCT_NM1_RENDER}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNCtctLastNmCol" rendered="${oa.OpptyDetAppPropertiesVO1.CTCT_NM1_RENDER}">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNCtctLastNmColHdr" prompt="Last Name" shortDesc="Last Name"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="ASNCtctLastNm" viewName="OpportunityContactDetailsVO1" viewAttr="PersonLastName" columns="10" prompt="Last Name" maximumLength="150" rendered="${oa.OpptyDetAppPropertiesVO1.CTCT_NM1_RENDER}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNCtctNmCol" rendered="${oa.OpptyDetAppPropertiesVO1.CTCT_NM2_RENDER}">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNCtctNmColHdr" prompt="Name" shortDesc="Name"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageStyledText id="ASNCtctNm" viewName="OpportunityContactDetailsVO1" viewAttr="PartyName" prompt="Name" rendered="${oa.OpptyDetAppPropertiesVO1.CTCT_NM2_RENDER}" warnAboutChanges="false">
+                                                   <ui:primaryClientAction>
+                                                      <ui:fireAction id="ASNCtctNm_fireAction1">
+                                                         <ui:parameters>
+                                                            <ui:parameter key="ASNReqPgAct" value="CTCTDET"/>
+                                                            <ui:parameter key="ASNReqEvtCtctId" value="${oa.current.SubjectId}"/>
+                                                            <ui:parameter key="ASNReqEvtCustId" value="${oa.current.CustomerId}"/>
+                                                            <ui:parameter key="ASNReqEvtRelId" value="${oa.current.PartyRelationshipId}"/>
+                                                            <ui:parameter key="ASNReqEvtRelPtyId" value="${oa.current.ContactPartyId}"/>
+                                                            <ui:parameter key="ASNReqEvtFuncName" value="ASN_CTCTSECURVIEWPG"/>
+                                                         </ui:parameters>
+                                                      </ui:fireAction>
+                                                   </ui:primaryClientAction>
+                                                </oa:messageStyledText>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNCtctJobCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNCtctJobColHdr" prompt="Job Title" shortDesc="Job Title"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="ASNCtctJob" viewName="OpportunityContactDetailsVO1" viewAttr="JobTitle" prompt="Job Title" columns="10" maximumLength="100" readOnly="${oa.OpptyDetAppPropertiesVO1.CTCT_JOB_READ_ONLY}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNCtctPhoneCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNCtctPhoneColHdr" prompt="Phone" shortDesc="Phone"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:flowLayout id="ASNCtctPhoneFlow" regionName="Contacts - Phone">
+                                                   <ui:contents>
+                                                      <oa:messageTextInput id="ASNCtctCountryCode" maximumLength="10" viewName="OpportunityContactDetailsVO1" viewAttr="PhoneCountryCode" sortState="yes" columns="3" readOnly="${oa.OpptyDetAppPropertiesVO1.CTCT_COUNTRY_CODE_READ_ONLY}" rendered="${oa.OpptyDetAppPropertiesVO1.CTCT_PHONE1_RENDER}" shortDesc="Country Code"/>
+                                                      <oa:messageTextInput id="ASNCtctAreaCode" viewAttr="PhoneAreaCode" viewName="OpportunityContactDetailsVO1" maximumLength="10" sortState="yes" columns="3" readOnly="${oa.OpptyDetAppPropertiesVO1.CTCT_AREA_CODE_READ_ONLY}" rendered="${oa.OpptyDetAppPropertiesVO1.CTCT_PHONE1_RENDER}" shortDesc="Area Code"/>
+                                                      <oa:messageTextInput id="ASNCtctPhone" viewName="OpportunityContactDetailsVO1" viewAttr="PhoneNumber" prompt="Phone" sortState="yes" maximumLength="40" columns="5" readOnly="${oa.OpptyDetAppPropertiesVO1.CTCT_PHONE_READ_ONLY}" rendered="${oa.OpptyDetAppPropertiesVO1.CTCT_PHONE1_RENDER}"/>
+                                                      <oa:messageTextInput id="ASNCtctExt" viewName="OpportunityContactDetailsVO1" viewAttr="PhoneExtension" maximumLength="20" sortState="yes" columns="3" readOnly="${oa.OpptyDetAppPropertiesVO1.CTCT_EXT_READ_ONLY}" rendered="${oa.OpptyDetAppPropertiesVO1.CTCT_PHONE1_RENDER}" shortDesc="Extension"/>
+                                                      <oa:messageStyledText id="ASNCtctFormattedPhone" viewName="OpportunityContactDetailsVO1" viewAttr="ConcatPhoneNumber" prompt="Phone" rendered="${oa.OpptyDetAppPropertiesVO1.CTCT_PHONE2_RENDER}"/>
+                                                   </ui:contents>
+                                                </oa:flowLayout>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNCtctEmailCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNCtctEmailColHdr" prompt="Email" shortDesc="Email"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageStyledText id="ASNCtctEmail" viewName="OpportunityContactDetailsVO1" viewAttr="EmailAddress" prompt="Email" destination="mailto:{@EmailAddress}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNCtctRoleCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNCtctRoleColHdr" use="/oracle/apps/asn/opportunity/attributesets/OpportunityContact/Rank"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageChoice id="ASNCtctRole" pickListViewDef="oracle.apps.asn.common.poplist.server.ContactRolesVO" pickListValAttr="LookupCode" pickListDispAttr="Meaning" viewName="OpportunityContactDetailsVO1" viewAttr="Rank" use="/oracle/apps/asn/opportunity/attributesets/OpportunityContact/Rank" readOnly="${oa.OpptyDetAppPropertiesVO1.CTCT_ROLE_READ_ONLY}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNCtctPriCol" columnDataFormat="iconButtonFormat">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNCtctPriColHdr" use="/oracle/apps/asn/opportunity/attributesets/OpportunityContact/PrimaryContactFlag"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageCheckBox id="ASNCtctPri" viewName="OpportunityContactDetailsVO1" viewAttr="PrimaryContactFlag" text="Primary" checkedValue="Y" unCheckedValue="N" readOnly="${oa.OpptyDetAppPropertiesVO1.CTCT_PRI_READ_ONLY}" shortDesc="Primary"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNCtctRmCol" columnDataFormat="iconButtonFormat" rendered="${oa.OpptyDetAppPropertiesVO1.CTCT_REMOVE_RENDER}">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNCtctRmColHdr" prompt="Remove" shortDesc="Remove"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:link id="ASNCtctRmLink" serverUnvalidated="true">
+                                                   <ui:contents>
+                                                      <oa:image id="ASNCtctRm" source="remove_enabled.gif" rendered="${oa.OpptyDetAppPropertiesVO1.CTCT_SEL_RENDER}" shortDesc="Remove" serverUnvalidated="true"/>
+                                                   </ui:contents>
+                                                   <ui:primaryClientAction>
+                                                      <ui:firePartialAction unvalidated="true" id="firePartialAction31">
+                                                         <ui:parameters>
+                                                            <ui:parameter key="ASNReqPgAct" value="CTCT_DELETE"/>
+                                                            <ui:parameter key="ASNReqEvtRowId" value="${oa.OpportunityContactDetailsVO1.LeadContactId}"/>
+                                                         </ui:parameters>
+                                                      </ui:firePartialAction>
+                                                   </ui:primaryClientAction>
+                                                </oa:link>
+                                             </ui:contents>
+                                          </oa:column>
+                                       </ui:contents>
+                                       <ui:tableSelection>
+                                          <oa:singleSelection id="ASNCtctSelection" viewAttr="SelectFlag" rendered="${oa.OpptyDetAppPropertiesVO1.CTCT_SEL_RENDER}" text="" shortDesc="Select Contact">
+                                             <ui:contents>
+                                                <oa:rowLayout id="ASNCtctActions" rendered="${oa.OpptyDetAppPropertiesVO1.CTCT_ACTIONS_RENDERED}" regionName="Contact Actions">
+                                                   <ui:contents>
+                                                      <oa:messageChoice id="ASNCtctAct" shortDesc="Contact Action" pickListValAttr="LookupCode" pickListDispAttr="Meaning" defaultValue="CREATE_TASK" pickListViewName="ContactActionsVO1" prompt="Select Contact :"/>
+                                                      <oa:submitButton id="ASNCtctGoButton" text="Go" prompt="Go" shortDesc="Go"/>
+                                                   </ui:contents>
+                                                </oa:rowLayout>
+                                             </ui:contents>
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="ASNOpptyCtctSelFA" id="fireAction2"/>
+                                             </ui:primaryClientAction>
+                                          </oa:singleSelection>
+                                       </ui:tableSelection>
+                                       <ui:tableActions>
+                                          <oa:flowLayout id="ASNCtctLstTbActRegion" regionName="Contacts">
+                                             <ui:contents>
+                                                <oa:submitButton id="ASNCtctAddButton" use="/oracle/apps/asn/common/attributesets/Buttons/AddContact" rendered="${oa.OpptyDetAppPropertiesVO1.ADD_CTCT_RENDER}" shortDesc="Add Contact"/>
+                                                <oa:submitButton id="ASNCtctCrteButton" rendered="${oa.OpptyDetAppPropertiesVO1.CRTE_CTCT_RENDER}" shortDesc="Create Contact" text="Create Contact" prompt="Create Contact"/>
+                                             </ui:contents>
+                                          </oa:flowLayout>
+                                       </ui:tableActions>
+                                    </oa:advancedTable>
+                                    <oa:header id="ASNCtctAddInfoHdrRN" text="Additional Information" regionName="Contacts Additional Information" controllerClass="oracle.apps.asn.opportunity.webui.OpptyCtctAddInfoCO" rendered="false">
+                                       <ui:contents>
+                                          <oa:flex id="ASNCtctAddInfoFF" flexFieldAppShortName="AS" flexName="AS_LEAD_CONTACTS" viewName="OpportunityContactDetailsVO1" readOnly="${oa.OpptyDetAppPropertiesVO1.CTCT_FLEX_READ_ONLY}" shortDesc="Contacts Additional Information"/>
+                                       </ui:contents>
+                                    </oa:header>
+                                 </ui:contents>
+                              </oa:header>
+                           </ui:contents>
+                        </oa:hideShowHeader>
+                        <oa:hideShowHeader id="ASNDetPrdtHdrRN" disclosed="true" use="/oracle/apps/asn/common/attributesets/Transient/Products_Hdr" regionName="Products">
+                           <ui:contents>
+                              <oa:stackLayout id="ASNPrdtTableStk" controllerClass="oracle.apps.asn.opportunity.webui.PrdtTableCO" prompt="Products" regionName="Products Layout">
+                                 <ui:contents>
+                                    <oa:advancedTable id="ASNPrdtLstTb" blockSize="5" width="100%" shortDesc="Products" viewName="OpportunityLineDetailsVO1" regionName="Products Table">
+                                       <ui:contents>
+                                          <oa:column id="ASNPrdtCtgCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNPrdtCtgHdr" prompt="Product" sortState="yes"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageStyledText id="ASNPrdtCtg" viewAttr="ProductCategory" sortState="yes" prompt="Product"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNPrdtItmNumCol" rendered="false">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNPrdtItmHdr" prompt="Item Number" shortDesc="Item Number" sortState="yes"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageStyledText id="ASNPrdtItmNum" viewAttr="ItemNumber" prompt="Item Number" shortDesc="Item Number"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNPrdtUomCol">
+                                             <ui:contents>
+                                                <oa:switcher id="ASNPrdtUom" viewName="OpportunityLineDetailsVO1" viewAttr="ItemNullFlag" prompt="UOM" sortState="no" regionName="UOM">
+                                                   <ui:case name="ASNPrdtInvItemNo">
+                                                      <oa:messageChoice id="ASNPrdtInvItemNo" viewName="OpportunityLineDetailsVO1" viewAttr="UomCode" prompt="UOM" sortState="no" pickListViewDef="oracle.apps.asn.common.poplist.server.UomCodesVO" pickListDispAttr="Description" pickListValAttr="UomCode" readOnly="${oa.OpptyDetAppPropertiesVO1.UOM_READ_ONLY}"/>
+                                                   </ui:case>
+                                                   <ui:case name="case2">
+                                                      <oa:messageStyledText id="ASNPrdtInvItemYes" sortState="yes" viewName="OpportunityLineDetailsVO1" viewAttr="UomCode"/>
+                                                   </ui:case>
+                                                </oa:switcher>
+                                             </ui:contents>
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNPrdtUomHdr" prompt="UOM"/>
+                                             </ui:columnHeader>
+                                          </oa:column>
+                                          <oa:column id="ASNPrdtQuanCol" columnDataFormat="numberFormat">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNPrdtQuanHdr" prompt="Quantity" sortState="yes"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="ASNPrdtQuan" dataType="NUMBER" viewAttr="Quantity" sortState="yes" columns="8" use="/oracle/apps/asn/opportunity/attributesets/OpportunityLine/Quantity" readOnly="${oa.OpptyDetAppPropertiesVO1.QUANTITY_READ_ONLY}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNPrdtAmtCol" columnDataFormat="numberFormat">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNPrdtAmtHdr" prompt="Amount" sortState="yes"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="ASNPrdtAmt" dataType="NUMBER" viewAttr="TotalAmount" sortState="yes" columns="6" use="/oracle/apps/asn/opportunity/attributesets/OpportunityLine/TotalAmount" readOnly="${oa.OpptyDetAppPropertiesVO1.LINE_AMOUNT_READ_ONLY}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNPrdtDateCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNPrdtDateHdr" prompt="Forecast Date" sortState="yes"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="ASNPrdtDate" dataType="DATE" viewAttr="ForecastDate" sortState="yes" columns="8" use="/oracle/apps/asn/opportunity/attributesets/OpportunityLine/ForecastDate" readOnly="${oa.OpptyDetAppPropertiesVO1.LINE_DATE_READ_ONLY}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNPrdtBestCol" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST1_RENDER}" columnDataFormat="numberFormat">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNPrdtBestHdr" prompt="Best" rendered="true"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="ASNPrdtBest" dataType="NUMBER" viewAttr="OppBestForecastAmount" columns="6" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST1_RENDER}" use="/oracle/apps/asn/opportunity/attributesets/OpportunityLine/OppBestForecastAmount" readOnly="${oa.OpptyDetAppPropertiesVO1.BEST_READ_ONLY}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNBestExCol" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST2_RENDER}" columnDataFormat="numberFormat">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNPrdtBestExHdr" prompt="Best" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST2_RENDER}"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageStyledText id="ASNPrdtBestEx" viewAttr="EmptyString" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST2_RENDER}" use="/oracle/apps/asn/opportunity/attributesets/OpportunityLine/OppBestForecastAmount"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNPrdtFrcstCol" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST1_RENDER}" columnDataFormat="numberFormat">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNPrdtFrcstHdr" prompt="Forecast"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="ASNPrdtFrcst" dataType="NUMBER" viewAttr="OppForecastAmount" columns="6" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST1_RENDER}" use="/oracle/apps/asn/opportunity/attributesets/OpportunityLine/OppForecastAmount" readOnly="${oa.OpptyDetAppPropertiesVO1.FORECAST_READ_ONLY}" serverUnvalidated="true">
+                                                   <ui:primaryClientAction>
+                                                      <ui:firePartialAction event="lineFrcstUpdate" unvalidated="true" id="firePartialAction223"/>
+                                                   </ui:primaryClientAction>
+                                                </oa:messageTextInput>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNPrdtFrcstExCol" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST2_RENDER}" columnDataFormat="numberFormat">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNPrdtFrcstExHdr" prompt="Forecast" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST2_RENDER}"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageStyledText id="ASNPrdtFrcstEx" viewAttr="EmptyString" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST2_RENDER}" use="/oracle/apps/asn/opportunity/attributesets/OpportunityLine/OppForecastAmount"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNPrdtWorstCol" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST1_RENDER}" columnDataFormat="numberFormat">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNPrdtWorstHdr" prompt="Worst" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST1_RENDER}"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="ASNPrdtWorst" dataType="NUMBER" viewAttr="OppWorstForecastAmount" columns="6" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST1_RENDER}" use="/oracle/apps/asn/opportunity/attributesets/OpportunityLine/OppWorstForecastAmount" readOnly="${oa.OpptyDetAppPropertiesVO1.WORST_READ_ONLY}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNPrdtWorstExCol" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST2_RENDER}" columnDataFormat="numberFormat">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNPrdtWorstExHdr" prompt="Worst" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST2_RENDER}"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageStyledText id="ASNPrdtWorstEx" viewAttr="EmptyString" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST2_RENDER}" use="/oracle/apps/asn/opportunity/attributesets/OpportunityLine/OppWorstForecastAmount"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ASNPrdtRmLinkCol" rendered="${oa.OpptyDetAppPropertiesVO1.UPDATE_RENDER}" columnDataFormat="iconButtonFormat">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ASNPrdtRmLinkHdr" prompt="Remove"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:link id="ASNPrdtRmLink" rendered="${oa.OpptyDetAppPropertiesVO1.UPDATE_RENDER}" serverUnvalidated="true">
+                                                   <ui:contents>
+                                                      <oa:image id="ASNPrdtRm" source="remove_enabled.gif" prompt="Remove" serverUnvalidated="true"/>
+                                                   </ui:contents>
+                                                   <ui:primaryClientAction>
+                                                      <ui:firePartialAction unvalidated="true" id="firePartialAction224">
+                                                         <ui:parameters>
+                                                            <ui:parameter key="ASNReqPgAct" value="LINE_DELETE"/>
+                                                            <ui:parameter key="ASNReqEvtRowId" value="${oa.OpportunityLineDetailsVO1.LeadLineId}"/>
+                                                         </ui:parameters>
+                                                      </ui:firePartialAction>
+                                                   </ui:primaryClientAction>
+                                                </oa:link>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:formValue id="ASNPrdtOrgId" viewAttr="OrganizationId" adminCustomizable="false"/>
+                                          <oa:formValue id="ASNPrdtInvItemId" viewAttr="InventoryItemId" adminCustomizable="false"/>
+                                          <oa:formValue id="ASNPrdtPrdtCatId" viewAttr="ProductCategoryId" adminCustomizable="false"/>
+                                          <oa:formValue id="ASNPrdtPrdtCatSetId" viewAttr="ProductCatSetId" adminCustomizable="false"/>
+                                          <oa:formValue id="ASNPrdtProcInvItemId" viewAttr="ProcInventoryItemId" adminCustomizable="false"/>
+                                          <oa:formValue id="ASNPrdtProcOrgId" viewAttr="ProcOrganizationId" adminCustomizable="false"/>
+                                       </ui:contents>
+                                       <ui:tableActions>
+                                          <oa:flowLayout id="ASNPrdtTblActRegion" regionName="Products Button Layout">
+                                             <ui:contents>
+                                                <oa:submitButton id="ASNPrdtAddButton" use="/oracle/apps/asn/common/attributesets/Buttons/AddProduct" rendered="${oa.OpptyDetAppPropertiesVO1.UPDATE_RENDER}"/>
+                                             </ui:contents>
+                                          </oa:flowLayout>
+                                       </ui:tableActions>
+                                       <ui:tableSelection>
+                                          <oa:singleSelection id="ASNPrdtSelection" viewName="OpportunityLineDetailsVO1" viewAttr="SelectFlag" shortDesc="Select Object">
+                                             <ui:primaryClientAction>
+                                                <ui:firePartialAction event="prdtSelect" id="firePartialAction222"/>
+                                             </ui:primaryClientAction>
+                                          </oa:singleSelection>
+                                       </ui:tableSelection>
+                                    </oa:advancedTable>
+                                    <oa:stackLayout id="ASNPrdtInfoChoiceRN" regionName="Products Selection Region" rendered="false">
+                                       <ui:contents>
+                                          <oa:messageChoice id="ASNPrdtInfoChoice" pickListDispAttr="Meaning" pickListValAttr="LookupCode" prompt="View" allowBlankValue="false" defaultValue="COMP_PRDT" shortDesc="View" rendered="${oa.OpptyDetAppPropertiesVO1.PRDT_INFOPLIST_RENDER}" pickListViewDef="oracle.apps.asn.opportunity.poplist.server.OpportunityProductViewVO">
+                                             <ui:primaryClientAction>
+                                                <ui:firePartialAction event="PrdtInfoChoiceFPA" id="firePartialAction2261"/>
+                                             </ui:primaryClientAction>
+                                          </oa:messageChoice>
+                                       </ui:contents>
+                                    </oa:stackLayout>
+                                    <oa:header id="ASNPrdtAddInfoHdrRN" text="Additional Information" rendered="${oa.OpptyDetAppPropertiesVO1.PRDT_ADDINFO_RENDER}" regionName="Products Additional Information">
+                                       <ui:contents>
+                                          <oa:flex id="ASNPrdtAddInfoFF" flexFieldAppShortName="AS" flexName="AS_LEAD_LINES" viewName="OpportunityLineDetailsVO1" shortDesc="Additional Information" readOnly="${oa.OpptyDetAppPropertiesVO1.PRDT_FLEX_READ_ONLY}"/>
+                                       </ui:contents>
+                                    </oa:header>
+                                    <oa:header id="ASNPrdtInfoHdrRN" rendered="${oa.OpptyDetAppPropertiesVO1.PRDT_COMP_RENDER}" text="Product Details" regionName="Competitors">
+                                       <ui:contents>
+                                          <oa:advancedTable id="ASNPrdtInfoCmptLstTb" blockSize="5" width="100%" shortDesc="Competitors" alternateText="No Competitors Selected." text="" viewName="OpptyLineCmptPrdtDetailsVO1" regionName="Competitors">
+                                             <ui:contents>
+                                                <oa:column id="ASNCmptNmCol">
+                                                   <ui:columnHeader>
+                                                      <oa:sortableHeader id="ASNCmptNmHdr" prompt="Competitor Name" shortDesc="Competitor Name" sortState="yes"/>
+                                                   </ui:columnHeader>
+                                                   <ui:contents>
+                                                      <oa:messageStyledText id="ASNCmptNm" prompt="Competitor" sortState="yes" viewAttr="PartyName"/>
+                                                   </ui:contents>
+                                                </oa:column>
+                                                <oa:column id="ASNCmptPrdtCol">
+                                                   <ui:columnHeader>
+                                                      <oa:sortableHeader id="ASNCmptPrdtHdr" prompt="Competitor Product" shortDesc="Competitor Product" sortState="yes"/>
+                                                   </ui:columnHeader>
+                                                   <ui:contents>
+                                                      <oa:messageStyledText id="ASNCmptPrdt" viewAttr="CompetitorProductName" prompt="Competitor Product" sortState="yes"/>
+                                                   </ui:contents>
+                                                </oa:column>
+                                                <oa:column id="ASNCmptStatusCol">
+                                                   <ui:columnHeader>
+                                                      <oa:sortableHeader id="ASNCmptStatusHdr" prompt="Status" shortDesc="Status"/>
+                                                   </ui:columnHeader>
+                                                   <ui:contents>
+                                                      <oa:messageChoice id="ASNCmptStatus" viewAttr="WinLossStatus" sortState="no" pickListDispAttr="Meaning" pickListValAttr="LookupCode" pickListViewDef="oracle.apps.asn.common.poplist.server.CompetitorWinLossesVO" use="/oracle/apps/asn/opportunity/attributesets/OpptyLineCompetitorProduct/WinLossStatus" readOnly="${oa.OpptyDetAppPropertiesVO1.CMPT_STATUS_READ_ONLY}"/>
+                                                   </ui:contents>
+                                                </oa:column>
+                                                <oa:column id="ASNCmptRmCol" rendered="${oa.OpptyDetAppPropertiesVO1.UPDATE_RENDER}" columnDataFormat="iconButtonFormat">
+                                                   <ui:columnHeader>
+                                                      <oa:sortableHeader id="ASNCmptRmHdr" prompt="Remove" shortDesc="Remove"/>
+                                                   </ui:columnHeader>
+                                                   <ui:contents>
+                                                      <oa:link id="ASNCmptRmLink" rendered="true" serverUnvalidated="true">
+                                                         <ui:contents>
+                                                            <oa:image id="ASNCmptRm" source="remove_enabled.gif" prompt="Remove" serverUnvalidated="true"/>
+                                                         </ui:contents>
+                                                         <ui:primaryClientAction>
+                                                            <ui:firePartialAction unvalidated="true" id="firePartialAction221">
+                                                               <ui:parameters>
+                                                                  <ui:parameter key="ASNReqPgAct" value="CMPT_DELETE"/>
+                                                                  <ui:parameter key="ASNReqEvtRowId" value="${oa.OpptyLineCmptPrdtDetailsVO1.LeadCompetitorProdId}"/>
+                                                               </ui:parameters>
+                                                            </ui:firePartialAction>
+                                                         </ui:primaryClientAction>
+                                                      </oa:link>
+                                                   </ui:contents>
+                                                </oa:column>
+                                                <oa:formValue id="ASNCmptPrdtId" viewAttr="CompetitorProductId" adminCustomizable="false"/>
+                                             </ui:contents>
+                                             <ui:tableActions>
+                                                <oa:flowLayout id="ASNCmptPrdtTbActRegion" regionName="Competitors">
+                                                   <ui:contents>
+                                                      <oa:lovActionButton id="ASNCmptAddButton" externalListOfValues="/oracle/apps/asn/common/lov/webui/CompetitorProductsLovRN" rendered="${oa.OpptyDetAppPropertiesVO1.UPDATE_RENDER}" shortDesc="Add Competitors" prompt="Add Competitors">
+                                                         <jrad:lovActionMappings>
+                                                            <jrad:lovActionMap id="CompetitorName" lovItem="PartyName" resultTo="ASNCmptNm"/>
+                                                            <jrad:lovActionMap id="CompetitorProduct" lovItem="CompetitorProductName" resultTo="ASNCmptPrdt"/>
+                                                            <jrad:lovActionMap id="CompetitorProductId" lovItem="CompetitorProductId" resultTo="ASNCmptPrdtId"/>
+                                                         </jrad:lovActionMappings>
+                                                      </oa:lovActionButton>
+                                                   </ui:contents>
+                                                </oa:flowLayout>
+                                             </ui:tableActions>
+                                          </oa:advancedTable>
+                                       </ui:contents>
+                                    </oa:header>
+                                    <oa:hideShowHeader id="ASNPrdtRevFrcstHideShowHdrRN" text="Revenue" regionName="Revenue Header" rendered="${oa.OpptyDetAppPropertiesVO1.PRDT_REVENUE_FRCST_RENDER}" disclosed="true">
+                                       <ui:contents>
+                                          <oa:advancedTable id="ASNPrdtRevFrcstLstTb" viewName="OpportunityLineRevFrcstDetailsVO1" shortDesc="Revenue" blockSize="5" width="100%" regionName="Revenue Table">
+                                             <ui:contents>
+                                                <oa:column id="ASNRevFrcstOwnerCol">
+                                                   <ui:columnHeader>
+                                                      <oa:sortableHeader id="ASNRevFrcstOwnerHdr" prompt="Forecast Owner" required="yes"/>
+                                                   </ui:columnHeader>
+                                                   <ui:contents>
+                                                      <oa:messageLovInput id="ASNRevFrcstOwner" viewAttr="ResourceName" shortDesc="Forecast Owner" externalListOfValues="/oracle/apps/asn/common/lov/webui/RscGrpLovRN" readOnly="${oa.OpptyDetAppPropertiesVO1.PRDT_REVENUE_FRCST_OWNER_READ_ONLY}" required="yes" prompt="Forecast Owner">
+                                                         <jrad:lovMappings>
+                                                            <jrad:lovMap id="ASNRevFrcstOwnerLovMapCriteria" lovItem="ASNRscGrpLovNm" criteriaFrom="ASNRevFrcstOwner" useForValidation="yes" programmaticQuery="true"/>
+                                                            <jrad:lovMap id="ASNRevFrcstGroupIdLovMap" lovItem="ASNRscGrpLovGrpId" resultTo="ASNRevFrcstGroup" useForValidation="yes"/>
+                                                            <jrad:lovMap id="ASNRevFrcstRscIdLovMap" lovItem="ASNRscGrpLovRscId" resultTo="ASNRevFrcstRscId" useForValidation="yes"/>
+                                                            <jrad:lovMap id="ASNRevFrcstOwnerLovMap" lovItem="ASNRscGrpLovNm" resultTo="ASNRevFrcstOwner" useForValidation="yes"/>
+                                                            <jrad:lovMap id="ASNRevFrcstGroupIdFVMap" lovItem="ASNRscGrpLovGrpId" resultTo="ASNRevFrcstGroupId"/>
+                                                         </jrad:lovMappings>
+                                                      </oa:messageLovInput>
+                                                   </ui:contents>
+                                                </oa:column>
+                                                <oa:column id="ASNRevFrcstGroupCol">
+                                                   <ui:columnHeader>
+                                                      <oa:sortableHeader id="ASNRevFrcstGroupHdr" prompt="Sales Group" required="yes" rendered="true"/>
+                                                   </ui:columnHeader>
+                                                   <ui:contents>
+                                                      <oa:messageChoice id="ASNRevFrcstGroup" pickListViewDef="oracle.apps.asn.common.poplist.server.ResourceGroupsVO" pickListDispAttr="GroupName" pickListValAttr="GroupId" viewAttr="SalesgroupId" allowBlankValue="false" readOnly="${oa.OpptyDetAppPropertiesVO1.PRDT_REVENUE_FRCST_GROUP_READ_ONLY}" prompt="Sales Group" shortDesc="Sales Group">
+                                                         <ui:primaryClientAction>
+                                                            <ui:firePartialAction event="CHANGE_GROUP" id="firePartialAction2242">
+                                                               <ui:parameters>
+                                                                  <ui:parameter key="ASNReqEvtRowId" value="${oa.current.SalesCreditId}"/>
+                                                               </ui:parameters>
+                                                            </ui:firePartialAction>
+                                                         </ui:primaryClientAction>
+                                                      </oa:messageChoice>
+                                                   </ui:contents>
+                                                </oa:column>
+                                                <oa:column id="ASNRevFrcstDefaultCol" columnDataFormat="iconButtonFormat" rendered="${oa.OpportunityLineRevFrcstDetailsVO1.OWNER_FLAG1_RENDER}">
+                                                   <ui:columnHeader>
+                                                      <oa:sortableHeader id="ASNRevFrcstDefaultHdr" prompt="Defaulted from Opportunity Owner" shortDesc="Defaulted from Opportunity Owner"/>
+                                                   </ui:columnHeader>
+                                                   <ui:contents>
+                                                      <oa:image id="ASNOwnerDefaulted" source="FNDICHK2.gif" shortDesc="Defaulted from Owner" imageHeight="16" imageWidth="20"/>
+                                                   </ui:contents>
+                                                </oa:column>
+                                                <oa:column id="ASNRevFrcstDefaultExCol" rendered="${oa.OpportunityLineRevFrcstDetailsVO1.OWNER_FLAG2_RENDER}" columnDataFormat="numberFormat">
+                                                   <ui:columnHeader>
+                                                      <oa:sortableHeader id="ASNRevFrcstDefaultExHdr" prompt="Defaulted from Opportunity Owner" shortDesc="Defaulted from Opportunity Owner"/>
+                                                   </ui:columnHeader>
+                                                   <ui:contents>
+                                                      <oa:messageStyledText id="ASNOwnerDetaultedEx" viewAttr="EmptyString" shortDesc="Defaulted from Owner"/>
+                                                   </ui:contents>
+                                                </oa:column>
+                                                <oa:formValue id="ASNRevFrcstRscId" viewAttr="SalesforceId" adminCustomizable="false"/>
+                                                <oa:formValue id="ASNRevFrcstCreditTypeId" viewAttr="CreditTypeId" adminCustomizable="false"/>
+                                                <oa:formValue id="ASNRevFrcstGroupId" adminCustomizable="false" viewAttr="SalesgroupId"/>
+                                             </ui:contents>
+                                          </oa:advancedTable>
+                                       </ui:contents>
+                                    </oa:hideShowHeader>
+                                    <oa:hideShowHeader id="ASNPrdtNonRevFrcstHideShowHdrRN" text="Non-Revenue" rendered="${oa.OpptyDetAppPropertiesVO1.PRDT_NON_REVENUE_FRCST_RENDER}" disclosed="true" regionName="Non-Revenue Header">
+                                       <ui:contents>
+                                          <oa:advancedTable id="ASNPrdtNonRevFrcstLstTb" viewName="OpportunityLineNonRevFrcstDetailsVO1" regionName="Non-Revenue Table" width="100%" blockSize="5" shortDesc="Non-Revenue">
+                                             <ui:contents>
+                                                <oa:column id="ASNNonRevFrcstOwnerCol">
+                                                   <ui:columnHeader>
+                                                      <oa:sortableHeader id="ASNNonRevFrcstOwnerHdr" prompt="Forecast Owner" required="yes" shortDesc="Forecast Owner" sortState="yes"/>
+                                                   </ui:columnHeader>
+                                                   <ui:contents>
+                                                      <oa:messageStyledText id="ASNNonRevFrcstOwner" viewAttr="ResourceName" prompt="Forecast Owner" shortDesc="Forecast Owner"/>
+                                                   </ui:contents>
+                                                </oa:column>
+                                                <oa:column id="ASNNonRevFrcstGroupCol">
+                                                   <ui:columnHeader>
+                                                      <oa:sortableHeader id="ASNNonRevFrcstGroupHdr" prompt="Sales Group" required="yes"/>
+                                                   </ui:columnHeader>
+                                                   <ui:contents>
+                                                      <oa:messageChoice id="ASNNonRevFrcstGroup" pickListViewDef="oracle.apps.asn.common.poplist.server.ResourceGroupsVO" pickListDispAttr="GroupName" pickListValAttr="GroupId" viewAttr="SalesgroupId" allowBlankValue="false" readOnly="${oa.OpptyDetAppPropertiesVO1.PRDT_NON_REVENUE_FRCST_GROUP_READ_ONLY}" prompt="Sales Group" shortDesc="Sales Group"/>
+                                                   </ui:contents>
+                                                </oa:column>
+                                                <oa:column id="ASNNonRevFrcstCreditTypeIdCol">
+                                                   <ui:columnHeader>
+                                                      <oa:sortableHeader id="ASNNonRevFrcstCreditTypeHdr" prompt="Type" required="yes"/>
+                                                   </ui:columnHeader>
+                                                   <ui:contents>
+                                                      <oa:messageChoice id="ASNNonRevFrcstCreditTypeId" pickListDispAttr="Name" pickListValAttr="SalesCreditTypeId" viewAttr="CreditTypeId" pickListViewDef="oracle.apps.asn.common.poplist.server.NonRevenueForecastTypesVO" allowBlankValue="false" required="no" readOnly="${oa.OpptyDetAppPropertiesVO1.PRDT_NON_REVENUE_FRCST_TYPE_READ_ONLY}" prompt="Type" shortDesc="Type"/>
+                                                   </ui:contents>
+                                                </oa:column>
+                                                <oa:column id="ASNNonRevFrcstCreditPercentCol" rendered="false">
+                                                   <ui:columnHeader>
+                                                      <oa:sortableHeader id="ASNNonRevFrcstCreditPercentHdr" prompt="Credit Percent" required="no" rendered="false"/>
+                                                   </ui:columnHeader>
+                                                   <ui:contents>
+                                                      <oa:messageTextInput id="ASNNonRevFrcstCreditPercent" viewAttr="CreditPercent" required="no" readOnly="${oa.OpptyDetAppPropertiesVO1.PRDT_NON_REVENUE_FRCST_CREDITPERCENT_READ_ONLY}" prompt="Credit Percent" shortDesc="Credit Percent" columns="6" dataType="NUMBER"/>
+                                                   </ui:contents>
+                                                </oa:column>
+                                                <oa:column id="ASNNonRevFrcstBestAmountCol" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST1_RENDER}" columnDataFormat="numberFormat">
+                                                   <ui:columnHeader>
+                                                      <oa:sortableHeader id="ASNNonRevFrcstBestAmountHdr" prompt="Best" shortDesc="Best" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST1_RENDER}"/>
+                                                   </ui:columnHeader>
+                                                   <ui:contents>
+                                                      <oa:messageTextInput id="ASNNonRevFrcstBestAmount" viewAttr="OppBestForecastAmount" readOnly="${oa.OpptyDetAppPropertiesVO1.BEST_READ_ONLY}" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST1_RENDER}" dataType="NUMBER" columns="6" prompt="Best" shortDesc="Best"/>
+                                                   </ui:contents>
+                                                </oa:column>
+                                                <oa:column id="ASNNonRevFrcstBestAmountExCol" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST2_RENDER}" columnDataFormat="numberFormat">
+                                                   <ui:columnHeader>
+                                                      <oa:sortableHeader id="ASNNonRevFrcstBestAmountExHdr" prompt="Best" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST2_RENDER}"/>
+                                                   </ui:columnHeader>
+                                                   <ui:contents>
+                                                      <oa:messageStyledText id="ASNNonRevFrcstBestExAmount" viewAttr="EmptyString" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST2_RENDER}" shortDesc="Best" prompt="Best"/>
+                                                   </ui:contents>
+                                                </oa:column>
+                                                <oa:column id="ASNNonRevFrcstAmountCol" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST1_RENDER}" columnDataFormat="numberFormat">
+                                                   <ui:columnHeader>
+                                                      <oa:sortableHeader id="ASNNonRevFrcstAmountHdr" prompt="Forecast" shortDesc="Forecast" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST1_RENDER}"/>
+                                                   </ui:columnHeader>
+                                                   <ui:contents>
+                                                      <oa:messageTextInput id="ASNNonRevFrcstAmount" viewAttr="OppForecastAmount" readOnly="${oa.OpptyDetAppPropertiesVO1.FORECAST_READ_ONLY}" shortDesc="Forecast" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST1_RENDER}" dataType="NUMBER" columns="6" prompt="Forecast"/>
+                                                   </ui:contents>
+                                                </oa:column>
+                                                <oa:column id="ASNNonRevFrcstAmountExCol" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST2_RENDER}" columnDataFormat="numberFormat">
+                                                   <ui:columnHeader>
+                                                      <oa:sortableHeader id="ASNNonRevFrcstAmountExHdr" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST2_RENDER}" prompt="Forecast"/>
+                                                   </ui:columnHeader>
+                                                   <ui:contents>
+                                                      <oa:messageStyledText id="ASNNonRevFrcstAmountEx" viewAttr="EmptyString" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST2_RENDER}" prompt="Forecast" shortDesc="Forecast"/>
+                                                   </ui:contents>
+                                                </oa:column>
+                                                <oa:column id="ASNNonRevFrcstWorstAmountCol" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST1_RENDER}" columnDataFormat="numberFormat">
+                                                   <ui:columnHeader>
+                                                      <oa:sortableHeader id="ASNNonRevFrcstWorstAmountHdr" prompt="Worst" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST1_RENDER}"/>
+                                                   </ui:columnHeader>
+                                                   <ui:contents>
+                                                      <oa:messageTextInput id="ASNNonRevFrcstWorstAmount" viewAttr="OppWorstForecastAmount" readOnly="${oa.OpptyDetAppPropertiesVO1.WORST_READ_ONLY}" shortDesc="Worst" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST1_RENDER}" dataType="NUMBER" columns="6" prompt="Worst"/>
+                                                   </ui:contents>
+                                                </oa:column>
+                                                <oa:column id="ASNNonRevFrcstWorstAmountExCol" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST2_RENDER}" columnDataFormat="numberFormat">
+                                                   <ui:columnHeader>
+                                                      <oa:sortableHeader id="ASNNonRevFrcstWorstAmountExHdr" prompt="Worst" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST2_RENDER}"/>
+                                                   </ui:columnHeader>
+                                                   <ui:contents>
+                                                      <oa:messageStyledText id="ASNNonRevFrcstWorstAmountEx" viewAttr="EmptyString" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST2_RENDER}" prompt="Worst" shortDesc="Worst"/>
+                                                   </ui:contents>
+                                                </oa:column>
+                                                <oa:column id="ASNPrdtNonRevFrcstRmLinkCol" rendered="${oa.OpptyDetAppPropertiesVO1.UPDATE_RENDER}" columnDataFormat="iconButtonFormat">
+                                                   <ui:columnHeader>
+                                                      <oa:sortableHeader id="ASNPrdtNonRevFrcstRmLinkHdr" prompt="Remove" rendered="${oa.OpptyDetAppPropertiesVO1.UPDATE_RENDER}"/>
+                                                   </ui:columnHeader>
+                                                   <ui:contents>
+                                                      <oa:link id="ASNPrdtNonRevFrcstRmLink" rendered="${oa.OpptyDetAppPropertiesVO1.UPDATE_RENDER}" serverUnvalidated="true">
+                                                         <ui:contents>
+                                                            <oa:image id="ASNPrdtNonRevFrcstRm" source="remove_enabled.gif" prompt="Remove" serverUnvalidated="true" shortDesc="Remove"/>
+                                                         </ui:contents>
+                                                         <ui:primaryClientAction>
+                                                            <ui:firePartialAction unvalidated="true" id="firePartialAction2241">
+                                                               <ui:parameters>
+                                                                  <ui:parameter key="ASNReqPgAct" value="NONREV_FRCST_OWNER_DELETE"/>
+                                                                  <ui:parameter key="ASNReqEvtRowId" value="${oa.OpportunityLineNonRevFrcstDetailsVO1.SalesCreditId}"/>
+                                                               </ui:parameters>
+                                                            </ui:firePartialAction>
+                                                         </ui:primaryClientAction>
+                                                      </oa:link>
+                                                   </ui:contents>
+                                                </oa:column>
+                                                <oa:formValue id="ASNNonRevFrcstRscId" viewAttr="SalesforceId" adminCustomizable="false"/>
+                                                <oa:formValue id="ASNNonRevFrcstGroupId" adminCustomizable="false" viewAttr="SalesgroupId"/>
+                                             </ui:contents>
+                                             <ui:tableActions>
+                                                <oa:flowLayout id="ASNNonRevFrcstTblAction" rendered="true" regionName="Non-Revenue Forecast Actions">
+                                                   <ui:contents>
+                                                      <oa:lovActionButton id="ASNNonRevFrcstAddPersonBtn" prompt="Add Person" shortDesc="Add Person" rendered="${oa.OpptyDetAppPropertiesVO1.UPDATE_RENDER}" externalListOfValues="/oracle/apps/asn/common/lov/webui/RscGrpLovRN">
+                                                         <jrad:lovActionMappings>
+                                                            <jrad:lovActionMap id="lovActionMap1" lovItem="ASNRscGrpLovGrpId" resultTo="ASNNonRevFrcstGroup"/>
+                                                            <jrad:lovActionMap id="lovActionMap2" lovItem="ASNRscGrpLovNm" resultTo="ASNNonRevFrcstOwner"/>
+                                                            <jrad:lovActionMap id="lovActionMap3" lovItem="ASNRscGrpLovRscId" resultTo="ASNNonRevFrcstRscId"/>
+                                                         </jrad:lovActionMappings>
+                                                      </oa:lovActionButton>
+                                                   </ui:contents>
+                                                </oa:flowLayout>
+                                             </ui:tableActions>
+                                          </oa:advancedTable>
+                                          <oa:tip id="ASNPrdtNonRevFrcstTip" text="Changes to the roll-up forecast amount will not propagate to the non-revenue forecast."/>
+                                       </ui:contents>
+                                    </oa:hideShowHeader>
+                                 </ui:contents>
+                              </oa:stackLayout>
+                           </ui:contents>
+                        </oa:hideShowHeader>
+                        <oa:hideShowHeader id="ASNDetSrveHdrRN" disclosed="true" use="/oracle/apps/asn/common/attributesets/Transient/Service_Hdr" regionName="Service">
+                           <ui:contents>
+                              <oa:stackLayout id="ASNCustomerServiceRN" extends="/oracle/apps/asn/common/webui/CustomerServiceRN" regionName="Escalated"/>
+                           </ui:contents>
+                        </oa:hideShowHeader>
+                        <oa:hideShowHeader id="ASNDetNoteHdrRN" disclosed="true" use="/oracle/apps/asn/common/attributesets/Transient/Notes_Hdr" regionName="Notes">
+                           <ui:contents>
+                              <oa:stackLayout id="ASNNotesRN" extends="/oracle/apps/asn/common/webui/ASNNotesRN"/>
+                              <oa:stackLayout id="ASNPRMDetNotesRN" extends="/oracle/apps/pv/notes/webui/PVNotesRN" rendered="false" regionName="Notes (Partner)"/>
+                           </ui:contents>
+                        </oa:hideShowHeader>
+                        <oa:hideShowHeader id="ASNDetTaskHdrRN" disclosed="true" use="/oracle/apps/asn/common/attributesets/Transient/Tasks_Hdr" regionName="Tasks">
+                           <ui:contents>
+                              <oa:stackLayout id="ASNDetTaskRN" extends="/oracle/apps/jtf/cac/task/webui/CacTaskSummRN" prompt="Tasks" regionName="Tasks Layout"/>
+                           </ui:contents>
+                        </oa:hideShowHeader>
+                        <oa:hideShowHeader id="ASNDetAttchHdrRN" disclosed="true" text="Attachments" regionName="Attachments">
+                           <ui:contents>
+                              <oa:attachmentTable id="ASNDetAttchTable" viewName="OpportunityDetailsVO1" searchRegionRendered="false" text="Attachments" regionName="Attachments Table">
+                                 <oa:entityMappings>
+                                    <oa:entityMap id="ASNDetAttchEntityMap" entityId="AS_OPPORTUNITY_ATTCH">
+                                       <oa:primaryKeys>
+                                          <oa:primaryKey id="ASNSubtabAttachPrimaryKey1" viewAttr="LeadId"/>
+                                       </oa:primaryKeys>
+                                       <oa:categoryMappings>
+                                          <oa:categoryMap id="ASNDetAttchCategoryMap" categoryName="MISC"/>
+                                       </oa:categoryMappings>
+                                    </oa:entityMap>
+                                 </oa:entityMappings>
+                              </oa:attachmentTable>
+                           </ui:contents>
+                        </oa:hideShowHeader>
+                        <oa:spacer id="ASNDetSpacer" height="10"/>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:stackLayout id="ASNCustAnlHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/OppCustomerAnalysis_Subtab" regionName="Customer Analysis Subtab">
+                     <ui:contents>
+                        <oa:tableLayout id="ASNSubtabAnlHdrTable" extends="/oracle/apps/asn/opportunity/webui/OpptyDetPG.ASNDetAnlHdrTable"/>
+                        <oa:stackLayout id="ASNSubtabCustomerServiceRN" extends="/oracle/apps/asn/common/webui/CustomerServiceRN" regionName="Escalated"/>
+                        <oa:spacer id="ASNCustAnlSpacer" height="10"/>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:stackLayout id="ASNNoteTaskHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/OppNotesAndTasks_Subtab" regionName="Notes and Tasks Subtab">
+                     <ui:contents>
+                        <oa:header id="ASNSubtabNoteHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/Notes_Hdr">
+                           <ui:contents>
+                              <oa:stackLayout id="ASNSubtabNoteRN" extends="/oracle/apps/asn/common/webui/ASNNotesRN"/>
+                              <oa:stackLayout id="ASNPRMNotesRN" extends="/oracle/apps/pv/notes/webui/PVNotesRN" rendered="false" regionName="Notes (Partner)"/>
+                           </ui:contents>
+                        </oa:header>
+                        <oa:header id="ASNSubtabTaskHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/Tasks_Hdr" regionName="Tasks">
+                           <ui:contents>
+                              <oa:stackLayout id="ASNSubtabTaskRN" extends="/oracle/apps/jtf/cac/task/webui/CacTaskSummRN" prompt="Tasks" regionName="Tasks"/>
+                           </ui:contents>
+                        </oa:header>
+                        <oa:hideShowHeader id="ASNSubtabAttchHdrRN" disclosed="true" text="Attachments" regionName="Attachments">
+                           <ui:contents>
+                              <oa:attachmentTable id="ASNSubtabAttchTable" viewName="OpportunityDetailsVO1" searchRegionRendered="false" text="Attachments" regionName="Attachments">
+                                 <oa:entityMappings>
+                                    <oa:entityMap id="ASNSubtabAttchEntityMap" entityId="AS_OPPORTUNITY_ATTCH">
+                                       <oa:primaryKeys>
+                                          <oa:primaryKey id="ASNSubtabAttachPrimaryKey" viewAttr="LeadId"/>
+                                       </oa:primaryKeys>
+                                       <oa:categoryMappings>
+                                          <oa:categoryMap id="ASNSubtabAttchCategoryMap" categoryName="MISC"/>
+                                       </oa:categoryMappings>
+                                    </oa:entityMap>
+                                 </oa:entityMappings>
+                              </oa:attachmentTable>
+                           </ui:contents>
+                        </oa:hideShowHeader>
+                        <oa:spacer id="ASNNotesTaskSpacer" height="10"/>
+                        <oa:stackLayout id="ASNOpptyAttchContextHolderRN" regionName="Attachments">
+                           <ui:contents>
+                              <oa:messageComponentLayout id="ASNOpptyAttchContextRN" width="100%" rows="3" columns="2" regionName="Attachments">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="ASNOpptyAttchNm" viewName="OpportunityDetailsVO1" viewAttr="Description" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/Description_OpportunityName" styleClass="OraDataText" shortDesc="Opportunity Name"/>
+                                    <oa:messageStyledText id="ASNOpptyAttchCust" viewName="OpportunityDetailsVO1" viewAttr="PartyName" prompt="Customer" shortDesc="Customer" styleClass="OraDataText"/>
+                                    <oa:messageStyledText id="ASNOpptyAttchDate" viewName="OpportunityDetailsVO1" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/DecisionDate" viewAttr="DecisionDate" styleClass="OraDataText" shortDesc="Close Date"/>
+                                    <oa:messageLayout id="ASNOpptyAttchAmtRN" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/TotalAmount">
+                                       <ui:contents>
+                                          <oa:rowLayout id="ASNOpptyAttchAmtRow" regionName="Attachments Amount">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="ASNOpptyAttchAmt" viewName="OpportunityDetailsVO1" viewAttr="TotalAmount" styleClass="OraDataText" shortDesc="Amount"/>
+                                                <oa:spacer id="ASNOpptyAttchAmtSpacer"/>
+                                                <oa:messageChoice id="ASNOpptyAttchAmtCurr" required="yes" viewName="OpportunityDetailsVO1" viewAttr="CurrencyCode" pickListViewDef="oracle.apps.asn.common.poplist.server.CurrenciesVO" pickListDispAttr="CurrencyName" pickListValAttr="CurrencyCode" readOnly="true" styleClass="OraDataText" shortDesc="Currency"/>
+                                             </ui:contents>
+                                          </oa:rowLayout>
+                                       </ui:contents>
+                                    </oa:messageLayout>
+                                    <oa:messageLayout id="ASNOpptyAttchFrcstAmtRN" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/ForecastAmount" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST3_RENDER}">
+                                       <ui:contents>
+                                          <oa:rowLayout id="ASNOpptyAttchFrcstAmtRow" regionName="Attachments Forecast Amount">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="ASNOpptyAttchFrcstAmt" viewName="OpportunityDetailsVO1" shortDesc="ForecastAmount" viewAttr="ForecastAmount" styleClass="OraDataText"/>
+                                                <oa:spacer id="ASNOpptyAttchFrcstAmtSpacer"/>
+                                                <oa:messageChoice id="ASNOpptyAttchFrcstCurr" required="yes" viewName="OpportunityDetailsVO1" viewAttr="CurrencyCode" pickListViewDef="oracle.apps.asn.common.poplist.server.CurrenciesVO" pickListDispAttr="CurrencyName" pickListValAttr="CurrencyCode" readOnly="true" styleClass="OraDataText" shortDesc="Currency"/>
+                                             </ui:contents>
+                                          </oa:rowLayout>
+                                       </ui:contents>
+                                    </oa:messageLayout>
+                                    <oa:messageStyledText id="ASNOpptyAttchFrcstAmtEx" viewName="OpportunityDetailsVO1" viewAttr="EmptyString" rendered="${oa.OpptyDetAppPropertiesVO1.FORECAST4_RENDER}" use="/oracle/apps/asn/opportunity/attributesets/Opportunity/ForecastAmount"/>
+                                    <oa:messageChoice id="ASNOpptyAttchStatus" viewName="OpportunityDetailsVO1" viewAttr="Status" pickListViewDef="oracle.apps.asn.opportunity.poplist.server.OpportunityStatusesVO" pickListDispAttr="Meaning" pickListValAttr="StatusCode" required="yes" serverUnvalidated="true" use="/oracle/apps/asn/admin/attributesets/Status/Meaning" readOnly="true" styleClass="OraDataText" shortDesc="Status">
+                                       <ui:primaryClientAction>
+                                          <ui:firePartialAction event="detailStatusUpdate" unvalidated="true" id="firePartialAction21"/>
+                                       </ui:primaryClientAction>
+                                    </oa:messageChoice>
+                                 </ui:contents>
+                              </oa:messageComponentLayout>
+                           </ui:contents>
+                        </oa:stackLayout>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:stackLayout id="ASNCtctHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/OppContacts_Subtab" regionName="Contacts Subtab">
+                     <ui:contents>
+                        <oa:header id="ASNSubtabSugCtctLstRN" extends="/oracle/apps/asn/common/webui/SugCtctLstRN" regionName="Suggested Contacts"/>
+                        <oa:header id="ASNSubtabCtctLstRN" extends="/oracle/apps/asn/opportunity/webui/OpptyDetPG.ASNCtctLstRN"/>
+                        <oa:spacer id="ASNCtctSpacer" height="10"/>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:stackLayout id="ASNPrdtHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/OppProducts_Subtab" regionName="Products Subtab">
+                     <ui:contents>
+                        <oa:spacer id="ASNDetPrdtTopSpacer" height="10"/>
+                        <oa:stackLayout id="ASNSubtabPrdtTable" extends="/oracle/apps/asn/opportunity/webui/OpptyDetPG.ASNPrdtTableStk"/>
+                        <oa:spacer id="ASNDetPrdtSpacer" height="10"/>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:stackLayout id="ASNSCHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/OppSalesCycle_Subtab" regionName="Sales Cycle Subtab">
+                     <ui:contents>
+                        <oa:spacer id="ASNSCTopSpacer" height="10"/>
+                        <oa:stackLayout id="ASNSCStgStack" extends="/oracle/apps/asn/common/webui/SCStgStack" regionName="Sales Cycle Layout"/>
+                        <oa:spacer id="ASNScStgSpacer" height="10"/>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:stackLayout id="ASNSTHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/OppSalesTeam_Subtab" regionName="Sales Team Subtab">
+                     <ui:contents>
+                        <oa:spacer id="ASNSTTopSpacer" height="10"/>
+                        <oa:advancedTable id="ASNSTLstTb" shortDesc="Sales Team" blockSize="5" width="100%" viewName="AccessDetailsVO" regionName="Sales Team Table">
+                           <ui:contents>
+                              <oa:column id="ASNSTNmCol">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="ASNSTNmHdr" prompt="Name" sortState="yes"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="ASNSTNm" prompt="Name" viewAttr="ResourceName"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="ASNSTJobCol">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="ASNSTJobHdr" prompt="Job Title" sortState="yes"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="ASNSTJob" prompt="Job Title" viewAttr="SourceJobTitle"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="ASNSTGroupCol">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="ASNSTGroupHdr" prompt="Sales Group"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageChoice id="ASNSTGroup" prompt="Sales Group" viewAttr="SalesGroupId" required="yes" pickListViewDef="oracle.apps.asn.common.poplist.server.ResourceGroupsVO" pickListDispAttr="GroupName" pickListValAttr="GroupId" readOnly="${oa.OpptyDetAppPropertiesVO1.GROUP_READ_ONLY}"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="ASNSTPhoneCol">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="ASNSTPhoneHdr" prompt="Phone" sortState="yes"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="ASNSTPhone" prompt="Phone" viewAttr="SourcePhone"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="ASNSTEmailCol">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="ASNSTEmailHdr" prompt="Email" sortState="yes"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="ASNSTEmail" prompt="Email" viewAttr="SourceEmail" destination="mailto:{@SourceEmail}"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="ASNSTAccCol" columnDataFormat="iconButtonFormat">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="ASNSTAccHdr" use="/oracle/apps/asn/common/attributesets/Access/TeamLeaderFlag"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageCheckBox id="ASNSTAcc" viewAttr="TeamLeaderFlag" checkedValue="Y" unCheckedValue="N" readOnly="${oa.OpptyDetAppPropertiesVO1.ACC_READ_ONLY}" shortDesc="Full Access"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="ASNSTContributorCol" rendered="false" columnDataFormat="iconButtonFormat">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="ASNSTContributorHdr" prompt="Contributor"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageCheckBox id="ASNSTContributor" viewAttr="ContributorFlag" readOnly="${oa.OpptyDetAppPropertiesVO1.ST_CONTRIBUTOR_READ_ONLY}" shortDesc="Contributor" text="" prompt="" defaultValue="N" checkedValue="Y" unCheckedValue="N"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="ASNSTKeepCol" columnDataFormat="iconButtonFormat">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="ASNSTKeepHdr" use="/oracle/apps/asn/common/attributesets/Access/FreezeFlag"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageCheckBox id="ASNSTKeep" viewAttr="FreezeFlag" checkedValue="Y" unCheckedValue="N" readOnly="${oa.OpptyDetAppPropertiesVO1.KEEP_READ_ONLY}" shortDesc="Do Not Reassign"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="ASNSTOwCol" columnDataFormat="iconButtonFormat">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="ASNSTOwHdr" use="/oracle/apps/asn/common/attributesets/Access/OwnerFlag"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageCheckBox id="ASNSTOw" viewAttr="OwnerFlag" checkedValue="Y" unCheckedValue="N" readOnly="${oa.OpptyDetAppPropertiesVO1.OW_READ_ONLY}" shortDesc="Owner"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="ASNSTRmLinkCol" rendered="${oa.OpptyDetAppPropertiesVO1.UPDATE_RENDER}" columnDataFormat="iconButtonFormat">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="ASNSTRmLinkHdr" prompt="Remove"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:link id="ASNSTRmLink" serverUnvalidated="true">
+                                       <ui:contents>
+                                          <oa:image id="ASNSTRm" source="remove_enabled.gif" shortDesc="Remove" serverUnvalidated="true"/>
+                                       </ui:contents>
+                                       <ui:primaryClientAction>
+                                          <ui:firePartialAction unvalidated="true" id="firePartialAction225">
+                                             <ui:parameters>
+                                                <ui:parameter key="ASNReqPgAct" value="ST_DELETE"/>
+                                                <ui:parameter key="ASNReqEvtRowId" value="${oa.AccessDetailsVO.AccessId}"/>
+                                             </ui:parameters>
+                                          </ui:firePartialAction>
+                                       </ui:primaryClientAction>
+                                    </oa:link>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:formValue id="ASNSTGroupId" viewAttr="SalesGroupId" adminCustomizable="false"/>
+                              <oa:formValue id="ASNSTRscId" viewAttr="SalesforceId" adminCustomizable="false"/>
+                           </ui:contents>
+                           <ui:tableActions>
+                              <oa:flowLayout id="ASNStTbActRegion" regionName="Sales Team">
+                                 <ui:contents>
+                                    <oa:lovActionButton id="ASNSTAddButton" externalListOfValues="/oracle/apps/asn/common/lov/webui/RscGrpLovRN" use="/oracle/apps/asn/common/attributesets/Buttons/AddPerson" shortDesc="Add Person" rendered="${oa.OpptyDetAppPropertiesVO1.UPDATE_RENDER}">
+                                       <jrad:lovActionMappings>
+                                          <jrad:lovActionMap id="lovActionMap11" resultTo="ASNSTNm" lovItem="ASNRscGrpLovNm"/>
+                                          <jrad:lovActionMap id="lovActionMap21" resultTo="ASNSTJob" lovItem="ASNRscGrpLovJob"/>
+                                          <jrad:lovActionMap id="lovActionMap31" resultTo="ASNSTGroup" lovItem="ASNRscGrpLovGrpId"/>
+                                          <jrad:lovActionMap id="lovActionMap4" resultTo="ASNSTEmail" lovItem="ASNRscGrpLovEmail"/>
+                                          <jrad:lovActionMap id="lovActionMap5" resultTo="ASNSTPhone" lovItem="ASNRscGrpLovPhone"/>
+                                          <jrad:lovActionMap id="lovActionMap6" resultTo="ASNSTRscId" lovItem="ASNRscGrpLovRscId"/>
+                                       </jrad:lovActionMappings>
+                                    </oa:lovActionButton>
+                                 </ui:contents>
+                              </oa:flowLayout>
+                           </ui:tableActions>
+                           <ui:tableSelection>
+                              <oa:singleSelection id="ASNOpptyStSelFA" viewName="AccessDetailsVO" viewAttr="SelectFlag" text="Select" shortDesc="Select" rendered="${oa.OpptyDetAppPropertiesVO1.ST_SELECTCOL_RENDERED}">
+                                 <ui:primaryClientAction>
+                                    <ui:fireAction id="fireAction1" event="ASNOpptyStSelFA"/>
+                                 </ui:primaryClientAction>
+                              </oa:singleSelection>
+                           </ui:tableSelection>
+                        </oa:advancedTable>
+                        <oa:header id="ASNSTAddInfoHdrRN" text="Additional Information" controllerClass="oracle.apps.asn.opportunity.webui.OpptySTAddInfoCO" rendered="false" regionName="Additional Information Header">
+                           <ui:contents>
+                              <oa:flex id="ASNSTAddInfoFF" flexFieldAppShortName="AS" flexName="AS_ACCESSES" viewName="AccessDetailsVO" readOnly="${oa.OpptyDetAppPropertiesVO1.ST_FLEX_READ_ONLY}"/>
+                           </ui:contents>
+                        </oa:header>
+                        <oa:spacer id="ASNSTSpacer" height="10"/>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:stackLayout id="ASNPartnersHdrRN" rendered="false" regionName="Partners Subtab">
+                     <ui:contents>
+                        <oa:tableLayout id="ASNSubtabPrmRN" extends="/oracle/apps/pv/opportunity/webui/PvOpptyPartnerRN" hAlign="center" use="/oracle/apps/asn/common/attributesets/Transient/OppPartners_Subtab" regionName="Partners"/>
+                        <oa:spacer id="ASNPRMBottomSpacer" height="10"/>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:stackLayout id="ASNQotPrpHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/OppProposalsAndQuotes_Subtab" regionName="Proposals and Quotes Subtab">
+                     <ui:contents>
+                        <oa:header id="ASNPrpLstRN" use="/oracle/apps/asn/common/attributesets/Transient/Proposals_Hdr" regionName="Proposals Header">
+                           <ui:contents>
+                              <oa:advancedTable id="PrpLstTb" shortDesc="Proposals" blockSize="5" width="100%" viewName="OpportunityProposalsVO1" amDefName="oracle.apps.asn.opportunity.server.PrpLstAM" controllerClass="oracle.apps.asn.opportunity.webui.PrpLstCO" regionName="Proposals Table">
+                                 <ui:contents>
+                                    <oa:column id="ASNPrpNmCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNPrpNmHdr" shortDesc="Name" use="/oracle/apps/prp/attributesets/PrpProposals/ProposalName" sortState="yes"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNPrpNm" sortState="yes" viewAttr="ProposalName" use="/oracle/apps/prp/attributesets/PrpProposals/ProposalName" warnAboutChanges="false">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction id="ASNPrpNm_fireAction">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="ASNReqPgAct" value="PRPDET"/>
+                                                      <ui:parameter key="ASNReqEvtPrpId" value="${oa.current.ProposalId}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:messageStyledText>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNPrpDescCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNPrpDescHdr" shortDesc="Description" use="/oracle/apps/prp/attributesets/PrpProposals/ProposalDesc" sortState="yes"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNPrpDesc" sortState="yes" viewAttr="ProposalDesc" use="/oracle/apps/prp/attributesets/PrpProposals/ProposalDesc"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNPrpOwCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNPrpOwHdr" prompt="Owner" shortDesc="Owner" sortState="yes"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNPrpOw" prompt="Owner" sortState="yes" viewAttr="ResourceName"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNPrpDueCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNPrpDueHdr" shortDesc="Due Date" use="/oracle/apps/prp/attributesets/PrpProposals/DueDate" sortState="yes"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNPrpDue" dataType="DATE" sortState="yes" viewAttr="DueDate" use="/oracle/apps/prp/attributesets/PrpProposals/DueDate"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNPrpStatusCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNPrpStatusHdr" shortDesc="Status" use="/oracle/apps/prp/attributesets/PrpProposals/ProposalStatus" sortState="yes"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNPrpStatus" sortState="yes" viewAttr="ProposalStatus" use="/oracle/apps/prp/attributesets/PrpProposals/ProposalStatus" shortDesc="Status"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                 </ui:contents>
+                                 <ui:tableActions>
+                                    <oa:flowLayout id="ASNPrpTblActRegion" regionName="Proposal Button">
+                                       <ui:contents>
+                                          <oa:submitButton id="ASNPrpAddButton" prompt="Create Proposal" hAlign="center" rendered="true"/>
+                                       </ui:contents>
+                                    </oa:flowLayout>
+                                 </ui:tableActions>
+                              </oa:advancedTable>
+                           </ui:contents>
+                        </oa:header>
+                        <oa:header id="ASNQotLstRN" use="/oracle/apps/asn/common/attributesets/Transient/Quotes_Hdr" rendered="true" regionName="Quotes Header">
+                           <ui:contents>
+                              <oa:advancedTable id="ASNQotLstTb" controllerClass="oracle.apps.asn.opportunity.webui.QotLstCO" amDefName="oracle.apps.asn.opportunity.server.QotLstAM" shortDesc="Quotes" blockSize="5" width="100%" viewName="OpportunityQuotesVO1" regionName="Quotes Table">
+                                 <ui:contents>
+                                    <oa:column id="ASNQotNmCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNQotNmHdr" prompt="Quote Name" shortDesc="Quote Name" sortState="yes"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNQotNm" prompt="Quote Name" sortState="yes" viewAttr="QuoteName" warnAboutChanges="false">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction id="ASNQotNm_fireAction">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="ASNReqPgAct" value="QOTDET"/>
+                                                      <ui:parameter key="ASNReqEvtQotHdrId" value="${oa.current.QuoteHeaderId}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:messageStyledText>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNQotNbrCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNQotNbrHdr" prompt="Quote Number" shortDesc="Quote Number" sortState="yes"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNQotNbr" prompt="Quote Number" sortState="yes" viewAttr="QuoteNumber"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNQotOwCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNQotOwHdr" shortDesc="Owner" prompt="Owner" sortState="yes"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNQotOw" prompt="Owner" sortState="yes" viewAttr="ResourceName"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNQotStatusCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNQotStatusHdr" prompt="Status" shortDesc="Status" sortState="yes"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNQotStatus" prompt="Status" sortState="yes" viewAttr="QuoteStatus"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNQotCrtedCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNQotCrtedHdr" prompt="Created" shortDesc="Created" sortState="yes"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNQotCrted" dataType="DATE" prompt="Created" sortState="yes" viewAttr="CreationDate"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNQotExpDateCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNQotExpDateHdr" prompt="Expiration Date" shortDesc="Expiration Date" sortState="yes"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNQotExpDate" dataType="DATE" prompt="Expiration Date" sortState="yes" viewAttr="QuoteExpirationDate"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNQotAmtCol" columnDataFormat="numberFormat">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNQotAmtHdr" shortDesc="Amount" prompt="Amount" sortState="yes"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNQotAmt" dataType="NUMBER" prompt="Amount" sortState="yes" viewAttr="TotalQuotePrice"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNQotCurrCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNQotCurrHdr" prompt="Currency" shortDesc="Currency" sortState="yes"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNQotCurr" prompt="Currency" sortState="yes" viewAttr="CurrencyName"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                 </ui:contents>
+                                 <ui:tableActions>
+                                    <oa:flowLayout id="ASNQotTbActRegion" regionName="Quotes">
+                                       <ui:contents>
+                                          <oa:submitButton id="ASNQotAddButton" prompt="Create Quote" hAlign="center"/>
+                                       </ui:contents>
+                                    </oa:flowLayout>
+                                 </ui:tableActions>
+                              </oa:advancedTable>
+                           </ui:contents>
+                        </oa:header>
+                        <oa:header id="ASNPrjLstTable" text="Projects" regionName="Projects Header" rendered="false">
+                           <ui:contents>
+                              <oa:advancedTable id="PrjLstTb" shortDesc="Projects" blockSize="5" width="100%" regionName="Projects Table" amDefName="oracle.apps.asn.opportunity.server.PrjLstAM" viewName="OpportunityProjectsVO1" controllerClass="oracle.apps.asn.opportunity.webui.PrjLstCO">
+                                 <ui:contents>
+                                    <oa:column id="ASNPrjNumberCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNPrjNumberHdr" shortDesc="Number" prompt="Number" sortState="yes"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNPrjNumber" sortState="yes" viewAttr="Segment1" warnAboutChanges="false" comment="Number" shortDesc="Number"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNPrjNameCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNPrjNameHdr" shortDesc="Name" prompt="Name" sortState="yes"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNPrjName" sortState="yes" viewAttr="Name" shortDesc="Name"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNPrjOrganizationCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNPrjOrganizationHdr" prompt="Organization" shortDesc="Organization"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNPrjOrganization" prompt="" sortState="yes" viewAttr="OrganizationName" shortDesc="Organization"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNPrjMangerCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNPrjManagerHdr" shortDesc="Manager" prompt="Manager"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNPrjManger" dataType="DATE" sortState="yes" prompt="" shortDesc="Manager" viewAttr="ManagerName"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNPrjStartDateCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNPrjStartDateHdr" shortDesc="Start Date" prompt="Start Date"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNPrjStartDate" sortState="yes" viewAttr="StartDate" shortDesc="Start Date" prompt=""/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNPrjFinishDateCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNPrjFinishDateHdr" shortDesc="Finish Date" prompt="Finish Date"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNPrjFinishDate" sortState="yes" viewAttr="FinishDate" shortDesc="Finish Date" prompt=""/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNPrjTypeCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNPrjTypeHdr" shortDesc="Type" prompt="Type"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNPrjType" sortState="yes" viewAttr="Type" shortDesc="Type" prompt=""/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ASNPrjStatusCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ASNPrjStatusHdr" shortDesc="Status" prompt="Status"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ASNPrjStatus" sortState="yes" viewAttr="ProjectStatusName" shortDesc="Status" prompt=""/>
+                                       </ui:contents>
+                                    </oa:column>
+                                 </ui:contents>
+                              </oa:advancedTable>
+                           </ui:contents>
+                        </oa:header>
+                        <oa:spacer id="ASNQotPrpPrjSpacer" height="10"/>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:stackLayout id="ASNInfoHdrRN" use="/oracle/apps/asn/common/attributesets/Transient/OppAdditionalInfo_Subtab" rendered="false" regionName="Additional Information Subtab">
+                     <ui:contents>
+                        <oa:spacer id="ASNOpptyFlexTopSpacer" height="10"/>
+                        <oa:flex id="ASNOpptyFlexfield" viewName="OpportunityDetailsVO1" flexName="AS_LEADS" flexFieldAppShortName="AS" readOnly="${oa.OpptyDetAppPropertiesVO1.FLEX_READ_ONLY}" shortDesc="Additional Information"/>
+                        <oa:spacer id="ASNOpptyFlexSpacer" height="10"/>
+                     </ui:contents>
+                  </oa:stackLayout>
+               </ui:contents>
+               <ui:subTabs>
+                  <oa:subTabBar id="ASNOpptyDetSubtabBar">
+                     <ui:contents>
+                        <oa:link id="ASNDetHdrLnk" use="/oracle/apps/asn/common/attributesets/Transient/OppDetails_Subtab" serverUnvalidated="true">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction unvalidated="true"/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="ASNCustAnlHdrLnk" use="/oracle/apps/asn/common/attributesets/Transient/OppCustomerAnalysis_Subtab" serverUnvalidated="true">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction unvalidated="true"/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="ASNNoteTaskHdrLnk" use="/oracle/apps/asn/common/attributesets/Transient/OppNotesAndTasks_Subtab" serverUnvalidated="true">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction unvalidated="true"/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="ASNCtctHdrLnk" use="/oracle/apps/asn/common/attributesets/Transient/OppContacts_Subtab" serverUnvalidated="true">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction unvalidated="true"/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="ASNPrdtHdrLnk" use="/oracle/apps/asn/common/attributesets/Transient/OppProducts_Subtab" serverUnvalidated="true">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction unvalidated="true"/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="ASNSCHdrLnk" use="/oracle/apps/asn/common/attributesets/Transient/OppSalesCycle_Subtab" serverUnvalidated="true">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction unvalidated="true"/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="ASNSTHdrLnk" use="/oracle/apps/asn/common/attributesets/Transient/OppSalesTeam_Subtab" serverUnvalidated="true">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction unvalidated="true"/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="ASNPartnerHdrLnk" serverUnvalidated="true" use="/oracle/apps/asn/common/attributesets/Transient/OppPartners_Subtab">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction unvalidated="true" id="firePartialAction22"/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="ASNQotPrpHdrLnk" use="/oracle/apps/asn/common/attributesets/Transient/OppProposalsAndQuotes_Subtab" serverUnvalidated="true">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction unvalidated="true"/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:link id="ASNInfoHdrLnk" use="/oracle/apps/asn/common/attributesets/Transient/OppAdditionalInfo_Subtab" serverUnvalidated="true">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction unvalidated="true"/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                     </ui:contents>
+                  </oa:subTabBar>
+               </ui:subTabs>
+            </oa:subTabLayout>
+            <oa:stackLayout id="ASNReqEvtRN" extends="/oracle/apps/asn/common/fwk/webui/ASNReqEvtRN" regionName="Request Parameters"/>
+            <oa:formParameter id="ASNReqEvtPrpId" adminCustomizable="false"/>
+            <oa:formParameter id="ASNReqEvtCschId" adminCustomizable="false"/>
+            <oa:formParameter id="ASNReqEvtQotHdrId" adminCustomizable="false"/>
+         </ui:contents>
+         <ui:productBranding>
+            <oa:image id="ASNBrandImage" source="ASNBRAND.gif" shortDesc="Sales" prompt="Sales"/>
+         </ui:productBranding>
+         <ui:pageStatus>
+            <oa:tableLayout id="ASNOpptyDetKeyRN" extends="/oracle/apps/fnd/framework/webui/OAReqFieldDescRG" hAlign="start"/>
+         </ui:pageStatus>
+      </oa:pageLayout>
+   </jrad:content>
+</jrad:page>

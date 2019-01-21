@@ -1,0 +1,21 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+create or replace synonym  xxcrm_custmast_head_int  for  xxcrm.xxcrm_custmast_head_int  ;
+create or replace synonym  xx_cdhar_int_log  for  xxcrm.xx_cdhar_int_log  ;
+create or replace synonym  xxcrm_wcelg_cust  for  xxcrm.xxcrm_wcelg_cust  ;
+create or replace synonym  xxar_adjustment_delta  for  xxcrm.xxar_adjustment_delta  ;
+create or replace synonym  xxcrm_contpoint_delta  for  xxcrm.xxcrm_contpoint_delta  ;
+create or replace synonym  xxcrm_cust_acct_sites_delta  for  xxcrm.xxcrm_cust_acct_sites_delta  ;
+create or replace synonym  xxcrm_cust_profile_amts_delta  for  xxcrm.xxcrm_cust_profile_amts_delta  ;
+create or replace synonym  xxcrm_cust_site_uses_delta  for  xxcrm.xxcrm_cust_site_uses_delta  ;
+create or replace synonym  xxcrm_CUSTOMER_PROFILES_delta  for  xxcrm.xxcrm_CUSTOMER_PROFILES_delta  ;
+create or replace synonym  xxcrm_org_contacts_delta   for  xxcrm.xxcrm_org_contacts_delta   ;
+create or replace synonym  xxcrm_party_sites_delta  for  xxcrm.xxcrm_party_sites_delta  ;
+create or replace synonym  xxcrm_rs_group_members_delta  for  xxcrm.xxcrm_rs_group_members_delta  ;
+create or replace synonym  xxcrm_rs_resource_extns  for  xxcrm.xxcrm_rs_resource_extns  ;
+create or replace synonym  xxcrm_TM_NAM_DTLS_delta  for  xxcrm.xxcrm_TM_NAM_DTLS_delta  ;
+create or replace synonym  xxcrm_party_delta  for  xxcrm.xxcrm_party_delta  ;
+CREATE OR REPLACE SYNONYM xxcrm_cust_accounts_delta FOR xxcrm.xxcrm_cust_accounts_delta ;
+

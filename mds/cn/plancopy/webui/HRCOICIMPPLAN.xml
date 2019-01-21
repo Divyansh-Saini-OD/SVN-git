@@ -1,0 +1,24 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.10_1080" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="PageLyOutRN" amDefName="od.oracle.apps.xxcrm.cn.plancopy.server.HrcOicImpPlanAM" windowTitle="Import Plan/Rate Tables" controllerClass="od.oracle.apps.xxcrm.cn.plancopy.webui.HrcOicImpPlanCO" title="Import Compensation Plans/Rate tables">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:spacer id="ImpTextSeperator" height="25"/>
+            <oa:spacer id="ImpSeperator" height="10"/>
+            <oa:messageFileUpload id="ImpUpload" dataType="CLOB" prompt="Upload File"/>
+            <oa:spacer id="UpldSeperator" height="25"/>
+            <oa:submitButton id="Import" text="Import" prompt="Import"/>
+            <oa:spacer id="LogRNSpacer" height="20"/>
+            <oa:stackLayout id="LogRN" rendered="${oa.LogPVO1.LogRender}" prompt="Log Messages">
+               <ui:contents>
+                  <oa:messageStyledText id="LogText" dataType="VARCHAR2" rendered="${oa.LogPVO1.LogRender}"/>
+               </ui:contents>
+            </oa:stackLayout>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

@@ -1,0 +1,48 @@
+/* Formatted on 3/2/2015 1:35:20 PM (QP5 v5.256.13226.35510) */
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+-- +===================================================================+
+-- |                        Office Depot                               |
+-- |                                                                   |
+-- +===================================================================+
+-- | Table Name  :  XX_CRM_CUST_CONTID_STG.tbl                       |
+-- | Description :  Table to customer contact sequence for web collect   |
+-- |                Contacts program                              |
+-- | Rice Id     :                                                |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author             Remarks                  |
+-- |=======   ===========  =================  =========================|
+-- |DRAFT 1A  07-JUL-2016  Sridhar Pamu       Initial draft version    |
+--- +===================================================================+
+
+
+
+
+PROMPT
+PROMPT Creating the Table XXCRM.XX_CRM_CUST_CONTID_STG
+PROMPT
+
+
+
+CREATE TABLE XXCRM.XX_CRM_CUST_CONTID_STG
+(
+ RECORD_ID	NUMBER,
+CUST_ACCOUNT_ID	NUMBER
+)
+/
+
+
+Grant all on XXCRM.XX_CRM_CUST_CONTID_STG  to APPS;
+SET FEEDBACK ON
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script
+REM============================================================================================

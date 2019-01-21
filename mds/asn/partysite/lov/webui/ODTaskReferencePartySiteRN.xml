@@ -1,0 +1,15 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<oa:listOfValues xmlns:ui="http://xmlns.oracle.com/uix/ui" xmlns:oa="http://xmlns.oracle.com/oa" version="9.0.3.8.13_1550" xml:lang="en-US" xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$" controllerClass="od.oracle.apps.xxcrm.asn.partysite.lov.webui.ODPartySiteCO" amDefName="od.oracle.apps.xxcrm.asn.partysite.lov.server.ODPartySiteAM">
+   <ui:contents>
+      <oa:table name="ODTaskReferencePartySiteRN" id="ODPartySiteTBL">
+         <ui:contents>
+            <oa:messageStyledText id="ODPartySiteLovPartyNum" viewName="ODPartySiteLOvVO" viewAttr="PartyNumber" prompt="Party Number" queryable="false"/>
+            <oa:messageStyledText id="ODPartyName" viewName="ODPartySiteLOvVO" viewAttr="PartyName" prompt="Party" queryable="false"/>
+            <oa:messageStyledText id="ODPartySiteLOvNum" viewName="ODPartySiteLOvVO" viewAttr="PartySiteNumber" prompt="Party Site Number" queryable="true"/>
+            <oa:messageStyledText id="ODPartySiteLovName" viewName="ODPartySiteLOvVO" viewAttr="Address" prompt="Address" queryable="true"/>
+            <oa:formValue id="ODPartySiteLovId" prompt="Site Id" dataType="NUMBER" queryable="false" selectiveSearchCriteria="false" viewName="ODPartySiteLOvVO" viewAttr="PartySiteId" rendered="true"/>
+         </ui:contents>
+      </oa:table>
+   </ui:contents>
+</oa:listOfValues>

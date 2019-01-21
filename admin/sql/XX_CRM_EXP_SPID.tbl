@@ -1,0 +1,33 @@
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify                                           |
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_SPID.tbl                                                          |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        26-Aug-2011     Kishore Jena         Initial version                             |
+-- +============================================================================================+
+
+CREATE TABLE XXCRM.XX_CRM_EXP_SPID 
+   (BATCH_ID          NUMBER, 
+    RECORD_ID         NUMBER,
+    SP_ID             VARCHAR2(30),
+    SP_NAME           VARCHAR2(65),
+    EMPLOYEE_NUMBER   VARCHAR2(30),
+    ROLE_RELATE_ID    NUMBER,
+    PRIMARY_FLAG      CHAR(1),
+    CREATION_DATE     DATE,
+    CREATED_BY        NUMBER,
+    LAST_UPDATE_DATE  DATE,
+    LAST_UPDATED_BY   NUMBER,
+    LAST_UPDATE_LOGIN NUMBER
+   )
+TABLESPACE APPS_TS_TX_DATA;
+
+GRANT ALL ON XXCRM.XX_CRM_EXP_SPID TO APPS;
+  
+SHOW ERRORS;

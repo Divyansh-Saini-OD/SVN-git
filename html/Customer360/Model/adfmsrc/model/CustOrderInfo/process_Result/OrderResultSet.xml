@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<JavaBean xmlns="http://xmlns.oracle.com/adfm/beanmodel" version="11.1.1.56.60"
+          id="OrderResultSet" Package="model.CustOrderInfo.process_Result"
+          BeanClass="model.CustOrderInfo.process_Result.OrderResultSet"
+          isJavaBased="false">
+  <Attribute Name="OrderNumber" IsUpdateable="0" IsNotNull="true"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="OrderTotal" IsUpdateable="0" IsNotNull="true"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="ShipToRef" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="SalesRepId" IsUpdateable="0" IsNotNull="true"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="OrderedDate" IsUpdateable="0" IsNotNull="true"
+             Type="java.sql.Date"/>
+  <Attribute Name="Message" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+</JavaBean>

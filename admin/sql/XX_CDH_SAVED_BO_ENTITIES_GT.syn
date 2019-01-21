@@ -1,0 +1,11 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- ----------------------------------------------------------------------------
+--      Create Custom Synonym XX_CDH_SAVED_BO_ENTITIES_GT.
+-- ----------------------------------------------------------------------------
+
+CREATE OR REPLACE SYNONYM XX_CDH_SAVED_BO_ENTITIES_GT FOR XXCRM.XX_CDH_SAVED_BO_ENTITIES_GT;
+/
+SHOW ERRORS;

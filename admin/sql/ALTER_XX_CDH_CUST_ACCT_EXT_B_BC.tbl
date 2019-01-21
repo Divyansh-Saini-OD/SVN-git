@@ -1,0 +1,36 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                                     Office Depot                                           |
+-- +============================================================================================+
+-- | Name        : AlTER_XX_CDH_CUST_ACCT_EXT_B_NAIT-61952_NAIT_66520.tbl                                            |
+-- | Description : MOD4B Release2                                                               |
+-- | Rice Id     : E2059                                                                        |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        05-Nov-2018     Rafi Mohammed        Added for req NAIT-61952 and NAIT-66520     |                                   
+-- +============================================================================================+
+
+PROMPT
+PROMPT Altering the Table XX_CDH_CUST_ACCT_EXT_B .....
+PROMPT
+
+ALTER TABLE XX_CDH_CUST_ACCT_EXT_B   	
+ADD (BILL_COMPLETE_FLAG VARCHAR2(3), 
+     POD_FLAG VARCHAR2(3)
+     );
+
+COMMIT;
+
+PROMPT
+PROMPT Altering the Table XX_CDH_CUST_ACCT_EXT_B is done.
+PROMPT
+
+SHOW ERRORS;
+EXIT;
+

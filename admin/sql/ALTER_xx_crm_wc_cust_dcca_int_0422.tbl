@@ -1,0 +1,14 @@
+-- +============================================================================+
+-- | Office Depot - Project Simplify                                            |
+-- |                                                                            |
+-- +============================================================================+
+-- | SQL Script to alter table:  xx_crm_wc_cust_dcca_int                        |
+-- |                                                                            |
+-- |Change Record:                                                              |
+-- |===============                                                             |
+-- |Version   Date          Author         Remarks                              |
+-- |=======   ===========   =============  =====================================|
+-- |          04-07-2015   Arun Gannarapu  Add new columns for webcollect collector portfolio|
+-- +============================================================================+
+
+ALTER TABLE xxcrm.xx_crm_wc_cust_dcca_int ADD (collector_portfolio VARCHAR2(25));

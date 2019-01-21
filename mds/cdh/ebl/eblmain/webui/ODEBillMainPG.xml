@@ -1,0 +1,1154 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="ODEBillMainPL" amDefName="od.oracle.apps.xxcrm.cdh.ebl.server.ODEBillAM" controllerClass="od.oracle.apps.xxcrm.cdh.ebl.eblmain.webui.ODEBillMainCO" windowTitle="eBilling Main Details" title="eBilling Main Details">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:stackLayout id="ODEBillMainSLRN">
+               <ui:contents>
+                  <oa:spacer id="Spacer1" height="20" width="100"/>
+                  <oa:messageComponentLayout id="HeaderRN" rows="1" columns="4" width="100%">
+                     <ui:contents>
+                        <oa:messageStyledText id="CustName" dataType="VARCHAR2" prompt="Customer Name" viewName="ODEBillCustHeaderVO" viewAttr="CustomerName" maximumLength="30" styleClass="OraDataText"/>
+                        <oa:messageStyledText id="CustomerDocID" dataType="VARCHAR2" prompt="Customer Doc ID" viewName="ODEBillCustHeaderVO" viewAttr="CustDocId" maximumLength="30" styleClass="OraDataText"/>
+                        <oa:messageStyledText id="BillingID" dataType="VARCHAR2" prompt="Billing ID" viewName="ODEBillCustHeaderVO" viewAttr="CustomerNumber" maximumLength="30" styleClass="OraDataText"/>
+                        <oa:messageStyledText id="DirectFlag" dataType="VARCHAR2" prompt="Direct Doc" viewName="ODEBillCustHeaderVO" viewAttr="DirectDocDisp" maximumLength="30" styleClass="OraDataText"/>
+                        <oa:messageStyledText id="CustAccountId" dataType="NUMBER" prompt="Customer Account Id" viewName="ODEBillCustHeaderVO" viewAttr="CustAccountId" maximumLength="15" styleClass="OraDataText" rendered="false"/>
+                     </ui:contents>
+                  </oa:messageComponentLayout>
+                  <oa:spacer id="Spacer2" height="5" width="100"/>
+                  <oa:messageComponentLayout id="HeaderRN1" rows="1" columns="4" width="100%">
+                     <ui:contents>
+                        <oa:messageStyledText id="AopsNumber1" dataType="VARCHAR2" prompt="AOPS Number" viewName="ODEBillCustHeaderVO" viewAttr="AopsNumber" maximumLength="24" styleClass="OraDataText"/>
+                        <oa:messageStyledText id="DeliveryMethod1" dataType="VARCHAR2" prompt="Delivery Method" viewName="ODEBillCustHeaderVO" viewAttr="DeliveryMethod" maximumLength="150" styleClass="OraDataText"/>
+                        <oa:messageStyledText id="PayDocInd1" viewName="ODEBillCustHeaderVO" viewAttr="PayDocIndDisp" prompt="Pay Doc" styleClass="OraDataText"/>
+                        <oa:messageStyledText id="Status1" viewName="ODEBillCustHeaderVO" viewAttr="Status" prompt="Status" styleClass="OraDataText"/>
+                     </ui:contents>
+                  </oa:messageComponentLayout>
+                  <oa:separator id="Separator"/>
+                  <oa:spacer id="Spacer3" height="20" width="100"/>
+                  <oa:pageButtonBar id="ButtonBarRN1">
+                     <ui:contents>
+                        <oa:submitButton id="Save1" text="Save" prompt="Save">
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="Save" id="fireAction2"/>
+                           </ui:primaryClientAction>
+                        </oa:submitButton>
+                        <oa:submitButton id="Cancel1" text="Cancel" prompt="Cancel" serverUnvalidated="true" unvalidated="true">
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="Cancel"/>
+                           </ui:primaryClientAction>
+                        </oa:submitButton>
+                        <oa:submitButton id="ChangeStatus" text="Change to Complete" prompt="Change to Complete" hAlign="right" disabled="${oa.ODEBillPPRVO.Complete}">
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="ChangeStatus" id="fireAction832"/>
+                           </ui:primaryClientAction>
+                        </oa:submitButton>
+                     </ui:contents>
+                  </oa:pageButtonBar>
+                  <oa:spacer id="Spacer4" height="20" width="100"/>
+                  <oa:stackLayout id="EBillMainSTRN" prompt="EBill Main Details">
+                     <ui:contents>
+                        <oa:header id="EBillMainHRN" text="eBill Main Details"/>
+                        <oa:messageComponentLayout id="EBillMainMCLRN" rows="8" columns="2" width="60%">
+                           <ui:contents>
+                              <oa:messageChoice id="EbillTransmission" dataType="VARCHAR2" prompt="Transmission Type" viewName="ODEBillMainVO" viewAttr="EbillTransmissionType" pickListViewName="ODEBillTransTypePVO" pickListDispAttr="Meaning" pickListValAttr="Code" defaultValue="EMAIL" serverUnvalidated="true" required="yes" readOnly="false" styleClass="${oa.ODEBillPPRVO.CCSClass}" disabled="${oa.ODEBillPPRVO.Complete}">
+                                 <ui:primaryClientAction>
+                                    <ui:firePartialAction event="updateTransmissionType" unvalidated="true" id="firePartialAction1">
+                                       <ui:parameters>
+                                          <ui:parameter key="transmissionType" value="${oa.ODEBillMainVO.EbillTransmissionType}"/>
+                                       </ui:parameters>
+                                    </ui:firePartialAction>
+                                 </ui:primaryClientAction>
+                              </oa:messageChoice>
+                              <oa:messageChoice id="EbillAssociate" dataType="VARCHAR2" prompt="Associate" viewName="ODEBillMainVO" viewAttr="EbillAssociate" pickListViewName="ODEBillAssociatePVO" pickListDispAttr="Meaning" pickListValAttr="Code" required="yes" readOnly="false" styleClass="${oa.ODEBillPPRVO.CCSClass}" disabled="false"/>
+                              <oa:messageChoice id="FileProcessingMethod" viewName="ODEBillMainVO" viewAttr="FileProcessingMethod" prompt="File Processing Method" pickListViewName="ODEBillFileProcMtdPVO" pickListDispAttr="Meaning" pickListValAttr="Code" disabled="true" readOnly="false"/>
+                              <oa:messageTextInput id="EbillMaxFileSize" viewName="ODEBillMainVO" viewAttr="MaxFileSize" prompt="Max File Size (MB)" readOnly="false" disabled="false" translatableDefaultValue="10"/>
+                              <oa:messageTextInput id="MaxTransmissionSize" viewName="ODEBillMainVO" viewAttr="MaxTransmissionSize" prompt="Max Trans Size (MB)" readOnly="false" disabled="false" translatableDefaultValue="10"/>
+                              <oa:messageCheckBox id="CompRequired" dataType="VARCHAR2" prompt="Zip Required" viewName="ODEBillMainVO" viewAttr="ZipRequired" checkedValue="Y" unCheckedValue="N" vAlign="middle" serverUnvalidated="true" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}">
+                                 <ui:primaryClientAction>
+                                    <ui:firePartialAction event="CompRequired">
+                                       <ui:parameters>
+                                          <ui:parameter key="zipRequired" value="${oa.ODEBillMainVO.ZipRequired}"/>
+                                       </ui:parameters>
+                                    </ui:firePartialAction>
+                                 </ui:primaryClientAction>
+                              </oa:messageCheckBox>
+                              <oa:messageChoice id="ComprshUtility" dataType="VARCHAR2" prompt="Compression Utility" viewName="ODEBillMainVO" viewAttr="ZippingUtility" pickListViewName="ODEBillCompUtilPVO" pickListDispAttr="Meaning" pickListValAttr="Code" disabled="${oa.ODEBillPPRVO.Compress}" readOnly="false"/>
+                              <oa:messageTextInput id="CompFileNameExtn" viewName="ODEBillMainVO" viewAttr="ZipFileNameExt" prompt="Compression Extension" disabled="${oa.ODEBillPPRVO.Compress}" readOnly="false"/>
+                              <oa:messageLayout id="messageLayout11">
+                                 <ui:contents>
+                                    <oa:messageCheckBox id="SummaryBillLabelCB" dataType="VARCHAR2" prompt="Summary Bill" viewName="ODEBillMainVO" viewAttr="SummaryBill" checkedValue="Y" unCheckedValue="N" vAlign="middle" serverUnvalidated="true" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}" text="Summary Bill" defaultValue="N">
+                                       <ui:primaryClientAction>
+                                          <ui:fireAction event="SummaryBillLabel"/>
+                                       </ui:primaryClientAction>
+                                    </oa:messageCheckBox>
+                                 </ui:contents>
+                              </oa:messageLayout>
+                              <oa:messageTextInput id="EbillFileExtension" dataType="VARCHAR2" prompt="File Extension" viewName="ODEBillMainVO" viewAttr="FileNameExt" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                              <oa:messageTextInput id="EbillContact" dataType="VARCHAR2" prompt="Sales Contact Name" viewName="ODEBillMainVO" viewAttr="OdFieldContact" readOnly="false" disabled="false"/>
+                              <oa:messageTextInput id="EbillContactEmail" dataType="VARCHAR2" prompt="Sales Contact Email" viewName="ODEBillMainVO" viewAttr="OdFieldContactEmail" readOnly="false" disabled="false"/>
+                              <oa:messageTextInput id="EbillContactPhone" dataType="VARCHAR2" prompt="Sales Contact Phone" viewName="ODEBillMainVO" viewAttr="OdFieldContactPhone" readOnly="false" disabled="false"/>
+                              <oa:messageTextInput id="ClientTechContact" dataType="VARCHAR2" prompt="Setup Contact Name" viewName="ODEBillMainVO" viewAttr="ClientTechContact" readOnly="false" disabled="false"/>
+                              <oa:messageTextInput id="ClientTechContactEmail" dataType="VARCHAR2" prompt="Setup Contact Email" viewName="ODEBillMainVO" viewAttr="ClientTechContactEmail" readOnly="false" disabled="false"/>
+                              <oa:messageTextInput id="ClientTechContactPhone" dataType="VARCHAR2" prompt="Setup Contact Phone" viewName="ODEBillMainVO" viewAttr="ClientTechContactPhone" readOnly="false" disabled="false"/>
+                              <oa:messageChoice id="StdContLvl" pickListViewName="ODEBillStdContLvlPVO" pickListDispAttr="Meaning" pickListValAttr="Code" viewName="ODEBillMainVO" viewAttr="Attribute1" defaultValue="CORE" prompt="Field Selection" disabled="${oa.ODEBillPPRVO.FieldSelection}" serverUnvalidated="true" readOnly="false">
+                                 <ui:primaryClientAction>
+                                    <ui:firePartialAction event="ChangeStdCont">
+                                       <ui:parameters>
+                                          <ui:parameter key="custDocId" value="${oa.ODEBillMainVO.CustDocId}"/>
+                                          <ui:parameter key="stdContLvl" value="${oa.ODEBillMainVO.Attribute1}"/>
+                                       </ui:parameters>
+                                    </ui:firePartialAction>
+                                 </ui:primaryClientAction>
+                              </oa:messageChoice>
+                              <oa:messageChoice id="ParentCustId" dataType="NUMBER" pickListViewName="ODEBillParentCustDocId" pickListDispAttr="CustDocId" pickListValAttr="CustDocId" viewName="ODEBillMainVO" viewAttr="ParentDocId" prompt="Parent Doc Id" disabled="${oa.ODEBillPPRVO.parentDocIDDisabled}"/>
+                           </ui:contents>
+                        </oa:messageComponentLayout>
+                        <oa:subTabLayout id="EBillSubTabRN">
+                           <ui:subTabs>
+                              <oa:subTabBar id="subTabBar1">
+                                 <ui:contents>
+                                    <oa:link id="TransmissionDetailsLink" text="Transmission Details">
+                                       <ui:primaryClientAction>
+                                          <ui:firePartialAction event="parentDocIdEvent"/>
+                                       </ui:primaryClientAction>
+                                    </oa:link>
+                                    <oa:link id="ContactDetailsLink" text="eBill Contact Details">
+                                       <ui:primaryClientAction>
+                                          <ui:firePartialAction event="parentDocIdEvent"/>
+                                       </ui:primaryClientAction>
+                                    </oa:link>
+                                    <oa:link id="FileNamingLink" text="File Naming Parameters">
+                                       <ui:primaryClientAction>
+                                          <ui:firePartialAction event="parentDocIdEvent"/>
+                                       </ui:primaryClientAction>
+                                    </oa:link>
+                                    <oa:link id="ConfigHdrLink" text="Configuration Header">
+                                       <ui:primaryClientAction>
+                                          <ui:firePartialAction event="parentDocIdEvent"/>
+                                       </ui:primaryClientAction>
+                                    </oa:link>
+                                    <oa:link id="ConfigDetailsLink" text="Configuration Details">
+                                       <ui:primaryClientAction>
+                                          <ui:firePartialAction event="parentDocIdEvent"/>
+                                       </ui:primaryClientAction>
+                                    </oa:link>
+                                    <oa:link id="ConcatenateLink" text="Concatenate" rendered="true">
+                                       <ui:primaryClientAction>
+                                          <ui:firePartialAction event="ConcatenateLinkUpd"/>
+                                       </ui:primaryClientAction>
+                                    </oa:link>
+                                    <oa:link id="SplitLink" text="Splitting" rendered="true">
+                                       <ui:primaryClientAction>
+                                          <ui:firePartialAction event="SplitLinkUpd"/>
+                                       </ui:primaryClientAction>
+                                    </oa:link>
+                                    <oa:link id="SubTotalLink" text="Sub Total" rendered="true">
+                                       <ui:primaryClientAction>
+                                          <ui:firePartialAction event="SubTotalUpd"/>
+                                       </ui:primaryClientAction>
+                                    </oa:link>
+                                 </ui:contents>
+                              </oa:subTabBar>
+                           </ui:subTabs>
+                           <ui:contents>
+                              <oa:stackLayout id="TransmissionDetailsRN">
+                                 <ui:contents>
+                                    <oa:formValue id="CustDocId" viewName="ODEBillTransmissionVO" viewAttr="CustDocId"/>
+                                    <oa:stackLayout id="EmailSLRN" rendered="${oa.ODEBillPPRVO.Email}" prompt="EMail Test">
+                                       <ui:contents>
+                                          <oa:header id="EmailHRN" text="Transmission Type: eMail"/>
+                                          <oa:messageComponentLayout id="EmailRN" rows="6" columns="2" width="60%">
+                                             <ui:contents>
+                                                <oa:messageTextInput id="Subject" dataType="VARCHAR2" prompt="eMail Subject" viewName="ODEBillTransmissionVO" viewAttr="EmailSubject" rows="1" columns="60" readOnly="false" disabled="false"/>
+                                                <oa:messageTextInput id="StdMessage" dataType="VARCHAR2" prompt="Standard Message" viewName="ODEBillTransmissionVO" viewAttr="EmailStdMessage" readOnly="false" rows="1" columns="60" disabled="true"/>
+                                                <oa:messageTextInput id="CustMessage" dataType="VARCHAR2" prompt="Custom Message" viewName="ODEBillTransmissionVO" viewAttr="EmailCustomMessage" rows="10" columns="60" readOnly="false" disabled="false"/>
+                                                <oa:messageTextInput id="Signature" dataType="VARCHAR2" prompt="Signature" viewName="ODEBillTransmissionVO" viewAttr="EmailSignature" rows="2" columns="60" readOnly="false" disabled="false"/>
+                                                <oa:messageTextInput id="StdDisclaimer" dataType="VARCHAR2" prompt="Standard Disclaimer" viewName="ODEBillTransmissionVO" viewAttr="EmailStdDisclaimer" readOnly="false" rows="7" columns="60" disabled="true"/>
+                                                <oa:messageTextInput id="SplInstructions" dataType="VARCHAR2" prompt="Special Instructions" viewName="ODEBillTransmissionVO" viewAttr="EmailSplInstruction" readOnly="false" rows="2" columns="60" disabled="true"/>
+                                                <oa:messageCheckBox id="LogoReq" dataType="VARCHAR2" prompt="Logo Required?" viewName="ODEBillTransmissionVO" viewAttr="EmailLogoRequired" checkedValue="Y" unCheckedValue="N" defaultValue="N" serverUnvalidated="true" text="Logo Required?" readOnly="false" disabled="false">
+                                                   <ui:primaryClientAction>
+                                                      <ui:firePartialAction event="LogoReq"/>
+                                                   </ui:primaryClientAction>
+                                                </oa:messageCheckBox>
+                                                <oa:messageChoice id="LogoType" dataType="VARCHAR2" prompt="Logo Type" viewName="ODEBillTransmissionVO" viewAttr="EmailLogoFileName" readOnly="false" defaultValue="Y" pickListViewName="ODEBillLogoFilePVO" pickListDispAttr="Meaning" pickListValAttr="Code" disabled="false"/>
+                                                <oa:messageTextInput id="EmailComments" dataType="VARCHAR2" prompt="Comments (Not displayed)" viewName="ODEBillTransmissionVO" viewAttr="Comments" readOnly="false" rows="3" columns="60" disabled="false"/>
+                                             </ui:contents>
+                                          </oa:messageComponentLayout>
+                                       </ui:contents>
+                                    </oa:stackLayout>
+                                    <oa:stackLayout id="CDSLRN" rendered="${oa.ODEBillPPRVO.CD}">
+                                       <ui:contents>
+                                          <oa:header id="CDHRN" text="Transmission Type: CD"/>
+                                          <oa:messageComponentLayout id="CDDetMCLRN">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="FileLocation" dataType="VARCHAR2" prompt="File Location" viewName="ODEBillTransmissionVO" viewAttr="CdFileLocation" maximumLength="12" rendered="false"/>
+                                                <oa:messageTextInput id="SendToAddress" dataType="VARCHAR2" prompt="Customer Mailing Address" viewName="ODEBillTransmissionVO" viewAttr="CdSendToAddress" rows="5" columns="30" readOnly="false" disabled="false"/>
+                                                <oa:messageTextInput id="CDComments" dataType="VARCHAR2" prompt="Comments" viewName="ODEBillTransmissionVO" viewAttr="Comments" readOnly="false" disabled="false" columns="30" rows="3"/>
+                                             </ui:contents>
+                                          </oa:messageComponentLayout>
+                                       </ui:contents>
+                                    </oa:stackLayout>
+                                    <oa:stackLayout id="FTPSLRN" rendered="${oa.ODEBillPPRVO.FTP}">
+                                       <ui:contents>
+                                          <oa:header id="FTPHRN" text="Transmission Type: FTP"/>
+                                          <oa:messageComponentLayout id="FTPDetMCLRN" rows="7" columns="2" width="60%">
+                                             <ui:contents>
+                                                <oa:messageCheckBox id="NotifyCust" dataType="VARCHAR2" prompt="Notify Customer?" viewName="ODEBillTransmissionVO" viewAttr="FtpNotifyCustomer" checkedValue="Y" unCheckedValue="N" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}">
+                                                   <ui:primaryClientAction>
+                                                      <ui:firePartialAction event="NotifyCust" id="firePartialAction3"/>
+                                                   </ui:primaryClientAction>
+                                                </oa:messageCheckBox>
+                                                <oa:messageStyledText id="FTPNotificationMessage" dataType="VARCHAR2" prompt="Notification Message" viewName="ODEBillTransmissionVO" viewAttr="FtpCcEmails" maximumLength="12" rendered="false"/>
+                                                <oa:messageTextInput id="CustContName" dataType="VARCHAR2" prompt="Contact Name" viewName="ODEBillTransmissionVO" viewAttr="FtpCustContactName" secret="false" readOnly="false" disabled="${oa.ODEBillPPRVO.FtpNotifyCustomer}" columns="30"/>
+                                                <oa:messageTextInput id="ContactEmail" dataType="VARCHAR2" prompt="Contact Email" viewName="ODEBillTransmissionVO" viewAttr="FtpCustContactEmail" secret="false" readOnly="false" disabled="${oa.ODEBillPPRVO.FtpNotifyCustomer}" columns="30"/>
+                                                <oa:messageTextInput id="CCList" dataType="VARCHAR2" prompt="CC List" viewName="ODEBillTransmissionVO" viewAttr="FtpCcEmails" secret="false" readOnly="false" disabled="${oa.ODEBillPPRVO.FtpNotifyCustomer}" columns="32" rows="2"/>
+                                                <oa:messageTextInput id="EmailSubj" dataType="VARCHAR2" prompt="Email Subject" viewName="ODEBillTransmissionVO" viewAttr="FtpEmailSub" secret="false" readOnly="false" disabled="${oa.ODEBillPPRVO.FtpNotifyCustomer}" columns="50"/>
+                                                <oa:messageTextInput id="EmailCont" dataType="VARCHAR2" prompt="Email Content" viewName="ODEBillTransmissionVO" viewAttr="FtpEmailContent" secret="false" readOnly="false" disabled="${oa.ODEBillPPRVO.FtpNotifyCustomer}" columns="52" rows="3"/>
+                                                <oa:messageTextInput id="ContactPhone" dataType="VARCHAR2" prompt="Contact Phone" viewName="ODEBillTransmissionVO" viewAttr="FtpCustContactPhone" secret="false" readOnly="false" disabled="${oa.ODEBillPPRVO.FtpNotifyCustomer}"/>
+                                                <oa:messageChoice id="FtpDirection" dataType="VARCHAR2" prompt="FTP Direction" viewName="ODEBillTransmissionVO" viewAttr="FtpDirection" pickListViewName="ODEBillFTPDirectPVO" pickListDispAttr="Meaning" pickListValAttr="Code" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                                <oa:messageChoice id="FtpTransferType" dataType="VARCHAR2" prompt="FTP Transfer Type" viewName="ODEBillTransmissionVO" viewAttr="FtpTransferType" pickListViewName="ODEBillTransTypePVO" pickListDispAttr="Meaning" pickListValAttr="Code" rendered="false" readOnly="false" disabled="false"/>
+                                                <oa:messageTextInput id="FtpDestinationSite" dataType="VARCHAR2" prompt="Destination Site" viewName="ODEBillTransmissionVO" viewAttr="FtpDestinationSite" secret="false" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}" rendered="false" columns="30"/>
+                                                <oa:messageTextInput id="DestFTPFolder" dataType="VARCHAR2" prompt="Destination Folder" viewName="ODEBillTransmissionVO" viewAttr="FtpDestinationFolder" secret="false" rendered="true" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                                <oa:messageTextInput id="UserName" dataType="VARCHAR2" prompt="User Name" viewName="ODEBillTransmissionVO" viewAttr="FtpUserName" rows="1" rendered="false" readOnly="false" disabled="false"/>
+                                                <oa:messageTextInput id="Password" dataType="VARCHAR2" prompt="Password" viewName="ODEBillTransmissionVO" viewAttr="FtpPassword" secret="true" rendered="false" readOnly="false" disabled="false"/>
+                                                <oa:messageTextInput id="FtpPickupServer" dataType="VARCHAR2" prompt="FTP Pickup Site" viewName="ODEBillTransmissionVO" viewAttr="FtpPickupServer" secret="false" rendered="false" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                                <oa:messageTextInput id="PickupFolder" dataType="VARCHAR2" prompt="Pickup Folder" viewName="ODEBillTransmissionVO" viewAttr="FtpPickupFolder" secret="false" rendered="false" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                                <oa:messageCheckBox id="ZeroByte" text="FTP if Zero Byte" prompt="FTP if Zero Byte" viewName="ODEBillTransmissionVO" viewAttr="FtpSendZeroByteFile" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}">
+                                                   <ui:primaryClientAction>
+                                                      <ui:firePartialAction event="ZeroByte" id="firePartialAction2"/>
+                                                   </ui:primaryClientAction>
+                                                </oa:messageCheckBox>
+                                                <oa:messageTextInput id="ZeroByteNotifiTxt" viewName="ODEBillTransmissionVO" viewAttr="FtpZeroByteNotificationTxt" prompt="Zero Byte Notification Text" readOnly="false" disabled="${oa.ODEBillPPRVO.FtpSendZeroByteFile}" columns="50" rows="3"/>
+                                                <oa:messageTextInput id="FileText" viewName="ODEBillTransmissionVO" viewAttr="FtpZeroByteFileText" prompt="Zero Byte File Text" rendered="true" readOnly="false" disabled="${oa.ODEBillPPRVO.FtpSendZeroByteFile}"/>
+                                                <oa:messageTextInput id="FTPComments" dataType="VARCHAR2" prompt="Comments" viewName="ODEBillTransmissionVO" viewAttr="Comments" readOnly="false" rows="3" columns="30" disabled="false"/>
+                                             </ui:contents>
+                                          </oa:messageComponentLayout>
+                                       </ui:contents>
+                                    </oa:stackLayout>
+                                 </ui:contents>
+                              </oa:stackLayout>
+                              <oa:stackLayout id="ContactDetailsRN">
+                                 <ui:contents>
+                                    <oa:advancedTable id="ContactsTableRN" viewName="ODEBillContactsVO">
+                                       <ui:contents>
+                                          <oa:column id="ContactNameCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader1" prompt="Contact Name"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageLovInput id="contactName" viewAttr="ContactName" externalListOfValues="/od/oracle/apps/xxcrm/cdh/ebl/lov/webui/ODEBillContactNamesLOVRN" queryable="false" required="uiOnly">
+                                                   <lovMappings>
+                                                      <lovMap id="lovMap1" resultTo="contactName" criteriaFrom="contactName" lovItem="LOVContactName"/>
+                                                      <lovMap id="lovMap2" lovItem="LOVOrgContactId" resultTo="OrgContactId" useForValidation="default"/>
+                                                      <lovMap id="lovMap3" lovItem="LOVCustAccountId" criteriaFrom="CustAccntIdFormValue" useForValidation="default" programmaticQuery="false" requiredForLOV="true"/>
+                                                   </lovMappings>
+                                                </oa:messageLovInput>
+                                                <oa:formValue id="ContCustDocId" viewAttr="CustDocId"/>
+                                                <oa:formValue id="OrgContactId" viewAttr="OrgContactId" dataType="NUMBER"/>
+                                                <oa:formValue id="CustAccntIdFormValue" viewAttr="Attribute1" dataType="NUMBER" queryable="false"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ContactSiteCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader2" prompt="Location"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:tableLayout id="tableLayoutRegion1" hAlign="center">
+                                                   <ui:contents>
+                                                      <oa:rowLayout id="rowLayoutRegion1" hAlign="center">
+                                                         <ui:contents>
+                                                            <oa:cellFormat id="cellFormatRegion2" hAlign="left">
+                                                               <ui:contents>
+                                                                  <oa:messageStyledText id="AddressSeq" viewAttr="Attribute9" prompt=""/>
+                                                               </ui:contents>
+                                                            </oa:cellFormat>
+                                                            <oa:cellFormat id="cellFormatRegion3" hAlign="right">
+                                                               <ui:contents>
+                                                                  <oa:messageLovInput id="ContactLocation" externalListOfValues="/od/oracle/apps/xxcrm/cdh/ebl/lov/webui/ODEBillLocationsLOVRN" viewAttr="Location" columns="100">
+                                                                     <lovMappings>
+                                                                        <lovMap id="LoactionMap" lovItem="LOVLocation" resultTo="ContactLocation" criteriaFrom="ContactLocation"/>
+                                                                        <lovMap id="SiteUseCodeMap" lovItem="LOVSiteUseCode" criteriaFrom="LocSiteUseCode" requiredForLOV="true"/>
+                                                                        <lovMap id="CustAcctSiteMap" lovItem="LOVCustAcctSiteId" resultTo="LocCustAcctSiteId"/>
+                                                                        <lovMap id="LOVSequenceNumberMap" lovItem="LOVSequenceNumber" criteriaFrom="LOVSequenceNumber" resultTo="AddressSeq" requiredForLOV="false"/>
+                                                                        <lovMap id="CustAccountMap" lovItem="LOVCustAccountId" criteriaFrom="CustAccntIdFormValue" requiredForLOV="true"/>
+                                                                     </lovMappings>
+                                                                  </oa:messageLovInput>
+                                                               </ui:contents>
+                                                            </oa:cellFormat>
+                                                         </ui:contents>
+                                                      </oa:rowLayout>
+                                                   </ui:contents>
+                                                </oa:tableLayout>
+                                                <oa:formValue id="LocSiteUseCode" viewAttr="SiteUseCode"/>
+                                                <oa:formValue id="LocCustAcctSiteId" viewAttr="CustAcctSiteId"/>
+                                                <oa:formValue id="AddreSeqHidden" viewAttr="Attribute9"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="UpdateContactCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader322" prompt="Update Contact"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:image id="UpdateContact" source="/OA_MEDIA/updateicon_enabled.gif" prompt="Update" serverUnvalidated="true">
+                                                   <ui:primaryClientAction>
+                                                      <ui:fireAction event="UpdateContact" id="fireAction71" unvalidated="true">
+                                                         <ui:parameters>
+                                                            <ui:parameter key="orgContactId" value="${oa.ODEBillContactsVO.OrgContactId}"/>
+                                                         </ui:parameters>
+                                                      </ui:fireAction>
+                                                   </ui:primaryClientAction>
+                                                </oa:image>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="DeleteContactCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader3" prompt="Delete Contact"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:switcher id="DeleteImageSwitch" viewAttr="DeleteImageSwitch">
+                                                   <ui:case name="DeleteContact">
+                                                      <oa:image id="DeleteContact" source="/OA_MEDIA/deleteicon_enabled.gif" prompt="Delete" serverUnvalidated="true">
+                                                         <ui:primaryClientAction>
+                                                            <ui:fireAction event="deleteContact" id="fireAction7" unvalidated="true">
+                                                               <ui:parameters>
+                                                                  <ui:parameter key="eblDocContactId" value="${oa.ODEBillContactsVO.EblDocContactId}"/>
+                                                                  <ui:parameter key="contactName" value="${oa.ODEBillContactsVO.ContactName}"/>
+                                                               </ui:parameters>
+                                                            </ui:fireAction>
+                                                         </ui:primaryClientAction>
+                                                      </oa:image>
+                                                   </ui:case>
+                                                   <ui:case name="DeleteDisable">
+                                                      <oa:image id="DeleteDisable" source="/OA_MEDIA/deleteicon_disabled.gif" prompt="Delete Disabled"/>
+                                                   </ui:case>
+                                                </oa:switcher>
+                                             </ui:contents>
+                                          </oa:column>
+                                       </ui:contents>
+                                       <ui:tableActions>
+                                          <oa:flowLayout id="ContactTableAction">
+                                             <ui:contents>
+                                                <oa:submitButton id="AddContact" text="Add Contact" prompt="Add Contact" disabled="false">
+                                                   <ui:primaryClientAction>
+                                                      <ui:fireAction event="AddContact">
+                                                         <ui:parameters>
+                                                            <ui:parameter key="custDocId" value="${oa.ODEBillMainVO.CustDocId}"/>
+                                                            <ui:parameter key="custAcctId" value="${oa.ODEBillMainVO.CustAccountId}"/>
+                                                            <ui:parameter key="payDocInd" value="${oa.ODEBillCustHeaderVO.PayDocInd}"/>
+                                                         </ui:parameters>
+                                                      </ui:fireAction>
+                                                   </ui:primaryClientAction>
+                                                </oa:submitButton>
+                                                <oa:button id="CreateContact" targetFrame="." text="Create New Contact" prompt="Create New Contact" destination="">
+                                                   <ui:primaryClientAction>
+                                                      <ui:fireAction event="CreateContact"/>
+                                                   </ui:primaryClientAction>
+                                                </oa:button>
+                                                <oa:button id="UpldEblContact" destination="OA.jsp?page=/od/oracle/apps/xxcrm/cdh/uploads/eblContacts/webui/XXCRMEblContactsUploadPG&amp;retainAM=Y&amp;addBreadCrumb=Y" text="Upload Ebill Contact" prompt="Upload Ebill Contact" rendered="true"/>
+                                                <oa:button id="DnldEblContact" destination="" text="Download Ebill Contact" prompt="Download Ebill Contact" rendered="true">
+                                                   <ui:primaryClientAction>
+                                                      <ui:fireAction event="DownloadEblContact"/>
+                                                   </ui:primaryClientAction>
+                                                </oa:button>
+                                             </ui:contents>
+                                          </oa:flowLayout>
+                                       </ui:tableActions>
+                                    </oa:advancedTable>
+                                 </ui:contents>
+                              </oa:stackLayout>
+                              <oa:stackLayout id="NamingParameterRN">
+                                 <ui:contents>
+                                    <oa:stackLayout id="NamingRN1" rendered="true" prompt="EMail Test">
+                                       <ui:contents>
+                                          <oa:spacer id="Spacer11" height="30" width="100"/>
+                                          <oa:messageComponentLayout id="region4" rows="2" columns="2" width="50%">
+                                             <ui:contents>
+                                                <oa:messageChoice id="FileNameSeqReset" viewName="ODEBillMainVO" viewAttr="FileNameSeqReset" prompt="Sequence Reset" pickListViewDef="" pickListViewName="ODEBillFileSeqResetVO" pickListDispAttr="Meaning" pickListValAttr="Code" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                                <oa:messageTextInput id="FileSeqNumber" viewName="ODEBillMainVO" viewAttr="FileNextSeqNumber" prompt="Sequence Number" tipType="none" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                                <oa:messageStyledText id="FileSeqResetDate" dataType="DATE" viewName="ODEBillMainVO" viewAttr="FileSeqResetDate" prompt="Sequence Reset Date" styleClass="OraDataText"/>
+                                                <oa:messageTextInput id="FileNameMaxSeqNum" viewName="ODEBillMainVO" viewAttr="FileNameMaxSeqNumber" prompt="Max Sequence Number" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:messageComponentLayout>
+                                          <oa:spacer id="Spacer212" height="30" width="100"/>
+                                       </ui:contents>
+                                    </oa:stackLayout>
+                                    <oa:advancedTable id="ParametersRN" viewName="ODEBillFileNameVO">
+                                       <ui:contents>
+                                          <oa:column id="FileNameSeqCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader11" prompt="Sequence"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="FileNameSeq" viewAttr="FileNameOrderSeq" readOnly="false" required="yes" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                                <oa:formValue id="FileCustDocId" viewAttr="CustDocId"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="FieldNameCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader21" prompt="Field Name"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageChoice id="FieldName" dataType="VARCHAR2" prompt="Field Name" viewAttr="FieldId" pickListViewName="ODEBillFileFieldParamPVO" pickListDispAttr="FieldName" pickListValAttr="FieldId" readOnly="false" required="yes" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ConstantValueCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader31" prompt="Constant Value"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="ConstantValue1" dataType="VARCHAR2" prompt="Value" viewAttr="ConstantValue" maximumLength="256" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="DefaultIfNullCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader4" prompt="Default"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="DefaultIfNull" dataType="VARCHAR2" prompt="Default If NULL" viewAttr="DefaultIfNull" maximumLength="20" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="CommentsCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader5" prompt="Comments"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="FNPComments" dataType="VARCHAR2" prompt="Comments" viewAttr="Comments" columns="20" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="DeleteNamingCol" rendered="${oa.ODEBillPPRVO.CompleteDelBtn}">
+                                             <ui:columnHeader/>
+                                             <ui:contents>
+                                                <oa:image id="DeleteNaming" source="/OA_MEDIA/deleteicon_enabled.gif" prompt="Delete" rendered="${oa.ODEBillPPRVO.CompleteDelBtn}" serverUnvalidated="true">
+                                                   <ui:primaryClientAction>
+                                                      <ui:fireAction event="deleteFieldName" id="fireAction8" unvalidated="true">
+                                                         <ui:parameters>
+                                                            <ui:parameter key="pkId" value="${oa.ODEBillFileNameVO.EblFileNameId}"/>
+                                                            <ui:parameter key="fieldId" value="${oa.ODEBillFileNameVO.FieldId}"/>
+                                                         </ui:parameters>
+                                                      </ui:fireAction>
+                                                   </ui:primaryClientAction>
+                                                </oa:image>
+                                             </ui:contents>
+                                          </oa:column>
+                                       </ui:contents>
+                                       <ui:tableActions>
+                                          <oa:flowLayout id="region5">
+                                             <ui:contents>
+                                                <oa:submitButton id="AddFileName" text="Add Field" prompt="Add Field" disabled="${oa.ODEBillPPRVO.Complete}">
+                                                   <ui:primaryClientAction>
+                                                      <ui:fireAction event="AddFileName">
+                                                         <ui:parameters>
+                                                            <ui:parameter key="custDocId" value="${oa.ODEBillFileNameVO.CustDocId}"/>
+                                                            <ui:parameter key="eblFileNameId" value="${oa.ODEBillFileNameVO.FieldId}"/>
+                                                         </ui:parameters>
+                                                      </ui:fireAction>
+                                                   </ui:primaryClientAction>
+                                                </oa:submitButton>
+                                             </ui:contents>
+                                          </oa:flowLayout>
+                                       </ui:tableActions>
+                                    </oa:advancedTable>
+                                 </ui:contents>
+                              </oa:stackLayout>
+                              <oa:stackLayout id="ConfigurationHeaderRN">
+                                 <ui:contents>
+                                    <oa:messageComponentLayout id="ConfigMCLRN" rows="3" columns="2" width="60%">
+                                       <ui:contents>
+                                          <oa:messageChoice id="FileCreationType" dataType="VARCHAR2" prompt="File Creation Type" viewName="ODEBillTempHeaderVO" viewAttr="EbillFileCreationType" pickListViewName="ODEBillFileCreatTypePVO" pickListDispAttr="Meaning" pickListValAttr="Code" disabled="false" defaultValue="" allowBlankValue="false" serverUnvalidated="true" readOnly="false">
+                                             <ui:primaryClientAction>
+                                                <ui:firePartialAction event="FileDelimited">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="fileCreationType" value="${oa.ODEBillTempHeaderVO.EbillFileCreationType}"/>
+                                                   </ui:parameters>
+                                                </ui:firePartialAction>
+                                             </ui:primaryClientAction>
+                                          </oa:messageChoice>
+                                          <oa:messageChoice id="DelimiterChar" dataType="VARCHAR2" prompt="Delimiter Char" viewName="ODEBillTempHeaderVO" viewAttr="DelimiterChar" pickListViewName="ODEBillDelimitCharPVO" pickListDispAttr="Meaning" pickListValAttr="Code" disabled="${oa.ODEBillPPRVO.FileCreationType}" serverUnvalidated="true" readOnly="false"/>
+                                          <oa:messageCheckBox id="IncludeHeader" dataType="VARCHAR2" prompt="Include Header" viewName="ODEBillTempHeaderVO" viewAttr="IncludeHeader" checkedValue="Y" unCheckedValue="N" disabled="${oa.ODEBillPPRVO.Complete}" defaultValue="N" serverUnvalidated="true" readOnly="false"/>
+                                          <oa:messageChoice id="LogoFileName" dataType="VARCHAR2" prompt="Logo File Name" viewName="ODEBillTempHeaderVO" viewAttr="LogoFileName" pickListViewName="ODEBillLogoFilePVO" pickListDispAttr="Meaning" pickListValAttr="Code" disabled="${oa.ODEBillPPRVO.Complete}" serverUnvalidated="true" readOnly="false"/>
+                                          <oa:messageChoice id="SplitType" prompt="File Split Criteria" viewName="ODEBillTempHeaderVO" viewAttr="FileSplitCriteria" pickListViewName="ODEBillSplitTypePVO" pickListDispAttr="Meaning" pickListValAttr="Code" serverUnvalidated="true" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                          <oa:messageTextInput id="SplitValue" prompt="File Split Value" rendered="${oa.ODEBillPPRVO.Split}" viewName="ODEBillTempHeaderVO" viewAttr="FileSplitValue" serverUnvalidated="true" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                          <oa:messageChoice id="LineFeed" viewName="ODEBillTempHeaderVO" viewAttr="LineFeedStyle" prompt="Line Feed Style" pickListViewName="ODEBillLineFeedPVO" pickListDispAttr="Meaning" pickListValAttr="Code" disabled="${oa.ODEBillPPRVO.Complete}" defaultValue="10"/>
+                                          <oa:messageChoice id="SplitTabsBy" prompt="Split Tabs By" viewName="ODEBillTempHeaderVO" viewAttr="SplitTabsBy" pickListViewName="ODEBillSplitTabsByPVO" pickListDispAttr="Meaning" pickListValAttr="Code" serverUnvalidated="true" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                          <oa:messageCheckBox id="EnableXLSubTotal" dataType="VARCHAR2" prompt="Enable Excel Sub Totals" viewName="ODEBillTempHeaderVO" viewAttr="EnableXLSubTotal" checkedValue="Y" unCheckedValue="N" disabled="${oa.ODEBillPPRVO.Complete}" defaultValue="N" serverUnvalidated="true" readOnly="false"/>
+                                          <oa:messageCheckBox id="ConcatSplit" dataType="VARCHAR2" prompt="Concatenate and Split" viewName="ODEBillTempHeaderVO" viewAttr="ConcatSplit" checkedValue="Y" unCheckedValue="N" disabled="${oa.ODEBillPPRVO.Complete}" defaultValue="N" serverUnvalidated="true" readOnly="false">
+                                             <ui:primaryClientAction>
+                                                <ui:firePartialAction event="ConcatSplit"/>
+                                             </ui:primaryClientAction>
+                                          </oa:messageCheckBox>
+                                       </ui:contents>
+                                    </oa:messageComponentLayout>
+                                 </ui:contents>
+                              </oa:stackLayout>
+                              <oa:stackLayout id="ConfigurationDetailsRN">
+                                 <ui:contents>
+                                    <oa:messageComponentLayout id="ConfigMCLRN1" rows="1" columns="2" width="40%">
+                                       <ui:contents>
+                                          <oa:messageCheckBox id="RepeatTotal" dataType="VARCHAR2" prompt="Repeat Tax, Freight Charges and Miscellaneous etc" viewName="ODEBillTemplDtlVO" viewAttr="RepeatTotalFlag" checkedValue="Y" unCheckedValue="N" disabled="${oa.ODEBillPPRVO.Complete}" defaultValue="Y" serverUnvalidated="true" readOnly="false" text="Repeat Tax, Freight Charges and Miscellaneous etc" checked="true">
+                                             <ui:primaryClientAction>
+                                                <ui:firePartialAction event="RepeatTotalLabelDtl"/>
+                                             </ui:primaryClientAction>
+                                          </oa:messageCheckBox>
+                                       </ui:contents>
+                                    </oa:messageComponentLayout>
+                                    <oa:advancedTable id="ODEBillStdTemplTblRN" viewName="ODEBillTemplDtlVO" rendered="true">
+                                       <ui:contents>
+                                          <oa:column id="SelectCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader535" prompt="Select"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageCheckBox id="Select" viewAttr="Attribute1" checkedValue="Y" unCheckedValue="N" defaultValue="N" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                                <oa:formValue id="EblTemplId" viewAttr="EblTemplId"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="SeqCol">
+                                             <ui:contents>
+                                                <oa:messageTextInput id="Seq" dataType="NUMBER" prompt="Seq" viewAttr="Seq" columns="4" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}" required="yes"/>
+                                                <oa:formValue id="custdocId2" viewAttr="CustDocId"/>
+                                             </ui:contents>
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader121" prompt="Sequence"/>
+                                             </ui:columnHeader>
+                                          </oa:column>
+                                          <oa:column id="StdFieldNameCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="FieldNameHdr2" prompt="Field Name"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageChoice id="StdFieldName" dataType="NUMBER" prompt="Field Name" viewAttr="FieldId" pickListViewDef="" pickListViewName="ODEBillConfigDetailsFieldNamesPVO" pickListDispAttr="FieldName" pickListValAttr="FieldId" readOnly="true" rendered="true"/>
+                                                <oa:formValue id="FieldId3" viewAttr="FieldId"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="StdLabelCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="LabelHdr2" prompt="Label"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="StdLabel" dataType="VARCHAR2" prompt="Label" viewAttr="Label" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}" required="yes"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ConsValCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="LabelHdr21" prompt="Constant Value"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="ConsValue" dataType="VARCHAR2" prompt="Constant Value" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}" required="no" viewAttr="ConstantValue"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="DataFormatCol" rendered="false">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader221" prompt="Data Format"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="DataFormat" dataType="VARCHAR2" prompt="Data Format" viewAttr="DataFormat" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="DataFormatSwitchID" rendered="true">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="DataFormatPrompt" prompt="Data Format"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:switcher id="DataFormatSwitchRN" viewAttr="Xlslabelmethod">
+                                                   <ui:case name="switch1">
+                                                      <oa:messageChoice id="switch1" disabled="${oa.ODEBillPPRVO.Complete}" pickListDispAttr="Dataxlsfmt" pickListValAttr="Dataxlsfmt" pickListViewName="ODEBillDataXlsFmtPVO" viewAttr="DataFormat" prompt="Data Format" pickListViewDef=""/>
+                                                   </ui:case>
+                                                   <ui:case name="switch2">
+                                                      <oa:messageTextInput id="switch2" disabled="${oa.ODEBillPPRVO.Complete}" viewAttr="DataFormat" prompt="Data Format"/>
+                                                   </ui:case>
+                                                </oa:switcher>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ConcatCol" rendered="${oa.ODEBillPPRVO.ConcatSplit}">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="ConcatHeader" prompt="Concatenate"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageCheckBox id="Concat" viewAttr="Concatenate" checkedValue="Y" unCheckedValue="N" defaultValue="N" readOnly="false" disabled="${oa.current.ConcatFlag}" checked="false" serverUnvalidated="false"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="SplitCol" rendered="${oa.ODEBillPPRVO.ConcatSplit}">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="splitHeader" prompt="Split"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageCheckBox id="Split" viewAttr="Split" checkedValue="Y" unCheckedValue="N" defaultValue="N" readOnly="false" disabled="${oa.current.SplitFlag}" checked="false" serverUnvalidated="true"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="SortOrderCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader321" prompt="Sort Order"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="SortOrder" dataType="NUMBER" prompt="Sort Order" viewAttr="SortOrder" columns="4" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="SortTypeCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader411" prompt="Sort Type"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageChoice id="SortType" dataType="VARCHAR2" prompt="Sort Type" viewAttr="SortType" pickListViewName="ODEBillSortTypePVO" pickListDispAttr="Meaning" pickListValAttr="Code" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="MandatoryCol" rendered="false">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader511" prompt="Required?"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageCheckBox id="Mandatory" dataType="VARCHAR2" prompt="" viewAttr="Mandatory" checkedValue="Y" unCheckedValue="N" text="" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="DefaultCol" rendered="false">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader62" prompt="Default If NULL"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="Default" dataType="VARCHAR2" prompt="Default If NULL" viewAttr="DefaultIfNull" rows="1" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="StdCommentsCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader72" prompt="Configuration notes"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="StdComments" dataType="VARCHAR2" prompt="Comments" viewAttr="Comments" rows="1" disabled="${oa.ODEBillPPRVO.Complete}" readOnly="false"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="DisplayCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader5351" prompt="Display"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageCheckBox id="Display" viewAttr="Attribute20" checkedValue="Y" unCheckedValue="N" defaultValue="Y" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}" checked="true">
+                                                   <ui:primaryClientAction>
+                                                      <ui:firePartialAction event="displayCheckEvent"/>
+                                                   </ui:primaryClientAction>
+                                                </oa:messageCheckBox>
+                                             </ui:contents>
+                                          </oa:column>
+                                       </ui:contents>
+                                       <ui:tableActions>
+                                          <oa:flowLayout id="region62">
+                                             <ui:contents>
+                                                <oa:submitButton id="Subtotal2" text="Configure SubTotals" prompt="Configure SubTotals" rendered="false">
+                                                   <ui:primaryClientAction>
+                                                      <ui:fireAction event="configSubTotal" id="fireAction32"/>
+                                                   </ui:primaryClientAction>
+                                                </oa:submitButton>
+                                             </ui:contents>
+                                          </oa:flowLayout>
+                                       </ui:tableActions>
+                                    </oa:advancedTable>
+                                    <oa:advancedTable id="ODEBillNonStdTemplTblRN" viewName="ODEBillNonStdVO" rendered="${oa.ODEBillPPRVO.NonStd}">
+                                       <ui:contents>
+                                          <oa:column id="RecordTypeCol" rendered="true">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader518" prompt="Record Type"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:formValue id="EblNonStdTemplId" dataType="NUMBER" prompt="EblTemplId" viewAttr="EblTemplId"/>
+                                                <oa:formValue id="CustDocId2" dataType="NUMBER" prompt="CustDocId" viewAttr="CustDocId"/>
+                                                <oa:messageChoice id="RecordType" dataType="VARCHAR2" prompt="RecordType" viewAttr="RecordType" pickListViewName="ODEBillRecordTypePVO" pickListDispAttr="Meaning" pickListValAttr="Code" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}" required="yes"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="NonStdSeqCol" rendered="true">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader534" prompt="Sequence"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="NonStdSeq" dataType="NUMBER" prompt="Seq" viewAttr="Seq" maximumLength="15" columns="5" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}" required="yes"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="NonStdFieldNameCol" rendered="false">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader519" prompt="Field Name"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageLovInput id="NonStdFieldName" dataType="VARCHAR2" prompt="Field Name" viewAttr="Attribute5" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}" externalListOfValues="/od/oracle/apps/xxcrm/cdh/ebl/lov/webui/ODEBillNSFieldsLOVRN">
+                                                   <lovMappings>
+                                                      <lovMap id="FieldNameMap" lovItem="FieldNameLOV" resultTo="NonStdFieldName" criteriaFrom="NonStdFieldName"/>
+                                                      <lovMap id="FieldIdMap" lovItem="FieldIdLOV" resultTo="FieldId"/>
+                                                      <lovMap id="FieldLabelMap" lovItem="FieldNameLOV" resultTo="NonStdLabel"/>
+                                                      <lovMap id="FieldDataFormatMap" lovItem="DataFormatLOV" resultTo="NSDataFormat"/>
+                                                   </lovMappings>
+                                                </oa:messageLovInput>
+                                                <oa:formValue id="FieldId" viewAttr="FieldId"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="NonStdFieldNameCol1" rendered="true">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader5191" prompt="Field Name"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageChoice id="NonStdFieldName1" dataType="NUMBER" prompt="Field Name" viewAttr="FieldId" pickListViewName="ODEBillNSFieldNamesPVO" pickListDispAttr="FieldName" pickListValAttr="FieldId" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}" serverUnvalidated="true" required="yes">
+                                                   <ui:primaryClientAction>
+                                                      <ui:fireAction event="NSFieldChange" id="fireAction833" unvalidated="true">
+                                                         <ui:parameters>
+                                                            <ui:parameter key="eblTemplId" value="${oa.ODEBillNonStdVO.EblTemplId}"/>
+                                                         </ui:parameters>
+                                                      </ui:fireAction>
+                                                   </ui:primaryClientAction>
+                                                </oa:messageChoice>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="NonStdLabelCol" rendered="true">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader520" prompt="Label"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="NonStdLabel" dataType="VARCHAR2" prompt="Label" viewAttr="Label" maximumLength="256" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}" required="yes"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="NonStdFieldLenCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader533" prompt="Field Length"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="FieldLen" dataType="NUMBER" prompt="Field Length" viewAttr="FieldLen" maximumLength="15" columns="8" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="NonStdDataFormatCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader532" prompt="Data Format"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="NSDataFormat" dataType="VARCHAR2" prompt="Data Format" viewAttr="DataFormat" maximumLength="30" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="NonStdStringFunCol" rendered="false">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader531" prompt="String Function"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="StringFun" dataType="VARCHAR2" prompt="String Function" viewAttr="StringFun" maximumLength="256" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}" rendered="false"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="NonStdRequiredCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader530" prompt="Required?"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageCheckBox id="NonStdMandatory" dataType="VARCHAR2" prompt="" viewAttr="Mandatory" defaultValue="N" checkedValue="Y" unCheckedValue="N" text="" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="NonStdDefaultCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader529" prompt="Default Value"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="NonStdDefault" dataType="VARCHAR2" prompt="Default" viewAttr="DefaultIfNull" maximumLength="20" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="NonSeqStartValCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader528" prompt="Sequence Start Value"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="SeqStartVal" dataType="NUMBER" prompt="SeqStartVal" viewAttr="SeqStartVal" maximumLength="15" columns="7" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="NonStdSeqIncValCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader527" prompt="Sequence Value"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="SeqIncVal" dataType="NUMBER" prompt="SeqIncVal" viewAttr="SeqIncVal" columns="7" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="NonStdSeqResetCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader526" prompt="Reset Sequence"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageChoice id="SeqResetField" dataType="NUMBER" prompt="" viewAttr="SeqResetField" defaultValue="" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}" pickListViewName="ODEBillNSFieldNamesPVO" pickListDispAttr="FieldName" pickListValAttr="FieldId"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="NonStdConstValueCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader525" prompt="Constant Value"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="NonStdConstanctValue" viewAttr="ConstantValue" columns="13" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="NonStdAlignmentCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader524" prompt="Alignment"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageChoice id="NonStdAlignment" dataType="VARCHAR2" prompt="Alignment" viewAttr="Alignment" pickListViewName="ODEBillFieldAlignPVO" pickListDispAttr="Meaning" pickListValAttr="Code" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="NonStdPaddCharCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader523" prompt="Padding Characters"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageChoice id="NonStdPaddingChar" dataType="VARCHAR2" prompt="Padding Characters" viewAttr="PaddingChar" pickListViewName="ODEBillFieldPaddCharPVO" pickListDispAttr="Meaning" pickListValAttr="Code" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="NonStdCommentsCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader522" prompt="Configuration Notes"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="NonStdComments" dataType="VARCHAR2" prompt="Comments" viewAttr="Comments" maximumLength="3000" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="NonStdDeleteCol" rendered="${oa.ODEBillPPRVO.CompleteDelBtn}">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader521" prompt="Delete"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:image id="DeleteNonStd" source="/OA_MEDIA/deleteicon_enabled.gif" prompt="Delete" rendered="${oa.ODEBillPPRVO.CompleteDelBtn}" serverUnvalidated="true">
+                                                   <ui:primaryClientAction>
+                                                      <ui:fireAction event="deleteTemplField" id="fireAction831" unvalidated="true">
+                                                         <ui:parameters>
+                                                            <ui:parameter key="pkId" value="${oa.ODEBillNonStdVO.EblTemplId}"/>
+                                                            <ui:parameter key="fieldId" value="${oa.ODEBillNonStdVO.FieldId}"/>
+                                                         </ui:parameters>
+                                                      </ui:fireAction>
+                                                   </ui:primaryClientAction>
+                                                </oa:image>
+                                             </ui:contents>
+                                          </oa:column>
+                                       </ui:contents>
+                                       <ui:tableActions>
+                                          <oa:flowLayout id="region64">
+                                             <ui:contents>
+                                                <oa:submitButton id="AddNonStdField" text="Add Field" prompt="Add Field" disabled="${oa.ODEBillPPRVO.Complete}">
+                                                   <ui:primaryClientAction>
+                                                      <ui:fireAction event="AddNonStdField">
+                                                         <ui:parameters>
+                                                            <ui:parameter key="custDocId" value="${oa.ODEBillNonStdVO.CustDocId}"/>
+                                                         </ui:parameters>
+                                                      </ui:fireAction>
+                                                   </ui:primaryClientAction>
+                                                </oa:submitButton>
+                                             </ui:contents>
+                                          </oa:flowLayout>
+                                       </ui:tableActions>
+                                    </oa:advancedTable>
+                                 </ui:contents>
+                              </oa:stackLayout>
+                              <oa:stackLayout id="ConcatenateRN" rendered="true">
+                                 <ui:contents>
+                                    <oa:advancedTable id="ODEBillConcatRN" rendered="${oa.ODEBillPPRVO.ConcatSplit}" viewName="ODEBillConcatenateVO">
+                                       <ui:contents>
+                                          <oa:column id="ConcField1">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader211" prompt="Concatenate Field1"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageChoice id="FieldName1" dataType="VARCHAR2" prompt="" viewAttr="ConcBaseFieldId1" pickListViewName="ODEBillDynConcFieldsVO" pickListDispAttr="Meaning" pickListValAttr="Code" readOnly="false" required="no" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ConcField2">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader2112" prompt="Concatenate Field2"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageChoice id="FieldName2" dataType="VARCHAR2" prompt="" viewAttr="ConcBaseFieldId2" pickListViewName="ODEBillDynConcFieldsVO" pickListDispAttr="Meaning" pickListValAttr="Code" readOnly="false" required="no" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ConcField3">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader2111" prompt="Concatenate Field3"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageChoice id="FieldName3" dataType="VARCHAR2" prompt="" viewAttr="ConcBaseFieldId3" pickListViewName="ODEBillDynConcFieldsVO" pickListDispAttr="Meaning" pickListValAttr="Code" readOnly="false" required="no" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="ConcFieldLabelCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader5151" prompt="Concatenate Field Label"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="ConcFieldLabel" dataType="VARCHAR2" prompt="Concatenate Field Label" viewAttr="ConcFieldLabel" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}" required="yes" showRequired="true"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="DeleteConcRow1" rendered="${oa.ODEBillPPRVO.CompleteDelBtn}">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader51611" prompt="Delete"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:image id="DelConcRow1" source="/OA_MEDIA/deleteicon_enabled.gif" prompt="Delete" rendered="${oa.ODEBillPPRVO.CompleteDelBtn}" serverUnvalidated="true">
+                                                   <ui:primaryClientAction>
+                                                      <ui:fireAction event="deleteConcRow" id="fireAction8111" unvalidated="true">
+                                                         <ui:parameters>
+                                                            <ui:parameter key="concFieldId" value="${oa.ODEBillConcatenateVO.ConcFieldId}"/>
+                                                         </ui:parameters>
+                                                      </ui:fireAction>
+                                                   </ui:primaryClientAction>
+                                                </oa:image>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:formValue id="ConcCustDocId" viewAttr="CustDocId"/>
+                                          <oa:formValue id="ConcCustAccountId" viewAttr="CustAccountId"/>
+                                          <oa:formValue id="ConcFieldId" viewAttr="ConcFieldId"/>
+                                       </ui:contents>
+                                       <ui:tableActions>
+                                          <oa:flowLayout id="region6311">
+                                             <ui:contents>
+                                                <oa:submitButton id="AddConcRow1" text="Add Row" prompt="Add Row" disabled="${oa.ODEBillPPRVO.Complete}">
+                                                   <ui:primaryClientAction>
+                                                      <ui:fireAction event="AddConcRow" id="fireAction8211">
+                                                         <ui:parameters>
+                                                            <ui:parameter key="custDocId" value="${oa.ODEBillFileNameVO.CustDocId}"/>
+                                                            <ui:parameter key="eblFileNameId" value="${oa.ODEBillFileNameVO.FieldId}"/>
+                                                         </ui:parameters>
+                                                      </ui:fireAction>
+                                                   </ui:primaryClientAction>
+                                                </oa:submitButton>
+                                             </ui:contents>
+                                          </oa:flowLayout>
+                                       </ui:tableActions>
+                                    </oa:advancedTable>
+                                    <oa:formattedText id="ConcMsg" text="Concatenate and Split checkbox needs to be checked for configuring." rendered="${oa.ODEBillPPRVO.ConcatSplitMsg}" styleClass="OraDataText"/>
+                                 </ui:contents>
+                              </oa:stackLayout>
+                              <oa:stackLayout id="SplitRN" rendered="true">
+                                 <ui:contents>
+                                    <oa:advancedTable id="ODEBillSplitRN" rendered="${oa.ODEBillPPRVO.ConcatSplit}" viewName="ODEBillSplitVO">
+                                       <ui:contents>
+                                          <oa:column id="SplitField">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader2113" prompt="Split Base Field"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageChoice id="SplitFieldName" dataType="VARCHAR2" prompt="Split Base Field" pickListViewName="ODEBillDynSplitFieldsVO" pickListDispAttr="Meaning" pickListValAttr="Code" readOnly="false" required="yes" disabled="${oa.ODEBillPPRVO.Complete}" pickListViewDef="" viewAttr="SplitBaseFieldId"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="SplitFieldTypeId">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader2113117" prompt="Split Type"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageChoice id="SplitFieldType" dataType="VARCHAR2" prompt="Split Type" pickListDispAttr="" pickListValAttr="" readOnly="false" required="yes" disabled="${oa.ODEBillPPRVO.Complete}" pickListViewName="" viewAttr="SplitType"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="SplitFixedPositionId">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader2113115" prompt="Fixed Position"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="SplitFixedPosition" dataType="VARCHAR2" prompt="Fixed Position" viewAttr="FixedPosition" readOnly="false" required="no" disabled="${oa.current.EnableFixedPosition}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="SplitDelimiterId" columnDataFormat="objectNameFormat">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader2113116" prompt="Delimiter"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="SplitDelimiter" dataType="VARCHAR2" prompt="Delimiter" viewAttr="Delimiter" readOnly="false" required="no" disabled="${oa.current.EnableDelimiter}" maximumLength="1" columns="1" vAlign="middle"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="SplitField1LabelId">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader21131" prompt="Split Field1 Label"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="SplitField1Label" dataType="VARCHAR2" prompt="Split Field1 Label" viewAttr="SplitField1Label" readOnly="false" required="no" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="SplitField2LabelId">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader2113111" prompt="Split Field2 Label"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="SplitField2Label" dataType="VARCHAR2" prompt="Split Field2 Label" viewAttr="SplitField2Label" readOnly="false" required="no" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="SplitField3LabelId">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader2113112" prompt="Split Field3 Label"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="SplitField3Label" dataType="VARCHAR2" prompt="Split Field3 Label" viewAttr="SplitField3Label" readOnly="false" required="no" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="SplitField4LabelId">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader2113113" prompt="Split Field4 Label"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="SplitField4Label" dataType="VARCHAR2" prompt="Split Field4 Label" viewAttr="SplitField4Label" readOnly="false" required="no" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="SplitField5LabelId">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader2113114" prompt="Split Field5 Label"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="SplitField5Label" dataType="VARCHAR2" prompt="Split Field5 Label" viewAttr="SplitField5Label" readOnly="false" required="no" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="SplitField6LabelId">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader211311" prompt="Split Field6 Label"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="SplitField6Label" dataType="VARCHAR2" prompt="Split Field6 Label" viewAttr="SplitField6Label" readOnly="false" required="no" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="DeleteSplitRow" rendered="${oa.ODEBillPPRVO.CompleteDelBtn}">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader516111" prompt="Delete"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:image id="DelSplitRow" source="/OA_MEDIA/deleteicon_enabled.gif" prompt="Delete" rendered="${oa.ODEBillPPRVO.CompleteDelBtn}" serverUnvalidated="true">
+                                                   <ui:primaryClientAction>
+                                                      <ui:fireAction event="deleteSplitRow" id="fireAction81111" unvalidated="true">
+                                                         <ui:parameters>
+                                                            <ui:parameter key="splitFieldId" value="${oa.ODEBillSplitVO.SplitFieldId}"/>
+                                                         </ui:parameters>
+                                                      </ui:fireAction>
+                                                   </ui:primaryClientAction>
+                                                </oa:image>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:formValue id="SplitCustDocId" viewAttr="CustDocId"/>
+                                          <oa:formValue id="SplitCustAccountId" viewAttr="CustAccountId"/>
+                                          <oa:formValue id="SplitFieldId" viewAttr="SplitFieldId"/>
+                                       </ui:contents>
+                                       <ui:tableActions>
+                                          <oa:flowLayout id="region63111">
+                                             <ui:contents>
+                                                <oa:submitButton id="AddSplitRow" text="Add Row" prompt="Add Row" disabled="${oa.ODEBillPPRVO.Complete}">
+                                                   <ui:primaryClientAction>
+                                                      <ui:fireAction event="AddSplitRow" id="fireAction82111">
+                                                         <ui:parameters>
+                                                            <ui:parameter key="custDocId" value="${oa.ODEBillFileNameVO.CustDocId}"/>
+                                                            <ui:parameter key="eblFileNameId" value="${oa.ODEBillFileNameVO.FieldId}"/>
+                                                         </ui:parameters>
+                                                      </ui:fireAction>
+                                                   </ui:primaryClientAction>
+                                                </oa:submitButton>
+                                             </ui:contents>
+                                          </oa:flowLayout>
+                                       </ui:tableActions>
+                                    </oa:advancedTable>
+                                    <oa:formattedText id="SplitMsg" text="Concatenate and Split checkbox needs to be checked for configuring." rendered="${oa.ODEBillPPRVO.ConcatSplitMsg}" styleClass="OraDataText"/>
+                                 </ui:contents>
+                              </oa:stackLayout>
+                              <oa:stackLayout id="SubTotalRN" rendered="true">
+                                 <ui:contents>
+                                    <oa:advancedTable id="ODEBillSubTotalRN" viewName="ODEBillStdAggrDtlVO">
+                                       <ui:contents>
+                                          <oa:column id="EblAggrFunCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader512" prompt="Aggregate Function"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:formValue id="EblAggrId" dataType="NUMBER" prompt="EblAggrId" viewAttr="EblAggrId"/>
+                                                <oa:formValue id="CustDocId1" dataType="NUMBER" prompt="CustDocId" viewAttr="CustDocId"/>
+                                                <oa:messageChoice id="AggrFun" dataType="VARCHAR2" prompt="Aggrigate Function" viewAttr="AggrFun" pickListViewName="ODEBillAggrFunPVO" pickListDispAttr="Meaning" pickListValAttr="Code" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}" required="yes"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="AggrFieldCol1" rendered="false">
+                                             <ui:contents>
+                                                <oa:messageLovInput id="AggrFieldName1" dataType="VARCHAR2" prompt="Aggrigate Field Name" viewAttr="Attribute1" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}" externalListOfValues="/od/oracle/apps/xxcrm/cdh/ebl/lov/webui/ODEBillAggrFieldLOVRN" required="yes">
+                                                   <lovMappings>
+                                                      <lovMap id="lovFieldNameMap" lovItem="FieldName" resultTo="AggrFieldName1" criteriaFrom="AggrFieldName1" useForValidation="yes"/>
+                                                      <lovMap id="lovCustDocIDMap" lovItem="CustDocId" criteriaFrom="custDocIDFV"/>
+                                                      <lovMap id="lovFieldIdMap" lovItem="FieldId" resultTo="aggrFieldIdFV"/>
+                                                   </lovMappings>
+                                                </oa:messageLovInput>
+                                             </ui:contents>
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader5131" prompt="Aggregate Field Name"/>
+                                             </ui:columnHeader>
+                                          </oa:column>
+                                          <oa:column id="AggrFieldCol" rendered="true">
+                                             <ui:contents>
+                                                <oa:messageChoice id="AggrFieldName" dataType="NUMBER" prompt="Aggrigate Field Name" viewAttr="AggrFieldId" pickListViewName="ODEBillAggrFieldPVO" pickListDispAttr="FieldName" pickListValAttr="FieldId" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader513" prompt="Aggregate Field Name"/>
+                                             </ui:columnHeader>
+                                          </oa:column>
+                                          <oa:column id="ChangeFieldNameCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader514" prompt="Change Field Name"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageChoice id="ChangeFieldName" dataType="NUMBER" prompt="Change Field Id" viewAttr="ChangeFieldId" pickListViewName="ODEBillSubTotalFieldsVO" pickListDispAttr="FieldName" pickListValAttr="FieldId" readOnly="false" disabled="${oa.ODEBillPPRVO.Complete}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="LabelOnFileCol">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader515" prompt="Field Alias"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:messageTextInput id="LabelOnFile" dataType="VARCHAR2" prompt="Label On File" viewAttr="LabelOnFile" readOnly="false" disabled="${oa.ODEBillPPRVO.EnableXlsSubtotal}"/>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:column id="DeleteSubTotalCol" rendered="${oa.ODEBillPPRVO.CompleteDelBtn}">
+                                             <ui:columnHeader>
+                                                <oa:sortableHeader id="sortableHeader516" prompt="Delete"/>
+                                             </ui:columnHeader>
+                                             <ui:contents>
+                                                <oa:image id="DeleteSubTotal" source="/OA_MEDIA/deleteicon_enabled.gif" prompt="Delete" rendered="${oa.ODEBillPPRVO.CompleteDelBtn}" serverUnvalidated="true">
+                                                   <ui:primaryClientAction>
+                                                      <ui:fireAction event="deleteSubTotal" id="fireAction81" unvalidated="true">
+                                                         <ui:parameters>
+                                                            <ui:parameter key="eblAggrId" value="${oa.ODEBillStdAggrDtlVO.EblAggrId}"/>
+                                                         </ui:parameters>
+                                                      </ui:fireAction>
+                                                   </ui:primaryClientAction>
+                                                </oa:image>
+                                             </ui:contents>
+                                          </oa:column>
+                                          <oa:formValue id="custDocIDFV" viewAttr="CustDocId"/>
+                                          <oa:formValue id="aggrFieldIdFV" viewAttr="AggrFieldId"/>
+                                       </ui:contents>
+                                       <ui:tableActions>
+                                          <oa:flowLayout id="region63">
+                                             <ui:contents>
+                                                <oa:submitButton id="AddSubTotal" text="Add Sub Total" prompt="Add Sub Total" disabled="${oa.ODEBillPPRVO.Complete}">
+                                                   <ui:primaryClientAction>
+                                                      <ui:fireAction event="AddSubTotal" id="fireAction82">
+                                                         <ui:parameters>
+                                                            <ui:parameter key="custDocId" value="${oa.ODEBillFileNameVO.CustDocId}"/>
+                                                            <ui:parameter key="eblFileNameId" value="${oa.ODEBillFileNameVO.FieldId}"/>
+                                                         </ui:parameters>
+                                                      </ui:fireAction>
+                                                   </ui:primaryClientAction>
+                                                </oa:submitButton>
+                                             </ui:contents>
+                                          </oa:flowLayout>
+                                       </ui:tableActions>
+                                    </oa:advancedTable>
+                                 </ui:contents>
+                              </oa:stackLayout>
+                           </ui:contents>
+                        </oa:subTabLayout>
+                     </ui:contents>
+                  </oa:stackLayout>
+                  <oa:spacer id="Spacer" height="20" width="100"/>
+                  <oa:pageButtonBar id="ButtonBarRN">
+                     <ui:contents>
+                        <oa:submitButton id="Save" text="Save" prompt="Save">
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="Save" id="fireAction6"/>
+                           </ui:primaryClientAction>
+                        </oa:submitButton>
+                        <oa:submitButton id="Cancel" text="Cancel" prompt="Cancel" serverUnvalidated="true" unvalidated="true">
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="Cancel"/>
+                           </ui:primaryClientAction>
+                        </oa:submitButton>
+                     </ui:contents>
+                  </oa:pageButtonBar>
+               </ui:contents>
+            </oa:stackLayout>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

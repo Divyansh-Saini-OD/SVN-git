@@ -1,0 +1,25 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : ALT_XX_CDH_ACCOUNT_SETUP_REQ1.tbl                  |
+-- | Description      : Add contract_template_id Column                    |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |1        15-MAR-2010   Sreedhar Mohan   Initial Version                |
+-- +=======================================================================+
+
+------------------------------------------------------------------------
+-- Add locked flags and mandotary flag                 
+------------------------------------------------------------------------
+
+alter table XXCRM.XX_CDH_ACCOUNT_SETUP_REQ add (contract_template_id number(15));
+
+SHOW ERRORS;

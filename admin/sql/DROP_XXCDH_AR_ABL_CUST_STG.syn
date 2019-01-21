@@ -1,0 +1,37 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :DROP_XXCDH_AR_ABL_CUST_STG.syn                      |
+-- | Description      :Drop Synonym to XXCDH_AR_ABL_CUST_STG Table         |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |1.0       21-Feb-2010  Nabarun       Initial draft                |
+-- +=======================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Dropping Existing Synonym APPS.XXCDH_AR_ABL_CUST_STG .....
+PROMPT
+
+DROP SYNONYM APPS.XXCDH_AR_ABL_CUST_STG;
+
+SHOW ERRORS;
+EXIT;
+

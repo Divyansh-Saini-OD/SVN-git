@@ -1,0 +1,201 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile(120.9.12010000.5=120.13)(120.6.12000000.4=120.9)(115.9=120.0):~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<oa:hideShowHeader version="10.1.3_" xml:lang="en-US" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:ui="http://xmlns.oracle.com/uix/ui" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header: XXCSGroupQueueRN.xml 120.9.12020000.16 2015/07/01 04:57:39 spamujul ship $" controllerClass="od.oracle.apps.xxcrm.cs.csz.dashboard.webui.XXCSGroupQueueCO" amDefName="oracle.apps.cs.csz.dashboard.server.GroupQueueAM" text="Unassigned Service Requests" amUsageName="GroupQueueAM" disclosed="true">
+   <ui:contents>
+      <oa:tableLayout id="GroupTL" hAlign="center" width="100%">
+         <ui:contents>
+            <oa:rowLayout id="GroupSRTipRow">
+               <ui:contents>
+                  <oa:cellFormat id="GroupSRTipCell">
+                     <ui:contents>
+                        <oa:tip id="GroupTip" tipMessageAppShortName="CS" tipMessageName="CSZ_SR_ASSIGN_TIP"/>
+                     </ui:contents>
+                  </oa:cellFormat>
+               </ui:contents>
+            </oa:rowLayout>
+            <oa:rowLayout id="RefreshGroupRow" width="100%" rendered="true">
+               <ui:contents>
+                  <oa:cellFormat id="RefreshGroupCell" hAlign="right" rendered="true">
+                     <ui:contents>
+                        <oa:button id="RefreshGroupButton" text="Refresh" prompt="Refresh">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction event="cszGroupQueueRefresh" id="firePartialAction1"/>
+                           </ui:primaryClientAction>
+                        </oa:button>
+                     </ui:contents>
+                  </oa:cellFormat>
+               </ui:contents>
+            </oa:rowLayout>
+            <oa:rowLayout id="GroupSRTipSpacerRow">
+               <ui:contents>
+                  <oa:cellFormat id="GroupSRTipSpCell">
+                     <ui:contents>
+                        <oa:spacer id="GroupSRTipSpacer" height="5"/>
+                     </ui:contents>
+                  </oa:cellFormat>
+               </ui:contents>
+            </oa:rowLayout>
+            <oa:rowLayout id="GroupTableRow" width="100%">
+               <ui:contents>
+                  <oa:cellFormat id="GroupTableCell">
+                     <ui:contents>
+                        <oa:table id="GroupTableRN" width="100%" text="" shortDesc="Unassigned Service Requests">
+                           <ui:contents>
+                              <oa:messageStyledText id="GrpIncidentnumber" dataType="VARCHAR2" prompt="Number" viewName="GroupQueueVO" viewAttr="IncidentNumber" maximumLength="64" sortState="ascending" sortByViewAttr="Creationdate"/>
+                              <oa:messageStyledText id="GrpSummary" dataType="VARCHAR2" prompt="Summary" viewName="GroupQueueVO" viewAttr="Summary" maximumLength="240" sortState="ascending" adminCustomizable="true">
+                                 <ui:primaryClientAction>
+                                    <ui:fireAction event="cszUpdateSREvent" id="fireAction1">
+                                       <ui:parameters>
+                                          <ui:parameter key="srId" value="${oa.current.IncidentId}"/>
+                                       </ui:parameters>
+                                    </ui:fireAction>
+                                 </ui:primaryClientAction>
+                              </oa:messageStyledText>
+                              <oa:switcher id="Escalated" viewName="GroupQueueVO" viewAttr="Escalated" rendered="true" sortState="ascending" prompt="Escalated">
+                                 <ui:case name="showescalateicon">
+                                    <oa:image id="showescalateicon" source="changeind_increbad_status.gif" rendered="true" sortState="ascending" shortDesc="Escalated"/>
+                                 </ui:case>
+                              </oa:switcher>
+                              <oa:messageStyledText id="GrpIncidentseverity" dataType="VARCHAR2" prompt="Severity" viewName="GroupQueueVO" viewAttr="Incidentseverity" maximumLength="30" sortByViewAttr="Sevimportancelevel" sortState="ascending" initSortSeq="first"/>
+                              <oa:switcher id="GrpDueDateStr" viewName="GroupQueueVO" viewAttr="Duedatecolor" sortState="ascending" prompt="Due Date" sortByViewAttr="DueDate" initSortSeq="second">
+                                 <ui:case name="showredcolor">
+                                    <oa:messageStyledText id="showredcolor" viewName="GroupQueueVO" viewAttr="DueDateStr" sortByViewAttr="DueDate" prompt="Due Date" styleClass="OraErrorText" sortState="ascending"/>
+                                 </ui:case>
+                                 <ui:case name="showbluecolor">
+                                    <oa:messageStyledText id="showbluecolor" prompt="Due Date" viewName="GroupQueueVO" viewAttr="DueDateStr" sortByViewAttr="DueDate" styleClass="OraTipText" sortState="ascending"/>
+                                 </ui:case>
+                                 <ui:case name="showblackcolor">
+                                    <oa:messageStyledText id="showblackcolor" prompt="Due Date" viewName="GroupQueueVO" viewAttr="DueDateStr" sortByViewAttr="DueDate" sortState="ascending"/>
+                                 </ui:case>
+                              </oa:switcher>
+                              <oa:switcher id="GrpSrstatusswitcher" viewName="GroupQueueVO" viewAttr="Srstatusswitcher" prompt="Status">
+                                 <ui:case name="SrStatusEnabled">
+                                    <oa:messageChoice id="SrStatusEnabled" prompt="Status" viewName="GroupQueueVO" viewAttr="IncidentStatusId" pickListViewDef="oracle.apps.cs.csz.dashboard.server.SRStatusPickListVO" pickListDispAttr="Name" pickListValAttr="IncidentStatusId" allowBlankValue="false" pickListViewName="GroupSRStatusPickListVO"/>
+                                 </ui:case>
+                                 <ui:case name="SrStatusDisabled">
+                                    <oa:messageStyledText id="SrStatusDisabled" viewName="GroupQueueVO" sortState="ascending" viewAttr="Incidentstatus" sortByViewAttr="Statusordattr" prompt="Status"/>
+                                 </ui:case>
+                              </oa:switcher>
+                              <oa:messageStyledText id="GrpCustomername" dataType="VARCHAR2" prompt="Customer" viewName="GroupQueueVO" viewAttr="Customername" maximumLength="360" rendered="true" sortState="ascending"/>
+                              <oa:messageStyledText id="GrpSrgroup" dataType="VARCHAR2" prompt="Group" viewName="GroupQueueVO" viewAttr="Srgroup" maximumLength="60" rendered="true" sortState="ascending"/>
+                              <oa:image id="AssignIcon" prompt="Accept" source="assignposition_enabled.gif" adminCustomizable="false" shortDesc="Accept">
+                                 <ui:primaryClientAction>
+                                    <ui:fireAction event="cszAssignSREvent" id="fireAction2">
+                                       <ui:parameters>
+                                          <ui:parameter key="srId" value="${oa.current.IncidentId}"/>
+                                          <ui:parameter key="srNumber" value="${oa.current.IncidentNumber}"/>
+                                       </ui:parameters>
+                                    </ui:fireAction>
+                                 </ui:primaryClientAction>
+                              </oa:image>
+                              <oa:switcher id="DueAction" viewName="GroupQueueVO" viewAttr="DueAction" prompt="Action" sortState="ascending" rendered="false">
+                                 <ui:case name="RESPOND">
+                                    <oa:staticStyledText id="RESPOND" text="Respond" prompt="Respond" sortState="ascending"/>
+                                 </ui:case>
+                                 <ui:case name="RESOLVE">
+                                    <oa:staticStyledText id="RESOLVE" text="Resolve" prompt="Resolve" sortState="ascending"/>
+                                 </ui:case>
+                                 <ui:case name="CLOSE">
+                                    <oa:staticStyledText id="CLOSE" text="Close" prompt="Close" sortState="ascending"/>
+                                 </ui:case>
+                              </oa:switcher>
+                              <oa:messageStyledText id="GrpWaitingon" dataType="VARCHAR2" prompt="Waiting On" viewName="GroupQueueVO" viewAttr="Waitingon" maximumLength="80" sortState="ascending" rendered="false"/>
+                              <oa:messageStyledText id="GrpIncidenttype" dataType="VARCHAR2" prompt="Type" viewName="GroupQueueVO" viewAttr="Incidenttype" maximumLength="30" rendered="false" sortState="ascending"/>
+                              <oa:messageStyledText id="GrpIncidenturgency" dataType="VARCHAR2" prompt="Urgency" viewName="GroupQueueVO" viewAttr="Incidenturgency" maximumLength="30" rendered="false" sortState="ascending"/>
+                              <oa:formValue id="Problemcodeid" dataType="VARCHAR2" viewName="GroupQueueVO" viewAttr="Problemcodeid" rendered="false"/>
+                              <oa:messageStyledText id="GrpProblemcode" dataType="VARCHAR2" prompt="Problem" viewName="GroupQueueVO" viewAttr="Problemcode" maximumLength="80" rendered="false" sortState="ascending"/>
+                              <oa:formValue id="Resolutioncodeid" dataType="VARCHAR2" viewName="GroupQueueVO" viewAttr="Resolutioncodeid" rendered="false"/>
+                              <oa:messageStyledText id="GrpResolutioncode" dataType="VARCHAR2" prompt="Resolution" viewName="GroupQueueVO" viewAttr="Resolutioncode" maximumLength="80" rendered="false" sortState="ascending"/>
+                              <oa:messageStyledText id="GrpTimezonename" dataType="VARCHAR2" prompt="Contact Timezone" viewName="GroupQueueVO" viewAttr="Timezonename" maximumLength="80" rendered="false" sortState="ascending"/>
+                              <oa:messageStyledText id="GrpAccountnumber" dataType="VARCHAR2" prompt="Account" viewName="GroupQueueVO" viewAttr="Accountnumber" maximumLength="30" rendered="false" sortState="ascending"/>
+                              <oa:messageStyledText id="GrpProduct" dataType="VARCHAR2" prompt="Item" viewName="GroupQueueVO" viewAttr="Product" maximumLength="40" rendered="false" sortState="ascending"/>
+                              <oa:messageStyledText id="GrpProductdescription" dataType="VARCHAR2" prompt="Item Description" viewName="GroupQueueVO" viewAttr="Productdescription" maximumLength="240" rendered="false" sortState="ascending"/>
+                              <oa:messageStyledText id="GrpCreationdate" dataType="DATETIME" prompt="Created" viewName="GroupQueueVO" viewAttr="Creationdate" rendered="false" sortState="ascending"/>
+                              <oa:messageStyledText id="GrpIncidentdate" dataType="DATETIME" prompt="Incident On" viewName="GroupQueueVO" viewAttr="Incidentdate" rendered="false" sortState="ascending"/>
+                              <oa:messageStyledText id="GrpExpectedreactiondate" dataType="DATETIME" prompt="Respond By" viewName="GroupQueueVO" viewAttr="Expectedreactiondate" rendered="false" sortState="ascending"/>
+                              <oa:messageStyledText id="GrpExpectedresolutiondate" dataType="DATETIME" prompt="Resolve By" viewName="GroupQueueVO" viewAttr="Expectedresolutiondate" rendered="false" sortState="ascending"/>
+                              <oa:messageStyledText id="GrpDatefirstreacted" dataType="DATETIME" prompt="Responded On" viewName="GroupQueueVO" viewAttr="Datefirstreacted" rendered="false" sortState="ascending"/>
+                              <oa:messageStyledText id="GrpDueDate" dataType="DATETIME" prompt="Due Date" viewName="GroupQueueVO" viewAttr="DueDate" sortState="ascending" rendered="false"/>
+                              <oa:messageStyledText id="GrpCustomerphone" dataType="VARCHAR2" prompt="Customer Phone" viewName="GroupQueueVO" viewAttr="Customerphone" maximumLength="62" rendered="false" sortState="ascending"/>
+                              <oa:messageStyledText id="GrpCustomeremail" dataType="VARCHAR2" prompt="Customer Email" viewName="GroupQueueVO" viewAttr="Customeremail" maximumLength="2000" rendered="false" sortState="ascending"/>
+                              <oa:messageStyledText id="GrpContractName" dataType="VARCHAR2" prompt="Contract" viewName="GroupQueueVO" viewAttr="Contractname" maximumLength="485" rendered="false" sortState="ascending"/>
+                              <oa:messageStyledText id="GrpCoverageName" dataType="VARCHAR2" prompt="Coverage" viewName="GroupQueueVO" viewAttr="Coveragename" maximumLength="150" rendered="false" sortState="ascending"/>
+                              <oa:messageStyledText id="GrpCoverageDescription" dataType="VARCHAR2" prompt="Coverage Description" viewName="GroupQueueVO" viewAttr="Coveragedescription" maximumLength="1995" rendered="false" sortState="ascending"/>
+                              <oa:messageStyledText id="GrpContactname" dataType="VARCHAR2" prompt="Contact" viewName="GroupQueueVO" viewAttr="Contactname" maximumLength="4000" rendered="false" sortState="ascending"/>
+                              <oa:switcher id="SrJeopardy" viewName="GroupQueueVO" viewAttr="Srjeopardy" rendered="false" prompt="In Jeopardy" sortState="ascending">
+                                 <ui:case name="showjeopardyicon">
+                                    <oa:image id="showjeopardyicon" source="warningind_status.gif" rendered="true" sortState="ascending" shortDesc="Jeopardy"/>
+                                 </ui:case>
+                              </oa:switcher>
+                              <oa:switcher id="LateSr" viewName="GroupQueueVO" viewAttr="Latesr" rendered="false" sortState="ascending" prompt="Overdue">
+                                 <ui:case name="showlateicon">
+                                    <oa:image id="showlateicon" source="erroricon_status.gif" rendered="true" sortState="ascending" shortDesc="Overdue"/>
+                                 </ui:case>
+                              </oa:switcher>
+                              <oa:messageStyledText id="GrpResolutionsummary" dataType="VARCHAR2" prompt="Resolution Summary" viewName="GroupQueueVO" viewAttr="Resolutionsummary" maximumLength="250" rendered="false" sortState="ascending"/>
+                              <oa:messageStyledText id="GrpContacttype" dataType="VARCHAR2" prompt="Contact Type" viewName="GroupQueueVO" viewAttr="Contacttype" maximumLength="80" rendered="false" sortState="ascending"/>
+                              <oa:messageStyledText id="GrpSrcreationchannel" dataType="VARCHAR2" prompt="Creation Channel" viewName="GroupQueueVO" viewAttr="Srcreationchannel" maximumLength="80" rendered="false" sortState="ascending"/>
+                              <oa:messageStyledText id="GrpCreatedby" dataType="VARCHAR2" prompt="Created By" viewName="GroupQueueVO" viewAttr="Createdby" maximumLength="100" rendered="false" sortState="ascending"/>
+                              <oa:messageStyledText id="GrpLastupdatedate" dataType="DATETIME" prompt="Last Update On" viewName="GroupQueueVO" viewAttr="Lastupdatedate" rendered="false" sortState="ascending"/>
+                              <oa:messageStyledText id="GrpPublishflag" dataType="VARCHAR2" prompt="Publishflag" viewName="GroupQueueVO" viewAttr="Publishflag" maximumLength="1" rendered="false" sortState="ascending"/>
+                              <oa:messageStyledText id="GrpCustomernumber" dataType="VARCHAR2" prompt="Customer Number" viewName="GroupQueueVO" viewAttr="Customernumber" maximumLength="30" rendered="false" sortState="ascending"/>
+                              <oa:formValue id="Srownerid" dataType="NUMBER" prompt="Srownerid" viewName="GroupQueueVO" viewAttr="Srownerid"/>
+                              <oa:formValue id="Srgroupid" dataType="NUMBER" prompt="Srgroupid" viewName="GroupQueueVO" viewAttr="Srgroupid"/>
+                              <oa:formValue id="Incidentid" dataType="NUMBER" prompt="Incidentid" viewName="GroupQueueVO" viewAttr="IncidentId"/>
+                              <oa:messageStyledText id="GrpResolutioncodedesc" dataType="VARCHAR2" prompt="Resolution Description" viewName="GroupQueueVO" viewAttr="Resolutioncodedesc" rendered="false" sortState="ascending"/>
+                              <oa:messageStyledText id="GrpProblemcodedesc" dataType="VARCHAR2" prompt="Problem Description" viewName="GroupQueueVO" viewAttr="Problemcodedesc" maximumLength="240" rendered="false" sortState="ascending"/>
+                              <oa:messageStyledText id="GrpDateresolved" dataType="DATETIME" prompt="Resolved On" viewName="GroupQueueVO" viewAttr="Dateresolved" rendered="false" sortState="ascending"/>
+                              <oa:formValue id="ResponsibilityId" dataType="NUMBER" viewName="GroupQueueVO" viewAttr="ResponsibilityId"/>
+                              <oa:formValue id="IncidentTypeId" dataType="NUMBER" viewName="GroupQueueVO" viewAttr="IncidentTypeId"/>
+                              <oa:flowLayout id="GrpquickUpdateFlowLayout" prompt="Quick Update">
+                                 <ui:contents>
+                                    <oa:messageComponentLayout id="QuickUpdateLayoutRN">
+                                       <ui:contents>
+                                          <oa:messageLayout id="quickUpdateRN">
+                                             <ui:contents>
+                                                <oa:switcher id="GroupQuickUpdateSwitcher" viewName="GroupQueueVO" viewAttr="GQuickUpdateSwitcher">
+                                                   <ui:case name="GQuickUpdateEnabled">
+                                                      <oa:image id="GQuickUpdateEnabled" popupId="updateGroupServiceReqest" popupEnabled="true" prompt="Quick Update" popupRenderEvent="onClick" source="updateicon_enabled.gif"/>
+                                                   </ui:case>
+                                                   <ui:case name="GQuickUpdateDisabled">
+                                                      <oa:image id="GQuickUpdateDisabled" prompt="Quick Update" source="updateicon_disabled.gif"/>
+                                                   </ui:case>
+                                                </oa:switcher>
+                                             </ui:contents>
+                                          </oa:messageLayout>
+                                       </ui:contents>
+                                    </oa:messageComponentLayout>
+                                    <oa:popUp id="updateGroupServiceReqest" popupType="ParameterizedPopup" popupRegion="/oracle/apps/cs/csz/popup/sr/webui/QuickUpdateSRRN" popupParameters="ieuIncidentId={@IncidentId}" popupTitle="Update Service Request" isModal="true" autoResizeEnabled="false" height="450" width="800"/>
+                                 </ui:contents>
+                              </oa:flowLayout>
+                              <oa:flowLayout id="GrpsrNotesFlowLayout" prompt="Quick Notes">
+                                 <ui:contents>
+                                    <oa:messageComponentLayout id="srNoteslayout">
+                                       <ui:contents>
+                                          <oa:messageLayout id="srNotesRN">
+                                             <ui:contents>
+                                                <oa:switcher id="srNotesSwitcher" viewAttr="NotesSwitcher" viewName="GroupQueueVO" prompt="">
+                                                   <ui:case name="ENABLE">
+                                                      <oa:image id="ENABLE" popupId="GroupSRNotesPopup" popupEnabled="true" prompt="Quick Notes" popupRenderEvent="onClick" source="notesicon_enabled.gif"/>
+                                                   </ui:case>
+                                                   <ui:case name="DISABLE">
+                                                      <oa:image id="DISABLE" popupEnabled="false" prompt="Quick Notes" popupRenderEvent="onClick" source="notesicon_disabled.gif"/>
+                                                   </ui:case>
+                                                </oa:switcher>
+                                             </ui:contents>
+                                          </oa:messageLayout>
+                                       </ui:contents>
+                                    </oa:messageComponentLayout>
+                                    <oa:popUp id="GroupSRNotesPopup" popupType="ParameterizedPopup" popupRegion="/oracle/apps/cs/csz/popup/sr/webui/SRNotesPopupRN" popupParameters="incidentId={@IncidentId}&amp;contactName={@Contactname}" popupTitle="Service Request Notes History" readOnly="true" autoResizeEnabled="false" height="450" width="800"/>
+                                 </ui:contents>
+                              </oa:flowLayout>
+                           </ui:contents>
+                        </oa:table>
+                     </ui:contents>
+                  </oa:cellFormat>
+               </ui:contents>
+            </oa:rowLayout>
+         </ui:contents>
+      </oa:tableLayout>
+   </ui:contents>
+</oa:hideShowHeader>

@@ -1,0 +1,110 @@
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify						|
+-- +============================================================================================+
+-- | Name        : XXCRM_REMITTO_SALES_BATCH.tbl                                                |
+-- | Description : Remit to sale channel.                                                       |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        08/07/11       Devendra Petkar        Initial version                            |
+-- +============================================================================================+
+
+
+--------------------------------------------------------------------
+----------------------- Added Drop Table Statement -----------------
+--------------------------------------------------------------------
+
+
+SET time on;
+SET timing on;
+SET serveroutput on;
+SET trimspool on;
+SET feedback on
+SET verify on
+SET echo on
+
+DECLARE
+   v_cnt   NUMBER;
+   v_sqlerrm VARCHAR2(250);
+   TYPE type_droptable IS TABLE OF VARCHAR2(50);
+   rec_droptable type_droptable:=type_droptable('XXCRM_REMITTO_SALES_BATCH', 'XXCRM_REMITTO_SALES_FINANCE');
+
+BEGIN
+FOR i IN rec_droptable.first..rec_droptable.last
+LOOP
+BEGIN
+   SELECT COUNT (*)
+     INTO v_cnt
+     FROM user_tables
+    WHERE table_name = rec_droptable(i);
+   IF v_cnt = 1
+   THEN
+      EXECUTE IMMEDIATE    'DROP TABLE '|| rec_droptable(i)
+                        || ' PURGE ';
+         DBMS_OUTPUT.put_line ('Table Drop is '||rec_droptable(i));
+   ELSE
+  DBMS_OUTPUT.put_line ('Table not found for Drop is '||rec_droptable(i));
+   END IF;
+ EXCEPTION
+   WHEN OTHERS THEN
+     v_sqlerrm:= sqlerrm;
+      DBMS_OUTPUT.put_line (v_sqlerrm);
+   ROLLBACK;
+END;
+END LOOP;
+END;
+/
+
+Prompt CREATE TABLE XXCNV.XXCRM_REMITTO_SALES_BATCH
+
+CREATE TABLE XXCNV.XXCRM_REMITTO_SALES_BATCH
+  (
+    record_id NUMBER,
+    batch_date DATE ,
+    batch_status  VARCHAR2(240),
+    error_msg     VARCHAR2(2000),
+    rowid_hz_cust_site_uses_all rowid,
+    site_use_id             VARCHAR2(240),
+    cust_account_profile_id VARCHAR2(240),
+    cust_account_id         VARCHAR2(240),
+    cust_acct_site_id       VARCHAR2(240),
+    attribute25             VARCHAR2(240),
+    site_use_code           VARCHAR2(240),
+    bill_to_site_use_id     VARCHAR2(240),
+    attribute25_new        VARCHAR2(240)
+  )
+  TABLESPACE apps_ts_tx_data
+  NOLOGGING
+  NOPARALLEL;
+
+Prompt CREATE TABLE XXCNV.XXCRM_REMITTO_SALES_FINANCE
+
+CREATE TABLE XXCNV.XXCRM_REMITTO_SALES_FINANCE
+  (
+    cust_account_id VARCHAR2(240),
+    party_site_id   VARCHAR2(240),
+    location_id     VARCHAR2(240),
+    state           VARCHAR2(240),
+    address_id      VARCHAR2(240),
+    attribute1      VARCHAR2(240)
+  )
+  TABLESPACE apps_ts_tx_data
+  NOLOGGING
+  NOPARALLEL;
+
+
+GRANT ALL ON XXCNV.XXCRM_REMITTO_SALES_BATCH TO APPS;
+
+GRANT ALL ON XXCNV.XXCRM_REMITTO_SALES_FINANCE TO APPS;
+
+SHOW ERRORS;
+
+EXIT;

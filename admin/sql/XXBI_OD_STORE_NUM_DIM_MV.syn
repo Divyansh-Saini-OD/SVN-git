@@ -1,0 +1,29 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+SET TERM         ON
+
+PROMPT Creating SYNONYM APPS.XXBI_OD_STORE_NUM_DIM_MV
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- |                       WIPRO Technologies                                          |
+-- +===================================================================================+
+-- | Name        : APPS.XXBI_OD_STORE_NUM_DIM_MV                                       |
+-- | Description : Synonym for XXCRM.XXBI_OD_STORE_NUM_DIM_MV                          |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date          Author                 Remarks                             |
+-- |=======   ==========   =============           ====================================|
+-- |DRAFT 1.0 22-DEC-2010  Gokila Tamilselvam      Initial draft version               |
+-- +===================================================================================+
+
+CREATE SYNONYM apps.XXBI_OD_STORE_NUM_DIM_MV FOR xxcrm.XXBI_OD_STORE_NUM_DIM_MV;
+
+SHOW ERROR

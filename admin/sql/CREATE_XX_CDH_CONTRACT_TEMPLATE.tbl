@@ -1,0 +1,55 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_CDH_CONTRACT_TEMPLATE.tbl                 |
+-- | Description      :Contract template defaulting info                   |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |DRAFT 1A  29-Nov-2007  Sudeept Maharana   Initial draft version        |
+-- +=======================================================================+
+
+-- ---------------------------------------------------------------------
+--      Create Custom Table XX_CDH_CONTRACT_TEMPLATE    --
+-- ---------------------------------------------------------------------
+CREATE TABLE XXCRM.XX_CDH_CONTRACT_TEMPLATE
+	  (
+		  CONTRACT_TEMPLATE_ID   NUMBER,
+		  TEMPLATE_NAME          VARCHAR2(80 BYTE),
+		  REVENUE_BAND_CODE      NUMBER,
+		  CONTRACT_NUMBER        VARCHAR2(80 BYTE),
+		  CONTRACT_DESCRIPTION   VARCHAR2(240 BYTE),
+		  PRIORITY               VARCHAR2(30 BYTE),
+		  CUSTOM                 VARCHAR2(30 BYTE),
+		  SALES_ROLE             VARCHAR2(50 BYTE),
+		  CUST_PROD_XREF         VARCHAR2(30 BYTE),
+		  OFF_CONTRACT_CODE      VARCHAR2(30 BYTE),
+		  OFF_CONTRACT_PERCENT   NUMBER(10),
+		  OFF_WHOLESALE_CODE     VARCHAR2(30 BYTE),
+		  OFF_WHOLESALE_PERCENT  NUMBER(10),
+		  GP_FLOOR_PERCENT       NUMBER(10),
+		  FREIGHT_CHARGE         VARCHAR2(5 BYTE),
+		  CREATED_BY             NUMBER(15)             NOT NULL,
+		  CREATION_DATE          DATE                   DEFAULT SYSDATE               NOT NULL,
+		  LAST_UPDATED_BY        NUMBER(15)             NOT NULL,
+		  LAST_UPDATE_DATE       DATE                   DEFAULT SYSDATE               NOT NULL,
+		  LAST_UPDATE_LOGIN      NUMBER(15),
+		  PARENT_ID              VARCHAR2(30 BYTE)
+	  );
+------------------------------------------------------
+-- Adding Grants to APPS.                           --
+------------------------------------------------------
+GRANT ALL ON XXCRM.XX_CDH_CONTRACT_TEMPLATE TO APPS;
+
+SHOW ERRORS;

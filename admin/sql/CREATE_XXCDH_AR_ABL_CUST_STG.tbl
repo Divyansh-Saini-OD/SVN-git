@@ -1,0 +1,65 @@
+-- $Id:  $
+-- $Rev:  $
+-- $HeadURL:  $
+-- $Author:  $
+-- $Date:  $
+
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XXCDH_AR_ABL_CUST_STG                                                      |--                                                                                          |--
+--| Program Name   : CREATE_XXCDH_AR_ABL_CUST_STG.tbl                                           |--
+--|                                                                                             |--
+--| Purpose        : Sales Activity Table                                                       |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              03-Feb-2010       Nabarun Ghosh             Initial Draft                   |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Table XXCRM.XXCDH_AR_ABL_CUST_STG......
+PROMPT
+
+CREATE TABLE xxcdh_ar_abl_cust_stg
+             (
+               party_id     NUMBER,
+               account_name  VARCHAR2(250), 
+               party_site_id NUMBER,
+               address1  VARCHAR2(250),
+               address2  VARCHAR2(250),
+               city  VARCHAR2(250),
+               state  VARCHAR2(250),
+               province VARCHAR2(250),
+               postal_code VARCHAR2(250),
+               country VARCHAR2(250),
+               country_code VARCHAR2(4),
+               account_number VARCHAR2(150),
+               standard_terms NUMBER
+              ) PARALLEL (DEGREE 8); 
+             
+------------------------------------------------------
+-- Adding Grants to APPS.                           --
+------------------------------------------------------
+GRANT ALL ON XXCRM.XXCDH_AR_ABL_CUST_STG TO APPS;
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

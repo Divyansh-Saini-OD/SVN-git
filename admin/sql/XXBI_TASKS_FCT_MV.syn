@@ -1,0 +1,25 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :XXBI_TASKS_FCT_MV.syn                     |
+-- | Description      :Synonym for Custom Table                            |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |Version  Date          Author              Remarks                     |
+-- |-------  ----------- -----------------    -----------------------------|
+-- | 1.0     04/15/2010  Mohan Kalyanasundaram Initial Version              |
+-- +=======================================================================+
+
+
+
+
+CREATE OR REPLACE SYNONYM APPS.XXBI_TASKS_FCT_MV FOR XXCRM.XXBI_TASKS_FCT_MV;
+
+
+SHOW ERRORS;

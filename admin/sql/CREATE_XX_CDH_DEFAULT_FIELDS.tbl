@@ -1,0 +1,51 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_CDH_DEFAULT_FIELDS.tbl                 |
+-- | Description      :Document template defaulting info                   |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |DRAFT 1A  09-May-2007  V Jayamohan          Initial draft version      |
+-- +=======================================================================+
+-- -----------------------------------------------------
+--      DROP Custom Table XX_CDH_DEFAULT_FIELDS    --
+-- -----------------------------------------------------
+--DROP TABLE  XXCRM.XX_CDH_DEFAULT_FIELDS ;
+
+-- ---------------------------------------------------------------------
+--      Create Custom Table XX_CDH_DEFAULT_FIELDS    --
+-- ---------------------------------------------------------------------
+CREATE TABLE XXCRM.XX_CDH_DEFAULT_FIELDS
+(
+	  DEFAULT_FIELDS_ID  NUMBER,
+	  REVENUE_BAND_CODE  VARCHAR2(150 BYTE),
+	  PRICE_PLAN_CODE    VARCHAR2(30 BYTE),
+	  XREF               VARCHAR2(30 BYTE),
+	  OFF_CONTRACT_PCT   NUMBER,
+	  WHOLESALE_PCT      NUMBER,
+	  GP_FLOOR_PCT       NUMBER,
+	  CREATED_BY         NUMBER(15)                 NOT NULL,
+	  CREATION_DATE      DATE                       DEFAULT SYSDATE               NOT NULL,
+	  LAST_UPDATED_BY    NUMBER(15)                 NOT NULL,
+	  LAST_UPDATE_DATE   DATE                       DEFAULT SYSDATE               NOT NULL,
+	  LAST_UPDATE_LOGIN  NUMBER(15),
+	  SALES_ROLE         VARCHAR2(50 BYTE)	  
+ );
+------------------------------------------------------
+-- Adding Grants to APPS.                           --
+------------------------------------------------------
+GRANT ALL ON XXCRM.XX_CDH_DEFAULT_FIELDS TO APPS;
+
+SHOW ERRORS;

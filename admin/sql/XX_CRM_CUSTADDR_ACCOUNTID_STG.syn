@@ -1,0 +1,37 @@
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify						|
+-- +============================================================================================+
+-- | Name        : XX_CRM_CUSTADDR_ACCOUNTID_STG.syn                                            |
+-- | Description : Webcollect                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        06/07/12       Devendra Petkar        Initial version                            |
+-- +============================================================================================+
+
+
+---------------------------------------------------------
+-- Creating synonym				       --
+---------------------------------------------------------
+
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_CUSTADDR_ACCOUNTID_STG FOR XXCRM.XX_CRM_CUSTADDR_ACCOUNTID_STG;
+
+
+UPDATE XX_FIN_TRANSLATEVALUES SET  target_value14 = '10' , target_value16 = 'XXCRM_WC_ADDR_CHILD'  WHERE TRANSLATE_ID IN
+(SELECT TRANSLATE_ID FROM apps.XX_FIN_TRANSLATEDEFINITION  WHERE TRANSLATION_NAME = 'XXOD_WEBCOLLECT_INTERFACE') AND SOURCE_VALUE1 IN ('CUST_ADDRESSES');
+
+COMMIT;
+
+
+SHOW ERRORS;
+
+EXIT;

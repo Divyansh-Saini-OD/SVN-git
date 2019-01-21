@@ -1,0 +1,4 @@
+--Defect 30204 - Error while assigning collector to Customers through Webcollect Inbound program.
+ALTER TABLE XXCRM.XX_CRM_WC_CUST_DCCA_INT MODIFY email_osr VARCHAR2(255);
+ALTER TABLE XXCRM.XX_CRM_WC_CUST_DCCA_INT MODIFY phone_osr VARCHAR2(255);
+ALTER TABLE XXCRM.XX_CRM_WC_CUST_DCCA_INT MODIFY fax_osr   VARCHAR2(255);

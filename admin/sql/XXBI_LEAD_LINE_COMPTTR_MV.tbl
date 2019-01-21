@@ -1,0 +1,48 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+CREATE MATERIALIZED VIEW "XXCRM"."XXBI_LEAD_LINE_COMPTTR_MV"
+  PARALLEL 8
+  BUILD DEFERRED
+  USING INDEX 
+  REFRESH FORCE
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        :  XXBI_LEAD_LINE_COMPTTR_MV.tbl                         |
+-- | Description :  MV for Opportunity Fact for Detailed Reporting     |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date          Author           Remarks                   |
+-- |=======   ==========    =============    ==========================|
+-- |1.0       30-Aug-2010   Luis Mazuera     full refresh MV           |
+-- |                                                                   | 
+-- +===================================================================+
+AS
+select lead_id, lead_line_id, party_name, competitor_party_id, creation_date
+from (
+SELECT lcp.lead_id ,
+    lcp.lead_line_id  ,
+    hp.party_name,
+    acpt.competitor_party_id ,
+    lcp.creation_date,
+    row_number() over (partition BY lead_id,lead_line_id order by lcp.creation_date, lcp.competitor_product_id ASC) rnum
+     FROM apps.as_lead_comp_products lcp,
+    apps.ams_competitor_products_vl acpt,
+    apps.hz_parties hp
+    WHERE lcp.competitor_product_id = acpt.competitor_product_id
+  AND acpt.competitor_party_id                           = hp.party_id
+  order by lcp.creation_date ASC, lcp.competitor_product_id ASC
+  ) foo
+  where   rnum = 1;
+
+
+----------------------------------------------------------
+-- Grant to APPS
+----------------------------------------------------------
+GRANT ALL ON XXCRM.XXBI_LEAD_LINE_COMPTTR_MV TO APPS;
+
+SHOW ERRORS;
+EXIT;

@@ -1,0 +1,50 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===========================================================================+
+-- |                  Office Depot - eBilling Project                          |
+-- |                         WIPRO/Office Depot                                |
+-- +===========================================================================+
+-- | Name        : CREATE_XX_CDH_EBL_ERROR.tbl                                 |
+-- | Description : Error table to store error messages for eBilling.           |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author        Remarks            	               |
+-- |======== =========== ============= ========================================|
+-- |DRAFT 1A 15-MAR-2010 Srini Ch      Initial draft version                   |
+-- |                                                                           |
+-- |                                                                           |
+-- |                                                                           |
+-- +===========================================================================+
+
+-- ----------------------------------------------------------------------------
+--      Create Custom Table XX_CDH_EBL_ERROR
+-- ----------------------------------------------------------------------------
+
+CREATE TABLE XXCRM.XX_CDH_EBL_ERROR 
+    ( 
+     CUST_DOC_ID NUMBER (15)  NOT NULL , 
+     DOC_PROCESS_DATE DATE  NOT NULL , 
+     ERROR_CODE VARCHAR2 (20)  NOT NULL , 
+     ERROR_DESC VARCHAR2 (4000)  NOT NULL 
+    );
+
+-- ----------------------------------------------------------------------------
+-- Creating Index on XX_CDH_EBL_ERROR.
+-- ----------------------------------------------------------------------------
+
+CREATE INDEX XXCRM.XX_CDH_EBL_ERROR__IDX01 ON XXCRM.XX_CDH_EBL_ERROR 
+    ( 
+     CUST_DOC_ID ASC 
+    );
+
+-- ----------------------------------------------------------------------------
+-- Adding Grants to APPS.
+-- ----------------------------------------------------------------------------
+
+GRANT ALL ON XXCRM.XX_CDH_EBL_ERROR TO APPS;
+
+SHOW ERRORS;

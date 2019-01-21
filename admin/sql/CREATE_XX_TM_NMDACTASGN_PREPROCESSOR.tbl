@@ -1,0 +1,67 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : CREATE_XX_TM_NMDACTASGN_PREPROCESSOR.tbl           |
+-- | Description      : Named Account Territory Definitions                |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |Draft 1a  11-Jun-2008  Nabarun            Initial Draft Version        |
+-- +=======================================================================+
+
+
+--  Create Custom Table XX_TM_NMDACTASGN_PREPROCESSOR
+-- ---------------------------------------------------------------------
+CREATE TABLE XXCRM.XX_TM_NMDACTASGN_PREPROCESSOR
+  (
+	  PREPROCESSOR_RECORD_ID     NUMBER(15)        NOT NULL,
+	  RULE_BASED_TERR_ID         NUMBER(15),
+	  RULE_BASED_TERR_NAME       VARCHAR2(250),
+	  RULE_BASED_TERR_DESC       VARCHAR2(250),
+          RULE_BASED_TERR_LEVEL	     VARCHAR2(250),    -- NODE, PARENT, GRAND PARENT,CATCH_ALL
+          RESOURCE_ID                NUMBER,
+          RESOURCE_NAME              VARCHAR2(250),
+          RESOURCE_ROLE_ID           NUMBER,
+          RESOURCE_ROLE_NAME         VARCHAR2(250),
+          RESOURCE_ROLE_DIV          VARCHAR2(250),
+          RESOURCE_OD_ROLE_CODE      VARCHAR2(250),
+          RESOURCE_GROUP_ID          NUMBER,
+          RESOURCE_GROUP_NAME        VARCHAR2(250),
+          PARTY_SITE_ID              NUMBER,
+          PARTY_ID                   NUMBER,
+          PARTY_NAME                 VARCHAR2(250),
+          PROSPECT_CUSTOMER          VARCHAR2(50),
+          COUNTRY                    VARCHAR2(50), 
+          POSTAL_CODE                VARCHAR2(50),
+          OD_SITE_SIC_CODE           VARCHAR2(50),
+          OD_WCW                     NUMBER,
+	  CREATED_BY                 NUMBER,
+	  CREATION_DATE              DATE  ,
+          ATTRIBUTE1                 VARCHAR2(150 BYTE),
+          ATTRIBUTE2                 VARCHAR2(150 BYTE),
+          ATTRIBUTE3                 VARCHAR2(150 BYTE),          
+          ATTRIBUTE4                 VARCHAR2(150 BYTE),
+          ATTRIBUTE5                 VARCHAR2(150 BYTE),
+          ATTRIBUTE6                 VARCHAR2(150 BYTE),          
+          ATTRIBUTE7                 VARCHAR2(150 BYTE),
+          ATTRIBUTE8                 VARCHAR2(150 BYTE),
+          ATTRIBUTE9                 VARCHAR2(150 BYTE),          
+          ATTRIBUTE10                VARCHAR2(150 BYTE)
+) NOLOGGING;
+------------------------------------------------------
+-- Adding Grants to APPS                            --
+------------------------------------------------------
+GRANT ALL ON XXCRM.XX_TM_NMDACTASGN_PREPROCESSOR TO APPS;
+
+
+SHOW ERRORS;

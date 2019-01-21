@@ -1,0 +1,28 @@
+-- +=====================================================================+
+-- |                  Office Depot - Project Simplify                    |
+-- |                       WIPRO Consulting                              |
+-- +=====================================================================+
+-- |                                                                     |
+-- | Description :Altered as part of Defect# 6435                        |
+-- |                                                                     |
+-- |                                                                     |
+-- |Change Record:                                                       |
+-- |===============                                                      |
+-- |Version   Date              Author              Remarks              |
+-- |======   ==========     =============          ===================== |
+-- |1.0       12-NOV-2010   Gokila Tamilselvam,    Added as part of      |
+-- |                        WIPRO Consulting       Defect# 6435.         |
+-- |                                                                     |
+-- +=====================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE XXCRM.XXBI_QUICK_LINKS
+MODIFY(
+       full_path   VARCHAR2(2000)
+       );
+SHOW ERROR

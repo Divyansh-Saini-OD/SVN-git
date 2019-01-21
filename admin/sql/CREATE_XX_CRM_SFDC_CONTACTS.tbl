@@ -1,0 +1,74 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : CREATE_XX_CRM_SFDC_CONTACTS.tbl                    |
+-- | Description      : AP and eBill Contacts from SFDC                    |
+-- |                                                                       |
+-- | Subversion Info:                                                      |
+-- |                                                                       |
+-- |   $HeadURL$
+-- |       $Rev$
+-- |      $Date$
+-- |                                                                       |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- | 1.0      19-Aug-2011  Phil Price         Initial Version              |
+-- +=======================================================================+
+
+-- ---------------------------------------------------------------------
+--      Create Custom Table XX_CRM_SFDC_CONTACTS                      --
+-- ---------------------------------------------------------------------
+create table XXCRM.XX_CRM_SFDC_CONTACTS
+               (id                         number          not null
+               ,sfdc_account_id            varchar2(50)    not null
+               ,sfdc_message_version       number
+               ,party_id                   number          not null
+               ,contact_role               varchar2(50)    not null  -- "Accounts Payable" or "eBilling"
+               ,contact_salutation         varchar2(60)
+               ,contact_first_name         varchar2(150)
+               ,contact_last_name          varchar2(150)   not null
+               ,contact_job_title          varchar2(100)
+               ,contact_phone_number       varchar2(60)
+               ,contact_fax_number         varchar2(60)
+               ,contact_email_addr         varchar2(2000)
+               ,cust_account_id            number         -- populated by oracle
+               ,org_contact_id             number         -- populated by oracle when contact created in Ebiz
+               ,person_party_osr           varchar2(240)  -- populated by oracle when contact created in Ebiz
+               ,email_osr                  varchar2(240)  -- populated by oracle when contact created in Ebiz
+               ,phone_osr                  varchar2(240)  -- populated by oracle when contact created in Ebiz
+               ,fax_osr                    varchar2(240)  -- populated by oracle when contact created in Ebiz
+               ,creation_date              date            not null
+               ,created_by                 number          not null
+               ,last_update_date           date            not null
+               ,last_updated_by            number          not null
+               ,last_update_login          number
+               ,import_status              varchar2(10)    not null  -- NEW, PENDING, IMPORTED, ERROR
+               ,import_error               varchar2(2000)
+               ,import_warnings            varchar2(2000)  -- import was performed but warnings were generated
+               ,import_attempt_count       number          not null
+             );
+
+
+--------------------------------------------------------------
+-- Adding Grants to APPS, BPEL (SOA) user, and other roles. --
+--------------------------------------------------------------
+GRANT ALL    ON XXCRM.XX_CRM_SFDC_CONTACTS TO APPS;
+
+GRANT SELECT ON XXCRM.XX_CRM_SFDC_CONTACTS TO XX_CRM_SELECT_CRMDEV_R;
+
+GRANT SELECT, INSERT, UPDATE, DELETE
+             ON XXCRM.XX_CRM_SFDC_CONTACTS TO APPSRW_ROLE;
+
+--GRANT SELECT, INSERT, UPDATE, DELETE
+--             ON XXCRM.XX_CRM_SFDC_CONTACTS TO XXSOA_SVC;

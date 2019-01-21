@@ -1,0 +1,36 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |                  Office Depot - Project Simplify                      |
+-- |                       WIPRO Technologies                              |
+-- +=======================================================================+
+-- | Name       :  XX_HZ_PARTIES_N18.idx                                   |
+-- | Rice ID    :  I0405_Outbound-Territories                              |
+-- | Description:  Index on HZ_PARTIES                                     |
+-- |                                                                       |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0     06-Dec-2007  Rizwan Appees      Initial Version                |
+-- +=======================================================================+
+
+
+-- ---------------------------------------------------
+-- Dropping existing index XX_HZ_PARTIES_N18
+-- ---------------------------------------------------
+
+DROP INDEX AR.XX_HZ_PARTIES_N18;
+
+
+-- -------------------------------------------------
+-- Creating Index XX_HZ_PARTIES_N18
+-- -------------------------------------------------
+
+CREATE INDEX XXCRM.XX_HZ_PARTIES_N18 ON AR.HZ_PARTIES (ATTRIBUTE13, PARTY_ID); 
+  

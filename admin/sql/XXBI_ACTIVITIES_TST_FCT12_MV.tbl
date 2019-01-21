@@ -1,0 +1,55 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+CREATE MATERIALIZED VIEW xxcrm.XXBI_ACT_TEST12_FCT_MV
+  BUILD IMMEDIATE
+  REFRESH ON DEMAND
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        :  XXBI_ACTIVITIES_FCT_MV.vw                          |
+-- | Description :  Activities Fact Materialized View(for all reps)    |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author             Remarks                   |
+-- |=======   ==========  =============      ==========================|
+-- |1.0       02/19/2010  Mohan                                        |
+-- |                      Kalyanasundaram    Initial draft version     |
+-- |2.0       03/29/2010  Anirban C          Added a few columns       | 
+-- +===================================================================+
+AS
+SELECT 
+t.TASK_ID,t.CREATED_BY,
+t.CREATION_DATE,
+cast(to_char(t.CREATION_DATE, 'J') as number) CREATION_DATE_JULIAN,
+t.LAST_UPDATED_BY,
+t.LAST_UPDATE_DATE DUE_DATE,
+cast(to_char(t.last_update_DATE, 'J') as number) LAST_UPDATE_DATE_JULIAN,
+t.TASK_NUMBER,t.TASK_TYPE_ID,p.name TASK_TYPE_NAME,t.TASK_STATUS_ID, s.name TASK_STATUS_NAME,
+t.TASK_PRIORITY_ID,t2.name task_priority_name,t.OWNER_ID,
+t.OWNER_TYPE_CODE,
+t.PLANNED_START_DATE,
+t.PARENT_TASK_ID,t.DELETED_FLAG,t.ACTUAL_START_DATE,t.PRIVATE_FLAG,t.PUBLISH_FLAG,
+t.ACTUAL_END_DATE,t.SOURCE_OBJECT_TYPE_CODE ENTITY_TYPE,t.SOURCE_OBJECT_TYPE_CODE ENTITY_TYPE_NAME, 
+t.SOURCE_OBJECT_ID ENTITY_ID,t.SOURCE_OBJECT_NAME, t.PLANNED_END_DATE,t.SCHEDULED_START_DATE,t.SCHEDULED_END_DATE,
+t.CALENDAR_END_DATE, t.TASK_NAME,t.DESCRIPTION, t.OPEN_FLAG,
+'Update' UPDATE_DETAILS, 'Create' CREATE_APPOINTMENT,
+'View Details' VIEW_DETAILS
+FROM apps.jtf_tasks_vl t, apps.jtf_task_statuses_vl s, apps.jtf_task_types_vl p, 
+apps.jtf_task_priorities_vl t2
+WHERE t.task_status_id = s.task_status_id(+)
+and upper(s.name) IN ('COMPLETED', 'CLOSED')
+and t.task_type_id = p.task_type_id(+)
+--and upper (p.name) IN ('IN PERSON VISIT', 'CALL','EMAIL','MAIL','OTHER')
+and t.task_priority_id = t2.task_priority_id(+)
+and rownum < 10;
+----------------------------------------------------------
+-- Grant to APPS
+----------------------------------------------------------
+GRANT ALL ON APPS.XXBI_ACTIVITIES_FCT_MV TO XXCRM;
+
+SHOW ERRORS;
+EXIT;
+

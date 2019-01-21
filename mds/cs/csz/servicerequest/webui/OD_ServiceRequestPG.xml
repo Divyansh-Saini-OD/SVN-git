@@ -1,0 +1,149 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1579" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="MainRN" amDefName="od.oracle.apps.xxcrm.cs.csz.servicerequest.server.OD_ServiceRequestAM" windowTitle="Service Request" controllerClass="od.oracle.apps.xxcrm.cs.csz.servicerequest.webui.OD_ServiceRequestCO" warnAboutChanges="true">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:header id="SearchRN" rendered="false" text="Parts Detail">
+               <ui:contents>
+                  <oa:tableLayout id="TableRN" hAlign="center" rendered="false">
+                     <ui:contents>
+                        <oa:rowLayout id="SearchParamRowRN">
+                           <ui:contents>
+                              <oa:cellFormat id="SearchParamCellRN">
+                                 <ui:contents>
+                                    <oa:messageComponentLayout id="MessageComponentRN">
+                                       <ui:contents>
+                                          <oa:messageTextInput id="SRNumber" prompt="Service Request Number" dataType="VARCHAR2" maximumLength="25"/>
+                                          <oa:messageCheckBox id="Core" prompt="Core" checkedValue="Y" rendered="false"/>
+                                          <oa:messageCheckBox id="Excess" prompt="Excess" rendered="false"/>
+                                       </ui:contents>
+                                    </oa:messageComponentLayout>
+                                 </ui:contents>
+                              </oa:cellFormat>
+                           </ui:contents>
+                        </oa:rowLayout>
+                        <oa:rowLayout id="SpacerRow">
+                           <ui:contents>
+                              <oa:cellFormat id="SpacerCell">
+                                 <ui:contents>
+                                    <oa:spacer id="Spacer" height="5"/>
+                                 </ui:contents>
+                              </oa:cellFormat>
+                           </ui:contents>
+                        </oa:rowLayout>
+                        <oa:rowLayout id="region1" hAlign="center">
+                           <ui:contents>
+                              <oa:cellFormat id="region2" hAlign="center">
+                                 <ui:contents>
+                                    <oa:submitButton id="Search" text="Search" prompt="Search" hAlign="right"/>
+                                 </ui:contents>
+                              </oa:cellFormat>
+                           </ui:contents>
+                        </oa:rowLayout>
+                     </ui:contents>
+                  </oa:tableLayout>
+               </ui:contents>
+            </oa:header>
+            <oa:header id="SearchResultsHDR" text="Work Order:">
+               <ui:contents>
+                  <oa:header id="QuoteHdr" text="Quotation Number:">
+                     <ui:contents>
+                        <oa:table id="OD_ServiceRequestVO" text="" detailViewAttr="setFlag" viewLinkName="OD_ServiceRequestMasterDetailVL1" childViewAttrName="RequestNumber">
+                           <ui:contents>
+                              <oa:messageStyledText id="ItemNumber" dataType="VARCHAR2" prompt="Item Number" viewName="OD_ServiceRequestMasterVO" viewAttr="ItemNumber" maximumLength="25" cellNoWrapFormat="true" columns="10"/>
+                              <oa:messageStyledText id="ItemDescription" dataType="VARCHAR2" prompt="Item Description" viewName="OD_ServiceRequestMasterVO" viewAttr="ItemDescription" maximumLength="250" cellNoWrapFormat="true"/>
+                              <oa:messageStyledText id="Quantity" dataType="NUMBER" prompt="Quantity" viewName="OD_ServiceRequestMasterVO" viewAttr="Quantity" columns="5"/>
+                              <oa:messageStyledText id="SellingPrice" dataType="NUMBER" prompt="Price" viewName="OD_ServiceRequestMasterVO" viewAttr="SellingPrice"/>
+                              <oa:messageStyledText id="ScheduleDate" dataType="DATE" prompt="ETA" viewName="OD_ServiceRequestMasterVO" viewAttr="ScheduleDate"/>
+                              <oa:messageTextInput id="NotUsedQuantity" dataType="NUMBER" prompt="Not Used Quantity" viewName="OD_ServiceRequestMasterVO" cellNoWrapFormat="false" viewAttr="ExcessQuantity" readOnly="${oa.OD_ServiceRequestMasterVO.NotUsedQty}"/>
+                              <oa:messageCheckBox id="NotUsedFlag" dataType="VARCHAR2" prompt="Not Used" viewName="OD_ServiceRequestMasterVO" readOnly="${oa.OD_ServiceRequestMasterVO.NotUsed}" text="Not Used" viewAttr="ExcessFlag">
+                                 <ui:primaryClientAction>
+                                    <ui:firePartialAction event="NotUsedFlag"/>
+                                 </ui:primaryClientAction>
+                              </oa:messageCheckBox>
+                              <oa:messageCheckBox id="ReceivedShipmentFlag" viewName="OD_ServiceRequestMasterVO" prompt="Received Shipment" viewAttr="ReceivedShipmentFlag" readOnly="${oa.OD_ServiceRequestMasterVO.ReceivedShipment}" checkedValue="" rendered="${oa.OD_ServiceRequestMasterVO.ReceivedShipmentRender}">
+                                 <ui:primaryClientAction>
+                                    <ui:firePartialAction event="ReceivedShipment" id="firePartialAction21"/>
+                                 </ui:primaryClientAction>
+                              </oa:messageCheckBox>
+                              <oa:messageTextInput id="ReceivedQuantity" prompt="Received Quantity" viewName="OD_ServiceRequestMasterVO" viewAttr="ReceivedQuantity" columns="5" maximumLength="255" readOnly="${oa.OD_ServiceRequestMasterVO.Receive_Quantity}" dataType="NUMBER">
+                                 <ui:primaryClientAction>
+                                    <ui:fireAction event="ReceivedQty"/>
+                                 </ui:primaryClientAction>
+                              </oa:messageTextInput>
+                              <oa:messageStyledText id="TotalReceivedQty" viewName="OD_ServiceRequestMasterVO" viewAttr="TotReceivedQty" prompt="Total Received Quantity" dataType="NUMBER"/>
+                              <oa:messageCheckBox id="CoreFlag" viewName="OD_ServiceRequestMasterVO" viewAttr="CoreFlag" text="Core Flag" prompt="Core Flag" readOnly="false" rendered="${oa.OD_ServiceRequestMasterVO.Core_Flag}"/>
+                              <oa:messageCheckBox id="SalesFlag" text="Complete" prompt="Complete" viewName="OD_ServiceRequestMasterVO" viewAttr="SalesFlag" readOnly="${oa.OD_ServiceRequestMasterVO.Complete}">
+                                 <ui:primaryClientAction>
+                                    <ui:firePartialAction event="Complete"/>
+                                 </ui:primaryClientAction>
+                              </oa:messageCheckBox>
+                              <oa:messageLovInput id="FreightCarrier" prompt="Freight Carrier" viewName="OD_ServiceRequestMasterVO" viewAttr="Attribute3" rendered="false">
+                                 <lovContents>
+                                    <oa:listOfValues id="region7">
+                                       <ui:contents>
+                                          <oa:table name="region7" id="OD_ServiceRequestFreightCarrierLOVVO">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="FreightCarrier1" dataType="VARCHAR2" prompt="Freight Carrier" viewName="OD_ServiceRequestFreightCarrierLOVVO" viewAttr="Freightcarrier" maximumLength="5" queryable="true"/>
+                                             </ui:contents>
+                                          </oa:table>
+                                       </ui:contents>
+                                    </oa:listOfValues>
+                                 </lovContents>
+                                 <lovMappings>
+                                    <lovMap id="lovMap1" lovItem="FreightCarrier1" resultTo="FreightCarrier" criteriaFrom="FreightCarrier"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageChoice id="FreightCarrierMC" pickListViewDef="od.oracle.apps.xxcrm.cs.csz.servicerequest.lov.server.OD_ServiceRequestFreightCarrierLOVVO" pickListViewName="OD_ServiceRequestFreightCarrierLOVVO" pickListDispAttr="Freightcarrier" pickListValAttr="Freightcarrier" viewName="OD_ServiceRequestMasterVO" viewAttr="Attribute3" prompt="Freight Carrier" readOnly="${oa.OD_ServiceRequestMasterVO.FreightCarrier}"/>
+                              <oa:messageTextInput id="TrackingNumber" prompt="Tracking Number" viewName="OD_ServiceRequestMasterVO" viewAttr="Attribute1" maximumLength="250" columns="25" readOnly="${oa.OD_ServiceRequestMasterVO.Tracking_Number}"/>
+                           </ui:contents>
+                           <ui:detail>
+                              <oa:header id="DetailHDR" text="Details">
+                                 <ui:contents>
+                                    <oa:header id="Inst2" text="*  If Customer agree to return core part then Price will be" rendered="false"/>
+                                    <oa:messageStyledText id="Tip" rendered="false" prompt="*  If Customer agree to return core part then Price will be exchange_price ( This note should display if core_flag = ‘Y’)"/>
+                                    <oa:table id="DetailTable" viewLinkName="OD_ServiceRequestMasterDetailVL1">
+                                       <ui:contents>
+                                          <oa:switcher id="region6" viewName="OD_ServiceRequestDetailsVO" viewAttr="Display" rendered="false">
+                                             <ui:case name="Inst">
+                                                <oa:header id="Inst" text="*  If Customer agree to return core part then Price will be" rendered="${oa.OD_ServiceRequestDetailsVO.Msg_Hdr}"/>
+                                             </ui:case>
+                                          </oa:switcher>
+                                          <oa:messageStyledText id="Manufacturer" prompt="Manufacturer" viewName="OD_ServiceRequestDetailsVO" viewAttr="Manufacturer" styleClass="OraDataText"/>
+                                          <oa:messageStyledText id="Model" viewName="OD_ServiceRequestDetailsVO" viewAttr="Model" prompt="Model" styleClass="OraDataText"/>
+                                          <oa:messageStyledText id="Serial" viewName="OD_ServiceRequestDetailsVO" viewAttr="SerialNumber" prompt="Serial" styleClass="OraDataText"/>
+                                          <oa:messageStyledText id="ProblemDescription" prompt="Problem Description" viewName="OD_ServiceRequestDetailsVO" viewAttr="ProblemDescr" styleClass="OraDataText"/>
+                                          <oa:messageStyledText id="SpecialInstitutions" prompt="Special Instructions" viewName="OD_ServiceRequestDetailsVO" viewAttr="SpecialInstr" rendered="true" styleClass="OraDataText"/>
+                                       </ui:contents>
+                                    </oa:table>
+                                    <oa:separator id="Separator"/>
+                                 </ui:contents>
+                              </oa:header>
+                           </ui:detail>
+                        </oa:table>
+                     </ui:contents>
+                  </oa:header>
+                  <oa:spacer id="SpacerSpc" height="10"/>
+                  <oa:tableLayout id="region3" hAlign="center">
+                     <ui:contents>
+                        <oa:rowLayout id="region4" hAlign="center">
+                           <ui:contents>
+                              <oa:cellFormat id="region5" hAlign="center">
+                                 <ui:contents>
+                                    <oa:submitButton id="SubmitBtn" text="Save / Close" prompt="Save / Close" warnAboutChanges="false"/>
+                                 </ui:contents>
+                              </oa:cellFormat>
+                           </ui:contents>
+                        </oa:rowLayout>
+                     </ui:contents>
+                  </oa:tableLayout>
+               </ui:contents>
+            </oa:header>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

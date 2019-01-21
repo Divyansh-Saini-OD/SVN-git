@@ -1,0 +1,41 @@
+-- +====================================================================+
+-- |                  Office Depot - Project Simplify                   |
+-- |                Oracle NAIO Consulting Organization                 |
+-- +====================================================================+
+-- | Name        : DROP_XX_CN_OM_TRX_N5.idx                             |
+-- | Rice ID     : E1004A_CustomCollections_(TableDesign)               |
+-- | Description : XX_CN_OM_TRX Table - Non Unique Index Drop Script    |
+-- |                                                                    |
+-- |               Columns :                                            |
+-- |                         Source_Trx_Id                              |
+-- |                         Source_Trx_Line_Id                         |
+-- |                         Event_Id                                   |
+-- |                                                                    |
+-- |Change Record:                                                      |
+-- |===============                                                     |
+-- |Version   Date        Author           Remarks                      |
+-- |=======  ===========  =============    =============================|
+-- |Draft 1a 15-Nov-2007  Vidhya Valantina Initial draft version        |
+-- |1.0      15-Nov-2007  Vidhya Valantina Baselined after testing      |
+-- |                                                                    |
+-- +====================================================================+
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+PROMPT
+PROMPT Dropping Existing Non Unique INDEX XX_CN_OM_TRX_N5
+PROMPT
+
+DROP INDEX xx_cn_om_trx_n5;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

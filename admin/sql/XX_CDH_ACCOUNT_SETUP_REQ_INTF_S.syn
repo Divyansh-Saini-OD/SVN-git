@@ -1,0 +1,33 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                        WIPRO Technologies                         |
+-- +===================================================================+
+-- | Name             : XX_CDH_ACCOUNT_SETUP_REQ_INTF_S.syn            |
+-- | Rice ID          : E0806_SalesCustomerAccountCreation             |
+-- | Description      : This script creates a synonym for the sequnece |
+-- |                    XX_CDH_ACCOUNT_SETUP_REQ_INTF_S.               |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |DRAFT 1   04-OCT-2007 Rizwan A         Initial Version             |
+-- |                                                                   |
+-- |                                                                   |
+-- +===================================================================+
+
+------------------------------------------------------
+-- Dropping the existing synonym and creating new.  --
+------------------------------------------------------
+
+CREATE OR REPLACE SYNONYM APPS.XX_CDH_ACCOUNT_SETUP_REQ_INTF_S FOR XXCRM.XX_CDH_ACCOUNT_SETUP_REQ_INTF_S
+/
+SHOW ERROR

@@ -1,0 +1,51 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : XXBI_QUICK_LINKS.tbl                                |
+-- | Description : Dashboard Quick Links                               |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1a 15-Feb-2010  Sarah Justina    Initial draft version       |
+-- +===================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Table XXBI_QUICK_LINKS .....
+PROMPT
+
+CREATE TABLE XXBI_QUICK_LINKS (
+ QUICKLINK_ID       NUMBER
+,LABEL              VARCHAR2(100) 
+,DESCRIPTION        VARCHAR2(100) 
+,ORDER_OF_DISPLAY   NUMBER
+,PATH               VARCHAR2(10) 
+,FULL_PATH          VARCHAR2(100) 
+,RESPONSIBILITY_KEY VARCHAR2(30) 
+,CREATION_DATE      DATE 
+,CREATED_BY         NUMBER
+,LAST_UPDATE_DATE   DATE 
+,LAST_UPDATED_BY    NUMBER
+,LAST_UPDATE_LOGIN  NUMBER
+,CATEGORY_ID        VARCHAR2(30) 
+);
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

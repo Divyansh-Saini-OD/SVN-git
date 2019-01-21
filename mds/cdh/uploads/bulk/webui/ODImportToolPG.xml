@@ -1,0 +1,156 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.10_1080" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="ODImportToolRN" windowTitle="BSD Imports" title="BSD Imports" amDefName="od.oracle.apps.xxcrm.cdh.uploads.bulk.server.ODImportToolAM" controllerClass="od.oracle.apps.xxcrm.cdh.uploads.bulk.webui.ODImportToolCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:staticStyledText id="Header1" text="Upload File" prompt="Upload File" styleClass="OraDataText" rendered="false"/>
+            <oa:header id="Header22" text="Upload File" styleClass="OraDataText"/>
+            <oa:messageComponentLayout id="ODImportToolTemplateHDR">
+               <ui:contents>
+                  <oa:messageChoice id="templateType" pickListViewDef="" pickListValAttr="TemplateFileUploadId" pickListDispAttr="TemplateCode" pickListViewName="ODImportToolTemplatePVO" prompt="Upload Type *" allowBlankValue="false"/>
+                  <oa:messageFileUpload id="fileUpload" prompt="File *" required="no"/>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:submitButton id="upload" text="Upload" prompt="Upload"/>
+            <oa:separator id="seperator1"/>
+            <oa:spacer id="Spacer1" height="10"/>
+            <oa:header id="Header2" text="Uploaded Files" styleClass="OraDataText"/>
+            <oa:table id="ODImportToolsUpdFilesRN">
+               <ui:contents>
+                  <oa:messageStyledText id="FileUploadId" dataType="NUMBER" prompt="File Upload Id" viewName="ODImportToolsVO" viewAttr="FileUploadId" rendered="false"/>
+                  <oa:link id="FileName" viewName="ODImportToolsVO" viewAttr="FileName" text="File Name">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="Download">
+                           <ui:parameters>
+                              <ui:parameter key="p_file_id" value="${oa.current.FileUploadId}"/>
+                           </ui:parameters>
+                        </ui:fireAction>
+                     </ui:primaryClientAction>
+                  </oa:link>
+                  <oa:messageChoice id="ClobCode" viewName="ODImportToolsVO" viewAttr="ClobCode" prompt="Upload Type" rendered="true" pickListDispAttr="TemplateName" pickListValAttr="ClobCode" pickListViewName="ODImportTempNameFilesPVO" readOnly="true"/>
+                  <oa:messageStyledText id="CreationDate" dataType="DATE" prompt="Creation Date" viewName="ODImportToolsVO" viewAttr="CreationDate" sortState="yes"/>
+                  <oa:messageStyledText id="CreatedBy" dataType="NUMBER" prompt="Created By" viewName="ODImportToolsVO" viewAttr="Username" rendered="true" sortState="yes"/>
+                  <oa:messageStyledText id="FileStatus" dataType="VARCHAR2" prompt="File Status" viewName="ODImportToolsVO" viewAttr="Status" maximumLength="1" sortState="yes"/>
+                  <oa:messageStyledText id="Program" dataType="VARCHAR2" prompt="Program" viewName="ODImportToolsVO" viewAttr="Program" maximumLength="30" rendered="false"/>
+                  <oa:messageStyledText id="RequestId" viewName="ODImportToolsVO" viewAttr="RequestId" prompt="Request Id"/>
+                  <oa:image id="ErrorFileData" viewName="ODImportToolsVO" rendered="false" prompt="Error File" source="/OA_MEDIA/results_enabled.gif" viewAttr="ErrorFileData">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="error">
+                           <ui:parameters>
+                              <ui:parameter key="p_file" value="${oa.current.FileUploadId}"/>
+                           </ui:parameters>
+                        </ui:fireAction>
+                     </ui:primaryClientAction>
+                  </oa:image>
+                  <oa:switcher id="ErrSwitcher" prompt="Error File" viewName="ODImportToolsVO" viewAttr="Errswitcher">
+                     <ui:case name="Y">
+                        <oa:image id="Y" source="/OA_MEDIA/results_enabled.gif">
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="error">
+                                 <ui:parameters>
+                                    <ui:parameter key="p_file" value="${oa.current.FileUploadId}"/>
+                                 </ui:parameters>
+                              </ui:fireAction>
+                           </ui:primaryClientAction>
+                        </oa:image>
+                     </ui:case>
+                     <ui:case name="N">
+                        <oa:image id="N" source="/OA_MEDIA/results_disabled.gif"/>
+                     </ui:case>
+                  </oa:switcher>
+                  <oa:image id="OutFileData" viewName="ODImportToolsVO" rendered="false" prompt="Out File" source="/OA_MEDIA/results_enabled.gif" viewAttr="OutputFileData">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="output" id="fireAction1">
+                           <ui:parameters>
+                              <ui:parameter key="p_file" value="${oa.current.FileUploadId}"/>
+                           </ui:parameters>
+                        </ui:fireAction>
+                     </ui:primaryClientAction>
+                  </oa:image>
+                  <oa:switcher id="outSwitcher" prompt="Out File" viewName="ODImportToolsVO" viewAttr="Outswitcher">
+                     <ui:case name="Yes">
+                        <oa:image id="Yes" source="/OA_MEDIA/results_enabled.gif">
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="output" id="fireAction4">
+                                 <ui:parameters>
+                                    <ui:parameter key="p_file" value="${oa.current.FileUploadId}"/>
+                                 </ui:parameters>
+                              </ui:fireAction>
+                           </ui:primaryClientAction>
+                        </oa:image>
+                     </ui:case>
+                     <ui:case name="No">
+                        <oa:image id="No" source="/OA_MEDIA/results_disabled.gif"/>
+                     </ui:case>
+                  </oa:switcher>
+                  <oa:messageStyledText id="TotalRecords" viewName="ODImportToolsVO" viewAttr="TotalProcessedRecords" prompt="Total Records" columns="3"/>
+                  <oa:messageStyledText id="SuccessRecords" viewName="ODImportToolsVO" viewAttr="NoOfSuccessRecords" prompt="Success Records" columns="3"/>
+                  <oa:messageStyledText id="ErrorRecords" viewName="ODImportToolsVO" viewAttr="NoOfErrorRecords" prompt="Error Records" columns="3"/>
+                  <oa:submitButton id="Action" text="Process" prompt="Process" disabled="${oa.current.UploadAction}">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="uploadAction" id="fireAction2">
+                           <ui:parameters>
+                              <ui:parameter key="p_fileupload_id" value="${oa.current.FileUploadId}"/>
+                           </ui:parameters>
+                        </ui:fireAction>
+                     </ui:primaryClientAction>
+                  </oa:submitButton>
+                  <oa:submitButton id="cancel" text="Cancel" prompt="Cancel" disabled="${oa.current.UploadAction}">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="cancel" id="fireAction3">
+                           <ui:parameters>
+                              <ui:parameter key="p_file_idval" value="${oa.current.FileUploadId}"/>
+                           </ui:parameters>
+                        </ui:fireAction>
+                     </ui:primaryClientAction>
+                  </oa:submitButton>
+               </ui:contents>
+               <ui:tableActions>
+                  <oa:flowLayout id="region3">
+                     <ui:contents>
+                        <oa:submitButton id="Refresh" text="Refresh" prompt="Refresh"/>
+                     </ui:contents>
+                  </oa:flowLayout>
+               </ui:tableActions>
+            </oa:table>
+            <oa:spacer id="Spacer2" height="10"/>
+            <oa:header id="Header21" text="Templates" styleClass="OraDataText"/>
+            <oa:table id="TemplateRN">
+               <ui:contents>
+                  <oa:messageStyledText id="TemplName" destination="../XXCRM_HTML/XXOD_AS_SALES_LEADS_TEMPLATE.csv" prompt="Template Name" viewName="ODImportToolTempVO" viewAttr="TemplateName" rendered="false"/>
+                  <oa:link id="TemplateName" viewName="ODImportToolTempVO" viewAttr="TemplateName" text="Template Name">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="templateDownload">
+                           <ui:parameters>
+                              <ui:parameter key="p_template_id" value="${oa.current.TemplateFileUploadId}"/>
+                           </ui:parameters>
+                        </ui:fireAction>
+                     </ui:primaryClientAction>
+                  </oa:link>
+                  <oa:messageStyledText id="TemplDesc" viewName="ODImportToolTempVO" viewAttr="TemplateDesc" prompt="Template Description"/>
+                  <oa:link id="Help" viewName="ODImportToolTempVO" viewAttr="ClickHere" text="Help">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="help" id="fireAction5">
+                           <ui:parameters>
+                              <ui:parameter key="p_template_id" value="${oa.current.TemplateFileUploadId}"/>
+                           </ui:parameters>
+                        </ui:fireAction>
+                     </ui:primaryClientAction>
+                  </oa:link>
+               </ui:contents>
+               <ui:tableActions>
+                  <oa:flowLayout id="region2">
+                     <ui:contents>
+                        <oa:submitButton id="updTemplate" text="Upload Template" prompt="Upload Template" rendered="false"/>
+                     </ui:contents>
+                  </oa:flowLayout>
+               </ui:tableActions>
+            </oa:table>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

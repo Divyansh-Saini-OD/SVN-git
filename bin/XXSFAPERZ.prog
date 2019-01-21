@@ -1,0 +1,315 @@
+#-- +=======================================================================+
+#-- |               Office Depot - Project Simplify                         |
+#-- |             Oracle NAIO Consulting Organization                       |
+#-- +=======================================================================+
+#-- | Name            : XXSFAPERZ.prog                                      |
+#-- | Rice ID         : E1307H_SiteLevel_Attributes_ASN                     |
+#-- | Description     : Shell script to create User-level Personalizations  |
+#-- |                   for Rep Managers in SFA                             |
+#-- |                                                                       |
+#-- |Change History:                                                        |
+#-- |---------------                                                        |
+#-- |                                                                       |
+#-- |Version  Date        Author                Remarks                     |
+#-- |-------  ----------- -----------------     --------------------------  |
+#-- |Draft 1A 27-MAR-2008 Sarah Maria Justina   Initial Draft version       |
+#-- |1.0      20-MAY-2008 Sarah Maria Justina   Removed dependency on       |
+#-- |                                           Envt Variable TWO_TASK      |
+#-- |1.1      22-MAY-2008 Sarah Maria Justina   Masked the DB password in   |
+#-- |                                           case of Connect String      |
+#-- |                                           Failure.                    |
+#-- +=======================================================================+
+#Shell Script for creating User-level Personalizations for Managers/Proxy Administrators in SFA 
+# --------------------------------------------------------------------
+#  Setting the variables to be used for the installation
+# --------------------------------------------------------------------
+MACHINE_NAME=0
+PORT_NUMBER=0
+DB_NAME=0
+CRM_FILE_LOCATION=0
+# --------------------------------------------------------------------
+#  Function to get DB Machine and DB Port
+# --------------------------------------------------------------------
+getPortMachine()
+{
+    MACHINE_NAME=`sqlplus -s $ORA_USER_PASS <<EOF 
+                        set pages 0 
+                        set lines 1023
+                        select host_name from v\\$instance;
+                        exit
+                        EOF`
+                        
+    PORT_NUMBER=`sqlplus -s $ORA_USER_PASS <<EOF 
+                        set pages 0 
+                        set lines 1023 
+                        select fnd_profile.value('CSF_MAP_DB_PORT') from dual; 
+                        exit
+                        EOF`
+                        
+        DB_NAME=`sqlplus -s $ORA_USER_PASS <<EOF 
+                        set pages 0 
+                        set lines 1023  
+                        select instance_name from v\\$instance;
+                        exit
+                        EOF`    
+}
+# --------------------------------------------------------------------
+#  Function to get the File-Write Location
+# --------------------------------------------------------------------
+getFileWriteLocation()
+{                   
+    CRM_FILE_LOCATION=`sqlplus -s $ORA_USER_PASS <<EOF 
+                        set pages 0 
+                        set lines 1023 
+                        select directory_path from all_directories where directory_name='CRM_FILE_LOCATION';
+                        exit
+                        EOF`
+}
+# --------------------------------------------------------------------
+#  Function to get and write the Output Header
+# --------------------------------------------------------------------
+writeOutputHeader()
+{ 
+    #cat $CRM_FILE_LOCATION/OD_SFA_ErrList.txt | while read line ; do
+    #echo "$line" >> $OUTDIR
+    #done
+    
+    sed -n '1,9p' $CRM_FILE_LOCATION/OD_SFA_ErrList.txt >> $OUTDIR
+
+}
+# --------------------------------------------------------------------------
+#  Function to get and write the Output per each Manager/Proxy Administrator
+# --------------------------------------------------------------------------
+writeOutput()
+{
+    RESOURCE_NAME=`sqlplus -s $ORA_USER_PASS <<EOF 
+                        set pages 0 
+                        set lines 1023 
+                        select resource_name from jtf_rs_resource_extns_vl where user_id = $1;
+                        exit
+                        EOF` 
+    echo "`grep "^$RESOURCE_NAME" $CRM_FILE_LOCATION/OD_SFA_ErrList.txt`"   >> $OUTDIR 
+    echo " " >> $OUTDIR
+    echo "XML Load Status for $RESOURCE_NAME : $2" >> $OUTDIR
+    echo "-------------------------------------------------------------------------------------------------------------------------------------------------------------------------" >> $OUTDIR
+    #for LINE in `grep "$RESOURCE_NAME" $CRM_FILE_LOCATION/OD_SFA_ErrList.txt`
+    #do
+    #echo "$LINE Success"  >> $OUTDIR 
+    #done
+}
+# --------------------------------------------------------------------------
+#  Function to mask password in LOG File
+# --------------------------------------------------------------------------
+maskPasswd()
+{
+    sed -n '1,12p' $LOGDIR > /tmp/XXSFATMP.log
+    sed "s/$APPS_PASSWD/*********/" $LOG_FILE >> /tmp/XXSFATMP.log
+    mv /tmp/XXSFATMP.log $LOGDIR  
+}
+HOME_PATH=`pwd`
+LOG_FILE=XXSFAPERZ.log
+SQL_DIR=$XXCRM_TOP/sql
+ORA_USER_PASS=$1
+USERID=$2
+USERNAME=$3
+REQUESTID=$4
+PERSON_ID=$5
+LEAD_STATUS=$6
+OPPTY_STATUS=$7
+PERZ_TYPE=$8
+
+echo "Shell Script for creating User-level Personalizations for Managers/Proxy Administrators in SFA" > $LOG_FILE
+echo `date` >> $LOG_FILE
+
+getPortMachine
+getFileWriteLocation
+
+echo "*********************************************" >> $LOG_FILE
+echo Machine Name : $MACHINE_NAME >> $LOG_FILE
+echo "*********************************************" >> $LOG_FILE
+sleep 5
+echo  Port number : $PORT_NUMBER >> $LOG_FILE
+echo "*********************************************" >> $LOG_FILE
+sleep 5
+echo      DB Name : $DB_NAME >> $LOG_FILE
+echo "*********************************************" >> $LOG_FILE
+sleep 5
+echo File Location Directory : $CRM_FILE_LOCATION  >> $LOG_FILE
+echo "*********************************************" >> $LOG_FILE
+sleep 5
+
+CONTAINER_FILE_LIST=$CRM_FILE_LOCATION/OD_SFA_PerzList.txt
+# --------------------------------------------------------------------
+# Setting the Concurrent Program Output File Name based on $APPCPNAM
+# --------------------------------------------------------------------
+if [ "$APPCPNAM" = "USER.REQUID" ]; then
+    OUTDIR = $APPLCSF/$APPLOUT/$USERNAME.$REQUESTID
+else 
+    OUTDIR=$APPLCSF/$APPLOUT/o$REQUESTID.out
+fi
+LOGDIR=$APPLCSF/$APPLLOG/l$REQUESTID.req
+# --------------------------------------------------------------------
+# Calling the PL/SQL procedure to generate XML Files
+# --------------------------------------------------------------------
+if sqlplus -s $ORA_USER_PASS @$SQL_DIR/XX_SFA_PERZ.sql $PERSON_ID "'"$LEAD_STATUS"'" $OPPTY_STATUS $PERZ_TYPE
+then
+    echo "PL/SQL procedure completed successfully" >> $LOG_FILE
+else
+    echo "Generation of XML is Unsuccessful"  >> $LOG_FILE
+    echo "Please check and rerun" >> $LOG_FILE
+    echo "Aborting......" >> $LOG_FILE
+    exit 1
+fi
+# --------------------------------------------------------------------
+# Logic to get the DB Username and DB Password
+# --------------------------------------------------------------------
+IDX=`expr index $ORA_USER_PASS /`
+LENGTH=`expr length $ORA_USER_PASS`	    	
+if [ "$IDX" == 0 ]; then
+    IDX=`expr length $ORA_USER_PASS`
+else
+    IDX=`expr $IDX - 1`
+    PWD_IDX=`expr $IDX + 2`
+fi
+	    	
+APPS_USER=`expr substr $ORA_USER_PASS 1 $IDX`
+
+APPS_PASSWD=`expr substr $ORA_USER_PASS $PWD_IDX $LENGTH`
+
+echo " " >> $LOG_FILE
+echo "3. Importing the User-Personalizations files into Database " >> $LOG_FILE
+writeOutputHeader
+# ---------------------------------------------------------------------------------------------
+# FOR Loop that loops through each personalization file in the Master File $CONTAINER_FILE_LIST
+# ---------------------------------------------------------------------------------------------
+ for FILE in `cat $CONTAINER_FILE_LIST`
+    do
+    	    echo "File: $FILE" >> $LOG_FILE
+	   # --------------------------------------------------------------------
+	   # Import Logic for Lead
+	   # --------------------------------------------------------------------    	    
+    	    if [ "$PERZ_TYPE" == 'LEAD' ]; then
+            cp $CRM_FILE_LOCATION/$FILE $CRM_FILE_LOCATION/LeadUwqPG.xml
+            chmod 777 $CRM_FILE_LOCATION/LeadUwqPG.xml
+            IDX=`expr index $FILE .`
+	    	
+	        if [ "$IDX" == 0 ]; then
+	    		IDX=`expr length $FILE`
+	    	else
+	    		IDX=`expr $IDX - 1`
+	    	fi
+	    	
+	    	SUB=`expr substr $FILE 1 $IDX`
+	    	echo "Manager: $SUB" >> $LOG_FILE
+		# --------------------------------------------------------------------
+		# Import JRAD XML file
+		# --------------------------------------------------------------------
+		if java oracle.jrad.tools.xml.importer.XMLImporter $CRM_FILE_LOCATION/LeadUwqPG.xml userId "1"  -rootdir $CRM_FILE_LOCATION -rootPackage /od/oracle/apps/asn/lead/webui/customizations/user/$SUB  -username $APPS_USER -password $APPS_PASSWD -dbconnection  "(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=$MACHINE_NAME)(PORT=$PORT_NUMBER))(CONNECT_DATA=(SID=$DB_NAME)))" | tee -a $LOG_FILE
+		then
+		   echo "Import of JRAD xml file $FILE for Lead successful." >> $LOG_FILE
+		   writeOutput $SUB Success
+		else
+		   echo "Unable to import JRAD xml file $FILE for Lead" >> $LOG_FILE
+		   echo "Aborting..." >> $LOG_FILE
+		   writeOutput $SUB Failure
+		exit 1
+		fi 
+		rm $CRM_FILE_LOCATION/LeadUwqPG.xml
+            fi
+	   # --------------------------------------------------------------------
+	   # Import Logic for Opportunity
+	   # --------------------------------------------------------------------               
+	    if [ "$PERZ_TYPE" == 'OPPTY' ]; then
+	        cp $CRM_FILE_LOCATION/$FILE $CRM_FILE_LOCATION/OpptyUwqPG.xml
+	        chmod 777 $CRM_FILE_LOCATION/OpptyUwqPG.xml
+	        IDX=`expr index $FILE .`
+	    	
+	    	if [ "$IDX" == 0 ]; then
+	    		IDX=`expr length $FILE`
+	    	else
+	    		IDX=`expr $IDX - 1`
+	    	fi
+	    	
+	    	SUB=`expr substr $FILE 1 $IDX`
+	    	echo "Manager: $SUB" >> $LOG_FILE
+	    	# --------------------------------------------------------------------
+	    	# Import JRAD XML files
+	    	# --------------------------------------------------------------------
+	    	if java oracle.jrad.tools.xml.importer.XMLImporter $CRM_FILE_LOCATION/OpptyUwqPG.xml userId "1"  -rootdir $CRM_FILE_LOCATION -rootPackage /od/oracle/apps/asn/opportunity/webui/customizations/user/$SUB  -username $APPS_USER -password $APPS_PASSWD -dbconnection  "(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=$MACHINE_NAME)(PORT=$PORT_NUMBER))(CONNECT_DATA=(SID=$DB_NAME)))" | tee -a $LOG_FILE
+	    	then
+	    	   echo "Import of JRAD xml file $FILE for Opportunity successful." >> $LOG_FILE
+	    	   writeOutput $SUB Success
+	    	else
+	    	   echo "Unable to import JRAD xml file $FILE for Opportunity" >> $LOG_FILE
+	    	   echo "Aborting..." >> $LOG_FILE
+	    	   writeOutput $SUB Failure
+	    	exit 1
+	    	fi 
+		rm $CRM_FILE_LOCATION/OpptyUwqPG.xml
+	    fi
+	   # --------------------------------------------------------------------
+	   # Import Logic for Customer
+	   # --------------------------------------------------------------------   	    
+	    if [ "$PERZ_TYPE" == 'CUST' ]; then
+	    	cp $CRM_FILE_LOCATION/$FILE $CRM_FILE_LOCATION/ODCustomerSearchPG.xml
+	    	chmod 777 $CRM_FILE_LOCATION/ODCustomerSearchPG.xml
+	    	IDX=`expr index $FILE .`
+	    	
+	    	if [ "$IDX" == 0 ]; then
+	    		IDX=`expr length $FILE`
+	    	else
+	    		IDX=`expr $IDX - 1`
+	    	fi
+	    	
+	    	SUB=`expr substr $FILE 1 $IDX`
+	    	echo "Manager: $SUB" >> $LOG_FILE
+	    	# --------------------------------------------------------------------
+	    	# Import JRAD XML files
+	    	# --------------------------------------------------------------------
+	    	if java oracle.jrad.tools.xml.importer.XMLImporter $CRM_FILE_LOCATION/ODCustomerSearchPG.xml userId "1"  -rootdir $CRM_FILE_LOCATION -rootPackage /od/oracle/apps/xxcrm/asn/custsrch/common/customer/webui/customizations/user/$SUB  -username $APPS_USER -password $APPS_PASSWD -dbconnection  "(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=$MACHINE_NAME)(PORT=$PORT_NUMBER))(CONNECT_DATA=(SID=$DB_NAME)))" | tee -a $LOG_FILE
+	    	then
+	    	   echo "Import of JRAD xml file $FILE for Customer successful." >> $LOG_FILE
+	    	   writeOutput $SUB Success
+	    	else
+	    	   echo "Unable to import JRAD xml file $FILE for Customer" >> $LOG_FILE
+	    	   echo "Aborting..." >> $LOG_FILE
+	    	   writeOutput $SUB Failure
+	    	exit 1
+	    	fi 
+	    	rm $CRM_FILE_LOCATION/ODCustomerSearchPG.xml
+	    fi
+    done
+# --------------------------------------------------------------------
+# Logic to Cleanup the location $CONTAINER_FILE_LIST
+# --------------------------------------------------------------------    
+ for FILE in `cat $CONTAINER_FILE_LIST`
+    do 
+       rm $CRM_FILE_LOCATION/$FILE -fR
+    done
+rm $CONTAINER_FILE_LIST
+
+
+echo " " >> $OUTDIR
+echo "`grep "Failure" $CRM_FILE_LOCATION/OD_SFA_ErrList.txt`"   >> $OUTDIR 
+echo " " >> $OUTDIR
+echo "_____________________________________________________________________________________________________________________________________________________________________________" >> $OUTDIR
+echo " " >> $OUTDIR
+echo "`grep "Total Number" $CRM_FILE_LOCATION/OD_SFA_ErrList.txt`"  >> $LOG_FILE
+
+echo "`grep "Total Number" $CRM_FILE_LOCATION/OD_SFA_ErrList.txt`" >> $OUTDIR 
+echo " " >> $OUTDIR
+echo "_____________________________________________________________________________________________________________________________________________________________________________" >> $OUTDIR
+
+rm $CRM_FILE_LOCATION/OD_SFA_ErrList.txt
+maskPasswd
+# --------------------------------------------------------------------
+# Unset the variables set for this installation
+# --------------------------------------------------------------------
+unset HOME_PATH
+unset LOG_FILE
+unset SQL_DIR
+ 
+exit 0
+# --------------------------------------------------------------------
+#  End of Script
+# --------------------------------------------------------------------

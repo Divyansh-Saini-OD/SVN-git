@@ -1,0 +1,36 @@
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify						|
+-- +============================================================================================+
+-- | Name        : XXOD_CDH_EBL_CONTACTS_STG.syn                                                |
+-- | Description : ePDF enhancement                                                             |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        07/07/12       Devendra Petkar        Initial version                            |
+-- +============================================================================================+
+
+
+---------------------------------------------------------
+-- Creating synonym				       --
+---------------------------------------------------------
+
+CREATE OR REPLACE SYNONYM APPS.XXOD_CDH_EBL_CONTACTS_STG FOR XXCRM.XXOD_CDH_EBL_CONTACTS_STG ;
+
+CREATE OR REPLACE SYNONYM APPS.XXCRM_EBL_CONT_UPLOADS FOR XXCRM.XXCRM_EBL_CONT_UPLOADS ;
+
+CREATE OR REPLACE SYNONYM APPS.XXCRM_FILE_UPLOAD_ID_S FOR XXCRM.XXCRM_FILE_UPLOAD_ID_S ;
+
+
+
+
+SHOW ERRORS;
+
+EXIT;

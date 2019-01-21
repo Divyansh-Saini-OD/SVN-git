@@ -1,0 +1,113 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        :  XX_CRM_TPS_SITE_REQUESTS_STG.tbl                   |
+-- | Description :  Create custom DB Tables and Indexes for            |
+-- |                TOPS Site Requests.                                |
+-- |                The Objects created are:                           |
+-- |                 1. XX_CRM_TPS_SITE_REQUESTS_STG (Extension Table) |
+-- |                 2. XX_CRM_TPS_SITE_STG_TL_U1   (Index )           |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author             Remarks                  |
+-- |=======   ===========  =================  =========================|
+-- |DRAFT 1A  25-Jul-2008  Piyush Khandelwal   Initial draft version   |
+-- +===================================================================+
+
+
+
+
+PROMPT
+PROMPT Creating the Table XX_CRM_TPS_SITE_REQUESTS_STG 
+PROMPT
+
+CREATE TABLE XXCRM.XX_CRM_TPS_SITE_REQUESTS_STG
+( 
+RECORD_ID                NUMBER(15)      NOT NULL,
+SITE_REQUEST_ID	         NUMBER(15)      NOT NULL,			
+CREATION_DATE	         DATE            NOT NULL,			
+CREATED_BY	         NUMBER(15)      NOT NULL,			
+LAST_UPDATE_DATE         DATE            NOT NULL,			
+LAST_UPDATED_BY	         NUMBER	         NOT NULL,			
+PROGRAM_APPLICATION_ID   NUMBER,			
+PROGRAM_ID               NUMBER,			
+PROGRAM_UPDATE_DATE      DATE,   		
+REQUEST_ID               NUMBER,				
+GOAL_ID                  NUMBER          NOT NULL,			
+TO_RESOURCE_ID           NUMBER          NOT NULL,			
+TO_ROLE_ID               NUMBER          NOT NULL,		
+TO_GROUP_ID              NUMBER          NOT NULL,			
+PARTY_SITE_ID            NUMBER          NOT NULL,			
+REQUEST_REASON_CODE      VARCHAR2(30),			
+REQUEST_REASON           VARCHAR2(240),				
+EFFECTIVE_DATE	         DATE            NOT NULL,			
+REQUEST_STATUS_CODE      VARCHAR2(30)    NOT NULL,			
+REVIEW_COMPLETION_METHOD VARCHAR2(30),		
+REVIEW_COMPLETION_DATE   DATE,
+REJECT_REASON_CODE       VARCHAR2(30),			
+REJECT_REASON	         VARCHAR2(240),			
+DIRECTION_CODE           VARCHAR2(30)        NOT NULL,			
+TERRITORY_IFACE_DATE	   DATE	,		
+FROM_RESOURCE_ID	   NUMBER	        NOT NULL,			
+FROM_ROLE_ID	           NUMBER	        NOT NULL,		
+FROM_GROUP_ID	           NUMBER	        NOT NULL,			
+BULK_REQUEST_ID            NUMBER	        NOT NULL,			
+TERR_REC_ID	           NUMBER	,			
+PREVIOUS_SITE_REQUEST_ID NUMBER	,
+ATTRIBUTE1               VARCHAR2(150),
+ATTRIBUTE2               VARCHAR2(150),
+ATTRIBUTE3               VARCHAR2(150),
+ATTRIBUTE4               VARCHAR2(150),
+ATTRIBUTE5               VARCHAR2(150),
+ATTRIBUTE6               VARCHAR2(150),
+ATTRIBUTE7               VARCHAR2(150),
+ATTRIBUTE8               VARCHAR2(150),
+ATTRIBUTE9               VARCHAR2(150),
+ATTRIBUTE10              VARCHAR2(150),
+ATTRIBUTE11              VARCHAR2(150),
+ATTRIBUTE12              VARCHAR2(150),
+ATTRIBUTE13              VARCHAR2(150),
+ATTRIBUTE14              VARCHAR2(150),
+ATTRIBUTE15              VARCHAR2(150),
+ATTRIBUTE16              VARCHAR2(150),
+ATTRIBUTE17              VARCHAR2(150),
+ATTRIBUTE18              VARCHAR2(150),
+ATTRIBUTE19              VARCHAR2(150),
+ATTRIBUTE20              VARCHAR2(150)
+);
+
+
+PROMPT
+PROMPT Grants XX_CRM_TPS_SITE_REQUESTS_STG
+PROMPT   
+grant all on XXCRM.XX_CRM_TPS_SITE_REQUESTS_STG to apps;
+            
+            
+PROMPT
+PROMPT Creating Unique Index XX_CRM_TPS_SITE_STG_TL_U1
+PROMPT   
+
+CREATE UNIQUE INDEX XX_CRM_TPS_SITE_STG_TL_U1 ON XXCRM.XX_CRM_TPS_SITE_REQUESTS_STG(RECORD_ID);
+
+                                                                    
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

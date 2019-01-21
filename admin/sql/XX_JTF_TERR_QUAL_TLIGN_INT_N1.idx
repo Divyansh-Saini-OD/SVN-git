@@ -1,0 +1,9 @@
+-- $Id$
+-- $Rev$
+-- $HeadURL$
+-- $Author$
+-- $Date$
+
+create index xxcrm.xx_jtf_terr_qual_tlign_int_n1
+          on xxcrm.xx_jtf_terr_qual_tlign_int (map_id, low_value_char, details_file_name)
+          compute statistics;

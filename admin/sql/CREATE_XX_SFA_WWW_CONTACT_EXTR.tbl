@@ -1,0 +1,40 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_SFA_WWW_CONTACT_EXTR.tbl                  |
+-- | Description      :I2043 Leads_from_WWW_and_Jmillennia                 |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      15-Feb-2008 David Woods        Initial version                |
+-- +=======================================================================+ 
+
+CREATE TABLE XXCRM.XX_SFA_WWW_CONTACT_EXTR
+  (BATCH_ID                      NUMBER 
+  ,PARENT_OSR                    VARCHAR2(50)
+  ,CONTACT_OSR                   VARCHAR2(50)
+  ,ORIG_SYSTEM                   CHAR(2) 
+  ,CREATED_BY_MODULE             VARCHAR2(10)                
+  ,PERSON_FIRST_NAME             VARCHAR2(32)       
+  ,PERSON_LAST_NAME              VARCHAR2(32)       
+  ,PERSON_TITLE                  VARCHAR2(32)       
+  ,START_DATE                    DATE                 
+  ,PHONE                         VARCHAR2(32)       
+  ,ADDRESS1                      VARCHAR2(32)       
+  ,CITY                          VARCHAR2(32)       
+  ,STATE                         VARCHAR2(32)       
+  ,POSTAL_CODE                   VARCHAR2(15)       
+  ,COUNTRY                       CHAR(2) 
+  ,CREATED_BY                    NUMBER 
+  );
+
+Grant all on XXCRM.XX_SFA_WWW_CONTACT_EXTR to APPS;

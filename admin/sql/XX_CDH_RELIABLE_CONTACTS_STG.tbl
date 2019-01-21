@@ -1,0 +1,87 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+-- +===================================================================+
+-- |                        Office Depot                               |
+-- |                                                                   |
+-- +===================================================================+
+-- | Table Name  :  XXCRM.XX_CDH_RELIABLE_CONTACTS_STG.tbl             |
+-- | Description :  Table holds AOPS information for Reliable AP       | 
+-- |                Contacts                                           |
+-- | Rice Id     :  I3092                                              |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author             Remarks                  |
+-- |=======   ===========  =================  =========================|
+-- |1.0       01-MAY-2015  Manikant Kasu      Initial draft version    |
+-- +===================================================================+
+WHENEVER SQLERROR CONTINUE;
+SET TERM ON
+
+PROMPT 'Drop Custom Table XXCRM.XX_CDH_RELIABLE_CONTACTS_STG If Exists'
+DROP TABLE XXCRM.XX_CDH_RELIABLE_CONTACTS_STG 
+/
+
+SET TERM ON
+
+PROMPT 'Custom Table' 
+PROMPT
+
+PROMPT
+PROMPT 'Creating the Table XXCRM.XX_CDH_RELIABLE_CONTACTS_STG'
+PROMPT
+CREATE TABLE XXCRM.XX_CDH_RELIABLE_CONTACTS_STG 
+(
+  CST_AOPS_ACCT_OSR              VARCHAR2(255) --Acct  OSR is AOPS_NUM-00001-A0
+ ,CST_ACCT_NUM_OSR_ID1           VARCHAR2(255) --Party OSR is OMAX_NUM-0000000
+ ,CST_SIT_CONSIGNE_OSR_ID2       VARCHAR2(255) --Party OSR is OMAX_NUM-0000000
+ ,CCU_CONTACT_ID                 VARCHAR2(255)
+ ,CCU_CREATED_DT                 DATE          NOT NULL  
+ ,STATUS_FLAG                    VARCHAR2(1)   --'N','E','S'- 'N' New E=> Error S=> Success
+ ,ERROR_MSG                      VARCHAR2(255) --Error substringed to 255 chars
+ ,CREATION_DATE                  DATE          NOT NULL
+ ,CREATED_BY                     NUMBER(15)    NOT NULL
+ ,LAST_UPDATE_DATE               DATE          NOT NULL
+ ,LAST_UPDATED_BY                NUMBER(15)    NOT NULL
+)
+/
+
+PROMPT 'CREATE  INDEX XXCRM.XX_CDH_RELIABLE_APCONTCT_N1 ON XXCRM.XX_CDH_RELIABLE_CONTACTS_STG (CST_AOPS_ACCT_OSR)'
+CREATE  INDEX XX_CDH_RELIABLE_APCONTCT_N1 ON XXCRM.XX_CDH_RELIABLE_CONTACTS_STG(CST_AOPS_ACCT_OSR)
+/
+
+PROMPT 'CREATE  INDEX XXCRM.XX_CDH_RELIABLE_APCONTCT_N2 ON XXCRM.XX_CDH_RELIABLE_CONTACTS_STG (CCU_CONTACT_ID)'
+CREATE  INDEX XX_CDH_RELIABLE_APCONTCT_N2 ON XXCRM.XX_CDH_RELIABLE_CONTACTS_STG(CCU_CONTACT_ID)
+/
+
+PROMPT 'CREATE INDEX XXCRM.XX_CDH_RELIABLE_APCONTCT_N3 ON XXCRM.XX_CDH_RELIABLE_CONTACTS_STG (LAST_UPDATE_DATE)'
+CREATE INDEX XX_CDH_RELIABLE_APCONTCT_N3 ON XXCRM.XX_CDH_RELIABLE_CONTACTS_STG(LAST_UPDATE_DATE)
+/
+
+PROMPT 'CREATE INDEX XXCRM.XX_CDH_RELIABLE_APCONTCT_N4 ON XXCRM.XX_CDH_RELIABLE_CONTACTS_STG (CREATION_DATE)'
+CREATE INDEX XX_CDH_RELIABLE_APCONTCT_N4 ON XXCRM.XX_CDH_RELIABLE_CONTACTS_STG(CREATION_DATE)
+/
+
+PROMPT 'Grant XX_CDH_RELIABLE_CONTACTS_STG'
+GRANT SELECT ON XXCRM.XX_CDH_RELIABLE_CONTACTS_STG TO ERP_SYSTEM_TABLE_SELECT_ROLE
+/
+
+PROMPT 'Grant XX_CDH_RELIABLE_CONTACTS_STG to APPS'
+GRANT ALL ON XXCRM.XX_CDH_RELIABLE_CONTACTS_STG TO APPS
+/
+    
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

@@ -1,0 +1,23 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             : CREATE_XX_CRM_TPS_Record_Id_S.syn            |
+-- | Description      : synonym creation for TOPS Staging Table seq        |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0	     09-Aug-08   Piyush Khandelwal      Initial Draft Version      |
+-- +=======================================================================+
+
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_TPS_Record_Id_S FOR xxcrm.XX_CRM_TPS_Record_Id_S
+/ 

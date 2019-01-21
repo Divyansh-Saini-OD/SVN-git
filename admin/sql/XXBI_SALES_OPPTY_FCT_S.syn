@@ -1,0 +1,30 @@
+-- $Id$
+-- $Rev$
+-- $HeadURL$
+-- $Author$
+-- $Date$
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :XXBI_SALES_OPPTY_FCT_S.syn                          |
+-- | Description      :Synonym for Opportunities Fact Sequence             |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      13-Mar-09   Sreekanth Rao      Initial       version          |
+-- +=======================================================================+
+------------------------------------------------------
+-- Dropping the existing synonym and creating new.  --
+------------------------------------------------------
+CREATE OR REPLACE SYNONYM APPS.XXBI_SALES_OPPTY_FCT_S FOR XXCRM.XXBI_SALES_OPPTY_FCT_S;
+
+SHOW ERRORS;
+

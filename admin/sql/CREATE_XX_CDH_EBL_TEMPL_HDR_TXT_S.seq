@@ -1,0 +1,45 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+-- +===========================================================================================+
+-- |                                    Office Depot                                           |
+-- +===========================================================================================|
+-- | Name       : XX_CDH_EBL_TEMPL_HDR_TXT_S.seq                                               |
+-- | Description: Sequence for Header eTXT                                                     |
+-- | Rice Id    :                                                                              | 
+-- |Change Record:                                                                             |
+-- |===============                                                                            |
+-- |Version   Date         Author           Remarks                                            |
+-- |=======   ===========  =============    ===================================================|
+-- |1.0       1-APR-2016  Sridevi K   Initial Version                                    |
+-- +===========================================================================================+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET TERM ON
+PROMPT
+PROMPT Creating the Sequence XX_CDH_EBL_TEMPL_HDR_TXT_S 
+PROMPT
+
+CREATE SEQUENCE  "XX_CDH_EBL_TEMPL_HDR_TXT_S"  
+  MINVALUE 1 
+  INCREMENT BY 1 
+  START WITH 1000
+  NOCACHE
+/
+   
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

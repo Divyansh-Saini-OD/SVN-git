@@ -1,0 +1,53 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :CREATE_XXCRM_FILE_UPLOADS.tbl                       |
+-- | Description      :File Uploads Table                                  |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author               Remarks                    |
+-- |=======   ===========  =================  =============================|
+-- |DRAFT 1A  04-Oct-2016  Shubhashree Rajanna  Initial draft version      |
+-- +=======================================================================+
+
+-- ---------------------------------------------------------------------
+--      Create Custom Table XXCRM_FILE_UPLOADS    --
+-- ---------------------------------------------------------------------
+CREATE TABLE XXCRM.XXCRM_FILE_UPLOADS
+(
+	FILE_UPLOAD_ID             NUMBER        NOT NULL,      
+	CLOB_TYPE                  VARCHAR2(30)  NOT NULL,
+	CLOB_CODE                  VARCHAR2(80)  NOT NULL, 
+	FILE_NAME                  VARCHAR2(120) NOT NULL,
+	FILE_STATUS                VARCHAR2(1)   NOT NULL,   
+	FILE_CONTENT_TYPE          VARCHAR2(120) NOT NULL ,
+	FILE_DATA                  CLOB       ,   
+	PROGRAM                    VARCHAR2(30) , 
+	CREATED_BY                 NUMBER        NOT NULL,      
+	CREATION_DATE              DATE          NOT NULL,         
+	LAST_UPDATED_BY            NUMBER        NOT NULL,      
+	LAST_UPDATE_DATE           DATE          NOT NULL,        
+	REQUEST_ID                       NUMBER  ,      
+	ERROR_FILE_DATA                  CLOB  ,        
+	LAST_UPDATE_LOGIN                NUMBER  ,      
+	OUTPUT_FILE_DATA                 CLOB ,         
+	TOTAL_PROCESSED_RECORDS          NUMBER ,       
+	NO_OF_SUCCESS_RECORDS            NUMBER ,       
+	NO_OF_ERROR_RECORDS              NUMBER 
+  );
+------------------------------------------------------
+-- Adding Grants to APPS.                           --
+------------------------------------------------------
+GRANT ALL ON XXCRM.XXCRM_FILE_UPLOADS TO APPS;
+
+SHOW ERRORS;

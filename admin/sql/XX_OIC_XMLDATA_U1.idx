@@ -1,0 +1,34 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +========================================================================+
+-- |               Office Depot - Project Simplify                          |
+-- |      Oracle NAIO/Office Depot/Consulting Organization                  |
+-- +========================================================================+
+-- |Description:  Creation of Index for OIC Plan Copy                       |
+-- |                                                                        |
+-- |                                                                        |
+-- |NAME...: XX_OIC_XMLDATA_U1.idx                                          |
+-- |                                                                        |
+-- |DESCRIPTION: DDL to create index for xx_oic_xmldata table for the       |
+-- |             OIC Plan Copy object                                       |
+-- |                                                                        |
+-- |                                                                        |
+-- |                                                                        |
+-- | Change Record:                                                         |
+-- | ===============                                                        |
+-- |   Version   Date          Author             Remarks                   |
+-- |   =======   ==========    ================   ==========================|
+-- |   1.0       01-Aug-07     Nageswara Rao      Initial version           |
+-- +========================================================================+
+
+-- ============================================================================
+-- Create the index's:
+-- ============================================================================
+
+-- Creating index xx_oic_xmldata_u1
+
+CREATE INDEX xxcrm.xx_oic_xmldata_u1
+ON xx_oic_xmldata(imp_seq_id)
+/

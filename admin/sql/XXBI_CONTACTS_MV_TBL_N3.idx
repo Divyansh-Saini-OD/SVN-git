@@ -1,0 +1,39 @@
+
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                        WIPRO Technologies                         |
+-- +===================================================================+
+-- | Name    :          XXBI_CONTACTS_MV_TBL_N3 .idx                   |
+-- | |
+-- | Description      : This scipt creates index                       |
+-- |                    XXBI_CONTACTS_MV_TBL_N3 .                      |
+-- |                                                                   |
+-- | Subversion Info:                                                          |
+-- | $HeadURL:  $                                                               |
+-- | $Rev:  $                                                                   |
+-- | $Date: $                                         |
+-- |                                                                           |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |1.0       14-APR-2010 Prasad Initial Version             |
+-- |                                                                   |
+-- |                                                                   |
+-- +===================================================================+
+
+-- ----------------------------------------------------------
+--   CREATE Custom index XXBI_CONTACTS_MV_TBL_N3         --
+-- ----------------------------------------------------------
+
+CREATE INDEX XXCRM.XXBI_CONTACT_MV_TBL_N3 ON "XXCRM"."XXBI_CONTACT_MV_TBL" ("CUST_ACCT_SITE_ID", "SITE_PARTY_SITE_ID", "PARTY_ID", "CUST_ACCOUNT_ID");
+  
+SHOW ERRORS; 
+ 
+

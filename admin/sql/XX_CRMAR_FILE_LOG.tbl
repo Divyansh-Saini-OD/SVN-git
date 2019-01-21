@@ -1,0 +1,27 @@
+--+=====================================================================+
+--|                   Office Depot - Project FIT                        |
+--|          Capgemini/Office Depot/Consulting Organization             |
+--+=====================================================================+
+--|                                                                     |
+--|Rice        : 106313                                                 |
+--|File Name   : XX_CRM_FILE_LOG.tbl                                    |
+--|File Path   : $XXCRM_TOP/admin/sql                                   |
+--|Schema      : XXCRM                                                  |
+--|                                                                     |
+--|Version    Date           Author                       Remarks       |
+--|=======   ======        ====================          =========      |
+--| 1.0    06-Sep-2011     Balakrishna Bolikonda       Initial version  |
+--|                                                                     |
+--+=====================================================================+
+
+SET VERIFY OFF
+WHENEVER SQLERROR CONTINUE
+                  
+CREATE TABLE XXCRM.XX_CRMAR_FILE_LOG
+                  (program_id              NUMBER
+                  ,program_name            VARCHAR2(240)
+                  ,Program_run_date        DATE
+                  ,filename                VARCHAR2(150)
+                  ,Total_records           NUMBER
+                  ,status                  VARCHAR2(100)
+                  );

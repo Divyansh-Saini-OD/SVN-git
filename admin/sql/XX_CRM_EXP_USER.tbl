@@ -1,0 +1,55 @@
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify                                           |
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_USER.tbl                                                          |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        26-Aug-2011     Kishore Jena         Initial version                             |
+-- +============================================================================================+
+
+CREATE TABLE XXCRM.XX_CRM_EXP_USER 
+   (BATCH_ID          NUMBER, 
+    RECORD_ID         NUMBER,
+    USERNAME          VARCHAR2(60),
+    LASTNAME          VARCHAR2(60),  
+    FIRSTNAME         VARCHAR2(60),  
+    COMPANY_NAME      VARCHAR2(130),  
+    DIVISION          VARCHAR2(30),  
+    JOB_TITLE         VARCHAR2(60),  
+    ADDRESS           VARCHAR2(130),
+    CITY              VARCHAR2(60),
+    STATE             VARCHAR2(30),
+    POSTAL_CODE       VARCHAR2(30),
+    COUNTRY           VARCHAR2(30),
+    EMAIL             VARCHAR2(60),
+    PHONE             VARCHAR2(30),
+    FAX               VARCHAR2(30),
+    MOBILE            VARCHAR2(30),
+    ALIAS             VARCHAR2(30),
+    NICKNAME          VARCHAR2(30),
+    TIMEZONE          VARCHAR2(30),
+    LOCALE            VARCHAR2(30),
+    EMAIL_ENCODING    VARCHAR2(30),
+    LANGAUAGE         VARCHAR2(30),
+    PROFILE_ID        VARCHAR2(30),
+    FEDERATION_ID     VARCHAR2(30),
+    EMPLOYEE_NUMBER   VARCHAR2(30),
+    MGR_EMP_NUMBER    VARCHAR2(30),
+    ISACTIVE          CHAR(1),
+    ISROLECHANGED     CHAR(1),
+    CREATION_DATE     DATE,
+    CREATED_BY        NUMBER,
+    LAST_UPDATE_DATE  DATE,
+    LAST_UPDATED_BY   NUMBER,
+    LAST_UPDATE_LOGIN NUMBER
+   )
+TABLESPACE APPS_TS_TX_DATA;
+
+GRANT ALL ON XXCRM.XX_CRM_EXP_USER TO APPS;
+  
+SHOW ERRORS;

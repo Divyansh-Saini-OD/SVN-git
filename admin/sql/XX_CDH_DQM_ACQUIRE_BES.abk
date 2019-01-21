@@ -1,0 +1,38 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=========================================================================================+
+-- |                  Office Depot - Project Simplify                                        |
+-- +=========================================================================================+
+-- | Name        : XX_CDH_DQM_ACQUIRE_BES                                                    |
+-- | Description : Anonymous block for setting up Business Events for specific attribute     |
+-- |               groups where DQM needs to be updated due to change in attributes in group |
+-- |                                                                                         |
+-- |Change Record:                                                                           |
+-- |===============                                                                          |
+-- |Version     Date           Author               Remarks                                  |
+-- |=======    ==========      ================     =========================================|
+-- |1.0        05-Nov-2007     Rajeev Kamath        Anonymous Block; First version           |
+-- +=========================================================================================+
+
+-- Update Flex Field Definition in EGO 
+-- to add invocation from seeded EGO Code.
+-- EGO API looks at this column for the entity being updated/created
+update EGO_FND_DESC_FLEXS_EXT
+set business_Event_name = 'od.oracle.apps.ar.hz.PartySiteExt.update'
+WHERE APPLICATION_ID = 222
+AND DESCRIPTIVE_FLEXFIELD_NAME = 'HZ_PARTY_SITES_GROUP';
+
+-- Update Flex field context to enable generation of 
+-- the event for this specific group
+update EGO_FND_DSC_FLX_CTX_EXT
+set business_event_flag = 'Y'
+WHERE DESCRIPTIVE_FLEX_CONTEXT_CODE = 'SITE_CONTACTS'
+AND DESCRIPTIVE_FLEXFIELD_NAME = 'HZ_PARTY_SITES_GROUP';
+           
+commit;           
+/
+SHOW ERRORS;
+/
+EXIT;

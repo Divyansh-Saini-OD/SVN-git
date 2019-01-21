@@ -1,0 +1,52 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===========================================================================+
+-- |                  Office Depot - eBilling Project                          |
+-- |                         WIPRO/Office Depot                                |
+-- +===========================================================================+
+-- | Name        : CREATE_XX_CDH_EBL_SEQ_S.seq                             |
+-- | Description :                                                             |
+-- | File to create sequence for eBilling project,                             |
+-- | Table: XX_CDH_EBL_LOG.                                           |
+-- |                                                                           |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author        Remarks            	               |
+-- |======== =========== ============= ========================================|
+-- |DRAFT 1A 08-APR-2010 Mangala      Initial draft version                    |
+-- |===========================================================================|
+-- | Subversion Info:                                                          |
+-- | $HeadURL$                                                               |
+-- | $Rev$                                                                   |
+-- | $Date$                                                                  |
+-- |                                                                           |
+-- |                                                                           |
+-- |                                                                           |
+-- |                                                                           |
+-- |                                                                           |
+-- +===========================================================================+
+
+-- ----------------------------------------------------------------------------
+-- Create Custom Sequence XX_CDH_EBL_SEQ_S
+-- ----------------------------------------------------------------------------
+
+CREATE SEQUENCE XXCRM.XX_CDH_EBL_SEQ_S 
+INCREMENT BY 1 
+START WITH 1 
+NOMAXVALUE
+NOCYCLE NOCACHE NOORDER;
+
+
+-- ----------------------------------------------------------------------------
+-- Grants to APPS
+-- ----------------------------------------------------------------------------
+
+GRANT ALL ON XXCRM.XX_CDH_EBL_SEQ_S TO APPS;
+
+
+SHOW ERRORS;
+EXIT;

@@ -1,0 +1,89 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : CREATE_XX_CN_SUM_TRX_ARCH.tbl                       |
+-- | Rice ID     : E1004G_CustomCollections_(Archiving)                |
+-- | Description : Summarization Archive Table Creation Script         |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1A 08-Nov-2007  Hema Chikkanna   Initial draft version       |
+-- |                                                                   |
+-- +===================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Table XX_CN_SUM_TRX_ARCH .....
+PROMPT
+
+CREATE TABLE xx_cn_sum_trx_arch (
+       sum_trx_id                      NUMBER(15)     NOT NULL
+      ,salesrep_id                     NUMBER(15)     NOT NULL
+      ,rollup_date                     DATE           NOT NULL
+      ,revenue_class_id                NUMBER(15)     NOT NULL
+      ,revenue_type                    VARCHAR2(15)   NOT NULL
+      ,org_id                          NUMBER(15)     NOT NULL
+      ,resource_org_id                 NUMBER(15)     NOT NULL
+      ,division                        VARCHAR2(40)
+      ,salesrep_division               VARCHAR2(40)
+      ,role_id                         NUMBER(15)
+      ,comp_group_id                   NUMBER(15)
+      ,processed_date                  DATE
+      ,processed_period_id             NUMBER(15)
+      ,transaction_amount              NUMBER(15)     NOT NULL
+      ,trx_type                        VARCHAR2(30)   NOT NULL
+      ,quantity                        NUMBER(15)
+      ,transaction_currency_code       VARCHAR2(15)
+      ,exchange_rate                   NUMBER(15)
+      ,discount_percentage             NUMBER(15)
+      ,margin                          NUMBER(15)
+      ,salesrep_number                 VARCHAR2(30)
+      ,rollup_flag                     VARCHAR2(1)
+      ,source_doc_type                 VARCHAR2(30)
+      ,object_version_number           NUMBER(15)     NOT NULL
+      ,ou_transfer_status              VARCHAR2(30)   NOT NULL
+      ,collect_eligible                CHAR(1)        NOT NULL
+      ,attribute1                      VARCHAR2(150)
+      ,attribute2                      VARCHAR2(150)
+      ,attribute3                      VARCHAR2(150)
+      ,attribute4                      VARCHAR2(150)
+      ,attribute5                      VARCHAR2(150)
+      ,conc_batch_id                   NUMBER(15)
+      ,process_audit_id                NUMBER(15)
+      ,orig_request_id                 NUMBER(15)
+      ,orig_program_application_id     NUMBER(15)
+      ,orig_created_by                 NUMBER(15)
+      ,orig_creation_date              DATE
+      ,orig_last_updated_by            NUMBER(15)
+      ,orig_last_update_date           DATE
+      ,orig_last_update_login          NUMBER(15)
+      ,created_by                      NUMBER(15)
+      ,creation_date                   DATE
+      ,last_updated_by                 NUMBER(15)
+      ,last_update_date                DATE
+      ,last_update_login               NUMBER(15)
+      ,request_id                      NUMBER(15)
+      ,program_application_id          NUMBER(15)
+    );
+      
+
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

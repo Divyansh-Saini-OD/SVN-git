@@ -1,0 +1,44 @@
+-- $Id$
+-- $Rev$
+-- $HeadURL$
+-- $Author$
+-- $Date$
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : CREATE_XXSCS_POTENTIAL_ID_S.seq                    |
+-- | Description      : Sequence for XXSCS_POTENTIAL_STG                   |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  15-Mar-2009 Sree/Prasad        Initial Draft Version          |
+-- |                                                                       |
+-- +=======================================================================+
+
+--------------------------------------------------------------
+--  Create Custom Sequence CREATE_XXSCS_POTENTIAL_ID_S  --
+--------------------------------------------------------------
+
+CREATE SEQUENCE XXCRM.XXSCS_POTENTIAL_ID_S
+INCREMENT BY 1 
+START WITH 1 
+NOMAXVALUE
+NOCYCLE NOCACHE NOORDER;
+
+------------------------------------------------------
+-- Grants to APPS                                   --
+------------------------------------------------------
+
+GRANT ALL ON XXSCS_POTENTIAL_ID_S TO APPS;
+
+GRANT ALL ON XXSCS_POTENTIAL_ID_S TO XXDATA_STAGE;
+
+SHOW ERRORS;

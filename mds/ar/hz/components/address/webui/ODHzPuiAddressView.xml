@@ -1,0 +1,107 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath_~PROD_~PATH_~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath_~PROD_mds_directory  -->
+<oa:header version="9.0.3.8.13_1550" xml:lang="en-US" file-version="$Header: HzPuiAddressView.xml 115.24.24.2 2007/02/14 09:25:52 avjha noship $" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" xmlns:jrad="http://xmlns.oracle.com/jrad" scope="/" text="Addresses">
+   <ui:contents>
+      <oa:stackLayout id="addressViewStack" controllerClass="od.oracle.apps.xxcrm.asn.common.customer.webui.ODHzPuiAddressViewCO" amDefName="od.oracle.apps.xxcrm.asn.common.customer.server.ODHzPuiAddressAM">
+         <ui:contents>
+            <oa:table id="addressViewTable" width="100%" shortDesc="Addresses">
+               <ui:contents>
+                  <oa:messageStyledText id="PartySiteNumber" dataType="VARCHAR2" prompt="Site Number" text="Site Number" viewName="ODHzContactAddressesVO" viewAttr="PartySiteNumber" maximumLength="30" rendered="false"/>
+                  <oa:messageStyledText id="Address" dataType="VARCHAR2" prompt="Address" text="Address" viewName="ODHzContactAddressesVO" viewAttr="PrimaryAddress" maximumLength="4000"/>
+                  <oa:messageStyledText id="County" dataType="VARCHAR2" prompt="County" text="County" viewName="ODHzContactAddressesVO" viewAttr="County" maximumLength="60" sortState="yes" rendered="false" sortByViewAttr="Country"/>
+                  <oa:messageStyledText id="Province" dataType="VARCHAR2" prompt="Province" text="Province" viewName="ODHzContactAddressesVO" viewAttr="Province" maximumLength="60" sortState="yes" rendered="false" sortByViewAttr="State"/>
+                  <oa:messageStyledText id="State" dataType="VARCHAR2" prompt="State" text="State" viewName="ODHzContactAddressesVO" viewAttr="State" maximumLength="60" sortState="yes" rendered="false" sortByViewAttr="State"/>
+                  <oa:messageStyledText id="PostalCode" dataType="VARCHAR2" prompt="Postal Code" text="Postal Code" viewName="ODHzContactAddressesVO" viewAttr="PostalCode" maximumLength="60" sortState="yes" rendered="false" sortByViewAttr="PostalCode"/>
+                  <oa:messageStyledText id="Country" dataType="VARCHAR2" prompt="Country" text="Country" viewName="ODHzContactAddressesVO" viewAttr="Country" maximumLength="60" sortState="yes" sortByViewAttr="Country"/>
+                  <oa:switcher id="primarySwitcher" viewName="ODHzContactAddressesVO" viewAttr="IdentifyingAddressFlag" prompt="Identifying" sortState="yes" sortByViewAttr="IdentifyingAddressFlag" shortDesc="Identifying">
+                     <ui:case name="case3" id="case3">
+                        <oa:image id="Y" source="primary_status.gif" shortDesc="Identifying"/>
+                     </ui:case>
+                     <ui:case name="case4" id="case4"/>
+                  </oa:switcher>
+                  <oa:messageStyledText id="Use" dataType="VARCHAR2" prompt="Purpose" text="Use" viewName="ODHzContactAddressesVO" viewAttr="Use" maximumLength="90" sortState="yes" sortByViewAttr="Use"/>
+                  <oa:image id="Source" prompt="Source" shortDesc="Source" source="detailsicon_enabled.gif" rendered="false">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="HzPuiAddressSourceEvent">
+                           <ui:parameters>
+                              <ui:parameter key="HzPuiAddressViewLocationId" value="${oa.encrypt.ODHzContactAddressesVO.LocationId}"/>
+                              <ui:parameter key="HzPuiAddressViewPartySiteId" value="${oa.encrypt.ODHzContactAddressesVO.PartySiteId}"/>
+                              <ui:parameter key="HzPuiFormattedAddress" value="${oa.encrypt.ODHzContactAddressesVO.PrimaryAddress}"/>
+                           </ui:parameters>
+                        </ui:fireAction>
+                     </ui:primaryClientAction>
+                  </oa:image>
+                  <oa:image id="mapImage" destination="javascript:oaOpenIMWin('modal','{$MapURL}')" prompt="Map" source="map_enabled.gif" shortDesc="Click to view Map"/>
+                  <oa:switcher id="updateSwitcher" viewName="ODHzContactAddressesVO" viewAttr="Updateiconstatus" prompt="Update" shortDesc="Update">
+                     <ui:case name="case1" id="case1">
+                        <oa:image id="DisableUpdateIcon" source="updateicon_disabled.gif" shortDesc="Remove Icon Disabled"/>
+                     </ui:case>
+                     <ui:case name="case2" id="case2">
+                        <oa:link id="EnableUpdateIcon" warnAboutChanges="true">
+                           <ui:contents>
+                              <oa:image id="EnableUpdateIcon_image" source="updateicon_enabled.gif" shortDesc="Update Icon Enabled"/>
+                           </ui:contents>
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="HzPuiEnableUpdateIconEvent" unvalidated="true" id="fireAction1">
+                                 <ui:parameters>
+                                    <ui:parameter key="HzPuiAddressViewEvent" value="HzAddressUpdate"/>
+                                    <ui:parameter key="HzPuiAddressViewLocationId" value="${oa.encrypt.ODHzContactAddressesVO.LocationId}"/>
+                                    <ui:parameter key="HzPuiAddressViewPartySiteId" value="${oa.encrypt.ODHzContactAddressesVO.PartySiteId}"/>
+                                 </ui:parameters>
+                              </ui:fireAction>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                     </ui:case>
+                  </oa:switcher>
+                  <oa:switcher id="removeSwitcher" viewName="ODHzContactAddressesVO" viewAttr="Removeiconstatus" prompt="Remove" shortDesc="Remove">
+                     <ui:case name="case5" id="case5">
+                        <oa:image id="DisableRemoveIcon" source="remove_disabled.gif" shortDesc="Remove Icon Disabled"/>
+                     </ui:case>
+                     <ui:case name="case6" id="case6">
+                        <oa:link id="EnableRemoveIcon" warnAboutChanges="false">
+                           <ui:contents>
+                              <oa:image id="EnableRemoveIcon_image" source="remove_enabled.gif" shortDesc="Remove Icon Enabled"/>
+                           </ui:contents>
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="HzPuiEnableRemoveIconEvent" unvalidated="true" id="fireAction2">
+                                 <ui:parameters>
+                                    <ui:parameter key="HzPuiAddressViewEvent" value="HzAddressRemove"/>
+                                    <ui:parameter key="HzPuiAddressViewPartySiteId" value="${oa.encrypt.ODHzContactAddressesVO.PartySiteId}"/>
+                                    <ui:parameter key="HzPuiFormattedAddress" value="${oa.ODHzContactAddressesVO.PrimaryAddress}"/>
+                                    <ui:parameter key="ExtensionId" value="${oa.encrypt.ODHzContactAddressesVO.ExtensionId}"/>
+                                    <ui:parameter key="ContRelName" value="${oa.encrypt.ODHzContactAddressesVO.PartyName}"/>
+                                    <ui:parameter key="ContRelRole" value="${oa.encrypt.ODHzContactAddressesVO.RoleMeaningSingular}"/>
+                                    <ui:parameter key="ContRelType" value="${oa.ODHzContactAddressesVO.PartyType}"/>
+                                 </ui:parameters>
+                              </ui:fireAction>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                     </ui:case>
+                  </oa:switcher>
+               </ui:contents>
+               <ui:tableActions>
+                  <oa:flowLayout id="addressButtons">
+                     <ui:contents>
+                        <oa:submitButton id="HzPuiViewInactiveButton" text="View Removed" prompt="View Removed" warnAboutChanges="true" serverUnvalidated="true" unvalidated="true"/>
+                        <oa:submitButton id="HzPuiSelectPrimaryUseButton" text="View by Purpose" prompt="View by Purpose" warnAboutChanges="true" serverUnvalidated="true" unvalidated="true"/>
+                        <oa:submitButton id="HzPuiCreateButton" text="Create" prompt="Create" warnAboutChanges="true" serverUnvalidated="true" unvalidated="true"/>
+                     </ui:contents>
+                  </oa:flowLayout>
+               </ui:tableActions>
+               <ui:tableSelection>
+                  <oa:singleSelection id="singleAddressSelection" serverUnvalidated="true" comment="Select" viewName="ODHzContactAddressesVO" viewAttr="SelectFlag" shortDesc="Select">
+                     <ui:primaryClientAction>
+                        <ui:firePartialAction unvalidated="true" event="HzPuiAddressSelected"/>
+                     </ui:primaryClientAction>
+                  </oa:singleSelection>
+               </ui:tableSelection>
+            </oa:table>
+            <oa:formParameter id="HzPuiFormattedAddress"/>
+            <oa:formParameter id="HzPuiAddressViewEvent"/>
+            <oa:formValue id="HzPuiAddressViewPartyId"/>
+            <oa:formParameter id="HzPuiAddressViewLocationId"/>
+            <oa:formParameter id="HzPuiAddressViewPartySiteId"/>
+         </ui:contents>
+      </oa:stackLayout>
+   </ui:contents>
+</oa:header>

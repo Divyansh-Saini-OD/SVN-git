@@ -1,0 +1,117 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- +===================================================================+
+-- |                        Office Depot                               |
+-- |                                                                   |
+-- +===================================================================+
+-- | Table Name  :  XX_CDH_BILLDOCS_UPLOAD_STG.tbl                     |
+-- | Description :  Table to Hold all the Bill Documents               |
+-- |                information                                        |
+-- | Rice Id     :                                                     |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author             Remarks                  |
+-- |=======   ===========  =================  =========================|
+-- |1.0       15-JUN-2015  Arun Gannarapu     Initial draft version    |
+-- +===================================================================+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET TERM OFF
+
+SET TERM ON
+
+PROMPT
+PROMPT Creating the Table XXCRM.XX_CDH_BILLDOCS_UPLOAD_STG 
+PROMPT
+
+CREATE TABLE XXCRM.XX_CDH_BILLDOCS_UPLOAD_STG
+			( BATCH_ID                    NUMBER            NOT NULL,
+              RECORD_ID                   NUMBER,
+              AOPS_CUSTOMER_NUMBER	      VARCHAR2(20),
+              MBS_DOC_ID                  NUMBER,
+			  PAYDOC                      VARCHAR2(20),
+			  DELIVERY_METHOD             VARCHAR2(20),
+			  DIRECT_DOCUMENT             VARCHAR2(20),
+              IS_PARENT                   VARCHAR2(20),
+			  REQUEST_START_DATE          DATE,
+			  PAYMENT_TERM                VARCHAR2(40),
+			  SEND_TO_PARENT              VARCHAR2(20),
+			  PARENT_DOC_ID               NUMBER,
+			  MAIL_TO_ATTENTION           VARCHAR2(200),
+			  DOC_STATUS                  VARCHAR2(20),
+			  TRANSMISSION_TYPE           VARCHAR2(20),
+			  FILE_EXTENSION              VARCHAR2(20),
+			  EBILL_ASSOCIATE             VARCHAR2(250),
+			  FILE_PROCESSING_METHOD      VARCHAR2(50),
+			  MAX_FILE_SIZE               NUMBER,
+			  MAX_TRANS_SIZE              NUMBER,
+			  ZIP_REQUIRED                VARCHAR2(20),
+			  COMPRESS_UTILITY            VARCHAR2(20),
+			  COMPRESS_EXTENSION          VARCHAR2(20),
+			  EMAIL_SUBJECT               VARCHAR2(250),
+			  STANDARD_MESSAGE            VARCHAR2(4000),
+			  NOTIFY_CUSTOMER             VARCHAR2(200),
+			  FTP_DIRECTION               VARCHAR2(200),
+			  CONTACT_NAME                VARCHAR2(200),
+			  DESTINATION_FOLDER          VARCHAR2(200),
+			  CONTACT_EMAIL               VARCHAR2(200),
+			  FTP_IF_ZERO_BYTE            VARCHAR2(200),
+			  CC_LIST                     VARCHAR2(4000),
+			  ZERO_BYTE_NOTY_LIST         VARCHAR2(200),
+			  FTP_EMAIL_SUBJECT           VARCHAR2(250),
+			  ZERO_BYTE_FILE_TEXT         VARCHAR2(2000),
+			  EMAIL_CONTENT               VARCHAR2(200),
+			  COMMENTS                    VARCHAR2(4000),
+			  CONTACT_PHONE               VARCHAR2(200),
+			  RECORD_STATUS               VARCHAR2(200),
+              CREATION_DATE               DATE              NOT NULL,
+			  CREATED_BY                  VARCHAR2(200)     NOT NULL,	
+              LAST_UPDATE_DATE            DATE              NOT NULL,			  
+			  LAST_UPDATED_BY             VARCHAR2(200)     NOT NULL,			  
+			  ERROR_MESSAGE               VARCHAR2(4000)    
+			)
+/
+
+PROMPT
+PROMPT Grant XX_CDH_BILLDOCS_UPLOAD_STG to ERP_SYSTEM_TABLE_SELECT_ROLE
+PROMPT    
+GRANT SELECT ON XXCRM.XX_CDH_BILLDOCS_UPLOAD_STG TO ERP_SYSTEM_TABLE_SELECT_ROLE
+/
+
+PROMPT
+PROMPT Grant XXCRM.XX_CDH_BILLDOCS_UPLOAD_STG to APPS
+PROMPT   
+GRANT ALL ON XXCRM.XX_CDH_BILLDOCS_UPLOAD_STG TO APPS
+/
+
+PROMPT
+PROMPT Creating Index XX_CDH_BILLDOCS_UPLOAD_N1
+PROMPT   
+
+CREATE INDEX XX_CDH_BILLDOCS_UPLOAD_N1 ON XXCRM.XX_CDH_BILLDOCS_UPLOAD_STG(BATCH_ID);
+
+PROMPT
+PROMPT Creating Index XX_CDH_BILLDOCS_UPLOAD_N2
+PROMPT   
+
+CREATE INDEX XX_CDH_BILLDOCS_UPLOAD_N2 ON XXCRM.XX_CDH_BILLDOCS_UPLOAD_STG(RECORD_ID);
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

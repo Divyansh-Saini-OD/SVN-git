@@ -1,0 +1,32 @@
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify                                           |
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_OPP_CONTACT.tbl                                                          |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        26-Aug-2011     Prasad Devar        Initial version                              |
+-- +============================================================================================+
+
+CREATE TABLE "XXCRM"."XX_CRM_EXP_OPP_CONTACT" 
+   (	"BATCH_ID" NUMBER, 
+	"RECORD_ID" NUMBER, 
+	"ORACLE_ENTITY_ID" VARCHAR2(240 CHAR), 
+	"PRIMARY" VARCHAR2(10 CHAR), 
+	"ROLE" VARCHAR2(240 CHAR), 
+	"ORACLE_CONTACT_ID" VARCHAR2(240 CHAR), 
+	"CREATION_DATE" DATE,
+	"CREATED_BY" NUMBER,
+	"LAST_UPDATE_DATE" DATE,
+	"LAST_UPDATED_BY" NUMBER,
+	"LAST_UPDATE_LOGIN" NUMBER
+   )
+  TABLESPACE "APPS_TS_TX_DATA" ;
+
+ GRANT ALL ON XXCRM.XX_CRM_EXP_OPP_CONTACT TO APPS;
+  
+ SHOW ERRORS;

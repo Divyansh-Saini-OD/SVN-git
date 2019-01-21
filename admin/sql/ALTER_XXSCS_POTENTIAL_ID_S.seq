@@ -1,0 +1,28 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : UPDATE_XXSCS_POTENTIAL_ID_S.seq                    |
+-- | Description      : Update Cache for STG for performance               |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  22-Mar-2009 Sree               Created                        |
+-- |                                                                       |
+-- +=======================================================================+
+
+--------------------------------------------------------------
+--  Create Custom Sequence CREATE_XXSCS_POTENTIAL_ID_S  --
+--------------------------------------------------------------
+
+ALTER SEQUENCE xxcrm.xxscs_potential_id_s CACHE 1000;
+
+SHOW ERRORS;
+
+EXIT;

@@ -1,0 +1,34 @@
+-- $Id$
+-- $Rev$
+-- $HeadURL$
+-- $Author$
+-- $Date$
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |      Oracle NAIO/Office Depot/Consulting Organization                 |
+-- +=======================================================================+
+-- | Name             :XXBI_SALES_OPPTY_FCT_U1.idx                         |
+-- | Description      :Unique Index for Custom Table                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |Version  Date          Author              Remarks                     |
+-- |-------  ----------- -----------------    -----------------------------|
+-- | 1.0     13-MAR-2009  Sreekanth Rao       Initial Version              |
+-- +=======================================================================+
+
+
+REM============================================================================================
+REM         Creating Index XXBI_SALES_OPPTY_FCT_U1
+REM============================================================================================
+
+CREATE UNIQUE INDEX XXCRM.XXBI_SALES_OPPTY_FCT_U1
+ON XXCRM.XXBI_SALES_OPPTY_FCT(OPPTY_FCT_ID);
+
+EXIT;

@@ -1,0 +1,23 @@
+-- +==========================================================================+
+-- |                              Office Depot                                     |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             Table       : XX_CRM_CUST_CONTID_STG                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     07-JUL-2016  Sridhar Pamu         Initial Version               | 
+-- |                                                                          |
+-- +==========================================================================+
+
+PROMPT
+PROMPT Synonym XX_CRM_CUST_CONTID_STG
+PROMPT   
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_CUST_CONTID_STG FOR XXCRM.XX_CRM_CUST_CONTID_STG;
+ 
+SHOW ERROR;

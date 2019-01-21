@@ -1,0 +1,27 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : DROP_XX_TM_NAM_TERR_ENTITY_DTLS_N5.idx             |
+-- | Description      : Unique Index for custom table                      |
+   |                    XX_TM_NAM_TERR_ENTITY_DTLS                         |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |Draft 1a 11-mar-2008   Abhradip ghosh  Initial Draft Version           |
+-- +=======================================================================+
+
+-------------------------------------------------------------
+-- Drop existing Index for XX_TM_NAM_TERR_ENTITY_DTLS_N5      --
+-------------------------------------------------------------
+
+DROP INDEX XXCRM.XX_TM_NAM_TERR_ENTITY_DTLS_N5;
+
+SHOW ERRORS;
+

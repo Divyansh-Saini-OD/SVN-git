@@ -1,0 +1,74 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        :  CREATE_XXBI_TERENT_ASGNMNT_FCT_MV.TBL              |
+-- | Description :  Active Territory Entity Assignments Fact MV        |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author             Remarks                   |
+-- |=======   ==========  =============      ==========================|
+-- |1.0       20-Mar-2010 Kishore Jena       Initial draft version     |
+-- |                                                                   | 
+-- +===================================================================+
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+CREATE MATERIALIZED VIEW xxcrm.xxbi_terent_asgnmnt_fct_mv
+PARALLEL 8
+TABLESPACE APPS_TS_TX_DATA
+BUILD DEFERRED
+REFRESH FORCE
+ON DEMAND 
+WITH PRIMARY KEY AS
+SELECT /*+ FULL(terr) PARALLEL(terr, 4) FULL(terr_rsc) PARALLEL(terr_rsc, 4) FULL(terr_ent) PARALLEL(terr_ent, 4) */ 
+       terr.rowid terr_defn_rowid, 
+       terr.named_acct_terr_id,
+       terr.named_acct_terr_name,
+       terr.named_acct_terr_desc,
+       terr.source_territory_id,
+       terr.start_date_active terr_defn_start_date,
+       terr.end_date_active terr_defn_end_date,
+       terr_rsc.rowid terr_rsc_rowid, 
+       terr_rsc.named_acct_terr_rsc_id,
+       terr_rsc.resource_id,
+       terr_rsc.resource_role_id role_id,
+       terr_rsc.group_id,
+       terr_rsc.attribute20 terr_rsc_extracted,
+       terr_rsc.start_date_active terr_rsc_start_date,
+       terr_rsc.end_date_active terr_rsc_end_date,     
+       terr_ent.rowid terr_ent_rowid, 
+       terr_ent.named_acct_terr_entity_id  access_id,
+       terr_ent.entity_type,
+       terr_ent.entity_id,
+       terr_ent.start_date_active terr_ent_start_date,
+       terr_ent.end_date_active terr_ent_end_date,
+       terr_ent.attribute19 terr_ent_asgnmnt_source,
+       terr_ent.attribute20 terr_ent_extracted
+FROM   xxcrm.xx_tm_nam_terr_defn        terr,
+       xxcrm.xx_tm_nam_terr_entity_dtls terr_ent,
+       xxcrm.xx_tm_nam_terr_rsc_dtls    terr_rsc
+WHERE  terr.named_acct_terr_id   = terr_ent.named_acct_terr_id
+  AND  terr.named_acct_terr_id   = terr_rsc.named_acct_terr_id
+  AND  nvl(terr.status,     'A') = 'A'
+  AND  nvl(terr_ent.status, 'A') = 'A'
+  AND  nvl(terr_rsc.status, 'A') = 'A';
+
+GRANT ALL ON xxcrm.xxbi_terent_asgnmnt_fct_mv TO APPS;
+
+GRANT ALL ON xxcrm.xxbi_terent_asgnmnt_fct_mv TO XXDATA_STAGE;
+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+--EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

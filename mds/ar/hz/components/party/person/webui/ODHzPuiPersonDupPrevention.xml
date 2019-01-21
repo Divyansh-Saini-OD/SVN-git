@@ -1,0 +1,46 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath_~PROD_~PATH_~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath_~PROD_mds_directory  -->
+<oa:tableLayout version="9.0.3.8.13_1550" xml:lang="en-US" file-version="$Header: HzPuiPersonDupPrevention.xml 115.10 2004/04/23 06:28:09 geliu noship $" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" xmlns:jrad="http://xmlns.oracle.com/jrad" comment="Search Results component" amDefName="od.oracle.apps.xxcrm.asn.common.customer.server.ODHzPuiPersonDupPreventionAM" controllerClass="oracle.apps.ar.hz.components.party.person.webui.HzPuiPersonDupPreventionHCO">
+   <ui:contents>
+      <oa:spacer id="srchResultSpacer" height="10"/>
+      <oa:header id="header" text="Option 1: Create New Person">
+         <ui:contents>
+            <oa:tableLayout id="TableLayout" width="100%">
+               <ui:contents>
+                  <oa:rowLayout id="ButtonRow">
+                     <ui:contents>
+                        <oa:cellFormat id="ButtonCell" vAlign="TOP" hAlign="END">
+                           <ui:contents>
+                              <oa:submitButton id="HzPuiPersonCreate" text="Create" prompt="Create New Person" hAlign="start" warnAboutChanges="false" serverUnvalidated="true" unvalidated="true"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="SpacerRow">
+                     <ui:contents>
+                        <oa:cellFormat id="FndCellFormat"/>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="TableRow">
+                     <ui:contents>
+                        <oa:cellFormat id="TableCell" vAlign="TOP">
+                           <ui:contents>
+                              <oa:table id="HzPuiPersonDetails" width="100%" shortDesc="Person Table">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="HzPuiPersonName" viewName="HzPuiPersonDupPreventionVO" viewAttr="HzPuiPersonName" prompt="Name" sortState="no"/>
+                                    <oa:messageStyledText id="HzPuiPersonAddress" viewName="HzPuiPersonDupPreventionVO" viewAttr="HzPuiPersonAddress" prompt="Address" sortState="no"/>
+                                    <oa:messageStyledText id="HzPuiPersonCountry" viewName="HzPuiPersonDupPreventionVO" viewAttr="HzPuiPersonCountry" prompt="Country" sortState="no"/>
+                                    <oa:messageStyledText id="HzPuiPersonPhoneNumber" viewName="HzPuiPersonDupPreventionVO" viewAttr="HzPuiPersonPhoneNumber" prompt="Phone" sortState="no"/>
+                                    <oa:messageStyledText id="HzPuiPersonEmail" viewName="HzPuiPersonDupPreventionVO" viewAttr="HzPuiPersonEmail" prompt="Email" sortState="no" destination="mailto:{$HzPuiPersonEmail}"/>
+                                 </ui:contents>
+                              </oa:table>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:tableLayout>
+         </ui:contents>
+      </oa:header>
+   </ui:contents>
+</oa:tableLayout>

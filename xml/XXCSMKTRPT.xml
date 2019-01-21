@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<dataTemplate name="XXCSMKTRPT" description="OD : CS Marketing Report" Version="1.0">
+<parameters>
+ <parameter name="p_start_date" datatype="character" />
+ <parameter name="p_end_date" datatype="character" />
+ </parameters>
+<dataQuery>
+<sqlStatement name="Q_MAIN">
+<![CDATA[
+select to_char(cb.creation_date, 'MM-DD-YYYY')  creation_date, 
+cb.incident_attribute_5 name,
+       cb.incident_attribute_8 email_address, 
+       cb.incident_attribute_14 phone_no,
+       xt.item_number||'-'||xt.item_description Item_details
+from xx_cs_sr_items_link xt,
+    cs_incidents_all_b cb
+where xt.service_request_id = cb.incident_id
+and  cb.problem_code = 'TDS-SERVICES'
+and trunc(cb.creation_date) BETWEEN nvl(to_date(:p_start_date,'YYYY/MM/DD HH24:MI:SS'), trunc(sysdate-7))
+    AND nvl(to_date(:p_end_date,'YYYY/MM/DD HH24:MI:SS'), trunc(sysdate-1))
+order by creation_date desc
+
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="LIST_G_CREATION_DATE" source="Q_MAIN">
+<group name="G_CREATION_DATE" source="Q_MAIN">
+<element name="CREATION_DATE" value="CREATION_DATE" />
+<element name="NAME" value="NAME" />
+<element name="EMAIL_ADDRESS" value="EMAIL_ADDRESS" />
+<element name="PHONE_NO" value="PHONE_NO" />
+<element name="ITEM_DETAILS" value="ITEM_DETAILS" />
+</group>
+</group>
+</dataStructure>
+</dataTemplate>

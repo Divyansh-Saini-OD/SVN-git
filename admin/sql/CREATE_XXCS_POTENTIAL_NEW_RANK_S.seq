@@ -1,0 +1,38 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : CREATE_XXCS_POTENTIAL_NEW_RANK_S.seq               |
+-- | Description      : Sequence for XXCS_POTENTIAL_NEW_RANK               |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  15-Mar-2009 Sree/Prasad        Initial Draft Version          |
+-- |                                                                       |
+-- +=======================================================================+
+
+--------------------------------------------------------------
+--  Create Custom Sequence XXCRM.XXCS_POTENTIAL_NEW_RANK_S  --
+--------------------------------------------------------------
+
+CREATE SEQUENCE XXCRM.XXCS_POTENTIAL_NEW_RANK_S
+INCREMENT BY 1 
+START WITH 1 
+NOMAXVALUE
+NOCYCLE NOCACHE NOORDER;
+
+------------------------------------------------------
+-- Grants to APPS                                   --
+------------------------------------------------------
+
+GRANT ALL ON XXCRM.XXCS_POTENTIAL_NEW_RANK_S TO APPS;
+
+GRANT ALL ON XXCRM.XXCS_POTENTIAL_NEW_RANK_S TO XXDATA_STAGE;
+
+SHOW ERRORS;

@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XX_E1309B_PREVAL" description="OD: Named Acct TOPS SOLAR Prevalidation" Version="1.0">
+<parameters/>
+<dataQuery>
+<sqlStatement name="Q_AUTONAMED_TABLES">
+<![CDATA[
+SELECT 'XX_TM_NAM_TERR_DEFN' AS TABLE_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_tables ALT
+WHERE ALT.table_name = 'XX_TM_NAM_TERR_DEFN'
+UNION
+SELECT 'XX_TM_NAM_TERR_RSC_DTLS' AS TABLE_NAME,CASE COUNT(1) 
+                                               WHEN 1 THEN 'Y'
+                                               ELSE 'N'
+                                               END AS DOES_EXIST
+FROM  all_tables ALT
+WHERE ALT.table_name = 'XX_TM_NAM_TERR_RSC_DTLS'  
+UNION
+SELECT 'XX_TM_NAM_TERR_ENTITY_DTLS' AS TABLE_NAME,CASE COUNT(1) 
+                                                  WHEN 1 THEN 'Y'
+                                                  ELSE 'N'
+                                                  END AS DOES_EXIST
+FROM  all_tables ALT
+WHERE ALT.table_name = 'XX_TM_NAM_TERR_ENTITY_DTLS'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_AUTONAMED_VIEWS">
+<![CDATA[
+SELECT 'XX_TM_NAM_TERR_CURR_ASSIGN_V' AS VIEW_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_views ALV
+WHERE ALV.view_name = 'XX_TM_NAM_TERR_CURR_ASSIGN_V'
+UNION
+SELECT 'XX_TM_NAM_TERR_DATE_ASSIGN_V' AS VIEW_NAME,CASE COUNT(1) 
+                                               WHEN 1 THEN 'Y'
+                                               ELSE 'N'
+                                               END AS DOES_EXIST
+FROM  all_views ALV
+WHERE ALV.view_name = 'XX_TM_NAM_TERR_DATE_ASSIGN_V'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_AUTONAMED_SEQUENCES">
+<![CDATA[
+SELECT 'XX_TM_NAM_TERR_DEFN_S' AS SEQUENCE_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_sequences ALS
+WHERE ALS.sequence_name = 'XX_TM_NAM_TERR_DEFN_S'
+UNION
+SELECT 'XX_TM_NAM_TERR_ENTITY_DTLS_S' AS SEQUENCE_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_sequences ALS
+WHERE ALS.sequence_name = 'XX_TM_NAM_TERR_ENTITY_DTLS_S'
+UNION
+SELECT 'XX_TM_NAM_TERR_RSC_DTLS_S' AS SEQUENCE_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_sequences ALS
+WHERE ALS.sequence_name = 'XX_TM_NAM_TERR_RSC_DTLS_S'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_AUTONAMED_PROFILES">
+<![CDATA[
+SELECT 'OD: TM Validate Division and Role Code' AS PROFILE_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_profile_options_tl FPO
+WHERE FPO.profile_option_name = 'XX_TM_VALIDATE_DIV_ROLE'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_AUTONAMED_VALUESETS">
+<![CDATA[
+SELECT 'XX_TM_GROUP_ID' AS VALUE_SET_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_flex_value_sets FFV
+WHERE FFV.flex_value_set_name = 'XX_TM_GROUP_ID'
+UNION
+SELECT 'XX_TM_ROLE_ID' AS VALUE_SET_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_flex_value_sets FFV
+WHERE FFV.flex_value_set_name = 'XX_TM_ROLE_ID'
+UNION
+SELECT 'XX_TM_RESOURCE_ID' AS VALUE_SET_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_flex_value_sets FFV
+WHERE FFV.flex_value_set_name = 'XX_TM_RESOURCE_ID'
+UNION
+SELECT 'XX_TM_NAMED_ACCT_TERRITORY' AS VALUE_SET_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_flex_value_sets FFV
+WHERE FFV.flex_value_set_name = 'XX_TM_NAMED_ACCT_TERRITORY'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_AUTONAMED_PACKAGES">
+<![CDATA[
+SELECT 'Package specification' AS Type,'XX_JTF_RS_NAMED_ACC_TERR_PUB.pks' AS package_name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_RS_NAMED_ACC_TERR_PUB'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID'
+UNION
+SELECT 'Package Body' AS Type,'XX_JTF_RS_NAMED_ACC_TERR_PUB.pkb' AS package_name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_RS_NAMED_ACC_TERR_PUB'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID'
+UNION
+SELECT 'Package specification' AS Type,'XX_JTF_NMDACC_CREATE_TERR.pks' AS package_name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_NMDACC_CREATE_TERR'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID'
+UNION
+SELECT 'Package Body' AS Type,'XX_JTF_NMDACC_CREATE_TERR.pkb' AS package_name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_NMDACC_CREATE_TERR'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_AUTONAMED_CONC_PROG">
+<![CDATA[
+SELECT 'OD: TM Named Account Move Party Sites' AS CONCURRENT_PROGRAM,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_concurrent_programs FCP
+WHERE FCP.concurrent_program_name = 'XXNMACCTMVPARTYSITES'
+AND   FCP.enabled_flag = 'Y'
+UNION
+SELECT 'OD: TM Named Account Move Resource Territories' AS CONCURRENT_PROGRAM,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_concurrent_programs FCP
+WHERE FCP.concurrent_program_name = 'XXNMACCTMVRSTERR'
+AND   FCP.enabled_flag = 'Y'
+UNION
+SELECT 'OD: TM Named Account Synchronize Status Flag' AS CONCURRENT_PROGRAM,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_concurrent_programs FCP
+WHERE FCP.concurrent_program_name = 'XXNAMACCTSYNCSTATUS'
+AND   FCP.enabled_flag = 'Y'
+UNION
+SELECT 'OD: IC Named Account Create Territory' AS CONCURRENT_PROGRAM,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_concurrent_programs FCP
+WHERE FCP.concurrent_program_name = 'XXNMACTCREATERR'
+AND   FCP.enabled_flag = 'Y'
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_AUTONAMED_TABLES" source="Q_AUTONAMED_TABLES">
+<element name="TABLE_NAME" value="TABLE_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_AUTONAMED_VIEWS" source="Q_AUTONAMED_VIEWS">
+<element name="VIEW_NAME" value="VIEW_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_AUTONAMED_SEQUENCES" source="Q_AUTONAMED_SEQUENCES">
+<element name="SEQUENCE_NAME" value="SEQUENCE_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_AUTONAMED_PROFILES" source="Q_AUTONAMED_PROFILES">
+<element name="PROFILE_NAME" value="PROFILE_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_AUTONAMED_VALUESETS" source="Q_AUTONAMED_VALUESETS">
+<element name="VALUE_SET_NAME" value="VALUE_SET_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_AUTONAMED_PACKAGES" source="Q_AUTONAMED_PACKAGES">
+<element name="TYPE" value="TYPE" />
+<element name="PACKAGE_NAME" value="PACKAGE_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_AUTONAMED_CONC_PROG" source="Q_AUTONAMED_CONC_PROG">
+<element name="CONCURRENT_PROGRAM" value="CONCURRENT_PROGRAM" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+</dataStructure>
+</dataTemplate>
+

@@ -1,0 +1,48 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1579" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="pageLayoutRN" windowTitle="MPS File Upload Tool" title="MPS File Upload Tool" amDefName="od.oracle.apps.xxcrm.mps.upload.server.MPSFileUploadAM" controllerClass="od.oracle.apps.xxcrm.mps.upload.webui.MPSFileUploadCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:header id="UploadRegion">
+               <ui:contents>
+                  <oa:messageComponentLayout id="mainRN">
+                     <ui:contents>
+                        <oa:messageChoice id="ExcelTemplateChoice" pickListViewDef="od.oracle.apps.xxcrm.mps.upload.server.XXCSMPSFlexFieldVO" pickListViewName="XXCSMPSFlexFieldVO" pickListDispAttr="Type" pickListValAttr="Value" prompt="Choose Template" required="yes"/>
+                        <oa:messageFileUpload id="FileUpload" prompt="Upload Excel File"/>
+                     </ui:contents>
+                  </oa:messageComponentLayout>
+                  <oa:pageButtonBar id="pageButtons" rendered="true">
+                     <ui:contents>
+                        <oa:submitButton id="Apply" text="Upload" prompt="Upload"/>
+                        <oa:resetButton id="Cancel" text="Cancel"/>
+                     </ui:contents>
+                  </oa:pageButtonBar>
+               </ui:contents>
+            </oa:header>
+            <oa:rowLayout id="region1" hAlign="right">
+               <ui:contents>
+                  <oa:button id="btnView" text="View Concurrent Requests" targetFrame="_blank" destination="OA.jsp?akRegionApplicationId=0&amp;akRegionCode=FNDCPREQUESTVIEWPAGE&amp;addBreadCrumb=Y;menubar=yes;scrollbars=yes;resizable=yes;status=1;" prompt="View Concurrent Requests"/>
+                  <oa:submitButton id="btnNextSteps" text="Next Steps" prompt="Next Steps">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="NextSteps" id="fireAction1"/>
+                     </ui:primaryClientAction>
+                  </oa:submitButton>
+               </ui:contents>
+            </oa:rowLayout>
+            <oa:header id="ViewRequestsRegion" rendered="false">
+               <ui:contents>
+                  <oa:submitButton id="btnViewRequests" prompt="ViewRequests" rendered="false">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="viewRequest"/>
+                     </ui:primaryClientAction>
+                  </oa:submitButton>
+               </ui:contents>
+            </oa:header>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

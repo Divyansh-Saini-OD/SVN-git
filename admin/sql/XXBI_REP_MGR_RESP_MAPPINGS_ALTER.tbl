@@ -1,0 +1,50 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XXBI_REP_MGR_RESP_MAPPINGS_ALTER.tbl               |
+-- | Description      : Alter table XXBI_REP_MGR_RESP_MAPPINGS to incude   |
+-- |                    who columns and attribute columns                  |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |1        25-MAR-2011   Sreekanth Rao    Initial Version                |
+-- +=======================================================================+
+
+------------------------------------------------------------------------
+-- Add who columns and attribute columns              
+------------------------------------------------------------------------
+
+ALTER TABLE XXCRM.XXBI_REP_MGR_RESP_MAPPINGS ADD
+(
+CREATED_BY         NUMBER,
+CREATION_DATE      DATE, 
+LAST_UPDATED_BY    NUMBER,
+LAST_UPDATE_DATE   DATE,
+LAST_UPDATE_LOGIN  NUMBER,
+ATTRIBUTE_CATEGORY VARCHAR2(255),
+ATTRIBUTE1         VARCHAR2(255),
+ATTRIBUTE2         VARCHAR2(255),
+ATTRIBUTE3         VARCHAR2(255),
+ATTRIBUTE4         VARCHAR2(255),
+ATTRIBUTE5         VARCHAR2(255),
+ATTRIBUTE6         VARCHAR2(255),
+ATTRIBUTE7         VARCHAR2(255),
+ATTRIBUTE8         VARCHAR2(255),
+ATTRIBUTE9         VARCHAR2(255),
+ATTRIBUTE10        VARCHAR2(255),
+ATTRIBUTE11        VARCHAR2(255),
+ATTRIBUTE12        VARCHAR2(255),
+ATTRIBUTE13        VARCHAR2(255),
+ATTRIBUTE14        VARCHAR2(255),
+ATTRIBUTE15        VARCHAR2(255)
+);
+
+SHOW ERRORS;
+

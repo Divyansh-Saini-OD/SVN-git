@@ -1,0 +1,101 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- +===================================================================+
+-- |                        Office Depot                               |
+-- |                                                                   |
+-- +===================================================================+
+-- | Table Name  :  XX_CDH_EBL_CONCAT_FIELDS_TXT.tbl                       |
+-- | Description :  Table to Hold TRL eTXT                             |
+-- | Rice Id     : I2186 R4                                            |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author             Remarks                  |
+-- |=======   ===========  =================  =========================|
+-- |1.0       1-APR-2016  Sridevi K      Initial draft version         |
+-- +===================================================================+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET TERM OFF
+
+SET TERM ON
+
+PROMPT
+PROMPT Creating the Table XX_CDH_EBL_CONCAT_FIELDS_TXT 
+PROMPT
+
+
+  
+  CREATE TABLE "XX_CDH_EBL_CONCAT_FIELDS_TXT" 
+   (	"CONC_FIELD_ID" NUMBER(15,0) NOT NULL ENABLE, 
+	"CUST_DOC_ID" NUMBER(15,0) NOT NULL ENABLE, 
+	"CUST_ACCOUNT_ID" NUMBER(15,0) NOT NULL ENABLE, 
+	"CONC_BASE_FIELD_ID1" NUMBER(15,0), 
+	"CONC_BASE_FIELD_ID2" NUMBER(15,0), 
+	"CONC_BASE_FIELD_ID3" NUMBER(15,0), 
+	"CONC_FIELD_LABEL" VARCHAR2(256 BYTE) NOT NULL ENABLE, 
+	"ATTRIBUTE1" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE2" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE3" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE4" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE5" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE6" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE7" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE8" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE9" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE10" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE11" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE12" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE13" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE14" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE15" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE16" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE17" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE18" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE19" VARCHAR2(150 BYTE), 
+	"ATTRIBUTE20" VARCHAR2(150 BYTE), 
+	"LAST_UPDATE_DATE" DATE NOT NULL ENABLE, 
+	"LAST_UPDATED_BY" NUMBER(15,0) NOT NULL ENABLE, 
+	"CREATION_DATE" DATE NOT NULL ENABLE, 
+	"CREATED_BY" NUMBER(15,0) NOT NULL ENABLE, 
+	"LAST_UPDATE_LOGIN" NUMBER(15,0) NOT NULL ENABLE, 
+	"REQUEST_ID" NUMBER(15,0), 
+	"PROGRAM_APPLICATION_ID" NUMBER(15,0), 
+	"PROGRAM_ID" NUMBER(15,0), 
+	"PROGRAM_UPDATE_DATE" DATE, 
+	"WH_UPDATE_DATE" DATE, 
+	"TAB" VARCHAR2(10 BYTE)
+   )
+  
+/
+
+PROMPT
+PROMPT Grant XX_CDH_EBL_CONCAT_FIELDS_TXT to ERP_SYSTEM_TABLE_SELECT_ROLE
+PROMPT    
+GRANT SELECT ON XX_CDH_EBL_CONCAT_FIELDS_TXT TO ERP_SYSTEM_TABLE_SELECT_ROLE
+/
+
+PROMPT
+PROMPT Grant XX_CDH_EBL_CONCAT_FIELDS_TXT to APPS
+PROMPT   
+GRANT ALL ON XX_CDH_EBL_CONCAT_FIELDS_TXT TO APPS
+/
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

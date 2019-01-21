@@ -1,0 +1,49 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : CREATE_XX_CRM_CONC_JOBS_DETAILS.tbl                 |
+-- | Rice ID     : R1153_CRM_Concurrent_Monitor_Utilities              |
+-- | Description : Concurrent Monitor Utilities Program                |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1a  9-FEB-09    Sarah Justina    Initial Version             |
+-- +===================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Table XX_CRM_CONC_JOBS_DETAILS .....
+PROMPT
+
+CREATE TABLE XX_CRM_CONC_JOBS_DETAILS (
+	REQUEST_ID      NUMBER,
+	JOB_NAME        VARCHAR2(30), 
+	MODULE_SUB_APPL VARCHAR2(30), 
+	ARGUMENT_TEXT   VARCHAR2(240), 
+	DATE_STARTED    DATE, 
+	DURATION        NUMBER,
+	OVERDUE_FLAG    VARCHAR2(1), 
+	REQUEST_STATUS  VARCHAR2(1), 
+	REQUEST_PHASE   VARCHAR2(1), 
+	DESCRIPTION     VARCHAR2(240) 
+);
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

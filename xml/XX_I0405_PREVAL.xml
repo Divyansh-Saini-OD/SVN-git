@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XX_I0405_PREVAL" description="OD: TM Create Update Territories Prevalidation" Version="1.0">
+<parameters/>
+<dataQuery>
+<sqlStatement name="Q_I0405_TABLES">
+<![CDATA[
+SELECT 'XX_JTF_TERRITORIES_INT' AS TABLE_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_tables ALT
+WHERE ALT.table_name = 'XX_JTF_TERRITORIES_INT'
+AND   ALT.owner      = 'XXCRM'
+UNION
+SELECT 'XX_JTF_TERR_QUALIFIERS_INT' AS TABLE_NAME,CASE COUNT(1) 
+                                               WHEN 1 THEN 'Y'
+                                               ELSE 'N'
+                                               END AS DOES_EXIST
+FROM  all_tables ALT
+WHERE ALT.table_name = 'XX_JTF_TERR_QUALIFIERS_INT'
+AND   ALT.owner      = 'XXCRM' 
+]]>
+</sqlStatement>
+<sqlStatement name="Q_I0405_SEQUENCES">
+<![CDATA[
+SELECT 'XX_JTF_RECORD_ID_INT_S' AS SEQUENCE_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_sequences ALS
+WHERE ALS.sequence_name = 'XX_JTF_RECORD_ID_INT_S'
+AND   ALS.sequence_owner = 'XXCRM'
+UNION
+SELECT 'XX_JTF_QUAL_RECORD_ID_INT_S' AS SEQUENCE_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_sequences ALS
+WHERE ALS.sequence_name = 'XX_JTF_QUAL_RECORD_ID_INT_S'
+AND   ALS.sequence_owner = 'XXCRM'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_I0405_INDEXES">
+<![CDATA[
+SELECT 'XX_JTF_TERRITORIES_INT_N1' AS INDEX_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_indexes ALI
+WHERE ALI.index_name  = 'XX_JTF_TERRITORIES_INT_N1'
+AND   ALI.owner       = 'XXCRM'
+AND   ALI.status     = 'VALID'
+UNION
+SELECT 'XX_JTF_TERRITORIES_INT_U1' AS INDEX_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_indexes ALI
+WHERE ALI.index_name  = 'XX_JTF_TERRITORIES_INT_U1'
+AND   ALI.owner       = 'XXCRM'
+AND   ALI.status     = 'VALID'
+UNION
+SELECT 'XX_JTF_TERR_QUALIFIERS_INT_N1' AS INDEX_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_indexes ALI
+WHERE ALI.index_name  = 'XX_JTF_TERR_QUALIFIERS_INT_N1'
+AND   ALI.owner       = 'XXCRM'
+AND   ALI.status     = 'VALID'
+UNION
+SELECT 'XX_JTF_TERR_QUALIFIERS_INT_U1' AS INDEX_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_indexes ALI
+WHERE ALI.index_name  = 'XX_JTF_TERR_QUALIFIERS_INT_U1'
+AND   ALI.owner       = 'XXCRM'
+AND   ALI.status     = 'VALID'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_I0405_SYNONYMS">
+<![CDATA[
+SELECT 'XX_JTF_TERRITORIES_INT' AS SYNONYM_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_synonyms ALS
+WHERE ALS.synonym_name = 'XX_JTF_TERRITORIES_INT'
+AND   ALS.owner = 'APPS'
+UNION
+SELECT 'XX_JTF_TERR_QUALIFIERS_INT' AS SYNONYM_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_synonyms ALS
+WHERE ALS.synonym_name = 'XX_JTF_TERR_QUALIFIERS_INT'
+AND   ALS.owner = 'APPS'
+UNION
+SELECT 'XX_JTF_RECORD_ID_INT_S' AS SYNONYM_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_synonyms ALS
+WHERE ALS.synonym_name = 'XX_JTF_RECORD_ID_INT_S'
+AND   ALS.owner = 'APPS'
+UNION
+SELECT 'XX_JTF_QUAL_RECORD_ID_INT_S' AS SYNONYM_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_synonyms ALS
+WHERE ALS.synonym_name = 'XX_JTF_QUAL_RECORD_ID_INT_S'
+AND   ALS.owner = 'APPS'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_I0405_VALUESETS">
+<![CDATA[
+SELECT 'XX_TM_TERRITORY_NAME' AS VALUE_SET_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_flex_value_sets FFV
+WHERE FFV.flex_value_set_name = 'XX_TM_TERRITORY_NAME'
+UNION
+SELECT 'XX_TM_ATTRIBUTE_NAME' AS VALUE_SET_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_flex_value_sets FFV
+WHERE FFV.flex_value_set_name = 'XX_TM_ATTRIBUTE_NAME'
+UNION
+SELECT 'XX_TM_REGION_TAG' AS VALUE_SET_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_flex_value_sets FFV
+WHERE FFV.flex_value_set_name = 'XX_TM_REGION_TAG'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_I0405_LOOKUPS">
+<![CDATA[
+SELECT 'XX_TM_SALESREP_TYPE' AS LOOKUP_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_lookup_types FLT
+WHERE FLT.lookup_type = 'XX_TM_SALESREP_TYPE'
+UNION
+SELECT 'XX_TM_BUSINESS_LINE' AS LOOKUP_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_lookup_types FLT
+WHERE FLT.lookup_type = 'XX_TM_BUSINESS_LINE'
+UNION
+SELECT 'XX_TM_VERTICAL_MARKET_CODE' AS LOOKUP_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_lookup_types FLT
+WHERE FLT.lookup_type = 'XX_TM_VERTICAL_MARKET_CODE'
+UNION
+SELECT 'XX_TM_TERRALIGN_QUALS' AS LOOKUP_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_lookup_types FLT
+WHERE FLT.lookup_type = 'XX_TM_TERRALIGN_QUALS'
+UNION
+SELECT 'XX_TM_SOURCE_SYSTEMS' AS LOOKUP_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_lookup_types FLT
+WHERE FLT.lookup_type = 'XX_TM_SOURCE_SYSTEMS'
+UNION
+SELECT 'XX_TM_TERR_CLASSIFICATION' AS LOOKUP_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_lookup_types FLT
+WHERE FLT.lookup_type = 'XX_TM_TERR_CLASSIFICATION'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_I0405_PACKAGES">
+<![CDATA[
+SELECT 'Package Specification' AS Type,'XX_JTF_TERRITORIES_PKG.pks' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_TERRITORIES_PKG'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID' 
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Body' AS Type,'XX_JTF_TERRITORIES_PKG.pkb' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_TERRITORIES_PKG'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_I0405_CONC_PROG">
+<![CDATA[
+SELECT 'OD: TM Create Update Territory Program' AS CONCURRENT_PROGRAM,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_concurrent_programs FCP
+WHERE FCP.concurrent_program_name = 'XXTMTERRITORIESIN'
+AND   FCP.enabled_flag = 'Y'
+UNION
+SELECT 'OD: TM Label Territory Hierarchy Program' AS CONCURRENT_PROGRAM,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_concurrent_programs FCP
+WHERE FCP.concurrent_program_name = 'XXTMUPDATTR'
+AND   FCP.enabled_flag = 'Y'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_I0405_TERR_HIERARC">
+<![CDATA[
+SELECT  terr_id
+       ,orig_system_reference
+       ,name
+       ,parent_territory_id
+       ,level1
+       ,attribute15 
+       ,attribute14
+       ,attribute13
+       ,attribute12
+FROM
+     (SELECT jta.terr_id                TERR_ID
+            ,jta.orig_system_reference  ORIG_SYSTEM_REFERENCE
+            ,jta.name                   NAME
+            ,jta.parent_territory_id    PARENT_TERRITORY_ID
+            ,level                      LEVEL1
+            ,attribute15                ATTRIBUTE15 
+            ,attribute14		ATTRIBUTE14
+            ,attribute13		ATTRIBUTE13
+            ,attribute12		ATTRIBUTE12
+      FROM  apps.jtf_terr_all           JTA
+      START WITH JTA.attribute12 = 'NA'
+      AND SYSDATE BETWEEN start_date_active AND NVL(end_date_active,SYSDATE)
+      CONNECT BY PRIOR terr_id = parent_territory_id
+      ) 
+WHERE level1 <> 5
+]]>
+</sqlStatement>
+<sqlStatement name="Q_I0405_TERR_OVIEW">
+<![CDATA[
+SELECT TERR.terr_name                          AS   TERR_NAME , 
+       TERR.terr_id                            AS   TER_ID, 
+       TERR.level1                             AS   TERR_LEVEL, 
+       TERR.parent_terr_name                   AS   PARENT_TERR_NAME, 
+       TERR.rank                               AS   RANK, 
+       TERR.no_of_winners                      AS   NO_OF_WINNERS  , 
+       TRX_V.qualifier_type_description        AS   TRANSACTION_TYPE , 
+       TO_CHAR(TERR.start_date,'DD-MON-RR')  AS   START_DATE, 
+       TO_CHAR(TERR.end_date,'DD-MON-RR')    AS   END_DATE  
+FROM 
+       ( 
+    	SELECT jta.name                      terr_name, 
+	       jta.terr_id                   terr_id, 
+               level                         level1, 
+	       jta.parent_territory_id       parent_territory_id, 
+	       jta.parent_terr_name          parent_terr_name, 
+	       jta.rank                      rank, 
+	       jta.num_winners               no_of_winners	, 
+	       jta.start_date_active         start_date, 
+	       jta.end_date_active           end_date	, 
+	       jta.attribute12               attribute12 
+        FROM    apps.jtf_terr_overview_v           JTA 
+        START WITH JTA.attribute12     = 'NA' 
+        AND SYSDATE BETWEEN start_date_active AND NVL(end_date_active,SYSDATE) 
+        CONNECT BY PRIOR terr_id      = parent_territory_id 
+       )                        TERR 
+      ,jtf_terr_transactions_v  TRX_V 
+WHERE TERR.level1               <> 5 
+AND   TERR.terr_id              = TRX_V.terr_id(+) 
+START WITH TERR.attribute12     = 'NA' 
+CONNECT BY PRIOR TERR.terr_id   = TERR.parent_territory_id
+]]>
+</sqlStatement>
+<sqlStatement name="Q_I0405_QUAL_NM">
+<![CDATA[
+SELECT 
+  JTQ.terr_qual_id AS  TER_QUAL_ID,
+  JSQ.NAME         AS  QUALIFIER_NAME 
+FROM 
+  jtf_terr_qual        JTQ ,
+  jtf_qual_usgs        JQU ,
+  jtf_seeded_qual      JSQ  
+WHERE 
+  JTQ.QUAL_USG_ID = JQU.QUAL_USG_ID AND
+  JQU.SEEDED_QUAL_ID = JSQ.SEEDED_QUAL_ID AND
+  JTQ.ORG_ID = JQU.ORG_ID AND
+  JTQ.terr_id = :TER_ID
+]]>
+</sqlStatement>
+<sqlStatement name="Q_I0405_QUAL_VAL">
+<![CDATA[
+SELECT 
+   CASE 
+     WHEN (JTVA.comparison_operator ='BETWEEN' AND JTVA.low_value_number IS NOT NULL) 
+      THEN 'Range between '||TO_CHAR(JTVA.low_value_number)||' - '||TO_CHAR(JTVA.high_value_number)
+     WHEN (JTVA.comparison_operator = '=' AND JTVA.low_value_number IS NOT NULL) 
+      THEN TO_CHAR(JTVA.low_value_number)
+     WHEN (JTVA.comparison_operator = '=' AND JTVA.low_value_char IS NOT NULL) 		  
+       THEN JTVA.low_value_char
+   END                AS QUALIFIER_VALUE  
+FROM 
+     jtf_terr_qual        JTQ ,
+     jtf_qual_usgs        JQU ,
+     jtf_seeded_qual      JSQ ,	 
+     jtf_terr_values_all  JTVA,     
+     jtf_terr_qual        JTQA , 
+     jtf_qual_usgs        JQUT 	 
+WHERE 
+      JTQ.QUAL_USG_ID         = JQU.QUAL_USG_ID AND
+      JQU.SEEDED_QUAL_ID      = JSQ.SEEDED_QUAL_ID AND
+      JTQ.ORG_ID              = JQU.ORG_ID
+      AND JTQ.TERR_QUAL_ID    = JTVA.terr_qual_id
+      AND JTQA.QUAL_USG_ID    = JQUT.QUAL_USG_ID 
+      AND JTVA.TERR_QUAL_ID   = JTQA.TERR_QUAL_ID 
+      AND JQUT.SEEDED_QUAL_ID = JSQ.SEEDED_QUAL_ID
+      AND JTVA.terr_qual_id   = :TER_QUAL_ID      
+]]>
+</sqlStatement>
+<sqlStatement name="Q_I0405_RSC_DTLS">
+<![CDATA[
+SELECT  RES.terr_rsc_id        AS ter_rsc_id 
+      ,RES.resource_name       AS resource_name
+      ,RES.group_name	       AS group_name
+      ,RES.role 	       AS role 
+FROM   jtf_terr_resources_v   RES
+WHERE  RES.terr_id         = :TER_ID
+]]>
+</sqlStatement>
+<sqlStatement name="Q_I0405_RSC_ACCESS">
+<![CDATA[
+select INITCAP(access_type)  AS access_type
+from jtf_terr_rsc_access_v
+WHERE terr_rsc_id         = :ter_rsc_id
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_I0405_TABLES" source="Q_I0405_TABLES">
+<element name="TABLE_NAME" value="TABLE_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_I0405_SEQUENCES" source="Q_I0405_SEQUENCES">
+<element name="SEQUENCE_NAME" value="SEQUENCE_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_I0405_INDEXES" source="Q_I0405_INDEXES">
+<element name="INDEX_NAME" value="INDEX_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="Q_I0405_SYNONYMS" source="Q_I0405_SYNONYMS">
+<element name="SYNONYM_NAME" value="SYNONYM_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_I0405_VALUESETS" source="Q_I0405_VALUESETS">
+<element name="VALUE_SET_NAME" value="VALUE_SET_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_I0405_LOOKUPS" source="Q_I0405_LOOKUPS">
+<element name="LOOKUP_NAME" value="LOOKUP_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_I0405_PACKAGES" source="Q_I0405_PACKAGES">
+<element name="TYPE" value="TYPE" />
+<element name="PACKAGE_NAME" value="PACKAGE_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_I0405_CONC_PROG" source="Q_I0405_CONC_PROG">
+<element name="CONCURRENT_PROGRAM" value="CONCURRENT_PROGRAM" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_I0405_TERR_HIERARC" source="Q_I0405_TERR_HIERARC">
+<element name="TERR_ID" value="TERR_ID" />
+<element name="ORIG_SYSTEM_REFERENCE" value="ORIG_SYSTEM_REFERENCE" />
+<element name="NAME" value="NAME" />
+<element name="PARENT_TERRITORY_ID" value="PARENT_TERRITORY_ID" />
+<element name="LEVEL1" value="LEVEL1" />
+<element name="ATTRIBUTE15 " value="ATTRIBUTE15" />
+<element name="ATTRIBUTE14" value="ATTRIBUTE14" />
+<element name="ATTRIBUTE13" value="ATTRIBUTE13" />
+<element name="ATTRIBUTE12" value="ATTRIBUTE12" />
+</group>
+<group name="G_I0405_TERR_OVIEW" source="Q_I0405_TERR_OVIEW" >
+<element name="TERR_NAME" value="TERR_NAME" />
+<element name="TERR_LEVEL" value="TERR_LEVEL"/>
+<element name="PARENT_TERR_NAME" value="PARENT_TERR_NAME"/>
+<element name="RANK" value="RANK"/>
+<element name="NO_OF_WINNERS" value="NO_OF_WINNERS"/>
+<element name="START_DATE" value="START_DATE"/>
+<element name="END_DATE" value="END_DATE"/>
+<element name="TRANSACTION_TYPE" value="TRANSACTION_TYPE"/>
+<group name="G_I0405_QUAL_NM" source="Q_I0405_QUAL_NM">
+<element name="QUALIFIER_NAME" value="QUALIFIER_NAME" />
+<group name="G_I0405_QUAL_VAL" source="Q_I0405_QUAL_VAL">
+<element name="QUALIFIER_VALUE" value="QUALIFIER_VALUE" />
+</group>
+</group>
+<group name="G_I0405_RSC_DTLS" source="Q_I0405_RSC_DTLS">
+<element name="RESOURCE_NAME" value="RESOURCE_NAME" />
+<element name="GROUP_NAME" value="GROUP_NAME" />
+<element name="ROLE" value="ROLE" />
+<group name="G_I0405_RSC_ACCESS" source="Q_I0405_RSC_ACCESS">
+<element name="ACCESS_TYPE" value="ACCESS_TYPE" />
+</group>
+</group>
+</group>
+</dataStructure>
+</dataTemplate>
+

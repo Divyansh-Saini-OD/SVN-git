@@ -1,0 +1,36 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XX_TM_NAM_TERR_HISTORY_DTLS_U1.idx                 |
+-- | Description      : Unique Index for custom table                      |
+-- |                    XX_TM_NAM_TERR_HISTORY_DTLS                        |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |Draft 1a  11-Jun-2008  Jeevan babu        Initial Draft Version        |
+-- +=======================================================================+
+
+-------------------------------------------------------------
+-- Drop existing Index for XX_TM_NAM_TERR_HISTORY_DTLS_U1   --
+-------------------------------------------------------------
+
+--DROP INDEX XX_TM_NAM_TERR_HISTORY_DTLS_U1;
+
+-------------------------------------------------------------
+-- Create Index XX_TM_NAM_TERR_HISTORY_DTLS_U1              --
+-------------------------------------------------------------
+
+CREATE UNIQUE INDEX XXCRM.XX_TM_NAM_TERR_HISTORY_DTLS_U1 
+ON XXCRM.XX_TM_NAM_TERR_HISTORY_DTLS(RECORD_ID)
+NOLOGGING;
+
+
+SHOW ERRORS;
+

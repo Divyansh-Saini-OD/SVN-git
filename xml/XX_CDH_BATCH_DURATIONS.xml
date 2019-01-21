@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XX_CDH_BATCH_DURATIONS" description="OD: CDH Batch Durations" Version="1.0">
+<parameters>
+ <parameter name="P_START_AOPS_BATCH_ID" dataType="number" />
+ <parameter name="P_END_AOPS_BATCH_ID" dataType="number" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_CDH_AOPS_EBS_BATCH_DATA">
+<![CDATA[
+SELECT   aops_batch_id, ebs_batch_id
+    FROM xx_owb_crmbatch_status
+   WHERE aops_batch_id BETWEEN :P_START_AOPS_BATCH_ID AND :P_END_AOPS_BATCH_ID
+ORDER BY aops_batch_id
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_TCA_BULK_DATA">
+<![CDATA[
+  SELECT r.actual_completion_date,
+        r.actual_start_date,
+        (r.actual_completion_date -r.actual_start_date) *24 DURATION
+FROM fnd_concurrent_requests r,
+  fnd_concurrent_programs_vl p
+WHERE r.concurrent_program_id = p.concurrent_program_id
+ AND p.concurrent_program_name = 'ARHIMAIN'
+ AND argument_text LIKE to_char(:P_EBS_BATCH_ID) || '%'
+ GROUP BY r.request_id, 
+ r.actual_completion_date, 
+ r.actual_start_date
+HAVING r.request_id = MAX (r.request_id)
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_RUNNING_BATCHES">
+<![CDATA[
+SELECT COUNT (*) AS COUNT_RUNNING
+  FROM fnd_concurrent_requests
+ WHERE request_id IN (
+          SELECT r.request_id
+            FROM fnd_concurrent_requests r,
+                 fnd_concurrent_programs_vl p
+           WHERE r.concurrent_program_id = p.concurrent_program_id
+             AND (   argument_text LIKE '%' || TO_CHAR (:P_AOPS_BATCH_ID)|| ',%'
+                  OR argument_text LIKE '%' || TO_CHAR (:P_EBS_BATCH_ID) || '%'
+                 )
+             AND r.phase_code = 'R')
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_ROLE_RESP_PROGRAM_DETAILS">
+<![CDATA[
+SELECT MAX (r.actual_completion_date) END_DATE
+  FROM fnd_concurrent_requests r, fnd_concurrent_programs_vl p
+ WHERE r.concurrent_program_id = p.concurrent_program_id
+   AND p.concurrent_program_name = 'XX_CDH_ROLE_RESP_WORKER'
+   AND (   argument_text LIKE '\''' || TO_CHAR (:P_AOPS_BATCH_ID) || ',%'
+        OR argument_text LIKE '%' || TO_CHAR (:P_EBS_BATCH_ID) || '%')
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_BATCH_REQUEST_DETAILS">
+<![CDATA[
+SELECT MAX (r.request_id) max_req_id, MIN (r.request_id) min_req_id
+  FROM fnd_concurrent_requests r, fnd_concurrent_programs_vl p
+ WHERE r.concurrent_program_id = p.concurrent_program_id
+   AND p.user_concurrent_program_name LIKE 'OD%CDH%'
+   AND (   argument_text LIKE '\''' || TO_CHAR (:p_aops_batch_id) || ',%'
+        OR argument_text LIKE '%' || TO_CHAR (:p_ebs_batch_id) || '%')
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_TOTAL_IMPORTED_BATCHES">
+<![CDATA[
+SELECT NVL(TOTAL_RECORDS_IMPORTED,0) as TOTAL_RECORDS_IMPORTED
+  FROM hz_imp_batch_summary
+ WHERE batch_id = :P_EBS_BATCH_ID
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_REL_TOTAL">
+<![CDATA[
+SELECT COUNT (*) AS rel_count
+  FROM xxod_hz_imp_relships_stg
+ WHERE batch_id = :P_EBS_BATCH_ID
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_EXT_TOTAL">
+<![CDATA[
+SELECT COUNT (*) AS ext_count
+  FROM xxod_hz_imp_ext_attribs_stg
+ WHERE batch_id = :P_EBS_BATCH_ID
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_BANK_TOTAL">
+<![CDATA[
+SELECT COUNT (*) as BANK_COUNT
+  FROM xxod_hz_imp_customer_banks_stg
+ WHERE batch_id = :P_EBS_BATCH_ID
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_CONTACT_PTS_TOTAL">
+<![CDATA[
+SELECT COUNT (*) AS contact_pts_count
+  FROM xxod_hz_imp_contactpts_stg
+ WHERE batch_id = :P_EBS_BATCH_ID
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_SITE_USES_TOTAL">
+<![CDATA[
+SELECT COUNT (*) AS SITE_USES_COUNT
+  FROM xxod_hz_imp_acct_site_uses_stg
+ WHERE batch_id = :P_EBS_BATCH_ID
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_SITES_TOTAL">
+<![CDATA[
+SELECT COUNT (*) as SITES_COUNT
+  FROM xxod_hz_imp_acct_sites_stg
+ WHERE batch_id = :P_EBS_BATCH_ID
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_PAYMT_METH_TOTAL">
+<![CDATA[
+  SELECT COUNT(*) as PAYMT_METH_COUNT
+  FROM xxod_hz_imp_acct_paymeth_stg
+  WHERE batch_id = :P_EBS_BATCH_ID
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_CONTACTS_TOTAL">
+<![CDATA[
+SELECT COUNT (*) as CONTACTS_COUNT
+  FROM xxod_hz_imp_acct_contact_stg
+ WHERE batch_id = :P_EBS_BATCH_ID
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_CONTACT_ROLES_TOTAL">
+<![CDATA[
+SELECT COUNT (*) as CONTACT_ROLES_COUNT
+  FROM xxod_hz_imp_acct_cnttroles_stg
+ WHERE batch_id = :P_EBS_BATCH_ID
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_ACCOUNTS_PROFS_TOTAL">
+<![CDATA[
+SELECT COUNT (*) as PROFILES_COUNT
+  FROM xxod_hz_imp_account_prof_stg
+ WHERE batch_id = :P_EBS_BATCH_ID
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_ACCOUNTS_TOTAL">
+<![CDATA[
+SELECT COUNT (*) as ACCOUNTS_COUNT
+  FROM xxod_hz_imp_accounts_stg
+ WHERE batch_id = :P_EBS_BATCH_ID
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_TCA_BULK_TIME">
+<![CDATA[
+SELECT NVL ((b.end_date - a.actual_completion_date) * 24, 0) AS tca_bulk_time,
+       (NVL ((b.end_date - a.actual_completion_date) * 24, 0) + a.DURATION
+       ) tca_total_time
+  FROM (SELECT   r.actual_completion_date, r.actual_start_date,
+                   (r.actual_completion_date - r.actual_start_date
+                   )
+                 * 24 DURATION
+            FROM fnd_concurrent_requests r,
+                 fnd_concurrent_programs_vl p
+           WHERE r.concurrent_program_id = p.concurrent_program_id
+             AND p.concurrent_program_name = 'ARHIMAIN'
+             AND argument_text LIKE TO_CHAR (:p_ebs_batch_id) || '%'
+        GROUP BY r.request_id, r.actual_completion_date, r.actual_start_date
+          HAVING r.request_id = MAX (r.request_id)) a,
+       (SELECT MAX (r.actual_completion_date) end_date
+          FROM fnd_concurrent_requests r,
+               fnd_concurrent_programs_vl p
+         WHERE r.concurrent_program_id = p.concurrent_program_id
+           AND p.concurrent_program_name = 'XX_CDH_ROLE_RESP_WORKER'
+           AND (   argument_text LIKE
+                                    '\''' || TO_CHAR (:p_aops_batch_id)
+                                    || ',%'
+                OR argument_text LIKE '%' || TO_CHAR (:p_ebs_batch_id) || '%'
+               )) b]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_CDH_AOPS_EBS_BATCH_DATA" source="Q_CDH_AOPS_EBS_BATCH_DATA">
+<element name="AOPS_BATCH_ID" value="AOPS_BATCH_ID" />
+<element name="EBS_BATCH_ID" value="EBS_BATCH_ID" />
+	<group name="G_CDH_TCA_BULK_DATA" source="Q_CDH_TCA_BULK_DATA">
+	<element name="ACTUAL_COMPLETION_DATE" value="ACTUAL_COMPLETION_DATE" />
+	<element name="ACTUAL_START_DATE" value="ACTUAL_START_DATE" />
+	<element name="DURATION" value="DURATION" />
+	</group>
+	<group name="G_CDH_RUNNING_BATCHES" source="Q_CDH_RUNNING_BATCHES">
+	<element name="COUNT_RUNNING" value="COUNT_RUNNING" />
+	</group>
+	<group name="G_CDH_ROLE_RESP_PROGRAM_DETAILS" source="Q_CDH_ROLE_RESP_PROGRAM_DETAILS">
+	<element name="END_DATE" value="END_DATE" />
+	</group>
+	<group name="G_CDH_BATCH_REQUEST_DETAILS" source="Q_CDH_BATCH_REQUEST_DETAILS">
+	<element name="MAX_REQ_ID" value="MAX_REQ_ID" />
+	<element name="MIN_REQ_ID" value="MIN_REQ_ID" />
+	</group>
+	<group name="G_CDH_TOTAL_IMPORTED_BATCHES" source="Q_CDH_TOTAL_IMPORTED_BATCHES">
+	<element name="TOTAL_RECORDS_IMPORTED" value="TOTAL_RECORDS_IMPORTED" />
+	</group>
+	<group name="G_CDH_REL_TOTAL" source="Q_CDH_REL_TOTAL">
+	<element name="REL" value="REL_COUNT" />
+	</group>
+	<group name="G_CDH_EXT_TOTAL" source="Q_CDH_EXT_TOTAL">
+	<element name="EXT" value="EXT_COUNT" />
+	</group>
+	<group name="G_CDH_BANK_TOTAL" source="Q_CDH_BANK_TOTAL">
+	<element name="BANK" value="BANK_COUNT" />
+	</group>
+	<group name="G_CDH_CONTACT_PTS_TOTAL" source="Q_CDH_CONTACT_PTS_TOTAL">
+	<element name="CONTACT_PTS" value="CONTACT_PTS_COUNT" />
+	</group>
+	<group name="G_CDH_SITE_USES_TOTAL" source="Q_CDH_SITE_USES_TOTAL">
+	<element name="SITE_USES" value="SITE_USES_COUNT" />
+	</group>
+	<group name="G_CDH_SITES_TOTAL" source="Q_CDH_SITES_TOTAL">
+	<element name="SITES" value="SITES_COUNT" />
+	</group>
+	<group name="G_CDH_PAYMT_METH_TOTAL" source="Q_CDH_PAYMT_METH_TOTAL">
+	<element name="PAYMT_METH" value="PAYMT_METH_COUNT" />
+	</group>
+	<group name="G_CDH_CONTACTS_TOTAL" source="Q_CDH_CONTACTS_TOTAL">
+	<element name="CONTACTS" value="CONTACTS_COUNT" />
+	</group>
+	<group name="G_CDH_CONTACT_ROLES_TOTAL" source="Q_CDH_CONTACT_ROLES_TOTAL">
+	<element name="CONTACT_ROLES" value="CONTACT_ROLES_COUNT" />
+	</group>
+	<group name="G_CDH_ACCOUNTS_PROFS_TOTAL" source="Q_CDH_ACCOUNTS_PROFS_TOTAL">
+	<element name="PROFILES" value="PROFILES_COUNT" />
+	</group>
+	<group name="G_CDH_ACCOUNTS_TOTAL" source="Q_CDH_ACCOUNTS_TOTAL">
+	<element name="ACCOUNTS" value="ACCOUNTS_COUNT" />
+	</group>
+	<group name="G_CDH_TCA_BULK_TIME" source="Q_CDH_TCA_BULK_TIME">
+	<element name="TCA_BULK_TIME" value="TCA_BULK_TIME" />
+	<element name="TCA_TOTAL_TIME" value="TCA_TOTAL_TIME" />
+	</group>	
+</group>
+</dataStructure>
+</dataTemplate>
+

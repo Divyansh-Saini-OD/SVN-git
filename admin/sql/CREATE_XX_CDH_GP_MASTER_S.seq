@@ -1,0 +1,44 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===========================================================================+
+-- |                  Office Depot - CR777                                     |
+-- |                                                                           |
+-- +===========================================================================+
+-- | Name        : CREATE_XX_CDH_GP_MASTER_S.seq                            |
+-- | Description :                                                             |
+-- | File to create sequence for CR777-GRANDPARENT                             |
+-- | Table: XX_CDH_GP_MASTER.                                                  |
+-- |                                                                           |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author        Remarks            	               |
+-- |======== =========== ============= ========================================|
+-- |DRAFT 1A 01-JUN-2001 Kalyan        Initial draft version                   |
+-- |                                                                           |
+-- |                                                                           |
+-- |                                                                           |
+-- +===========================================================================+
+
+-- ----------------------------------------------------------------------------
+-- Create Custom Sequence XXCRM.XX_CDH_GP_MASTER_S
+-- ----------------------------------------------------------------------------
+
+CREATE SEQUENCE XXCRM.XX_CDH_GP_MASTER_S 
+INCREMENT BY 1 
+START WITH 1000
+MAXVALUE 99999999
+NOCYCLE NOCACHE NOORDER;
+
+
+-- ----------------------------------------------------------------------------
+-- Grants to APPS
+-- ----------------------------------------------------------------------------
+
+GRANT ALL ON XXCRM.XX_CDH_GP_MASTER_S TO APPS;
+
+
+SHOW ERRORS;

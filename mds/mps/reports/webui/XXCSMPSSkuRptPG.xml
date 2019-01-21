@@ -1,0 +1,198 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_1312" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="SkuRptPG" windowTitle="MARS SKUs Report" title="MARS SKUs Report" amDefName="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSReportsAM" controllerClass="od.oracle.apps.xxcrm.mps.reports.webui.XXCSMPSSkuRptCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:messageComponentLayout id="searchRN">
+               <ui:contents>
+                  <oa:messageLovInput id="PartyName2" queryable="true" prompt="Customer Name" selectiveSearchCriteria="true">
+                     <lovContents>
+                        <oa:listOfValues id="PartyNameRN">
+                           <ui:contents>
+                              <oa:table name="PartyNameRN" id="PartyNameLOVRN">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="PartyName1" dataType="VARCHAR2" prompt="Party Name" viewName="XXCSMPSPartyNameVO" viewAttr="PartyName" maximumLength="250" queryable="true"/>
+                                    <oa:formValue id="PartyId" dataType="NUMBER" prompt="PartyId" viewName="XXCSMPSPartyNameVO" viewAttr="PartyId"/>
+                                 </ui:contents>
+                              </oa:table>
+                           </ui:contents>
+                        </oa:listOfValues>
+                     </lovContents>
+                     <lovMappings>
+                        <lovMap id="PartyNamelovMap" lovItem="PartyName1" resultTo="PartyName2" criteriaFrom="PartyName2"/>
+                        <lovMap id="PartyIdlovMap" lovItem="PartyId" resultTo="PartyIDFV"/>
+                     </lovMappings>
+                  </oa:messageLovInput>
+                  <oa:messageTextInput id="txtFromDelDt" dataType="DATE" prompt="From Delivery Date"/>
+                  <oa:messageTextInput id="txtToDelDt" dataType="DATE" prompt="To Delivery Date"/>
+                  <oa:messageTextInput id="txtItem" prompt="SKU Number"/>
+                  <oa:messageTextInput id="ManagedStatusInput" prompt="Managed Status"/>
+                  <oa:messageTextInput id="ActiveStatusInput" prompt="Active Status"/>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:formValue id="PartyIDFV"/>
+            <oa:spacer id="item2" height="20" width="600"/>
+            <oa:rowLayout id="searchBtnRN" hAlign="end">
+               <ui:contents>
+                  <oa:submitButton id="btnSubmit" prompt="Search"/>
+                  <oa:spacer id="spacer1" width="10"/>
+                  <oa:submitButton id="btnClear" text="Clear" prompt="Clear"/>
+               </ui:contents>
+            </oa:rowLayout>
+            <oa:spacer id="item3" height="30" width="600"/>
+            <oa:separator id="item1"/>
+            <oa:advancedTable id="ResultsRN" viewName="XXCSMPSSkuRptVO1">
+               <ui:contents>
+                  <oa:column id="PartyNameCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="CustomerNamesortableHeader" prompt="Customer Name" sortState="yes" sortByViewAttr="PartyName"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="CustomerName" viewAttr="PartyName" prompt="Customer Name"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="GroupNameCol" rendered="false">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="GroupNamesortableHeader" prompt="Group Name" sortState="yes" sortByViewAttr="GroupName"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="GroupName" viewAttr="GroupName" prompt="Group Name"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="IpAddressCol" rendered="false">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="IpAddresssortableHeader" prompt="Ip Address" sortState="yes" sortByViewAttr="IpAddress"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="IpAddress" viewAttr="IpAddress" prompt="Ip Address"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ModelCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ModelsortableHeader" prompt="Model" sortState="yes" sortByViewAttr="Model"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="Model" viewAttr="Model" prompt="Model"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="SerialNoCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="SerialNosortableHeader" prompt="Serial No" sortState="yes" sortByViewAttr="SerialNo"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="SerialNo" viewAttr="SerialNo" prompt="Serial No"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="SkuOption1Col">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="SkuOption1sortableHeader" prompt="Sku Option1" sortState="yes" sortByViewAttr="SkuOption1"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="SkuOption1" viewAttr="SkuOption1" prompt="Sku Option1"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="SkuOption2Col">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="SkuOption2sortableHeader" prompt="Sku Option2" sortState="yes" sortByViewAttr="SkuOption2"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="SkuOption2" viewAttr="SkuOption2" prompt="Sku Option2"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="SkuOption3Col">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="SkuOption3sortableHeader" prompt="Sku Option3" sortState="yes" sortByViewAttr="SkuOption3"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="SkuOption3" viewAttr="SkuOption3" prompt="Sku Option3"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="SuppliesLabelCol" rendered="true">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="SuppliesLabelsortableHeader" prompt="Supplies Label" sortState="yes" sortByViewAttr="Sku"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="SuppliesLabel" viewAttr="Sku" prompt="Supplies Label"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ItemCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ItemsortableHeader" prompt="SKU Number" sortState="yes" sortByViewAttr="SkuNumber"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="Item" viewAttr="SkuNumber"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ItemDescCol1">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ItemsortableHeader1" prompt="SKU Description" sortState="no"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ItemDesc1" viewAttr="SkuDescription"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="OrderNumberCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="OrderNumbersortableHeader" prompt="Order Number" sortByViewAttr="OrderNo" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="OrderNumber" viewAttr="OrderNo" prompt="Order Number"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="SRNumberCol1">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="SrNumbersortableHeader1" prompt="SR Number" sortByViewAttr="SrNumber" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="SRNumber1" viewAttr="SrNumber" prompt="Order Number"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="OrderDateCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="OrderDatesortableHeader" prompt="Order Date" sortState="yes" sortByViewAttr="OrderDate"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="OrderDate" viewAttr="OrderDate"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="DeliveryDateCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="DeliveryDatesortableHeader" prompt="Delivery Date" sortState="yes" sortByViewAttr="DeliveryDate"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="DeliveryDate" viewAttr="DeliveryDate"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ManagedStatusCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ManagedStatusHdr" prompt="Managed Status"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ManagedStatus" viewAttr="ManagedStatus"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ActiveStatusCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ActiveStatusHdr" prompt="Active Status"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ActiveStatus" viewAttr="ActiveStatus"/>
+                     </ui:contents>
+                  </oa:column>
+               </ui:contents>
+               <ui:tableActions>
+                  <oa:rowLayout id="exportRN">
+                     <ui:contents>
+                        <oa:exportButton id="Export" exportAllRows="true" text="Export to CSV" viewName="XXCSMPSTonerOrdVO1" rendered="true"/>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:tableActions>
+            </oa:advancedTable>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

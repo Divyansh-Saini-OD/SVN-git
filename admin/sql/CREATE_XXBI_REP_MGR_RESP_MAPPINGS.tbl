@@ -1,0 +1,19 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : XXBI_REP_MGR_RESP_MAPPINGS.tbl                      |
+-- | Description : Dashboard Customizations: Rep&Mgr Respsonsibilities |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1a 19-Feb-2010  Sarah Justina    Initial draft version       |
+-- +===================================================================+
+CREATE TABLE XXCRM.XXBI_REP_MGR_RESP_MAPPINGS(
+ RESP_KEY VARCHAR2(30) NOT NULL
+,REP_MGR  VARCHAR2(1) NOT NULL
+);
+EXIT;

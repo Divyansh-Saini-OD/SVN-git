@@ -1,0 +1,38 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                        WIPRO Technologies                         |
+-- +===================================================================+
+-- | Name    :          XXBI_CONTACTS_MV_TBL_N1 .idx                   |
+-- | |
+-- | Description      : This scipt creates index                       |
+-- |                    XXBI_CONTACTS_MV_TBL_N1 .                      |
+-- |                                                                   |
+-- | Subversion Info:                                                          |
+-- | $HeadURL:  $                                                               |
+-- | $Rev:  $                                                                   |
+-- | $Date: $                                         |
+-- |                                                                           |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |1.0       14-APR-2010 Prasad Initial Version             |
+-- |                                                                   |
+-- |                                                                   |
+-- +===================================================================+
+
+-- ----------------------------------------------------------
+--   CREATE Custom index XXBI_CONTACTS_MV_TBL_N1         --
+-- ----------------------------------------------------------
+
+alter INDEX xxcrm.xxbi_contact_mv_tbl_n1  rebuild online;
+alter INDEX xxcrm.xxbi_contact_mv_tbl_n2  rebuild online;
+alter INDEX xxcrm.xxbi_contact_mv_tbl_n3  rebuild online;
+alter INDEX xxcrm.xxbi_contact_mv_tbl_n4  rebuild online;
+SHOW ERRORS;
+

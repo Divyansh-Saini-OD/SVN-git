@@ -1,0 +1,131 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +=========================================================================+
+-- |                                  ORACLE NAIO                            |
+-- |                                Bangalore, India                         | 
+-- |                               All Rights Reserved                       |
+-- +=========================================================================+
+-- |NAME: CREATE_XX_OIC_ERROR_TABLES.tbl                                     |
+-- |Description: Creation of error tables for Plan copy                      |
+-- |                                                                         |
+-- |                                                                         |
+-- |DESC...: DDL to create xx_oic_error_headers and xx_oic_error_lines tables|
+-- |                                                                         |
+-- |                                                                         |
+-- |                                                                         |
+-- | Change Record:                                                          |
+-- | ===============                                                         |
+-- |   Version   Date          Author                   Remarks              |
+-- |   =======   ===========   =======================  =====================|
+-- |   1.0       01-Aug-07     Nageswara rao            Baseline version     |
+-- +=========================================================================+
+
+
+-- +========================================================================+
+-- drop table if it exists:
+-- =========================================================================+
+
+-- Dropping table XXCRM.xx_oic_error_headers (if any) . . .
+
+--DROP TABLE
+--   XXCRM.xx_oic_error_headers
+--CASCADE CONSTRAINTS
+--/
+--
+-- Dropping table XXCRM.xx_oic_error_lines (if any) . . .
+--
+--DROP TABLE
+--   XXCRM.xx_oic_error_lines
+--CASCADE CONSTRAINTS
+--/
+
+-- ============================================================================
+-- Createing error tables
+-- ============================================================================
+
+-- Creating table XXCRM.xx_oic_error_headers . . .
+
+CREATE TABLE XXCRM.xx_oic_error_headers
+    (
+      request_id           NUMBER(15)      NOT NULL
+    , program_id           NUMBER(15)      NOT NULL
+    , program_name         VARCHAR2(100)
+    , run_time             DATE
+    , record_count         NUMBER(10)
+    , process_flag         VARCHAR2(1)
+    , creation_date        DATE            NOT NULL
+    , created_by           NUMBER(15)      NOT NULL
+    , last_updated_date    DATE            NOT NULL
+    , last_updated_by      NUMBER(15)      NOT NULL
+    , last_updated_login   NUMBER(15)
+    )
+PCTFREE 10
+PCTUSED 90
+STORAGE (INITIAL 500K
+         NEXT 500K
+         MINEXTENTS 1
+         MAXEXTENTS 505
+         PCTINCREASE 0)
+/
+
+-- Creating table XXCRM.xx_oic_error_headers . . .
+
+CREATE TABLE XXCRM.xx_oic_error_lines
+    (
+      request_id           NUMBER(10)      NOT NULL
+    , program_id           NUMBER(15)      NOT NULL
+    , error_sequence       NUMBER(10)
+    , error_message        VARCHAR2(4000)
+    , field                VARCHAR2(30)
+    , field_value          VARCHAR2(1000)
+    , record_id            VARCHAR2(40)
+    , creation_date        DATE            NOT NULL
+    , created_by           NUMBER(15)      NOT NULL
+    , last_updated_date    DATE            NOT NULL
+    , last_updated_by      NUMBER(15)      NOT NULL
+    , last_updated_login   NUMBER(15)
+    )
+PCTFREE 10
+PCTUSED 90
+STORAGE (INITIAL 500K
+         NEXT 500K
+         MINEXTENTS 1
+         MAXEXTENTS 505
+         PCTINCREASE 0)
+/
+
+
+-- ============================================================================
+-- Adding Constraints to Error Tables
+-- ============================================================================
+
+
+-- Creating primary key XXCRM.xx_oic_error_headers
+
+ALTER TABLE XXCRM.xx_oic_error_headers ADD 
+  (
+   CONSTRAINT xx_oic_error_headers_pk primary key (program_id)
+  )
+/
+
+-- Creating foregin key xx_oic_error_lines
+
+ALTER TABLE XXCRM.xx_oic_error_lines ADD 
+  (
+   CONSTRAINT xx_oic_error_lines_fk foreign key (program_id) 
+   REFERENCES XXCRM.xx_oic_error_headers (program_id)
+  )
+/
+
+-- ============================================================================
+-- Granting Privileges on error's Table's TO APPS
+-- ============================================================================
+
+-- Granting Privileges on error's Table's and Sequences TO APPS
+GRANT SELECT,INSERT,UPDATE,DELETE  ON xxcrm.xx_oic_error_headers TO APPS
+/
+GRANT SELECT,INSERT,UPDATE,DELETE  ON xxcrm.xx_oic_error_lines TO APPS
+/

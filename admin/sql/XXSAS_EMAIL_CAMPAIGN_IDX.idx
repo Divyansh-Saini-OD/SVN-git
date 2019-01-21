@@ -1,0 +1,22 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - SAS Email Campaign                       |
+-- +=======================================================================+
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      31-Mar-2010 Indra Varada       Initial Version                |
+-- +=======================================================================+
+
+
+
+CREATE INDEX XXCRM.XXSAS_EMAIL_CAMPAIGN_N1 ON XXCRM.XXSAS_EMAIL_CAMPAIGN (ORDER_ID);
+CREATE INDEX XXCRM.XXSAS_EMAIL_CAMPAIGN_N2 ON XXCRM.XXSAS_EMAIL_CAMPAIGN (CREATION_DATE);
+
+EXIT;
+/

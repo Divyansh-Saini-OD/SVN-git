@@ -1,0 +1,36 @@
+-- $Id$
+-- $Rev$
+-- $HeadURL$
+-- $Author$
+-- $Date$
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :XXBI_SALES_OPPTY_FCT_N1.idx                         |
+-- | Description      :Unique Index for Custom Oppty Fact Table            |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author              Remarks                     |
+-- |-------  ----------- -----------------    -----------------------------|
+-- | 1.0     13-MAR-2009  Sreekanth Rao        Initial Draft Version       |
+-- +=======================================================================+
+
+
+REM============================================================================================
+REM        Creating Index XXBI_SALES_OPPTY_FCT_N1
+REM============================================================================================
+
+
+CREATE INDEX XXCRM.XXBI_SALES_OPPTY_FCT_N1
+ON XXCRM.XXBI_SALES_OPPTY_FCT (OPP_ID);
+
+EXIT;
+

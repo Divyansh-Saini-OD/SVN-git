@@ -1,0 +1,24 @@
+SET VERIFY OFF
+SET FEEDBACK 1
+WHENEVER SQLERROR EXIT FAILURE ROLLBACK
+WHENEVER OSERROR EXIT FAILURE ROLLBACK
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :XXCRM_RTF_TO_PLAIN_TEXT_POLICY.syn                  |
+-- | Description      :I5000 configure SOLAR conversion tables             |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      13-Dec-2007 Phil Price         Initial version                |
+-- +=======================================================================+
+
+
+create or replace synonym xxcrm_rtf_to_plain_text_policy
+                      for xxcrm.xxcrm_rtf_to_plain_text_policy;

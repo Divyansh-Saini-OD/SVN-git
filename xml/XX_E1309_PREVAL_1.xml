@@ -1,0 +1,705 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XX_E1309_PREVAL_1" description="OD: Autonamed Account Creation Prevalidation 1" Version="1.0">
+<parameters/>
+<dataQuery>
+<sqlStatement name="Q_AUTONAMED_TABLES">
+<![CDATA[
+SELECT 'XX_TM_NAM_TERR_DEFN' AS TABLE_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_tables ALT
+WHERE ALT.table_name = 'XX_TM_NAM_TERR_DEFN'
+UNION
+SELECT 'XX_TM_NAM_TERR_RSC_DTLS' AS TABLE_NAME,CASE COUNT(1) 
+                                               WHEN 1 THEN 'Y'
+                                               ELSE 'N'
+                                               END AS DOES_EXIST
+FROM  all_tables ALT
+WHERE ALT.table_name = 'XX_TM_NAM_TERR_RSC_DTLS'  
+UNION
+SELECT 'XX_TM_NAM_TERR_ENTITY_DTLS' AS TABLE_NAME,CASE COUNT(1) 
+                                                  WHEN 1 THEN 'Y'
+                                                  ELSE 'N'
+                                                  END AS DOES_EXIST
+FROM  all_tables ALT
+WHERE ALT.table_name = 'XX_TM_NAM_TERR_ENTITY_DTLS'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_AUTONAMED_VIEWS">
+<![CDATA[
+SELECT 'XX_TM_NAM_TERR_CURR_ASSIGN_V' AS VIEW_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_views ALV
+WHERE ALV.view_name = 'XX_TM_NAM_TERR_CURR_ASSIGN_V'
+UNION
+SELECT 'XX_TM_NAM_TERR_DATE_ASSIGN_V' AS VIEW_NAME,CASE COUNT(1) 
+                                               WHEN 1 THEN 'Y'
+                                               ELSE 'N'
+                                               END AS DOES_EXIST
+FROM  all_views ALV
+WHERE ALV.view_name = 'XX_TM_NAM_TERR_DATE_ASSIGN_V'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_AUTONAMED_SEQUENCES">
+<![CDATA[
+SELECT 'XX_TM_NAM_TERR_DEFN_S' AS SEQUENCE_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_sequences ALS
+WHERE ALS.sequence_name = 'XX_TM_NAM_TERR_DEFN_S'
+UNION
+SELECT 'XX_TM_NAM_TERR_ENTITY_DTLS_S' AS SEQUENCE_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_sequences ALS
+WHERE ALS.sequence_name = 'XX_TM_NAM_TERR_ENTITY_DTLS_S'
+UNION
+SELECT 'XX_TM_NAM_TERR_RSC_DTLS_S' AS SEQUENCE_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_sequences ALS
+WHERE ALS.sequence_name = 'XX_TM_NAM_TERR_RSC_DTLS_S'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_AUTONAMED_INDEXES">
+<![CDATA[
+SELECT 'XX_TM_NAM_TERR_DEFN_U1' AS INDEX_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_indexes ALI
+WHERE ALI.index_name = 'XX_TM_NAM_TERR_DEFN_U1'
+AND   ALI.owner      = 'XXCRM'
+AND   ALI.status     = 'VALID'
+UNION
+SELECT 'XX_TM_NAM_TERR_ENTITY_DTLS_U1' AS INDEX_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_indexes ALI
+WHERE ALI.index_name = 'XX_TM_NAM_TERR_ENTITY_DTLS_U1'
+AND   ALI.owner      = 'XXCRM'
+AND   ALI.status     = 'VALID'
+UNION
+SELECT 'XX_TM_NAM_TERR_RSC_DTLS_U1' AS INDEX_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_indexes ALI
+WHERE ALI.index_name = 'XX_TM_NAM_TERR_RSC_DTLS_U1'
+AND   ALI.owner      = 'XXCRM'
+AND   ALI.status     = 'VALID'
+UNION
+SELECT 'XX_TM_NAM_TERR_RSC_DTLS_N1' AS INDEX_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_indexes ALI
+WHERE ALI.index_name = 'XX_TM_NAM_TERR_RSC_DTLS_N1'
+AND   ALI.owner      = 'XXCRM'
+AND   ALI.status     = 'VALID'
+UNION
+SELECT 'XX_TM_NAM_TERR_ENTITY_DTLS_N1' AS INDEX_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_indexes ALI
+WHERE ALI.index_name = 'XX_TM_NAM_TERR_ENTITY_DTLS_N1'
+AND   ALI.owner      = 'XXCRM'
+AND   ALI.status     = 'VALID'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_AUTONAMED_SYNONYMS">
+<![CDATA[
+SELECT 'XX_TM_NAM_TERR_DEFN' AS SYNONYM_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_synonyms ALS
+WHERE ALS.synonym_name = 'XX_TM_NAM_TERR_DEFN'
+AND   ALS.owner = 'APPS'
+UNION
+SELECT 'XX_TM_NAM_TERR_ENTITY_DTLS' AS SYNONYM_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_synonyms ALS
+WHERE ALS.synonym_name = 'XX_TM_NAM_TERR_ENTITY_DTLS'
+AND   ALS.owner = 'APPS'
+UNION
+SELECT 'XX_TM_NAM_TERR_RSC_DTLS' AS SYNONYM_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_synonyms ALS
+WHERE ALS.synonym_name = 'XX_TM_NAM_TERR_RSC_DTLS'
+AND   ALS.owner = 'APPS'
+UNION
+SELECT 'XX_TM_NAM_TERR_DEFN_S' AS SYNONYM_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_synonyms ALS
+WHERE ALS.synonym_name = 'XX_TM_NAM_TERR_DEFN_S'
+AND   ALS.owner = 'APPS'
+UNION
+SELECT 'XX_TM_NAM_TERR_ENTITY_DTLS_S' AS SYNONYM_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_synonyms ALS
+WHERE ALS.synonym_name = 'XX_TM_NAM_TERR_ENTITY_DTLS_S'
+AND   ALS.owner = 'APPS'
+UNION
+SELECT 'XX_TM_NAM_TERR_RSC_DTLS_S' AS SYNONYM_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  all_synonyms ALS
+WHERE ALS.synonym_name = 'XX_TM_NAM_TERR_RSC_DTLS_S'
+AND   ALS.owner = 'APPS'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_AUTONAMED_PROFILES">
+<![CDATA[
+SELECT 'OD - Named Account Party Site Assignment Process ID' AS PROFILE_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_profile_options_tl FPO
+WHERE FPO.profile_option_name = 'XX_TM_AUTO_MAX_PARTY_SITE_ID'
+UNION
+SELECT 'OD - Named Account Opportunity Assignment Process ID' AS PROFILE_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_profile_options_tl FPO
+WHERE FPO.profile_option_name = 'XX_TM_AUTO_MAX_OPPTY_ID'
+UNION
+SELECT 'OD - Named Account Lead Assignment Process ID' AS PROFILE_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_profile_options_tl FPO
+WHERE FPO.profile_option_name = 'XX_TM_AUTO_MAX_LEAD_ID'
+UNION
+SELECT 'OD: TM Sales Rep Party Site Assignment Process Batch Size' AS PROFILE_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_profile_options_tl FPO
+WHERE FPO.profile_option_name = 'XX_TM_PARTY_SITE_BATCH_SIZE'
+UNION
+SELECT 'OD: Bulk Fetch Limit for Customer Conversion' AS PROFILE_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_profile_options_tl FPO
+WHERE FPO.profile_option_name = 'XX_CDH_BULK_FETCH_LIMIT'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_AUTONAMED_VALUE_SETS">
+<![CDATA[
+SELECT 'XX_OD_TM_DIVISION' AS VALUE_SET_NAME,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_flex_value_sets FFV
+WHERE FFV.flex_value_set_name = 'XX_OD_TM_DIVISION'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_AUTONAMED_DBPACKAGES">
+<![CDATA[
+SELECT 'Package Specification' AS Type,'XX_TM_TERRITORY_UTIL_PKG.pks' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_TM_TERRITORY_UTIL_PKG'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Body' AS Type,'XX_TM_TERRITORY_UTIL_PKG.pkb' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_TM_TERRITORY_UTIL_PKG'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Specification' AS Type,'XX_JTF_RS_NAMED_ACC_TERR.pks' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_RS_NAMED_ACC_TERR'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Body' AS Type,'XX_JTF_RS_NAMED_ACC_TERR.pkb' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_RS_NAMED_ACC_TERR'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Specification' AS Type,'XX_TM_JTF_TERR_ASSIGN_PUB.pks' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_TM_JTF_TERR_ASSIGN_PUB'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Body' AS Type,'XX_TM_JTF_TERR_ASSIGN_PUB.pkb' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_TM_JTF_TERR_ASSIGN_PUB'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Specification' AS Type,'XX_JTF_SALES_REP_PTY_SITE_CRTN.pks' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_SALES_REP_PTY_SITE_CRTN'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Body' AS Type,'XX_JTF_SALES_REP_PTY_SITE_CRTN.pkb' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_SALES_REP_PTY_SITE_CRTN'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Specification' AS Type,'XX_JTF_BL_SLREP_PST_CRTN.pks' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_BL_SLREP_PST_CRTN'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Body' AS Type,'XX_JTF_BL_SLREP_PST_CRTN.pkb' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_BL_SLREP_PST_CRTN'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Specification' AS Type,'XX_JTF_SALES_REP_LEAD_CRTN.pks' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_SALES_REP_LEAD_CRTN'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Body' AS Type,'XX_JTF_SALES_REP_LEAD_CRTN.pkb' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_SALES_REP_LEAD_CRTN'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Specification' AS Type,'XX_JTF_SALES_REP_BL_LEAD_CRTN.pks' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_SALES_REP_BL_LEAD_CRTN'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Body' AS Type,'XX_JTF_SALES_REP_BL_LEAD_CRTN.pkb' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_SALES_REP_BL_LEAD_CRTN'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Specification' AS Type,'XX_JTF_SALES_REP_OPPTY_CRTN.pks' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_SALES_REP_OPPTY_CRTN'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Body' AS Type,'XX_JTF_SALES_REP_OPPTY_CRTN.pkb' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_SALES_REP_OPPTY_CRTN'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Specification' AS Type,'XX_JTF_SALES_REP_BL_OPPTY_CRTN.pks' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_SALES_REP_BL_OPPTY_CRTN'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Body' AS Type,'XX_JTF_SALES_REP_BL_OPPTY_CRTN.pkb' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_SALES_REP_BL_OPPTY_CRTN'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Specification' AS Type,'XX_JTF_SALES_REP_LEAD_SYNC.pks' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_SALES_REP_LEAD_SYNC'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Body' AS Type,'XX_JTF_SALES_REP_LEAD_SYNC.pkb' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_SALES_REP_LEAD_SYNC'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Specification' AS Type,'XX_JTF_SALES_REP_OPPTY_SYNC.pks' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_SALES_REP_OPPTY_SYNC'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Body' AS Type,'XX_JTF_SALES_REP_OPPTY_SYNC.pkb' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_SALES_REP_OPPTY_SYNC'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Specification' AS Type,'XX_JTF_SLS_REP_NW_DIV_PTY_SITE.pks' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_SLS_REP_NW_DIV_PTY_SITE'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Body' AS Type,'XX_JTF_SLS_REP_NW_DIV_PTY_SITE.pkb' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_SLS_REP_NW_DIV_PTY_SITE'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Specification' AS Type,'JTF_TERR_LOOKUP_PUB.pks' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'JTF_TERR_LOOKUP_PUB'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Body' AS Type,'JTF_TERR_LOOKUP_PUB.pkb' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'JTF_TERR_LOOKUP_PUB'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Specification' AS Type,'XX_JTF_SL_REP_UNASSGN_INT_CUST.pks' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_SL_REP_UNASSGN_INT_CUST'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Body' AS Type,'XX_JTF_SL_REP_UNASSGN_INT_CUST.pkb' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_SL_REP_UNASSGN_INT_CUST'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Specification' AS Type,'XX_JTF_UNASSGN_PST_EXP_REP.pks' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_UNASSGN_PST_EXP_REP'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Body' AS Type,'XX_JTF_UNASSGN_PST_EXP_REP.pkb' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_UNASSGN_PST_EXP_REP'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Specification' AS Type,'XX_TM_TERRITORY_UTIL_PKG_W.pks' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_TM_TERRITORY_UTIL_PKG_W'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+UNION
+SELECT 'Package Body' AS Type,'XX_TM_TERRITORY_UTIL_PKG_W.pkb' AS Package_Name,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_TM_TERRITORY_UTIL_PKG_W'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID'
+AND   DBO.owner       = 'APPS'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_AUTONAMED_SQUAL_CHAR61">
+<![CDATA[
+SELECT 'JTF_TERR_ASSIGN_PUB.JTF_TERR_CHAR_360LIST.SQUAL_CHAR61' AS SQUAL_CHAR61,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM   all_source ASO
+WHERE  ASO.name = 'JTF_TERR_ASSIGN_PUB'
+AND    ASO.type = 'PACKAGE'
+AND    ASO.text like '%SQUAL_CHAR61%jtf_terr_char_360list := jtf_terr_char_360list()%'
+UNION
+SELECT 'JTF_TERR_LOOKUP_PUB.LP_TRANS_REC.SQUAL_CHAR61' AS SQUAL_CHAR61,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM   all_source ASO
+WHERE  ASO.name = 'JTF_TERR_LOOKUP_PUB'
+AND    ASO.type = 'PACKAGE BODY'
+AND    ASO.text like '%lp_trans_Rec.SQUAL_CHAR61.EXTEND%'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_AUTONAMED_CONC_PROG">
+<![CDATA[
+SELECT 'OD: TM Party Site Named Account Mass Assignment Master Program' AS CONCURRENT_PROGRAM,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_concurrent_programs FCP
+WHERE FCP.concurrent_program_name = 'XXJTFBLSLREPPSTCRTNMASTER'
+AND   FCP.enabled_flag = 'Y'
+UNION
+SELECT 'OD: TM Party Site Named Account Mass Assignment Child Program' AS CONCURRENT_PROGRAM,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_concurrent_programs FCP
+WHERE FCP.concurrent_program_name = 'XXJTFBLSLREPPSTCRTNCHILD'
+AND   FCP.enabled_flag = 'Y'
+UNION
+SELECT 'OD: TM Synchronize Lead Named Account' AS CONCURRENT_PROGRAM,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_concurrent_programs FCP
+WHERE FCP.concurrent_program_name = 'XXJTFSALESREPLEADSYNC'
+AND   FCP.enabled_flag = 'Y'
+UNION
+SELECT 'OD: TM Synchronize Opportunity Named Account' AS CONCURRENT_PROGRAM,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_concurrent_programs FCP
+WHERE FCP.concurrent_program_name = 'XXJTFSALESREPOPPTYSYNC'
+AND   FCP.enabled_flag = 'Y'
+UNION
+SELECT 'OD: TM Unassign Internal Customers' AS CONCURRENT_PROGRAM,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_concurrent_programs FCP
+WHERE FCP.concurrent_program_name = 'XXJTFSLREPUNASSGNINTCUST'
+AND   FCP.enabled_flag = 'Y'
+UNION
+SELECT 'OD: TM Unassigned Party Sites Exception Report' AS CONCURRENT_PROGRAM,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_concurrent_programs FCP
+WHERE FCP.concurrent_program_name = 'XXJTFUNASSGNPSTEXPREP'
+AND   FCP.enabled_flag = 'Y'
+UNION
+SELECT 'OD: TM New Division Named Account Mass Assignment Master Program' AS CONCURRENT_PROGRAM,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_concurrent_programs FCP
+WHERE FCP.concurrent_program_name = 'XXJTFSLREPNEWDIVPTYSITEMASTER'
+AND   FCP.enabled_flag = 'Y'
+UNION
+SELECT 'OD: TM New Division Named Account Mass Assignment Child Program' AS CONCURRENT_PROGRAM,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_concurrent_programs FCP
+WHERE FCP.concurrent_program_name = 'XXJTFSLREPNEWDIVPTYSITECHILD'
+AND   FCP.enabled_flag = 'Y'
+UNION
+SELECT 'OD: TM Lead Named Account Mass Assignment Master Program' AS CONCURRENT_PROGRAM,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_concurrent_programs FCP
+WHERE FCP.concurrent_program_name = 'XXJTFBLSLREPLEADCRTNMASTER'
+AND   FCP.enabled_flag = 'Y'
+UNION
+SELECT 'OD: TM Lead Named Account Mass Assignment Child Program' AS CONCURRENT_PROGRAM,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_concurrent_programs FCP
+WHERE FCP.concurrent_program_name = 'XXJTFBLSLREPLEADCRTNCHILD'
+AND   FCP.enabled_flag = 'Y'
+UNION
+SELECT 'OD: TM Opportunity Named Account Mass Assignment Master Program' AS CONCURRENT_PROGRAM,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_concurrent_programs FCP
+WHERE FCP.concurrent_program_name = 'XXJTFBLSLREPOPPTYCRTNMASTER'
+AND   FCP.enabled_flag = 'Y'
+UNION
+SELECT 'OD: TM Opportunity Named Account Mass Assignment Child Program' AS CONCURRENT_PROGRAM,CASE COUNT(1) 
+                                           WHEN 1 THEN 'Y'
+                                           ELSE 'N'
+                                           END AS DOES_EXIST
+FROM  fnd_concurrent_programs FCP
+WHERE FCP.concurrent_program_name = 'XXJTFBLSLREPOPPTYCRTNCHILD'
+AND   FCP.enabled_flag = 'Y'
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_AUTONAMED_TABLES" source="Q_AUTONAMED_TABLES">
+<element name="TABLE_NAME" value="TABLE_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_AUTONAMED_VIEWS" source="Q_AUTONAMED_VIEWS">
+<element name="VIEW_NAME" value="VIEW_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_AUTONAMED_SEQUENCES" source="Q_AUTONAMED_SEQUENCES">
+<element name="SEQUENCE_NAME" value="SEQUENCE_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_AUTONAMED_INDEXES" source="Q_AUTONAMED_INDEXES">
+<element name="INDEX_NAME" value="INDEX_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_AUTONAMED_SYNONYMS" source="Q_AUTONAMED_SYNONYMS">
+<element name="SYNONYM_NAME" value="SYNONYM_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_AUTONAMED_PROFILES" source="Q_AUTONAMED_PROFILES">
+<element name="PROFILE_NAME" value="PROFILE_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_AUTONAMED_VALUE_SETS" source="Q_AUTONAMED_VALUE_SETS">
+<element name="VALUE_SET_NAME" value="VALUE_SET_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_AUTONAMED_DBPACKAGES" source="Q_AUTONAMED_DBPACKAGES">
+<element name="TYPE" value="Type" />
+<element name="PACKAGE_NAME" value="PACKAGE_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_AUTONAMED_SQUAL_CHAR61" source="Q_AUTONAMED_SQUAL_CHAR61">
+<element name="SQUAL_CHAR61" value="SQUAL_CHAR61" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_AUTONAMED_CONC_PROG" source="Q_AUTONAMED_CONC_PROG">
+<element name="CONCURRENT_PROGRAM" value="CONCURRENT_PROGRAM" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+</dataStructure>
+</dataTemplate>
+

@@ -1,0 +1,6 @@
+create unique index xxcrm.xxod_cust_relate_temp_u1 on xxcrm.xxod_cust_relate_temp
+(
+parent_id,
+child_id
+)
+nologging parallel;

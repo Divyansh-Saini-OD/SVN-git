@@ -1,0 +1,58 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.10_1080" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="PageLayoutRN" amDefName="od.oracle.apps.xxcrm.cdh.ebl.search.server.ODEBillDocSearchAM" windowTitle="Billing Document Search Page" title="Billing Document Search Page" controllerClass="od.oracle.apps.xxcrm.cdh.ebl.search.webui.ODEBillDocSearchCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:productBranding>
+            <oa:image id="ProductBrand" source="ODLOGO.gif" shortDesc="OA Framework ToolBox Tutorial"/>
+         </ui:productBranding>
+         <ui:contents>
+            <oa:query id="QueryRN" dispSimple="true" dispCustomized="true" dispAdvanced="false" mode="resultsBasedSearch" simpleSearchInstrTexts="Please enter your search criteria and select the &quot;Go&quot; button to see the result. Note: Use % as Wildcard , if needed." defaultPanel="simple" customizeInstrTexts="Please enter your search criteria and select the &quot;Go&quot; button to see the result. Note: Use % as Wildcard , if needed.">
+               <ui:contents>
+                  <oa:table id="ResultsTable" userCustomizable="true" width="100%">
+                     <ui:contents>
+                        <oa:messageStyledText id="CustomerName" dataType="VARCHAR2" prompt="Customer Name" viewName="ODEBillDocSearchVO" viewAttr="CustomerName" maximumLength="240" queryable="true" userCustomizable="true" selectiveSearchCriteria="true" destination="OA.jsp?page=/od/oracle/apps/xxcrm/cdh/ebl/custdocs/webui/ODEBillDocumentsPG&amp;custAccountId={@CustAccountId}&amp;accountNumber={@CustomerNumber}&amp;custName={@CustomerName}&amp;retainAM=N&amp;addBreadCrumb=Y" initSortSeq="none" sortState="no"/>
+                        <oa:messageStyledText id="CustNumber" dataType="NUMBER" prompt="Billing ID" viewName="ODEBillDocSearchVO" viewAttr="CustomerNumber" maximumLength="30" queryable="true" sortState="no" initSortSeq="first" userCustomizable="true" selectiveSearchCriteria="true"/>
+                        <oa:messageStyledText id="AopsNumber1" viewName="ODEBillDocSearchVO" viewAttr="AopsNumber1" selectiveSearchCriteria="true" queryable="true" prompt="AOPS Number" rendered="true"/>
+                        <oa:messageStyledText id="AopsNumber" dataType="VARCHAR2" prompt="AOPS Number" viewName="ODEBillDocSearchVO" viewAttr="AopsNumber" maximumLength="24" queryable="false" userCustomizable="true" selectiveSearchCriteria="false" rendered="false"/>
+                        <oa:messageStyledText id="DeliveryMethod" dataType="VARCHAR2" prompt="Delivery Method" viewName="ODEBillDocSearchVO" viewAttr="DeliveryMethod" maximumLength="150" queryable="false" userCustomizable="true" sortState="no" initSortSeq="none"/>
+                        <oa:messageStyledText id="CustDocId" dataType="NUMBER" prompt="Customer Doc ID" viewName="ODEBillDocSearchVO" viewAttr="CustDocId" maximumLength="22" queryable="true" userCustomizable="true" selectiveSearchCriteria="true" destination=""/>
+                        <oa:messageStyledText id="CustAccountId" dataType="NUMBER" prompt="Customer Account" viewName="ODEBillDocSearchVO" viewAttr="CustAccountId" maximumLength="15" queryable="false" userCustomizable="true" destination="" rendered="false"/>
+                        <oa:messageStyledText id="ParentDocId" dataType="NUMBER" prompt="Parent Document Id" viewName="ODEBillDocSearchVO" viewAttr="ParentDocId" maximumLength="22" queryable="true" userCustomizable="true" rendered="false"/>
+                        <oa:switcher id="CustDocSwitcher" viewName="ODEBillDocSearchVO" viewAttr="Ebilldelvmethod" prompt="EBill Main" rendered="false">
+                           <ui:case name="Y">
+                              <oa:image id="Y" destination="OA.jsp?page=/od/oracle/apps/xxcrm/cdh/ebl/eblmain/webui/ODEBillMainPG&amp;custAccountId={@CustAccountId}&amp;custDocId={@CustDocId}&amp;deliveryMethod={@DeliveryMethod}&amp;retainAM=Y&amp;addBreadCrumb=Y" source="/OA_MEDIA/updateicon_enabled.gif"/>
+                           </ui:case>
+                           <ui:case name="N">
+                              <oa:image id="N" source="/OA_MEDIA/updateicon_disabled.gif"/>
+                           </ui:case>
+                        </oa:switcher>
+                        <oa:messageLovInput id="customernumber" externalListOfValues="/od/oracle/apps/xxcrm/cdh/ebl/lov/webui/ODEBillDocSearchCopyLOVRN" prompt="Customer Number" queryable="false" viewName="ODEBillDocSearchVO" viewAttr="PCustNumber">
+                           <lovMappings>
+                              <lovMap id="lovMap1" lovItem="Customenumber" resultTo="customernumber" criteriaFrom="customernumber"/>
+                              <lovMap id="lovMap2" lovItem="custacctid" resultTo="copyCustDocId"/>
+                           </lovMappings>
+                        </oa:messageLovInput>
+                        <oa:submitButton id="copy" text="Copy" prompt="Copy" disabled="${oa.current.Ebillcopy}">
+                           <ui:primaryClientAction>
+                              <ui:firePartialAction event="copy">
+                                 <ui:parameters>
+                                    <ui:parameter key="p_cust_doc_id" value="${oa.current.CustDocId}"/>
+                                    <ui:parameter key="p_cust_acct_id" value="${oa.current.CustAccountId}"/>
+                                    <ui:parameter key="p_dcust_acct_id" value="${oa.current.PCustAccountId}"/>
+                                 </ui:parameters>
+                              </ui:firePartialAction>
+                           </ui:primaryClientAction>
+                        </oa:submitButton>
+                        <oa:formValue id="copyCustDocId" viewName="ODEBillDocSearchVO" viewAttr="PCustAccountId"/>
+                     </ui:contents>
+                  </oa:table>
+               </ui:contents>
+            </oa:query>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

@@ -1,0 +1,41 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===========================================================================+
+-- |                  Office Depot - VPS Project                               |
+-- |                         
+-- +===========================================================================+
+-- | Name        : XX_CDH_VPS_CUSTOMER_STG_S.seq                               |
+-- | Description :                                                             |
+-- | File to create sequence for vps customer project,                         |
+-- | Table: XX_CDH_VPS_CUSTOMER_STG.                                           |
+-- |                                                                           |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author        Remarks               	               |
+-- |======== =========== ============= ========================================|
+-- |DRAFT 1A 13-JUN-2017 Thejaswini Rajula      Initial draft version          |
+-- |                                                                           |
+-- |                                                                           |
+-- |                                                                           |
+-- +===========================================================================+
+
+-- ----------------------------------------------------------------------------
+-- Create Custom Sequence XX_CDH_VPS_CUSTOMER_STG_S
+-- ----------------------------------------------------------------------------
+BEGIN
+  EXECUTE IMMEDIATE 'DROP SEQUENCE XXCRM.XX_CDH_VPS_CUSTOMER_STG_S';
+EXCEPTION
+  WHEN OTHERS THEN NULL;
+END;
+/
+
+CREATE SEQUENCE XXCRM.XX_CDH_VPS_CUSTOMER_STG_S 
+INCREMENT BY 1 
+START WITH 1 
+NOMAXVALUE
+NOCYCLE NOCACHE NOORDER
+/

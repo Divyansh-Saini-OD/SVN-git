@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXHRCRM" description="OD: HR CRM Prevalidation" Version="1.0">
+<parameters/>
+<dataQuery>
+<sqlStatement name="Q_ENTITY_CHK">
+<![CDATA[
+SELECT 'Value Set' as ENTITY_TYPE,'XX_CRM_HRCRM_PERSON' as ENTITY_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                      ELSE 'N'
+                                        END as DOES_EXIST
+FROM  fnd_flex_value_sets FFV
+WHERE FFV.flex_value_set_name = 'XX_CRM_HRCRM_PERSON'
+UNION ALL
+SELECT 'The profile OD: HRCRM Synchronization debug flag ' as ENTITY_TYPE,'XX_HRCRM_SYNC_DEBUG' as ENTITY_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                       ELSE 'N'
+                                        END as DOES_EXIST
+FROM  fnd_profile_options_tl FPO
+WHERE FPO.profile_option_name = 'XX_HRCRM_SYNC_DEBUG'
+UNION ALL
+SELECT 'The profile OD: CRM Go Live Date DD-MON-YYYY (Release 1) 'as ENTITY_TYPE,'XX_CRM_GO_LIVE_DATE_R1' as ENTITY_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                  ELSE 'N'
+                                                                    END as DOES_EXIST
+FROM  fnd_profile_options_tl FPO
+WHERE FPO.profile_option_name = 'XX_CRM_GO_LIVE_DATE_R1'
+UNION ALL
+SELECT 'The lookup OD_OPERATING_UNIT 'as ENTITY_TYPE,'OD_OPERATING_UNIT' as ENTITY_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                      ELSE 'N'
+                                        END as DOES_EXIST
+FROM  fnd_lookup_types FLT
+WHERE FLT.lookup_type = 'OD_OPERATING_UNIT'
+UNION ALL
+SELECT 'The lookup OD_OPERATING_UNIT values 'as ENTITY_TYPE,'OD_OPERATING_UNIT' as ENTITY_NAME,CASE COUNT(1) WHEN 2 THEN 'Y'
+                                                      ELSE 'N'
+                                        END as DOES_EXIST
+FROM   fnd_lookup_values FLV
+       WHERE  FLV.lookup_type = 'OD_OPERATING_UNIT'
+       AND    FLV.end_date_active IS NULL
+       AND    FLV.enabled_flag = 'Y'
+       AND    FLV.lookup_code IN (SELECT name
+                                  FROM  hr_operating_units HOU
+                                  WHERE HOU.date_to IS NULL
+                                  )
+UNION ALL								  
+SELECT 'Sales credit type'as ENTITY_TYPE,'Quota Sales Credit' as ENTITY_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                      ELSE 'N'
+                                        END as DOES_EXIST
+FROM  oe_sales_credit_types OSC
+WHERE OSC.name = 'Quota Sales Credit'
+AND   OSC.enabled_flag = 'Y'
+UNION ALL		
+SELECT 'Role Code' as ENTITY_TYPE,'VP' as ENTITY_NAME,
+                       CASE COUNT(1) WHEN 0 THEN 'N'
+                                     ELSE 'Y'
+                        END as DOES_EXIST
+FROM   jtf_rs_roles_b_dfv JRRBD
+      ,jtf_rs_roles_b JRRB 
+WHERE  JRRBD.od_role_code        = 'VP'
+AND    JRRBD.row_id              = JRRB.rowid
+AND    NVL(JRRB.active_flag,'N') = 'Y'		                                  
+]]>
+</sqlStatement>
+<sqlStatement name="Q_GRP_CHK">
+<![CDATA[
+SELECT 'The group OD_SALES_ADMIN_GRP 'as SALES_GROUP,'OD_SALES_ADMIN_GRP' as GROUP_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                      ELSE 'N'
+                                        END as DOES_EXIST
+FROM  jtf_rs_groups_vl JRG
+WHERE JRG.group_name = 'OD_SALES_ADMIN_GRP'
+UNION ALL
+SELECT 'The group OD_PAYMENT_ANALYST_GRP 'as SALES_GROUP,'OD_PAYMENT_ANALYST_GRP' as GROUP_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                          ELSE 'N'
+                                            END as DOES_EXIST
+FROM  jtf_rs_groups_vl JRG
+WHERE JRG.group_name = 'OD_PAYMENT_ANALYST_GRP'
+UNION ALL
+SELECT 'The group OD_SUPPORT_GRP 'as SALES_GROUP,'OD_SUPPORT_GRP' as GROUP_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                          ELSE 'N'
+                                            END as DOES_EXIST
+FROM  jtf_rs_groups_vl JRG
+WHERE JRG.group_name = 'OD_SUPPORT_GRP'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_DFF_CHK">
+<![CDATA[
+SELECT 'Additional Assignment Details ' as  DFF_TITLE,'PER_ASSIGNMENTS' as DFF_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  fnd_descriptive_flexs FDF
+WHERE FDF.application_table_name = 'PER_ALL_ASSIGNMENTS_F'
+AND   FDF.descriptive_flexfield_name = 'PER_ASSIGNMENTS'
+UNION ALL
+SELECT 'CRM Specific Resources Additional Information 'as  DFF_TITLE,'JTF_RS_RESOURCE_EXTNS' as DFF_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  fnd_descriptive_flexs FDF
+WHERE FDF.application_table_name = 'JTF_RS_RESOURCE_EXTNS'
+AND   FDF.descriptive_flexfield_name = 'JTF_RS_RESOURCE_EXTNS'
+UNION ALL
+SELECT 'Resource, Group, Team and Roles Additional Information ' as  DFF_TITLE,'JTF_RS_ROLE_RELATIONS' as DFF_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  fnd_descriptive_flexs FDF
+WHERE FDF.application_table_name = 'JTF_RS_ROLE_RELATIONS'
+AND   FDF.descriptive_flexfield_name = 'JTF_RS_ROLE_RELATIONS'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_DFF_CNTXT_CHK">
+<![CDATA[
+SELECT 'Additional Assignment Details ' as  DFF_TITLE,'Global Data Elements ' as CONTEXT_CODE,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  fnd_descr_flex_contexts FDF
+WHERE FDF.descriptive_flexfield_name = 'PER_ASSIGNMENTS'
+AND   FDF.descriptive_flex_context_code = 'Global Data Elements'
+AND   FDF.enabled_flag = 'Y'
+UNION ALL
+SELECT 'CRM Specific Resources Additional Information 'as  DFF_TITLE,'Global Data Elements 'as CONTEXT_CODE,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  fnd_descr_flex_contexts FDF
+WHERE FDF.descriptive_flexfield_name = 'JTF_RS_RESOURCE_EXTNS'
+AND   FDF.descriptive_flex_context_code = 'Global Data Elements'
+AND   FDF.enabled_flag = 'Y'
+UNION ALL
+SELECT 'Resource, Group, Team and Roles Additional Information ' as  DFF_TITLE,'Global Data Elements 'as CONTEXT_CODE,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  fnd_descr_flex_contexts FDF
+WHERE FDF.descriptive_flexfield_name = 'JTF_RS_ROLE_RELATIONS'
+AND   FDF.descriptive_flex_context_code = 'Global Data Elements'
+AND   FDF.enabled_flag = 'Y'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_DFF_COLMN_CHK">
+<![CDATA[
+SELECT 'Additional Assignment Details' as  DFF_TITLE,'Global Data Elements' as CONTEXT_CODE,'Job Effective Date'as SEGMENT_NAME,'ASS_ATTRIBUTE9' as COLUMN_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  fnd_descr_flex_column_usages FDF
+WHERE FDF.descriptive_flexfield_name = 'PER_ASSIGNMENTS'
+AND   FDF.descriptive_flex_context_code = 'Global Data Elements'
+AND   FDF.application_column_name = 'ASS_ATTRIBUTE9'
+AND   FDF.enabled_flag = 'Y'
+UNION ALL
+SELECT 'Additional Assignment Details' as  DFF_TITLE,'Global Data Elements' as CONTEXT_CODE,'Job Entry Date'as SEGMENT_NAME,'ASS_ATTRIBUTE10' as COLUMN_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  fnd_descr_flex_column_usages FDF
+WHERE FDF.descriptive_flexfield_name = 'PER_ASSIGNMENTS'
+AND   FDF.descriptive_flex_context_code = 'Global Data Elements'
+AND   FDF.application_column_name = 'ASS_ATTRIBUTE10'
+AND   FDF.enabled_flag = 'Y'
+UNION ALL
+SELECT 'CRM Specific Resources Additional Information' as  DFF_TITLE,'Global Data Elements' as CONTEXT_CODE,'Job Code Effectivity Date'as SEGMENT_NAME,'ATTRIBUTE14' as COLUMN_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  fnd_descr_flex_column_usages FDF
+WHERE FDF.descriptive_flexfield_name = 'JTF_RS_RESOURCE_EXTNS'
+AND   FDF.descriptive_flex_context_code = 'Global Data Elements'
+AND   FDF.application_column_name = 'ATTRIBUTE14'
+AND   FDF.enabled_flag = 'Y'
+UNION ALL
+SELECT 'CRM Specific Resources Additional Information' as  DFF_TITLE,'Global Data Elements' as CONTEXT_CODE,'Supervisor Effectivity Date'as SEGMENT_NAME,'ATTRIBUTE15' as COLUMN_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  fnd_descr_flex_column_usages FDF
+WHERE FDF.descriptive_flexfield_name = 'JTF_RS_RESOURCE_EXTNS'
+AND   FDF.descriptive_flex_context_code = 'Global Data Elements'
+AND   FDF.application_column_name = 'ATTRIBUTE15'
+AND   FDF.enabled_flag = 'Y'
+UNION ALL
+SELECT 'Resource, Group, Team and Roles Additional Information'as  DFF_TITLE,'Global Data Elements' as CONTEXT_CODE,'Bonus_Eligibility_Date'as SEGMENT_NAME,'ATTRIBUTE14' as COLUMN_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  fnd_descr_flex_column_usages FDF
+WHERE FDF.descriptive_flexfield_name = 'JTF_RS_ROLE_RELATIONS'
+AND   FDF.descriptive_flex_context_code = 'Global Data Elements'
+AND   FDF.application_column_name = 'ATTRIBUTE14'
+AND   FDF.enabled_flag = 'Y'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PKG_CHK">
+<![CDATA[
+SELECT 'Package Specification'as ENTITY_TYPE,'XX_CRM_HRCRM_SYNC_PKG.pks' as ENTITY_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_CRM_HRCRM_SYNC_PKG'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID' 
+AND   DBO.owner       = 'APPS' 
+UNION ALL
+SELECT 'Package Body'as ENTITY_TYPE,'XX_CRM_HRCRM_SYNC_PKG.pkb' as ENTITY_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_CRM_HRCRM_SYNC_PKG'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID' 
+AND   DBO.owner       = 'APPS'
+UNION ALL
+SELECT 'Package Specification'as ENTITY_TYPE,'XX_JTF_RS_ROLE_RELATE_PUB.pks' as ENTITY_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_RS_ROLE_RELATE_PUB'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID' 
+AND   DBO.owner       = 'APPS'
+UNION ALL
+SELECT 'Package Body'as ENTITY_TYPE,'XX_JTF_RS_ROLE_RELATE_PUB.pkb' as ENTITY_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_RS_ROLE_RELATE_PUB'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID' 
+AND   DBO.owner       = 'APPS'
+UNION ALL
+SELECT 'Package Specification'as ENTITY_TYPE,'XX_JTF_RS_GRP_MEMBERSHIP_PUB.pks' as ENTITY_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_RS_GRP_MEMBERSHIP_PUB'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID' 
+AND   DBO.owner       = 'APPS' 
+UNION ALL
+SELECT 'Package Body'as ENTITY_TYPE,'XX_JTF_RS_GRP_MEMBERSHIP_PUB.pkb' as ENTITY_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_RS_GRP_MEMBERSHIP_PUB'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID' 
+AND   DBO.owner       = 'APPS'
+UNION ALL
+SELECT 'Package Specification'as ENTITY_TYPE,'XX_JTF_RS_GROUPS_PUB.pks' as ENTITY_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_RS_GROUPS_PUB'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID' 
+AND   DBO.owner       = 'APPS' 
+UNION ALL
+SELECT 'Package Body'as ENTITY_TYPE,'XX_JTF_RS_GROUPS_PUB.pkb' as ENTITY_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_RS_GROUPS_PUB'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID' 
+AND   DBO.owner       = 'APPS'
+UNION ALL
+SELECT 'Package Specification'as ENTITY_TYPE,'XX_TM_RM_HIERARCHY_REPORT_PKG.pks' as ENTITY_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_TM_RM_HIERARCHY_REPORT_PKG'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID' 
+AND   DBO.owner       = 'APPS' 
+UNION ALL
+SELECT 'Package Body'as ENTITY_TYPE,'XX_TM_RM_HIERARCHY_REPORT_PKG.pkb' as ENTITY_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_TM_RM_HIERARCHY_REPORT_PKG'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID' 
+AND   DBO.owner       = 'APPS'
+UNION ALL
+SELECT 'Package Specification'as ENTITY_TYPE,'XX_TM_RM_RESOURCE_GROUPS_PKG.pks' as ENTITY_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_TM_RM_RESOURCE_GROUPS_PKG'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID' 
+AND   DBO.owner       = 'APPS' 
+UNION ALL
+SELECT 'Package Body'as ENTITY_TYPE,'XX_TM_RM_RESOURCE_GROUPS_PKG.pkb' as ENTITY_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_TM_RM_RESOURCE_GROUPS_PKG'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID' 
+AND   DBO.owner       = 'APPS'
+UNION ALL
+SELECT 'Package Specification'as ENTITY_TYPE,'XX_CRM_HRCRM_CLEANSE_PKG.pks' as ENTITY_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_CRM_HRCRM_CLEANSE_PKG'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID' 
+AND   DBO.owner       = 'APPS' 
+UNION ALL
+SELECT 'Package Body'as ENTITY_TYPE,'XX_CRM_HRCRM_CLEANSE_PKG.pkb' as ENTITY_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_CRM_HRCRM_CLEANSE_PKG'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID' 
+AND   DBO.owner       = 'APPS'
+UNION ALL
+SELECT 'Package Specification'as ENTITY_TYPE,'XX_CRM_HRCRM_UPDATE_BED_PKG.pks' as ENTITY_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_CRM_HRCRM_UPDATE_BED_PKG'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID' 
+AND   DBO.owner       = 'APPS' 
+UNION ALL
+SELECT 'Package Body'as ENTITY_TYPE,'XX_CRM_HRCRM_UPDATE_BED_PKG.pkb' as ENTITY_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_CRM_HRCRM_UPDATE_BED_PKG'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID' 
+AND   DBO.owner       = 'APPS'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CONCPGM_CHK">
+<![CDATA[
+SELECT 'OD: CRM HR Synchronization Program' as CONC_PRGM_NAME,'XXCRMHRCRMCONV' as SHORT_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  fnd_concurrent_programs FCP
+WHERE FCP.concurrent_program_name = 'XXCRMHRCRMCONV'
+AND   FCP.enabled_flag = 'Y'
+UNION ALL
+SELECT 'OD:RM Hierarchy Report' as CONC_PRGM_NAME,'XXTMRMHIERREPORT' as SHORT_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  fnd_concurrent_programs FCP
+WHERE FCP.concurrent_program_name = 'XXTMRMHIERREPORT'
+AND   FCP.enabled_flag = 'Y'
+UNION ALL
+SELECT 'OD: RM Resource Groups Report' as CONC_PRGM_NAME,'XXCRMRMGROUP' as SHORT_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  fnd_concurrent_programs FCP
+WHERE FCP.concurrent_program_name = 'XXCRMRMGROUP'
+AND   FCP.enabled_flag = 'Y'
+UNION ALL
+SELECT 'OD: CRM HRCRM Cleanse Program' as CONC_PRGM_NAME,'XXCRMHRCRMCLEAN' as SHORT_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  fnd_concurrent_programs FCP
+WHERE FCP.concurrent_program_name = 'XXCRMHRCRMCLEAN'
+AND   FCP.enabled_flag = 'Y'
+UNION ALL
+SELECT 'OD:CRM HRCRM Update BED Program' as CONC_PRGM_NAME,'XXCRMHRCRMUPDTBED' as SHORT_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                                 ELSE 'N'
+                                                                   END as DOES_EXIST
+FROM  fnd_concurrent_programs FCP
+WHERE FCP.concurrent_program_name = 'XXCRMHRCRMUPDTBED'
+AND   FCP.enabled_flag = 'Y'
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_ENTITY_CHK" source="Q_ENTITY_CHK">
+<element name="ENTITY_TYPE" value="ENTITY_TYPE" />
+<element name="ENTITY_NAME" value="ENTITY_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_GRP_CHK" source="Q_GRP_CHK">
+<element name="SALES_GROUP" value="SALES_GROUP" />
+<element name="GROUP_NAME" value="GROUP_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_DFF_CHK" source="Q_DFF_CHK">
+<element name="DFF_TITLE" value="DFF_TITLE" />
+<element name="DFF_NAME" value="DFF_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_DFF_CNTXT_CHK" source="Q_DFF_CNTXT_CHK">
+<element name="DFF_TITLE" value="DFF_TITLE" />
+<element name="CONTEXT_CODE" value="CONTEXT_CODE" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_DFF_COLMN_CHK" source="Q_DFF_COLMN_CHK">
+<element name="DFF_TITLE" value="DFF_TITLE" />
+<element name="CONTEXT_CODE" value="CONTEXT_CODE" />
+<element name="SEGMENT_NAME" value="SEGMENT_NAME" />
+<element name="COLUMN_NAME" value="COLUMN_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_PKG_CHK" source="Q_PKG_CHK">
+<element name="ENTITY_TYPE" value="ENTITY_TYPE" />
+<element name="ENTITY_NAME" value="ENTITY_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_CONCPGM_CHK" source="Q_CONCPGM_CHK">
+<element name="CONC_PRGM_NAME" value="CONC_PRGM_NAME" />
+<element name="SHORT_NAME" value="SHORT_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+</dataStructure>
+</dataTemplate>
+

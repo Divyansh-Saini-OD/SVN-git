@@ -1,0 +1,606 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!--
+Subversion Info:
+$HeadURL$
+$Rev$
+$Date$
+-->
+<oa:stackLayout xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1566" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$" amDefName="od.oracle.apps.xxcrm.customer.account.server.ODCustomerAccountSetupRequestAM" scope="" standalone="true" controllerClass="od.oracle.apps.xxcrm.customer.account.webui.ODAccountSetupCO">
+   <ui:contents>
+      <oa:header id="RequestLogTableRN" text="Customer Account Setup Request Log Table">
+         <ui:contents>
+            <oa:spacer id="Spacer01" height="10"/>
+            <oa:rawText id="CustomerExists"/>
+            <oa:flowLayout id="ButtonFlow">
+               <ui:contents>
+                  <oa:submitButton id="AddNewRequestRow" cellNoWrapFormat="true" comment="Add New Request Row" prompt="Add New Request Row" shortDesc="Add New Request Row" hAlign="end" rendered="${oa.ODAccountSetupButtonsPVO.AddNewRequestRowRendered}">
+                     <ui:primaryClientAction>
+                        <ui:firePartialAction>
+                           <ui:parameters>
+                              <ui:parameter key="AcctReqEvent" value="AddNewRequestRow"/>
+                           </ui:parameters>
+                        </ui:firePartialAction>
+                     </ui:primaryClientAction>
+                  </oa:submitButton>
+                  <oa:submitButton id="CopyRequestRow" cellNoWrapFormat="true" comment="Copy Request Row" prompt="Copy Request Row" shortDesc="Copy Request Row" hAlign="end" rendered="${oa.ODAccountSetupButtonsPVO.CopyRequestRowRendered}">
+                     <ui:primaryClientAction>
+                        <ui:firePartialAction>
+                           <ui:parameters>
+                              <ui:parameter key="AcctReqEvent" value="CopyRequestRow"/>
+                              <ui:parameter key="AccReqSelectedId" value="${oa.current.RequestId}"/>
+                           </ui:parameters>
+                        </ui:firePartialAction>
+                     </ui:primaryClientAction>
+                  </oa:submitButton>
+                  <oa:submitButton id="ValidateAndSave" cellNoWrapFormat="true" comment="Validate and Save" prompt="Validate and Save" shortDesc="Validate and Save" hAlign="end" rendered="${oa.ODAccountSetupButtonsPVO.ValidateAndSaveRendered}">
+                     <ui:primaryClientAction>
+                        <ui:firePartialAction>
+                           <ui:parameters>
+                              <ui:parameter key="AcctReqEvent" value="ValidateAndSave"/>
+                              <ui:parameter key="AccReqSelectedId" value="${oa.current.RequestId}"/>
+                           </ui:parameters>
+                        </ui:firePartialAction>
+                     </ui:primaryClientAction>
+                  </oa:submitButton>
+                  <oa:submitButton id="SubmitRequest" cellNoWrapFormat="true" comment="Submit Request" prompt="Submit Request" shortDesc="Submit Request" hAlign="end" rendered="${oa.ODAccountSetupButtonsPVO.SubmitRequestRendered}">
+                     <ui:primaryClientAction>
+                        <ui:firePartialAction>
+                           <ui:parameters>
+                              <ui:parameter key="AcctReqEvent" value="SubmitRequest"/>
+                              <ui:parameter key="AccReqSelectedId" value="${oa.current.RequestId}"/>
+                           </ui:parameters>
+                        </ui:firePartialAction>
+                     </ui:primaryClientAction>
+                  </oa:submitButton>
+                  <oa:submitButton id="DeleteRequest" cellNoWrapFormat="true" comment="Delete Request" prompt="Delete Request" shortDesc="Delete Request" hAlign="end" rendered="${oa.ODAccountSetupButtonsPVO.DeleteRequestRendered}">
+                     <ui:primaryClientAction>
+                        <ui:firePartialAction>
+                           <ui:parameters>
+                              <ui:parameter key="AcctReqEvent" value="DeleteRequest"/>
+                              <ui:parameter key="AccReqSelectedId" value="${oa.current.RequestId}"/>
+                           </ui:parameters>
+                        </ui:firePartialAction>
+                     </ui:primaryClientAction>
+                  </oa:submitButton>
+               </ui:contents>
+            </oa:flowLayout>
+            <oa:spacer id="Spacer02" height="10"/>
+            <oa:table id="AccReqTb" width="100%" blockSize="10" shortDesc="Requests" userCustomizable="true" regionName="Request List">
+               <ui:contents>
+                  <oa:messageStyledText id="RequestID" sortState="no" viewName="CustomerAccountSetupRequestVO" viewAttr="RequestId" warnAboutChanges="false" shortDesc="Request ID" userCustomizable="true" prompt="Request ID"/>
+                  <oa:messageStyledText id="CreationDate" sortState="no" viewName="CustomerAccountSetupRequestVO" viewAttr="CreationDate" warnAboutChanges="false" shortDesc="Creation Date" userCustomizable="true" prompt="Creation Date"/>
+                  <oa:messageStyledText id="Status" sortState="no" viewName="CustomerAccountSetupRequestVO" viewAttr="Status" warnAboutChanges="false" shortDesc="Status" userCustomizable="true" prompt="Status"/>
+                  <oa:messageStyledText id="StatusTransitionDate" sortState="no" viewName="CustomerAccountSetupRequestVO" viewAttr="StatusTransitionDate" warnAboutChanges="false" shortDesc="Status Transition Date" userCustomizable="true" prompt="Status Transition Date"/>
+                  <oa:messageStyledText id="AccountNumber" sortState="no" viewName="CustomerAccountSetupRequestVO" viewAttr="AccountNumber" warnAboutChanges="false" shortDesc="Account Number" userCustomizable="true" prompt="Account Number">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="accNumclick">
+                           <ui:parameters>
+                              <ui:parameter key="accrequestID" value="${oa.current.RequestId}"/>
+                              <ui:parameter key="accpartyID" value="${oa.current.PartyId}"/>
+                           </ui:parameters>
+                        </ui:fireAction>
+                     </ui:primaryClientAction>
+                  </oa:messageStyledText>
+               </ui:contents>
+               <ui:tableSelection>
+                  <oa:singleSelection id="ReqIDSelection" viewName="CustomerAccountSetupRequestVO" viewAttr="SelectFlag">
+                     <ui:primaryClientAction>
+                        <ui:firePartialAction>
+                           <ui:parameters>
+                              <ui:parameter key="AcctReqEvent" value="RequestIDSelection"/>
+                              <ui:parameter key="AccReqSelectedId" value="${oa.current.RequestId}"/>
+                           </ui:parameters>
+                        </ui:firePartialAction>
+                     </ui:primaryClientAction>
+                  </oa:singleSelection>
+               </ui:tableSelection>
+            </oa:table>
+            <oa:flowLayout id="TipRN">
+               <ui:contents>
+                  <oa:tip id="TipAccountNumber" text="Only 1 (one) account can be created for a Party"/>
+               </ui:contents>
+            </oa:flowLayout>
+         </ui:contents>
+      </oa:header>
+      <oa:header id="AccountRequestDetailsRN" text="Customer Account Setup Request Views">
+         <ui:contents>
+            <oa:defaultSingleColumn id="SetupSummaryRN" headerDisabled="true">
+               <ui:contents>
+                  <oa:messageChoice id="BillToSite" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="BillToSiteId" prompt="* Select 'Bill To' Site" pickListViewName="HzPuiAddressTableVO" pickListDispAttr="Address" pickListValAttr="PartySiteId" required="no" allowBlankValue="false" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                  <oa:messageChoice id="ShipToSite" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="ShipToSiteId" prompt="Select 'Ship To' Site" pickListViewName="HzPuiAddressTableVO" pickListDispAttr="Address" pickListValAttr="PartySiteId" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="CHANGE_SHIPTO"/>
+                     </ui:primaryClientAction>
+                  </oa:messageChoice>
+                  <oa:tip id="TipShipTo" text="PO Box Addresses are not eligible for Ship to"/>
+                  <oa:tip id="TipReq" text="* Indicates Required Field"/>
+                  <!--Added for Customer Loyalty and Segmentation LOVs -->
+                  <!--<oa:defaultSingleColumn id="SegmentLoyaltyRN" headerDisabled="true">-->
+                  <!--<ui:contents>-->
+                  <oa:messageLovInput id="CustSegmentLovItem" prompt="* Segmentation" queryable="true" selectiveSearchCriteria="true" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="Attribute14" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}">
+                     <lovContents>
+                        <oa:listOfValues id="CustSegmentLOVRN" amDefName="od.oracle.apps.xxcrm.customer.account.server.ODCustomerAccountSetupRequestAM">
+                           <ui:contents>
+                              <oa:table name="CustSegmentLOVRN" id="ODCustomerSegmentationLOVVO" amDefName="od.oracle.apps.xxcrm.customer.account.server.ODCustomerAccountSetupRequestAM">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Meaning" dataType="VARCHAR2" prompt="Segmentation" viewName="ODCustomerSegmentationLOVVO" viewAttr="Meaning" maximumLength="80" queryable="true"/>
+                                    <oa:messageStyledText id="LookupCode" dataType="VARCHAR2" prompt="Segmentation Code" viewName="ODCustomerSegmentationLOVVO" viewAttr="LookupCode" maximumLength="30" queryable="true"/>
+                                 </ui:contents>
+                              </oa:table>
+                           </ui:contents>
+                        </oa:listOfValues>
+                     </lovContents>
+                     <lovMappings><lovMap id="lovMap1" requiredForLOV="false" resultTo="CustSegmentLovItem" lovItem="Meaning" criteriaFrom="CustSegmentLovItem"/>
+                     />
+                     </lovMappings>
+                  </oa:messageLovInput>
+                  <oa:messageLovInput id="CustLoyalLovItem" prompt="Loyalty Type" queryable="true" selectiveSearchCriteria="true" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="Attribute15" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}">
+                     <lovContents>
+                        <oa:listOfValues id="CustLoyaltyLOVRN" amDefName="od.oracle.apps.xxcrm.customer.account.server.ODCustomerAccountSetupRequestAM">
+                           <ui:contents>
+                              <oa:table name="CustLoyaltyLOVRN" id="ODCustomerLoyaltyLOVVO" amDefName="od.oracle.apps.xxcrm.customer.account.server.ODCustomerAccountSetupRequestAM">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="Meaning" dataType="VARCHAR2" prompt="Loyalty" viewName="ODCustomerLoyaltyLOVVO" viewAttr="Meaning" maximumLength="80" queryable="true"/>
+                                    <oa:messageStyledText id="LookupCode" dataType="VARCHAR2" prompt="Loyalty Code" viewName="ODCustomerLoyaltyLOVVO" viewAttr="LookupCode" maximumLength="30" queryable="true"/>
+                                 </ui:contents>
+                              </oa:table>
+                           </ui:contents>
+                        </oa:listOfValues>
+                     </lovContents>
+                     <lovMappings>
+                        <lovMap id="lovMap3" requiredForLOV="false" resultTo="CustLoyalLovItem" lovItem="Meaning" criteriaFrom="CustLoyalLovItem"/>
+                     </lovMappings>
+                  </oa:messageLovInput>
+                  <!--</ui:contents>-->
+                  <!--</oa:defaultSingleColumn>-->
+                  <!--End Customer Loyalty and Segmentation LOVs-->
+               </ui:contents>
+            </oa:defaultSingleColumn>
+         </ui:contents>
+      </oa:header>
+      <oa:hideShowHeader id="SetupContractPricing" disclosed="true" text="Setup, Contracts &amp; Pricing">
+         <ui:contents>
+            <oa:tip id="TipReq" text="* Indicates Required Field"/>
+            <oa:defaultDoubleColumn id="SetupContractPricingContent" headerDisabled="true">
+               <ui:contents>
+                  <oa:messageChoice id="StdContractTemplate" prompt="* Standard Contract Template" pickListDispAttr="TemplateName" pickListValAttr="ContractTemplateId" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="Attribute5" pickListViewName="ODContractTemplatePoplistVO" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="CHANGE_CONT_TEMP"/>
+                     </ui:primaryClientAction>
+                  </oa:messageChoice>
+                  <oa:messageChoice id="PricePlan" prompt="# Price Plan" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="PricePlan" pickListViewName="ODPricePlanLovVO" pickListValAttr="PricePlan" pickListDispAttr="PricePlan" allowBlankValue="false" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}" required="no"/>
+                  <oa:messageChoice id="OffContractCode" viewAttr="OffContractCode" pickListViewDef="od.oracle.apps.xxcrm.customer.account.poplist.server.ODAccountSetupUpOffVO" pickListDispAttr="Meaning" pickListValAttr="Meaning" viewName="ODCustomerAccountSetupRequestDetailsVO" prompt="* Off Contract" readOnly="${oa.ODCdhContractCompPVO.TemplateLockedFlag}"/>
+                  <oa:messageTextInput id="OffContract" prompt="* Off Contract %" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="OffContractPercentage" maximumLength="3" columns="6" dataType="NUMBER" readOnly="${oa.ODCdhContractCompPVO.TemplateLockedFlag}"/>
+                  <oa:messageChoice id="OffWholesaleCode" prompt="* Off Wholesale" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="OffWholesaleCode" readOnly="${oa.ODCdhContractCompPVO.TemplateLockedFlag}" pickListViewDef="od.oracle.apps.xxcrm.customer.account.poplist.server.ODAccountSetupUpOffVO" pickListDispAttr="Meaning" pickListValAttr="Meaning"/>
+                  <oa:messageTextInput id="WholeSale" prompt="* Off Wholesale %" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="WholesalePercentage" maximumLength="3" columns="6" dataType="NUMBER" readOnly="${oa.ODCdhContractCompPVO.TemplateLockedFlag}"/>
+                  <oa:messageTextInput id="XREF" prompt="Cust. Prod. XREF" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="Xref" maximumLength="20" readOnly="${oa.ODContTempCUPVO.ReadOnly}"/>
+                  <oa:messageTextInput id="GPFloor" prompt="* GP Floor %" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="GpFloorPercentage" maximumLength="3" columns="6" dataType="NUMBER" readOnly="${oa.ODCdhContractCompPVO.TemplateLockedFlag}"/>
+                  <oa:messageTextInput id="ParentID" prompt="Parent ID" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="ParentId" maximumLength="8" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                  <oa:messageTextInput id="Comment" dataType="VARCHAR2" prompt="Comment" shortDesc="Comment" rows="4" columns="30" maximumLength="900" vAlign="middle" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="Comments" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                  <oa:messageTextInput id="PricePlanText" prompt="# PricePlan(Free Text)" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="Attribute2" maximumLength="20" columns="20" dataType="VARCHAR2" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}" rendered="${oa.ODCdhContractCompPVO.PriceplanLockedFlag}"/>
+                  <oa:messageTextInput id="TinNumber" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="TinNumber" prompt="TIN Number" shortDesc="TIN Number" readOnly="${oa.ODContTempCUPVO.ReadOnly}"/>
+               </ui:contents>
+            </oa:defaultDoubleColumn>
+            <oa:tip id="TipPricePlan" comment="" text="Price Plan is required" rendered="${oa.ODCdhContractCompPVO.PriceplanMandatoryFlag}"/>
+            <oa:tip id="TipTinNumber" comment="" text="TIN Number must be in 00-0000000 format"/>
+         </ui:contents>
+      </oa:hideShowHeader>
+      <oa:header id="Contracts" text="Contracts">
+         <ui:contents>
+            <oa:flowLayout id="ContractsButtonFlow">
+               <ui:contents>
+                  <oa:submitButton id="AddCustomContract" cellNoWrapFormat="true" comment="Copy Request Row" prompt="Add Custom Contract" shortDesc="Add Custom Contract" hAlign="end" text="Add Custom Contract" rendered="false">
+                     <ui:primaryClientAction>
+                        <ui:firePartialAction id="firePartialAction3">
+                           <ui:parameters>
+                              <ui:parameter key="AcctReqEvent" value="AddCustomContract"/>
+                           </ui:parameters>
+                        </ui:firePartialAction>
+                     </ui:primaryClientAction>
+                  </oa:submitButton>
+                  <oa:submitButton id="DeleteContract" cellNoWrapFormat="true" comment="Copy Request Row" prompt="Delete Contract" shortDesc="Delete Contract" hAlign="end" text="Delete Contract" rendered="false">
+                     <ui:primaryClientAction>
+                        <ui:firePartialAction id="firePartialAction31">
+                           <ui:parameters>
+                              <ui:parameter key="AcctReqEvent" value="DeleteContract"/>
+                           </ui:parameters>
+                        </ui:firePartialAction>
+                     </ui:primaryClientAction>
+                  </oa:submitButton>
+               </ui:contents>
+            </oa:flowLayout>
+            <oa:table id="ContractsTable" width="100%" blockSize="10" shortDesc="Requests" userCustomizable="true" regionName="Request List" rendered="false">
+               <ui:contents>
+                  <oa:messageTextInput id="ContractNumber" sortState="no" warnAboutChanges="false" shortDesc="Contract Number" userCustomizable="true" prompt="Contract Number" viewName="ODCustAcctSetupContractsVO" viewAttr="ContractNumber" columns="30" maximumLength="30" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                  <oa:messageTextInput id="ContractDescription" prompt="Contract Description" shortDesc="Contract Description" viewName="ODCustAcctSetupContractsVO" viewAttr="ContractDescription" maximumLength="100" columns="50" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                  <oa:messageChoice id="Priority" prompt="Priority" shortDesc="Priority" viewName="ODCustAcctSetupContractsVO" viewAttr="Priority" pickListViewDef="od.oracle.apps.xxcrm.customer.account.poplist.server.ODAcctSetupContractPriorityLovVO" pickListViewName="ODAcctSetupContractPriorityLovVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode" required="yes" allowBlankValue="false" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+               </ui:contents>
+               <ui:tableSelection>
+                  <oa:multipleSelection id="ContractMultiSelect" viewName="ODCustAcctSetupContractsVO" viewAttr="SelectFlag"/>
+               </ui:tableSelection>
+            </oa:table>
+         </ui:contents> 
+      </oa:header>         
+      <oa:header id="AssnContracts" text="Contract Template Available Contracts">
+         <ui:contents>
+            <oa:flowLayout id="AssnContractsButtonFlow">
+               <ui:contents>
+                  <oa:submitButton id="AddAssnContract" cellNoWrapFormat="true" comment="Add Assign Contract" prompt="Add Contract" shortDesc="Add Contract" hAlign="end" text="Add Contract" rendered="${oa.ODAccountSetupButtonsPVO.AddCustomContractRendered}">
+                     <ui:primaryClientAction>
+                        <ui:firePartialAction id="firePartialAction33">
+                           <ui:parameters>
+                              <ui:parameter key="AcctReqEvent" value="AddAssnContract"/>
+                           </ui:parameters>
+                        </ui:firePartialAction>
+                     </ui:primaryClientAction>
+                  </oa:submitButton>
+                  <oa:submitButton id="DeleteAssnContract" cellNoWrapFormat="true" comment="Delete Assign Contract" prompt="Delete Contract" shortDesc="Delete Contract" hAlign="end" text="Delete Contract" rendered="${oa.ODAccountSetupButtonsPVO.DeleteContractRendered}">
+                     <ui:primaryClientAction>
+                        <ui:firePartialAction id="firePartialAction331">
+                           <ui:parameters>
+                              <ui:parameter key="AcctReqEvent" value="DeleteAssnContract"/>
+                           </ui:parameters>
+                        </ui:firePartialAction>
+                     </ui:primaryClientAction>
+                  </oa:submitButton>
+               </ui:contents>
+            </oa:flowLayout>            
+            <oa:table id="ContTempContracts" width="100%" readOnly="${oa.ODAccountSetupButtonsPVO.DeleteContractRendered}">
+               <ui:contents>
+                  <oa:messageTextInput id="ContractNumber1" sortState="no" warnAboutChanges="false" shortDesc="Contract Number" userCustomizable="true" prompt="Contract Number" viewName="OdCdhAcctTemplateContractsVO" viewAttr="ContractNumber" columns="30" maximumLength="30" readOnly="${oa.ODCdhContractCompPVO.AssncontrLockedFlag}"/>
+                  <oa:messageTextInput id="ContractDescription1" prompt="Contract Description" shortDesc="Contract Description" viewName="OdCdhAcctTemplateContractsVO" viewAttr="ContractDescription" maximumLength="100" columns="50" readOnly="${oa.ODCdhContractCompPVO.AssncontrLockedFlag}"/>
+                  <oa:messageChoice id="Priority1" prompt="Priority" shortDesc="Priority" viewName="OdCdhAcctTemplateContractsVO" viewAttr="Priority" pickListViewDef="od.oracle.apps.xxcrm.customer.account.poplist.server.ODAcctSetupContractPriorityLovVO" pickListViewName="ODAcctSetupContractPriorityLovVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode" allowBlankValue="false" required="yes" readOnly="${oa.ODCdhContractCompPVO.AssncontrLockedFlag}"/>
+               </ui:contents>   
+               <ui:tableSelection>
+                  <oa:multipleSelection id="ContTempContractsMultiSelect" viewName="OdCdhAcctTemplateContractsVO" viewAttr="SelectFlag" rendered="true"/>
+               </ui:tableSelection>
+            </oa:table>               
+            <!--Added for Contract Compiance Project -->
+            <oa:table id="UniversalPricing" text="Universal Program Codes for this Contract" width="100%">
+               <ui:contents>
+                  <oa:messageStyledText id="ProgramCode" viewName="ODCdhContractProgCodesVO" viewAttr="ProgramCode" prompt="Program Code"/>
+                  <oa:messageStyledText id="Discount" viewName="ODCdhContractProgCodesVO" viewAttr="DiscountRate" prompt="Discount"/>
+                  <oa:messageCheckBox id="ExcludeUP" viewName="ODCdhContractProgCodesVO" viewAttr="ExcludeUnivPricing" text="Exclude Universal Pricing" prompt="Exclude Universal Pricing" readOnly="true"/>
+               </ui:contents>
+            </oa:table>
+            <!--End - Contract Compiance Project -->
+         </ui:contents>
+      </oa:header>
+      <oa:hideShowHeader id="CustomizedFields" disclosed="true" text="Customized Fields">
+         <ui:contents>
+            <oa:rowLayout id="CustomizedFieldsContent" vAlign="top">
+               <ui:contents>
+                  <oa:contentContainer id="CustomerAccountingFields" text="Customer Accounting Fields">
+                     <ui:contents>
+                        <oa:tip id="TipReq" text="* Indicates Required Field"/>
+                        <oa:defaultSingleColumn id="CustAccFldColumnRN" headerDisabled="true">
+                           <ui:contents>
+                              <oa:messageChoice id="POValidated" prompt="* Purchase Order(PO)" pickListViewDef="od.oracle.apps.xxcrm.customer.account.poplist.server.ODDefaultPageDefLovVO" pickListViewName="ODDefaultPageDefLovVO" pickListValAttr="LookupCode" pickListDispAttr="Meaning" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="PoValidated" allowBlankValue="false" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                              <oa:messageChoice id="ReleaseValidated" prompt="* Release" pickListViewDef="od.oracle.apps.xxcrm.customer.account.poplist.server.ODDefaultPageDefLovVO" pickListViewName="ODDefaultPageDefLovVO" pickListValAttr="LookupCode" pickListDispAttr="Meaning" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="ReleaseValidated" allowBlankValue="false" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                              <oa:messageChoice id="DepartmentValidated" prompt="* Cost Center" pickListViewDef="od.oracle.apps.xxcrm.customer.account.poplist.server.ODAcctSetupDepartmentValidatedLovVO" pickListViewName="ODAcctSetupDepartmentValidatedLovVO" pickListValAttr="LookupCode" pickListDispAttr="Meaning" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="DepartmentValidated" allowBlankValue="false" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                              <oa:messageChoice id="DesktopValidated" prompt="* Desktop" pickListViewDef="od.oracle.apps.xxcrm.customer.account.poplist.server.ODDefaultPageDefLovVO" pickListViewName="ODDefaultPageDefLovVO" pickListValAttr="LookupCode" pickListDispAttr="Meaning" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="DesktopValidated" allowBlankValue="false" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                           </ui:contents>
+                        </oa:defaultSingleColumn>
+                     </ui:contents>
+                  </oa:contentContainer>
+                  <oa:cellFormat id="SpacerCust01" height="1">
+                     <ui:contents>
+                        <oa:spacer id="Separator01" width="25" height="5"/>
+                     </ui:contents>
+                  </oa:cellFormat>
+                  <oa:contentContainer id="OrderEntryFieldLabels" text="Order Entry Field Labels">
+                     <ui:contents>
+                        <oa:defaultSingleColumn id="OrdEntFldLblSingleCol" headerDisabled="true">
+                           <ui:contents>
+                              <oa:messageTextInput id="POHeader" prompt="Purchase Order(PO)" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="PoHeader" columns="7" maximumLength="7" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                              <oa:messageTextInput id="ReleaseHeader" prompt="Release" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="ReleaseHeader" columns="7" maximumLength="7" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                              <oa:messageTextInput id="DepartmentHeader" prompt="Cost Center" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="DepartmentHeader" columns="7" maximumLength="7" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                              <oa:messageTextInput id="DesktopHeader" prompt="Desktop" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="DesktopHeader" columns="7" maximumLength="7" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                           </ui:contents>
+                        </oa:defaultSingleColumn>
+                     </ui:contents>
+                  </oa:contentContainer>
+                  <oa:cellFormat id="SpacerCust02" height="1">
+                     <ui:contents>
+                        <oa:spacer id="Separator02" width="25" height="5"/>
+                     </ui:contents>
+                  </oa:cellFormat>
+                  <oa:contentContainer id="Defaults" text="Defaults">
+                     <ui:contents>
+                        <oa:defaultDoubleColumn id="DefaultsDoubleCol" headerDisabled="true">
+                           <ui:contents>
+                              <oa:messageCheckBox id="AFax" prompt="A Fax" defaultValue="Y" checkedValue="Y" unCheckedValue="N" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="Afax" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                              <oa:messageCheckBox id="FreightCharge" prompt="Freight Charge" defaultValue="N" checkedValue="Y" unCheckedValue="N" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="FreightCharge" readOnly="${oa.ODCdhContractCompPVO.TemplateLockedFlag}"/>
+                              <oa:messageCheckBox id="FaxOrder" prompt="Fax Order" defaultValue="N" checkedValue="Y" unCheckedValue="N" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="FaxOrder" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                              <oa:messageCheckBox id="Substitutions" prompt="Substitutions" defaultValue="Y" checkedValue="Y" unCheckedValue="N" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="Substitutions" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                              <oa:messageCheckBox id="BackOrders" prompt="Back Orders" defaultValue="Y" checkedValue="Y" unCheckedValue="N" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="BackOrders" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                           </ui:contents>
+                        </oa:defaultDoubleColumn>
+                     </ui:contents>
+                  </oa:contentContainer>
+               </ui:contents>
+            </oa:rowLayout>
+         </ui:contents>
+      </oa:hideShowHeader>
+      <oa:hideShowHeader id="DocumentRequests" disclosed="true" text="Document Requests">
+         <ui:contents>
+            <oa:rowLayout id="DocumentRequestContent" vAlign="top">
+               <ui:contents>
+                  <oa:contentContainer id="DeliveryDocumentsRN" text="Delivery Document">
+                     <ui:contents>
+                        <oa:defaultDoubleColumn id="DeliveryDocumentDblRN" headerDisabled="true">
+                           <ui:contents>
+                              <oa:messageCheckBox id="DisplayBackOrder" prompt="Display Back Orders" defaultValue="Y" checkedValue="Y" unCheckedValue="N" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="DisplayBackOrder" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                              <oa:messageCheckBox id="PrintInvoice" prompt="Print Invoice" defaultValue="Y" checkedValue="Y" unCheckedValue="N" checked="false" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="PrintInvoice" readOnly="true"/>
+                              <oa:messageCheckBox id="DisplayPurchaseOrder" prompt="Display Purchase Orders" defaultValue="Y" checkedValue="Y" unCheckedValue="N" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="DisplayPurchaseOrder" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                              <oa:messageCheckBox id="DisplayPaymentMethod" prompt="Display Payment Method" defaultValue="N" checkedValue="Y" unCheckedValue="N" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="DisplayPaymentMethod" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                              <oa:messageCheckBox id="DisplayPrices" prompt="Display Prices" defaultValue="N" checkedValue="Y" unCheckedValue="N" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="DisplayPrices" checked="true" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                           </ui:contents>
+                        </oa:defaultDoubleColumn>
+                     </ui:contents>
+                  </oa:contentContainer>
+                  <oa:cellFormat id="SpacerDocReq" height="1">
+                     <ui:contents>
+                        <oa:spacer id="SpacerDocReqCell" width="25" height="5"/>
+                     </ui:contents>
+                  </oa:cellFormat>
+                  <oa:contentContainer id="PaymentDetails">
+                     <ui:contents>
+                        <oa:defaultSingleColumn id="DocReqSingleCol" headerDisabled="true">
+                           <ui:contents>
+                              <oa:messageChoice id="PaymentMethod" prompt="* Payment Method" pickListViewDef="od.oracle.apps.xxcrm.customer.account.poplist.server.ODDocPaymentMethodLovVO" pickListViewName="ODDocPaymentMethodLovVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="PaymentMethod" allowBlankValue="false" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}">
+                                 <ui:primaryClientAction>
+                                    <ui:firePartialAction event="PaymentMethodDD"/>
+                                 </ui:primaryClientAction>
+                              </oa:messageChoice>
+                              <oa:messageTextInput id="ProcurementCard" prompt="Procurement Card" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="ProcurementCard" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                           </ui:contents>
+                        </oa:defaultSingleColumn>
+                     </ui:contents>
+                  </oa:contentContainer>
+               </ui:contents>
+            </oa:rowLayout>
+         </ui:contents>
+      </oa:hideShowHeader>
+      <oa:hideShowHeader id="APContactandSalesContact" disclosed="true" text="AP Contact and Sales Contact">
+         <ui:contents>
+            <oa:tip id="TipAPSalesContact" text="AP Contact phone and email/fax is required for accounts receivable correspondence and collection efforts."/>
+            <oa:rowLayout id="AllContactsRow" width="10%" hAlign="start" vAlign="top">
+               <ui:contents>
+                  <oa:cellFormat id="APContactCell" width="40%" hAlign="start" vAlign="top">
+                     <ui:contents>
+                        <oa:rowLayout id="APContactRow" hAlign="start" vAlign="top">
+                           <ui:contents>
+                              <oa:defaultSingleColumn id="ContactDetails1" text="Accounts Payable Contact">
+                                 <ui:contents>
+                                    <oa:stackLayout id="ContactStackLayout1" adminCustomizable="false">
+                                       <ui:contents>
+                                          <oa:messageComponentLayout id="ContDetailsLayoutAPContact">
+                                             <ui:contents>
+                                                <oa:messageChoice id="APContactDD" prompt="Select Existing Contact" rendered="true" pickListViewName="ODApContactLovVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="Attribute13" allowBlankValue="true" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}">
+                                                   <ui:primaryClientAction>
+                                                      <ui:firePartialAction event="APContactDD"/>
+                                                   </ui:primaryClientAction>
+                                                </oa:messageChoice>
+                                                <oa:messageLayout id="mLSpacerAPfirst">
+                                                   <ui:contents>
+                                                      <oa:spacer id="item112" height="6"/>
+                                                   </ui:contents>
+                                                </oa:messageLayout>
+                                                <oa:messageStyledText id="ORAPContact" prompt="OR" styleClass="OraDataText"/>
+                                                <oa:messageLayout id="mLSpacerAPsecond">
+                                                   <ui:contents>
+                                                      <oa:spacer id="item113" height="6"/>
+                                                   </ui:contents>
+                                                </oa:messageLayout>
+                                                <oa:messageStyledText id="CreateContactAP" prompt="Create New Contact" styleClass="OraDataText"/>
+                                                <oa:messageLayout id="messageLayoutTIP">
+                                                   <ui:contents>
+                                                      <oa:tip id="TIPAPContact" text="Email Address or Fax Number is Mandatory for AP Contact."/>
+                                                   </ui:contents>
+                                                </oa:messageLayout>
+                                                <oa:messageChoice id="PersonPreNameAdjunct1" use="/oracle/apps/ar/hz/attributesets/HzPuiPersonProfile/Prefix" pickListViewName="HzPuiPrefixVO1" pickListDispAttr="Meaning" pickListValAttr="LookupCode" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}" viewName="ODAPContactsVO" viewAttr="PersonPreNameAdjunct"/>
+                                                <oa:messageTextInput id="PersonFirstName1" use="/oracle/apps/ar/hz/attributesets/HzPuiPersonProfile/FirstName" maximumLength="150" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}" viewName="ODAPContactsVO" viewAttr="PersonFirstName" required="no"/>
+                                                <oa:messageTextInput id="PersonMiddleName1" use="/oracle/apps/ar/hz/attributesets/HzPuiPersonProfile/MiddleName" maximumLength="60" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}" viewName="ODAPContactsVO" viewAttr="PersonMiddleName"/>
+                                                <oa:messageTextInput id="PersonLastName1" use="/oracle/apps/ar/hz/attributesets/HzPuiPersonProfile/LastName" maximumLength="150" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}" viewName="ODAPContactsVO" viewAttr="PersonLastName" required="no"/>
+                                                <oa:messageTextInput id="EmailAddress1" use="/oracle/apps/ar/hz/attributesets/HzPuiContactPoint/EmailAddress" viewName="ODAPContactPointEmailVO" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}" viewAttr="EmailAddress" maximumLength="2000"/>
+                                                <oa:messageLayout id="PhoneMessageLayout1" prompt="Phone Number">
+                                                   <ui:contents>
+                                                      <oa:rowLayout id="PhoneRow1">
+                                                         <ui:contents>
+                                                            <oa:cellFormat id="PhoneCountryCell1">
+                                                               <ui:contents>
+                                                                  <oa:messageChoice id="PerPhoneCountryCode1" use="/oracle/apps/ar/hz/attributesets/HzPuiContactPoint/PhoneCountryCode" shortDesc="Phone Country Code" pickListViewName="HzPuiPhoneCountryCodeVO1" pickListDispAttr="Country" pickListValAttr="PhoneCountryCode" required="no" prompt="" viewName="ODAPContactPointPhoneVO" viewAttr="PhoneCountryCode" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                                                               </ui:contents>
+                                                            </oa:cellFormat>
+                                                            <oa:cellFormat id="PhoneAreaCell1">
+                                                               <ui:contents>
+                                                                  <oa:messageTextInput id="PhoneAreaCode11" use="/oracle/apps/ar/hz/attributesets/HzPuiContactPoint/PhoneAreaCode" maximumLength="10" shortDesc="Phone Area Code" required="no" columns="5" prompt="" viewName="ODAPContactPointPhoneVO" viewAttr="PhoneAreaCode" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                                                               </ui:contents>
+                                                            </oa:cellFormat>
+                                                            <oa:cellFormat id="PhoneCell1">
+                                                               <ui:contents>
+                                                                  <oa:messageTextInput id="PhoneNumber11" use="/oracle/apps/ar/hz/attributesets/HzPuiContactPoint/PhoneTelexNumber" maximumLength="40" shortDesc="Phone Number" required="no" columns="12" prompt="" viewName="ODAPContactPointPhoneVO" viewAttr="PhoneNumber" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                                                               </ui:contents>
+                                                            </oa:cellFormat>
+                                                         </ui:contents>
+                                                      </oa:rowLayout>
+                                                   </ui:contents>
+                                                </oa:messageLayout>
+                                                <oa:messageTextInput id="PhoneExtension1" use="/oracle/apps/ar/hz/attributesets/HzPuiContactPoint/PhoneExtension" maximumLength="20" prompt="Phone Ext" viewName="ODAPContactPointPhoneVO" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}" viewAttr="PhoneExtension" columns="8"/>
+                                                <oa:messageLayout id="FaxMessageLayout1" prompt="Fax Number">
+                                                   <ui:contents>
+                                                      <oa:rowLayout id="FaxRow1">
+                                                         <ui:contents>
+                                                            <oa:cellFormat id="FaxCountryCell1">
+                                                               <ui:contents>
+                                                                  <oa:messageChoice id="FaxCountryCode1" shortDesc="Fax Country Code" pickListViewName="HzPuiFaxCountryCodeVO1" pickListDispAttr="Country" pickListValAttr="PhoneCountryCode" prompt="" viewName="ODAPContactPointFaxVO" viewAttr="PhoneCountryCode" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                                                               </ui:contents>
+                                                            </oa:cellFormat>
+                                                            <oa:cellFormat id="FaxAreaCell1">
+                                                               <ui:contents>
+                                                                  <oa:messageTextInput id="FaxAreaCode1" maximumLength="10" shortDesc="Fax Area Code" columns="5" prompt="" viewName="ODAPContactPointFaxVO" viewAttr="PhoneAreaCode" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                                                               </ui:contents>
+                                                            </oa:cellFormat>
+                                                            <oa:cellFormat id="FaxCell1">
+                                                               <ui:contents>
+                                                                  <oa:messageTextInput id="FaxNumber1" maximumLength="40" shortDesc="Fax Number" columns="12" prompt="" viewName="ODAPContactPointFaxVO" viewAttr="PhoneNumber" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                                                               </ui:contents>
+                                                            </oa:cellFormat>
+                                                         </ui:contents>
+                                                      </oa:rowLayout>
+                                                   </ui:contents>
+                                                </oa:messageLayout>
+                                             </ui:contents>
+                                          </oa:messageComponentLayout>
+                                       </ui:contents>
+                                    </oa:stackLayout>
+                                 </ui:contents>
+                              </oa:defaultSingleColumn>
+                           </ui:contents>
+                        </oa:rowLayout>
+                     </ui:contents>
+                  </oa:cellFormat>
+                  <oa:cellFormat id="ContactSpacerCell" rendered="false" hAlign="start">
+                     <ui:contents>
+                        <oa:spacer id="SpacerContact" width="250"/>
+                     </ui:contents>
+                  </oa:cellFormat>
+                  <oa:cellFormat id="SalesContactCell" hAlign="start" vAlign="top">
+                     <ui:contents>
+                        <oa:rowLayout id="SalesContactRow" hAlign="start" vAlign="top">
+                           <ui:contents>
+                              <oa:defaultSingleColumn id="ContactDetails" text="Sales Contact">
+                                 <ui:contents>
+                                    <oa:stackLayout id="ContactStackLayout" adminCustomizable="false">
+                                       <ui:contents>
+                                          <oa:messageComponentLayout id="ContDetailsLayoutSalesContact">
+                                             <ui:contents>
+                                                <oa:messageChoice id="SalesContactDD" prompt="Select Existing Contact" rendered="true" pickListViewName="ODSalesContactLovVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode" viewName="ODCustomerAccountSetupRequestDetailsVO" viewAttr="ApContact" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}" allowBlankValue="true">
+                                                   <ui:primaryClientAction>
+                                                      <ui:firePartialAction event="SalesContactDD"/>
+                                                   </ui:primaryClientAction>
+                                                </oa:messageChoice>
+                                                <oa:messageLayout id="mLSpacerSalesfirst">
+                                                   <ui:contents>
+                                                      <oa:spacer id="item114" height="6"/>
+                                                   </ui:contents>
+                                                </oa:messageLayout>
+                                                <oa:messageStyledText id="ORSalesContact" styleClass="OraDataText" prompt="OR"/>
+                                                <oa:messageLayout id="mLSpacerSalessecond">
+                                                   <ui:contents>
+                                                      <oa:spacer id="item115" height="6"/>
+                                                   </ui:contents>
+                                                </oa:messageLayout>
+                                                <oa:messageStyledText id="CreateContactSales" prompt="Create New Contact" styleClass="OraDataText"/>
+                                                <oa:messageLayout id="mLSpacerSalesthird">
+                                                   <ui:contents>
+                                                      <oa:spacer id="item1144" height="35"/>
+                                                   </ui:contents>
+                                                </oa:messageLayout>
+                                                <oa:messageChoice id="PersonPreNameAdjunct" use="/oracle/apps/ar/hz/attributesets/HzPuiPersonProfile/Prefix" pickListViewName="HzPuiPrefixVO" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}" pickListDispAttr="Meaning" pickListValAttr="LookupCode" viewName="ODSalesContactsVO" viewAttr="PersonPreNameAdjunct"/>
+                                                <oa:messageTextInput id="PersonFirstName" use="/oracle/apps/ar/hz/attributesets/HzPuiPersonProfile/FirstName" maximumLength="150" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}" viewName="ODSalesContactsVO" viewAttr="PersonFirstName" required="no"/>
+                                                <oa:messageTextInput id="PersonMiddleName" use="/oracle/apps/ar/hz/attributesets/HzPuiPersonProfile/MiddleName" maximumLength="60" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}" viewName="ODSalesContactsVO" viewAttr="PersonMiddleName"/>
+                                                <oa:messageTextInput id="PersonLastName" use="/oracle/apps/ar/hz/attributesets/HzPuiPersonProfile/LastName" maximumLength="150" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}" viewName="ODSalesContactsVO" viewAttr="PersonLastName" required="no"/>
+                                                <oa:messageTextInput id="EmailAddress" use="/oracle/apps/ar/hz/attributesets/HzPuiContactPoint/EmailAddress" maximumLength="2000" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}" viewName="ODSalesContactPointEmailVO" viewAttr="EmailAddress"/>
+                                                <oa:messageLayout id="PhoneMessageLayout" prompt="Phone Number">
+                                                   <ui:contents>
+                                                      <oa:rowLayout id="PhoneRow">
+                                                         <ui:contents>
+                                                            <oa:cellFormat id="PhoneCountryCell">
+                                                               <ui:contents>
+                                                                  <oa:messageChoice id="PerPhoneCountryCode" use="/oracle/apps/ar/hz/attributesets/HzPuiContactPoint/PhoneCountryCode" shortDesc="Phone Country Code" pickListViewName="HzPuiPhoneCountryCodeVO" pickListDispAttr="Country" pickListValAttr="PhoneCountryCode" required="no" prompt="" viewName="ODSalesContactPointPhoneVO" viewAttr="PhoneCountryCode" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                                                               </ui:contents>
+                                                            </oa:cellFormat>
+                                                            <oa:cellFormat id="PhoneAreaCell">
+                                                               <ui:contents>
+                                                                  <oa:messageTextInput id="PhoneAreaCode1" use="/oracle/apps/ar/hz/attributesets/HzPuiContactPoint/PhoneAreaCode" maximumLength="10" shortDesc="Phone Area Code" columns="5" required="no" viewName="ODSalesContactPointPhoneVO" viewAttr="PhoneAreaCode" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}" prompt=""/>
+                                                               </ui:contents>
+                                                            </oa:cellFormat>
+                                                            <oa:cellFormat id="PhoneCell">
+                                                               <ui:contents>
+                                                                  <oa:messageTextInput id="PhoneNumber1" use="/oracle/apps/ar/hz/attributesets/HzPuiContactPoint/PhoneTelexNumber" maximumLength="40" shortDesc="Phone Number" columns="12" required="no" viewName="ODSalesContactPointPhoneVO" viewAttr="PhoneNumber" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}" prompt=""/>
+                                                               </ui:contents>
+                                                            </oa:cellFormat>
+                                                         </ui:contents>
+                                                      </oa:rowLayout>
+                                                   </ui:contents>
+                                                </oa:messageLayout>
+                                                <oa:messageTextInput id="PhoneExtension" use="/oracle/apps/ar/hz/attributesets/HzPuiContactPoint/Phone" maximumLength="20" viewName="ODSalesContactPointPhoneVO" viewAttr="PhoneExtension" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}" prompt="Phone Ext" columns="8"/>
+                                                <oa:messageLayout id="FaxMessageLayout" prompt="Fax Number">
+                                                   <ui:contents>
+                                                      <oa:rowLayout id="FaxRow">
+                                                         <ui:contents>
+                                                            <oa:cellFormat id="FaxCountryCell">
+                                                               <ui:contents>
+                                                                  <oa:messageChoice id="FaxCountryCode" shortDesc="Fax Country Code" pickListViewName="HzPuiFaxCountryCodeVO" pickListDispAttr="Country" pickListValAttr="PhoneCountryCode" viewName="ODSalesContactPointFaxVO" viewAttr="PhoneCountryCode" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}" prompt=""/>
+                                                               </ui:contents>
+                                                            </oa:cellFormat>
+                                                            <oa:cellFormat id="FaxAreaCell">
+                                                               <ui:contents>
+                                                                  <oa:messageTextInput id="FaxAreaCode" maximumLength="10" shortDesc="Fax Area Code" columns="5" viewName="ODSalesContactPointFaxVO" viewAttr="PhoneAreaCode" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}" prompt=""/>
+                                                               </ui:contents>
+                                                            </oa:cellFormat>
+                                                            <oa:cellFormat id="FaxCell">
+                                                               <ui:contents>
+                                                                  <oa:messageTextInput id="FaxNumber" maximumLength="40" shortDesc="Fax Number" columns="12" viewName="ODSalesContactPointFaxVO" viewAttr="PhoneNumber" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}" prompt=""/>
+                                                               </ui:contents>
+                                                            </oa:cellFormat>
+                                                         </ui:contents>
+                                                      </oa:rowLayout>
+                                                   </ui:contents>
+                                                </oa:messageLayout>
+                                             </ui:contents>
+                                          </oa:messageComponentLayout>
+                                       </ui:contents>
+                                    </oa:stackLayout>
+                                 </ui:contents>
+                              </oa:defaultSingleColumn>
+                           </ui:contents>
+                        </oa:rowLayout>
+                     </ui:contents>
+                  </oa:cellFormat>
+               </ui:contents>
+            </oa:rowLayout>
+         </ui:contents>
+      </oa:hideShowHeader>
+      <oa:header id="Documents" text="Documents">
+         <ui:contents>
+            <oa:flowLayout id="DocumentsButtonFlow">
+               <ui:contents>
+                  <oa:submitButton id="AddCustomDocument" cellNoWrapFormat="true" comment="Copy Request" prompt="Add Custom Document" shortDesc="Add Custom Document" hAlign="end" text="Add Custom Document" rendered="${oa.ODAccountSetupButtonsPVO.AddCustomDocumentRendered}">
+                     <ui:primaryClientAction>
+                        <ui:firePartialAction id="firePartialAction32">
+                           <ui:parameters>
+                              <ui:parameter key="AcctReqEvent" value="AddCustomDocument"/>
+                           </ui:parameters>
+                        </ui:firePartialAction>
+                     </ui:primaryClientAction>
+                  </oa:submitButton>
+                  <oa:submitButton id="DeleteDocument" cellNoWrapFormat="true" comment="Copy Request Row" prompt="Delete Document" shortDesc="Delete Document" hAlign="end" text="Delete Document" rendered="${oa.ODAccountSetupButtonsPVO.DeleteDocumentRendered}">
+                     <ui:primaryClientAction>
+                        <ui:firePartialAction id="firePartialAction311">
+                           <ui:parameters>
+                              <ui:parameter key="AcctReqEvent" value="DeleteDocument"/>
+                           </ui:parameters>
+                        </ui:firePartialAction>
+                     </ui:primaryClientAction>
+                  </oa:submitButton>
+               </ui:contents>
+            </oa:flowLayout>
+            <oa:table id="DocumentTable" width="100%" blockSize="10" shortDesc="Requests" userCustomizable="true" regionName="Request List">
+               <ui:contents>
+                  <oa:rawText id="DocumentType" sortState="no" userCustomizable="true" prompt="Document Type" text="Info Copy"/>
+                  <oa:messageChoice id="DocumentName" prompt="Document Name" shortDesc="Document Name" viewName="ODCustAcctSetupDocumentVO" viewAttr="DocumentName" pickListViewDef="od.oracle.apps.xxcrm.customer.account.poplist.server.ODAcctSetupDocNameLovVO" pickListViewName="ODAcctSetupDocNameLovVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+                  <oa:messageChoice id="Frequency" prompt="Frequency" shortDesc="Frequency" viewName="ODCustAcctSetupDocumentVO" viewAttr="Frequency" pickListViewDef="od.oracle.apps.xxcrm.customer.account.poplist.server.ODAcctSetupDocFreqLovVO" pickListViewName="ODAcctSetupDocFreqLovVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode" readOnly="${oa.ODOrgAccountSetupPVO.ReadOnly}"/>
+               </ui:contents>
+               <ui:tableSelection>
+                  <oa:multipleSelection id="DocumentMultiSelect" viewName="ODCustAcctSetupDocumentVO" viewAttr="SelectFlag"/>
+               </ui:tableSelection>
+            </oa:table>
+            <oa:tip id="DocumentTip" text="Only one Document can be added to the Request"/>
+         </ui:contents>
+      </oa:header>
+      <oa:formValue id="PartyID"/>
+   </ui:contents>
+</oa:stackLayout>

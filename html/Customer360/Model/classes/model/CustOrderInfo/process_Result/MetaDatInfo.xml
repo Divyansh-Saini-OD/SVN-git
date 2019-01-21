@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<JavaBean xmlns="http://xmlns.oracle.com/adfm/beanmodel" version="11.1.1.56.60"
+          id="MetaDatInfo" Package="model.CustOrderInfo.process_Result"
+          BeanClass="model.CustOrderInfo.process_Result.MetaDatInfo"
+          isJavaBased="false">
+  <Attribute Name="topFiveOrderDataSource" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="topFiveOrderFetchTime" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="backOrderDataSource" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="backOrderFetchTime" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="custOrderDataSource" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="custOrderFetchTime" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+</JavaBean>

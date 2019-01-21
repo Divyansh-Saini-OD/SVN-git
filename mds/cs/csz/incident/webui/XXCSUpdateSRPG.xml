@@ -1,0 +1,462 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- +======================================================================+ -->
+<!-- |    Copyright (c) 2005, 2015 Oracle and/or its affiliates.           | -->
+<!-- |                         All rights reserved.                         | -->
+<!-- |                           Version 12.0.0                             | -->
+<!-- +======================================================================+ -->
+<!--  dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath_~PROD_~PATH_~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath_~PROD_mds_directory  -->
+<jrad:page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_" xml:lang="en-US" file-version="$Header: UpdateSRPG.xml 120.34.12020000.7 2015/04/03 10:05:28 sardas ship $" xmlns:user="http://xmlns.oracle.com/jrad/user">
+   <jrad:content>
+      <oa:pageLayout amDefName="oracle.apps.cs.csz.incident.server.IncidentUpdateAM" id="UpdateSR" amUsageName="IncidentUpdateAM" controllerClass="oracle.apps.cs.csz.incident.webui.IncidentUpdateCO" windowTitle="Service Request" warnAboutChanges="true" addForm="true" helpTargetAppShortName="CS" helpTarget="CSZ_CS_UPDATESR_UpdateSRPG" function="CSZ_SR_UP_FN" securityMode="selfSecured">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:pageButtonBar id="GlobalActionsxRN" extends="/oracle/apps/cs/csz/globalactions/webui/GlobalActionsRN"/>
+            <oa:spacer id="UpdateSRSpacer" height="5"/>
+            <oa:tableLayout id="ServiceRequestDetailsTLRN" width="100%" rendered="true">
+               <ui:contents>
+                  <oa:rowLayout id="ServiceRequestDetailsRLRN" vAlign="top">
+                     <ui:contents>
+                        <oa:cellFormat id="SRDetailsLeftRN" vAlign="top" width="75%" rendered="true" hAlign="start">
+                           <ui:contents>
+                              <oa:tableLayout id="LeftTable" hAlign="center" width="100%">
+                                 <ui:contents>
+                                    <oa:rowLayout id="LeftTableRow1">
+                                       <ui:contents>
+                                          <oa:cellFormat id="LeftTableCell1">
+                                             <ui:contents>
+                                                <oa:flexibleLayout id="SRHeaderFL" title="Issue and Subject Layout" layoutStyle="horizontal"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                    <oa:rowLayout id="LeftTableRow2">
+                                       <ui:contents>
+                                          <oa:cellFormat id="LeftTableCell2">
+                                             <ui:contents>
+                                                <oa:flexibleLayout id="HeaderSummaryFL"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                    <oa:rowLayout id="LeftTableRow3">
+                                       <ui:contents>
+                                          <oa:cellFormat id="LeftTableCell3">
+                                             <ui:contents>
+                                                <oa:flexibleLayout id="GlobalContextEAFL"/>
+                                                <oa:flexibleLayout id="CICAttrSingleColFL" width="100%"/>
+                                                <oa:flexibleLayout id="CICAttrDoubleColFL" width="100%"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                    <oa:rowLayout id="LeftTableRow4">
+                                       <ui:contents>
+                                          <oa:cellFormat id="LeftTableCell4">
+                                             <ui:contents>
+                                                <oa:subTabLayout id="SRDetailsSubTabRN" rendered="true">
+                                                   <ui:contents>
+                                                      <oa:messageComponentLayout id="SRHistoryTabxMCL">
+                                                         <ui:contents>
+                                                            <oa:messageLayout id="SRHistoryTabML">
+                                                               <ui:contents>
+                                                                  <oa:flexibleLayout id="HistoryTabFL" title="History Tab Layout" showHeader="false"/>
+                                                               </ui:contents>
+                                                            </oa:messageLayout>
+                                                         </ui:contents>
+                                                      </oa:messageComponentLayout>
+                                                      <oa:messageComponentLayout id="SRSuperTab1xMCL">
+                                                         <ui:contents>
+                                                            <oa:messageLayout id="SRSuperTab1ML">
+                                                               <ui:contents>
+                                                                  <oa:flexibleLayout id="SuperTab1FL" title="Super Tab 1 Layout" showHeader="false"/>
+                                                               </ui:contents>
+                                                            </oa:messageLayout>
+                                                         </ui:contents>
+                                                      </oa:messageComponentLayout>
+                                                      <oa:messageComponentLayout id="SRSuperTab2xMCL">
+                                                         <ui:contents>
+                                                            <oa:messageLayout id="SRSuperTab2xML">
+                                                               <ui:contents>
+                                                                  <oa:flexibleLayout id="SuperTab2FL" title="Super Tab 2 Layout"/>
+                                                               </ui:contents>
+                                                            </oa:messageLayout>
+                                                         </ui:contents>
+                                                      </oa:messageComponentLayout>
+                                                      <oa:messageComponentLayout id="SRSuperTab3xMCL">
+                                                         <ui:contents>
+                                                            <oa:messageLayout id="SRSuperTab3xML">
+                                                               <ui:contents>
+                                                                  <oa:flexibleLayout id="SuperTab3FL" title="Super Tab 3 Layout"/>
+                                                               </ui:contents>
+                                                            </oa:messageLayout>
+                                                         </ui:contents>
+                                                      </oa:messageComponentLayout>
+                                                      <oa:messageComponentLayout id="SRSuperTab4xMCL">
+                                                         <ui:contents>
+                                                            <oa:messageLayout id="SRSuperTab4xML">
+                                                               <ui:contents>
+                                                                  <oa:flexibleLayout id="SuperTab4FL" title="Super Tab 4 Layout"/>
+                                                               </ui:contents>
+                                                            </oa:messageLayout>
+                                                         </ui:contents>
+                                                      </oa:messageComponentLayout>
+                                                      <oa:messageComponentLayout id="SRSuperTab5xMCL">
+                                                         <ui:contents>
+                                                            <oa:messageLayout id="SRSuperTab5xML">
+                                                               <ui:contents>
+                                                                  <oa:flexibleLayout id="SuperTab5FL" title="Super Tab 5 Layout"/>
+                                                               </ui:contents>
+                                                            </oa:messageLayout>
+                                                         </ui:contents>
+                                                      </oa:messageComponentLayout>
+                                                      <oa:messageComponentLayout id="SRSuperTab6xMCL">
+                                                         <ui:contents>
+                                                            <oa:messageLayout id="SRSuperTab6xML">
+                                                               <ui:contents>
+                                                                  <oa:flexibleLayout id="SuperTab6FL" title="Super Tab 6 Layout"/>
+                                                               </ui:contents>
+                                                            </oa:messageLayout>
+                                                         </ui:contents>
+                                                      </oa:messageComponentLayout>
+                                                      <oa:messageComponentLayout id="SRSuperTab7xMCL" rendered="${oa.DashboardFlagVO.DashboardFlag}" amDefName="oracle.apps.cs.csz.incident.server.SRAM" amUsageName="SRAM">
+                                                         <ui:contents>
+                                                            <oa:messageLayout id="SRSuperTab7xML" rendered="${oa.DashboardFlagVO.DashboardFlag}">
+                                                               <ui:contents>
+                                                                  <oa:flexibleLayout id="SuperTab7FL" title="Super Tab7 Layout" showHeader="false"/>
+                                                               </ui:contents>
+                                                            </oa:messageLayout>
+                                                         </ui:contents>
+                                                      </oa:messageComponentLayout>
+                                                      <oa:messageComponentLayout id="SRSolutionTab8xMCL" rendered="true" amDefName="oracle.apps.cs.csz.incident.server.SRAM" amUsageName="SRAM">
+                                                         <ui:contents>
+                                                            <oa:messageLayout id="SRSolutionTab8xML" rendered="true">
+                                                               <ui:contents>
+                                                                  <oa:flexibleLayout id="SRSolutionsTab8FL" title="Super Tab7 Layout" showHeader="false"/>
+                                                               </ui:contents>
+                                                            </oa:messageLayout>
+                                                         </ui:contents>
+                                                      </oa:messageComponentLayout>
+                                                   </ui:contents>
+                                                   <ui:subTabs>
+                                                      <oa:subTabBar id="subTabBarRN">
+                                                         <ui:contents>
+                                                            <oa:link id="SRHistoryTabLink" text="History" serverUnvalidated="true" warnAboutChanges="false">
+                                                               <ui:primaryClientAction>
+                                                                  <ui:firePartialAction unvalidated="false" event="HistoryTab" id="firePartialAction1"/>
+                                                               </ui:primaryClientAction>
+                                                            </oa:link>
+                                                            <oa:link id="SRSuperTab1Link" text="Entitlement and Deadlines" serverUnvalidated="true" warnAboutChanges="false" rendered="true">
+                                                               <ui:primaryClientAction>
+                                                                  <ui:firePartialAction unvalidated="false" event="EntitlementTab" id="firePartialAction2"/>
+                                                               </ui:primaryClientAction>
+                                                            </oa:link>
+                                                            <oa:link id="SRSuperTab2Link" warnAboutChanges="false" text="Problem and Diagnosis" rendered="true" serverUnvalidated="true">
+                                                               <ui:primaryClientAction>
+                                                                  <ui:firePartialAction event="ProblemTab" id="firePartialAction3" unvalidated="false"/>
+                                                               </ui:primaryClientAction>
+                                                            </oa:link>
+                                                            <oa:link id="SRSuperTab3Link" warnAboutChanges="false" text="Resolution and Wrap Up" serverUnvalidated="true" rendered="true">
+                                                               <ui:primaryClientAction>
+                                                                  <ui:firePartialAction unvalidated="false" event="DiagnosisTab" id="firePartialAction4"/>
+                                                               </ui:primaryClientAction>
+                                                            </oa:link>
+                                                            <oa:link id="SRSuperTab4Link" warnAboutChanges="false" text="Additional Details" serverUnvalidated="true" rendered="false">
+                                                               <ui:primaryClientAction>
+                                                                  <ui:firePartialAction unvalidated="false" event="ResolutionTab" id="firePartialAction5"/>
+                                                               </ui:primaryClientAction>
+                                                            </oa:link>
+                                                            <oa:link id="SRSuperTab5Link" text="Additional Details" serverUnvalidated="true" warnAboutChanges="false" rendered="false">
+                                                               <ui:primaryClientAction>
+                                                                  <ui:firePartialAction unvalidated="false" event="WrapupTab" id="firePartialAction6"/>
+                                                               </ui:primaryClientAction>
+                                                            </oa:link>
+                                                            <oa:link id="SRSuperTab6Link" serverUnvalidated="true" warnAboutChanges="false" text="Interactions">
+                                                               <ui:primaryClientAction>
+                                                                  <ui:firePartialAction event="InteractionsTab" unvalidated="false"/>
+                                                               </ui:primaryClientAction>
+                                                            </oa:link>
+                                                            <oa:link id="SRSuperTab7Link" text="Dashboard" warnAboutChanges="false">
+                                                               <ui:primaryClientAction>
+                                                                  <ui:firePartialAction event="DashboardTab"/>
+                                                               </ui:primaryClientAction>
+                                                            </oa:link>
+                                                            <oa:link id="SRSolutionsTab8Link" text="Solutions" warnAboutChanges="false">
+                                                               <ui:primaryClientAction>
+                                                                  <ui:firePartialAction event="SolutionsTab" id="firePartialAction7"/>
+                                                               </ui:primaryClientAction>
+                                                            </oa:link>
+                                                         </ui:contents>
+                                                      </oa:subTabBar>
+                                                   </ui:subTabs>
+                                                </oa:subTabLayout>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                    <oa:rowLayout id="LeftTableRow5">
+                                       <ui:contents>
+                                          <oa:cellFormat id="LeftTableCell5">
+                                             <ui:contents>
+                                                <oa:flexibleLayout id="AddNoteFL" title="Add Notes Layout"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                 </ui:contents>
+                              </oa:tableLayout>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="SRDetailsRightRN" vAlign="top" width="23%">
+                           <ui:contents>
+                              <oa:flexibleLayout id="SRDetailsRightFL"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:tableLayout>
+         </ui:contents>
+         <ui:pageStatus>
+            <oa:tableLayout id="InstructionxRN" extends="/oracle/apps/cs/csz/oa/webui/InstructionRN"/>
+         </ui:pageStatus>
+         <oa:flexibleContents>
+            <oa:flexibleContentList id="flexibleContentList">
+               <ui:contents>
+                  <oa:flexibleContent id="SRHeaderIssuexFC" title="Issue" description="Issue" flexibleLayoutRef="SRHeaderFL">
+                     <ui:contents>
+                        <oa:defaultSingleColumn id="SRHeaderIssuexRN" extends="/oracle/apps/cs/csz/issue/webui/SRHeaderIssueRN"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="SRHeaderSubjectxFC" title="Subject" description="Subject" flexibleLayoutRef="SRHeaderFL">
+                     <ui:contents>
+                        <oa:tableLayout id="SRHeaderSubjectxRN" extends="/oracle/apps/cs/csz/subject/webui/SubjectDtlsRN" hAlign="center"/>
+                        <oa:messageComponentLayout id="SRHeaderSubjectxRORN" extends="/oracle/apps/cs/csz/subject/webui/SubjectDtlsRORN" rendered="false"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="SRHeaderSummaryxFC" title="Summary" description="Summary" flexibleLayoutRef="HeaderSummaryFL">
+                     <ui:contents>
+                        <oa:defaultSingleColumn id="SRHeaderSummaryxRN" extends="/oracle/apps/cs/csz/issue/webui/SummaryFlexFieldRN"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="GlobalContextEAFC" title="Global Additional Attributes" flexibleLayoutRef="GlobalContextEAFL" description="Global Additional Attributes" rendered="true">
+                     <ui:contents>
+                        <oa:tableLayout id="GlobalContextEATL" extends="/oracle/apps/cs/csz/extfwk/user/webui/GlobalContextEARN" width="100%"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="AddNotexFC" description="Add Notes" title="Add Notes" flexibleLayoutRef="AddNoteFL">
+                     <ui:contents>
+                        <oa:defaultSingleColumn id="AddNoteRN" extends="/oracle/apps/jtf/cac/notes/webui/CacNotesCreateRN"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="SRWarningxFC" title="SR Warning" description="SR Warning" flexibleLayoutRef="SRDetailsRightFL">
+                     <ui:contents>
+                        <oa:stackLayout id="SRWarningRN" extends="/oracle/apps/cs/csz/warning/webui/WarnMsgRG"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="CustomerContactBinFC" title="Customer Contact Bin" description="Customer Contact Bin" flexibleLayoutRef="SRDetailsRightFL">
+                     <ui:contents>
+                        <oa:switcher id="CustomerContactBinRN" extends="/oracle/apps/cs/csz/bin/webui/ProfileBinRN"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="KMSearchFC" title="KM Search Bin" description="KM Search Bin" flexibleLayoutRef="SRDetailsRightFL">
+                     <ui:contents>
+                        <oa:contentContainer id="KMSearchRN" extends="/oracle/apps/cs/knowledge/solution/integration/webui/SearchKMBinRN"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="QuickLinkContainerFC" title="Quick Link Bin" description="Quick Link Bin" flexibleLayoutRef="SRDetailsRightFL" rendered="false">
+                     <ui:contents>
+                        <oa:contentContainer id="QuickLinkContanerRN" extends="/oracle/apps/cs/csz/dashboard/webui/QuickLinksContainerRN" rendered="false"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="HistoryTabFC" title="History Tab" description="History Tab" flexibleLayoutRef="HistoryTabFL">
+                     <ui:contents>
+                        <oa:defaultSingleColumn id="HistoryTabRN" extends="/od/oracle/apps/xxcrm/cs/csz/incident/webui/XXCSHistoryTabRN"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="ProblemDetailsFC" title="Problem Details" description="Problem Details" flexibleLayoutRef="SuperTab1FL">
+                     <ui:contents>
+                        <oa:defaultDoubleColumn id="ProblemDetailsRN" extends="/oracle/apps/cs/csz/issue/webui/ProblemIssueDetailsRN" text="Request Details" headerDisabled="false"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="RequestDatesFC" title="Request Dates" description="Request Dates" flexibleLayoutRef="SuperTab1FL">
+                     <ui:contents>
+                        <oa:defaultDoubleColumn id="RequestDatesRN" extends="/oracle/apps/cs/csz/contract/webui/RequestDatesRN"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="EntitlementAddressComboFC" flexibleLayoutRef="SuperTab1FL" title="Entitlement Address Combo Region" description="Entitlement Address Combo Region">
+                     <ui:contents>
+                        <oa:header id="EntitlementAddressComboHeader" text="Entitlement and Addresses">
+                           <ui:contents>
+                              <oa:tableLayout id="EntitlementAddressComboTL" hAlign="start" width="100%">
+                                 <ui:contents>
+                                    <oa:rowLayout id="EntitlementTL" vAlign="top">
+                                       <ui:contents>
+                                          <oa:cellFormat id="ContractCL" width="100%" vAlign="top" columnSpan="2">
+                                             <ui:contents>
+                                                <oa:defaultSingleColumn id="ContractxRN" extends="/oracle/apps/cs/csz/contract/webui/ContractRN"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                    <oa:rowLayout id="AddressTL">
+                                       <ui:contents>
+                                          <oa:cellFormat id="IncidentAddrCL" width="1" vAlign="top">
+                                             <ui:contents>
+                                                <oa:defaultSingleColumn id="IncidentAddrxRN" extends="/oracle/apps/cs/csz/address/webui/IncidentAddressRN"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                          <oa:cellFormat id="ShipToAddrCL" width="1" vAlign="top">
+                                             <ui:contents>
+                                                <oa:defaultSingleColumn id="ShipToAddrxRN" extends="/oracle/apps/cs/csz/address/webui/ShipToAddrRN"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                    <oa:rowLayout id="BillToAddressTL">
+                                       <ui:contents>
+                                          <oa:cellFormat id="BillToAddrCL" width="100%" vAlign="top" columnSpan="2">
+                                             <ui:contents>
+                                                <oa:defaultSingleColumn id="BillToAddrxRN" extends="/oracle/apps/cs/csz/address/webui/BillToAddrRN"/>
+                                             </ui:contents>
+                                          </oa:cellFormat>
+                                       </ui:contents>
+                                    </oa:rowLayout>
+                                 </ui:contents>
+                              </oa:tableLayout>
+                           </ui:contents>
+                        </oa:header>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="ContractFC" title="Contract" description="Contract">
+                     <ui:contents>
+                        <oa:defaultSingleColumn id="ContractRN" extends="/oracle/apps/cs/csz/contract/webui/ContractRN"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="BillToAddressFL" title="Bill To Address" description="Bill To Address">
+                     <ui:contents>
+                        <oa:defaultSingleColumn id="BillToAddressRN" extends="/oracle/apps/cs/csz/address/webui/BillToAddrRN"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="IncidentAddressFC" title="Incident Address" description="Incident Address">
+                     <ui:contents>
+                        <oa:defaultSingleColumn id="IncidentAddressRN" extends="/oracle/apps/cs/csz/address/webui/IncidentAddressRN"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="ShipToAddressFC" title="Ship To Address" description="Ship To Address">
+                     <ui:contents>
+                        <oa:defaultSingleColumn id="ShipToAddressRN" extends="/oracle/apps/cs/csz/address/webui/ShipToAddrRN"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="SRTypeContextEAFC" title="Type Specific Additional Information" description="Type Specific Additional Information" flexibleLayoutRef="SuperTab2FL">
+                     <ui:contents>
+                        <oa:tableLayout id="SRTypeContextEATL" extends="/oracle/apps/cs/csz/extfwk/user/webui/SRTypeContextEARN" width="100%"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="InstanceHistoryHSHFC" title="Instance History" description="Instance History" flexibleLayoutRef="SuperTab2FL">
+                     <ui:contents>
+                        <oa:hideShowHeader id="InstanceHistoryHSHRN" extends="/oracle/apps/cs/csz/instanceHistory/webui/InstanceHistoryRN"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="InstanceNotesHSHFC" title="Instance Notes" description="Instance Notes" flexibleLayoutRef="SuperTab2FL">
+                     <ui:contents>
+                        <oa:hideShowHeader id="InstanceNotesHSHxRN" extends="/oracle/apps/cs/csz/instanceNote/webui/InstanceNotesRN"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="RelatedObjectsFC" title="Related SRs" description="Related SRs" flexibleLayoutRef="SuperTab2FL">
+                     <ui:contents>
+                        <oa:hideShowHeader id="RelatedObjectsHRN" text="Related Service Requests" controllerClass="oracle.apps.cs.csz.srlink.webui.SRLinkHSHCO" amDefName="oracle.apps.cs.csz.incident.server.SRAM" amUsageName="SRAM">
+                           <ui:contents>
+                              <oa:table id="SrLnkSRxRN" extends="/oracle/apps/cs/csz/srlink/webui/SrLnkSRRN"/>
+                           </ui:contents>
+                        </oa:hideShowHeader>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="ExternalObjectFC" title="Related Objects" description="Related Objects" flexibleLayoutRef="SuperTab2FL">
+                     <ui:contents>
+                        <oa:hideShowHeader id="ExternalObjectHRN" text="Related Objects" controllerClass="oracle.apps.cs.csz.srlink.webui.SRLinkExtObjHSHCO" amDefName="oracle.apps.cs.csz.incident.server.SRAM" amUsageName="SRAM">
+                           <ui:contents>
+                              <oa:table id="SrLnkExtObjxRN" extends="/oracle/apps/cs/csz/srlink/webui/SrLnkExtObjRN"/>
+                           </ui:contents>
+                        </oa:hideShowHeader>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="AttachmentFC" title="Attachments" description="Attachments" flexibleLayoutRef="SuperTab2FL">
+                     <ui:contents>
+                        <oa:tableLayout id="AttachmentxRN" extends="/oracle/apps/cs/csz/incident/webui/AttachmentRN" hAlign="start" width="100%"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="KnowledgeSolutionFC" title="Solutions" description="Solutions" flexibleLayoutRef="SuperTab2FL">
+                     <ui:contents>
+                        <oa:tableLayout id="KnowledgeSolutionxRN" extends="/oracle/apps/cs/csz/knowledge/webui/KnowledgeSolutionRN" hAlign="start" width="100%"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="TaskSummaryFC" title="Task Summary" description="Task Summary" flexibleLayoutRef="SuperTab3FL">
+                     <ui:contents>
+                        <oa:hideShowHeader id="TaskSummaryRN" extends="/oracle/apps/cs/csz/task/webui/TasksSummaryHideShowRN"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+				  <oa:flexibleContent id="RepairOrdersFC" flexibleLayoutRef="SuperTab3FL" title="Repair Orders" description="Repair Orders" rendered="false">
+                     <ui:contents>
+                        <oa:hideShowHeader id="RepairOrderHSRN" extends="/oracle/apps/cs/csz/repairorder/webui/RepairOrdersRN"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="ResolutionSummaryFC" title="Resolution Summary" description="Resolution Summary" flexibleLayoutRef="SuperTab3FL">
+                     <ui:contents>
+                        <oa:tableLayout id="ResolutionSummaryRN" extends="/oracle/apps/cs/csz/issue/webui/ResolutionSummaryRN" hAlign="start" width="100%"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="ChargesFC" title="Charges" description="Charges">
+                     <ui:contents>
+                        <oa:hideShowHeader id="ChargesHeaderRN" text="Charges" disclosed="true">
+                           <ui:contents>
+                              <oa:header id="ChargesRNHeader" rendered="true">
+                                 <ui:contents>
+                                    <oa:stackLayout id="ChargesRN" extends="/oracle/apps/cs/charges/webui/CsChargesSharedRN" prompt="Charges"/>
+                                 </ui:contents>
+                              </oa:header>
+                           </ui:contents>
+                        </oa:hideShowHeader>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="SRInteractionsFC" title="SR Interactions" description="SR Interactions" flexibleLayoutRef="SuperTab6FL">
+                     <ui:contents>
+                        <oa:advancedTable id="SRInteractionTable" extends="/oracle/apps/cs/csz/interaction/webui/SRInteractionHistoryRN" width="100%" text=""/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="CICAttrSingleColFC" description="Additional Attributes" title="Additional Attributes" flexibleLayoutRef="CICAttrSingleColFL">
+                     <ui:contents>
+                        <oa:tableLayout id="CICAttrSingleColTL" extends="/oracle/apps/cs/csz/cicfwk/webui/CICAttrSingleColRN" hAlign="start"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="CICattrDoubleColFC" description="Additional Attributes" title="Additional Attributes" flexibleLayoutRef="CICAttrDoubleColFL" rendered="false">
+                     <ui:contents>
+                        <oa:tableLayout id="CICAttrDoubleColTL" extends="/oracle/apps/cs/csz/cicfwk/webui/CICAttrDoubleColRN" hAlign="start"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="CostDetailFC">
+                     <ui:contents>
+                        <oa:header id="CostDetailHdr" extends="/oracle/apps/cs/cost/costdetails/webui/MainRN"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="DashboardFC" flexibleLayoutRef="SuperTab7FL" description="Dashboard" title="Dashboard" showHeader="false">
+                     <ui:contents>
+                        <oa:stackLayout id="DashboardSL" rendered="${oa.DashboardFlagVO.DashboardFlag}" amDefName="oracle.apps.cs.csz.incident.server.SRAM" amUsageName="SRAM">
+                           <ui:contents>
+                              <oa:header id="DashboardRN" extends="/oracle/apps/cs/csz/cdb/webui/CustomerDashboardRN"/>
+                           </ui:contents>
+                        </oa:stackLayout>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="SolutionsFC" flexibleLayoutRef="SRSolutionsTab8FL" title="Solutions Tab" description="Solutions">
+                     <ui:contents>
+                        <oa:stackLayout id="SolutionsFL" extends="/oracle/apps/cs/knowledge/solution/integration/webui/CsInquiraSolutionsRN"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+               </ui:contents>
+            </oa:flexibleContentList>
+         </oa:flexibleContents>
+      </oa:pageLayout>
+   </jrad:content>
+</jrad:page>

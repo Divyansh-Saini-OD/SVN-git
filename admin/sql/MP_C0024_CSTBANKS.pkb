@@ -1,0 +1,134 @@
+
+/*****************************************************************************
+--  Note: This generated code is for demonstration purposes only and may
+--        not be deployable.
+*****************************************************************************/
+
+CREATE OR REPLACE PACKAGE ""MP_C0024_CSTBANKS"" AS
+OWB$MAP_OBJECT_ID VARCHAR2(32) := '';
+sql_stmt  VARCHAR2(32767);
+get_abort BOOLEAN := FALSE;
+get_abort_procedure BOOLEAN := FALSE;
+get_trigger_success BOOLEAN := TRUE;
+get_errors NUMBER(22) := 0;
+get_status NUMBER(22) := 0;
+get_error_ratio NUMBER(22) := 0;
+get_global_names              VARCHAR2(10) := 'FALSE';
+-- Status variable for Batch cursors
+"XXOD_HZ_CUSTOMER_BANKS_INT_St" BOOLEAN := FALSE; 
+
+"P_BATCH_ID" NUMBER;"P_AOPS_BATCH_ID" NUMBER;"CO_0_CR" VARCHAR2(30) := 'XXCONV';"CO_1_ST" DATE := '01-JAN-1900';
+
+-- Function Main 
+-- Entry point in package ""MP_C0024_CSTBANKS""
+FUNCTION Main("P_BATCH_ID" IN NUMBER
+ DEFAULT NULL, "P_AOPS_BATCH_ID" IN NUMBER
+ DEFAULT NULL) RETURN NUMBER;  
+
+END ""MP_C0024_CSTBANKS"";
+
+/
+
+CREATE OR REPLACE PACKAGE BODY ""MP_C0024_CSTBANKS"" AS
+
+
+
+
+---------------------------------------------------------------------------
+-- Function "XXOD_HZ_CUSTOMER_BANKS_INT_Bat"
+--   performs batch extraction
+--   Returns TRUE on success
+--   Returns FALSE on failure
+---------------------------------------------------------------------------
+FUNCTION "XXOD_HZ_CUSTOMER_BANKS_INT_Bat" ("P_BATCH_ID" IN NUMBER
+ DEFAULT NULL, "P_AOPS_BATCH_ID" IN NUMBER
+ DEFAULT NULL) 
+ RETURN BOOLEAN IS
+
+BEGIN
+  EXECUTE IMMEDIATE 'ALTER SESSION ENABLE PARALLEL DML';
+
+  BEGIN
+    INSERT
+    INTO
+      "XXOD_HZ_CUSTOMER_BANKS_INT"
+      ("BATCH_ID",
+      "CREATED_BY_MODULE",
+      "PARTY_ORIG_SYSTEM",
+      "PARTY_ORIG_SYSTEM_REFERENCE",
+      "ACCOUNT_ORIG_SYSTEM",
+      "ACCOUNT_ORIG_SYSTEM_REFERENCE",
+      "BANK_ACCOUNT_CURRENCY_CODE",
+      "BANK_ACCOUNT_NAME",
+      "BANK_ACCOUNT_NUM",
+      "BANK_BRANCH_NAME",
+      "BANK_NAME",
+      "BANK_NUM",
+      "PRIMARY_FLAG",
+      "START_DATE")
+      (SELECT
+/*+ NO_MERGE */
+  "MP_C0024_CSTBANKS"."P_BATCH_ID" "P_BATCH_ID$1",
+  "MP_C0024_CSTBANKS"."CO_0_CR" "CRTBYMOD",
+  "CSTBANKS"."PARTY_ORIG_SYSTEM" "PARTY_ORIG_SYSTEM",
+  "CSTBANKS"."PARTY_ORIG_SYSREF" "PARTY_ORIG_SYSREF",
+  TRIM( "CSTBANKS"."ACCT_ORIG_SYSTEM" )/* EXPRESSION.OUTGRP1.ACCOUNT_ORIG_SYSTEM */ "ACCOUNT_ORIG_SYSTEM",
+  TRIM ("CSTBANKS"."ACCT_ORIG_SYSREF" )/* EXPRESSION.OUTGRP1.ACCOUNT_ORIG_SYSTEM_REFERENCE */ "ACCOUNT_ORIG_SYSTEM_REFERENCE",
+  "CSTBANKS"."CB_CURR_CD" "CB_CURR_CD",
+  "CSTBANKS"."CB_ACCT_NAM" "CB_ACCT_NAM",
+  "CSTBANKS"."CB_ACCT_NUM" "CB_ACCT_NUM",
+  "CSTBANKS"."CB_BNK_BRNCH_NAM" "CB_BNK_BRNCH_NAM",
+  "CSTBANKS"."CB_BNK_NAM" "CB_BNK_NAM",
+  trim( "CSTBANKS"."CB_BNK_NUM" )/* EXPRESSION.OUTGRP1.BANK_NUM */ "BANK_NUM",
+  "CSTBANKS"."CB_PRIMRY" "CB_PRIMRY",
+  "MP_C0024_CSTBANKS"."CO_1_ST" "START_DATE"
+FROM
+  "SIMPLIFY"."CSTBANKS"@"GANDHI.NA.ODCORP.NET" "CSTBANKS"
+  WHERE 
+  ( "CSTBANKS"."BATCH_NBR" = "MP_C0024_CSTBANKS"."P_AOPS_BATCH_ID" )
+      );
+    COMMIT;
+  EXCEPTION WHEN OTHERS THEN
+    ROLLBACK;
+    COMMIT;
+    RETURN FALSE;
+  END;
+  COMMIT;
+  RETURN TRUE;
+END "XXOD_HZ_CUSTOMER_BANKS_INT_Bat";
+
+FUNCTION Main("P_BATCH_ID" IN NUMBER
+ DEFAULT NULL, "P_AOPS_BATCH_ID" IN NUMBER
+ DEFAULT NULL) RETURN NUMBER IS
+get_batch_status           BOOLEAN := TRUE;
+BEGIN
+  -- Mapping input parameter global variable assignments
+  "MP_C0024_CSTBANKS"."P_BATCH_ID" := "MP_C0024_CSTBANKS".Main."P_BATCH_ID";"MP_C0024_CSTBANKS"."P_AOPS_BATCH_ID" := "MP_C0024_CSTBANKS".Main."P_AOPS_BATCH_ID";
+  
+
+  
+  
+  
+  
+  
+PROCEDURE EXEC_AUTONOMOUS_SQL(CMD IN VARCHAR2) IS
+  PRAGMA AUTONOMOUS_TRANSACTION;
+BEGIN
+  EXECUTE IMMEDIATE (CMD);
+  COMMIT;
+END;
+  -- Initialize all batch status variables
+	"XXOD_HZ_CUSTOMER_BANKS_INT_St" := FALSE;
+
+
+
+			
+"XXOD_HZ_CUSTOMER_BANKS_INT_St" := "XXOD_HZ_CUSTOMER_BANKS_INT_Bat"; 
+
+
+RETURN get_status;
+END Main;
+END ""MP_C0024_CSTBANKS"";
+
+/
+

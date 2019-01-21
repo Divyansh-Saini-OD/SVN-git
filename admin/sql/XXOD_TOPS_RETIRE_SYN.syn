@@ -1,0 +1,30 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name : XXOD_TOPS_RETIRE_SYN                                       |
+-- | Description : Create the Synonyms for staging table for Tops Retirement  |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     06-May-2016   PRAVEEN VANGA        Initial version              |
+-- |                                                                          |
+-- +==========================================================================+
+
+   SET SHOW         OFF
+   SET VERIFY       OFF
+   SET ECHO         OFF
+   SET TAB          OFF
+   SET FEEDBACK     ON
+   
+ CREATE OR REPLACE SYNONYM APPS.XXOD_TOPS_RETIRE_TABLE for XXCRM.XXOD_TOPS_RETIRE_TABLE;
+ CREATE OR REPLACE SYNONYM APPS.XXOD_TOPS_RETIRE_LOG_TABLE for XXCRM.XXOD_TOPS_RETIRE_LOG_TABLE;
+ CREATE OR REPLACE SYNONYM APPS.XXOD_TOPS_RETIRE_INVALID_OBJ for XXCRM.XXOD_TOPS_RETIRE_INVALID_OBJ;
+ CREATE OR REPLACE SYNONYM APPS.XXOD_TOPS_RETIRE_INVALID_OBJ1 for XXCRM.XXOD_TOPS_RETIRE_INVALID_OBJ1;
+ CREATE OR REPLACE SYNONYM APPS.XXOD_TOPS_RETIRE_OBJ_EXTRACT FOR XXCRM.XXOD_TOPS_RETIRE_OBJ_EXTRACT;
+
+                         
+ SHOW ERRORS;  

@@ -1,0 +1,19 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+CREATE TABLE XXCRM.XXBI_OD_SIC_GROUP_TYPES
+(
+  SIC_CODE VARCHAR2(2),
+  SIC_GROUP_TYPE VARCHAR2(2),
+  SIC_GROUP_NAME VARCHAR2(60)
+);
+
+----------------------------------------------------------
+-- Grant to APPS
+----------------------------------------------------------
+GRANT ALL ON XXCRM.XXBI_OD_SIC_GROUP_TYPES TO APPS;
+
+
+SHOW ERRORS;
+EXIT;

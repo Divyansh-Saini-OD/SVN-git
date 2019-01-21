@@ -1,0 +1,39 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_SFA_WWW_PROSPECT_ADDR.tbl                 |
+-- | Description      :I2043 Leads_from_WWW_and_Jmillennia                 |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      15-Feb-2008 David Woods        Initial version                |
+-- +=======================================================================+ 
+
+CREATE TABLE XXCRM.XX_SFA_WWW_PROSPECT_ADDR
+  (BATCH_ID                      NUMBER  
+  ,CREATED_BY_MODULE             VARCHAR2(10)  
+  ,PARTY_ORIG_SYSTEM             CHAR(2)       
+  ,PARTY_ORIG_SYSTEM_REFERENCE   VARCHAR2(50)  
+  ,SITE_ORIG_SYSTEM              CHAR(2)      
+  ,SITE_ORIG_SYSTEM_REFERENCE    VARCHAR2(50)  
+  ,SITE_USE_TYPE                 VARCHAR2(10)  
+  ,ADDRESS1                      VARCHAR2(50)  
+  ,CITY                          VARCHAR2(50)   
+  ,STATE                         VARCHAR2(2)   
+  ,POSTAL_CODE                   VARCHAR2(12)   
+  ,COUNTRY                       CHAR(2)      
+  ,PRIMARY_FLAG                  CHAR(1)     
+  ,DESCRIPTION                   VARCHAR2(10)    
+  ,CREATED_BY                    NUMBER    
+  );
+
+Grant all on XXCRM.XX_SFA_WWW_PROSPECT_ADDR to APPS;

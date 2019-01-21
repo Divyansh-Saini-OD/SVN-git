@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<JavaBean xmlns="http://xmlns.oracle.com/adfm/beanmodel" version="11.1.1.56.60"
+          id="ActiveContractsOutput" Package="model.ContractInfo.process_Result"
+          BeanClass="model.ContractInfo.process_Result.ActiveContractsOutput"
+          isJavaBased="false">
+  <Attribute Name="LinkSeq" IsUpdateable="0" IsNotNull="true"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="ContractId" IsUpdateable="0" IsNotNull="true"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="ContractSeq" IsUpdateable="0" IsNotNull="true"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="StatusCode" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="PriorityCode" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="PriceCode" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="OffPricePriceCode" IsUpdateable="0" IsNotNull="true"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="WholesalePriceCode" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="WholesalePricePriceCode" IsUpdateable="0" IsNotNull="true"
+             Type="java.math.BigDecimal"/>
+  <Attribute Name="DataSource" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+  <Attribute Name="fetchTime" IsUpdateable="0" IsNotNull="true"
+             Type="java.lang.String"/>
+</JavaBean>

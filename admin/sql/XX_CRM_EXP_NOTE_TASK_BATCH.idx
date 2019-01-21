@@ -1,0 +1,262 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify						|
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_NOTE_TASK_BATCH.idx                                               |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        08/07/11       Devendra Petkar        Initial version                            |
+-- +============================================================================================+
+
+
+--------------------------------------------------------------------
+-----------------------------Tasks----------------------------------
+--------------------------------------------------------------------
+
+
+
+PROMPT CREATE INDEX xxcrm.xx_crm_exp_tasks_party_rec
+
+CREATE INDEX xxcrm.xx_crm_exp_tasks_party_rec ON xxcrm.xx_crm_exp_tasks_party
+(record_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+PROMPT CREATE INDEX xxcrm.xx_crm_exp_tasks_party_bat
+
+CREATE INDEX xxcrm.xx_crm_exp_tasks_party_bat ON xxcrm.xx_crm_exp_tasks_party
+(batch_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+
+PROMPT CREATE INDEX xxcrm.xx_crm_exp_tasks_party_sit_rec
+
+CREATE INDEX xxcrm.xx_crm_exp_tasks_party_sit_rec ON xxcrm.xx_crm_exp_tasks_party_site
+(record_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+
+PROMPT CREATE INDEX xxcrm.xx_crm_exp_tasks_party_sit_bat
+
+CREATE INDEX xxcrm.xx_crm_exp_tasks_party_sit_bat ON xxcrm.xx_crm_exp_tasks_party_site
+(batch_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+
+PROMPT CREATE INDEX xxcrm.xx_crm_exp_tasks_lead_rec
+
+CREATE INDEX xxcrm.xx_crm_exp_tasks_lead_rec ON xxcrm.xx_crm_exp_tasks_lead
+(record_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+
+PROMPT CREATE INDEX xxcrm.xx_crm_exp_tasks_lead_bat
+
+CREATE INDEX xxcrm.xx_crm_exp_tasks_lead_bat ON xxcrm.xx_crm_exp_tasks_lead
+(batch_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+
+PROMPT CREATE INDEX xxcrm.xx_crm_exp_tasks_opportuni_rec
+
+CREATE INDEX xxcrm.xx_crm_exp_tasks_opportuni_rec ON xxcrm.xx_crm_exp_tasks_opportunity
+(record_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+
+PROMPT CREATE INDEX xxcrm.xx_crm_exp_tasks_opportuni_bat
+
+CREATE INDEX xxcrm.xx_crm_exp_tasks_opportuni_bat ON xxcrm.xx_crm_exp_tasks_opportunity
+(batch_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+
+
+PROMPT CREATE INDEX xxcrm.xx_crm_exp_tasks_task_rec
+
+CREATE INDEX xxcrm.xx_crm_exp_tasks_task_rec ON xxcrm.xx_crm_exp_tasks_task
+(record_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+
+PROMPT CREATE INDEX xxcrm.xx_crm_exp_tasks_task_bat
+
+CREATE INDEX xxcrm.xx_crm_exp_tasks_task_bat ON xxcrm.xx_crm_exp_tasks_task
+(batch_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+--------------------------------------------------------------------
+-----------------------------Notes----------------------------------
+--------------------------------------------------------------------
+
+
+PROMPT CREATE INDEX xxcrm.xx_crm_exp_notes_party_rec
+
+CREATE INDEX xxcrm.xx_crm_exp_notes_party_rec ON xxcrm.xx_crm_exp_notes_party
+(record_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+
+
+PROMPT CREATE INDEX xxcrm.xx_crm_exp_notes_party_bat
+
+CREATE INDEX xxcrm.xx_crm_exp_notes_party_bat ON xxcrm.xx_crm_exp_notes_party
+(batch_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+
+
+PROMPT CREATE INDEX xxcrm.xx_crm_exp_notes_party_sit_rec
+
+CREATE INDEX xxcrm.xx_crm_exp_notes_party_sit_rec ON xxcrm.xx_crm_exp_notes_party_site
+(record_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+
+PROMPT CREATE INDEX xxcrm.xx_crm_exp_notes_party_sit_bat
+
+CREATE INDEX xxcrm.xx_crm_exp_notes_party_sit_bat ON xxcrm.xx_crm_exp_notes_party_site
+(batch_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+
+
+PROMPT CREATE INDEX xxcrm.xx_crm_exp_notes_lead_rec
+
+CREATE INDEX xxcrm.xx_crm_exp_notes_lead_rec ON xxcrm.xx_crm_exp_notes_lead
+(record_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+
+
+PROMPT CREATE INDEX xxcrm.xx_crm_exp_notes_lead_bat
+
+CREATE INDEX xxcrm.xx_crm_exp_notes_lead_bat ON xxcrm.xx_crm_exp_notes_lead
+(batch_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+
+
+PROMPT CREATE INDEX xxcrm.xx_crm_exp_notes_opportuni_rec
+
+CREATE INDEX xxcrm.xx_crm_exp_notes_opportuni_rec ON xxcrm.xx_crm_exp_notes_opportunity
+(record_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+
+PROMPT CREATE INDEX xxcrm.xx_crm_exp_notes_opportuni_bat
+
+CREATE INDEX xxcrm.xx_crm_exp_notes_opportuni_bat ON xxcrm.xx_crm_exp_notes_opportunity
+(batch_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+--------------------------------------------------------------------
+-----------------------------Batch----------------------------------
+--------------------------------------------------------------------
+
+PROMPT CREATE UNIQUE INDEX xx_crm_exp_batch_id
+
+CREATE UNIQUE INDEX xxcrm.xx_crm_exp_batch_id ON xxcrm.xx_crm_exp_batch
+(batch_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+ALTER TABLE xxcrm.xx_crm_exp_batch ADD (
+  CONSTRAINT xx_crm_exp_batch_pk
+ PRIMARY KEY
+ (batch_id) USING INDEX xxcrm.xx_crm_exp_batch_id);
+
+
+
+--------------------------------------------------------------------
+---------------------------Exception--------------------------------
+--------------------------------------------------------------------
+
+
+
+PROMPT CREATE INDEX xxcrm.xx_crm_exp_dataloader_erro_bat
+
+CREATE INDEX xxcrm.xx_crm_exp_dataloader_erro_bat ON xxcrm.xx_crm_exp_dataloader_error
+(batch_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+PROMPT CREATE INDEX xxcrm.xx_crm_exp_dataloader_erro_rec
+
+CREATE INDEX xxcrm.xx_crm_exp_dataloader_erro_rec ON xxcrm.xx_crm_exp_dataloader_error
+(record_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+
+
+SHOW ERROR;
+
+EXIT;

@@ -1,0 +1,32 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :DROP_XX_AS_LEAD_IMP_OSR_STG.tbl                   |
+-- | Description      :Custom table for I0809_LeadInterface                |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  16-Nov-2007 Piyush Khandelwal    Initial Draft Version        |
+-- |                                                                       |
+-- |                                                                       |
+-- +=======================================================================+
+
+-- -------------------------------------------------------
+--      Drop Custom Table XX_AS_LEAD_IMP_ORS_STG      --
+-- -------------------------------------------------------
+
+DROP TABLE XXCRM.xx_as_lead_imp_osr_stg;
+
+/
+SHOW ERRORS;
+
+EXIT;

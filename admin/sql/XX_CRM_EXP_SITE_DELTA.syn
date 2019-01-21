@@ -1,0 +1,32 @@
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify						|
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_SITE_DELTA.syn                                               |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        08/07/11       Devendra Petkar        Initial version                            |
+-- +============================================================================================+
+
+
+---------------------------------------------------------
+-- Creating synonym				       --
+---------------------------------------------------------
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_EXP_CUST_SITE_DELTA FOR XXCRM.XX_CRM_EXP_CUST_SITE_DELTA ;
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_EXP_PROS_SITE_DELTA FOR XXCRM.XX_CRM_EXP_PROS_SITE_DELTA ;
+
+
+SHOW ERRORS;
+
+EXIT;

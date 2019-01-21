@@ -1,0 +1,75 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : OD,I0607_IncentiveAndBonusToPayroll                                        |--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_OIC_PAYMENT_DETAILS_STG.tbl                                      |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_OIC_PAYMENT_DETAILS_STG (OD I0607_IncentiveAndBonusToPayroll Staging   |--
+--|                                                                                 Table)      |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              04-Oct-2007       Gowri Nagarajan         Original                         |--
+--| 1.1              09-Oct-2002       Gowri Nagarajan	       Added the schema name            |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XXCRM.XX_OIC_PAYMENT_DETAILS_STG......
+PROMPT
+
+CREATE TABLE XXCRM.XX_OIC_PAYMENT_DETAILS_STG
+                                    (
+                                       RECORD_ID                NUMBER         
+                                     , REQUEST_ID               NUMBER         
+                                     , PAYRUN_NAME              VARCHAR2(80)
+                                     , SALES_REP_EMPLOYEE_ID    VARCHAR2(30)         
+                                     , SALES_REP_NAME           VARCHAR2(360)         
+                                     , PAYMENT_AMOUNT           NUMBER    
+                                     , PERIOD                   VARCHAR2 (15)  
+                                     , PAYMENT_DATE             DATE
+                                     , OPERATING_UNIT           VARCHAR2(240)
+                                     , ORG_ID                   NUMBER(15)
+                                     , PLAN_ELEMENT_NAME        VARCHAR2(80)   
+                                     , PLAN_ELEMENT_SUBTOTAL    NUMBER         
+                                     , CREATED_BY               NUMBER         
+                                     , CREATION_DATE            DATE           
+                                     , LAST_UPDATE_DATE         DATE           
+                                     , LAST_UPDATED_BY          NUMBER         
+                                     , LAST_UPDATED_LOGIN       NUMBER                          
+                                     );
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
+
+

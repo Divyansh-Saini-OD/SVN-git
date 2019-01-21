@@ -1,0 +1,29 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.5.4.89_560" xml:lang="en-US" customizes="/od/oracle/apps/xxcrm/asn/common/customer/webui/ODOrgUpdatePG">
+   <modifications>
+      <modify element="ASNIndClsInfoRN.region1.HzPuiIndClassificationGo" rendered="false"/>
+      <modify element="ASNIndClsInfoRN.region1.IndUpdate" rendered="false"/>
+      <modify element="ASNIndClsInfoRN.region1.IndRemove" rendered="false"/>
+      <modify element="ASNSTAddButton" rendered="false"/>
+      <modify element="ASNSTKeepCol" rendered="false"/>
+      <modify element="ASNNotesRN.ASNNoteStatusRow" rendered="false"/>
+      <modify element="ASNRelInfoRN.HzPuiContTableCreateRelRole" rendered="false"/>
+      <modify element="ASNRelInfoRN.HzPuiPartyRelTableCreateEvent" rendered="false"/>
+      <modify element="ASNClsInfoRN.region1.HzPuiClassificationViewHistory" rendered="false"/>
+      <modify element="ASNClsInfoRN.region1.HzPuiAddClassification" prompt="" readOnly="true"/>
+      <modify element="ASNClsInfoRN.region1.HzPuiClassificationGo" rendered="false"/>
+      <modify element="ASNIndClsInfoRN.region1.HzPuiAddIndClassification" defaultValue="" prompt="" readOnly="true"/>
+      <modify element="ASNIndClsInfoRN.region1.HzPuiIndClassificationViewHistory" rendered="false"/>
+      <modify element="ASNIndClsInfoRN.region1.HzPuiRegion4CF" rendered="false"/>
+      <modify element="ASNIndClsInfoRN.region1.tableButtons" rendered="false"/>
+      <modify element="ASNClsInfoRN.region1.tableButtons" rendered="false"/>
+      <modify element="ASNOrgPrflInfoRN" text="Prospect/Customer Information"/>
+      <move element="ASNRequiredFieldRN.spacer1" after="ASNRequiredFieldRN.RequiredFieldIcon"/>
+      <move element="ASNRequiredFieldRN.RequiredFieldText" after="ASNRequiredFieldRN.spacer1"/>
+      <insert after="ASNRequiredFieldRN.RequiredFieldText">
+         <oa:tip id="XX_OD_ORG_UPD_REV_BAND_TIP_TXT" adminCustomizable="true" rendered="true" scope="." text="Revenue Band is required." xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <modify element="ASNTasksRN.CacSmrTaskDueDate" prompt="Date"/>
+      <modify element="ASNTasksRN.CacSmrTaskDueDateRO" prompt="Date"/>      
+   </modifications>
+</customization>

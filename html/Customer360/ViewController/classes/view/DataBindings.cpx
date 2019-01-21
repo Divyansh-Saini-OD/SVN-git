@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Application xmlns="http://xmlns.oracle.com/adfm/application"
+             version="11.1.1.56.60" id="DataBindings" SeparateXMLFiles="false"
+             Package="view" ClientType="Generic">
+  <definitionFactories>
+    <factory nameSpace="http://xmlns.oracle.com/adfm/dvt"
+             className="oracle.adfinternal.view.faces.dvt.model.binding.FacesBindingFactory"/>
+  </definitionFactories>
+  <pageMap>
+    <page path="/Customer360.jspx" usageId="view_Customer360PageDef"/>
+  </pageMap>
+  <pageDefinitionUsages>
+    <page id="view_Customer360PageDef" path="view.pageDefs.Customer360PageDef"/>
+  </pageDefinitionUsages>
+  <dataControlUsages>
+    <dc id="ContractInfo" path="model.ContractInfo"/>
+    <dc id="AOPS_Reports" path="model.AOPS_Reports"/>
+    <dc id="CasesInfo" path="model.CasesInfo"/>
+    <dc id="CustOrderInfo" path="model.CustOrderInfo"/>
+    <dc id="CustInfo" path="model.CustInfo"/>
+  </dataControlUsages>
+</Application>

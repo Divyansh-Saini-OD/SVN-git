@@ -1,0 +1,66 @@
+create materialized view log on xxcrm.xx_cdh_cust_acct_ext_b
+with rowid, primary key, sequence(cust_account_id, attr_group_id, c_ext_attr2, c_ext_attr3, 
+                                  c_ext_attr6, c_ext_attr13, c_ext_attr14, last_update_date)
+including new values;
+
+
+CREATE MATERIALIZED VIEW LOG ON xxcrm.xx_tm_nam_terr_entity_dtls
+WITH  rowid, 
+      primary key,
+      sequence(named_acct_terr_id, entity_type, entity_id, 
+               start_date_active, end_date_active, status, attribute19, attribute20, last_update_date
+              )
+including new values;
+
+
+CREATE MATERIALIZED VIEW LOG ON xxcrm.xx_tm_nam_terr_rsc_dtls
+WITH rowid, 
+     primary key,
+     sequence(NAMED_ACCT_TERR_ID, RESOURCE_ID, RESOURCE_ROLE_ID, GROUP_ID,
+              start_date_active, end_date_active, status, attribute20, last_update_date
+             )
+including new values;
+
+
+CREATE MATERIALIZED VIEW LOG ON xxcrm.xx_tm_nam_terr_defn
+WITH rowid, 
+     primary key,
+     sequence(named_acct_terr_name,named_acct_terr_desc,
+              source_territory_id, start_date_active, end_date_active, status, last_update_date)
+including new values;
+
+
+CREATE MATERIALIZED VIEW LOG ON xxcrm.xxbi_activities
+WITH rowid, 
+     sequence(source_type, source_id, last_activity_date)
+including new values;
+
+
+CREATE MATERIALIZED VIEW LOG ON xxcrm.xxscs_top_cust_exstng_lead_opp
+WITH rowid, 
+     sequence(party_site_id, potential_id, potential_type_cd, last_update_date)
+including new values;
+
+
+CREATE MATERIALIZED VIEW LOG ON xxcrm.xxscs_potential_stg
+WITH rowid, 
+     primary key,
+     sequence(party_site_id, potential_type_cd, last_update_date)
+including new values;
+
+
+CREATE MATERIALIZED VIEW LOG ON xxcrm.xxscs_potential_new_rank
+WITH rowid, 
+     primary key,
+     sequence(potential_id, party_site_id, potential_type_cd, new_rank, last_update_date)
+including new values;
+
+create materialized view log on xxcrm.xxbi_terent_asgnmnt_fct_mv
+with rowid, sequence(resource_id, role_id, group_id, entity_type, entity_id)
+including new values;
+
+CREATE MATERIALIZED VIEW LOG ON xxcrm.xxbi_party_site_data_fct
+WITH ROWID, sequence(party_site_id)
+INCLUDING NEW VALUES;
+
+

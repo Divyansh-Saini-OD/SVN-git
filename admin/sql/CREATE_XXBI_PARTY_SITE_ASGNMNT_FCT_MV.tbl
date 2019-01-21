@@ -1,0 +1,189 @@
+-- $Id: CREATE_XXBI_PARTY_SITE_ASGNMNT_FCT_MV.tbl 69444 2010-03-20 10:44:38 -0400Z Kishor Jena $
+-- $Rev:  $
+-- $HeadURL: https://svn.na.odcorp.net/od/crm/trunk/xxcrm/admin/sql/CREATE_XXBI_PARTY_SITE_ASGNMNT_FCT_MV.tbl $
+-- $Author: Kishore Jena $
+-- $Date: 2010-03-20 10:44:38 -0400 (Thu, 09 Apr 2009) $
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        :  CREATE_XXBI_PARTY_SITE_ASGNMNT_FCT_MV.tbl          |
+-- | Description :  Party Site Assignments Fact MV                     |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author             Remarks                   |
+-- |=======   ==========  =============      ==========================|
+-- |1.0       20-Mar-2010 Kishore Jena       Initial draft version     |
+-- |                                                                   | 
+-- +===================================================================+
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+CREATE  MATERIALIZED VIEW XXCRM.XXBI_PARTY_SITE_ASGNMNT_FCT_MV
+PARALLEL 8
+BUILD DEFERRED
+REFRESH FORCE
+ON DEMAND 
+WITH PRIMARY KEY AS
+SELECT /*+ FULL(tas) PARALLEL(tas, 6) FULL(psd) PARALLEL(psd, 6) FULL(csd) PARALLEL(csd, 6)*/
+       tas.rowid tas_rowid,
+       psd.rowid psd_rowid,
+       csd.rowid csd_rowid,     
+       tas.access_id,
+       tas.named_acct_terr_rsc_id,
+       tas.named_acct_terr_id,
+       tas.resource_id,
+       tas.role_id,
+       tas.group_id,
+       tas.terr_defn_start_date,
+       tas.terr_defn_end_date,
+       tas.terr_rsc_start_date,
+       tas.terr_rsc_end_date,
+       tas.terr_ent_start_date,
+       tas.terr_ent_end_date,
+       psd.party_site_id,
+       psd.party_site_number,
+       psd.party_site_name,
+       psd.site_orig_sys_ref,
+       psd.party_site_account,  
+       psd.party_site_sequence,
+       psd.site_status,
+       psd.identifying_address_flag,
+       psd.site_start_dt,
+       psd.site_end_dt,
+       psd.site_create_dt,
+       psd.site_last_update_dt,
+       psd.party_id,
+       psd.party_number,
+       psd.party_name,
+       psd.party_type,
+       psd.od_party_type,
+       psd.party_revenue_band,
+       psd.party_orig_sys_ref,
+       psd.party_status,
+       psd.party_sic_code,
+       psd.party_create_dt,
+       psd.party_last_update_dt,
+       psd.location_id,
+       psd.address1,
+       psd.address2,
+       psd.address3,
+       psd.address4,
+       psd.city,
+       psd.county,
+       psd.state,
+       psd.province,
+       nvl(decode(psd.country,'US',psd.state,psd.province),'XX') state_province,
+       psd.postal_code,
+       psd.country,
+       psd.address_style,
+       psd.address_lines_phonetic,
+       psd.loc_orig_sys_ref,
+       psd.loc_create_dt,
+       psd.loc_last_update_dt,
+       psd.parent_start_dt,
+       psd.parent_end_dt,    
+       psd.parent_party_id,
+       psd.parent_party_name,
+       psd.gparent_start_dt,
+       psd.gparent_end_dt,  
+       psd.gparent_party_id,
+       psd.gparent_party_name,
+       psd.hpse1_id,
+       psd.cust_create_date,
+       psd.hpse2_id,
+       psd.site_wcw,
+       psd.od_site_wcw,
+       psd.site_duns_number,
+       psd.od_site_full_sic_code,
+       psd.od_site_sic_code,
+       psd.su1_id,
+       psd.su2_id,
+       psd.site_use,
+       psd.cust_account_id,
+       psd.acct_name,
+       psd.orcl_acct_number,
+       psd.acct_customer_type,
+       psd.acct_osr,
+       psd.aops_customer_id,
+       psd.acct_status,
+       psd.od_acct_customer_type,
+       psd.org_type,
+       psd.org_number,      
+       psd.org_site_number,      
+       psd.org_site_status,      
+       psd.acct_create_dt,
+       psd.acct_last_update_dt,
+       psd.cust_acct_site_id,
+       psd.acct_site_osr,
+       psd.acct_site_status,
+       psd.acct_site_create_dt,
+       psd.acct_site_last_update_dt,
+       psd.site_orig_system_reference,
+       psd.site_account,  
+       psd.site_sequence,
+       psd.cust_account_profile_id,
+       psd.acct_prof_site_use_id,
+       psd.ab_flag,
+       psd.collector_id,
+       psd.exposure_segment,
+       psd.term_id,       
+       psd.pmt_term,
+       psd.pmt_freq,
+       psd.pmt_report_day,
+       psd.language,
+       psd.pmt_term_descr,
+       psd.extension_id,       
+       psd.acct_bldc_dlvry_method,
+       psd.acct_bldc_freq,
+       psd.acct_bldc_pmt_term,
+       psd.last_activity_date,
+       psd.create_view_lead_oppty,
+       psd.loyalty_code_asgnmnt_id,
+       psd.cust_loyalty_code,
+       psd.segmnt_code_asgnmnt_id,
+       psd.cust_segment_code,
+       psd.potential_id,
+       psd.potential_type_cd,
+       psd.potential_type_nm,
+       psd.comparable_potential_amt,
+       psd.account_site_rnk,
+       NVL(xnr.new_rank, psd.site_rank) site_rank,
+       csd.job_title contact_title,
+       csd.party_name contact_name,
+       csd.formated_phone contact_phone,
+       csd.org_contact_id,                                                                                  
+       csd.rel_party_id,                                                                                      
+       csd.relationship_id,
+       csd.per_party_id 
+FROM   xxcrm.xxbi_terent_asgnmnt_fct    tas,
+       xxcrm.xxbi_party_site_data_fct   psd,
+       xxcrm.xxbi_last_site_contact_mv  csd,
+       xxcrm.xxscs_potential_new_rank   xnr
+WHERE  tas.entity_type      = 'PARTY_SITE'
+  AND  psd.party_site_id    = tas.entity_id
+  AND  csd.party_site_id(+) = psd.party_site_id
+  AND  xnr.party_site_id(+) = psd.party_site_id
+  AND  xnr.potential_id(+)  = psd.potential_id
+  AND  xnr.potential_type_cd(+) = psd.potential_type_cd;
+
+
+GRANT ALL ON XXCRM.XXBI_PARTY_SITE_ASGNMNT_FCT_MV TO APPS;
+
+GRANT ALL ON XXCRM.XXBI_PARTY_SITE_ASGNMNT_FCT_MV TO XXDATA_STAGE;
+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+--EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
+

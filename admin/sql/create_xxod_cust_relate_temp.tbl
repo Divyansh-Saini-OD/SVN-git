@@ -1,0 +1,10 @@
+create table xxcrm.xxod_cust_relate_temp
+(
+parent_id NUMBER(10) NOT NULL,
+child_id NUMBER(10) NOT NULL,
+OP VARCHAR2(1),
+subject_id NUMBER(15),
+object_id NUMBER(15)
+);
+
+grant ALL on xxcrm.xxod_cust_relate_temp TO APPS; 

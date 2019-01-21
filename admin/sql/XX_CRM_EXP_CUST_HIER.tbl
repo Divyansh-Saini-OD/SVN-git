@@ -1,0 +1,32 @@
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify                                           |
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_CUST_HIER.tbl                                                     |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        26-Aug-2011     Indra Varada        Initial version                              |
+-- +============================================================================================+
+ 
+ CREATE TABLE "XXCRM"."XX_CRM_EXP_CUST_HIER" 
+   (	"ORACLE_PARTY_ID" NUMBER, 
+	"GPARENT_GPID" VARCHAR2(20 CHAR), 
+	"AOPS_PARENT_CUST_ID" VARCHAR2(20 CHAR), 
+	"PARENT_ID" NUMBER, 
+	"RECORD_ID" VARCHAR2(20 CHAR), 
+	"ERROR_MSG" VARCHAR2(2000 CHAR), 
+	"LOAD_STATUS" VARCHAR2(20 CHAR), 
+	"BATCH_ID" NUMBER, 
+	"SFDC_RECORD_TYPE_ID" VARCHAR2(100 CHAR)
+   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)
+  TABLESPACE "USERS" ;
+
+ GRANT ALL ON XXCRM.XX_CRM_EXP_CUST_HIER TO APPS;
+  
+ SHOW ERRORS;

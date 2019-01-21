@@ -1,0 +1,144 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1550" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="PageLayoutRN" amDefName="od.oracle.apps.xxcrm.addattr.account.server.ODAccountSPCCardAM" windowTitle="Additional Attributes: Accounts: SPC Card Information" title="Additional Attributes: Accounts: SPC Card Information" controllerClass="od.oracle.apps.xxcrm.addattr.account.webui.ODAccountSPCCardCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:query id="QueryRN" mode="autoCustomizationCriteria" dispSimple="true" controllerClass="od.oracle.apps.xxcrm.addattr.account.webui.ODAccountSPCCardQueryCO">
+               <ui:contents>
+                  <oa:advancedTable id="TableRN" viewName="ODCustAcctExtVO1">
+                     <ui:contents>
+                        <oa:column id="column1">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader1" prompt="SPC Card #"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageTextInput id="SPCCardNum" viewAttr="NExtAttr1" prompt="SPC Card #" dataType="NUMBER" queryable="true" selectiveSearchCriteria="true"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="column2">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader2" prompt="Transaction Limit"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageTextInput id="TrnLimit" dataType="NUMBER" viewAttr="NExtAttr2" prompt="Transaction Limit"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="column3">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader3" prompt="Daily Transaction Limit"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageTextInput id="DailyTrnLimit" dataType="NUMBER" viewAttr="NExtAttr3" prompt="Daily Transaction Limit"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="column4">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader4" prompt="Transactions per Day"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageTextInput id="TrnPerDay" dataType="NUMBER" viewAttr="NExtAttr4" prompt="Transactions per Day"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="column5">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader5" prompt="Credit Code/ Status"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageTextInput id="CreditCodeStatus" viewAttr="CExtAttr1" prompt="Credit Code/ Status"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="column6">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader6" prompt="Tender Code"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageLovInput id="TenderCode" viewAttr="CExtAttr2" prompt="Tender Code">
+                                 <lovContents>
+                                    <oa:listOfValues id="LovRN">
+                                       <ui:contents>
+                                          <oa:table name="LovRN" id="LovTableRN">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="InternalName" viewName="ODTenderCodeLovVO1" viewAttr="InternalName" prompt="Tender Code" queryable="true"/>
+                                                <oa:messageStyledText id="DisplayName" viewName="ODTenderCodeLovVO1" viewAttr="DisplayName" prompt="Tender Code Name" queryable="true"/>
+                                             </ui:contents>
+                                          </oa:table>
+                                       </ui:contents>
+                                    </oa:listOfValues>
+                                 </lovContents>
+                                 <lovMappings>
+                                    <lovMap id="TenderCodeLovMap" lovItem="InternalName" resultTo="TenderCode" criteriaFrom="TenderCode"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="column7">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader7" prompt="CDH Batch ID"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageTextInput id="CDHBatchID" viewAttr="NExtAttr20" prompt="CDH Batch ID"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="column8">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="sortableHeader8" prompt="Delete"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:image id="DeleteImg" prompt="Delete" destination="" source="deleteicon_enabled.gif">
+                                 <ui:primaryClientAction>
+                                    <ui:fireAction event="deleteSPCRow">
+                                       <ui:parameters>
+                                          <ui:parameter key="ExtnID" value="${oa.ODCustAcctExtVO1.ExtensionId}"/>
+                                       </ui:parameters>
+                                    </ui:fireAction>
+                                 </ui:primaryClientAction>
+                              </oa:image>
+                           </ui:contents>
+                        </oa:column>
+                     </ui:contents>
+                     <ui:footer>
+                        <oa:tableFooter id="tableFooter1">
+                           <ui:contents>
+                              <oa:addTableRow id="addTableRow1" rows="1"/>
+                           </ui:contents>
+                        </oa:tableFooter>
+                     </ui:footer>
+                  </oa:advancedTable>
+               </ui:contents>
+               <oa:simpleSearchPanel>
+                  <oa:header text="Simple Search" id="region2">
+                     <ui:contents>
+                        <oa:messageComponentLayout id="region1">
+                           <ui:contents>
+                              <oa:messageTextInput id="SPCCardNumSearch" dataType="NUMBER" prompt="SPC Card #" required="yes"/>
+                           </ui:contents>
+                        </oa:messageComponentLayout>
+                     </ui:contents>
+                  </oa:header>
+               </oa:simpleSearchPanel>
+               <oa:simpleSearchMappings>
+                  <oa:queryCriteriaMap id="SPCCardNumSearchMap" criteriaItem="SPCCardNumSearch" resultsItem="SPCCardNum"/>
+               </oa:simpleSearchMappings>
+            </oa:query>
+            <oa:pageButtonBar id="PageButtonRN">
+               <ui:contents>
+                  <oa:button id="CommitBtn" text="Save" prompt="Save">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="saveChanges"/>
+                     </ui:primaryClientAction>
+                  </oa:button>
+                  <oa:button id="RollbackBtn" text="Restore" prompt="Restore">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="rollbackChanges"/>
+                     </ui:primaryClientAction>
+                  </oa:button>
+               </ui:contents>
+            </oa:pageButtonBar>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

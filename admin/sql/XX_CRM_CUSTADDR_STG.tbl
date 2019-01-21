@@ -1,0 +1,65 @@
+--+=====================================================================+
+--|                   Office Depot - Project FIT                        |
+--|          Capgemini/Office Depot/Consulting Organization             |
+--+=====================================================================+
+--|                                                                     |
+--|Rice        : 106313                                                 |
+--|File Name   : XX_CRM_CUSTADDR_STG.tbl                                |
+--|File Path   : $XXCRM_TOP/admin/sql                                   |
+--|Schema      : XXCRM                                                  |
+--|                                                                     |
+--|Version    Date           Author                       Remarks       |
+--|=======   ======        ====================          =========      |
+--| 1.0    06-Sep-2011     Balakrishna Bolikonda       Initial version  |
+--|                                                                     |
+--+=====================================================================+
+
+SET VERIFY OFF
+WHENEVER SQLERROR CONTINUE
+                  
+CREATE TABLE XXCRM.XX_CRM_CUSTADDR_STG (
+ site_use_id                    NUMBER(15)
+,org_id                          NUMBER(15)
+,cust_account_id                 NUMBER(15)
+,address1                        VARCHAR2(240)
+,address2                        VARCHAR2(240)
+,address3                        VARCHAR2(240)
+,address4                        VARCHAR2(240)
+,postal_code                     VARCHAR2(60)
+,city                            VARCHAR2(60)
+,state                           VARCHAR2(60)
+,province                        VARCHAR2(60)
+,country                         VARCHAR2(60)
+,party_site_number               VARCHAR2(30)
+,primary_flag                    VARCHAR2(1)
+,sequence                        VARCHAR2(240)
+,orig_system_reference           VARCHAR2(240)
+,location                        VARCHAR2(40)
+,collector_number                VARCHAR2(30)
+,collector_name                  VARCHAR2(240)
+,dunning_letters                 VARCHAR2(1)
+,send_statements                 VARCHAR2(1)
+,credit_limit_usd                NUMBER
+,credit_limit_cad                NUMBER
+,profile_class_name              VARCHAR2(30)
+,consolidated_billing            VARCHAR2(1)
+,cons_billing_formats_type       VARCHAR2(30)
+,bill_in_the_box                 VARCHAR2(150)
+,billing_currency                VARCHAR2(150)
+,dunning_delivery                VARCHAR2(150)
+,statement_delivery              VARCHAR2(150)
+,taxware_entity_code             VARCHAR2(150)
+,remit_to_sales_channel          VARCHAR2(150)
+,edi_location                    VARCHAR2(40)
+,addressee                       VARCHAR2(360)
+,identifying_address             VARCHAR2(1)
+,acct_site_status                VARCHAR2(1)
+,site_use_status                 VARCHAR2(1)
+,site_use_code                   VARCHAR2(30)
+,last_updated_by                 NUMBER(15) NOT NULL
+,creation_date                   DATE       NOT NULL
+,request_id                      NUMBER(15)     
+,created_by                      NUMBER(15) NOT NULL
+,last_update_date                DATE   NOT NULL
+,program_id                      NUMBER(15)
+);

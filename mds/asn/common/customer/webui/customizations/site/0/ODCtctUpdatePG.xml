@@ -1,0 +1,10 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.5.4.89_560" xml:lang="en-US" customizes="/od/oracle/apps/xxcrm/asn/common/customer/webui/ODCtctUpdatePG" MDSActiveDoc="false">
+   <modifications>
+      <modify element="ASNNotesRN.ASNNoteStatusRow" rendered="false"/>
+      <modify element="ASNCtctUpdateHdrRN.FirstName" required="yes"/>
+      <modify element="ASNCtctUpdateHdrRN.LastName" required="yes"/>
+      <modify element="ASNAddrViewRN.addressViewStack" rendered="false"/>
+      <modify element="ASNPhnViewRN.Usage" rendered="false"/>
+   </modifications>
+</customization>

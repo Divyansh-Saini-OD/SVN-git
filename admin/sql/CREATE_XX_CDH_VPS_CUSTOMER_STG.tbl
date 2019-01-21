@@ -1,0 +1,101 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - VPS                         		   |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_CDH_VPS_CUSTOMER_STG.tbl              	   |
+-- | Description      :Custom table for TCA Entities statistics            |
+-- |                                                                       |
+-- |                    Note:This script should be executed from           |
+-- |                    XXCRM schema                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |DRAFT 1a 13-JUN-2017 Thejaswini Rajula  Initial draft version          |
+-- +=======================================================================+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE XXCRM.XX_CDH_VPS_CUSTOMER_STG';
+EXCEPTION
+  WHEN OTHERS THEN NULL;
+END;
+/
+-- ------------------------------------------------------
+--      Create Custom Table XX_CDH_VPS_CUSTOMER_STG --
+-- ------------------------------------------------------
+
+CREATE TABLE XXCRM.XX_CDH_VPS_CUSTOMER_STG
+  (
+    VENDOR_SITE_CODE          VARCHAR2(30 BYTE),
+    VENDOR_NUM                VARCHAR2(360 BYTE),
+    GLOBAL_SUPPLIER_NUM       VARCHAR2(360 BYTE),
+    VPS_CUST_TYPE             VARCHAR2(150 BYTE),
+    VPS_AR_SUP_SITE_CAT       VARCHAR2(150 BYTE),
+    VPS_BILLING_FREQUENCY     VARCHAR2(150 BYTE),
+    VPS_BILLING_EXCEPTION     VARCHAR2(150 BYTE),
+    VPS_AP_NETTING_EXCEPTION  VARCHAR2(150 BYTE),
+    VPS_SENSITIVE_VENDOR_FLAG VARCHAR2(150 BYTE),
+    VPS_VENDOR_REPORT_FLAG    VARCHAR2(150 BYTE),
+    VPS_VENDOR_REPORT_FMT     VARCHAR2(150 BYTE),
+    VPS_INV_BACKUP            VARCHAR2(150 BYTE),
+    VPS_TIERED_PROGRAM        VARCHAR2(150 BYTE),
+    VPS_FOB_DEST_ORIGIN       VARCHAR2(150 BYTE),
+    VPS_POST_AUDIT_TF         VARCHAR2(150 BYTE),
+    VPS_SUPPLIER_SITE_PAY_GRP VARCHAR2(150 BYTE),
+    CONTACT_FNAME1            VARCHAR2(360 BYTE),
+    CONTACT_LNAME1            VARCHAR2(360 BYTE),
+    CONTACT_JOB_TITLE1        VARCHAR2(100 BYTE),
+    CONTACT_EMAIL1            VARCHAR2(2000 BYTE),
+    CONTACT_PHONE1            VARCHAR2(40 BYTE),
+    CONTACT_FNAME2            VARCHAR2(360 BYTE),
+    CONTACT_LNAME2            VARCHAR2(360 BYTE),
+    CONTACT_JOB_TITLE2        VARCHAR2(100 BYTE),
+    CONTACT_EMAIL2            VARCHAR2(2000 BYTE),
+    CONTACT_PHONE2            VARCHAR2(40 BYTE),
+    CONTACT_FNAME3            VARCHAR2(360 BYTE),
+    CONTACT_LNAME3            VARCHAR2(360 BYTE),
+    CONTACT_JOB_TITLE3        VARCHAR2(100 BYTE),
+    CONTACT_EMAIL3            VARCHAR2(2000 BYTE),
+    CONTACT_PHONE3            VARCHAR2(40 BYTE),
+    CONTACT_FNAME4            VARCHAR2(360 BYTE),
+    CONTACT_LNAME4            VARCHAR2(360 BYTE),
+    CONTACT_JOB_TITLE4        VARCHAR2(100 BYTE),
+    CONTACT_EMAIL4            VARCHAR2(2000 BYTE),
+    CONTACT_PHONE4            VARCHAR2(40 BYTE),
+    CONTACT_FNAME5            VARCHAR2(360 BYTE),
+    CONTACT_LNAME5            VARCHAR2(360 BYTE),
+    CONTACT_JOB_TITLE5        VARCHAR2(100 BYTE),
+    CONTACT_EMAIL5            VARCHAR2(2000 BYTE),
+    CONTACT_PHONE5            VARCHAR2(40 BYTE),
+    INTERFACE_ID              NUMBER,
+    REQUEST_ID                NUMBER,
+    RECORD_STATUS             VARCHAR2(1 BYTE),
+    ERROR_MESSAGE             VARCHAR2(2000 BYTE),
+    GLOBAL_SUPPLIER_FLAG      VARCHAR2(1 BYTE),
+    VALIDATE_PROCESS_DATA     VARCHAR2(150 BYTE),
+    LAST_UPDATE_DATE          DATE,
+    LAST_UPDATED_BY           NUMBER(15,0),
+    CREATION_DATE             DATE,
+    CREATED_BY                NUMBER(15,0)
+  );
+    
+------------------------------------------------------
+-- Adding Grants to APPS.                           --
+------------------------------------------------------
+GRANT ALL ON XXCRM.XX_CDH_VPS_CUSTOMER_STG TO APPS WITH GRANT OPTION;
+
+GRANT SELECT ON XXCRM.XX_CDH_VPS_CUSTOMER_STG TO ERP_SYSTEM_TABLE_SELECT_ROLE;
+/
+
+SHOW ERRORS;

@@ -1,0 +1,155 @@
+# $Header$
+
+# dbdrv: exec fnd bin FNDLOAD bin &phase=daa+51 checkfile:~PROD:~PATH:~FILE &ui_apps 0 Y UPLOAD @FND:patch/115/import/aflvmlu.lct @~PROD:~PATH/~FILE
+LANGUAGE = "US"
+LDRCONFIG = "aflvmlu.lct 115.20"
+
+#Source Database GSIDEV01
+
+#RELEASE_NAME 11.5.10.2
+
+# -- Begin Entity Definitions -- 
+
+DEFINE FND_LOOKUP_TYPE
+  KEY   VIEW_APPSNAME                   VARCHAR2(50)
+  KEY   LOOKUP_TYPE                     VARCHAR2(30)
+  CTX   APPLICATION_SHORT_NAME          VARCHAR2(50)
+  BASE  CUSTOMIZATION_LEVEL             VARCHAR2(1)
+  CTX   OWNER                           VARCHAR2(4000)
+  BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+  TRANS MEANING                         VARCHAR2(80)
+  TRANS DESCRIPTION                     VARCHAR2(240)
+
+  DEFINE FND_LOOKUP_VALUE
+    KEY   LOOKUP_CODE                     VARCHAR2(30)
+    BASE  ENABLED_FLAG                    VARCHAR2(1)
+    BASE  START_DATE_ACTIVE               VARCHAR2(10)
+    BASE  END_DATE_ACTIVE                 VARCHAR2(10)
+    BASE  TERRITORY_CODE                  VARCHAR2(2)
+    BASE  TAG                             VARCHAR2(150)
+    BASE  ATTRIBUTE_CATEGORY              VARCHAR2(30)
+    BASE  ATTRIBUTE1                      VARCHAR2(150)
+    BASE  ATTRIBUTE2                      VARCHAR2(150)
+    BASE  ATTRIBUTE3                      VARCHAR2(150)
+    BASE  ATTRIBUTE4                      VARCHAR2(150)
+    BASE  ATTRIBUTE5                      VARCHAR2(150)
+    BASE  ATTRIBUTE6                      VARCHAR2(150)
+    BASE  ATTRIBUTE7                      VARCHAR2(150)
+    BASE  ATTRIBUTE8                      VARCHAR2(150)
+    BASE  ATTRIBUTE9                      VARCHAR2(150)
+    BASE  ATTRIBUTE10                     VARCHAR2(150)
+    BASE  ATTRIBUTE11                     VARCHAR2(150)
+    BASE  ATTRIBUTE12                     VARCHAR2(150)
+    BASE  ATTRIBUTE13                     VARCHAR2(150)
+    BASE  ATTRIBUTE14                     VARCHAR2(150)
+    BASE  ATTRIBUTE15                     VARCHAR2(150)
+    CTX   OWNER                           VARCHAR2(4000)
+    BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+    TRANS MEANING                         VARCHAR2(80)
+    TRANS DESCRIPTION                     VARCHAR2(240)
+  END FND_LOOKUP_VALUE
+END FND_LOOKUP_TYPE
+
+# -- End Entity Definitions -- 
+
+
+BEGIN FND_LOOKUP_TYPE "FND" "XX_SFDC_SEC_PROFILE_IDS"
+  APPLICATION_SHORT_NAME = "XXCRM"
+  CUSTOMIZATION_LEVEL = "U"
+  OWNER = "263403"
+  LAST_UPDATE_DATE = "2011/09/20"
+  MEANING = "XX_SFDC_SEC_PROFILE_IDS"
+  DESCRIPTION = "Salesforce.com security profiles"
+
+  BEGIN FND_LOOKUP_VALUE "CUSTOMER SERVICE"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2011/10/21"
+    TAG = "00eE0000000I0crIAC"
+    OWNER = "263403"
+    LAST_UPDATE_DATE = "2011/10/28"
+    MEANING = "Customer Service"
+    DESCRIPTION = "Customer Service (View only)"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "EXECUTIVE"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2011/10/21"
+    TAG = "00eE0000000I0cwIAC"
+    OWNER = "263403"
+    LAST_UPDATE_DATE = "2011/10/28"
+    MEANING = "Executive"
+    DESCRIPTION = "Executive Management"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "INSIDE_SALES"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2011/10/21"
+    TAG = "00eE0000000I0cXIAS"
+    OWNER = "263403"
+    LAST_UPDATE_DATE = "2011/10/28"
+    MEANING = "Inside Sales"
+    DESCRIPTION = "Inside Sales Rep & 1st level Manager"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "FIELD_SALES"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2011/10/21"
+    TAG = "00eE0000000HzxrIAC"
+    OWNER = "263403"
+    LAST_UPDATE_DATE = "2011/10/28"
+    MEANING = "Field Sales"
+    DESCRIPTION = "Field Sales Rep & 1st level Manager"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "MARKETING"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2011/10/21"
+    TAG = "00eE0000000I0ccIAC"
+    OWNER = "263403"
+    LAST_UPDATE_DATE = "2011/10/28"
+    MEANING = "Marketing"
+    DESCRIPTION = "Marketing Department"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "OVERLAY_SALES"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2011/10/21"
+    TAG = "00eE0000000I0chIAC"
+    OWNER = "263403"
+    LAST_UPDATE_DATE = "2011/10/28"
+    MEANING = "Overlay Sales"
+    DESCRIPTION = "Product Specialists"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "PRICING"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2011/10/21"
+    TAG = "00eE0000000I0cmIAC"
+    OWNER = "263403"
+    LAST_UPDATE_DATE = "2011/10/28"
+    MEANING = "Pricing"
+    DESCRIPTION = "Bids & Pricing"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "SALES_ADMIN"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2011/10/21"
+    TAG = "00eE0000000I0d1IAC"
+    OWNER = "263403"
+    LAST_UPDATE_DATE = "2011/10/28"
+    MEANING = "Sales Admin"
+    DESCRIPTION = "Proxies to 1st level Manager's"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "SALES_OPS"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2011/10/21"
+    TAG = "00eE0000000I0d6IAC"
+    OWNER = "263403"
+    LAST_UPDATE_DATE = "2011/10/28"
+    MEANING = "Sales Ops"
+    DESCRIPTION = "Sales Operations"
+  END FND_LOOKUP_VALUE
+  
+END FND_LOOKUP_TYPE
+

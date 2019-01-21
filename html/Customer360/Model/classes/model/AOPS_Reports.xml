@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<JavaBean xmlns="http://xmlns.oracle.com/adfm/beanmodel" version="11.1.1.56.60"
+          id="AOPS_Reports" Package="model" BeanClass="model.AOPS_Reports"
+          isJavaBased="false">
+  <AccessorAttribute id="initiate_parameters" IsCollection="false"
+                     BeanClass="AOPS_Reports.Types.initiate"/>
+  <MethodAccessor id="initiate">
+    <ParameterInfo id="ReplyTo" Type="java.lang.Object" isStructured="false">
+      <Properties>
+        <Property Name="__SET_INITIAL_VALUE" Value="true"/>
+      </Properties>
+    </ParameterInfo>
+    <ParameterInfo id="MessageID" Type="java.lang.String" isStructured="false"/>
+    <ParameterInfo id="payload" Type="java.lang.Object" isStructured="false">
+      <Properties>
+        <Property Name="__SET_INITIAL_VALUE" Value="true"/>
+      </Properties>
+    </ParameterInfo>
+  </MethodAccessor>
+</JavaBean>

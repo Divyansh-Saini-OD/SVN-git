@@ -1,0 +1,308 @@
+# $Header$
+
+# dbdrv: exec fnd bin FNDLOAD bin &phase=daa+51 checkfile:~PROD:~PATH:~FILE &ui_apps 0 Y UPLOAD @FND:patch/115/import/aflvmlu.lct @~PROD:~PATH/~FILE
+LANGUAGE = "US"
+LDRCONFIG = "aflvmlu.lct 115.20"
+
+#Source Database GSIDEV01
+
+#RELEASE_NAME 11.5.10.2
+
+# -- Begin Entity Definitions -- 
+
+DEFINE FND_LOOKUP_TYPE
+  KEY   VIEW_APPSNAME                   VARCHAR2(50)
+  KEY   LOOKUP_TYPE                     VARCHAR2(30)
+  CTX   APPLICATION_SHORT_NAME          VARCHAR2(50)
+  BASE  CUSTOMIZATION_LEVEL             VARCHAR2(1)
+  CTX   OWNER                           VARCHAR2(4000)
+  BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+  TRANS MEANING                         VARCHAR2(80)
+  TRANS DESCRIPTION                     VARCHAR2(240)
+
+  DEFINE FND_LOOKUP_VALUE
+    KEY   LOOKUP_CODE                     VARCHAR2(30)
+    BASE  ENABLED_FLAG                    VARCHAR2(1)
+    BASE  START_DATE_ACTIVE               VARCHAR2(10)
+    BASE  END_DATE_ACTIVE                 VARCHAR2(10)
+    BASE  TERRITORY_CODE                  VARCHAR2(2)
+    BASE  TAG                             VARCHAR2(150)
+    BASE  ATTRIBUTE_CATEGORY              VARCHAR2(30)
+    BASE  ATTRIBUTE1                      VARCHAR2(150)
+    BASE  ATTRIBUTE2                      VARCHAR2(150)
+    BASE  ATTRIBUTE3                      VARCHAR2(150)
+    BASE  ATTRIBUTE4                      VARCHAR2(150)
+    BASE  ATTRIBUTE5                      VARCHAR2(150)
+    BASE  ATTRIBUTE6                      VARCHAR2(150)
+    BASE  ATTRIBUTE7                      VARCHAR2(150)
+    BASE  ATTRIBUTE8                      VARCHAR2(150)
+    BASE  ATTRIBUTE9                      VARCHAR2(150)
+    BASE  ATTRIBUTE10                     VARCHAR2(150)
+    BASE  ATTRIBUTE11                     VARCHAR2(150)
+    BASE  ATTRIBUTE12                     VARCHAR2(150)
+    BASE  ATTRIBUTE13                     VARCHAR2(150)
+    BASE  ATTRIBUTE14                     VARCHAR2(150)
+    BASE  ATTRIBUTE15                     VARCHAR2(150)
+    CTX   OWNER                           VARCHAR2(4000)
+    BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+    TRANS MEANING                         VARCHAR2(80)
+    TRANS DESCRIPTION                     VARCHAR2(240)
+  END FND_LOOKUP_VALUE
+END FND_LOOKUP_TYPE
+
+# -- End Entity Definitions -- 
+
+
+BEGIN FND_LOOKUP_TYPE "FND" "XXOD_EBL_RECORD_TYPE"
+  APPLICATION_SHORT_NAME = "XXCRM"
+  CUSTOMIZATION_LEVEL = "U"
+  OWNER = "571015"
+  LAST_UPDATE_DATE = "2010/02/17"
+  MEANING = "OD EBill Record Type"
+  DESCRIPTION = "OD EBill Record Type"
+
+  BEGIN FND_LOOKUP_VALUE "000"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2010/04/09"
+    OWNER = "574723"
+    LAST_UPDATE_DATE = "2010/04/09"
+    MEANING = "Record Type used in eXLS"
+    DESCRIPTION = "Record Type used in eXLS"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "020"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2010/04/09"
+    OWNER = "574723"
+    LAST_UPDATE_DATE = "2010/04/09"
+    MEANING = "Account Header"
+    DESCRIPTION = "Multiple in case of Merge, otherwise once"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "010"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2010/04/09"
+    OWNER = "574723"
+    LAST_UPDATE_DATE = "2010/04/09"
+    MEANING = "Document Header"
+    DESCRIPTION = "Only once in a file"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "030"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2010/04/09"
+    OWNER = "574723"
+    LAST_UPDATE_DATE = "2010/04/09"
+    MEANING = "Site Header (Bill To)"
+    DESCRIPTION = "Multiple per Account"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "070"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2010/04/09"
+    OWNER = "574723"
+    LAST_UPDATE_DATE = "2010/04/09"
+    MEANING = "Tiered Discount Line"
+    DESCRIPTION = "Once per transaction"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "040"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2010/04/09"
+    OWNER = "574723"
+    LAST_UPDATE_DATE = "2010/04/09"
+    MEANING = "Consolidated Bill Header"
+    DESCRIPTION = "Multiple in case of Merge, otherwise once"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "080"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2010/04/09"
+    OWNER = "574723"
+    LAST_UPDATE_DATE = "2010/04/09"
+    MEANING = "Bulk Discount Line"
+    DESCRIPTION = "Once per transaction"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "060"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2010/04/09"
+    OWNER = "574723"
+    LAST_UPDATE_DATE = "2010/04/09"
+    MEANING = "SKU Line"
+    DESCRIPTION = "Multiple per transaction"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "090"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2010/04/09"
+    OWNER = "574723"
+    LAST_UPDATE_DATE = "2010/04/09"
+    MEANING = "Delivery Charges Line"
+    DESCRIPTION = "Once per transaction"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "120"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2010/04/09"
+    OWNER = "574723"
+    LAST_UPDATE_DATE = "2010/04/09"
+    MEANING = "GST Line"
+    DESCRIPTION = "Once per transaction"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "240"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2010/04/09"
+    OWNER = "574723"
+    LAST_UPDATE_DATE = "2010/04/09"
+    MEANING = "Document Trailer"
+    DESCRIPTION = "Once per Document"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "230"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2010/04/09"
+    OWNER = "574723"
+    LAST_UPDATE_DATE = "2010/04/09"
+    MEANING = "Account Trailer"
+    DESCRIPTION = "Once per Account"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "100"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2010/04/09"
+    OWNER = "574723"
+    LAST_UPDATE_DATE = "2010/04/09"
+    MEANING = "Tax Line"
+    DESCRIPTION = "Once per transaction"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "110"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2010/04/09"
+    OWNER = "574723"
+    LAST_UPDATE_DATE = "2010/04/09"
+    MEANING = "PST Line"
+    DESCRIPTION = "Once per transaction"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "130"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2010/04/09"
+    OWNER = "574723"
+    LAST_UPDATE_DATE = "2010/04/09"
+    MEANING = "HST Line"
+    DESCRIPTION = "Once per transaction"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "140"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2010/04/09"
+    OWNER = "574723"
+    LAST_UPDATE_DATE = "2010/04/09"
+    MEANING = "QST Line"
+    DESCRIPTION = "Once per transaction"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "150"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2010/04/09"
+    OWNER = "574723"
+    LAST_UPDATE_DATE = "2010/04/09"
+    MEANING = "Coupon Line"
+    DESCRIPTION = "Once per transaction"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "160"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2010/04/09"
+    OWNER = "574723"
+    LAST_UPDATE_DATE = "2010/04/09"
+    MEANING = "Miscellaneous Line"
+    DESCRIPTION = "Once per transaction"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "170"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2010/04/09"
+    OWNER = "574723"
+    LAST_UPDATE_DATE = "2010/04/09"
+    MEANING = "Gift Card Line"
+    DESCRIPTION = "Once per transaction"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "180"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2010/04/09"
+    OWNER = "574723"
+    LAST_UPDATE_DATE = "2010/04/09"
+    MEANING = "Tender"
+    DESCRIPTION = "Multiple per transaction"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "190"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2010/04/09"
+    OWNER = "574723"
+    LAST_UPDATE_DATE = "2010/04/09"
+    MEANING = "Distribution Line"
+    DESCRIPTION = "Multiple per transaction"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "200"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2010/04/09"
+    OWNER = "574723"
+    LAST_UPDATE_DATE = "2010/04/09"
+    MEANING = "Remittance"
+    DESCRIPTION = "Once per Bill To"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "210"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2010/04/09"
+    OWNER = "574723"
+    LAST_UPDATE_DATE = "2010/04/09"
+    MEANING = "Transaction Trailer"
+    DESCRIPTION = "Once per transaction"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "220"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2010/04/09"
+    OWNER = "574723"
+    LAST_UPDATE_DATE = "2010/04/09"
+    MEANING = "Consolidated Bill Trailer"
+    DESCRIPTION = "Once per Consolidated Bill"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "001"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2010/04/09"
+    OWNER = "574723"
+    LAST_UPDATE_DATE = "2010/04/09"
+    MEANING = "File Header"
+    DESCRIPTION = "Only once in a file"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "050"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2010/04/09"
+    OWNER = "574723"
+    LAST_UPDATE_DATE = "2010/04/09"
+    MEANING = "Transaction Header"
+    DESCRIPTION = "Once per transaction"
+  END FND_LOOKUP_VALUE
+  
+  BEGIN FND_LOOKUP_VALUE "999"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2010/04/09"
+    OWNER = "574723"
+    LAST_UPDATE_DATE = "2010/04/09"
+    MEANING = "File Trailer"
+    DESCRIPTION = "Once per File"
+  END FND_LOOKUP_VALUE
+  
+END FND_LOOKUP_TYPE
+

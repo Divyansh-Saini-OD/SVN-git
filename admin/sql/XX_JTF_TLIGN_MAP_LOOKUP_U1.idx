@@ -1,0 +1,37 @@
+-- +================================================================================+
+-- |                  Office Depot - Project Simplify                               |
+-- |                Oracle NAIO Consulting Organization                             |
+-- +================================================================================+
+-- | Name        : XX_JTF_TLIGN_MAP_LOOKUP_U1.idx                                   |
+-- | Rice ID     : I0405_Territories_Terralign_Inbound_Interface                    |
+-- | Description : XX_JTF_TLIGN_MAP_LOOKUP_U1 index Creation Script                 |
+-- |                                                                                |
+-- |                                                                                |
+-- |Change Record:                                                                  |
+-- |===============                                                                 |
+-- |Version   Date         Author                 Remarks                           |
+-- |========  ===========  =============          ===============================   |
+-- |DRAFT 1A  12-OCT-2007  Mohan Kalyanasundaram  Initial draft version             |
+-- |DRAFT 1B  07-JAN-2007  Hema Chikkanna         Incorporated changes as per OD    |
+-- |                                              Standards                         |
+-- +================================================================================+
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+PROMPT
+PROMPT Creating Unique INDEX XX_JTF_TLIGN_MAP_LOOKUP_U1
+PROMPT
+
+CREATE UNIQUE INDEX xx_jtf_tlign_map_lookup_u1 ON XX_JTF_TLIGN_MAP_LOOKUP( map_id );
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

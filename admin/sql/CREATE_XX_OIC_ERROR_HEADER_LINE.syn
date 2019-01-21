@@ -1,0 +1,44 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             : CREATE_XX_OIC_ERROR_HEADER_LINE.syn                |
+-- | Description      : synonym creation for ERROR tables and sequence     |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0	     01-Aug-07   Nageswara rao      Initial Draft Version          |
+-- +=======================================================================+
+
+-- ============================================================================
+-- Droping Synonym for Errors Objects
+-- ============================================================================
+
+--DROP SYNONYM APPS.xx_oic_error_headers
+--/
+--DROP SYNONYM APPS.xx_oic_error_lines
+--/
+--DROP SYNONYM APPS.xx_oic_error_headers_s
+--/
+--DROP SYNONYM APPS.xx_oic_error_lines_s
+--/
+-- ============================================================================
+-- Creating Synonym for Errors Objects
+-- ============================================================================
+
+CREATE OR REPLACE SYNONYM APPS.xx_oic_error_headers FOR xxcrm.xx_oic_error_headers 
+/ 
+CREATE OR REPLACE SYNONYM APPS.xx_oic_error_lines FOR xxcrm.xx_oic_error_lines
+/
+CREATE OR REPLACE SYNONYM APPS.xx_oic_error_headers_s FOR xxcrm.xx_oic_error_headers_s 
+/ 
+CREATE OR REPLACE SYNONYM APPS.xx_oic_error_lines_s FOR xxcrm.xx_oic_error_lines_s
+/

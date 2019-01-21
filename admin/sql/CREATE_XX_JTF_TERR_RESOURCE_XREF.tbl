@@ -1,0 +1,36 @@
+-- $Id$
+-- $Rev$
+-- $HeadURL$
+-- $Author$
+-- $Date$
+
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_JTF_TERR_RESOURCE_XREF.tbl                |
+-- | Description      :Table that maps territory name to sales rep         |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      30-Jul-2009 Phil Price         Initial version                |
+-- +=======================================================================+ 
+
+create table XX_JTF_TERR_RESOURCE_XREF
+                       (region_name        varchar2(100)  not null,
+                        territory_name     varchar2(100)  not null,
+                        employee_number    varchar2(30),
+                        rep_id             varchar2(20),
+                        employee_name      varchar2(240),
+                        created_by         number(15)     not null,
+                        creation_date      date           not null,
+                        last_updated_by    number(15)     not null,
+                        last_update_date   date           not null,
+                        last_update_login  number(15));
+
+grant all on XXCRM.XX_JTF_TERR_RESOURCE_XREF to APPS;
+

@@ -1,0 +1,39 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : XX_CRM_CONC_JOBS_DETAILS.idx                        |
+-- | Rice ID     : R1153_CRM_Concurrent_Monitor_Utilities              |
+-- | Description : XX_CRM_CONC_JOBS_DETAILS Table - Unique Index       |
+-- |               Creation Script.                                    |
+-- |               Columns :                                           |
+-- |                         REQUEST_ID                                |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1a 09-FEB-09    Sarah Justina  Initial draft version         |
+-- |1.1      21-Jan-09    Indra Varada   Modified to a Non uniue index |
+-- |                                     to accomodate new requirements|
+-- +===================================================================+
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+PROMPT
+PROMPT Creating INDEX XX_CRM_CONC_JOBS_DETAILS_N1
+PROMPT
+
+CREATE INDEX XX_CRM_CONC_JOBS_DETAILS_N1 ON XX_CRM_CONC_JOBS_DETAILS( REQUEST_ID );
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

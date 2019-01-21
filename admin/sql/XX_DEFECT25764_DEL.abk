@@ -1,0 +1,35 @@
+-- +===========================================================================+
+-- |                              Office Depot                                 |
+-- |                                                                           |
+-- +===========================================================================+
+-- | Name         : XX_DEFECT25764_DEL.sql                                     |
+-- | Rice Id      : DEFECT 25764                                               | 
+-- | Description  :                                                            |  
+-- | Purpose      : To remove personalization for VO substitution for          |
+-- |                TaskSummVO                                                 |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version    Date          Author               Remarks                      | 
+-- |=======    ==========    =================    =============================+
+-- |1.0        03-Dec-2013   Darshini G           Initial Version              |
+-- |                                                                           |
+-- +===========================================================================+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Deleting Document XX_DEFECT25764_DEL.sql
+PROMPT
+
+begin
+jdr_utils.deletedocument('/oracle/apps/jtf/cac/task/server/customizations/site/0/TaskSummVO');
+commit;
+end;
+/
+
+SHOW ERR

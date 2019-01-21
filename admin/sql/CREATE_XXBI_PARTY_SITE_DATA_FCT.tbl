@@ -1,0 +1,164 @@
+-- $Id: CREATE_XXBI_PARTY_SITE_DATA_FCT.TBL 69444 2009-04-09 14:44:38Z Indra Varada $
+-- $Rev: 69444 $
+-- $HeadURL: https://svn.na.odcorp.net/od/crm/trunk/xxcrm/admin/sql/CREATE_XXBI_PARTY_SITE_DATA_FCT.TBL $
+-- $Author: Kishore Jena $
+-- $Date: 2010-04-15 10:44:38 -0400 (Thu, 09 Apr 2009) $
+
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XXBI_PARTY_SITE_DATA_FCT Table                                             |--                                                                                          |--
+--| Program Name   : CREATE_XXBI_PARTY_SITE_DATA_FCT.TBL                                        |--
+--|                                                                                             |--
+--| Purpose        : Table for Party Site Fact, refreshe  on demand as needed                   |--
+--|                                                                                             |--
+--| Change History :                                                                            |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              05-Apr-2010       Kishore Jena            Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Table XXCRM.XXBI_PARTY_SITE_DATA_FCT......
+PROMPT
+
+
+CREATE TABLE XXCRM.XXBI_PARTY_SITE_DATA_FCT(
+PARTY_SITE_ID                          	NUMBER(15)	NOT NULL,
+PARTY_SITE_NUMBER                      	VARCHAR2(30),
+PARTY_SITE_NAME                        	VARCHAR2(240),
+SITE_ORIG_SYS_REF                      	VARCHAR2(240),
+PARTY_SITE_ACCOUNT                     	VARCHAR2(24),
+PARTY_SITE_SEQUENCE                    	VARCHAR2(15),
+SITE_STATUS                            	VARCHAR2(1),
+IDENTIFYING_ADDRESS_FLAG               	VARCHAR2(1),
+SITE_START_DT                          	DATE,
+SITE_END_DT                            	DATE,
+SITE_CREATE_DT                         	DATE,
+SITE_LAST_UPDATE_DT                    	DATE,
+PARTY_ID                               	NUMBER(15),
+PARTY_NUMBER                           	VARCHAR2(30),
+PARTY_NAME                             	VARCHAR2(360),
+PARTY_TYPE                             	VARCHAR2(30),
+OD_PARTY_TYPE                          	VARCHAR2(150),
+PARTY_REVENUE_BAND                     	VARCHAR2(150),
+PARTY_ORIG_SYS_REF                     	VARCHAR2(240),
+PARTY_STATUS                           	VARCHAR2(1),
+PARTY_SIC_CODE                         	VARCHAR2(30),
+PARTY_CREATE_DT                        	DATE,
+PARTY_LAST_UPDATE_DT                   	DATE,
+LOCATION_ID                            	NUMBER(15),
+ADDRESS1                               	VARCHAR2(240),
+ADDRESS2                               	VARCHAR2(240),
+ADDRESS3                               	VARCHAR2(240),
+ADDRESS4                               	VARCHAR2(240),
+CITY                                   	VARCHAR2(60),
+COUNTY                                 	VARCHAR2(60),
+STATE                                  	VARCHAR2(60),
+PROVINCE                               	VARCHAR2(60),
+POSTAL_CODE                            	VARCHAR2(60),
+COUNTRY                                	VARCHAR2(60),
+ADDRESS_STYLE                          	VARCHAR2(30),
+ADDRESS_LINES_PHONETIC                 	VARCHAR2(560),
+LOC_ORIG_SYS_REF                       	VARCHAR2(240),
+LOC_CREATE_DT                          	DATE,
+LOC_LAST_UPDATE_DT                     	DATE,
+PARENT_START_DT                        	DATE,
+PARENT_END_DT                          	DATE,
+PARENT_PARTY_ID                        	NUMBER(15),
+PARENT_PARTY_NAME                      	VARCHAR2(360),
+GPARENT_START_DT                       	DATE,
+GPARENT_END_DT                         	DATE,
+GPARENT_PARTY_ID                       	NUMBER(15),
+GPARENT_PARTY_NAME                     	VARCHAR2(360),
+HPSE1_ID                               	NUMBER(15),
+CUST_CREATE_DATE                       	DATE,
+HPSE2_ID                               	NUMBER(15),
+SITE_WCW                               	NUMBER(22,5),
+OD_SITE_WCW                            	NUMBER,
+SITE_DUNS_NUMBER                       	NUMBER(22,5),
+OD_SITE_FULL_SIC_CODE                  	VARCHAR2(150),
+OD_SITE_SIC_CODE                       	VARCHAR2(450),
+SU1_ID                                 	NUMBER(15),
+SU2_ID                                 	NUMBER(15),
+SITE_USE                               	VARCHAR2(61),
+CUST_ACCOUNT_ID                        	NUMBER(15),
+ACCT_NAME                              	VARCHAR2(240),
+ORCL_ACCT_NUMBER                       	VARCHAR2(30),
+ACCT_CUSTOMER_TYPE                     	VARCHAR2(30),
+ACCT_OSR                               	VARCHAR2(240),
+AOPS_CUSTOMER_ID                       	VARCHAR2(24),
+ACCT_STATUS                            	VARCHAR2(1),
+OD_ACCT_CUSTOMER_TYPE                  	VARCHAR2(150),
+ORG_TYPE                               	VARCHAR2(8),
+ORG_NUMBER                             	VARCHAR2(240),
+ORG_SITE_NUMBER                        	VARCHAR2(240),
+ORG_SITE_STATUS                        	VARCHAR2(1),
+ACCT_CREATE_DT                         	DATE,
+ACCT_LAST_UPDATE_DT                    	DATE,
+CUST_ACCT_SITE_ID                      	NUMBER(15),
+ACCT_SITE_OSR                          	VARCHAR2(240),
+ACCT_SITE_STATUS                       	VARCHAR2(1),
+ACCT_SITE_CREATE_DT                    	DATE,
+ACCT_SITE_LAST_UPDATE_DT               	DATE,
+SITE_ORIG_SYSTEM_REFERENCE             	VARCHAR2(240),
+SITE_ACCOUNT                           	VARCHAR2(24),
+SITE_SEQUENCE                          	VARCHAR2(15),
+CUST_ACCOUNT_PROFILE_ID                	NUMBER(15),
+ACCT_PROF_SITE_USE_ID                  	NUMBER(15),
+AB_FLAG                                	VARCHAR2(150),
+COLLECTOR_ID                           	NUMBER(15),
+EXPOSURE_SEGMENT                       	VARCHAR2(30),
+TERM_ID                                	NUMBER(15),
+PMT_TERM                               	VARCHAR2(15),
+PMT_FREQ                               	VARCHAR2(150),
+PMT_REPORT_DAY                         	VARCHAR2(150),
+LANGUAGE                               	VARCHAR2(4),
+PMT_TERM_DESCR                         	VARCHAR2(240),
+EXTENSION_ID                           	NUMBER(15),
+ACCT_BLDC_DLVRY_METHOD                 	VARCHAR2(150),
+ACCT_BLDC_FREQ                         	VARCHAR2(150),
+ACCT_BLDC_PMT_TERM                     	VARCHAR2(150),
+LAST_ACTIVITY_DATE                     	DATE,
+CREATE_VIEW_LEAD_OPPTY                 	VARCHAR2(6),
+LOYALTY_CODE_ASGNMNT_ID                	NUMBER(15),
+CUST_LOYALTY_CODE                      	VARCHAR2(30),
+SEGMNT_CODE_ASGNMNT_ID                 	NUMBER(15),
+CUST_SEGMENT_CODE                      	VARCHAR2(30),
+POTENTIAL_ID                           	NUMBER,
+POTENTIAL_TYPE_CD                      	VARCHAR2(30),
+POTENTIAL_TYPE_NM                      	VARCHAR2(100),
+COMPARABLE_POTENTIAL_AMT               	NUMBER,
+ACCOUNT_SITE_RNK                       	NUMBER,
+SITE_RANK                              	NUMBER,
+CONTACT_TITLE                             VARCHAR2(100),
+CONTACT_NAME                              VARCHAR2(100),
+CONTACT_PHONE                             VARCHAR2(30)
+);
+
+GRANT ALL ON XXCRM.XXBI_PARTY_SITE_DATA_FCT TO APPS;
+
+GRANT ALL ON XXCRM.XXBI_PARTY_SITE_DATA_FCT TO XXDATA_STAGE;
+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+--EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

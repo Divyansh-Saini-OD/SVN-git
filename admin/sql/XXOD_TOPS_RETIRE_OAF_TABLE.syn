@@ -1,0 +1,23 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XXOD_TOPS_RETIRE_OAF_TABLE.syn                   |
+-- | Description      : Synonyms for XXOD_TOPS_RETIRE_OAF_TABLE          |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |1.0      26-5-2016   Shubhashree R   Initial Version                |
+-- +=======================================================================+
+------------------------------------------------------
+-- Dropping the existing synonym and creating new.  --
+------------------------------------------------------
+CREATE OR REPLACE SYNONYM APPS.XXOD_TOPS_RETIRE_OAF_TABLE FOR XXCRM.XXOD_TOPS_RETIRE_OAF_TABLE;
+
+SHOW ERRORS;

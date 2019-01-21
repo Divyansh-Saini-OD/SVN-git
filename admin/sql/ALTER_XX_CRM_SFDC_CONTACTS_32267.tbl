@@ -1,0 +1,48 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : ALTER_XX_CRM_SFDC_CONTACTS_32267.tbl                                        |
+-- | Rice Id      :                                                                             | 
+-- | Description  :                                                                             |  
+-- | Purpose      :                                                                             |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |1.0        22-OCT-2014   Sridevi K            for Defect 32267                              |
+-- |                                                                                            |
+-- +============================================================================================+
+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+
+
+PROMPT
+PROMPT Altering the Table XX_CRM_SFDC_CONTACTS.....
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+--Defect 32267 - Multiple eBill contacts to be synched from AOPS to Oracle CDH
+ALTER TABLE XXCRM.XX_CRM_SFDC_CONTACTS ADD  primary_contact_flag VARCHAR2(1)
+/
+
+
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+

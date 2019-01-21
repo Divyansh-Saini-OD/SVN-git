@@ -1,0 +1,10 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.5.4.89_560" xml:lang="en-US" customizes="/od/oracle/apps/xxcrm/asn/partysite/webui/ODCreateUpdateSitePhonePG">
+   <modifications>
+      <modify element="SitePhonePageRN.OrgStatus" readOnly="true"/>
+      <modify element="SitePhonePageRN.ContactFlexField" rendered="false"/>
+      <modify element="SitePhonePageRN.OrgPhoneCountryCode" required="yes"/>
+      <modify element="SitePhonePageRN.PhoneAreaCode" required="yes"/>
+      <modify element="SitePhonePageRN.OrgPrimaryFlag" readOnly="false"/>
+   </modifications>
+</customization>

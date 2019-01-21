@@ -1,0 +1,288 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- +======================================================================+ -->
+<!-- |    Copyright (c) 2005, 2014 Oracle and/or its affiliates.           | -->
+<!-- |                         All rights reserved.                         | -->
+<!-- |                           Version 12.0.0                             | -->
+<!-- +======================================================================+ -->
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile(120.11.12000000.2=120.12)(115.41=120.1):~PROD:~PATH:~FILE &fullpath_~PROD_~PATH_~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath_~PROD_mds_directory  -->
+<jrad:page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_" xml:lang="en-US" file-version="$Header: DashboardPG.xml 120.16.12020000.15 2014/05/02 08:59:28 lkullamb ship $" xmlns:user="http://xmlns.oracle.com/jrad/user">
+   <jrad:content>
+      <oa:pageLayout amDefName="oracle.apps.cs.csz.dashboard.server.DashboardAM" id="DashboardPG" controllerClass="oracle.apps.cs.csz.dashboard.webui.DashboardCO" autoFooter="true" title="" windowTitle="Agent Dashboard" helpTargetAppShortName="CS" helpTarget="CSZ_CS_DB_DashboardPG">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:flowLayout id="quickSRPopupStatusLayout" rendered="true">
+               <ui:contents>
+                  <oa:rowLayout id="statusRowLayout">
+                     <ui:contents>
+                        <oa:messageStyledText id="message1" prompt="" viewAttr="confirmStartMessage" viewName="IncidentConfirmationMessageVO" styleClass="OraDataText"/>
+                        <oa:link id="message2" styleClass="OraDataText" viewName="IncidentConfirmationMessageVO" viewAttr="IncidentNumber">
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="QuickApplySRToUpdate" id="fireAction1"/>
+                           </ui:primaryClientAction>
+                        </oa:link>
+                        <oa:messageStyledText id="message3" viewAttr="confirmationMessage" viewName="IncidentConfirmationMessageVO" styleClass="OraDataText"/>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:flowLayout>
+            <oa:header id="topHeader" text="Agent Dashboard">
+               <ui:contents>
+                  <oa:header id="UwqHeaderRN" extends="/oracle/apps/ieu/oa/webui/UWQStandAloneRN" text="Universal Work Queue" rendered="false"/>
+                  <oa:flexibleLayout id="DashboardFL" title="Agent Dashboard" width="100%" layoutStyle="vertical"/>
+                  <oa:hideShowHeader id="AgentToolHdr" text="Agent Tools" disclosed="true">
+                     <ui:contents>
+                        <oa:flexibleLayout id="AgentToolFL" layoutStyle="horizontal"/>
+                     </ui:contents>
+                  </oa:hideShowHeader>
+                  <oa:header id="ScriptHdr" text="Scripting Tool" rendered="false">
+                     <ui:contents>
+                        <oa:flexibleLayout id="ScriptsFL"/>
+                     </ui:contents>
+                  </oa:header>
+                  <oa:subTabLayout id="DashboardSubTabRN" rendered="false">
+                     <ui:contents>
+                        <oa:messageComponentLayout id="ServiceRequestsTabxMCL">
+                           <ui:contents>
+                              <oa:messageLayout id="ServiceRequestsTabML">
+                                 <ui:contents>
+                                    <oa:flexibleLayout id="ServiceRequestTabFL" title="Service Requests Tab Flexible Layout" showHeader="false"/>
+                                 </ui:contents>
+                              </oa:messageLayout>
+                           </ui:contents>
+                        </oa:messageComponentLayout>
+                        <oa:messageComponentLayout id="SRTasksTabxMCL">
+                           <ui:contents>
+                              <oa:messageLayout id="SRTasksTabML">
+                                 <ui:contents>
+                                    <oa:flexibleLayout id="SRTasksTabFL" title="SR Tasks Flexible Layout" showHeader="false"/>
+                                 </ui:contents>
+                              </oa:messageLayout>
+                           </ui:contents>
+                        </oa:messageComponentLayout>
+                        <oa:messageComponentLayout id="DashboardTab3xMCL">
+                           <ui:contents>
+                              <oa:messageLayout id="DashboardTab3xML">
+                                 <ui:contents>
+                                    <oa:flexibleLayout id="DashboardTab3FL" title="Dashboard Tab 3 Layout"/>
+                                 </ui:contents>
+                              </oa:messageLayout>
+                           </ui:contents>
+                        </oa:messageComponentLayout>
+                        <oa:messageComponentLayout id="DashboardTab4xMCL">
+                           <ui:contents>
+                              <oa:messageLayout id="DashboardTab4xML">
+                                 <ui:contents>
+                                    <oa:flexibleLayout id="DashboardTab4FL" title="Dashboard Tab 4 Layout" rows="2"/>
+                                 </ui:contents>
+                              </oa:messageLayout>
+                           </ui:contents>
+                        </oa:messageComponentLayout>
+                        <oa:messageComponentLayout id="DashboardTab5xMCL">
+                           <ui:contents>
+                              <oa:messageLayout id="DashboardTab5xML">
+                                 <ui:contents>
+                                    <oa:flexibleLayout id="DashboardTab5FL" title="Dashboard Tab 5 Layout"/>
+                                 </ui:contents>
+                              </oa:messageLayout>
+                           </ui:contents>
+                        </oa:messageComponentLayout>
+                        <oa:messageComponentLayout id="DashboardTab6xMCL">
+                           <ui:contents>
+                              <oa:messageLayout id="DashboardTab6xML">
+                                 <ui:contents>
+                                    <oa:flexibleLayout id="DashboardTab6FL" title="Dashboard Tab 6 Layout"/>
+                                 </ui:contents>
+                              </oa:messageLayout>
+                           </ui:contents>
+                        </oa:messageComponentLayout>
+                     </ui:contents>
+                     <ui:subTabs>
+                        <oa:subTabBar id="subTabBarRN">
+                           <ui:contents>
+                              <oa:link id="ServiceRequestsTabLink" text="Service Requests" serverUnvalidated="true" warnAboutChanges="false">
+                                 <ui:primaryClientAction>
+                                    <ui:firePartialAction unvalidated="true" event="ServiceRequestTab" id="firePartialAction1"/>
+                                 </ui:primaryClientAction>
+                              </oa:link>
+                              <oa:link id="SRTasksTabLink" text="Tasks" serverUnvalidated="true" warnAboutChanges="false" rendered="true">
+                                 <ui:primaryClientAction>
+                                    <ui:firePartialAction unvalidated="true" event="TasksTab" id="firePartialAction2"/>
+                                 </ui:primaryClientAction>
+                              </oa:link>
+                              <oa:link id="DashboardTab3Link" warnAboutChanges="false" text="Third Dashboard Tab" rendered="false">
+                                 <ui:primaryClientAction>
+                                    <ui:firePartialAction event="DashboardTab3" id="firePartialAction3"/>
+                                 </ui:primaryClientAction>
+                              </oa:link>
+                              <oa:link id="DashboardTab4Link" warnAboutChanges="false" text="Fourth Dashboard Tab" serverUnvalidated="true" rendered="false">
+                                 <ui:primaryClientAction>
+                                    <ui:firePartialAction unvalidated="true" event="DashboardTab4" id="firePartialAction4"/>
+                                 </ui:primaryClientAction>
+                              </oa:link>
+                              <oa:link id="DashboardTab5Link" warnAboutChanges="false" text="Fifth Dashboard Tab" serverUnvalidated="true" rendered="false">
+                                 <ui:primaryClientAction>
+                                    <ui:firePartialAction unvalidated="true" event="DashboardTab5" id="firePartialAction5"/>
+                                 </ui:primaryClientAction>
+                              </oa:link>
+                              <oa:link id="DashboardTab6Link" text="Sixth Dashboard Tab" serverUnvalidated="true" warnAboutChanges="false" rendered="false">
+                                 <ui:primaryClientAction>
+                                    <ui:firePartialAction unvalidated="true" event="DashboardTab6" id="firePartialAction6"/>
+                                 </ui:primaryClientAction>
+                              </oa:link>
+                           </ui:contents>
+                        </oa:subTabBar>
+                     </ui:subTabs>
+                  </oa:subTabLayout>
+               </ui:contents>
+            </oa:header>
+         </ui:contents>
+         <ui:contentFooter>
+            <oa:contentFooter id="DashboardContentFooter"/>
+         </ui:contentFooter>
+         <oa:flexibleContents>
+            <oa:flexibleContentList id="flexibleContentList">
+               <ui:contents>
+                  <oa:flexibleContent id="GetNextWorkFC" title="Get Next Work" flexibleLayoutRef="DashboardFL">
+                     <ui:contents>
+                        <oa:stackLayout id="xGetNextWorkRN" extends="/oracle/apps/cs/csz/dashboard/webui/GetNextWorkRN"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="xServiceRequestQueueFC" flexibleLayoutRef="DashboardFL">
+                     <ui:contents>
+                        <oa:hideShowHeader id="xServiceRequestQueueHeader" text="Service Request Work Queues" disclosed="true">
+                           <ui:contents>
+                              <oa:rowLayout id="xSaveRevertButtonRN" extends="/oracle/apps/cs/csz/dashboard/webui/RefreshButtonRN"/>
+                              <oa:hideShowHeader id="xAgentQueueRN" extends="/oracle/apps/cs/csz/dashboard/webui/AgentQueueRN"/>
+                              <oa:hideShowHeader id="xGroupQueueRN" extends="/od/oracle/apps/xxcrm/cs/csz/dashboard/webui/XXCSGroupQueueRN"/>
+                           </ui:contents>
+                        </oa:hideShowHeader>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="xAgentToolFC" title="SR Create Bin" flexibleLayoutRef="AgentToolFL">
+                     <ui:contents>
+                        <oa:tableLayout id="xAgentToolTL" hAlign="start" width="100%">
+                           <ui:contents>
+                              <oa:rowLayout id="xCreateSRKPIAvlQkLnkRL" hAlign="start">
+                                 <ui:contents>
+                                    <oa:cellFormat id="xCreateSRBinCL" hAlign="center" vAlign="top">
+                                       <ui:contents>
+                                          <oa:stackLayout id="xSISearchBinRN" extends="/oracle/apps/cs/csz/incident/webui/SISearchBinSLRN"/>
+                                       </ui:contents>
+                                    </oa:cellFormat>
+                                    <oa:cellFormat id="xCreateSRSpCL">
+                                       <ui:contents>
+                                          <oa:spacer id="xCreateSRSpacer" width="30"/>
+                                       </ui:contents>
+                                    </oa:cellFormat>
+                                    <oa:cellFormat id="xKPICL" hAlign="center">
+                                       <ui:contents>
+                                          <oa:stackLayout id="xKPIRN" extends="/oracle/apps/cs/csy/kpi/webui/CsyKpiCntrRN"/>
+                                       </ui:contents>
+                                    </oa:cellFormat>
+                                    <oa:cellFormat id="xKPISpCL">
+                                       <ui:contents>
+                                          <oa:spacer id="xKPISpacer" width="30"/>
+                                       </ui:contents>
+                                    </oa:cellFormat>
+                                    <oa:cellFormat id="xAvailQucikLnCL" hAlign="center" vAlign="top">
+                                       <ui:contents>
+                                          <oa:stackLayout id="xAvailabilityRN" extends="/oracle/apps/cs/csz/dashboard/webui/AgentAvailabilityRN" rendered="true"/>
+                                          <oa:stackLayout id="QuickLinksStackRN" extends="/oracle/apps/cs/csz/dashboard/webui/QuickLinksBinRN" rendered="true"/>
+                                       </ui:contents>
+                                    </oa:cellFormat>
+                                 </ui:contents>
+                              </oa:rowLayout>
+                              <oa:rowLayout id="xSearchBinsRL" width="100%" hAlign="start">
+                                 <ui:contents>
+                                    <oa:cellFormat id="xSearchBinsCL" columnSpan="5" width="100%">
+                                       <ui:contents>
+                                          <oa:header id="xSearchBinsHeader" text="Search">
+                                             <ui:contents>
+                                                <oa:tableLayout id="xSearchSRTaskPtyTL" hAlign="start" width="100%" rendered="false"/>
+                                                <oa:rowLayout id="xSrchSRRL" hAlign="start">
+                                                   <ui:contents>
+                                                      <oa:cellFormat id="xSrchSRCL" hAlign="start" width="30%">
+                                                         <ui:contents>
+                                                            <oa:flowLayout id="xSearchBin" extends="/oracle/apps/cs/csz/search/webui/SrchBinRN"/>
+                                                         </ui:contents>
+                                                      </oa:cellFormat>
+                                                      <oa:cellFormat id="xSrchSRSpCL" rendered="true" hAlign="start" width="5%">
+                                                         <ui:contents>
+                                                            <oa:spacer id="xSearchSRSpacer" width="65"/>
+                                                         </ui:contents>
+                                                      </oa:cellFormat>
+                                                      <oa:cellFormat id="xSrchTaskCL" hAlign="start" vAlign="top" width="30%">
+                                                         <ui:contents>
+                                                            <oa:flowLayout id="TaskSearchBin" extends="/oracle/apps/cs/csz/tasksearch/webui/TaskSearchBinRN"/>
+                                                         </ui:contents>
+                                                      </oa:cellFormat>
+                                                      <oa:cellFormat id="xSrchTaskSpCL" rendered="true" hAlign="start" width="5%">
+                                                         <ui:contents>
+                                                            <oa:spacer id="xSrchTaskSpacer" width="5"/>
+                                                         </ui:contents>
+                                                      </oa:cellFormat>
+                                                      <oa:cellFormat id="xPartySearchCL" hAlign="start" vAlign="top" width="30%">
+                                                         <ui:contents>
+                                                            <oa:stackLayout id="xPartySearchRN" extends="/oracle/apps/cs/csz/tca/webui/PartySearchBinRN" rendered="true"/>
+                                                         </ui:contents>
+                                                      </oa:cellFormat>
+                                                   </ui:contents>
+                                                </oa:rowLayout>
+                                             </ui:contents>
+                                          </oa:header>
+                                       </ui:contents>
+                                    </oa:cellFormat>
+                                 </ui:contents>
+                              </oa:rowLayout>
+                           </ui:contents>
+                        </oa:tableLayout>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="xKPIFC" title="KPI Bin">
+                     <ui:contents>
+                        <oa:stackLayout id="xKPIIRN" extends="/oracle/apps/cs/csy/kpi/webui/CsyKpiCntrRN"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="xSearchBinFC" title="Search Bin">
+                     <ui:contents>
+                        <oa:flowLayout id="xSearchBinIRN" extends="/oracle/apps/cs/csz/search/webui/SrchBinRN"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="xAvailabilityFC" title="Agent Availability">
+                     <ui:contents>
+                        <oa:stackLayout id="xAvailabilityIRN" extends="/oracle/apps/cs/csz/dashboard/webui/AgentAvailabilityRN"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="xQuickLinksFC" title="Quick Link Bin">
+                     <ui:contents>
+                        <oa:stackLayout id="QuickLinksStackIRN" extends="/oracle/apps/cs/csz/dashboard/webui/QuickLinksBinRN"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="xTaskQueuesFC" flexibleLayoutRef="DashboardFL">
+                     <ui:contents>
+                        <oa:hideShowHeader id="xTaskQueuesHeader" disclosed="true" text="Task Work Queues">
+                           <ui:contents>
+                              <oa:hideShowHeader id="xAgentTaskQueue" extends="/oracle/apps/cs/csz/dashboard/webui/CszDBTaskSumRN"/>
+                              <oa:hideShowHeader id="xGroupTaskQueue" extends="/oracle/apps/cs/csz/dashboard/webui/CszDBUnasgnTaskSumRN"/>
+                           </ui:contents>
+                        </oa:hideShowHeader>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="xOAScriptLaunchFC" flexibleLayoutRef="ScriptsFL">
+                     <ui:contents>
+                        <oa:stackLayout id="xOAScriptLaunchRN" extends="/oracle/apps/ies/oalaunch/webui/OALaunchScriptRN"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+                  <oa:flexibleContent id="xDCTI" flexibleLayoutRef="AgentToolFL" title="Direct CTI Bin" adminCustomizable="false" userCustomizable="false" disclosed="true" rendered="false">
+                     <ui:contents>
+                        <oa:stackLayout id="xCTIRN1" extends="/oracle/apps/cs/csz/directcti/webui/DirectCTIRN2" amUsageName="AMDirectCTI"/>
+                     </ui:contents>
+                  </oa:flexibleContent>
+               </ui:contents>
+            </oa:flexibleContentList>
+         </oa:flexibleContents>
+      </oa:pageLayout>
+   </jrad:content>
+</jrad:page>

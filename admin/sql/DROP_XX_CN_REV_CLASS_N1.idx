@@ -1,0 +1,39 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : DROP_XX_CN_REV_CLASS_N1.idx                         |
+-- | Rice ID     : E1004A_CustomCollections_(TableDesign)              |
+-- | Description : XX_CN_REV_CLASS Table -  Index Drop Script          |
+-- |                                                                   |
+-- |               Columns :                                           |
+-- |                         Revenue_Class_Id                          |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1a 18-Oct-2007  Sarah Justina    Initial draft version       |
+-- |1.0      18-Oct-2007  Sarah Justina    Baselined after testing     |
+-- |                                                                   |
+-- +===================================================================+
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+PROMPT
+PROMPT Dropping Existing Unique INDEX XX_CN_REV_CLASS_N1
+PROMPT
+
+DROP INDEX xx_cn_rev_class_n1;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

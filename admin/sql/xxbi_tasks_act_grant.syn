@@ -1,0 +1,26 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+----------------------------------------------------------
+-- Mohan Kalyanasundaram 4/16/2010
+-- Grant to XXCRM
+----------------------------------------------------------
+
+GRANT ALL ON apps.JTF_TASK_TYPES_TL TO XXCRM;
+GRANT ALL ON apps.JTF_TASK_TYPES_B TO XXCRM;
+GRANT ALL ON apps.JTF_TASK_PRIORITIES_TL TO XXCRM;
+GRANT ALL ON apps.JTF_TASK_PRIORITIES_B TO XXCRM;
+GRANT ALL ON apps.JTF_TASK_STATUSES_TL TO XXCRM;
+GRANT ALL ON apps.JTF_TASK_STATUSES_B TO XXCRM;
+GRANT ALL ON apps.JTF_TASKS_TL TO XXCRM;
+GRANT ALL ON apps.JTF_TASKS_B TO XXCRM;
+GRANT ALL ON apps.jtf_tasks_vl TO XXCRM;
+GRANT ALL ON apps.jtf_task_statuses_vl TO XXCRM;
+GRANT ALL ON apps.jtf_task_types_vl TO XXCRM;
+GRANT ALL ON apps.jtf_task_priorities_vl TO XXCRM;
+GRANT ALL ON apps.xxcrm_task_dashboard_helper TO XXCRM;
+GRANT SELECT ON apps.XXBI_PARTY_SITE_USES_DIM_V TO XXCRM;
+SHOW ERRORS;
+EXIT;
+
+

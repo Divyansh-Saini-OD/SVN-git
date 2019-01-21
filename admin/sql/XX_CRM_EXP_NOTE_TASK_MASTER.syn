@@ -1,0 +1,47 @@
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify						|
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_NOTE_TASK_MASTER.syn                                               |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        08/07/11       Devendra Petkar        Initial version                            |
+-- +============================================================================================+
+
+
+---------------------------------------------------------
+-- Creating synonym				       --
+---------------------------------------------------------
+
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_EXP_TASKS_PARTY_MASTER FOR XXCRM.XX_CRM_EXP_TASKS_PARTY_MASTER;
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_EXP_TASKS_SITE_MASTER FOR XXCRM.XX_CRM_EXP_TASKS_SITE_MASTER;
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_EXP_TASKS_LEAD_MASTER FOR XXCRM.XX_CRM_EXP_TASKS_LEAD_MASTER;
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_EXP_TASKS_OPP_MASTER FOR XXCRM.XX_CRM_EXP_TASKS_OPP_MASTER;
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_EXP_TASKS_TASK_MASTER FOR XXCRM.XX_CRM_EXP_TASKS_TASK_MASTER;
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_EXP_NOTES_PARTY_MASTER FOR XXCRM.XX_CRM_EXP_NOTES_PARTY_MASTER;
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_EXP_NOTES_SITE_MASTER FOR XXCRM.XX_CRM_EXP_NOTES_SITE_MASTER;
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_EXP_NOTES_LEAD_MASTER FOR XXCRM.XX_CRM_EXP_NOTES_LEAD_MASTER;
+
+CREATE OR REPLACE SYNONYM APPS.XX_CRM_EXP_NOTES_OPP_MASTER FOR XXCRM.XX_CRM_EXP_NOTES_OPP_MASTER;
+
+
+SHOW ERRORS;
+
+EXIT;

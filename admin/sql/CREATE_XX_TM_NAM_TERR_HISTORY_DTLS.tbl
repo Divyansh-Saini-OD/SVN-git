@@ -1,0 +1,75 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : CREATE_XX_TM_NAM_TERR_HISTORY_DTLS.tbl             |
+-- | Description      : Named Account Territory History Details                |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |Draft 1a  11-Jun-2008  Jeevan babu        Initial Draft Version        |
+-- +=======================================================================+
+
+
+--  Create Custom Table XX_TM_NAM_TERR_HISTORY_DTLS
+-- ---------------------------------------------------------------------
+CREATE TABLE XXCRM.XX_TM_NAM_TERR_HISTORY_DTLS
+  (
+	  RECORD_ID                  NUMBER(15)        NOT NULL,
+	  NAMED_ACCT_TERR_ID         NUMBER(15),
+	  NAMED_ACCT_TERR_ENTITY_ID  NUMBER(15),
+	  NAMED_ACCT_TERR_RSC_ID     NUMBER(15),
+	  PARTY_SITE_ID              NUMBER(15),
+	  RESOURCE_ID                NUMBER(15),
+	  RESOURCE_ROLE_ID           NUMBER(15),
+	  GROUP_ID                   NUMBER(15),
+	  DIVISION                   VARCHAR2(100),
+	  STATUS                     VARCHAR2(50 BYTE),
+	  START_DATE_ACTIVE          DATE,
+	  END_DATE_ACTIVE            DATE,
+	  DELETE_FLAG                CHAR,
+	  CREATED_BY                 NUMBER(15)         NOT NULL,
+	  CREATION_DATE              DATE               NOT NULL,
+	  LAST_UPDATED_BY            NUMBER(15)         NOT NULL,
+	  LAST_UPDATE_DATE           DATE               NOT NULL,
+	  LAST_UPDATE_LOGIN          NUMBER(15),
+          REQUEST_ID                 NUMBER(15),
+          PROGRAM_APPLICATION_ID     NUMBER(15),
+          ATTRIBUTE_CATEGORY         VARCHAR2(30 BYTE),
+          ATTRIBUTE1                 VARCHAR2(150 BYTE),
+          ATTRIBUTE2                 VARCHAR2(150 BYTE),
+          ATTRIBUTE3                 VARCHAR2(150 BYTE),          
+          ATTRIBUTE4                 VARCHAR2(150 BYTE),
+          ATTRIBUTE5                 VARCHAR2(150 BYTE),
+          ATTRIBUTE6                 VARCHAR2(150 BYTE),          
+          ATTRIBUTE7                 VARCHAR2(150 BYTE),
+          ATTRIBUTE8                 VARCHAR2(150 BYTE),
+          ATTRIBUTE9                 VARCHAR2(150 BYTE),          
+          ATTRIBUTE10                VARCHAR2(150 BYTE),
+          ATTRIBUTE11                VARCHAR2(150 BYTE),
+          ATTRIBUTE12                VARCHAR2(150 BYTE),
+          ATTRIBUTE13                VARCHAR2(150 BYTE),
+          ATTRIBUTE14                VARCHAR2(150 BYTE),
+          ATTRIBUTE15                VARCHAR2(150 BYTE),
+          ATTRIBUTE16                VARCHAR2(150 BYTE),
+          ATTRIBUTE17                VARCHAR2(150 BYTE),
+          ATTRIBUTE18                VARCHAR2(150 BYTE),
+          ATTRIBUTE19                VARCHAR2(150 BYTE),
+          ATTRIBUTE20                VARCHAR2(150 BYTE)
+) NOLOGGING;
+------------------------------------------------------
+-- Adding Grants to APPS                            --
+------------------------------------------------------
+GRANT ALL ON XXCRM.XX_TM_NAM_TERR_HISTORY_DTLS TO APPS;
+
+
+SHOW ERRORS;

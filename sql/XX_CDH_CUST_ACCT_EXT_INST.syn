@@ -1,0 +1,46 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        :  XX_CDH_ACCT_SITE_EXT_INST.syn                      |
+-- | Description :  Create custom DB Tables,Views and Indexes for      |
+-- |                Account-Site additional attributes                 |
+-- |                The Objects created are:                           |
+-- |                 1. XX_ACCT_SITE_EXT_B      (Extension Table)      |
+-- |                 2. XX_ACCT_SITE_EXT_B_N1   (Index )               |
+-- |                 3. XX_ACCT_SITE_EXT_B_U1   (Unique Index )        |
+-- |                 4. XX_ACCT_SITE_EXT_TL     (Translation)          |
+-- |                 5. XX_ACCT_SITE_EXT_TL_N1  (Index )               |
+-- |                 6. XX_ACCT_SITE_EXT_TL_U1  (Unique Index )        |
+-- |                 7. XX_ACCT_SITE_EXT_VL     (View)                 |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author             Remarks                  |
+-- |=======   ===========  =================  =========================|
+-- |DRAFT 1A  19-Jun-2007  Rajeev Kamath      Initial draft version    |
+-- +===================================================================+
+
+
+
+------------------------------------------------------
+-- Dropping the existing synonym and creating new.  --
+------------------------------------------------------
+CREATE OR REPLACE SYNONYM apps.XX_CUST_ACCT_EXT_B FOR XXCRM.XX_CUST_ACCT_EXT_B;
+
+CREATE OR REPLACE SYNONYM apps.XX_CUST_ACCT_EXT_TL FOR XXCRM.XX_CUST_ACCT_EXT_TL;
+
+CREATE OR REPLACE SYNONYM apps.XX_CUST_ACCT_EXT_VL FOR XXCRM.XX_CUST_ACCT_EXT_VL;
+
+SHOW ERRORS;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

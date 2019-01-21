@@ -1,0 +1,18 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+CREATE TABLE XXCRM.XXBI_OD_SIC_CODE_MAPPING
+(
+ sic_code varchar2(40),
+ sic_group_type varchar2(4)
+);
+
+----------------------------------------------------------
+-- Grant to APPS
+----------------------------------------------------------
+GRANT ALL ON XXCRM.XXBI_OD_SIC_CODE_MAPPING TO APPS;
+
+
+SHOW ERRORS;
+EXIT;

@@ -1,0 +1,39 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- +===================================================================+
+-- |                        Office Depot                               |
+-- |                                                                   |
+-- +===================================================================+
+-- | Synonym Name:  XX_CDH_EBL_SPLIT_FIELDS.syn                  |
+-- | Rice Id     :                                                     |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author             Remarks                  |
+-- |=======   ===========  =================  =========================|
+-- |1.0      22-DEC-2015  Sridevi Kondoju       Initial draft version   |
+-- +===================================================================+
+
+PROMPT
+PROMPT Synonym XX_CDH_EBL_SPLIT_FIELDS
+PROMPT    
+
+CREATE OR REPLACE SYNONYM XX_CDH_EBL_SPLIT_FIELDS FOR XXCRM.XX_CDH_EBL_SPLIT_FIELDS; 
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

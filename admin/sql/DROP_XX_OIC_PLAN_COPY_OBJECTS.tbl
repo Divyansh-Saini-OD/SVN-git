@@ -1,0 +1,92 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             : CREATE_XX_OIC_PLAN_COPY_OBJECTS.syn                |
+-- | Description      : synonym creation for object type	           |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0	     01-Aug-07   Nageswara rao      Initial Draft Version          |
+-- +=======================================================================+
+
+DROP TYPE  XX_OIC_COMP_PLANS_LIST
+/
+DROP TYPE  XX_OIC_COMP_PLANS_OBJ
+/
+DROP TYPE  XX_OIC_QUOTA_ASSIGN_LIST
+/
+DROP TYPE  XX_OIC_QUOTA_ASSIGN_OBJ
+/
+DROP TYPE  XX_OIC_QUOTAS_LIST
+/
+DROP TYPE  XX_OIC_QUOTAS_OBJ
+/
+DROP TYPE  XX_OIC_QUOTA_RULES_LIST
+/
+DROP TYPE  XX_OIC_QUOTA_RULES_OBJ
+/
+DROP TYPE  XX_OIC_RULE_UPLIFTS_LIST
+/
+DROP TYPE  XX_OIC_RULE_UPLIFTS_OBJ
+/
+DROP TYPE  XX_OIC_REVENUE_CLASSES_LIST 
+/
+DROP TYPE  XX_OIC_REVENUE_CLASSES_OBJ
+/
+DROP TYPE  XX_OIC_RATE_SCHEDULES_RT_LIST
+/
+DROP TYPE  XX_OIC_RATE_SCHEDULES_RT_OBJ
+/
+DROP TYPE  XX_OIC_RT_FORMULA_ASGN_RT_LIST
+/
+DROP TYPE  XX_OIC_RT_FORMULA_ASGN_RT_OBJ
+/
+DROP TYPE  XX_OIC_CALC_FORMULAS_RT_LIST
+/
+DROP TYPE  XX_OIC_CALC_FORMULAS_RT_OBJ
+/
+DROP TYPE  XX_OIC_CALC_FORMULAS_LIST
+/
+DROP TYPE  XX_OIC_CALC_FORMULAS_OBJ
+/
+DROP TYPE  XX_OIC_FORMULA_INPUTS_LIST
+/
+DROP TYPE  XX_OIC_FORMULA_INPUTS_OBJ
+/
+DROP TYPE  XX_OIC_CALC_EXPRESSIONS_LIST
+/
+DROP TYPE  XX_OIC_CALC_EXPRESSIONS_OBJ
+/
+DROP TYPE  XX_OIC_RT_FORMULA_ASGN_LIST
+/
+DROP TYPE  XX_OIC_RT_FORMULA_ASGN_OBJ
+/
+DROP TYPE  XX_OIC_RATE_SCHEDULES_LIST
+/
+DROP TYPE  XX_OIC_RATE_SCHEDULES_OBJ
+/
+DROP TYPE  XX_OIC_RATE_SCH_DIMS_LIST
+/
+DROP TYPE  XX_OIC_RATE_SCH_DIMS_OBJ
+/
+DROP TYPE  XX_OIC_RATE_DIMENSIONS_LIST
+/
+DROP TYPE  XX_OIC_RATE_DIMENSIONS_OBJ
+/
+DROP TYPE  XX_OIC_RATE_DIM_TIERS_LIST
+/
+DROP TYPE  XX_OIC_RATE_DIM_TIERS_OBJ
+/
+DROP TYPE  XX_OIC_RATE_TIERS_LIST
+/
+DROP TYPE  XX_OIC_RATE_TIERS_OBJ
+/

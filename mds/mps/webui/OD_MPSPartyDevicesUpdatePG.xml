@@ -1,0 +1,274 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1579" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="MainRN" amDefName="od.oracle.apps.xxcrm.mps.server.OD_MPSPartyDevicesAM" warnAboutChanges="true" windowTitle="Party Devices Update" controllerClass="od.oracle.apps.xxcrm.mps.webui.OD_MPSPartyDevicesUpdateCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:messageStyledText id="CustomerName" viewName="OD_MPSPartyDevicesUpdateVO" viewAttr="PartyName" styleClass="x18"/>
+            <oa:messageComponentLayout id="PartyDevicesUpdateRN" rows="4" columns="2">
+               <ui:contents>
+                  <oa:messageTextInput id="SerialNo" prompt="Serial No" viewAttr="SerialNo" viewName="OD_MPSPartyDevicesUpdateVO" maximumLength="100"/>
+                  <oa:messageTextInput id="Model" prompt="Model" viewAttr="Model" viewName="OD_MPSPartyDevicesUpdateVO" maximumLength="250"/>
+                  <oa:messageTextInput id="ProgramType" prompt="Program Type" viewAttr="ProgramType" viewName="OD_MPSPartyDevicesUpdateVO" maximumLength="150"/>
+                  <oa:messageTextInput id="ContractNumber" prompt="Contract Number" viewAttr="ContractNumber" viewName="OD_MPSPartyDevicesUpdateVO" maximumLength="50"/>
+                  <oa:messageTextInput id="StartDate" prompt="Start Date" viewAttr="PeriodCoveredStDate" viewName="OD_MPSPartyDevicesUpdateVO" maximumLength="100" dataType="DATE"/>
+                  <oa:messageTextInput id="EndDate" prompt="End Date" viewAttr="PeriodCoveredEndDate" viewName="OD_MPSPartyDevicesUpdateVO" maximumLength="50" dataType="DATE"/>
+                  <oa:messageTextInput id="UsageSendLeadDays" prompt="Usage Send Lead Days" viewAttr="UsageSendLeadDays" viewName="OD_MPSPartyDevicesUpdateVO" maximumLength="2" dataType="NUMBER" rendered="false"/>
+                  <oa:messageTextInput id="UsageDataSentDate" viewAttr="UsageDataSentDate" prompt="Usage Data Sent Date" viewName="OD_MPSPartyDevicesUpdateVO" maximumLength="150" readOnly="false" dataType="DATE" rendered="false"/>
+                  <oa:messageTextInput id="ExpiredDate" viewAttr="ExpiredDate" prompt="Expired Date" viewName="OD_MPSPartyDevicesUpdateVO" maximumLength="150" readOnly="false" dataType="DATE"/>
+                  <oa:messageTextInput id="BlackCPC" viewAttr="BlackCpc" prompt="Black CPC" viewName="OD_MPSPartyDevicesUpdateVO" maximumLength="150" readOnly="false"/>
+                  <oa:messageTextInput id="ColorCPC" viewAttr="ColorCpc" prompt="Color CPC" viewName="OD_MPSPartyDevicesUpdateVO" maximumLength="150" readOnly="false"/>
+                  <oa:messageTextInput id="Allowances" viewAttr="Allowances" prompt="Allowances" viewName="OD_MPSPartyDevicesUpdateVO" maximumLength="150" readOnly="false"/>
+                  <oa:messageTextInput id="ColorAllowances" viewAttr="ColorAllowances" prompt="Color Allowances" viewName="OD_MPSPartyDevicesUpdateVO" maximumLength="150" readOnly="false"/>
+                  <oa:messageTextInput id="OverageCos" viewAttr="OverageCost" prompt="Black Overage Cost" viewName="OD_MPSPartyDevicesUpdateVO" maximumLength="150" readOnly="false"/>
+                  <oa:messageTextInput id="ColorOverageCost" viewAttr="ColorOverageCost" prompt="Color Overage Cost" viewName="OD_MPSPartyDevicesUpdateVO" maximumLength="150" readOnly="false"/>
+                  <oa:messageTextInput id="FlatRate" viewAttr="FlatRate" prompt="Flat Rate" viewName="OD_MPSPartyDevicesUpdateVO" maximumLength="150" readOnly="false"/>
+                  <oa:messageTextInput id="ServiceCost" viewAttr="ServiceCost" prompt="Service Cost" viewName="OD_MPSPartyDevicesUpdateVO" maximumLength="150" readOnly="false"/>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:tableLayout id="ButtonRN" hAlign="center">
+               <ui:contents>
+                  <oa:rowLayout id="region2" hAlign="center">
+                     <ui:contents>
+                        <oa:cellFormat id="region3" hAlign="center">
+                           <ui:contents>
+                              <oa:submitButton id="Save" text="Save" prompt="Save"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="region32" hAlign="center">
+                           <ui:contents>
+                              <oa:spacer id="SpacerBtn" width="25"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="region31" hAlign="center">
+                           <ui:contents>
+                              <oa:submitButton id="Back" text="Back" prompt="Back" warnAboutChanges="true">
+                                 <ui:primaryClientAction>
+                                    <ui:fireAction event="Back" id="fireAction1">
+                                       <ui:parameters>
+                                          <ui:parameter key="partyName" value="${oa.OD_MPSPartyDevicesUpdateVO.PartyName}"/>
+                                          <ui:parameter key="partyId" value="${oa.OD_MPSPartyDevicesUpdateVO.PartyId}"/>
+                                          <ui:parameter key="customerNumber" value="${oa.OD_MPSPartyDevicesUpdateVO.AopsCustNumber}"/>
+                                          <ui:parameter key="serialNo" value="${oa.OD_MPSPartyDevicesUpdateVO.SerialNo}"/>
+                                       </ui:parameters>
+                                    </ui:fireAction>
+                                 </ui:primaryClientAction>
+                              </oa:submitButton>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="region321" hAlign="center" rendered="false">
+                           <ui:contents>
+                              <oa:spacer id="SpacerBtn1" width="25"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="region34" rendered="false">
+                           <ui:contents>
+                              <oa:button id="OrderDetails" text="Device Color Details" prompt="Device Color Details">
+                                 <ui:primaryClientAction>
+                                    <ui:fireAction event="colorDetails" id="fireAction11">
+                                       <ui:parameters>
+                                          <ui:parameter key="serialNo" value="${oa.OD_MPSPartyDevicesUpdateVO.SerialNo}"/>
+                                       </ui:parameters>
+                                    </ui:fireAction>
+                                 </ui:primaryClientAction>
+                              </oa:button>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:tableLayout>
+            <oa:tableLayout id="DevicesColorRN" hAlign="center">
+               <ui:contents>
+                  <oa:rowLayout id="DevicesColorRL">
+                     <ui:contents>
+                        <oa:cellFormat id="ColorCountRN">
+                           <ui:contents>
+                              <oa:advancedTable id="PartyDevicesColorCountRN" viewName="OD_MPSPartyDevicesColorCountVO" text="COGS Per Device" width="100%" blockSize="100">
+                                 <ui:contents>
+                                    <oa:column id="MonoLifeCountCol" rendered="true">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="MonoLifeCountsortableHeader" prompt="Mono Life Count"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="Serialno" viewAttr="Monolifecount" destination=""/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ColorLifeCountCol">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ColorLifeCountsortableHeader" prompt="Color Life Count"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ColorLifeCount" prompt="" viewAttr="Colorlifecount"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="PreviousMonoCountCol" rendered="true">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="PreviousMonoCountsortableHeader" prompt="Previous Mono Count"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="PreviousMonoCount" viewAttr="Previousmonocount"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="PreviousColorCountCol" rendered="true">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="PreviousColorCountsortableHeader" prompt="Previous Color Count"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="PreviousColorCount" prompt="" viewAttr="Previouscolorcount"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="BlkBillCountCol" rendered="true" cellNoWrapFormat="true">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="BlkBillCountsortableHeader" prompt="Black Bill Count"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="BlkBillCount" viewAttr="Blkbillcount"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="MonoBillAmtCol" rendered="true" cellNoWrapFormat="true">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="MonoBillAmtsortableHeader" prompt="Mono Bill Amount"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="MonoBillAmt" viewAttr="Monobillamt"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ColorBillCountCol" rendered="true">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ColorBillCountsortableHeader" prompt="Color Bill Count"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ColorBillCount" viewAttr="Colorbillcount"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ColorBillAmtCol" rendered="true">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ColorBillAmtsortableHeader" prompt="Color Bill Amount"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ColorBillAmt" prompt="" viewAttr="Colorbillamt"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="BlkOverUsageCol" rendered="true">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="BlkOverUsagesortableHeader" prompt="Black Over Usage"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="BlkOverUsage" prompt="" viewAttr="Blkoverusage"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ColorOverUsageCol" rendered="true">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ColorOverUsagesortableHeader" prompt="Color Over Usage"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ColorOverUsage" viewAttr="Coloroverusage"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="BlkUnderUsageCol" rendered="false">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="BlkUnderUsagesortableHeader" prompt="Black Under Usage"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="BlkUnderUsage" viewAttr="Blkunderusage"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ColorUnderUsageCol" rendered="false">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ColorUnderUsagesortableHeader" prompt="Color Under Usage"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ColorUnderUsage" viewAttr="Colorunderusage"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="PreBlkBillCountCol" rendered="true">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="PreBlkBillCountsortableHeader" prompt="Previous Black Bill Count"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="PreBlkBillCount" prompt="" viewAttr="Preblkbillcount"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="PreColorBillCountCol" rendered="true">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="PreColorBillCountsortableHeader" prompt="Previous Color Bill Count"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="PreColorBillCount" viewAttr="Precolorbillcount"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="ServiceCostCol" rendered="true" columnDataFormat="numberFormat">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ServiceCostsortableHeader" prompt="Service Cost"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ServiceCost1" viewAttr="ServiceCost" dataType="NUMBER"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="MarginCol" rendered="false">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="MarginsortableHeader" prompt="Margin"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="Margin" viewAttr="Margin"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                 </ui:contents>
+                              </oa:advancedTable>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="SpacerRN">
+                           <ui:contents>
+                              <oa:spacer id="SpacerN" width="25" height="10"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="CurrentCountsRN" vAlign="top">
+                           <ui:contents>
+                              <oa:advancedTable id="CurrentCountTL" width="100%" viewName="OD_MPSPartyDevicesColorTonerVO">
+                                 <ui:contents>
+                                    <oa:column id="ColorCol" rendered="true">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="ColorsortableHeader" prompt="Color"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="Color" viewAttr="Color" destination="" styleClass="ORATEXT"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="TonerOrderTotalCol" rendered="true" columnDataFormat="numberFormat">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="TonerOrderTotalsortableHeader" prompt="Retail"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="TonerOrderTotal" viewAttr="TonerOrderTotal" destination="" dataType="NUMBER"/>
+                                       </ui:contents>
+                                    </oa:column>
+                                    <oa:column id="CurrentCountHeader" rendered="true" columnDataFormat="numberFormat">
+                                       <ui:columnHeader>
+                                          <oa:sortableHeader id="CurrentCountsortableHeader" prompt="Count"/>
+                                       </ui:columnHeader>
+                                       <ui:contents>
+                                          <oa:messageStyledText id="CurrentCount" viewAttr="CurrentCount" destination="" dataType="NUMBER"/>
+                                       </ui:contents>
+                                    </oa:column>									
+                                 </ui:contents>
+                              </oa:advancedTable>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:tableLayout>
+            <oa:rowLayout id="region322" hAlign="center">
+               <ui:contents>
+                  <oa:staticStyledText id="MarginPrompt" prompt="Margin:" styleClass="x18" dataType="VARCHAR2" text="Margin:"/>
+                  <oa:messageStyledText id="MarginValue" viewName="OD_MPSPartyDevicesMarginVO" viewAttr="Margin" prompt="" styleClass="x18" dataType="NUMBER"/>
+               </ui:contents>
+            </oa:rowLayout>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

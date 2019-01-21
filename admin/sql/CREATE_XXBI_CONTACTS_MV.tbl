@@ -1,0 +1,119 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XXBI_CONTACTS_MV MV                                                  |--                                                          
+ --|                                                                                             |--
+--| Program Name   : CREATE_XXBI_CONTACTS_MV.tbl                                              |--
+--|                                                                                             |--
+--| Purpose        : Contacts MV.                                      |--
+--|                                                                                             |--
+--| Change History :     
+-- | Subversion Info:                                                          |
+-- | $HeadURL: https://svn.na.odcorp.net/od/crm/branches/fix/xxcrm/admin/sql/CREATE_XXBI_CONTACTS_MV.tbl $                                                               |
+-- | $Rev: 126457 $                                                                   |
+-- | $Date: 2011-01-31 16:51:22 -0500 (Mon, 31 Jan 2011) $                                         |
+-- |                                                                           |
+-- |                                                                           |                                                           
+--   |
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              14-Apr-2010       Prasad                  Original                         |--
+--| 2.0              31-Jan-2011       Kishore Jena            Changed MV Query to pull Contract|-- 
+--|                                                            Customers Only.                  |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the MV XXCRM.XXBI_CONTACTS_MV......
+PROMPT
+
+
+  CREATE MATERIALIZED VIEW XXCRM.XXBI_CONTACTS_MV
+  BUILD DEFERRED
+  REFRESH FORCE ON DEMAND
+  DISABLE QUERY REWRITE
+  AS SELECT
+ /*+ full(pc) parallel(pc,4) full(pa) parallel(pa,4) full(rel) parallel(rel,4) full(psext) parallel(psext,4) full(hc) parallel(hc,4) full(hoc) parallel(hoc,4) full(hca) parallel(hca,4)*/
+  rel.object_id party_id,
+  rel.party_id rel_party_id,
+  pc.rowid pc_row_id,
+  pc.contact_point_id,
+  pc.last_update_date c_last_dt,
+  Pc.contact_point_type,
+  pc.primary_flag,
+  pc.email_address,
+  pc.raw_phone_number,
+  phone_area_code,
+  phone_country_code,
+  phone_number,
+  phone_extension,
+  phone_line_type,
+  pa.party_name,
+  pa.person_first_name,
+  pa.person_middle_name,
+  pa.person_last_name,
+  pa.party_id per_party_id,
+  pa.rowid parowid ,
+  rel.rowid relrid,
+  rel.relationship_id ,
+  psext.rowid psextrowid,
+  psext.party_site_id site_party_site_id,
+  psext.last_update_date site_last_update_date ,
+  hc.cust_acct_site_id ,
+  hc.cust_account_id ,
+  hc.rowid hc_row_id,
+  hc.end_date hc_end_date,
+rel.end_date rel_end_date,
+psext.party_site_id ,
+ hoc.job_title,
+  hoc.org_contact_id,
+  hc.cust_account_role_id,
+  hca.attribute18 acct_contract_flag,
+  greatest(pa.last_update_date,pc.last_update_date,rel.last_update_date,NVL(psext.last_update_date,TO_DATE('01-JAN-2000','DD-MON-RRRR')),
+           NVL(hc.last_update_date,TO_DATE('01-JAN-2000','DD-MON-RRRR')),NVL(hoc.last_update_date,TO_DATE('01-JAN-2000','DD-MON-RRRR'))) contact_update_date
+FROM ar.hz_contact_points pc ,
+  ar.hz_parties pa ,
+  ar.hz_relationships rel,
+  ar.HZ_PARTY_SITES_EXT_B psext,
+  ar.hz_cust_account_roles hc,
+  ar.hz_org_contacts hoc,
+  ar.hz_cust_accounts hca  
+WHERE rel.party_id         = pc.owner_table_id
+AND pc.owner_table_name    = 'HZ_PARTIES'
+AND rel.subject_type       = 'PERSON'
+AND rel.object_type        = 'ORGANIZATION'
+AND rel.subject_id         = pa.party_id
+AND rel.relationship_id = hoc.party_relationship_id(+)
+AND psext.attr_group_id(+) = 169
+AND psext.n_ext_attr1(+)   = rel.relationship_id
+AND hc.party_id(+)         = rel.party_id
+AND hca.party_id(+)        = rel.object_id
+AND hca.attribute18(+)     = 'CONTRACT'
+and pc.status='A'
+and pa.status='A'
+and rel.status ='A'
+and hc.status(+)='A'
+and current_role_state(+)='A' ;
+
+GRANT ALL ON XXCRM.XXBI_CONTACTS_MV TO APPS;
+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

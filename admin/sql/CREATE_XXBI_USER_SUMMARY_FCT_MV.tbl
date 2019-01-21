@@ -1,0 +1,116 @@
+-- $Id: CREATE_XXBI_USER_SUMMARY_FCT_MV.tbl 69444 2010-03-20 10:44:38 -0400Z Kishor Jena $
+-- $Rev:  $
+-- $HeadURL: https://svn.na.odcorp.net/od/crm/trunk/xxcrm/admin/sql/CREATE_XXBI_USER_SUMMARY_FCT_MV.tbl $
+-- $Author: Kishore Jena $
+-- $Date: 2010-03-20 10:44:38 -0400 (Thu, 09 Apr 2009) $
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        :  CREATE_XXBI_USER_SUMMARY_FCT_MV.tbl                |
+-- | Description :  Party Site Assignments Summary Fact MV             |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author             Remarks                   |
+-- |=======   ==========  =============      ==========================|
+-- |1.0       20-Mar-2010 Kishore Jena       Initial draft version     |
+-- |                                                                   | 
+-- +===================================================================+
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+CREATE  MATERIALIZED VIEW XXCRM.XXBI_USER_SUMMARY_FCT_MV
+BUILD DEFERRED
+REFRESH FORCE
+ON DEMAND 
+WITH PRIMARY KEY AS
+SELECT   /*+ FULL(psd) PARALLEL(psd, 8) */
+         psd.resource_id,       
+         psd.resource_name,
+         psd.role_id,
+         psd.role_name,
+         psd.group_id,
+         psd.group_name,
+         psd.m1_resource_id,
+         psd.m1_resource_name_and_role m1_resource_name,       
+         psd.m2_resource_id,
+         psd.m2_resource_name_and_role m2_resource_name,              
+         psd.m3_resource_id,
+         psd.m3_resource_name_and_role m3_resource_name,              
+         psd.m4_resource_id,
+         psd.m4_resource_name_and_role m4_resource_name,              
+         psd.m5_resource_id,
+         psd.m5_resource_name_and_role m5_resource_name,              
+         psd.m6_resource_id,
+         psd.m6_resource_name_and_role m6_resource_name,              
+         psd.potential_type_cd,
+         NVL(psd.potential_type_nm, 'No Model') potential_type_nm,
+         psd.org_type,
+         psd.cust_loyalty_code,
+         psd.party_revenue_band,
+         psd.city,
+         psd.state_province,
+         psd.od_site_full_sic_code,
+         psd.od_site_sic_code,
+         psd.od_site_wcw,
+         psd.od_site_wcw_range,
+         psd.org_site_status,
+         psd.site_use_id,
+         psd.site_use,
+         SUM(NVL(psd.comparable_potential_amt, 0)) total_potential_amt,
+         COUNT(*) party_site_count
+FROM     xxcrm.xxbi_user_site_dtl psd
+WHERE    NVL(duplicate_view, 'N') = 'N' 
+GROUP BY psd.resource_id,       
+         psd.resource_name,
+         psd.role_id,
+         psd.role_name,
+         psd.group_id,
+         psd.group_name,
+         psd.m1_resource_id,
+         psd.m1_resource_name_and_role,       
+         psd.m2_resource_id,
+         psd.m2_resource_name_and_role,              
+         psd.m3_resource_id,
+         psd.m3_resource_name_and_role,              
+         psd.m4_resource_id,
+         psd.m4_resource_name_and_role,              
+         psd.m5_resource_id,
+         psd.m5_resource_name_and_role,              
+         psd.m6_resource_id,
+         psd.m6_resource_name_and_role,              
+         psd.potential_type_cd,
+         NVL(psd.potential_type_nm, 'No Model'),
+         psd.org_type,
+         psd.cust_loyalty_code,
+         psd.party_revenue_band,
+         psd.city,
+         psd.state_province,
+         psd.od_site_full_sic_code,
+         psd.od_site_sic_code,
+         psd.od_site_wcw,
+         psd.od_site_wcw_range,
+         psd.org_site_status,
+         psd.site_use_id,
+         psd.site_use;
+
+GRANT ALL ON XXCRM.XXBI_USER_SUMMARY_FCT_MV TO APPS;
+
+GRANT ALL ON XXCRM.XXBI_USER_SUMMARY_FCT_MV TO XXDATA_STAGE;
+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+--EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
+
+

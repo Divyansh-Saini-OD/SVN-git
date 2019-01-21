@@ -1,0 +1,103 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_CDH_ACCOUNT_SETUP_REQ.tbl                 |
+-- | Description      :Account request details                             |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |DRAFT 1A  09-May-2007  V Jayamohan        Initial draft version        |
+-- |DRAFT 1B  26-Jul-2007  V Jayamohan        Added two more columns       |
+-- |1.0       30-Nov-2007  Sreekanth Rao      Moved Drop to seperate file  |
+-- +=======================================================================+
+
+-- ---------------------------------------------------------------------
+--      Create Custom Table XX_CDH_ACCOUNT_SETUP_REQ    --
+-- ---------------------------------------------------------------------
+CREATE TABLE XXCRM.XX_CDH_ACCOUNT_SETUP_REQ
+  (
+	  REQUEST_ID                 NUMBER(15),
+	  STATUS                     VARCHAR2(50 BYTE),
+	  STATUS_TRANSITION_DATE     DATE,
+	  ACCOUNT_NUMBER             NUMBER(15),
+	  CUST_ACCOUNT_ID            NUMBER(15),
+	  ACCOUNT_CREATION_SYSTEM    VARCHAR2(50 BYTE),
+	  BILL_TO_SITE_ID            NUMBER(15),
+	  SHIP_TO_SITE_ID            NUMBER(15),
+	  CREATED_BY                 NUMBER(15)         NOT NULL,
+	  CREATION_DATE              DATE               NOT NULL,
+	  LAST_UPDATED_BY            NUMBER(15)         NOT NULL,
+	  LAST_UPDATE_DATE           DATE               NOT NULL,
+	  LAST_UPDATE_LOGIN          NUMBER(15),
+	  PARTY_ID                   NUMBER(15),
+	  TAX_EXEMPT                 VARCHAR2(1 BYTE),
+	  OFF_CONTRACT_PERCENTAGE    NUMBER,
+	  TAX_CERTIFICATE_NUMBER     VARCHAR2(50 BYTE),
+	  WHOLESALE_PERCENTAGE       NUMBER,
+	  GP_FLOOR_PERCENTAGE        NUMBER,
+	  PRICE_PLAN                 VARCHAR2(50 BYTE),
+	  CHILD                      VARCHAR2(1 BYTE),
+	  PARENT_ID                  VARCHAR2(50 BYTE),
+	  XREF                       VARCHAR2(50 BYTE),
+	  PO_VALIDATED               VARCHAR2(50 BYTE),
+	  RELEASE_VALIDATED          VARCHAR2(50 BYTE),
+	  DEPARTMENT_VALIDATED       VARCHAR2(50 BYTE),
+	  DESKTOP_VALIDATED          VARCHAR2(50 BYTE),
+	  PO_HEADER                  VARCHAR2(50 BYTE),
+	  RELEASE_HEADER             VARCHAR2(50 BYTE),
+	  DEPARTMENT_HEADER          VARCHAR2(50 BYTE),
+	  DESKTOP_HEADER             VARCHAR2(50 BYTE),
+	  AFAX                       VARCHAR2(50 BYTE),
+	  FREIGHT_CHARGE             VARCHAR2(50 BYTE),
+	  FAX_ORDER                  VARCHAR2(50 BYTE),
+	  SUBSTITUTIONS              VARCHAR2(50 BYTE),
+	  BACK_ORDERS                VARCHAR2(50 BYTE),
+	  DELIVERY_DOCUMENT_TYPE     VARCHAR2(50 BYTE),
+	  PRINT_INVOICE              VARCHAR2(1 BYTE),
+	  DISPLAY_BACK_ORDER         VARCHAR2(1 BYTE),
+	  RENAME_PACKING_LIST        VARCHAR2(1 BYTE),
+	  DISPLAY_PURCHASE_ORDER     VARCHAR2(1 BYTE),
+	  DISPLAY_PAYMENT_METHOD     VARCHAR2(1 BYTE),
+	  DISPLAY_PRICES             VARCHAR2(1 BYTE),
+	  PROCUREMENT_CARD           VARCHAR2(50 BYTE),
+	  PAYMENT_METHOD             VARCHAR2(50 BYTE),
+	  AP_CONTACT                 VARCHAR2(50 BYTE),
+	  COMMENTS		     VARCHAR2(4000 BYTE),
+	  DELETE_FLAG                VARCHAR2(1 BYTE),
+	  OFFLINE_CREATED_FLAG       VARCHAR2(1 BYTE),
+	  ATTRIBUTE_CATEGORY         VARCHAR2(30 BYTE),
+	  ATTRIBUTE1                 VARCHAR2(150 BYTE),
+	  ATTRIBUTE2                 VARCHAR2(150 BYTE),
+	  ATTRIBUTE3                 VARCHAR2(150 BYTE),
+	  ATTRIBUTE4                 VARCHAR2(150 BYTE),
+	  ATTRIBUTE5                 VARCHAR2(150 BYTE),
+	  ATTRIBUTE6                 VARCHAR2(150 BYTE),
+	  ATTRIBUTE7                 VARCHAR2(150 BYTE),
+	  ATTRIBUTE8                 VARCHAR2(150 BYTE),
+	  ATTRIBUTE9                 VARCHAR2(150 BYTE),
+	  ATTRIBUTE10                VARCHAR2(150 BYTE),
+	  ATTRIBUTE11                VARCHAR2(150 BYTE),
+	  ATTRIBUTE12                VARCHAR2(150 BYTE),
+	  ATTRIBUTE13                VARCHAR2(150 BYTE),
+	  ATTRIBUTE14                VARCHAR2(150 BYTE),
+	  ATTRIBUTE15                VARCHAR2(150 BYTE),
+	  OFF_CONTRACT_CODE          VARCHAR2(50 BYTE),
+          OFF_WHOLESALE_CODE         VARCHAR2(50 BYTE)
+);
+------------------------------------------------------
+-- Adding Grants to APPS.                           --
+------------------------------------------------------
+GRANT ALL ON XXCRM.XX_CDH_ACCOUNT_SETUP_REQ TO APPS;
+
+SHOW ERRORS;

@@ -1,0 +1,25 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_CDH_VPS_CUSTOMER_STG.syn                  |
+-- | Description      :Synonym to XX_CDH_VPS_CUSTOMER_STG Table            |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |1.0       13-JUN-2017  Thejaswini Rajula     Initial draft             |
+-- +=======================================================================+
+
+CREATE OR REPLACE SYNONYM APPS.XX_CDH_VPS_CUSTOMER_STG FOR XXCRM.XX_CDH_VPS_CUSTOMER_STG;
+/
+
+SHOW ERRORS;

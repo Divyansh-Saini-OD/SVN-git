@@ -1,0 +1,23 @@
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify                                           |
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_ASSIGN_IDS.tbl                                                   |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        26-Aug-2011     Indra Varada        Initial version                              |
+-- +============================================================================================+
+
+  CREATE TABLE "XXCRM"."XX_CRM_EXP_ASSIGN_IDS" 
+   (	"BATCH_ID" NUMBER NOT NULL ENABLE, 
+	"EBIZ_ENTITY_ID" NUMBER NOT NULL ENABLE, 
+	"RECORD_ID" NUMBER NOT NULL ENABLE
+   ) ;
+ 
+ GRANT ALL ON XXCRM.XX_CRM_EXP_ASSIGN_IDS TO APPS;
+  
+ SHOW ERRORS;

@@ -1,0 +1,20 @@
+--+=====================================================================+
+--|                   Office Depot - Project FIT                        |
+--|          Capgemini/Office Depot/Consulting Organization             |
+--+=====================================================================+
+--|                                                                     |
+--|Rice        : 106313                                                 |
+--|File Name   : XX_CRM_WCELG_CUST.syn                                  |
+--|File Path   : $XXCRM_TOP/admin/sql                                   |
+--|Schema      : APPS                                                   |
+--|                                                                     |
+--|Version    Date           Author                       Remarks       |
+--|=======   ======        ====================          =========      |
+--| 1.0    06-Sep-2011     Balakrishna Bolikonda       Initial version  |
+--|                                                                     |
+--+=====================================================================+
+
+SET VERIFY OFF
+WHENEVER SQLERROR CONTINUE
+
+CREATE OR REPLACE SYNONYM XX_CRM_WCELG_CUST FOR XXCRM.XX_CRM_WCELG_CUST;

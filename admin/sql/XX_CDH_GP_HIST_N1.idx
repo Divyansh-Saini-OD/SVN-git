@@ -1,0 +1,35 @@
+-- $Id: XXSCS_POTENTIAL_STG_N1.idx 69590 2009-04-10 15:32:12Z Naga Kalyan $
+-- $Rev: 69590 $
+-- $HeadURL: https://svn.na.odcorp.net/od/crm/trunk/xxcrm/admin/sql/XX_CDH_GP_HIST_N1.idx $
+-- $Author: Naga Kalyan $
+-- $Date: 2009-04-10 11:32:12 -0400 (Fri, 10 Apr 2009) $
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :XX_CDH_GP_HIST_N1.idx                               |
+-- | Description      :Non Unique Index for XX_CDH_GP_HIST table.          |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author              Remarks                     |
+-- |-------  ----------- -----------------    -----------------------------|
+-- | 1.0     11-MAR-2011 Kalyan                Initial Draft Version       |
+-- +=======================================================================+
+
+
+--REM==============================================================================
+--REM        Creating Index XX_CDH_GP_HIST_N1
+--REM==============================================================================
+
+CREATE INDEX XXCRM.XX_CDH_GP_HIST_N1
+ON XXCRM.XX_CDH_GP_HIST (GP_ID);
+
+EXIT;
+

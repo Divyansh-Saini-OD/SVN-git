@@ -1,0 +1,31 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XXCS_TOP_CUST_EXSTNG_LEAD_OPP.syn                  |
+-- | Description      : Custom synonym for XXCS_TOP_CUST_EXSTNG_LEAD_OPP   |
+-- |                                                                       |
+-- |                    Note:This script will be executed from             |
+-- |                    APPS schema                                        |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      23-Mar-2009 Sreekanth          Initial version                |
+-- +=======================================================================+
+
+-------------------------------------------------------------
+-- Creating synonym APPS.XXCS_TOP_CUST_EXSTNG_LEAD_OPP     --
+-------------------------------------------------------------
+
+CREATE OR REPLACE SYNONYM APPS.XXCS_TOP_CUST_EXSTNG_LEAD_OPP FOR XXCRM.XXCS_TOP_CUST_EXSTNG_LEAD_OPP;
+
+
+SHOW ERRORS;
+
+EXIT;

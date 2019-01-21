@@ -1,0 +1,36 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : XX_TM_NAM_TERR_HISTORY_DTLS_N1.idx                 |
+-- | Description      : Non Unique Index for custom table                  |
+-- |                    XX_TM_NAM_TERR_HISTORY_DTLS                        |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |Draft 1a  11-Jun-2008  Jeevan babu        Initial Draft Version        |
+-- +=======================================================================+
+
+-------------------------------------------------------------
+-- Drop existing Index for XX_TM_NAM_TERR_HISTORY_DTLS_N1   --
+-------------------------------------------------------------
+
+--DROP INDEX XX_TM_NAM_TERR_HISTORY_DTLS_N1;
+
+-------------------------------------------------------------
+-- Create Index XX_TM_NAM_TERR_HISTORY_DTLS_N1              --
+-------------------------------------------------------------
+
+CREATE INDEX XXCRM.XX_TM_NAM_TERR_HISTORY_DTLS_N1 
+ON XXCRM.XX_TM_NAM_TERR_HISTORY_DTLS(PARTY_SITE_ID, STATUS,START_DATE_ACTIVE, END_DATE_ACTIVE)
+NOLOGGING;
+
+
+SHOW ERRORS;
+

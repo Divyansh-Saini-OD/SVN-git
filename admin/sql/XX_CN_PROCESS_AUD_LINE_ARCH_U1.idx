@@ -1,0 +1,39 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : XX_CN_PROCESS_AUD_LINE_ARCH_U1.idx                  |
+-- | Rice ID     : E1004G_CustomCollections_(Archive)                  |
+-- | Description : XX_CN_PROCESS_AUDIT_LINES Table - Unique Index      |
+-- |               Creation Script                                     |
+-- |                                                                   |
+-- |               Columns :                                           |
+-- |                         Process_Audit_Line_Id  (Primary Key)      |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1A 08-Nov-2007  Hema Chikkanna   Initial draft version       |
+-- |                                                                   |
+-- +===================================================================+
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+PROMPT
+PROMPT Creating Unique INDEX XX_CN_PROCESS_AUDIT_LINES_ARCH_U1
+PROMPT
+
+CREATE UNIQUE INDEX xx_cn_process_aud_line_arch_u1 ON xx_cn_process_audit_lines_arch( process_audit_line_id );
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

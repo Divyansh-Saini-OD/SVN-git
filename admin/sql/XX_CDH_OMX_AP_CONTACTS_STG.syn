@@ -1,0 +1,26 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             Table       : XX_CDH_OMX_AP_CONTACTS_STG                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- |DRAFT 1.0  19-Feb-2015  Abhi konda       Initial draft version    	      |
+-- |DRAFT 1.1  24-MAR-2015  Abhi konda       Code Review Changes	          |
+-- +==========================================================================+
+
+PROMPT
+PROMPT Synonym XX_CDH_OMX_AP_CONTACTS_STG
+PROMPT   
+
+CREATE OR REPLACE SYNONYM APPS.XX_CDH_OMX_AP_CONTACTS_STG FOR XXCRM.XX_CDH_OMX_AP_CONTACTS_STG;
+
+SHOW ERRORS;
+ 
+ 

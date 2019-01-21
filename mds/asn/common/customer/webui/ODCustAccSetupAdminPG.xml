@@ -1,0 +1,152 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1550" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="pageLayout" title="Customer Account Setup Administration Page" controllerClass="od.oracle.apps.xxcrm.asn.common.customer.webui.ODCustAccSetupAdminCO" amDefName="od.oracle.apps.xxcrm.asn.common.customer.server.ODCustAccSetupAdminAM">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:stackLayout id="SetUpHeaderRN">
+               <ui:contents>
+                  <oa:hideShowHeader id="ContractTemplateHdr" text="Define Contract Templates" disclosed="true">
+                     <ui:contents>
+                        <oa:table id="ODContractTemplatesTBL">
+                           <ui:contents>
+                              <oa:messageTextInput id="TemplateName" dataType="VARCHAR2" prompt="Template Name" viewName="ODContractTemplatesVO" viewAttr="TemplateName" maximumLength="80"/>
+                              <oa:messageChoice id="SalesRole" dataType="VARCHAR2" prompt="Sales Role" viewName="ODContractTemplatesVO" viewAttr="SalesRole" pickListViewName="ODSalesRoleLookupsVO" pickListValAttr="LookupCode" pickListDispAttr="Meaning"/>
+                              <oa:messageChoice id="RevenueBandCode" dataType="VARCHAR2" prompt="Revenue Band" viewName="ODContractTemplatesVO" viewAttr="RevenueBandCode" pickListViewName="ODRevenueBandVO" pickListValAttr="LookupCode" pickListDispAttr="Meaning"/>
+                              <oa:messageChoice id="ContractNumber" dataType="VARCHAR2" prompt="Contract Number" viewName="ODContractTemplatesVO" viewAttr="ContarctNumber" pickListViewName="ODAccSetupCntrtNumVO" pickListValAttr="LookupCode" pickListDispAttr="Meaning"/>
+                              <oa:messageTextInput id="ContractDescription" dataType="VARCHAR2" prompt="Contract Description" viewName="ODContractTemplatesVO" viewAttr="ContractDescription" maximumLength="240"/>
+                              <oa:messageChoice id="Priority" dataType="VARCHAR2" prompt="Priority" viewName="ODContractTemplatesVO" viewAttr="Priority" pickListViewName="ODAccSetupCntrtPriorVO" pickListValAttr="LookupCode" pickListDispAttr="Meaning"/>
+                              <oa:messageChoice id="Custom" dataType="VARCHAR2" prompt="Custom" viewName="ODContractTemplatesVO" viewAttr="Custom" pickListViewName="ODAccSetupCntrtCustomVO" pickListValAttr="LookupCode" pickListDispAttr="Meaning"/>
+                           </ui:contents>
+                           <ui:tableSelection>
+                              <oa:multipleSelection id="ContractTemplateMultiSelect" viewName="ODContractTemplatesVO" viewAttr="SelectFlag"/>
+                           </ui:tableSelection>
+                           <ui:tableActions>
+                              <oa:flowLayout id="ContractsButtonFlow">
+                                 <ui:contents>
+                                    <oa:submitButton id="AddContractTemplate" cellNoWrapFormat="true" comment="Add Row" prompt="Add Row" shortDesc="Add Row" hAlign="end" text="Add Row">
+                                       <ui:primaryClientAction>
+                                          <ui:firePartialAction id="firePartialAction3">
+                                             <ui:parameters>
+                                                <ui:parameter key="AcctSetupAdminEvent" value="AddContractTemplate"/>
+                                             </ui:parameters>
+                                          </ui:firePartialAction>
+                                       </ui:primaryClientAction>
+                                    </oa:submitButton>
+                                    <oa:submitButton id="RemoveContractTemplate" cellNoWrapFormat="true" comment="Remove Row" prompt="Remove Row" shortDesc="Remove Row" hAlign="end" text="Remove Row">
+                                       <ui:primaryClientAction>
+                                          <ui:firePartialAction id="firePartialAction1">
+                                             <ui:parameters>
+                                                <ui:parameter key="AcctSetupAdminEvent" value="RemoveContractTemplate"/>
+                                             </ui:parameters>
+                                          </ui:firePartialAction>
+                                       </ui:primaryClientAction>
+                                    </oa:submitButton>
+                                 </ui:contents>
+                              </oa:flowLayout>
+                           </ui:tableActions>
+                        </oa:table>
+                     </ui:contents>
+                  </oa:hideShowHeader>
+                  <oa:hideShowHeader id="DocTemplateHdr" text="Define Document Templates" disclosed="true">
+                     <ui:contents>
+                        <oa:table id="ODDocumentTemplatesTL">
+                           <ui:contents>
+                              <oa:messageChoice id="PaymentMethod" dataType="VARCHAR2" prompt="Payment Method" viewName="ODDocumentTemplatesVO" viewAttr="PaymentMethod" pickListViewName="ODAccSetupPayMethVO" pickListValAttr="LookupCode" pickListDispAttr="Meaning"/>
+                              <oa:messageChoice id="DocumentType" dataType="VARCHAR2" prompt="Document Type" viewName="ODDocumentTemplatesVO" viewAttr="DocumentType" pickListViewName="ODAccSetupDocTypVO" pickListValAttr="LookupCode" pickListDispAttr="Meaning"/>
+                              <oa:messageChoice id="DocumentName" dataType="VARCHAR2" prompt="Document Name" viewName="ODDocumentTemplatesVO" viewAttr="DocumentName" pickListViewName="ODAccSetupDocNameVO" pickListValAttr="LookupCode" pickListDispAttr="Meaning"/>
+                              <oa:messageCheckBox id="DetailFlag" dataType="VARCHAR2" text="Detail ?" prompt="Detail ?" viewName="ODDocumentTemplatesVO" viewAttr="DetailFlag"/>
+                              <oa:messageChoice id="Frequency" dataType="VARCHAR2" prompt="Pay Frequency" viewName="ODDocumentTemplatesVO" viewAttr="Frequency" pickListViewName="ODAccSetupDocFreqVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode"/>
+                              <oa:messageCheckBox id="IndirectFlag" dataType="VARCHAR2" text="Indirect ?" prompt="Indirect ?" viewName="ODDocumentTemplatesVO" viewAttr="IndirectFlag"/>
+                              <oa:messageCheckBox id="InclBkupInvFlag" dataType="VARCHAR2" text="Incl Backup Inv?" prompt="Incl Backup Inv?" viewName="ODDocumentTemplatesVO" viewAttr="InclBkupInvFlag"/>
+                              <oa:image id="Sorts" destination="javascript:window.open('OA.jsp?OAFunc=XX_ASN_ACCT_SETUP_ADM_SORT&amp;retainAM=N&amp;documentID={@DocTemplateId}', 'self', 'resizable=no, width=570,height=375,menubar=no,toolbar=no,statusbar=yes,location=no,locationbar=no,scrollbars=yes');void(0);" prompt="Sort" source="../OA_MEDIA/{@sortImage}"/>
+                              <oa:image id="Totals" destination="javascript:window.open('OA.jsp?page=/od/oracle/apps/xxcrm/asn/common/customer/webui/ODAcctSetupAdminTotalsShuttlePG&amp;retainAM=N&amp;documentID={@DocTemplateId}', 'self', 'resizable=no, width=570,height=375,menubar=no,toolbar=no,statusbar=yes,location=no,locationbar=no,scrollbars=yes');void(0);" prompt="Totals" source="../OA_MEDIA/{@TotalsImage}"/>
+                              <oa:image id="PageBreak" destination="javascript:window.open('OA.jsp?page=/od/oracle/apps/xxcrm/asn/common/customer/webui/ODAcctSetupAdminPageBreakShuttlePG&amp;retainAM=N&amp;documentID={@DocTemplateId}', 'self', 'resizable=no, width=570,height=375,menubar=no,toolbar=no,statusbar=yes,location=no,locationbar=no,scrollbars=yes');void(0);" prompt="Page Break" viewName="ODCustAcctSetupDocumentVO" source="../OA_MEDIA/{@PageBreakImage}"/>
+                           </ui:contents>
+                           <ui:tableSelection>
+                              <oa:multipleSelection id="DocumentTemplateMultiSelect" viewName="ODDocumentTemplatesVO" viewAttr="SelectFlag"/>
+                           </ui:tableSelection>
+                           <ui:tableActions>
+                              <oa:flowLayout id="DocumentButtonFlow">
+                                 <ui:contents>
+                                    <oa:submitButton id="AddDocumentTemplate" cellNoWrapFormat="true" comment="Add Row" prompt="Add Row" shortDesc="Add Row" hAlign="end" text="Add Row">
+                                       <ui:primaryClientAction>
+                                          <ui:firePartialAction id="firePartialAction3">
+                                             <ui:parameters>
+                                                <ui:parameter key="AcctSetupAdminEvent" value="AddDocumentTemplate"/>
+                                             </ui:parameters>
+                                          </ui:firePartialAction>
+                                       </ui:primaryClientAction>
+                                    </oa:submitButton>
+                                    <oa:submitButton id="RemoveDocumentTemplate" cellNoWrapFormat="true" comment="Remove Row" prompt="Remove Row" shortDesc="Remove Row" hAlign="end" text="Remove Row">
+                                       <ui:primaryClientAction>
+                                          <ui:firePartialAction id="firePartialAction1">
+                                             <ui:parameters>
+                                                <ui:parameter key="AcctSetupAdminEvent" value="RemoveDocumentTemplate"/>
+                                             </ui:parameters>
+                                          </ui:firePartialAction>
+                                       </ui:primaryClientAction>
+                                    </oa:submitButton>
+                                 </ui:contents>
+                              </oa:flowLayout>
+                           </ui:tableActions>
+                        </oa:table>
+                     </ui:contents>
+                  </oa:hideShowHeader>
+                  <oa:hideShowHeader id="DefaultValuesHdr" text="Define Default Fields" disclosed="true">
+                     <ui:contents>
+                        <oa:table id="ODDefaultValuesTBL">
+                           <ui:contents>
+                              <oa:messageChoice id="SalesRole02" dataType="VARCHAR2" prompt="Sales Role" viewName="ODDefaultValuesVO" viewAttr="SalesRole" pickListViewName="ODSalesRoleLookupsVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode"/>
+                              <oa:messageChoice id="RevenueBandCode1" dataType="VARCHAR2" prompt="Revenue Band" viewName="ODDefaultValuesVO" viewAttr="RevenueBandCode" pickListViewName="ODRevenueBandVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode"/>
+                              <oa:messageChoice id="PricePlanCode" dataType="VARCHAR2" prompt="Price Plan" viewName="ODDefaultValuesVO" viewAttr="PricePlanCode" pickListViewName="ODAccSetupPricePlanVO" pickListDispAttr="Meaning" pickListValAttr="LookupCode"/>
+                              <oa:messageTextInput id="Xref" dataType="VARCHAR2" prompt="XREF" viewName="ODDefaultValuesVO" viewAttr="Xref" maximumLength="30"/>
+                              <oa:messageTextInput id="OffContractPct" dataType="NUMBER" prompt="Off Contract %" viewName="ODDefaultValuesVO" viewAttr="OffContractPct" maximumLength="6" columns="6"/>
+                              <oa:messageTextInput id="WholesalePct" dataType="NUMBER" prompt="Wholesale %" viewName="ODDefaultValuesVO" viewAttr="WholesalePct" maximumLength="6" columns="6"/>
+                              <oa:messageTextInput id="GpFloorPct" dataType="NUMBER" prompt="GP Floor %" viewName="ODDefaultValuesVO" viewAttr="GpFloorPct" maximumLength="6" columns="6"/>
+                           </ui:contents>
+                           <ui:tableSelection>
+                              <oa:multipleSelection id="DefaultValuesMultiSelect" viewName="ODDefaultValuesVO" viewAttr="SelectFlag"/>
+                           </ui:tableSelection>
+                           <ui:tableActions>
+                              <oa:flowLayout id="DefaultValuesButtonFlow">
+                                 <ui:contents>
+                                    <oa:submitButton id="AddDefaultValues" cellNoWrapFormat="true" comment="Add Row" prompt="Add Row" shortDesc="Add Row" hAlign="end" text="Add Row">
+                                       <ui:primaryClientAction>
+                                          <ui:firePartialAction id="firePartialAction3">
+                                             <ui:parameters>
+                                                <ui:parameter key="AcctSetupAdminEvent" value="AddDefaultValues"/>
+                                             </ui:parameters>
+                                          </ui:firePartialAction>
+                                       </ui:primaryClientAction>
+                                    </oa:submitButton>
+                                    <oa:submitButton id="RemoveDefaultValues" cellNoWrapFormat="true" comment="Remove Row" prompt="Remove Row" shortDesc="Remove Row" hAlign="end" text="Remove Row">
+                                       <ui:primaryClientAction>
+                                          <ui:firePartialAction id="firePartialAction1">
+                                             <ui:parameters>
+                                                <ui:parameter key="AcctSetupAdminEvent" value="RemoveDefaultValues"/>
+                                             </ui:parameters>
+                                          </ui:firePartialAction>
+                                       </ui:primaryClientAction>
+                                    </oa:submitButton>
+                                 </ui:contents>
+                              </oa:flowLayout>
+                           </ui:tableActions>
+                        </oa:table>
+                     </ui:contents>
+                  </oa:hideShowHeader>
+               </ui:contents>
+            </oa:stackLayout>
+            <oa:pageButtonBar id="ButtonBar">
+               <ui:contents>
+                  <oa:submitButton id="Update" text="Update" prompt="Update"/>
+                  <oa:resetButton id="Restore" text="Restore"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

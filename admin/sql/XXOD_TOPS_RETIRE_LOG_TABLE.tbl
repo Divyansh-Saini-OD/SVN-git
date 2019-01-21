@@ -1,0 +1,63 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name :XXCRM.XXOD_TOPS_RETIRE_LOG_TABLE                                   |
+-- | Description : Create the staging table for Tops Retirement Project       |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     06-May-2016   PRAVEEN VANGA        Initial version              |
+-- |                                                                          |
+-- +==========================================================================+
+
+   SET SHOW         OFF
+   SET VERIFY       OFF
+   SET ECHO         OFF
+   SET TAB          OFF
+   SET FEEDBACK     ON
+   
+  
+   
+  create table XXCRM.XXOD_TOPS_RETIRE_LOG_TABLE
+                         (REQUEST_ID  NUMBER,
+						  EXECUTION_SCHEMA varchar2(10),
+                          OBJECT_TYPE VARCHAR2(20),
+                          OBJECT_NAME VARCHAR2(250),
+                          PACKAGE_NAME  VARCHAR2(250),
+                          PKG_PROGRAM VARCHAR2(250),
+						  REFERENCE_PKG_NAME  VARCHAR2(250),
+                          REFERENCE_PKG_PROGRAM VARCHAR2(250),
+						  SYNONYM_NAME VARCHAR2(250),
+						  VIEW_NAME  VARCHAR2(250),
+                          INDEX_NAME VARCHAR2(250));
+						  
+  create table XXCRM.XXOD_TOPS_RETIRE_INVALID_OBJ
+                         (
+                          OWNER VARCHAR2(250),
+                          OBJECT_TYPE  VARCHAR2(250),
+                          OBJECT_NAME varchar2(250)
+                          );
+						  
+  create table XXCRM.XXOD_TOPS_RETIRE_INVALID_OBJ1
+                         (
+                          OWNER VARCHAR2(250),
+                          OBJECT_TYPE  VARCHAR2(250),
+                          OBJECT_NAME varchar2(250)
+                          );						  
+						  
+   						  
+
+  create table XXCRM.XXOD_TOPS_RETIRE_OBJ_EXTRACT
+                         (SCHEMA_OBJ varchar2(10),
+                          OBJECT_TYPE VARCHAR2(20),
+                          OBJECT_NAME VARCHAR2(200),
+                          DROP_FLAG  VARCHAR2(2),
+                          STATUS VARCHAR2(2),
+						  COMMENTS VARCHAR2(2000));
+						  
+                         
+ SHOW ERRORS;                         

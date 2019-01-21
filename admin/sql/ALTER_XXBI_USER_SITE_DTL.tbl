@@ -1,0 +1,5 @@
+alter table xxcrm.xxbi_user_site_dtl
+add (start_date_active date,
+     end_date_active   date,
+     duplicate_view    varchar2(1)
+    );

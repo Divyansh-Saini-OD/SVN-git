@@ -1,0 +1,57 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+-- +======================================================================================+
+-- |                                    Office Depot                                      |
+-- +======================================================================================|
+-- | Name       : XX_CDH_OMX_REC_ID_S.seq                                                 |
+-- | Description: This script will populate the Record_id field in MOD4 staging tables    |
+-- |                                                                                      | 
+-- | Rice Id    : 700                                                                     | 
+-- |                                                                                      |
+-- |                                                                                      |
+-- |Change Record:                                                                        |
+-- |===============                                                                       |
+-- |Version   Date         Author           Remarks                                       |
+-- |=======   ===========  =============    ==============================================|
+-- |1.0       12-Feb-2015  Havish Kasina     Initial Version                              |
+-- +======================================================================================+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET TERM ON
+
+PROMPT
+PROMPT Drop Sequence XXCRM.XX_CDH_OMX_REC_ID_S
+PROMPT
+
+DROP SEQUENCE XXCRM.XX_CDH_OMX_REC_ID_S;
+
+SET TERM ON
+
+PROMPT
+PROMPT Creating the Sequence XXCRM.XX_CDH_OMX_REC_ID_S 
+PROMPT
+
+CREATE SEQUENCE XXCRM.XX_CDH_OMX_REC_ID_S 
+  MINVALUE 1
+  START WITH 1
+  INCREMENT BY 1
+  NOCACHE
+/
+   
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

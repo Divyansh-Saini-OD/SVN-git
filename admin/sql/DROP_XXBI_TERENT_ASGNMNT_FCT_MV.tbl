@@ -1,0 +1,38 @@
+-- $Id: DROP_XXBI_TERENT_ASGNMNT_FCT_MV.tbl 69444 2010-03-20 10:44:38 -0400Z Kishor Jena $
+-- $Rev:  $
+-- $HeadURL: https://svn.na.odcorp.net/od/crm/trunk/xxcrm/admin/sql/DROP_XXBI_TERENT_ASGNMNT_FCT_MV.tbl $
+-- $Author: Kishore Jena $
+-- $Date: 2010-03-20 10:44:38 -0400 (Thu, 09 Apr 2009) $
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        :  DROP_XXBI_TERENT_ASGNMNT_FCT_MV.tbl                |
+-- | Description :  Drop Active Territory Entity Assignments Fact MV   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author             Remarks                   |
+-- |=======   ==========  =============      ==========================|
+-- |1.0       20-Mar-2010 Kishore Jena       Initial draft version     |
+-- |                                                                   | 
+-- +===================================================================+
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+DROP MATERIALIZED VIEW xxcrm.xxbi_terent_asgnmnt_fct_mv;
+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+--EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

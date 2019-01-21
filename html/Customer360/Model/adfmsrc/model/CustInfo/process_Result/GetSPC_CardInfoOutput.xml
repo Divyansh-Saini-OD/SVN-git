@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<JavaBean xmlns="http://xmlns.oracle.com/adfm/beanmodel" version="11.1.1.56.60"
+          id="GetSPC_CardInfoOutput" Package="model.CustInfo.process_Result"
+          BeanClass="model.CustInfo.process_Result.GetSPC_CardInfoOutput"
+          isJavaBased="false">
+  <Attribute Name="SPC_CARD_NUM" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+  <Attribute Name="TRANS_LIMIT" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+  <Attribute Name="DAILY_TRANS_LIMIT" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+  <Attribute Name="CREDIT_STATUS" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+  <Attribute Name="TENDER_CODE" IsUpdateable="0" IsNotNull="false"
+             Type="java.lang.String"/>
+</JavaBean>

@@ -1,0 +1,37 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        :  CREATE_XX_CDH_TCA_ENTITY_STAT_INFO_U1.idx          |
+-- | Description :  Create custom tables for C0024                     |
+-- |                The Objects created are:                           |
+-- |                 1. XX_CDH_TCA_ENTITY_STAT_INFO_U1 (Report Index ) |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author             Remarks                   |
+-- |=======   ==========  ================== ==========================|
+-- |DRAFT 1a  28-Aug-2008 Shabbar Hassan     Initial draft version     |
+-- +===================================================================+
+
+-- -----------------------------------------------------
+--      Create Custom Index XX_CDH_TCA_ENTITY_STAT_INFO_U1    --
+-- -----------------------------------------------------
+
+CREATE UNIQUE INDEX XXCRM.XX_CDH_TCA_ENTITY_STAT_INFO_U1 ON XXCRM.XX_CDH_TCA_ENTITY_STAT_INFO(
+summary_name,
+group_name1,
+group_name2,
+group_name3,
+group_name4,
+group_name5);
+
+
+/
+SHOW ERRORS;
+
+EXIT;

@@ -1,0 +1,30 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |      Oracle NAIO/Office Depot/Consulting Organization                 |
+-- +=======================================================================+
+-- | Name             :XX_CDH_ACCT_SETUP_CONTRACTS_N1.idx                     |
+-- | Description      :Index on XX_CDH_ACCT_SETUP_CONTRACTS                   | 
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  25-May-2007  V Jayamohan       Initial Draft Version          |
+-- | 1.1     03-Jan-2008 Sudeept Maharana   Removed Drop                   |
+-- +=======================================================================+
+
+-- -------------------------------------------------
+-- Creating Index XX_CDH_ACCT_SETUP_CONTRACTS_N1
+-- -------------------------------------------------
+
+
+CREATE INDEX XXCRM.XX_CDH_ACCT_SETUP_CONTRACTS_N1 ON XXCRM.XX_CDH_ACCT_SETUP_CONTRACTS
+(ACCOUNT_REQUEST_ID
+ );
+
+

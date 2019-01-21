@@ -1,0 +1,41 @@
+-- $Id$
+-- $Rev$
+-- $HeadURL$
+-- $Author$
+-- $Date$
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             :XXOD_HZ_SUMMARY_N2.idx                              |
+-- | Description      :N2 Index on Summary ID                              |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author              Remarks                     |
+-- |-------  ----------- -----------------    -----------------------------|
+-- | 1.0     23-Jul-2009  Indra Varada         Initial Draft Version       |
+-- +=======================================================================+
+
+
+REM============================================================================================
+REM        Creating Index XXOD_HZ_SUMMARY_N2
+REM============================================================================================
+
+
+  CREATE INDEX "XXCRM"."XXOD_HZ_SUMMARY_N2" ON "XXCRM"."XXOD_HZ_SUMMARY" ("SUMMARY_ID") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)
+  TABLESPACE "XXOD_TS_DATA" 
+
+/
+
+EXIT;
+

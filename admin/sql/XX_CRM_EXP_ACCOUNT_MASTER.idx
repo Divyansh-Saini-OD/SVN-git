@@ -1,0 +1,37 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify						|
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_NOTE_TASK_MASTER.idx                                               |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        08/07/11       Devendra Petkar        Initial version                            |
+-- +============================================================================================+
+
+
+--------------------------------------------------------------------
+-----------------------------XX_CRM_EXP_ACCOUNT_MASTER_I----------------------------------
+--------------------------------------------------------------------
+
+
+PROMPT CREATE INDEX xxcrm.XX_CRM_EXP_ACCOUNT_MASTER_I
+
+CREATE UNIQUE INDEX xxcrm.XX_CRM_EXP_ACCOUNT_MASTER_I ON xxcrm.XX_CRM_EXP_ACCOUNT_MASTER
+(party_id)
+NOLOGGING
+TABLESPACE apps_ts_tx_idx
+NOPARALLEL;
+
+
+
+SHOW ERROR;
+
+EXIT;

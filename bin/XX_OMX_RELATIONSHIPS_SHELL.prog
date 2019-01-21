@@ -1,0 +1,91 @@
+#! /usr/bin/ksh
+#-- +=======================================================================+
+#-- |               Office Depot - Project Simplify                         |
+#-- +=======================================================================+
+#-- | Name            : XX_OMX_RELATIONSHIPS_SHELL.prog   		            |
+#-- | Description     : UNIX Shell Routine to load relationships and invoke |
+#-- |					SQL loader routine to load the records from data    |
+#-- |					file to XX_OMX_RELATIONSHIPS table.                 |
+#-- |                                                                       |
+#-- |Change History:                                                        |
+#-- |---------------                                                        |
+#-- |                                                                       |
+#-- |Version   Date         Author             Remarks                      |
+#-- |------- ----------- -----------------  --------------------------------|
+#-- |1.0     20-Oct-2014   Pooja Mehra         Initial Version              |
+#-- |1.1	 21-Nov-2014   Pooja Mehra		   Commented the FTP part       |
+#-- +=======================================================================+
+
+FTPUSER=prodftp
+FTPPASSWD=ftpprod
+user_name=`(echo $FCP_LOGIN | cut -f1 -d'/')`       
+password=`(echo $FCP_LOGIN | cut -f2 -d'/')`        
+mfdatafile=$XXCRM_DATA/inbound/tops/$6
+logfilemfload=$XXCRM_DATA/outbound/omx_relationship`date '+%d%m%Y%H%M'`.log
+
+
+# Bring the relationship file from the teradata
+# date '+DATE: %m/%d/%y%nTIME:%H:%M:%S' >> $logfilemfload
+# echo "STEP1 Bring relationship file from the teradata" >> $logfilemfload
+# ftp -n mfsysa <<SCRIPT1
+# user $FTPUSER $FTPPASSWD
+# EBCDIC
+# cd ..
+# get $5 $XXCRM_DATA/inbound/tops/$6
+# bye
+# SCRIPT1
+# 
+# if [ -f $mfdatafile ]
+# then
+#    echo "FTP from mainframe completed $?" >> $logfilemfload
+# else
+#   echo "FTP completed $?. File not found. Aborting....." >> $logfilemfload
+#   exit 1 
+# fi    
+
+# In case mainframe sends data with trailing NULLS ie right-padded with nulls, causing SQL Loader
+# nullcount=-1
+# echo "STEP2 Checking for presence of NULLS in $mfdatafile" >> $logfilemfload
+# nullcount=`od $mfdatafile |  grep ' 000' | wc -l`
+# echo "STEP2 Found $nullcount NULL chars in file. Status $?  [0 means success]" >> $logfilemfload
+# if [ "$nullcount" -gt 0 ]
+# then
+#     echo "STEP2 Since NULL chars were found, starting to remove them from file" >> $logfilemfload    
+#     sed -i 's/\x0//g' $mfdatafile
+#     echo "STEP2 Removed NULL chars from file. Status $?  [0 means success]" >> $logfilemfload
+# else
+#    echo "STEP2 No NULL chars found, so good to got to STEP3.  nullcount= $nullcount" >> $logfilemfload
+# fi
+# 
+## Need to return status to host program according to failures encountered.
+# actualerrors=0
+# loadedrows=0
+echo "STEP3 SQL loader to be invoked to read $mfdatafile " >> $logfilemfload
+
+sqlldr  $user_name/$password  readsize=10000000 bindsize=10000000 control=$XXCRM_TOP/bin/XX_OMX_RELATIONSHIPS_LOADER.ctl data=$mfdatafile log=$XXCRM_DATA/outbound/omx_relationship.out
+retstatus=$?  
+echo "STEP3 SQL loader returned status = $retstatus  ### 0: Successful  1: Unrecoverable failure  2: At least one row rejected 3: OS Errors"  >> $logfilemfload
+
+ls -l $XXCRM_DATA/outbound/omx_relationship.out >> $logfilemfload 
+cat $XXCRM_DATA/outbound/omx_relationship.out >> $logfilemfload 
+cat $XXCRM_DATA/outbound/omx_relationship.out
+
+##Checking if we need to pass error status to host program, so that it is marked as failed in ESP
+if [ $retstatus -eq 2 -o $retstatus -eq 0 ]
+then
+  echo "STEP3 Checking errors in sqlldr log" >> $logfilemfload
+  actualerrors=`cat $XXCRM_DATA/outbound/omx_relationship.out | grep 'Rows not loaded due to data errors' | awk '{printf $1}' `
+  loadedrows=`cat $XXCRM_DATA/outbound/omx_relationship.out | grep 'Rows successfully loaded' | awk '{printf $1}' `
+ 
+  if [ "$loadedrows" -gt 0 ]
+  then 
+     echo "STEP3 Proceeding to next step, because $loadedrows rows were loaded. Number of rows failed to load = $actualerrors"  >> $logfilemfload
+  else
+      echo "STEP3 Aborting because no rows were loaded [$loadedrows]. Number of rows failed to load = $actualerrors" >> $logfilemfload
+      exit 1 ;   # next step of realtionship load table should not happen, and conc job should error out
+  fi 
+else
+    echo "STEP3 Aborting because sqlldr has failed i.e. return status is = $retstatus" >> $logfilemfload
+    exit 1 ;     # next step of realtionship load table should not happen, and conc job should error out
+fi
+/

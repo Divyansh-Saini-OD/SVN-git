@@ -1,0 +1,53 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=========================================================================================+
+-- |                  Office Depot - Project Simplify                                        |
+-- +=========================================================================================+
+-- | Name        : XX_SFA_AOPS_JOBS_PUB_BE_RECREATE.abk                                      |
+-- | Description : Anonymous block for creating Business Events for Invoking AOPS            |
+-- |               Procedure                                                                 |
+-- |                                                                                         |
+-- |Change Record:                                                                           |
+-- |===============                                                                          |
+-- |Version     Date           Author               Remarks                                  |
+-- |=======    ==========      ================     =========================================|
+-- |1.0        28-Apr-2009     Yusuf Ali            Anonymous Block; Need to delete existing |
+-- |                                                event and recreate the event.            |
+-- +=========================================================================================+
+
+declare
+eventRowId ROWID;
+
+wf_guid WF_EVENTS.GUID%type;
+
+begin
+
+WF_EVENTS_PKG.g_Mode := 'CUSTOM';
+
+SELECT guid into wf_guid FROM apps.WF_EVENTS
+WHERE NAME = 'od.oracle.apps.ar.hz.AccountCreationRequestBatch.create';
+
+WF_EVENTS_PKG.DELETE_ROW(
+  X_GUID               => wf_guid
+);
+
+
+WF_EVENTS_PKG.INSERT_ROW (
+    X_ROWID => eventRowId,
+    X_GUID => substr(hextoraw(WF_CORE.RANDOM), 1, 20),
+    X_NAME => 'od.oracle.apps.ar.hz.AccountCreationRequestBatch.create',
+    X_TYPE => 'EVENT',
+    X_STATUS => 'ENABLED',
+    X_GENERATE_FUNCTION => NULL,
+    X_OWNER_NAME => 'AR',
+    X_OWNER_TAG => 'AR',
+    X_DISPLAY_NAME => 'od.oracle.apps.ar.hz.AccountCreationRequestBatch.create',
+    X_DESCRIPTION => 'To invoke Account Creation BPEL process',
+    X_CUSTOMIZATION_LEVEL => 'U',
+    X_JAVA_GENERATE_FUNC => NULL
+);
+commit;
+END;
+/

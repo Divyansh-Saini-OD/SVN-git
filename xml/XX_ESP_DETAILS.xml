@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXESPJOB" description="OD: ESP Scheduled Jobs Details Program" Version="1.0">
+<parameters>
+ <parameter name="p_user_name" dataType="character" /> 
+ <parameter name="p_request_id" dataType="number" /> 
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_ESP_DETAILS">
+<![CDATA[
+SELECT FCP.user_concurrent_program_name Program_Name,       
+       FCR.Request_id Request_Id,
+       fcr.parent_request_id Parent_Request_id,       
+       (SELECT fcpt1.user_concurrent_program_name         
+        FROM fnd_concurrent_programs_tl fcpt1,                
+             fnd_concurrent_requests fcr1
+        WHERE fcr1.request_id = fcr.parent_request_id         
+        AND fcpt1.concurrent_program_id = fcr1.concurrent_program_id) Parent_concurrent_name,       
+        TO_CHAR(FCR.actual_start_date, 'MM DD YY HH24:MI:SS') Start_Time,       
+        TO_CHAR(FCR.Actual_completion_date, 'MM DD YY HH24:MI:SS') Completion_Time,       
+        ROUND((Actual_completion_date - actual_start_date) * 24 * 60, 2) Total_Time,       
+        FCR.completion_text Status_Code_Desc,       
+        FCR.status_code Status_Code
+  FROM fnd_concurrent_requests FCR,       
+       fnd_concurrent_programs_tl FCP,       
+       fnd_user FU
+ WHERE FCR.requested_by = FU.user_id      
+ AND FU.user_name = :p_user_name
+ AND fcr.parent_request_id = NVL(:p_request_id,fcr.parent_request_id)
+ AND FCP.user_concurrent_program_name NOT IN ('OD: CDH DQM Synchronization Updates','OD: CDH DQM Synchronization Creates')     
+ AND trunc(FCR.actual_start_date) between trunc(sysdate - 1)
+ AND trunc(sysdate)      
+ AND FCR.CONCURRENT_PROGRAM_ID = FCP.concurrent_program_id
+ ORDER BY fcr.request_id, fcr.parent_request_id
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_ORG_COUNT_PROS" source="Q_ESP_DETAILS">
+<element name="ProgramName"  value="Program_Name" />
+<element name="RequestId" value="Request_Id" />
+<element name="ParentRequestid" value="Parent_Request_id" />
+<element name="Parentconcurrentname" value="Parent_concurrent_name" />
+<element name="StartTime" value="Start_Time" />
+<element name="CompletionTime" value="Completion_Time" />
+<element name="TotalTime" value="Total_Time" />
+<element name="StatusCodeDesc" value="Status_Code_Desc" />
+<element name="StatusCode" value="Status_Code" />
+</group>
+</dataStructure>
+</dataTemplate>
+

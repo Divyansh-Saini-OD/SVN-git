@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<dataTemplate name="XXCSMARSRPT" description="OD: MARS Device Threshold Report" Version="1.0">
+<dataQuery>
+<sqlStatement name="Q_MAIN">
+<![CDATA[
+SELECT REGEXP_REPLACE(db.serial_no, '[[:cntrl:]]', '') Serial_Number,
+  db.party_name Customer_Name,
+  db.level_limit Device_Level,
+  db.aops_cust_number AOPS_Number,
+  db.program_type Program_Type,
+  db.active_Status Active_Status,
+  (SELECT attribute2
+  FROM xx_cs_mps_device_details
+  WHERE db.serial_no=serial_no
+  AND supplies_label='TONERLEVEL_BLACK'
+  ) Black_Threshold,
+  (SELECT attribute2
+  FROM xx_cs_mps_device_details
+  WHERE db.serial_no=serial_no
+  AND supplies_label='TONERLEVEL_MAGENTA'
+  ) Magenta_Threshold,
+  (SELECT attribute2
+  FROM xx_cs_mps_device_details
+  WHERE db.serial_no=serial_no
+  AND supplies_label='TONERLEVEL_CYAN'
+  ) Cyan_Threshold,
+  (SELECT attribute2
+  FROM xx_cs_mps_device_details
+  WHERE db.serial_no=serial_no
+  AND supplies_label='TONERLEVEL_YELLOW'
+  ) Yellow_Threshold,
+  db.managed_status Managed_Status
+FROM xx_cs_mps_device_b db
+WHERE SUBSTR(db.party_name,0,5) = 'RADIO'
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_ORDER" source="Q_MAIN">
+<element name="Serial_Number" value="Serial_Number" />
+<element name="Customer_Name" value="Customer_Name" />
+<element name="Device_Level" value="Device_Level" />
+<element name="AOPS_Number" value="AOPS_Number" />
+<element name="Program_Type" value="Program_Type" />
+<element name="Active_Status" value="Active_Status" />
+<element name="Black_Threshold" value="Black_Threshold" />
+<element name="Magenta_Threshold" value="Magenta_Threshold" />
+<element name="Cyan_Threshold" value="Cyan_Threshold" />
+<element name="Yellow_Threshold" value="Yellow_Threshold" />
+<element name="Managed_Status" value="Managed_Status" />
+</group>
+</dataStructure>
+</dataTemplate>

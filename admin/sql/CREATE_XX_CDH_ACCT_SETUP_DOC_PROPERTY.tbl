@@ -1,0 +1,50 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_CDH_ACCT_SETUP_DOC_PROPERTY.tbl                 |
+-- | Description      :Account request details                             |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date         Author             Remarks                      |
+-- |=======   ===========  =================  =============================|
+-- |DRAFT 1A  09-May-2007  V Jayamohan          Initial draft version      |
+-- +=======================================================================+
+-- -----------------------------------------------------
+--      DROP Custom Table XX_CDH_ACCT_SETUP_DOC_PROPERTY    --
+-- -----------------------------------------------------
+--DROP TABLE  XXCRM.XX_CDH_ACCT_SETUP_DOC_PROPERTY ;
+
+-- ---------------------------------------------------------------------
+--      Create Custom Table XX_CDH_ACCT_SETUP_DOC_PROPERTY    --
+-- ---------------------------------------------------------------------
+
+CREATE TABLE XXCRM.XX_CDH_ACCT_SETUP_DOC_PROPERTY
+(
+	  DOC_PROPERTY_ID    NUMBER(15),
+	  DOCUMENT_ID        NUMBER(15),
+	  PROPERTY_TYPE      VARCHAR2(50 BYTE),
+	  PROPERTY_VALUE     VARCHAR2(50 BYTE),
+	  CREATED_BY         NUMBER(15)                 NOT NULL,
+	  CREATION_DATE      DATE                       NOT NULL,
+	  LAST_UPDATED_BY    NUMBER(15)                 NOT NULL,
+	  LAST_UPDATE_DATE   DATE                       NOT NULL,
+	  LAST_UPDATE_LOGIN  NUMBER(15)
+);
+
+------------------------------------------------------
+-- Adding Grants to APPS.                           --
+------------------------------------------------------
+
+GRANT ALL ON XXCRM.XX_CDH_ACCT_SETUP_DOC_PROPERTY TO APPS;
+
+SHOW ERRORS;

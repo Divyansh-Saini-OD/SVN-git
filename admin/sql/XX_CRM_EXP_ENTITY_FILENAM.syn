@@ -1,0 +1,163 @@
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify						|
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_ENTITY_FILENAM.syn                                                |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        08/07/11       Devendra Petkar        Initial version                            |
+-- +============================================================================================+
+
+---------------------------------------------------------
+-- Deleting  				               --
+---------------------------------------------------------
+
+
+DELETE FROM XX_FIN_TRANSLATEVALUES WHERE TRANSLATE_ID IN
+(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM');
+
+COMMIT;
+
+
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +============================================================================================+
+-- |                  Office Depot - Project Simplify						|
+-- +============================================================================================+
+-- | Name        : XX_CRM_EXP_ENTITY_FILENAM.syn                                                |
+-- | Description : SFDC Conversion                                                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        08/07/11       Devendra Petkar        Initial version                            |
+-- +============================================================================================+
+
+---------------------------------------------------------
+-- Deleting  				               --
+---------------------------------------------------------
+
+
+DELETE FROM XX_FIN_TRANSLATEVALUES WHERE TRANSLATE_ID IN
+(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM');
+
+COMMIT;
+
+
+---------------------------------------------------------
+-- Inserting  				               --
+---------------------------------------------------------
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('NOTES_LEAD','ebiz_sfdc_note_lead','XX_CRM_EXP_NOTES_LEAD',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('NOTES_OPPORTUNITY','ebiz_sfdc_note_opportunity','XX_CRM_EXP_NOTES_OPPORTUNITY',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('NOTES_PARTY','ebiz_sfdc_note_account','XX_CRM_EXP_NOTES_PARTY',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('NOTES_PARTY_SITE','ebiz_sfdc_note_site','XX_CRM_EXP_NOTES_PARTY_SITE',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('TASKS_LEAD','ebiz_sfdc_task_lead_insert','XX_CRM_EXP_TASKS_LEAD',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('TASKS_OPPORTUNITY','ebiz_sfdc_task_opportunity_insert','XX_CRM_EXP_TASKS_OPPORTUNITY',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('TASKS_PARTY','ebiz_sfdc_task_account_insert','XX_CRM_EXP_TASKS_PARTY',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('TASKS_PARTY_SITE','ebiz_sfdc_task_sites_insert','XX_CRM_EXP_TASKS_PARTY_SITE',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('TASKS_TASK','ebiz_sfdc_task_task_insert','XX_CRM_EXP_TASKS_TASK',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('TASKS_LEAD_UPDATE','ebiz_sfdc_task_lead_update','XX_CRM_EXP_TASKS_LEAD',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('TASKS_OPPORTUNITY_UPDATE','ebiz_sfdc_task_opportunity_update','XX_CRM_EXP_TASKS_OPPORTUNITY',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('TASKS_PARTY_UPDATE','ebiz_sfdc_task_account_update','XX_CRM_EXP_TASKS_PARTY',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('TASKS_PARTY_SITE_UPDATE','ebiz_sfdc_task_sites_update','XX_CRM_EXP_TASKS_PARTY_SITE',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('TASKS_TASK_UPDATE','ebiz_sfdc_task_task_update','XX_CRM_EXP_TASKS_TASK',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('OPP_CONTACT','ebiz_sfdc_opp_contact','XX_CRM_EXP_OPP_CONTACT',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('CUST_HIER','ebiz_sfdc_cust_hier','XX_CRM_EXP_CUST_HIER',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('CUSTOMER_DELTA','ebiz_sfdc_customerd','XX_CRM_EXP_ACCOUNT',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('PROSPECT','ebiz_sfdc_prospect','XX_CRM_EXP_ACCOUNT',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('CUSTOMER','ebiz_sfdc_customer','XX_CRM_EXP_ACCOUNT',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('GRANDPARENT','ebiz_sfdc_grandparent','XX_CRM_EXP_ACCOUNT',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('SITES','ebiz_sfdc_sites','XX_CRM_EXP_SITE',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('CONTACTS','ebiz_sfdc_contacts','XX_CRM_EXP_CONTACT',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('LEAD','ebiz_sfdc_leads','XX_CRM_EXP_LEAD',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('OPPORTUNITY','ebiz_sfdc_opportunity','XX_CRM_EXP_OPPORTUNITY',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('PROSPECT_CONTACTS','ebiz_sfdc_prospect_contacts','XX_CRM_EXP_CONTACT',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('CUSTOMER_CONTACTS','ebiz_sfdc_customer_contacts','XX_CRM_EXP_CONTACT',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('PROSPECT_SITES','ebiz_sfdc_prospect_sites','XX_CRM_EXP_SITE',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('CUSTOMER_SITES','ebiz_sfdc_customer_sites','XX_CRM_EXP_SITE',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('ASSIGNMENTS','ebiz_sfdc_assignments','XX_CRM_EXP_ASSIGNMENTS',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('USER','ebiz_sfdc_user','XX_CRM_EXP_USER',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+INSERT INTO XX_FIN_TRANSLATEVALUES (SOURCE_VALUE1,SOURCE_VALUE2,SOURCE_VALUE3,TRANSLATE_ID,creation_date,created_by,last_update_date,last_updated_by,last_update_login,start_date_active,TRANSLATE_VALUE_ID,ENABLED_FLAG) VALUES ('SPID','ebiz_sfdc_spid','XX_CRM_EXP_SPID',(select TRANSLATE_ID from apps.XX_FIN_TRANSLATEDEFINITION  where TRANSLATION_NAME = 'XX_CRM_EXP_ENTITY_FILENAM'), sysdate,-1,sysdate,-1,0,'01-JAN-05',XX_FIN_TRANSLATEVALUES_S.NEXTVAL,'Y');
+COMMIT;
+
+
+SHOW ERRORS;
+
+EXIT;
+

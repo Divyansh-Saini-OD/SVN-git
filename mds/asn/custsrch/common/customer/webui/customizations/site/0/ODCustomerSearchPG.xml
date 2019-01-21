@@ -1,0 +1,78 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!--
+Subversion Info: 
+$HeadURL$
+$Rev$
+$Date$ 
+-->
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.5.4.89_560" xml:lang="en-US" customizes="/od/oracle/apps/xxcrm/asn/custsrch/common/customer/webui/ODCustomerSearchPG" developerMode="true" xmlns:oa="http://xmlns.oracle.com/oa">
+   <modifications>
+      <modify element="SourceSystem" rendered="false"/>
+      <modify element="Country" rendered="false"/>
+      <modify element="PrimaryUrl" rendered="false"/>
+      <modify element="CanCrossSell" rendered="false"/>
+      <modify element="ConctFreq" rendered="false"/>
+      <move element="Prospect" after="PartyNameLink"/>
+      <insert before="Prospect">
+         <oa:messageStyledText id="ProsCust" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" prompt="Org Type" queryable="true" rendered="true" required="no" scope="." selectiveSearchCriteria="false" serverUnvalidated="false" sortState="yes" tipType="none" totalValue="false" userCustomizable="false" vAlign="middle" viewAttr="ProspectCust" viewName="ODCustomerSearchResultsVO" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <move element="SiteUseType" after="Prospect"/>
+      <move element="SiteSeqNum" after="SiteUseType"/>
+      <move element="SourceSystem" after="SiteSeqNum"/>
+      <move element="KnownAs" after="SourceSystem"/>
+      <move element="AddressLink" after="KnownAs"/>
+      <move element="Country" after="AddressLink"/>
+      <move element="Pphone" after="Country"/>
+      <move element="PrimaryUrl" after="Pphone"/>
+      <move element="Email" after="PrimaryUrl"/>
+      <move element="PrimarySalesPerson" after="Email"/>
+      <move element="CanCrossSell" after="PrimarySalesPerson"/>
+      <move element="ConctFreq" after="CanCrossSell"/>
+      <move element="WhiteCollarWrk" after="ConctFreq"/>
+      <move element="ResultsFlag" after="WhiteCollarWrk"/>
+      <move element="ActiveFlag" after="ResultsFlag"/>
+      <move element="NoOfRows" after="ActiveFlag"/>
+      <move element="PartySiteId" after="NoOfRows"/>
+      <move element="PartyId" after="PartySiteId"/>
+      <move element="PartySiteNumber" after="PartyId"/>
+      <move element="AddressKey" after="PartySiteNumber"/>
+      <move element="PartyType" after="AddressKey"/>
+      <move element="PartyNumber" after="PartyType"/>
+      <move element="TaxReference" after="PartyNumber"/>
+      <move element="TaxPayerId" after="TaxReference"/>
+      <move element="DunsNumber" after="TaxPayerId"/>
+      <move element="KnownAs2" after="DunsNumber"/>
+      <move element="KnownAs3" after="KnownAs2"/>
+      <move element="KnownAs4" after="KnownAs3"/>
+      <move element="KnownAs5" after="KnownAs4"/>
+      <move element="OrganizationNamePhonetic" after="KnownAs5"/>
+      <move element="PersonFirstNamePhonetic" after="OrganizationNamePhonetic"/>
+      <move element="PersonLastNamePhonetic" after="PersonFirstNamePhonetic"/>
+      <move element="LocationId" after="PersonLastNamePhonetic"/>
+      <move element="Percentage" after="LocationId"/>
+      <move element="City" after="Percentage"/>
+      <move element="State" after="City"/>
+      <move element="Province" after="State"/>
+      <move element="PostalCode" after="Province"/>
+      <move element="SicCode" after="PostalCode"/>
+      <move element="SicCodeType" after="SicCode"/>
+      <move element="CustomerCategory" after="SicCodeType"/>
+      <move element="SalesChannel" after="CustomerCategory"/>
+      <move element="MicrNumber" after="SalesChannel"/>
+      <move element="OdCustomerType" after="MicrNumber"/>
+      <move element="ShipToSequenceNum" after="OdCustomerType"/>
+      <move element="BillingNumber" after="ShipToSequenceNum"/>
+      <move element="ClassCodeValue" after="BillingNumber"/>
+      <move element="ClassCategoryValue" after="ClassCodeValue"/>
+      <move element="Classification" after="ClassCategoryValue"/>
+      <move element="RelationshipRole" after="Classification"/>
+      <move element="ContactName" after="RelationshipRole"/>
+      <move element="LegacyNumber" after="ContactName"/>
+      <move element="SalesPersonResourceId" after="LegacyNumber"/>
+      <move element="SalesPerson" after="SalesPersonResourceId"/>
+      <move element="PrimaryPhone" after="SalesPerson"/>
+      <modify element="CustSmpSrchName" prompt="Org Name"/>
+      <modify element="item1" prompt="Org Name"/>
+      <modify element="AdvSrchName" prompt="Org Name" shortDesc="Org Name"/>
+   </modifications>
+</customization>

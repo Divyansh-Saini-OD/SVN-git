@@ -1,0 +1,46 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : XX_CN_SALES_REP_ASGN_S.seq                          |
+-- | Rice ID     : E1004A_CustomCollections_(TableDesign)              |
+-- | Description : XX_CN_SALES_REP_ASGN Table - Sequence Creation      |
+-- |               Script                                              |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1a 03-Oct-2007  Vidhya Valantina Initial draft version       |
+-- |1.0      04-Oct-2007  Vidhya Valantina Baselined after testing     |
+-- |                                                                   |
+-- +===================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+SET TERM ON
+
+PROMPT
+PROMPT Creating SEQUENCE XX_CN_SALES_REP_ASGN_S
+PROMPT
+
+CREATE SEQUENCE XXCRM.xx_cn_sales_rep_asgn_s
+INCREMENT BY 1
+START WITH 1
+NOCYCLE
+NOCACHE
+NOORDER;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

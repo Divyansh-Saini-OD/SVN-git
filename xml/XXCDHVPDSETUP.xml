@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXCDHVPDSETUP" description="OD: CDH VPD Setup Report" Version="1.0">
+<dataQuery>
+<sqlStatement name="Q_CDH_VPD_PROF_MASTER">
+<![CDATA[
+select profile_option_id          PROF_ID, 
+       user_profile_option_name   PROF_NAME,
+       REGEXP_REPLACE(REGEXP_SUBSTR(sql_validation,'''[^'']*'''),'''','') LOOKUP_TYPE
+from   fnd_profile_options_vl     fpo 
+where  fpo.profile_option_name like 'XX_CDH_SEC%'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_VPD_PROF_CHILD">
+<![CDATA[
+select 'Site'                     PROFILE_LEVEL,
+       NULL                       RESP_NAME,
+       flv.meaning                PROFILE_VALUE
+from   fnd_profile_option_values  fpov,
+       fnd_lookup_values          flv 
+where  fpov.profile_option_id     = :PROF_ID
+and    fpov.level_id              = 10001
+and    flv.lookup_type            = :LOOKUP_TYPE
+and    flv.lookup_code            = fpov.profile_option_value 
+UNION
+select 'Responsibility'           PROFILE_LEVEL,
+       frv.responsibility_name    RESP_NAME,
+       flv.meaning                PROFILE_VALUE
+from   fnd_profile_option_values  fpov,
+       fnd_responsibility_vl      frv,
+       fnd_lookup_values          flv 
+where  fpov.profile_option_id     = :PROF_ID
+and    fpov.level_id              = 10003
+and    fpov.level_value           = frv.responsibility_id
+and    flv.lookup_type            = :LOOKUP_TYPE
+and    flv.lookup_code            = fpov.profile_option_value 
+order by PROFILE_LEVEL desc,RESP_NAME asc
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_CDH_VPD_PROF_MASTER" source="Q_CDH_VPD_PROF_MASTER">
+<element name="PROF_NAME" value="PROF_NAME" />
+<group name="G_CDH_VPD_PROF_CHILD" source="Q_CDH_VPD_PROF_CHILD">
+<element name="PROFILE_LEVEL" value="PROFILE_LEVEL" />
+<element name="RESP_NAME" value="RESP_NAME" />
+<element name="PROFILE_VALUE" value="PROFILE_VALUE" />
+</group>
+</group>
+</dataStructure>
+</dataTemplate>
+

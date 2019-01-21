@@ -1,0 +1,31 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===========================================================================+
+-- |                  Office Depot - eBilling Project                          |
+-- |                         WIPRO/Office Depot                                |
+-- +===========================================================================+
+-- | Name        : GRANT_AS_IMPORT_INTERFACE_S.syn                                  |
+-- | Description : grant select on AS_IMPORT_INTERFACE_S      |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author        Remarks            	               |
+-- |======== =========== ============= ========================================|
+-- |DRAFT 1A 09-FEB-2011 luis M.       Initial draft version                   |
+-- |                                                                           |
+-- |                                                                           |
+-- |                                                                           |
+-- +===========================================================================+
+
+-- ----------------------------------------------------------------------------
+--      Create Custom Synonym XX_CDH_EBL_MAIN.
+-- ----------------------------------------------------------------------------
+
+GRANT SELECT   ON  AS_IMPORT_INTERFACE_S TO  XXCNV;
+
+
+/
+SHOW ERRORS;

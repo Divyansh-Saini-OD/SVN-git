@@ -1,0 +1,25 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        :  DROP_XXBI_SLS_LDS_SMRY_MV.TBL                      |
+-- | Description :  DrOP MV for Sales Leads                            |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date          Author           Remarks                   |
+-- |=======   ==========    =============    ==========================|
+-- |1.0       14-Jul-2010   Lokesh Kumar     Initial version           |
+-- |                                                                   | 
+-- +===================================================================+
+
+
+
+DROP MATERIALIZED VIEW XXCRM.XXBI_SLS_LDS_SMRY_MV
+
+/
+SHOW ERRORS;
+EXIT;

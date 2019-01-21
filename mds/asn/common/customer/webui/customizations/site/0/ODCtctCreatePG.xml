@@ -1,0 +1,13 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.5.4.89_560" xml:lang="en-US" customizes="/od/oracle/apps/xxcrm/asn/common/customer/webui/ODCtctCreatePG">
+   <modifications>
+      <modify element="ASNCtctCreateRN.orgProfileRegion.PersonFirstName" required="yes"/>
+      <modify element="ASNCtctCreateRN.orgProfileRegion.PersonLastName" required="yes"/>
+      <modify element="ASNCtctCreateRN.orgProfileRegion.personFlex" rendered="false"/>
+      <modify element="ASNCtctCreateRN.addressRegion.partySiteInformation" rendered="false"/>
+      <modify element="ASNCtctCreateRN.orgProfileRegion.PerPhoneCountryCode" required="yes"/>
+      <modify element="ASNCtctCreateRN.orgProfileRegion.PhoneAreaCode" required="yes"/>
+      <modify element="ASNCtctCreateRN.orgProfileRegion.PhoneNumber" rendered="true" required="yes"/>
+      <modify element="ASNCtctCreateRN.addressRegion.hzPurposeHeader" rendered="false"/>
+   </modifications>
+</customization>

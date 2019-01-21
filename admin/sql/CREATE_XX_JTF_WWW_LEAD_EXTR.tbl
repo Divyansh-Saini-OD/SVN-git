@@ -1,0 +1,43 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_JTF_WWW_LEAD_EXTR.tbl                     |
+-- | Description      :I2043 Leads_from_WWW_and_Jmillennia                 |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      15-Feb-2008 David Woods        Initial version                |
+-- +=======================================================================+ 
+
+Create table XXCRM.XX_JTF_WWW_LEAD_EXTR
+  (BATCH_ID                      NUMBER 
+  ,PARTIES_OSR                   VARCHAR2(50)      
+  ,PARTY_SITES_OSR               VARCHAR2(50)        
+  ,CONTACT_OSR                   VARCHAR2(50)      
+  ,CNT_PTS_OSR                   VARCHAR2(50)      
+  ,COMPANY_NAME                  VARCHAR2(50)
+  ,ADDRESS1                      VARCHAR2(32)       
+  ,CITY                          VARCHAR2(32)       
+  ,STATE                         VARCHAR2(32)       
+  ,POSTAL_CODE                   VARCHAR2(15)        
+  ,COUNTRY                       CHAR(2) 
+  ,FIRST_NAME                    VARCHAR2(32)       
+  ,LAST_NAME                     VARCHAR2(32)       
+  ,PHONE_NUMBER                  VARCHAR2(32)       
+  ,CREATED_BY                    NUMBER 
+  ,NUM_OF_EMPLOYEES              NUMBER 
+  ,LOAD_DATE                     DATE        
+  ,IMPORT_INTERFACE_ID           NUMBER 
+  ,ORIG_SYSTEM_CODE              CHAR(2) 
+  );
+
+Grant all on XXCRM.XX_JTF_WWW_LEAD_EXTR to APPS;

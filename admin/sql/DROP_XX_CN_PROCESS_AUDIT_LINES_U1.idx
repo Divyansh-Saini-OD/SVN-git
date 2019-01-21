@@ -1,0 +1,40 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name        : DROP_XX_CN_PROCESS_AUDIT_LINES_U1.idx               |
+-- | Rice ID     : E1004A_CustomCollections_(TableDesign)              |
+-- | Description : XX_CN_PROCESS_AUDIT_LINES Table - Unique Index Drop |
+-- |               Script                                              |
+-- |                                                                   |
+-- |               Columns :                                           |
+-- |                         Process_Audit_Line_Id  (Primary Key)      |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |Draft 1a 03-Oct-2007  Vidhya Valantina Initial draft version       |
+-- |1.0      04-Oct-2007  Vidhya Valantina Baselined after testing     |
+-- |                                                                   |
+-- +===================================================================+
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+PROMPT
+PROMPT Dropping Existing Unique INDEX XX_CN_PROCESS_AUDIT_LINES_U1
+PROMPT
+
+DROP INDEX xx_cn_process_audit_lines_u1;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

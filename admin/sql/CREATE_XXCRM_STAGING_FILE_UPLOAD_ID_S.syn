@@ -1,0 +1,28 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                                                                   |
+-- +===================================================================+
+-- | Name        :  CREATE_XXCRM_STAGING_FILE_UPLOAD_ID_SS.syn              |
+-- | Description :  XXCRM_STAGING_FILE_UPLOAD_ID_S synonym                 |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author             Remarks                   |
+-- |=======   ==========  ================== ==========================|
+-- |1.0       04-Oct-2016 Shubhashree         Initial draft version     |
+-- +===================================================================+
+
+-- -----------------------------------------------------
+--      Create Custom Synonym XXCRM_STAGING_FILE_UPLOAD_ID_S  --
+-- -----------------------------------------------------
+
+CREATE OR REPLACE SYNONYM APPS.XXCRM_STAGING_FILE_UPLOAD_ID_S FOR XXCRM.XXCRM_STAGING_FILE_UPLOAD_ID_S;
+
+/
+SHOW ERRORS;

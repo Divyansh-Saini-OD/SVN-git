@@ -1,0 +1,25 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name             : DROP_XX_TM_NAM_TERR_ENTITY_DTLS_U2.idx                |
+-- | Description      : Drop Index XX_TM_NAM_TERR_ENTITY_DTLS_U2              |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date          Author           Remarks                        |
+-- |-------  -----------   ---------------  -------------------------------|
+-- |Draft 1a 04-Sep-2008   Nabarun Ghosh   Initial Draft Version          |
+-- +=======================================================================+
+
+-------------------------------------------------------------
+-- Drop existing Index XX_TM_NAM_TERR_ENTITY_DTLS_U2          --
+-------------------------------------------------------------
+
+DROP INDEX XXCRM.XX_TM_NAM_TERR_ENTITY_DTLS_U2;
+
+SHOW ERRORS;

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XX_CDH_NOTES_INTERFACE" description="OD: CDH Notes Interface Prevalidation" Version="1.0">
+<parameters/>
+<dataQuery>
+<sqlStatement name="Q_CDH_NOTES_TABLES">
+<![CDATA[
+SELECT 'XX_JTF_NOTES_INT' as TABLE_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                    ELSE 'N'
+                                      END as DOES_EXIST
+FROM  all_tables ALT
+WHERE ALT.table_name = 'XX_JTF_NOTES_INT'
+AND   ALT.owner      = 'XXCNV' 
+UNION ALL
+SELECT 'XX_JTF_NOTE_CTX_INT' as TABLE_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                    ELSE 'N'
+                                      END as DOES_EXIST
+FROM  all_tables ALT
+WHERE ALT.table_name = 'XX_JTF_NOTE_CTX_INT'
+AND   ALT.owner      = 'XXCNV'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_NOTES_INDEXES">
+<![CDATA[
+SELECT 'XX_JTF_NOTES_INT_U1' as INDEX_NAME,
+                                     CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                   ELSE 'N'
+                                     END as DOES_EXIST
+FROM  all_indexes ALI
+WHERE ALI.index_name = 'XX_JTF_NOTES_INT_U1'
+AND   ALI.owner      = 'XXCNV'
+AND   ALI.status     = 'VALID'
+UNION ALL 
+SELECT 'XX_JTF_NOTE_CTX_INT_U1' as INDEX_NAME,
+                                     CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                   ELSE 'N'
+                                     END as DOES_EXIST
+FROM  all_indexes ALI
+WHERE ALI.index_name = 'XX_JTF_NOTE_CTX_INT_U1'
+AND   ALI.owner      = 'XXCNV'
+AND   ALI.status     = 'VALID'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_NOTES_SEQUENCES">
+<![CDATA[
+SELECT 'XX_JTF_NOTES_INT_S' as SEQUENCE_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                         ELSE 'N'
+                                           END as DOES_EXIST
+FROM  all_sequences ALS
+WHERE ALS.sequence_name  = 'XX_JTF_NOTES_INT_S'
+AND   ALS.sequence_owner = 'XXCNV'
+UNION ALL
+SELECT 'XX_JTF_NOTE_CTX_INT_S' as SEQUENCE_NAME,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                         ELSE 'N'
+                                           END as DOES_EXIST
+FROM  all_sequences ALS
+WHERE ALS.sequence_name  = 'XX_JTF_NOTE_CTX_INT_S'
+AND   ALS.sequence_owner = 'XXCNV'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CDH_NOTES_SYNONYMS">
+<![CDATA[
+SELECT 'XX_JTF_NOTES_INT' as SYNONYM_NAME,
+                                      CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                    ELSE 'N'
+                                      END as DOES_EXIST
+FROM  all_synonyms ALS
+WHERE ALS.synonym_name = 'XX_JTF_NOTES_INT'
+AND   ALS.owner = 'APPS'
+UNION ALL 
+SELECT 'XX_JTF_NOTE_CTX_INT' as SYNONYM_NAME,
+                                      CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                    ELSE 'N'
+                                      END as DOES_EXIST
+FROM  all_synonyms ALS
+WHERE ALS.synonym_name = 'XX_JTF_NOTE_CTX_INT'
+AND   ALS.owner = 'APPS'
+UNION ALL 
+SELECT 'XX_JTF_NOTES_INT_S' as SYNONYM_NAME,
+                                      CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                    ELSE 'N'
+                                      END as DOES_EXIST
+FROM  all_synonyms ALS
+WHERE ALS.synonym_name = 'XX_JTF_NOTES_INT_S'
+AND   ALS.owner = 'APPS'
+UNION ALL 
+SELECT 'XX_JTF_NOTE_CTX_INT_S' as SYNONYM_NAME,
+                                      CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                    ELSE 'N'
+                                      END as DOES_EXIST
+FROM  all_synonyms ALS
+WHERE ALS.synonym_name = 'XX_JTF_NOTE_CTX_INT_S'
+AND   ALS.owner = 'APPS'
+]]>
+</sqlStatement> 
+<sqlStatement name="Q_CDH_NOTES_PACKAGES">
+<![CDATA[
+SELECT 'PACKAGE SPECIFICATION' as TYPE, 'XX_JTF_NOTES_PKG.pks' as PACKAGE_NAME,
+                                         CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                       ELSE 'N'
+                                         END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_NOTES_PKG'
+AND   DBO.object_type = 'PACKAGE'
+AND   DBO.status      = 'VALID' 
+AND   DBO.owner       = 'APPS'
+UNION ALL 
+SELECT 'PACKAGE BODY' as TYPE, 'XX_JTF_NOTES_PKG.pkb' as PACKAGE_NAME,
+                                         CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                       ELSE 'N'
+                                         END as DOES_EXIST
+FROM  dba_objects DBO
+WHERE DBO.object_name = 'XX_JTF_NOTES_PKG'
+AND   DBO.object_type = 'PACKAGE BODY'
+AND   DBO.status      = 'VALID' 
+AND   DBO.owner       = 'APPS'
+]]>
+</sqlStatement> 
+<sqlStatement name="Q_CDH_NOTES_CONC_PROGS">
+<![CDATA[
+SELECT 'OD: JTF Notes Creation Program' as CONC_PROG,CASE COUNT(1) WHEN 1 THEN 'Y'
+                                                                   ELSE 'N' END as DOES_EXIST
+FROM  fnd_concurrent_programs FCP
+WHERE FCP.concurrent_program_name = 'XXNOTESTOCDH'
+AND   FCP.enabled_flag = 'Y'
+]]>
+</sqlStatement> 
+</dataQuery>
+<dataStructure>
+<group name="G_CDH_NOTES_TABLES" source="Q_CDH_NOTES_TABLES">
+<element name="TABLE_NAME" value="TABLE_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_CDH_NOTES_INDEXES" source="Q_CDH_NOTES_INDEXES">
+<element name="INDEX_NAME" value="INDEX_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_CDH_NOTES_SEQUENCES" source="Q_CDH_NOTES_SEQUENCES">
+<element name="SEQUENCE_NAME" value="SEQUENCE_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_CDH_NOTES_SYNONYMS" source="Q_CDH_NOTES_SYNONYMS">
+<element name="SYNONYM_NAME" value="SYNONYM_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_CDH_NOTES_PACKAGES" source="Q_CDH_NOTES_PACKAGES">
+<element name="TYPE" value="TYPE" />
+<element name="PACKAGE_NAME" value="PACKAGE_NAME" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+<group name="G_CDH_NOTES_CONC_PROGS" source="Q_CDH_NOTES_CONC_PROGS">
+<element name="CONC_PROG" value="CONC_PROG" />
+<element name="DOES_EXIST" value="DOES_EXIST" />
+</group>
+</dataStructure>
+</dataTemplate>
+

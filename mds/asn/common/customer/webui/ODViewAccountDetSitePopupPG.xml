@@ -1,0 +1,20 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1550" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <!--*[Enter Javadoc like developer documentation, delete this line once you fill the included template.] [Put a one line description of the region here.] [Put a brief description of the usage of the region here.] @param [Parameter_name] [Put parameter use here.] @param [Parameter_name] [Put parameter use here.] @see [Put any additional links apart from controller class and BC4J objects directly referenced by this region]-->
+      <oa:pageLayout id="SiteUsageDtlRN" controllerClass="od.oracle.apps.xxcrm.asn.common.customer.webui.ODViewAccountSiteDtlCO" amDefName="od.oracle.apps.xxcrm.asn.common.customer.server.ODViewAccountSiteDtlAM" windowTitle="Site Usage Details" title="Site Usage Details">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:table id="SiteDetailTBL" amDefName="od.oracle.apps.xxcrm.asn.common.customer.server.ODViewAccountSiteDtlAM" controllerClass="od.oracle.apps.xxcrm.asn.common.customer.webui.ODViewAccountSiteDtlCO">
+               <ui:contents>
+                  <oa:messageStyledText id="SiteUsage" destination="" prompt="Site Usage" viewName="ODSiteUsageVO1" viewAttr="SiteUse"/>
+                  <oa:messageStyledText id="PrimaryFlag" viewName="ODSiteUsageVO1" viewAttr="PrimaryFlag" prompt="Primary"/>
+               </ui:contents>
+            </oa:table>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

@@ -1,0 +1,26 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1566" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="searchPG" amDefName="od.oracle.apps.xxcrm.cdh.ach.server.ODCDHACHSearchAM" windowTitle="ACH ID Search" title="ACH ID Search">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:query id="queryRN" mode="resultsBasedSearch" dispSimple="true" dispCustomized="false" showCustomizePanelControls="false">
+               <ui:contents>
+                  <oa:table id="ODCDHACHIDSearchResultsRN">
+                     <ui:contents>
+                        <oa:messageStyledText id="AccountName" dataType="VARCHAR2" prompt="AccountName" viewName="ODCDHACHIDSearchVO" viewAttr="AccountName" maximumLength="240"/>
+                        <oa:messageStyledText id="CExtAttr1" viewName="ODCDHACHIDSearchVO" viewAttr="CExtAttr1" prompt="ACH ID" queryable="true"/>
+                        <oa:messageStyledText id="AccountNumber" dataType="VARCHAR2" prompt="Account Number" viewName="ODCDHACHIDSearchVO" viewAttr="AccountNumber" maximumLength="30" queryable="true"/>
+                        <oa:messageStyledText id="AopsCustomerId" dataType="VARCHAR2" prompt="AOPS Customer ID" viewName="ODCDHACHIDSearchVO" viewAttr="AopsCustomerId" maximumLength="24" queryable="true"/>
+                        <oa:messageStyledText id="Comments" dataType="VARCHAR2" prompt="Comments" viewName="ODCDHACHIDSearchVO" viewAttr="Comments" maximumLength="150"/>
+                     </ui:contents>
+                  </oa:table>
+               </ui:contents>
+            </oa:query>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

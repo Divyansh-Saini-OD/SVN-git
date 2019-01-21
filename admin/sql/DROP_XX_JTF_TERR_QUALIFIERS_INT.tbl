@@ -1,0 +1,53 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : OD,I0405_Territories                                                       |--
+--|                                                                                             |--
+--| Program Name   : DROP_XX_JTF_TERR_QUALIFIERS_INT.tbl                                        |--
+--|                                                                                             |--
+--| Purpose        : Drop Custom Tables .                                                       |--
+--|                  The Objects dropped are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_JTF_TERR_QUALIFIERS_INT (Custom Qualifiers table for I0405_Territories)|--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              10-Oct-2007       Sathya Prabha Rani       Original                        |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Dropping Existing Custom Tables......
+PROMPT
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Dropping Table XXCRM.XX_JTF_TERR_QUALIFIERS_INT
+PROMPT
+
+DROP TABLE XXCRM.XX_JTF_TERR_QUALIFIERS_INT ;
+
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

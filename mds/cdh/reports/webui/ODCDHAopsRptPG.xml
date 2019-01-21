@@ -1,0 +1,77 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1550" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="MainRG" amDefName="od.oracle.apps.xxcrm.cdh.reports.server.ODCDHAopsRptAM" windowTitle="AOPS Customer Reports" title="AOPS Customer Reports" controllerClass="od.oracle.apps.xxcrm.cdh.reports.webui.ODCDHAopsRptCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:defaultSingleColumn id="dtRN" amDefName="od.oracle.apps.xxcrm.cdh.reports.server.ODCDHAopsRptAM">
+               <ui:contents>
+                  <oa:messageStyledText id="item1" prompt="Enter the date for the AOPS Report"/>
+                  <oa:messageTextInput id="batchDT" dataType="DATE"/>
+                  <oa:submitButton id="getDataBtn" text="View Data" prompt="View Data"/>
+               </ui:contents>
+            </oa:defaultSingleColumn>
+            <oa:defaultDoubleColumn id="custCntRN">
+               <ui:contents>
+                  <oa:messageStyledText id="CustInfo" prompt="Number of active AOPS customers that are not in EBS" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="custCnt" prompt="" styleClass="OraDataText" viewName="ODCDHAopsCustCntRptVO1" viewAttr="Attribute1"/>
+                  <oa:tableLayout id="hsRN" hAlign="left">
+                     <ui:contents>
+                        <oa:rowLayout id="hsRowRN">
+                           <ui:contents>
+                              <oa:cellFormat id="hsCellRN">
+                                 <ui:contents>
+                                    <oa:hideShow id="custRN">
+                                       <ui:contents>
+                                          <oa:table id="custTblRN" controllerClass="od.oracle.apps.xxcrm.cdh.reports.webui.ODCDHAopsRptCO">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="custID" viewName="ODCDHAopsCustRptVO1" prompt="CustomerID" styleClass="OraDataText" viewAttr="Fcu000pCustomerId" dataType="NUMBER"/>
+                                                <oa:messageStyledText id="custNM" viewName="ODCDHAopsCustRptVO1" prompt="Customer Name" styleClass="OraDataText" viewAttr="Fcu000pBusinessName"/>
+                                             </ui:contents>
+                                          </oa:table>
+                                       </ui:contents>
+                                    </oa:hideShow>
+                                 </ui:contents>
+                              </oa:cellFormat>
+                           </ui:contents>
+                        </oa:rowLayout>
+                     </ui:contents>
+                  </oa:tableLayout>
+               </ui:contents>
+            </oa:defaultDoubleColumn>
+            <oa:defaultDoubleColumn id="custSiteCntRN">
+               <ui:contents>
+                  <oa:messageStyledText id="custSiteInfo" prompt="Number of active AOPS customer sites that are not in EBS" styleClass="OraDataText"/>
+                  <oa:messageStyledText id="custSiteCnt" styleClass="OraDataText" viewName="ODCDHAopsCustCntRptVO1" viewAttr="Attribute2"/>
+                  <oa:tableLayout id="hsSiteRN" hAlign="left">
+                     <ui:contents>
+                        <oa:rowLayout id="hsRowSiteRN">
+                           <ui:contents>
+                              <oa:cellFormat id="hsCellSiteRN">
+                                 <ui:contents>
+                                    <oa:hideShow id="custSiteHSRN">
+                                       <ui:contents>
+                                          <oa:table id="custSiteTblRN" controllerClass="od.oracle.apps.xxcrm.cdh.reports.webui.ODCDHAopsRptCO">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="custSiteID" prompt="Customer Site ID" viewName="ODCDHAopsCustSiteRptVO1" styleClass="OraDataText" viewAttr="AccountNumber"/>
+                                                <oa:messageStyledText id="custSiteNM" prompt="Customer Name" viewName="ODCDHAopsCustSiteRptVO1" styleClass="OraDataText" viewAttr="AccountName"/>
+                                                <oa:messageStyledText id="custSiteAddr" prompt="Customer Address" viewName="ODCDHAopsCustSiteRptVO1" styleClass="OraDataText" viewAttr="Address"/>
+                                             </ui:contents>
+                                          </oa:table>
+                                       </ui:contents>
+                                    </oa:hideShow>
+                                 </ui:contents>
+                              </oa:cellFormat>
+                           </ui:contents>
+                        </oa:rowLayout>
+                     </ui:contents>
+                  </oa:tableLayout>
+               </ui:contents>
+            </oa:defaultDoubleColumn>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

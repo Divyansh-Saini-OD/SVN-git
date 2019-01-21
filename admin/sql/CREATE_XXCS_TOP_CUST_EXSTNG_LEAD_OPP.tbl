@@ -1,0 +1,77 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XXCS_TOP_CUST_EXSTNG_LEAD_OPP Table                                        |--                                                                                          |--
+--| Program Name   : CREATE_XXCS_TOP_CUST_EXSTNG_LEAD_OPP.tbl                                   |--
+--|                                                                                             |--
+--| Purpose        : Lead or Opportunities created from Potentials.                             |--
+--|                  Life: Till New GDW data is populated.                                      |--
+--|                                                                                             |--
+--| Change History :                                                                            |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              23-Mar-2009       Sreekanth               Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Table XXCRM.XXCS_TOP_CUST_EXSTNG_LEAD_OPP......
+PROMPT
+
+CREATE TABLE XXCRM.XXCS_TOP_CUST_EXSTNG_LEAD_OPP
+   (	
+        POTENTIAL_ID           NUMBER,
+        POTENTIAL_TYPE_CD      VARCHAR2(30),
+        PARTY_SITE_ID          NUMBER,
+        ENTITY_TYPE            VARCHAR2(30),
+        ENTITY_ID              NUMBER,
+        DUPLICATES             VARCHAR2(30),
+	CREATED_BY             NUMBER, 
+	CREATION_DATE          DATE, 
+	LAST_UPDATED_BY        NUMBER, 
+	LAST_UPDATE_DATE       DATE, 
+        LAST_UPDATE_LOGIN      NUMBER,
+	REQUEST_ID             NUMBER,
+        ATTRIBUTE_CATEGORY     VARCHAR2(30),
+        ATTRIBUTE1             VARCHAR2(2500),
+        ATTRIBUTE2             VARCHAR2(2500),
+        ATTRIBUTE3             VARCHAR2(2500),
+        ATTRIBUTE4             VARCHAR2(2500),
+        ATTRIBUTE5             VARCHAR2(2500),
+        ATTRIBUTE6             VARCHAR2(2500),
+        ATTRIBUTE7             VARCHAR2(2500),
+        ATTRIBUTE8             VARCHAR2(2500),
+        ATTRIBUTE9             VARCHAR2(2500),
+        ATTRIBUTE10            VARCHAR2(2500),
+        ATTRIBUTE11            VARCHAR2(2500),
+        ATTRIBUTE12            VARCHAR2(2500),
+        ATTRIBUTE13            VARCHAR2(2500),
+        ATTRIBUTE14            VARCHAR2(2500),
+        ATTRIBUTE15            VARCHAR2(2500),
+        ATTRIBUTE16            VARCHAR2(2500),
+        ATTRIBUTE17            VARCHAR2(2500),
+        ATTRIBUTE18            VARCHAR2(2500),
+        ATTRIBUTE19            VARCHAR2(2500),
+        ATTRIBUTE20            VARCHAR2(2500)
+   ) ;
+ 
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

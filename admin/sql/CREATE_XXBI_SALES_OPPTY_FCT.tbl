@@ -1,0 +1,126 @@
+-- $Id$
+-- $Rev$
+-- $HeadURL$
+-- $Author$
+-- $Date$
+
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XXBI Opportunity Fact Table                                                |--                                                                                          |--
+--| Program Name   : CREATE_XXBI_SALES_OPPTY_FCT.tbl                                            |--
+--|                                                                                             |--
+--| Purpose        : Opportunity Fact Table                                                     |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              05-Mar-2009       Sreekanth               Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating the Table XXCRM.XXBI_SALES_OPPTY_FCT......
+PROMPT
+
+CREATE TABLE XXCRM.XXBI_SALES_OPPTY_FCT
+   (	OPPTY_FCT_ID           NUMBER, 
+	OPP_ID                 NUMBER, 
+	OPP_NUMBER             NUMBER, 
+	CUSTOMER_ID            NUMBER, 
+	ADDRESS_ID             NUMBER, 
+	SOURCE_ID              NUMBER, 
+	STATUS_CATEGORY        VARCHAR2(1), 
+	STATUS_CODE            VARCHAR2(30), 
+        FORECASTABLE           VARCHAR2(1), 
+ 	CHANNEL_CODE           VARCHAR2(30), 
+	CLOSE_REASON           VARCHAR2(30), 
+	CURRENCY_CODE          VARCHAR2(15), 
+	STATE                  VARCHAR2(60),
+	CITY                   VARCHAR2(60),
+	PROVINCE               VARCHAR2(60),
+	COUNTRY                VARCHAR2(60),
+	METHODOLOGY_ID         NUMBER,
+	STAGE_ID               NUMBER,
+        WIN_PROBABILITY        NUMBER,
+--  WIN_PROBABILITY_RANGE_ID NUMBER, MV
+	SOURCE_LANG            VARCHAR2(4), 
+        KEY_COMPETITOR_ID      NUMBER,
+        KEY_INCUMBANT_ID       NUMBER,        
+	TOTAL_AMOUNT           NUMBER, 
+	TOTAL_MARGIN_AMOUNT    NUMBER,
+	TOTAL_FORECAST_AMOUNT  NUMBER,         
+	ORG_ID                 NUMBER, 
+        DECISION_DATE          DATE,
+	DECISION_MONTH         NUMBER, 
+	DECISION_QTR           NUMBER, 
+	DECISION_YEAR          NUMBER, 
+	OPPTY_CREATION_DATE    DATE, 
+	OPPTY_CREATED_BY       NUMBER, 
+	OPPTY_LAST_UPDATE_DATE DATE, 
+	OPPTY_LAST_UPDATED_BY  NUMBER, 
+	OPPTY_CREATION_MONTH   NUMBER, 
+	OPPTY_CREATION_QTR     NUMBER, 
+	OPPTY_CREATION_YEAR    NUMBER, 
+	OPPTY_UPDATION_MONTH   NUMBER, 
+	OPPTY_UPDATION_QTR     NUMBER, 
+	OPPTY_UPDATION_YEAR    NUMBER, 
+	SALES_LEAD_ID          NUMBER, 
+	SALES_LEAD_CONV_DATE   DATE, 
+	CREATION_DATE          DATE, 
+	CREATED_BY             NUMBER, 
+	LAST_UPDATE_DATE       DATE, 
+	LAST_UPDATED_BY        NUMBER, 
+	ATTRIBUTE_CATEGORY     VARCHAR2(30), 
+	N_ATTRIBUTE1           NUMBER, 
+	N_ATTRIBUTE2           NUMBER, 
+	N_ATTRIBUTE3           NUMBER, 
+	N_ATTRIBUTE4           NUMBER, 
+	N_ATTRIBUTE5           NUMBER, 
+	N_ATTRIBUTE6           NUMBER, 
+	N_ATTRIBUTE7           NUMBER, 
+	N_ATTRIBUTE8           NUMBER, 
+	N_ATTRIBUTE9           NUMBER, 
+	N_ATTRIBUTE10          NUMBER, 
+	C_ATTRIBUTE1           VARCHAR2(150), 
+	C_ATTRIBUTE2           VARCHAR2(150), 
+	C_ATTRIBUTE3           VARCHAR2(150), 
+	C_ATTRIBUTE4           VARCHAR2(150), 
+	C_ATTRIBUTE5           VARCHAR2(150), 
+	C_ATTRIBUTE6           VARCHAR2(150), 
+	C_ATTRIBUTE7           VARCHAR2(150), 
+	C_ATTRIBUTE8           VARCHAR2(150), 
+	C_ATTRIBUTE9           VARCHAR2(150), 
+	C_ATTRIBUTE10          VARCHAR2(150), 
+	D_ATTRIBUTE1           DATE, 
+	D_ATTRIBUTE2           DATE, 
+	D_ATTRIBUTE3           DATE, 
+	D_ATTRIBUTE4           DATE, 
+	D_ATTRIBUTE5           DATE, 
+	D_ATTRIBUTE6           DATE, 
+	D_ATTRIBUTE7           DATE, 
+	D_ATTRIBUTE8           DATE, 
+	D_ATTRIBUTE9           DATE, 
+	D_ATTRIBUTE10          DATE
+   ) ;
+ 
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

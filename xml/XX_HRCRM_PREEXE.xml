@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXHRCRMPREEXE" description="OD: HR CRM PreExec" Version="1.0">
+<parameters>
+ <parameter name="P_PERSON_ID" dataType="character" /> 
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_EMP_CNT">
+<![CDATA[
+SELECT count(*) EMP_CNT,paaf.job_id JOB_ID, pj.name JOB_NAME
+FROM PER_ALL_ASSIGNMENTS_F PAAF 
+    ,PER_JOBS PJ
+WHERE pj.job_id = paaf.job_id
+AND EXISTS
+(
+SELECT 1
+FROM JTF_RS_ROLES_B JRRB
+   , JTF_RS_JOB_ROLEs JRJR
+WHERE jrjr.job_id = paaf.job_id
+AND jrjr.role_id = jrrb.role_id
+AND NVL(JRRB.active_flag,'N') = 'Y'
+AND jrrb.role_type_code in ('SALES','SALES_COMP','SALES_COMP_PAYMENT_ANALIST','COLLECTIONS')
+)
+START WITH paaf.person_id = :P_PERSON_ID
+CONNECT BY PRIOR paaf.person_id = paaf.supervisor_id
+GROUP BY paaf.job_id, pj.name                               
+]]>
+</sqlStatement>
+<sqlStatement name="Q_RES_CRE_CNT">
+<![CDATA[
+SELECT count(*) RES_CRE_CNT
+FROM PER_ALL_ASSIGNMENTS_F PAAF
+WHERE EXISTS
+(
+SELECT 1
+FROM   JTF_RS_ROLES_B JRRB
+     , JTF_RS_JOB_ROLEs JRJR
+WHERE jrjr.job_id = paaf.job_id
+AND   jrjr.role_id = jrrb.role_id
+AND   NVL(JRRB.active_flag,'N') = 'Y'
+AND   jrrb.role_type_code in ('SALES','SALES_COMP','SALES_COMP_PAYMENT_ANALIST','COLLECTIONS')
+)
+AND NOT EXISTS
+(
+SELECT 1
+FROM   JTF_RS_RESOURCE_EXTNS JRRE
+WHERE  jrre.source_id = paaf.person_id
+AND    jrre.category = 'EMPLOYEE'
+and sysdate between start_date_active and nvl(end_date_active,sysdate)
+)
+START WITH paaf.person_id = :P_PERSON_ID
+CONNECT BY PRIOR paaf.person_id = paaf.supervisor_id                                  
+]]>
+</sqlStatement>
+<sqlStatement name="Q_RES_UPDT_CNT">
+<![CDATA[
+SELECT count(*) RES_UPDT_CNT
+FROM  PER_ALL_ASSIGNMENTS_F PAAF
+WHERE EXISTS
+(
+SELECT 1
+FROM JTF_RS_ROLES_B JRRB
+   , JTF_RS_JOB_ROLES JRJR
+WHERE jrjr.job_id = paaf.job_id
+AND   jrjr.role_id = jrrb.role_id
+AND   NVL(JRRB.active_flag,'N') = 'Y'
+AND   jrrb.role_type_code in ('SALES','SALES_COMP','SALES_COMP_PAYMENT_ANALIST','COLLECTIONS')
+)
+AND EXISTS
+(
+SELECT 1
+FROM   JTF_RS_RESOURCE_EXTNS JRRE
+WHERE  jrre.source_id = paaf.person_id
+AND   (jrre.source_job_id <> paaf.job_id
+OR jrre.source_mgr_id <> paaf.supervisor_id)
+AND jrre.category = 'EMPLOYEE'
+and sysdate between start_date_active and nvl(end_date_active,sysdate)
+)
+START WITH paaf.person_id = :P_PERSON_ID
+CONNECT BY PRIOR paaf.person_id = paaf.supervisor_id	                                  
+]]>
+</sqlStatement>
+<sqlStatement name="Q_ADMIN_CNT">
+<![CDATA[
+SELECT count(*) ADMIN_CNT
+FROM PER_ALL_ASSIGNMENTS_F PAAF
+WHERE EXISTS
+(
+SELECT 1
+FROM  JTF_RS_ROLES_B JRRB
+    , JTF_RS_JOB_ROLEs JRJR
+WHERE jrjr.job_id = paaf.job_id
+AND   jrjr.role_id = jrrb.role_id
+AND   NVL(JRRB.active_flag,'N') = 'Y'
+AND   jrrb.role_type_code IN ('SALES','COLLECTIONS')
+AND   jrrb.admin_flag = 'Y'
+)
+START WITH paaf.person_id = :P_PERSON_ID
+CONNECT BY PRIOR paaf.person_id = paaf.supervisor_id	                                  
+]]>
+</sqlStatement>
+<sqlStatement name="Q_SALES_COMP_ANA_CNT">
+<![CDATA[
+SELECT count(*) SALES_COMP_ANA_CNT
+FROM   PER_ALL_ASSIGNMENTS_F PAAF
+WHERE  EXISTS
+(
+SELECT 1
+FROM JTF_RS_ROLES_B JRRB
+   , JTF_RS_JOB_ROLEs JRJR
+WHERE jrjr.job_id = paaf.job_id
+AND jrjr.role_id = jrrb.role_id
+AND jrrb.role_type_code IN ('SALES_COMP_PAYMENT_ANALIST')
+AND   NVL(JRRB.active_flag,'N') = 'Y'
+AND jrrb.Member_flag = 'Y'
+)
+START WITH paaf.person_id = :P_PERSON_ID
+CONNECT BY PRIOR paaf.person_id = paaf.supervisor_id	                                  
+]]>
+</sqlStatement>
+<sqlStatement name="Q_MGR_CNT">
+<![CDATA[
+SELECT count(*) MGR_CNT
+FROM   PER_ALL_ASSIGNMENTS_F PAAF
+WHERE  EXISTS
+(
+SELECT 1
+FROM JTF_RS_ROLES_B JRRB
+   , JTF_RS_JOB_ROLEs JRJR
+WHERE jrjr.job_id = paaf.job_id
+AND jrjr.role_id = jrrb.role_id
+AND jrrb.role_type_code IN ('SALES','SALES_COMP','COLLECTIONS')
+AND jrrb.manager_flag = 'Y'
+AND NVL(JRRB.active_flag,'N') = 'Y'
+)
+AND NOT EXISTS
+(
+SELECT 1
+FROM JTF_RS_RESOURCE_EXTNS JRRE
+WHERE jrre.source_id = paaf.person_id
+AND jrre.category = 'EMPLOYEE'
+and sysdate between start_date_active and nvl(end_date_active,sysdate)
+)
+START WITH paaf.person_id = :P_PERSON_ID
+CONNECT BY PRIOR paaf.person_id = paaf.supervisor_id	                                  
+]]>
+</sqlStatement>
+<sqlStatement name="Q_SREP_CNT">
+<![CDATA[
+SELECT count(*) SREP_CNT
+FROM   PER_ALL_ASSIGNMENTS_F PAAF
+WHERE EXISTS
+(
+SELECT 1
+FROM JTF_RS_ROLES_B JRRB
+   , JTF_RS_JOB_ROLEs JRJR
+WHERE jrjr.job_id = paaf.job_id
+AND jrjr.role_id = jrrb.role_id
+AND jrrb.role_type_code IN ('SALES','SALES_COMP')
+AND NVL(JRRB.active_flag,'N') = 'Y'
+AND jrrb.member_flag = 'Y'
+)
+AND NOT EXISTS
+(
+SELECT 1
+FROM JTF_RS_RESOURCE_EXTNS JRRE
+WHERE jrre.source_id = paaf.person_id
+AND jrre.category = 'EMPLOYEE'
+and sysdate between start_date_active and nvl(end_date_active,sysdate)
+)
+START WITH paaf.person_id =:P_PERSON_ID
+CONNECT BY PRIOR paaf.person_id = paaf.supervisor_id	                                  
+]]>
+</sqlStatement>
+<sqlStatement name="Q_EMP_NULL_JOB_CNT">
+<![CDATA[
+SELECT count(*) EMP_NULL_JOB_CNT
+FROM   PER_ALL_ASSIGNMENTS_F PAAF
+WHERE  paaf.job_id IS NULL
+START WITH paaf.person_id = :P_PERSON_ID
+CONNECT BY PRIOR paaf.person_id = paaf.supervisor_id                               
+]]>
+</sqlStatement>
+<sqlStatement name="Q_TERMIN_EMP_CNT">
+<![CDATA[
+SELECT COUNT(*) TERMIN_EMP_CNT
+FROM   PER_ALL_ASSIGNMENTS_F PAAF
+     , PER_ALL_PEOPLE_F PAPF
+     , per_periods_of_service PPOS
+     , per_person_types       PPT
+WHERE papf.person_id = paaf.person_id 
+AND   PAPF.person_id = PPOS.person_id
+AND   PPT.person_type_id = PAPF.person_type_id
+AND     PPOS.actual_termination_date    = TRUNC (sysdate)
+AND    (PPT.system_person_type          = 'EMP'
+OR      PPT.system_person_type          = 'CWK')
+START WITH paaf.person_id = :P_PERSON_ID
+CONNECT BY PRIOR paaf.person_id = paaf.supervisor_id                              
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_EMP_CNT" source="Q_EMP_CNT">
+<element name="EMP_CNT" value="EMP_CNT" />
+<element name="JOB_ID" value="JOB_ID" />
+<element name="JOB_NAME" value="JOB_NAME"/>
+</group>
+<group name="G_RES_CRE_CNT" source="Q_RES_CRE_CNT">
+<element name="RES_CRE_CNT" value="RES_CRE_CNT" />
+</group>
+<group name="G_RES_UPDT_CNT" source="Q_RES_UPDT_CNT">
+<element name="RES_UPDT_CNT" value="RES_UPDT_CNT" />
+</group>
+<group name="G_ADMIN_CNT" source="Q_ADMIN_CNT">
+<element name="ADMIN_CNT" value="ADMIN_CNT" />
+</group>
+<group name="G_SALES_COMP_ANA_CNT" source="Q_SALES_COMP_ANA_CNT">
+<element name="SALES_COMP_ANA_CNT" value="SALES_COMP_ANA_CNT" />
+</group>
+<group name="G_MGR_CNT" source="Q_MGR_CNT">
+<element name="MGR_CNT" value="MGR_CNT" />
+</group>
+<group name="G_SREP_CNT" source="Q_SREP_CNT">
+<element name="SREP_CNT" value="SREP_CNT" />
+</group>
+<group name="G_EMP_NULL_JOB_CNT" source="Q_EMP_NULL_JOB_CNT">
+<element name="EMP_NULL_JOB_CNT" value="EMP_NULL_JOB_CNT" />
+</group>
+<group name="G_TERMIN_EMP_CNT" source="Q_TERMIN_EMP_CNT">
+<element name="TERMIN_EMP_CNT" value="TERMIN_EMP_CNT" />
+</group>
+</dataStructure>
+</dataTemplate>
+

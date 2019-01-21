@@ -1,0 +1,42 @@
+-- +===================================================================+
+-- |                        Office Depot                               |
+-- |                                                                   |
+-- +===================================================================+
+-- | Synonym Name:  CREATE_XX_CDH_EBL_TEMPL_DTL_TXT_W2.syn             |
+-- | Rice Id     :                                                     |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author             Remarks                  |
+-- |=======   ===========  =================  =========================|
+-- |1.0       08-AUG-2017  Thilak CG          Initial draft version    |
+-- +===================================================================+
+
+PROMPT
+PROMPT Synonym XX_CDH_EBL_TEMPL_HDR_TXT
+PROMPT    
+
+CREATE OR REPLACE SYNONYM XX_CDH_EBL_TEMPL_HDR_TXT FOR XXCRM.XX_CDH_EBL_TEMPL_HDR_TXT; 
+
+PROMPT
+PROMPT Synonym XX_CDH_EBL_TEMPL_DTL_TXT
+PROMPT    
+
+CREATE OR REPLACE SYNONYM XX_CDH_EBL_TEMPL_DTL_TXT FOR XXCRM.XX_CDH_EBL_TEMPL_DTL_TXT; 
+
+PROMPT
+PROMPT Synonym XX_CDH_EBL_TEMPL_TRL_TXT
+PROMPT    
+
+CREATE OR REPLACE SYNONYM XX_CDH_EBL_TEMPL_TRL_TXT FOR XXCRM.XX_CDH_EBL_TEMPL_TRL_TXT; 
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

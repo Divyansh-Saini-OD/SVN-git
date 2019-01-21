@@ -1,0 +1,37 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=========================================================================================+
+-- |                  Office Depot - Project Simplify                                        |
+-- +=========================================================================================+
+-- | Name        : XX_CDH_BE_delete_ForSFAtoAOPS.abk                 |
+-- | Description : Anonymous block for creating Business Events for Invoking AOPS            |
+-- |               Procedure                                                                 |
+-- |                                                                                         |
+-- |Change Record:                                                                           |
+-- |===============                                                                          |
+-- |Version     Date           Author               Remarks                                  |
+-- |=======    ==========      ================     =========================================|
+-- |1.0        28-Apr-2009     Yusuf Ali            Anonymous Block; Need to delete existing |
+-- |                                                event and recreate the event.            |
+-- +=========================================================================================+
+
+declare
+eventRowId ROWID;
+
+wf_guid WF_EVENTS.GUID%type;
+
+begin
+
+WF_EVENTS_PKG.g_Mode := 'CUSTOM';
+
+SELECT guid into wf_guid FROM apps.WF_EVENTS
+WHERE NAME = 'od.oracle.apps.ar.hz.AccountCreationRequestBatch.create';
+
+WF_EVENTS_PKG.DELETE_ROW(
+  X_GUID               => wf_guid
+);
+commit;
+END;
+/

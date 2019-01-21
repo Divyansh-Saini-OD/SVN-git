@@ -1,0 +1,38 @@
+-- $Id: DROP_XXBI_PARTY_SITE_DATA_FCT.tbl 69444 2010-03-20 10:44:38 -0400Z Kishor Jena $
+-- $Rev:  $
+-- $HeadURL: https://svn.na.odcorp.net/od/crm/trunk/xxcrm/admin/sql/DROP_XXBI_PARTY_SITE_DATA_FCT.tbl $
+-- $Author: Kishore Jena $
+-- $Date: 2010-03-20 10:44:38 -0400 (Thu, 09 Apr 2009) $
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        :  DROP_XXBI_PARTY_SITE_DATA_FCT.tbl                  |
+-- | Description :  Party Site Fact                                    |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author             Remarks                   |
+-- |=======   ==========  =============      ==========================|
+-- |1.0       03-Nov-2010 Kishore Jena       Initial draft version     |
+-- |                                                                   | 
+-- +===================================================================+
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+DROP TABLE XXCRM.XXBI_PARTY_SITE_DATA_FCT;
+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET FEEDBACK ON
+
+--EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
+

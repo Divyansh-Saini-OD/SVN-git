@@ -1,0 +1,61 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |                      Wipro Technologies                               |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_SFA_LEAD_REFERRALS.tbl                    |
+-- | Description      :I2043 Leads_from_WWW_and_Jmillennia                 |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      05-Mar-2008 Rizwan Appees      Initial version                |
+-- +=======================================================================+ 
+
+------------------------------------------------------
+-- TABLE CREATION SCRIPT                            --
+------------------------------------------------------
+
+CREATE TABLE XXCRM.XX_SFA_LEAD_REFERRALS
+  (INTERNID           NUMBER                    NOT NULL,
+  NAME               VARCHAR2(360 BYTE)         NOT NULL,
+  ADDR1              VARCHAR2(240 BYTE)         NOT NULL,
+  CITY               VARCHAR2(60 BYTE)          NOT NULL,
+  STATE              VARCHAR2(60 BYTE)          NOT NULL,
+  COUNTRY            VARCHAR2(60 BYTE),
+  ZIP                VARCHAR2(60 BYTE)          NOT NULL,
+  PHONE              VARCHAR2(40 BYTE)          NOT NULL,
+  NUM_WC_EMP_OD      NUMBER                     NOT NULL,
+  DUNS_NUMBER        VARCHAR2(30 BYTE),
+  SOURCE             VARCHAR2(60 BYTE),
+  REV_BAND           VARCHAR2(60 BYTE),
+  FNAME              VARCHAR2(150 BYTE)         NOT NULL,
+  LNAME              VARCHAR2(150 BYTE)         NOT NULL,
+  CONTACT_TITLE      VARCHAR2(60 BYTE)          NOT NULL,
+  IP_ADDRESS         VARCHAR2(60 BYTE),
+  PROCESS_FLAG       VARCHAR2(30 BYTE),
+  PROCESS_STATUS     VARCHAR2(30 BYTE),
+  LAST_UPDATE_DATE   DATE                       NOT NULL,
+  LAST_UPDATED_BY    VARCHAR2(60 BYTE),
+  CREATION_DATE      DATE                       NOT NULL,
+  CREATED_BY         VARCHAR2(60 BYTE),
+  LAST_UPDATE_LOGIN  VARCHAR2(60 BYTE)
+  );
+
+------------------------------------------------------
+-- GRANT SCRIPT                                     --
+------------------------------------------------------
+
+Grant all on XXCRM.XX_SFA_LEAD_REFERRALS to APPS;
+
+------------------------------------------------------
+-- GRANT SCRIPT                                     --
+------------------------------------------------------
+
+Grant all on XXCRM.XX_SFA_LEAD_REFERRALS to xxcrm_leads;

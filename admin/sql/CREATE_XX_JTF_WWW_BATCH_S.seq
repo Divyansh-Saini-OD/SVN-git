@@ -1,0 +1,27 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR EXIT FAILURE ROLLBACK;
+WHENEVER OSERROR  EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_JTF_WWW_BATCH_S.seq                       |
+-- | Description      :I2043 Leads_from_WWW_and_Jmillennia                 |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      15-Feb-2008 David Woods        Initial version                |
+-- +=======================================================================+
+
+CREATE SEQUENCE XXCRM.XX_JTF_WWW_BATCH_S 
+INCREMENT BY 1 
+START WITH 1 
+NOMAXVALUE
+NOCYCLE;
+
+GRANT ALL ON XXCRM.XX_JTF_WWW_BATCH_S TO APPS;

@@ -1,0 +1,97 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_1312" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <!--*[Enter Javadoc like developer documentation, delete this line once you fill the included template.] [Put a one line description of the region here.] [Put a brief description of the usage of the region here.] @param [Parameter_name] [Put parameter use here.] @param [Parameter_name] [Put parameter use here.] @see [Put any additional links apart from controller class and BC4J objects directly referenced by this region]-->
+      <oa:pageLayout id="TopCustPgLtRN" amDefName="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSTopCustAM" title="Top Customer Report" controllerClass="od.oracle.apps.xxcrm.mps.reports.webui.XXCSMPSTOPCustCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:messageComponentLayout id="SearchRN" amDefName="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSTopCustAM" searchRegion="true">
+               <ui:contents>
+                  <oa:messageChoice id="ProgramTypeParam" pickListViewDef="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSProgramTypeVO" pickListViewName="XXCSMPSProgramTypeVO1" prompt="ProgramType" pickListDispAttr="ProgramType" pickListValAttr="ProgramType" queryable="true" selectiveSearchCriteria="false"/>
+                  <oa:messageTextInput id="ManagedStatusInput" prompt="Managed Status"/>
+                  <oa:messageTextInput id="ActiveStatusInput" prompt="Active Status"/>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:rowLayout id="searchBtnRN" hAlign="end">
+               <ui:contents>
+                  <oa:submitButton id="SearchBtn" text="Search" prompt="Search"/>
+                  <oa:spacer id="Spacer"/>
+                  <oa:submitButton id="ClearBtn" text="Clear" prompt="Clear"/>
+                  <oa:spacer id="Spacer1"/>
+                  <oa:separator id="Separator1"/>
+               </ui:contents>
+            </oa:rowLayout>
+            <oa:advancedTable id="ResultsRN" viewName="XXCSMPSTOPCustomerVO1" blockSize="10">
+               <ui:contents>
+                  <oa:column id="PartyName">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="CustomerNamesortableHeader" prompt="Customer Name" sortByViewAttr="PartyName" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="CustomerName" viewAttr="PartyName"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ProgramTypeCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableProgramType" sortByViewAttr="ProgramType" prompt="ProgramType" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ProgramType" viewAttr="ProgramType"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="SumNvlTotalCount0">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableSumNvlTotalCount" prompt="Total Count" sortState="yes" sortByViewAttr="Totalcount"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="TotalCount" viewAttr="Totalcount"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="SumNvlTotalBlackCount0">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableSumNvlTotalBlackCount" prompt="TotalBlackCount" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="TotalBlackCount" viewAttr="TotalBlackCount"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="SumNvlTotalColorCount0">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="SumNvlTotalColorCount" sortByViewAttr="TotalColorCount" prompt="Total Color Count" sortState="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="TotalColorCount" viewAttr="TotalColorCount"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ManagedStatusCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ManagedStatusHdr" prompt="Managed Status"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ManagedStatus" viewAttr="ManagedStatus"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ActiveStatusCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ActiveStatusHdr" prompt="Active Status"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ActiveStatus" viewAttr="ActiveStatus"/>
+                     </ui:contents>
+                  </oa:column>
+               </ui:contents>
+               <ui:tableActions>
+                  <oa:rowLayout id="exportRN">
+                     <ui:contents>
+                        <oa:exportButton id="ExportButton" exportAllRows="true" viewName="XXCSMPSTOPCustomerVO1" text="Export to CSV"/>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:tableActions>
+            </oa:advancedTable>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

@@ -1,0 +1,43 @@
+-- +====================================================================+
+-- |                  Office Depot - Project Simplify                   |
+-- |                Oracle NAIO Consulting Organization                 |
+-- +====================================================================+
+-- | Name        : XX_CN_AR_TRX_N2.idx                                  |
+-- | Rice ID     : E1004A_CustomCollections_(TableDesign)               |
+-- | Description : XX_CN_AR_TRX Table - Non Unique Index Creation Script|
+-- |                                                                    |
+-- |               Columns :                                            |
+-- |                         Rollup_Date                                |
+-- |                         Ship_To_Address_Id                         |
+-- |                         Trnsfr_Batch_Id                            |
+-- |                                                                    |
+-- |Change Record:                                                      |
+-- |===============                                                     |
+-- |Version   Date        Author           Remarks                      |
+-- |=======  ===========  =============    =============================|
+-- |Draft 1a 03-Oct-2007  Vidhya Valantina Initial draft version        |
+-- |1.0      04-Oct-2007  Vidhya Valantina Baselined after testing      |
+-- |                                                                    |
+-- +====================================================================+
+
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+PROMPT
+PROMPT Creating Non Unique INDEX XX_CN_AR_TRX_N2
+PROMPT
+
+CREATE INDEX xx_cn_ar_trx_n2 ON xx_cn_ar_trx( rollup_date
+                                             ,ship_to_address_id
+                                             ,trnsfr_batch_id );
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

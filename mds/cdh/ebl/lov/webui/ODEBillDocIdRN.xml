@@ -1,0 +1,12 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<oa:listOfValues version="10.1.3_1312" xml:lang="en-US" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:ui="http://xmlns.oracle.com/uix/ui" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$" scope="/" amDefName="od.oracle.apps.xxcrm.cdh.ebl.lov.server.ODEBillLOVAM">
+   <ui:contents>
+      <oa:table id="ODEBillDocIdQueryRN" name="ODEBillDocIdRN">
+         <ui:contents>
+            <oa:messageStyledText id="DocumentId" dataType="NUMBER" prompt="Document ID" viewName="ODEBillDocIdLOVVO" viewAttr="DocumentId" maximumLength="5" queryable="true"/>
+            <oa:messageStyledText id="DocType" dataType="VARCHAR2" prompt="Document Type" viewName="ODEBillDocIdLOVVO" viewAttr="DocType" maximumLength="17" queryable="true"/>
+            <oa:messageStyledText id="DocDesc" dataType="VARCHAR2" prompt="Document Desc" viewName="ODEBillDocIdLOVVO" viewAttr="DocDesc" maximumLength="50"/>
+         </ui:contents>
+      </oa:table>
+   </ui:contents>
+</oa:listOfValues>
