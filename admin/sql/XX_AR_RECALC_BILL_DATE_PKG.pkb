@@ -174,6 +174,7 @@ BEGIN
    
    print_debug_msg ('Input Parameters' ,TRUE);
    print_debug_msg ('Debug Flag :'|| gc_debug ,TRUE);
+   print_debug_msg ('Billing Date :'||p_billing_date, TRUE);
    print_debug_msg ('                  ',TRUE);
    print_debug_msg ('Processing the Eligible Transactions',FALSE);
    
@@ -319,22 +320,27 @@ BEGIN
                       FROM ar_cons_bill_cycle_dates
                      WHERE billing_cycle_id = ln_billing_cycle_id
                        AND billable_date BETWEEN  TRUNC(ld_billing_date) AND TRUNC(SYSDATE);
+					-- print_debug_msg('p_billing_date - Test 1');
 		       EXCEPTION
 		       WHEN OTHERS
 		       THEN
 		           ld_new_bill_date := NULL;
+				   -- print_debug_msg('p_billing_date - Test 2');
 		       END;
 		   ELSE
+		       print_debug_msg('p_billing_date :'||p_billing_date);
 		       BEGIN
 		            SELECT MAX(billable_date)
                       INTO ld_new_bill_date
                       FROM ar_cons_bill_cycle_dates
                      WHERE billing_cycle_id = ln_billing_cycle_id
-                       AND billable_date BETWEEN  TRUNC(ld_billing_date) AND TRUNC(TO_DATE(p_billing_date,'YYYY/MM/DD'));
+                       AND billable_date BETWEEN  TRUNC(ld_billing_date) AND TRUNC(TO_DATE(p_billing_date,'DD-MON-YYYY'));
+				-- print_debug_msg('p_billing_date - Test 3');
 		       EXCEPTION
 		       WHEN OTHERS
 		       THEN
-		           ld_new_bill_date := NULL;
+			       -- print_debug_msg('p_billing_date - Test 4');
+		           ld_new_bill_date := TO_DATE(p_billing_date,'DD-MON-YYYY');
 		       END;
 		   END IF;
 		   
@@ -345,14 +351,15 @@ BEGIN
                  FROM ar_cons_bill_cycle_dates
                 WHERE billing_cycle_id = ln_billing_cycle_id
                   AND billable_date <= TRUNC(SYSDATE);
+				-- print_debug_msg('p_billing_date - Test 5');
 			END IF;
-		   print_debug_msg('New Bill Date :'||ld_new_bill_date);
+		   print_debug_msg('New Billing Date :'||ld_new_bill_date);
 		   
 		   ----------------------------------------------------------------------------
 		   /* Step 4: To derive the new DUE date */
 		   ----------------------------------------------------------------------------		     
 		   l_trx_dtls_tab(indx).billing_date := NVL(ld_new_bill_date,l_trx_dtls_tab(indx).billing_date);
-		   print_debug_msg('New Bill Date1 :'||l_trx_dtls_tab(indx).billing_date);
+		   print_debug_msg('New Billing Date1 :'||l_trx_dtls_tab(indx).billing_date);
 		   
 		   ld_new_due_date := ar_bfb_utils_pvt.get_due_date(l_trx_dtls_tab(indx).billing_date, l_trx_dtls_tab(indx).term_id);
 		   print_debug_msg('Due Date :'||ld_new_due_date);
