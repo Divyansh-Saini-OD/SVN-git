@@ -1,0 +1,16 @@
+-- +==================================================================================+
+-- | Office Depot - Project Simplify                                                  |
+-- | Providge Consulting                                                              |
+-- +==================================================================================+
+-- | SQL Script to create the table:  XX_CE_RECON_JRNL                                |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       15-MAR-2008   DGowda		 Initial version                      |
+-- |                                                                                  |
+-- +==================================================================================+
+
+ALTER TABLE xxfin.xx_ce_999_interface
+ADD (match_amount NUMBER);

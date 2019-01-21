@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://officedepot.com/EmailFaultMessage"
+	xmlns:efm="http://officedepot.com/EmailFaultMessage"
+	elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	
+	<xsd:element name="ErrorNotification" type="efm:ErrorNotificationType"/>
+	<xsd:complexType name="ErrorNotificationType">
+
+		<xsd:sequence>
+
+
+			<xsd:element name="errorCode" type="xsd:string" />
+			<xsd:element name="domain" type="xsd:string" />
+
+			<xsd:element name="transactionId" type="xsd:string" />
+
+			<xsd:element name="errorType" type="xsd:string" />
+
+			<xsd:element name="systemName" type="xsd:string" />
+			<xsd:element name="serviceName" type="xsd:string"/>
+
+
+			<xsd:element name="errorDescription" type="xsd:string" />
+
+			<xsd:element name="errorSeverity" type="xsd:string" />
+
+			<xsd:element name="messagePayload" type="xsd:string" />
+
+			<xsd:element name="errorDateTime" type="xsd:dateTime" />
+
+			<xsd:element name="FlexFields" type="efm:FlexFieldsType"
+				minOccurs="0"/>
+
+		</xsd:sequence>
+
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="FlexFieldsType">
+
+		<xsd:sequence>
+
+			<xsd:element name="FlexField" type="efm:FlexFieldType"
+				minOccurs="1" maxOccurs="unbounded" />
+
+		</xsd:sequence>
+
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="FlexFieldType">
+
+		<xsd:sequence>
+
+			<xsd:element name="FlexFieldName" type="xsd:string" />
+
+			<xsd:element name="FlexFieldValue" type="xsd:string" />
+
+		</xsd:sequence>
+
+	</xsd:complexType>
+
+</schema>

@@ -1,0 +1,63 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating TABLE XX_AR_INV_FREQ_MASTER
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | SQL Script to create the following object                                |
+-- |Table    : XX_AR_INV_FREQ_MASTER                                          |
+-- |           Contains the document level information of the customer        |
+-- |           which is valid for the current billing cycle.                  |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version      Date              Author               Remarks               |
+-- |=======      ==========        =============        ===================== |
+-- | V1.0        11-MAR-2010       Tamil Vendhan L      Initial version       |
+-- |                                                    R1.3 CR 738           |
+-- |                                                    Defect 2766           |
+-- +==========================================================================+
+
+CREATE TABLE "XXFIN"."XX_AR_INV_FREQ_MASTER"
+ (      "CUST_ACCOUNT_ID"           NUMBER(15,0) NOT NULL ENABLE,
+        "EXTENSION_ID"              NUMBER(15,0) NOT NULL ENABLE,
+        "BILLDOCS_PAYDOC_IND"       VARCHAR2(150),
+        "BILLDOCS_CUST_DOC_ID"      NUMBER(22,5),
+        "BILLDOCS_DOC_ID"           NUMBER(22,5),
+        "BILLDOCS_PAYMENT_TERM"     VARCHAR2(150),
+        "BILLDOCS_DELIVERY_METH"    VARCHAR2(150),
+        "BILLDOCS_SPECIAL_HANDLING" VARCHAR2(150),
+        "DIRECT_FLAG"               VARCHAR2(150),
+        "BATCH_ID"                  NUMBER(15,0),
+        "INSERT_COUNT"              NUMBER(15,0),
+        "PRNT_DATE_FAILED_CNT"      NUMBER(15,0),
+        "COMBO_PAY_FAILED_CNT"      NUMBER(15,0),
+        "COMBO_INFO_FAILED_CNT"     NUMBER(15,0),
+        "FETCH_INV_FAILED_CNT"      NUMBER(15,0),
+        "BILLDOCS_COMBO_TYPE"       VARCHAR2(150),
+        "BILLDOCS_EFF_START_DATE"   DATE,
+        "BILLDOCS_EFF_END_DATE"     DATE,
+        "ORG_ID"                    NUMBER
+ )
+ PARTITION BY LIST(ORG_ID)
+ (
+ PARTITION XX_AR_INV_FREQ_MASTER_403 VALUES(403),
+ PARTITION XX_AR_INV_FREQ_MASTER_404 VALUES(404)
+ )
+ PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
+ STORAGE
+ (
+ INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+ PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT
+ )
+ TABLESPACE "XXOD_TS_DATA";
+SHOW ERROR

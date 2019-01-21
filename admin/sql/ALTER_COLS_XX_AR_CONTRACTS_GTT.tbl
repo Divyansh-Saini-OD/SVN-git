@@ -1,0 +1,28 @@
+-- +========================================================================+
+-- |                  Office Depot                                          |
+-- +========================================================================+
+-- | Name        : ALTER_COLS_XX_AR_CONTRACTS_GTT.tbl                       |
+-- | Description : Added new field in the existing XX_AR_CONTRACTS_GTT      |
+-- |               table                                                    |
+-- |                                                                        |
+-- |Change Record:                                                          |
+-- |===============                                                         |
+-- |Version   Date        Author           Remarks                          |
+-- |=======  ===========  =============    =================================|
+-- |1.0      03-JDec-2018  Sahithi Kunuru    Initial Version                |
+-- +========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+alter table xxfin.xx_ar_contracts_gtt
+add (PURCHASE_ORDER    VARCHAR2(50)
+    ,DESKTOP           VARCHAR2(240)
+    ,COST_CENTER       VARCHAR2(240)
+    ,RELEASE_NUM       VARCHAR2(240)
+    );
+
+/

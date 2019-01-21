@@ -1,0 +1,26 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+whenever SQLERROR CONTINUE;
+whenever OSERROR EXIT FAILURE ROLLBACK;
+
+-- +==========================================================================+
+-- |                  Office Depot - Project                                  |
+-- |                                                                          |
+-- +==========================================================================+
+-- | SQL Script to drop the following objects                               |
+-- |            SYNONYM      : XX_AR_INVOICES_CAND                            |
+-- |    Rice ID:  XX_AR_INVOICES_CAND                                         |                                                                                                               -- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     15-MAY-2018  Aarthi            Initial Version              | 
+-- |                                                                          |
+-- +==========================================================================+
+
+DROP PUBLIC SYNONYM XX_AR_INVOICES_CAND;
+
+SHOW error

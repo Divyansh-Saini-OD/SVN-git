@@ -1,0 +1,36 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Altering TABLE XX_AR_LBX_WRAPPER_TEMP
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +=======================================================================================+
+-- |                  Office Depot - Project Simplify                                      |
+-- +=======================================================================================+
+-- | Name :ALTER_XX_AR_LBX_WRAPPER_TEMP.tbl                                                |
+-- | Description : Altering the  table XX_AR_LBX_WRAPPER_TEMP for defect 14764             |
+-- |                                                                                       |
+-- |                                                                                       |
+-- |                                                                                       |
+-- |                                                                                       |
+-- |Change Record:                                                                         |
+-- |===============                                                                        |
+-- |Version   Date         Author               Remarks                                    |
+-- |=======   ==========   =============        ===========================================|
+-- | V1.0     31-OCT-11     Aravind A.          For Defect 14764                           |
+-- |                                                                                       |
+-- +=======================================================================================+ 
+
+ALTER TABLE XXFIN.XX_AR_LBX_WRAPPER_TEMP
+  ADD(PROCESS_LBX_VAL_REQ_ID NUMBER
+      , PROCESS_LBX_VAL_STATUS VARCHAR2(120)
+      );
+
+
+SHOW ERROR

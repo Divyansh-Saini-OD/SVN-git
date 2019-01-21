@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--Native format was generated from COBOL copybook : C:\dev\workspaces\jdevWorkspace\FinanceBPELApplication\GetVikingCreditStatus\VKCreditCheck_Response_Copybook.txt-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:nxsd="http://xmlns.oracle.com/pcbpel/nxsd" xmlns:extn="http://xmlns.oracle.com/pcbpel/nxsd/extensions" targetNamespace="http://TargetNamespace.com/ServiceName" xmlns:tns="http://TargetNamespace.com/ServiceName" elementFormDefault="qualified" attributeFormDefault="unqualified" nxsd:version="NXSD" nxsd:encoding="cp037" nxsd:byteOrder="bigEndian" nxsd:stream="chars">
+   <xsd:element name="Root-Element">
+      <xsd:complexType>
+         <xsd:sequence>
+            <!--COBOL declaration :05 RESPONSE-AREA-->
+            <xsd:element name="RESPONSE-AREA" minOccurs="1" maxOccurs="unbounded">
+               <xsd:complexType>
+                  <xsd:sequence>
+                     <!--COBOL declaration : 10 BUC_AMT_0 PIC 9(8)V99-->
+                     <xsd:element name="BUC_AMT_0" type="xsd:decimal" nxsd:style="virtualDecimal" extn:assumeDecimal="8" extn:picSize="10"/>
+                     <!--COBOL declaration : 10 BUC_AMT_1 PIC 9(8)V99-->
+                     <xsd:element name="BUC_AMT_1" type="xsd:decimal" nxsd:style="virtualDecimal" extn:assumeDecimal="8" extn:picSize="10"/>
+                     <!--COBOL declaration : 10 BUC_AMT_2 PIC 9(8)V99-->
+                     <xsd:element name="BUC_AMT_2" type="xsd:decimal" nxsd:style="virtualDecimal" extn:assumeDecimal="8" extn:picSize="10"/>
+                     <!--COBOL declaration : 10 BUC_AMT_3 PIC 9(8)V99-->
+                     <xsd:element name="BUC_AMT_3" type="xsd:decimal" nxsd:style="virtualDecimal" extn:assumeDecimal="8" extn:picSize="10"/>
+                     <!--COBOL declaration : 10 BUC_AMT_4 PIC 9(8)V99-->
+                     <xsd:element name="BUC_AMT_4" type="xsd:decimal" nxsd:style="virtualDecimal" extn:assumeDecimal="8" extn:picSize="10"/>
+                     <!--COBOL declaration : 10 BUC_AMT_5 PIC 9(8)V99-->
+                     <xsd:element name="BUC_AMT_5" type="xsd:decimal" nxsd:style="virtualDecimal" extn:assumeDecimal="8" extn:picSize="10"/>
+                     <!--COBOL declaration : 10 OUT_BAL PIC 9(8)V99-->
+                     <xsd:element name="OUT_BAL" type="xsd:decimal" nxsd:style="virtualDecimal" extn:assumeDecimal="8" extn:picSize="10"/>
+                     <!--COBOL declaration : 10 RCPT_DATE PIC X(030)-->
+                     <xsd:element name="RCPT_DATE" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="30"/>
+                     <!--COBOL declaration : 10 COLLECTOR_ID PIC 9(10)-->
+                     <xsd:element name="COLLECTOR_ID" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="10"/>
+                     <!--COBOL declaration : 10 COLLECTOR_NAME PIC X(030)-->
+                     <xsd:element name="COLLECTOR_NAME" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="30"/>
+                     <!--COBOL declaration : 10 RESPONSE_CODE PIC X(003)-->
+                     <xsd:element name="RESPONSE_CODE" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="3"/>
+                     <!--COBOL declaration : 10 RESPONSE_MESSAGE PIC X(150)-->
+                     <xsd:element name="RESPONSE_MESSAGE" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="150"/>
+                  </xsd:sequence>
+               </xsd:complexType>
+            </xsd:element>
+         </xsd:sequence>
+      </xsd:complexType>
+   </xsd:element>
+</xsd:schema>

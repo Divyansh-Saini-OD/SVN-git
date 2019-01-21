@@ -1,0 +1,124 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating TABLE XX_AR_EBL_IND_DTL_HIST 
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | SQL Script to create the following object                                |
+-- |Table    : XX_AR_EBL_IND_DTL_HIST                                         |
+-- |           Individual   batching staging table                            |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version      Date              Author               Remarks               |
+-- |=======      ==========        =============        ===================== |
+-- |1.0          26-MAy-2010   Ranjith Thangasamy  For R1.4 CR# 586 eBilling. |
+-- +==========================================================================+
+CREATE TABLE XXFIN.XX_AR_EBL_IND_DTL_HIST 
+  ( 
+     CUSTOMER_TRX_ID         NUMBER NOT NULL ENABLE, 
+     CUST_DOC_ID             NUMBER NOT NULL ENABLE, 
+     CUSTOMER_TRX_LINE_ID    NUMBER, 
+     TRX_LINE_NUMBER         NUMBER, 
+     TRX_LINE_TYPE           VARCHAR2(20), 
+     ITEM_DESCRIPTION        VARCHAR2(1000), 
+     INVENTORY_ITEM_ID       NUMBER, 
+     INVENTORY_ITEM_NUMBER   VARCHAR2(40), 
+     TRANSLATED_DESCRIPTION  VARCHAR2(1000), 
+     ORDER_LINE_ID           NUMBER, 
+     PO_LINE_NUMBER          VARCHAR2(50), 
+     QUANTITY_BACK_ORDERED   NUMBER, 
+     QUANTITY_CREDITED       NUMBER, 
+     QUANTITY_INVOICED       NUMBER, 
+     QUANTITY_ORDERED        NUMBER, 
+     QUANTITY_SHIPPED        NUMBER, 
+     UNIT_OF_MEASURE         VARCHAR2(3), 
+     UNIT_PRICE              NUMBER, 
+     EXT_PRICE               NUMBER, 
+     CONTRACT_PLAN_ID        VARCHAR2(150), 
+     CONTRACT_SEQ_NUMBER     VARCHAR2(150), 
+     ENTERED_PRODUCT_CODE    VARCHAR2(1000), 
+     VENDOR_PRODUCT_CODE     VARCHAR2(240), 
+     CUSTOMER_PRODUCT_CODE   VARCHAR2(1000), 
+     DISCOUNT_CODE           VARCHAR2(240), 
+     ELEC_DETAIL_SEQ_NUMBER  NUMBER, 
+     ELEC_RECORD_TYPE        VARCHAR2(5), 
+     WHOLESALER_ITEM         VARCHAR2(240), 
+     DETAIL_REC_TAXABLE_FLAG VARCHAR2(240), 
+     GSA_COMMENTS            VARCHAR2(2000), 
+     INTERFACE_LINE_CONTEXT  VARCHAR2(30), 
+     PRICE_ADJUSTMENT_ID     VARCHAR2(30), 
+     DEPT_SFT_HDR            VARCHAR2(200), 
+     LAST_UPDATED_BY         NUMBER, 
+     LAST_UPDATED_DATE       DATE, 
+     CREATED_BY              NUMBER, 
+     CREATION_DATE           DATE, 
+     LAST_UPDATED_LOGIN      NUMBER, 
+     C_EXT_ATTR1             VARCHAR2(150), 
+     C_EXT_ATTR2             VARCHAR2(150), 
+     C_EXT_ATTR3             VARCHAR2(150), 
+     C_EXT_ATTR4             VARCHAR2(150), 
+     C_EXT_ATTR5             VARCHAR2(150), 
+     C_EXT_ATTR6             VARCHAR2(150), 
+     C_EXT_ATTR7             VARCHAR2(150), 
+     C_EXT_ATTR8             VARCHAR2(150), 
+     C_EXT_ATTR9             VARCHAR2(150), 
+     C_EXT_ATTR10            VARCHAR2(150), 
+     C_EXT_ATTR11            VARCHAR2(150), 
+     C_EXT_ATTR12            VARCHAR2(150), 
+     C_EXT_ATTR13            VARCHAR2(150), 
+     C_EXT_ATTR14            VARCHAR2(150), 
+     C_EXT_ATTR15            VARCHAR2(150), 
+     C_EXT_ATTR16            VARCHAR2(150), 
+     C_EXT_ATTR17            VARCHAR2(150), 
+     C_EXT_ATTR18            VARCHAR2(150), 
+     C_EXT_ATTR19            VARCHAR2(150), 
+     C_EXT_ATTR20            VARCHAR2(150), 
+     C_EXT_ATTR21            VARCHAR2(150), 
+     C_EXT_ATTR22            VARCHAR2(150), 
+     C_EXT_ATTR23            VARCHAR2(150), 
+     C_EXT_ATTR24            VARCHAR2(150), 
+     C_EXT_ATTR25            VARCHAR2(150), 
+     C_EXT_ATTR26            VARCHAR2(150), 
+     C_EXT_ATTR27            VARCHAR2(150), 
+     C_EXT_ATTR28            VARCHAR2(150), 
+     C_EXT_ATTR29            VARCHAR2(150), 
+     C_EXT_ATTR30            VARCHAR2(150), 
+     C_EXT_ATTR31            VARCHAR2(150), 
+     C_EXT_ATTR32            VARCHAR2(150), 
+     C_EXT_ATTR33            VARCHAR2(150), 
+     C_EXT_ATTR34            VARCHAR2(150), 
+     C_EXT_ATTR35            VARCHAR2(150), 
+     C_EXT_ATTR36            VARCHAR2(150), 
+     C_EXT_ATTR37            VARCHAR2(150), 
+     C_EXT_ATTR38            VARCHAR2(150), 
+     C_EXT_ATTR39            VARCHAR2(150), 
+     C_EXT_ATTR40            VARCHAR2(150), 
+     C_EXT_ATTR41            VARCHAR2(150), 
+     C_EXT_ATTR42            VARCHAR2(150), 
+     C_EXT_ATTR43            VARCHAR2(150), 
+     C_EXT_ATTR44            VARCHAR2(150), 
+     C_EXT_ATTR45            VARCHAR2(150), 
+     C_EXT_ATTR46            VARCHAR2(150), 
+     C_EXT_ATTR47            VARCHAR2(150), 
+     C_EXT_ATTR48            VARCHAR2(150), 
+     C_EXT_ATTR49            VARCHAR2(150), 
+     C_EXT_ATTR50            VARCHAR2(150), 
+     BATCH_ID                VARCHAR2(150), 
+     ORG_ID                  NUMBER, 
+     LINE_LEVEL_COMMENT      VARCHAR2(300), 
+     DEPT_DESC               VARCHAR2(1000), 
+     PARENT_CUST_DOC_ID      NUMBER, 
+     EXTRACT_BATCH_ID        NUMBER, 
+     CONSTRAINT XX_PK_EBL_IND_DTL_HIST PRIMARY KEY (CUSTOMER_TRX_ID, 
+     CUST_DOC_ID, CUSTOMER_TRX_LINE_ID) 
+  )
+TABLESPACE "XXOD_EBL_TS_DATA";

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewObject
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="DropshipNonConLOV"
+  Version="12.2.1.12.24"
+  InheritPersonalization="merge"
+  BindingStyle="OracleName"
+  CustomQuery="true"
+  RowClass="od.tdmatch.model.reports.vo.lov.DropshipNonConLOVRowImpl"
+  ComponentClass="od.tdmatch.model.reports.vo.lov.DropshipNonConLOVImpl"
+  PageIterMode="Full">
+  <DesignTime>
+    <Attr Name="_codeGenFlag2" Value="Coll"/>
+    <Attr Name="_isExpertMode" Value="true"/>
+    <Attr Name="_isCodegen" Value="true"/>
+  </DesignTime>
+  <SQLQuery><![CDATA[SELECT distinct RETRUN_REASON_CODE  FROM XX_AP_DROPSHIP_NON_DEDUCTIONS]]></SQLQuery>
+  <ViewAttribute
+    Name="RetrunReasonCode"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="255"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="RETRUN_REASON_CODE"
+    Expression="RETRUN_REASON_CODE"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="30"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.lov.DropshipNonConLOV.RetrunReasonCode_LABEL"/>
+        <DISPLAYWIDTH
+          Value="20"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <AttrArray Name="KeyAttributes">
+    <Item Value="RetrunReasonCode"/>
+  </AttrArray>
+  <ResourceBundle>
+    <PropertiesBundle
+      PropertiesFile="od.tdmatch.model.ModelBundle"/>
+  </ResourceBundle>
+</ViewObject>

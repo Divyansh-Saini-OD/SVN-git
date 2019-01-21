@@ -1,0 +1,38 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- +===================================================================+
+-- |                        Office Depot                               |
+-- |                                                                   |
+-- +===================================================================+
+-- | Table Name  :  ALTER_XX_AR_VPS_ADJ_DTLS_STG.tbl                   |
+-- | Description :  Alter the Staging table                            |
+-- | Rice Id     :  E7047                                              |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author             Remarks                  |
+-- |=======   ===========  =================  =========================|
+-- |1.0       12-JUL-2018  Havish Kasina      Initial draft version    |
+-- +===================================================================+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET TERM OFF
+
+SET TERM ON
+
+PROMPT
+PROMPT Altering the Table XXFIN.XX_AR_VPS_ADJ_DTLS_STG 
+PROMPT
+
+ALTER TABLE XXFIN.XX_AR_VPS_ADJ_DTLS_STG
+        ADD( VENDOR_NUM               VARCHAR2(100), 
+             EMAIL_STATUS             VARCHAR2(1)
+		   );
+		   
+SHOW ERROR;

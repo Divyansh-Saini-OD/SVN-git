@@ -1,0 +1,33 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Altering TABLE XX_TWE_ISO_USETAX_TMP
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +=======================================================================================+
+-- |                  Office Depot - Project Simplify                                      |
+-- +=======================================================================================+
+-- | Name :XX_TWE_ISO_USETAX_TMP.tbl                                                       |
+-- | Description : Altering the  table XX_TWE_ISO_USETAX_TMP for defect 2428 - R1.1        |
+-- |                                                                                       |
+-- |                                                                                       |
+-- |                                                                                       |
+-- |                                                                                       |
+-- |Change Record:                                                                         |
+-- |===============                                                                        |
+-- |Version   Date         Author               Remarks                                    |
+-- |=======   ==========   =============        ===========================================|
+-- | V1.0     17-Sep-09     Rani Asaithambi              For Defect 2428 - R1.1            |
+-- |                                                                                       |
+-- +=======================================================================================+ 
+
+ALTER TABLE xxfin.xx_twe_iso_usetax_tmp
+ADD ( SHIP_TO_COUNTY                                      VARCHAR2(50));	
+	
+SHOW ERROR

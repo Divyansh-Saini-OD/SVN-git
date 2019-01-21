@@ -1,0 +1,7 @@
+create table xxfin.xx_ap_dcn_stg
+(dcn number(9) not null,
+vendor_num varchar2(10) not null,
+invoice_num varchar2(20) not null,
+invoice_date date,
+status varchar2(40))
+/

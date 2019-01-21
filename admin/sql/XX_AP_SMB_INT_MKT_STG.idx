@@ -1,0 +1,30 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Internal Market Place            |
+-- +==========================================================================+
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- |                      INDEXES: XX_AP_SMB_INT_MKT_STG_U1                   |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     19-OCT-2018  Arun DSouza          Initial version               |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE UNIQUE INDEX XXFIN.XX_AP_SMB_INT_MKT_STG_U1 ON XXFIN.XX_AP_SMB_INT_MKT_STG(LOAD_ID);
+
+CREATE INDEX XXFIN.XX_AP_SMB_INT_MKT_STG_N1 ON XXFIN.XX_AP_SMB_INT_MKT_STG(SHOP_ID);
+
+CREATE INDEX XXFIN.XX_AP_SMB_INT_MKT_STG_N2 ON XXFIN.XX_AP_SMB_INT_MKT_STG(INVOICE_NUMBER);
+
+CREATE INDEX XXFIN.XX_AP_SMB_INT_MKT_STG_N3 ON XXFIN.XX_AP_SMB_INT_MKT_STG(RECORD_STATUS);
+

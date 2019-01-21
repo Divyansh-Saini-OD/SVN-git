@@ -1,0 +1,28 @@
+-- +==================================================================================+
+-- |                  Office Depot - Project Simplify                                 |
+-- |      Oracle NAIO/WIPRO/Office Depot/Consulting Organization                      |
+-- +==================================================================================+
+-- | Name  :  XXFIN_REMIT_ERRORSG.syn                                                 |
+-- |                                                                                  |
+-- | Description : Script to create synonym for custom table.                         |
+-- |               This script is to be executed from the APPS Schema.                |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |                                                                                  |
+-- |Version     Date         Author             Remarks                               |
+-- |=========   ==========   ==============     =======================================|
+-- |DRAFT 1.0   18-JAN-2007  Shivkumar Iyer     Synonym creation.                      |
+-- |V1.0        17-NOV-2007  Anitha Devarajulu  Drop statement and slash are removed   |
+-- +===================================================================================+
+
+-- Drop SYNONYM APPS.XXFIN_REMIT_ERRORS (if exists).
+
+--DROP SYNONYM APPS.XXFIN_REMIT_ERRORS;
+
+
+-- Creating Synonym APPS.XXFIN_REMIT_ERRORS.
+
+CREATE SYNONYM APPS.XXFIN_REMIT_ERRORS FOR XXFIN.XXFIN_REMIT_ERRORS;
+
+SHOW ERROR

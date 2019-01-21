@@ -1,0 +1,25 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | 		Name  :   XX_PO_RCV_TRANS_INT_STG.tbl                             |
+-- |                      Script to create the table for                      |
+-- |                      POM Receipts Staging table                          |
+-- | 	     RICE ID  :   I2194_WMS_Receipts_to_EBS_Interface                 |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     04-25-2017   Uday Jadhav          Initial version               |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE xx_po_rcv_trans_int_stg ADD( AP_RECEIPT_NUM VARCHAR2(30));
+		   
+	   
+SHOW ERROR;

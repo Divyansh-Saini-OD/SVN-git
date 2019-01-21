@@ -1,0 +1,51 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       PROVIDGE Consulting                                |
+-- +==========================================================================+
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- |                      INDEXES: XX_AP_SCR_HEADERS_U1                       |
+-- |                               XX_AP_SCR_LINES_N1                         |
+-- |                               XX_AP_SCR_LINES_N2                         |
+-- |                               XX_AP_SCR_LINES_N2                         |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   ================     ==============================|
+-- | V1.0     05-JUN-2007  Sarat Uppalapati     Initial version               |
+-- | V1.0     30-OCT-2207  Sarat Uppalapati     CR 282                        |
+-- | V1.0     01-NOV-2207  Sarat Uppalapati     Removed DROP Commands         |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+
+
+CREATE UNIQUE INDEX xxfin.XX_AP_SCR_HEADERS_U1 ON xxfin.XX_AP_SCR_HEADERS_ALL(BATCH_ID,VENDOR_SITE_ID);
+
+CREATE INDEX xxfin.XX_AP_SCR_LINES_N1 ON xxfin.XX_AP_SCR_LINES_ALL(HEADER_ID);
+
+CREATE INDEX xxfin.XX_AP_SCR_LINES_N2 ON xxfin.XX_AP_SCR_LINES_ALL(INVOICE_ID);
+
+CREATE UNIQUE INDEX xxfin.XX_AP_SCR_LINES_U1 ON xxfin.XX_AP_SCR_LINES_ALL(LINE_ID);
+
+-- Begin CR 282
+
+CREATE INDEX xxfin.xx_ap_scr_receiver_stg_N1 ON xxfin.xx_ap_scr_receiver_stg(global_vendor_id);
+
+CREATE INDEX xxfin.xx_ap_scr_receiver_stg_N2 ON xxfin.xx_ap_scr_receiver_stg(open_reciever_days);
+
+-- End CR 282
+
+SHOW ERROR
+
+
+
+

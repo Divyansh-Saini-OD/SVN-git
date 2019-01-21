@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-persistence xmlns="http://www.eclipse.org/eclipselink/xsds/persistence" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:eclipselink="http://www.eclipse.org/eclipselink/xsds/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="Eclipse Persistence Services - 2.1.2.v20101206-r8635">
+   <name>getEJMDataDBAdapter-OR</name>
+   <class-mapping-descriptors>
+      <class-mapping-descriptor xsi:type="object-relational-class-mapping-descriptor">
+         <class>getEJMDataDBAdapter.VwEbsPa</class>
+         <alias>dbo.vw_EBS_PA</alias>
+         <primary-key>
+            <field table="vw_EBS_PA" name="PANEx" xsi:type="column"/>
+         </primary-key>
+         <events/>
+         <querying>
+            <queries>
+               <query name="getEJMDataDBAdapterSelect" xsi:type="read-all-query">
+                  <reference-class>getEJMDataDBAdapter.VwEbsPa</reference-class>
+                  <container xsi:type="list-container-policy">
+                     <collection-type>java.util.Vector</collection-type>
+                  </container>
+               </query>
+            </queries>
+         </querying>
+         <attribute-mappings>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>pan</attribute-name>
+               <field table="vw_EBS_PA" name="PAN" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>ex</attribute-name>
+               <field table="vw_EBS_PA" name="Ex" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>panex</attribute-name>
+               <field table="vw_EBS_PA" name="PANEx" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>projectid</attribute-name>
+               <field table="vw_EBS_PA" name="ProjectID" xsi:type="column"/>
+               <attribute-classification>java.lang.Integer</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>projman</attribute-name>
+               <field table="vw_EBS_PA" name="ProjMan" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>template</attribute-name>
+               <field table="vw_EBS_PA" name="Template" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>projorg</attribute-name>
+               <field table="vw_EBS_PA" name="ProjOrg" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>projname</attribute-name>
+               <field table="vw_EBS_PA" name="ProjName" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>projlongname</attribute-name>
+               <field table="vw_EBS_PA" name="ProjLongName" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>projdescr</attribute-name>
+               <field table="vw_EBS_PA" name="ProjDescr" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>startdate</attribute-name>
+               <field table="vw_EBS_PA" name="StartDate" xsi:type="column"/>
+               <attribute-classification>java.sql.Timestamp</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>completiondate</attribute-name>
+               <field table="vw_EBS_PA" name="CompletionDate" xsi:type="column"/>
+               <attribute-classification>java.sql.Timestamp</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>countryid</attribute-name>
+               <field table="vw_EBS_PA" name="CountryID" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>expenses</attribute-name>
+               <field table="vw_EBS_PA" name="Expenses" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>capital</attribute-name>
+               <field table="vw_EBS_PA" name="Capital" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="one-to-many-mapping">
+               <attribute-name>vwEbsPaKeymembersCollection</attribute-name>
+               <properties>
+                  <property name="enabled">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <reference-class>getEJMDataDBAdapter.VwEbsPaKeymembers</reference-class>
+               <private-owned>true</private-owned>
+               <target-foreign-key>
+                  <field-reference>
+                     <source-field table="vw_EBS_PA_KeyMembers" name="PANEx" xsi:type="column"/>
+                     <target-field table="vw_EBS_PA" name="PANEx" xsi:type="column"/>
+                  </field-reference>
+               </target-foreign-key>
+               <batch-reading>true</batch-reading>
+               <container xsi:type="list-container-policy">
+                  <collection-type>org.eclipse.persistence.indirection.IndirectList</collection-type>
+               </container>
+               <indirection xsi:type="value-holder-indirection-policy"/>
+               <selection-query xsi:type="read-all-query">
+                  <reference-class>getEJMDataDBAdapter.VwEbsPaKeymembers</reference-class>
+                  <container xsi:type="list-container-policy">
+                     <collection-type>org.eclipse.persistence.indirection.IndirectList</collection-type>
+                  </container>
+               </selection-query>
+            </attribute-mapping>
+         </attribute-mappings>
+         <descriptor-type>independent</descriptor-type>
+         <caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+            <always-refresh>true</always-refresh>
+         </caching>
+         <remote-caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+         </remote-caching>
+         <instantiation/>
+         <copying xsi:type="instantiation-copy-policy"/>
+         <tables>
+            <table name="dbo.vw_EBS_PA"/>
+         </tables>
+         <structure>structureName</structure>
+      </class-mapping-descriptor>
+      <class-mapping-descriptor xsi:type="object-relational-class-mapping-descriptor">
+         <class>getEJMDataDBAdapter.VwEbsPaKeymembers</class>
+         <alias>dbo.vw_EBS_PA_KeyMembers</alias>
+         <primary-key>
+            <field table="vw_EBS_PA_KeyMembers" name="PANEx" xsi:type="column"/>
+         </primary-key>
+         <events/>
+         <querying/>
+         <attribute-mappings>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>panex</attribute-name>
+               <read-only>true</read-only>
+               <properties>
+                  <property name="fkPlaceholder">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <field table="vw_EBS_PA_KeyMembers" name="PANEx" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>projectid</attribute-name>
+               <field table="vw_EBS_PA_KeyMembers" name="ProjectID" xsi:type="column"/>
+               <attribute-classification>java.lang.Integer</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>role</attribute-name>
+               <field table="vw_EBS_PA_KeyMembers" name="Role" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>employeeid</attribute-name>
+               <field table="vw_EBS_PA_KeyMembers" name="EmployeeID" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+         </attribute-mappings>
+         <descriptor-type>independent</descriptor-type>
+         <caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+            <always-refresh>true</always-refresh>
+         </caching>
+         <remote-caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+         </remote-caching>
+         <instantiation/>
+         <copying xsi:type="instantiation-copy-policy"/>
+         <tables>
+            <table name="dbo.vw_EBS_PA_KeyMembers"/>
+         </tables>
+         <structure>structureName</structure>
+      </class-mapping-descriptor>
+   </class-mapping-descriptors>
+   <login xsi:type="database-login">
+      <platform-class>org.eclipse.persistence.platform.database.SQLServerPlatform</platform-class>
+      <user-name></user-name>
+      <connection-url></connection-url>
+   </login>
+</object-persistence>

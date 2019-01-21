@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel" version="12.2.1.12.24" id="PoInquiryPageDef"
+                Package="od.tdmatch.view.pageDefs">
+  <parameters/>
+  <executables>
+    <variableIterator id="variables"/>
+    <iterator Binds="PoInquirySearchVO" RangeSize="25" DataControl="ODTradeMatchReportsAMDataControl"
+              id="PoInquirySearchVO1Iterator"/>
+    <iterator Binds="PoInquiryMainVO" RangeSize="5" DataControl="ODTradeMatchReportsAMDataControl"
+              id="PoInquiryMainVO1Iterator"/>
+    <iterator Binds="PoInquiryDetailsVO" RangeSize="8" DataControl="ODTradeMatchReportsAMDataControl"
+              id="PoInquiryDetailsVO1Iterator" ChangeEventPolicy="ppr"/>
+    <iterator Binds="PoInquiryInvPopVO" RangeSize="25" DataControl="ODTradeMatchReportsAMDataControl"
+              id="PoInquiryInvPopVO1Iterator"/>
+    <iterator Binds="PoInquiryWrtoffPopVO" RangeSize="25" DataControl="ODTradeMatchReportsAMDataControl"
+              id="PoInquiryWrtoffPopVO1Iterator"/>
+    <iterator Binds="PoInquiryRecPopVO" RangeSize="25" DataControl="ODTradeMatchReportsAMDataControl"
+              id="PoInquiryRecPopVO1Iterator"/>
+  </executables>
+  <bindings>
+    <listOfValues IterBinding="PoInquirySearchVO1Iterator" StaticList="false" Uses="LOV_Suppliername"
+                  id="Suppliername"/>
+    <listOfValues IterBinding="PoInquirySearchVO1Iterator" StaticList="false" Uses="LOV_Suppliernum" id="Suppliernum"/>
+    <listOfValues IterBinding="PoInquirySearchVO1Iterator" StaticList="false" Uses="LOV_Suppliersiteno"
+                  id="Suppliersiteno"/>
+    <listOfValues IterBinding="PoInquirySearchVO1Iterator" StaticList="false" Uses="LOV_Sku" id="Sku"/>
+    <listOfValues IterBinding="PoInquirySearchVO1Iterator" StaticList="false" Uses="LOV_Ponum" id="Ponum"/>
+    <listOfValues IterBinding="PoInquirySearchVO1Iterator" StaticList="false" Uses="LOV_Polinenum" id="Polinenum"/>
+    <listOfValues IterBinding="PoInquirySearchVO1Iterator" StaticList="false" Uses="LOV_Location" id="Location"/>
+    <listOfValues IterBinding="PoInquirySearchVO1Iterator" StaticList="false" Uses="LOV_Status" id="Status"/>
+    <attributeValues IterBinding="PoInquirySearchVO1Iterator" id="Podatefrom">
+      <AttrNames>
+        <Item Value="Podatefrom"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="PoInquirySearchVO1Iterator" id="Podateto">
+      <AttrNames>
+        <Item Value="Podateto"/>
+      </AttrNames>
+    </attributeValues>
+    <tree IterBinding="PoInquiryMainVO1Iterator" id="PoInquiryMainVO1">
+      <nodeDefinition DefName="od.tdmatch.model.reports.vo.PoInquiryMainVO" Name="PoInquiryMainVO10">
+        <AttrNames>
+          <Item Value="PoNumber"/>
+          <Item Value="PoDate"/>
+          <Item Value="SupplierName"/>
+          <Item Value="SupplierSite"/>
+          <Item Value="PoAmount"/>
+          <Item Value="OrderQty"/>
+          <Item Value="ReceiptQty"/>
+          <Item Value="BalanceQty"/>
+          <Item Value="PoType"/>
+          <Item Value="PaymentTerm"/>
+          <Item Value="Status"/>
+          <Item Value="PoHeaderId"/>
+          <Item Value="LastReceipt"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <tree IterBinding="PoInquiryDetailsVO1Iterator" id="PoInquiryDetailsVO1">
+      <nodeDefinition DefName="od.tdmatch.model.reports.vo.PoInquiryDetailsVO" Name="PoInquiryDetailsVO10">
+        <AttrNames>
+          <Item Value="PoNumber"/>
+          <Item Value="LineNumber"/>
+          <Item Value="Sku"/>
+          <Item Value="SkuDescription"/>
+          <Item Value="Dept"/>
+          <Item Value="Uom"/>
+          <Item Value="Quantity"/>
+          <Item Value="UnitPrice"/>
+          <Item Value="LineAmount"/>
+          <Item Value="Vpc"/>
+          <Item Value="Location"/>
+          <Item Value="MatchLevel"/>
+          <Item Value="ReceivedQty"/>
+          <Item Value="InvoicedQty"/>
+          <Item Value="ReceiptNumber"/>
+          <Item Value="InvoiceNumber"/>
+          <Item Value="UnmatchedQty"/>
+          <Item Value="AccrualAmount"/>
+          <Item Value="WrittenoffAmount"/>
+          <Item Value="AccrualAccount"/>
+          <Item Value="VarianceAccount"/>
+          <Item Value="PoLineId"/>
+          <Item Value="PoHeaderId"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <listOfValues IterBinding="PoInquirySearchVO1Iterator" StaticList="false" Uses="LOV_Orgid" id="Orgid"/>
+    <attributeValues IterBinding="PoInquirySearchVO1Iterator" id="OrgIdValue">
+      <AttrNames>
+        <Item Value="OrgIdValue"/>
+      </AttrNames>
+    </attributeValues>
+    <methodAction id="getInvPopUp" RequiresUpdateModel="true" Action="invokeMethod" MethodName="getInvPopUp"
+                  IsViewObjectMethod="false" DataControl="ODTradeMatchReportsAMDataControl"
+                  InstanceName="bindings.getInvPopUp.dataControl.dataProvider"
+                  ReturnName="data.ODTradeMatchReportsAMDataControl.methodResults.getInvPopUp_getInvPopUp_dataControl_dataProvider_getInvPopUp_result">
+      <NamedData NDName="poHdrId" NDType="oracle.jbo.domain.Number"/>
+      <NamedData NDName="poLineId" NDType="oracle.jbo.domain.Number"/>
+    </methodAction>
+    <methodAction id="getRecPopUp" RequiresUpdateModel="true" Action="invokeMethod" MethodName="getRecPopUp"
+                  IsViewObjectMethod="false" DataControl="ODTradeMatchReportsAMDataControl"
+                  InstanceName="bindings.getRecPopUp.dataControl.dataProvider"
+                  ReturnName="data.ODTradeMatchReportsAMDataControl.methodResults.getRecPopUp_getRecPopUp_dataControl_dataProvider_getRecPopUp_result">
+      <NamedData NDName="poLineId" NDType="oracle.jbo.domain.Number"/>
+    </methodAction>
+    <methodAction id="getWriteoffPopUp" RequiresUpdateModel="true" Action="invokeMethod" MethodName="getWriteoffPopUp"
+                  IsViewObjectMethod="false" DataControl="ODTradeMatchReportsAMDataControl"
+                  InstanceName="bindings.getWriteoffPopUp.dataControl.dataProvider"
+                  ReturnName="data.ODTradeMatchReportsAMDataControl.methodResults.getWriteoffPopUp_getWriteoffPopUp_dataControl_dataProvider_getWriteoffPopUp_result">
+      <NamedData NDName="poHdrId" NDType="oracle.jbo.domain.Number"/>
+      <NamedData NDName="poLineId" NDType="oracle.jbo.domain.Number"/>
+    </methodAction>
+    <tree IterBinding="PoInquiryInvPopVO1Iterator" id="PoInquiryInvPopVO1">
+      <nodeDefinition DefName="od.tdmatch.model.reports.vo.PoInquiryInvPopVO" Name="PoInquiryInvPopVO10">
+        <AttrNames>
+          <Item Value="InvoiceNumber"/>
+          <Item Value="InvoiceQty"/>
+          <Item Value="InvoicePrice"/>
+          <Item Value="Status"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <tree IterBinding="PoInquiryWrtoffPopVO1Iterator" id="PoInquiryWrtoffPopVO1">
+      <nodeDefinition DefName="od.tdmatch.model.reports.vo.PoInquiryWrtoffPopVO" Name="PoInquiryWrtoffPopVO10">
+        <AttrNames>
+          <Item Value="ReasonCode"/>
+          <Item Value="WriteoffDate"/>
+          <Item Value="Amount"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <tree IterBinding="PoInquiryRecPopVO1Iterator" id="PoInquiryRecPopVO1">
+      <nodeDefinition DefName="od.tdmatch.model.reports.vo.PoInquiryRecPopVO" Name="PoInquiryRecPopVO10">
+        <AttrNames>
+          <Item Value="ReceiptNumber"/>
+          <Item Value="ReceiptDate"/>
+          <Item Value="Qty"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <methodAction id="clearPoDetails" RequiresUpdateModel="true" Action="invokeMethod" MethodName="clearPoDetails"
+                  IsViewObjectMethod="false" DataControl="ODTradeMatchReportsAMDataControl"
+                  InstanceName="bindings.clearPoDetails.dataControl.dataProvider"/>
+    <list IterBinding="PoInquirySearchVO1Iterator" StaticList="false" Uses="LOV_Status" id="Status1"
+          DTSupportsMRU="true" SelectItemValueMode="ListObject"/>
+    <methodAction id="searchPoInquiry" RequiresUpdateModel="true" Action="invokeMethod" MethodName="searchPoInquiry"
+                  IsViewObjectMethod="false" DataControl="ODTradeMatchReportsAMDataControl"
+                  InstanceName="bindings.searchPoInquiry.dataControl.dataProvider"
+                  ReturnName="data.ODTradeMatchReportsAMDataControl.methodResults.searchPoInquiry_searchPoInquiry_dataControl_dataProvider_searchPoInquiry_result">
+      <NamedData NDName="poNum" NDType="java.lang.String"/>
+      <NamedData NDName="orgId" NDType="int"/>
+      <NamedData NDName="poTypeMap" NDType="java.util.HashMap"/>
+    </methodAction>
+    <methodAction id="getPoLines" RequiresUpdateModel="true" Action="invokeMethod" MethodName="getPoLines"
+                  IsViewObjectMethod="false" DataControl="ODTradeMatchReportsAMDataControl"
+                  InstanceName="bindings.getPoLines.dataControl.dataProvider"
+                  ReturnName="data.ODTradeMatchReportsAMDataControl.methodResults.getPoLines_getPoLines_dataControl_dataProvider_getPoLines_result">
+      <NamedData NDName="poHdrId" NDType="oracle.jbo.domain.Number"/>
+      <NamedData NDName="poNum" NDType="java.lang.String"/>
+    </methodAction>
+  </bindings>
+</pageDefinition>

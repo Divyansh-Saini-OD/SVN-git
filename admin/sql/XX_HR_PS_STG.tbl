@@ -1,0 +1,81 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Table Script to create the following object                              |
+-- |             Table  : XX_HR_PS_STG                                        |
+-- |                      For I0097 HR Employees                              |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     2012-05-29   Joe Klein            Initial version               |
+-- | v1.1     2012-07-17   Paddy Sanjeevi	Removed not null for vendorid |
+-- +==========================================================================+
+CREATE TABLE XXFIN.XX_HR_PS_STG(
+ EMPLID              VARCHAR2 (33 Byte)  NOT NULL ENABLE
+,BADGE_NBR           VARCHAR2 (60 Byte)
+,FIRST_NAME          VARCHAR2 (90 Byte)  NOT NULL ENABLE
+,MIDDLE_NAME         VARCHAR2 (90 Byte)  NOT NULL ENABLE
+,LAST_NAME           VARCHAR2 (136 Byte)
+,SECOND_LAST_NAME    VARCHAR2 (90 Byte)  NOT NULL ENABLE
+,NAME_PREFIX         VARCHAR2 (12 Byte)  NOT NULL ENABLE
+,NAME_SUFFIX         VARCHAR2 (45 Byte)  NOT NULL ENABLE
+,OD_ADDEFFDT         DATE
+,SEX                 VARCHAR2 (3 Byte)   NOT NULL ENABLE
+,ADDRESS1            VARCHAR2 (165 Byte)
+,ADDRESS2            VARCHAR2 (165 Byte)
+,ADDRESS3            VARCHAR2 (408 Byte)
+,CITY                VARCHAR2 (90 Byte)
+,POSTAL              VARCHAR2 (36 Byte)
+,COUNTY              VARCHAR2 (90 Byte)
+,STATE               VARCHAR2 (18 Byte)
+,COUNTRY             VARCHAR2 (9 Byte)
+,PER_ORG             VARCHAR2 (9 Byte)   NOT NULL ENABLE
+,EMPL_STATUS         VARCHAR2 (3 Byte)   NOT NULL ENABLE
+,OD_JOBEFFDT         DATE                NOT NULL ENABLE
+,HIRE_DT             DATE
+,ACTION              VARCHAR2 (9 Byte)   NOT NULL ENABLE
+,SETID_JOBCODE       VARCHAR2 (15 Byte)  NOT NULL ENABLE
+,JOBCODE             VARCHAR2 (18 Byte)  NOT NULL ENABLE
+,BUSINESS_UNIT       VARCHAR2 (15 Byte)  NOT NULL ENABLE
+,SETID_LOCATION      VARCHAR2 (15 Byte)  NOT NULL ENABLE
+,LOCATION            VARCHAR2 (30 Byte)  NOT NULL ENABLE
+,COMPANY             VARCHAR2 (9 Byte)   NOT NULL ENABLE
+,SETID_DEPT          VARCHAR2 (15 Byte)  NOT NULL ENABLE
+,DEPTID              VARCHAR2 (30 Byte)  NOT NULL ENABLE
+,REG_REGION          VARCHAR2 (15 Byte)  NOT NULL ENABLE
+,LAST_DATE_WORKED    DATE
+,GRADE               VARCHAR2 (9 Byte)   NOT NULL ENABLE
+,SAL_ADMIN_PLAN      VARCHAR2 (12 Byte)  NOT NULL ENABLE
+,SUPERVISOR_ID       VARCHAR2 (33 Byte)  NOT NULL ENABLE
+,MANAGER_LEVEL       VARCHAR2 (6 Byte)   NOT NULL ENABLE
+,JOB_ENTRY_DT        DATE
+,JOB_FUNCTION        VARCHAR2 (9 Byte)   NOT NULL ENABLE
+,DESCR               VARCHAR2 (90 Byte)  NOT NULL ENABLE
+,EMAILID             VARCHAR2 (210 Byte)
+,VENDOR_ID           VARCHAR2 (30 Byte)  
+,OD_PHONE_BUSN       VARCHAR2 (72 Byte)
+,PREF_PHONE_BUSN_FG  VARCHAR2 (3 Byte)
+,OD_PHONE_FAX        VARCHAR2 (72 Byte)
+,PREF_PHONE_FAX_FG   VARCHAR2 (3 Byte)
+,OD_PHONE_FAXP       VARCHAR2 (72 Byte)
+,PREF_PHONE_FAXP_FG  VARCHAR2 (3 Byte)
+,OD_PHONE_MAIN       VARCHAR2 (72 Byte)
+,PREF_PHONE_MAIN_FG  VARCHAR2 (3 Byte)
+,OD_PHONE_MOBB       VARCHAR2 (72 Byte)
+,PREF_PHONE_MOBB_FG  VARCHAR2 (3 Byte)
+,OD_PHONE_MOBP       VARCHAR2 (72 Byte)
+,PREF_PHONE_MOBP_FG  VARCHAR2 (3 Byte)
+,OD_PHONE_PGR1       VARCHAR2 (72 Byte)
+,PREF_PHONE_PGR1_FG  VARCHAR2 (3 Byte)
+,CONSTRAINT XX_HR_PS_STG_PK PRIMARY KEY(EMPLID)
+);
+
+SHOW ERROR;

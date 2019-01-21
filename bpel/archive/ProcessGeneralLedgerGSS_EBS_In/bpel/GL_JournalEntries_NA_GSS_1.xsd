@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:nxsd="http://xmlns.oracle.com/pcbpel/nxsd"
+            targetNamespace="http://TargetNamespace.com/FileRead"
+            xmlns:tns="http://TargetNamespace.com/FileRead"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified" nxsd:encoding="ASCII" nxsd:stream="chars" nxsd:version="NXSD">
+  <xsd:element name="Root-Element">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="GL" minOccurs="1" maxOccurs="unbounded" nxsd:style="array" nxsd:cellSeparatedBy="${eol}">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="GLJESTATUS" type="xsd:string" nxsd:style="fixedLength" nxsd:length="3">
+              </xsd:element>
+              <xsd:element name="GLJECREATEDATE" type="xsd:dateTime" nxsd:dateFormat ="yyyy-MM-dd"  nxsd:style="fixedLength" nxsd:length="11">
+              </xsd:element>
+              <xsd:element name="GLJECREATEBY" type="xsd:string" nxsd:style="fixedLength" nxsd:length="1">
+              </xsd:element>
+              <xsd:element name="GLJEACTUALFLAG" type="xsd:string" nxsd:style="fixedLength" nxsd:length="1">
+              </xsd:element>
+              <xsd:element name="GLJESOURCE" type="xsd:string" nxsd:style="fixedLength" nxsd:length="25">
+              </xsd:element>
+              <xsd:element name="GLJECATEGORY" type="xsd:string" nxsd:style="fixedLength" nxsd:length="25">
+              </xsd:element>
+              <xsd:element name="GLJEREVERSEFLAG" type="xsd:string" nxsd:style="fixedLength" nxsd:length="3">
+              </xsd:element>
+              <xsd:element name="GLJEREVERSEPD" type="xsd:string" nxsd:style="fixedLength" nxsd:length="6">
+              </xsd:element>
+              <xsd:element name="GLJEREVERSEMTH" type="xsd:string" nxsd:style="fixedLength" nxsd:length="3">
+              </xsd:element>
+              <xsd:element name="GLJETRANSDATE" type="xsd:dateTime" nxsd:dateFormat ="yyyy-MM-dd" nxsd:style="fixedLength" nxsd:length="11">
+              </xsd:element>
+              <xsd:element name="GLJECURRENCY" type="xsd:string" nxsd:style="fixedLength" nxsd:length="5">
+              </xsd:element>
+              <xsd:element name="FILLER1" type="xsd:string" nxsd:style="fixedLength" nxsd:length="1">
+              </xsd:element>
+              <xsd:element name="GLJELINECOMPANY" type="xsd:string" nxsd:style="fixedLength" nxsd:length="5">
+              </xsd:element>
+              <xsd:element name="GLJELINECOSTCNTR" type="xsd:string" nxsd:style="fixedLength" nxsd:length="5">
+              </xsd:element>
+              <xsd:element name="GLJELINEACCOUNT" type="xsd:string" nxsd:style="fixedLength" nxsd:length="8">
+              </xsd:element>
+              <xsd:element name="GLJELINELOCATION" type="xsd:string" nxsd:style="fixedLength" nxsd:length="6">
+              </xsd:element>
+              <xsd:element name="GLJELINEINTERCO" type="xsd:string" nxsd:style="fixedLength" nxsd:length="5">
+              </xsd:element>
+              <xsd:element name="GLJELINELOB" type="xsd:string" nxsd:style="fixedLength" nxsd:length="2">
+              </xsd:element>
+              <xsd:element name="GLJELINEFUTURE" type="xsd:string" nxsd:style="fixedLength" nxsd:length="6">
+              </xsd:element>
+              <xsd:element name="FILLER2" type="xsd:string" nxsd:style="fixedLength" nxsd:length="1">
+              </xsd:element>
+              <xsd:element name="GLJELINEDEBIT" type="xsd:decimal" nxsd:style="fixedLength" nxsd:length="15">
+              </xsd:element>
+              <xsd:element name="GLJELINECREDIT" type="xsd:string" nxsd:style="fixedLength" nxsd:length="15">
+              </xsd:element>
+              <xsd:element name="FILLER3" type="xsd:string" nxsd:style="fixedLength" nxsd:length="1">
+              </xsd:element>
+              <xsd:element name="GLJELINEDESC" type="xsd:string" nxsd:style="fixedLength" nxsd:length="30">
+              </xsd:element>
+              <xsd:element name="GLBATCHNAME" type="xsd:string" nxsd:style="fixedLength" nxsd:length="30">
+              </xsd:element>
+              <xsd:element name="GLBATCHDESC" type="xsd:string" nxsd:style="fixedLength" nxsd:length="30">
+              </xsd:element>
+              <xsd:element name="GLJENAME" type="xsd:string" nxsd:style="fixedLength" nxsd:length="30">
+              </xsd:element>
+              <xsd:element name="GLJEDESC" type="xsd:string" nxsd:style="fixedLength" nxsd:length="30">
+              </xsd:element>
+              <xsd:element name="FILLER4" type="xsd:string" nxsd:style="fixedLength" nxsd:length="1">
+              </xsd:element>
+              <xsd:element name="GLJELINECD" type="xsd:string" nxsd:style="fixedLength" nxsd:length="20">
+              </xsd:element>
+              <xsd:element name="GLJETEMPLATE" type="xsd:string" nxsd:style="fixedLength" nxsd:length="10">
+              </xsd:element>
+              <xsd:element name="GLJESYSREFID" type="xsd:string" nxsd:style="fixedLength" nxsd:length="25">
+              </xsd:element>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>
+<!--NXSDWIZ:C:\Office Depot\GL\GL_JournalEntries_NA_GSS.txt:-->
+<!--USE-HEADER:false:-->

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:comm="http://xmlns.officedepot.com/VendorSynch/Common"
+            targetNamespace="http://xmlns.officedepot.com/VendorSynch/Common"
+            elementFormDefault="qualified">
+ <xsd:element name="counter" type="comm:simpleNumberType"/>
+ <xsd:complexType name="simpleNumberType">
+  <xsd:sequence>
+   <xsd:element name="value" type="xsd:integer"/>
+  </xsd:sequence>
+ </xsd:complexType>
+</xsd:schema>

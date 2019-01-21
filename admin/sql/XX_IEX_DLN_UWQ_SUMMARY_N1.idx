@@ -1,0 +1,26 @@
+-- +====================================================================================+
+-- |                  Office Depot - Project Simplify                                   |
+-- +====================================================================================+
+-- | SQL Script to create                                                               |
+-- |                                                                                    |
+-- |                      INDEXES: XX_IEX_DLN_UWQ_SUMMARY_N1                          |
+-- |                                                                                    |
+-- |                                                                                    |
+-- |                                                                                    |
+-- |Change Record:                                                                      |
+-- |===============                                                                     |
+-- |Version   Date         Author               Remarks                                 |
+-- |=======   ===========  ================     ========================================|
+-- |  1.0     05-MAR-2014  Arun gannarapu       Defect 28445 to fix the performance issue |
+-- +====================================================================================+
+
+DROP INDEX XXFIN.XX_IEX_DLN_UWQ_SUMMARY_N1;
+
+CREATE  INDEX XXFIN.XX_IEX_DLN_UWQ_SUMMARY_N1 ON IEX.IEX_DLN_UWQ_SUMMARY(RESOURCE_ID) 
+TABLESPACE APPS_TS_TX_IDX
+NOLOGGING 
+parallel 8;
+
+alter index XXFIN.XX_IEX_DLN_UWQ_SUMMARY_N1 noparallel;
+
+EXIT;

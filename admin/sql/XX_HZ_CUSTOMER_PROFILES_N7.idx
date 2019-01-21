@@ -1,0 +1,28 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                                                                          |
+-- +==========================================================================+
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- | INDEX: XX_HZ_CUSTOMER_PROFILES_N7                                        |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   ================     ==============================|
+-- | V1.0     11-DEC-2018  Capgemini            Initial version               |
+-- |                                                                          |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX XXFIN.XX_HZ_CUSTOMER_PROFILES_N7 ON AR.HZ_CUSTOMER_PROFILES(CUST_ACCOUNT_ID, ATTRIBUTE6, SITE_USE_ID);
+
+SHOW ERRORS;

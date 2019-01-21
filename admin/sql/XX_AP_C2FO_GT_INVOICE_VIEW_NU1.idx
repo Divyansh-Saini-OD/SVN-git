@@ -1,0 +1,19 @@
+-----------------------------------------------------------------------------------
+-- Program Name: XX_AP_C2FO_GT_INVOICE_VIEW_NU1.idx
+-- Purpose:      Creates index for xx_ap_c2fo_gt_invoice_view
+--
+-- REVISIONS:
+-- Version Date        Author                               Description
+-- ------- ----------- ------------------------------------ ---------------------
+-- 1.0     07-SEP-2018 Antonio Morales                      Created base version.
+-- 
+------------------------------------------------------------------------------------
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX xx_ap_c2fo_gt_invoice_view_nu1 ON xxfin.xx_ap_c2fo_gt_invoice_view (company_id);
+
+SHOW ERROR

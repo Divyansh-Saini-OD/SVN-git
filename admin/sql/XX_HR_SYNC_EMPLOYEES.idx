@@ -1,0 +1,23 @@
+---+========================================================================================================+        
+---|                                        Office Depot - Project Simplify                                 |
+---+========================================================================================================+
+---|    Application             :       HR                                                                  |
+---|                                                                                                        |
+---|    Name                    :       XX_HR_SYNC_EMPLOYEES.idx                                            |
+---|                                                                                                        |
+---|    Description             :       This script creates the indexes on the table XX_HR_SYNC_EMPLOYEES   |
+---|                                                                                                        |
+---|                                                                                                        |
+---|                                                                                                        |
+---|    Change Record                                                                                       |
+---|    ---------------------------------                                                                   |
+---|    Version         DATE              AUTHOR            DESCRIPTION                                     |
+---|    ------------    ----------------- ---------------   ---------------------                           |
+---|    1.0             02-OCT-2007       Bushrod Thomas    Initial Version                                 |
+---|                                                                                                        |
+---+========================================================================================================+        
+
+  CREATE INDEX "XXFIN"."XX_HR_SYNC_EMPLOYEES_I1" ON "XXFIN"."XX_HR_SYNC_EMPLOYEES" ("PROCESS_STATUS", "OD_TRANS_DT") ;
+
+
+  CREATE INDEX "XXFIN"."XX_HR_SYNC_EMPLOYEES_I2" ON "XXFIN"."XX_HR_SYNC_EMPLOYEES" ("EMPLID", "PROCESS_STATUS", "PROCESS_DATE") ;

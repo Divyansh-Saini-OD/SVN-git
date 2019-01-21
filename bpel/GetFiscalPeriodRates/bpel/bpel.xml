@@ -1,0 +1,14 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="GetFiscalPeriodRates" src="GetFiscalPeriodRates.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="client">
+            <property name="wsdlLocation">GetFiscalPeriodRates.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="GetFiscalPeriodRate_Teradata">
+            <property name="wsdlLocation">GetFiscalPeriodRate_Teradata.wsdl</property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+   </BPELProcess>
+</BPELSuitcase>

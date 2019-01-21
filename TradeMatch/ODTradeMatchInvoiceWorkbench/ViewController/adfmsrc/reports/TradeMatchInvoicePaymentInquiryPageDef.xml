@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel" version="12.2.1.12.24"
+                id="TradeMatchInvoicePaymentInquiryPageDef" Package="reports">
+  <parameters/>
+  <executables>
+    <variableIterator id="variables"/>
+    <iterator Binds="XxApInvoicePaymentInquirySearchVO" RangeSize="25" DataControl="ODTradeMatchReportsAMDataControl"
+              id="XxApInvoicePaymentInquirySearchVOIterator"/>
+    <iterator Binds="XxApInvoicePaymentInquiryHeaderVO" RangeSize="10" DataControl="ODTradeMatchReportsAMDataControl"
+              id="XxApInvoicePaymentInquiryHeaderVOIterator"/>
+    <iterator Binds="XxApInvoicePaymentInquiryHDummyVO" RangeSize="10" DataControl="ODTradeMatchReportsAMDataControl"
+              id="XxApInvoicePaymentInquiryHDummyVOIterator"/>
+    <iterator Binds="XxApInvoicePaymentInquiryItemVO" RangeSize="10" DataControl="ODTradeMatchReportsAMDataControl"
+              id="XxApInvoicePaymentInquiryItemVOIterator"/>
+  </executables>
+  <bindings>
+    <listOfValues IterBinding="XxApInvoicePaymentInquirySearchVOIterator" StaticList="false" Uses="LOV_SupplierName"
+                  id="SupplierName"/>
+    <listOfValues IterBinding="XxApInvoicePaymentInquirySearchVOIterator" StaticList="false" Uses="LOV_SupplierNum"
+                  id="SupplierNum"/>
+    <listOfValues IterBinding="XxApInvoicePaymentInquirySearchVOIterator" StaticList="false" Uses="LOV_SupplierSiteNum"
+                  id="SupplierSiteNum"/>
+    <listOfValues IterBinding="XxApInvoicePaymentInquirySearchVOIterator" StaticList="false" Uses="LOV_VendorAssistant"
+                  id="VendorAssistant"/>
+    <listOfValues IterBinding="XxApInvoicePaymentInquirySearchVOIterator" StaticList="false" Uses="LOV_PoNum"
+                  id="PoNum"/>
+    <attributeValues IterBinding="XxApInvoicePaymentInquirySearchVOIterator" id="PoDateRangeFrom">
+      <AttrNames>
+        <Item Value="PoDateRangeFrom"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApInvoicePaymentInquirySearchVOIterator" id="InvoiceSource">
+      <AttrNames>
+        <Item Value="InvoiceSource"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApInvoicePaymentInquirySearchVOIterator" id="InvoiceType">
+      <AttrNames>
+        <Item Value="InvoiceType"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApInvoicePaymentInquirySearchVOIterator" id="InvoiceNum">
+      <AttrNames>
+        <Item Value="InvoiceNum"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApInvoicePaymentInquirySearchVOIterator" id="InvoiceDateRangeFrom">
+      <AttrNames>
+        <Item Value="InvoiceDateRangeFrom"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApInvoicePaymentInquirySearchVOIterator" id="GlDateRangeFrom">
+      <AttrNames>
+        <Item Value="GlDateRangeFrom"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApInvoicePaymentInquirySearchVOIterator" id="GlDateRangeTo">
+      <AttrNames>
+        <Item Value="GlDateRangeTo"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApInvoicePaymentInquirySearchVOIterator" id="PaymentStatus">
+      <AttrNames>
+        <Item Value="PaymentStatus"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApInvoicePaymentInquirySearchVOIterator" id="PaymentNum">
+      <AttrNames>
+        <Item Value="PaymentNum"/>
+      </AttrNames>
+    </attributeValues>
+    <list IterBinding="XxApInvoicePaymentInquirySearchVOIterator" StaticList="false" Uses="LOV_InvoiceValidated"
+          id="InvoiceValidated" DTSupportsMRU="false" SelectItemValueMode="ListObject"/>
+    <tree IterBinding="XxApInvoicePaymentInquiryHeaderVOIterator" id="XxApInvoicePaymentInquiryHeaderVO">
+      <nodeDefinition DefName="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquiryHeaderVO"
+                      Name="XxApInvoicePaymentInquiryHeaderVO0">
+        <AttrNames>
+          <Item Value="VendorAssistant"/>
+          <Item Value="SupNum"/>
+          <Item Value="SupName"/>
+          <Item Value="SupSite"/>
+          <Item Value="InvoiceNum"/>
+          <Item Value="InvoiceDate"/>
+          <Item Value="InvoiceAmount"/>
+          <Item Value="FreightAmount"/>
+          <Item Value="TaxAmount"/>
+          <Item Value="PoNum"/>
+          <Item Value="PaymentTerm"/>
+          <Item Value="TermsDate"/>
+          <Item Value="DueDate"/>
+          <Item Value="GlDate"/>
+          <Item Value="InvCurCode"/>
+          <Item Value="PaymentMethod"/>
+          <Item Value="PayGroup"/>
+          <Item Value="InvSource"/>
+          <Item Value="PoType"/>
+          <Item Value="InvoiceStatus"/>
+          <Item Value="PaymentNumb"/>
+          <Item Value="PaymentDate"/>
+          <Item Value="AmountPaid"/>
+          <Item Value="PaymentStatus"/>
+          <Item Value="InvoiceId"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <tree IterBinding="XxApInvoicePaymentInquiryHDummyVOIterator" id="XxApInvoicePaymentInquiryHDummyVO">
+      <nodeDefinition DefName="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquiryHDummyVO"
+                      Name="XxApInvoicePaymentInquiryHDummyVO0">
+        <AttrNames>
+          <Item Value="Vendorasistant"/>
+          <Item Value="SupNum"/>
+          <Item Value="SupName"/>
+          <Item Value="SupSite"/>
+          <Item Value="InvoiceNum"/>
+          <Item Value="InvoiceDate"/>
+          <Item Value="InvoiceAmount"/>
+          <Item Value="FreightAmount"/>
+          <Item Value="TaxAmount"/>
+          <Item Value="PoNum"/>
+          <Item Value="PaymentTerm"/>
+          <Item Value="TermsDate"/>
+          <Item Value="DueDate"/>
+          <Item Value="GlDate"/>
+          <Item Value="InvCurCode"/>
+          <Item Value="PaymentMethod"/>
+          <Item Value="PayGroup"/>
+          <Item Value="InvSource"/>
+          <Item Value="PoType"/>
+          <Item Value="InvoiceStatus"/>
+          <Item Value="PaymentNumb"/>
+          <Item Value="PaymentDate"/>
+          <Item Value="AmountPaid"/>
+          <Item Value="PaymentStatus"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <tree IterBinding="XxApInvoicePaymentInquiryItemVOIterator" id="XxApInvoicePaymentInquiryItemVO">
+      <nodeDefinition DefName="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquiryItemVO"
+                      Name="XxApInvoicePaymentInquiryItemVO0">
+        <AttrNames>
+          <Item Value="LineNumber"/>
+          <Item Value="LineType"/>
+          <Item Value="PoNumber"/>
+          <Item Value="PoLineNum"/>
+          <Item Value="InvoiceLineAmount"/>
+          <Item Value="Description"/>
+          <Item Value="Sku"/>
+          <Item Value="SkuDescription"/>
+          <Item Value="Uom"/>
+          <Item Value="PoQuantity"/>
+          <Item Value="ReceivedQuantity"/>
+          <Item Value="InvoicedQuantity"/>
+          <Item Value="PoPrice"/>
+          <Item Value="InvoicePrice"/>
+          <Item Value="HoldsPlaced"/>
+          <Item Value="HoldDate"/>
+          <Item Value="HoldReleasedBy"/>
+          <Item Value="HoldReleaseDate"/>
+          <Item Value="HoldReleaseReason"/>
+          <Item Value="ChargeAccReasonCode"/>
+          <Item Value="ChargeAccount"/>
+          <Item Value="ChargeBackLine"/>
+          <Item Value="AnswerCode"/>
+          <Item Value="OrigInvLineNum"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <attributeValues IterBinding="XxApInvoicePaymentInquirySearchVOIterator" id="InvoiceDateRangeTo">
+      <AttrNames>
+        <Item Value="InvoiceDateRangeTo"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApInvoicePaymentInquirySearchVOIterator" id="PoDateRangeTo">
+      <AttrNames>
+        <Item Value="PoDateRangeTo"/>
+      </AttrNames>
+    </attributeValues>
+    <list IterBinding="XxApInvoicePaymentInquirySearchVOIterator" StaticList="false" Uses="LOV_OrgName" id="OrgName"
+          DTSupportsMRU="true" SelectItemValueMode="ListObject"/>
+    <methodAction id="searchInvoicePaymentInq" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="searchInvoicePaymentInq" IsViewObjectMethod="false" DataControl="ODTradeMatchReportsAMDataControl"
+                  InstanceName="bindings.searchInvoicePaymentInq.dataControl.dataProvider"
+                  ReturnName="data.ODTradeMatchReportsAMDataControl.methodResults.searchInvoicePaymentInq_searchInvoicePaymentInq_dataControl_dataProvider_searchInvoicePaymentInq_result">
+      <NamedData NDName="trMaInvoicePaymentMap" NDType="java.util.HashMap"/>
+    </methodAction>
+    <methodAction id="searchInvoicePaymentInqItem" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="searchInvoicePaymentInqItem" IsViewObjectMethod="false"
+                  DataControl="ODTradeMatchReportsAMDataControl"
+                  InstanceName="bindings.searchInvoicePaymentInqItem.dataControl.dataProvider"
+                  ReturnName="data.ODTradeMatchReportsAMDataControl.methodResults.searchInvoicePaymentInqItem_searchInvoicePaymentInqItem_dataControl_dataProvider_searchInvoicePaymentInqItem_result">
+      <NamedData NDName="trMaInvoicePaymentMap" NDType="java.util.HashMap"/>
+    </methodAction>
+    <listOfValues IterBinding="XxApInvoicePaymentInquirySearchVOIterator" StaticList="false" Uses="LOV_InvoiceSource"
+                  id="InvoiceSource1"/>
+    <listOfValues IterBinding="XxApInvoicePaymentInquirySearchVOIterator" StaticList="false" Uses="LOV_InvoiceType"
+                  id="InvoiceType1"/>
+    <list IterBinding="XxApInvoicePaymentInquirySearchVOIterator" StaticList="false" Uses="LOV_PaymentStatus"
+          id="PaymentStatus1" DTSupportsMRU="true" SelectItemValueMode="ListObject"/>
+    <listOfValues IterBinding="XxApInvoicePaymentInquirySearchVOIterator" StaticList="false" Uses="LOV_PaymentNum"
+                  id="PaymentNum1"/>
+    <attributeValues IterBinding="XxApInvoicePaymentInquirySearchVOIterator" id="OrgId">
+      <AttrNames>
+        <Item Value="OrgId"/>
+      </AttrNames>
+    </attributeValues>
+  </bindings>
+</pageDefinition>

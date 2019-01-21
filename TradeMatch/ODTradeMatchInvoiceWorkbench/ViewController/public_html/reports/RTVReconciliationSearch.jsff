@@ -1,0 +1,413 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1" xmlns:af="http://xmlns.oracle.com/adf/faces/rich"
+          xmlns:f="http://java.sun.com/jsf/core">
+    <af:panelGroupLayout id="pgl16" layout="horizontal">
+        <af:spacer width="15" height="10" id="s5"/>
+        <af:panelGroupLayout id="pgl1" layout="vertical">
+            <af:spacer width="10" height="10" id="s3"/>
+            <af:panelGroupLayout id="pgl24" layout="horizontal">
+                <af:outputFormatted value="Office Depot - AP Trade - RTV Reconcilation  : " id="of1"
+                                    inlineStyle="font-size:large;"/>
+                <af:outputFormatted value="#{MyDate}" id="of2" inlineStyle="font-size:large;">
+                    <af:convertDateTime pattern="MM/dd/YYYY"/>
+                </af:outputFormatted>
+            </af:panelGroupLayout>
+            <af:spacer width="10" height="10" id="s4"/>
+            <af:panelGroupLayout id="pgl23" layout="vertical">
+                <af:panelGroupLayout id="pgl2" layout="horizontal">
+                    <af:spacer width="20" height="10" id="s1"/>
+                    <af:panelGroupLayout id="pgl4" layout="vertical"
+                                         binding="#{pageFlowScope.TrMaRTVReconciliationSearchBean.searchAreaBind}">
+                        <af:panelLabelAndMessage label="#{bindings.InvoiceDateRangeFrom.hints.label}" id="plam3">
+                            <af:spacer width="60" height="10" id="s9"/>
+                            <af:inputDate value="#{bindings.InvoiceDateRangeFrom.inputValue}"
+                                          label="#{bindings.InvoiceDateRangeFrom.hints.label}"
+                                          required="#{bindings.InvoiceDateRangeFrom.hints.mandatory}"
+                                          columns="#{bindings.InvoiceDateRangeFrom.hints.displayWidth}" simple="true"
+                                          shortDesc="#{bindings.InvoiceDateRangeFrom.hints.tooltip}" id="id3"
+                                          binding="#{pageFlowScope.TrMaRTVReconciliationSearchBean.invDateRageFromBind}">
+                                <f:validator binding="#{bindings.InvoiceDateRangeFrom.validator}"/>
+                                <af:convertDateTime pattern="#{bindings.InvoiceDateRangeFrom.format}"/>
+                            </af:inputDate>
+                            <f:facet name="end">
+                                <af:inputDate value="#{bindings.InvoiceDateRangeTo.inputValue}" simple="true"
+                                              label="#{bindings.InvoiceDateRangeTo.hints.label}"
+                                              required="#{bindings.InvoiceDateRangeTo.hints.mandatory}"
+                                              columns="#{bindings.InvoiceDateRangeTo.hints.displayWidth}"
+                                              shortDesc="#{bindings.InvoiceDateRangeTo.hints.tooltip}" id="id4"
+                                              binding="#{pageFlowScope.TrMaRTVReconciliationSearchBean.invDateRangeToBind}">
+                                    <f:validator binding="#{bindings.InvoiceDateRangeTo.validator}"/>
+                                    <af:convertDateTime pattern="#{bindings.InvoiceDateRangeTo.format}"/>
+                                </af:inputDate>
+                            </f:facet>
+                        </af:panelLabelAndMessage>
+                        <af:spacer width="10" height="10" id="s2"/>
+                        <af:panelLabelAndMessage label="#{bindings.PeriodRangeFrom.hints.label}" id="plam2">
+                            <af:spacer width="94" height="10" id="s10"/>
+                            <f:facet name="end">
+                                <af:inputListOfValues id="periodRangeToId"
+                                                      popupTitle="Search and Select: #{bindings.PeriodRangeTo.hints.label}"
+                                                      value="#{bindings.PeriodRangeTo.inputValue}"
+                                                      label="#{bindings.PeriodRangeTo.hints.label}"
+                                                      model="#{bindings.PeriodRangeTo.listOfValuesModel}"
+                                                      required="#{bindings.PeriodRangeTo.hints.mandatory}"
+                                                      columns="#{bindings.PeriodRangeTo.hints.displayWidth}"
+                                                      contentStyle="text-transform:uppercase;"
+                                                      shortDesc="#{bindings.PeriodRangeTo.hints.tooltip}" simple="true"
+                                                      binding="#{pageFlowScope.TrMaRTVReconciliationSearchBean.perRangToBind}"/>
+                            </f:facet>
+                            <af:inputListOfValues id="periodRangeFromId"
+                                                  popupTitle="Search and Select: #{bindings.PeriodRangeFrom.hints.label}"
+                                                  value="#{bindings.PeriodRangeFrom.inputValue}"
+                                                  label="#{bindings.PeriodRangeFrom.hints.label}"
+                                                  model="#{bindings.PeriodRangeFrom.listOfValuesModel}"
+                                                  required="#{bindings.PeriodRangeFrom.hints.mandatory}"
+                                                  columns="#{bindings.PeriodRangeFrom.hints.displayWidth}"
+                                                  shortDesc="#{bindings.PeriodRangeFrom.hints.tooltip}" simple="true"
+                                                  contentStyle="text-transform:uppercase;"
+                                                  binding="#{pageFlowScope.TrMaRTVReconciliationSearchBean.perRangFromBind}"/>
+                        </af:panelLabelAndMessage>
+                    </af:panelGroupLayout>
+                    <af:spacer width="10" height="3" id="s13"/>
+                </af:panelGroupLayout>
+                <af:spacer width="10" height="3" id="s14"/>
+            </af:panelGroupLayout>
+            <af:panelGroupLayout id="pgl3" styleClass="AFStretchWidth" halign="center" layout="horizontal"
+                                 valign="middle">
+                <af:spacer width="150" height="10" id="s6"/>
+                <af:toolbar id="t1">
+                    <af:button text="Go" id="b1"
+                               action="#{pageFlowScope.TrMaRTVReconciliationSearchBean.rtvReconSearch}"/>
+                    <af:spacer width="15" height="10" id="s7"/>
+                    <af:button text="Clear" id="b2"
+                               action="#{pageFlowScope.TrMaRTVReconciliationSearchBean.clearSearch}" immediate="true"/>
+                </af:toolbar>
+                <af:spacer width="150" height="10" id="s8"/>
+            </af:panelGroupLayout>
+            <af:outputFormatted value="OU_CA" id="of3" inlineStyle="font-weight:bold;"/>
+            <af:panelCollection id="pc2" styleClass="AFStretchWidth"
+                                binding="#{pageFlowScope.TrMaRTVReconciliationSearchBean.caPanelGrpBind}">
+                <f:facet name="menus">
+                    <af:menu text="File" id="m3">
+                        <af:commandMenuItem text="Export to Excel" id="cdm0i1">
+                            <af:exportCollectionActionListener type="excelHTML" exportedId="t3"
+                                                               filename="RTVReconcilationCA.xls"
+                                                               title="CA RTV Reconcilation "/>
+                        </af:commandMenuItem>
+                    </af:menu>
+                </f:facet>
+                <f:facet name="toolbar"/>
+                <f:facet name="statusbar"/>
+                <af:table value="#{bindings.XxApRTVReconCAVO.collectionModel}" var="row"
+                          rows="#{bindings.XxApRTVReconCAVO.rangeSize}"
+                          emptyText="#{bindings.XxApRTVReconCAVO.viewable ? 'No data to display.' : 'Access Denied.'}"
+                          rowBandingInterval="0" fetchSize="#{bindings.XxApRTVReconCAVO.rangeSize}" id="t3">
+                    <af:column sortProperty="#{bindings.XxApRTVReconCAVO.hints.System.name}" sortable="true"
+                               headerText="#{bindings.XxApRTVReconCAVO.hints.System.label}" id="c6" width="140">
+                        <af:outputText value="#{row.System}"
+                                       shortDesc="#{bindings.XxApRTVReconCAVO.hints.System.tooltip}" id="ot6"/>
+                        <f:facet name="footer">
+                            <af:outputText value="DIFFERENCE" id="ot17"/>
+                        </f:facet>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApRTVReconCAVO.hints.Regular.name}" sortable="true"
+                               headerText="#{bindings.XxApRTVReconCAVO.hints.Regular.label}" id="c7" width="120"
+                               align="right">
+                        <af:panelGroupLayout id="pgl6" layout="horizontal" halign="right">
+                            <af:outputText value="#{row.Regular}"
+                                           shortDesc="#{bindings.XxApRTVReconCAVO.hints.Regular.tooltip}" id="ot7">
+                                <af:convertNumber groupingUsed="false"
+                                                  pattern="#{bindings.XxApRTVReconCAVO.hints.Regular.format}"/>
+                            </af:outputText>
+                        </af:panelGroupLayout>
+                        <f:facet name="footer">
+                            <af:panelGroupLayout id="pgl5" halign="end" layout="horizontal">
+                                <af:outputText id="ot19"
+                                               binding="#{pageFlowScope.TrMaRTVReconciliationSearchBean.caRegValuBind}">
+                                    <af:convertNumber pattern="#,###.00"/>
+                                </af:outputText>
+                            </af:panelGroupLayout>
+                        </f:facet>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApRTVReconCAVO.hints.Opt73Weekly.name}" sortable="true"
+                               headerText="#{bindings.XxApRTVReconCAVO.hints.Opt73Weekly.label}" id="c8" width="140"
+                               align="right">
+                        <af:panelGroupLayout id="pgl7" halign="right">
+                            <af:outputText value="#{row.Opt73Weekly}"
+                                           shortDesc="#{bindings.XxApRTVReconCAVO.hints.Opt73Weekly.tooltip}" id="ot8">
+                                <af:convertNumber groupingUsed="false"
+                                                  pattern="#{bindings.XxApRTVReconCAVO.hints.Opt73Weekly.format}"/>
+                            </af:outputText>
+                        </af:panelGroupLayout>
+                        <f:facet name="footer">
+                            <af:panelGroupLayout id="pgl8" layout="horizontal" halign="end">
+                                <af:outputText id="ot20"
+                                               binding="#{pageFlowScope.TrMaRTVReconciliationSearchBean.caOptWeekBind}">
+                                    <af:convertNumber pattern="#,###.00"/>
+                                </af:outputText>
+                            </af:panelGroupLayout>
+                        </f:facet>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApRTVReconCAVO.hints.Opt73Monthly.name}" sortable="true"
+                               headerText="#{bindings.XxApRTVReconCAVO.hints.Opt73Monthly.label}" id="c9" width="140"
+                               align="right">
+                        <af:panelGroupLayout id="pgl9" halign="right">
+                            <af:outputText value="#{row.Opt73Monthly}"
+                                           shortDesc="#{bindings.XxApRTVReconCAVO.hints.Opt73Monthly.tooltip}" id="ot9">
+                                <af:convertNumber groupingUsed="false"
+                                                  pattern="#{bindings.XxApRTVReconCAVO.hints.Opt73Monthly.format}"/>
+                            </af:outputText>
+                        </af:panelGroupLayout>
+                        <f:facet name="footer">
+                            <af:panelGroupLayout id="pgl11" halign="end" layout="horizontal">
+                                <af:outputText id="ot21"
+                                               binding="#{pageFlowScope.TrMaRTVReconciliationSearchBean.caOtpMonBind}">
+                                    <af:convertNumber pattern="#,###.00"/>
+                                </af:outputText>
+                            </af:panelGroupLayout>
+                        </f:facet>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApRTVReconCAVO.hints.Opt73Qtrly.name}" sortable="true"
+                               headerText="#{bindings.XxApRTVReconCAVO.hints.Opt73Qtrly.label}" id="c10" align="right">
+                        <af:panelGroupLayout id="pgl10" halign="right">
+                            <af:outputText value="#{row.Opt73Qtrly}"
+                                           shortDesc="#{bindings.XxApRTVReconCAVO.hints.Opt73Qtrly.tooltip}" id="ot10">
+                                <af:convertNumber groupingUsed="false"
+                                                  pattern="#{bindings.XxApRTVReconCAVO.hints.Opt73Qtrly.format}"/>
+                            </af:outputText>
+                        </af:panelGroupLayout>
+                        <f:facet name="footer">
+                            <af:panelGroupLayout id="pgl12" halign="end" layout="horizontal">
+                                <af:outputText id="ot22"
+                                               binding="#{pageFlowScope.TrMaRTVReconciliationSearchBean.caOptOtrlBind}">
+                                    <af:convertNumber pattern="#,###.00"/>
+                                </af:outputText>
+                            </af:panelGroupLayout>
+                        </f:facet>
+                    </af:column>
+                    <af:column headerText="#{bindings.XxApRTVReconCAVO.hints.Total.label}" id="c16" align="right">
+                        <af:panelGroupLayout id="pgl13" halign="right">
+                            <af:outputText value="#{row.Total}"
+                                           shortDesc="#{bindings.XxApRTVReconCAVO.hints.Total.tooltip}" id="ot31">
+                                <af:convertNumber groupingUsed="false"
+                                                  pattern="#{bindings.XxApRTVReconCAVO.hints.Total.format}"/>
+                            </af:outputText>
+                        </af:panelGroupLayout>
+                        <f:facet name="footer">
+                            <af:panelGroupLayout id="pgl14" halign="right" layout="horizontal">
+                                <af:outputText id="ot32"
+                                               binding="#{pageFlowScope.TrMaRTVReconciliationSearchBean.caTotalValBind}">
+                                    <af:convertNumber pattern="#,###.00"/>
+                                </af:outputText>
+                            </af:panelGroupLayout>
+                        </f:facet>
+                    </af:column>
+                </af:table>
+            </af:panelCollection>
+            <af:outputFormatted value="OU_US" id="of43" inlineStyle="font-weight:bold;"/>
+            <af:panelCollection id="pc3" styleClass="AFStretchWidth"
+                                binding="#{pageFlowScope.TrMaRTVReconciliationSearchBean.usPanelGrpBind}">
+                <f:facet name="menus">
+                    <af:menu text="File" id="m1" inlineStyle="color:#ff4242; font-size:small;">
+                        <af:commandMenuItem text="Export to Excel" id="cdmdi1">
+                            <af:exportCollectionActionListener type="excelHTML" exportedId="t2"
+                                                               filename="RTVReconcilationUS.xls"
+                                                               title="US RTV Reconcilation "/>
+                        </af:commandMenuItem>
+                    </af:menu>
+                </f:facet>
+                <f:facet name="toolbar">
+                    <af:toolbar id="t6"/>
+                </f:facet>
+                <f:facet name="statusbar"/>
+                <af:table value="#{bindings.XxApRTVReconUSVO.collectionModel}" var="row"
+                          rows="#{bindings.XxApRTVReconUSVO.rangeSize}"
+                          emptyText="#{bindings.XxApRTVReconUSVO.viewable ? 'No data to display.' : 'Access Denied.'}"
+                          rowBandingInterval="0" fetchSize="#{bindings.XxApRTVReconUSVO.rangeSize}"
+                          filterModel="#{bindings.XxApRTVReconUSVOQuery.queryDescriptor}"
+                          queryListener="#{bindings.XxApRTVReconUSVOQuery.processQuery}" varStatus="vs" id="t2">
+                    <af:column sortProperty="#{bindings.XxApRTVReconUSVO.hints.System.name}" filterable="true"
+                               sortable="true" headerText="" id="c1" width="140">
+                        <af:outputText value="#{row.System}"
+                                       shortDesc="#{bindings.XxApRTVReconUSVO.hints.System.tooltip}" id="ot1"/>
+                        <f:facet name="footer">
+                            <af:outputText value="DIFFERENCE" id="ot16"/>
+                        </f:facet>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApRTVReconUSVO.hints.Regular.name}" filterable="true"
+                               sortable="true" headerText="" id="c2" width="120" align="right">
+                        <af:outputText value="#{row.Regular}"
+                                       shortDesc="#{bindings.XxApRTVReconUSVO.hints.Regular.tooltip}" id="ot2">
+                            <af:convertNumber groupingUsed="false"
+                                              pattern="#{bindings.XxApRTVReconUSVO.hints.Regular.format}"/>
+                        </af:outputText>
+                        <f:facet name="footer">
+                            <af:outputText id="ot23"
+                                           binding="#{pageFlowScope.TrMaRTVReconciliationSearchBean.usRegValBind}">
+                                <af:convertNumber pattern="#,###.00"/>
+                            </af:outputText>
+                        </f:facet>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApRTVReconUSVO.hints.Opt73Weekly.name}" filterable="true"
+                               sortable="true" headerText="" id="c3" width="140" align="right">
+                        <af:outputText value="#{row.Opt73Weekly}"
+                                       shortDesc="#{bindings.XxApRTVReconUSVO.hints.Opt73Weekly.tooltip}" id="ot3">
+                            <af:convertNumber groupingUsed="false" pattern="#,###.00"/>
+                        </af:outputText>
+                        <f:facet name="footer">
+                            <af:outputText id="ot24"
+                                           binding="#{pageFlowScope.TrMaRTVReconciliationSearchBean.usOptWeekBind}">
+                                <af:convertNumber pattern="#,###.00"/>
+                            </af:outputText>
+                        </f:facet>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApRTVReconUSVO.hints.Opt73Monthly.name}" filterable="true"
+                               sortable="true" headerText="" id="c4" width="140" align="right">
+                        <af:outputText value="#{row.Opt73Monthly}"
+                                       shortDesc="#{bindings.XxApRTVReconUSVO.hints.Opt73Monthly.tooltip}" id="ot4">
+                            <af:convertNumber groupingUsed="false"
+                                              pattern="#{bindings.XxApRTVReconUSVO.hints.Opt73Monthly.format}"/>
+                        </af:outputText>
+                        <f:facet name="footer">
+                            <af:outputText id="ot25"
+                                           binding="#{pageFlowScope.TrMaRTVReconciliationSearchBean.usOptMonBind}">
+                                <af:convertNumber pattern="#,###.00"/>
+                            </af:outputText>
+                        </f:facet>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApRTVReconUSVO.hints.Opt73Qtrly.name}" filterable="true"
+                               sortable="true" headerText="" id="c5" align="right">
+                        <af:outputText value="#{row.Opt73Qtrly}"
+                                       shortDesc="#{bindings.XxApRTVReconUSVO.hints.Opt73Qtrly.tooltip}" id="ot5">
+                            <af:convertNumber groupingUsed="false"
+                                              pattern="#{bindings.XxApRTVReconUSVO.hints.Opt73Qtrly.format}"/>
+                        </af:outputText>
+                        <f:facet name="footer">
+                            <af:outputText id="ot26"
+                                           binding="#{pageFlowScope.TrMaRTVReconciliationSearchBean.usOptOtrlBind}">
+                                <af:convertNumber pattern="#,###.00"/>
+                            </af:outputText>
+                        </f:facet>
+                    </af:column>
+                    <af:column id="c17" align="right">
+                        <af:outputText value="#{row.TotalVal}"
+                                       shortDesc="#{bindings.XxApRTVReconUSVO.hints.TotalVal.tooltip}" id="ot33">
+                            <af:convertNumber groupingUsed="false"
+                                              pattern="#{bindings.XxApRTVReconUSVO.hints.TotalVal.format}"/>
+                        </af:outputText>
+                        <f:facet name="footer">
+                            <af:panelGroupLayout id="pgl15" halign="right">
+                                <af:outputText id="ot34"
+                                               binding="#{pageFlowScope.TrMaRTVReconciliationSearchBean.usTotalVal}">
+                                    <af:convertNumber pattern="#,###.00"/>
+                                </af:outputText>
+                            </af:panelGroupLayout>
+                        </f:facet>
+                    </af:column>
+                </af:table>
+                <f:facet name="secondaryToolbar"/>
+            </af:panelCollection>
+            <af:outputFormatted value="Total" id="ofD43" inlineStyle="font-weight:bold;"/>
+            <af:panelCollection id="pc1" styleClass="AFStretchWidth"
+                                binding="#{pageFlowScope.TrMaRTVReconciliationSearchBean.totPanelGrpBind}">
+                <f:facet name="menus">
+                    <af:menu text="File" id="m2">
+                        <af:commandMenuItem text="Export to Excel" id="cdmi1">
+                            <af:exportCollectionActionListener type="excelHTML" exportedId="t5"
+                                                               filename="RTVReconcilationTotal.xls"
+                                                               title="Total RTV Reconcilation "/>
+                        </af:commandMenuItem>
+                    </af:menu>
+                </f:facet>
+                <f:facet name="toolbar">
+                    <af:toolbar id="t4"/>
+                </f:facet>
+                <f:facet name="statusbar"/>
+                <af:table value="#{bindings.XxApRTVReconTotalVO.collectionModel}" var="row"
+                          rows="#{bindings.XxApRTVReconTotalVO.rangeSize}"
+                          emptyText="#{bindings.XxApRTVReconTotalVO.viewable ? 'No data to display.' : 'Access Denied.'}"
+                          rowBandingInterval="0" fetchSize="#{bindings.XxApRTVReconTotalVO.rangeSize}" id="t5">
+                    <af:column sortProperty="#{bindings.XxApRTVReconTotalVO.hints.System.name}" sortable="true"
+                               headerText="" id="c11" width="140">
+                        <af:outputText value="#{row.System}"
+                                       shortDesc="#{bindings.XxApRTVReconTotalVO.hints.System.tooltip}" id="ot11"/>
+                        <f:facet name="footer">
+                            <af:outputText value="DIFFERENCE" id="ot18"/>
+                        </f:facet>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApRTVReconTotalVO.hints.Regular.name}" sortable="true"
+                               headerText="" id="c12" width="120" align="right">
+                        <af:outputText value="#{row.Regular}"
+                                       shortDesc="#{bindings.XxApRTVReconTotalVO.hints.Regular.tooltip}" id="ot12">
+                            <af:convertNumber groupingUsed="false"
+                                              pattern="#{bindings.XxApRTVReconTotalVO.hints.Regular.format}"/>
+                        </af:outputText>
+                        <f:facet name="footer">
+                            <af:outputText id="ot27"
+                                           binding="#{pageFlowScope.TrMaRTVReconciliationSearchBean.totRegValBind}">
+                                <af:convertNumber pattern="#,###.00"/>
+                            </af:outputText>
+                        </f:facet>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApRTVReconTotalVO.hints.Opt73Weekly.name}" sortable="true"
+                               headerText="" id="c13" width="140" align="right">
+                        <af:outputText value="#{row.Opt73Weekly}"
+                                       shortDesc="#{bindings.XxApRTVReconTotalVO.hints.Opt73Weekly.tooltip}" id="ot13">
+                            <af:convertNumber groupingUsed="false"
+                                              pattern="#{bindings.XxApRTVReconTotalVO.hints.Opt73Weekly.format}"/>
+                        </af:outputText>
+                        <f:facet name="footer">
+                            <af:outputText id="ot28"
+                                           binding="#{pageFlowScope.TrMaRTVReconciliationSearchBean.totOptWeekBind}">
+                                <af:convertNumber pattern="#,###.00"/>
+                            </af:outputText>
+                        </f:facet>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApRTVReconTotalVO.hints.Opt73Monthly.name}" sortable="true"
+                               headerText="" id="c14" width="140" align="right">
+                        <af:outputText value="#{row.Opt73Monthly}"
+                                       shortDesc="#{bindings.XxApRTVReconTotalVO.hints.Opt73Monthly.tooltip}" id="ot14">
+                            <af:convertNumber groupingUsed="false"
+                                              pattern="#{bindings.XxApRTVReconTotalVO.hints.Opt73Monthly.format}"/>
+                        </af:outputText>
+                        <f:facet name="footer">
+                            <af:outputText id="ot29"
+                                           binding="#{pageFlowScope.TrMaRTVReconciliationSearchBean.totOptMonBind}">
+                                <af:convertNumber pattern="#,###.00"/>
+                            </af:outputText>
+                        </f:facet>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApRTVReconTotalVO.hints.Opt73Qtrly.name}" sortable="true"
+                               headerText="" id="c15" align="right">
+                        <af:outputText value="#{row.Opt73Qtrly}"
+                                       shortDesc="#{bindings.XxApRTVReconTotalVO.hints.Opt73Qtrly.tooltip}" id="ot15">
+                            <af:convertNumber groupingUsed="false"
+                                              pattern="#{bindings.XxApRTVReconTotalVO.hints.Opt73Qtrly.format}"/>
+                        </af:outputText>
+                        <f:facet name="footer">
+                            <af:outputText id="ot30"
+                                           binding="#{pageFlowScope.TrMaRTVReconciliationSearchBean.totOptOtrBind}">
+                                <af:convertNumber pattern="#,###.00"/>
+                            </af:outputText>
+                        </f:facet>
+                    </af:column>
+                    <af:column id="c18" align="right">
+                        <af:outputText value="#{row.Total}"
+                                       shortDesc="#{bindings.XxApRTVReconTotalVO.hints.Total.tooltip}" id="ot35">
+                            <af:convertNumber groupingUsed="false"
+                                              pattern="#{bindings.XxApRTVReconTotalVO.hints.Total.format}"/>
+                        </af:outputText>
+                        <f:facet name="filter"/>
+                        <f:facet name="footer">
+                            <af:outputText id="ot36"
+                                           binding="#{pageFlowScope.TrMaRTVReconciliationSearchBean.totTotalBind}">
+                                <af:convertNumber pattern="#,###.00"/>
+                            </af:outputText>
+                        </f:facet>
+                    </af:column>
+                </af:table>
+            </af:panelCollection>
+        </af:panelGroupLayout>
+    </af:panelGroupLayout>
+    <!--oracle-jdev-comment:preferred-managed-bean-name:TrMaChargebackSumSearchBean-->
+</jsp:root>

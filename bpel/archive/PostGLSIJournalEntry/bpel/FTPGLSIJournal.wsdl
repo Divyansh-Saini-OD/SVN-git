@@ -1,0 +1,52 @@
+<definitions
+     name="FTPGLJournalInvoice"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/ftp/FTPGLJournalInvoice/"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/ftp/FTPGLJournalInvoice/"
+     xmlns:ns1="http://schemas.oracle.com/service/bpel/common"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+     xmlns:pc="http://xmlns.oracle.com/pcbpel/"
+     xmlns:imp1="http://TargetNamespace.com/FTPGLJournalInvoice"
+     xmlns:hdr="http://xmlns.oracle.com/pcbpel/adapter/ftp/"
+    >
+    <import namespace="http://schemas.oracle.com/bpel/extension" location="http://chilsoa01d.na.odcorp.net:7778/orabpel/xmllib/RuntimeFault.wsdl"/>
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/ftp/" location="ftpAdapterInboundHeader.wsdl"/>
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://TargetNamespace.com/FTPGLJournalInvoice" schemaLocation="GL_INTERFACE_NA_STG.xsd"/>
+        </schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://schemas.oracle.com/service/bpel/common" schemaLocation="params.xsd"/>
+        </xsd:schema>
+    </types>
+    <message name="GLJournalInvoice_msg">
+        <part name="GLJournalInvoice" element="imp1:GLJournalInvoice"/>
+    </message>
+    <portType name="Get_ptt">
+        <operation name="Get">
+            <input message="tns:GLJournalInvoice_msg"/>
+        </operation>
+    </portType>
+    <binding name="Get_binding" type="tns:Get_ptt">
+        <pc:inbound_binding/>
+        <operation name="Get">
+            <jca:operation FileType="binary" LogicalDirectory="GLInDir" ActivationSpec="oracle.tip.adapter.ftp.inbound.FTPActivationSpec"
+                 LogicalArchiveDirectory="GLArchiveDir" DeleteFile="true" IncludeFiles="GL_Journals_NA_GLSI.*\.txt"
+                 PollingFrequency="600" MinimumAge="0" OpaqueSchema="false"/>
+            <input>
+                <jca:header message="hdr:InboundHeader_msg" part="inboundHeader"/>
+            </input>
+        </operation>
+    </binding>
+    <service name="FTPGLJournalInvoice">
+        <port name="Get_pt" binding="tns:Get_binding">
+            <jca:address location="eis/ftp/EBSCentralExternal" UIincludeWildcard="GL_Journals_NA_GLSI*.txt"/>
+        </port>
+    </service>
+    <plt:partnerLinkType name="Get_plt">
+        <plt:role name="Get_role">
+            <plt:portType name="tns:Get_ptt"/>
+        </plt:role>
+    </plt:partnerLinkType>
+</definitions>

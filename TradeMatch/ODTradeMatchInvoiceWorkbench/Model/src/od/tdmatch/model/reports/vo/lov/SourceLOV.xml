@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewObject
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="SourceLOV"
+  Version="12.2.1.12.24"
+  InheritPersonalization="merge"
+  BindingStyle="OracleName"
+  CustomQuery="true"
+  RowClass="od.tdmatch.model.reports.vo.lov.SourceLOVRowImpl"
+  ComponentClass="od.tdmatch.model.reports.vo.lov.SourceLOVImpl"
+  PageIterMode="Full">
+  <DesignTime>
+    <Attr Name="_codeGenFlag2" Value="Coll"/>
+    <Attr Name="_isExpertMode" Value="true"/>
+    <Attr Name="_isCodegen" Value="true"/>
+  </DesignTime>
+  <SQLQuery><![CDATA[SELECT TV.TARGET_VALUE1 LOOKUP_CODE 
+FROM xx_fin_translatevalues tv , 
+  xx_fin_translatedefinition td 
+WHERE td.TRANSLATION_NAME = 'XX_AP_TR_MATCH_INVOICES' 
+AND tv.TRANSLATE_ID       = td.TRANSLATE_ID 
+AND tv.enabled_flag       ='Y' 
+AND sysdate BETWEEN TV.START_DATE_ACTIVE AND NVL(TV.END_DATE_ACTIVE,sysdate)]]></SQLQuery>
+  <ViewAttribute
+    Name="LookupCode"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="255"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="LOOKUP_CODE"
+    Expression="LOOKUP_CODE"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="30"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.lov.SourceLOV.LookupCode_LABEL"/>
+        <DISPLAYWIDTH
+          Value="10"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ResourceBundle>
+    <PropertiesBundle
+      PropertiesFile="od.tdmatch.model.ModelBundle"/>
+  </ResourceBundle>
+</ViewObject>

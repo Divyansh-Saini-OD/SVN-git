@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewObject
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="VendorAssistantLovInvoiceVO"
+  Version="12.2.1.12.24"
+  InheritPersonalization="merge"
+  BindingStyle="OracleName"
+  CustomQuery="true"
+  RowClass="od.tdmatch.model.lov.VendorAssistantLovInvoiceVORowImpl"
+  ComponentClass="od.tdmatch.model.lov.VendorAssistantLovInvoiceVOImpl"
+  PageIterMode="Full">
+  <DesignTime>
+    <Attr Name="_codeGenFlag2" Value="Coll"/>
+    <Attr Name="_isExpertMode" Value="true"/>
+    <Attr Name="_isCodegen" Value="true"/>
+  </DesignTime>
+  <Properties>
+    <SchemaBasedProperties>
+      <LABEL
+        ResId="od.tdmatch.model.lov.VendorAssistantLovInvoiceVO_LABEL"/>
+    </SchemaBasedProperties>
+  </Properties>
+  <SQLQuery><![CDATA[SELECT  b.target_value2 vendor_assistant 
+  FROM  xx_fin_translatevalues b 
+       ,xx_fin_translatedefinition a    
+ WHERE EXISTS (SELECT 'x' 
+                 FROM  ap_supplier_sites_all site 
+                      ,ap_invoices_all ai 
+                WHERE ai.validation_request_id=-9999999999   
+                  AND site.vendor_id=ai.vendor_id 
+                  AND site.vendor_site_id=ai.vendor_site_id 
+                  AND exists (SELECT 'x'         
+         FROM xx_fin_translatevalues tv,                                                                          
+              xx_fin_translatedefinition td                          
+        WHERE td.translation_name = 'XX_AP_TRADE_CATEGORIES'                                                                           
+          AND tv.translate_id  = td.translate_id                                                                          
+          AND tv.enabled_flag = 'Y'                                                                          
+          AND sysdate between tv.start_date_active and nvl(tv.end_date_active,sysdate)         
+          AND tv.target_value1 = site.attribute8) 
+                  AND b.target_value1=site.attribute6||''      
+               ) 
+   AND a.TRANSLATION_NAME = 'XX_AP_VENDOR_ASSISTANTS'  
+   AND b.TRANSLATE_ID  = a.TRANSLATE_ID 
+   AND b.enabled_flag='Y' 
+   AND SYSDATE BETWEEN b.start_date_active and NVL(b.end_date_active,sysdate)]]></SQLQuery>
+  <ViewAttribute
+    Name="VendorAssistant"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="255"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="VENDOR_ASSISTANT"
+    Expression="VENDOR_ASSISTANT"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="240"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.lov.VendorAssistantLovInvoiceVO.VendorAssistant_LABEL"/>
+        <DISPLAYWIDTH
+          Value="25"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <AttrArray Name="KeyAttributes">
+    <Item Value="VendorAssistant"/>
+  </AttrArray>
+  <ResourceBundle>
+    <PropertiesBundle
+      PropertiesFile="od.tdmatch.model.ModelBundle"/>
+  </ResourceBundle>
+</ViewObject>

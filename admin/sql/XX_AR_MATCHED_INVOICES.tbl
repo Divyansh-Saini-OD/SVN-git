@@ -1,0 +1,34 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating TABLE XXFIN.xx_ar_matched_invoices
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+
+-- +==================================================================================+
+-- |                       Office Depot - Project Simplify                            |
+-- |                              WIPRO Technologies                                  |
+-- +==================================================================================+
+-- | SQL Script to create the global Temporary table:  XX_MATCHED_INVOICES            |
+-- |                                                                                  |
+-- | TO store processed lbx records                                                   |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       11-APR-2010   Sundaram S           Initial version                      |
+-- |                                             Added for Defect #4320               |
+-- |                                                                                  |
+-- +==================================================================================+
+
+CREATE GLOBAL TEMPORARY TABLE XXFIN.xx_ar_matched_invoices ( trx_number VARCHAR2(20))
+ON COMMIT PRESERVE ROWS;
+
+SHOW ERR

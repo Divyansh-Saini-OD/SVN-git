@@ -1,0 +1,26 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- +================================================================================+
+-- |                  Office Depot - Project Simplify                               |
+-- |                       WIPRO Technologies                                       |
+-- +================================================================================+
+-- | SQL Script to drop the synonym                                                 |
+-- |                                                                                |
+-- |Change Record:                                                                  |
+-- |===============                                                                 |
+-- |Version   Date         Author              Remarks                              |
+-- |=======   ==========   =============       ==================================== |
+-- | V1.0     20-JAN-2009  Ganga Devi R         Dropped synonym                     |                                                                                |
+-- +================================================================================+
+
+-- --------------------------------------------------------
+-- Dropping existing synonym XXFIN.XX_RA_CUSTOM_IMPORT_REF
+-- --------------------------------------------------------
+
+DROP SYNONYM APPS.XX_RA_CUSTOM_IMPORT_REF;
+                                 
+SHOW ERROR

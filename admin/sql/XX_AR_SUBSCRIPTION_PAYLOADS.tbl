@@ -1,0 +1,35 @@
+-- +===========================================================================+
+-- |                  Office Depot                                             |
+-- +===========================================================================+
+-- |Description : Create Table XX_AR_SUBSCRIPTION_PAYLOADS                     |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | 1.0       20-03-2018      Dinesh Nagapuri          Initial draft version. |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE XXFIN.XX_AR_SUBSCRIPTION_PAYLOADS';
+EXCEPTION
+  WHEN OTHERS THEN NULL;
+END;
+/
+
+CREATE TABLE XXFIN.XX_AR_SUBSCRIPTION_PAYLOADS
+AS
+SELECT * FROM XX_AR_SUBSCRIPTIONS_GT;
+
+
+GRANT ALL ON XXFIN.XX_AR_SUBSCRIPTION_PAYLOADS TO APPS WITH GRANT OPTION;
+
+GRANT SELECT ON XXFIN.XX_AR_SUBSCRIPTION_PAYLOADS TO ERP_SYSTEM_TABLE_SELECT_ROLE;

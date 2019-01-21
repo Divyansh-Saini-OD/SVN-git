@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<adfc-config xmlns="http://xmlns.oracle.com/adf/controller" version="1.2">
+  <task-flow-definition id="mass-release-hold-btf">
+    <default-activity>initMassRelease</default-activity>
+    <data-control-scope>
+      <shared/>
+    </data-control-scope>
+    <managed-bean id="__2">
+      <managed-bean-name>MassReleaseHoldBean</managed-bean-name>
+      <managed-bean-class>od.tdmatch.view.managedBeans.MassReleaseHoldBean</managed-bean-class>
+      <managed-bean-scope>pageFlow</managed-bean-scope>
+    </managed-bean>
+    <managed-bean id="__4">
+      <managed-bean-name>MyDate</managed-bean-name>
+      <managed-bean-class>java.util.Date</managed-bean-class>
+      <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <view id="MassReleaseHold">
+      <page>/MassReleaseHold.jsff</page>
+    </view>
+    <method-call id="initMassRelease">
+      <method>#{pageFlowScope.MassReleaseHoldBean.initMassRelease}</method>
+      <outcome>
+        <fixed-outcome>massRelease</fixed-outcome>
+      </outcome>
+    </method-call>
+    <control-flow-rule id="__1">
+      <from-activity-id>initMassRelease</from-activity-id>
+      <control-flow-case id="__3">
+        <from-outcome>massRelease</from-outcome>
+        <to-activity-id>MassReleaseHold</to-activity-id>
+      </control-flow-case>
+    </control-flow-rule>
+    <use-page-fragments/>
+  </task-flow-definition>
+</adfc-config>

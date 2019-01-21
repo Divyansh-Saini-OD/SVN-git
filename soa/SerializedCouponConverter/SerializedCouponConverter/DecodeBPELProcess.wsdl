@@ -1,0 +1,34 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+     name="DecodeBPELProcess"
+     targetNamespace="http://xmlns.oracle.com/SerializedCouponApplication/SerializedCouponConverter/DecodeBPELProcess"
+     xmlns:ns1="http://www.officedepot.com/SerializableCouponConverter"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:client="http://xmlns.oracle.com/SerializedCouponApplication/SerializedCouponConverter/DecodeBPELProcess"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    >
+    <plnk:partnerLinkType name="DecodeBPELProcess">
+        <plnk:role name="DecodeBPELProcessProvider">
+            <plnk:portType name="client:DecodeBPELProcess"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://www.officedepot.com/SerializableCouponConverter"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:client="http://xmlns.oracle.com/SerializedCouponApplication/SerializedCouponConverter/DecodeBPELProcess"
+             xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+            <import namespace="http://www.officedepot.com/SerializableCouponConverter" schemaLocation="xsd/serializedCouponConverter.xsd"/>
+        </schema>
+    </wsdl:types>
+    <wsdl:message name="DecodeBPELProcessRequestMessage">
+        <wsdl:part name="payload" element="ns1:encodedSerializedCoupon"/>
+    </wsdl:message>
+    <wsdl:message name="DecodeBPELProcessResponseMessage">
+        <wsdl:part name="payload" element="ns1:decodedSerializedCoupon"/>
+    </wsdl:message>
+    <wsdl:portType name="DecodeBPELProcess">
+        <wsdl:operation name="process">
+            <wsdl:input message="client:DecodeBPELProcessRequestMessage"/>
+            <wsdl:output message="client:DecodeBPELProcessResponseMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

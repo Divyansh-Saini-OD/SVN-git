@@ -1,0 +1,139 @@
+Modified Composite [ SelectProjectEJMReqABCSImpl ]
+  Composite properties
+	Component
+	  Component  [ SelectProjectEJMReqABCSImplProcess ]
+	    Property [ bpel.preference.EBIZ_SUCCESS_STATUS ]
+		No change in old and new value S 
+	    Property [ bpel.preference.EBIZ_ERROR_STATUS ]
+		No change in old and new value E 
+	    Property [ bpel.preference.SOURCE_SYSTEM_NAME ]
+		No change in old and new value EJM 
+	    Property [ bpel.preference.ERROR_DESCRIPTION_TEXT ]
+		No change in old and new value There was an issue sending the data for PANEX: 
+	    Property [ bpel.preference.MESSAGE_TYPE ]
+		No change in old and new value SelectProjectEJMReqABCSImplProcess 
+	    Property [ bpel.preference.MESSAGE_VERSION ]
+		No change in old and new value V1 
+	    Property [ bpel.preference.ERROR_TYPE ]
+		No change in old and new value System 
+	    Property [ bpel.preference.ERROR_SEVERITY ]
+		No change in old and new value fatal 
+	    Property [ bpel.preference.CATCH_ALL_PROCESS_STEP ]
+		No change in old and new value Catch All on the Main Sequence 
+	    Property [ bpel.preference.MESSAGE_OPERATION ]
+		No change in old and new value receiveEJMHttpGet 
+	    Property [ bpel.preference.RECEIVED_DATA_ERROR ]
+		No change in old and new value Received data, however unable to proocess payload For PANEX : 
+	    Property [ bpel.preference.API_SUCCESS_STATUS ]
+		No change in old and new value S 
+	    Property [ bpel.preference.API_ERROR_STATUS ]
+		No change in old and new value E 
+	    Property [ bpel.preference.API_SOURCE_SYSTEM_NAME ]
+		No change in old and new value EJM 
+	    Property [ bpel.preference.API_ERROR_DESCRIPTION_TEXT ]
+		No change in old and new value There was an exception during writting of JMS queue for PANEX : 
+	    Property [ bpel.preference.API_MESSAGE_TYPE ]
+		No change in old and new value InvokeEJMGetProjectData 
+	    Property [ bpel.preference.API_MESSAGE_VERSION ]
+		No change in old and new value V1 
+	    Property [ bpel.preference.API_ERROR_TYPE ]
+		No change in old and new value Process EXception 
+	    Property [ bpel.preference.API_ERROR_SEVERITY ]
+		No change in old and new value Process Exception from EJM select data proc 
+	    Property [ bpel.preference.API_ERROR_TEXT ]
+		No change in old and new value API process exception, received error message from EJM Database 
+	    Property [ bpel.preference.API_PROCESS_STEP ]
+		No change in old and new value Process Exception Flow 
+	    Property [ bpel.preference.API_MESSAGE_OPERATION ]
+		No change in old and new value InvokeEJMGetProjectData 
+	    Property [ bpel.preference.API_RECEIVED_DATA_ERROR ]
+		No change in old and new value Exception occured during data select of PANEX : 
+	    Property [ bpel.preference.JMS_SUCCESS_STATUS ]
+		No change in old and new value S 
+	    Property [ bpel.preference.JMS_ERROR_STATUS ]
+		No change in old and new value E 
+	    Property [ bpel.preference.JMS_SOURCE_SYSTEM_NAME ]
+		No change in old and new value EJM 
+	    Property [ bpel.preference.JMS_ERROR_DESCRIPTION_TEXT ]
+		No change in old and new value There was an exception during writting of JMS queue for PANEX : 
+	    Property [ bpel.preference.JMS_MESSAGE_TYPE ]
+		No change in old and new value InvokeJMSQueuePut 
+	    Property [ bpel.preference.JMS_MESSAGE_VERSION ]
+		No change in old and new value V1 
+	    Property [ bpel.preference.JMS_ERROR_TYPE ]
+		No change in old and new value API Process EXception 
+	    Property [ bpel.preference.JMS_ERROR_SEVERITY ]
+		No change in old and new value Process Exception from stored proc 
+	    Property [ bpel.preference.JMS_ERROR_TEXT ]
+		No change in old and new value API process exception, received error message writing to JMS request queue 
+	    Property [ bpel.preference.JMS_PROCESS_STEP ]
+		No change in old and new value Process Exception Flow 
+	    Property [ bpel.preference.JMS_MESSAGE_OPERATION ]
+		No change in old and new value null 
+	    Property [ bpel.preference.JMS_RECEIVED_DATA_ERROR ]
+		No change in old and new value null 
+	Service
+	  Service  [ EJMRecordsHttpGetAdapter ]
+	    Service Bindings
+	  	Binding  [ ws ]
+	    Property [ http.verb ]
+		No change in old and new value GET 
+	    Property [ http.payload ]
+		No change in old and new value url-encoded 
+	Attribute name=port
+		No change in old and new value http://xmlns.oracle.com/pcbpel/adapter/http/MyJavaApplication/SelectProjectEJMReqABCSImpl/EJMRecordsHttpGetAdapter#wsdl.endpoint(EJMRecordsHttpGetAdapter/Send_pt) 
+	Attribute name=location
+		No change in old and new value EJMRecordsHttpGetAdapter.wsdl 
+	Reference
+	  Reference  [ getEJMDataDBAdapter ]
+	    Property [ jca.retry.count ]
+		No change in old and new value 4 
+	    Property [ jca.retry.interval ]
+		No change in old and new value 1 
+	    Property [ jca.retry.backoff ]
+		No change in old and new value 2 
+	    Property [ jca.retry.maxInterval ]
+		No change in old and new value 120 
+	    Reference Bindings
+	  	Binding  [ jca ]
+	  Reference  [ EJMPutDataJMSProducer ]
+	    Reference Bindings
+	  	Binding  [ jca ]
+	  Reference  [ UpdateEJMStatusDBSAdapter ]
+	    Property [ jca.retry.count ]
+		No change in old and new value 4 
+	    Property [ jca.retry.interval ]
+		No change in old and new value 1 
+	    Property [ jca.retry.backoff ]
+		No change in old and new value 2 
+	    Property [ jca.retry.maxInterval ]
+		No change in old and new value 120 
+	    Reference Bindings
+	  	Binding  [ jca ]
+	  Reference  [ InsertErrorLoggerJMSProducer ]
+	    Reference Bindings
+	  	Binding  [ jca ]
+	  Reference  [ LockEJMRecordStatusDBAdapter ]
+	    Property [ jca.retry.count ]
+		No change in old and new value 4 
+	    Property [ jca.retry.interval ]
+		No change in old and new value 1 
+	    Property [ jca.retry.backoff ]
+		No change in old and new value 2 
+	    Property [ jca.retry.maxInterval ]
+		No change in old and new value 120 
+	    Reference Bindings
+	  	Binding  [ jca ]
+	  Reference  [ AcknowledgeEJMStatusDBAdapter ]
+	    Property [ jca.retry.count ]
+		No change in old and new value 4 
+	    Property [ jca.retry.interval ]
+		No change in old and new value 1 
+	    Property [ jca.retry.backoff ]
+		No change in old and new value 2 
+	    Property [ jca.retry.maxInterval ]
+		No change in old and new value 120 
+	    Reference Bindings
+	  	Binding  [ jca ]
+---End Match for composite [ SelectProjectEJMReqABCSImpl ] in config plan---
+Checking for replacement in wsdl and schema files

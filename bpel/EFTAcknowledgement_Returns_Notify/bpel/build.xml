@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<project default="compile" basedir=".">
+    <target name="compile">
+       <echo>
+--------------------------------------------------------------
+
+| Compiling bpel process ${process.name}, revision ${rev}
+
+--------------------------------------------------------------
+        </echo>
+        <bpelc rev="${rev}" input="${process.dir}/bpel/bpel.xml" out="${process.dir}/output" home="${bpel.home}">
+           <customize> 
+              <partnerLinkBinding name="PlODErrorLogger">
+                   <property name="wsdlLocation">http://${hostname}:${http.port}/orabpel/${ODErrorLogger.domain}/ODErrorLogger/ODErrorLogger?wsdl</property>
+                 </partnerLinkBinding>
+                 <partnerLinkBinding name="ODTransactionLogger">
+                        <property name="wsdlLocation">http://${hostname}:${http.port}/orabpel/${ODTransactionLogger.domain}/ODTransactionLogger/ODTransactionLogger?wsdl</property>
+                 </partnerLinkBinding>
+                <activationAgent className="oracle.tip.adapter.fw.agent.jca.JCAActivationAgent" partnerLink="FTPGetFile">
+                    <property name="rejectedMessageHandlers" >file://${rejectedMessage.basedirectory}/${process.name}                bpel://${default.domain.locator}|${rejectedMessage.processname}|${rejectedMessage.operation}|message</property>
+                    <property name="fatalErrorFailoverProcess">bpel://${default.domain.locator}|${fatalErrorMessage.processname}|${fatalErrorMessage.operation}|message</property>
+                    <property name="DirArchiveFile">${ebs.archive.directory}xxfin/inbound</property>
+                    <property name="portType">Get_ptt</property>
+                    <property name="DirIncomingFile">xxfin/ftp/in/eft</property>
+            <!--Added for defect 3606 cluster properties-->
+            <property name="clusterGroupId">${process.name}_${cluster.group.id}</property>
+            <property name="useJgroupConfigFile">${useJgroupConfigFile}</property>
+                </activationAgent>
+       </customize>
+        </bpelc>
+   </target>
+</project>

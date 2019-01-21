@@ -1,0 +1,192 @@
+CREATE OR REPLACE  VIEW XXOD_FA_PROPERTY_TAX_REPORT_V AS 
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                      Oracle/Office Depot                          |
+-- +===================================================================+
+-- | Name  : XXOD_FA_PROPERTY_TAX_REPORT_V                             |
+-- | Description: Custom view used for extracting active,transfer and  |
+-- |              retired assets.                                      |
+-- |                                                                   |                
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author            Remarks                   |
+-- |=======   ==========   =============     ==========================|
+-- |1.0       22-APR-2007  Sudha Seetharaman Initial version           |
+-- |1.1       27-APR-2007  Sudha Seetharaman Included TRANSFER         | 
+-- |                                         transaction type code     |  
+-- |1.2       07-MAY-2007  Sudha Seetharaman Added ap_invoices table   |
+-- |                                         for invoice number        |
+-- +===================================================================+|
+  (SELECT
+ 'active' report_type
+ ,FB.book_type_code book
+ ,GCC.segment1 company
+ ,GCC.segment4 location
+ ,GCC.segment2 cost_center
+ ,GCC.segment6 lob
+ ,FA.asset_number asset_number
+ ,FA.attribute6 legacy_id    
+ ,FB. Date_effective effective_date
+ ,FA.attribute8 hist_acq_date
+ ,FB.date_placed_in_service date_placed_in_service
+ ,FC.segment1 major
+ ,sysdate retire_date
+ ,FC.segment2 minor
+ ,FA.description description
+ ,FB.original_cost cost
+ ,FA.attribute7 hist_cost
+ ,FL.location_id location_no
+ ,'trans_type' trans_type
+ ,FL.segment6 building
+ ,FL.segment4 city
+ ,FL.segment3 county
+ ,FL.segment2 state
+ ,FL.segment5 zip
+ ,AI.invoice_num invoice_number
+ ,FB.date_effective  book_effective
+ ,FB.date_ineffective book_ineffective
+ ,FDH.date_effective  dist_effective
+ ,FDH.date_ineffective dist_ineffective
+ FROM
+ gl_code_combinations GCC
+,fa_additions FA
+,fa_books FB
+,fa_distribution_history FDH
+,fa_transaction_headers FTH
+,fa_locations FL
+,fa_asset_invoices FAI
+,fa_categories FC
+,ap_invoices AI
+WHERE
+ FA.asset_id=FB.asset_id
+ AND FDH.code_combination_id=GCC.code_combination_id
+ AND FDH.asset_id=FA.asset_id
+ AND FDH.book_type_code=FB.book_type_code
+ AND FDH.location_id=FL.location_id
+ AND FAI.asset_id(+)=FB.asset_id
+ AND FAI.invoice_id=AI.invoice_id(+)
+ AND FTH.asset_id=FA.asset_id
+ AND FTH.book_type_code=FB.book_type_code
+ AND FTH.Transaction_type_code <>'FULL RETIREMENT' 
+ AND FC.CATEGORY_ID=FA.ASSET_CATEGORY_ID
+ AND FTH.transaction_header_id=FB.transaction_header_id_in
+ AND FC.category_type <>'LEASE'
+UNION ALL
+SELECT
+'disposal' report_type
+ ,FB.book_type_code book 
+ ,GCC.segment1 company
+ ,GCC.segment4 location
+ ,GCC.segment2 cost_center
+ ,GCC.segment6 lob
+ ,FA.asset_number asset_number
+ ,FA.attribute6 legacy_id   
+ ,FB.date_effective effective_date
+ ,FA.attribute8 hist_acq_date
+ ,FB.date_placed_in_service date_placed_in_service
+ ,FC.segment1 major
+ ,FR.date_retired retire_date
+ ,'minor' minor
+ ,FA.description      description
+ ,FB.original_cost cost
+ ,FA.attribute7 hist_cost
+ ,1 location_no
+ ,FTH.transaction_type_code trans_type
+ ,'building' building
+ ,'city' city
+ ,'county' county
+ ,FL.segment2 state
+ ,'zip' zip
+ ,'invoice'  invoice_number
+ ,FB.date_effective  book_effective
+ ,FB.date_ineffective book_ineffective
+ ,FDH.date_effective  dist_effective
+ ,FDH.date_ineffective dist_ineffective
+FROM
+ gl_code_combinations GCC
+,fa_additions FA
+,fa_books FB
+,fa_distribution_history FDH
+,fa_locations FL
+,fa_retirements FR
+,fa_categories FC
+,fa_transaction_headers FTH
+WHERE
+ FA.asset_id=FB.asset_id 
+ AND FDH.code_combination_id=GCC.code_combination_id
+ AND FDH.asset_id=FA.asset_id
+ AND FDH.book_type_code=FB.book_type_code
+ AND FDH.location_id=FL.location_id
+ AND FC.CATEGORY_ID=FA.ASSET_CATEGORY_ID
+ AND FR.asset_id=FA.asset_id
+ AND FR.book_type_code=FB.book_type_code
+ AND FTH.asset_id=FA.asset_id
+ AND FTH.book_type_code=FB.book_type_code
+ AND FTH.transaction_type_code in ('FULL RETIREMENT','PARTIAL RETIREMENT')
+ AND FTH.transaction_header_id=FR.transaction_header_id_in  
+ AND FTH.transaction_header_id=FB.transaction_header_id_in
+ AND FR.status ='PROCESSED'
+ AND FC.category_type <>'LEASE'
+UNION ALL
+SELECT    
+ 'transfer' report_type
+ ,FB.book_type_code book
+ ,GCC.segment1 company
+ ,GCC.segment4 location
+ ,GCC.segment2 cost_center
+ ,GCC.segment6 lob
+ ,FA.asset_number asset_number
+ ,FA.attribute6 legacy_id   
+ ,FB.date_effective effective_date
+ ,FA.attribute8 hist_acq_date
+ ,FB.date_placed_in_service date_placed_in_service
+ ,FC.segment1 major
+ ,FTH.transaction_date_entered retire_date
+ ,FC.segment2 minor
+ ,FA.description description
+ ,FB.original_cost cost
+ ,FA.attribute7 hist_cost
+ ,1 location_no
+ ,FTH.transaction_type_code  trans_type
+ ,'building' building
+ ,FL.segment1||'.'||
+  FL.segment2||'.'||
+  FL.segment3||'.'||
+  FL.segment4||'.'||
+  FL.segment5||'.'||
+  FL.segment6 city
+ ,'county' county
+ ,FL.segment2 state
+ ,'zip' zip
+ ,'invoice'  invoice_number
+ ,FB.date_effective  book_effective
+ ,FB.date_ineffective book_ineffective
+ ,FDH.date_effective  dist_effective
+ ,FDH.date_ineffective dist_ineffective
+FROM
+  gl_code_combinations GCC
+ ,fa_additions FA
+ ,fa_transaction_headers FTH
+ ,fa_books FB
+ ,fa_locations FL
+ ,fa_distribution_history FDH
+ ,fa_transfer_details FTD
+ ,FA_CATEGORIES FC
+WHERE
+ FA.asset_id=FB.asset_id
+ AND FDH.code_combination_id=GCC.code_combination_id
+ AND FDH.asset_id=FA.asset_id
+ AND FDH.book_type_code=FB.book_type_code
+ AND FDH.location_id=FL.location_id
+ AND FTH.asset_id=FA.asset_id
+ AND FTH.book_type_code=fb.book_type_code
+ AND FTH.transaction_type_code IN ('TRANSFER IN','TRANSFER','TRANSFER OUT')
+ AND FTD.transfer_header_id=fth.transaction_header_id
+ AND FC.CATEGORY_ID=FA.ASSET_CATEGORY_ID
+ AND FTD.distribution_id=FDH.distribution_id
+ AND FTH.transaction_header_id=FDH.transaction_header_id_in
+ AND FC.category_type <>'LEASE'
+)
+/
+ 

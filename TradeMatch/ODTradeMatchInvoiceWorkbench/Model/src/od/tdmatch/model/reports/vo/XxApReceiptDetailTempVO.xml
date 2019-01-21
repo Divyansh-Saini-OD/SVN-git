@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewObject
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="XxApReceiptDetailTempVO"
+  Version="12.2.1.12.24"
+  InheritPersonalization="merge"
+  BindingStyle="OracleName"
+  CustomQuery="true"
+  RowClass="od.tdmatch.model.reports.vo.XxApReceiptDetailTempVORowImpl"
+  ComponentClass="od.tdmatch.model.reports.vo.XxApReceiptDetailTempVOImpl"
+  PageIterMode="Full"
+  FetchMode="FETCH_AS_NEEDED"
+  Passivate="All"
+  OrderBy='"INVOICE_NUM"'>
+  <DesignTime>
+    <Attr Name="_codeGenFlag2" Value="Access|Coll"/>
+    <Attr Name="_isExpertMode" Value="true"/>
+    <Attr Name="_isCodegen" Value="true"/>
+  </DesignTime>
+  <Properties>
+    <SchemaBasedProperties>
+      <LABEL
+        ResId="od.tdmatch.model.reports.vo.XxApReceiptDetailTempVO_LABEL"/>
+    </SchemaBasedProperties>
+  </Properties>
+  <Variable
+    Name="P_Review_Num"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="bindUserId"
+    Kind="where"
+    Type="oracle.jbo.domain.Number"/>
+  <Variable
+    Name="bindInvNum"
+    Kind="where"
+    Type="java.lang.String"/>
+  <SQLQuery><![CDATA[select a.RECEIPT_NUM,a.INVOICE_NUM, a.INV_APPLIED_AMT,a.INV_VAL from XX_AP_PO_RECINV_DASHB_GTEMP a            
+where  a.Receipt_num=:P_Review_Num           
+and a.USER_ID=:bindUserId      
+AND a.PO_LINE_ID=:bindInvNum]]></SQLQuery>
+  <ViewAttribute
+    Name="ReceiptNum"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="30"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="RECEIPT_NUM"
+    Expression="RECEIPT_NUM"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="30"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="InvoiceNum"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="255"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="INVOICE_NUM"
+    Expression="INVOICE_NUM"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="50"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApReceiptDetailTempVO.InvoiceNum_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="InvAppliedAmt"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="INV_APPLIED_AMT"
+    Expression="INV_APPLIED_AMT"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApReceiptDetailTempVO.InvAppliedAmt_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="InvVal"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="5"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="INV_VAL"
+    Expression="INV_VAL"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="5"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.reports.vo.XxApReceiptDetailTempVO.InvVal_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ResourceBundle>
+    <PropertiesBundle
+      PropertiesFile="od.tdmatch.model.ModelBundle"/>
+  </ResourceBundle>
+</ViewObject>

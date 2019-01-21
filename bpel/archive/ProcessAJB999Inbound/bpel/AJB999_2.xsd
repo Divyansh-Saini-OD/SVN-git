@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:nxsd="http://xmlns.oracle.com/pcbpel/nxsd"
+            targetNamespace="http://TargetNamespace.com/InboundService"
+            xmlns:tns="http://TargetNamespace.com/InboundService"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified" nxsd:encoding="ASCII" nxsd:stream="chars" nxsd:version="NXSD">
+  <xsd:element name="Root-Element">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="AJB999" minOccurs="1" maxOccurs="unbounded">
+          <xsd:complexType>
+            <xsd:sequence>
+        <xsd:element name="FIPayReconRecord" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="," nxsd:quotedBy="&quot;"/>
+        <xsd:element name="StoreNumber" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="," nxsd:quotedBy="&quot;"/>
+        <xsd:element name="TenderType" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="," nxsd:quotedBy="&quot;"/>
+        <xsd:element name="SubmissionDate" type="xsd:dateTime" nxsd:dateFormat ="MMddyyyy" nxsd:style="terminated" nxsd:terminatedBy="," nxsd:quotedBy="&quot;"/>
+        <xsd:element name="CountryCode" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="," nxsd:quotedBy="&quot;"/>
+        <xsd:element name="CurrencyCode" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="," nxsd:quotedBy="&quot;"/>
+        <xsd:element name="ProcessorID" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="," nxsd:quotedBy="&quot;"/>
+        <xsd:element name="BankRecId" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="," nxsd:quotedBy="&quot;"/>
+        <xsd:element name="CardType" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="," nxsd:quotedBy="&quot;"/>
+        <xsd:element name="NetSalesAmount" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="," nxsd:quotedBy="&quot;"/>
+        <xsd:element name="NetRejectAmount" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="," nxsd:quotedBy="&quot;"/>
+        <xsd:element name="ChargeBackAdjustmentAmount" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="," nxsd:quotedBy="&quot;"/>
+        <xsd:element name="DiscountAmount" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="," nxsd:quotedBy="&quot;"/>
+        <xsd:element name="NetDepositAmount" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="," nxsd:quotedBy="&quot;"/>
+        <xsd:element name="MONTHLY_DISCOUNT_AMT" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="," nxsd:quotedBy="&quot;"/>
+        <xsd:element name="MONTHLY_ASSESSMENT_FEE" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="," nxsd:quotedBy="&quot;"/>                
+        <xsd:element name="DEPOSIT_HOLD_AMT" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="," nxsd:quotedBy="&quot;"/>
+        <xsd:element name="DEPOSIT_RELEASE_AMT" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="," nxsd:quotedBy="&quot;"/>                
+        <xsd:element name="SERVICE_FEE" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="," nxsd:quotedBy="&quot;"/>
+        <xsd:element name="ADJ_FEE" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="," nxsd:quotedBy="&quot;"/>                
+        <xsd:element name="COST_FUNDS_AMT" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="," nxsd:quotedBy="&quot;"/>
+        <xsd:element name="COST_FUNDS_ALPHA_CODE" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="," nxsd:quotedBy="&quot;"/>                
+        <xsd:element name="COST_FUNDS_NUM_CODE" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="," nxsd:quotedBy="&quot;"/>
+        <xsd:element name="RESERVED_AMT" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="," nxsd:quotedBy="&quot;"/>                        
+        <xsd:element name="RESERVED_AMT_ALPHA_CODE" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="," nxsd:quotedBy="&quot;"/>
+        <xsd:element name="RESERVED_AMT_NUM_CODE" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="${eol}"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>
+<!--NXSDWIZ:C:\Documents and Settings\rajesh-iyangar\Desktop\AJB999.txt:-->
+<!--USE-HEADER:false:-->

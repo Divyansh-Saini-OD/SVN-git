@@ -1,0 +1,29 @@
+  -- +============================================================================================+
+  -- |  Office Depot - Project Simplify                                                           |
+  -- |                                                                                            |
+  -- +============================================================================================+
+  -- |  Name        : xx_ap_trade_rct_inq_pkg                                                     |
+  -- |  RICE ID     : E3523
+  -- |  Solution ID : 218 AP Trade – Receipt Detail Inquiry                                       |
+  -- |  Description : Dash board Query are build using pipeline Function for performance          |
+  -- |  Change Record:                                                                            |
+  -- +============================================================================================+
+  -- | Version     Date         Author           Remarks                                          |
+  -- | =========   ===========  =============    ===============================================  |
+  -- | 1.0         13-Nov-17   Priyam Parmar    Initial version                                   |
+  -- +============================================================================================+
+ SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+drop table xxfin.XX_AP_PO_REC_INV_DASH_TEMP ;
+
+/
+
+SHOW ERRORS;

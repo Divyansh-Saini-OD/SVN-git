@@ -1,0 +1,18 @@
+-- +============================================================================+
+-- | Office Depot - Project Simplify                                            |
+-- |                                                                            |
+-- +============================================================================+
+-- | SQL Script to alter table:  XX_CE_AJB996                                   |
+-- |                                                                            |
+-- |Change Record:                                                              |
+-- |===============                                                             |
+-- |Version   Date          Author         Remarks                              |
+-- |=======   ===========   =============  =====================================|
+-- |1.0       03-25-2011    Joe Klein      E2077 - OD: CE Pre-Process AJB Files |
+-- |                                       Add column order_payment_id          |   
+-- |                                       for E2077 SDR project.               |
+-- |                                                                            |
+-- |                                                                            |
+-- +============================================================================+
+
+ALTER TABLE xxfin.xx_ce_ajb996 ADD order_payment_id NUMBER;

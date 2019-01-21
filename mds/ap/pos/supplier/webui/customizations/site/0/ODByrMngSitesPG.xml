@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.6.0.0_50" xml:lang="en-US" customizes="/oracle/apps/pos/supplier/webui/ByrMngSitesPG" xmlns:oa="http://xmlns.oracle.com/oa">
+   <modifications>
+      <move element="OUName1" after="siteName1"/>
+      <move element="EditDateSwr" after="OUName1"/>
+      <move element="purchasing" after="EditDateSwr"/>
+      <move element="Pay" after="purchasing"/>
+      <move element="PrimaryPay" after="Pay"/>
+      <move element="RfqOnly" after="PrimaryPay"/>
+      <move element="pcard" after="RfqOnly"/>
+      <move element="dffItem" after="pcard"/>
+      <move element="FlexSwr" after="dffItem"/>
+      <move element="ExtAttr" after="FlexSwr"/>
+      <move element="ODExtAttr" after="ExtAttr"/>
+      <insert before="ODExtAttr">
+         <oa:image id="imgODAddlAttribs" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2"
+                   destination="javascript:window.open('OA.jsp?page=/od/oracle/apps/xxfin/ap/pos/supplier/webui/ODAPSupplierSitePlainPG&amp;VendorId={@VendorId}&amp;VendorSiteId={@VendorSiteId}', '_blank', 'menubar=no,scrollbars=yes,resizable=yes', 
+                   '');void(0);" initSortSeq="none" popupEnabled="false" popupRenderEvent="onClick" prompt="OD Supplier Site DFF" rendered="true" scope="." serverUnvalidated="false" sortState="no" source="updateicon_enabled.gif" userCustomizable="false"
+                   warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <modify element="ExtAttr" prompt="" rendered="false" source=""/>
+      <modify element="ODExtAttr" rendered="false"/>
+      <move element="addrDt" after="addrName"/>
+      <move element="purpose" after="addrDt"/>
+      <move element="suppName" after="purpose"/>
+      <move element="suppNum" after="suppName"/>
+      <move element="messageLayout1" after="suppNum"/>
+      <modify element="siteName1" prompt="Vendor Site Name"/>
+   </modifications>
+</customization>
+
+

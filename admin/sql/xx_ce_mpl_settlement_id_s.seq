@@ -1,0 +1,46 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name        : XX_CE_MRKTPLC_Sequences                                 |
+-- | Description : I3123 CM Market Place Expansion Settlement and Reconciliation-Redesign                |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- | RICE ID : I3091                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- | 1.0     18-Jun-2018  M K Pramod Kumar.         Original                       |
+-- +=======================================================================+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET TERM ON
+PROMPT
+PROMPT Creating the Sequence XXFIN.xx_ce_mpl_settlement_id_s 
+PROMPT
+
+CREATE SEQUENCE XXFIN.xx_ce_mpl_settlement_id_s
+  MINVALUE 1
+  START WITH 1000
+  INCREMENT BY 1
+  NOCACHE;
+
+   
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+Grant  all on xx_ce_mpl_settlement_id_s to APPS;
+
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

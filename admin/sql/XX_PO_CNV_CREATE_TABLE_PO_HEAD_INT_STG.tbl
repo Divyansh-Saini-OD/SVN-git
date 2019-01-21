@@ -1,0 +1,107 @@
+-- +===========================================================================+
+-- |                  Office Depot                                             |
+-- +===========================================================================+
+-- |Description : Create Table XX_PO_HDRS_CONV_STG for PO/Receipts Conversion  |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | 1.0       19-JUL-17      Antonio Morales           Initial draft version  |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE XXFIN.XX_PO_HDRS_CONV_STG';
+EXCEPTION
+  WHEN OTHERS THEN NULL;
+END;
+/
+
+
+CREATE TABLE XXFIN.XX_PO_HDRS_CONV_STG
+(
+  CONTROL_ID                      NUMBER,
+  PROCESS_FLAG                    NUMBER DEFAULT 1,
+  CONV_ACTION                     VARCHAR2(20),
+  BATCH_ID                        NUMBER,
+  SOURCE_SYSTEM_CODE              VARCHAR2(40),
+  SOURCE_SYSTEM_REF               VARCHAR2(40),
+  AUDIT_ID                        NUMBER,
+  RECORD_ID                       NUMBER,
+  PARENT_RECORD_ID                NUMBER,
+  INTERFACE_HEADER_ID             NUMBER,
+  INTERFACE_SOURCE_CODE           VARCHAR2(25),
+  ORG_ID                          NUMBER,
+  DOCUMENT_NUM                    VARCHAR2(50),
+  RELEASE_DATE                    DATE,
+  CURRENCY_CODE                   VARCHAR2(15),
+  RATE_TYPE                       VARCHAR2(30),
+  AGENT_ID                        NUMBER,
+  VENDOR_NAME                     VARCHAR2(240),
+  VENDOR_ID                       NUMBER,
+  VENDOR_SITE_CODE                VARCHAR2(15),
+  VENDOR_SITE_ID                  NUMBER,
+  SHIP_TO_LOCATION                VARCHAR2(60),
+  SHIP_TO_LOCATION_ID             NUMBER,
+  TERMS_ID                        NUMBER,
+  FOB                             VARCHAR2(25),
+  FREIGHT_TERMS                   VARCHAR2(25),
+  APPROVAL_STATUS                 VARCHAR2(25),
+  NOTE_TO_VENDOR                  VARCHAR2(480),
+  NOTE_TO_RECEIVER                VARCHAR2(480),
+  CLOSED_CODE                     VARCHAR2(25),
+  VENDOR_DOC_NUM                  VARCHAR2(25),
+  ATTRIBUTE10                     VARCHAR2(150),
+  ATTRIBUTE15                     VARCHAR2(150),
+  CREATION_DATE                   DATE  DEFAULT SYSDATE,
+  CREATED_BY                      NUMBER,
+  LAST_UPDATE_DATE                DATE  DEFAULT SYSDATE,
+  LAST_UPDATED_BY                 NUMBER,
+  LAST_UPDATE_LOGIN               NUMBER,
+  REQUEST_ID                      NUMBER,
+  REFERENCE_NUM                   VARCHAR2(25),
+  VENDOR_NUM                      VARCHAR2(30),
+  DISTRIBUTION_CODE               VARCHAR2(30), --16
+  PO_TYPE                         VARCHAR2(30), --17
+  NUM_LINES                       NUMBER,       --18
+  COST                            NUMBER,       --19
+  ORD_REC_SHPD                    NUMBER,       --20 UNITS        
+  LB                              NUMBER,       --21 (WEIGHT OR REC/SHP)
+  NET_PO_TOTAL_COST               NUMBER,       --22
+  DROP_SHIP_FLAG                  VARCHAR2(30), --23
+  SHIP_VIA                        VARCHAR2(200),--25 
+  BACK_ORDERS                     VARCHAR2(10), --26
+  ORDER_DT                        DATE,         --27                     
+  SHIP_DT                         DATE,         --28
+  ARRIVAL_DT                      DATE,         --29
+  CANCEL_DT                       DATE,         --30
+  REVISION_FLAG                   VARCHAR2(10), --32
+  LAST_SHIP_DT                    DATE,         --33
+  LAST_RECEIPT_DT                 DATE,         --34
+  TERMS_DISC_PCT                  NUMBER,       --35
+  TERMS_DISC_DAYS                 NUMBER,       --36
+  TERMS_NET_DAYS                  NUMBER,       --37
+  ALLOWANCE_BASIS_CODE            VARCHAR2(10), --38                 
+  ALLOWANCE_DOLLARS               NUMBER,       --39
+  ALLOWANCE_PERCENT               NUMBER,       --40
+  POM_CREATED_BY                  VARCHAR2(100),--41
+  PGM_ENTERED_BY                  VARCHAR2(400),--43
+  POM_CHANGED_BY                  VARCHAR2(100),--45
+  PGM_CHANGED_BY                  VARCHAR2(400),--46
+  CUST_ORDER_SUB_NBR              NUMBER,       --47
+  CUST_ORDER_NBR                  NUMBER,       --48
+  RECORD_TYPE                     VARCHAR2(1), 
+  CUST_ID                         NUMBER
+);
+
+GRANT SELECT ON XXFIN.XX_PO_HDRS_CONV_STG TO ERP_SYSTEM_TABLE_SELECT_ROLE;
+
+GRANT ALL ON XXFIN.XX_PO_HDRS_CONV_STG TO APPS WITH GRANT OPTION;

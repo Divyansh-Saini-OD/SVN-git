@@ -1,0 +1,40 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +==================================================================================+  
+-- | Office Depot - Project Simplify                                                  |
+-- |                                                              |
+-- +==================================================================================+
+-- | SQL Script to create the table:  XX_CE_EBAY_CA_DTL_STG_ARCH               |
+-- |                                                                                  |
+-- |
+-- |                                                                                  |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       17-dec-18    Priyam Parmar       Initial DRAFT version                |
+-- |                                                                                  |
+-- +==================================================================================+
+
+--+=====================================================================+
+--+               CREATE TABLE XX_CE_EBAY_CA_DTL_STG_ARCH
+--+=====================================================================+
+
+
+  CREATE TABLE XX_CE_EBAY_CA_DTL_STG_ARCH as SELECT * FROM XX_CE_EBAY_CA_DTL_STG WHERE 1=2;
+
+ 
+ 
+ Grant  all on XX_CE_EBAY_CA_DTL_STG_ARCH to APPS;
+
+   /
+Show error

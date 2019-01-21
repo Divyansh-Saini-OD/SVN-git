@@ -1,0 +1,22 @@
+----------------------------------------------------------------------------------
+-- Program Name: XXAPDISTR_DROP.idx
+-- Purpose:      Drop custom indexes for Payables Accounting Process
+--
+-- REVISIONS:
+-- Version Date        Author                               Description
+-- ------- ----------- ------------------------------------ ---------------------
+-- 1.0     14-AUG-2008 Sandeep Pandhare										   Created base version.
+-- 
+----------------------------------------------------------------------------------/
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+drop index xxfin.xxAP_CHRG_ALLOCATIONS_N1;
+
+drop index xxfin.xxAP_INVOICE_DISTRIBUTIONS_n1;
+
+SHOW ERROR
+

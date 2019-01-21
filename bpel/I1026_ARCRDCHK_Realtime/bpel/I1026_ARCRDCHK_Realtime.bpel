@@ -1,0 +1,431 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Tue Feb 27 15:29:01 EST 2007
+  Author:  joe-klein
+  Purpose: Empty BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="I1026_ARCRDCHK_Realtime"
+         targetNamespace="http://xmlns.oracle.com/I1026_ARCRDCHK_Realtime"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns4="http://TargetNamespace.com/plReadRequest"
+         xmlns:ns7="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_AR_CREDIT_CHECK_PKG/CREDIT_CHECK/"
+         xmlns:client="http://xmlns.oracle.com/I1026_ARCRDCHK_Realtime"
+         xmlns:ns6="http://TargetNamespace.com/plWriteResponse"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ns11="http://xmlns.oracle.com/pcbpel/adapter/mq/headersvcNotifyMQPut/"
+         xmlns:ns9="http://xmlns.oracle.com/ODTransactionLogger"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/mq/headersvcMQGet/"
+         xmlns:ehdr="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/plCallPLSQLAPI/"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/mq/headersvcMQPut/"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:ns10="http://xmlns.oracle.com/TransactionData"
+         xmlns:ns8="ODError">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <partnerLink myRole="Dequeue_role" name="svcMQGet"
+                 partnerLinkType="ns1:Dequeue_plt"/>
+    <partnerLink name="svcMQPut" partnerRole="Enqueue_role"
+                 partnerLinkType="ns2:Enqueue_plt"/>
+    <partnerLink name="plCallPLSQLAPI" partnerRole="plCallPLSQLAPI_role"
+                 partnerLinkType="ns3:plCallPLSQLAPI_plt"/>
+    <partnerLink myRole="ODErrorLoggerRequester" name="ODErrorLogger"
+                 partnerRole="ODErrorLoggerProvider"
+                 partnerLinkType="ns7:ODErrorLogger"/>
+  </partnerLinks>
+  <variables>
+    <variable name="rcvMQMsg_Dequeue_InputVariable"
+              messageType="ns1:Root-Element_msg"/>
+    <variable name="invkPlSqlAPI_plCallPLSQLAPI_InputVariable"
+              messageType="ns3:args_in_msg"/>
+    <variable name="invkPlSqlAPI_plCallPLSQLAPI_OutputVariable"
+              messageType="ns3:args_out_msg"/>
+    <variable name="invkMQPutMsg_Enqueue_InputVariable"
+              messageType="ns2:Response_msg"/>
+    <variable name="OutputAPI" type="xsd:string"/>
+    <variable name="invkCatchAll_initiate"
+              messageType="ns7:ODErrorLoggerRequestMessage"/>
+    <variable name="ErrorMessageText" type="xsd:string"/>
+    <variable name="ProcessHeader" type="xsd:string"/>
+  </variables>
+  <faultHandlers>
+    <catchAll>
+      <sequence name="Sequence_4">
+        <assign name="asnCatchAll">
+          <copy>
+            <from expression="'Error encountered in Process I1026_ARCRDCHK_Realtime'"/>
+            <to variable="ErrorMessageText"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessId()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns8:ErrorData/ns8:ProcessInfo/ns8:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns8:ErrorData/ns8:ProcessInfo/ns8:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns8:ErrorData/ns8:ProcessInfo/ns8:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns8:ErrorData/ns8:ProcessInfo/ns8:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-dateTime()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns8:ErrorData/ns8:ErrorDetails/ns8:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="'Catch All on the Main Sequence'"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns8:ErrorData/ns8:ProcessInfo/ns8:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from expression="ora:getFaultName()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns8:ErrorData/ns8:ErrorDetails/ns8:ErrorCode"/>
+          </copy>
+          <copy>
+            <from variable="ErrorMessageText"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns8:ErrorData/ns8:ErrorDetails/ns8:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from expression="ora:getFaultAsString()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns8:ErrorData/ns8:ErrorDetails/ns8:ErrorText"/>
+          </copy>
+          <copy>
+            <from expression="'system'"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns8:ErrorData/ns8:ErrorDetails/ns8:ErrorType"/>
+          </copy>
+          <copy>
+            <from expression="'fatal'"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns8:ErrorData/ns8:ErrorDetails/ns8:ErrorSeverity"/>
+          </copy>
+          <!--Commented for defect 3580 notification not being sent
+          <copy>
+            <from expression="ora:doc('${server_url}/xmllib/fin/GlobalParameters.xml','/GlobalParameters/FaultNotification/SendNotification')"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns8:ErrorData/ns8:Notification/ns8:sendNotification"/>
+          </copy>-->
+          <!--Added for 3580-->
+          <copy>
+            <from expression="ora:getPreference('sendNotification')"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns8:ErrorData/ns8:Notification/ns8:sendNotification"/>
+          </copy>
+        </assign>
+        <invoke name="invkCatchAll" partnerLink="ODErrorLogger"
+                portType="ns7:ODErrorLogger" operation="initiate"
+                inputVariable="invkCatchAll_initiate"/>
+        <assign name="asnAPIErrOutput2Enq">
+          <copy>
+            <from variable="rcvMQMsg_Dequeue_InputVariable" part="Root-Element"
+                  query="/ns4:Root-Element/ns4:HEADER-AREA/ns4:HDR-DATE-TIME"/>
+            <to variable="invkMQPutMsg_Enqueue_InputVariable" part="Response"
+                query="/ns6:Response/ns6:HEADER-AREA/ns6:HDR-DATE-TIME"/>
+          </copy>
+          <copy>
+            <from variable="rcvMQMsg_Dequeue_InputVariable" part="Root-Element"
+                  query="/ns4:Root-Element/ns4:HEADER-AREA/ns4:HDR-EIBTASKN"/>
+            <to variable="invkMQPutMsg_Enqueue_InputVariable" part="Response"
+                query="/ns6:Response/ns6:HEADER-AREA/ns6:HDR-EIBTASKN"/>
+          </copy>
+          <copy>
+            <from variable="rcvMQMsg_Dequeue_InputVariable" part="Root-Element"
+                  query="/ns4:Root-Element/ns4:HEADER-AREA/ns4:HDR-TERMID"/>
+            <to variable="invkMQPutMsg_Enqueue_InputVariable" part="Response"
+                query="/ns6:Response/ns6:HEADER-AREA/ns6:HDR-TERMID"/>
+          </copy>
+          <copy>
+            <from variable="rcvMQMsg_Dequeue_InputVariable" part="Root-Element"
+                  query="/ns4:Root-Element/ns4:HEADER-AREA/ns4:HDR-TRANID"/>
+            <to variable="invkMQPutMsg_Enqueue_InputVariable" part="Response"
+                query="/ns6:Response/ns6:HEADER-AREA/ns6:HDR-TRANID"/>
+          </copy>
+          <copy>
+            <from variable="rcvMQMsg_Dequeue_InputVariable" part="Root-Element"
+                  query="/ns4:Root-Element/ns4:HEADER-AREA/ns4:HDR-SYSID"/>
+            <to variable="invkMQPutMsg_Enqueue_InputVariable" part="Response"
+                query="/ns6:Response/ns6:HEADER-AREA/ns6:HDR-SYSID"/>
+          </copy>
+          <copy>
+            <from variable="rcvMQMsg_Dequeue_InputVariable" part="Root-Element"
+                  query="/ns4:Root-Element/ns4:HEADER-AREA/ns4:HDR-PROG"/>
+            <to variable="invkMQPutMsg_Enqueue_InputVariable" part="Response"
+                query="/ns6:Response/ns6:HEADER-AREA/ns6:HDR-PROG"/>
+          </copy>
+          <copy>
+            <from variable="rcvMQMsg_Dequeue_InputVariable" part="Root-Element"
+                  query="/ns4:Root-Element/ns4:HEADER-AREA/ns4:HDR-TSQNAME"/>
+            <to variable="invkMQPutMsg_Enqueue_InputVariable" part="Response"
+                query="/ns6:Response/ns6:HEADER-AREA/ns6:HDR-TSQNAME"/>
+          </copy>
+          <copy>
+            <from expression="'95'"/>
+            <to variable="invkMQPutMsg_Enqueue_InputVariable" part="Response"
+                query="/ns6:Response/ns6:RESPONSE-AREA/ns6:RES-ACTION-CODE"/>
+          </copy>
+          <copy>
+            <from expression="'95'"/>
+            <to variable="invkMQPutMsg_Enqueue_InputVariable" part="Response"
+                query="/ns6:Response/ns6:RESPONSE-AREA/ns6:RES-PROVIDER-RESPONSE"/>
+          </copy>
+          <copy>
+            <from expression="'Declined - EBS is down for maintenance'"/>
+            <to variable="invkMQPutMsg_Enqueue_InputVariable" part="Response"
+                query="/ns6:Response/ns6:RESPONSE-AREA/ns6:RES-MESSAGE"/>
+          </copy>
+        </assign>
+        <scope name="Scope_1">
+          <sequence name="Sequence_9">
+            <assign name="initializeInstanceTitle">
+              <copy>
+                <from expression="substring(concat(bpws:getVariableData('ProcessHeader'),',',bpws:getVariableData('invkPlSqlAPI_plCallPLSQLAPI_OutputVariable','OutputParameters','/ns5:OutputParameters/ns5:P_RESPONSE_TEXT')),1,50)"/>
+                <to variable="ProcessHeader"/>
+              </copy>
+            </assign>
+            <bpelx:exec name="setTitle" language="java" version="1.3">
+              <![CDATA[/*Write your java code below e.g.  
+	System.out.println("Hello, World"); 
+*/ 
+try {              
+  String title = (String)getVariableData("ProcessHeader");              
+  setTitle(title);              
+  addAuditTrailEntry(title) ;              
+} catch (Exception ex) {              
+  addAuditTrailEntry(ex.toString());              
+  ex.printStackTrace();              
+}]]>
+            </bpelx:exec>
+          </sequence>
+        </scope>
+        <invoke name="invksvcNotifyMQPutMsg" portType="ns2:Enqueue_ptt"
+                inputVariable="invkMQPutMsg_Enqueue_InputVariable"
+                partnerLink="svcMQPut" operation="Enqueue"/>
+        <terminate name="Terminate"/>
+      </sequence>
+    </catchAll>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="I1026_ARCRDCHK_Realtime_main">
+    <receive name="rcvMQMsg" partnerLink="svcMQGet" portType="ns1:Dequeue_ptt"
+             operation="Dequeue" variable="rcvMQMsg_Dequeue_InputVariable"
+             createInstance="yes"/>
+    <scope name="ScopeInitialize">
+      <sequence name="Sequence_10">
+        <assign name="initializeInstanceTitleAtStart">
+          <copy>
+            <from expression="substring(concat('S:',bpws:getVariableData('rcvMQMsg_Dequeue_InputVariable','Root-Element','/ns4:Root-Element/ns4:REQUEST-AREA/ns4:REQ-STORE'),'R:',bpws:getVariableData('rcvMQMsg_Dequeue_InputVariable','Root-Element','/ns4:Root-Element/ns4:REQUEST-AREA/ns4:REQ-REGISTER'),'O:',bpws:getVariableData('rcvMQMsg_Dequeue_InputVariable','Root-Element','/ns4:Root-Element/ns4:REQUEST-AREA/ns4:REQ-ORDER'),bpws:getVariableData('rcvMQMsg_Dequeue_InputVariable','Root-Element','/ns4:Root-Element/ns4:REQUEST-AREA/ns4:REQ-ORDER-SUB'),'A:',bpws:getVariableData('rcvMQMsg_Dequeue_InputVariable','Root-Element','/ns4:Root-Element/ns4:REQUEST-AREA/ns4:REQ-ACCOUNT')),1,50)"/>
+            <to variable="ProcessHeader"/>
+          </copy>
+        </assign>
+        <bpelx:exec name="setTitleBegin" language="java" version="1.3">
+          <![CDATA[/*Write your java code below e.g.  
+	System.out.println("Hello, World"); 
+*/ 
+ 
+try {                
+  String title = (String)getVariableData("ProcessHeader");                
+  setTitle(title);                
+  addAuditTrailEntry(title) ;                
+} catch (Exception ex) {                
+  addAuditTrailEntry(ex.toString());                
+  ex.printStackTrace();                
+}]]>
+        </bpelx:exec>
+      </sequence>
+    </scope>
+    <assign name="asnPlSqlInput">
+      <copy>
+        <from variable="rcvMQMsg_Dequeue_InputVariable" part="Root-Element"
+              query="/ns4:Root-Element/ns4:REQUEST-AREA/ns4:REQ-ACCOUNT"/>
+        <to variable="invkPlSqlAPI_plCallPLSQLAPI_InputVariable"
+            part="InputParameters"
+            query="/ns5:InputParameters/ns5:P_ACCOUNT_NUM"/>
+      </copy>
+      <copy>
+        <from expression="number(bpws:getVariableData('rcvMQMsg_Dequeue_InputVariable','Root-Element','/ns4:Root-Element/ns4:REQUEST-AREA/ns4:REQ-AMOUNT'))"/>
+        <to variable="invkPlSqlAPI_plCallPLSQLAPI_InputVariable"
+            part="InputParameters" query="/ns5:InputParameters/ns5:P_AMT"/>
+      </copy>
+      <copy>
+        <from variable="rcvMQMsg_Dequeue_InputVariable" part="Root-Element"
+              query="/ns4:Root-Element/ns4:REQUEST-AREA/ns4:REQ-STORE"/>
+        <to variable="invkPlSqlAPI_plCallPLSQLAPI_InputVariable"
+            part="InputParameters"
+            query="/ns5:InputParameters/ns5:P_STORE_NUM"/>
+      </copy>
+      <copy>
+        <from variable="rcvMQMsg_Dequeue_InputVariable" part="Root-Element"
+              query="/ns4:Root-Element/ns4:REQUEST-AREA/ns4:REQ-REGISTER"/>
+        <to variable="invkPlSqlAPI_plCallPLSQLAPI_InputVariable"
+            part="InputParameters"
+            query="/ns5:InputParameters/ns5:P_REGISTER_NUM"/>
+      </copy>
+      <copy>
+        <from variable="rcvMQMsg_Dequeue_InputVariable" part="Root-Element"
+              query="/ns4:Root-Element/ns4:REQUEST-AREA/ns4:REQ-SALE-TRAN"/>
+        <to variable="invkPlSqlAPI_plCallPLSQLAPI_InputVariable"
+            part="InputParameters"
+            query="/ns5:InputParameters/ns5:P_SALE_TRAN"/>
+      </copy>
+      <copy>
+        <from variable="rcvMQMsg_Dequeue_InputVariable" part="Root-Element"
+              query="/ns4:Root-Element/ns4:REQUEST-AREA/ns4:REQ-ORDER"/>
+        <to variable="invkPlSqlAPI_plCallPLSQLAPI_InputVariable"
+            part="InputParameters"
+            query="/ns5:InputParameters/ns5:P_ORDER_NUM"/>
+      </copy>
+      <copy>
+        <from variable="rcvMQMsg_Dequeue_InputVariable" part="Root-Element"
+              query="/ns4:Root-Element/ns4:REQUEST-AREA/ns4:REQ-ORDER-SUB"/>
+        <to variable="invkPlSqlAPI_plCallPLSQLAPI_InputVariable"
+            part="InputParameters"
+            query="/ns5:InputParameters/ns5:P_SUB_ORDER_NUM"/>
+      </copy>
+      <copy>
+        <from variable="rcvMQMsg_Dequeue_InputVariable" part="Root-Element"
+              query="/ns4:Root-Element/ns4:REQUEST-AREA/ns4:REQ-AMOUNT"/>
+        <to variable="invkPlSqlAPI_plCallPLSQLAPI_InputVariable"
+            part="InputParameters" query="/ns5:InputParameters/ns5:P_AMT"/>
+      </copy>
+    </assign>
+    <scope name="ScopeInvkPlSql">
+      <invoke name="invkPlSqlAPI" partnerLink="plCallPLSQLAPI"
+              portType="ns3:plCallPLSQLAPI_ptt" operation="plCallPLSQLAPI"
+              inputVariable="invkPlSqlAPI_plCallPLSQLAPI_InputVariable"
+              outputVariable="invkPlSqlAPI_plCallPLSQLAPI_OutputVariable"/>
+    </scope>
+    <scope name="Scope_1">
+      <sequence name="Sequence_5">
+        <assign name="initializeInstanceTitle">
+          <copy>
+            <from expression="substring(concat(bpws:getVariableData('ProcessHeader'),',',bpws:getVariableData('invkPlSqlAPI_plCallPLSQLAPI_OutputVariable','OutputParameters','/ns5:OutputParameters/ns5:P_RESPONSE_TEXT')),1,50)"/>
+            <to variable="ProcessHeader"/>
+          </copy>
+        </assign>
+        <bpelx:exec name="setTitle" language="java" version="1.3">
+          <![CDATA[/*Write your java code below e.g.  
+	System.out.println("Hello, World"); 
+*/ 
+try {              
+  String title = (String)getVariableData("ProcessHeader");              
+  setTitle(title);              
+  addAuditTrailEntry(title) ;              
+} catch (Exception ex) {              
+  addAuditTrailEntry(ex.toString());              
+  ex.printStackTrace();              
+}]]>
+        </bpelx:exec>
+      </sequence>
+    </scope>
+    <assign name="asnAPIOutput2Enq">
+      <copy>
+        <from variable="rcvMQMsg_Dequeue_InputVariable" part="Root-Element"
+              query="/ns4:Root-Element/ns4:HEADER-AREA/ns4:HDR-DATE-TIME"/>
+        <to variable="invkMQPutMsg_Enqueue_InputVariable" part="Response"
+            query="/ns6:Response/ns6:HEADER-AREA/ns6:HDR-DATE-TIME"/>
+      </copy>
+      <copy>
+        <from variable="rcvMQMsg_Dequeue_InputVariable" part="Root-Element"
+              query="/ns4:Root-Element/ns4:HEADER-AREA/ns4:HDR-EIBTASKN"/>
+        <to variable="invkMQPutMsg_Enqueue_InputVariable" part="Response"
+            query="/ns6:Response/ns6:HEADER-AREA/ns6:HDR-EIBTASKN"/>
+      </copy>
+      <copy>
+        <from variable="rcvMQMsg_Dequeue_InputVariable" part="Root-Element"
+              query="/ns4:Root-Element/ns4:HEADER-AREA/ns4:HDR-TERMID"/>
+        <to variable="invkMQPutMsg_Enqueue_InputVariable" part="Response"
+            query="/ns6:Response/ns6:HEADER-AREA/ns6:HDR-TERMID"/>
+      </copy>
+      <copy>
+        <from variable="rcvMQMsg_Dequeue_InputVariable" part="Root-Element"
+              query="/ns4:Root-Element/ns4:HEADER-AREA/ns4:HDR-TRANID"/>
+        <to variable="invkMQPutMsg_Enqueue_InputVariable" part="Response"
+            query="/ns6:Response/ns6:HEADER-AREA/ns6:HDR-TRANID"/>
+      </copy>
+      <copy>
+        <from variable="rcvMQMsg_Dequeue_InputVariable" part="Root-Element"
+              query="/ns4:Root-Element/ns4:HEADER-AREA/ns4:HDR-SYSID"/>
+        <to variable="invkMQPutMsg_Enqueue_InputVariable" part="Response"
+            query="/ns6:Response/ns6:HEADER-AREA/ns6:HDR-SYSID"/>
+      </copy>
+      <copy>
+        <from variable="rcvMQMsg_Dequeue_InputVariable" part="Root-Element"
+              query="/ns4:Root-Element/ns4:HEADER-AREA/ns4:HDR-PROG"/>
+        <to variable="invkMQPutMsg_Enqueue_InputVariable" part="Response"
+            query="/ns6:Response/ns6:HEADER-AREA/ns6:HDR-PROG"/>
+      </copy>
+      <copy>
+        <from variable="rcvMQMsg_Dequeue_InputVariable" part="Root-Element"
+              query="/ns4:Root-Element/ns4:HEADER-AREA/ns4:HDR-TSQNAME"/>
+        <to variable="invkMQPutMsg_Enqueue_InputVariable" part="Response"
+            query="/ns6:Response/ns6:HEADER-AREA/ns6:HDR-TSQNAME"/>
+      </copy>
+      <copy>
+        <from variable="invkPlSqlAPI_plCallPLSQLAPI_OutputVariable"
+              part="OutputParameters"
+              query="/ns5:OutputParameters/ns5:P_RESPONSE_ACT"/>
+        <to variable="invkMQPutMsg_Enqueue_InputVariable" part="Response"
+            query="/ns6:Response/ns6:RESPONSE-AREA/ns6:RES-ACTION-CODE"/>
+      </copy>
+      <copy>
+        <from variable="invkPlSqlAPI_plCallPLSQLAPI_OutputVariable"
+              part="OutputParameters"
+              query="/ns5:OutputParameters/ns5:P_RESPONSE_CODE"/>
+        <to variable="invkMQPutMsg_Enqueue_InputVariable" part="Response"
+            query="/ns6:Response/ns6:RESPONSE-AREA/ns6:RES-PROVIDER-RESPONSE"/>
+      </copy>
+      <copy>
+        <from variable="invkPlSqlAPI_plCallPLSQLAPI_OutputVariable"
+              part="OutputParameters"
+              query="/ns5:OutputParameters/ns5:P_RESPONSE_TEXT"/>
+        <to variable="invkMQPutMsg_Enqueue_InputVariable" part="Response"
+            query="/ns6:Response/ns6:RESPONSE-AREA/ns6:RES-MESSAGE"/>
+      </copy>
+    </assign>
+    <invoke name="invkMQPutMsg" partnerLink="svcMQPut"
+            portType="ns2:Enqueue_ptt" operation="Enqueue"
+            inputVariable="invkMQPutMsg_Enqueue_InputVariable"/>
+  </sequence>
+</process>

@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<page xmlns="http://xmlns.oracle.com/uix/controller"
+      xmlns:ui="http://xmlns.oracle.com/uix/ui"
+      xmlns:bibeans="http://xmlns.oracle.com/bibeans"
+      xmlns:template="http://xmlns.oracle.com/discoverer/templates"
+      xmlns:html="http://www.w3.org/TR/REC-html40"
+      xmlns:disco="http://www.oracle.com/discoverer"
+      expressionLanguage="el">
+  <templates xmlns="http://xmlns.oracle.com/uix/ui">
+    <templateImport source="/templates/CommonPage.uit"/>
+    <templateImport source="/templates/Document.uit"/>
+  </templates>
+  <content>
+    <dataScope xmlns="http://xmlns.oracle.com/uix/ui" xmlns:data="http://xmlns.oracle.com/uix/ui">
+      <provider>
+        <data name="nls">
+          <bundle class="oracle.discoverer.applications.viewer.resources.ApplicationResources" />
+        </data>
+        <data name="constants">
+          <method class="oracle.discoverer.applications.viewer.view.dataprovider.ConstantsMapping" method="getConstants" />
+        </data>
+      </provider>
+      <contents>
+        <template:documentTemplate pageTitle="${uix.eventResult.worksheetName}" allowCaching="true">
+          <contents>
+          <body>
+          <contents>
+          
+            <template:commonPageLayout helpID="disco_vw_worksheet" prefReturnDestination="worksheet">
+              <boundAttribute name="title">
+                <concat>
+                  <dataObject default="${uix.eventResult.workbookName}" />
+                  &nbsp;-&nbsp;
+                  <dataObject default="${uix.eventResult.worksheetName}" />
+                </concat>
+              </boundAttribute>
+              
+              <pageStatus>
+                <flowLayout rendered="${uix.eventResult.lastRunLabelRendered}">
+                  <contents>
+                    <styledText styleClass="OraPageStampText" text="${uix.data.nls['worksheet.text.lastRun']}" />
+                    <styledText styleClass="OraPageStampLabel" text="${uix.eventResult.queryLastRunTime}"/>
+                  </contents>
+                </flowLayout>
+              </pageStatus>
+              <userInfo>
+                <flowLayout rendered="${uix.eventResult.connectedUserRendered}">
+                  <contents>
+                    <styledText styleClass="OraPageStampText" text="${uix.data.nls['logged.in']}" />
+                    <styledText styleClass="OraPageStampLabel" text="${uix.eventResult.connectedUser}" />
+                  </contents>
+                </flowLayout>
+              </userInfo>
+              <contents>
+                <html:noscript>
+                  <styledText styleClass="OraInstructionText" text="${uix.data.nls['text.noscript']}" />
+                </html:noscript>
+                <rowLayout width="100%">
+                  <contents>
+                    <cellFormat width="15%" vAlign="top">
+                      <contents>
+                        <spacer width="1" height="9" />
+                        <contentContainer width="100%"   text="${uix.data.nls['worksheet.text.actions']}"  rendered="${uix.eventResult.actionsRendered}">
+                          <contents>
+                          <tableLayout  summary="">
+                          <contents>
+                            <rowLayout>
+                              <contents>
+                                <cellFormat wrappingDisabled="true" >
+                                <contents>
+                                <link text="${uix.data.nls['worksheet.text.rerunQuery']}" shortDesc="${uix.data.nls['worksheet.text.rerunQuery']}" rendered="${uix.eventResult.rerunRendered}">
+                                  <boundAttribute name="destination">
+                                    <concat>
+                                      javascript:discoSWP('aForm','
+                                      <contextProperty select="ui:contextURI" />
+                                      <dataObject select="ACTION_SERVLET" source="constants" />
+                                      grid?event=rerunQuery');
+                                    </concat>
+                                  </boundAttribute>
+                                </link>
+                                </contents>
+                                </cellFormat>
+                              </contents>
+                            </rowLayout>
+                            <rowLayout>
+                              <contents>
+                                <cellFormat wrappingDisabled="true" >
+                                <contents>
+                                <link   id="save" text="${uix.data.nls['worksheet.text.save']}" shortDesc="${uix.data.nls['worksheet.text.save']}" disabled="${uix.eventResult.saveDisabled}" rendered="${uix.eventResult.saveRendered}" >
+                                  <boundAttribute name="destination">
+                                    <concat>
+                                      javascript:discoSWP('aForm','
+                                      <contextProperty select="ui:contextURI" />
+                                      <dataObject select="ACTION_SERVLET" source="constants" />
+                                      save?event=save');
+                                    </concat>
+                                  </boundAttribute>
+                                </link>
+                                </contents>
+                                </cellFormat>
+                              </contents>
+                            </rowLayout>
+                            <rowLayout>
+                              <contents>
+                                <cellFormat wrappingDisabled="true" >
+                                <contents>
+                                <link   id="saveas" text="${uix.data.nls['worksheet.text.saveAs']}" shortDesc="${uix.data.nls['worksheet.text.saveAs']}" disabled="${uix.eventResult.saveDisabled}" rendered="${uix.eventResult.saveAsRendered}" >
+                                  <boundAttribute name="destination">
+                                    <concat>
+                                      javascript:discoSWP('aForm','
+                                      <contextProperty select="ui:contextURI" />
+                                      <dataObject select="ACTION_SERVLET" source="constants" />
+                                      save?event=saveas');
+                                    </concat>
+                                  </boundAttribute>
+                                </link>
+                                </contents>
+                                </cellFormat>
+                              </contents>
+                            </rowLayout>
+                            <rowLayout>
+                              <contents>
+                                <cellFormat wrappingDisabled="true" >
+                                <contents>
+                                <link   id="revert" text="${ui:cond(uix.eventResult.notPortalMode eq 'true',uix.data.nls['worksheet.text.revert'],uix.data.nls['worksheet.text.revertPortal'])}" shortDesc="${ui:cond(uix.eventResult.notPortalMode eq 'true',uix.data.nls['worksheet.text.revert'],uix.data.nls['worksheet.text.revertPortal'])}" rendered="${uix.eventResult.revertRendered}" >
+                                  <boundAttribute name="destination">
+                                    <concat>
+                                      javascript:discoSWP('aForm','
+                                      <contextProperty select="ui:contextURI" />
+                                      <dataObject select="ACTION_SERVLET" source="constants" />
+                                      grid?event=revert');
+                                    </concat>
+                                  </boundAttribute>
+                                </link>
+                                </contents>
+                                </cellFormat>
+                              </contents>
+                            </rowLayout>
+                            <rowLayout>
+                              <contents>
+                                <cellFormat wrappingDisabled="true" >
+                                <contents>
+                                <link   id="pdfopt" disabled="${uix.eventResult.printOptionsDisabled}" rendered="${uix.eventResult.printOptionsRendered}" text="${uix.data.nls['worksheet.text.printablePageOptions']}" shortDesc="${uix.data.nls['worksheet.text.printablePageOptions']}" >
+                                  <boundAttribute name="destination">
+                                    <concat>
+                                      javascript:discoSWP('aForm','
+                                      <contextProperty select="ui:contextURI" />
+                                      <dataObject select="ACTION_SERVLET" source="constants" />
+                                      pdf?event=DisplayPDFOptions&amp;checkpoint=true');
+                                    </concat>
+                                  </boundAttribute>
+                                </link>
+                                </contents>
+                                </cellFormat>
+                              </contents>
+                            </rowLayout>
+                            <rowLayout>
+                              <contents>
+                                <cellFormat wrappingDisabled="true" >
+                                <contents>
+                                <link   id="export" text="${uix.data.nls['worksheet.text.export']}" shortDesc="${uix.data.nls['worksheet.text.export']}" disabled="${uix.eventResult.exportDisabled}" rendered="${uix.eventResult.exportRendered}" >
+                                  <boundAttribute name="destination">
+                                    <concat>
+                                      javascript:discoSWP('aForm','
+                                      <contextProperty select="ui:contextURI" />
+                                      <dataObject select="ACTION_SERVLET" source="constants" />
+                                      export?event=startExport');
+                                    </concat>
+                                  </boundAttribute>
+                                </link>
+                                </contents>
+                                </cellFormat>
+                              </contents>
+                            </rowLayout>
+                            <rowLayout>
+                              <contents>
+                                <cellFormat wrappingDisabled="true" >
+                                <contents>
+                                <link   id="email" rendered="${uix.eventResult.emailRendered}" shortDesc="${uix.data.nls['worksheet.text.sendEmail']}" disabled="${uix.eventResult.emailDisabled}" text="${uix.data.nls['worksheet.text.sendEmail']}" >
+                                  <boundAttribute name="destination">
+                                    <concat>
+                                      javascript:discoSWP('aForm','
+                                      <contextProperty select="ui:contextURI" />
+                                      <dataObject select="ACTION_SERVLET" source="constants" />
+                                      export?event=startEmail');
+                                    </concat>
+                                  </boundAttribute>
+                                </link>
+                                </contents>
+                                </cellFormat>
+                              </contents>
+                            </rowLayout>
+                            <rowLayout>
+                              <contents>
+                                <cellFormat wrappingDisabled="true" >
+                                <contents>
+                                <link   id="wkshtopt" text="${uix.data.nls['worksheet.text.worksheetOptions']}" rendered="${uix.eventResult.worksheetOptionsRendered}" shortDesc="${uix.data.nls['worksheet.text.worksheetOptions']}" >
+                                  <boundAttribute name="destination">
+                                    <concat>
+                                      javascript:discoSWP('aForm','
+                                      <contextProperty select="ui:contextURI" />
+                                      <dataObject select="ACTION_SERVLET" source="constants" />
+                                      grid?event=displayWorksheetOptions');
+                                    </concat>
+                                  </boundAttribute>
+                                </link>
+                                </contents>
+                                </cellFormat>
+                              </contents>
+                            </rowLayout>
+                            <rowLayout>
+                              <contents>
+                                <cellFormat wrappingDisabled="true" >
+                                <contents>
+                                <link   id="linklayout" shortDesc="${uix.data.nls['worksheet.text.linkLayout']}" text="${uix.data.nls['worksheet.text.linkLayout']}" rendered="${uix.eventResult.linkLayoutRendered}" >
+                                  <boundAttribute name="destination">
+                                    <concat>
+                                      javascript:discoSWP('aForm','
+                                      <contextProperty select="ui:contextURI" />
+                                      <dataObject select="ACTION_SERVLET" source="constants" />
+                                      grid?event=linkLayout');
+                                    </concat>
+                                  </boundAttribute>
+                                </link>
+                                </contents>
+                                </cellFormat>
+                              </contents>
+                            </rowLayout>
+                            <rowLayout>
+                              <contents>
+                                <cellFormat wrappingDisabled="true" >
+                                <contents>
+                                <link   id="unlinklayout" text="${uix.data.nls['worksheet.text.unLinkLayout']}" shortDesc="${uix.data.nls['worksheet.text.unLinkLayout']}" rendered="${uix.eventResult.unlinkLayoutRendered}" >
+                                  <boundAttribute name="destination">
+                                    <concat>
+                                      javascript:discoSWP('aForm','
+                                      <contextProperty select="ui:contextURI" />
+                                      <dataObject select="ACTION_SERVLET" source="constants" />
+                                      grid?event=unlinkLayout');
+                                    </concat>
+                                  </boundAttribute>
+                                </link>
+                                </contents>
+                                </cellFormat>
+                              </contents>
+                            </rowLayout>
+                            </contents>
+                            </tableLayout>
+                          </contents>
+                        </contentContainer>
+                        <spacer width="0" height="8" />
+                        <contentContainer width="100%" rendered="${uix.eventResult.worksheetsRendered}" text="${uix.data.nls['worksheet.text.worksheets']}">
+                          <contents>
+                            <form id="WorkbookListForm" name="WorkbookListForm" method="POST">
+                              <contents>
+                                <tableLayout summary="">
+                                  <contents childData="${uix.eventResult.worksheets}">
+                                    <rowLayout>
+                                      <contents>
+                                        <cellFormat wrappingDisabled="true">
+                                          <contents>
+                                            <styledText shortDesc="${uix.current.overlayText}" styleClass="OraInstructionText" rendered="${uix.current.currWorksheet}" text="${uix.current.text}"/>
+                                            <link shortDesc="${uix.current.overlayText}" rendered="${uix.current.currWorksheet ne 'true'}" destination="${uix.current.destination}" text="${uix.current.text}"/>
+                                          </contents>
+                                        </cellFormat>
+                                      </contents>
+                                    </rowLayout>
+                                  </contents>
+                                </tableLayout>
+                                <formValue id="stateStrID3" name="${uix.data.constants.STATE_STRING_PARAM}"   rendered="${uix.eventResult.stateExists}" value="${uix.eventResult.stateStr}"/>
+                                <formValue id="stateID3" name="${uix.data.constants.STATE_STORE_ID_PARAM}"   rendered="${uix.eventResult.stateIDExists}" value="${uix.eventResult.stateID}"/>
+                              </contents>
+                            </form>
+                          </contents>
+                        </contentContainer>
+                      </contents>
+                    </cellFormat>
+                    <cellFormat width="75%" vAlign="top">
+                      <contents>
+                        <stackLayout>
+                          <contents>
+                            <spacer width="1" height="9" rendered="${uix.eventResult.titleRendered}"/>
+                            <rowLayout width="100%" rendered="${uix.eventResult.titleRendered}">
+                              <contents>
+                                <tableLayout width="100%"  summary="">
+                                  <contents>
+                                    <rowLayout hAlign="left" width="68%">
+                                      <contents>
+                                        <rawText text="&lt;td width=20&gt; &lt;script&gt;t(20,1)&lt;/script&gt; &lt;td&gt;" />
+                                        <rawText text="${uix.eventResult.worksheetTitle}" />
+                                      </contents>
+                                    </rowLayout>
+                                  </contents>
+                                </tableLayout>
+                              </contents>
+                            </rowLayout>
+                            <form destination="/discoverer/app/parameters" name="parametersForm" method="POST">
+                              <boundAttribute name="destination">
+                                <concat>
+                                  <contextProperty select="ui:contextURI" />
+                                  <dataObject select="ACTION_SERVLET" source="constants" />
+                                  parameters
+                                </concat>
+                              </boundAttribute>
+                              <contents>
+                              	<hideShowHeader formSubmitted="true" id="${uix.data.constants.PARAMETERS_HIDE_SHOW}" name="${uix.data.constants.PARAMETERS_HIDE_SHOW}"     disclosed="${uix.eventResult.paramshs}" rendered="${uix.eventResult.parametersRendered}" text="${uix.data.nls['text.parameters']}">
+                              	  <contents>
+                                    <bibeans:parameters   biParameters="${uix.eventResult.params}"/>
+                                    <button textAndAccessKey="${uix.data.nls['button.go']}" shortDesc="${uix.data.nls['text.go']}" onClick="paramsbi_selectParams();" disabled="${uix.eventResult.isAllParamsDisabled}"/>
+                                  </contents>
+                                </hideShowHeader>
+                                <formValue id="stateStrID2" name="${uix.data.constants.STATE_STRING_PARAM}"   rendered="${uix.eventResult.stateExists}" value="${uix.eventResult.stateStr}"/>
+                                <formValue id="stateID2" name="${uix.data.constants.STATE_STORE_ID_PARAM}"   rendered="${uix.eventResult.stateIDExists}" value="${uix.eventResult.stateID}"/>
+                              </contents>
+                            </form>
+                            <form name="gridForm" method="POST">
+                              <boundAttribute name="destination">
+                                <concat>
+                                  <contextProperty select="ui:contextURI" />
+                                  <dataObject select="ACTION_SERVLET" source="constants" />
+                                  grid
+                                </concat>
+                              </boundAttribute>
+                              <contents>
+                                <hideShowHeader formSubmitted="true" id="${uix.data.constants.GRAPH_GRID_HIDE_SHOW}" name="${uix.data.constants.GRAPH_GRID_HIDE_SHOW}"     disclosed="${uix.eventResult.gdvhs}" rendered="${uix.eventResult.graphAbove}" text="${uix.data.nls[uix.eventResult.graphviewType]}">
+                                  <contents>
+                                    <rowLayout rendered="${uix.eventResult.toolbarsRendered}" >
+                                      <contents>
+                                        <bibeans:viewToolbar   biViewToolbar="${uix.eventResult.gdvtb}"/>
+                                      </contents>
+                                    </rowLayout>
+                                    <separator rendered="${uix.eventResult.toolbarsRendered}" />
+                                    <disco:dummyImage thinView="${uix.eventResult.gdv}" imageSource="${ui:imageIcon(uix, 'http://www.oracle.com/discoverer', 'discovererDrillIcon').uri}"/>
+                                    <bibeans:presentation   biPresentation="${uix.eventResult.gdv}"/>
+                                  </contents>
+                                </hideShowHeader>
+                                <hideShowHeader formSubmitted="true" id="${uix.data.constants.GRID_HIDE_SHOW}" name="${uix.data.constants.GRID_HIDE_SHOW}"    disclosed="${uix.eventResult.dvhs}" rendered="${uix.eventResult.dataRendered}" text="${uix.data.nls[uix.eventResult.dataviewType]}">
+                                  <contents>
+                                    <rowLayout rendered="${uix.eventResult.toolbarsRendered}" >
+                                      <contents>
+                                        <formValue name="numberLocale" value="${uix.eventResult.numberLocale}" />
+                                        <bibeans:viewToolbar   biViewToolbar="${uix.eventResult.dvtb}"/>
+                                      </contents>
+                                    </rowLayout>
+                                    <separator rendered="${uix.eventResult.toolbarsRendered}" />
+                                    <disco:dummyImage thinView="${uix.eventResult.dv}" imageSource="${ui:imageIcon(uix, 'http://www.oracle.com/discoverer', 'discovererDrillIcon').uri}"/>
+                                    <bibeans:presentation   biPresentation="${uix.eventResult.dv}"/>
+                                  </contents>
+                                </hideShowHeader>
+                                <hideShowHeader formSubmitted="true" id="${uix.data.constants.GRAPH_GRID_HIDE_SHOW}" name="${uix.data.constants.GRAPH_GRID_HIDE_SHOW}"     disclosed="${uix.eventResult.gdvhs}" rendered="${uix.eventResult.graphBelow}" text="${uix.data.nls[uix.eventResult.graphviewType]}">
+                                  <contents>
+                                    <rowLayout rendered="${uix.eventResult.toolbarsRendered}" >
+                                      <contents>
+                                      <bibeans:viewToolbar   biViewToolbar="${uix.eventResult.gdvtb}"/>
+                                      </contents>
+                                    </rowLayout>
+                                    <separator rendered="${uix.eventResult.toolbarsRendered}" />
+                                    <disco:dummyImage thinView="${uix.eventResult.gdv}" imageSource="${ui:imageIcon(uix, 'http://www.oracle.com/discoverer', 'discovererDrillIcon').uri}"/>
+                                    <bibeans:presentation   biPresentation="${uix.eventResult.gdv}"/>
+                                  </contents>
+                                </hideShowHeader>
+                                <formValue id="stateStrID" name="${uix.data.constants.STATE_STRING_PARAM}"   rendered="${uix.eventResult.stateExists}" value="${uix.eventResult.stateStr}"/>
+                                <formValue id="stateID" name="${uix.data.constants.STATE_STORE_ID_PARAM}"   rendered="${uix.eventResult.stateIDExists}" value="${uix.eventResult.stateID}"/>
+                              </contents>
+                            </form>
+                            <spacer width="1" height="12" />
+                            <rowLayout width="100%" rendered="${uix.eventResult.textAreaRendered}">
+                              <contents>
+                              	<separator/>
+                                <tableLayout width="100%" summary="">
+                                  <contents>
+                                    <rowLayout hAlign="left" width="68%">
+                                      <contents>
+                                        <rawText text="&lt;td width=20&gt; &lt;script&gt;t(20,1)&lt;/script&gt; &lt;td&gt;" />
+                                        <rawText text="${uix.eventResult.worksheetTextArea}" />
+                                      </contents>
+                                    </rowLayout>
+                                  </contents>
+                                </tableLayout>
+                              </contents>
+                            </rowLayout>
+                          </contents>
+                        </stackLayout>
+                      </contents>
+                    </cellFormat>
+                  </contents>
+                </rowLayout>
+              </contents>
+            </template:commonPageLayout>
+            <form id="aForm" name="aForm" method="POST">
+              <contents>
+                <rawText   text="${uix.eventResult.concatScript}">
+                </rawText>
+                <formValue id="stateStrID4" name="${uix.data.constants.STATE_STRING_PARAM}"   rendered="${uix.eventResult.stateExists}" value="${uix.eventResult.stateStr}"/>
+                <formValue id="stateID4" name="${uix.data.constants.STATE_STORE_ID_PARAM}"   rendered="${uix.eventResult.stateIDExists}" value="${uix.eventResult.stateID}"/>
+              </contents>
+            </form>
+            </contents>
+            </body>
+          </contents>
+        </template:documentTemplate>
+      </contents>
+    </dataScope>
+  </content>
+  <handlers>
+    <event name="*">
+      <method class="oracle.discoverer.applications.viewer.view.dataprovider.WorksheetProxy" method="retrieveWorksheetData" />
+    </event>
+  </handlers>
+</page>

@@ -1,0 +1,17 @@
+-- +=========================================================================+
+-- |                     Office Depot - Project Simplify                     |
+-- +=========================================================================+
+-- | Name        : XX_CE_ACCRUAL_GLACT_DTL_U2.idx                            |
+-- | Rice ID     :                                                           |
+-- | Description : XX_CE_ACCRUAL_GLACT_DTL_U2.idx - Index Creation Script    |
+-- |                                                                         |
+-- |              					                                            |
+-- |Change Record:                                                           |
+-- |===============                                                          |
+-- |Version   Date        Author           Remarks                           |
+-- |=======  ===========  =============    ==================================|
+-- |1.0      26-Jan-2009  Subbu Pillai     Defect 12889                      |
+-- +=========================================================================+
+CREATE UNIQUE INDEX XXFIN.XX_CE_ACCRUAL_GLACT_DTL_U2 ON XX_CE_ACCRUAL_GLACT_DTL
+(HEADER_ID, CHARGE_CODE, COSTCENTER, LOCATION_FROM, LOCATION_TO, 
+CHARGE_DEBIT_ACT, EFFECTIVE_FROM_DATE, EFFECTIVE_TO_DATE);

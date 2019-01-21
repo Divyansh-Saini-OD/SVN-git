@@ -1,0 +1,19 @@
+//Groovy Scripts for od.tdmatch.model.reports.vo.XxApMatchRateDataVO
+
+package od.tdmatch.model.reports.vo
+
+import oracle.jbo.script.annotation.VariableExpression;
+
+@VariableExpression(path="P_date_to")
+def P_date_to_VariableScript_Variable()
+{
+adf.currentDBDate
+}
+
+
+@VariableExpression(path="P_date_from")
+def P_date_from_VariableScript_Variable()
+{
+adf.currentDBDate
+}
+

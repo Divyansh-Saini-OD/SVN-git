@@ -1,0 +1,32 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                         Oracle GSD                                       |
+-- +==========================================================================+
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- |                      TABLE: XX_AR_INTSTORECUST_OTC                       |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date          Author               Remarks                      |
+-- |=======   ===========   ================     =============================|
+-- | V1.0     26-APR-2011   Gaurav               Initial version              |
+-- |                                             Created for riceid 1350      |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE TABLE xxfin.xx_ar_intstorecust_otc(
+  cust_account_id               NUMBER(15)     NOT NULL
+ ,account_number                VARCHAR2(30)   NOT NULL
+ )
+ TABLESPACE XXOD_TS_DATA;
+
+exit;
+

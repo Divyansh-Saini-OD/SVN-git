@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1" xmlns:af="http://xmlns.oracle.com/adf/faces/rich">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <af:pageTemplateDef var="attrs" definition="private">
+        <af:xmlContent>
+            <component xmlns="http://xmlns.oracle.com/adf/faces/rich/component">
+                <description/>
+                <display-name>ODTradeMatchTemplate1</display-name>
+                <facet>
+                    <facet-name>DynamicRegion</facet-name>
+                </facet>
+                <facet>
+                    <facet-name>Page Header</facet-name>
+                </facet>
+                <attribute>
+                    <attribute-name>pageHeader</attribute-name>
+                    <attribute-class>java.lang.String</attribute-class>
+                </attribute>
+            </component>
+        </af:xmlContent>
+        <af:panelGridLayout id="pt_pgl1">
+            <af:gridRow height="50px" id="pt_gr1">
+                <af:gridCell width="100%" halign="stretch" valign="stretch" columnSpan="2" id="pt_gc1">
+                    <!-- Header -->
+                </af:gridCell>
+            </af:gridRow>
+            <af:gridRow height="100%" id="pt_gr2">
+                <af:gridCell width="100px" halign="stretch" valign="stretch" id="pt_gc3">
+                    <!-- Left -->
+                </af:gridCell>
+                <af:gridCell width="100%" halign="stretch" valign="stretch" id="pt_gc2">
+                    <!-- Content -->
+                </af:gridCell>
+            </af:gridRow>
+        </af:panelGridLayout>
+    </af:pageTemplateDef>
+</jsp:root>

@@ -1,0 +1,733 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewObject
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="VendMootDetVO"
+  Version="12.2.1.12.24"
+  InheritPersonalization="merge"
+  BindingStyle="OracleName"
+  CustomQuery="true"
+  RowClass="od.tdmatch.model.VendMootDetVORowImpl"
+  ComponentClass="od.tdmatch.model.VendMootDetVOImpl"
+  PageIterMode="Full"
+  FetchMode="FETCH_AS_NEEDED"
+  Passivate="All">
+  <DesignTime>
+    <Attr Name="_codeGenFlag2" Value="Coll"/>
+    <Attr Name="_isExpertMode" Value="true"/>
+    <Attr Name="_isCodegen" Value="true"/>
+  </DesignTime>
+  <Properties>
+    <SchemaBasedProperties>
+      <LABEL
+        ResId="od.tdmatch.model.VendMootDetVO_LABEL"/>
+    </SchemaBasedProperties>
+  </Properties>
+  <Variable
+    Name="OrganizationId"
+    Kind="viewcriteria"
+    Type="oracle.jbo.domain.Number"/>
+  <Variable
+    Name="p_item"
+    Kind="where"
+    Type="java.lang.String"/>
+  <ViewAccessor
+    Name="OrgVO1"
+    ViewObjectName="od.tdmatch.model.OrgVO"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="SupplierLOV1"
+    ViewObjectName="od.tdmatch.model.lov.SupplierLOV"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="SupplierLOV2"
+    ViewObjectName="od.tdmatch.model.lov.SupplierLOV"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="SupplierSiteLOV1"
+    ViewObjectName="od.tdmatch.model.lov.SupplierSiteLOV"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="VendorAssistantLOV1"
+    ViewObjectName="od.tdmatch.model.lov.VendorAssistantLOV"
+    RowLevelBinds="true"/>
+  <ListBinding
+    Name="LOV_VendorAssistant"
+    ListVOName="VendorAssistantLOV1"
+    NullValueFlag="none"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="VendorAssistant"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="VendorAssistant"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="VendorAssistant"/>
+      <Item Value="EmployeeNo"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_SupplierName"
+    ListVOName="SupplierLOV1"
+    ComboRowCountHint="10"
+    NullValueFlag="none"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="SupplierName"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="Supplier"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="Supplier"/>
+      <Item Value="SupplierNo"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_SupplierNo"
+    ListVOName="SupplierLOV2"
+    ComboRowCountHint="10"
+    NullValueFlag="none"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="SupplierNo"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="SupplierNo"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="SupplierNo"/>
+      <Item Value="Supplier"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_SupplierSite"
+    ListVOName="SupplierSiteLOV1"
+    ComboRowCountHint="10"
+    NullValueFlag="none"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="SupplierSite"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="SupplierSiteCode"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="Supplier"/>
+      <Item Value="SupplierNo"/>
+      <Item Value="SupplierSiteCode"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_OrgId"
+    ListVOName="OrgVO1"
+    NullValueFlag="none"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="OrgId"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="OrganizationId"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="OrganizationId"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <SQLQuery><![CDATA[SELECT tv.target_value2 vendor_assistant,                             
+       a.vendor_name supplier_name,                             
+       a.segment1 supplier_no,                             
+       b.vendor_site_code supplier_site,                             
+       DECODE(SIGN(instr(e.name,'/')),0,NULL,1,'D') discount,                             
+       ai.invoice_num,                             
+       ai.voucher_num,                             
+       ai.invoice_date,                             
+       ph.segment1 po_number,                             
+       SUBSTR(hrl.location_code,1,6) location,                             
+       NVL(py.discount_date,py.due_date) due_date,                             
+       ai.invoice_amount,                             
+       ai.attribute5 PO_Type,                            
+	   ai.org_id,                            
+	   ai.source,                    
+           DECODE('','Y',1,'N',0,0) all_pending_s,                 
+           DECODE('','Y',1,'N',0,0) front_door_s,               
+           DECODE('','Y',1,'N',0,0) non_code_s,             
+           DECODE('','Y',1,'N',0,0) drop_ship_s,          
+           DECODE('','Y',1,'N',0,0) price_except_s,          
+           DECODE('','Y',1,'N',0,0) qty_except_s,          
+           DECODE('','Y',1,'N',0,0) fr_Except_s,       
+           '' SKU,    
+           0 Qty_Hold_Amt,    
+           0 Price_Hold_Amt,    
+           DECODE('','Y',1,'N',0,0) Frt_Hold     
+  FROM  xx_fin_translatevalues tv                             
+       ,xx_fin_translatedefinition td                                    
+                   ,hr_locations_all hrl                             
+       ,ap_terms e                             
+       ,po_headers_all ph                             
+       ,ap_payment_schedules_all py                             
+       ,ap_supplier_sites_all b                             
+       ,ap_suppliers a                             
+       ,ap_invoices_all ai                             
+WHERE ai.invoice_num like 'SH%'                             
+   AND a.vendor_id=ai.vendor_id                             
+   AND b.vendor_id=a.vendor_id                             
+   AND b.vendor_site_id=ai.vendor_site_id                             
+   AND py.invoice_id=ai.invoice_id                             
+   AND e.term_id=ai.terms_id                             
+   AND ph.po_header_id=NVL(ai.po_header_id,ai.quick_po_header_id)                               
+   AND td.TRANSLATION_NAME = 'XX_AP_VENDOR_ASSISTANTS'                              
+   AND tv.TRANSLATE_ID  = td.TRANSLATE_ID                             
+   AND tv.target_value1=nvl(b.attribute6,'Open')||''                             
+   AND tv.enabled_flag='Y'                             
+   AND SYSDATE BETWEEN tv.start_date_active and NVL(tv.end_date_active,sysdate)                             
+   AND hrl.location_id=ph.ship_to_location_id                             
+   AND NVL(py.discount_date,py.due_date) BETWEEN SYSDATE AND SYSDATE+8                              
+   --AND ai.org_id=NVL(:p_org_id,ai.org_id)                             
+   --AND ai.invoice_num=NVL(:p_invoice_num,ai.invoice_num)                             
+   --AND ph.segment1=NVL(:p_ponum,ph.segment1)                             
+   --AND ai.invoice_date BETWEEN NVL(:p_fr_invdate,ai.invoice_date) AND NVL(:p_to_invdate,ai.invoice_date)                             
+   --AND a.vendor_name=NVL(:p_vend_name,a.vendor_name)                             
+   --AND a.segment1=NVL(:p_vend_no,a.segment1)                             
+   --AND b.vendor_site_code=NVL(:p_vend_site,b.vendor_site_code)                             
+   --AND tv.target_value1=NVL(:p_vend_ast,tv.target_value1)                             
+   --AND ai.source=NVL(:p_source,ai.source)                             
+   /*AND NVL(py.discount_date,py.due_date) BETWEEN NVL(:p_due_fdate,(NVL(py.discount_date,py.due_date)))                             
+                                                AND NVL(:p_due_tdate,(NVL(py.discount_date,py.due_date))) */                            
+   AND EXISTS ( select  'x'                         
+         from mtl_system_items_b msi,                         
+              po_lines_all pl                         
+        where pl.po_header_id=NVL(ai.po_header_id,ai.quick_po_header_id)                         
+          and msi.inventory_item_id=pl.item_id                             
+          and msi.organization_id+0=441                         
+          and msi.segment1=NVL(:p_item,msi.segment1)                         
+     )]]></SQLQuery>
+  <ViewAttribute
+    Name="VendorAssistant"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="255"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="VENDOR_ASSISTANT"
+    Expression="VENDOR_ASSISTANT"
+    SQLType="VARCHAR"
+    LOVName="LOV_VendorAssistant">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="240"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.VendMootDetVO.VendorAssistant_LABEL"/>
+        <DISPLAYWIDTH
+          Value="50"/>
+        <CONTROLTYPE
+          Value="choice"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SupplierName"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="240"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="SUPPLIER_NAME"
+    Expression="SUPPLIER_NAME"
+    SQLType="VARCHAR"
+    LOVName="LOV_SupplierName">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="240"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.VendMootDetVO.SupplierName_LABEL"/>
+        <DISPLAYWIDTH
+          Value="50"/>
+        <CONTROLTYPE
+          Value="input_text_lov"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SupplierNo"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="30"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="SUPPLIER_NO"
+    Expression="SUPPLIER_NO"
+    SQLType="VARCHAR"
+    LOVName="LOV_SupplierNo">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="30"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.VendMootDetVO.SupplierNo_LABEL"/>
+        <DISPLAYWIDTH
+          Value="50"/>
+        <CONTROLTYPE
+          Value="input_text_lov"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="SupplierSite"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="15"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="SUPPLIER_SITE"
+    Expression="SUPPLIER_SITE"
+    SQLType="VARCHAR"
+    LOVName="LOV_SupplierSite">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="15"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <CONTROLTYPE
+          Value="input_text_lov"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="Discount"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="1"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="DISCOUNT"
+    Expression="DISCOUNT"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="1"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="InvoiceNum"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="50"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="INVOICE_NUM"
+    Expression="INVOICE_NUM"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="50"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.VendMootDetVO.InvoiceNum_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="VoucherNum"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="50"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="VOUCHER_NUM"
+    Expression="VOUCHER_NUM"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="50"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.VendMootDetVO.VoucherNum_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="InvoiceDate"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Date"
+    ColumnType="DATE"
+    AliasName="INVOICE_DATE"
+    Expression="INVOICE_DATE"
+    SQLType="DATE"/>
+  <ViewAttribute
+    Name="PoNumber"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="20"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="PO_NUMBER"
+    Expression="PO_NUMBER"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="20"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.VendMootDetVO.PoNumber_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="Location"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="6"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="LOCATION"
+    Expression="LOCATION"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="6"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="DueDate"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Date"
+    ColumnType="DATE"
+    AliasName="DUE_DATE"
+    Expression="DUE_DATE"
+    SQLType="DATE"/>
+  <ViewAttribute
+    Name="InvoiceAmount"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="INVOICE_AMOUNT"
+    Expression="INVOICE_AMOUNT"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.VendMootDetVO.InvoiceAmount_LABEL"/>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.VendMootDetVO.InvoiceAmount_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.VendMootDetVO.InvoiceAmount_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="PoType"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="150"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="PO_TYPE"
+    Expression="PO_TYPE"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="OrgId"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="15"
+    Scale="0"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="ORG_ID"
+    Expression="ORG_ID"
+    SQLType="NUMERIC"
+    LOVName="LOV_OrgId">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.VendMootDetVO.OrgId_LABEL"/>
+        <CONTROLTYPE
+          Value="choice"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="Source"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="25"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="SOURCE"
+    Expression="SOURCE"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="25"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.VendMootDetVO.Source_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="AllPendingS"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.lang.Boolean"
+    ColumnType="NUMBER"
+    AliasName="ALL_PENDING_S"
+    Expression="ALL_PENDING_S"
+    SQLType="BIT">
+    <Properties>
+      <SchemaBasedProperties>
+        <CONTROLTYPE
+          Value="check_box"/>
+        <LABEL
+          ResId="od.tdmatch.model.VendMootDetVO.AllPendingS_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="FrontDoorS"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.lang.Boolean"
+    ColumnType="NUMBER"
+    AliasName="FRONT_DOOR_S"
+    Expression="FRONT_DOOR_S"
+    SQLType="BIT">
+    <Properties>
+      <SchemaBasedProperties>
+        <CONTROLTYPE
+          Value="check_box"/>
+        <LABEL
+          ResId="od.tdmatch.model.VendMootDetVO.FrontDoorS_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="NonCodeS"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.lang.Boolean"
+    ColumnType="NUMBER"
+    AliasName="NON_CODE_S"
+    Expression="NON_CODE_S"
+    SQLType="BIT">
+    <Properties>
+      <SchemaBasedProperties>
+        <CONTROLTYPE
+          Value="check_box"/>
+        <LABEL
+          ResId="od.tdmatch.model.VendMootDetVO.NonCodeS_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="DropShipS"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.lang.Boolean"
+    ColumnType="NUMBER"
+    AliasName="DROP_SHIP_S"
+    Expression="DROP_SHIP_S"
+    SQLType="BIT">
+    <Properties>
+      <SchemaBasedProperties>
+        <CONTROLTYPE
+          Value="check_box"/>
+        <LABEL
+          ResId="od.tdmatch.model.VendMootDetVO.DropShipS_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="PriceExceptS"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.lang.Boolean"
+    ColumnType="NUMBER"
+    AliasName="PRICE_EXCEPT_S"
+    Expression="PRICE_EXCEPT_S"
+    SQLType="BIT">
+    <Properties>
+      <SchemaBasedProperties>
+        <CONTROLTYPE
+          Value="check_box"/>
+        <LABEL
+          ResId="od.tdmatch.model.VendMootDetVO.PriceExceptS_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="QtyExceptS"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.lang.Boolean"
+    ColumnType="NUMBER"
+    AliasName="QTY_EXCEPT_S"
+    Expression="QTY_EXCEPT_S"
+    SQLType="BIT">
+    <Properties>
+      <SchemaBasedProperties>
+        <CONTROLTYPE
+          Value="check_box"/>
+        <LABEL
+          ResId="od.tdmatch.model.VendMootDetVO.QtyExceptS_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="FrExceptS"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="java.lang.Boolean"
+    ColumnType="NUMBER"
+    AliasName="FR_EXCEPT_S"
+    Expression="FR_EXCEPT_S"
+    SQLType="BIT">
+    <Properties>
+      <SchemaBasedProperties>
+        <CONTROLTYPE
+          Value="check_box"/>
+        <LABEL
+          ResId="od.tdmatch.model.VendMootDetVO.FrExceptS_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="Sku"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="32"
+    Type="java.lang.String"
+    ColumnType="CHAR"
+    AliasName="SKU"
+    Expression="SKU"
+    SQLType="VARCHAR">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.VendMootDetVO.Sku_LABEL"/>
+        <DISPLAYWIDTH
+          Value="25"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="QtyHoldAmt"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="QTY_HOLD_AMT"
+    Expression="QTY_HOLD_AMT"
+    SQLType="NUMERIC"/>
+  <ViewAttribute
+    Name="PriceHoldAmt"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="PRICE_HOLD_AMT"
+    Expression="PRICE_HOLD_AMT"
+    SQLType="NUMERIC"/>
+  <ViewAttribute
+    Name="FrtHold"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="FRT_HOLD"
+    Expression="FRT_HOLD"
+    SQLType="NUMERIC"/>
+  <ViewCriteria
+    Name="VendMootDetVOCriteria"
+    ViewObjectName="od.tdmatch.model.VendMootDetVO"
+    Conjunction="AND">
+    <Properties Name="_Props">
+      <CustomProperties>
+        <Property
+          Name="autoExecute"
+          Value="false"/>
+        <Property
+          Name="mode"
+          Value="Basic"/>
+        <Property
+          Name="allowConjunctionOverride"
+          Value="false"/>
+        <Property
+          Name="showInList"
+          Value="true"/>
+        <Property
+          Name="displayOperators"
+          Value="Never"/>
+      </CustomProperties>
+    </Properties>
+    <ViewCriteriaRow
+      Name="VendMootDetVOCriteria_row_0"
+      UpperColumns="1"
+      Conjunction="OR">
+      <ViewCriteriaItem
+        Name="OrgId"
+        ViewAttribute="OrgId"
+        Operator="="
+        Conjunction="AND"
+        Required="Required"/>
+    </ViewCriteriaRow>
+  </ViewCriteria>
+  <AttrArray Name="KeyAttributes">
+    <Item Value="InvoiceNum"/>
+  </AttrArray>
+  <ResourceBundle>
+    <PropertiesBundle
+      PropertiesFile="od.tdmatch.model.ModelBundle"/>
+  </ResourceBundle>
+</ViewObject>

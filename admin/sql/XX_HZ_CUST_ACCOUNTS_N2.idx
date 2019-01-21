@@ -1,0 +1,31 @@
+-- +===============================================================================================+
+-- |                  Office Depot - Project Simplify                                              |
+-- |                       WIPRO Technologies                                                      |
+-- +===============================================================================================+
+-- | Name :  XX_HZ_CUST_ACCOUNTS_N2                                                                |
+-- | Description : Function based index for Advanced collections screen to be able to search by    |  
+-- |               AOPS account number                                                             |
+-- |                                                                                               |
+-- |Change Record:                                                                                 |
+-- |===============                                                                                |
+-- |Version   Date           Author                 Remarks                                        |
+-- |======   ==========     =============           =======================                        |
+-- |1.0      18-AUG-2008    Prakash Sankaran        Initial Version                                |
+-- |                                                Created index for the Advanced Collections     |
+-- |                                                screen to be able to search by AOPS            |
+-- |                                                account number                                 |
+-- |                                                                                               |
+-- |1.1      24-FEB-2009    Aravind A.              Modifed for defect 13309                       |
+-- |                                                                                               |
+-- +===============================================================================================+
+
+CREATE INDEX XXFIN.XX_HZ_CUST_ACCOUNTS_N2
+ON AR.HZ_CUST_ACCOUNTS(UPPER(ORIG_SYSTEM_REFERENCE))
+ONLINE NOLOGGING PARALLEL 4
+COMPUTE STATISTICS;
+
+ALTER INDEX XXFIN.XX_HZ_CUST_ACCOUNTS_N2 PARALLEL 1;
+
+
+
+

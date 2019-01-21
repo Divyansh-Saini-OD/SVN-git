@@ -1,0 +1,29 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                      Wipro Technologies                           |
+-- +===================================================================+
+-- | Name  : XX_GL_INTORD_DET_TEMP                                     |
+-- | Description: Synonym for the table XX_GL_INTORD_DET_TEMP          |
+-- |              R0493 - OD: GL In-Transit Orders Detail By Books     |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author            Remarks                   |
+-- |=======   ==========   =============     ==========================|
+-- |1.0       22-JAN-09    Manovinayak       Initial version           |
+-- |                       Ayyappan                                    |
+-- +===================================================================+
+
+DROP SYNONYM APPS.xx_gl_intord_det_temp;
+
+CREATE SYNONYM  APPS.xx_gl_intord_det_temp FOR XXFIN.xx_gl_intord_det_temp ;
+
+SHOW ERR;

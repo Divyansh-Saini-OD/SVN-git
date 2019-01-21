@@ -1,0 +1,53 @@
+-- +===========================================================================+
+-- |                  Office Depot - Project Simplify                          |
+-- +===========================================================================+
+-- | Name :XXFIN.XX_OD_CONS_BILLTO_SITES_ITM                                   |
+-- | Description :   This temp table is you to hold temp data for irec page    |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | DRAFT 1.0 03-FEB-2015    Deepak V                  Initial draft version  |
+-- |                                                                           |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+
+--+=====================================================================+
+--+               CREATE TABLE xxfin.XX_OD_CONS_BILLTO_SITES_ITM        +
+--+=====================================================================+
+
+
+   
+  CREATE TABLE xxfin.XX_OD_CONS_BILLTO_SITES_ITM 
+   (	"BILL_TO" VARCHAR2(2000), 
+	"REMIT_TO" VARCHAR2(2000), 
+	"RETURN_ADDRESS" VARCHAR2(2000), 
+	"TAX_ID_DESC" VARCHAR2(500), 
+	"TAX_ID" VARCHAR2(100), 
+	"BILLING_ID" VARCHAR2(30) , 
+	"ACCOUNT_NUMBER" VARCHAR2(240), 
+	"CUSTOMER_NAME" VARCHAR2(120), 
+	"ACCOUNT_CONTACT" VARCHAR2(2000), 
+	"ORDER_CONTACT" VARCHAR2(2000), 
+	"BILL_TO_COUNTRY" VARCHAR2(500), 
+	"BILL_TO_POSTAL_CODE" VARCHAR2(100), 
+	"SPL_HANDLING" CHAR(10), 
+	"SPL_HANDLING_COMMENTS" CHAR(500), 
+	"CURRENCY_CODE" VARCHAR2(15), 
+	"TERMS" VARCHAR2(300), 
+	"BILL_TO_PROVINCE" VARCHAR2(300), 
+	"CUST_ACCOUNT_ID" NUMBER, 
+	"BILL_TO_ID" VARCHAR2(200), 
+	"MAIL_TO_ATTN" VARCHAR2(2000), 
+	"REQUEST_ID" NUMBER
+   ) ;   
+
+/

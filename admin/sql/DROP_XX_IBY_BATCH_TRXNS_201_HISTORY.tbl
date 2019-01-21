@@ -1,0 +1,23 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | SQL Script to drop the following object                                  |
+-- |             Table    : XX_IBY_BATCH_TRXNS_201_HISTORY                    |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version      Date              Author               Remarks               |
+-- |=======      ==========        =============        ===================== |
+-- | V1.0        28-FEB-2009       Aravind A.           Initial version       |
+-- |                                                    Defect 11482          |
+-- +==========================================================================+
+
+DROP TABLE XXFIN.XX_IBY_BATCH_TRXNS_201_HISTORY;
+
+SHOW ERROR

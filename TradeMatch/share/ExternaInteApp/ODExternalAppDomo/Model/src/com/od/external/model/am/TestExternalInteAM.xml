@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+<!---->
+<AppModule
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="TestExternalInteAM"
+  Version="12.2.1.12.24"
+  InheritPersonalization="merge"
+  ComponentClass="com.od.external.model.am.TestExternalInteAMImpl"
+  ClearCacheOnRollback="true"
+  ComponentInterface="com.od.external.model.am.common.TestExternalInteAM">
+  <DesignTime>
+    <Attr Name="_isCodegen" Value="true"/>
+  </DesignTime>
+  <ViewUsage
+    Name="XxApChargeBackTempVO"
+    ViewObjectName="com.od.external.model.vo.XxApChargeBackTempVO"/>
+  <ViewUsage
+    Name="EbsRoleVO"
+    ViewObjectName="com.od.external.model.vo.EbsRoleVO"/>
+  <ViewUsage
+    Name="EbsRoleValues1"
+    ViewObjectName="com.od.external.model.vo.EbsRoleValues"/>
+  <ViewUsage
+    Name="EbsResponsibilitiesVO1"
+    ViewObjectName="com.od.external.model.vo.EbsResponsibilitiesVO"/>
+  <ClientInterface
+    Name="__clientInterface">
+    <Method
+      Name="populateDetailsBean"
+      MethodName="populateDetailsBean">
+      <Return
+        Name="_return_type_"
+        Type="com.od.external.model.bean.FndUserBean"/>
+      <Parameter
+        Name="fndUser"
+        Type="com.od.external.model.bean.FndUserBean"/>
+    </Method>
+  </ClientInterface>
+</AppModule>

@@ -1,0 +1,29 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | RICE ID     :  E3023                                                     |
+-- | Name        :  AP Trade Match Dashboard                                  |
+-- |                                                                          |
+-- | SQL Script to create the following object                                |
+-- |             Table       : XX_AP_PREVAL_INVOICES_STG                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0      21-Dec-2017  Naveen Patha         Added new columns             |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE TABLE xxfin.xx_ap_preval_invoices_stg 
+            (po_header_id NUMBER,
+             po_line_id NUMBER,
+             BATCH_ID NUMBER,
+             invoice_id NUMBER,
+             inv_status VARCHAR2(250)); 	   
+SHOW ERROR;

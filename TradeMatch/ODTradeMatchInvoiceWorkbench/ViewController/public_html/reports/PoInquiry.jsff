@@ -1,0 +1,803 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1" xmlns:af="http://xmlns.oracle.com/adf/faces/rich"
+          xmlns:f="http://java.sun.com/jsf/core">
+    <af:panelGroupLayout id="pgl1" layout="horizontal">
+        <af:spacer width="15" height="10" id="s25"/>
+        <af:panelGroupLayout id="pgl29" layout="vertical">
+            <af:panelGroupLayout id="pgl2" layout="horizontal">
+                <af:outputFormatted value="Office Depot - AP - Purchase Order Details Inquiry :  " id="of1"
+                                    inlineStyle="font-size:large;"/>
+                <af:outputFormatted value="#{MyDate}" id="of2" inlineStyle="font-size:large;">
+                    <af:convertDateTime pattern="MM/dd/YYYY"/>
+                </af:outputFormatted>
+            </af:panelGroupLayout>
+            <af:panelGroupLayout id="pgl3" layout="vertical">
+                <af:panelGroupLayout id="pgl4" layout="horizontal" halign="right" styleClass="AFStretchWidth">
+                    <af:inputComboboxListOfValues id="orgidId"
+                                                  popupTitle="Search and Select: #{bindings.Orgid.hints.label}"
+                                                  value="#{bindings.Orgid.inputValue}"
+                                                  label="#{bindings.Orgid.hints.label}"
+                                                  model="#{bindings.Orgid.listOfValuesModel}"
+                                                  required="#{bindings.Orgid.hints.mandatory}" columns="5"
+                                                  shortDesc="#{bindings.Orgid.hints.tooltip}">
+                        <f:validator binding="#{bindings.Orgid.validator}"/>
+                    </af:inputComboboxListOfValues>
+                </af:panelGroupLayout>
+                <af:inputText value="#{bindings.OrgIdValue.inputValue}"
+                              required="#{bindings.OrgIdValue.hints.mandatory}"
+                              columns="#{bindings.OrgIdValue.hints.displayWidth}"
+                              maximumLength="#{bindings.OrgIdValue.hints.precision}"
+                              shortDesc="#{bindings.OrgIdValue.hints.tooltip}" id="it1" rendered="false">
+                    <f:validator binding="#{bindings.OrgIdValue.validator}"/>
+                    <af:convertNumber groupingUsed="false" pattern="#{bindings.OrgIdValue.format}"/>
+                </af:inputText>
+                <af:panelGroupLayout id="pgl7" layout="horizontal" halign="start"
+                                     inlineStyle="width:1189px; height:208px;" valign="top"
+                                     binding="#{pageFlowScope.PoInquirySearchBean.searchAreaBind}">
+                    <af:spacer width="10" height="10" id="s10"/>
+                    <af:panelGroupLayout id="pgl5" layout="vertical" inlineStyle="height:200px; width:348px;">
+                        <af:panelLabelAndMessage label="#{bindings.Suppliername.hints.label}" id="plam1">
+                            <af:spacer width="10" height="10" id="s1"/>
+                            <af:inputListOfValues id="suppliernameId"
+                                                  popupTitle="Search and Select: #{bindings.Suppliername.hints.label}"
+                                                  value="#{bindings.Suppliername.inputValue}"
+                                                  label="#{bindings.Suppliername.hints.label}"
+                                                  model="#{bindings.Suppliername.listOfValuesModel}"
+                                                  required="#{bindings.Suppliername.hints.mandatory}"
+                                                  columns="#{bindings.Suppliername.hints.displayWidth}"
+                                                  shortDesc="#{bindings.Suppliername.hints.tooltip}" simple="true"
+                                                  binding="#{pageFlowScope.PoInquirySearchBean.supNameValBind}">
+                                <f:validator binding="#{bindings.Suppliername.validator}"/>
+                            </af:inputListOfValues>
+                        </af:panelLabelAndMessage>
+                        <af:panelLabelAndMessage label="#{bindings.Suppliernum.hints.label}" id="plam2">
+                            <af:spacer width="35" height="10" id="s2"/>
+                            <af:inputListOfValues id="suppliernumId"
+                                                  popupTitle="Search and Select: #{bindings.Suppliernum.hints.label}"
+                                                  value="#{bindings.Suppliernum.inputValue}"
+                                                  label="#{bindings.Suppliernum.hints.label}"
+                                                  model="#{bindings.Suppliernum.listOfValuesModel}"
+                                                  required="#{bindings.Suppliernum.hints.mandatory}"
+                                                  columns="#{bindings.Suppliernum.hints.displayWidth}"
+                                                  shortDesc="#{bindings.Suppliernum.hints.tooltip}" simple="true"
+                                                  binding="#{pageFlowScope.PoInquirySearchBean.supNumValBind}">
+                                <f:validator binding="#{bindings.Suppliernum.validator}"/>
+                            </af:inputListOfValues>
+                        </af:panelLabelAndMessage>
+                        <af:panelLabelAndMessage label="#{bindings.Suppliersiteno.label}" id="plam3">
+                            <af:spacer width="10" height="10" id="s3"/>
+                            <af:inputListOfValues id="suppliersitenoId"
+                                                  popupTitle="Search and Select: #{bindings.Suppliersiteno.hints.label}"
+                                                  value="#{bindings.Suppliersiteno.inputValue}"
+                                                  label="#{bindings.Suppliersiteno.hints.label}"
+                                                  model="#{bindings.Suppliersiteno.listOfValuesModel}"
+                                                  required="#{bindings.Suppliersiteno.hints.mandatory}"
+                                                  columns="#{bindings.Suppliersiteno.hints.displayWidth}"
+                                                  shortDesc="#{bindings.Suppliersiteno.hints.tooltip}" simple="true"
+                                                  binding="#{pageFlowScope.PoInquirySearchBean.supSiteValBind}">
+                                <f:validator binding="#{bindings.Suppliersiteno.validator}"/>
+                            </af:inputListOfValues>
+                        </af:panelLabelAndMessage>
+                        <af:panelLabelAndMessage label="#{bindings.Sku.label}" id="plam4">
+                            <af:spacer width="68" height="10" id="s4"/>
+                            <af:inputListOfValues id="skuId" popupTitle="Search and Select: #{bindings.Sku.hints.label}"
+                                                  value="#{bindings.Sku.inputValue}" label="#{bindings.Sku.hints.label}"
+                                                  model="#{bindings.Sku.listOfValuesModel}"
+                                                  required="#{bindings.Sku.hints.mandatory}"
+                                                  columns="#{bindings.Sku.hints.displayWidth}"
+                                                  shortDesc="#{bindings.Sku.hints.tooltip}" simple="true"
+                                                  binding="#{pageFlowScope.PoInquirySearchBean.skuValBind}">
+                                <f:validator binding="#{bindings.Sku.validator}"/>
+                            </af:inputListOfValues>
+                        </af:panelLabelAndMessage>
+                        <af:panelLabelAndMessage label="#{bindings.Ponum.hints.label}" id="plam5">
+                            <af:spacer width="67" height="10" id="s5"/>
+                            <af:inputListOfValues id="ponumId"
+                                                  popupTitle="Search and Select: #{bindings.Ponum.hints.label}"
+                                                  value="#{bindings.Ponum.inputValue}"
+                                                  label="#{bindings.Ponum.hints.label}"
+                                                  model="#{bindings.Ponum.listOfValuesModel}"
+                                                  required="#{bindings.Ponum.hints.mandatory}"
+                                                  columns="#{bindings.Ponum.hints.displayWidth}"
+                                                  shortDesc="#{bindings.Ponum.hints.tooltip}" simple="true"
+                                                  binding="#{pageFlowScope.PoInquirySearchBean.poNumValBind}">
+                                <f:validator binding="#{bindings.Ponum.validator}"/>
+                            </af:inputListOfValues>
+                        </af:panelLabelAndMessage>
+                        <!--<af:panelLabelAndMessage label="#{bindings.Polinenum.hints.label}" id="plam6">
+                            <af:spacer width="39" height="10" id="s6"/>
+                            <af:inputListOfValues id="polinenumId"
+                                                  popupTitle="Search and Select: #{bindings.Polinenum.hints.label}"
+                                                  value="#{bindings.Polinenum.inputValue}"
+                                                  label="#{bindings.Polinenum.hints.label}"
+                                                  model="#{bindings.Polinenum.listOfValuesModel}"
+                                                  required="#{bindings.Polinenum.hints.mandatory}"
+                                                  columns="#{bindings.Polinenum.hints.displayWidth}"
+                                                  shortDesc="#{bindings.Polinenum.hints.tooltip}" simple="true"
+                                                  binding="#{pageFlowScope.PoInquirySearchBean.poLineValBind}">
+                                <f:validator binding="#{bindings.Polinenum.validator}"/>
+                            </af:inputListOfValues>
+                        </af:panelLabelAndMessage>-->
+                        <af:panelLabelAndMessage label="#{bindings.Location.hints.label}" id="plam7">
+                            <af:spacer width="44" height="10" id="s7"/>
+                            <af:inputListOfValues id="locationId"
+                                                  popupTitle="Search and Select: #{bindings.Location.hints.label}"
+                                                  value="#{bindings.Location.inputValue}"
+                                                  label="#{bindings.Location.hints.label}"
+                                                  model="#{bindings.Location.listOfValuesModel}"
+                                                  required="#{bindings.Location.hints.mandatory}"
+                                                  columns="#{bindings.Location.hints.displayWidth}"
+                                                  shortDesc="#{bindings.Location.hints.tooltip}" simple="true"
+                                                  binding="#{pageFlowScope.PoInquirySearchBean.locationValBind}">
+                                <f:validator binding="#{bindings.Location.validator}"/>
+                            </af:inputListOfValues>
+                        </af:panelLabelAndMessage>
+                    </af:panelGroupLayout>
+                    <af:panelGroupLayout id="pgl6" layout="vertical" inlineStyle="height:200px; width:487px;">
+                        <af:panelLabelAndMessage label="PO Date  " id="plam8">
+                            <af:spacer width="11" height="2" id="s18"/>
+                            <af:inputDate value="#{bindings.Podatefrom.inputValue}"
+                                          required="#{bindings.Podatefrom.hints.mandatory}"
+                                          columns="#{bindings.Podatefrom.hints.displayWidth}"
+                                          shortDesc="#{bindings.Podatefrom.hints.tooltip}" id="id1"
+                                          binding="#{pageFlowScope.PoInquirySearchBean.poDateFromValBind}"
+                                          simple="true">
+                                <f:validator binding="#{bindings.Podatefrom.validator}"/>
+                                <af:convertDateTime pattern="#{bindings.Podatefrom.format}"/>
+                            </af:inputDate>
+                            <f:facet name="end">
+                                <af:inputDate value="#{bindings.Podateto.inputValue}"
+                                              required="#{bindings.Podateto.hints.mandatory}"
+                                              columns="#{bindings.Podateto.hints.displayWidth}"
+                                              shortDesc="#{bindings.Podateto.hints.tooltip}" id="id2"
+                                              binding="#{pageFlowScope.PoInquirySearchBean.poDateToValBind}"
+                                              simple="true">
+                                    <f:validator binding="#{bindings.Podateto.validator}"/>
+                                    <af:convertDateTime pattern="#{bindings.Podateto.format}"/>
+                                </af:inputDate>
+                            </f:facet>
+                        </af:panelLabelAndMessage>
+                        <af:selectOneChoice value="#{bindings.Status1.inputValue}" label="#{bindings.Status1.label}"
+                                            required="#{bindings.Status1.hints.mandatory}"
+                                            shortDesc="#{bindings.Status1.hints.tooltip}" id="soc1">
+                            <f:selectItems value="#{bindings.Status1.items}" id="si1"/>
+                            <f:validator binding="#{bindings.Status1.validator}"/>
+                        </af:selectOneChoice>
+                        <af:inputListOfValues id="statusId"
+                                              popupTitle="Search and Select: #{bindings.Status.hints.label}"
+                                              value="#{bindings.Status.inputValue}"
+                                              label="#{bindings.Status.hints.label}"
+                                              model="#{bindings.Status.listOfValuesModel}"
+                                              required="#{bindings.Status.hints.mandatory}"
+                                              columns="#{bindings.Status.hints.displayWidth}"
+                                              shortDesc="#{bindings.Status.hints.tooltip}"
+                                              binding="#{pageFlowScope.PoInquirySearchBean.poStatusValBind}"
+                                              rendered="false">
+                            <f:validator binding="#{bindings.Status.validator}"/>
+                        </af:inputListOfValues>
+                        <af:spacer width="10" height="100" id="s9"/>
+                        <af:panelGroupLayout id="pgl8" inlineStyle="height:52px;" layout="horizontal" halign="center">
+                            <af:button text="Go" id="b1" action="#{pageFlowScope.PoInquirySearchBean.searchPO}"/>
+                            <af:spacer width="10" height="10" id="s8"/>
+                            <af:button text="Clear" id="b2"
+                                       actionListener="#{pageFlowScope.PoInquirySearchBean.clearPoInquirySearch}"/>
+                        </af:panelGroupLayout>
+                    </af:panelGroupLayout>
+                    <af:panelGroupLayout id="pgl9" layout="vertical" inlineStyle="height:200px; width:150px;">
+                        <af:panelLabelAndMessage label="PO Type" id="plam18"/>
+                        <af:panelLabelAndMessage label="Dropship" id="plam9">
+                            <af:spacer width="33" height="10" id="s13"/>
+                            <af:selectBooleanCheckbox label="Dropship" id="sbc1"
+                                                      binding="#{pageFlowScope.PoInquirySearchBean.dropshipValBind}"
+                                                      simple="true" autoSubmit="true"
+                                                      valueChangeListener="#{pageFlowScope.PoInquirySearchBean.poTypeDropshipValueChange}"/>
+                        </af:panelLabelAndMessage>
+                        <af:panelLabelAndMessage label="Front Door" id="plam10">
+                            <af:spacer width="24" height="10" id="s12"/>
+                            <af:selectBooleanCheckbox label="Front Door" id="sbc2"
+                                                      binding="#{pageFlowScope.PoInquirySearchBean.frontdoorValBind}"
+                                                      simple="true" autoSubmit="true"
+                                                      valueChangeListener="#{pageFlowScope.PoInquirySearchBean.poTypeFrontDoorValueChange}"/>
+                        </af:panelLabelAndMessage>
+                        <af:panelLabelAndMessage label="Non Code" id="plam11">
+                            <af:spacer width="29" height="10" id="s11"/>
+                            <af:selectBooleanCheckbox label="Non Code" id="sbc3"
+                                                      binding="#{pageFlowScope.PoInquirySearchBean.nonCodeValBind}"
+                                                      simple="true" autoSubmit="true"
+                                                      valueChangeListener="#{pageFlowScope.PoInquirySearchBean.poTypeNonCodeValueChange}"/>
+                        </af:panelLabelAndMessage>
+                        <af:panelLabelAndMessage label="Consignment" id="plam12">
+                            <af:spacer width="10" height="10" id="s17"/>
+                            <af:selectBooleanCheckbox label="Consignment" id="sbc4"
+                                                      binding="#{pageFlowScope.PoInquirySearchBean.consignValBind}"
+                                                      simple="true" autoSubmit="true"
+                                                      valueChangeListener="#{pageFlowScope.PoInquirySearchBean.poTypeConsignmentValueChange}"/>
+                        </af:panelLabelAndMessage>
+                        <af:panelLabelAndMessage label="Trade" id="plam13">
+                            <af:spacer width="54" height="10" id="s15"/>
+                            <af:selectBooleanCheckbox label="Trade" id="sbc5"
+                                                      binding="#{pageFlowScope.PoInquirySearchBean.tradeValBind}"
+                                                      simple="true" autoSubmit="true"
+                                                      valueChangeListener="#{pageFlowScope.PoInquirySearchBean.poTypeTradeValueChange}"/>
+                        </af:panelLabelAndMessage>
+                        <af:panelLabelAndMessage label="New Store" id="plam14">
+                            <af:spacer width="27" height="10" id="s16"/>
+                            <af:selectBooleanCheckbox label="New Store" id="sbc6"
+                                                      binding="#{pageFlowScope.PoInquirySearchBean.newStoreValBind}"
+                                                      simple="true" autoSubmit="true"
+                                                      valueChangeListener="#{pageFlowScope.PoInquirySearchBean.poTypeNewStoreValueChange}"/>
+                        </af:panelLabelAndMessage>
+                        <af:panelLabelAndMessage label="Replenishment" id="plam15">
+                            <af:selectBooleanCheckbox label="Replenishment" id="sbc7"
+                                                      binding="#{pageFlowScope.PoInquirySearchBean.replenValBind}"
+                                                      simple="true" autoSubmit="true"
+                                                      valueChangeListener="#{pageFlowScope.PoInquirySearchBean.poTypeReplenishmentValueChange}"/>
+                        </af:panelLabelAndMessage>
+                        <af:panelLabelAndMessage label="Direct Import" id="plam16">
+                            <af:spacer width="12" height="10" id="s14"/>
+                            <af:selectBooleanCheckbox label="Direct Import" id="sbc8"
+                                                      binding="#{pageFlowScope.PoInquirySearchBean.dirImpValBind}"
+                                                      simple="true" autoSubmit="true"
+                                                      valueChangeListener="#{pageFlowScope.PoInquirySearchBean.poTypeDirectImportValueChange}"/>
+                        </af:panelLabelAndMessage>
+                    </af:panelGroupLayout>
+                    <af:panelGroupLayout id="pgl10" layout="vertical"/>
+                </af:panelGroupLayout>
+                <af:panelGroupLayout id="pgl12" layout="horizontal">
+                    <af:spacer width="10" height="10" id="s20"/>
+                    <af:outputText value="PO Headers" id="ot12"
+                                   inlineStyle="font-size:medium; color:blue; font-weight:bold;"/>
+                </af:panelGroupLayout>
+                <af:panelGroupLayout id="pgl13" layout="horizontal">
+                    <af:spacer width="10" height="10" id="s21"/>
+                    <af:panelCollection id="pc1" binding="#{pageFlowScope.PoInquirySearchBean.resultPanelHdrGrpBind}"
+                                        inlineStyle="height:100px; width:1103px;">
+                        <f:facet name="menus">
+                            <af:menu text="File" id="m1">
+                                <af:commandMenuItem text="Export to Excel" id="poh">
+                                    <af:exportCollectionActionListener type="excelHTML" exportedId="t1"
+                                                                       filename=" POInquiryHeader.xls"
+                                                                       title="PO Inquiry Header"/>
+                                </af:commandMenuItem>
+                            </af:menu>
+                        </f:facet>
+                        <f:facet name="toolbar"/>
+                        <f:facet name="statusbar"/>
+                        <af:table value="#{bindings.PoInquiryMainVO1.collectionModel}" var="row"
+                                  rows="#{bindings.PoInquiryMainVO1.rangeSize}"
+                                  emptyText="#{bindings.PoInquiryMainVO1.viewable ? 'No data to display.' : 'Access Denied.'}"
+                                  rowBandingInterval="0" fetchSize="#{bindings.PoInquiryMainVO1.rangeSize}" id="t1">
+                            <af:column sortProperty="#{bindings.PoInquiryMainVO1.hints.PoNumber.name}" sortable="true"
+                                       headerText="PO Number" id="c1" width="81">
+                                <af:link text="#{row.PoNumber}" id="l1" selected="true"
+                                         actionListener="#{pageFlowScope.PoInquirySearchBean.viewPOLinesListener}"
+                                         binding="#{pageFlowScope.PoInquirySearchBean.poNumbind}">
+                                    <f:attribute name="PoHeaderId" value="#{row.PoHeaderId}"/>
+                                          <f:attribute name="PoNum" value="#{row.PoNumber}"/>
+                                </af:link>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryMainVO1.hints.PoDate.name}" sortable="true"
+                                       headerText="PO Date" id="c2" width="55">
+                                <af:outputText value="#{row.PoDate}"
+                                               shortDesc="#{bindings.PoInquiryMainVO1.hints.PoDate.tooltip}" id="ot2">
+                                    <af:convertDateTime pattern="#{bindings.PoInquiryMainVO1.hints.PoDate.format}"/>
+                                </af:outputText>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryMainVO1.hints.SupplierName.name}"
+                                       sortable="true" headerText="Supplier Name" id="c3" width="100">
+                                <af:outputText value="#{row.SupplierName}"
+                                               shortDesc="#{bindings.PoInquiryMainVO1.hints.SupplierName.tooltip}"
+                                               id="ot3"/>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryMainVO1.hints.SupplierSite.name}"
+                                       sortable="true" headerText="Supplier Site" id="c4" width="83">
+                                <af:outputText value="#{row.SupplierSite}"
+                                               shortDesc="#{bindings.PoInquiryMainVO1.hints.SupplierSite.tooltip}"
+                                               id="ot4"/>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryMainVO1.hints.PoAmount.name}" sortable="true"
+                                       headerText="PO Amount" id="c5" width="79">
+                                <af:panelGroupLayout id="pgl16" halign="right" layout="horizontal">
+                                    <af:outputText value="#{row.PoAmount}"
+                                                   shortDesc="#{bindings.PoInquiryMainVO1.hints.PoAmount.tooltip}"
+                                                   id="ot5">
+                                        <af:convertNumber groupingUsed="false"
+                                                          pattern="#{bindings.PoInquiryMainVO1.hints.PoAmount.format}"/>
+                                    </af:outputText>
+                                </af:panelGroupLayout>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryMainVO1.hints.OrderQty.name}" sortable="true"
+                                       headerText="Order Qty" id="c6" width="60">
+                                <af:panelGroupLayout id="pgl17" halign="right" layout="horizontal">
+                                    <af:outputText value="#{row.OrderQty}"
+                                                   shortDesc="#{bindings.PoInquiryMainVO1.hints.OrderQty.tooltip}"
+                                                   id="ot6">
+                                        <af:convertNumber groupingUsed="false"
+                                                          pattern="###0"/>
+                                    </af:outputText>
+                                </af:panelGroupLayout>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryMainVO1.hints.ReceiptQty.name}" sortable="true"
+                                       headerText="Receipt Qty" id="c7" width="60">
+                                <af:panelGroupLayout id="pgl18" halign="right" layout="horizontal">
+                                    <af:outputText value="#{row.ReceiptQty}"
+                                                   shortDesc="#{bindings.PoInquiryMainVO1.hints.ReceiptQty.tooltip}"
+                                                   id="ot7">
+                                        <af:convertNumber groupingUsed="false"
+                                                          pattern="#{bindings.PoInquiryMainVO1.hints.ReceiptQty.format}"/>
+                                    </af:outputText>
+                                </af:panelGroupLayout>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryMainVO1.hints.BalanceQty.name}" sortable="true"
+                                       headerText="Balance Qty" id="c8" width="60">
+                                <af:panelGroupLayout id="pgl19" halign="right" layout="horizontal">
+                                    <af:outputText value="#{row.BalanceQty}"
+                                                   shortDesc="#{bindings.PoInquiryMainVO1.hints.BalanceQty.tooltip}"
+                                                   id="ot8">
+                                        <af:convertNumber groupingUsed="false"
+                                                          pattern="#{bindings.PoInquiryMainVO1.hints.BalanceQty.format}"/>
+                                    </af:outputText>
+                                </af:panelGroupLayout>
+                            </af:column>
+                            <af:column headerText="Last Receipt" id="c33" width="56">
+                                <af:panelGroupLayout id="pgl20" halign="right" layout="horizontal">
+                                    <af:outputText value="#{row.LastReceipt}"
+                                                   shortDesc="#{bindings.PoInquiryMainVO1.hints.LastReceipt.tooltip}"
+                                                   id="ot1">
+                                        <af:convertDateTime pattern="#{bindings.PoInquiryMainVO1.hints.LastReceipt.format}"/>
+                                    </af:outputText>
+                                </af:panelGroupLayout>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryMainVO1.hints.PoType.name}" sortable="true"
+                                       headerText="PO Type" id="c9" width="80">
+                                <af:outputText value="#{row.PoType}"
+                                               shortDesc="#{bindings.PoInquiryMainVO1.hints.PoType.tooltip}" id="ot9"/>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryMainVO1.hints.PaymentTerm.name}"
+                                       sortable="true" headerText="Payment Term" id="c10" width="60">
+                                <af:outputText value="#{row.PaymentTerm}"
+                                               shortDesc="#{bindings.PoInquiryMainVO1.hints.PaymentTerm.tooltip}"
+                                               id="ot10"/>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryMainVO1.hints.Status.name}" sortable="true"
+                                       headerText="#{bindings.PoInquiryMainVO1.hints.Status.label}" id="c11" width="60">
+                                <af:outputText value="#{row.Status}"
+                                               shortDesc="#{bindings.PoInquiryMainVO1.hints.Status.tooltip}" id="ot11"/>
+                            </af:column>
+                            <!--<af:column headerText="#{bindings.PoInquiryMainVO1.hints.PoHeaderId.label}" id="c34"
+                                       rendered="false" binding="#{pageFlowScope.PoInquirySearchBean.poHdrIdbind}"
+                                       width="1" minimumWidth="1">
+                                <af:outputText value="#{row.PoHeaderId}"
+                                               shortDesc="#{bindings.PoInquiryMainVO1.hints.PoHeaderId.tooltip}"
+                                               id="ot14">
+                                    <af:convertNumber groupingUsed="false"
+                                                      pattern="#{bindings.PoInquiryMainVO1.hints.PoHeaderId.format}"/>
+                                </af:outputText>
+                            </af:column>-->
+                        </af:table>
+                    </af:panelCollection>
+                </af:panelGroupLayout>
+                <af:panelGroupLayout id="pgl11">
+                    <af:spacer width="10" height="10" id="s22"/>
+                    <af:outputText value="Total # of Records : " id="total40"/>
+                    <af:outputText value="#{pageFlowScope.PoInquirySearchBean.recordCount}" id="total41"
+                                   partialTriggers="::b1"/>
+                </af:panelGroupLayout>
+                <af:spacer width="10" height="10" id="s19"/>
+                <af:panelGroupLayout id="pgl15" layout="horizontal">
+                    <af:spacer width="10" height="10" id="s24"/>
+                    <af:outputText value="PO Lines" id="ot13"
+                                   inlineStyle="font-size:medium;color:blue; font-weight:bold;"/>
+                </af:panelGroupLayout>
+                <af:panelGroupLayout id="pgl14" layout="horizontal" inlineStyle="width:1000px;">
+                    <af:spacer width="10" height="10" id="s23"/>
+                    <af:panelCollection id="pc2" binding="#{pageFlowScope.PoInquirySearchBean.resultPanelLineGrpBind}"
+                                        inlineStyle="width:1235px;">
+                        <f:facet name="menus">
+                            <af:menu text="File" id="m2">
+                                <af:commandMenuItem text="Export to Excel" id="pol">
+                                    <af:exportCollectionActionListener type="excelHTML" exportedId="t2"
+                                                                       filename=" POInquiryLines.xls"
+                                                                       title="PO Inquiry Lines"/>
+                                </af:commandMenuItem>
+                            </af:menu>
+                        </f:facet>
+                        <f:facet name="toolbar"/>
+                        <f:facet name="statusbar"/>
+                        <af:table value="#{bindings.PoInquiryDetailsVO1.collectionModel}" var="row"
+                                  rows="#{bindings.PoInquiryDetailsVO1.rangeSize}"
+                                  emptyText="#{bindings.PoInquiryDetailsVO1.viewable ? 'No data to display.' : 'Access Denied.'}"
+                                  rowBandingInterval="0" fetchSize="#{bindings.PoInquiryDetailsVO1.rangeSize}" id="t2">
+                            <af:column sortProperty="#{bindings.PoInquiryDetailsVO1.hints.PoNumber.name}"
+                                       sortable="true" headerText="PO #" id="c12" width="67">
+                                <af:inputText value="#{row.bindings.PoNumber.inputValue}"
+                                              label="#{bindings.PoInquiryDetailsVO1.hints.PoNumber.label}"
+                                              required="#{bindings.PoInquiryDetailsVO1.hints.PoNumber.mandatory}"
+                                              columns="#{bindings.PoInquiryDetailsVO1.hints.PoNumber.displayWidth}"
+                                              maximumLength="#{bindings.PoInquiryDetailsVO1.hints.PoNumber.precision}"
+                                              shortDesc="#{bindings.PoInquiryDetailsVO1.hints.PoNumber.tooltip}"
+                                              id="it2">
+                                    <f:validator binding="#{row.bindings.PoNumber.validator}"/>
+                                </af:inputText>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryDetailsVO1.hints.LineNumber.name}"
+                                       sortable="true" headerText="Line #" id="c13" width="39">
+                                <af:panelGroupLayout id="pgl21" halign="right" layout="horizontal">
+                                    <af:inputText value="#{row.bindings.LineNumber.inputValue}"
+                                                  label="#{bindings.PoInquiryDetailsVO1.hints.LineNumber.label}"
+                                                  required="#{bindings.PoInquiryDetailsVO1.hints.LineNumber.mandatory}"
+                                                  columns="#{bindings.PoInquiryDetailsVO1.hints.LineNumber.displayWidth}"
+                                                  maximumLength="#{bindings.PoInquiryDetailsVO1.hints.LineNumber.precision}"
+                                                  shortDesc="#{bindings.PoInquiryDetailsVO1.hints.LineNumber.tooltip}"
+                                                  id="it3">
+                                        <f:validator binding="#{row.bindings.LineNumber.validator}"/>
+                                        <af:convertNumber groupingUsed="false"
+                                                          pattern="#{bindings.PoInquiryDetailsVO1.hints.LineNumber.format}"/>
+                                    </af:inputText>
+                                </af:panelGroupLayout>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryDetailsVO1.hints.Sku.name}" sortable="true"
+                                       headerText="SKU" id="c14" width="79">
+                                <af:inputText value="#{row.bindings.Sku.inputValue}"
+                                              label="#{bindings.PoInquiryDetailsVO1.hints.Sku.label}"
+                                              required="#{bindings.PoInquiryDetailsVO1.hints.Sku.mandatory}"
+                                              columns="#{bindings.PoInquiryDetailsVO1.hints.Sku.displayWidth}"
+                                              maximumLength="#{bindings.PoInquiryDetailsVO1.hints.Sku.precision}"
+                                              shortDesc="#{bindings.PoInquiryDetailsVO1.hints.Sku.tooltip}" id="it4">
+                                    <f:validator binding="#{row.bindings.Sku.validator}"/>
+                                </af:inputText>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryDetailsVO1.hints.SkuDescription.name}"
+                                       sortable="true" headerText="Description" id="c15" width="95">
+                                <af:inputText value="#{row.bindings.SkuDescription.inputValue}"
+                                              label="#{bindings.PoInquiryDetailsVO1.hints.SkuDescription.label}"
+                                              required="#{bindings.PoInquiryDetailsVO1.hints.SkuDescription.mandatory}"
+                                              columns="#{bindings.PoInquiryDetailsVO1.hints.SkuDescription.displayWidth}"
+                                              maximumLength="#{bindings.PoInquiryDetailsVO1.hints.SkuDescription.precision}"
+                                              shortDesc="#{bindings.PoInquiryDetailsVO1.hints.SkuDescription.tooltip}"
+                                              id="it5">
+                                    <f:validator binding="#{row.bindings.SkuDescription.validator}"/>
+                                </af:inputText>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryDetailsVO1.hints.Dept.name}" sortable="true"
+                                       headerText="#{bindings.PoInquiryDetailsVO1.hints.Dept.label}" id="c16"
+                                       width="40">
+                                <af:inputText value="#{row.bindings.Dept.inputValue}"
+                                              label="#{bindings.PoInquiryDetailsVO1.hints.Dept.label}"
+                                              required="#{bindings.PoInquiryDetailsVO1.hints.Dept.mandatory}"
+                                              columns="#{bindings.PoInquiryDetailsVO1.hints.Dept.displayWidth}"
+                                              maximumLength="#{bindings.PoInquiryDetailsVO1.hints.Dept.precision}"
+                                              shortDesc="#{bindings.PoInquiryDetailsVO1.hints.Dept.tooltip}" id="it6">
+                                    <f:validator binding="#{row.bindings.Dept.validator}"/>
+                                </af:inputText>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryDetailsVO1.hints.Uom.name}" sortable="true"
+                                       headerText="UOM" id="c17" width="44">
+                                <af:inputText value="#{row.bindings.Uom.inputValue}"
+                                              label="#{bindings.PoInquiryDetailsVO1.hints.Uom.label}"
+                                              required="#{bindings.PoInquiryDetailsVO1.hints.Uom.mandatory}"
+                                              columns="#{bindings.PoInquiryDetailsVO1.hints.Uom.displayWidth}"
+                                              maximumLength="#{bindings.PoInquiryDetailsVO1.hints.Uom.precision}"
+                                              shortDesc="#{bindings.PoInquiryDetailsVO1.hints.Uom.tooltip}" id="it7">
+                                    <f:validator binding="#{row.bindings.Uom.validator}"/>
+                                </af:inputText>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryDetailsVO1.hints.Quantity.name}"
+                                       sortable="true" headerText="Qty" id="c18" width="46">
+                                <af:panelGroupLayout id="pgl22" halign="right" layout="horizontal">
+                                    <af:inputText value="#{row.bindings.Quantity.inputValue}"
+                                                  label="#{bindings.PoInquiryDetailsVO1.hints.Quantity.label}"
+                                                  required="#{bindings.PoInquiryDetailsVO1.hints.Quantity.mandatory}"
+                                                  columns="#{bindings.PoInquiryDetailsVO1.hints.Quantity.displayWidth}"
+                                                  maximumLength="#{bindings.PoInquiryDetailsVO1.hints.Quantity.precision}"
+                                                  shortDesc="#{bindings.PoInquiryDetailsVO1.hints.Quantity.tooltip}"
+                                                  id="it8">
+                                        <f:validator binding="#{row.bindings.Quantity.validator}"/>
+                                        <af:convertNumber groupingUsed="false"
+                                                          pattern="#{bindings.PoInquiryDetailsVO1.hints.Quantity.format}"/>
+                                    </af:inputText>
+                                </af:panelGroupLayout>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryDetailsVO1.hints.UnitPrice.name}"
+                                       sortable="true" headerText="Price" id="c19" width="63">
+                                <af:panelGroupLayout id="pgl23" halign="right" layout="horizontal">
+                                    <af:inputText value="#{row.bindings.UnitPrice.inputValue}"
+                                                  label="#{bindings.PoInquiryDetailsVO1.hints.UnitPrice.label}"
+                                                  required="#{bindings.PoInquiryDetailsVO1.hints.UnitPrice.mandatory}"
+                                                  columns="#{bindings.PoInquiryDetailsVO1.hints.UnitPrice.displayWidth}"
+                                                  maximumLength="#{bindings.PoInquiryDetailsVO1.hints.UnitPrice.precision}"
+                                                  shortDesc="#{bindings.PoInquiryDetailsVO1.hints.UnitPrice.tooltip}"
+                                                  id="it9">
+                                        <f:validator binding="#{row.bindings.UnitPrice.validator}"/>
+                                        <af:convertNumber groupingUsed="false"
+                                                          pattern="#{bindings.PoInquiryDetailsVO1.hints.UnitPrice.format}"/>
+                                    </af:inputText>
+                                </af:panelGroupLayout>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryDetailsVO1.hints.LineAmount.name}"
+                                       sortable="true" headerText="Line Amount" id="c20" width="90">
+                                <af:panelGroupLayout id="pgl24" halign="right" layout="horizontal">
+                                    <af:inputText value="#{row.bindings.LineAmount.inputValue}"
+                                                  label="#{bindings.PoInquiryDetailsVO1.hints.LineAmount.label}"
+                                                  required="#{bindings.PoInquiryDetailsVO1.hints.LineAmount.mandatory}"
+                                                  columns="#{bindings.PoInquiryDetailsVO1.hints.LineAmount.displayWidth}"
+                                                  maximumLength="#{bindings.PoInquiryDetailsVO1.hints.LineAmount.precision}"
+                                                  shortDesc="#{bindings.PoInquiryDetailsVO1.hints.LineAmount.tooltip}"
+                                                  id="it10">
+                                        <f:validator binding="#{row.bindings.LineAmount.validator}"/>
+                                        <af:convertNumber groupingUsed="false"
+                                                          pattern="#{bindings.PoInquiryDetailsVO1.hints.LineAmount.format}"/>
+                                    </af:inputText>
+                                </af:panelGroupLayout>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryDetailsVO1.hints.Vpc.name}" sortable="true"
+                                       headerText="VPC" id="c21" width="50">
+                                <af:inputText value="#{row.bindings.Vpc.inputValue}"
+                                              label="#{bindings.PoInquiryDetailsVO1.hints.Vpc.label}"
+                                              required="#{bindings.PoInquiryDetailsVO1.hints.Vpc.mandatory}"
+                                              columns="#{bindings.PoInquiryDetailsVO1.hints.Vpc.displayWidth}"
+                                              maximumLength="#{bindings.PoInquiryDetailsVO1.hints.Vpc.precision}"
+                                              shortDesc="#{bindings.PoInquiryDetailsVO1.hints.Vpc.tooltip}" id="it11">
+                                    <f:validator binding="#{row.bindings.Vpc.validator}"/>
+                                </af:inputText>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryDetailsVO1.hints.Location.name}"
+                                       sortable="true" headerText="#{bindings.PoInquiryDetailsVO1.hints.Location.label}"
+                                       id="c22" width="68">
+                                <af:inputText value="#{row.bindings.Location.inputValue}"
+                                              label="#{bindings.PoInquiryDetailsVO1.hints.Location.label}"
+                                              required="#{bindings.PoInquiryDetailsVO1.hints.Location.mandatory}"
+                                              columns="#{bindings.PoInquiryDetailsVO1.hints.Location.displayWidth}"
+                                              maximumLength="#{bindings.PoInquiryDetailsVO1.hints.Location.precision}"
+                                              shortDesc="#{bindings.PoInquiryDetailsVO1.hints.Location.tooltip}"
+                                              id="it12">
+                                    <f:validator binding="#{row.bindings.Location.validator}"/>
+                                </af:inputText>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryDetailsVO1.hints.MatchLevel.name}"
+                                       sortable="true" headerText="Match Level" id="c23" width="60">
+                                <af:inputText value="#{row.bindings.MatchLevel.inputValue}"
+                                              label="#{bindings.PoInquiryDetailsVO1.hints.MatchLevel.label}"
+                                              required="#{bindings.PoInquiryDetailsVO1.hints.MatchLevel.mandatory}"
+                                              columns="#{bindings.PoInquiryDetailsVO1.hints.MatchLevel.displayWidth}"
+                                              maximumLength="#{bindings.PoInquiryDetailsVO1.hints.MatchLevel.precision}"
+                                              shortDesc="#{bindings.PoInquiryDetailsVO1.hints.MatchLevel.tooltip}"
+                                              id="it13">
+                                    <f:validator binding="#{row.bindings.MatchLevel.validator}"/>
+                                </af:inputText>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryDetailsVO1.hints.ReceivedQty.name}"
+                                       sortable="true" headerText="Received Qty" id="c24" width="60">
+                                <af:panelGroupLayout id="pgl25" halign="right" layout="horizontal">
+                                    <af:outputText value="#{row.ReceivedQty}"
+                                                  
+                                                  id="it14">
+                                     
+                                        <af:convertNumber groupingUsed="false"
+                                                          pattern="#{bindings.PoInquiryDetailsVO1.hints.ReceivedQty.format}"/>
+                                    </af:outputText>
+                                </af:panelGroupLayout>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryDetailsVO1.hints.InvoicedQty.name}"
+                                       sortable="true" headerText="Invoiced Qty" id="c25" width="60">
+                                <af:panelGroupLayout id="pgl26" halign="right" layout="horizontal">
+                                    <af:outputText value="#{row.InvoicedQty}"
+                                                  
+                                                  id="it15">
+                                       
+                                        <af:convertNumber groupingUsed="false"
+                                                          pattern="#{bindings.PoInquiryDetailsVO1.hints.InvoicedQty.format}"/>
+                                    </af:outputText>
+                                </af:panelGroupLayout>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryDetailsVO1.hints.ReceiptNumber.name}"
+                                       sortable="true" headerText="Receipt #s" id="c26" width="100">
+                                <af:link text="#{row.ReceiptNumber}" id="l2" selected="true"
+                                         actionListener="#{pageFlowScope.PoInquirySearchBean.viewPORecPopUpListener}"
+                                         binding="#{pageFlowScope.PoInquirySearchBean.receiptNumberbind}"
+                                         immediate="true">
+                                    <f:attribute name="PoLineId" value="#{row.PoLineId}"/>
+                                </af:link>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryDetailsVO1.hints.InvoiceNumber.name}"
+                                       sortable="true" headerText="Invoice #s" id="c27" width="100">
+                                <af:link text="#{row.InvoiceNumber}" id="l3" selected="true"
+                                         actionListener="#{pageFlowScope.PoInquirySearchBean.viewPOInvPopUpListener}"
+                                         binding="#{pageFlowScope.PoInquirySearchBean.invNumberbind}" immediate="true">
+                                    <f:attribute name="PoLineId" value="#{row.PoLineId}"/>
+                                    <f:attribute name="PoHeaderId" value="#{row.PoHeaderId}"/>
+                                </af:link>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryDetailsVO1.hints.UnmatchedQty.name}"
+                                       sortable="true" headerText="Unmatched Qty" id="c28" width="63">
+                                <af:panelGroupLayout id="pgl27" halign="right" layout="horizontal">
+                                    <af:outputText value="#{row.UnmatchedQty}"
+                                                
+                                                  id="it18">
+                                     
+                                        <af:convertNumber groupingUsed="false"
+                                                          pattern="#{bindings.PoInquiryDetailsVO1.hints.UnmatchedQty.format}"/>
+                                    </af:outputText>
+                                </af:panelGroupLayout>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryDetailsVO1.hints.AccrualAmount.name}"
+                                       sortable="true" headerText="Accrual Amount" id="c29" width="75">
+                                <af:panelGroupLayout id="pgl28" halign="right" layout="horizontal">
+                                    <af:inputText value="#{row.bindings.AccrualAmount.inputValue}"
+                                                  label="#{bindings.PoInquiryDetailsVO1.hints.AccrualAmount.label}"
+                                                  required="#{bindings.PoInquiryDetailsVO1.hints.AccrualAmount.mandatory}"
+                                                  columns="#{bindings.PoInquiryDetailsVO1.hints.AccrualAmount.displayWidth}"
+                                                  maximumLength="#{bindings.PoInquiryDetailsVO1.hints.AccrualAmount.precision}"
+                                                  shortDesc="#{bindings.PoInquiryDetailsVO1.hints.AccrualAmount.tooltip}"
+                                                  id="it19">
+                                        <f:validator binding="#{row.bindings.AccrualAmount.validator}"/>
+                                        <af:convertNumber groupingUsed="false"
+                                                          pattern="#{bindings.PoInquiryDetailsVO1.hints.AccrualAmount.format}"/>
+                                    </af:inputText>
+                                </af:panelGroupLayout>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryDetailsVO1.hints.WrittenoffAmount.name}"
+                                       sortable="true" headerText="Accrual Written-off" id="c30" width="80">
+                                <af:link text="#{row.WrittenoffAmount}" id="l4" selected="true"
+                                         actionListener="#{pageFlowScope.PoInquirySearchBean.viewPOWrtoffPopUpListener}"
+                                         binding="#{pageFlowScope.PoInquirySearchBean.writeOffAmtbind}">
+                                    <f:attribute name="PoLineId" value="#{row.PoLineId}"/>
+                                     <f:attribute name="PoHeaderId" value="#{row.PoHeaderId}"/>
+                                </af:link>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryDetailsVO1.hints.AccrualAccount.name}"
+                                       sortable="true" headerText="Accrual Account" id="c31" width="80">
+                                <af:inputText value="#{row.bindings.AccrualAccount.inputValue}"
+                                              label="#{bindings.PoInquiryDetailsVO1.hints.AccrualAccount.label}"
+                                              required="#{bindings.PoInquiryDetailsVO1.hints.AccrualAccount.mandatory}"
+                                              columns="#{bindings.PoInquiryDetailsVO1.hints.AccrualAccount.displayWidth}"
+                                              maximumLength="#{bindings.PoInquiryDetailsVO1.hints.AccrualAccount.precision}"
+                                              shortDesc="#{bindings.PoInquiryDetailsVO1.hints.AccrualAccount.tooltip}"
+                                              id="it21">
+                                    <f:validator binding="#{row.bindings.AccrualAccount.validator}"/>
+                                    <af:convertNumber groupingUsed="false"
+                                                      pattern="#{bindings.PoInquiryDetailsVO1.hints.AccrualAccount.format}"/>
+                                </af:inputText>
+                            </af:column>
+                            <af:column sortProperty="#{bindings.PoInquiryDetailsVO1.hints.VarianceAccount.name}"
+                                       sortable="true" headerText="Variance Account" id="c32" width="80">
+                                <af:inputText value="#{row.bindings.VarianceAccount.inputValue}"
+                                              label="#{bindings.PoInquiryDetailsVO1.hints.VarianceAccount.label}"
+                                              required="#{bindings.PoInquiryDetailsVO1.hints.VarianceAccount.mandatory}"
+                                              columns="#{bindings.PoInquiryDetailsVO1.hints.VarianceAccount.displayWidth}"
+                                              maximumLength="#{bindings.PoInquiryDetailsVO1.hints.VarianceAccount.precision}"
+                                              shortDesc="#{bindings.PoInquiryDetailsVO1.hints.VarianceAccount.tooltip}"
+                                              id="it22">
+                                    <f:validator binding="#{row.bindings.VarianceAccount.validator}"/>
+                                    <af:convertNumber groupingUsed="false"
+                                                      pattern="#{bindings.PoInquiryDetailsVO1.hints.VarianceAccount.format}"/>
+                                </af:inputText>
+                            </af:column>
+                            <af:column headerText="#{bindings.PoInquiryDetailsVO1.hints.PoLineId.label}" id="c35"
+                                       rendered="false">
+                                <af:outputText value="#{row.PoLineId}"
+                                               shortDesc="#{bindings.PoInquiryDetailsVO1.hints.PoLineId.tooltip}"
+                                               id="ot16">
+                                    <af:convertNumber groupingUsed="false"
+                                                      pattern="#{bindings.PoInquiryDetailsVO1.hints.PoLineId.format}"/>
+                                </af:outputText>
+                            </af:column>
+                        </af:table>
+                    </af:panelCollection>
+                </af:panelGroupLayout>
+                <af:popup id="p5" contentDelivery="lazy" clientComponent="false" autoCancel="disabled"
+                          binding="#{pageFlowScope.PoInquirySearchBean.receiptPopBind}">
+                    <af:dialog type="none" id="d05" styleClass="AFStretchWidth" inlineStyle="width:500px" title="Receipts Details">
+                        <af:spacer height="5" id="sd9"/>
+                        <af:panelCollection id="pc3" styleClass="AFStretchWidth"
+                                            binding="#{pageFlowScope.PoInquirySearchBean.viewPoRecPopup}">
+                            <af:table value="#{bindings.PoInquiryRecPopVO1.collectionModel}" var="row"
+                                      rows="#{bindings.PoInquiryRecPopVO1.rangeSize}"
+                                      emptyText="#{bindings.PoInquiryRecPopVO1.viewable ? 'No data to display.' : 'Access Denied.'}"
+                                      rowBandingInterval="0" fetchSize="#{bindings.PoInquiryRecPopVO1.rangeSize}"
+                                      id="t3">
+                                <af:column headerText="Receipt #" id="c39">
+                                    <af:outputText value="#{row.ReceiptNumber}"
+                                                   shortDesc="#{bindings.PoInquiryRecPopVO1.hints.ReceiptNumber.tooltip}"
+                                                   id="ot15"/>
+                                </af:column>
+                                <af:column headerText="Date" id="c40">
+                                    <af:outputText value="#{row.ReceiptDate}"
+                                                   shortDesc="#{bindings.PoInquiryRecPopVO1.hints.ReceiptDate.tooltip}"
+                                                   id="ot17">
+                                        <af:convertDateTime pattern="#{bindings.PoInquiryRecPopVO1.hints.ReceiptDate.format}"/>
+                                    </af:outputText>
+                                </af:column>
+                                <af:column headerText="Qty" id="c41">
+                                    <af:outputText value="#{row.Qty}"
+                                                   shortDesc="#{bindings.PoInquiryRecPopVO1.hints.Qty.tooltip}"
+                                                   id="ot18">
+                                        <af:convertNumber groupingUsed="false"
+                                                          pattern="#{bindings.PoInquiryRecPopVO1.hints.Qty.format}"/>
+                                    </af:outputText>
+                                </af:column>
+                            </af:table>
+                        </af:panelCollection>
+                    </af:dialog>
+                </af:popup>
+                <af:popup id="p6" contentDelivery="lazy" clientComponent="false" autoCancel="disabled"
+                          binding="#{pageFlowScope.PoInquirySearchBean.invoicePopBind}">
+                    <af:dialog type="none" id="d06" styleClass="AFStretchWidth" inlineStyle="width:500px"
+                               title="Invoice Details">
+                        <af:spacer height="5" id="sd10"/>
+                        <af:panelCollection id="pc4" styleClass="AFStretchWidth">
+                            <af:table value="#{bindings.PoInquiryInvPopVO1.collectionModel}" var="row"
+                                      rows="#{bindings.PoInquiryInvPopVO1.rangeSize}"
+                                      emptyText="#{bindings.PoInquiryInvPopVO1.viewable ? 'No data to display.' : 'Access Denied.'}"
+                                      rowBandingInterval="0" fetchSize="#{bindings.PoInquiryInvPopVO1.rangeSize}"
+                                      id="t4">
+                                <af:column headerText="Invoice #" id="c36">
+                                    <af:outputText value="#{row.InvoiceNumber}"
+                                                   shortDesc="#{bindings.PoInquiryInvPopVO1.hints.InvoiceNumber.tooltip}"
+                                                   id="ot19"/>
+                                </af:column>
+                                <af:column headerText="Inv Qty" id="c37">
+                                    <af:outputText value="#{row.InvoiceQty}"
+                                                   shortDesc="#{bindings.PoInquiryInvPopVO1.hints.InvoiceQty.tooltip}"
+                                                   id="ot20">
+                                        <af:convertNumber groupingUsed="false"
+                                                          pattern="#{bindings.PoInquiryInvPopVO1.hints.InvoiceQty.format}"/>
+                                    </af:outputText>
+                                </af:column>
+                                <af:column headerText="Inv Price" id="c38">
+                                    <af:outputText value="#{row.InvoicePrice}"
+                                                   shortDesc="#{bindings.PoInquiryInvPopVO1.hints.InvoicePrice.tooltip}"
+                                                   id="ot21">
+                                        <af:convertNumber groupingUsed="false"
+                                                          pattern="#{bindings.PoInquiryInvPopVO1.hints.InvoicePrice.format}"/>
+                                    </af:outputText>
+                                </af:column>
+                                <af:column headerText="Validated" id="c42">
+                                    <af:outputText value="#{row.Status}"
+                                                   shortDesc="#{bindings.PoInquiryInvPopVO1.hints.Status.tooltip}"
+                                                   id="ot22"/>
+                                </af:column>
+                            </af:table>
+                        </af:panelCollection>
+                    </af:dialog>
+                </af:popup>
+                <af:popup id="p7" contentDelivery="lazy" clientComponent="false" autoCancel="disabled"
+                          binding="#{pageFlowScope.PoInquirySearchBean.writeOffPopBind}">
+                    <af:dialog type="none" id="d07" styleClass="AFStretchWidth" inlineStyle="width:500px" title="WriteOff Details" >
+                        <af:spacer height="7" id="sd11"/>
+                        <af:panelCollection id="pc5" styleClass="AFStretchWidth">
+                            <af:table value="#{bindings.PoInquiryWrtoffPopVO1.collectionModel}" var="row"
+                                      rows="#{bindings.PoInquiryWrtoffPopVO1.rangeSize}"
+                                      emptyText="#{bindings.PoInquiryWrtoffPopVO1.viewable ? 'No data to display.' : 'Access Denied.'}"
+                                      rowBandingInterval="0" fetchSize="#{bindings.PoInquiryWrtoffPopVO1.rangeSize}"
+                                      id="t5">
+                                <af:column headerText="Reason Code" id="c43">
+                                    <af:outputText value="#{row.ReasonCode}"
+                                                   shortDesc="#{bindings.PoInquiryWrtoffPopVO1.hints.ReasonCode.tooltip}"
+                                                   id="ot23"/>
+                                </af:column>
+                                <af:column headerText="Date" id="c44">
+                                    <af:outputText value="#{row.WriteoffDate}"
+                                                   shortDesc="#{bindings.PoInquiryWrtoffPopVO1.hints.WriteoffDate.tooltip}"
+                                                   id="ot24">
+                                        <af:convertDateTime pattern="#{bindings.PoInquiryWrtoffPopVO1.hints.WriteoffDate.format}"/>
+                                    </af:outputText>
+                                </af:column>
+                                <af:column headerText="Amount" id="c45">
+                                    <af:panelGroupLayout id="pgl30" layout="horizontal" halign="end">
+                                        <af:outputText value="#{row.Amount}"
+                                                       shortDesc="#{bindings.PoInquiryWrtoffPopVO1.hints.Amount.tooltip}"
+                                                       id="ot25">
+                                            <af:convertNumber groupingUsed="false"
+                                                              pattern="#{bindings.PoInquiryWrtoffPopVO1.hints.Amount.format}"/>
+                                        </af:outputText>
+                                    </af:panelGroupLayout>
+                                </af:column>
+                            </af:table>
+                        </af:panelCollection>
+                    </af:dialog>
+                </af:popup>
+            </af:panelGroupLayout>
+        </af:panelGroupLayout>
+    </af:panelGroupLayout>
+</jsp:root>

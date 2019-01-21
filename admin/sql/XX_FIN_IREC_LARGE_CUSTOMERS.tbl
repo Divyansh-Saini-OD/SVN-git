@@ -1,0 +1,33 @@
+
+ SET SHOW         OFF
+ SET VERIFY       OFF
+ SET ECHO         OFF
+ SET TAB          OFF
+ SET FEEDBACK     ON
+
+ PROMPT Creating TABLE xx_fin_irec_large_customers
+
+ PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+ WHENEVER SQLERROR CONTINUE
+
+ -- +==========================================================================+
+ -- |                  Office Depot - Project Simplify                         |
+ -- +==========================================================================+
+ -- | SQL Script to create the following object                                |
+ -- |Table    : xx_fin_irec_large_customers                                    |
+ -- |Change Record:                                                            |
+ -- |===============                                                           |
+ -- |Version      Date              Author               Remarks               |
+ -- |=======      ==========        =============        ===================== |
+ -- | V1.0        05-MAY-2017       Sreedhar Mohan       Initial version       |
+ -- +==========================================================================+
+
+ CREATE TABLE XXFIN.xx_fin_irec_large_customers(                                                
+                                                  CUST_ACCOUNT_ID          NUMBER(15)
+                                                 ,SITES_COUNT              NUMBER(15)
+                                                 ,TRX_COUNT                NUMBER(15)
+                                                 ,ENABLED_FLAG             VARCHAR2(1) DEFAULT 'Y'
+                                               )            
+;
+

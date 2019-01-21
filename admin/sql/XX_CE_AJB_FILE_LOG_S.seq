@@ -1,0 +1,24 @@
+SET SHOW         OFF 
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET TERM         ON
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       		                                      |
+-- +==========================================================================+
+-- | Name :       I0032 AJB CM Interface                                      |
+-- | Description : SQL Script to create the Sequence                          |
+-- | XX_CE_AJB_FILE_LOG_S used for the generation of seq_ID in                | 
+-- | the custom table XX_CE_AJB_FILE_LOG_S                                    | 
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ===========  =============        ==============================|
+-- | 1.0      24-JUL-2008  Deepak Gowda         Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+CREATE SEQUENCE xxfin.XX_CE_AJB_FILE_LOG_S START WITH 1 INCREMENT BY 1;

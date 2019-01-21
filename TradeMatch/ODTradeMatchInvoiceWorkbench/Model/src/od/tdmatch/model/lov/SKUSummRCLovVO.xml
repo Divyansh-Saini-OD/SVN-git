@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewObject
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="SKUSummRCLovVO"
+  Version="12.2.1.12.24"
+  InheritPersonalization="merge"
+  BindingStyle="OracleName"
+  CustomQuery="true"
+  RowClass="od.tdmatch.model.lov.SKUSummRCLovVORowImpl"
+  ComponentClass="od.tdmatch.model.lov.SKUSummRCLovVOImpl"
+  PageIterMode="Full">
+  <DesignTime>
+    <Attr Name="_codeGenFlag2" Value="Coll"/>
+    <Attr Name="_isExpertMode" Value="true"/>
+    <Attr Name="_isCodegen" Value="true"/>
+  </DesignTime>
+  <Properties>
+    <SchemaBasedProperties>
+      <LABEL
+        ResId="od.tdmatch.model.lov.SKUSummRCLovVO_LABEL"/>
+    </SchemaBasedProperties>
+  </Properties>
+  <SQLQuery><![CDATA[SELECT msi.segment1 SKU_Number, msi.inventory_item_id          
+  FROM mtl_system_items_b msi   
+WHERE 1=1   
+--AND EXISTS (SELECT 'x'  
+       --        FROM ap_invoices_all ai, ap_invoice_lines_all ail  
+      --      WHERE ai.validation_request_id=-9999999999  
+         --         AND ai.invoice_id=ail.invoice_id 
+           --     AND ail.attribute12 is not null 
+            --      AND ail.inventory_item_id = msi.inventory_item_id 
+           --       AND ail.ship_to_location_id = msi.ORGANIZATION_ID)]]></SQLQuery>
+  <ViewAttribute
+    Name="SkuNumber"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="255"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="SKU_NUMBER"
+    Expression="SKU_NUMBER"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="40"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <DISPLAYWIDTH
+          Value="25"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="InventoryItemId"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="INVENTORY_ITEM_ID"
+    Expression="INVENTORY_ITEM_ID"
+    SQLType="NUMERIC"/>
+  <ResourceBundle>
+    <PropertiesBundle
+      PropertiesFile="od.tdmatch.model.ModelBundle"/>
+  </ResourceBundle>
+</ViewObject>

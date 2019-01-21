@@ -1,0 +1,38 @@
+ SET SHOW         OFF
+ SET VERIFY       OFF
+ SET ECHO         OFF
+ SET TAB          OFF
+ SET FEEDBACK     ON
+
+ PROMPT Creating INDEX XX_AR_CUSTOMER_TRX_N6
+
+ PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+ WHENEVER SQLERROR CONTINUE
+ WHENEVER OSERROR EXIT FAILURE ROLLBACK
+
+ -- +================================================================================+
+ -- |                  Office Depot - Project Simplify                               |
+ -- +================================================================================+
+ -- |Desxription - SQL Script to create XX_AR_CUSTOMER_TRX_N6 index - QC Defect 17501|
+ -- |Purpose - Index created on RA_CUSTOMER_TRX_ALL table to improve performance     |
+ -- |                                                                                |
+ -- |Change Record:                                                                  |
+ -- |===============                                                                 |
+ -- |Version      Date               Author               Remarks                    |
+ -- |=======      ===========        =============        ========================== |
+ -- |  1.0        20-JUN-2012        Abdul Khan           Initial version.           |
+ -- |                                                                                |
+ -- +================================================================================+
+
+ CREATE INDEX xxfin.xx_ar_customer_trx_n6
+ ON ar.ra_customer_trx_all ( bill_to_customer_id, trx_date ) 
+ PARALLEL;
+
+ ALTER INDEX xxfin.xx_ar_customer_trx_n6
+ NOPARALLEL; 
+                            
+ EXIT;
+
+ SHO ERR;
+

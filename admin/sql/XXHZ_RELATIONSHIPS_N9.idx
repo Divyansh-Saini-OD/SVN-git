@@ -1,0 +1,30 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        : XXHZ_RELATIONSHIPS_N9.idx                           |
+-- |              						                                   |
+-- | Rice ID     : I2159 (WebCollect Diary Notes)                      |
+-- |              						                                   |
+-- | Description : Index Creation Script                               |
+-- |                                                                   |
+-- |              						                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |1.0      20-FEB-2012  R.Aldridge       Defect 16234 - Performance  |
+-- +===================================================================+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX xxcrm.XXHZ_RELATIONSHIPS_N9 on AR.HZ_RELATIONSHIPS (OBJECT_ID,RELATIONSHIP_TYPE,STATUS) PARALLEL 8;
+ALTER INDEX  xxcrm.XXHZ_RELATIONSHIPS_N9 NOPARALLEL;
+
+EXECUTE DBMS_STATS.UNLOCK_TABLE_STATS ('AR', 'HZ_RELATIONSHIPS');
+exec dbms_stats.gather_index_stats(ownname=>'XXCRM',indname=>'XXHZ_RELATIONSHIPS_N9',degree=>8)
+EXECUTE DBMS_STATS.LOCK_TABLE_STATS ('AR', 'HZ_RELATIONSHIPS');
+
+

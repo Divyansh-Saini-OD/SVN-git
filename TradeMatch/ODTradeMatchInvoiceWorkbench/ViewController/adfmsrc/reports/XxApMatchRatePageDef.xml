@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel" version="12.2.1.12.24" id="XxApMatchRatePageDef"
+                Package="reports">
+  <parameters/>
+  <executables>
+    <variableIterator id="variables"/>
+    <taskFlow id="matchratebtf1" taskFlowId="/WEB-INF/match-rate-btf.xml#match-rate-btf" activation="deferred"
+              xmlns="http://xmlns.oracle.com/adf/controller/binding"/>
+  </executables>
+  <bindings>
+    <methodAction id="searchDefaultMatchRateData" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="searchDefaultMatchRateData" IsViewObjectMethod="false"
+                  DataControl="ODTradeMatchReportsAMDataControl"
+                  InstanceName="bindings.searchDefaultMatchRateData.dataControl.dataProvider"/>
+  </bindings>
+</pageDefinition>

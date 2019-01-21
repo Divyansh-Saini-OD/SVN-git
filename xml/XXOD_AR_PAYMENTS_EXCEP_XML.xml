@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataTemplate name="XXOD_AR_PAYMENTS_EXCEPTION" description="OD AR Payments Exception Report" defaultPackage="xxod_ar_payments_excep_pkg" version="1.0">
+<parameters>
+<parameter name="P_EXCEPTION_TYPE" dataType = "varchar2"></parameter>
+<parameter name="P_DATE_FROM" dataType = "varchar2"></parameter>
+<parameter name="P_DATE_TO" dataType = "varchar2"></parameter>
+</parameters>
+<lexicals>
+</lexicals>
+<dataQuery>
+<sqlStatement name="Q_EXCEP_DATA">
+<![CDATA[
+SELECT hca.account_name PARTY_NAME, 
+       hca.account_number ACCOUNT_NUMBER, 
+       xcreditauth.last_updated_by LAST_UPDATED_BY, 
+	   xcreditauth.last_update_date LAST_UPDATE_DATE,
+	   (select user_name from fnd_user where user_id = xcreditauth.last_updated_by) LAST_UPDATE_BY_USER
+  FROM xx_cdh_cust_acct_ext_b xcreditauth,
+       hz_cust_accounts hca
+ WHERE 1 = 1
+   AND xcreditauth.attr_group_id=:ATTR_GROUP_ID
+   AND xcreditauth.cust_account_id = hca.cust_account_id
+   and xcreditauth.C_EXT_ATTR1=:Y_N
+    AND xcreditauth.last_update_date BETWEEN TO_DATE(nvl(:P_DATE_FROM, sysdate-7300), 'DD-MON-RRRR' )
+                                         AND TO_DATE(nvl(:P_DATE_TO,sysdate), 'DD-MON-RRRR')+1
+]]>
+</sqlStatement>
+
+
+</dataQuery>
+<dataTrigger name="beforeReportTrigger" source="xxod_ar_payments_excep_pkg.beforereport"/>
+<dataStructure>
+<group name="G_EXCEP_DATA" source="Q_EXCEP_DATA">
+<element name="PARTY_NAME" value="PARTY_NAME"/>
+<element name="ACCOUNT_NUMBER" value="ACCOUNT_NUMBER"/>
+<element name="LAST_UPDATED_BY" value="LAST_UPDATED_BY"/>
+<element name="LAST_UPDATE_DATE" value="LAST_UPDATE_DATE"/>
+<element name="LAST_UPDATE_BY_USER" value="LAST_UPDATE_BY_USER"/>
+</group>
+<element name="ATTR_GROUP_ID" dataType="NUMBER" value="xxod_ar_payments_excep_pkg.attr_group_id_p"/>
+<element name="Y_N" dataType="VARCHAR2" value="xxod_ar_payments_excep_pkg.access_p"/>
+<element name="RUN_DATE" dataType="VARCHAR2" value="xxod_ar_payments_excep_pkg.rundate_p"/>
+<element name="OU" dataType="VARCHAR2" value="xxod_ar_payments_excep_pkg.ou_p"/>
+</dataStructure>
+</dataTemplate>

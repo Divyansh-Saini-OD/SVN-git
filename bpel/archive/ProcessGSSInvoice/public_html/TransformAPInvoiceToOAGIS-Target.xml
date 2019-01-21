@@ -1,0 +1,144 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<ns0:ProcessInvoice xmlns:ns0="http://www.openapplications.org/oagis/9" releaseID="1.0">
+   <ns0:ApplicationArea>
+      <ns0:Sender>
+         <ns0:ComponentID>AP_EXPENSE_NA_GSS</ns0:ComponentID>
+      </ns0:Sender>
+      <ns0:CreationDateTime>2007-07-30T10:54:20-05:00</ns0:CreationDateTime>
+   </ns0:ApplicationArea>
+   <ns0:DataArea>
+      <ns0:Process/>
+      <ns0:Invoice>
+         <ns0:InvoiceHeader>
+            <ns0:Description>DAL0160194</ns0:Description>
+            <ns0:DocumentReference>
+               <ns0:DocumentID>
+                  <ns0:ID>DAL0160194</ns0:ID>
+               </ns0:DocumentID>
+               <ns0:DocumentDateTime>2007-04-20T10:54:20-05:00</ns0:DocumentDateTime>
+            </ns0:DocumentReference>
+            <ns0:TotalAmount>+00000470180</ns0:TotalAmount>
+            <ns0:SupplierParty>
+               <ns0:PartyIDs>
+                  <ns0:ID>0000343088</ns0:ID>
+               </ns0:PartyIDs>
+            </ns0:SupplierParty>
+            <ns0:CustomerParty>
+               <ns0:Location>
+                  <ns0:Name/>
+               </ns0:Location>
+            </ns0:CustomerParty>
+            <ns6:SourceSystemCode xmlns:ns6="http://www.openapplications.org/oagis/9/officedepot/1">US_OD_GLOBAL_SOURCING</ns6:SourceSystemCode>
+            <ns6:Batch xmlns:ns6="http://www.openapplications.org/oagis/9/officedepot/1">
+               <ns6:NumberOfRecords>000000002</ns6:NumberOfRecords>
+               <ns0:TotalAmount>+00000051856290</ns0:TotalAmount>
+               <ns0:Communication>
+                  <ns0:ChannelCode/>
+               </ns0:Communication>
+            </ns6:Batch>
+         </ns0:InvoiceHeader>
+         <ns0:InvoiceLine>
+            <ns0:LineNumber>001</ns0:LineNumber>
+            <ns0:Item>
+               <ns0:Description>TOTAL INVOICED FEES</ns0:Description>
+            </ns0:Item>
+            <ns0:TotalAmount>+00000470180</ns0:TotalAmount>
+            <ns0:Tax>
+               <ns0:TaxJurisdicationCodes>
+                  <ns0:Code/>
+               </ns0:TaxJurisdicationCodes>
+               <ns0:Amount/>
+            </ns0:Tax>
+            <ns0:Distribution>
+               <ns0:GLElement>
+                  <ns0:Element>00001.10000.0900.04.0002180010</ns0:Element>
+               </ns0:GLElement>
+               <ns0:ProjectReference>
+                  <ns0:ID/>
+                  <ns0:ActivityID/>
+               </ns0:ProjectReference>
+               <ns6:ExpenditureOrganizationCode xmlns:ns6="http://www.openapplications.org/oagis/9/officedepot/1"/>
+               <ns6:ExpenditureTypeCode xmlns:ns6="http://www.openapplications.org/oagis/9/officedepot/1"/>
+            </ns0:Distribution>
+         </ns0:InvoiceLine>
+      </ns0:Invoice>
+      <ns0:Invoice>
+         <ns0:InvoiceHeader>
+            <ns0:Description>30001</ns0:Description>
+            <ns0:DocumentReference>
+               <ns0:DocumentID>
+                  <ns0:ID>30001</ns0:ID>
+               </ns0:DocumentID>
+               <ns0:DocumentDateTime>2007-05-31T10:54:20-05:00</ns0:DocumentDateTime>
+            </ns0:DocumentReference>
+            <ns0:TotalAmount>+00051386110</ns0:TotalAmount>
+            <ns0:SupplierParty>
+               <ns0:PartyIDs>
+                  <ns0:ID>0000350711</ns0:ID>
+               </ns0:PartyIDs>
+            </ns0:SupplierParty>
+            <ns0:CustomerParty>
+               <ns0:Location>
+                  <ns0:Name/>
+               </ns0:Location>
+            </ns0:CustomerParty>
+            <ns6:SourceSystemCode xmlns:ns6="http://www.openapplications.org/oagis/9/officedepot/1">US_OD_GLOBAL_SOURCING</ns6:SourceSystemCode>
+            <ns6:Batch xmlns:ns6="http://www.openapplications.org/oagis/9/officedepot/1">
+               <ns6:NumberOfRecords>000000002</ns6:NumberOfRecords>
+               <ns0:TotalAmount>+00000051856290</ns0:TotalAmount>
+               <ns0:Communication>
+                  <ns0:ChannelCode/>
+               </ns0:Communication>
+            </ns6:Batch>
+         </ns0:InvoiceHeader>
+         <ns0:InvoiceLine>
+            <ns0:LineNumber>001</ns0:LineNumber>
+            <ns0:Item>
+               <ns0:Description>MISC. INVOICED AMT.</ns0:Description>
+            </ns0:Item>
+            <ns0:TotalAmount>+00000176206</ns0:TotalAmount>
+            <ns0:Tax>
+               <ns0:TaxJurisdicationCodes>
+                  <ns0:Code/>
+               </ns0:TaxJurisdicationCodes>
+               <ns0:Amount/>
+            </ns0:Tax>
+            <ns0:Distribution>
+               <ns0:GLElement>
+                  <ns0:Element>00001.ASRET.0909.03.0005010070</ns0:Element>
+               </ns0:GLElement>
+               <ns0:ProjectReference>
+                  <ns0:ID/>
+                  <ns0:ActivityID/>
+               </ns0:ProjectReference>
+               <ns6:ExpenditureOrganizationCode xmlns:ns6="http://www.openapplications.org/oagis/9/officedepot/1"/>
+               <ns6:ExpenditureTypeCode xmlns:ns6="http://www.openapplications.org/oagis/9/officedepot/1"/>
+            </ns0:Distribution>
+         </ns0:InvoiceLine>
+         <ns0:InvoiceLine>
+            <ns0:LineNumber>002</ns0:LineNumber>
+            <ns0:Item>
+               <ns0:Description>TOTAL INVOICED FEES</ns0:Description>
+            </ns0:Item>
+            <ns0:TotalAmount>+00051209904</ns0:TotalAmount>
+            <ns0:Tax>
+               <ns0:TaxJurisdicationCodes>
+                  <ns0:Code/>
+               </ns0:TaxJurisdicationCodes>
+               <ns0:Amount/>
+            </ns0:Tax>
+            <ns0:Distribution>
+               <ns0:GLElement>
+                  <ns0:Element>00001.10000.0900.04.0002180010</ns0:Element>
+               </ns0:GLElement>
+               <ns0:ProjectReference>
+                  <ns0:ID/>
+                  <ns0:ActivityID/>
+               </ns0:ProjectReference>
+               <ns6:ExpenditureOrganizationCode xmlns:ns6="http://www.openapplications.org/oagis/9/officedepot/1"/>
+               <ns6:ExpenditureTypeCode xmlns:ns6="http://www.openapplications.org/oagis/9/officedepot/1"/>
+            </ns0:Distribution>
+         </ns0:InvoiceLine>
+      </ns0:Invoice>
+   </ns0:DataArea>
+</ns0:ProcessInvoice>

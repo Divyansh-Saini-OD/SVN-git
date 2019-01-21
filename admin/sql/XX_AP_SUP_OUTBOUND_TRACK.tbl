@@ -1,0 +1,49 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +==========================================================================+
+-- |                      Office Depot - IDMS                                 |
+-- |                      Capgemini Technology Services                       |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             Table       : XX_AP_SUP_OUTBOUND_TRACK                       |
+-- |             Schema      : XXFIN                                          |
+-- |     Rice ID:   C0709                                                                       |
+-- |Create Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0     08-JAN-2018   Sunil Kalal          New Table to store Supplier   |
+-- |                                            Outbound Integration details. | 
+-- |                                                                          |
+-- +==========================================================================+
+
+ CREATE TABLE xx_ap_sup_outbound_track
+  (
+
+TRANSACTION_ID            NUMBER        ,
+GLOBAL_VENDOR_ID          NUMBER        ,
+VENDOR_NAME               VARCHAR2(100) ,
+VENDOR_SITE_ID            NUMBER        ,
+VENDOR_SITE_CODE          VARCHAR2(20)  ,
+SITE_ORG_ID               NUMBER        ,
+TRANSACTION_DATE          DATE          ,
+USER_ID                   VARCHAR2(25)  ,
+USER_NAME                 VARCHAR2(25)  ,
+XML_OUTPUT                CLOB          ,
+REQUEST_ID                NUMBER        ,
+RESPONSE_STATUS_CODE      VARCHAR2(150) ,
+RESPONSE_REASON           VARCHAR2(150)   );
+  
+GRANT ALL ON xx_ap_sup_outbound_track TO apps;
+
+   /
+Show error
+	

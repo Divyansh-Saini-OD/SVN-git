@@ -1,0 +1,148 @@
+#!/bin/ksh
+# ----------------------------------------------------------------------------------------
+# Filename:   XXARDELIVERYDOC
+# ----------------------------------------------------------------------------------------
+
+#  Concurrent Program Definitions Parameters
+#  var1  is --> Job name 
+#  var2  is --> Concurrent Program Request ID.
+#  var3  is --> Login Credentials
+
+#  User defined Parameters
+
+#  var9  is --> File Path
+
+# VERSION  AUTHOR                          COMMENTS                     DATE     
+# ----------------------------------------------------------------------------------------
+# |1.0      Shivkumar Arunachalam Iyer    Initial Version               12-JUN-2007      |
+# |1.1      Samitha U M                   Variable changed for the      22-OCT-2007      |
+# |                                       soft link (Defect 2482)                        |
+# |1.2      Sambasiva Reddy D             Changed for the Defect# 7225  22-MAY-2008      |
+# |1.3      Anitha Devarajulu             Fixed defect 1084             30-JUL-2009      |
+# |1.4      Jude Felix Antony A           Fixed defect 6796             16-JUL-2010      |
+# |1.5      Arun Pandian                  Retrofitted with R12          25-JUN-2013      |
+# ----------------------------------------------------------------------------------------
+
+# Parsing System Defined Parameters.
+#Commented which are not used 
+#var1=`echo $1 | awk '{print $1}'| tr -d '"'`
+#var2=`echo $1 | awk '{print $2}'| tr -d '"'`
+#var3=`echo $1 | awk '{print $3}'| tr -d '"'`
+
+#Commented for defect 2482 
+#var9=`echo $1 | cut -f8 -d '"'`
+
+# Defining User Defined Parameters.
+#Added for defect 2482  
+var9=${5}
+
+#Added for the defect 1084
+var10=${6}
+
+#(warn= -1)
+
+# Assigning Required Parameters to the Shell variables.
+
+lc_file_path=${var9}
+lc_arch_path=$lc_file_path/archive
+
+# Printing User Defined Parameters in the Request Log File.
+
+echo "File Path     : "${var9}
+echo "Archive Path  : "${lc_arch_path}
+
+#Added for the defect 1084
+echo "Sender Address          : "${var10}
+
+if [ "$var10" != "" ] 
+then
+sender_address=${var10}
+else
+sender_address="noreply-customerstatements@officedepot.com"
+fi
+
+#ls -lrt 1>/dev/null $lc_file_path/*.pdf
+
+cd $lc_file_path
+ls *.pdf 1> temp.txt 2>/dev/null
+
+if [ $? -ne 0 ] 
+then
+echo "Result/Error                          : No Acrobat Files exist in "$lc_file_path 
+else
+
+cat temp.txt|while read LINE
+
+#for FILE in `ls -rt*.pdf`
+do
+echo ""
+echo "Delivery File                         : "$LINE
+attachment=$lc_file_path/$LINE
+
+#Commented for Defect 6796
+#p_site_use_id=`echo $LINE|awk '{print $1}'| tr -d '.pdf'`
+
+#Added for Defect 6796
+p_site_use_id=`echo $LINE|awk '{print $1}'| sed -e "s/\.pdf//g"`
+
+echo "Site Use ID                           : "$p_site_use_id
+
+# Setting up database connection credentials.
+
+# Connecting to Oracle Application Database. 
+
+lc_check=`sqlplus -s /nolog <<EOF
+
+SET FEEDBACK OFF
+SET SERVEROUTPUT ON SIZE 10000
+DECLARE
+o_mail_add        VARCHAR2(5000);
+BEGIN
+--FND_CLIENT_INFO.SET_ORG_CONTEXT(FND_PROFILE.VALUE('ORG_ID')); --commented for R12 CEMLI RETROFIT
+MO_GLOBAL.SET_POLICY_CONTEXT('S',FND_PROFILE.VALUE('ORG_ID')); --added for R12 CEMLI RETROFIT
+xx_ar_get_delivery_email('$p_site_use_id',o_mail_add);
+END;
+/
+SET FEEDBACK OFF
+EOF`
+
+# Determining the Email Address of the Site Use ID. 
+lc_check_1=`echo $lc_check | sed 's/ //g'`   # Added for the defect # 7225
+o_mail_add=`echo $lc_check_1 | cut -f2 -d '~'`
+
+if [ "$o_mail_add" = "No_Email_Addr" ]
+then
+echo "Email Address                         : Not Found for the Site Use ID : " $p_site_use_id
+echo "Result/Error                          : File Not Delivered."
+echo " "
+else
+echo "Email Address.                        : "$o_mail_add  
+#Commented for the defect 1084
+#( /usr/bin/uuencode $attachment $attachment > /dev/null 2>&1) | mailx -s "Delivery_File_Attached" -a $attachment ${o_mail_add} <<-EOF
+#Added for the defect 1084
+( /usr/bin/uuencode $attachment $attachment > /dev/null 2>&1) | mailx -r ${sender_address} -s "Delivery_File_Attached" -a $attachment ${o_mail_add} <<-EOF
+----------------------------------------------------
+This is a system generated mail.Please do not reply.
+----------------------------------------------------
+EOF
+
+DATE_TIME_STAMP=`date +"%Y%m%d_%H%M%S"`
+
+if (test -r $LINE )
+then
+mv $lc_file_path/$LINE $lc_arch_path/${p_site_use_id}_${DATE_TIME_STAMP}'.pdf'
+echo "Result/Error                          : File "$LINE "delivered and moved to archive folder."
+else
+echo "Result/Error                          : File "$LINE "has no READ previleges.   Hence cannot be mailed or archived."
+fi
+
+fi
+done
+fi
+
+rm temp.txt
+
+# Exiting from Shell.
+echo " "
+echo "Exiting from Shell."
+exit 0   # Success.

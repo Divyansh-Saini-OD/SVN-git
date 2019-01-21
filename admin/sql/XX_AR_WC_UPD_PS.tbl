@@ -1,0 +1,48 @@
+--+=====================================================================+
+--|                   Office Depot - Project FIT                        |
+--|          Capgemini/Office Depot/Consulting Organization             |
+--+=====================================================================+
+--|                                                                     |
+--|Rice        : 106313                                                 |
+--|File Name   : XX_AR_WC_UPD_PS.tbl                                    |
+--|File Path   : $XXFIN_TOP/admin/sql                                   |
+--|Schema      : XXFIN                                                  |
+--|                                                                     |
+--|Version    Date           Author                       Remarks       |
+--|=======   ======        ====================          =========      |
+--| 1.0      15-DEC-11    Purushothaman.Narmatha                        |
+--|                                                                     |
+--+=====================================================================+
+
+SET VERIFY OFF
+WHENEVER SQLERROR CONTINUE
+
+PROMPT "Creating Table XXFIN.XX_AR_WC_UPD_PS..."
+CREATE TABLE XXFIN.XX_AR_WC_UPD_PS
+(
+  PAYMENT_SCHEDULE_ID            NUMBER(15)    NOT NULL
+  ,STATUS                          VARCHAR2(30) NOT NULL
+,CLASS                           VARCHAR2(20)  NOT NULL
+,CUST_TRX_TYPE_ID                        NUMBER(15)
+,CUSTOMER_ID                             NUMBER(15)
+,CUSTOMER_SITE_USE_ID                    NUMBER(15)
+,CUSTOMER_TRX_ID                         NUMBER(15)
+,CASH_RECEIPT_ID                         NUMBER(15)
+,LAST_UPDATE_DATE                        DATE
+,AMOUNT_DUE_ORIGINAL                     NUMBER
+,AMOUNT_DUE_REMAINING                    NUMBER
+,AMOUNT_APPLIED                          NUMBER
+,AMOUNT_ADJUSTED                         NUMBER
+,AMOUNT_IN_DISPUTE                       NUMBER
+,AMOUNT_CREDITED                         NUMBER
+,CASH_APPLIED_AMOUNT_LAST                NUMBER
+,CASH_RECEIPT_AMOUNT_LAST                NUMBER
+,ADJUSTMENT_AMOUNT_LAST                  NUMBER
+,CREATION_DATE                           DATE
+,CREATED_BY                              NUMBER
+,PMT_UPD_REQUEST_ID             NUMBER NOT NULL
+,PMT_UPD_CREATION_DATE           DATE NOT NULL
+,EXT_TYPE                        VARCHAR2(1) NOT NULL
+,CYCLE_DATE                      DATE NOT NULL
+,BATCH_NUM                       NUMBER NOT NULL
+);

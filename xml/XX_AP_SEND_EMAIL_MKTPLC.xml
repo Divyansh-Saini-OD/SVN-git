@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataTemplate name="XXODMKTPLCSENDEMAIL" defaultPackage="XX_CE_MRKTPLC_LOAD_PKG" Version="1.0">
+ <dataQuery>
+  <sqlStatement name="Q1">
+ <![CDATA[ SELECT MPL_NAME PROCESS_NAME,
+      FILE_NAME,
+      CREATION_DATE PROCESS_DATE,
+      ERR_MSG,
+      PROCESS_FLAG,
+      REQUEST_ID
+    FROM Xx_Ce_Mpl_Files
+    WHERE Process_Flag ='E'
+    ORDER BY MPL_NAME
+]]> 
+</sqlStatement>
+<sqlStatement name="Q2">
+ <![CDATA[ SELECT xftv.target_value1 EMAIL_SUBJECT,
+  'Hi Team,'||CHR(13)||CHR(10)||CHR(13)||CHR(10)||
+  Xftv.Target_Value2||CHR(13)||CHR(10)||CHR(13)||CHR(10)||
+  'File Archival Path : '||Xftv.Target_Value4||CHR(13)||CHR(10)||CHR(13)||CHR(10)||
+  'Regards'||CHR(13)||CHR(10)||
+   Xftv.Target_Value3 EMAIL_CONTENT,
+  Xftv.Target_Value4 ARCHIVE_PATH,
+  Xftv.Target_Value5 DISTRIBUTION_LIST,
+   FND_PROFILE.VALUE('XX_XDO_SMTP_HOST') SMTP_SERVER
+FROM xx_fin_translatedefinition xftd ,
+  xx_fin_translatevalues xftv
+WHERE xftd.translate_id   = xftv.translate_id
+AND xftd.translation_name = 'OD_CE_MKTPLC_DL'
+AND xftv.source_value1    ='FILE_ERROR_EXCEPTION'
+AND sysdate BETWEEN xftv.start_date_active AND NVL(xftv.end_date_active, sysdate+1)
+AND sysdate BETWEEN xftd.start_date_active AND NVL(xftd.end_date_active, sysdate+1)
+AND XFTV.ENABLED_FLAG = 'Y'
+AND XFTD.ENABLED_FLAG = 'Y']]> 
+</sqlStatement>
+  </dataQuery>
+ <dataStructure>
+  <group name="G_EMAIL_DETAILS" source="Q2">
+	<element name="SMTP_SERVER" value= "SMTP_SERVER" />
+	<element name="EMAIL_SUBJECT" value= "EMAIL_SUBJECT" />
+	<element name="EMAIL_CONTENT" value= "EMAIL_CONTENT" />
+	<element name="DISTRIBUTION_LIST" value= "DISTRIBUTION_LIST" />
+	<element name="ARCHIVE_PATH" value= "ARCHIVE_PATH" />
+    <group name="G_SEND_EMAIL_MRKTPLC" source="Q1">
+	  <element name="PROCESS_NAME" value= "PROCESS_NAME" />
+	  <element name="FILE_NAME" value= "FILE_NAME" />
+	  <element name="PROCESS_DATE" value= "PROCESS_DATE" />
+	  <element name="ERR_MSG" value= "ERR_MSG" />
+	  <element name="REQUEST_ID" value="REQUEST_ID"/>
+	</group>
+	</group>
+</dataStructure>
+<dataTrigger name="afterReport" source="XX_CE_MRKTPLC_LOAD_PKG.afterReport()"/>
+</dataTemplate>

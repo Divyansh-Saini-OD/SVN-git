@@ -1,0 +1,526 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1" xmlns:af="http://xmlns.oracle.com/adf/faces/rich"
+          xmlns:f="http://java.sun.com/jsf/core">
+    <!--<af:panelGroupLayout id="pgl13" binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.pgl13}"
+                         layout="horizontal">
+                         </af:panelGroupLayout>-->
+        <!--<af:spacer width="15" height="10" id="s20" binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.s20}"/>-->
+        <af:panelGroupLayout id="pgl1" layout="vertical" partialTriggers="sor2"
+                           >
+            <af:panelGroupLayout id="pgl25" halign="right" layout="vertical">
+                <!--<af:spacer width="10" height="10" id="s16"/>-->
+                <af:inputComboboxListOfValues id="orgidId" popupTitle="Search and Select: #{bindings.Orgid.hints.label}"
+                                              value="#{bindings.Orgid.inputValue}" label="#{bindings.Orgid.hints.label}"
+                                              model="#{bindings.Orgid.listOfValuesModel}"
+                                              required="#{bindings.Orgid.hints.mandatory}"
+                                              columns="#{bindings.Orgid.hints.displayWidth}"
+                                              shortDesc="#{bindings.Orgid.hints.tooltip}"
+                                              binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.orgIdBind}">
+                    <f:validator binding="#{bindings.Orgid.validator}"/>
+                </af:inputComboboxListOfValues>
+                <af:inputText value="#{bindings.OrgIdVal.inputValue}" simple="true"
+                              required="#{bindings.OrgIdVal.hints.mandatory}"
+                              columns="#{bindings.OrgIdVal.hints.displayWidth}"
+                              maximumLength="#{bindings.OrgIdVal.hints.precision}"
+                              shortDesc="#{bindings.OrgIdVal.hints.tooltip}" id="it1" rendered="false"
+                              binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.orgIdNonRendBind}"
+                              partialTriggers="orgidId">
+                    <f:validator binding="#{bindings.OrgIdVal.validator}"/>
+                </af:inputText>
+            </af:panelGroupLayout>
+            <af:panelGroupLayout id="pgl24" layout="horizontal">
+                <af:outputFormatted value="Office Depot - AP Trade - Invoice Detail by Reason Code : " id="of1"
+                                    inlineStyle="font-size:large;"/>
+                <af:outputFormatted value="#{MyDate}" id="of2" inlineStyle="font-size:large;">
+                    <af:convertDateTime pattern="MM/dd/YYYY"/>
+                </af:outputFormatted>
+            </af:panelGroupLayout>
+            <!--<af:spacer width="10" height="10" id="s4"/>-->
+            <af:spacer width="10" height="10" id="s19" binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.s19}"/>
+            <af:panelGroupLayout id="pgl12" 
+                                 layout="horizontal">
+                <af:panelGroupLayout id="pgl2" layout="horizontal"
+            binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.searchAreaBind}"                        
+                                     valign="top">
+                    <af:spacer width="20" height="10" id="s5"/>
+                    <af:panelGroupLayout id="pgl3" layout="horizontal">
+                        <af:panelFormLayout id="pfl1" labelAlignment="top">
+                            <f:facet name="footer"/>
+                            <af:selectOneRadio value="#{bindings.ReportOption.inputValue}" autoSubmit="true"
+                                               label="#{bindings.ReportOption.label}"
+                                               required="#{bindings.ReportOption.hints.mandatory}"
+                                               shortDesc="#{bindings.ReportOption.hints.tooltip}" id="sor2"
+                                               binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.reportOptionBind}">
+                                <f:selectItems value="#{bindings.ReportOption.items}" id="si2"
+                                               binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.si2}"/>
+                                <f:validator binding="#{bindings.ReportOption.validator}"/>
+                            </af:selectOneRadio>
+                        </af:panelFormLayout>
+                    </af:panelGroupLayout>
+                    <af:spacer width="40" height="10" id="s3"/>
+                    <af:panelGroupLayout id="pgl23" layout="vertical">
+                        <af:panelLabelAndMessage id="plam1" label="#{bindings.Supplier.label}">
+                            <af:spacer width="50" height="11" id="s1"/>
+                            <af:inputListOfValues id="ilov2"
+                                                  popupTitle="Search and Select: #{bindings.Supplier.hints.label}"
+                                                  value="#{bindings.Supplier.inputValue}"
+                                                  label="#{bindings.Supplier.hints.label}"
+                                                  model="#{bindings.Supplier.listOfValuesModel}"
+                                                  required="#{bindings.Supplier.hints.mandatory}"
+                                                  columns="#{bindings.Supplier.hints.displayWidth}"
+                                                  shortDesc="#{bindings.Supplier.hints.tooltip}" partialTriggers="sor2"
+                                                  autoSubmit="true"
+                                                  binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.suppBind}"
+                                                  inlineStyle="width:40px;" simple="true">
+                                <f:validator binding="#{bindings.Supplier.validator}"/>
+                            </af:inputListOfValues>
+                        </af:panelLabelAndMessage>
+                        <!--<af:spacer width="5" height="3" id="s13"/>-->
+                        <af:panelLabelAndMessage id="plam2" label="#{bindings.Suppliername.label}">
+                            <af:spacer width="24" height="10" id="s2"/>
+                            <af:inputListOfValues id="ilov1"
+                                                  popupTitle="Search and Select: #{bindings.Suppliername.hints.label}"
+                                                  value="#{bindings.Suppliername.inputValue}"
+                                                  model="#{bindings.Suppliername.listOfValuesModel}"
+                                                  required="#{bindings.Suppliername.hints.mandatory}"
+                                                  columns="#{bindings.Suppliername.hints.displayWidth}"
+                                                  shortDesc="#{bindings.Suppliername.hints.tooltip}"
+                                                  binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.suppName}"
+                                                  simple="true" autoSubmit="true" partialTriggers="sor2">
+                                <f:validator binding="#{bindings.Suppliername.validator}"/>
+                            </af:inputListOfValues>
+                        </af:panelLabelAndMessage>
+                        <!--<af:spacer width="5" height="3" id="s14"/>-->
+                        <af:panelLabelAndMessage id="plam3" label="#{bindings.Suppliersiteno.label}">
+                            <af:spacer width="35" height="9" id="s7"/>
+                            <af:inputListOfValues id="suppliersitenoId"
+                                                  popupTitle="Search and Select: #{bindings.Suppliersiteno.hints.label}"
+                                                  value="#{bindings.Suppliersiteno.inputValue}"
+                                                  model="#{bindings.Suppliersiteno.listOfValuesModel}"
+                                                  required="#{bindings.Suppliersiteno.hints.mandatory}"
+                                                  columns="#{bindings.Suppliersiteno.hints.displayWidth}"
+                                                  shortDesc="#{bindings.Suppliersiteno.hints.tooltip}"
+                                                  binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.suppliersitenoId}"
+                                                  simple="true" partialTriggers="sor2">
+                                <f:validator binding="#{bindings.Suppliersiteno.validator}"/>
+                            </af:inputListOfValues>
+                        </af:panelLabelAndMessage>
+                        <af:panelLabelAndMessage id="plam4" label="#{bindings.Vendorassistant.label}">
+                            <af:spacer width="10" height="10" id="s8"/>
+                            <af:inputListOfValues id="vendorassistantId"
+                                                  popupTitle="Search and Select: #{bindings.Vendorassistant.hints.label}"
+                                                  value="#{bindings.Vendorassistant.inputValue}"
+                                                  model="#{bindings.Vendorassistant.listOfValuesModel}"
+                                                  required="#{bindings.Vendorassistant.hints.mandatory}"
+                                                  columns="#{bindings.Vendorassistant.hints.displayWidth}"
+                                                  shortDesc="#{bindings.Vendorassistant.hints.tooltip}"
+                                                  binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.vendorassistantId}"
+                                                  simple="true" autoSubmit="true" partialTriggers="sor2">
+                                <f:validator binding="#{bindings.Vendorassistant.validator}"/>
+                            </af:inputListOfValues>
+                        </af:panelLabelAndMessage>
+                        <af:panelLabelAndMessage id="plam5" label="#{bindings.Sku1.label}">
+                            <af:spacer width="83" height="10" id="s9"/>
+                            <!--<af:inputText value="#{bindings.Sku1.inputValue}"
+                                          required="#{bindings.Sku1.hints.mandatory}"
+                                          columns="#{bindings.Sku1.hints.displayWidth}"
+                                          maximumLength="#{bindings.Sku1.hints.precision}"
+                                          shortDesc="#{bindings.Sku1.hints.tooltip}" id="skuInpText"
+                                          binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.skuInpText}"
+                                          simple="true" partialTriggers="sor2">
+                                <f:validator binding="#{bindings.Sku1.validator}"/>
+                            </af:inputText>-->
+                            <af:inputText value="#{bindings.Sku1.inputValue}" simple="true"
+                                          required="#{bindings.Sku1.hints.mandatory}"
+                                          columns="#{bindings.Sku1.hints.displayWidth}"
+                                          maximumLength="#{bindings.Sku1.hints.precision}"
+                                          shortDesc="#{bindings.Sku1.hints.tooltip}" id="skuInpText"
+                                          binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.skuInpText}"
+                                           partialTriggers="sor2" autoSubmit="true">
+                                <f:validator binding="#{bindings.Sku1.validator}"/>
+                            </af:inputText>
+                            <!--<af:inputListOfValues id="skuId" popupTitle="Search and Select: #{bindings.Sku.hints.label}"
+                                                  value="#{bindings.Sku.inputValue}"
+                                                  model="#{bindings.Sku.listOfValuesModel}"
+                                                  required="#{bindings.Sku.hints.mandatory}"
+                                                  columns="#{bindings.Sku.hints.displayWidth}"
+                                                  shortDesc="#{bindings.Sku.hints.tooltip}"
+                                                  binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.skuId}"
+                                                  simple="true" partialTriggers="sor2">
+                                <f:validator binding="#{bindings.Sku.validator}"/>
+                            </af:inputListOfValues>-->
+                        </af:panelLabelAndMessage>
+                    </af:panelGroupLayout>
+                    <af:spacer width="55" height="10" id="s6"/>
+                    <af:panelGroupLayout id="pgl5" layout="vertical">
+                        <af:panelGroupLayout id="pgl4" layout="horizontal">
+                            <af:panelLabelAndMessage id="plam6" label="GL Date Range">
+                                <af:spacer width="1" height="10" id="s25"/>
+                                <af:inputDate value="#{bindings.Gldaterangefrom.inputValue}"
+                                              required="#{bindings.Gldaterangefrom.hints.mandatory}"
+                                              columns="#{bindings.Gldaterangefrom.hints.displayWidth}"
+                                              shortDesc="#{bindings.Gldaterangefrom.hints.tooltip}" id="id2"
+                                              binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.gldDateFrom}"
+                                              simple="true">
+                                    <f:validator binding="#{bindings.Gldaterangefrom.validator}"/>
+                                    <af:convertDateTime pattern="#{bindings.Gldaterangefrom.format}"/>
+                                </af:inputDate>
+                                <f:facet name="end">
+                                    <af:inputDate value="#{bindings.Gldaterangeto.inputValue}"
+                                                  required="#{bindings.Gldaterangeto.hints.mandatory}"
+                                                  columns="#{bindings.Gldaterangeto.hints.displayWidth}"
+                                                  shortDesc="#{bindings.Gldaterangeto.hints.tooltip}" id="id3"
+                                                  binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.gldDateTo}">
+                                        <f:validator binding="#{bindings.Gldaterangeto.validator}"/>
+                                        <af:convertDateTime pattern="#{bindings.Gldaterangeto.format}"/>
+                                    </af:inputDate>
+                                </f:facet>
+                            </af:panelLabelAndMessage>
+                        </af:panelGroupLayout>
+                        <af:panelGroupLayout id="pgl6" layout="horizontal">
+                            <af:panelLabelAndMessage label="Period Range" id="plam8">
+                                <af:spacer width="10" height="10" id="s10"/>
+                                <af:inputListOfValues id="prdRangeFrm" simple="true"
+                                                      popupTitle="Search and Select: #{bindings.Periodrangefrom.hints.label}"
+                                                      value="#{bindings.Periodrangefrom.inputValue}"
+                                                      label="#{bindings.Periodrangefrom.hints.label}"
+                                                      model="#{bindings.Periodrangefrom.listOfValuesModel}"
+                                                      required="#{bindings.Periodrangefrom.hints.mandatory}"
+                                                      columns="#{bindings.Periodrangefrom.hints.displayWidth}"
+                                                      shortDesc="#{bindings.Periodrangefrom.hints.tooltip}"
+                                                      binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.prdRangeFrm}">
+                                    <f:validator binding="#{bindings.Periodrangefrom.validator}"/>
+                                </af:inputListOfValues>
+                                <af:spacer width="12" height="5" id="s110"/>
+                                <af:inputListOfValues id="prdRangeTo" simple="true"
+                                                      popupTitle="Search and Select: #{bindings.Periodrangeto.hints.label}"
+                                                      value="#{bindings.Periodrangeto.inputValue}"
+                                                      label="#{bindings.Periodrangeto.hints.label}"
+                                                      model="#{bindings.Periodrangeto.listOfValuesModel}"
+                                                      required="#{bindings.Periodrangeto.hints.mandatory}"
+                                                      columns="#{bindings.Periodrangeto.hints.displayWidth}"
+                                                      shortDesc="#{bindings.Periodrangeto.hints.tooltip}"
+                                                      binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.prdRangeTo}">
+                                    <f:validator binding="#{bindings.Periodrangeto.validator}"/>
+                                </af:inputListOfValues>
+                            </af:panelLabelAndMessage>
+                        </af:panelGroupLayout>
+                        <af:panelLabelAndMessage label="#{bindings.Reasoncode.label}" id="plam9">
+                            <af:spacer width="11" height="10" id="s14"/>
+                            <af:inputListOfValues id="ilov3"
+                                                  popupTitle="Search and Select: #{bindings.Reasoncode1.hints.label}"
+                                                  value="#{bindings.Reasoncode1.inputValue}"
+                                                  label="#{bindings.Reasoncode1.hints.label}"
+                                                  model="#{bindings.Reasoncode1.listOfValuesModel}"
+                                                  required="#{bindings.Reasoncode1.hints.mandatory}"
+                                                  columns="#{bindings.Reasoncode1.hints.displayWidth}"
+                                                  shortDesc="#{bindings.Reasoncode1.hints.tooltip}" simple="true"
+                                                  binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.reasonCode}">
+                                <f:validator binding="#{bindings.Reasoncode1.validator}"/>
+                            </af:inputListOfValues>
+                        </af:panelLabelAndMessage>
+                        <af:panelLabelAndMessage label="#{bindings.Dropship.label}" id="plam10">
+                            <af:spacer width="35" height="10" id="s15"/>
+                            <af:selectBooleanCheckbox value="#{bindings.Dropship.inputValue}"
+                                                      label="#{bindings.Dropship.label}"
+                                                      shortDesc="#{bindings.Dropship.hints.tooltip}" id="sbc2"
+                                                      simple="true" autoSubmit="true"
+                                                      binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.dropShip}"/>
+                        </af:panelLabelAndMessage>
+                    </af:panelGroupLayout>
+                </af:panelGroupLayout>
+                <af:spacer width="15" height="10" id="s11"/>
+                <af:panelGroupLayout id="pgl7" layout="vertical">
+                    <af:spacer width="10" height="120" id="s12"/>
+                    <af:panelGroupLayout id="pgl8" layout="horizontal">
+                        <af:button text="Go" id="b1" binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.b1}"
+                                   action="#{pageFlowScope.backing_InvoiceReasonCodeSummary.searchInvoiceReasonCodeAction}"/>
+                        <af:spacer width="10" height="10" id="s13"/>
+                        <af:button text="Clear" id="b2" binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.b2}"
+                                   action="#{pageFlowScope.backing_InvoiceReasonCodeSummary.ClearInvoiceReasonCodeAction}"
+                                   immediate="true"/>
+                    </af:panelGroupLayout>
+                </af:panelGroupLayout>
+            </af:panelGroupLayout>
+            <af:spacer width="10" height="10" id="s18"/>
+            <af:panelGroupLayout id="pgl11" >
+                <af:panelGroupLayout id="pgl9" binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.pgl9}">
+                    <af:panelCollection id="pc1" styleClass="AFStretchWidth">
+                        <f:facet name="menus">
+                            <af:menu text="File" id="m1" binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.m1}">
+                                <af:commandMenuItem text="Export to Excel" id="cmi1"
+                                                    binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.cmi1}">
+                                    <af:exportCollectionActionListener type="excelHTML" exportedId="resSumm"
+                                                                       filename=" InvoiceReasonCodeSummary.xls"
+                                                                       title="Invoice Reason Code Summary"/>
+                                </af:commandMenuItem>
+                            </af:menu>
+                        </f:facet>
+                        <f:facet name="toolbar"/>
+                        <f:facet name="statusbar"/>
+                        <af:table value="#{bindings.XxApReasonCodeSummaryVO1.collectionModel}" var="row"
+                                  rows="#{bindings.XxApReasonCodeSummaryVO1.rangeSize}"
+                                  emptyText="#{bindings.XxApReasonCodeSummaryVO1.viewable ? 'No data to display.' : 'Access Denied.'}"
+                                  rowBandingInterval="0" scrollPolicy="scroll"
+                                  selectedRowKeys="#{bindings.XxApReasonCodeSummaryVO1.collectionModel.selectedRow}"
+                                  selectionListener="#{bindings.XxApReasonCodeSummaryVO1.collectionModel.makeCurrent}"
+                                  rowSelection="single" fetchSize="#{bindings.XxApReasonCodeSummaryVO1.rangeSize}"
+                                  id="resSumm" binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.resSumm}"
+                                  inlineStyle="height:40px">
+                            <af:column headerText="Vendor Assistant" id="c1" width="100">
+                                <af:outputText value="#{row.VendorAssistant}"
+                                               shortDesc="#{bindings.XxApReasonCodeSummaryVO1.hints.VendorAssistant.tooltip}"
+                                               id="ot1"/>
+                            </af:column>
+                            <af:column headerText="Supplier #" id="c2" width="50">
+                                <af:outputText value="#{row.Supplier}"
+                                               shortDesc="#{bindings.XxApReasonCodeSummaryVO1.hints.Supplier.tooltip}"
+                                               id="ot2"/>
+                            </af:column>
+                            <af:column headerText="Supplier Name" width="85" id="c3">
+                                <af:outputText value="#{row.SupplierName}"
+                                               shortDesc="#{bindings.XxApReasonCodeSummaryVO1.hints.SupplierName.tooltip}"
+                                               id="ot3"/>
+                            </af:column>
+                            <af:column headerText="Supplier Site" width="80" id="c4">
+                                <af:outputText value="#{row.SupplierSite}"
+                                               shortDesc="#{bindings.XxApReasonCodeSummaryVO1.hints.SupplierSite.tooltip}"
+                                               id="ot4"/>
+                            </af:column>
+                            <af:column headerText="Supplier Site Category" width="130" id="c5">
+                                <af:outputText value="#{row.SupplierSiteCategory}"
+                                               shortDesc="#{bindings.XxApReasonCodeSummaryVO1.hints.SupplierSiteCategory.tooltip}"
+                                               id="ot5"/>
+                            </af:column>
+                            <af:column headerText="Invoice #" id="c6" width="50">
+                                <af:outputText value="#{row.Invoice}"
+                                               shortDesc="#{bindings.XxApReasonCodeSummaryVO1.hints.Invoice.tooltip}"
+                                               id="ot6"/>
+                            </af:column>
+                            <af:column headerText="Invoice Amount" id="c7" width="90">
+                                <af:panelGroupLayout id="pgl14" halign="right" layout="horizontal">
+                                    <af:outputText value="#{row.InvoiceAmount}"
+                                                   shortDesc="#{bindings.XxApReasonCodeSummaryVO1.hints.InvoiceAmount.tooltip}"
+                                                   id="ot7">
+                                        <af:convertNumber groupingUsed="false" pattern="#,###.00"/>
+                                    </af:outputText>
+                                </af:panelGroupLayout>
+                            </af:column>
+                            <af:column headerText="% to Invoice Amt" id="c8" width="40">
+                                <af:panelGroupLayout id="pgl15" halign="right" layout="horizontal">
+                                    <af:outputText value="#{row.InvoicePercent}"
+                                                   shortDesc="#{bindings.XxApReasonCodeSummaryVO1.hints.InvoicePercent.tooltip}"
+                                                   id="ot8">
+                                        <af:convertNumber groupingUsed="false"
+                                                          pattern="#{bindings.XxApReasonCodeSummaryVO1.hints.InvoicePercent.format}"/>
+                                    </af:outputText>
+                                </af:panelGroupLayout>
+                            </af:column>
+                            <af:column headerText="Debit Memo #" width="65" id="c9">
+                                <af:outputText value="#{row.DebitMemo}"
+                                               shortDesc="#{bindings.XxApReasonCodeSummaryVO1.hints.DebitMemo.tooltip}"
+                                               id="ot9"/>
+                            </af:column>
+                            <af:column headerText="PO Type" width="50" id="c11">
+                                <!--<af:outputText value="#{row.PoType}"
+                                           shortDesc="#{bindings.XxApReasonCodeSummaryVO1.hints.PoType.tooltip}"
+                                           id="ot11"/>-->
+                            </af:column>
+                            <af:column headerText="PO #" width="50" id="c12">
+                                <!--<af:outputText value="#{row.Po}"
+                                           shortDesc="#{bindings.XxApReasonCodeSummaryVO1.hints.Po.tooltip}" id="ot12"/>-->
+                            </af:column>
+                            <!--<af:column headerText="PO Line #" width="50" id="c10">
+                                <af:outputText id="ot10"/>
+                                --><!--<af:outputText value="#{row.PoLine}"
+                                           shortDesc="#{bindings.XxApReasonCodeSummaryVO1.hints.PoLine.tooltip}"
+                                           id="ot10">
+                                <af:convertNumber groupingUsed="false"
+                                                  pattern="#{bindings.XxApReasonCodeSummaryVO1.hints.PoLine.format}"/>
+                            </af:outputText>--><!--
+                            </af:column>-->
+                            <af:column headerText="SKU" width="50" id="c13">
+                                <!--<af:outputText value="#{row.Sku}"
+                                           shortDesc="#{bindings.XxApReasonCodeSummaryVO1.hints.Sku.tooltip}"
+                                           id="ot13"/>-->
+                            </af:column>
+                            <af:column headerText="Reason Code" width="75" id="c14">
+                                <af:outputText value="#{row.ReasonCode}"
+                                               shortDesc="#{bindings.XxApReasonCodeSummaryVO1.hints.ReasonCode.tooltip}"
+                                               id="ot14"/>
+                            </af:column>
+                            <af:column headerText="Line Description" width="85" id="c15">
+                                <!--<af:outputText value="#{row.LineDescription}"
+                                           shortDesc="#{bindings.XxApReasonCodeSummaryVO1.hints.LineDescription.tooltip}"
+                                           id="ot15"/>-->
+                            </af:column>
+                            <af:column headerText="Chargeback (Y/N)" id="c16" width="65">
+                                <af:outputText value="#{row.Chargeback}"
+                                               shortDesc="#{bindings.XxApReasonCodeSummaryVO1.hints.Chargeback.tooltip}"
+                                               id="ot16"/>
+                            </af:column>
+                            <af:column headerText="Reason Code Amount" id="c17" width="95">
+                                <af:panelGroupLayout id="pgl16" halign="right" layout="horizontal">
+                                    <af:outputText value="#{row.ReasonCodeAmount}"
+                                                   shortDesc="#{bindings.XxApReasonCodeSummaryVO1.hints.ReasonCodeAmount.tooltip}"
+                                                   id="ot17">
+                                        <af:convertNumber groupingUsed="false" pattern="#,###.00"/>
+                                    </af:outputText>
+                                </af:panelGroupLayout>
+                            </af:column>
+                        </af:table>
+                    </af:panelCollection>
+                    <af:panelGroupLayout id="pgl29">
+                        <af:outputText value="Total # of Records : " id="ot41"/>
+                        <af:outputText value=" #{bindings.XxApReasonCodeSummaryVO1Iterator.estimatedRowCount}" id="ot43"
+                                       rendered="#{bindings.ReportOption.inputValue eq 'Summary'}"
+                                       partialTriggers="b1"/>
+                        <af:outputText value="#{bindings.XxApReasonCodeDetailVO1Iterator.estimatedRowCount}" id="ot44"
+                                       rendered="#{bindings.ReportOption.inputValue eq 'Detail'}" partialTriggers="b1"/>
+                    </af:panelGroupLayout>
+                </af:panelGroupLayout>
+                <af:panelGroupLayout id="pgl10" binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.pgl10}"
+                                     visible="false">
+                    <af:panelCollection id="pc2" 
+                                        styleClass="AFStretchWidth">
+                        <f:facet name="menus">
+                            <af:menu text="File" id="m2" binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.m2}">
+                                <af:commandMenuItem text="Export to Excel" id="cmi2"
+                                                    binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.cmi2}">
+                                    <af:exportCollectionActionListener type="excelHTML" exportedId="resDtl"
+                                                                       filename=" InvoiceReasonCodeDetail.xls"
+                                                                       title="Invoice Reason Code Detail"/>
+                                </af:commandMenuItem>
+                            </af:menu>
+                        </f:facet>
+                        <f:facet name="toolbar"/>
+                        <f:facet name="statusbar"/>
+                        <af:table value="#{bindings.XxApReasonCodeDetailVO1.collectionModel}" var="row"
+                                  rows="#{bindings.XxApReasonCodeDetailVO1.rangeSize}"
+                                  emptyText="#{bindings.XxApReasonCodeDetailVO1.viewable ? 'No data to display.' : 'Access Denied.'}"
+                                  rowBandingInterval="0" scrollPolicy="scroll" inlineStyle="height:40px"
+                                  selectedRowKeys="#{bindings.XxApReasonCodeDetailVO1.collectionModel.selectedRow}"
+                                  selectionListener="#{bindings.XxApReasonCodeDetailVO1.collectionModel.makeCurrent}"
+                                  rowSelection="single" fetchSize="#{bindings.XxApReasonCodeDetailVO1.rangeSize}"
+                                  id="resDtl" binding="#{pageFlowScope.backing_InvoiceReasonCodeSummary.resDtl}">
+                            <af:column headerText="Vendor Assistant" width="100" id="c18">
+                                <af:outputText value="#{row.VendorAssistant}"
+                                               shortDesc="#{bindings.XxApReasonCodeDetailVO1.hints.VendorAssistant.tooltip}"
+                                               id="ot18"/>
+                            </af:column>
+                            <af:column headerText="Supplier #" id="c19" width="50">
+                                <af:outputText value="#{row.Supplier}"
+                                               shortDesc="#{bindings.XxApReasonCodeDetailVO1.hints.Supplier.tooltip}"
+                                               id="ot19"/>
+                            </af:column>
+                            <af:column headerText="Supplier Name" id="c20" width="85">
+                                <af:outputText value="#{row.SupplierName}"
+                                               shortDesc="#{bindings.XxApReasonCodeDetailVO1.hints.SupplierName.tooltip}"
+                                               id="ot20"/>
+                            </af:column>
+                            <af:column headerText="Supplier Site" id="c21" width="80">
+                                <af:outputText value="#{row.SupplierSite}"
+                                               shortDesc="#{bindings.XxApReasonCodeDetailVO1.hints.SupplierSite.tooltip}"
+                                               id="ot21"/>
+                            </af:column>
+                            <af:column headerText="Supplier Site Category" id="c22" width="130">
+                                <af:outputText value="#{row.SupplierSiteCategory}"
+                                               shortDesc="#{bindings.XxApReasonCodeDetailVO1.hints.SupplierSiteCategory.tooltip}"
+                                               id="ot22"/>
+                            </af:column>
+                            <af:column headerText="Invoice #" id="c23" width="50">
+                                <af:outputText value="#{row.Invoice}"
+                                               shortDesc="#{bindings.XxApReasonCodeDetailVO1.hints.Invoice.tooltip}"
+                                               id="ot23"/>
+                            </af:column>
+                            <!--<af:column headerText="#{bindings.XxApReasonCodeDetailVO1.hints.InvoiceNum.label}" id="c35">
+                            <af:outputText value="#{row.InvoiceNum}"
+                                           shortDesc="#{bindings.XxApReasonCodeDetailVO1.hints.InvoiceNum.tooltip}"
+                                           id="ot35"/>
+                        </af:column>-->
+                            <af:column headerText="Invoice Amount" id="c24" width="90">
+                                <af:panelGroupLayout id="pgl17" halign="right" layout="horizontal">
+                                    <af:outputText value="#{row.InvoiceAmount}"
+                                                   shortDesc="#{bindings.XxApReasonCodeDetailVO1.hints.InvoiceAmount.tooltip}"
+                                                   id="ot24">
+                                        <af:convertNumber groupingUsed="false" pattern="#,###.00"/>
+                                    </af:outputText>
+                                </af:panelGroupLayout>
+                            </af:column>
+                            <af:column headerText="% to Invoice Amt" id="c25" width="40">
+                                <af:panelGroupLayout id="pgl18" halign="right" layout="horizontal">
+                                    <af:outputText value="#{row.InvoicePercent}"
+                                                   shortDesc="#{bindings.XxApReasonCodeDetailVO1.hints.InvoicePercent.tooltip}"
+                                                   id="ot25">
+                                        <af:convertNumber groupingUsed="false"
+                                                          pattern="#{bindings.XxApReasonCodeDetailVO1.hints.InvoicePercent.format}"/>
+                                    </af:outputText>
+                                </af:panelGroupLayout>
+                            </af:column>
+                            <af:column headerText="Debit Memo #" id="c26" width="65">
+                                <af:outputText value="#{row.DebitMemo}"
+                                               shortDesc="#{bindings.XxApReasonCodeDetailVO1.hints.DebitMemo.tooltip}"
+                                               id="ot26"/>
+                            </af:column>
+                            <af:column headerText="PO Type" id="c27" width="50">
+                                <af:outputText value="#{row.PoType}"
+                                               shortDesc="#{bindings.XxApReasonCodeDetailVO1.hints.PoType.tooltip}"
+                                               id="ot27"/>
+                            </af:column>
+                            <af:column headerText="PO #" id="c28" width="50">
+                                <af:outputText value="#{row.Po}"
+                                               shortDesc="#{bindings.XxApReasonCodeDetailVO1.hints.Po.tooltip}"
+                                               id="ot28"/>
+                            </af:column>
+                            <!--<af:column headerText="PO Line #" id="c29" width="50">
+                                <af:outputText value="#{row.PoLine}"
+                                               shortDesc="#{bindings.XxApReasonCodeDetailVO1.hints.PoLine.tooltip}"
+                                               id="ot29">
+                                    <af:convertNumber groupingUsed="false"
+                                                      pattern="#{bindings.XxApReasonCodeDetailVO1.hints.PoLine.format}"/>
+                                </af:outputText>
+                            </af:column>-->
+                            <af:column headerText="SKU" id="c30" width="50">
+                                <af:outputText value="#{row.Sku}"
+                                               shortDesc="#{bindings.XxApReasonCodeDetailVO1.hints.Sku.tooltip}"
+                                               id="ot30"/>
+                            </af:column>
+                            <af:column headerText="Reason Code" id="c31" width="75">
+                                <af:outputText value="#{row.ReasonCode}"
+                                               shortDesc="#{bindings.XxApReasonCodeDetailVO1.hints.ReasonCode.tooltip}"
+                                               id="ot31"/>
+                            </af:column>
+                            <af:column headerText="Line Description" id="c32" width="85">
+                                <af:outputText value="#{row.LineDescription}"
+                                               shortDesc="#{bindings.XxApReasonCodeDetailVO1.hints.LineDescription.tooltip}"
+                                               id="ot32"/>
+                            </af:column>
+                            <af:column headerText="Chargeback (Y/N)" id="c33" width="75">
+                                <af:outputText value="#{row.Chargeback}"
+                                               shortDesc="#{bindings.XxApReasonCodeDetailVO1.hints.Chargeback.tooltip}"
+                                               id="ot33"/>
+                            </af:column>
+                            <af:column headerText="Reason Code Amount" id="c34" width="95">
+                                <af:panelGroupLayout id="pgl19" halign="right" layout="horizontal">
+                                    <af:outputText value="#{row.ReasonCodeAmount}"
+                                                   shortDesc="#{bindings.XxApReasonCodeDetailVO1.hints.ReasonCodeAmount.tooltip}"
+                                                   id="ot34">
+                                        <af:convertNumber groupingUsed="false" pattern="#,###.00"/>
+                                    </af:outputText>
+                                </af:panelGroupLayout>
+                            </af:column>
+                        </af:table>
+                    </af:panelCollection>
+                    <af:panelGroupLayout id="pgl28">
+                        <af:outputText value="Total # of Records : " id="ot40"/>
+                        <af:outputText value="#{bindings.XxApReasonCodeSummaryVO1Iterator.estimatedRowCount}" id="ot45"
+                                       rendered="#{bindings.ReportOption.inputValue eq 'Summary'}"
+                                       partialTriggers="b1"/>
+                        <af:outputText value="#{bindings.XxApReasonCodeDetailVO1Iterator.estimatedRowCount}" id="ot42"
+                                       rendered="#{bindings.ReportOption.inputValue eq 'Detail'}" partialTriggers="b1"/>
+                    </af:panelGroupLayout>
+                </af:panelGroupLayout>
+            </af:panelGroupLayout>
+        </af:panelGroupLayout>
+    <!--oracle-jdev-comment:auto-binding-backing-bean-name:backing_InvoiceReasonCodeSummary-->
+</jsp:root>

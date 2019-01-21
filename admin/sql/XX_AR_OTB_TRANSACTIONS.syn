@@ -1,0 +1,22 @@
+---+========================================================================================================+        
+---|                                        Office Depot - Project Simplify                                 |
+---|                             Oracle NAIO/WIPRO/Office Depot/Consulting Organization                     |
+---+========================================================================================================+
+---|    Application             :       AR                                                                  |
+---|                                                                                                        |
+---|    Name                    :       XX_AR_OTB_TRANSACTIONS.syn                                          |
+---|                                                                                                        |
+---|    Description             :       This Creates the synonym for the table xxfin.xx_ar_otb_transactions |
+---|                                                                                                        |
+---|                                                                                                        |
+---|                                                                                                        |
+---|    Change Record                                                                                       |
+---|    ---------------------------------                                                                   |
+---|    Version         DATE              AUTHOR            DESCRIPTION                                     |
+---|    ------------    ----------------- ---------------   ---------------------                           |
+---|    1.0             14-JUL-2007       Shiva Rao         Initial Version                                 |
+---|                                                                                                        |
+---+========================================================================================================+        
+
+
+CREATE SYNONYM xx_ar_otb_transactions for xxfin.xx_ar_otb_transactions ;

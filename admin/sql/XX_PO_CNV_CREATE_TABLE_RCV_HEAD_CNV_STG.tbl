@@ -1,0 +1,103 @@
+-- +===========================================================================+
+-- |                  Office Depot                                             |
+-- +===========================================================================+
+-- |Description : Create Table XX_PO_RCPTS_STG for PO/Receipts Conversion      |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | 1.0       19-JUL-17      Antonio Morales           Initial draft version  |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+
+BEGIN
+
+  EXECUTE IMMEDIATE 'DROP TABLE XXFIN.XX_PO_RCPTS_STG';
+EXCEPTION
+  WHEN OTHERS THEN NULL;
+END;
+/
+
+CREATE TABLE XXFIN.XX_PO_RCPTS_STG
+(
+  CONTROL_ID                 NUMBER,
+  PROCESS_FLAG               NUMBER DEFAULT 0,
+  CONV_ACTION                VARCHAR2(10),
+  BATCH_ID                   NUMBER,
+  REQUEST_ID                 NUMBER,
+  SOURCE_SYSTEM_CODE         VARCHAR2(5),
+  SOURCE_SYSTEM_REF          VARCHAR2(50),
+  CREATION_DATE              TIMESTAMP,
+  LAST_UPDATE_DATE           TIMESTAMP,
+  QUANTITY                   NUMBER,
+  HEADER_INTERFACE_ID        NUMBER,
+  GROUP_ID                   NUMBER,
+  INTERFACE_TRANSACTION_ID   NUMBER,
+  SHIP_TO_ORGANIZATION_ID    NUMBER,
+  SUBINVENTORY               VARCHAR2(30),
+  AUTO_TRANSACT_CODE         VARCHAR2(30),
+  CREATED_BY                 NUMBER,
+  EXPECTED_RECEIPT_DATE      DATE,
+  ITEM_ID                    NUMBER,
+  LAST_UPDATE_LOGIN          NUMBER,
+  UOM                        VARCHAR2(10),
+  LAST_UPDATED_BY            NUMBER,
+  PO_DISTRIBUTION_ID         NUMBER,
+  PO_HEADER_ID               NUMBER,
+  PO_LINE_ID                 NUMBER,
+  PO_LINE_LOCATION_ID        NUMBER,
+  PROCESSING_MODE_CODE       VARCHAR2(30),
+  PROCESSING_STATUS_CODE     VARCHAR2(30),
+  RECEIPT_NUM                VARCHAR2(30),
+  SHIP_TO_ORGANIZATION_CODE  VARCHAR2(30),
+  SHIPPED_DATE               DATE,
+  SOURCE_DOCUMENT_CODE       VARCHAR2(30),
+  TRANSACTION_STATUS_CODE    VARCHAR2(30),
+  TRANSACTION_TYPE           VARCHAR2(30),
+  VALIDATION_FLAG            VARCHAR2(1),
+  VENDOR_ID                  NUMBER,
+  SHIPMENT_HEADER_ID         NUMBER,
+  SHIPMENT_LINE_ID           NUMBER,
+  AP_REC                     VARCHAR2(30),
+  AP_COMPANY                 VARCHAR2(30),
+  AP_RECEIVER_NO             VARCHAR2(30),
+  AP_LOCATION                VARCHAR2(30),
+  AP_KEYREC                  VARCHAR2(30),
+  AP_LINE_NO                 VARCHAR2(30),
+  AP_TRAN_TYPE               VARCHAR2(30),
+  AP_PO_NUMBER               VARCHAR2(30),
+  AP_PO_NUMBER_7             VARCHAR2(30),
+  AP_PO_VENDOR               VARCHAR2(30),
+  AP_PO_VENDOR_1             VARCHAR2(30),
+  AP_RCVD_DATE               VARCHAR2(30),
+  AP_PO_DATE                 VARCHAR2(30),
+  AP_SHIP_DATE               VARCHAR2(30),
+  AP_FRT_BILL_NO             VARCHAR2(30),
+  AP_BUYER_CODE              VARCHAR2(30),
+  AP_FREIGHT_TERMS           VARCHAR2(30),
+  AP_PO_LINE_NO              VARCHAR2(30),
+  AP_SKU                     VARCHAR2(30),
+  AP_VENDOR_ITEM             VARCHAR2(30),
+  AP_DESCRIPTION             VARCHAR2(30),
+  AP_RCVD_QUANTITY           VARCHAR2(30),
+  AP_RCVD_COST               VARCHAR2(30),
+  AP_VENDOR_PRODCD           VARCHAR2(30),
+  AP_SEQ_NO1                 VARCHAR2(30),
+  ORG_ID                     NUMBER,
+  RVCTP_REQUEST_ID           NUMBER
+);
+
+
+GRANT ALL ON XXFIN.XX_PO_RCPTS_STG TO APPS WITH GRANT OPTION;
+
+GRANT SELECT ON XXFIN.XX_PO_RCPTS_STG TO ERP_SYSTEM_TABLE_SELECT_ROLE;
+

@@ -1,0 +1,41 @@
+-- +=====================================================================+
+-- |                  Office Depot - Project Simplify                    |
+-- |                       WIPRO Technologies                            |
+-- +=====================================================================+
+-- | Name :  XX_AR_PROMO_CARDTYPES.tbl                                   |
+-- | Description :   Creates XX_AR_PROMO_CARDTYPES                       |
+-- |                                                                     |
+-- |                                                                     |
+-- |Change Record:                                                       |
+-- |===============                                                      |
+-- |Version   Date              Author              Remarks              |
+-- |======   ==========     =============        ======================= |
+-- |1.0       05-MAR-2007   Raji Natarajan,     Created Base version     |
+-- |                        Wipro Technologies                           |
+-- |                                                                     |
+-- +=====================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+--DROP TABLE xxfin.xx_ar_promo_cardtypes CASCADE CONSTRAINTS;
+
+CREATE TABLE xxfin.xx_ar_promo_cardtypes 
+   (	card_type_id NUMBER, 
+	card_type VARCHAR2(30 BYTE) NOT NULL ENABLE, 
+	bin_start NUMBER NOT NULL ENABLE, 
+	bin_end NUMBER NOT NULL ENABLE, 
+	creation_date DATE DEFAULT SYSDATE, 
+	created_by NUMBER(15), 
+	last_update_date DATE DEFAULT SYSDATE, 
+	last_updated_by NUMBER(15), 
+      attribute1 VARCHAR2(30 BYTE),
+      attribute2 VARCHAR2(30 BYTE),
+      attribute3 VARCHAR2(30 BYTE)
+    ) ;
+
+
+SHOW ERROR

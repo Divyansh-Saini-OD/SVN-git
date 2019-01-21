@@ -1,0 +1,29 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating SYNONYM XX_AR_CUST_PAYMENT_TEMP
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- +===================================================================================+
+-- | Name        : XX_AR_CUST_PAYMENT_TEMP                                             |
+-- | Description : Create the Synonym for the table XX_AR_CUST_PAYMENT_TEMP            |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date         Author               Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | V1.0     28-Sep-2010  Ganga Devi R          Initial version                       |
+-- +===================================================================================+
+
+CREATE SYNONYM APPS.XX_AR_CUST_PAYMENT_TEMP FOR XXFIN.XX_AR_CUST_PAYMENT_TEMP;
+
+SHOW ERROR

@@ -1,0 +1,560 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1" xmlns:af="http://xmlns.oracle.com/adf/faces/rich"
+          xmlns:f="http://java.sun.com/jsf/core">
+    <af:panelGroupLayout id="pgl1" layout="vertical">
+        <af:panelGroupLayout id="pgl24" layout="horizontal">
+            <af:outputFormatted value="Office Depot - AP - Receipt Detail Inquiry :  " id="of1"
+                                inlineStyle="font-size:large;"/>
+            <af:outputFormatted value="#{MyDate}" id="of2" inlineStyle="font-size:large;">
+                <af:convertDateTime pattern="MM/dd/YYYY"/>
+            </af:outputFormatted>
+        </af:panelGroupLayout>
+        <af:spacer width="10" height="25" id="s1" />
+        <af:panelGroupLayout id="searchAreaBind" layout="horizontal"
+                             binding="#{pageFlowScope.backing_ReceiptDetailInquiry.searchAreaBind}">
+            <af:spacer width="20" height="10" id="s2" binding="#{pageFlowScope.backing_ReceiptDetailInquiry.s2}"/>
+            <!--<af:panelGroupLayout id="pgl3" binding="#{pageFlowScope.backing_ReceiptDetailInquiry.pgl3}"
+                                     layout="horizontal"></af:panelGroupLayout>-->
+            <af:panelGroupLayout id="pgl23" layout="vertical">
+                <af:panelLabelAndMessage label="Supplier Name" id="plam1"
+                                         binding="#{pageFlowScope.backing_ReceiptDetailInquiry.plam1}">
+                    <af:spacer width="15" height="10" id="s3"
+                               binding="#{pageFlowScope.backing_ReceiptDetailInquiry.s3}"/>
+                    <af:inputListOfValues id="suppliernameId" simple="true"
+                                          popupTitle="Search and Select: #{bindings.Suppliername.hints.label}"
+                                          value="#{bindings.Suppliername.inputValue}"
+                                          label="#{bindings.Suppliername.hints.label}"
+                                          model="#{bindings.Suppliername.listOfValuesModel}"
+                                          required="#{bindings.Suppliername.hints.mandatory}"
+                                          columns="#{bindings.Suppliername.hints.displayWidth}"
+                                          shortDesc="#{bindings.Suppliername.hints.tooltip}"
+                                          binding="#{pageFlowScope.backing_ReceiptDetailInquiry.suppliernameId}">
+                        <f:validator binding="#{bindings.Suppliername.validator}"/>
+                    </af:inputListOfValues>
+                </af:panelLabelAndMessage>
+                <af:spacer width="10" height="15" id="s4"
+                           binding="#{pageFlowScope.backing_ReceiptDetailInquiry.s4}"/>
+                <af:panelLabelAndMessage label="Supplier Site #" id="plam2"
+                                         binding="#{pageFlowScope.backing_ReceiptDetailInquiry.plam2}">
+                    <af:spacer width="16" height="10" id="s5"
+                               binding="#{pageFlowScope.backing_ReceiptDetailInquiry.s5}"/>
+                    <af:inputListOfValues id="suppliersiteId" simple="true"
+                                          popupTitle="Search and Select: #{bindings.Suppliersite.hints.label}"
+                                          value="#{bindings.Suppliersite.inputValue}"
+                                          label="#{bindings.Suppliersite.hints.label}"
+                                          model="#{bindings.Suppliersite.listOfValuesModel}"
+                                          required="#{bindings.Suppliersite.hints.mandatory}"
+                                          columns="#{bindings.Suppliersite.hints.displayWidth}"
+                                          shortDesc="#{bindings.Suppliersite.hints.tooltip}"
+                                          binding="#{pageFlowScope.backing_ReceiptDetailInquiry.suppliersiteId}">
+                        <f:validator binding="#{bindings.Suppliersite.validator}"/>
+                    </af:inputListOfValues>
+                </af:panelLabelAndMessage>
+                <af:spacer width="10" height="15" id="s6"
+                           binding="#{pageFlowScope.backing_ReceiptDetailInquiry.s6}"/>
+                <af:panelLabelAndMessage label="SKU" id="plam3"
+                                         binding="#{pageFlowScope.backing_ReceiptDetailInquiry.plam3}">
+                    <af:spacer width="75" height="10" id="s7"
+                               binding="#{pageFlowScope.backing_ReceiptDetailInquiry.s7}"/>
+                    <af:inputListOfValues id="skuId" popupTitle="Search and Select: #{bindings.Sku.hints.label}"
+                                          value="#{bindings.Sku.inputValue}" label="#{bindings.Sku.hints.label}"
+                                          model="#{bindings.Sku.listOfValuesModel}"
+                                          autoSubmit="true"
+                                          required="#{bindings.Sku.hints.mandatory}"
+                                          columns="#{bindings.Sku.hints.displayWidth}"
+                                          shortDesc="#{bindings.Sku.hints.tooltip}" simple="true"
+                                          binding="#{pageFlowScope.backing_ReceiptDetailInquiry.skuId}">
+                        <f:validator binding="#{bindings.Sku.validator}"/>
+                    </af:inputListOfValues>
+                </af:panelLabelAndMessage>
+            </af:panelGroupLayout>
+            <af:spacer width="55" height="10" id="s13" binding="#{pageFlowScope.backing_ReceiptDetailInquiry.s13}"/>
+            <af:panelGroupLayout id="pgl4" binding="#{pageFlowScope.backing_ReceiptDetailInquiry.pgl4}"
+                                 layout="vertical">
+                <af:panelLabelAndMessage label="Invoice #" id="plam4"
+                                         binding="#{pageFlowScope.backing_ReceiptDetailInquiry.plam4}">
+                    <af:spacer width="17" height="10" id="s8"
+                               binding="#{pageFlowScope.backing_ReceiptDetailInquiry.s8}"/>
+                    <af:inputListOfValues id="invoiceId" popupTitle="Search and Select: #{bindings.Invoice.hints.label}"
+                                          value="#{bindings.Invoice.inputValue}" label="#{bindings.Invoice.hints.label}"
+                                          model="#{bindings.Invoice.listOfValuesModel}"
+                                          required="#{bindings.Invoice.hints.mandatory}"
+                                          columns="#{bindings.Invoice.hints.displayWidth}"
+                                          shortDesc="#{bindings.Invoice.hints.tooltip}" simple="true"
+                                          binding="#{pageFlowScope.backing_ReceiptDetailInquiry.invoiceId}">
+                        <f:validator binding="#{bindings.Invoice.validator}"/>
+                    </af:inputListOfValues>
+                </af:panelLabelAndMessage>
+                <af:spacer width="50" height="10" id="s9"
+                           binding="#{pageFlowScope.backing_ReceiptDetailInquiry.s9}"/>
+                <af:panelLabelAndMessage label="PO #" id="plam5"
+                                         binding="#{pageFlowScope.backing_ReceiptDetailInquiry.plam5}">
+                    <af:spacer width="41" height="10" id="s17"
+                               binding="#{pageFlowScope.backing_ReceiptDetailInquiry.s17}"/>
+                    <af:inputListOfValues id="poId" popupTitle="Search and Select: #{bindings.Po.hints.label}"
+                                          value="#{bindings.Po.inputValue}" label="#{bindings.Po.hints.label}"
+                                          model="#{bindings.Po.listOfValuesModel}"
+                                          required="#{bindings.Po.hints.mandatory}"
+                                          columns="#{bindings.Po.hints.displayWidth}" simple="true"
+                                          shortDesc="#{bindings.Po.hints.tooltip}"
+                                          binding="#{pageFlowScope.backing_ReceiptDetailInquiry.poId}">
+                        <f:validator binding="#{bindings.Po.validator}"/>
+                    </af:inputListOfValues>
+                </af:panelLabelAndMessage>
+                <af:spacer width="10" height="10" id="s10"
+                           binding="#{pageFlowScope.backing_ReceiptDetailInquiry.s10}"/>
+                <af:panelLabelAndMessage label="Receipt #" id="plam6"
+                                         binding="#{pageFlowScope.backing_ReceiptDetailInquiry.plam6}">
+                    <af:spacer width="15" height="10" id="s11"
+                               binding="#{pageFlowScope.backing_ReceiptDetailInquiry.s11}"/>
+                    <af:inputListOfValues id="receiptId" popupTitle="Search and Select: #{bindings.Receipt.hints.label}"
+                                          value="#{bindings.Receipt.inputValue}" label="#{bindings.Receipt.hints.label}"
+                                          model="#{bindings.Receipt.listOfValuesModel}" simple="true"
+                                          required="#{bindings.Receipt.hints.mandatory}"
+                                          columns="#{bindings.Receipt.hints.displayWidth}"
+                                          shortDesc="#{bindings.Receipt.hints.tooltip}"
+                                          binding="#{pageFlowScope.backing_ReceiptDetailInquiry.receiptId}">
+                        <f:validator binding="#{bindings.Receipt.validator}"/>
+                    </af:inputListOfValues>
+                    <!--<af:inputListOfValues id="ilov1" popupTitle="Search and Select: #{bindings.Invoice.hints.label}"
+                                          value="#{bindings.Invoice.inputValue}" label="#{bindings.Invoice.hints.label}"
+                                          model="#{bindings.Invoice.listOfValuesModel}" simple="true"
+                                          required="#{bindings.Invoice.hints.mandatory}"
+                                          columns="#{bindings.Invoice.hints.displayWidth}"
+                                          shortDesc="#{bindings.Invoice.hints.tooltip}"
+                                          binding="#{pageFlowScope.backing_ReceiptDetailInquiry.ilov1}">
+                        <f:validator binding="#{bindings.Invoice.validator}"/>
+                    </af:inputListOfValues>-->
+                </af:panelLabelAndMessage>
+            </af:panelGroupLayout>
+            <af:spacer width="55" height="10" id="s14" binding="#{pageFlowScope.backing_ReceiptDetailInquiry.s14}"/>
+            <af:panelGroupLayout id="pgl5" binding="#{pageFlowScope.backing_ReceiptDetailInquiry.pgl5}"
+                                 layout="vertical">
+                <af:panelGroupLayout id="pgl6" binding="#{pageFlowScope.backing_ReceiptDetailInquiry.pgl6}"
+                                     layout="horizontal">
+                    <af:panelLabelAndMessage label="Receipt Date Range                         " id="plam8"
+                                             binding="#{pageFlowScope.backing_ReceiptDetailInquiry.plam8}">
+                        <af:spacer width="10" height="10" id="s21"
+                                   binding="#{pageFlowScope.backing_ReceiptDetailInquiry.s21}"/>
+                        <af:inputDate value="#{bindings.Daterangefrom.inputValue}"
+                                      required="#{bindings.Daterangefrom.hints.mandatory}"
+                                      columns="#{bindings.Daterangefrom.hints.displayWidth}"
+                                      shortDesc="#{bindings.Daterangefrom.hints.tooltip}" id="dateFrom"
+                                      binding="#{pageFlowScope.backing_ReceiptDetailInquiry.dateFrom}" simple="true">
+                            <f:validator binding="#{bindings.Daterangefrom.validator}"/>
+                            <af:convertDateTime pattern="#{bindings.Daterangefrom.format}"/>
+                        </af:inputDate>
+                        <af:spacer width="5" height="10" id="s23"/>
+                        <f:facet name="end">
+                            <af:inputDate value="#{bindings.Daterangeto.inputValue}"
+                                          required="#{bindings.Daterangeto.hints.mandatory}"
+                                          columns="#{bindings.Daterangeto.hints.displayWidth}"
+                                          shortDesc="#{bindings.Daterangeto.hints.tooltip}" id="dateTo"
+                                          binding="#{pageFlowScope.backing_ReceiptDetailInquiry.dateTo}"
+                                          simple="true">
+                                <f:validator binding="#{bindings.Daterangeto.validator}"/>
+                                <af:convertDateTime pattern="#{bindings.Daterangeto.format}"/>
+                            </af:inputDate>
+                        </f:facet>
+                    </af:panelLabelAndMessage>
+                </af:panelGroupLayout>
+                <af:spacer width="10" height="40" id="s15"
+                           binding="#{pageFlowScope.backing_ReceiptDetailInquiry.s15}"/>
+                <af:spacer width="10" height="10" id="s16"
+                           binding="#{pageFlowScope.backing_ReceiptDetailInquiry.s16}"/>
+                <af:panelGroupLayout id="pgl29" 
+                                     layout="horizontal">
+                    <af:button text="Go" id="b1" binding="#{pageFlowScope.backing_ReceiptDetailInquiry.b1}"
+                               action="#{pageFlowScope.backing_ReceiptDetailInquiry.searchReceiptAction}"/>
+                    <af:spacer width="10" height="10" id="s12"
+                               binding="#{pageFlowScope.backing_ReceiptDetailInquiry.s12}"/>
+                        <af:button text="Concurrent Request" id="b78" 
+                               action="#{pageFlowScope.backing_ReceiptDetailInquiry.submitConcurrentRequest}"/>    
+                                <af:spacer width="10" height="10" id="s687"/>
+                    <af:button text="Clear" id="b2" binding="#{pageFlowScope.backing_ReceiptDetailInquiry.b2}"
+                    action="#{pageFlowScope.backing_ReceiptDetailInquiry.ClearReceiptDetailAction}"
+                               immediate="true"/>
+                </af:panelGroupLayout>
+            </af:panelGroupLayout>
+        </af:panelGroupLayout>
+        <af:spacer width="10" height="10" id="s18"/>
+        <af:panelGroupLayout id="pgl11">
+            <af:panelGroupLayout id="pg20" binding="#{pageFlowScope.backing_ReceiptDetailInquiry.pg20}" >
+                <af:panelCollection id="pc2" styleClass="AFStretchWidth" binding="#{pageFlowScope.backing_ReceiptDetailInquiry.recDtlPC}">
+                    <f:facet name="menus">
+                        <af:menu text="File" id="m2">
+                            <af:commandMenuItem text="Export to Excel" id="cmi2">
+                                <af:exportCollectionActionListener type="excelHTML" exportedId="t4"
+                                                                   filename="ReceiptDetailsEnquiryt1.xls"
+                                                                   title="Receipt Details Enquiry"/>
+                            </af:commandMenuItem>
+                        </af:menu>
+                    </f:facet>
+                    <f:facet name="toolbar"/>
+                    <f:facet name="statusbar"/>
+                    <af:table value="#{bindings.XxApReceiptDetailSummaryVO3.collectionModel}" var="row"
+                              rows="#{bindings.XxApReceiptDetailSummaryVO3.rangeSize}"
+                              emptyText="#{bindings.XxApReceiptDetailSummaryVO3.viewable ? 'No data to display.' : 'Access Denied.'}"
+                              rowBandingInterval="0"  scrollPolicy="page" rendered="false"
+                              selectedRowKeys="#{bindings.XxApReceiptDetailSummaryVO3.collectionModel.selectedRow}"
+                              selectionListener="#{bindings.XxApReceiptDetailSummaryVO3.collectionModel.makeCurrent}"
+                              rowSelection="single" fetchSize="#{bindings.XxApReceiptDetailSummaryVO3.rangeSize}"
+                              id="t4" binding="#{pageFlowScope.backing_ReceiptDetailInquiry.t4}" styleClass="AFStretchWidth"
+                              columnStretching="last">
+                        <af:column sortProperty="#{bindings.XxApReceiptDetailSummaryVO3.hints.ReceiptNum.name}"
+                                   sortable="true" align="right"
+                                   headerText="#{bindings.XxApReceiptDetailSummaryVO3.hints.ReceiptNum.label}" id="c1"
+                                   width="60">
+                            <af:outputText value="#{row.ReceiptNum}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummaryVO3.hints.ReceiptNum.tooltip}"
+                                           id="ot1"/>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.XxApReceiptDetailSummaryVO3.hints.RcpDate.name}"
+                                   sortable="true"  align="left"
+                                   headerText="#{bindings.XxApReceiptDetailSummaryVO3.hints.RcpDate.label}" id="c2">
+                            <af:outputText value="#{row.RcpDate}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummaryVO3.hints.RcpDate.tooltip}"
+                                           id="ot2">
+                                <af:convertDateTime pattern="#{bindings.XxApReceiptDetailSummaryVO3.hints.RcpDate.format}"/>
+                            </af:outputText>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.XxApReceiptDetailSummaryVO3.hints.SupplierNum.name}"
+                                   sortable="true"  align="right"
+                                   headerText="#{bindings.XxApReceiptDetailSummaryVO3.hints.SupplierNum.label}" id="c3"
+                                   width="60">
+                            <af:outputText value="#{row.SupplierNum}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummaryVO3.hints.SupplierNum.tooltip}"
+                                           id="ot3"/>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.XxApReceiptDetailSummaryVO3.hints.SupplierName.name}"
+                                   sortable="true" align="left"
+                                   headerText="#{bindings.XxApReceiptDetailSummaryVO3.hints.SupplierName.label}"
+                                   id="c4">
+                            <af:outputText value="#{row.SupplierName}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummaryVO3.hints.SupplierName.tooltip}"
+                                           id="ot4"/>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.XxApReceiptDetailSummaryVO3.hints.SupplierSite.name}"
+                                   sortable="true" align="left"
+                                   headerText="#{bindings.XxApReceiptDetailSummaryVO3.hints.SupplierSite.label}"
+                                   id="c5">
+                            <af:outputText value="#{row.SupplierSite}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummaryVO3.hints.SupplierSite.tooltip}"
+                                           id="ot5"/>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.XxApReceiptDetailSummaryVO3.hints.Po.name}" sortable="true"
+                                   headerText="#{bindings.XxApReceiptDetailSummaryVO3.hints.Po.label}" id="c6" align="left"
+                                   width="60">
+                            <af:outputText value="#{row.Po}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummaryVO3.hints.Po.tooltip}"
+                                           id="ot6"/>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.XxApReceiptDetailSummaryVO3.hints.PoLineNum.name}"
+                                   sortable="true" align="right"
+                                   headerText="#{bindings.XxApReceiptDetailSummaryVO3.hints.PoLineNum.label}" id="c7"
+                                   width="60">
+                            <af:outputText value="#{row.PoLineNum}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummaryVO3.hints.PoLineNum.tooltip}"
+                                           id="ot7">
+                                <af:convertNumber groupingUsed="false"
+                                                  pattern="#{bindings.XxApReceiptDetailSummaryVO3.hints.PoLineNum.format}"/>
+                            </af:outputText>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.XxApReceiptDetailSummaryVO3.hints.Sku.name}" sortable="true"
+                                  width="60" headerText="#{bindings.XxApReceiptDetailSummaryVO3.hints.Sku.label}" id="c8" align="left">
+                            <af:outputText value="#{row.Sku}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummaryVO3.hints.Sku.tooltip}"
+                                           id="ot8"/>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.XxApReceiptDetailSummaryVO3.hints.Location.name}"
+                                   sortable="true" align="left"
+                                   headerText="#{bindings.XxApReceiptDetailSummaryVO3.hints.Location.label}" id="c9"
+                                   width="60">
+                            <af:outputText value="#{row.Location}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummaryVO3.hints.Location.tooltip}"
+                                           id="ot9"/>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.XxApReceiptDetailSummaryVO3.hints.Uom.name}" sortable="true"
+                                   headerText="#{bindings.XxApReceiptDetailSummaryVO3.hints.Uom.label}" align="left" id="c10"
+                                   width="40">
+                            <af:outputText value="#{row.Uom}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummaryVO3.hints.Uom.tooltip}"
+                                           id="ot10"/>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.XxApReceiptDetailSummaryVO3.hints.RecLineNum.name}"
+                                   sortable="true" align="right"
+                                   headerText="#{bindings.XxApReceiptDetailSummaryVO3.hints.RecLineNum.label}" id="c11"
+                                   width="60">
+                            <af:outputText value="#{row.RecLineNum}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummaryVO3.hints.RecLineNum.tooltip}"
+                                           id="ot11">
+                                <af:convertNumber groupingUsed="false"
+                                                  pattern="#{bindings.XxApReceiptDetailSummaryVO3.hints.RecLineNum.format}"/>
+                            </af:outputText>
+                              
+                        </af:column>
+                        <af:column sortProperty="#{bindings.XxApReceiptDetailSummaryVO3.hints.ReceiptLineAmt.name}"
+                                   sortable="true" align="right"
+                                   headerText="#{bindings.XxApReceiptDetailSummaryVO3.hints.ReceiptLineAmt.label}"
+                                   id="c12">
+                            <af:outputText value="#{row.ReceiptLineAmt}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummaryVO3.hints.ReceiptLineAmt.tooltip}"
+                                           id="ot12">
+                                <af:convertNumber groupingUsed="false"
+                                                  pattern="#{bindings.XxApReceiptDetailSummaryVO3.hints.ReceiptLineAmt.format}"/>
+                            </af:outputText>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.XxApReceiptDetailSummaryVO3.hints.PoQty.name}"
+                                   sortable="true" align="right"
+                                   headerText="#{bindings.XxApReceiptDetailSummaryVO3.hints.PoQty.label}" id="c13"
+                                   width="60">
+                            <af:outputText value="#{row.PoQty}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummaryVO3.hints.PoQty.tooltip}"
+                                           id="ot13">
+                                <af:convertNumber groupingUsed="false"
+                                                  pattern="#{bindings.XxApReceiptDetailSummaryVO3.hints.PoQty.format}"/>
+                            </af:outputText>
+                        </af:column>
+                        <af:column sortable="true" align="right" headerText="#{bindings.XxApReceiptDetailSummaryVO3.hints.UnitPrice.label}" id="c42"
+                        sortProperty="#{bindings.XxApReceiptDetailSummaryVO3.hints.UnitPrice.name}" width="60">
+                            <af:outputText value="#{row.UnitPrice}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummaryVO3.hints.UnitPrice.tooltip}"
+                                           id="ot40">
+                                <af:convertNumber groupingUsed="false"
+                                                  pattern="#{bindings.XxApReceiptDetailSummaryVO3.hints.UnitPrice.format}"/>
+                            </af:outputText>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.XxApReceiptDetailSummaryVO3.hints.RcpQty.name}"
+                                   sortable="true" align="right"
+                                   headerText="#{bindings.XxApReceiptDetailSummaryVO3.hints.RcpQty.label}" id="c14"
+                                   width="60">
+                            <af:outputText value="#{row.RcpQty}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummaryVO3.hints.RcpQty.tooltip}"
+                                           id="ot14">
+                                <af:convertNumber groupingUsed="false"
+                                                  pattern="#{bindings.XxApReceiptDetailSummaryVO3.hints.RcpQty.format}"/>
+                            </af:outputText>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.XxApReceiptDetailSummaryVO3.hints.InvQtty.name}"
+                                   sortable="true" align="right"
+                                   headerText="#{bindings.XxApReceiptDetailSummaryVO3.hints.InvQtty.label}" id="c15"
+                                   width="50">
+                            <af:outputText value="#{row.InvQtty}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummaryVO3.hints.InvQtty.tooltip}"
+                                           id="ot15">
+                                <af:convertNumber groupingUsed="false"
+                                                  pattern="#{bindings.XxApReceiptDetailSummaryVO3.hints.InvQtty.format}"/>
+                            </af:outputText>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.XxApReceiptDetailSummaryVO3.hints.InvNumFifo.name}"
+                                   sortable="true" align="left"
+                                   headerText="#{bindings.XxApReceiptDetailSummaryVO3.hints.InvNumFifo.label}" id="c16">
+                            <!--<af:outputText value="#{row.InvNumFifo}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummaryVO3.hints.InvNumFifo.tooltip}"
+                                           id="ot17"/>-->
+                                             <af:link text="#{row.InvNumFifo}" id="l1" selected="true"
+                             actionListener="#{pageFlowScope.backing_ReceiptDetailInquiry.invNumListener}"
+                             binding="#{pageFlowScope.backing_ReceiptDetailInquiry.invNumBind}">
+                             <f:attribute name="InvoiceNum" value="#{row.InvNumFifo}"/>
+                               <f:attribute name="PoLineId" value="#{row.PoLineId}"/>
+                              <f:attribute name="ReceiptNum" value="#{row.ReceiptNum}"/>
+                             </af:link>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.XxApReceiptDetailSummaryVO3.hints.UninvQtty.name}"
+                                   sortable="true"  align="right"
+                                   headerText="#{bindings.XxApReceiptDetailSummaryVO3.hints.UninvQtty.label}" id="c17"
+                                   width="70">
+                            <af:outputText value="#{row.UninvQtty}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummaryVO3.hints.UninvQtty.tooltip}"
+                                           id="ot18">
+                                <af:convertNumber groupingUsed="false"
+                                                  pattern="#{bindings.XxApReceiptDetailSummaryVO3.hints.UninvQtty.format}"/>
+                            </af:outputText>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.XxApReceiptDetailSummaryVO3.hints.UninvAmt.name}"
+                                   sortable="true"  align="right"
+                                   headerText="#{bindings.XxApReceiptDetailSummaryVO3.hints.UninvAmt.label}" id="c18"
+                                   width="70">
+                            <af:outputText value="#{row.UninvAmt}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummaryVO3.hints.UninvAmt.tooltip}"
+                                           id="ot19">
+                                <af:convertNumber groupingUsed="false"
+                                                  pattern="#{bindings.XxApReceiptDetailSummaryVO3.hints.UninvAmt.format}"/>
+                            </af:outputText>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.XxApReceiptDetailSummaryVO3.hints.RctAge.name}"
+                                   sortable="true"  align="right"
+                                   headerText="#{bindings.XxApReceiptDetailSummaryVO3.hints.RctAge.label}" id="c19"
+                                   width="60">
+                            <af:outputText value="#{row.RctAge}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummaryVO3.hints.RctAge.tooltip}"
+                                           id="ot39">
+                                <af:convertNumber groupingUsed="false"
+                                                  pattern="#{bindings.XxApReceiptDetailSummaryVO3.hints.RctAge.format}"/>
+                            </af:outputText>
+                        </af:column>
+                    </af:table>
+                   
+                    <af:table value="#{bindings.XxApReceiptDetailSummVO1.collectionModel}" var="row"
+                              rows="#{bindings.XxApReceiptDetailSummVO1.rangeSize}"
+                              emptyText="#{bindings.XxApReceiptDetailSummVO1.viewable ? 'No data to display.' : 'Access Denied.'}"
+                              rowBandingInterval="0" scrollPolicy="scroll"
+                              selectedRowKeys="#{bindings.XxApReceiptDetailSummVO1.collectionModel.selectedRow}"
+                              selectionListener="#{bindings.XxApReceiptDetailSummVO1.collectionModel.makeCurrent}"
+                              rowSelection="single" fetchSize="#{bindings.XxApReceiptDetailSummVO1.rangeSize}" id="t2"
+                              binding="#{pageFlowScope.backing_ReceiptDetailInquiry.t2}" columnStretching="last"
+                              styleClass="AFStretchWidth">
+                        <af:column headerText="#{bindings.XxApReceiptDetailSummVO1.hints.ReceiptNum.label}"
+                         id="c20" align="right">
+                            <af:outputText value="#{row.ReceiptNum}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummVO1.hints.ReceiptNum.tooltip}"
+                                           id="ot20"/>
+                        </af:column>
+                        <af:column headerText="#{bindings.XxApReceiptDetailSummVO1.hints.RctDate.label}" id="c21" align="left">
+                            <af:outputText value="#{row.RctDate}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummVO1.hints.RctDate.tooltip}"
+                                           id="ot21">
+                                <af:convertDateTime pattern="#{bindings.XxApReceiptDetailSummVO1.hints.RctDate.format}"/>
+                            </af:outputText>
+                        </af:column>
+                        <af:column headerText="#{bindings.XxApReceiptDetailSummVO1.hints.SupplierNum.label}" id="c22" align="right">
+                            <af:outputText value="#{row.SupplierNum}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummVO1.hints.SupplierNum.tooltip}"
+                                           id="ot22"/>
+                        </af:column>
+                        <af:column headerText="#{bindings.XxApReceiptDetailSummVO1.hints.SupplierName.label}" id="c23" align="left">
+                            <af:outputText value="#{row.SupplierName}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummVO1.hints.SupplierName.tooltip}"
+                                           id="ot23"/>
+                        </af:column>
+                        <af:column headerText="#{bindings.XxApReceiptDetailSummVO1.hints.SupplierSite.label}" id="c24" align="left">
+                            <af:outputText value="#{row.SupplierSite}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummVO1.hints.SupplierSite.tooltip}"
+                                           id="ot24"/>
+                        </af:column>
+                        <af:column headerText="#{bindings.XxApReceiptDetailSummVO1.hints.PoNum.label}" id="c25" align="left">
+                            <af:outputText value="#{row.PoNum}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummVO1.hints.PoNum.tooltip}"
+                                           id="ot25"/>
+                        </af:column>
+                        <af:column headerText="#{bindings.XxApReceiptDetailSummVO1.hints.PoLineNum.label}" align="right" id="c26">
+                            <af:outputText value="#{row.PoLineNum}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummVO1.hints.PoLineNum.tooltip}"
+                                           id="ot26"/>
+                        </af:column>
+                        <af:column headerText="#{bindings.XxApReceiptDetailSummVO1.hints.Sku.label}" id="c27" align="left">
+                            <af:outputText value="#{row.Sku}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummVO1.hints.Sku.tooltip}"
+                                           id="ot27"/>
+                        </af:column>
+                        <af:column headerText="#{bindings.XxApReceiptDetailSummVO1.hints.Location.label}" id="c28" align="left">
+                            <af:outputText value="#{row.Location}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummVO1.hints.Location.tooltip}"
+                                           id="ot28"/>
+                        </af:column>
+                        <af:column headerText="#{bindings.XxApReceiptDetailSummVO1.hints.Uom.label}" id="c29" align="left">
+                            <af:outputText value="#{row.Uom}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummVO1.hints.Uom.tooltip}"
+                                           id="ot29"/>
+                        </af:column>
+                        <af:column headerText="#{bindings.XxApReceiptDetailSummVO1.hints.RecLineNum.label}"  align="right" id="c30">
+                            <af:outputText value="#{row.RecLineNum}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummVO1.hints.RecLineNum.tooltip}"
+                                           id="ot30"/>
+                        </af:column>
+                        <af:column headerText="#{bindings.XxApReceiptDetailSummVO1.hints.ReceiptLineAmt.label}" align="right"
+                                   id="c31">
+                            <af:outputText value="#{row.ReceiptLineAmt}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummVO1.hints.ReceiptLineAmt.tooltip}"
+                                           id="ot31"/>
+                           
+                        </af:column>
+                        <af:column headerText="#{bindings.XxApReceiptDetailSummVO1.hints.PoQty.label}" id="c32" align="right">
+                            <af:outputText value="#{row.PoQty}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummVO1.hints.PoQty.tooltip}"
+                                           id="ot32"/>
+                        </af:column>
+                        <af:column headerText="#{bindings.XxApReceiptDetailSummVO1.hints.UnitPrice.label}" id="c43">
+                            <af:outputText value="#{row.UnitPrice}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummVO1.hints.UnitPrice.tooltip}"
+                                           id="ot46"/>
+                        </af:column>
+                        <af:column headerText="#{bindings.XxApReceiptDetailSummVO1.hints.ReceiptQty.label}" id="c33"  align="right">
+                            <af:outputText value="#{row.ReceiptQty}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummVO1.hints.ReceiptQty.tooltip}"
+                                           id="ot33"/>
+                        </af:column>
+                        <af:column headerText="#{bindings.XxApReceiptDetailSummVO1.hints.InvQtty.label}" id="c34"   align="right">
+                            <af:outputText value="#{row.InvQtty}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummVO1.hints.InvQtty.tooltip}"
+                                           id="ot34"/>
+                        </af:column>
+                        <af:column headerText="#{bindings.XxApReceiptDetailSummVO1.hints.InvNum.label}" id="c35"  align="left">
+                            <af:outputText value="#{row.InvNum}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummVO1.hints.InvNum.tooltip}"
+                                           id="ot35"/>
+                        </af:column>
+                        <af:column headerText="#{bindings.XxApReceiptDetailSummVO1.hints.UninvQtty.label}" id="c36" align="right">
+                            <af:outputText value="#{row.UninvQtty}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummVO1.hints.UninvQtty.tooltip}"
+                                           id="ot36"/>
+                        </af:column>
+                        <af:column headerText="#{bindings.XxApReceiptDetailSummVO1.hints.UninvAmt.label}" id="c37" align="right">
+                            <af:outputText value="#{row.UninvAmt}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummVO1.hints.UninvAmt.tooltip}"
+                                           id="ot37"/>
+                        
+                        </af:column>
+                        <af:column headerText="#{bindings.XxApReceiptDetailSummVO1.hints.RctAge.label}" id="c38">
+                            <af:outputText value="#{row.RctAge}"
+                                           shortDesc="#{bindings.XxApReceiptDetailSummVO1.hints.RctAge.tooltip}"
+                                           id="ot38"/>
+                        </af:column>
+                    </af:table>
+                    <af:popup contentDelivery="lazy" clientComponent="false" autoCancel="disabled" id="p1"
+                              binding="#{pageFlowScope.backing_ReceiptDetailInquiry.p1}">
+                        <af:dialog id="d1" type="none" styleClass="AFStretchWidth" binding="#{pageFlowScope.backing_ReceiptDetailInquiry.d1}"
+                                   title="Invoice Details">
+                            <af:table value="#{bindings.XxApReceiptDetailTempVO1.collectionModel}" var="row"
+                                      rows="#{bindings.XxApReceiptDetailTempVO1.rangeSize}"
+                                      emptyText="#{bindings.XxApReceiptDetailTempVO1.viewable ? 'No data to display.' : 'Access Denied.'}"
+                                      rowBandingInterval="0"
+                                      selectedRowKeys="#{bindings.XxApReceiptDetailTempVO1.collectionModel.selectedRow}"
+                                      selectionListener="#{bindings.XxApReceiptDetailTempVO1.collectionModel.makeCurrent}"
+                                      rowSelection="single" fetchSize="#{bindings.XxApReceiptDetailTempVO1.rangeSize}"
+                                      id="t3" binding="#{pageFlowScope.backing_ReceiptDetailInquiry.t3}"
+                                      scrollPolicy="page">
+                                <af:column headerText="#{bindings.XxApReceiptDetailTempVO1.hints.InvoiceNum.label}"
+                                           id="c39" align="right">
+                                    <af:outputText value="#{row.InvoiceNum}"
+                                                   shortDesc="#{bindings.XxApReceiptDetailTempVO1.hints.InvoiceNum.tooltip}"
+                                                   id="ot41"/>
+                                                   
+                                </af:column>
+                                <af:column headerText="#{bindings.XxApReceiptDetailTempVO1.hints.InvAppliedAmt.label}"
+                                           id="c40" align="right">
+                                    <af:outputText value="#{row.InvAppliedAmt}"
+                                                   shortDesc="#{bindings.XxApReceiptDetailTempVO1.hints.InvAppliedAmt.tooltip}"
+                                                   id="ot42">
+                                        <af:convertNumber groupingUsed="false"
+                                                          pattern="#{bindings.XxApReceiptDetailTempVO1.hints.InvAppliedAmt.format}"/>
+                                    </af:outputText>
+                                </af:column>
+                                <af:column headerText="#{bindings.XxApReceiptDetailTempVO1.hints.InvVal.label}"
+                                           id="c41" align="right">
+                                    <af:outputText value="#{row.InvVal}"
+                                                   shortDesc="#{bindings.XxApReceiptDetailTempVO1.hints.InvVal.tooltip}"
+                                                   id="ot43"/>
+                                </af:column>
+                            </af:table>
+                            <!--<f:facet name="buttonBar"/>-->
+                        </af:dialog>
+                    </af:popup>
+                </af:panelCollection>
+               
+            </af:panelGroupLayout>
+        </af:panelGroupLayout>
+      
+    </af:panelGroupLayout>
+    <!--oracle-jdev-comment:auto-binding-backing-bean-name:backing_ReceiptDetailInquiry-->
+</jsp:root>

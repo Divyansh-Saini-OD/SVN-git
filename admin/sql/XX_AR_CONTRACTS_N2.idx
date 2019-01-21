@@ -1,0 +1,34 @@
+ SET SHOW         OFF
+ SET VERIFY       OFF
+ SET ECHO         OFF
+ SET TAB          OFF
+ SET FEEDBACK     ON
+
+ PROMPT Creating INDEX XX_AR_CONTRACTS_N2
+
+ PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+ WHENEVER SQLERROR CONTINUE
+ WHENEVER OSERROR EXIT FAILURE ROLLBACK
+
+ -- +================================================================================+
+ -- |                  Office Depot - Project Simplify                               |
+ -- +================================================================================+
+ -- |Desxription - SQL Script to create XX_AR_CONTRACTS_N2 						     |
+ -- |Purpose - Index created on XX_AR_CONTRACTS  table to improve performance        |
+ -- |                                                                                |
+ -- |Change Record:                                                                  |
+ -- |===============                                                                 |
+ -- |Version      Date               Author               Remarks                    |
+ -- |=======      ===========        =============        ========================== |
+ -- |  1.0        03-23-18           Sahithi Kunuru      Initial version.        	 |
+ -- |                                                                                |
+ -- +================================================================================+
+
+ CREATE INDEX XXFIN.XX_AR_CONTRACTS_N2 
+ ON XXFIN.XX_AR_CONTRACTS ( contract_number
+							  );
+                            
+ EXIT;
+
+ 

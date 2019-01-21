@@ -1,0 +1,25 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | SQL Script to create the Synonym for XX_AR_CS_DOCID_STR_CHD_HISTORY          |
+-- |                                                                          |
+-- |                      R1.2 CR622                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     30-Nov-2009  Ranjith Thangasamy   Initial version               |
+-- +==========================================================================+
+
+
+CREATE SYNONYM APPS.XX_AR_CS_DOCID_STR_CHD_HISTORY FOR XXFIN.XX_AR_CS_DOCID_STR_CHD_HISTORY;
+
+
+SHOW ERROR

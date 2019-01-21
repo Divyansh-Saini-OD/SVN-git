@@ -1,0 +1,77 @@
+<wsp:Policy xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:oralgp="http://schemas.oracle.com/ws/2006/01/loggingpolicy" xmlns:orasp="http://schemas.oracle.com/ws/2006/01/securitypolicy" xmlns:orawsp="http://schemas.oracle.com/ws/2006/01/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" Name="od/posa/wss10_message_protection_client_policy_ignore_ts" orawsp:attachTo="binding.client" orawsp:category="security" orawsp:description="i18n:oracle.wsm.resources.policydescription.PolicyDescriptionBundle_oracle/wss10_message_protection_client_policy_PolyDescKey" orawsp:displayName="i18n:oracle.wsm.resources.policydescription.PolicyDescriptionBundle_oracle/wss10_message_protection_client_policy_PolyDispNameKey" orawsp:local-optimization="on" orawsp:oraSmartDigest="-1263163918" orawsp:provides="{http://schemas.oracle.com/ws/2006/01/policy}token.x509, {http://schemas.oracle.com/ws/2006/01/policy}anonymous, {http://docs.oasis-open.org/ns/opencsa/sca/200903}integrity, {http://docs.oasis-open.org/ns/opencsa/sca/200903}integrity.message, {http://docs.oasis-open.org/ns/opencsa/sca/200903}confidentiality, {http://docs.oasis-open.org/ns/opencsa/sca/200903}confidentiality.message, {http://schemas.oracle.com/ws/2006/01/policy}messageProtection" orawsp:smartDigest="-850691092" orawsp:smartDigests="-850691092V1_2V1_1,-9839804V1_2V1_2,-1358857200V1_5V1_2-1374215824V1_5V1_3," orawsp:status="enabled" orawsp:versionCreator="weblogic" orawsp:versionNumber="1" orawsp:versionTime="1336420833732" wsu:Id="wss10_message_protection_client_policy_ignore_ts">
+<oralgp:Logging orawsp:Enforced="false" orawsp:Silent="true" orawsp:category="security/logging" orawsp:name="Log Message1">
+<oralgp:msg-log>
+<oralgp:request>all</oralgp:request>
+<oralgp:response>all</oralgp:response>
+<oralgp:fault>all</oralgp:fault>
+</oralgp:msg-log>
+<orawsp:bindings>
+<orawsp:Config orawsp:name="added-from-em"/>
+</orawsp:bindings>
+</oralgp:Logging>
+<orasp:wss10-anonymous-with-certificates orawsp:Enforced="true" orawsp:Silent="false" orawsp:category="security/msg-protection" orawsp:name="WS-Security 1.0 Anonymous with certificates">
+<orasp:x509-token orasp:enc-key-ref-mech="direct" orasp:is-encrypted="false" orasp:is-signed="true" orasp:rcpt-enc-key-ref-mech="direct" orasp:rcpt-sign-key-ref-mech="direct" orasp:sign-key-ref-mech="direct"/>
+<orasp:msg-security orasp:algorithm-suite="Basic128" orasp:encrypt-signature="false" orasp:include-timestamp="true" orasp:sign-then-encrypt="true">
+<orasp:request>
+<orasp:signed-parts>
+<orasp:header orasp:name="Timestamp" orasp:namespace="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"/>
+</orasp:signed-parts>
+<orasp:encrypted-parts/>
+<orasp:signed-elements/>
+<orasp:encrypted-elements/>
+</orasp:request>
+<orasp:response>
+<orasp:signed-parts>
+<orasp:header orasp:name="Timestamp" orasp:namespace="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"/>
+</orasp:signed-parts>
+<orasp:encrypted-parts/>
+<orasp:signed-elements/>
+<orasp:encrypted-elements/>
+</orasp:response>
+<orasp:fault>
+<orasp:signed-parts/>
+<orasp:encrypted-parts/>
+<orasp:signed-elements/>
+<orasp:encrypted-elements/>
+</orasp:fault>
+</orasp:msg-security>
+<orawsp:bindings>
+<orawsp:Config orawsp:configType="declarative" orawsp:name="Wss10AnonWithCertsConfig">
+<orawsp:PropertySet orawsp:name="standard-security-properties"/>
+<orawsp:PropertySet orawsp:name="stanard-security-properties">
+<orawsp:Property orawsp:contentType="constant" orawsp:name="ignore.timestamp.in.response" orawsp:type="string">
+<orawsp:Description>To ignore timestamp in response</orawsp:Description>
+<orawsp:Value>true</orawsp:Value>
+<orawsp:DefaultValue/>
+</orawsp:Property>
+<orawsp:Property orawsp:contentType="optional" orawsp:name="keystore.enc.csf.key" orawsp:type="string">
+<orawsp:Value/>
+<orawsp:DefaultValue/>
+</orawsp:Property>
+<orawsp:Property orawsp:contentType="constant" orawsp:name="keystore.recipient.alias" orawsp:type="string">
+<orawsp:Value>orakey</orawsp:Value>
+<orawsp:DefaultValue/>
+</orawsp:Property>
+<orawsp:Property orawsp:contentType="optional" orawsp:name="keystore.sig.csf.key" orawsp:type="string">
+<orawsp:Value/>
+<orawsp:DefaultValue/>
+</orawsp:Property>
+<orawsp:Property orawsp:contentType="constant" orawsp:name="role" orawsp:type="string">
+<orawsp:Value>ultimateReceiver</orawsp:Value>
+<orawsp:DefaultValue/>
+</orawsp:Property>
+</orawsp:PropertySet>
+</orawsp:Config>
+</orawsp:bindings>
+</orasp:wss10-anonymous-with-certificates>
+<oralgp:Logging orawsp:Enforced="false" orawsp:Silent="true" orawsp:category="security/logging" orawsp:name="Log Message2">
+<oralgp:msg-log>
+<oralgp:request>all</oralgp:request>
+<oralgp:response>all</oralgp:response>
+<oralgp:fault>all</oralgp:fault>
+</oralgp:msg-log>
+<orawsp:bindings>
+<orawsp:Config orawsp:name="added-from-em"/>
+</orawsp:bindings>
+</oralgp:Logging>
+</wsp:Policy>

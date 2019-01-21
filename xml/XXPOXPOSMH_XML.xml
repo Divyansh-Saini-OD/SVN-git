@@ -1,0 +1,881 @@
+<!-- $Header: POXPOSMH_XML.xml 120.1 2007/12/25 10:44:39 krreddy noship $ -->
+<!-- dbdrv: exec java oracle/apps/xdo/oa/util XDOLoader.class java &phase=dat checkfile:~PROD:patch/115/publisher/defs:POXPOSMH_XML.xml UPLOAD -DB_USERNAME &un_apps -DB_PASSWORD &pw_apps -JDBC_CONNECTION &jdbc_db_addr -LOB_TYPE DATA_TEMPLATE -APPS_SHORT_NAME ~PROD -LOB_CODE POXPOSMH_XML -LANGUAGE 00 -XDO_FILE_TYPE XML-DATA-TEMPLATE -FILE_NAME &fullpath:~PROD:patch/115/publisher/defs:POXPOSMH_XML.xml -->
+<!-- GSCC_Category="Xdo Data Definition" -->
+
+<dataTemplate name="POXPOSMH" defaultPackage="PO_POXPOSMH_XMLP_PKG" version="1.0">
+<properties>
+<property name="xml_tag_case" value="upper" />
+</properties>
+<parameters>
+<!--parameter name="P_TITLE" dataType = "character"></parameter-->
+<!--<parameter name="P_PO_TYPE" dataType = "character"></parameter> Defect 43410--> 
+<parameter name="P_TITLE" dataType = "character"></parameter>
+<parameter name="P_FLEX_ITEM" dataType = "character" defaultValue="(MSI.SEGMENT1||&apos;\n&apos;||MSI.SEGMENT2||&apos;\n&apos;||MSI.SEGMENT3||&apos;\n&apos;||MSI.SEGMENT4||&apos;\n&apos;||MSI.SEGMENT5||&apos;\n&apos;||MSI.SEGMENT6||&apos;\n&apos;||MSI.SEGMENT7||&apos;\n&apos;||MSI.SEGMENT8||&apos;\n&apos;||MSI.SEGMENT9||&apos;\n&apos;||MSI.SEGMENT10||&apos;\n&apos;||MSI.SEGMENT11||&apos;\n&apos;||MSI.SEGMENT12||&apos;\n&apos;||MSI.SEGMENT13||&apos;\n&apos;||MSI.SEGMENT14||&apos;\n&apos;||MSI.SEGMENT15||&apos;\n&apos;||MSI.SEGMENT16||&apos;\n&apos;||MSI.SEGMENT17||&apos;\n&apos;||MSI.SEGMENT18||&apos;\n&apos;||MSI.SEGMENT19||&apos;\n&apos;||MSI.SEGMENT20)"></parameter>
+<parameter name="P_FLEX_CAT" dataType = "character" defaultValue="(MCA.SEGMENT1||&apos;\n&apos;||MCA.SEGMENT2||&apos;\n&apos;||MCA.SEGMENT3||&apos;\n&apos;||MCA.SEGMENT4||&apos;\n&apos;||MCA.SEGMENT5||&apos;\n&apos;||MCA.SEGMENT6||&apos;\n&apos;||MCA.SEGMENT7||&apos;\n&apos;||MCA.SEGMENT8||&apos;\n&apos;||MCA.SEGMENT9||&apos;\n&apos;||MCA.SEGMENT10||&apos;\n&apos;||MCA.SEGMENT11||&apos;\n&apos;||MCA.SEGMENT12||&apos;\n&apos;||MCA.SEGMENT13||&apos;\n&apos;||MCA.SEGMENT14||&apos;\n&apos;||MCA.SEGMENT15||&apos;\n&apos;||MCA.SEGMENT16||&apos;\n&apos;||MCA.SEGMENT17||&apos;\n&apos;||MCA.SEGMENT18||&apos;\n&apos;||MCA.SEGMENT19||&apos;\n&apos;||MCA.SEGMENT20)"></parameter>
+<parameter name="P_CONC_REQUEST_ID" dataType = "number" defaultValue="0"></parameter>
+<parameter name="P_BUYER" dataType = "character"></parameter>
+<parameter name="P_VENDOR_FROM" dataType = "character"></parameter>
+<parameter name="P_VENDOR_TO" dataType = "character"></parameter>
+<parameter name="P_INVOICE_DATE_FROM" dataType = "character"></parameter>
+<parameter name="P_INVOICE_DATE_TO" dataType = "character"></parameter>
+<parameter name="PRICE_HOLD" dataType = "character"></parameter>
+<parameter name="QTY_ORD_HOLD" dataType = "character"></parameter>
+<parameter name="QTY_REC_HOLD" dataType = "character"></parameter>
+<parameter name="QUALITY_HOLD" dataType = "character"></parameter>
+<parameter name="ORG_ID" dataType = "character"></parameter>
+<parameter name="P_PRICE_HOLD" dataType = "character"></parameter>
+<parameter name="P_QTY_ORD_HOLD" dataType = "character"></parameter>
+<parameter name="P_QTY_REC_HOLD" dataType = "character"></parameter>
+<parameter name="P_QUALITY_HOLD" dataType = "character"></parameter>
+<parameter name="P_QTY_PRECISION" dataType = "number" defaultValue="2"></parameter>
+<parameter name="P_WHERE_CAT" dataType = "character" defaultValue="1 = 1"></parameter>
+<parameter name="P_WHERE_ITEM" dataType = "character" defaultValue="1 = 1"></parameter>
+<parameter name="P_STRUCT_NUM" dataType = "character"></parameter>
+<!--parameter name="P_CATEGORY_FROM" dataType = "character"></parameter-->
+<parameter name="P_CATEGORY_FROM" dataType = "character"></parameter>
+
+<!--parameter name="P_CATEGORY_TO" dataType = "character"></parameter-->
+<parameter name="P_CATEGORY_TO" dataType = "character"></parameter>
+
+<!--parameter name="P_ITEM_FROM" dataType = "character"></parameter-->
+<parameter name="P_ITEM_FROM" dataType = "character"></parameter>
+
+<!--parameter name="P_ITEM_TO" dataType = "character"></parameter-->
+<parameter name="P_ITEM_TO" dataType = "character"></parameter>
+
+<parameter name="P_ITEM_STRUCT_NUM" dataType = "character" defaultValue="101"></parameter>
+</parameters>
+<lexicals>
+<lexical type ="oracle.apps.fnd.flex.kff.where" name ="P_WHERE_CAT" application_short_name="INV" id_flex_code="MCAT" id_flex_num=":P_STRUCT_NUM" code_combination_table_alias="MCA" segments="ALL" operator="BETWEEN" operand1=":P_CATEGORY_FROM" operand2=":P_CATEGORY_TO" />
+<lexical type ="oracle.apps.fnd.flex.kff.where" name ="P_WHERE_ITEM" application_short_name="INV" id_flex_code="MSTK" id_flex_num=":P_ITEM_STRUCT_NUM" code_combination_table_alias="MSI" segments="ALL" operator="BETWEEN" operand1=":P_ITEM_FROM" operand2=":P_ITEM_TO" />
+<lexical type ="oracle.apps.fnd.flex.kff.select"  name ="C_FLEX_CAT_DISP" application_short_name="INV" id_flex_code="MCAT" id_flex_num=":P_STRUCT_NUM" multiple_id_flex_num="N" code_combination_table_alias="MCA" segments="ALL" show_parent_segments="Y" output_type="VALUE" />
+<lexical type ="oracle.apps.fnd.flex.kff.select"  name ="C_FLEX_ITEM_DISP" application_short_name="INV" id_flex_code="MSTK" id_flex_num="101" multiple_id_flex_num="N" code_combination_table_alias="MSI" segments="ALL" show_parent_segments="Y" output_type="VALUE" />
+</lexicals>
+<dataQuery>
+<sqlStatement name="Q_company">
+<![CDATA[
+SELECT   gsb.name                      c_company
+,        fsp.inventory_organization_id c_organization_id
+,        gsb.currency_code             GL_CURRENCY
+,        gsb.chart_of_accounts_id      STRUCTURE_ACC
+,        mdv.structure_id              STRUCTURE_CAT
+,        mdv.category_set_id           c_category_set_id
+,        flo1.meaning                  c_yes
+,        flo2.meaning                  c_no
+,        fc.precision                   c_precision
+FROM     gl_sets_of_books              gsb
+,        financials_system_parameters  fsp
+,        mtl_default_sets_view         mdv
+,        fnd_lookups                   flo1
+,        fnd_lookups                   flo2
+,        fnd_currencies               fc
+WHERE    gsb.set_of_books_id           = fsp.set_of_books_id
+AND      mdv.functional_area_id        = 2
+AND      flo1.lookup_type              = 'YES_NO'
+AND      flo1.lookup_code              = 'Y'
+AND      flo2.lookup_type              = 'YES_NO'
+AND      flo2.lookup_code              = 'N'
+AND      fc.enabled_flag = 'Y'
+AND      fc.currency_code = gsb.currency_code
+]]>
+</sqlStatement><sqlStatement name="Q_po">
+<![CDATA[
+SELECT    distinct hre.full_name||poh.currency_code
+,                  hre.full_name               Buyer
+,                 poh.currency_code    Parent_Currency_code
+,                 hre.person_id         Parent_Employee_id
+,                  1                                   for_the_break_group
+,                 fc.precision         Parent_Currency_Precision, 
+	PO_POXPOSMH_XMLP_PKG.c_report_avg_no_of_daysformula(:C_report_tot_days_hold, :C_report_number_total) C_report_avg_no_of_days
+FROM     per_all_people_f            hre
+,               po_headers                poh
+,             fnd_currencies             fc
+WHERE    (:P_buyer              is NULL
+         OR :P_buyer            = hre.full_name)
+         AND poh.agent_id = hre.person_id
+--		 and hre.full_name = 'Ho-On, Stacy L'
+AND fc.currency_code = poh.currency_code
+        
+and trunc(sysdate) between hre.effective_start_date and hre.effective_end_date
+and decode(hr_security.view_all ,'Y','TRUE',
+hr_security.show_record('PER_ALL_PEOPLE_F',hre.person_id,hre.person_type_id,
+hre.employee_number,hre.applicant_number
+,hre.npw_number )) = 'TRUE'                        
+and decode(hr_general.get_xbg_profile,'Y',hre.business_group_id ,
+hr_general.get_business_group_id) = hre.business_group_id
+ AND EXISTS
+            ( SELECT 'a hold exists on this purchase order shipment'
+FROM     ap_invoices                    api
+,        ap_holds                       aph
+,        mtl_system_items               msi
+,        mtl_categories                 mca
+,        ap_invoice_distributions       aid
+,        po_distributions               pod
+,        po_line_locations              pll
+,        po_lines                       pol
+,        po_vendors                     pov
+,        ap_lookup_codes           alc
+,        po_line_types                 polt
+,        po_system_parameters psp
+WHERE    pol.po_line_id                            = pll.po_line_id
+AND      pov.vendor_id                             = poh.vendor_id
+AND      poh.po_header_id                          = pol.po_header_id
+AND      pol.item_id                               = msi.inventory_item_id(+)
+AND      nvl(msi.organization_id,:organization_id) = :organization_id
+AND      pol.category_id                           = mca.category_id
+AND      pll.line_location_id                      = pod.line_location_id
+AND      aid.po_distribution_id                    = pod.po_distribution_id
+AND      pll.line_location_id                      = aph.line_location_id
+AND      api.invoice_id                               = aph.invoice_id
+AND      pll.shipment_type in ('STANDARD','BLANKET','SCHEDULED')
+AND      (:P_vendor_from        is NULL
+         OR pov.vendor_name     >= :P_vendor_from)
+AND      (:P_vendor_to          is NULL
+         OR pov.vendor_name        <= :P_vendor_to)
+AND      api.invoice_date 
+          BETWEEN nvl(to_date(:P_invoice_date_from, 'YYYY/MM/DD HH24:MI:SS'),
+			api.invoice_date - 1)
+          AND     nvl(to_date(:P_invoice_date_to,   'YYYY/MM/DD HH24:MI:SS'),
+			api.invoice_date + 1)
+AND      &P_WHERE_ITEM
+AND      &P_WHERE_CAT
+AND      api.invoice_id                            = aid.invoice_id
+AND      aph.release_lookup_code is NULL
+AND      (aph.hold_lookup_code =  DECODE(:P_price_hold,'Y','PRICE','N','X')
+                       OR     
+                   aph.hold_lookup_code = DECODE(:P_qty_ord_hold,'Y','QTY ORD','N','X')
+                       OR       
+                   aph.hold_lookup_code = DECODE(:P_qty_rec_hold,'Y','QTY REC','N','X')
+                       OR       
+                   aph.hold_lookup_code = DECODE(:P_quality_hold,'Y','QUALITY','N','X')
+                       OR
+                             (:P_price_hold is null
+                          AND :P_qty_ord_hold is null
+                          AND :P_qty_rec_hold is null
+                          AND :P_quality_hold is null
+                           AND  aph.hold_lookup_code in ('PRICE','QTY ORD','QTY REC','QUALITY')))
+AND     alc.lookup_type = 'HOLD CODE'
+AND     alc.lookup_code = aph.hold_lookup_code
+AND     polt.line_type_id = pol.line_type_id)
+ORDER BY 5 ASC,hre.full_name
+]]>
+</sqlStatement><sqlStatement name="Q_break_lines">
+<![CDATA[
+SELECT   aph.line_location_id                                  line_location_id     --Added for defect 27844
+,        api.invoice_num                                       Invoice_Number    --Added for defect 27844
+,        apla.amount                                           Invoice_Amount   -- Added for Defect 43410
+,        apla.line_number								       Line_Number      -- Added for defect 44616
+--,        pol.po_header_id                                      po_header_id 
+--,        poh.agent_id                                          agent_id
+,        api.gl_date                                             GL_Date   -- Added for Defect 43410
+,		 poh.attribute_category                                PO_Type	-- Added for Defect 43410
+,        pov.vendor_name                                       Vendor
+,        aph.hold_reason                                       HOLD_REASON       --Added for defect 27844
+,        poh.segment1                                          PO_Number
+,        pol.item_description                                  Description
+/*,      poh.currency_code                                     C_CURRENCY   --Commented for defect 27844
+,        pol.line_num                                          Line
+,        null                                           C_FLEX_CAT
+,        null                                          C_FLEX_ITEM
+,        pol.item_revision                                     Rev
+,        pol.unit_meas_lookup_code                             Unit
+,        pll.shipment_num                                      Shipment
+,        decode(polt.order_type_lookup_code,'AMOUNT',
+              null,pll.price_override)                                    Unit_Price
+,        round(pll.quantity,:P_qty_precision)                  Ordered              
+,        round(pll.quantity_billed,:P_qty_precision)           Billed
+,        round(pll.quantity_received,:P_qty_precision)         Received
+,        round(pll.quantity_accepted,:P_qty_precision)         Accepted
+,        alc.displayed_field                                  Holds_Placed*/
+--,        api.invoice_num                                       Invoice_Number   --Commented for defect 27844
+,        api.invoice_date		                               I_Date
+/*,        aid.distribution_line_number                          Line1
+,        aid.description                                       Description1
+,        round(aid.quantity_invoiced,:P_qty_precision)               Invoiced
+,        aid.unit_price                                        Invoice_Price*/
+,        por.release_num                                       RELEASE_NUM   --Added by Veronica for defect 27844
+/*,        api.invoice_id, 
+	&C_FLEX_CAT_DISP C_FLEX_CAT_DISP,    --Commented for defect 27844
+	&C_FLEX_ITEM_DISP C_FLEX_ITEM_DISP, 
+	PO_POXPOSMH_XMLP_PKG.c_unit_price_round(decode ( polt.order_type_lookup_code , 'AMOUNT' , null , pll.price_override ), :PARENT_CURRENCY_PRECISION) C_UNIT_PRICE_ROUND, 
+	PO_POXPOSMH_XMLP_PKG.c_invoice_price_round(aid.unit_price, :PARENT_CURRENCY_PRECISION) C_INVOICE_PRICE_ROUND*/
+FROM     ap_invoices                    api
+,		 ap_invoice_lines_all           apla
+,        mtl_system_items               msi
+,        mtl_categories                 mca
+--,        ap_invoice_distributions       aid
+,        po_distributions               pod
+,        po_line_locations              pll
+,        po_lines                       pol
+,        po_vendors                     pov
+,        po_headers                     poh
+,        ap_lookup_codes           alc
+,        po_line_types                 polt
+--,        po_system_parameters psp
+,        ap_holds                       aph
+,        po_releases                    por                                  --Added by Veronica for defect 27844
+WHERE  pol.po_line_id                            = pll.po_line_id
+AND      pov.vendor_id                             = poh.vendor_id
+AND      poh.po_header_id                          = pol.po_header_id
+AND      pol.item_id                               = msi.inventory_item_id(+)
+AND      nvl(msi.organization_id,:organization_id) = :organization_id
+AND      pol.category_id                           = mca.category_id
+AND      pll.line_location_id                      = pod.line_location_id 
+--AND      aid.po_distribution_id                    = pod.po_distribution_id
+AND      pll.line_location_id                      = aph.line_location_id
+AND      api.invoice_id                            = aph.invoice_id
+AND      apla.amount 							   <> 0    -- DEFECT 44263
+AND		 apla.po_line_location_id				   = aph.line_location_id(+)
+AND      pll.po_release_id                         = por.po_release_id (+)    --Added by Veronica for defect 27844
+AND      pll.shipment_type in ('STANDARD','BLANKET','SCHEDULED')
+AND      (:P_vendor_from        is NULL
+         OR pov.vendor_name     >= :P_vendor_from)
+AND      (:P_vendor_to          is NULL
+         OR pov.vendor_name        <= :P_vendor_to)
+
+AND      api.invoice_date 
+          BETWEEN nvl(to_date(:P_invoice_date_from, 'YYYY/MM/DD HH24:MI:SS'),
+			api.invoice_date - 1)
+          AND     nvl(to_date(:P_invoice_date_to, 'YYYY/MM/DD HH24:MI:SS'),
+			api.invoice_date + 1)
+AND      &P_WHERE_ITEM
+AND      &P_WHERE_CAT
+--AND      api.invoice_id                            = aid.invoice_id
+AND      api.invoice_id                            = apla.invoice_id
+AND      aph.release_lookup_code is NULL
+AND		 poh.attribute_category = 'Non-Trade' -- DEFECT 43410
+--AND DECODE (:P_PO_TYPE,'N', poh.attribute_category,1) = DECODE(:P_PO_TYPE,'N', 'Non-Trade', 1) -- DEFECT 43410
+/*AND      (aph.hold_lookup_code =  DECODE(:P_price_hold,'Y','PRICE','N','X')
+                       OR     
+                   aph.hold_lookup_code = DECODE(:P_qty_ord_hold,'Y','QTY ORD','N','X')
+                       OR       
+                   aph.hold_lookup_code = DECODE(:P_qty_rec_hold,'Y','QTY REC','N','X')
+                       OR       
+                   aph.hold_lookup_code = DECODE(:P_quality_hold,'Y','QUALITY','N','X')
+                       OR
+                             (:P_price_hold is null
+                          AND :P_qty_ord_hold is null
+                          AND :P_qty_rec_hold is null
+                          AND :P_quality_hold is null
+                           AND  aph.hold_lookup_code in ('PRICE','QTY ORD','QTY REC','QUALITY')))*/  --commented for defect 27844
+AND     alc.lookup_type = 'HOLD CODE'
+AND     alc.lookup_code = aph.hold_lookup_code
+AND     polt.line_type_id = pol.line_type_id 
+ and poh.currency_code=:Parent_Currency_code 
+ and poh.agent_id=:Parent_Employee_id
+ 
+/*ORDER BY decode(psp.manual_po_num_type,'NUMERIC',
+                       null,poh.segment1)
+,        decode(psp.manual_po_num_type,'NUMERIC', 
+                       to_number(poh.segment1),null)
+,        pol.line_num 
+,        pll.shipment_num*/
+/*ORDER BY 1 ASC,6 ASC,7 ASC,8 ASC,9 ASC,10 ASC,2 ASC,3 ASC,4 ASC,5 ASC,11 ASC,12 ASC,13 ASC,14 ASC,15 ASC,16 ASC,17 ASC,18 ASC , decode ( psp.manual_po_num_type , 'NUMERIC' , null , poh.segment1 ) , decode ( psp.manual_po_num_type , 'NUMERIC' , to_number ( poh.segment1 ) , null ) , pol.line_num , pll.shipment_num*/
+group by   aph.line_location_id,api.invoice_num,api.gl_date,poh.attribute_category,pov.vendor_name,aph.hold_reason,poh.segment1,pol.item_description,por.release_num,
+           api.invoice_id,api.invoice_date,apla.amount,apla.line_number  --added for defect 27844
+order by pov.vendor_name
+]]>
+</sqlStatement><sqlStatement name="Q_price_hold">
+<![CDATA[
+SELECT  SUM(apd.amount)   C_AMOUNT_PRICE,
+round(SUM(apd.amount*nvl(api.exchange_rate,1)),:c_precision)   C_AMOUNT_PRICE_BASE,
+        count(api.invoice_id) number_amount_price
+,       api.invoice_currency_code
+,       hre.person_id employee_id
+FROM    ap_invoices    api
+, ap_invoice_distributions apd
+,        po_vendors          pov
+           ,      po_headers          poh
+           ,      per_all_people_f      hre
+           ,      po_line_locations   pll
+           ,   po_distributions pod
+           ,      ap_holds            aph
+WHERE   api.invoice_date
+                 BETWEEN nvl(to_date(:P_invoice_date_from, 'YYYY/MM/DD HH24:MI:SS'),
+                        api.invoice_date - 1)
+                 AND     nvl(to_date(:P_invoice_date_to, 'YYYY/MM/DD HH24:MI:SS'),
+                        api.invoice_date + 1)
+    AND api.invoice_id = apd.invoice_id
+    AND apd.invoice_id = aph.invoice_id
+  and           aph.hold_lookup_code = 'PRICE'
+           AND   poh.type_lookup_code IN ('BLANKET','STANDARD','PLANNED')
+           AND   aph.release_lookup_code is NULL
+           AND   (:P_price_hold        = 'Y'
+                 OR (    :P_price_hold is null AND :P_qty_ord_hold is null
+                     AND :P_qty_rec_hold is null
+                     AND :P_quality_hold is null))
+           AND   pov.vendor_name >= nvl(:P_vendor_from,pov.vendor_name)
+           AND   pov.vendor_name <= nvl(:P_vendor_to,pov.vendor_name)
+           AND   hre.full_name = nvl(:P_buyer,hre.full_name)
+           AND   pov.vendor_id        = poh.vendor_id
+           AND   hre.person_id        = poh.agent_id
+           AND   poh.po_header_id     = pll.po_header_id
+           AND   pll.line_location_id = pod.line_location_id
+           AND   pll.line_location_id = aph.line_location_id
+         AND   pll.shipment_type in ('STANDARD','BLANKET','SCHEDULED')
+and  pod.po_distribution_id = apd.po_distribution_id
+and  api.invoice_currency_code = :Parent_currency_code
+and   hre.person_id = :Parent_employee_id
+and   hre.business_group_id  = (select nvl(max(fsp.business_group_id),0)
+from financials_system_parameters fsp)
+        
+and trunc(sysdate) between hre.effective_start_date and hre.effective_end_date
+and decode(hr_security.view_all ,'Y','TRUE',
+hr_security.show_record('PER_ALL_PEOPLE_F',hre.person_id,hre.person_type_id,
+hre.employee_number,hre.applicant_number
+,hre.npw_number)) = 'TRUE'      
+and decode(hr_general.get_xbg_profile,'Y',hre.business_group_id ,
+hr_general.get_business_group_id) = hre.business_group_id 
+ and api.invoice_currency_code=:Parent_Currency_code 
+ and hre.person_id=:Parent_Employee_id
+GROUP BY
+  api.invoice_currency_code
+,  hre.person_id
+]]>
+</sqlStatement><sqlStatement name="Q_qty_ord_hold">
+<![CDATA[
+SELECT SUM(apd.amount)       C_AMOUNT_ORD
+,        round(SUM(apd.amount*nvl(api.exchange_rate,1)),:c_precision)       C_AMOUNT_ORD_BASE
+,       COUNT(api.invoice_id) number_amount_ord
+,       api.invoice_currency_code
+,        hre.person_id employee_id
+FROM ap_invoices api
+,       ap_invoice_distributions apd
+,       po_vendors          pov
+         ,      po_headers          poh
+         ,      per_all_people_f      hre
+         ,      po_line_locations   pll
+         ,      po_distributions pod
+         ,      ap_holds            aph
+WHERE api.invoice_date
+                 BETWEEN nvl(to_date(:P_invoice_date_from, 'YYYY/MM/DD HH24:MI:SS'),
+			api.invoice_date - 1)
+                 AND     nvl(to_date(:P_invoice_date_to, 'YYYY/MM/DD HH24:MI:SS'),
+			api.invoice_date + 1)
+    AND api.invoice_id = apd.invoice_id
+    AND apd.invoice_id=aph.invoice_id
+          AND  aph.hold_lookup_code = 'QTY ORD'
+         AND   poh.type_lookup_code IN ('BLANKET','STANDARD','PLANNED')
+         AND   aph.release_lookup_code is NULL
+           AND   (:P_qty_ord_hold        = 'Y'
+                 OR (    :P_price_hold is null
+                     AND :P_qty_ord_hold is null
+                     AND :P_qty_rec_hold is null
+                     AND :P_quality_hold is null))
+         AND   pov.vendor_name >= nvl(:P_vendor_from,pov.vendor_name)
+         AND   pov.vendor_name <= nvl(:P_vendor_to,pov.vendor_name)
+         AND   hre.full_name        = nvl(:P_buyer,hre.full_name)
+         AND   pov.vendor_id        = poh.vendor_id
+         AND   hre.person_id       = poh.agent_id
+         AND   poh.po_header_id     = pll.po_header_id
+         AND   pll.line_location_id = pod.line_location_id
+         AND   pll.line_location_id = aph.line_location_id
+         AND   pll.shipment_type in ('STANDARD','BLANKET','SCHEDULED')
+and  pod.po_distribution_id = apd.po_distribution_id
+and  api.invoice_currency_code = :Parent_currency_code
+and   hre.person_id = :Parent_employee_id
+and  hre.business_group_id  = (select nvl(max(fsp.business_group_id),0)
+from financials_system_parameters fsp)
+     
+and trunc(sysdate) between hre.effective_start_date and hre.effective_end_date
+and decode(hr_security.view_all ,'Y','TRUE',
+hr_security.show_record('PER_ALL_PEOPLE_F',hre.person_id,hre.person_type_id,
+hre.employee_number,hre.applicant_number
+,hre.npw_number)) = 'TRUE'    
+and decode(hr_general.get_xbg_profile,'Y',hre.business_group_id ,
+hr_general.get_business_group_id) = hre.business_group_id 
+ and api.invoice_currency_code=:Parent_Currency_code 
+ and hre.person_id=:Parent_Employee_id
+GROUP BY
+  api.invoice_currency_code
+, hre.person_id
+]]>
+</sqlStatement><sqlStatement name="Q_qty_rec_hold">
+<![CDATA[
+SELECT SUM(apd.amount)      C_AMOUNT_REC
+,round(SUM(apd.amount*nvl(api.exchange_rate,1)),:c_precision)      C_AMOUNT_REC_BASE
+,      count(api.invoice_id) number_amount_rec
+,      api.invoice_currency_code
+,      hre.person_id employee_id
+FROM   ap_invoices api
+, ap_invoice_distributions apd
+, po_vendors            pov
+        ,    po_headers            poh
+        ,    per_all_people_f        hre
+        ,    po_line_locations     pll
+        ,   po_distributions pod
+        ,    ap_holds              aph
+WHERE  api.invoice_date
+                 BETWEEN nvl(to_date(:P_invoice_date_from, 'YYYY/MM/DD HH24:MI:SS'),
+			api.invoice_date - 1)
+                 AND     nvl(to_date(:P_invoice_date_to, 'YYYY/MM/DD HH24:MI:SS'),
+			api.invoice_date + 1)
+    AND api.invoice_id  = apd.invoice_id
+    AND apd.invoice_id = aph.invoice_id
+AND   aph.hold_lookup_code = 'QTY REC'
+        AND   poh.type_lookup_code IN ('BLANKET','STANDARD','PLANNED')
+        AND   aph.release_lookup_code is NULL
+        AND   (:P_qty_rec_hold      = 'Y'
+              OR (    :P_price_hold is null
+                  AND :P_qty_ord_hold is null
+                  AND :P_qty_rec_hold is null
+                  AND :P_quality_hold is null))
+        AND   pov.vendor_name >= nvl(:P_vendor_from,pov.vendor_name)
+        AND   pov.vendor_name <= nvl(:P_vendor_to,pov.vendor_name)
+        AND   hre.full_name = nvl(:P_buyer,hre.full_name)
+        AND   pov.vendor_id        = poh.vendor_id
+        AND   hre.person_id       = poh.agent_id
+        AND   poh.po_header_id     = pll.po_header_id
+        AND   pll.line_location_id = pod.line_location_id
+        AND   pll.line_location_id = aph.line_location_id
+         AND   pll.shipment_type in ('STANDARD','BLANKET','SCHEDULED')
+and  pod.po_distribution_id = apd.po_distribution_id
+and  api.invoice_currency_code = :Parent_currency_code
+and   hre.person_id = :Parent_employee_id
+and    hre.business_group_id  = (select nvl(max(fsp.business_group_id),0)
+from financials_system_parameters fsp)
+      
+and trunc(sysdate) between hre.effective_start_date and hre.effective_end_date
+and decode(hr_security.view_all ,'Y','TRUE',
+hr_security.show_record('PER_ALL_PEOPLE_F',hre.person_id,hre.person_type_id,
+hre.employee_number,hre.applicant_number
+,hre.npw_number)) = 'TRUE'       
+and decode(hr_general.get_xbg_profile,'Y',hre.business_group_id ,
+hr_general.get_business_group_id) = hre.business_group_id 
+ and api.invoice_currency_code=:Parent_Currency_code 
+ and hre.person_id=:Parent_Employee_id
+GROUP BY
+  api.invoice_currency_code
+,  hre.person_id
+]]>
+</sqlStatement><sqlStatement name="Q_quality_hold">
+<![CDATA[
+SELECT SUM(apd.amount)      C_AMOUNT_QUAL
+,round(SUM(apd.amount*nvl(api.exchange_rate,1)) ,:c_precision)     C_AMOUNT_QUAL_BASE
+,      COUNT(api.invoice_id) number_amount_qual
+,      api.invoice_currency_code
+,      hre.person_id  employee_id
+FROM   ap_invoices api
+, ap_invoice_distributions apd
+,  po_vendors            pov
+        ,    po_headers            poh
+        ,    per_all_people_f        hre
+        ,    po_line_locations     pll
+        ,    po_distributions pod
+        ,    ap_holds              aph
+WHERE  api.invoice_date
+                 BETWEEN nvl(to_date(:P_invoice_date_from, 'YYYY/MM/DD HH24:MI:SS'),
+			api.invoice_date - 1)
+                 AND    nvl(to_date(:P_invoice_date_to, 'YYYY/MM/DD HH24:MI:SS'),
+			api.invoice_date + 1)
+    AND api.invoice_id = apd.invoice_id
+AND apd.invoice_id = aph.invoice_id
+and  aph.hold_lookup_code = 'QUALITY'
+         AND   poh.type_lookup_code IN    
+          ('BLANKET','STANDARD','PLANNED')
+         AND   aph.release_lookup_code is NULL
+         AND   (:P_quality_hold      = 'Y'
+               OR (    :P_price_hold is null
+                   AND :P_qty_ord_hold is null
+                   AND :P_qty_rec_hold is null
+                   AND :P_quality_hold is null))
+         AND   pov.vendor_name >= nvl(:P_vendor_from,pov.vendor_name)
+         AND   pov.vendor_name <= nvl(:P_vendor_to,pov.vendor_name)
+         AND   hre.full_name = nvl(:P_buyer,hre.full_name)
+         AND   pov.vendor_id        = poh.vendor_id
+         AND   hre.person_id     = poh.agent_id
+         AND   poh.po_header_id     = pll.po_header_id
+         AND   pll.line_location_id = pod.line_location_id
+         AND   pll.line_location_id = aph.line_location_id
+         AND   pll.shipment_type in ('STANDARD','BLANKET','SCHEDULED')
+and  pod.po_distribution_id = apd.po_distribution_id
+and  api.invoice_currency_code = :Parent_currency_code
+and   hre.person_id = :Parent_employee_id
+and hre.business_group_id  = (select nvl(max(fsp.business_group_id),0)
+from financials_system_parameters fsp)
+        
+and trunc(sysdate) between hre.effective_start_date and hre.effective_end_date
+and decode(hr_security.view_all ,'Y','TRUE',
+hr_security.show_record('PER_ALL_PEOPLE_F',hre.person_id,hre.person_type_id,
+hre.employee_number,hre.applicant_number
+,hre.npw_number)) = 'TRUE'           
+and decode(hr_general.get_xbg_profile,'Y',hre.business_group_id ,
+hr_general.get_business_group_id) = hre.business_group_id 
+ and api.invoice_currency_code=:Parent_Currency_code 
+ and hre.person_id=:Parent_Employee_id
+GROUP BY
+  api.invoice_currency_code
+,hre.person_id
+]]>
+</sqlStatement><sqlStatement name="Q_total_hold">
+<![CDATA[
+SELECT  SUM(apd.amount)      C_AMOUNT_TOT
+,round(SUM(apd.amount*nvl(api.exchange_rate,1)) ,:c_precision)     C_AMOUNT_TOT_BASE
+,       api.invoice_currency_code
+,       hre.person_id   employee_id
+FROM    ap_invoices   api
+, ap_invoice_distributions apd
+, po_vendors            pov
+         ,    po_headers            poh
+         ,    per_all_people_f         hre
+         ,    po_line_locations     pll
+         ,   po_distributions pod
+WHERE  (api.invoice_date
+       BETWEEN nvl(to_date(:P_invoice_date_from, 'YYYY/MM/DD HH24:MI:SS'),
+		 api.invoice_date - 1)
+       AND     nvl(to_date(:P_invoice_date_to,  'YYYY/MM/DD HH24:MI:SS'),
+		api.invoice_date + 1))
+       AND api.invoice_id = apd.invoice_id
+         AND poh.type_lookup_code IN ('BLANKET','STANDARD','PLANNED')
+         AND pov.vendor_name >= nvl(:P_vendor_from, pov.vendor_name)
+         AND pov.vendor_name <= nvl(:P_vendor_to,pov.vendor_name)
+         AND hre.full_name    = nvl(:P_buyer,hre.full_name)
+         AND pov.vendor_id         = poh.vendor_id
+         AND hre.person_id        = poh.agent_id
+         AND poh.po_header_id      = pll.po_header_id
+         AND   pll.line_location_id = pod.line_location_id
+        AND exists (select aph.line_location_id from ap_holds aph where
+	aph.line_location_id = pll.line_location_id and
+	apd.invoice_id = aph.invoice_id and
+          	aph.release_lookup_code is NULL and
+ (aph.hold_lookup_code =   DECODE(:P_price_hold,'Y','PRICE','N','X')
+                       OR     
+                   aph.hold_lookup_code = DECODE(:P_qty_ord_hold,'Y','QTY ORD','N','X')
+                       OR       
+                   aph.hold_lookup_code = DECODE(:P_qty_rec_hold,'Y','QTY REC','N','X')
+                       OR       
+                   aph.hold_lookup_code = DECODE(:P_quality_hold,'Y','QUALITY','N','X')
+                       OR
+                             (:P_price_hold is null
+                          AND :P_qty_ord_hold is null
+                          AND :P_qty_rec_hold is null
+                          AND :P_quality_hold is null
+                           AND  aph.hold_lookup_code in ('PRICE','QTY ORD','QTY REC','QUALITY'))))
+        AND pll.shipment_type in ('STANDARD','BLANKET','SCHEDULED')
+and  pod.po_distribution_id = apd.po_distribution_id
+and  api.invoice_currency_code = :Parent_currency_code
+and   hre.person_id = :Parent_employee_id
+and    hre.business_group_id  = (select nvl(max(fsp.business_group_id),0)
+from financials_system_parameters fsp)
+       
+and trunc(sysdate) between hre.effective_start_date and hre.effective_end_date
+and decode(hr_security.view_all ,'Y','TRUE',
+hr_security.show_record('PER_ALL_PEOPLE_F',hre.person_id,hre.person_type_id,
+hre.employee_number,hre.applicant_number
+,hre.npw_number)) = 'TRUE'     
+and decode(hr_general.get_xbg_profile,'Y',hre.business_group_id ,
+hr_general.get_business_group_id) = hre.business_group_id 
+ and api.invoice_currency_code=:Parent_Currency_code 
+ and hre.person_id=:Parent_Employee_id
+GROUP BY
+  api.invoice_currency_code
+, hre.person_id
+]]>
+</sqlStatement><sqlStatement name="Q_count_pos">
+<![CDATA[
+SELECT  count( distinct poh.segment1 )                                         count_PO_Number
+,        poh.agent_id                                          agent_id1
+,        poh.currency_code                                     C_CURRENCY
+FROM     ap_invoices                    api
+,        mtl_system_items               msi
+,        mtl_categories                 mca
+,        ap_invoice_distributions       aid
+,        po_distributions               pod
+,        po_line_locations              pll
+,        po_lines                       pol
+,        po_vendors                     pov
+,        po_headers                     poh
+,        ap_lookup_codes           alc
+,        po_line_types                 polt
+,        ap_holds                       aph
+WHERE    pol.po_line_id                            = pll.po_line_id
+AND      pov.vendor_id                             = poh.vendor_id
+AND      poh.po_header_id                          = pol.po_header_id
+AND      pol.item_id                               = msi.inventory_item_id(+)
+AND      nvl(msi.organization_id,:organization_id) = :organization_id
+AND      pol.category_id                           = mca.category_id
+AND      pll.line_location_id                      = pod.line_location_id
+AND      aid.po_distribution_id                    = pod.po_distribution_id
+AND      pll.line_location_id                      = aph.line_location_id 
+AND      pll.shipment_type in ('STANDARD','BLANKET','SCHEDULED')
+AND      (:P_vendor_from        is NULL
+         OR pov.vendor_name     >= :P_vendor_from)
+AND      (:P_vendor_to          is NULL
+         OR pov.vendor_name        <= :P_vendor_to)
+AND      api.invoice_date 
+          BETWEEN nvl(to_date(:P_invoice_date_from, 'YYYY/MM/DD HH24:MI:SS'),
+		api.invoice_date - 1)
+          AND     nvl(to_date(:P_invoice_date_to, 'YYYY/MM/DD HH24:MI:SS'),
+		api.invoice_date + 1)
+AND      api.invoice_id                            = aid.invoice_id
+AND      aph.release_lookup_code is NULL
+AND      (aph.hold_lookup_code =  DECODE(:P_price_hold,'Y','PRICE','N','X')
+                       OR     
+                   aph.hold_lookup_code = DECODE(:P_qty_ord_hold,'Y','QTY ORD','N','X')
+                       OR       
+                   aph.hold_lookup_code = DECODE(:P_qty_rec_hold,'Y','QTY REC','N','X')
+                       OR       
+                   aph.hold_lookup_code = DECODE(:P_quality_hold,'Y','QUALITY','N','X')
+                       OR
+                             (:P_price_hold is null
+                          AND :P_qty_ord_hold is null
+                          AND :P_qty_rec_hold is null
+                          AND :P_quality_hold is null))
+AND     alc.lookup_type = 'HOLD CODE'
+AND     alc.lookup_code = aph.hold_lookup_code
+AND     polt.line_type_id = pol.line_type_id 
+ and poh.currency_code=:Parent_Currency_code 
+ and poh.agent_id=:Parent_Employee_id
+group by poh.agent_id, poh.currency_code
+]]>
+</sqlStatement><sqlStatement name="Q_report">
+<![CDATA[
+select to_char(SYSDATE,'MM/DD/YYYY') CURRENT_DATE, --FOR DEFECT 43410
+FND_PROFILE.VALUE('XX_XDO_SMTP_HOST') SMTP_SERVER, --FOR DEFECT 43410
+:out_email1 EMAIL1, --FOR DEFECT 43410
+:out_email2 EMAIL2, 
+:out_email3 EMAIL3, 
+:out_email4 EMAIL4, 
+:out_email5 EMAIL5, 
+:out_email6 EMAIL6,
+:from_email1 FROM_EMAIL, --FOR DEFECT 43410
+'DIST_LIST' source, --FOR DEFECT 43410
+(SELECT FD.instance_name FROM v$instance FD)INSTANCE_NAME1,--FOR DEFECT 43410
+1
+from dual
+]]>
+</sqlStatement><sqlStatement name="Q_total_hold_number">
+<![CDATA[
+SELECT  COUNT(api.invoice_id) number_amount_tot
+
+,       AVG(sysdate - aph.hold_date) average
+,       api.invoice_currency_code
+,       hre.person_id employee_id, 
+	PO_POXPOSMH_XMLP_PKG.c_total_days_holdingformula(AVG ( sysdate - aph.hold_date ), COUNT ( api.invoice_id )) C_total_days_holding
+FROM    ap_invoices   api
+, ap_invoice_distributions apd
+, po_vendors            pov
+         ,    po_headers            poh
+         ,   per_all_people_f         hre
+         ,    po_line_locations     pll
+         ,   po_distributions pod
+         ,    ap_holds              aph
+WHERE  (api.invoice_date
+       BETWEEN nvl(to_date(:P_invoice_date_from, 'YYYY/MM/DD HH24:MI:SS'),
+		api.invoice_date - 1)
+       AND     nvl(to_date(:P_invoice_date_to, 'YYYY/MM/DD HH24:MI:SS'),
+		 api.invoice_date + 1))
+       AND api.invoice_id = apd.invoice_id
+AND apd.invoice_id = aph.invoice_id
+AND      (aph.hold_lookup_code =  DECODE(:P_price_hold,'Y','PRICE','N','X')
+                       OR     
+                   aph.hold_lookup_code = DECODE(:P_qty_ord_hold,'Y','QTY ORD','N','X')
+                       OR       
+                   aph.hold_lookup_code = DECODE(:P_qty_rec_hold,'Y','QTY REC','N','X')
+                       OR       
+                   aph.hold_lookup_code = DECODE(:P_quality_hold,'Y','QUALITY','N','X')
+                       OR
+                             (:P_price_hold is null
+                          AND :P_qty_ord_hold is null
+                          AND :P_qty_rec_hold is null
+                          AND :P_quality_hold is null
+                           AND  aph.hold_lookup_code in ('PRICE','QTY ORD','QTY REC','QUALITY')))
+         AND poh.type_lookup_code IN ('BLANKET','STANDARD','PLANNED')
+         AND aph.release_lookup_code is NULL
+         AND pov.vendor_name >= nvl(:P_vendor_from, pov.vendor_name)
+         AND pov.vendor_name <= nvl(:P_vendor_to,pov.vendor_name)
+         AND hre.full_name    = nvl(:P_buyer,hre.full_name)
+         AND pov.vendor_id         = poh.vendor_id
+         AND hre.person_id        = poh.agent_id
+         AND poh.po_header_id      = pll.po_header_id
+         AND   pll.line_location_id = pod.line_location_id
+         AND pll.line_location_id  = aph.line_location_id
+         AND pll.shipment_type in ('STANDARD','BLANKET','SCHEDULED')
+and  pod.po_distribution_id = apd.po_distribution_id
+and  api.invoice_currency_code = :Parent_currency_code
+and   hre.person_id = :Parent_employee_id
+and hre.business_group_id  = (select nvl(max(fsp.business_group_id),0)
+from financials_system_parameters fsp)
+     
+and trunc(sysdate) between hre.effective_start_date and hre.effective_end_date
+and decode(hr_security.view_all ,'Y','TRUE',
+hr_security.show_record('PER_ALL_PEOPLE_F',hre.person_id,hre.person_type_id,
+hre.employee_number,hre.applicant_number
+,hre.npw_number )) = 'TRUE'     
+and decode(hr_general.get_xbg_profile,'Y',hre.business_group_id ,
+hr_general.get_business_group_id) = hre.business_group_id 
+ and hre.person_id=:Parent_Employee_id 
+ and api.invoice_currency_code=:Parent_Currency_code
+GROUP BY
+  api.invoice_currency_code
+, hre.person_id
+]]>
+</sqlStatement>
+<sqlStatement name="Q_email1"> <!--FOR DEFECT 43410 -->
+<![CDATA[SELECT 
+	TV.target_value1 out_email1 
+    ,TV.target_value2 out_email2
+	,TV.target_value3 out_email3
+	,TV.target_value4 out_email4
+	,TV.target_value5 out_email5
+	,TV.target_value6 out_email6
+	,TV.target_value7 from_email1  				 
+       
+	   FROM   XX_FIN_TRANSLATEVALUES TV
+          	   ,XX_FIN_TRANSLATEDEFINITION TD
+       WHERE TV.TRANSLATE_ID = TD.TRANSLATE_ID
+       AND TRANSLATION_NAME = 'XX_PO_MATCH_HOLD_REPORT'
+       AND source_value1 = 'DIST_LIST'
+]]>
+
+</sqlStatement>
+</dataQuery>
+<dataTrigger name="beforeReportTrigger" source="PO_POXPOSMH_XMLP_PKG.beforereport"/>
+<dataStructure>
+<group name="G_EMAIL1" source="Q_email1"> <!-- FOR DEFECT 43410 -->
+<element name="out_email1" value="out_email1"/>
+<element name="out_email2" value="out_email2"/>
+<element name="out_email3" value="out_email3"/>
+<element name="out_email4" value="out_email4"/>
+<element name="out_email5" value="out_email5"/>
+<element name="out_email6" value="out_email6"/>
+<element name="from_email1" value="from_email1"/>
+</group>
+
+<group name="G_report" dataType="varchar2" source="Q_report">
+<element name="GL_CURRENCY1" function="first" dataType="varchar2" value="G_company.GL_CURRENCY"/>
+<element name="A" dataType="number" value="1"/>
+<element name="CURRENT_DATE" value="CURRENT_DATE"/> <!-- FOR DEFECT 43410 -->
+<element name="SMTP_SERVER" value="SMTP_SERVER"/> <!-- FOR DEFECT 43410 -->
+<element name="EMAIL1" value="EMAIL1"/>	<!-- FOR DEFECT 43410 -->
+<element name="EMAIL2" value="EMAIL2"/> <!-- FOR DEFECT 43410 -->
+<element name="EMAIL3" value="EMAIL3"/>	<!-- FOR DEFECT 43410 -->
+<element name="EMAIL4" value="EMAIL4"/> <!-- FOR DEFECT 43410 -->
+<element name="EMAIL5" value="EMAIL5"/>	<!-- FOR DEFECT 43410 -->
+<element name="EMAIL6" value="EMAIL6"/> <!-- FOR DEFECT 43410 -->
+<element name="FROM_EMAIL" value="FROM_EMAIL"/>	<!-- FOR DEFECT 43410 -->
+<element name="SOURCE" value="SOURCE"/>	<!-- FOR DEFECT 43410 -->
+<element name="INSTANCE_NAME1" value="INSTANCE_NAME1"/>	<!-- FOR DEFECT 43410 -->
+
+<group name="G_company" dataType="varchar2" source="Q_company">
+<element name="c_company" dataType="varchar2" value="C_COMPANY"/>
+<element name="c_organization_id" dataType="number" value="C_ORGANIZATION_ID"/>
+<element name="GL_CURRENCY" dataType="varchar2" value="GL_CURRENCY"/>
+<element name="STRUCTURE_ACC" dataType="number" value="STRUCTURE_ACC"/>
+<element name="STRUCTURE_CAT" dataType="number" value="STRUCTURE_CAT"/>
+<element name="c_yes" dataType="varchar2" value="C_YES"/>
+<element name="c_no" dataType="varchar2" value="C_NO"/>
+<element name="c_category_set_id" dataType="number" value="C_CATEGORY_SET_ID"/>
+<element name="c_precision" dataType="number" value="C_PRECISION"/>
+<group name="G_print" dataType="varchar2" source="Q_po">
+<element name="C_report_price_hold" function="sum" dataType="number" value="G_price_hold.C_AMOUNT_PRICE_BASE"/>
+<element name="C_report_ord_hold" function="sum" dataType="number" value="G_qty_ord_hold.C_AMOUNT_ORD_BASE"/>
+<element name="C_report_quality_hold" function="sum" dataType="number" value="G_quality_hold.C_AMOUNT_QUAL_BASE"/>
+<element name="C_report_rec_hold" function="sum" dataType="number" value="G_qty_rec_hold.C_AMOUNT_REC_BASE"/>
+<element name="C_report_total_hold" function="sum" dataType="number" value="G_total_hold.C_AMOUNT_TOT_BASE"/>
+<element name="C_report_number_price" function="sum" dataType="number" value="G_price_hold.number_amount_price"/>
+<element name="C_report_number_ord" function="sum" dataType="number" value="G_qty_ord_hold.number_amount_ord"/>
+<element name="C_report_number_quality" function="sum" dataType="number" value="G_quality_hold.number_amount_qual"/>
+<element name="C_report_number_rec" function="sum" dataType="number" value="G_qty_rec_hold.Number_amount_rec"/>
+<element name="C_report_number_total" function="sum" dataType="number" value="G_total_hold_number.number_amount_tot"/>
+<element name="C_report_avg_no_of_days"  dataType="number"  value="C_report_avg_no_of_days"/>
+<element name="C_report_tot_no_of_pos" function="sum" dataType="number" value="G_count_pos.count_PO_Number"/>
+<element name="C_report_tot_days_hold" function="sum" dataType="number" value="G_total_hold_number.C_total_days_holding"/>
+<element name="C_report_price_hold_disp"  dataType="varchar2" value="C_report_price_hold" function="CURRENCY_FORMAT" currencyCode="GL_CURRENCY1" width="19" />
+<element name="C_report_ord_hold_disp"  dataType="varchar2" value="C_report_ord_hold" function="CURRENCY_FORMAT" currencyCode="GL_CURRENCY1" width="19" />
+<element name="C_report_quality_hold_disp"  dataType="varchar2" value="C_report_quality_hold" function="CURRENCY_FORMAT" currencyCode="GL_CURRENCY1" width="19" />
+<element name="C_report_rec_hold_disp"  dataType="varchar2" value="C_report_rec_hold" function="CURRENCY_FORMAT" currencyCode="GL_CURRENCY1" width="19" />
+<element name="C_report_total_hold_disp"  dataType="varchar2" value="C_report_total_hold" function="CURRENCY_FORMAT" currencyCode="GL_CURRENCY1" width="19" />
+<element name="for_the_break_group" dataType="number" value="FOR_THE_BREAK_GROUP"/>
+<group name="G_po" dataType="varchar2" source="Q_po">
+<element name="Parent_Currency_Precision" dataType="number" value="PARENT_CURRENCY_PRECISION"/>
+<element name="hre_full_name_poh_currency_cod" dataType="varchar2" value="HRE.FULL_NAME||POH.CURRENCY_CODE"/>
+<element name="Total_no_of_pos" function="last" dataType="number" value="G_count_pos.count_PO_Number"/>
+<element name="Buyer" dataType="varchar2" value="BUYER"/>
+<element name="Parent_Currency_code" dataType="varchar2" value="PARENT_CURRENCY_CODE"/>
+<element name="Parent_Employee_id" dataType="number" value="PARENT_EMPLOYEE_ID"/>
+<group name="G_break_lines" dataType="varchar2" source="Q_break_lines">
+<element name="Description" dataType="varchar2" value="DESCRIPTION"/>
+<element name="Vendor" dataType="varchar2" value="VENDOR"/>
+<element name="PO_Number" dataType="varchar2" value="PO_NUMBER"/>
+<!--<element name="PO_Type" dataType="varchar2" value="PO_TYPE"/> DEFECT 43410-->
+<element name="RELEASE_NUM" dataType="varchar2" value="RELEASE_NUM"/>
+<group name="G_shipments" dataType="varchar2" source="Q_break_lines">
+<group name="G_holds" dataType="varchar2" source="Q_break_lines"> 
+<element name="HOLD_REASON" dataType="varchar2" value="HOLD_REASON"/>
+<group name="G_invoices" dataType="varchar2" source="Q_break_lines">
+<element name="Invoice_Number" dataType="varchar2" value="INVOICE_NUMBER"/>
+<element name="Invoice_Amount" dataType="number" value="INVOICE_AMOUNT"/>
+<element name="Line_Number" dataType="number" value="LINE_NUMBER"/><!-- Defect 44263-->
+<element name="I_Date" dataType="date" value="I_DATE"/>
+<element name="GL_Date" dataType="date" value="GL_DATE"/>
+<element name="invoice_id" dataType="number" value="INVOICE_ID"/>
+</group>
+</group>
+</group>
+</group>
+<group name="G_price_hold" dataType="varchar2" source="Q_price_hold">
+<element name="C_AMOUNT_PRICE" dataType="number" value="C_AMOUNT_PRICE"/>
+<element name="C_AMOUNT_PRICE_DISP"  dataType="varchar2" value="C_AMOUNT_PRICE" function="CURRENCY_FORMAT" currencyCode="GL_CURRENCY" width="19" />
+<element name="invoice_currency_code3" dataType="varchar2" value="INVOICE_CURRENCY_CODE"/>
+<element name="employee_id1" dataType="number" value="EMPLOYEE_ID"/>
+<element name="number_amount_price" dataType="number" value="NUMBER_AMOUNT_PRICE"/>
+<element name="C_AMOUNT_PRICE_BASE" dataType="number" value="C_AMOUNT_PRICE_BASE"/>
+</group>
+<group name="G_qty_ord_hold" dataType="varchar2" source="Q_qty_ord_hold">
+<element name="C_AMOUNT_ORD" dataType="number" value="C_AMOUNT_ORD"/>
+<element name="C_AMOUNT_ORD_DISP"  dataType="varchar2" value="C_AMOUNT_ORD" function="CURRENCY_FORMAT" currencyCode="GL_CURRENCY" width="19" />
+<element name="invoice_currency_code2" dataType="varchar2" value="INVOICE_CURRENCY_CODE"/>
+<element name="employee_id2" dataType="number" value="EMPLOYEE_ID"/>
+<element name="number_amount_ord" dataType="number" value="NUMBER_AMOUNT_ORD"/>
+<element name="C_AMOUNT_ORD_BASE" dataType="number" value="C_AMOUNT_ORD_BASE"/>
+</group>
+<group name="G_qty_rec_hold" dataType="varchar2" source="Q_qty_rec_hold">
+<element name="C_AMOUNT_REC" dataType="number" value="C_AMOUNT_REC"/>
+<element name="C_AMOUNT_REC_DISP"  dataType="varchar2" value="C_AMOUNT_REC" function="CURRENCY_FORMAT" currencyCode="GL_CURRENCY" width="19" />
+<element name="invoice_currency_code1" dataType="varchar2" value="INVOICE_CURRENCY_CODE"/>
+<element name="employee_id3" dataType="number" value="EMPLOYEE_ID"/>
+<element name="Number_amount_rec" dataType="number" value="NUMBER_AMOUNT_REC"/>
+<element name="C_AMOUNT_REC_BASE" dataType="number" value="C_AMOUNT_REC_BASE"/>
+</group>
+<group name="G_quality_hold" dataType="varchar2" source="Q_quality_hold">
+<element name="C_AMOUNT_QUAL" dataType="number" value="C_AMOUNT_QUAL"/>
+<element name="C_AMOUNT_QUAL_DISP"  dataType="varchar2" value="C_AMOUNT_QUAL" function="CURRENCY_FORMAT" currencyCode="GL_CURRENCY" width="19" />
+<element name="invoice_currency_code" dataType="varchar2" value="INVOICE_CURRENCY_CODE"/>
+<element name="employee_id4" dataType="number" value="EMPLOYEE_ID"/>
+<element name="number_amount_qual" dataType="number" value="NUMBER_AMOUNT_QUAL"/>
+<element name="C_AMOUNT_QUAL_BASE" dataType="number" value="C_AMOUNT_QUAL_BASE"/>
+</group>
+<group name="G_total_hold" dataType="varchar2" source="Q_total_hold">
+<element name="C_AMOUNT_TOT" dataType="number" value="C_AMOUNT_TOT"/>
+<element name="C_AMOUNT_TOT_DISP"  dataType="varchar2" value="C_AMOUNT_TOT" function="CURRENCY_FORMAT" currencyCode="GL_CURRENCY" width="19" />
+<element name="invoice_currency_code4" dataType="varchar2" value="INVOICE_CURRENCY_CODE"/>
+<element name="employee_id5" dataType="number" value="EMPLOYEE_ID"/>
+<element name="C_AMOUNT_TOT_BASE" dataType="number" value="C_AMOUNT_TOT_BASE"/>
+</group>
+<group name="G_count_pos" dataType="varchar2" source="Q_count_pos">
+<element name="agent_id1" dataType="number" value="AGENT_ID1"/>
+<element name="count_PO_Number" dataType="number" value="COUNT_PO_NUMBER"/>
+<element name="C_CURRENCY1" dataType="varchar2" value="C_CURRENCY"/>
+</group>
+<group name="G_TOTAL_HOLD_NUMBER" dataType="varchar2" source="Q_total_hold_number">
+<element name="number_amount_tot" dataType="number" value="NUMBER_AMOUNT_TOT"/>
+<element name="average" dataType="number" value="AVERAGE"/>
+<element name="invoice_currency_code5" dataType="varchar2" value="INVOICE_CURRENCY_CODE"/>
+<element name="employee_id" dataType="number" value="EMPLOYEE_ID"/>
+<element name="C_total_days_holding"  dataType="number"  value="C_total_days_holding"/>
+</group>
+</group>
+</group>
+</group>
+</group>
+<element name="no" function="first" dataType="varchar2" value="G_company.c_no"/>
+<element name="FORMAT_MASK" dataType="varchar2" value="PO_POXPOSMH_XMLP_PKG.FORMAT_MASK"/>
+<element name="count_records" function="count" dataType="number" value="G_po.Buyer"/>
+<element name="organization_id" function="first" dataType="varchar2" value="G_company.c_organization_id"/>
+<element name="yes" function="first" dataType="varchar2" value="G_company.c_yes"/>
+<element name="category_set_id" function="first" dataType="varchar2" value="G_company.c_category_set_id"/>
+<element name="company" function="first" dataType="varchar2" value="G_company.c_company"/>
+</dataStructure>
+<dataTrigger name="afterReportTrigger" source="PO_POXPOSMH_XMLP_PKG.afterreport()"/>
+</dataTemplate>

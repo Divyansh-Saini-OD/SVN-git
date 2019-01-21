@@ -1,0 +1,514 @@
+# $Header$
+
+# dbdrv: exec fnd bin FNDLOAD bin &phase=daa+52 checkfile:~PROD:~PATH:~FILE &ui_apps 0 Y UPLOAD @ALR:patch/115/import/alr.lct @~PROD:~PATH/~FILE
+LANGUAGE = "US"
+LDRCONFIG = "alr.lct"
+
+#Source Database GSIDEV01
+
+#RELEASE_NAME 11.5.10.2
+
+# -- Begin Entity Definitions -- 
+
+DEFINE ALR_ALERTS
+  KEY   APPLICATION_SHORT_NAME          VARCHAR2(50)
+  KEY   ALERT_NAME                      VARCHAR2(50)
+  CTX   OWNER                           VARCHAR2(4000)
+  BASE  ALERT_CONDITION_TYPE            VARCHAR2(1)
+  BASE  ENABLED_FLAG                    VARCHAR2(1)
+  BASE  START_DATE_ACTIVE               VARCHAR2(25)
+  BASE  END_DATE_ACTIVE                 VARCHAR2(25)
+  BASE  TABLE_APPLICATION_SHORT_NAME    VARCHAR2(50)
+  BASE  DESCRIPTION                     VARCHAR2(240)
+  BASE  FREQUENCY_TYPE                  VARCHAR2(1)
+  BASE  WEEKLY_CHECK_DAY                VARCHAR2(3)
+  BASE  MONTHLY_CHECK_DAY_NUM           VARCHAR2(50)
+  BASE  DAYS_BETWEEN_CHECKS             VARCHAR2(50)
+  BASE  CHECK_BEGIN_DATE                VARCHAR2(25)
+  BASE  DATE_LAST_CHECKED               VARCHAR2(25)
+  BASE  INSERT_FLAG                     VARCHAR2(1)
+  BASE  UPDATE_FLAG                     VARCHAR2(1)
+  BASE  DELETE_FLAG                     VARCHAR2(1)
+  BASE  MAINTAIN_HISTORY_DAYS           VARCHAR2(50)
+  BASE  CHECK_TIME                      VARCHAR2(50)
+  BASE  CHECK_START_TIME                VARCHAR2(50)
+  BASE  CHECK_END_TIME                  VARCHAR2(50)
+  BASE  SECONDS_BETWEEN_CHECKS          VARCHAR2(50)
+  BASE  CHECK_ONCE_DAILY_FLAG           VARCHAR2(1)
+  BASE  SQL_STATEMENT_TEXT              VARCHAR2(32000)
+  BASE  ONE_TIME_ONLY_FLAG              VARCHAR2(50)
+  BASE  TABLE_NAME                      VARCHAR2(31)
+  BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+
+  DEFINE ALR_RESPONSE_SETS
+    KEY   RESP_SET_NAME                   VARCHAR2(30)
+    CTX   OWNER                           VARCHAR2(4000)
+    BASE  DESCRIPTION                     VARCHAR2(240)
+    BASE  ENABLED_FLAG                    VARCHAR2(1)
+    BASE  END_DATE_ACTIVE                 VARCHAR2(25)
+    BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+
+    DEFINE ALR_RESPONSE_VARIABLES
+      KEY   RESP_VAR_NAME                   VARCHAR2(30)
+      CTX   OWNER                           VARCHAR2(4000)
+      BASE  DESCRIPTION                     VARCHAR2(240)
+      BASE  TYPE                            VARCHAR2(1)
+      BASE  DEFAULT_VALUE                   VARCHAR2(240)
+      BASE  DATA_TYPE                       VARCHAR2(1)
+      BASE  DETAIL_MAX_LEN                  VARCHAR2(50)
+      BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+    END ALR_RESPONSE_VARIABLES
+
+      DEFINE ALR_RESPONSE_ACTIONS
+        KEY   RESPONSE_NAME                   VARCHAR2(240)
+        KEY   SEQUENCE                        VARCHAR2(50)
+        CTX   OWNER                           VARCHAR2(4000)
+        BASE  ACTION_NAME                     VARCHAR2(80)
+        BASE  ENABLED_FLAG                    VARCHAR2(1)
+        BASE  END_DATE_ACTIVE                 VARCHAR2(25)
+        BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+      END ALR_RESPONSE_ACTIONS
+
+        DEFINE ALR_VALID_RESPONSES
+          KEY   RESPONSE_NAME                   VARCHAR2(240)
+          CTX   OWNER                           VARCHAR2(4000)
+          BASE  TYPE                            VARCHAR2(1)
+          BASE  RESPONSE_TEXT                   VARCHAR2(32000)
+          BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+        END ALR_VALID_RESPONSES
+  END ALR_RESPONSE_SETS
+
+    DEFINE ALR_ACTION_SETS
+      KEY   NAME                            VARCHAR2(50)
+      CTX   OWNER                           VARCHAR2(4000)
+      BASE  END_DATE_ACTIVE                 VARCHAR2(25)
+      BASE  ENABLED_FLAG                    VARCHAR2(1)
+      BASE  RECIPIENTS_VIEW_ONLY_FLAG       VARCHAR2(1)
+      BASE  DESCRIPTION                     VARCHAR2(240)
+      BASE  SUPPRESS_FLAG                   VARCHAR2(1)
+      BASE  SUPPRESS_DAYS                   VARCHAR2(50)
+      BASE  SEQUENCE                        VARCHAR2(50)
+      BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+
+      DEFINE ALR_ACTION_SET_MEMBERS
+        CTX   OWNER                           VARCHAR2(4000)
+        BASE  ACTION_NAME                     VARCHAR2(80)
+        BASE  GROUP_NAME                      VARCHAR2(80)
+        BASE  GROUP_TYPE                      VARCHAR2(1)
+        BASE  SEQUENCE                        VARCHAR2(50)
+        BASE  END_DATE_ACTIVE                 VARCHAR2(25)
+        BASE  ENABLED_FLAG                    VARCHAR2(1)
+        BASE  SUMMARY_THRESHOLD               VARCHAR2(50)
+        BASE  ABORT_FLAG                      VARCHAR2(1)
+        BASE  ERROR_ACTION_SEQUENCE           VARCHAR2(50)
+        BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+      END ALR_ACTION_SET_MEMBERS
+
+        DEFINE ALR_ACTION_SET_OUTPUTS
+          KEY   ACTION_SET_OUTPUT_NAME          VARCHAR2(30)
+          CTX   OWNER                           VARCHAR2(4000)
+          BASE  SEQUENCE                        VARCHAR2(50)
+          BASE  SUPPRESS_FLAG                   VARCHAR2(1)
+          BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+        END ALR_ACTION_SET_OUTPUTS
+
+          DEFINE ALR_ACTION_SET_INPUTS
+            KEY   ACTION_SET_INPUT_NAME           VARCHAR2(30)
+            CTX   OWNER                           VARCHAR2(4000)
+            BASE  VALUE                           VARCHAR2(240)
+            BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+          END ALR_ACTION_SET_INPUTS
+    END ALR_ACTION_SETS
+
+      DEFINE ALR_ACTION_GROUPS
+        KEY   NAME                            VARCHAR2(80)
+        KEY   GROUP_TYPE                      VARCHAR2(1)
+        CTX   OWNER                           VARCHAR2(4000)
+        BASE  ACTION_GROUP_TYPE               VARCHAR2(1)
+        BASE  END_DATE_ACTIVE                 VARCHAR2(25)
+        BASE  ENABLED_FLAG                    VARCHAR2(1)
+        BASE  DESCRIPTION                     VARCHAR2(240)
+        BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+
+        DEFINE ALR_ACTION_GROUP_MEMBERS
+          CTX   OWNER                           VARCHAR2(4000)
+          BASE  ACTION_NAME                     VARCHAR2(80)
+          BASE  END_DATE_ACTIVE                 VARCHAR2(25)
+          BASE  ENABLED_FLAG                    VARCHAR2(1)
+          BASE  ACTION_LEVEL                    VARCHAR2(50)
+          BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+        END ALR_ACTION_GROUP_MEMBERS
+      END ALR_ACTION_GROUPS
+
+        DEFINE ALR_ACTIONS
+          KEY   ACTION_NAME                     VARCHAR2(80)
+          KEY   ACTION_END_DATE_ACTIVE          VARCHAR2(25)
+          CTX   OWNER                           VARCHAR2(4000)
+          BASE  ACTION_TYPE                     VARCHAR2(1)
+          BASE  ENABLED_FLAG                    VARCHAR2(1)
+          BASE  DESCRIPTION                     VARCHAR2(240)
+          BASE  ACTION_LEVEL_TYPE               VARCHAR2(1)
+          BASE  DATE_LAST_EXECUTED              VARCHAR2(25)
+          BASE  FILE_NAME                       VARCHAR2(240)
+          BASE  ARGUMENT_STRING                 VARCHAR2(240)
+          BASE  PROGRAM_APPLICATION_NAME        VARCHAR2(50)
+          BASE  CONCURRENT_PROGRAM_NAME         VARCHAR2(30)
+          BASE  LIST_APPLICATION_NAME           VARCHAR2(50)
+          BASE  LIST_NAME                       VARCHAR2(30)
+          BASE  TO_RECIPIENTS                   VARCHAR2(240)
+          BASE  CC_RECIPIENTS                   VARCHAR2(240)
+          BASE  BCC_RECIPIENTS                  VARCHAR2(240)
+          BASE  PRINT_RECIPIENTS                VARCHAR2(240)
+          BASE  PRINTER                         VARCHAR2(30)
+          BASE  SUBJECT                         VARCHAR2(240)
+          BASE  REPLY_TO                        VARCHAR2(240)
+          BASE  RESPONSE_SET_NAME               VARCHAR2(30)
+          BASE  FOLLOW_UP_AFTER_DAYS            VARCHAR2(50)
+          BASE  COLUMN_WRAP_FLAG                VARCHAR2(1)
+          BASE  MAXIMUM_SUMMARY_MESSAGE_WIDTH   VARCHAR2(50)
+          BASE  BODY                            VARCHAR2(2000)
+          BASE  VERSION_NUMBER                  VARCHAR2(50)
+          BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+
+          DEFINE ALR_ACTION_OUTPUTS
+            KEY   ACTION_OUT_NAME                 VARCHAR2(30)
+            CTX   OWNER                           VARCHAR2(4000)
+            BASE  CRITICAL_FLAG                   VARCHAR2(1)
+            BASE  END_DATE_ACTIVE                 VARCHAR2(25)
+            BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+          END ALR_ACTION_OUTPUTS
+        END ALR_ACTIONS
+
+          DEFINE ALR_ALERT_OUTPUTS
+            KEY   NAME                            VARCHAR2(30)
+            CTX   OWNER                           VARCHAR2(4000)
+            BASE  SEQUENCE                        VARCHAR2(50)
+            BASE  ENABLED_FLAG                    VARCHAR2(1)
+            BASE  START_DATE_ACTIVE               VARCHAR2(25)
+            BASE  END_DATE_ACTIVE                 VARCHAR2(25)
+            BASE  TITLE                           VARCHAR2(240)
+            BASE  DETAIL_MAX_LEN                  VARCHAR2(50)
+            BASE  SUMMARY_MAX_LEN                 VARCHAR2(50)
+            BASE  DEFAULT_SUPPRESS_FLAG           VARCHAR2(1)
+            BASE  FORMAT_MASK                     VARCHAR2(30)
+            BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+          END ALR_ALERT_OUTPUTS
+
+            DEFINE ALR_ALERT_INSTALLATIONS
+              KEY   ORACLE_USERNAME                 VARCHAR2(30)
+              KEY   DATA_GROUP_NAME                 VARCHAR2(240)
+              CTX   OWNER                           VARCHAR2(4000)
+              BASE  ENABLED_FLAG                    VARCHAR2(1)
+              BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+            END ALR_ALERT_INSTALLATIONS
+
+              DEFINE ALR_ALERT_INPUTS
+                KEY   NAME                            VARCHAR2(30)
+                CTX   OWNER                           VARCHAR2(4000)
+                BASE  ENABLED_FLAG                    VARCHAR2(1)
+                BASE  START_DATE_ACTIVE               VARCHAR2(25)
+                BASE  END_DATE_ACTIVE                 VARCHAR2(25)
+                BASE  TITLE                           VARCHAR2(240)
+                BASE  DATA_TYPE                       VARCHAR2(1)
+                BASE  DEFAULT_VALUE                   VARCHAR2(240)
+                BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+              END ALR_ALERT_INPUTS
+END ALR_ALERTS
+
+# -- End Entity Definitions -- 
+
+
+BEGIN ALR_ALERTS "SQLAP" "TERMINATED EMPLOYEE WITH JPMORGAN CREDIT CARD"
+  OWNER = "548024"
+  ALERT_CONDITION_TYPE = "P"
+  ENABLED_FLAG = "Y"
+  START_DATE_ACTIVE = "2012/09/20 00:00:00"
+  DESCRIPTION = "Terminated Employee With Credit card"
+  FREQUENCY_TYPE = "B"
+  DAYS_BETWEEN_CHECKS = "1"
+  DATE_LAST_CHECKED = "2012/09/20 16:54:38"
+  MAINTAIN_HISTORY_DAYS = "0"
+  CHECK_START_TIME = "75600"
+  SQL_STATEMENT_TEXT =
+ "SELECT DISTINCT a.FULL_NAME Employee,\n\
+      a.EMPLOYEE_NUMBER EMPLOYEE_NO,\n\
+      C .FULL_NAME SUPERVISOR,\n\
+      a.effective_end_date Terminated,\n\
+      a.last_update_date Last_Update\n\
+Into   &FULL_NAME\n\
+\n\
+       &EMPLOYEE\n\
+\n\
+       &SUPERVISOR\n\
+\n\
+       &Terminated\n\
+\n\
+       &last_update\n\
+\n\
+FROM per_all_people_f c,\n\
+  per_all_assignments_f pa,\n\
+  ap_cards_all b,\n\
+  PER_ALL_PEOPLE_F a\n\
+WHERE b.EMPLOYEE_ID            =a.PERSON_ID\n\
+AND pa.person_id               =b.employee_id\n\
+and C.PERSON_ID                =PA.SUPERVISOR_ID\n\
+and a.person_type_id=6\n\
+and exists (select 'x'\n\
+         from per_all_people_f\n\
+        where person_id=a.person_id\n\
+          and person_type_id=9)\n\
+and PA.ASSIGNMENT_SEQUENCE=(select max(ASSIGNMENT_SEQUENCE)\n\
+        from per_all_assignments_f\n\
+       where person_id=a.person_id)\n\
+AND pa.person_id=b.employee_id\n\
+AND c.person_id=pa.supervisor_id\n\
+AND TRUNC(a.effective_end_date) BETWEEN TRUNC(SYSDATE-7) AND TRUNC(SYSDATE)\n\
+order by a.last_update_date desc\n\
+\n\
+"
+  LAST_UPDATE_DATE = "2012/11/09"
+
+
+  BEGIN ALR_ALERT_INSTALLATIONS "APPS" "OU_US"
+    OWNER = "548024"
+    ENABLED_FLAG = "Y"
+    LAST_UPDATE_DATE = "2012/09/24"
+  END ALR_ALERT_INSTALLATIONS
+  
+
+  BEGIN ALR_ALERT_OUTPUTS "EMPLOYEE"
+    OWNER = "548024"
+    SEQUENCE = "2"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2012/11/09 13:54:50"
+    TITLE = "EMPLOYEE"
+    DEFAULT_SUPPRESS_FLAG = "Y"
+    LAST_UPDATE_DATE = "2012/11/09"
+  END ALR_ALERT_OUTPUTS
+  
+  BEGIN ALR_ALERT_OUTPUTS "EMPLOYEE_NUMBER"
+    OWNER = "548024"
+    SEQUENCE = "2"
+    ENABLED_FLAG = "N"
+    START_DATE_ACTIVE = "2012/09/20 10:53:57"
+    END_DATE_ACTIVE = "2012/11/09 13:54:50"
+    TITLE = "EMPLOYEE_NUMBER"
+    DEFAULT_SUPPRESS_FLAG = "Y"
+    LAST_UPDATE_DATE = "2012/11/09"
+  END ALR_ALERT_OUTPUTS
+  
+  BEGIN ALR_ALERT_OUTPUTS "FULL_NAME"
+    OWNER = "548024"
+    SEQUENCE = "1"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2012/09/20 10:53:57"
+    TITLE = "FULL_NAME"
+    DEFAULT_SUPPRESS_FLAG = "Y"
+    LAST_UPDATE_DATE = "2012/09/20"
+  END ALR_ALERT_OUTPUTS
+  
+  BEGIN ALR_ALERT_OUTPUTS "LAST_UPDATE"
+    OWNER = "548024"
+    SEQUENCE = "5"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2012/11/09 13:54:50"
+    TITLE = "LAST_UPDATE"
+    DEFAULT_SUPPRESS_FLAG = "Y"
+    LAST_UPDATE_DATE = "2012/11/09"
+  END ALR_ALERT_OUTPUTS
+  
+  BEGIN ALR_ALERT_OUTPUTS "LAST_UPDATE_DATE"
+    OWNER = "548024"
+    SEQUENCE = "5"
+    ENABLED_FLAG = "N"
+    START_DATE_ACTIVE = "2012/11/09 10:36:09"
+    END_DATE_ACTIVE = "2012/11/09 13:54:50"
+    TITLE = "LAST_UPDATE_DATE"
+    DEFAULT_SUPPRESS_FLAG = "Y"
+    LAST_UPDATE_DATE = "2012/11/09"
+  END ALR_ALERT_OUTPUTS
+  
+  BEGIN ALR_ALERT_OUTPUTS "PERSON_ID"
+    OWNER = "510093"
+    SEQUENCE = "3"
+    ENABLED_FLAG = "N"
+    START_DATE_ACTIVE = "2012/09/20 10:53:57"
+    END_DATE_ACTIVE = "2012/09/24 09:37:16"
+    TITLE = "PERSON_ID"
+    DEFAULT_SUPPRESS_FLAG = "Y"
+    LAST_UPDATE_DATE = "2012/09/24"
+  END ALR_ALERT_OUTPUTS
+  
+  BEGIN ALR_ALERT_OUTPUTS "SUPERVISOR"
+    OWNER = "510093"
+    SEQUENCE = "3"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2012/09/24 09:37:16"
+    TITLE = "SUPERVISOR"
+    DEFAULT_SUPPRESS_FLAG = "Y"
+    LAST_UPDATE_DATE = "2012/09/24"
+  END ALR_ALERT_OUTPUTS
+  
+  BEGIN ALR_ALERT_OUTPUTS "TERMINATED"
+    OWNER = "548024"
+    SEQUENCE = "4"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2012/11/09 13:54:50"
+    TITLE = "TERMINATED"
+    DEFAULT_SUPPRESS_FLAG = "Y"
+    LAST_UPDATE_DATE = "2012/11/09"
+  END ALR_ALERT_OUTPUTS
+  
+  BEGIN ALR_ALERT_OUTPUTS "TERMINATION_DATE"
+    OWNER = "548024"
+    SEQUENCE = "4"
+    ENABLED_FLAG = "N"
+    START_DATE_ACTIVE = "2012/11/09 10:36:09"
+    END_DATE_ACTIVE = "2012/11/09 13:54:50"
+    TITLE = "TERMINATION_DATE"
+    DEFAULT_SUPPRESS_FLAG = "Y"
+    LAST_UPDATE_DATE = "2012/11/09"
+  END ALR_ALERT_OUTPUTS
+  
+
+  BEGIN ALR_ACTIONS "Terminated Employees" "2012/09/24 09:38:02"
+    OWNER = "548024"
+    ACTION_TYPE = "M"
+    ENABLED_FLAG = "N"
+    DESCRIPTION = "Terminated Employees"
+    ACTION_LEVEL_TYPE = "S"
+    TO_RECIPIENTS = "diego.schenquerman@officedepot.com"
+    SUBJECT = "Terminated employee with JPMorgage Credit Card"
+    REPLY_TO = "dschenqu@yahoo.com"
+    COLUMN_WRAP_FLAG = "Y"
+    MAXIMUM_SUMMARY_MESSAGE_WIDTH = "80"
+    VERSION_NUMBER = "1"
+    LAST_UPDATE_DATE = "2012/09/24"
+  
+  END ALR_ACTIONS
+  
+  BEGIN ALR_ACTIONS "Terminated Employees" ""
+    OWNER = "548024"
+    ACTION_TYPE = "M"
+    ENABLED_FLAG = "Y"
+    DESCRIPTION = "Terminated Employees"
+    ACTION_LEVEL_TYPE = "S"
+    TO_RECIPIENTS = "corporate.cardrequest@officedepot.com"
+    SUBJECT = "URGENT-Terminated employee with JPMorgan Credit Card"
+    COLUMN_WRAP_FLAG = "Y"
+    MAXIMUM_SUMMARY_MESSAGE_WIDTH = "80"
+    BODY =
+ "Review the following terminated Employees with JPMorgan Credit Card\n\
+\n\
+\n\
+\n\
+EMPL.      EMPL #  SUPERVISOR   TERM. DATE   LAST UPDATE   \n\
+\n\
+--------------------------------------------------------\n\
+\n\
+=**= Enter summary template below this line =**=\n\
+\n\
+**&FULL_NAME  &EMPLOYEE  &SUPERVISOR   &Terminated &last_update\n\
+\n\
+=**= Enter summary template above this line =**=\n\
+\n\
+\n\
+\n\
+" 
+    VERSION_NUMBER = "2"
+    LAST_UPDATE_DATE = "2012/11/09"
+  
+    BEGIN ALR_ACTION_OUTPUTS "EMPLOYEE"
+      OWNER = "548024"
+      CRITICAL_FLAG = "N"
+      LAST_UPDATE_DATE = "2012/11/09"
+    END ALR_ACTION_OUTPUTS
+    
+    BEGIN ALR_ACTION_OUTPUTS "FULL_NAME"
+      OWNER = "548024"
+      CRITICAL_FLAG = "N"
+      LAST_UPDATE_DATE = "2012/09/20"
+    END ALR_ACTION_OUTPUTS
+    
+    BEGIN ALR_ACTION_OUTPUTS "LAST_UPDATE"
+      OWNER = "548024"
+      CRITICAL_FLAG = "N"
+      LAST_UPDATE_DATE = "2012/11/09"
+    END ALR_ACTION_OUTPUTS
+    
+    BEGIN ALR_ACTION_OUTPUTS "SUPERVISOR"
+      OWNER = "510093"
+      CRITICAL_FLAG = "N"
+      LAST_UPDATE_DATE = "2012/09/24"
+    END ALR_ACTION_OUTPUTS
+    
+    BEGIN ALR_ACTION_OUTPUTS "TERMINATED"
+      OWNER = "548024"
+      CRITICAL_FLAG = "N"
+      LAST_UPDATE_DATE = "2012/11/09"
+    END ALR_ACTION_OUTPUTS
+    
+  END ALR_ACTIONS
+  
+
+
+  BEGIN ALR_ACTION_SETS "Credit Card Adminitrator messages"
+    OWNER = "548024"
+    ENABLED_FLAG = "Y"
+    RECIPIENTS_VIEW_ONLY_FLAG = "N"
+    DESCRIPTION = "Credit Card Adminitrator message"
+    SUPPRESS_FLAG = "Y"
+    SEQUENCE = "1"
+    LAST_UPDATE_DATE = "2012/09/20"
+  
+  
+    BEGIN ALR_ACTION_SET_OUTPUTS "EMPLOYEE"
+      OWNER = "548024"
+      SEQUENCE = "2"
+      SUPPRESS_FLAG = "Y"
+      LAST_UPDATE_DATE = "2012/11/09"
+    END ALR_ACTION_SET_OUTPUTS
+    
+    BEGIN ALR_ACTION_SET_OUTPUTS "FULL_NAME"
+      OWNER = "548024"
+      SEQUENCE = "1"
+      SUPPRESS_FLAG = "Y"
+      LAST_UPDATE_DATE = "2012/09/20"
+    END ALR_ACTION_SET_OUTPUTS
+    
+    BEGIN ALR_ACTION_SET_OUTPUTS "LAST_UPDATE"
+      OWNER = "548024"
+      SEQUENCE = "5"
+      SUPPRESS_FLAG = "Y"
+      LAST_UPDATE_DATE = "2012/11/09"
+    END ALR_ACTION_SET_OUTPUTS
+    
+    BEGIN ALR_ACTION_SET_OUTPUTS "SUPERVISOR"
+      OWNER = "510093"
+      SEQUENCE = "3"
+      SUPPRESS_FLAG = "Y"
+      LAST_UPDATE_DATE = "2012/09/24"
+    END ALR_ACTION_SET_OUTPUTS
+    
+    BEGIN ALR_ACTION_SET_OUTPUTS "TERMINATED"
+      OWNER = "548024"
+      SEQUENCE = "4"
+      SUPPRESS_FLAG = "Y"
+      LAST_UPDATE_DATE = "2012/11/09"
+    END ALR_ACTION_SET_OUTPUTS
+    
+  
+    BEGIN ALR_ACTION_SET_MEMBERS
+      OWNER = "548024"
+      ACTION_NAME = "Terminated Employees"
+      SEQUENCE = "1"
+      ENABLED_FLAG = "Y"
+      ABORT_FLAG = "A"
+      LAST_UPDATE_DATE = "2012/09/20"
+    END ALR_ACTION_SET_MEMBERS
+    
+  END ALR_ACTION_SETS
+  
+
+END ALR_ALERTS
+

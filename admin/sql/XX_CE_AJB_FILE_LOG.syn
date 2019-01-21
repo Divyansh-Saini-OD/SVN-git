@@ -1,0 +1,29 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       			                              |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             Synonym    :XX_CE_AJB_FILE_LOG                               |
+-- |             Synonym    :XX_CE_AJB_FILE_LOG_S                             |
+-- |                         For the Interface I0032/Extension E1310          |
+-- |                         Table to log files received from AJB and         |
+-- |                         successfully loaded by BPEL		      |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ===========  =============        ==============================|
+-- | V1.0     24-JUL-2008  Deepak Gowda         Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+create synonym  xx_ce_ajb_file_log for xxfin.xx_ce_ajb_file_log;
+create synonym  xx_ce_ajb_file_log_s for xxfin.xx_ce_ajb_file_log_s;
+
+

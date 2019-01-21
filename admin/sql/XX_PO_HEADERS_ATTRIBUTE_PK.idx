@@ -1,0 +1,26 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                                                                          |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             INDEX       : XX_PO_HEADER_ATTRIBUTES_PK                      |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ===========  =============        ==============================|
+-- | V1.0     25-Sep-2017  Antonio Morales      Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX XXFIN.XX_PO_HEADER_ATTRIBUTES_PK ON XXFIN.XX_PO_HEADER_ATTRIBUTES
+(PO_NUMBER)
+/

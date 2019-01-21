@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="SynchJobCodePsftToDB2Service"
+             targetNamespace="http://xmlns.oracle.com/OfficeDepotSOAApps/SynchJobCodePsftToDB2Service/SynchJobCodePsftToDB2Service"
+             xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:client="http://xmlns.oracle.com/OfficeDepotSOAApps/SynchJobCodePsftToDB2Service/SynchJobCodePsftToDB2Service"
+             xmlns:job="http://xmlns.oracle.com/Enterprise/Tools/schemas/JOBCODE_SYNC.VERSION_1"             
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/">
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	TYPE DEFINITION - List of services participating in this BPEL process
+	The default output of the BPEL designer uses strings as input and 
+	output to the BPEL Process. But you can define or import any XML 
+	Schema type and use them as part of the message types.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->   
+	<wsdl:types>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema">
+        
+			<!--import namespace="http://xmlns.oracle.com/OfficeDepotSOAApps/SynchJobCodePsftToDB2Service/SynchJobCodePsftToDB2Service" schemaLocation="xsd/SynchJobCodePsftToDB2Service.xsd" /-->
+       <import namespace="http://xmlns.oracle.com/Enterprise/Tools/schemas/JOBCODE_SYNC.VERSION_1" schemaLocation="xsd/JOBCODE_SYNC.XSD"/>
+		</schema>
+	</wsdl:types>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	MESSAGE TYPE DEFINITION - Definition of the message types used as 
+	part of the port type defintions
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->      
+	<wsdl:message name="SynchJobCodePsftToDB2ServiceRequestMessage">
+		<wsdl:part name="payload" element="job:JOBCODE_SYNC"/>
+	</wsdl:message>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PORT TYPE DEFINITION - A port type groups a set of operations into
+	a logical service unit.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+	<!-- portType implemented by the SynchJobCodePsftToDB2Service BPEL process -->
+	<wsdl:portType name="SynchJobCodePsftToDB2Service">
+		<wsdl:operation name="synchronizeJobData">
+			<wsdl:input  message="client:SynchJobCodePsftToDB2ServiceRequestMessage" />
+		</wsdl:operation>
+	</wsdl:portType>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PARTNER LINK TYPE DEFINITION
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --> 
+	<plnk:partnerLinkType name="SynchJobCodePsftToDB2Service">
+		<plnk:role name="SynchJobCodePsftToDB2ServiceProvider">
+			<plnk:portType name="client:SynchJobCodePsftToDB2Service"/>
+		</plnk:role>
+	</plnk:partnerLinkType>
+</wsdl:definitions>

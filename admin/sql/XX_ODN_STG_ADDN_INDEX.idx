@@ -1,0 +1,30 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - ODN AR Conversion                        |
+-- |                                                                       |
+-- +=======================================================================+
+-- | Name             :  XX_ODN_STG_ADDN_INDEX                             |
+-- | Description      :  Create additional index on XXOD_OMX_CNV_AR_TRX_STG|
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date           Author             Remarks                     |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  28-FEB-18   Punit Gupta        Initial Draft Version          |
+-- +=======================================================================+
+
+-- -------------------------------------------------
+-- Creating additional Indexes on XXOD_OMX_CNV_AR_TRX_STG
+-- -------------------------------------------------
+
+create index XXFIN.XXOD_OMX_CNV_AR_TRX_STG_C1 on  XXFIN.XXOD_OMX_CNV_AR_TRX_STG("RECORD_ID");
+ 
+create index XXFIN.XXOD_OMX_CNV_AR_TRX_STG_C2 on  XXFIN.XXOD_OMX_CNV_AR_TRX_STG(RECORD_ID,BATCH_ID);
+
+EXIT;
+
+

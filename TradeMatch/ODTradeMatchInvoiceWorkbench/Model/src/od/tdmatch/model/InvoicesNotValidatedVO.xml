@@ -1,0 +1,949 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewObject
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="InvoicesNotValidatedVO"
+  Version="12.2.1.12.24"
+  InheritPersonalization="merge"
+  BindingStyle="OracleName"
+  CustomQuery="true"
+  RowClass="od.tdmatch.model.InvoicesNotValidatedVORowImpl"
+  ComponentClass="od.tdmatch.model.InvoicesNotValidatedVOImpl"
+  PageIterMode="Full">
+  <DesignTime>
+    <Attr Name="_codeGenFlag2" Value="Coll"/>
+    <Attr Name="_isExpertMode" Value="true"/>
+    <Attr Name="_isCodegen" Value="true"/>
+  </DesignTime>
+  <Properties>
+    <SchemaBasedProperties>
+      <LABEL
+        ResId="od.tdmatch.model.InvoicesNotValidatedVO_LABEL"/>
+    </SchemaBasedProperties>
+  </Properties>
+  <Variable
+    Name="p_vend_no"
+    Kind="viewcriteria"
+    Type="java.lang.String">
+    <Properties>
+      <SchemaBasedProperties>
+        <DISPLAYWIDTH
+          Value="30"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </Variable>
+  <Variable
+    Name="p_ven_name"
+    Kind="viewcriteria"
+    Type="java.lang.String">
+    <Properties>
+      <SchemaBasedProperties>
+        <DISPLAYWIDTH
+          Value="30"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </Variable>
+  <Variable
+    Name="p_site"
+    Kind="viewcriteria"
+    Type="java.lang.String"/>
+  <Variable
+    Name="p_invoice_no"
+    Kind="viewcriteria"
+    Type="java.lang.String"/>
+  <Variable
+    Name="p_vendor_asst"
+    Kind="viewcriteria"
+    Type="java.lang.String"/>
+  <Variable
+    Name="p_invoice_from"
+    Kind="viewcriteria"
+    Type="oracle.jbo.domain.Date">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.InvoicesNotValidatedVO.p_invoice_from_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </Variable>
+  <Variable
+    Name="p_invoice_to"
+    Kind="viewcriteria"
+    Type="oracle.jbo.domain.Date">
+    <Properties>
+      <SchemaBasedProperties>
+        <DISPLAYHINT
+          Value="Display"/>
+        <LABEL
+          ResId="od.tdmatch.model.InvoicesNotValidatedVO.p_invoice_to_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </Variable>
+  <Variable
+    Name="p_due_from"
+    Kind="viewcriteria"
+    Type="oracle.jbo.domain.Date">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.InvoicesNotValidatedVO.p_due_from_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </Variable>
+  <Variable
+    Name="p_due_to"
+    Kind="viewcriteria"
+    Type="oracle.jbo.domain.Date">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.InvoicesNotValidatedVO.p_due_to_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </Variable>
+  <Variable
+    Name="p_po_no"
+    Kind="viewcriteria"
+    Type="java.lang.String"/>
+  <Variable
+    Name="glDateFrom"
+    Kind="where"
+    Type="oracle.jbo.domain.Date"/>
+  <Variable
+    Name="glDateTo"
+    Kind="where"
+    Type="oracle.jbo.domain.Date"/>
+  <Variable
+    Name="p_vendor_id"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="p_vendor_site_id"
+    Kind="where"
+    Type="oracle.jbo.domain.Number"/>
+  <Variable
+    Name="p_emp_id"
+    Kind="where"
+    Type="oracle.jbo.domain.Number"/>
+  <ViewAccessor
+    Name="SupplierLOV1"
+    ViewObjectName="od.tdmatch.model.lov.SupplierLOV"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="SupplierSiteLOV1"
+    ViewObjectName="od.tdmatch.model.lov.SupplierSiteLOV"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="VendorAssistantLOV1"
+    ViewObjectName="od.tdmatch.model.lov.VendorAssistantLOV"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="PerAllPeopleFVO1"
+    ViewObjectName="od.tdmatch.model.PerAllPeopleFVO"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="InvoiceNumLovVO1"
+    ViewObjectName="od.tdmatch.model.lov.InvoiceNumLovVO"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="PoNumLovVO1"
+    ViewObjectName="od.tdmatch.model.lov.PoNumLovVO"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="SupplierLovInvoiceVO1"
+    ViewObjectName="od.tdmatch.model.lov.SupplierLovInvoiceVO"
+    RowLevelBinds="true"/>
+  <ListBinding
+    Name="LOV_VendorNo"
+    ListVOName="SupplierLovInvoiceVO1"
+    NullValueFlag="none"
+    MRUCount="0"
+    ComboRowCountHint="10">
+    <AttrArray Name="AttrNames">
+      <Item Value="VendorNo"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="SupplierNo"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="SupplierNo"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_VendorName"
+    ListVOName="SupplierLovInvoiceVO1"
+    NullValueFlag="none"
+    MRUCount="0"
+    ComboRowCountHint="10">
+    <AttrArray Name="AttrNames">
+      <Item Value="VendorName"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="SupplierName"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="SupplierName"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_Site"
+    ListVOName="SupplierLovInvoiceVO1"
+    NullValueFlag="none"
+    MRUCount="0"
+    ComboRowCountHint="10">
+    <AttrArray Name="AttrNames">
+      <Item Value="Site"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="SupplierSiteCode"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="SupplierSiteCode"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_TargetValue1"
+    ListVOName="VendorAssistantLOV1"
+    NullValueFlag="start"
+    NullValueId="${adfBundle['oracle.javatools.resourcebundle.SystemBundle']['NULL_VALUE_RESID']}"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="TargetValue1"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="EmployeeNo"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="VendorAssistant"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_InvoiceNum"
+    ListVOName="InvoiceNumLovVO1"
+    ComboRowCountHint="10"
+    NullValueFlag="none"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="InvoiceNum"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="InvoiceNum"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="InvoiceNum"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_PoNumber"
+    ListVOName="PoNumLovVO1"
+    NullValueFlag="none"
+    MRUCount="0"
+    ComboRowCountHint="10">
+    <AttrArray Name="AttrNames">
+      <Item Value="PoNumber"/>
+    </AttrArray>
+    <AttrArray Name="AttrExpressions"/>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="Segment1"/>
+    </AttrArray>
+    <AttrArray Name="ListDisplayAttrNames">
+      <Item Value="Segment1"/>
+    </AttrArray>
+    <DisplayCriteria/>
+  </ListBinding>
+  <SQLQuery><![CDATA[SELECT  /*+ LEADING (ai) */ ai.invoice_num, ph.segment1 po_number, ai.invoice_date,NVL(py.discount_date,py.due_date) discount_due_date,           
+a.segment1 vendor_no,                   
+       a.vendor_name Vendor_name,                   
+       b.vendor_site_code site,                   
+       DECODE(SIGN(instr(e.name,'/')),0,NULL,1,'D') discount,                          
+                          
+                                 
+       ai.invoice_amount,                   
+                         
+       e.name Paymenr_terms,                   
+       ai.terms_date,                   
+                          
+       ai.gl_date,                          
+       ai.invoice_currency_code currency,                   
+       ai.payment_method_code,                   
+       ai.pay_group_lookup_code,                   
+       ai.source,                                 
+       ai.attribute5 PO_Type,                   
+       tv.target_value1,                   
+       tv.target_value2,      
+       SUBSTR(hrl.location_code,1,6) sitelocation      
+  FROM  xx_fin_translatevalues tv                   
+       ,xx_fin_translatedefinition td                          
+       ,ap_terms e ,       
+       hr_locations_all hrl                  
+       ,po_headers_all ph                    
+       ,ap_supplier_sites_all b  
+       ,ap_payment_schedules_all py                   
+                         
+       ,ap_suppliers a                   
+       ,ap_invoices_all ai      
+ WHERE                    
+-- ai.invoice_num like 'SPT0%'  
+   (:p_vendor_id IS NULL or a.vendor_id=:p_vendor_id)  
+   AND (:p_vendor_site_id IS NULL or  b.vendor_site_id=:p_vendor_site_id)  
+   AND (:p_emp_id IS null or :p_emp_id=nvl(b.attribute6,'Open'))  
+   AND a.vendor_id=ai.vendor_id                   
+   AND b.vendor_id=a.vendor_id                   
+   AND b.vendor_site_id=ai.vendor_site_id                   
+   AND py.invoice_id=ai.invoice_id                   
+   AND e.term_id=ai.terms_id                   
+   AND ph.po_header_id=NVL(ai.po_header_id,ai.quick_po_header_id)       
+   AND hrl.location_id=ph.ship_to_location_id       
+   AND td.TRANSLATION_NAME = 'XX_AP_VENDOR_ASSISTANTS'                    
+   AND tv.TRANSLATE_ID  = td.TRANSLATE_ID                   
+   AND tv.target_value1=nvl(b.attribute6,'Open')||''                   
+   AND tv.enabled_flag='Y'                   
+   AND SYSDATE BETWEEN tv.start_date_active and NVL(tv.end_date_active,sysdate)                   
+   AND ai.validation_request_id=-9999999999    
+   and ai.gl_date BETWEEN NVL(:glDateFrom,ai.gl_date) AND nvl(:glDateTo,ai.gl_date)]]></SQLQuery>
+ <ViewAttribute
+    Name="InvoiceNum"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="50"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="INVOICE_NUM"
+    Expression="INVOICE_NUM"
+    SQLType="VARCHAR"
+   LOVName="LOV_InvoiceNum">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="50"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.InvoicesNotValidatedVO.InvoiceNum_LABEL"/>
+        <DISPLAYWIDTH
+          Value="20"/>
+        <CATEGORY
+          Value="Category1"/>
+        <CONTROLTYPE
+          Value="input_text_lov"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="PoNumber"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="20"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="PO_NUMBER"
+    Expression="PO_NUMBER"
+    SQLType="VARCHAR"
+    LOVName="LOV_PoNumber">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="20"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.InvoicesNotValidatedVO.PoNumber_LABEL"/>
+        <CATEGORY
+          Value="Category1"/>
+        <CONTROLTYPE
+          Value="input_text_lov"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="InvoiceDate"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Date"
+    ColumnType="DATE"
+    AliasName="INVOICE_DATE"
+    Expression="INVOICE_DATE"
+    SQLType="DATE">
+    <Properties>
+      <SchemaBasedProperties>
+        <CATEGORY
+          Value="Category2"/>
+        <LABEL
+          ResId="od.tdmatch.model.InvoicesNotValidatedVO.InvoiceDate_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="DiscountDueDate"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Date"
+    ColumnType="DATE"
+    AliasName="DISCOUNT_DUE_DATE"
+    Expression="DISCOUNT_DUE_DATE"
+    SQLType="DATE">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.InvoicesNotValidatedVO.DiscountDueDate_LABEL"/>
+        <CATEGORY
+          Value="Category2"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="VendorNo"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="255"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="VENDOR_NO"
+    Expression="VENDOR_NO"
+    SQLType="VARCHAR"
+    LOVName="LOV_VendorNo">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="30"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <DISPLAYWIDTH
+          Value="30"/>
+        <CATEGORY
+          Value="Category3"/>
+        <LABEL
+          ResId="od.tdmatch.model.InvoicesNotValidatedVO.VendorNo_LABEL"/>
+        <CONTROLTYPE
+          Value="input_text_lov"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="VendorName"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="240"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="VENDOR_NAME"
+    Expression="VENDOR_NAME"
+    SQLType="VARCHAR"
+    LOVName="LOV_VendorName">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="240"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <DISPLAYWIDTH
+          Value="30"/>
+        <CATEGORY
+          Value="Category3"/>
+        <LABEL
+          ResId="od.tdmatch.model.InvoicesNotValidatedVO.VendorName_LABEL"/>
+        <CONTROLTYPE
+          Value="input_text_lov"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="Site"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="15"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="SITE"
+    Expression="SITE"
+    SQLType="VARCHAR"
+    LOVName="LOV_Site">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="15"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <DISPLAYWIDTH
+          Value="30"/>
+        <CATEGORY
+          Value="Category3"/>
+        <LABEL
+          ResId="od.tdmatch.model.InvoicesNotValidatedVO.Site_LABEL"/>
+        <CONTROLTYPE
+          Value="input_text_lov"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="Discount"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="1"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="DISCOUNT"
+    Expression="DISCOUNT"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="1"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.InvoicesNotValidatedVO.Discount_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  
+  
+  <ViewAttribute
+    Name="InvoiceAmount"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="INVOICE_AMOUNT"
+    Expression="INVOICE_AMOUNT"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.InvoicesNotValidatedVO.InvoiceAmount_LABEL"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.InvoicesNotValidatedVO.InvoiceAmount_FMT_FORMAT"/>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.InvoicesNotValidatedVO.InvoiceAmount_FMT_FORMATTER"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  
+  <ViewAttribute
+    Name="PaymenrTerms"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="50"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="PAYMENR_TERMS"
+    Expression="PAYMENR_TERMS"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="50"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.InvoicesNotValidatedVO.PaymenrTerms_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="TermsDate"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Date"
+    ColumnType="DATE"
+    AliasName="TERMS_DATE"
+    Expression="TERMS_DATE"
+    SQLType="DATE">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.InvoicesNotValidatedVO.TermsDate_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  
+  <ViewAttribute
+    Name="GlDate"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Date"
+    ColumnType="DATE"
+    AliasName="GL_DATE"
+    Expression="GL_DATE"
+    SQLType="DATE">
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.InvoicesNotValidatedVO.GlDate_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="Currency"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="15"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="CURRENCY"
+    Expression="CURRENCY"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="15"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.InvoicesNotValidatedVO.Currency_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="PaymentMethodCode"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="30"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="PAYMENT_METHOD_CODE"
+    Expression="PAYMENT_METHOD_CODE"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="30"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.InvoicesNotValidatedVO.PaymentMethodCode_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="PayGroupLookupCode"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="25"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="PAY_GROUP_LOOKUP_CODE"
+    Expression="PAY_GROUP_LOOKUP_CODE"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="25"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.InvoicesNotValidatedVO.PayGroupLookupCode_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="Source"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="25"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="SOURCE"
+    Expression="SOURCE"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="25"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.InvoicesNotValidatedVO.Source_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="PoType"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="150"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="PO_TYPE"
+    Expression="PO_TYPE"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.InvoicesNotValidatedVO.PoType_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="TargetValue1"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="240"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="TARGET_VALUE1"
+    Expression="TARGET_VALUE1"
+    SQLType="VARCHAR"
+    LOVName="LOV_TargetValue1">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="240"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <DISPLAYWIDTH
+          Value="30"/>
+        <LABEL
+          ResId="od.tdmatch.model.InvoicesNotValidatedVO.TargetValue1_LABEL"/>
+        <CATEGORY
+          Value="Category4"/>
+        <CONTROLTYPE
+          Value="choice"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="TargetValue2"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="240"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="TARGET_VALUE2"
+    Expression="TARGET_VALUE2"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="240"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="Sitelocation"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="6"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="SITELOCATION"
+    Expression="SITELOCATION"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="6"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <LABEL
+          ResId="od.tdmatch.model.InvoicesNotValidatedVO.Sitelocation_LABEL"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="EmployeeSelect"
+    IsSelected="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="255"
+    Type="java.lang.Boolean"
+    ColumnType="VARCHAR2"
+    AliasName="VIEW_ATTR"
+    SQLType="BIT"
+    Passivate="true"/>
+  <ViewCriteria
+    Name="InvoicesNotValidatedVOCriteria"
+    ViewObjectName="od.tdmatch.model.InvoicesNotValidatedVO"
+    Conjunction="AND">
+    <Properties Name="_Props">
+      <CustomProperties>
+        <Property
+          Name="autoExecute"
+          Value="false"/>
+        <Property
+          Name="mode"
+          Value="Basic"/>
+        <Property
+          Name="allowConjunctionOverride"
+          Value="false"/>
+        <Property
+          Name="showInList"
+          Value="true"/>
+        <Property
+          Name="displayOperators"
+          Value="InAdvancedMode"/>
+      </CustomProperties>
+    </Properties>
+    <ViewCriteriaRow
+      Name="InvoicesNotValidatedVOCriteria_row_0"
+      UpperColumns="1"
+      Conjunction="AND">
+      <ViewCriteriaItem
+        Name="InvoiceNum"
+        ViewAttribute="InvoiceNum"
+        Operator="="
+        Conjunction="AND"
+        Value=":p_invoice_no"
+        IsBindVarValue="true"
+        Required="Optional"/>
+      <ViewCriteriaItem
+        Name="PoNumber"
+        ViewAttribute="PoNumber"
+        Operator="="
+        Conjunction="AND"
+        Value=":p_po_no"
+        IsBindVarValue="true"
+        Required="Optional"/>
+    </ViewCriteriaRow>
+    <ViewCriteriaRow
+      Name="InvoicesNotValidatedVOCriteria_row_1"
+      Conjunction="AND"
+      UpperColumns="1">
+      <ViewCriteriaItemCompound
+        Name="InvoiceDate"
+        ViewAttribute="InvoiceDate">
+        <ViewCriteria
+          Name="InvoicesNotValidatedVOCriteria_InvoicesNotValidatedVOCriteria_row_1_InvoiceDate_itemHolder"
+          ViewObjectName="od.tdmatch.model.InvoicesNotValidatedVO"
+          Conjunction="OR">
+          <ViewCriteriaRow
+            Name="InvoicesNotValidatedVOCriteria_InvoicesNotValidatedVOCriteria_row_1_InvoiceDate_itemHolder_row_0"
+            Conjunction="AND">
+            <ViewCriteriaItem
+              Name="InvoiceDate"
+              ViewAttribute="InvoiceDate"
+              Operator="ONORAFTER"
+              Conjunction="AND"
+              Value=":p_invoice_from"
+              IsBindVarValue="true"
+              Required="Optional"/>
+          </ViewCriteriaRow>
+          <ViewCriteriaRow
+            Name="InvoicesNotValidatedVOCriteria_InvoicesNotValidatedVOCriteria_row_1_InvoiceDate_itemHolder_row_1"
+            Conjunction="AND">
+            <ViewCriteriaItem
+              Name="InvoicesNotValidatedVOCriteria_InvoicesNotValidatedVOCriteria_row_1_InvoiceDate_InvoicesNotValidatedVOCriteria_InvoicesNotValidatedVOCriteria_row_1_InvoiceDate_itemHolder_InvoicesNotValidatedVOCriteria_InvoicesNotValidatedVOCriteria_row_1_InvoiceDate_itemHolder_row_1_InvoiceDate"
+              ViewAttribute="InvoiceDate"
+              Operator="ONORBEFORE"
+              Conjunction="AND"
+              Value=":p_invoice_to"
+              IsBindVarValue="true"
+              Required="Optional"/>
+          </ViewCriteriaRow>
+        </ViewCriteria>
+      </ViewCriteriaItemCompound>
+      <ViewCriteriaItemCompound
+        Name="DiscountDueDate"
+        ViewAttribute="DiscountDueDate">
+        <ViewCriteria
+          Name="InvoicesNotValidatedVOCriteria_InvoicesNotValidatedVOCriteria_row_1_DiscountDueDate_itemHolder"
+          ViewObjectName="od.tdmatch.model.InvoicesNotValidatedVO"
+          Conjunction="OR">
+          <ViewCriteriaRow
+            Name="InvoicesNotValidatedVOCriteria_InvoicesNotValidatedVOCriteria_row_1_DiscountDueDate_itemHolder_row_0"
+            Conjunction="AND">
+            <ViewCriteriaItem
+              Name="DiscountDueDate"
+              ViewAttribute="DiscountDueDate"
+              Operator="ONORAFTER"
+              Conjunction="AND"
+              Value=":p_due_from"
+              IsBindVarValue="true"
+              Required="Optional"/>
+          </ViewCriteriaRow>
+          <ViewCriteriaRow
+            Name="InvoicesNotValidatedVOCriteria_InvoicesNotValidatedVOCriteria_row_1_DiscountDueDate_itemHolder_row_1"
+            Conjunction="AND">
+            <ViewCriteriaItem
+              Name="InvoicesNotValidatedVOCriteria_InvoicesNotValidatedVOCriteria_row_1_DiscountDueDate_InvoicesNotValidatedVOCriteria_InvoicesNotValidatedVOCriteria_row_1_DiscountDueDate_itemHolder_InvoicesNotValidatedVOCriteria_InvoicesNotValidatedVOCriteria_row_1_DiscountDueDate_itemHolder_row_1_DiscountDueDate"
+              ViewAttribute="DiscountDueDate"
+              Operator="ONORBEFORE"
+              Conjunction="AND"
+              Value=":p_due_to"
+              IsBindVarValue="true"
+              Required="Optional"/>
+          </ViewCriteriaRow>
+        </ViewCriteria>
+      </ViewCriteriaItemCompound>
+    </ViewCriteriaRow>
+    <ViewCriteriaRow
+      Name="InvoicesNotValidatedVOCriteria_row_2"
+      Conjunction="AND"
+      UpperColumns="1">
+      <ViewCriteriaItem
+        Name="VendorNo"
+        ViewAttribute="VendorNo"
+        Operator="="
+        Conjunction="AND"
+        Value=":p_vend_no"
+        IsBindVarValue="true"
+        Required="Optional"/>
+      <ViewCriteriaItem
+        Name="VendorName"
+        ViewAttribute="VendorName"
+        Operator="="
+        Conjunction="AND"
+        Value=":p_ven_name"
+        IsBindVarValue="true"
+        Required="Optional"/>
+      <ViewCriteriaItem
+        Name="Site"
+        ViewAttribute="Site"
+        Operator="="
+        Conjunction="AND"
+        Value=":p_site"
+        IsBindVarValue="true"
+        Required="Optional"/>
+    </ViewCriteriaRow>
+    <ViewCriteriaRow
+      Name="InvoicesNotValidatedVOCriteria_row_3"
+      Conjunction="AND"
+      UpperColumns="1">
+      <ViewCriteriaItem
+        Name="TargetValue2"
+        ViewAttribute="TargetValue2"
+        Operator="="
+        Conjunction="AND"
+        Value=":p_vendor_asst"
+        IsBindVarValue="true"
+        Required="Optional"/>
+    </ViewCriteriaRow>
+  </ViewCriteria>
+  <AttrArray Name="KeyAttributes">
+    <Item Value="VendorNo"/>
+    <Item Value="VendorName"/>
+    <Item Value="Site"/>
+    <Item Value="InvoiceNum"/>
+    <Item Value="TargetValue1"/>
+  </AttrArray>
+  <ResourceBundle>
+    <PropertiesBundle
+      PropertiesFile="od.tdmatch.model.ModelBundle"/>
+  </ResourceBundle>
+  <Category
+    Name="Category1"/>
+  <Category
+    Name="Category2"/>
+  <Category
+    Name="Category3"/>
+  <Category
+    Name="Category4"/>
+</ViewObject>

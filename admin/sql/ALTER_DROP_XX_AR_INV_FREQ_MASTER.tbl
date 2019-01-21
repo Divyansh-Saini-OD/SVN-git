@@ -1,0 +1,35 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Altering TABLE XX_AR_INV_FREQ_MASTER
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | Table       : XX_AR_INV_FREQ_MASTER                                      |
+-- | Description : Altered the table to add parent level inforamtion of the   |
+-- |               customer and the mail_to_attention column.                 |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version      Date          Author                   Remarks               |
+-- |=======      ===========   =====================    ===================== |
+-- | V1.0        29-APR-2010   Gokila Tamilselvam       Initial version       |
+-- |                                                    R1.4 CR# 586          |
+-- +==========================================================================+
+
+ALTER TABLE xxfin.xx_ar_inv_freq_master
+        DROP( PARENT_CUST_ACCT_ID
+             ,PARENT_CUST_DOC_ID
+             ,MAIL_TO_ATTENTION
+            );
+
+SHOW ERROR

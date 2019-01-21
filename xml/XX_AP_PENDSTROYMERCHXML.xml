@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataTemplate name="XX_AP_PENDSTROYMERCHXML"  defaultPackage="XX_AP_PENDSTROYMERCH_PKG" Version="1.0">
+<parameters>
+  <parameter name="P_FREQUENCY" dataType="string" />
+  <parameter name="P_RUN_DATE" dataType="date" /> 
+  </parameters>
+ <dataQuery>
+  <sqlStatement name="Q1">
+ <![CDATA[ SELECT :G_SMTP_SERVER SMTP_SERVER,
+   :G_EMAIL_SUBJECT EMAIL_SUBJECT, :G_EMAIL_CONTENT EMAIL_CONTENT, :G_DISTRIBUTION_LIST DISTRIBUTION_LIST from dual]]> 
+</sqlStatement>
+<sqlStatement name="Q2">
+ <![CDATA[SELECT xarh.vendor_num ,
+  xarl.rtv_number,
+  asp.vendor_name, --(SELECT vendor_name FROM ap_suppliers where vendor_id =  ,
+  xarl.location loc,
+  xarl.rga_number,
+  xarl.sku,
+  xarl.vendor_product_code,
+  xarl.item_description,
+  xarl.qty,
+  xarl.cost,
+  xarl.line_amount,
+  xarl.frequency_code,
+  xarl.header_id,
+  xarh.return_code,
+  xarh.return_description,
+  xarh.location_address1,
+  xarh.location_address2,
+  xarh.location_address3,
+  xarh.location_address4,
+  xarh.location_address5,
+  xarh.location_address6,
+  xarh.frequency_code frq1
+FROM xx_ap_rtv_hdr_attr xarh,
+  xx_ap_rtv_lines_attr xarl ,
+  ap_suppliers asp ,
+  ap_supplier_sites_all aspa
+WHERE 1                                  =1
+AND xarh.record_status                   ='N'
+AND xarh.return_description              = 'DESTROY-OPTION 73'
+AND xarl.rtv_number                      = xarh.rtv_number
+AND xarl.frequency_Code                  = xarh.frequency_code
+AND asp.vendor_id                        =aspa.vendor_id
+AND LTRIM(aspa.vendor_site_code_alt,'0') = LTRIM(xarh.vendor_num,'0')
+AND aspa.pay_site_flag                   = 'Y'
+AND NVL(aspa.inactive_date,sysdate)     >= TRUNC(sysdate)
+&G_where_clause
+]]> 
+</sqlStatement>
+   </dataQuery>
+  <dataTrigger name="beforeReport" source="XX_AP_PENDSTROYMERCH_PKG.beforeReport()" /> 
+ <dataStructure>
+  <group name="G_EMAIL_DETAILS" source="Q1">
+	<element name="SMTP_SERVER" value= "SMTP_SERVER" />
+	<element name="EMAIL_SUBJECT" value= "EMAIL_SUBJECT" />
+	<element name="EMAIL_CONTENT" value= "EMAIL_CONTENT" />
+	<element name="DISTRIBUTION_LIST" value= "DISTRIBUTION_LIST" />
+  <group name="G_PENDSTROYMERCH_HEADER" source="Q2">
+	<element name="VENDOR_NUM" value="VENDOR_NUM" /> 
+	<element name="VENDOR_NAME" value="VENDOR_NAME" /> 
+	<element name="LOCATION" value="LOC"/>
+	<element name="RETURN_CODE" value="RETURN_CODE" />
+	<element name="RETURN_DESCRIPTION" value="RETURN_DESCRIPTION" />
+	<element name="LOCATION_ADDRESS1" value="LOCATION_ADDRESS1"/> 
+	<element name="LOCATION_ADDRESS2" value="LOCATION_ADDRESS2"/> 
+	<element name="LOCATION_ADDRESS3" value="LOCATION_ADDRESS3"/> 
+	<element name="LOCATION_ADDRESS4" value="LOCATION_ADDRESS4"/> 
+	<element name="LOCATION_ADDRESS5" value="LOCATION_ADDRESS5"/> 
+	<element name="LOCATION_ADDRESS6" value="LOCATION_ADDRESS6"/> 
+	<element name="FREQUENCY_CODE" value="frq1"/> 
+	<element name="RGA_NUMBER" value="RGA_NUMBER" /> 
+	<element name="RTV_NUMBER" value="RTV_NUMBER" />
+	<element name="SKU" value="SKU" /> 
+	<element name="VENDOR_PRODUCT_CODE" value="VENDOR_PRODUCT_CODE"/> 
+	<element name="SKU_DESCRIPTION" value="ITEM_DESCRIPTION" /> 
+	<element name="QTY" value="QTY" /> 
+	<element name="COST" value="COST" /> 
+	<element name="LINE_AMOUNT" value="LINE_AMOUNT" /> 
+	<element name="TOT_LINE_AMOUNT"     value="G_PENDSTROYMERCH_HEADER.LINE_AMOUNT" function="SUM()"/>
+ </group>
+</group>
+  </dataStructure>
+  <dataTrigger name="afterReport"  source="XX_AP_PENDSTROYMERCH_PKG.afterReport()"/>
+  </dataTemplate>  

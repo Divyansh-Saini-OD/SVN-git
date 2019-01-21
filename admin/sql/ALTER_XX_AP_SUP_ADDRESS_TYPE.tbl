@@ -1,0 +1,27 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | RICE ID     :  C0709                                                    |
+-- | Name        :  IDMS CONVERSION Custom Table                              |
+-- |                                                                          |
+-- | SQL Script to create the following object                                |
+-- |             Table       : XX_AP_SUP_ADDRESS_TYPE                         |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0      29-Mar-2018  Sunil Kalal          Added new columns             |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE XX_AP_SUP_ADDRESS_TYPE
+ADD ( dashboard_ind varchar2(1) ,vendor_extranet_ind varchar2(1));		   
+	   
+SHOW ERROR;

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:nxsd="http://xmlns.oracle.com/pcbpel/nxsd"
+            targetNamespace="http://TargetNamespace.com/Pcard_term"
+            xmlns:tns="http://TargetNamespace.com/Pcard_term"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified" nxsd:encoding="ASCII" nxsd:stream="chars" nxsd:version="NXSD">
+<xsd:element name="container">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="tns:InvoiceHeader" maxOccurs="1" />
+        <xsd:element ref="tns:Trailer" maxOccurs="1"/>
+      </xsd:sequence>
+    </xsd:complexType>
+</xsd:element>
+  <!-- Invoice -->
+<xsd:element name="InvoiceHeader" type="tns:InvoiceHeaderType"/>
+  <xsd:complexType name="InvoiceHeaderType">
+    <xsd:sequence>
+              <xsd:element name="RunDate" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>
+              <xsd:element name="RunTime" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>              
+              <xsd:element name="CompanyID" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>
+              <xsd:element name="MapperName" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="${eol}"/>              
+      <xsd:element name="Lines">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="Line-Invoice" minOccurs="1" maxOccurs="unbounded">
+              <xsd:complexType>
+                <xsd:group ref="tns:InvoiceLines"/>
+              </xsd:complexType>
+            </xsd:element>
+         </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      </xsd:sequence>
+  </xsd:complexType>
+  <xsd:group name="InvoiceLines">
+    <xsd:sequence>
+        <xsd:element name="TransactionAmount" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>
+        <xsd:element name="SalesTax" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>
+        <xsd:element name="AccountCode" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>        
+        <xsd:element name="AccountNumber" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>
+        <xsd:element name="TransactionDate" type="xsd:string" nxsd:style="terminated" nxsd:length="${eol}"/>        
+    </xsd:sequence>
+  </xsd:group>
+<xsd:element name="Trailer" type="tns:TrailerType"/>
+  <xsd:complexType name="TrailerType">
+    <xsd:sequence>
+       <xsd:element name="RecordCount" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>
+       <xsd:element name="DebitTotal" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>
+       <xsd:element name="CreditTotal" type="xsd:string" nxsd:style="terminated" nxsd:length="${eol}"/>       
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

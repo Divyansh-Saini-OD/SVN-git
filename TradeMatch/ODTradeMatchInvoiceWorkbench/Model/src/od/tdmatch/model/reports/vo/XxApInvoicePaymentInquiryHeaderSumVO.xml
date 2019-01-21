@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewObject
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="XxApInvoicePaymentInquiryHeaderSumVO"
+  Version="12.2.1.12.24"
+  InheritPersonalization="merge"
+  BindingStyle="OracleName"
+  CustomQuery="true"
+  RowClass="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquiryHeaderSumVORowImpl"
+  ComponentClass="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquiryHeaderSumVOImpl"
+  PageIterMode="Full"
+  FetchMode="FETCH_AS_NEEDED"
+  Passivate="All">
+  <DesignTime>
+    <Attr Name="_codeGenFlag2" Value="Coll"/>
+    <Attr Name="_isExpertMode" Value="true"/>
+    <Attr Name="_isCodegen" Value="true"/>
+  </DesignTime>
+  <Variable
+    Name="bindSupName"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="bindSupNo"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="bindVenAssi"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="bindPoNum"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="bindInvSrc"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="bindInvTyp"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="bindInvNum"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="bindPayStatus"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="bindPayNum"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="bindPoType"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="bindInvStatus"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="bindInvDateFrom"
+    Kind="where"
+    Type="oracle.jbo.domain.Date">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquiryHeaderSumVO.bindInvDateFrom_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquiryHeaderSumVO.bindInvDateFrom_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </Variable>
+  <Variable
+    Name="bindInvDateTo"
+    Kind="where"
+    Type="oracle.jbo.domain.Date">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquiryHeaderSumVO.bindInvDateTo_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquiryHeaderSumVO.bindInvDateTo_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </Variable>
+  <Variable
+    Name="bindGlDateFrom"
+    Kind="where"
+    Type="oracle.jbo.domain.Date">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquiryHeaderSumVO.bindGlDateFrom_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquiryHeaderSumVO.bindGlDateFrom_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </Variable>
+  <Variable
+    Name="bindGlDateTo"
+    Kind="where"
+    Type="oracle.jbo.domain.Date">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquiryHeaderSumVO.bindGlDateTo_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquiryHeaderSumVO.bindGlDateTo_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </Variable>
+  <Variable
+    Name="bindPoDateFrom"
+    Kind="where"
+    Type="oracle.jbo.domain.Date">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquiryHeaderSumVO.bindPoDateFrom_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquiryHeaderSumVO.bindPoDateFrom_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </Variable>
+  <Variable
+    Name="bindSupSiteNo"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="bindPoDateTo"
+    Kind="where"
+    Type="oracle.jbo.domain.Date">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquiryHeaderSumVO.bindPoDateTo_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquiryHeaderSumVO.bindPoDateTo_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </Variable>
+  <Variable
+    Name="bindExp"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="bindLineChk"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="bindChkbk"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="bindOrgName"
+    Kind="where"
+    Type="java.lang.String"/>
+  <SQLQuery><![CDATA[SELECT NULL VENDORASISTANT,              
+ NULL INVOICE_NUM,      
+  sum(a.INVOICE_AMOUNT) TOTAL_INVOICE_AMOUNT ,                 
+    sum(a.freight_amount) TOTAL_freight_amount ,                
+   sum( a.TAX_AMOUNT) TOTAL_TAX_AMOUNT           
+FROM TABLE (XX_AP_INV_TRADE_DASHBOARD_PKG.XX_AP_INV_PAY_INQ ( P_DATE_FROM => to_date(:bindInvDateFrom,'DD-MON-YYYY') , P_DATE_TO => to_date(:bindInvDateTo,'DD-MON-YYYY'), P_GL_DATE_FROM => to_date(:bindGlDateFrom,'DD-MON-YYYY') , P_GL_DATE_TO => to_date(:bindGlDateTo,'DD-MON-YYYY'),P_PO_DATE_FROM => to_date(:bindPoDateFrom,'DD-MON-YYYY'), P_PO_DATE_TO => to_date(:bindPoDateTo,'DD-MON-YYYY') )) a  
+--  from table (XX_AP_INV_TRADE_DASHBOARD_PKG.XX_AP_INV_PAY_INQ ( P_DATE_FROM => '14-AUG-17' , P_DATE_TO => '14-AUG-17', P_GL_DATE_FROM => null, P_GL_DATE_TO => null,P_PO_DATE_FROM => null, P_PO_DATE_TO => null)) a  
+WHERE a.SUP_NAME     = NVL(:bindSupName, a.SUP_NAME)  
+AND a.SUP_NUM        = NVL( :bindSupNo,a.SUP_NUM)  
+AND a.SUP_SITE       = NVL( :bindSupSiteNo,A.SUP_SITE)  
+AND a.VENDORASISTANT = NVL(:bindVenAssi,A.VENDORASISTANT)  
+AND nvl(a.PO_NUM ,'X')    = NVL(:bindPoNum,nvl(a.PO_NUM ,'X'))
+AND a.INV_SOURCE     = NVL(:bindInvSrc,A.INV_SOURCE)  
+AND a.INVOICE_TYPE   = NVL(:bindInvTyp,A.INVOICE_TYPE)  
+AND a.INVOICE_NUM    = NVL(:bindInvNum,A.INVOICE_NUM)  
+AND a.OU_NAME = NVL(:bindOrgName,A.OU_NAME) 
+AND a.PAYMENT_STATUS_code = NVL(:bindPayStatus,A.PAYMENT_STATUS_code)  
+AND nvl(a.Payment_Numb,'X')  = NVL(:bindPayNum,nvl(a.Payment_Numb,'X') )
+AND (A.PO_TYPE_CODE IN  
+  (SELECT regexp_substr(:bindPoType,'[^,]+', 1, level)  
+  FROM dual  
+    CONNECT BY regexp_substr(:bindPoType, '[^,]+', 1, level) IS NOT NULL  
+  ) OR :bindPoType is null ) 
+AND (A.excep IN  
+  (SELECT regexp_substr(:bindExp,'[^,]+', 1, level)  
+  FROM dual  
+    CONNECT BY REGEXP_SUBSTR(:bindExp, '[^,]+', 1, LEVEL) IS NOT NULL  
+  )or  :bindExp is null) 
+AND A.INVOICE_STATUS_CODE         = NVL(:bindInvStatus,A.INVOICE_STATUS_CODE) 
+and a.LINE_TYPE_LOOKUP_CODE ='ITEM'
+AND a.CHARGE_BACK_LINE = NVL(:bindChkbk,a.CHARGE_BACK_LINE) 
+and exists (select 1 from AP_INVOICE_LINES_ALL AILA where AILA.INVOICE_ID=a.INVOICE_ID and 
+(a.LINE_TYPE_LOOKUP_CODE in 
+  (SELECT regexp_substr(:bindLineChk,'[^,]+', 1, level) 
+  FROM dual 
+    connect by REGEXP_SUBSTR(:bindLineChk, '[^,]+', 1, level) is not null 
+  ) or :bindLineChk is null))
+]]></SQLQuery>
+  <ViewAttribute
+    Name="Vendorasistant"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="25"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="VENDORASISTANT"
+    Expression="VENDORASISTANT"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="25"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="InvoiceNum"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="25"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="INVOICE_NUM"
+    Expression="INVOICE_NUM"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="25"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="TotalInvoiceAmount"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="TOTAL_INVOICE_AMOUNT"
+    Expression="TOTAL_INVOICE_AMOUNT"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquiryHeaderSumVO.TotalInvoiceAmount_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquiryHeaderSumVO.TotalInvoiceAmount_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="TotalFreightAmount"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="TOTAL_FREIGHT_AMOUNT"
+    Expression="TOTAL_FREIGHT_AMOUNT"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquiryHeaderSumVO.TotalFreightAmount_FMT_FORMAT"/>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquiryHeaderSumVO.TotalFreightAmount_FMT_FORMATTER"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="TotalTaxAmount"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="TOTAL_TAX_AMOUNT"
+    Expression="TOTAL_TAX_AMOUNT"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquiryHeaderSumVO.TotalTaxAmount_FMT_FORMAT"/>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.reports.vo.XxApInvoicePaymentInquiryHeaderSumVO.TotalTaxAmount_FMT_FORMATTER"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ResourceBundle>
+    <PropertiesBundle
+      PropertiesFile="od.tdmatch.model.ModelBundle"/>
+  </ResourceBundle>
+</ViewObject>

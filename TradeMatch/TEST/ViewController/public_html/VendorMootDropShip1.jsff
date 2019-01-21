@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1" xmlns:af="http://xmlns.oracle.com/adf/faces/rich"
+          xmlns:f="http://java.sun.com/jsf/core">
+  <af:panelGridLayout id="pgl1" inlineStyle="column-count:2;">
+    <af:gridRow marginTop="5px" height="10px" id="gr1">
+      <af:gridCell marginStart="5px" width="auto" marginEnd="5px" id="gc1">
+        <af:outputFormatted value="Office Depot - AP Trade - Match Exception - Vendor's MOOT Details - Dropship : " id="of1"
+                            inlineStyle="font-size:large;"/>
+        <af:outputFormatted value="#{MyDate}" id="of3" inlineStyle="font-size:large;">
+          <af:convertDateTime pattern="MM/dd/YYYY"/>
+        </af:outputFormatted>
+      </af:gridCell>
+    </af:gridRow>
+    <af:gridRow marginTop="5px" height="10px" id="gr2">
+      <af:gridCell marginStart="5px" width="auto" marginEnd="5px" id="gc2"/>
+    </af:gridRow>
+    <af:gridRow marginTop="5px" height="auto" marginBottom="5px" id="gr3">
+      <af:gridCell marginStart="5px" width="auto" marginEnd="5px" id="gc3"/>
+    </af:gridRow>
+  </af:panelGridLayout>
+</jsp:root>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataTemplate name="XXAPMOOTDRPSHIPXML" Version="1.0">
+  <dataQuery>
+<sqlStatement name="Q1">
+ <![CDATA[ SELECT /*+ LEADING (h) INDEX(aps AP_SUPPLIER_SITES_U1) */                                                           
+       (SELECT tv.target_value2                                                             
+         FROM xx_fin_translatevalues tv,                                                                                                               
+              xx_fin_translatedefinition td                                                               
+        WHERE td.translation_name = 'XX_AP_VENDOR_ASSISTANTS'                                                                                                                
+          AND tv.translate_id  = td.translate_id                                                                                                                
+          AND tv.target_value1 = NVL(aps.attribute6,'Open')||''                                                                                                               
+          AND tv.enabled_flag = 'Y'                                                                                                               
+          AND sysdate between tv.start_date_active and NVL(tv.end_date_active,sysdate)) vendor_assistant,
+asup.vendor_name supplier_name,	
+asup.segment1 supplier_no,	
+aps.vendor_site_code supplier_site,   
+DECODE(SIGN(instr(e.name,'/')),0,NULL,1,'D') discount,                                                                                      
+ai.invoice_num,                
+NVL(ai.voucher_num,ai.doc_sequence_value) voucher_num,                                                                                                                                     
+       TO_CHAR(ai.invoice_date,'MM/DD/YYYY') invoice_date,                                                                                    
+	   ph.segment1 po_number,                           
+	   ltrim(SUBSTR(hrl.location_code,1,6),'0') location,                                                                                                               
+       TO_CHAR(NVL(py.discount_date,py.due_date),'MM/DD/YYYY') due_date,                                                                                   
+       ai.invoice_amount,                                                                                                                                                                                                                 
+       XX_AP_TRADE_MATCH_UTL_PKG.xxod_tdmatch_quantity(ai.invoice_id) Qty_Hold_Amt,                                                                                       
+       XX_AP_TRADE_MATCH_UTL_PKG.xxod_tdmatch_price(ai.invoice_id) Price_Hold_Amt,                                                                                      
+        XX_AP_TRADE_MATCH_UTL_PKG.xx_ap_freight_invoice(ai.invoice_id) Frt_Hold,                                                                                 
+ DECODE(SUBSTR(ai.attribute5,1,1),'F','Y','N') front_doorC,                                                            
+                                   (CASE WHEN SUBSTR(ai.attribute5,1,1) = 'N' then 'Y' else 'N' end) non_codec
+  FROM ap_terms e,                                                                                                               
+       hr_locations_all hrl,                                                             
+       po_headers_all ph,                                                             
+       ap_suppliers asup,                                                            
+       ap_supplier_sites_all aps,                             
+       ap_payment_schedules_all py,                                                             
+       ap_invoices_all ai,                             
+       (SELECT /*+ INDEX(aph XX_AP_HOLDS_N1) */                                     
+            distinct aph.invoice_id                                                             
+          FROM ap_holds_all aph                                                            
+         WHERE NVL(aph.status_flag,'S')= 'S'                                    
+           AND aph.release_lookup_code is null                                    
+        ) h                                                            
+WHERE                                                                         
+   ai.invoice_id=h.invoice_id                                              
+     AND ai.invoice_num not like '%ODDBUIA%'   
+     AND NVL(ai.validation_request_id,1)<>-9999999999  
+     --AND ai.source ='US_OD_DROPSHIP' 	 
+     AND py.invoice_id=ai.invoice_id                                                                                                                  
+     AND aps.vendor_site_id=ai.vendor_site_id                                   
+     AND asup.vendor_id=ai.vendor_id+0                                                            
+     AND asup.vendor_id = aps.vendor_id+0                                                            
+     AND ph.po_header_id = NVL(ai.po_header_id,ai.quick_po_header_id)                                                             
+     AND hrl.location_id = ph.ship_to_location_id                                                            
+     AND e.term_id=ai.terms_id                                                             
+  AND exists (SELECT 'x'                                              
+         FROM xx_fin_translatevalues tv,                                                                                                               
+              xx_fin_translatedefinition td                                                               
+        WHERE td.translation_name = 'XX_AP_TRADE_CATEGORIES'                                                                                                                 
+          AND tv.translate_id  = td.translate_id                                                                                                               
+          AND tv.enabled_flag = 'Y'                                                                                                                
+          AND sysdate between tv.start_date_active and nvl(tv.end_date_active,sysdate)                                              
+          AND tv.target_value1 = aps.attribute8)                                                               
+  AND ai.org_id = 404                                     
+  AND EXISTS (SELECT  'x'                                                                                                           
+                FROM ap_invoice_lines_all al                                                                                                           
+               WHERE al.invoice_id=ai.invoice_id          
+               AND nvl(al.inventory_item_id,-1)=nvl('',nvl(al.inventory_item_id,-1))                                                                                                                          
+              )                                                            
+   AND EXISTS (SELECT 'x'                                                            
+                 FROM  xx_fin_translatevalues tv                                                            
+                      ,xx_fin_translatedefinition td                                                            
+                WHERE td.TRANSLATION_NAME = 'XX_AP_TR_MATCH_INVOICES'                                                            
+                  AND tv.TRANSLATE_ID  = td.TRANSLATE_ID                                                            
+                  AND tv.enabled_flag='Y'                                                            
+                  AND SYSDATE BETWEEN tv.start_date_active and NVL(tv.end_date_active,sysdate)                                                            
+                  AND tv.target_value1=ai.source                                                            
+                 )                                                                           
+ AND ai.attribute5 like '%DropShip%'
+ AND NVL(py.discount_date,py.due_date) IS NOT NULL
+Order by VENDOR_ASSISTANT,SUPPLIER_NAME,SUPPLIER_SITE,INVOICE_DATE,INVOICE_NUM]]> 
+</sqlStatement>
+  </dataQuery> 
+ <dataStructure>
+<group name="G_DROPSHIP" source="Q1">
+	<element name="VENDOR_ASSISTANT" value= "VENDOR_ASSISTANT" />
+	<element name="SUPPLIER_NAME" value= "SUPPLIER_NAME" />
+	<element name="SUPPLIER_NO" value= "SUPPLIER_NO" />
+	<element name="SUPPLIER_SITE" value= "SUPPLIER_SITE" />
+<element name="DISCOUNT" value="DISCOUNT"/>
+<element name="INVOICE_NUM" value="INVOICE_NUM"/> 
+<element name="VOUCHER_NUM" value="VOUCHER_NUM"/>
+<element name="INVOICE_DATE" value="INVOICE_DATE"/>
+<element name="PO_NUMBER" value="PO_NUMBER"/> 
+<element name="LOCATION" value="LOCATION"/> 
+<element name="DUE_DATE" value="DUE_DATE"/> 
+<element name="INVOICE_AMOUNT" value="INVOICE_AMOUNT"/>
+<element name="QTY_HOLD_AMT" value="QTY_HOLD_AMT"/>
+<element name="PRICE_HOLD_AMT" value="PRICE_HOLD_AMT"/>
+<element name="FRONT_DOORC" value="FRONT_DOORC"/> 
+<element name="NON_CODEC" value="NON_CODEC"/> 
+<element name="FRT_HOLD" value="FRT_HOLD"/> 
+</group>
+  </dataStructure>
+</dataTemplate>  

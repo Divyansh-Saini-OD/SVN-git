@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewObject
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="MassReleaseReasonLovVO"
+  Version="12.2.1.12.24"
+  InheritPersonalization="merge"
+  BindingStyle="OracleName"
+  CustomQuery="true"
+  RowClass="od.tdmatch.model.lov.MassReleaseReasonLovVORowImpl"
+  ComponentClass="od.tdmatch.model.lov.MassReleaseReasonLovVOImpl"
+  PageIterMode="Full"
+  OrderBy='"HOLD_LOOKUP_CODE"'>
+  <DesignTime>
+    <Attr Name="_codeGenFlag2" Value="Coll"/>
+    <Attr Name="_isExpertMode" Value="true"/>
+    <Attr Name="_isCodegen" Value="true"/>
+  </DesignTime>
+  <Properties>
+    <SchemaBasedProperties>
+      <LABEL
+        ResId="od.tdmatch.model.lov.MassReleaseReasonLovVO_LABEL"/>
+    </SchemaBasedProperties>
+  </Properties>
+  <SQLQuery><![CDATA[select target_value1 hold_lookup_code  
+FROM xx_fin_translatevalues tv,                                                                              
+              xx_fin_translatedefinition td                              
+        WHERE td.translation_name = 'OD_AP_REASON_CD_ACCT_MAP'                                                                               
+          AND tv.translate_id  = td.translate_id                                                                              
+          AND tv.enabled_flag = 'Y'                                                                              
+          AND sysdate between tv.start_date_active and nvl(tv.end_date_active,sysdate)             
+          AND tv.target_value15='Y']]></SQLQuery>
+  <ViewAttribute
+    Name="HoldLookupCode"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="255"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="HOLD_LOOKUP_CODE"
+    Expression="HOLD_LOOKUP_CODE"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="25"/>
+    </DesignTime>
+  </ViewAttribute>
+  <AttrArray Name="KeyAttributes">
+    <Item Value="HoldLookupCode"/>
+  </AttrArray>
+  <ResourceBundle>
+    <PropertiesBundle
+      PropertiesFile="od.tdmatch.model.ModelBundle"/>
+  </ResourceBundle>
+</ViewObject>

@@ -1,0 +1,44 @@
+BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE xxfin.xx_gl_arcs_balances';
+EXCEPTION
+  WHEN OTHERS THEN NULL;
+END;
+/
+
+CREATE TABLE xxfin.xx_gl_arcs_balances
+(
+ period_name           VARCHAR2(30)  NOT NULL
+,company               NUMBER        NOT NULL
+,account               NUMBER        NOT NULL
+,location              NUMBER        
+,lob                   NUMBER        
+,currency_code         VARCHAR2(10)  
+,beginning_balance     NUMBER
+,sum_ptd_net_dr        NUMBER
+,sum_ptd_net_cr        NUMBER
+,ending_balance        NUMBER
+,created_date          TIMESTAMP    DEFAULT systimestamp
+,created_by            VARCHAR2(60) DEFAULT USER
+,updated_date          TIMESTAMP    DEFAULT systimestamp
+,updated_by            VARCHAR2(60) DEFAULT USER
+,CONSTRAINT xx_gl_arcs_balances_pk  PRIMARY KEY (period_name
+                                                ,company
+                                                ,account
+                                                ,location
+                                                ,lob
+                                               )
+);
+
+
+Insert into xx_gl_arcs_balances (PERIOD_NAME,COMPANY,ACCOUNT,LOCATION,LOB,BEGINNING_BALANCE)
+       values ('JAN-18','1001','20101000',10000,90,-417935171.85);
+Insert into xx_gl_arcs_balances (PERIOD_NAME,COMPANY,ACCOUNT,LOCATION,LOB,BEGINNING_BALANCE)
+       values ('JAN-18','1003','20101000',10000,90,-190.25);
+
+Insert into xx_gl_arcs_balances (PERIOD_NAME,COMPANY,ACCOUNT,LOCATION,LOB,BEGINNING_BALANCE)
+       values ('JAN-18','1001','20204000',10000,90,-122018192.58);
+Insert into xx_gl_arcs_balances (PERIOD_NAME,COMPANY,ACCOUNT,LOCATION,LOB,BEGINNING_BALANCE)
+       values ('JAN-18','1003','20204000',10000,90,-671.44);
+
+commit;
+

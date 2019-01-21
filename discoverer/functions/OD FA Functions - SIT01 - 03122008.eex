@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EndUserLayerExport SourceEULId="20061121114954" SourceEULVersion="10.1.2.48.18" MinimumCodeVersion="10.0.0" ExportFileVersion="10.0.0" EULSecurityModel="OracleApplications">
+<Function Available="True" Description="CUR_INT" DeveloperKey="XXFA_CUR_INT" DeveloperKeyFrozen="False" ExternalDatabaseLink="" ExternalName="CUR_INT" ExternalOwner="APPS" ExternalPackage="XXOD_DISCO_PKG" FunctionType="UserDefined" Hidden="False" Id="253755" MaximumArgs="3" MinimumArgs="3" Name="XXFA_CUR_INT" ReturnDataType="Number" UserProperty1="" UserProperty2="">
+<FunctionArg DataType="Varchar" Description="p_company" DeveloperKey="p_company" DeveloperKeyFrozen="False" Id="255618" Name="p_company" Optional="False" Position="1" UserProperty1="" UserProperty2="">
+<ElementRef Name="Function" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="XXFA_CUR_INT"/>
+<UniqueIdent ConstraintName="FUN2" Name="XXFA_CUR_INT"/>
+</ElementRef>
+</FunctionArg>
+<FunctionArg DataType="Number" Description="p_fiscal_year" DeveloperKey="p_fiscal_year" DeveloperKeyFrozen="False" Id="255623" Name="p_fiscal_year" Optional="False" Position="2" UserProperty1="" UserProperty2="">
+<ElementRef Name="Function" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="XXFA_CUR_INT"/>
+<UniqueIdent ConstraintName="FUN2" Name="XXFA_CUR_INT"/>
+</ElementRef>
+</FunctionArg>
+<FunctionArg DataType="Varchar" Description="p_lease_number" DeveloperKey="p_lease_number" DeveloperKeyFrozen="False" Id="255630" Name="p_lease_number" Optional="False" Position="3" UserProperty1="" UserProperty2="">
+<ElementRef Name="Function" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="XXFA_CUR_INT"/>
+<UniqueIdent ConstraintName="FUN2" Name="XXFA_CUR_INT"/>
+</ElementRef>
+</FunctionArg>
+</Function>
+<Function Available="True" Description="CUR_PRL" DeveloperKey="XXFA_CUR_PRL" DeveloperKeyFrozen="False" ExternalDatabaseLink="" ExternalName="CUR_PRL" ExternalOwner="APPS" ExternalPackage="XXOD_DISCO_PKG" FunctionType="UserDefined" Hidden="False" Id="253757" MaximumArgs="3" MinimumArgs="3" Name="XXFA_CUR_PRL" ReturnDataType="Number" UserProperty1="" UserProperty2="">
+<FunctionArg DataType="Varchar" Description="p_company" DeveloperKey="p_company" DeveloperKeyFrozen="False" Id="255619" Name="p_company" Optional="False" Position="1" UserProperty1="" UserProperty2="">
+<ElementRef Name="Function" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="XXFA_CUR_PRL"/>
+<UniqueIdent ConstraintName="FUN2" Name="XXFA_CUR_PRL"/>
+</ElementRef>
+</FunctionArg>
+<FunctionArg DataType="Number" Description="p_fiscal_year" DeveloperKey="p_fiscal_year" DeveloperKeyFrozen="False" Id="255624" Name="p_fiscal_year" Optional="False" Position="2" UserProperty1="" UserProperty2="">
+<ElementRef Name="Function" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="XXFA_CUR_PRL"/>
+<UniqueIdent ConstraintName="FUN2" Name="XXFA_CUR_PRL"/>
+</ElementRef>
+</FunctionArg>
+<FunctionArg DataType="Varchar" Description="p_lease_number" DeveloperKey="p_lease_number" DeveloperKeyFrozen="False" Id="255631" Name="p_lease_number" Optional="False" Position="3" UserProperty1="" UserProperty2="">
+<ElementRef Name="Function" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="XXFA_CUR_PRL"/>
+<UniqueIdent ConstraintName="FUN2" Name="XXFA_CUR_PRL"/>
+</ElementRef>
+</FunctionArg>
+</Function>
+<Function Available="True" Description="CUR_YEAR" DeveloperKey="XXFA_CUR_YEAR" DeveloperKeyFrozen="False" ExternalDatabaseLink="" ExternalName="CUR_YEAR" ExternalOwner="APPS" ExternalPackage="XXOD_DISCO_PKG" FunctionType="UserDefined" Hidden="False" Id="253759" MaximumArgs="3" MinimumArgs="3" Name="XXFA_CUR_YEAR" ReturnDataType="Number" UserProperty1="" UserProperty2="">
+<FunctionArg DataType="Varchar" Description="p_company" DeveloperKey="p_company" DeveloperKeyFrozen="False" Id="255620" Name="p_company" Optional="False" Position="1" UserProperty1="" UserProperty2="">
+<ElementRef Name="Function" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="XXFA_CUR_YEAR"/>
+<UniqueIdent ConstraintName="FUN2" Name="XXFA_CUR_YEAR"/>
+</ElementRef>
+</FunctionArg>
+<FunctionArg DataType="Number" Description="p_fiscal_year" DeveloperKey="p_fiscal_year" DeveloperKeyFrozen="False" Id="255625" Name="p_fiscal_year" Optional="False" Position="2" UserProperty1="" UserProperty2="">
+<ElementRef Name="Function" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="XXFA_CUR_YEAR"/>
+<UniqueIdent ConstraintName="FUN2" Name="XXFA_CUR_YEAR"/>
+</ElementRef>
+</FunctionArg>
+<FunctionArg DataType="Varchar" Description="p_lease_number" DeveloperKey="p_lease_number" DeveloperKeyFrozen="False" Id="255632" Name="p_lease_number" Optional="False" Position="3" UserProperty1="" UserProperty2="">
+<ElementRef Name="Function" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="XXFA_CUR_YEAR"/>
+<UniqueIdent ConstraintName="FUN2" Name="XXFA_CUR_YEAR"/>
+</ElementRef>
+</FunctionArg>
+</Function>
+<Function Available="True" Description="LONG_TERM" DeveloperKey="XXFA_LONG_TERM" DeveloperKeyFrozen="False" ExternalDatabaseLink="" ExternalName="LONG_TERM" ExternalOwner="APPS" ExternalPackage="XXOD_DISCO_PKG" FunctionType="UserDefined" Hidden="False" Id="253761" MaximumArgs="3" MinimumArgs="3" Name="XXFA_LONG_TERM" ReturnDataType="Number" UserProperty1="" UserProperty2="">
+<FunctionArg DataType="Varchar" Description="p_company" DeveloperKey="p_company" DeveloperKeyFrozen="False" Id="255621" Name="p_company" Optional="False" Position="1" UserProperty1="" UserProperty2="">
+<ElementRef Name="Function" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="XXFA_LONG_TERM"/>
+<UniqueIdent ConstraintName="FUN2" Name="XXFA_LONG_TERM"/>
+</ElementRef>
+</FunctionArg>
+<FunctionArg DataType="Number" Description="p_fiscal_year" DeveloperKey="p_fiscal_year" DeveloperKeyFrozen="False" Id="255626" Name="p_fiscal_year" Optional="False" Position="2" UserProperty1="" UserProperty2="">
+<ElementRef Name="Function" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="XXFA_LONG_TERM"/>
+<UniqueIdent ConstraintName="FUN2" Name="XXFA_LONG_TERM"/>
+</ElementRef>
+</FunctionArg>
+<FunctionArg DataType="Varchar" Description="p_lease_number" DeveloperKey="p_lease_number" DeveloperKeyFrozen="False" Id="255633" Name="p_lease_number" Optional="False" Position="3" UserProperty1="" UserProperty2="">
+<ElementRef Name="Function" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="XXFA_LONG_TERM"/>
+<UniqueIdent ConstraintName="FUN2" Name="XXFA_LONG_TERM"/>
+</ElementRef>
+</FunctionArg>
+</Function>
+<Function Available="True" Description="SHORT_TERM" DeveloperKey="XXFA_SHORT_TERM" DeveloperKeyFrozen="False" ExternalDatabaseLink="" ExternalName="SHORT_TERM" ExternalOwner="APPS" ExternalPackage="XXOD_DISCO_PKG" FunctionType="UserDefined" Hidden="False" Id="253763" MaximumArgs="3" MinimumArgs="3" Name="XXFA_SHORT_TERM" ReturnDataType="Number" UserProperty1="" UserProperty2="">
+<FunctionArg DataType="Varchar" Description="Company" DeveloperKey="p_company" DeveloperKeyFrozen="False" Id="255622" Name="p_company" Optional="False" Position="1" UserProperty1="" UserProperty2="">
+<ElementRef Name="Function" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="XXFA_SHORT_TERM"/>
+<UniqueIdent ConstraintName="FUN2" Name="XXFA_SHORT_TERM"/>
+</ElementRef>
+</FunctionArg>
+<FunctionArg DataType="Number" Description="p_fiscal_year" DeveloperKey="p_fiscal_year" DeveloperKeyFrozen="False" Id="255627" Name="p_fiscal_year" Optional="False" Position="2" UserProperty1="" UserProperty2="">
+<ElementRef Name="Function" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="XXFA_SHORT_TERM"/>
+<UniqueIdent ConstraintName="FUN2" Name="XXFA_SHORT_TERM"/>
+</ElementRef>
+</FunctionArg>
+<FunctionArg DataType="Varchar" Description="p_lease_number" DeveloperKey="p_lease_number" DeveloperKeyFrozen="False" Id="255634" Name="p_lease_number" Optional="False" Position="3" UserProperty1="" UserProperty2="">
+<ElementRef Name="Function" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="XXFA_SHORT_TERM"/>
+<UniqueIdent ConstraintName="FUN2" Name="XXFA_SHORT_TERM"/>
+</ElementRef>
+</FunctionArg>
+</Function>
+</EndUserLayerExport>

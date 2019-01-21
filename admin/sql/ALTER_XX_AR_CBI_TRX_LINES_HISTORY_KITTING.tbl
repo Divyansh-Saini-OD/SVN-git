@@ -1,0 +1,28 @@
+-- +========================================================================+
+-- |                  Office Depot                                          |
+-- +========================================================================+
+-- | Name        : ALTER_XX_AR_CBI_TRX_LINES_HISTORY_KITTING.tbl            |
+-- | Rice ID     : E0286                                                    |
+-- | Description : Adding new columns in the table                          |
+-- |               XX_AR_CBI_TRX_LINES_HISTORY                              |
+-- |                                                                        |
+-- |========================================================================|
+-- |Version   Date        Author           Remarks                          |
+-- |=======  ===========  =============    =================================|
+-- |  1.0     03-MAY-2016  Havish Kasina   Initial version (Defect# 37670)  |
+-- +========================================================================+
+
+	SET SHOW         OFF
+	SET VERIFY       OFF
+	SET ECHO         OFF
+	SET TAB          OFF
+	SET FEEDBACK     ON
+
+	PROMPT
+	PROMPT Altering the Table XX_AR_CBI_TRX_LINES_HISTORY .....
+	PROMPT
+
+	ALTER TABLE XXFIN.XX_AR_CBI_TRX_LINES_HISTORY  
+				ADD( KIT_SKU     VARCHAR2(120));
+
+	SHOW ERROR;

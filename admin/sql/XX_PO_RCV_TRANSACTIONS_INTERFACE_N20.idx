@@ -1,0 +1,25 @@
+-- +===========================================================================+
+-- |                  Office Depot                                             |
+-- +===========================================================================+
+-- |Description : Create index RCV_TRANSACTIONS_INTERFACE_N20                  |
+-- |                                                                           |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | 1.0       05-SEP-17      Antonio Morales           Initial draft version  |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+CREATE INDEX PO.RCV_TRANSACTIONS_INTERFACE_N20 ON PO.RCV_TRANSACTIONS_INTERFACE
+(PARENT_INTERFACE_TXN_ID)
+LOGGING
+NOPARALLEL;

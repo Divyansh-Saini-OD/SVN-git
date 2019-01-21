@@ -1,0 +1,70 @@
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name :XXFIN.XX_RA_INT_SALESCREDITS_ALL                                  |
+-- | Description : Table to be used to summarize POS transaction for the 11.3 |
+-- |               SDR project.                                               |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0      25-MAR-2011  P. Marco            Initial version                |
+-- |==========================================================================|
+
+
+CREATE TABLE  XXFIN.XX_RA_INT_SALESCREDITS_ALL 
+  (
+     INTERFACE_SALESCREDIT_ID    NUMBER(15,0),
+     INTERFACE_LINE_ID           NUMBER(15,0),
+     INTERFACE_LINE_CONTEXT      VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE1   VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE2   VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE3   VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE4   VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE5   VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE6   VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE7   VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE8   VARCHAR2(30 BYTE),
+     SALESREP_NUMBER             VARCHAR2(30 BYTE),
+     SALESREP_ID                 NUMBER(15,0),
+     SALES_CREDIT_TYPE_NAME      VARCHAR2(30 BYTE),
+     SALES_CREDIT_TYPE_ID        NUMBER(15,0),
+     SALES_CREDIT_AMOUNT_SPLIT   NUMBER,
+     SALES_CREDIT_PERCENT_SPLIT  NUMBER,
+     INTERFACE_STATUS            VARCHAR2(1 BYTE),
+     REQUEST_ID                  NUMBER(15,0),
+     ATTRIBUTE_CATEGORY          VARCHAR2(30 BYTE),
+     ATTRIBUTE1                  VARCHAR2(150 BYTE),
+     ATTRIBUTE2                  VARCHAR2(150 BYTE),
+     ATTRIBUTE3                  VARCHAR2(150 BYTE),
+     ATTRIBUTE4                  VARCHAR2(150 BYTE),
+     ATTRIBUTE5                  VARCHAR2(150 BYTE),
+     ATTRIBUTE6                  VARCHAR2(150 BYTE),
+     ATTRIBUTE7                  VARCHAR2(150 BYTE),
+     ATTRIBUTE8                  VARCHAR2(150 BYTE),
+     ATTRIBUTE9                  VARCHAR2(150 BYTE),
+     ATTRIBUTE10                 VARCHAR2(150 BYTE),
+     ATTRIBUTE11                 VARCHAR2(150 BYTE),
+     ATTRIBUTE12                 VARCHAR2(150 BYTE),
+     ATTRIBUTE13                 VARCHAR2(150 BYTE),
+     ATTRIBUTE14                 VARCHAR2(150 BYTE),
+     ATTRIBUTE15                 VARCHAR2(150 BYTE),
+     INTERFACE_LINE_ATTRIBUTE10  VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE11  VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE12  VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE13  VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE14  VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE15  VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE9   VARCHAR2(30 BYTE),
+     CREATED_BY                  NUMBER(15,0),
+     CREATION_DATE  DATE,
+     LAST_UPDATED_BY  NUMBER(15,0),
+     LAST_UPDATE_DATE  DATE,
+     LAST_UPDATE_LOGIN  NUMBER(15,0),
+     ORG_ID             NUMBER(15,0),
+     SALESGROUP_ID      NUMBER
+  )  TABLESPACE APPS_TS_TX_DATA_32M;
+

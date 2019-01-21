@@ -1,0 +1,164 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Thu Jul 05 12:21:02 IST 2007
+  Author:  gowri
+  Purpose: Empty BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="ProcessInvoice_Integral_to_EBS"
+         targetNamespace="http://xmlns.oracle.com/ProcessInvoice_Integral_to_EBS"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns4="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ns7="ODError"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns5="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:client="http://xmlns.oracle.com/ProcessInvoice_Integral_to_EBS"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:ns6="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:ns9="http://www.openapplications.org/oagis/9/officedepot/1"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/ftp/svcFileGet/"
+         xmlns:ns3="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:ns2="http://xmlns.oracle.com/ProcessInvoiceInbound_OAGIS"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:ns10="http://xmlns.oracle.com/pcbpel/adapter/ftp/"
+         xmlns:ns8="http://www.openapplications.org/oagis/9">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <partnerLink myRole="Get_role" name="svcFileGet"
+                 partnerLinkType="ns1:Get_plt"/>
+    <partnerLink myRole="ProcessInvoiceInbound_OAGISRequester"
+                 name="ProcessInvoiceInbound_OAGIS"
+                 partnerRole="ProcessInvoiceInbound_OAGISProvider"
+                 partnerLinkType="ns2:ProcessInvoiceInbound_OAGIS"/>
+    <partnerLink myRole="ODErrorLoggerRequester" name="PlODErrorLogger"
+                 partnerRole="ODErrorLoggerProvider"
+                 partnerLinkType="ns3:ODErrorLogger"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <variable name="rcvFileGet_in" messageType="ns1:container_msg"/>
+    <variable name="invkInvoiceInboundOAGIS_in"
+              messageType="ns2:ProcessInvoiceInbound_OAGISRequestMessage"/>
+    <variable name="invkCatchAll_initiate"
+              messageType="ns3:ODErrorLoggerRequestMessage"/>
+    <variable name="FileName_In" messageType="ns10:InboundHeader_msg"/>
+    <variable name="ErrorMessageText" type="xsd:string"/>
+  </variables>
+  <faultHandlers>
+    <catchAll>
+      <sequence name="Sequence_4">
+        <assign name="asnCatchAll">
+          <copy>
+            <from expression="concat(&quot;Error encountered in ProcessIntegralInvoiceInbound, while copying file &quot;, bpws:getVariableData('FileName_In','inboundHeader','/ns10:InboundFTPHeaderType/ns10:fileName'))"/>
+            <to variable="ErrorMessageText"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessId()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-dateTime()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="'Catch All on the Main Sequence'"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from expression="ora:getFaultName()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorCode"/>
+          </copy>
+          <copy>
+            <from variable="ErrorMessageText"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from expression="ora:getFaultAsString()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorText"/>
+          </copy>
+          <copy>
+            <from expression="'system'"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorType"/>
+          </copy>
+          <copy>
+            <from expression="'fatal'"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorSeverity"/>
+          </copy>
+          <copy>
+            <from expression="ora:doc('${server_url}/xmllib/fin/GlobalParameters.xml','/GlobalParameters/FaultNotification/SendNotification')"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:Notification/ns7:sendNotification"/>
+          </copy>
+        </assign>
+        <invoke name="invkCatchAll" partnerLink="PlODErrorLogger"
+                portType="ns3:ODErrorLogger" operation="initiate"
+                inputVariable="invkCatchAll_initiate"/>
+        <terminate name="Terminate"/>
+      </sequence>
+    </catchAll>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <receive name="ReceiveFileGet" partnerLink="svcFileGet"
+             portType="ns1:Get_ptt" operation="Get" variable="rcvFileGet_in"
+             createInstance="yes" bpelx:headerVariable="FileName_In"/>
+    <assign name="TransformToOAGIS">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:processXSLT('TransformToOAGIS.xsl',bpws:getVariableData('rcvFileGet_in','container'))"/>
+        <to variable="invkInvoiceInboundOAGIS_in" part="payload"/>
+      </copy>
+    </assign>
+    <invoke name="InvokeOAGISProcess" partnerLink="ProcessInvoiceInbound_OAGIS"
+            portType="ns2:ProcessInvoiceInbound_OAGIS" operation="initiate"
+            inputVariable="invkInvoiceInboundOAGIS_in"/>
+  </sequence>
+</process>

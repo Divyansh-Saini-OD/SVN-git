@@ -1,0 +1,133 @@
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name :XXFIN.XX_RA_INT_DISTRIBUTIONS_ALL                                  |
+-- | Description : Table to be used to summarize POS transaction for the 11.3 |
+-- |               SDR project.                                               |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0      25-MAR-2011  P. Marco            Initial version                |
+-- |==========================================================================|
+
+drop table XXFIN.XX_RA_INT_DISTRIBUTIONS_ALL;
+
+/*
+CREATE TABLE  XXFIN.XX_RA_INT_DISTRIBUTIONS_ALL 
+  (
+     INTERFACE_DISTRIBUTION_ID   NUMBER(15,0),
+     INTERFACE_LINE_ID           NUMBER(15,0),
+     INTERFACE_LINE_CONTEXT      VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE1   VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE2   VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE3   VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE4   VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE5   VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE6   VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE7   VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE8   VARCHAR2(30 BYTE),
+     ACCOUNT_CLASS               VARCHAR2(20 BYTE) NOT NULL ENABLE,
+     AMOUNT                      NUMBER,
+     PERCENT                     NUMBER,
+     INTERFACE_STATUS            VARCHAR2(1 BYTE),
+     REQUEST_ID                  NUMBER(15,0),
+     CODE_COMBINATION_ID         NUMBER(15,0),
+     SEGMENT1                    VARCHAR2(25 BYTE),
+     SEGMENT2                    VARCHAR2(25 BYTE),
+     SEGMENT3                    VARCHAR2(25 BYTE),
+     SEGMENT4                    VARCHAR2(25 BYTE),
+     SEGMENT5                    VARCHAR2(25 BYTE),
+     SEGMENT6                    VARCHAR2(25 BYTE),
+     SEGMENT7                    VARCHAR2(25 BYTE),
+     SEGMENT8                    VARCHAR2(25 BYTE),
+     SEGMENT9                    VARCHAR2(25 BYTE),
+     SEGMENT10                   VARCHAR2(25 BYTE),
+     SEGMENT11                   VARCHAR2(25 BYTE),
+     SEGMENT12                   VARCHAR2(25 BYTE),
+     SEGMENT13                   VARCHAR2(25 BYTE),
+     SEGMENT14                   VARCHAR2(25 BYTE),
+     SEGMENT15                   VARCHAR2(25 BYTE),
+     SEGMENT16                   VARCHAR2(25 BYTE),
+     SEGMENT17                   VARCHAR2(25 BYTE),
+     SEGMENT18                   VARCHAR2(25 BYTE),
+     SEGMENT19                   VARCHAR2(25 BYTE),
+     SEGMENT20                   VARCHAR2(25 BYTE),
+     SEGMENT21                   VARCHAR2(25 BYTE),
+     SEGMENT22                   VARCHAR2(25 BYTE),
+     SEGMENT23                   VARCHAR2(25 BYTE),
+     SEGMENT24                   VARCHAR2(25 BYTE),
+     SEGMENT25                   VARCHAR2(25 BYTE),
+     SEGMENT26                   VARCHAR2(25 BYTE),
+     SEGMENT27                   VARCHAR2(25 BYTE),
+     SEGMENT28                   VARCHAR2(25 BYTE),
+     SEGMENT29                   VARCHAR2(25 BYTE),
+     SEGMENT30                   VARCHAR2(25 BYTE),
+     COMMENTS                    VARCHAR2(240 BYTE),
+     ATTRIBUTE_CATEGORY          VARCHAR2(30 BYTE),
+     ATTRIBUTE1                  VARCHAR2(150 BYTE),
+     ATTRIBUTE2                  VARCHAR2(150 BYTE),
+     ATTRIBUTE3                  VARCHAR2(150 BYTE),
+     ATTRIBUTE4                  VARCHAR2(150 BYTE),
+     ATTRIBUTE5                  VARCHAR2(150 BYTE),
+     ATTRIBUTE6                  VARCHAR2(150 BYTE),
+     ATTRIBUTE7                  VARCHAR2(150 BYTE),
+     ATTRIBUTE8                  VARCHAR2(150 BYTE),
+     ATTRIBUTE9                  VARCHAR2(150 BYTE),
+     ATTRIBUTE10                 VARCHAR2(150 BYTE),
+     ATTRIBUTE11                 VARCHAR2(150 BYTE),
+     ATTRIBUTE12                 VARCHAR2(150 BYTE),
+     ATTRIBUTE13                 VARCHAR2(150 BYTE),
+     ATTRIBUTE14                 VARCHAR2(150 BYTE),
+     ATTRIBUTE15                 VARCHAR2(150 BYTE),
+     ACCTD_AMOUNT                NUMBER,
+     INTERFACE_LINE_ATTRIBUTE10  VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE11  VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE12  VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE13  VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE14  VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE15  VARCHAR2(30 BYTE),
+     INTERFACE_LINE_ATTRIBUTE9   VARCHAR2(30 BYTE),
+     CREATED_BY                  NUMBER(15,0),
+     CREATION_DATE  DATE,
+     LAST_UPDATED_BY  NUMBER(15,0),
+     LAST_UPDATE_DATE  DATE,
+     LAST_UPDATE_LOGIN      NUMBER(15,0),
+     ORG_ID                 NUMBER(15,0),
+     INTERIM_TAX_CCID       NUMBER(15,0),
+     INTERIM_TAX_SEGMENT1   VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT2   VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT3   VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT4   VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT5   VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT6   VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT7   VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT8   VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT9   VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT10  VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT11  VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT12  VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT13  VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT14  VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT15  VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT16  VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT17  VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT18  VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT19  VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT20  VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT21  VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT22  VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT23  VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT24  VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT25  VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT26  VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT27  VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT28  VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT29  VARCHAR2(25 BYTE),
+     INTERIM_TAX_SEGMENT30  VARCHAR2(25 BYTE)
+  );
+
+*/

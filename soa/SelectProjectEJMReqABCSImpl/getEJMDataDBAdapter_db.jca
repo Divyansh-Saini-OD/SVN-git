@@ -1,0 +1,14 @@
+<adapter-config name="getEJMDataDBAdapter" adapter="Database Adapter" wsdlLocation="getEJMDataDBAdapter.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory location="eis/db/SQLServerEJM" UIConnectionName="EJMDevSQLServer" adapterRef=""/>
+  <endpoint-interaction portType="getEJMDataDBAdapter_ptt" operation="getEJMDataDBAdapterSelect">
+    <interaction-spec className="oracle.tip.adapter.db.DBReadInteractionSpec">
+      <property name="DescriptorName" value="getEJMDataDBAdapter.VwEbsPa"/>
+      <property name="QueryName" value="getEJMDataDBAdapterSelect"/>
+      <property name="MappingsMetaDataURL" value="getEJMDataDBAdapter-or-mappings.xml"/>
+      <property name="ReturnSingleResultSet" value="false"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+
+</adapter-config>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+
+<DynamicPartnerLinkParameters>
+    <PartnerLink>
+	    <InvoiceType name="BSinvcpymt">
+	        <Address>eis/Ftp/EBSFtpAdapter</Address>
+	        <ServiceName>FTPToEBSService</ServiceName>
+	        <TargetFileName>PROD.AP.TMS.EXPENSE.CHECK</TargetFileName>
+	    </InvoiceType>
+	
+	    <InvoiceType name="TDMinvcpymt">
+	        <Address>eis/Ftp/EBSFtpAdapter</Address>
+	        <ServiceName>FTPToEBSService</ServiceName>
+	        <TargetFileName>PROD.AP.TDM.INTG.STATUS</TargetFileName>
+	    </InvoiceType>
+	    
+	    <InvoiceType name="PMinvcpymt">
+	        <Address>eis/Ftp/EBSFtpAdapter</Address>
+	        <ServiceName>FTPToEBSService</ServiceName>
+	        <TargetFileName>PROD.AP.ODD.EXPENSE.CHECK</TargetFileName>
+	    </InvoiceType>
+	
+	    <InvoiceType name="CIinvcpymt">
+	        <Address>eis/Ftp/MVSFtpAdapter</Address>
+	        <ServiceName>FTPToMVSService</ServiceName>
+	        <TargetFileName>TEST.EBS.OUT.AP.CSI(CSIPYMT)</TargetFileName>
+	    </InvoiceType>
+	
+	    <InvoiceType name="SAinvcpymt">
+	        <Address>eis/Ftp/MVSFtpAdapter</Address>
+	        <ServiceName>FTPToMVSService</ServiceName>
+	        <TargetFileName>TEST.EBS.OUT.AP.SAS(MCPPYMT)</TargetFileName>
+	    </InvoiceType>
+	    
+	    <InvoiceType name="PAIDinvcpymt">
+	        <Address>eis/Ftp/MVSFtpAdapter</Address>
+	        <ServiceName>FTPToMVSService</ServiceName>
+	        <TargetFileName>TEST.EBS.OUT.AP.PAID(PAIDPYMT)</TargetFileName>
+	    </InvoiceType>
+	
+	    <InvoiceType name="GSSinvcpymt">
+	        <Address>eis/Ftp/MVSFtpAdapter</Address>
+	        <ServiceName>FTPToMVSService</ServiceName>
+	        <TargetFileName>TEST.EBS.OUT.AP.GSS(GSSPYMT)</TargetFileName>
+	    </InvoiceType>
+	
+	    <InvoiceType name="RLinvcpymt">
+	        <Address>eis/Ftp/ODSFtpAdapter</Address>
+	        <ServiceName>FTPToODSService</ServiceName>
+	        <TargetFileName>CHECK.TXT</TargetFileName>
+	    </InvoiceType>
+          
+    </PartnerLink>
+</DynamicPartnerLinkParameters>

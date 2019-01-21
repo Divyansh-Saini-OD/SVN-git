@@ -1,0 +1,132 @@
+<dataTemplate name="PABulkCreateProjectsReport" description="" Version="1.0">
+<properties>
+    <property name="scalable_mode" value="on" /> 
+    <property name="rtf-output-default-font">Arial:8</property> 
+</properties>
+<parameters>
+</parameters>
+<dataQuery>
+    <sqlStatement name="Q_PROJ_INFO">
+        <![CDATA[
+        select stg.pan "PAN",
+ppa.segment1 "PROJECT_NUMBER",
+SUBSTR(ppa.start_date,1,10) "START_DATE",
+SUBSTR(ppa.completion_date,1,10) "COMPLETION_DATE",
+ppa.name "PROJECT_NAME",
+ppa.long_name "LONG_NAME",
+ppa.description "DESCRIPTION",
+(select hre.employee_num 
+from hr_employees hre,
+pa_project_players ppp
+where ppp.person_id=hre.employee_id
+and ppp.project_role_type='PROJECT MANAGER'
+and stg.project_manager=hre.employee_num
+and ppp.project_id=ppa.project_id) "PROJECT_MANAGER",
+(select name from pa_projects_all where project_id=ppa.created_from_project_id) "TEMPLATE_NAME",
+ppa.attribute1 "PROJECT_LOCATION",
+(select name from hr_all_organization_units where organization_id=ppa.carrying_out_organization_id) "PROJECT_ORG",
+(select pbl.raw_cost 
+from pa_budget_versions pbv,
+pa_budget_lines pbl,
+pa_resource_assignments pra,
+pa_tasks pt
+where pbl.budget_version_id=pbv.budget_version_id
+and pbv.project_id=ppa.project_id
+and pbv.current_flag='Y'
+and pbv.project_id=pt.project_id
+and pra.budget_version_id=pbv.budget_version_id
+and pra.task_id=pt.task_id
+and pt.task_name = 'Capital Expenditures'
+and pbl.resource_assignment_id=pra.resource_assignment_id) "CAPITAL_BUDGET",
+(select pbl.raw_cost 
+from pa_budget_versions pbv,
+pa_budget_lines pbl,
+pa_resource_assignments pra,
+pa_tasks pt
+where pbl.budget_version_id=pbv.budget_version_id
+and pbv.project_id=ppa.project_id
+and pbv.current_flag='Y'
+and pbv.project_id=pt.project_id
+and pra.budget_version_id=pbv.budget_version_id
+and pra.task_id=pt.task_id
+and pt.task_name = 'Non-Cap Expenditures'
+and pbl.resource_assignment_id=pra.resource_assignment_id) "EXPENSE_BUDGET",
+(select ftl.territory_short_name
+from hr_all_organization_units haou,
+hr_operating_units hou,
+gl_sets_of_books gsob,
+fnd_currencies fc,
+fnd_territories_tl ftl
+where
+haou.organization_id=ppa.org_id
+and haou.name=hou.name
+and hou.set_of_books_id=gsob.set_of_books_id
+and gsob.currency_code=fc.currency_code
+and fc.issuing_territory_code=ftl.territory_code) "COUNTRY",
+(select fc.currency_code
+from hr_all_organization_units haou,
+hr_operating_units hou,
+gl_sets_of_books gsob,
+fnd_currencies fc,
+fnd_territories_tl ftl
+where
+haou.organization_id=ppa.org_id
+and haou.name=hou.name
+and hou.set_of_books_id=gsob.set_of_books_id
+and gsob.currency_code=fc.currency_code
+and fc.issuing_territory_code=ftl.territory_code) "CURRENCY_CODE",
+stg.status_code "COMPLETION_STATUS",
+stg.status_mesg "STATUS_MESG",
+FND_GLOBAL.CONC_REQUEST_ID "REQUEST_ID"
+FROM pa_projects_all ppa,
+xx_pa_bulk_create_prj_stg stg
+where stg.project_number=ppa.segment1
+and stg.status IN ('P','IC')
+union
+select stg.pan PAN,
+stg.project_extension "PROJECT_NUMBER",
+SUBSTR(stg.project_start_date,1,10) "START_DATE",
+SUBSTR(stg.project_end_date,1,10) "COMPLETION_DATE",
+stg.project_name "PROJECT_NAME",
+stg.project_long_name "LONG_NAME",
+stg.project_description||''||stg.add_to_desc "DESCRIPTION",
+stg.project_manager "PROJECT_MANAGER",
+stg.template_name "TEMPLATE_NAME",
+stg.project_location "PROJECT_LOCATION",
+stg.project_org "PROJECT_ORG",
+stg.capital_budget "CAPITAL_BUDGET",
+stg.expense_budget "EXPENSE_BUDGET",
+stg.country "COUNTRY",
+stg.currency_code "CURRENCY_CODE",
+stg.status_code "COMPLETION_STATUS",
+stg.status_mesg "STATUS_MESG",
+FND_GLOBAL.CONC_REQUEST_ID "REQUEST_ID"
+FROM 
+xx_pa_bulk_create_prj_stg stg
+where stg.status='E'
+        ]]> 
+    </sqlStatement>
+</dataQuery>
+<dataStructure>
+    <group name="G_PROJ_INFO" source="Q_PROJ_INFO">
+        <element name="PAN" value="PAN" function="" /> 
+        <element name="PROJECT_NUMBER" value="PROJECT_NUMBER" function="" /> 
+        <element name="START_DATE" value="START_DATE" function="" />
+		<element name="COMPLETION_DATE" value="COMPLETION_DATE" function="" />
+        <element name="PROJECT_NAME" value="PROJECT_NAME" function="" />
+        <element name="LONG_NAME" value="LONG_NAME" function="" /> 
+		<element name="DESCRIPTION" value="DESCRIPTION" function="" />
+        <element name="PROJECT_MANAGER" value="PROJECT_MANAGER" function="" />
+        <element name="TEMPLATE_NAME" value="TEMPLATE_NAME" function="" />
+        <element name="PROJECT_LOCATION" value="PROJECT_LOCATION" function="" />
+        <element name="PROJECT_ORG" value="PROJECT_ORG" function="" />
+        <element name="CAPITAL_BUDGET" value="CAPITAL_BUDGET" function="" />
+        <element name="EXPENSE_BUDGET" value="EXPENSE_BUDGET" function="" />
+        <element name="COUNTRY" value="COUNTRY" function="" />
+		<element name="CURRENCY_CODE" value="CURRENCY_CODE" function="" />
+        <element name="COMPLETION_STATUS" value="COMPLETION_STATUS" function="" />
+        <element name="STATUS_MESG" value="STATUS_MESG" function="" />
+		<element name="REQUEST_ID" value="REQUEST_ID" function="" />
+    </group>
+</dataStructure>
+</dataTemplate>

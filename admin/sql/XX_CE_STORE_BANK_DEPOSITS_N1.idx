@@ -1,0 +1,30 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       Oracle India Pvt Ltd                               |
+-- +==========================================================================+
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- | INDEXES: XX_CE_JE_MESSAGES_N1                                       |   
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     02-NOV-2015  Rakesh Polepalli       Initial version             |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX XX_CE_STORE_BANK_DEPOSITS_N1 ON XX_CE_STORE_BANK_DEPOSITS
+  (
+    LOC_ID,
+    SALES_DATE
+  );
+  
+SHOW ERRORS;

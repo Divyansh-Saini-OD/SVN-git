@@ -1,0 +1,67 @@
+-- +===================================================================+
+-- |                        Office Depot                               |
+-- |                                                                   |
+-- +===================================================================+
+-- | Table Name  :  XXFIN.XX_MON_TPS.tbl                               |
+-- | Description :  Table holds TPS information for OTC                |
+-- | Rice Id     :  E2025                                                    |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author             Remarks                  |
+-- |=======   ===========  =================  =========================|
+-- |1.0       23-APR-2015  Manikant Kasu      Initial draft version    |
+-- +===================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+SET TERM ON
+
+PROMPT
+PROMPT Custom Table 
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XXFIN.XX_MON_TPS
+PROMPT
+
+CREATE TABLE XXFIN.XX_MON_TPS 
+ (
+  REQUEST_ID              NUMBER            NOT NULL, 
+	PROGRAM_NAME            VARCHAR2(20 BYTE) NOT NULL, 
+	START_DATE              DATE, 
+  END_DATE                DATE, 
+  VOLUME                  NUMBER, 
+	PROCESSING_TIME_IN_SEC  NUMBER, 
+	THROUGHPUT              NUMBER, 
+	ORG_ID                  NUMBER, 
+	CYCLE_DATE              DATE, 
+	EVENT                   NUMBER, 
+	USER_NAME               VARCHAR2(100 BYTE)
+);
+
+PROMPT
+PROMPT Creating Unique Index XX_MON_TPS_N1 ON XXFIN.XX_MON_TPS(REQUEST_ID)...
+PROMPT
+Create UNIQUE INDEX XX_MON_TPS_U1 ON XXFIN.XX_MON_TPS(REQUEST_ID)
+/
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

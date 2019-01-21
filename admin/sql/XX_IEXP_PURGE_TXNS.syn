@@ -1,0 +1,58 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+--+==============================================================================================+--
+--|                                                                                              |--
+--| Object Name    : OD Iexpenses Terminated Employees                                           |--
+--|                                                                                              |--
+--| Program Name   : XX_IEXP_PURGE_TXNS.syn                                                      |--        
+--|                                                                                              |--   
+--| Purpose        : Create Custom synonyms                                                      |--
+--|                                                                                              |--
+--|                                                                                              |-- 
+--| Change History  :                                                                            |--
+--| Version           Date             Changed By              Description                       |--
+--+==============================================================================================+--
+--| 1.0            12-Nov-2014        Paddy Sanjeevi           Baselined                         |
+--+==============================================================================================+-- 
+                                     
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating Synonym in APPS...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM XX_IEXP_PURGE_TXNS
+PROMPT
+
+
+CREATE SYNONYM XX_IEXP_PURGE_TXNS FOR xxfin.XX_IEXP_PURGE_TXNS;
+
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+
+EXIT;
+
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================
+

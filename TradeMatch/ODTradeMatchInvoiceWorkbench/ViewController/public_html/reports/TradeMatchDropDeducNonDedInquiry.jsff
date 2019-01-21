@@ -1,0 +1,467 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1" xmlns:af="http://xmlns.oracle.com/adf/faces/rich"
+          xmlns:f="http://java.sun.com/jsf/core">
+    <af:panelGroupLayout id="pgl32" layout="horizontal">
+        <af:spacer width="15" height="10" id="s18"/>
+        <af:panelGroupLayout id="pgl3" layout="vertical">
+            <af:panelGroupLayout id="pgl1" layout="vertical" partialTriggers="sor1">
+                <af:panelGroupLayout id="pgl24" layout="horizontal">
+                    <af:outputFormatted value="Office Depot - AP Dropship Deductions Inquiry : " id="of1"
+                                        inlineStyle="font-size:large;"/>
+                    <af:outputFormatted value="#{MyDate}" id="of2" inlineStyle="font-size:large;">
+                        <af:convertDateTime pattern="MM/dd/YYYY"/>
+                    </af:outputFormatted>
+                </af:panelGroupLayout>
+                <af:spacer width="10" height="10" id="s4"/>
+                <af:panelGroupLayout id="pgl25" halign="end" layout="horizontal">
+                    <af:spacer width="1000" height="10" id="s16"/>
+                    <af:inputComboboxListOfValues id="orgid1Id"
+                                                  popupTitle="Search and Select: #{bindings.Orgid1.hints.label}"
+                                                  value="#{bindings.Orgid1.inputValue}"
+                                                  label="Operating Unit"
+                                                  model="#{bindings.Orgid1.listOfValuesModel}"
+                                                  required="#{bindings.Orgid1.hints.mandatory}"
+                                                  columns="15"
+                                                  shortDesc="#{bindings.Orgid1.hints.tooltip}"
+                                                  binding="#{pageFlowScope.TrMaDropDeducNonDedInquirySearchBean.orgIdBind}">
+                        <f:validator binding="#{bindings.Orgid1.validator}"/>
+                    </af:inputComboboxListOfValues>
+                    <af:inputText value="#{bindings.OrgIdVal.inputValue}" label="#{bindings.OrgIdVal.hints.label}"
+                                  required="#{bindings.OrgIdVal.hints.mandatory}"
+                                  columns="#{bindings.OrgIdVal.hints.displayWidth}"
+                                  maximumLength="#{bindings.OrgIdVal.hints.precision}"
+                                  shortDesc="#{bindings.OrgIdVal.hints.tooltip}" id="it1" partialTriggers="orgid1Id"
+                                  rendered="false"
+                                  binding="#{pageFlowScope.TrMaDropDeducNonDedInquirySearchBean.orgIdNonRendBind}">
+                        <f:validator binding="#{bindings.OrgIdVal.validator}"/>
+                    </af:inputText>
+                </af:panelGroupLayout>
+                <af:panelGroupLayout id="pgl2" layout="horizontal"
+                                     binding="#{pageFlowScope.TrMaDropDeducNonDedInquirySearchBean.searchAreaBind}"
+                                     valign="top">
+                    <af:spacer width="20" height="10" id="s5"/>
+                    <af:panelFormLayout id="pfl1" labelAlignment="top">
+                        <f:facet name="footer"/>
+                        <af:selectOneRadio value="#{bindings.Reportoption.inputValue}"
+                                           label="Report Option" autoSubmit="true"
+                                           shortDesc="#{bindings.Reportoption.hints.tooltip}" id="sor1"
+                                           binding="#{pageFlowScope.TrMaDropDeducNonDedInquirySearchBean.repOptBind}"
+                                           valueChangeListener="#{pageFlowScope.TrMaDropDeducNonDedInquirySearchBean.reportOptionValueChange}"
+                                           required="#{bindings.Reportoption.hints.mandatory}">
+                            <f:selectItems value="#{bindings.Reportoption.items}" id="si1"
+                                           binding="#{pageFlowScope.TrMaDropDeducNonDedInquirySearchBean.reporOptSelItemBind}"/>
+                            <f:validator binding="#{bindings.Reportoption.validator}"/>
+                        </af:selectOneRadio>
+                    </af:panelFormLayout>
+                    <af:spacer width="60" height="10" id="s3"/>
+                    <af:panelGroupLayout id="pgl23" layout="vertical">
+                        <af:panelLabelAndMessage label="Supplier Name" id="plam2">
+                            <af:spacer width="81" height="10" id="s10"/>
+                            <af:inputListOfValues id="suppliernameId"
+                                                  popupTitle="Search and Select: #{bindings.Suppliername.hints.label}"
+                                                  value="#{bindings.Suppliername.inputValue}"
+                                                  label="#{bindings.Suppliername.hints.label}"
+                                                  model="#{bindings.Suppliername.listOfValuesModel}"
+                                                  required="#{bindings.Suppliername.hints.mandatory}"
+                                                  columns="#{bindings.Suppliername.hints.displayWidth}"
+                                                  shortDesc="#{bindings.Suppliername.hints.tooltip}" simple="true"
+                                                  partialTriggers="sor1 suppliernumId"
+                                                  binding="#{pageFlowScope.TrMaDropDeducNonDedInquirySearchBean.supNameBind}"
+                                                  autoSubmit="true">
+                                <f:validator binding="#{bindings.Suppliername.validator}"/>
+                            </af:inputListOfValues>
+                        </af:panelLabelAndMessage>
+                        <af:spacer width="10" height="3" id="s14"/>
+                        <af:panelLabelAndMessage label="Supplier #" id="plam3">
+                            <af:spacer width="107" height="10" id="s6"/>
+                            <af:inputListOfValues id="suppliernumId"
+                                                  popupTitle="Search and Select: #{bindings.Suppliernum.hints.label}"
+                                                  value="#{bindings.Suppliernum.inputValue}"
+                                                  label="#{bindings.Suppliernum.hints.label}"
+                                                  model="#{bindings.Suppliernum.listOfValuesModel}"
+                                                  required="#{bindings.Suppliernum.hints.mandatory}"
+                                                  columns="#{bindings.Suppliernum.hints.displayWidth}"
+                                                  shortDesc="#{bindings.Suppliernum.hints.tooltip}" simple="true"
+                                                  autoSubmit="true" partialTriggers="suppliernameId"
+                                                  binding="#{pageFlowScope.TrMaDropDeducNonDedInquirySearchBean.bindSupNum}">
+                                <f:validator binding="#{bindings.Suppliernum.validator}"/>
+                            </af:inputListOfValues>
+                        </af:panelLabelAndMessage>
+                        <af:spacer width="10" height="3" id="s19"/>
+                        <af:panelLabelAndMessage label="Supplier Site #" id="plam1">
+                            <af:spacer width="82" height="10" id="s1"/>
+                            <af:inputListOfValues id="suppliersitenoId"
+                                                  popupTitle="Search and Select: #{bindings.Suppliersiteno.hints.label}"
+                                                  value="#{bindings.Suppliersiteno.inputValue}"
+                                                  label="#{bindings.Suppliersiteno.hints.label}"
+                                                  model="#{bindings.Suppliersiteno.listOfValuesModel}"
+                                                  required="#{bindings.Suppliersiteno.hints.mandatory}"
+                                                  columns="#{bindings.Suppliersiteno.hints.displayWidth}"
+                                                  shortDesc="#{bindings.Suppliersiteno.hints.tooltip}" simple="true"
+                                                  partialTriggers="sor1"
+                                                  binding="#{pageFlowScope.TrMaDropDeducNonDedInquirySearchBean.supSitNoBind}">
+                                <f:validator binding="#{bindings.Suppliersiteno.validator}"/>
+                            </af:inputListOfValues>
+                        </af:panelLabelAndMessage>
+                        <af:spacer width="10" height="3" id="s15"/>
+                        <af:panelLabelAndMessage label="Invoice #" id="plam7">
+                            <af:spacer width="115" height="10" id="s13"/>
+                            <af:inputListOfValues id="invoicenum1Id"
+                                                  popupTitle="Search and Select: #{bindings.Invoicenum1.hints.label}"
+                                                  value="#{bindings.Invoicenum1.inputValue}"
+                                                  label="#{bindings.Invoicenum1.hints.label}"
+                                                  model="#{bindings.Invoicenum1.listOfValuesModel}"
+                                                  required="#{bindings.Invoicenum1.hints.mandatory}"
+                                                  columns="#{bindings.Invoicenum1.hints.displayWidth}"
+                                                   binding="#{pageFlowScope.TrMaDropDeducNonDedInquirySearchBean.invoiceNumBind}"
+                                                  shortDesc="#{bindings.Invoicenum1.hints.tooltip}" simple="true">
+                                <f:validator binding="#{bindings.Invoicenum1.validator}"/>
+                            </af:inputListOfValues>
+                            
+                        </af:panelLabelAndMessage>
+                        <af:spacer width="10" height="3" id="s20"/>
+                        <af:panelLabelAndMessage label="Reason Code" id="plam4">
+                            <af:spacer width="90" height="10" id="s11"/>
+                            <af:inputListOfValues id="reasoncodeId"
+                                                  popupTitle="Search and Select: #{bindings.Reasoncode.hints.label}"
+                                                  value="#{bindings.Reasoncode.inputValue}"
+                                                  label="#{bindings.Reasoncode.hints.label}" simple="true"
+                                                  model="#{bindings.Reasoncode.listOfValuesModel}"
+                                                  required="#{bindings.Reasoncode.hints.mandatory}"
+                                                  columns="#{bindings.Reasoncode.hints.displayWidth}"
+                                                  shortDesc="#{bindings.Reasoncode.hints.tooltip}" disabled="false"
+                                                  partialTriggers="sor1"
+                                                  binding="#{pageFlowScope.TrMaDropDeducNonDedInquirySearchBean.bindSKUBind}">
+                                <f:validator binding="#{bindings.Reasoncode.validator}"/>
+                            </af:inputListOfValues>
+                        </af:panelLabelAndMessage>
+                        <af:spacer width="10" height="3" id="s17"/>
+                    </af:panelGroupLayout>
+                    <af:spacer width="90" height="10" id="s2"/>
+                    <af:panelFormLayout id="pfl3"
+                                        binding="#{pageFlowScope.TrMaDropDeducNonDedInquirySearchBean.dateRegionBind}">
+                        <f:facet name="footer"/>
+                        <af:selectOneRadio value="#{bindings.DateType.inputValue}" label="Date Type"
+                                           required="#{bindings.DateType.hints.mandatory}"
+                                           shortDesc="#{bindings.DateType.hints.tooltip}" id="sor2" layout="horizontal"
+                                           autoSubmit="true"
+                                           valueChangeListener="#{pageFlowScope.TrMaDropDeducNonDedInquirySearchBean.dateTypeChangeList}"
+                                           binding="#{pageFlowScope.TrMaDropDeducNonDedInquirySearchBean.dateTypeBind}">
+                            <f:selectItems value="#{bindings.DateType.items}" id="si2"/>
+                            <f:validator binding="#{bindings.DateType.validator}"/>
+                        </af:selectOneRadio>
+                        <!--<af:selectManyCheckbox value="#{bindings.ExceptionsStaticLOV.inputValue}"
+                               label="#{bindings.ExceptionsStaticLOV.label}" id="smc1" valuePassThru="true">
+          <f:selectItems value="#{bindings.ExceptionsStaticLOV.items}" id="si2" itemLabelEscaped="true"/>
+        </af:selectManyCheckbox>-->
+                        <af:spacer width="10" height="3" id="s22"/>
+                        <af:panelLabelAndMessage label="GL Date Range" id="plam6">
+                            <f:facet name="end">
+                                <af:inputDate value="#{bindings.Gldaterangto.inputValue}"
+                                              columns="#{bindings.Gldaterangto.hints.displayWidth}" simple="true"
+                                              shortDesc="#{bindings.Gldaterangto.hints.tooltip}" id="id3"
+                                              required="#{bindings.Gldaterangto.hints.mandatory}"
+                                              label="#{bindings.Gldaterangto.hints.label}"
+                                              disabled="#{bindings.DateType.inputValue eq 'INV' or bindings.DateType.inputValue eq null}"
+                                              partialTriggers="sor2"
+                                              binding="#{pageFlowScope.TrMaDropDeducNonDedInquirySearchBean.glToDate}"
+                                              autoSubmit="true">
+                                    <f:validator binding="#{bindings.Gldaterangto.validator}"/>
+                                    <af:convertDateTime pattern="#{bindings.Gldaterangto.format}"/>
+                                </af:inputDate>
+                                <af:spacer width="10" height="3" id="s23"/>
+                            </f:facet>
+                            <af:spacer width="56" height="10" id="s9"/>
+                            <af:inputDate value="#{bindings.Gldaterangfrom.inputValue}"
+                                          label="#{bindings.Gldaterangfrom.hints.label}"
+                                          columns="#{bindings.Gldaterangfrom.hints.displayWidth}" simple="true"
+                                          shortDesc="#{bindings.Gldaterangfrom.hints.tooltip}" id="id4"
+                                          required="#{bindings.Gldaterangfrom.hints.mandatory}" immediate="true"
+                                          disabled="#{bindings.DateType.inputValue eq 'INV' or  bindings.DateType.inputValue eq null }" partialTriggers="sor2"
+                                          binding="#{pageFlowScope.TrMaDropDeducNonDedInquirySearchBean.glFromDate}"
+                                          autoSubmit="true">
+                                <f:validator binding="#{bindings.Gldaterangfrom.validator}"/>
+                                <af:convertDateTime pattern="#{bindings.Gldaterangfrom.format}"/>
+                            </af:inputDate>
+                        </af:panelLabelAndMessage>
+                        <af:panelLabelAndMessage label="Inv Date Range" id="plam5">
+                            <f:facet name="end">
+                                <af:inputDate value="#{bindings.Invdaterangto.inputValue}"
+                                              columns="#{bindings.Invdaterangto.hints.displayWidth}" simple="true"
+                                              shortDesc="#{bindings.Invdaterangto.hints.tooltip}" id="id2"
+                                              required="#{bindings.Invdaterangto.hints.mandatory}"
+                                              label="#{bindings.Invdaterangto.hints.label}"
+                                              binding="#{pageFlowScope.TrMaDropDeducNonDedInquirySearchBean.toDateBind}"
+                                              disabled="#{bindings.DateType.inputValue eq 'GL' or bindings.DateType.inputValue eq null}" partialTriggers="sor2">
+                                    <f:validator binding="#{bindings.Invdaterangto.validator}"/>
+                                    <af:convertDateTime pattern="#{bindings.Invdaterangto.format}"/>
+                                </af:inputDate>
+                            </f:facet>
+                            <af:spacer width="56" height="10" id="s12"/>
+                            <af:inputDate value="#{bindings.Invdaterangfrom.inputValue}"
+                                          label="#{bindings.Invdaterangfrom.hints.label}"
+                                          columns="#{bindings.Invdaterangfrom.hints.displayWidth}" simple="true"
+                                          shortDesc="#{bindings.Invdaterangfrom.hints.tooltip}" id="id1"
+                                          required="#{bindings.Invdaterangfrom.hints.mandatory}"
+                                          binding="#{pageFlowScope.TrMaDropDeducNonDedInquirySearchBean.fromDateBind}"
+                                          immediate="true"
+                                          disabled="#{bindings.DateType.inputValue eq 'GL' or bindings.DateType.inputValue eq null}"
+                                          partialTriggers="sor2">
+                                <f:validator binding="#{bindings.Invdaterangfrom.validator}"/>
+                                <af:convertDateTime pattern="#{bindings.Invdaterangfrom.format}"/>
+                            </af:inputDate>
+                        </af:panelLabelAndMessage>
+                    </af:panelFormLayout>
+                </af:panelGroupLayout>
+                <!--<af:panelGroupLayout id="pgl3" styleClass="AFStretchWidth" halign="center" layout="horizontal"
+                                 valign="middle">
+                <af:spacer width="150" height="10" id="s6"/>
+                <af:panelFormLayout id="pfl2">
+                    -->
+                <!--<af:inputText value="#{bindings.SupplierName.inputValue}" label="#{bindings.SupplierName.hints.label}"
+                              required="#{bindings.SupplierName.hints.mandatory}"
+                              columns="#{bindings.SupplierName.hints.displayWidth}"
+                              maximumLength="#{bindings.SupplierName.hints.precision}"
+                              shortDesc="#{bindings.SupplierName.hints.tooltip}" id="it2">
+                    <f:validator binding="#{bindings.SupplierName.validator}"/>
+                </af:inputText>
+                </af:panelFormLayout>-->
+                <af:toolbar id="t1">
+                    <af:spacer width="675" height="10" id="s21"/>
+                    <af:button text="Go" id="b1"
+                               action="#{pageFlowScope.TrMaDropDeducNonDedInquirySearchBean.deduInqSearch}"/>
+                    <af:spacer width="15" height="10" id="s7"/>
+                    <af:button text="Clear" id="b2"
+                               action="#{pageFlowScope.TrMaDropDeducNonDedInquirySearchBean.clearSearch}"
+                               immediate="true"/>
+                </af:toolbar>
+                <af:spacer width="150" height="10" id="s8"/>
+            </af:panelGroupLayout>
+            <af:panelCollection id="pc1" styleClass="AFStretchWidth"
+                                binding="#{pageFlowScope.TrMaDropDeducNonDedInquirySearchBean.resultAreaPanelColl}">
+                <f:facet name="menus">
+                    <af:menu text="File" id="m2">
+                        <af:commandMenuItem text="Export to Excel" id="cmi1" rendered="false"
+                                            binding="#{pageFlowScope.TrMaDropDeducNonDedInquirySearchBean.vendAssMenuItem}">
+                            <af:exportCollectionActionListener type="excelHTML" exportedId="t2"
+                                                               filename="Dropship Deduction Summary.xls"
+                                                               title="Dropship Deductions Summary Inquiry"/>
+                        </af:commandMenuItem>
+                        <af:commandMenuItem text="Export to Excel" id="cmi1w" rendered="false"
+                                            binding="#{pageFlowScope.TrMaDropDeducNonDedInquirySearchBean.venMenuItemBind}">
+                            <af:exportCollectionActionListener type="excelHTML" exportedId="t3"
+                                                               filename="Dropship Non Deductions Details.xls"
+                                                               title="Dropship  Deductions Details"/>
+                        </af:commandMenuItem>
+                    </af:menu>
+                </f:facet>
+                <f:facet name="toolbar"/>
+                <f:facet name="statusbar"/>
+                <af:table value="#{bindings.XxApDropDeducNonDedInqSumVO.collectionModel}" var="row"
+                          rows="#{bindings.XxApDropDeducNonDedInqSumVO.rangeSize}"
+                          emptyText="#{bindings.XxApDropDeducNonDedInqSumVO.viewable ? 'No data to display.' : 'Access Denied.'}"
+                          rowBandingInterval="0" fetchSize="#{bindings.XxApDropDeducNonDedInqSumVO.rangeSize}" id="t2"
+                          binding="#{pageFlowScope.TrMaDropDeducNonDedInquirySearchBean.mainSearchResult}">
+                    <af:column sortProperty="#{bindings.XxApDropDeducNonDedInqSumVO.hints.SupplierName.name}"
+                               sortable="true"
+                               headerText="Supplier Name" id="c1" width="100">
+                        <af:outputText value="#{row.SupplierName}"
+                                       shortDesc="#{bindings.XxApDropDeducNonDedInqSumVO.hints.SupplierName.tooltip}"
+                                       id="ot1"/>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApDropDeducNonDedInqSumVO.hints.SupplierNum.name}"
+                               sortable="true"
+                               headerText="Supplier #" id="c2" width="100">
+                        <af:outputText value="#{row.SupplierNum}"
+                                       shortDesc="#{bindings.XxApDropDeducNonDedInqSumVO.hints.SupplierNum.tooltip}"
+                                       id="ot2"/>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApDropDeducNonDedInqSumVO.hints.SupplierSite.name}"
+                               sortable="true"
+                               headerText="Supplier Site #" id="c3" width="100">
+                        <af:outputText value="#{row.SupplierSite}"
+                                       shortDesc="#{bindings.XxApDropDeducNonDedInqSumVO.hints.SupplierSite.tooltip}"
+                                       id="ot3"/>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApDropDeducNonDedInqSumVO.hints.InvoiceDate.name}"
+                               sortable="true"
+                               headerText="Invoice Date" id="c4" width="100">
+                        <af:outputText value="#{row.InvoiceDate}"
+                                       shortDesc="#{bindings.XxApDropDeducNonDedInqSumVO.hints.InvoiceDate.tooltip}"
+                                       id="ot4">
+                            <af:convertDateTime pattern="#{bindings.XxApDropDeducNonDedInqSumVO.hints.InvoiceDate.format}"/>
+                        </af:outputText>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApDropDeducNonDedInqSumVO.hints.InvoiceNum.name}"
+                               sortable="true"
+                               headerText="Invoice #" id="c5" width="100">
+                        <af:outputText value="#{row.InvoiceNum}"
+                                       shortDesc="#{bindings.XxApDropDeducNonDedInqSumVO.hints.InvoiceNum.tooltip}"
+                                       id="ot5"/>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApDropDeducNonDedInqSumVO.hints.Total.name}" sortable="true"
+                               headerText="#{bindings.XxApDropDeducNonDedInqSumVO.hints.Total.label}" id="c6"
+                               width="100" align="right">
+                        <af:panelGroupLayout id="pgl4" layout="horizontal" halign="end">
+                            <af:outputText value="#{row.Total}"
+                                           shortDesc="#{bindings.XxApDropDeducNonDedInqSumVO.hints.Total.tooltip}"
+                                           id="ot6">
+                                <af:convertNumber groupingUsed="false"
+                                                  pattern="#{bindings.XxApDropDeducNonDedInqSumVO.hints.Total.format}"/>
+                            </af:outputText>
+                        </af:panelGroupLayout>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApDropDeducNonDedInqSumVO.hints.ReasonCode.name}"
+                               sortable="true"
+                               headerText="Reason Code" id="c7" width="100">
+                        <af:outputText value="#{row.ReasonCode}"
+                                       shortDesc="#{bindings.XxApDropDeducNonDedInqSumVO.hints.ReasonCode.tooltip}"
+                                       id="ot7"/>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApDropDeducNonDedInqSumVO.hints.CheckDescription.name}"
+                               sortable="true"
+                               headerText="Check Description"
+                               id="c8" width="140">
+                        <af:outputText value="#{row.CheckDescription}"
+                                       shortDesc="#{bindings.XxApDropDeducNonDedInqSumVO.hints.CheckDescription.tooltip}"
+                                       id="ot8"/>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApDropDeducNonDedInqSumVO.hints.CreationDate.name}"
+                               sortable="true"
+                               headerText="Creation Date" id="c9" width="100">
+                        <af:outputText value="#{row.CreationDate}"
+                                       shortDesc="#{bindings.XxApDropDeducNonDedInqSumVO.hints.CreationDate.tooltip}"
+                                       id="ot9">
+                            <af:convertDateTime pattern="#{bindings.XxApDropDeducNonDedInqSumVO.hints.CreationDate.format}"/>
+                        </af:outputText>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApDropDeducNonDedInqSumVO.hints.OuName.name}" sortable="true"
+                               headerText="OU_Name" id="c10" width="74">
+                        <af:outputText value="#{row.OuName}"
+                                       shortDesc="#{bindings.XxApDropDeducNonDedInqSumVO.hints.OuName.tooltip}"
+                                       id="ot10"/>
+                    </af:column>
+                </af:table>
+                <af:table value="#{bindings.XxApDropDeducNonDedInqDtlVO.collectionModel}" var="row"
+                          rows="#{bindings.XxApDropDeducNonDedInqDtlVO.rangeSize}"
+                          emptyText="#{bindings.XxApDropDeducNonDedInqDtlVO.viewable ? 'No data to display.' : 'Access Denied.'}"
+                          rowBandingInterval="0" fetchSize="#{bindings.XxApDropDeducNonDedInqDtlVO.rangeSize}" id="t3"
+                          binding="#{pageFlowScope.TrMaDropDeducNonDedInquirySearchBean.supResultTabBind}"
+                          rendered="false">
+                    <af:column sortProperty="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.SupplierName.name}"
+                               sortable="true"
+                               headerText="Supplier Name" id="c11">
+                        <af:outputText value="#{row.SupplierName}"
+                                       shortDesc="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.SupplierName.tooltip}"
+                                       id="ot11"/>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.SupplierNum.name}"
+                               sortable="true"
+                               headerText="Supplier #" id="c12">
+                        <af:outputText value="#{row.SupplierNum}"
+                                       shortDesc="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.SupplierNum.tooltip}"
+                                       id="ot12"/>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.SupplierSite.name}"
+                               sortable="true"
+                               headerText="Supplier Site #" id="c13">
+                        <af:outputText value="#{row.SupplierSite}"
+                                       shortDesc="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.SupplierSite.tooltip}"
+                                       id="ot13"/>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.InvoiceDate.name}"
+                               sortable="true"
+                               headerText="Invoice Date" id="c14">
+                        <af:outputText value="#{row.InvoiceDate}"
+                                       shortDesc="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.InvoiceDate.tooltip}"
+                                       id="ot14">
+                            <af:convertDateTime pattern="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.InvoiceDate.format}"/>
+                        </af:outputText>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.InvoiceNum.name}"
+                               sortable="true"
+                               headerText="Invoice #" id="c15">
+                        <af:outputText value="#{row.InvoiceNum}"
+                                       shortDesc="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.InvoiceNum.tooltip}"
+                                       id="ot15"/>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.Sku.name}" sortable="true"
+                               headerText="SKU" id="c16">
+                        <af:outputText value="#{row.Sku}"
+                                       shortDesc="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.Sku.tooltip}" id="ot16"/>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.Qty.name}" sortable="true"
+                               headerText="Qty" id="c17" align="right">
+                        <af:panelGroupLayout id="pgl6" layout="horizontal" halign="end">
+                            <af:outputText value="#{row.Qty}"
+                                           shortDesc="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.Qty.tooltip}"
+                                           id="ot17">
+                                <af:convertNumber groupingUsed="false"
+                                                  pattern="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.Qty.format}"/>
+                            </af:outputText>
+                        </af:panelGroupLayout>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.Cost.name}" sortable="true"
+                               headerText="Cost" id="c18" align="right">
+                        <af:panelGroupLayout id="pgl5" layout="horizontal" halign="end">
+                            <af:outputText value="#{row.Cost}"
+                                           shortDesc="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.Cost.tooltip}"
+                                           id="ot18">
+                                <af:convertNumber groupingUsed="false"
+                                                  pattern="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.Cost.format}"/>
+                            </af:outputText>
+                        </af:panelGroupLayout>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.CheckDescription.name}"
+                               sortable="true"
+                               headerText="Check Description"
+                               id="c19" width="165">
+                        <af:outputText value="#{row.CheckDescription}"
+                                       shortDesc="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.CheckDescription.tooltip}"
+                                       id="ot19"/>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.RtnOrder.name}"
+                               sortable="true" headerText="RTN Order #"
+                               id="c20">
+                        <af:outputText value="#{row.RtnOrder}"
+                                       shortDesc="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.RtnOrder.tooltip}"
+                                       id="ot20"/>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.RtnSub.name}" sortable="true"
+                               headerText="RTN Sub" id="c21">
+                        <af:outputText value="#{row.RtnSub}"
+                                       shortDesc="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.RtnSub.tooltip}"
+                                       id="ot21"/>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.OrigOrder.name}"
+                               sortable="true"
+                               headerText="Orig Order #" id="c22">
+                        <af:outputText value="#{row.OrigOrder}"
+                                       shortDesc="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.OrigOrder.tooltip}"
+                                       id="ot22"/>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.OrigSub.name}" sortable="true"
+                               headerText="Orig Sub" id="c23">
+                        <af:outputText value="#{row.OrigSub}"
+                                       shortDesc="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.OrigSub.tooltip}"
+                                       id="ot23"/>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.OuName.name}" sortable="true"
+                               headerText="OU_Name" id="c24">
+                        <af:outputText value="#{row.OuName}"
+                                       shortDesc="#{bindings.XxApDropDeducNonDedInqDtlVO.hints.OuName.tooltip}"
+                                       id="ot24"/>
+                    </af:column>
+                </af:table>
+            </af:panelCollection>
+            <af:panelGroupLayout id="pgl28">
+                <af:outputText value="Total # of Records : " id="ot40"/>
+                <af:outputText value="#{pageFlowScope.TrMaDropDeducNonDedInquirySearchBean.recordCount}" id="ot41"
+                            
+                               partialTriggers="b1"/>
+                
+            </af:panelGroupLayout>
+        </af:panelGroupLayout>
+    </af:panelGroupLayout>
+    <!--oracle-jdev-comment:preferred-managed-bean-name:TrMaDropDeducNonDedInquirySearchBean-->
+</jsp:root>

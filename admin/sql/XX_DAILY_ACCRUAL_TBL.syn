@@ -1,0 +1,14 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |                Synonym  :  XX_DAILY_ACCRUAL_TBL                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     16-SEP-2016  Avinash Baddam       Initial version               |
+-- +==========================================================================+
+
+CREATE or REPLACE SYNONYM XX_DAILY_ACCRUAL_TBL for xxfin.XX_DAILY_ACCRUAL_TBL;

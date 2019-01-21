@@ -1,0 +1,26 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name :XXFIN.XX_CE_AJB999A                                                |
+-- | Description : Alter table to add a new column                            |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     08/16/2007  Raji Natarajan       Initial version                |
+-- |                                                                          |
+-- +==========================================================================+
+
+   SET SHOW         OFF
+   SET VERIFY       OFF
+   SET ECHO         OFF
+   SET TAB          OFF
+   SET FEEDBACK     ON
+
+
+ALTER TABLE xxfin.xx_ce_ajb999a
+ADD VSET_GROUP_ID  VARCHAR2(60);
+
+SHOW ERROR

@@ -1,0 +1,95 @@
+---+========================================================================================================+        
+---|                                        Office Depot - Project Simplify                                 |
+---|                             Oracle NAIO/WIPRO/Office Depot/Consulting Organization                     |
+---+========================================================================================================+
+---|    Application             :       AR                                                                  |
+---|                                                                                                        |
+---|    Name                    :       XX_AR_PAYMENTS_INTERFACE.tbl                                        |
+---|                                                                                                        |
+---|    Description             :       The table XX_AR_PAYMENTS_INTERFACE stores all the data from the     |
+---|                                    BAI file from the bank.                                             |
+---|                                                                                                        |
+---|                                                                                                        |
+---|                                                                                                        |
+---|    Change Record                                                                                       |
+---|    ---------------------------------                                                                   |
+---|    Version         DATE              AUTHOR            DESCRIPTION                                     |
+---|    ------------    ----------------- ---------------   ---------------------                           |
+---|    1.0             14-AUG-2007       Shiva Rao         Initial Version                                 |
+---|    1.1             06-OCT-2007       Shiva Rao         Added New table for Any combo and added columns |
+---|                                                        to the temporary interface table                |
+---|    1.2             15-JUL-2008       Brian J Looman    Defect 7605 - removed unused tables             |
+---+========================================================================================================+        
+
+
+CREATE TABLE XXFIN.XX_AR_PAYMENTS_INTERFACE
+(
+STATUS                          VARCHAR2(30),
+RECORD_TYPE                     VARCHAR2(2),
+DESTINATION_ACCOUNT             VARCHAR2(25),
+ORIGINATION                     VARCHAR2(25),
+LOCKBOX_NUMBER                  VARCHAR2(30),
+DEPOSIT_DATE                    DATE,
+DEPOSIT_TIME                    VARCHAR2(8),                   
+BATCH_NAME                      VARCHAR2(25),
+ITEM_NUMBER                     NUMBER,
+REMITTANCE_AMOUNT               NUMBER,
+TRANSIT_ROUTING_NUMBER          VARCHAR2(25),
+ACCOUNT                         VARCHAR2(30),
+CHECK_NUMBER                    VARCHAR2(30),
+CUSTOMER_NUMBER                 VARCHAR2(30),
+OVERFLOW_SEQUENCE               NUMBER,
+OVERFLOW_INDICATOR              VARCHAR2(1),
+INVOICE1                        VARCHAR2(50),
+INVOICE2                        VARCHAR2(50),
+INVOICE3                        VARCHAR2(50),
+AMOUNT_APPLIED1                 NUMBER,
+AMOUNT_APPLIED2                 NUMBER,
+AMOUNT_APPLIED3                 NUMBER,
+BATCH_RECORD_COUNT              NUMBER(15),
+BATCH_AMOUNT                    NUMBER,
+LOCKBOX_RECORD_COUNT            NUMBER,
+LOCKBOX_AMOUNT                  NUMBER,
+TRANSMISSION_RECORD_COUNT       NUMBER,
+TRANSMISSION_AMOUNT             NUMBER,
+ATTRIBUTE1                      VARCHAR2(150),
+ATTRIBUTE2                      VARCHAR2(150),
+ATTRIBUTE3                      VARCHAR2(150),
+ATTRIBUTE4                      VARCHAR2(150),
+ATTRIBUTE5                      VARCHAR2(150),
+RECORD_STATUS                   VARCHAR2(30),
+PROCESS_NUM                     VARCHAR2(60),
+FILE_NAME                       VARCHAR2(100),
+ERROR_MESG                      VARCHAR2(100),
+INV_MATCH_STATUS                VARCHAR2(100),
+PROCESS_DATE                    DATE,
+ERROR_FLAG                      VARCHAR2(10),
+CREATION_DATE                   DATE,
+CREATED_BY                      NUMBER,
+LAST_UPDATE_DATE                DATE,
+LAST_UPDATED_BY                 NUMBER,
+AUTO_CASH_STATUS               VARCHAR2(60),
+AUTO_CASH_REQUEST              NUMBER,
+CUSTOMER_ID                    NUMBER,
+TRX_DATE                       DATE,
+INVOICE1_STATUS                VARCHAR2(60),
+INVOICE2_STATUS                VARCHAR2(60),
+INVOICE3_STATUS                VARCHAR2(60) );
+
+--
+-- B.Looman, none of these tables are used any more, defect 7605
+--CREATE TABLE XXFIN.XX_AR_AUTOCASH_GLB_TMP 
+--(TRX_NUMBER         VARCHAR2(25),
+--AMOUNT_DUE_ORIGINAL     NUMBER
+--) ;
+--CREATE TABLE XXFIN.XX_AR_AUTOCASH2_GLB_TMP 
+--(TRX_NUMBER         VARCHAR2(25),
+--AMOUNT_DUE_ORIGINAL     NUMBER
+--) ;
+--CREATE TABLE XXFIN.XX_AR_ANYCOMBO_NCR
+--(
+--  NCR_STRING      VARCHAR2(26 BYTE),
+--  RECEIPT_NUMBER  VARCHAR2(30 BYTE),
+--  CUSTOMER_ID     NUMBER
+--);
+--

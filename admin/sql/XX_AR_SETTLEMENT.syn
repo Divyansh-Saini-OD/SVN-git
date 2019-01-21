@@ -1,0 +1,27 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | SQL Script to create the following object                                |
+-- |             Synonym  : xx_iby_batch_trxns_201                            |
+-- |                      For I1039,Settlement and Payment Processing         |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     06-AUG-2007  Gowri Shankar        Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+-- DROP SYNONYM xx_ar_settlement;
+
+CREATE SYNONYM xx_ar_settlement FOR XXFIN.xx_ar_settlement;
+
+SHOW ERROR

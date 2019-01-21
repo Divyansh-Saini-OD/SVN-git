@@ -1,0 +1,62 @@
+-- +===========================================================================+
+-- |                  Office Depot - Project Simplify                          |
+-- +===========================================================================+
+-- | Name :XXFIN.XX_AR_AOPS_EBS_ORD_CHK                                        |
+-- | Description :   Script to create XX_OD_UPLOAD_EXCEL_CONFIG table	       |
+-- |  Rice ID : E3058 , E3062                                                  |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | DRAFT 1.0 14-MAR-2013    Kirubha       		Initial draft versio   |
+-- |                                                    Defect#21945 	       |
+-- |	1.1	04-jUN-2013	Archana N.		Added the columns      					|
+-- |							appl_short_name,       							|
+-- |							prog_short_name,       							|
+-- |							program_name          							|
+-- | 1.2		01-Jul-2013			Archana N.		Added the column INFO_ONLY	|
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+
+--+=====================================================================+
+--+               CREATE TABLE XXFIN.XX_OD_UPLOAD_EXCEL_CONFIG              +
+--+=====================================================================+
+
+CREATE TABLE xxfin.XX_OD_UPLOAD_EXCEL_CONFIG
+  (
+STAGING_TABLE_NAME       VARCHAR2(30),
+STAGING_COLUMN_NAME      VARCHAR2(30),
+DATA_TYPE                VARCHAR2(30),
+STG_COLUMN_HEADING       VARCHAR2(60),   
+SHEET_NO                 NUMBER,         
+EXCEL_COLUMN             VARCHAR2(3),
+TEMPLATE_ID              NUMBER,   
+VALIDATION_SQL           VARCHAR2(2000),
+CREATION_DATE            DATE,
+CREATED_BY               NUMBER,
+LAST_UPDATED_BY          NUMBER,        
+LAST_UPDATE_DATE         DATE,        
+USE_IN_IMG_TAG           CHAR(1),
+APPL_SHORT_NAME		 VARCHAR2(50),
+PROG_SHORT_NAME		 VARCHAR2(30),
+PROGRAM_NAME		 VARCHAR2(240),
+INFO_ONLY                VARCHAR2(10)
+  );
+
+SHOW ERROR
+
+--+=====================================================================+
+--+               GRANT TABLE XXFIN.XX_OD_UPLOAD_EXCEL_CONFIG                +
+--+=====================================================================+
+
+GRANT ALL ON xxfin.XX_OD_UPLOAD_EXCEL_CONFIG TO APPS;
+
+SHOW ERROR

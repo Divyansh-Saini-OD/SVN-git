@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xapi:requestset xmlns:xapi="http://xmlns.oracle.com/oxp/xapi/"> 
+ <xapi:request select="/XXAPSCRD/LIST_G_VENDOR_NUM/G_VENDOR_NUM">
+  <xapi:delivery>
+<xapi:filesystem output="${INS_TOP}/${VENDOR_NUM}"/>
+         <xapi:email server="chrelay.officedepot.com" port="25"
+         from="ConfirmedReceivable@officedepot.com" 
+         reply-to="">
+	  <xapi:message id="123" to="${EMAIL}" cc="" attachment="true" 
+         subject="Confirmed Receivable Stament - ${STATEMENT_DATE}">
+         		Please find the attached Office Depot's Confirmed Receivable Statement for ${STATEMENT_DATE}.
+         For this bundle, Office Depot will pay a total dollar amount of ${CS_NET} on ${WEIGHTED_DATE}.
+
+	   In order to have Office Depot bundle these transactions, a response must be received no later than 2pm EST
+         Friday.  Please FORWARD this e-mail to ConfirmedReceivable@officedepot.com.
+
+	   Once executed, these transactions cannot be rescinded.  All related invoices should be marked as paid and 
+         you should maintain the attached file to add in your payment posting proces.
+        </xapi:message>
+      </xapi:email>
+      </xapi:delivery>
+         <xapi:document output-type="pdf" delivery="123">
+       <xapi:template type="rtf" location="${INS_TOP}/VendorInvoice.rtf">
+      </xapi:template>
+     </xapi:document>
+    </xapi:request>
+</xapi:requestset>

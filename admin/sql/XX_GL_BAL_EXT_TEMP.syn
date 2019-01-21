@@ -1,0 +1,29 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | RICE ID     :  I1360                                                     |
+-- | Name        :  I1360 Oracle GL Feed to Hyperion Planning                 |
+-- | Description :                                                            |
+-- |                                                                          |
+-- |                                                                          |
+-- | SQL Script to create the following object                                |
+-- |             Table       : XX_GL_BAL_EXT_TEMP                             |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     11-JAN-2010  Cindhu Menaka        Initial version               |
+-- |                                            Defect 2841 CR 745/585 R 1.2  |
+-- +==========================================================================+
+
+CREATE SYNONYM XX_GL_BAL_EXT_TEMP FOR XXFIN.XX_GL_BAL_EXT_TEMP;
+
+SHOW ERROR

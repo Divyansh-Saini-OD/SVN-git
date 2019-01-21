@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<project default="compile" basedir=".">
+	<target name="compile">
+		<echo>
+--------------------------------------------------------------
+| Compiling bpel process ${process.name}, revision ${rev}
+--------------------------------------------------------------
+        </echo>
+		<bpelc rev="${rev}" input="${process.dir}/bpel/bpel.xml" out="${process.dir}/output" home="${bpel.home}">
+			<customize>
+				<partnerLinkBinding name="ODErrorLogger">
+					<property name="wsdlLocation">http://${hostname}:${http.port}/orabpel/${ODErrorLogger.domain}/ODErrorLogger/ODErrorLogger?wsdl</property>
+				</partnerLinkBinding>
+		             <partnerLinkBinding name="ODTransactionLogger">
+            		       <property name="wsdlLocation">http://${hostname}:${http.port}/orabpel/${ODTransactionLogger.domain}/ODTransactionLogger/ODTransactionLogger?wsdl</property>
+		             </partnerLinkBinding>
+				<partnerLinkBinding name="readExtensityInvoice">
+					<property name="wsdlLocation">readExtensityInvoice.wsdl</property>
+				</partnerLinkBinding>
+				<partnerLinkBinding name="writeExtensityInvoice">
+					<property name="wsdlLocation">writeExtensityInvoice.wsdl</property>
+					<property name="ExtensityInvoiceOut">xxfin/ftp/in/invoice/nonstandard</property>
+					<property name="retryInterval">600</property>
+				</partnerLinkBinding>
+				<activationAgent className="oracle.tip.adapter.fw.agent.jca.JCAActivationAgent" partnerLink="readExtensityInvoice">
+                              <property name="rejectedMessageHandlers" >file://${rejectedMessage.basedirectory}/${process.name}                bpel://${default.domain.locator}|${rejectedMessage.processname}|${rejectedMessage.operation}|message</property>
+                              <property name="fatalErrorFailoverProcess">bpel://${default.domain.locator}|${fatalErrorMessage.processname}|${fatalErrorMessage.operation}|message</property>
+					<property name="portType">Read_ptt</property>
+					<property name="ExtensityIn">/FTP/EXPORT</property>
+				</activationAgent>
+			</customize>
+		</bpelc>
+	</target>
+</project>

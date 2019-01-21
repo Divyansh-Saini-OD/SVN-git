@@ -1,0 +1,40 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Altering TABLE XX_AR_INVOICE_FREQ_HISTORY
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +=======================================================================================+
+-- |                  Office Depot - Project Simplify                                      |
+-- +=======================================================================================+
+-- | Name        :XX_AR_INVOICE_FREQ_HISTORY.tbl                                           |
+-- | Description : Altering the table XX_AR_INVOICE_FREQUENCY for R1.4 CR# 586 eBilling.   |
+-- |                                                                                       |
+-- |                                                                                       |
+-- |Change Record:                                                                         |
+-- |===============                                                                        |
+-- |Version   Date         Author                    Remarks                               |
+-- |=======   ==========   ==================        ======================================|
+-- | V1.0     05-APR-09    Gokila Tamilselvam        For R1.4 CR# 586 eBilling.            |
+-- |                                                                                       |
+-- +=======================================================================================+
+
+ALTER TABLE xxfin.xx_ar_invoice_freq_history
+        ADD ( parent_cust_acct_id        NUMBER
+             ,parent_cust_doc_id         NUMBER
+             ,mail_to_attention          VARCHAR2(150)
+             ,direct_flag                VARCHAR2(1)
+             ,amount_due_original        NUMBER
+             ,amount_due_remaining       NUMBER
+             ,due_date                   DATE
+             ,batch_id                   NUMBER
+             ,status                     VARCHAR2(15)
+            );
+
+SHOW ERROR

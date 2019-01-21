@@ -1,0 +1,82 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- +===================================================================+
+-- |                        Office Depot                               |
+-- |                                                                   |
+-- +===================================================================+
+-- | Table Name  :  XX_AP_TR_MATCH_EXCEPTIONS.tbl                      |
+-- | Description :  Table to store Trade Match Exceptions              |
+-- |                                                                   |
+-- | Rice Id     :  E1281                                              |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author             Remarks                  |
+-- |=======   ===========  =================  =========================|
+-- |1.0       21-MAR-2017  Havish Kasina      Initial draft version    |
+-- +===================================================================+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET TERM OFF
+
+SET TERM ON
+
+PROMPT
+PROMPT Creating the Table XXFIN.XX_AP_TR_MATCH_EXCEPTIONS 
+PROMPT
+
+CREATE TABLE XXFIN.XX_AP_TR_MATCH_EXCEPTIONS
+       (
+         INVOICE_ID                 NUMBER,
+         INVOICE_NUM                VARCHAR2(50),
+         VENDOR_ID                  NUMBER,
+         VENDOR_SITE_ID		        NUMBER,
+		 INVOICE_LINE_ID            NUMBER,
+		 INVOICE_LINE_NUM           NUMBER,
+		 PO_NUM                     VARCHAR2(50),
+		 PO_HEADER_ID               NUMBER,
+		 PO_LINE_ID                 NUMBER,
+		 PO_LINE_NUM                NUMBER,
+		 EXCEPTION_CODE             VARCHAR2(4),
+		 EXCEPTION_DESCRIPTION      VARCHAR2(200),
+		 PROCESS_FLAG               VARCHAR2(1),
+		 HOLD_PLACED_FLAG           VARCHAR2(1),
+		 HOLD_RELEASE_FLAG          VARCHAR2(1),
+		 CREATION_DATE              DATE,
+		 CREATED_BY                 NUMBER,
+		 LAST_UPDATED_BY            NUMBER,
+		 LAST_UPDATE_LOGIN          NUMBER,
+		 LAST_UPDATE_DATE           DATE
+      )
+/
+
+PROMPT
+PROMPT Grant XX_AP_TR_MATCH_EXCEPTIONS  to ERP_SYSTEM_TABLE_SELECT_ROLE
+PROMPT    
+GRANT SELECT ON XXFIN.XX_AP_TR_MATCH_EXCEPTIONS TO ERP_SYSTEM_TABLE_SELECT_ROLE
+/
+
+PROMPT
+PROMPT Grant XXFIN.XX_AP_TR_MATCH_EXCEPTIONS  to APPS
+PROMPT   
+GRANT ALL ON XXFIN.XX_AP_TR_MATCH_EXCEPTIONS TO APPS 
+/
+           
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

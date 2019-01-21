@@ -1,0 +1,212 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                        Providge Consulting                        |
+-- +===================================================================+
+-- |        Name : AR Collector Diary Notes Conversion DDL(FIN-1134)   |
+-- | Description : To create the Customer Diary Notes conversion       |
+-- |               tables                                              |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date          Author              Remarks                |
+-- |=======   ==========   =============        =======================|
+-- |1.0       26-MAR-2007  Terry Banks,         Initial version        |
+-- |                       Providge Consulting                         |
+-- |          27-MAR-2007  Terry Banks          Added comments         |
+-- |  Parameters : none                                                |
+-- |                                                                   |
+-- +===================================================================+
+
+DROP TABLE XXCNV.XX_JTF_NOTE_CONTEXTS_STG CASCADE CONSTRAINTS
+/
+
+CREATE TABLE XXCNV.XX_JTF_NOTE_CONTEXTS_STG
+(
+  CONTROL_ID            NUMBER,
+  PROCESS_FLAG          NUMBER,
+  CONV_ACTION           VARCHAR2(10 BYTE),
+  BATCH_ID              NUMBER,
+  SOURCE_SYSTEM_CODE    VARCHAR2(5 BYTE),
+  SOURCE_SYSTEM_REF     VARCHAR2(20 BYTE),
+  NOTE_CONTEXT_ID       NUMBER,
+  JTF_NOTE_ID           NUMBER,
+  NOTE_CONTEXT_TYPE     VARCHAR2(240 BYTE)      NOT NULL,
+  NOTE_CONTEXT_TYPE_ID  NUMBER                  NOT NULL,
+  LAST_UPDATE_DATE      DATE                    NOT NULL,
+  LAST_UPDATED_BY       NUMBER(15)              NOT NULL,
+  CREATION_DATE         DATE                    NOT NULL,
+  CREATED_BY            NUMBER                  NOT NULL,
+  LAST_UPDATE_LOGIN     NUMBER,
+  SECURITY_GROUP_ID     NUMBER
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            MINEXTENTS       1
+            MAXEXTENTS       2147483645
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING
+NOCOMPRESS
+NOCACHE
+NOPARALLEL
+MONITORING
+/
+CREATE UNIQUE INDEX XXCNV.XX_JTF_NOTE_CONTEXTS_STG_U1 ON XXCNV.XX_JTF_NOTE_CONTEXTS_STG
+(JTF_NOTE_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   11
+MAXTRANS   255
+STORAGE    (
+            INITIAL          128K
+            MINEXTENTS       1
+            MAXEXTENTS       2147483645
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL
+/
+
+DROP TABLE XXCNV.XX_JTF_NOTES_B_STG CASCADE CONSTRAINTS
+/
+
+CREATE TABLE XXCNV.XX_JTF_NOTES_B_STG
+(
+  CONTROL_ID                NUMBER,
+  PROCESS_FLAG              NUMBER,
+  CONV_ACTION               VARCHAR2(10 BYTE),
+  BATCH_ID                  NUMBER,
+  SOURCE_SYSTEM_CODE        VARCHAR2(5 BYTE),
+  SOURCE_SYSTEM_REF         VARCHAR2(20 BYTE),
+  JTF_NOTE_ID               NUMBER              NOT NULL,
+  PARENT_NOTE_ID            NUMBER,
+  SOURCE_OBJECT_ID          NUMBER,
+  SOURCE_OBJECT_CODE        VARCHAR2(240 BYTE)  NOT NULL,
+  LAST_UPDATE_DATE          DATE                NOT NULL,
+  LAST_UPDATED_BY           NUMBER(15)          NOT NULL,
+  CREATION_DATE             DATE                NOT NULL,
+  CREATED_BY                NUMBER(15)          NOT NULL,
+  LAST_UPDATE_LOGIN         NUMBER(15),
+  NOTE_STATUS               VARCHAR2(1 BYTE),
+  ENTERED_BY                NUMBER(15)          NOT NULL,
+  ENTERED_DATE              DATE                NOT NULL,
+  NOTE_TYPE                 VARCHAR2(30 BYTE),
+  ATTRIBUTE1                VARCHAR2(150 BYTE),
+  ATTRIBUTE2                VARCHAR2(150 BYTE),
+  ATTRIBUTE3                VARCHAR2(150 BYTE),
+  ATTRIBUTE4                VARCHAR2(150 BYTE),
+  ATTRIBUTE5                VARCHAR2(150 BYTE),
+  ATTRIBUTE6                VARCHAR2(150 BYTE),
+  ATTRIBUTE7                VARCHAR2(150 BYTE),
+  ATTRIBUTE8                VARCHAR2(150 BYTE),
+  ATTRIBUTE9                VARCHAR2(150 BYTE),
+  ATTRIBUTE10               VARCHAR2(150 BYTE),
+  ATTRIBUTE11               VARCHAR2(150 BYTE),
+  ATTRIBUTE12               VARCHAR2(150 BYTE),
+  ATTRIBUTE13               VARCHAR2(150 BYTE),
+  ATTRIBUTE14               VARCHAR2(150 BYTE),
+  ATTRIBUTE15               VARCHAR2(150 BYTE),
+  CONTEXT                   VARCHAR2(30 BYTE),
+  SECURITY_GROUP_ID         NUMBER,
+  ORIG_SYSTEM_REFERENCE     VARCHAR2(60 BYTE),
+  ORIG_SYSTEM_REFERENCE_ID  NUMBER,
+  UPGRADE_STATUS_FLAG       VARCHAR2(1 BYTE)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            MINEXTENTS       1
+            MAXEXTENTS       2147483645
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING
+NOCOMPRESS
+NOCACHE
+NOPARALLEL
+MONITORING
+/
+CREATE UNIQUE INDEX XXCNV.XX_JTF_NOTES_B_STG_U1 ON XXCNV.XX_JTF_NOTES_B_STG
+(JTF_NOTE_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   11
+MAXTRANS   255
+STORAGE    (
+            INITIAL          128K
+            MINEXTENTS       1
+            MAXEXTENTS       2147483645
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL
+/
+
+DROP TABLE XXCNV.XX_JTF_NOTES_TL_STG CASCADE CONSTRAINTS
+/
+
+CREATE TABLE XXCNV.XX_JTF_NOTES_TL_STG
+(
+  CONTROL_ID          NUMBER,
+  PROCESS_FLAG        NUMBER,
+  CONV_ACTION         VARCHAR2(10 BYTE),
+  BATCH_ID            NUMBER,
+  SOURCE_SYSTEM_CODE  VARCHAR2(5 BYTE),
+  SOURCE_SYSTEM_REF   VARCHAR2(20 BYTE),
+  JTF_NOTE_ID         NUMBER                    NOT NULL,
+  NOTES               VARCHAR2(2000 BYTE)       NOT NULL,
+  NOTES_DETAIL        VARCHAR2(1 BYTE),
+  LANGUAGE            VARCHAR2(4 BYTE)          NOT NULL,
+  SOURCE_LANG         VARCHAR2(4 BYTE)          NOT NULL,
+  CREATION_DATE       DATE                      NOT NULL,
+  CREATED_BY          NUMBER(15)                NOT NULL,
+  LAST_UPDATE_DATE    DATE                      NOT NULL,
+  LAST_UPDATED_BY     NUMBER(15)                NOT NULL,
+  LAST_UPDATE_LOGIN   NUMBER(15),
+  SECURITY_GROUP_ID   NUMBER
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            MINEXTENTS       1
+            MAXEXTENTS       2147483645
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING
+NOCOMPRESS
+NOCACHE
+NOPARALLEL
+MONITORING
+/
+CREATE UNIQUE INDEX XXCNV.XX_JTF_NOTES_TL_STG_U1 ON XXCNV.XX_JTF_NOTES_TL_STG
+(JTF_NOTE_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   11
+MAXTRANS   255
+STORAGE    (
+            INITIAL          128K
+            MINEXTENTS       1
+            MAXEXTENTS       2147483645
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL
+/

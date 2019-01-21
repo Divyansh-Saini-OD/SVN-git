@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataTemplate name="XXARSCBILLAUTHFAIL" defaultPackage="" description="Excel Template for OD: Subscription Billing Auth Failures Report" Version="1.0">
+        <parameters>
+            <parameter name="p_as_of_date" dataType="character" defaultValue=""/>
+            <parameter name="p_vendor_num" dataType="character" defaultValue=""/>
+            <parameter name="p_email_address" dataType="character" defaultValue=""/>
+        </parameters>
+    <dataQuery>
+        <sqlStatement name="Q_BILLING_SUMMARY">
+            <![CDATA[SELECT TO_CHAR(SUM(RCTLGD.amount),'$999,999.99')TOT_AMT,
+                            COUNT(DISTINCT RCTA.trx_number)INV_NO,
+                            TO_CHAR(TO_DATE(:p_as_of_date,'YYYY/MM/DD HH24:MI:SS'),'DD-MON-YY')P_CURRDATE
+                     FROM   xx_ar_subscriptions XAS,
+                            xx_ar_contracts XAC,
+                            xx_ar_contract_lines XACL,
+                            ra_customer_trx_all RCTA,
+                            ra_customer_trx_lines_all RCTLA,
+                            ra_cust_trx_line_gl_dist_all RCTLGD,
+                            ar_payment_schedules_all APSA
+                     WHERE  RCTA.trx_number                     = XAS.invoice_number
+                     AND    XAS.auth_completed_flag             = 'E'
+                     AND    XAS.auth_message                    IS NOT NULL
+                     AND    UPPER(XAC.contract_status)          = 'ACTIVE'
+                     AND    XAC.contract_id                     = XAS.contract_id
+                     AND    XACL.contract_id                    = XAC.contract_id
+                     AND    XACL.contract_line_number           = XAS.contract_line_number
+                     AND    RCTLA.line_number                   = XAS.contract_line_number
+                     AND    RCTLA.customer_trx_id               = RCTA.customer_trx_id
+                     AND    UPPER(RCTLA.interface_line_context) = 'RECURRING BILLING'
+                     AND    RCTA.trx_date                       <= fnd_date.canonical_to_date(NVL(:P_AS_OF_DATE,SYSDATE))
+                     AND    RCTLGD.customer_trx_line_id         = RCTLA.customer_trx_line_id
+                     AND    RCTLGD.customer_trx_id              = RCTLA.customer_trx_id
+                     AND    RCTLGD.customer_trx_id              = APSA.customer_trx_id
+                     AND    RCTLGD.customer_trx_id              = RCTA.customer_trx_id
+                     AND    APSA.customer_trx_id                = RCTA.customer_trx_id
+                     AND    APSA.org_id                         = RCTA.org_id
+                     AND    APSA.status                         = 'OP'
+                     AND    APSA.amount_due_remaining           <> 0
+                     AND    XACL.vendor_number                  = NVL(:P_VENDOR_NUM,XACL.vendor_number)
+                     GROUP BY XACL.vendor_number
+            ]]>
+        </sqlStatement>
+        <sqlStatement name="Q_ARSCBILLAUTHFAIL">
+            <![CDATA[SELECT RCTA.trx_number TRANSACTION_NUMBER,
+                            XAS.contract_number CONTRACT_NUMBER,
+                            XAS.contract_id,
+                            XAC.contract_status CONTRACT_STATUS,
+                            XAS.billing_sequence_number,
+                            RCTLA.interface_line_attribute1 REFERENCE,
+                            TO_CHAR(RCTA.trx_date,'DD-MON-YY') TRANSACTION_DATE,
+                            RCTLA.line_number TRANSACTION_LINE_NUMBER,
+                            MSI.segment1 ITEM_NUMBER,
+                            RCTLGD.amount TRANSACTION_LINE_AMOUNT,
+                            HCA.account_number CUSTOMER_NUMBER , 
+                            XAS.Auth_Message ERROR_MESSAGE,
+                            (SELECT APS.vendor_name 
+                             FROM   ap_suppliers APS,
+                                    ap_supplier_sites_all ASSA
+                             WHERE  LPAD(ASSA.vendor_site_code_alt,LENGTH(ASSA.vendor_site_code_alt)+1,'0') = XACL.vendor_number
+                             AND    APS.vendor_id  = ASSA.vendor_id
+                             AND    ROWNUM = 1
+                            )VENDOR_NAME
+                     FROM   xx_ar_subscriptions XAS,
+                            xx_ar_contracts XAC,
+                            xx_ar_contract_lines XACL,
+                            ra_customer_trx_all RCTA,
+                            ra_customer_trx_lines_all RCTLA,
+                            ra_cust_trx_line_gl_dist_all RCTLGD,
+                            mtl_system_items_b MSI,
+                            hz_cust_accounts HCA,
+                            ar_payment_schedules_all APSA
+                     WHERE  RCTA.trx_number                     = XAS.invoice_number
+                     AND    XAS.auth_completed_flag             = 'E'
+                     AND    XAS.auth_message                    IS NOT NULL
+                     AND    UPPER(XAC.contract_status)          = 'ACTIVE'
+                     AND    XAC.contract_id                     = XAS.contract_id
+                     AND    XACL.contract_id                    = XAC.contract_id
+                     AND    XACL.contract_line_number           = XAS.contract_line_number
+                     AND    RCTLA.line_number                   = XAS.contract_line_number
+                     AND    RCTLA.customer_trx_id               = RCTA.customer_trx_id
+                     AND    UPPER(RCTLA.interface_line_context) = 'RECURRING BILLING'
+                     AND    RCTA.trx_date                       <= fnd_date.canonical_to_date(NVL(:P_AS_OF_DATE,SYSDATE))
+                     AND    HCA.cust_account_id                 = RCTA.bill_to_customer_id
+                     AND    RCTLGD.customer_trx_line_id         = RCTLA.customer_trx_line_id
+                     AND    RCTLGD.customer_trx_id              = RCTLA.customer_trx_id
+                     AND    RCTLGD.customer_trx_id              = APSA.customer_trx_id
+                     AND    RCTLGD.customer_trx_id              = RCTA.customer_trx_id
+                     AND    APSA.customer_trx_id                = RCTA.customer_trx_id
+                     AND    APSA.org_id                         = RCTA.org_id
+                     AND    APSA.status                         = 'OP'
+                     AND    APSA.amount_due_remaining           <> 0
+                     AND    MSI.inventory_item_id               = RCTLA.inventory_item_id
+                     AND    MSI.organization_id                 = RCTLA.warehouse_id
+                     AND    XACL.vendor_number                  = NVL(:P_VENDOR_NUM,XACL.vendor_number)
+                     ORDER  BY RCTA.trx_number
+            ]]>
+        </sqlStatement>
+        <sqlStatement name="Q_SMTP_DTLS_EMAIL">
+            <![CDATA[SELECT SMTP_DTLS.SMTP_SERVER,
+                            SMTP_DTLS.SMTP_PORT,
+                            SMTP_DTLS.EMAIL_FROM,
+                            EMAIL_ADDRESS.VEND_EMAIL_ADDR,
+                            TO_CHAR(TO_DATE(:p_as_of_date,'YYYY/MM/DD HH24:MI:SS'),'DD Month YYYY')CURRENT_DATE
+                     FROM   (SELECT XFTV.target_value1 SMTP_SERVER,
+                                    XFTV.target_value2 SMTP_PORT,
+                                    XFTV.target_value3 EMAIL_FROM
+                             FROM   xx_fin_translatedefinition XFTD,
+                                    xx_fin_translatevalues XFTV 
+                             WHERE  XFTD.translation_name ='AR_EBL_EMAIL_CONFIG'
+                              AND   SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active, SYSDATE + 1)
+                              AND   XFTD.enabled_flag   = 'Y'
+                              AND   XFTD.translate_id   = XFTV.translate_id
+                              AND   SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active, SYSDATE + 1)
+                              AND   XFTV.enabled_flag   = 'Y'
+                            )SMTP_DTLS,
+                            (SELECT XFTV.target_value2 VEND_EMAIL_ADDR
+                             FROM   xx_fin_translatedefinition XFTD,
+                                    xx_fin_translatevalues XFTV
+                             WHERE  XFTD.translation_name = 'XX_AR_SUBSCR_VENDORS'
+                             AND    SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active, SYSDATE + 1)
+                             AND    XFTD.enabled_flag   = 'Y'
+                             AND    XFTD.translate_id   = XFTV.translate_id
+                             AND    SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active, SYSDATE + 1)
+                             AND    XFTV.enabled_flag   = 'Y'
+                             AND    XFTV.target_value1  = :P_VENDOR_NUM
+                            )EMAIL_ADDRESS
+            ]]>
+        </sqlStatement>
+    </dataQuery>
+    <dataStructure>
+        <group name="G_BILLING_SUMMARY" source="Q_BILLING_SUMMARY">
+            <element name="TOT_AMT" value="TOT_AMT"/>
+            <element name="INV_NO" value="INV_NO"/>
+            <element name="P_CURRDATE" value="P_CURRDATE"/>
+            <element name="P_VENDNUM" value="p_vendor_num"/>
+        </group>
+        <group name="G_ARSCBILLAUTHFAIL" source="Q_ARSCBILLAUTHFAIL">
+            <element name="TRX_NUM" value="TRANSACTION_NUMBER"/>
+            <element name="CON_NUM" value="CONTRACT_NUMBER"/>
+            <element name="CON_STAT" value="CONTRACT_STATUS"/>
+            <element name="REFERENCE" value="REFERENCE"/>
+            <element name="TRX_DATE" value="TRANSACTION_DATE"/>
+            <element name="LINE_NUM" value="TRANSACTION_LINE_NUMBER"/>
+            <element name="ITEM_NUM" value="ITEM_NUMBER"/>
+            <element name="LINE_AMT" value="TRANSACTION_LINE_AMOUNT"/>
+            <element name="CUST_NUM" value="CUSTOMER_NUMBER"/>
+            <element name="ERROR_MESSAGE" value="ERROR_MESSAGE"/>
+            <element name="VENDOR_NAME" value="VENDOR_NAME"/>
+        </group>
+        <group name="G_SMTP_DTLS_EMAIL" source="Q_SMTP_DTLS_EMAIL">
+            <element name="SMTP_SERVER" value="SMTP_SERVER"/>
+            <element name="SMTP_PORT" value="SMTP_PORT"/>
+            <element name="EMAIL_FROM" value="EMAIL_FROM"/>
+            <element name="EMAIL_SUBJECT" value="EMAIL_SUBJECT"/>
+            <element name="VEND_EMAIL_ADDR" value="VEND_EMAIL_ADDR"/>
+            <element name="CURRENT_DATE" value="CURRENT_DATE"/>
+        </group>
+    </dataStructure>
+</dataTemplate>

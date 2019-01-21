@@ -1,0 +1,75 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- +===================================================================+
+-- |                        Office Depot                               |
+-- |                                                                   |
+-- +===================================================================+
+-- | Table Name  :  XX_AR_VPS_ADJ_DTLS_STG.tbl                         |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author             Remarks                  |
+-- |=======   ===========  =================  =========================|
+-- |1.0       28-JUN-2018  Havish Kasina      Initial draft version    |
+-- +===================================================================+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET TERM OFF
+
+SET TERM ON
+
+PROMPT
+PROMPT Creating the Table XXFIN.XX_AR_VPS_ADJ_DTLS_STG 
+PROMPT
+
+CREATE TABLE XXFIN.XX_AR_VPS_ADJ_DTLS_STG 
+    ( trx_category           VARCHAR2(60)
+	, invoice_class          VARCHAR2(10)
+    , customer_trx_id        NUMBER
+    , transaction_number     VARCHAR2(30)
+	, transaction_date       DATE  
+	, set_of_books_id        NUMBER
+	, adjustment_id          NUMBER
+	, adjustment_number      VARCHAR2(30)
+	, payment_schedule_id    NUMBER
+    , amount                 NUMBER
+    , currency_code          VARCHAR2(6)
+    , reason_code            VARCHAR2(60)
+    , comments               VARCHAR2(2000)
+    , adj_activity_name      VARCHAR2(60)        
+    , cust_account_id        NUMBER
+    , cust_acct_number       VARCHAR2(30)
+	, cust_acct_name         VARCHAR2(100)
+    , send_refund            VARCHAR2(60)
+	, refund_status          VARCHAR2(60)
+    , trx_status             VARCHAR2(30)
+    , trx_message            VARCHAR2(255)
+	, request_id             NUMBER
+    , creation_date          DATE
+    , created_by             NUMBER
+    , last_update_date       DATE
+    , last_updated_by        NUMBER
+	, last_update_login      NUMBER    
+    , error_message          VARCHAR2(2000)
+    , process_flag           VARCHAR2(1)
+    )
+/
+         
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

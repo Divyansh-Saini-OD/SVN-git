@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataTemplate name="XXAPPVARXML" defaultPackage="XX_AP_URCOSTVAR_PKG"  Version="1.0">
+  <dataQuery>
+  <sqlStatement name="Q1">
+ <![CDATA[ SELECT :G_SMTP_SERVER SMTP_SERVER,
+   :G_EMAIL_SUBJECT EMAIL_SUBJECT, :G_EMAIL_CONTENT EMAIL_CONTENT, :G_DISTRIBUTION_LIST DISTRIBUTION_LIST from dual]]> 
+</sqlStatement>
+ <sqlStatement name="Q2">
+ <![CDATA[ 
+ SELECT  XX_AP_MERCH_CONT_PKG.merch_name(Dept) MERCHANT,
+        to_char(SYSDATE,'DDMMYY') CURRENT_DATE,
+        Vendor_No VENDOR,
+        Vendor_site_code Vendor_Site_Name,
+        Vendor_name ,
+        Dept,
+        Sku,
+        Sku_Description ,
+        COUNT(Line_num) Line_count,
+        SUM(Po_Cost) po_cost,
+        SUM(Invoice_price) Inv_cost,
+        SUM(Variance_amt) Variance
+FROM    xx_ap_cost_variance
+WHERE   NVL(answer_code,'X') = 'X' 
+GROUP BY 1,
+        Vendor_No,
+        Vendor_site_code,
+        Vendor_name,
+        Dept,
+        Sku,
+        Sku_Description  
+	]]> 
+</sqlStatement>
+   </dataQuery>
+  <dataTrigger name="beforeReport" source="XX_AP_URCOSTVAR_PKG.beforeReport()" /> 
+  <dataStructure>
+ <group name="G_EMAIL_DETAILS" source="Q1">
+	<element name="SMTP_SERVER" value= "SMTP_SERVER" />
+	<element name="EMAIL_SUBJECT" value= "EMAIL_SUBJECT" />
+	<element name="EMAIL_CONTENT" value= "EMAIL_CONTENT" />
+	<element name="DISTRIBUTION_LIST" value= "DISTRIBUTION_LIST" /> 
+ <group name="G_COST_VARIANCE" source="Q2">
+   <element name="MERCHANT" value="MERCHANT" /> 
+   <element name="CURRENT_DATE" value="CURRENT_DATE"/>
+  <element name="VENDOR" value="VENDOR" /> 
+  <element name="VENDOR_SITE_NAME" value="VENDOR_SITE_NAME" /> 
+  <element name="VENDOR_NAME" value="VENDOR_NAME"/>
+  <element name="DEPT" value="DEPT" />
+  <element name="SKU" value="SKU" />
+  <element name="SKU_DESCRIPTION" value="SKU_DESCRIPTION"/> 
+  <element name="LINE_COUNT" value="LINE_COUNT"/> 
+  <element name="PO_COST" value="PO_COST"/> 
+  <element name="INV_COST" value="INV_COST"/> 
+  <element name="VARIANCE" value="VARIANCE"/> 
+	</group>
+  </group>
+  </dataStructure>
+    <dataTrigger name="afterReport" source="XX_AP_URCOSTVAR_PKG.afterReport()" /> 
+  </dataTemplate>  

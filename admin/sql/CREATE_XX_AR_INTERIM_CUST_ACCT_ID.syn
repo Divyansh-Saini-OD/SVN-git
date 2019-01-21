@@ -1,0 +1,33 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating SYNONYM XX_AR_INTERIM_CUST_ACCT_ID
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | Name        : APPS.XX_AR_INTERIM_CUST_ACCT_ID                            |
+-- | Description : Synonym for XX_AR_INTERIM_CUST_ACCT_ID                     |
+-- |               Contains the consolidated customer id                      |
+-- |               which is valid for the current billing cycle.              |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version      Date              Author               Remarks               |
+-- |=======      ==========        =============        ===================== |
+-- | V1.0        04-MAY-2010       RamyaPriya M         Initial version       |
+-- |                                                    Defect 4422           |
+-- +==========================================================================+
+
+DROP Synonym APPS.xx_ar_interim_cust_acct_id;
+
+CREATE SYNONYM APPS.xx_ar_interim_cust_acct_id FOR XXFIN.xx_ar_interim_cust_acct_id;
+
+SHOW ERROR

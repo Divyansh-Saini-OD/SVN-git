@@ -1,0 +1,112 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<xs:schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/getEJMDataDBAdapter" xmlns="http://xmlns.oracle.com/pcbpel/adapter/db/top/getEJMDataDBAdapter" elementFormDefault="qualified" attributeFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+   <xs:element name="VwEbsPaCollection" type="VwEbsPaCollection"/>
+   <xs:complexType name="VwEbsPaCollection">
+      <xs:sequence>
+         <xs:element name="VwEbsPa" type="VwEbsPa" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="VwEbsPa">
+      <xs:sequence>
+         <xs:element name="pan" minOccurs="0">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="5"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="ex" minOccurs="0">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="9"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="panex">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="15"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="projectid" type="xs:int" minOccurs="0"/>
+         <xs:element name="projman" minOccurs="0">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="100"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="template" minOccurs="0">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="100"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="projorg" minOccurs="0">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="100"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="projname" minOccurs="0">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="30"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="projlongname" minOccurs="0">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="240"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="projdescr" minOccurs="0">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="250"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="startdate" type="xs:dateTime" minOccurs="0"/>
+         <xs:element name="completiondate" type="xs:dateTime" minOccurs="0"/>
+         <xs:element name="countryid" minOccurs="0">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="2"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="expenses" type="xs:decimal" minOccurs="0"/>
+         <xs:element name="capital" type="xs:decimal" minOccurs="0"/>
+         <xs:element name="vwEbsPaKeymembersCollection" minOccurs="0">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="VwEbsPaKeymembers" type="VwEbsPaKeymembers" minOccurs="0" maxOccurs="unbounded"/>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="VwEbsPaKeymembers">
+      <xs:sequence>
+         <xs:element name="projectid" type="xs:int" minOccurs="0"/>
+         <xs:element name="role" type="xs:string" minOccurs="0" nillable="true"/>
+         <xs:element name="employeeid" minOccurs="0">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="100"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:element name="getEJMDataDBAdapterSelectInputParameters" type="getEJMDataDBAdapterSelect"/>
+   <xs:complexType name="getEJMDataDBAdapterSelect">
+      <xs:sequence/>
+   </xs:complexType>
+</xs:schema>

@@ -1,0 +1,7 @@
+CREATE OR REPLACE PACKAGE XX_RJS_TEST_1_PKG AS
+
+PROCEDURE RJS_TEST(errbuf             OUT NOCOPY VARCHAR2,
+                   retcode            OUT NOCOPY NUMBER);
+
+END XX_RJS_TEST_1_PKG;
+/

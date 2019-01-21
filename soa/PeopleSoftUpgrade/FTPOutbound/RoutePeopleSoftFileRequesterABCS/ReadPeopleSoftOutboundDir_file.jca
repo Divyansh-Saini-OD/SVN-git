@@ -1,0 +1,16 @@
+<adapter-config name="ReadPeopleSoftOutboundDir" adapter="File Adapter" wsdlLocation="ReadPeopleSoftOutboundDir.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory location="eis/HAFileAdapter" UIincludeWildcard="*.*"/>
+  <endpoint-activation portType="Read_ptt" operation="Read">
+    <activation-spec className="oracle.tip.adapter.file.inbound.FileActivationSpec">
+      <property name="DeleteFile" value="false"/>
+      <property name="MinimumAge" value="60"/>
+      <property name="LogicalDirectory" value="POLLING_FOLDER"/>
+      <property name="Recursive" value="true"/>
+      <property name="PollingFrequency" value="300"/>
+      <property name="IncludeFiles" value=".*\..*"/>
+      <property name="UseHeaders" value="true"/>
+    </activation-spec>
+  </endpoint-activation>
+
+</adapter-config>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel" version="12.2.1.12.24" id="InvoicesNotValidatedPageDef"
+                Package="od.tdmatch.view.pageDefs">
+  <parameters/>
+  <executables>
+    <variableIterator id="variables"/>
+    <iterator Binds="InvoicesNotValidatedVO1" RangeSize="25" DataControl="TradeMatchAMDataControl"
+              id="InvoicesNotValidatedVO1Iterator" Refresh="ifNeeded"
+              RefreshCondition="#{pageFlowScope.InvoicesNotValidateBean.load}"/>
+    <searchRegion Criteria="InvoicesNotValidatedVOCriteria"
+                  Customizer="oracle.jbo.uicli.binding.JUSearchBindingCustomizer"
+                  Binds="InvoicesNotValidatedVO1Iterator" id="InvoicesNotValidatedVOCriteriaQuery"/>
+    <iterator Binds="ApInvoicesVO1" RangeSize="25" DataControl="TradeMatchAMDataControl" id="ApInvoicesVO1Iterator"/>
+  </executables>
+  <bindings>
+    <tree IterBinding="InvoicesNotValidatedVO1Iterator" id="InvoicesNotValidatedVO1">
+      <nodeDefinition DefName="od.tdmatch.model.InvoicesNotValidatedVO" Name="InvoicesNotValidatedVO10">
+        <AttrNames>
+          <Item Value="VendorNo"/>
+          <Item Value="VendorName"/>
+          <Item Value="Site"/>
+          <Item Value="Discount"/>
+          <Item Value="InvoiceNum"/>
+          <Item Value="InvoiceDate"/>
+          <Item Value="InvoiceAmount"/>
+          <Item Value="PoNumber"/>
+          <Item Value="PaymenrTerms"/>
+          <Item Value="TermsDate"/>
+          <Item Value="DiscountDueDate"/>
+          <Item Value="GlDate"/>
+          <Item Value="Currency"/>
+          <Item Value="PaymentMethodCode"/>
+          <Item Value="PayGroupLookupCode"/>
+          <Item Value="Source"/>
+          <Item Value="PoType"/>
+          <Item Value="TargetValue1"/>
+          <Item Value="TargetValue2"/>
+          <Item Value="EmployeeSelect" Binds="EmployeeSelect"/>
+          <Item Value="Sitelocation"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <listOfValues IterBinding="ApInvoicesVO1Iterator" StaticList="false" Uses="LOV_supNo" id="supNo"/>
+    <listOfValues IterBinding="ApInvoicesVO1Iterator" StaticList="false" Uses="LOV_supName" id="supName"/>
+    <listOfValues IterBinding="ApInvoicesVO1Iterator" StaticList="false" Uses="LOV_supSiteCode" id="supSiteCode"/>
+    <list IterBinding="ApInvoicesVO1Iterator" StaticList="false" Uses="LOV_vendorAssistant" id="vendorAssistant"
+          DTSupportsMRU="true" SelectItemValueMode="ListObject"/>
+    <methodAction id="invoiceSearch" RequiresUpdateModel="true" Action="invokeMethod" MethodName="invoiceSearch"
+                  IsViewObjectMethod="false" DataControl="TradeMatchAMDataControl"
+                  InstanceName="bindings.invoiceSearch.dataControl.dataProvider"/>
+    <attributeValues IterBinding="ApInvoicesVO1Iterator" id="invoiceNumber">
+      <AttrNames>
+        <Item Value="invoiceNumber"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="ApInvoicesVO1Iterator" id="poNumber">
+      <AttrNames>
+        <Item Value="poNumber"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="ApInvoicesVO1Iterator" id="invoiceFrom">
+      <AttrNames>
+        <Item Value="invoiceFrom"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="ApInvoicesVO1Iterator" id="invoiceTo">
+      <AttrNames>
+        <Item Value="invoiceTo"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="ApInvoicesVO1Iterator" id="dueFrom">
+      <AttrNames>
+        <Item Value="dueFrom"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="ApInvoicesVO1Iterator" id="dueTo">
+      <AttrNames>
+        <Item Value="dueTo"/>
+      </AttrNames>
+    </attributeValues>
+    <button IterBinding="InvoicesNotValidatedVO1Iterator" id="EmployeeSelect" DTSupportsMRU="false" StaticList="true">
+      <AttrNames>
+        <Item Value="EmployeeSelect"/>
+      </AttrNames>
+      <ValueList>
+        <Item Value="true"/>
+        <Item Value="false"/>
+      </ValueList>
+    </button>
+    <methodAction id="updateSelectedRows" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="updateSelectedRows" IsViewObjectMethod="false" DataControl="TradeMatchAMDataControl"
+                  InstanceName="bindings.updateSelectedRows.dataControl.dataProvider"/>
+    <listOfValues IterBinding="ApInvoicesVO1Iterator" StaticList="false" Uses="LOV_invoiceNumber" id="invoiceNumber1"/>
+    <listOfValues IterBinding="ApInvoicesVO1Iterator" StaticList="false" Uses="LOV_poNumber" id="poNumber1"/>
+    <methodAction id="invoiceSearchValidate" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="invoiceSearchValidate" IsViewObjectMethod="false" DataControl="TradeMatchAMDataControl"
+                  InstanceName="bindings.invoiceSearchValidate.dataControl.dataProvider"
+                  ReturnName="data.TradeMatchAMDataControl.methodResults.invoiceSearchValidate_invoiceSearchValidate_dataControl_dataProvider_invoiceSearchValidate_result"/>
+    <methodAction id="clearInvoiceValidate" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="clearInvoiceValidate" IsViewObjectMethod="false" DataControl="TradeMatchAMDataControl"
+                  InstanceName="bindings.clearInvoiceValidate.dataControl.dataProvider"/>
+    <action id="Rollback" RequiresUpdateModel="false" Action="rollbackTransaction"
+            DataControl="TradeMatchAMDataControl83"/>
+  </bindings>
+</pageDefinition>

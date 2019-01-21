@@ -1,0 +1,85 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | 		Name  :   XX_PO_POM_HDR_INT_STG.tbl                           |
+-- |                      Script to create the table for                      |
+-- |                      POM Staging table                                   |
+-- | 	     RICE ID  :   I2193_PO to EBS Interface                           |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     04-07-2017   Avinash Baddam       Initial version               |
+-- +==========================================================================+
+CREATE TABLE XXFIN.XX_PO_POM_HDR_INT_STG
+(RECORD_ID    			NUMBER
+,PROCESS_CODE			VARCHAR2(2)
+,PO_NUMBER				VARCHAR2(30)
+,CURRENCY_CODE          VARCHAR2(15)
+,VENDOR_SITE_CODE       VARCHAR2(25)
+,LOC_ID                 NUMBER
+,FOB_CODE               VARCHAR2(25)               
+,FREIGHT_CODE           VARCHAR2(25)
+,NOTE_TO_VENDOR         VARCHAR2(480) 
+,NOTE_TO_RECEIVER       VARCHAR2(480)
+,STATUS_CODE            VARCHAR2(25) 
+,IMPORT_MANUAL_PO       VARCHAR2(250)
+,DATE_ENTERED			DATE
+,DATE_CHANGED			DATE
+,RATE_TYPE              VARCHAR2(30)
+--,FIELD16              VARCHAR2(150)
+--,FIELD17              VARCHAR2(150)
+,DISTRIBUTION_CODE      VARCHAR2(30) 
+,PO_TYPE                VARCHAR2(30)
+,NUM_LINES              NUMBER
+,COST                   NUMBER
+,UNITS_ORD_REC_SHPD     NUMBER         
+,LBS                    NUMBER
+,NET_PO_TOTAL_COST      NUMBER         
+,DROP_SHIP_FLAG         VARCHAR2(30) 
+--,FIELD26                VARCHAR2(150)
+,SHIP_VIA               VARCHAR2(200)  
+,BACK_ORDERS            VARCHAR2(10)   
+,ORDER_DT               DATE           
+,SHIP_DT                DATE           
+,ARRIVAL_DT             DATE           
+,CANCEL_DT              DATE           
+,RELEASE_DATE           DATE
+,REVISION_FLAG          VARCHAR2(30)   
+,LAST_SHIP_DT           DATE           
+,LAST_RECEIPT_DT        DATE           
+,DISC_PCT         		NUMBER         
+,DISC_DAYS        		NUMBER         
+,NET_DAYS         		NUMBER         
+,ALLOWANCE_BASIS		VARCHAR2(10)   
+,ALLOWANCE_DOLLARS      NUMBER         
+,ALLOWANCE_PERCENT      NUMBER         
+,POM_CREATED_BY         VARCHAR2(100)
+,TIME_ENTERED           VARCHAR2(50)
+,PROGRAM_ENTERED_BY     VARCHAR2(100)  
+,POM_CHANGED_BY         VARCHAR2(100)
+,CHANGED_TIME           VARCHAR2(50)
+,PROGRAM_CHANGED_BY     VARCHAR2(100)  
+,CUST_ID	        	NUMBER         
+,CUST_ORDER_NBR         NUMBER
+,VENDOR_DOC_NUM	        VARCHAR2(30)
+,CUST_ORDER_SUB_NBR     VARCHAR2(30)
+,BATCH_ID               NUMBER
+,RECORD_STATUS			VARCHAR2(30)
+,ERROR_COLUMN 			VARCHAR2(100)
+,ERROR_VALUE 			VARCHAR2(200)
+,ERROR_DESCRIPTION		VARCHAR2(2000)
+,REQUEST_ID				NUMBER
+,ATTRIBUTE1             VARCHAR2(150)  
+,ATTRIBUTE2             VARCHAR2(150)  
+,ATTRIBUTE3             VARCHAR2(150)  
+,ATTRIBUTE4             VARCHAR2(150)  
+,ATTRIBUTE5             VARCHAR2(150)  
+,ATTRIBUTE_CATEGORY     VARCHAR2(150)  
+,CREATED_BY          	NUMBER
+,CREATION_DATE       	DATE 
+,LAST_UPDATED_BY     	NUMBER
+,LAST_UPDATE_DATE    	DATE
+,LAST_UPDATE_LOGIN   	NUMBER
+,CONSTRAINT XX_PO_POM_HDR_INT_STG_PK PRIMARY KEY(RECORD_ID));

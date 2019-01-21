@@ -1,0 +1,41 @@
+-- +===========================================================================+
+-- |                  Office Depot - AR Subscription                           |
+-- |                                                                           |
+-- +===========================================================================+
+-- | Name        : XX_AR_SUBSCRIPTIONS_IDX.idx                                 |
+-- | Description : Index for Custom Table XX_AR_SUBSCRIPTIONS                  |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version  Date        Author           Remarks                              |
+-- |======== =========== ================ =====================================|
+-- |1.0      26-NOV-2018 PUNIT_CG         Defect# NAIT-72201                   |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+
+PROMPT
+PROMPT Creation of Index on custom table XX_AR_SUBSCRIPTIONS.....
+PROMPT
+
+PROMPT
+PROMPT Creating non-unique index XX_AR_SUBSCRIPTIONS_N1 .....
+PROMPT
+
+CREATE INDEX XX_AR_SUBSCRIPTIONS_N3 ON XX_AR_SUBSCRIPTIONS(RECEIPT_NUMBER);
+CREATE INDEX XX_AR_SUBSCRIPTIONS_N4 ON XX_AR_SUBSCRIPTIONS(RECEIPT_CREATED_FLAG);
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+EXIT;
+

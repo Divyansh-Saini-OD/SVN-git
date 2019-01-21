@@ -1,0 +1,24 @@
+-- +==================================================================================+  
+-- | Office Depot - Project Simplify                                                  |
+-- | Providge Consulting                                                              |
+-- +==================================================================================+
+-- | SQL Script to create indexes on the table:  XXFIN.XX_AR_MAIL_CHECK_HOLDS         |
+-- |                                                                                  |
+-- | For the Extension E0055 AR Customer Refunds and I1380 Store Mail Checks          |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- | 1.0      25-MAR-2009    Sowmya M S                Inital Version                 |
+-- |                                                                                  |
+-- +==================================================================================+
+
+ 
+
+--DROP INDEX XXFIN.XX_AR_MAIL_CHECK_HOLDS_N2;
+
+CREATE INDEX XXFIN.XX_AR_MAIL_CHECK_HOLDS_N2
+ ON XX_AR_MAIL_CHECK_HOLDS (HOLD_STATUS,DELETE_STATUS)
+  NOLOGGING;
+ 

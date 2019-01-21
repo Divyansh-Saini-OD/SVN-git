@@ -1,0 +1,49 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name        : XX_AP_BULK_CHECK_INV_STG_N2		                         |
+-- | Description : Index for Custom Table XX_AP_BULK_CHECK_INVOICE_STG     |
+-- | Change History:                                                        |
+-- |---------------                                                        |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- | 1.0     12-Aug-2016 Radhika Patnala                                   |
+-- +=======================================================================+
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+
+
+  
+   CREATE INDEX XX_AP_BULK_CHECK_INV_STG_N4 ON XXFIN.XX_AP_BULK_CHECK_INVOICE_STG (Vendor_no, Vendor_site_code, invoice_amt) 
+  PCTFREE 10 
+  INITRANS 2 
+  MAXTRANS 255 
+  COMPUTE STATISTICS 
+  STORAGE(INITIAL 131072 
+  NEXT 131072
+  MINEXTENTS 1 
+  MAXEXTENTS 2147483645
+  PCTINCREASE 0
+  FREELISTS 1 
+  FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT 
+  FLASH_CACHE DEFAULT 
+  CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "APPS_TS_TX_DATA" ;
+
+SHOW ERRORS;
+
+
+

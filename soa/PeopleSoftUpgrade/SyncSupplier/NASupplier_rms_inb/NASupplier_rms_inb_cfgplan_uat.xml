@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAConfigPlan xmlns:jca="http://platform.integration.oracle/blocks/adapter/fw/metadata" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:orawsp="http://schemas.oracle.com/ws/2006/01/policy" xmlns:edl="http://schemas.oracle.com/events/edl" xmlns="http://schemas.oracle.com/soa/configplan">
+   <composite name="NASupplier_rms_inb">
+      <!--Add search and replace rules for the import section of a composite
+	Example:
+	<searchReplace>
+		<search>http://my-dev-server</search>
+		<replace>http://my-test-server</replace>
+	<searchReplace>
+	<searchReplace>
+		<search>8888</search>
+		<replace>8889</replace>
+	<searchReplace>-->
+      <import>
+         <searchReplace>
+            <search/>
+            <replace/>
+         </searchReplace>
+      </import>
+      <service name="nasupplier_rms_inb_client_ep">
+         <binding type="ws">
+            <attribute name="port">
+               <replace>http://xmlns.officedepot.com/Merchant/NASupplier_rms_inb/NASupplier_rms_inb#wsdl.endpoint(nasupplier_rms_inb_client_ep/NASupplier_rms_inb_pt)</replace>
+            </attribute>
+         </binding>
+         <callback>
+            <binding type="ws">
+               <attribute name="port">
+                  <replace>http://xmlns.officedepot.com/Merchant/NASupplier_rms_inb/NASupplier_rms_inb#wsdl.endpoint(nasupplier_rms_inb_client_ep/NASupplier_rms_inbCallback_pt)</replace>
+               </attribute>
+            </binding>
+         </callback>
+      </service>
+      <!--Add search and replace rules for the component properties
+	For components and service/reference bindings, you can add policy references.
+	Example:
+	<component name="*">
+		<wsp:PolicyReference orawsp:category="management" orawsp:status="enabled" URI="oracle/log_policy"/>
+	</component>-->
+      <component name="NASupplier_rms_inb">
+         <property name="bpel.preference.SOA_ERROR_MESSAGE">
+            <replace>Error Code:-1, Error Count:</replace>
+         </property>
+         <property name="bpel.preference.SOA_ERROR_SUBJECT">
+            <replace>- Error Returned from OD EBS Supplier API</replace>
+         </property>
+         <property name="bpel.preference.SOA_PROCESS_NAME">
+            <replace>NASupplier_rms_inb</replace>
+         </property>
+         <property name="bpel.preference.SOURCE_SYSTEM_NAME">
+            <replace>EBiz</replace>
+         </property>
+         <property name="bpel.preference.SYSTEM_NAME">
+            <replace>NASupplier_rms_inb</replace>
+         </property>
+         <property name="bpel.preference.MESSAGE_TYPE">
+            <replace>NASupplier_rms_inb</replace>
+         </property>
+         <property name="bpel.preference.MESSAGE_VERSION">
+            <replace>1</replace>
+         </property>
+         <property name="bpel.preference.CATCH_ALL_PROCESS_STEP">
+            <replace>Catch All on the Main Sequence</replace>
+         </property>
+         <property name="bpel.preference.ERROR_TYPE">
+            <replace>System</replace>
+         </property>
+         <property name="bpel.preference.ERROR_SEVERITY">
+            <replace>1</replace>
+         </property>
+      </component>
+      <!--Add search and replace rules for the reference properties
+	Example:
+	<searchReplace>
+		<search>http://my-dev-server</search>
+		<replace>http://my-test-server</replace>
+	<searchReplace>
+	<searchReplace>
+		<search>8888
+		<replace>8889</replace>
+	<searchReplace>
+	or provide a new replace value like:
+	<replace>http://my-new-server:8889/myservice</replace>-->
+      <reference name="UpdateSupplierRMS_db">
+         <property name="jca.retry.count">
+            <replace>4</replace>
+         </property>
+         <property name="jca.retry.interval">
+            <replace>1</replace>
+         </property>
+         <property name="jca.retry.backoff">
+            <replace>2</replace>
+         </property>
+         <property name="jca.retry.maxInterval">
+            <replace>120</replace>
+         </property>
+         <binding type="jca"/>
+      </reference>
+      <reference name="CommonErrorLoggingService">
+         <binding type="jca"/>
+      </reference>
+   </composite>
+   <!--To configure monitor.config: 
+	<property name="enabled"><replace>true</replace></property>
+	<property name="dataObjectsFolder"><searchReplace><search>mydev</search><replace>myproduction</replace></searchReplace></property>
+	
+	sample properties to configure for JMS adapter: 
+	<jca:property name="DestinationName"><replace>jms/DemoSupplierTopic</replace></jca:property>
+	<jca:property name="TimeToLive"><replace>0</replace></jca:property>
+	
+	To add search and replace rules for wsdls, xsd and jca files
+	Example:
+	<searchReplace>
+		<search>http://my-dev-server</search>
+		<replace>http://my-test-server</replace>
+	<searchReplace>
+	<searchReplace>
+		<search>8888</search>
+		<replace>8889</replace>
+	<searchReplace>
+	-->
+   <wsdlAndSchema name="CommonErrorLoggingService.wsdl|CommonErrorLoggingService_jms.jca|NASupplier_rms_inb.wsdl|UpdateSupplierRMS_db.jca|UpdateSupplierRMS_db.wsdl|xsd/RMS10_OD_EBS_SUPPLIER_SQL_VALIDATE_OPERATION.xsd">
+      <searchReplace>
+         <search/>
+         <replace/>
+      </searchReplace>
+   </wsdlAndSchema>
+</SOAConfigPlan>

@@ -1,0 +1,16 @@
+<adapter-config name="CreateProjectEBIZAppAdapter" adapter="Oracle Applications Adapter" wsdlLocation="CreateProjectEBIZAppAdapter.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory location="eis/apps/OraXxsoa_svcFin" UIConnectionName="gsidev01" UIOracleAppType="DBOBJECT" adapterRef=""/>
+  <endpoint-interaction portType="CreateProjectEBIZAppAdapter_ptt" operation="CreateProjectEBIZAppAdapter">
+    <interaction-spec className="oracle.tip.adapter.apps.AppsStoredProcedureInteractionSpec">
+      <property name="IRepInternalName" value="PLSQL:XX_PA_CREATE_PKG:SERVICE_EJM_QUEUE"/>
+      <property name="SchemaName" value="APPS"/>
+      <property name="PackageName" value="XX_PA_CREATE_PKG"/>
+      <property name="ProcedureName" value="SERVICE_EJM_QUEUE"/>
+      <property name="Username" value="sysadmin"/>
+      <property name="Responsibility" value="System Administrator"/>
+    </interaction-spec>
+    <output/>
+  </endpoint-interaction>
+
+</adapter-config>

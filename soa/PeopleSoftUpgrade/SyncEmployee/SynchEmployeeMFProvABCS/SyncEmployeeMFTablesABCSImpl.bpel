@@ -1,0 +1,213 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Fri Jul 06 20:53:18 IST 2012
+  Author:  srayasa
+  Type: BPEL 1.1 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="SyncEmployeeMFTablesABCSImpl"
+               targetNamespace="http://xmlns.oracle.com/PSHR/SynchEmployeeMFProvABCS/SyncEmployeeMFTablesABCSImpl"
+               xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+               xmlns:client="http://xmlns.oracle.com/PSHR/SynchEmployeeMFProvABCS/SyncEmployeeMFTablesABCSImpl"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/POC/DB2Tables/UpdateEmpDataMFDBAdaptorV1"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/db/POC/DB2Tables/UpdateEmpMiscMFDBAdaptorV1"
+         xmlns:ns4="http://xmlns.officedepot.com/EnterpriseObjects/Core/Common/V3"
+         xmlns:ns3="http://xmlns.officedepot.com/EnterpriseObjects/Core/EBO/Employee/V1"
+         xmlns:ns6="http://xmlns.oracle.com/pcbpel/adapter/db/top/PSHREmployeeDb2Tbl"
+         xmlns:ns5="http://xmlns.officedepot.com/EnterpriseObjects/Core/Custom/Common/V3"
+         xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns7="http://xmlns.officedepot.com/PeopleSoftMigration/UpdateEmployeeErrorCallBackPSFTProvABCS/UpdateEmployeeErrorToPSFTEBM"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:aia="http://www.oracle.com/XSL/Transform/java/oracle.apps.aia.core.xpath.AIAFunctions"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns8="http://xmlns.oracle.com/pcbpel/adapter/db/top/UpdateEmpMiscMFDBAdaptorV1"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="syncemployeemftablesabcsimpl_client" partnerLinkType="client:SyncEmployeeMFTablesABCSImpl" myRole="SyncEmployeeMFTablesABCSImplProvider"/>
+    <partnerLink name="UpdateEmpDataMFDBAdaptorV1"
+                 partnerLinkType="ns1:UpdateEmpDataMFDBAdaptorV1_plt"
+                 partnerRole="UpdateEmpDataMFDBAdaptorV1_role"/>
+    <partnerLink name="UpdateEmpMiscMFDBAdaptorV1"
+                 partnerLinkType="ns2:UpdateEmpMiscMFDBAdaptorV1_plt"
+                 partnerRole="UpdateEmpMiscMFDBAdaptorV1_role"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:SyncEmployeeMFTablesABCSImplRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:SyncEmployeeMFTablesABCSImplResponseMessage"/>
+    <variable name="InvokeUpdateEmpDataSelect_UpdateEmpDataMFDBAdaptorV1Select_InputVariable"
+              messageType="ns1:UpdateEmpDataMFDBAdaptorV1Select_inputParameters"/>
+    <variable name="InvokeUpdateEmpDataSelect_UpdateEmpDataMFDBAdaptorV1Select_OutputVariable"
+              messageType="ns1:EmpdataCollection_msg"/>
+    <variable name="InvokeUpdateEmpDataMerge_merge_InputVariable"
+              messageType="ns1:EmpdataCollection_msg"/>
+    <variable name="InvokeUpdateEmpMiscMerge_merge_InputVariable"
+              messageType="ns2:EmpmiscCollection_msg"/>
+    <variable name="Employee" element="ns3:Employee"/>
+    <variable name="employeeFault"
+              messageType="client:SyncEmployeeMFTablesABCSImplFaultMessage"/>
+  </variables>
+  <faultHandlers>
+    <catchAll>
+      <sequence name="Sequence1">
+        <switch name="Switch1">
+          <case condition="contains(ora:getFaultAsString(),'ERRORCODE=-4228')">
+            <bpelx:annotation>
+              <bpelx:pattern>Check if the failure is because of data issue</bpelx:pattern>
+              <bpelx:general>
+                <bpelx:property name="userLabel">DataErrorCheck</bpelx:property>
+              </bpelx:general>
+            </bpelx:annotation>
+            <assign name="AssignEmployeeDataError">
+              <copy>
+                <from variable="inputVariable" part="payload"
+                      query="/ns3:Employee/ns3:EmployeeIdentification/ns3:EmployeeID"/>
+                <to variable="employeeFault" part="payload"
+                    query="/ns7:UpdateEmployeeErrorToPSFTEBM/ns7:EmployeeErrorDetails/ns7:EmployeeID"/>
+              </copy>
+              <copy>
+                <from expression="string('E')"/>
+                <to variable="employeeFault" part="payload"
+                    query="/ns7:UpdateEmployeeErrorToPSFTEBM/ns7:EmployeeErrorDetails/ns7:ProcessFlag"/>
+              </copy>
+              <copy>
+                <from expression="xp20:current-dateTime()"/>
+                <to variable="employeeFault" part="payload"
+                    query="/ns7:UpdateEmployeeErrorToPSFTEBM/ns7:EmployeeErrorDetails/ns7:ProcessDateTime"/>
+              </copy>
+              <copy>
+                <from expression="substring(ora:getFaultAsString(),1,500)"/>
+                <to variable="employeeFault" part="payload"
+                    query="/ns7:UpdateEmployeeErrorToPSFTEBM/ns7:EmployeeErrorDetails/ns7:ErrorDesc"/>
+              </copy>
+            </assign>
+          </case>
+          <otherwise>
+            <assign name="AssignEmployeeError">
+           <copy>
+                <from variable="inputVariable" part="payload"
+                      query="/ns3:Employee/ns3:EmployeeIdentification/ns3:EmployeeID"/>
+                <to variable="employeeFault" part="payload"
+                    query="/ns7:UpdateEmployeeErrorToPSFTEBM/ns7:EmployeeErrorDetails/ns7:EmployeeID"/>
+              </copy>
+              <copy>
+                <from expression="string('N')"/>
+                <to variable="employeeFault" part="payload"
+                    query="/ns7:UpdateEmployeeErrorToPSFTEBM/ns7:EmployeeErrorDetails/ns7:ProcessFlag"/>
+              </copy>
+              <copy>
+                <from expression="xp20:current-dateTime()"/>
+                <to variable="employeeFault" part="payload"
+                    query="/ns7:UpdateEmployeeErrorToPSFTEBM/ns7:EmployeeErrorDetails/ns7:ProcessDateTime"/>
+              </copy>
+              <copy>
+                <from expression="substring(ora:getFaultAsString(),1,500)"/>
+                <to variable="employeeFault" part="payload"
+                    query="/ns7:UpdateEmployeeErrorToPSFTEBM/ns7:EmployeeErrorDetails/ns7:ErrorDesc"/>
+              </copy>
+        </assign>
+          </otherwise>
+        </switch>
+        <throw name="ThrowEmployeeFault" faultName="client:employeeFault"
+               faultVariable="employeeFault"/>
+      </sequence>
+    </catchAll>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in SyncEmployeeMFTablesABCSImpl.wsdl) -->
+    <receive name="receiveInput" partnerLink="syncemployeemftablesabcsimpl_client" portType="client:SyncEmployeeMFTablesABCSImpl" operation="process" variable="inputVariable" createInstance="yes"/>
+
+    <!-- Generate reply to synchronous request -->
+    <assign name="AssignEmployeeIDToMFEmployeeNbr">
+      <copy>
+        <from expression="number(bpws:getVariableData('inputVariable','payload','/ns3:Employee/ns3:EmployeeIdentification/ns3:EmployeeID'))"/>
+        <to variable="InvokeUpdateEmpDataSelect_UpdateEmpDataMFDBAdaptorV1Select_InputVariable"
+            part="UpdateEmpDataMFDBAdaptorV1Select_inputParameters"
+            query="/ns6:UpdateEmpDataMFDBAdaptorV1Select_InputParamEmpdataEmpIDInputParameters/ns6:InputParamEmpdataEmpID"/>
+      </copy>
+      <copy>
+        <from variable="inputVariable" part="payload" query="/ns3:Employee"/>
+        <to variable="Employee" query="/ns3:Employee"/>
+      </copy>
+    </assign>
+    <invoke name="InvokeUpdateEmpDataSelect"
+            inputVariable="InvokeUpdateEmpDataSelect_UpdateEmpDataMFDBAdaptorV1Select_InputVariable"
+            outputVariable="InvokeUpdateEmpDataSelect_UpdateEmpDataMFDBAdaptorV1Select_OutputVariable"
+            partnerLink="UpdateEmpDataMFDBAdaptorV1"
+            portType="ns1:UpdateEmpDataMFDBAdaptorV1_ptt"
+            operation="UpdateEmpDataMFDBAdaptorV1Select"
+            bpelx:invokeAsDetail="no"/>
+    <assign name="TransformCanonicalToUpdateEmpDataMFDBAdaptorV1">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:doXSLTransformForDoc('xsl/CanonicalToUpdateEmpDataMFDBAdaptorV1.xsl', $Employee, 'InvokeUpdateEmpDataSelect_UpdateEmpDataMFDBAdaptorV1Select_OutputVariable.EmpdataCollection', $InvokeUpdateEmpDataSelect_UpdateEmpDataMFDBAdaptorV1Select_OutputVariable.EmpdataCollection)"/>
+        <to variable="InvokeUpdateEmpDataMerge_merge_InputVariable"
+            part="EmpdataCollection"/>
+      </copy>
+    </assign>
+    <invoke name="InvokeUpdateEmpDataMerge" bpelx:invokeAsDetail="no"
+            inputVariable="InvokeUpdateEmpDataMerge_merge_InputVariable"
+            partnerLink="UpdateEmpDataMFDBAdaptorV1"
+            portType="ns1:UpdateEmpDataMFDBAdaptorV1_ptt" operation="merge"/>
+    <assign name="TransformCanonicalToUpdateEmpMiscDataMFDBAdapterV1">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:doXSLTransformForDoc('xsl/CanonicalToUpdateEmpMiscDataMFDBAdapterV1.xsl', $Employee)"/>
+        <to variable="InvokeUpdateEmpMiscMerge_merge_InputVariable"
+            part="EmpmiscCollection"/>
+      </copy>
+    </assign>
+    <invoke name="InvokeUpdateEmpMiscMerge" bpelx:invokeAsDetail="no"
+            inputVariable="InvokeUpdateEmpMiscMerge_merge_InputVariable"
+            partnerLink="UpdateEmpMiscMFDBAdaptorV1"
+            portType="ns2:UpdateEmpMiscMFDBAdaptorV1_ptt" operation="merge"/>
+    <reply name="replyOutput" partnerLink="syncemployeemftablesabcsimpl_client" portType="client:SyncEmployeeMFTablesABCSImpl" operation="process" variable="outputVariable"/>
+  </sequence>
+</process>

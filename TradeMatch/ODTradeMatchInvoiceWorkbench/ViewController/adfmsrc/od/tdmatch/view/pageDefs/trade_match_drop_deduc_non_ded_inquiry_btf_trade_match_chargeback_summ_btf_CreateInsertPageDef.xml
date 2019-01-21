@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel" version="12.2.1.12.24"
+                id="trade_match_drop_deduc_non_ded_inquiry_btf_trade_match_chargeback_summ_btf_CreateInsertPageDef"
+                Package="od.tdmatch.view.pageDefs" SkipValidation="true">
+  <parameters/>
+  <executables>
+    <iterator Binds="XxApDropDeducNonDedInqSearchVO" RangeSize="25" DataControl="ODTradeMatchReportsAMDataControl"
+              id="XxApDropDeducNonDedInqSearchVOIterator"/>
+  </executables>
+  <bindings>
+    <action IterBinding="XxApDropDeducNonDedInqSearchVOIterator" id="CreateInsert" RequiresUpdateModel="true"
+            Action="createInsertRow"/>
+  </bindings>
+</pageDefinition>

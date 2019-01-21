@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="testHttpPost"
+                  targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/http/IPaymentPOC/IPaymentHTTPBindingPOC/testHttpPost"
+                  xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/http/IPaymentPOC/IPaymentHTTPBindingPOC/testHttpPost"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:msg_in_out="http://xmlns.oracle.com/HttpRequestResponseData"
+                  xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+                  xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <plt:partnerLinkType name="Request_Response_plt">
+    <plt:role name="Request-Response_role">
+      <plt:portType name="tns:Request_Response_ptt"/>
+    </plt:role>
+  </plt:partnerLinkType>
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://xmlns.oracle.com/HttpRequestResponseData"
+              schemaLocation="xsd/HttpRequestResponseData.xsd"/>
+    </schema>
+  </wsdl:types>
+  <wsdl:message name="HttpClientBPELProcessProcessRequest_msg_in">
+    <wsdl:part name="HttpClientBPELProcessProcessRequest"
+               element="msg_in_out:HttpClientBPELProcessProcessRequest"/>
+  </wsdl:message>
+  <wsdl:message name="HttpClientBPELProcessProcessResponse_msg_out">
+    <wsdl:part name="HttpClientBPELProcessProcessResponse"
+               element="msg_in_out:HttpClientBPELProcessProcessResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="HttpPostPortType">
+    <wsdl:operation name="Request-Response">
+      <wsdl:input message="tns:HttpClientBPELProcessProcessRequest_msg_in"/>
+      <wsdl:output message="tns:HttpClientBPELProcessProcessResponse_msg_out"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="HttpPostBinding" type="tns:HttpPostPortType">
+    <http:binding verb="POST"/>
+    <wsdl:operation name="Request-Response">
+      <http:operation location="/test"/>
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="HttpPostService">
+    <wsdl:port name="HttpPostPort" binding="tns:HttpPostBinding">
+      <http:address location="/test"/>
+    </wsdl:port>
+  </wsdl:service>
+  <wsdl:portType name="Request_Response_ptt">
+    <wsdl:operation name="Request-Response">
+      <wsdl:input message="tns:HttpClientBPELProcessProcessRequest_msg_in"/>
+      <wsdl:output message="tns:HttpClientBPELProcessProcessResponse_msg_out"/>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

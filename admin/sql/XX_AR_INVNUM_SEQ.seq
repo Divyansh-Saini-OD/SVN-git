@@ -1,0 +1,21 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | 		Name  :   XX_AR_INVNUM_SEQ.seq                                    |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     20-01-2018   Punit Gupta          Initial version               |
+-- +==========================================================================+
+
+CREATE SEQUENCE XXFIN.XX_AR_INVNUM_SEQ
+MINVALUE 1
+MAXVALUE 999999999999999999999999999
+START WITH 1
+INCREMENT BY 1
+NOCACHE;
+
+SHOW ERRORS;
+EXIT;

@@ -1,0 +1,13 @@
+<adapter-config name="ReadPurchaseOrderFile" adapter="File Adapter" wsdlLocation="ReadPurchaseOrderFile.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory location="eis/HAFileAdapter"/>
+  <endpoint-interaction portType="SynchRead_ptt" operation="SynchRead">
+    <interaction-spec className="oracle.tip.adapter.file.outbound.FileReadInteractionSpec">
+      <property name="DeleteFile" value="true"/>
+      <property name="LogicalArchiveDirectory" value="LOGICAL_ARCHIVE_PATH_NAME"/>
+      <property name="FileName" value="*.*"/>
+      <property name="LogicalDirectory" value="LOGICAL_PATH_NAME"/>
+    </interaction-spec>
+  </endpoint-interaction>
+
+</adapter-config>

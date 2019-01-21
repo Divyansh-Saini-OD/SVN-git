@@ -1,0 +1,43 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | Name :      OD: IPO Transfer Images and Documents to Server              |
+-- |                                                                          |
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- |             EXTERNAL TABLE:                                              |
+-- |                            XX_IPO_IMAGE_TRANSFER_EXT                     |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     15-SEP-2008  Gowri Shankar        Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE TABLE xxfin.xx_ipo_image_transfer_ext 
+(
+    item_number VARCHAR2(4000)
+)
+ORGANIZATION EXTERNAL (
+TYPE ORACLE_LOADER
+DEFAULT DIRECTORY XXFIN_INBOUND
+ACCESS PARAMETERS
+( RECORDS DELIMITED BY NEWLINE
+BADFILE 'XX_PO_IMAGE_TRANSFER_EXT.BAD'
+LOGFILE 'XX_PO_IMAGE_TRANSFER_EXT.LOG'
+FIELDS TERMINATED BY ','
+)
+LOCATION ('XX_IPO_IMAGE_TRANSFER_EXT.TXT')
+)
+REJECT LIMIT UNLIMITED;
+
+SHOW ERROR

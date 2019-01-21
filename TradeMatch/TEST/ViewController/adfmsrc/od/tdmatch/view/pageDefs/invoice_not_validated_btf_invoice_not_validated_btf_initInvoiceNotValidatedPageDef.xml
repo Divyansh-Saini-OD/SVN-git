@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel" version="12.2.1.12.24"
+                id="invoice_not_validated_btf_invoice_not_validated_btf_initInvoiceNotValidatedPageDef"
+                Package="od.tdmatch.view.pageDefs" SkipValidation="true">
+  <parameters/>
+  <executables>
+    <variableIterator id="variables"/>
+  </executables>
+  <bindings>
+    <methodAction id="initInvoiceNotValidated" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="initInvoiceNotValidated" IsViewObjectMethod="false"
+                  DataControl="TradeMatchAMDataControl33"
+                  InstanceName="bindings.initInvoiceNotValidated.dataControl.dataProvider"/>
+  </bindings>
+</pageDefinition>

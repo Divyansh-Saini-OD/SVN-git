@@ -1,0 +1,31 @@
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       PROVIDGE Consulting                                |
+-- +==========================================================================+
+-- | SQL Script to create indexes                                             |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   ================     ==============================|
+-- | V1.0     10-SEP-2008  Deepak Gowda         Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX xxfin.XX_AR_CASH_RECEIPTS_ALL_N1 ON apps.AR_CASH_RECEIPTS_ALL (ATTRIBUTE14) ONLINE;
+
+
+
+
+

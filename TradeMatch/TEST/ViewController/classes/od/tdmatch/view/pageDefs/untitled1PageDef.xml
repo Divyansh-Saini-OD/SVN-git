@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel" version="12.2.1.12.24" id="untitled1PageDef"
+                Package="od.tdmatch.view.pageDefs">
+  <parameters/>
+  <executables>
+    <variableIterator id="variables"/>
+    <iterator Binds="VendorMOOTDetVO1" RangeSize="25" DataControl="TradeMatchAMDataControl13"
+              id="VendorMOOTDetVO1Iterator"/>
+    <searchRegion Criteria="VendorMOOTDetVOCriteria" Customizer="oracle.jbo.uicli.binding.JUSearchBindingCustomizer"
+                  Binds="VendorMOOTDetVO1Iterator" id="VendorMOOTDetVOCriteriaQuery"/>
+    <iterator Binds="VendorMOOTDetVO1" RangeSize="25" DataControl="TradeMatchAMDataControl14"
+              id="VendorMOOTDetVO1Iterator1"/>
+    <iterator Binds="VAEmpVendorSummaryVO1" RangeSize="25" DataControl="GSTestAppModuleDataControl3"
+              id="VAEmpVendorSummaryVO1Iterator"/>
+    <searchRegion Criteria="VAEmpVendorSummaryVOCriteria"
+                  Customizer="oracle.jbo.uicli.binding.JUSearchBindingCustomizer" Binds="VAEmpVendorSummaryVO1Iterator"
+                  id="VAEmpVendorSummaryVOCriteriaQuery"/>
+    <iterator Binds="VAEmpVendorSummaryVO1" RangeSize="25" DataControl="GSTestAppModuleDataControl4"
+              id="VAEmpVendorSummaryVO1Iterator1"/>
+  </executables>
+  <bindings>
+    <tree IterBinding="VendorMOOTDetVO1Iterator1" id="VendorMOOTDetVO1">
+      <nodeDefinition DefName="od.tdmatch.model.VendorMOOTDetVO" Name="VendorMOOTDetVO10">
+        <AttrNames>
+          <Item Value="VendorAssistant"/>
+          <Item Value="SupplierName"/>
+          <Item Value="SupplierNo"/>
+          <Item Value="SupplierSite"/>
+          <Item Value="Discount"/>
+          <Item Value="InvoiceNum"/>
+          <Item Value="VoucherNum"/>
+          <Item Value="InvoiceDate"/>
+          <Item Value="PoNumber"/>
+          <Item Value="Location"/>
+          <Item Value="DueDate"/>
+          <Item Value="InvoiceAmount"/>
+          <Item Value="PoType"/>
+          <Item Value="OrgId"/>
+          <Item Value="Source"/>
+          <Item Value="AllPendingS"/>
+          <Item Value="FrontDoorS"/>
+          <Item Value="NonCodeS"/>
+          <Item Value="DropShipS"/>
+          <Item Value="PriceExceptS"/>
+          <Item Value="QtyExceptS"/>
+          <Item Value="FrExceptS"/>
+          <Item Value="Sku"/>
+          <Item Value="QtyHoldAmt"/>
+          <Item Value="PriceHoldAmt"/>
+          <Item Value="FrtHold"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <tree IterBinding="VAEmpVendorSummaryVO1Iterator1" id="VAEmpVendorSummaryVO1">
+      <nodeDefinition DefName="od.tdmatch.model.VAEmpVendorSummaryVO" Name="VAEmpVendorSummaryVO10">
+        <AttrNames>
+          <Item Value="OrgId"/>
+          <Item Value="VendorAssistant"/>
+          <Item Value="EmployeeId"/>
+          <Item Value="VendorName"/>
+          <Item Value="Supplier"/>
+          <Item Value="VendorSiteCode"/>
+          <Item Value="Disc"/>
+          <Item Value="TotalInvCount"/>
+          <Item Value="TotalInvAmount"/>
+          <Item Value="TotalLineAmount"/>
+          <Item Value="TotalMootCount"/>
+          <Item Value="TotalMootInvAmount"/>
+          <Item Value="TotalMootLineAmount"/>
+          <Item Value="TotalNrfCount"/>
+          <Item Value="TotalNrfAmount"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+  </bindings>
+</pageDefinition>

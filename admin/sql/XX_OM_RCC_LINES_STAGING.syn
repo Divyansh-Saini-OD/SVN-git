@@ -1,0 +1,32 @@
+-- +===========================================================================+
+-- |                          Oracle - GSD                                     |
+-- +===========================================================================+
+-- | Name :XXFIN.XX_OM_RCC_LINES_STAGING                                       |
+-- | Description :   Script to create XX_OM_RCC_LINES_STAGING table	           |
+-- | RICE ID : I-3090                                                          |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author            Remarks                      |
+-- |=======    ==========     =============       ======================       |
+-- |  1.0      30-JUN-2014    Darshini G           Initial Version             |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+
+--+=====================================================================+
+--+               CREATE SYNOYM XXFIN.XX_OM_RCC_LINES_STAGING         +
+--+=====================================================================+
+
+CREATE SYNONYM apps.XX_OM_RCC_LINES_STAGING for xxfin.XX_OM_RCC_LINES_STAGING
+
+/
+
+SHOW ERROR

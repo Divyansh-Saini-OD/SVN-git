@@ -1,0 +1,1065 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toplink:object-persistence version="Oracle TopLink - 10g Release 3 (10.1.3.1.0) (Build 061004)" xmlns:opm="http://xmlns.oracle.com/ias/xsds/opm" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:toplink="http://xmlns.oracle.com/ias/xsds/toplink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <opm:name>ServicePeopleSoftTableInsertUpdate</opm:name>
+   <opm:class-mapping-descriptors>
+      <opm:class-mapping-descriptor xsi:type="toplink:relational-class-mapping-descriptor">
+         <opm:class>ServicePeopleSoftTableInsertUpdate.XxApPsVendor</opm:class>
+         <opm:alias>XxApPsVendor</opm:alias>
+         <opm:primary-key>
+            <opm:field table="XX_AP_PS_VENDOR" name="SETID" xsi:type="opm:column"/>
+            <opm:field table="XX_AP_PS_VENDOR" name="VENDOR_ID" xsi:type="opm:column"/>
+         </opm:primary-key>
+         <opm:events xsi:type="toplink:event-policy"/>
+         <opm:querying xsi:type="toplink:query-policy">
+            <opm:queries>
+               <opm:query name="findAllXxApPsVendor" xsi:type="toplink:read-all-query">
+                  <toplink:timeout>0</toplink:timeout>
+                  <toplink:reference-class>ServicePeopleSoftTableInsertUpdate.XxApPsVendor</toplink:reference-class>
+                  <toplink:cache-usage>primary-key</toplink:cache-usage>
+                  <toplink:lock-mode>none</toplink:lock-mode>
+                  <toplink:container xsi:type="toplink:list-container-policy">
+                     <toplink:collection-type>java.util.Vector</toplink:collection-type>
+                  </toplink:container>
+               </opm:query>
+            </opm:queries>
+            <toplink:does-exist-query xsi:type="toplink:does-exist-query">
+               <toplink:existence-check>check-database</toplink:existence-check>
+            </toplink:does-exist-query>
+         </opm:querying>
+         <opm:attribute-mappings>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>setid</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="SETID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vendorId</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="VENDOR_ID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vendorNameShort</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="VENDOR_NAME_SHORT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vndrNameShrtUsr</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="VNDR_NAME_SHRT_USR" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vndrNameSeqNum</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="VNDR_NAME_SEQ_NUM" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>name1</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="NAME1" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>name2</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="NAME2" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vendorStatus</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="VENDOR_STATUS" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vendorClass</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="VENDOR_CLASS" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vendorPersistence</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="VENDOR_PERSISTENCE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>remitAddrSeqNum</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="REMIT_ADDR_SEQ_NUM" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>primAddrSeqNum</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="PRIM_ADDR_SEQ_NUM" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>addrSeqNumOrdr</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="ADDR_SEQ_NUM_ORDR" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>remitSetid</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="REMIT_SETID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>remitVendor</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="REMIT_VENDOR" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>corporateSetid</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="CORPORATE_SETID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>corporateVendor</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="CORPORATE_VENDOR" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>custSetid</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="CUST_SETID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>custId</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="CUST_ID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>enteredBy</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="ENTERED_BY" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>arNum</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="AR_NUM" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>oldVendorId</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="OLD_VENDOR_ID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>wthdSw</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="WTHD_SW" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vatSw</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="VAT_SW" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vndrStatusPo</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="VNDR_STATUS_PO" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>remitLoc</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="REMIT_LOC" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>defaultLoc</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="DEFAULT_LOC" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>name1Ac</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="NAME1_AC" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>name2Ac</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="NAME2_AC" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>primaryVendor</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="PRIMARY_VENDOR" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>lastActivityDt</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="LAST_ACTIVITY_DT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.sql.Timestamp</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>withholdLoc</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="WITHHOLD_LOC" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>inProcessFlg</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="IN_PROCESS_FLG" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>processInstance</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="PROCESS_INSTANCE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.Integer</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>hubZone</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="HUB_ZONE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>eeoCertifDt</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="EEO_CERTIF_DT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.sql.Timestamp</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>hrmsClass</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR" name="HRMS_CLASS" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:one-to-many-mapping">
+               <opm:attribute-name>xxApPsVendorAddrCollection</opm:attribute-name>
+               <opm:reference-class>ServicePeopleSoftTableInsertUpdate.XxApPsVendorAddr</opm:reference-class>
+               <opm:private-owned>true</opm:private-owned>
+               <opm:target-foreign-key>
+                  <opm:field-reference>
+                     <opm:source-field table="XX_AP_PS_VENDOR_ADDR" name="SETID" xsi:type="opm:column"/>
+                     <opm:target-field table="XX_AP_PS_VENDOR" name="SETID" xsi:type="opm:column"/>
+                  </opm:field-reference>
+                  <opm:field-reference>
+                     <opm:source-field table="XX_AP_PS_VENDOR_ADDR" name="VENDOR_ID" xsi:type="opm:column"/>
+                     <opm:target-field table="XX_AP_PS_VENDOR" name="VENDOR_ID" xsi:type="opm:column"/>
+                  </opm:field-reference>
+               </opm:target-foreign-key>
+               <toplink:batch-reading>true</toplink:batch-reading>
+               <toplink:container xsi:type="toplink:container-policy">
+                  <toplink:collection-type>oracle.toplink.indirection.IndirectList</toplink:collection-type>
+               </toplink:container>
+               <toplink:indirection xsi:type="toplink:transparent-collection-indirection-policy"/>
+               <toplink:selection-query xsi:type="toplink:read-all-query">
+                  <toplink:reference-class>ServicePeopleSoftTableInsertUpdate.XxApPsVendorAddr</toplink:reference-class>
+                  <toplink:container xsi:type="toplink:container-policy">
+                     <toplink:collection-type>oracle.toplink.indirection.IndirectList</toplink:collection-type>
+                  </toplink:container>
+               </toplink:selection-query>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:one-to-many-mapping">
+               <opm:attribute-name>xxApPsVendorLocCollection</opm:attribute-name>
+               <opm:reference-class>ServicePeopleSoftTableInsertUpdate.XxApPsVendorLoc</opm:reference-class>
+               <opm:private-owned>true</opm:private-owned>
+               <opm:target-foreign-key>
+                  <opm:field-reference>
+                     <opm:source-field table="XX_AP_PS_VENDOR_LOC" name="SETID" xsi:type="opm:column"/>
+                     <opm:target-field table="XX_AP_PS_VENDOR" name="SETID" xsi:type="opm:column"/>
+                  </opm:field-reference>
+                  <opm:field-reference>
+                     <opm:source-field table="XX_AP_PS_VENDOR_LOC" name="VENDOR_ID" xsi:type="opm:column"/>
+                     <opm:target-field table="XX_AP_PS_VENDOR" name="VENDOR_ID" xsi:type="opm:column"/>
+                  </opm:field-reference>
+               </opm:target-foreign-key>
+               <toplink:batch-reading>true</toplink:batch-reading>
+               <toplink:container xsi:type="toplink:container-policy">
+                  <toplink:collection-type>oracle.toplink.indirection.IndirectList</toplink:collection-type>
+               </toplink:container>
+               <toplink:indirection xsi:type="toplink:transparent-collection-indirection-policy"/>
+               <toplink:selection-query xsi:type="toplink:read-all-query">
+                  <toplink:reference-class>ServicePeopleSoftTableInsertUpdate.XxApPsVendorLoc</toplink:reference-class>
+                  <toplink:container xsi:type="toplink:container-policy">
+                     <toplink:collection-type>oracle.toplink.indirection.IndirectList</toplink:collection-type>
+                  </toplink:container>
+               </toplink:selection-query>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:one-to-many-mapping">
+               <opm:attribute-name>xxApPsVndrAddrScrolCollection</opm:attribute-name>
+               <opm:reference-class>ServicePeopleSoftTableInsertUpdate.XxApPsVndrAddrScrol</opm:reference-class>
+               <opm:private-owned>true</opm:private-owned>
+               <opm:target-foreign-key>
+                  <opm:field-reference>
+                     <opm:source-field table="XX_AP_PS_VNDR_ADDR_SCROL" name="SETID" xsi:type="opm:column"/>
+                     <opm:target-field table="XX_AP_PS_VENDOR" name="SETID" xsi:type="opm:column"/>
+                  </opm:field-reference>
+                  <opm:field-reference>
+                     <opm:source-field table="XX_AP_PS_VNDR_ADDR_SCROL" name="VENDOR_ID" xsi:type="opm:column"/>
+                     <opm:target-field table="XX_AP_PS_VENDOR" name="VENDOR_ID" xsi:type="opm:column"/>
+                  </opm:field-reference>
+               </opm:target-foreign-key>
+               <toplink:batch-reading>true</toplink:batch-reading>
+               <toplink:container xsi:type="toplink:container-policy">
+                  <toplink:collection-type>oracle.toplink.indirection.IndirectList</toplink:collection-type>
+               </toplink:container>
+               <toplink:indirection xsi:type="toplink:transparent-collection-indirection-policy"/>
+               <toplink:selection-query xsi:type="toplink:read-all-query">
+                  <toplink:reference-class>ServicePeopleSoftTableInsertUpdate.XxApPsVndrAddrScrol</toplink:reference-class>
+                  <toplink:container xsi:type="toplink:container-policy">
+                     <toplink:collection-type>oracle.toplink.indirection.IndirectList</toplink:collection-type>
+                  </toplink:container>
+               </toplink:selection-query>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:one-to-many-mapping">
+               <opm:attribute-name>xxApPsVndrLocScrolCollection</opm:attribute-name>
+               <opm:reference-class>ServicePeopleSoftTableInsertUpdate.XxApPsVndrLocScrol</opm:reference-class>
+               <opm:private-owned>true</opm:private-owned>
+               <opm:target-foreign-key>
+                  <opm:field-reference>
+                     <opm:source-field table="XX_AP_PS_VNDR_LOC_SCROL" name="SETID" xsi:type="opm:column"/>
+                     <opm:target-field table="XX_AP_PS_VENDOR" name="SETID" xsi:type="opm:column"/>
+                  </opm:field-reference>
+                  <opm:field-reference>
+                     <opm:source-field table="XX_AP_PS_VNDR_LOC_SCROL" name="VENDOR_ID" xsi:type="opm:column"/>
+                     <opm:target-field table="XX_AP_PS_VENDOR" name="VENDOR_ID" xsi:type="opm:column"/>
+                  </opm:field-reference>
+               </opm:target-foreign-key>
+               <toplink:batch-reading>true</toplink:batch-reading>
+               <toplink:container xsi:type="toplink:container-policy">
+                  <toplink:collection-type>oracle.toplink.indirection.IndirectList</toplink:collection-type>
+               </toplink:container>
+               <toplink:indirection xsi:type="toplink:transparent-collection-indirection-policy"/>
+               <toplink:selection-query xsi:type="toplink:read-all-query">
+                  <toplink:reference-class>ServicePeopleSoftTableInsertUpdate.XxApPsVndrLocScrol</toplink:reference-class>
+                  <toplink:container xsi:type="toplink:container-policy">
+                     <toplink:collection-type>oracle.toplink.indirection.IndirectList</toplink:collection-type>
+                  </toplink:container>
+               </toplink:selection-query>
+            </opm:attribute-mapping>
+         </opm:attribute-mappings>
+         <toplink:descriptor-type>independent</toplink:descriptor-type>
+         <toplink:caching>
+            <toplink:cache-type>weak-reference</toplink:cache-type>
+            <toplink:always-refresh>true</toplink:always-refresh>
+         </toplink:caching>
+         <toplink:remote-caching>
+            <toplink:cache-type>weak-reference</toplink:cache-type>
+         </toplink:remote-caching>
+         <toplink:instantiation/>
+         <toplink:copying xsi:type="toplink:instantiation-copy-policy"/>
+         <toplink:change-policy xsi:type="toplink:deferred-detection-change-policy"/>
+         <toplink:tables>
+            <toplink:table name="XX_AP_PS_VENDOR"/>
+         </toplink:tables>
+      </opm:class-mapping-descriptor>
+      <opm:class-mapping-descriptor xsi:type="toplink:relational-class-mapping-descriptor">
+         <opm:class>ServicePeopleSoftTableInsertUpdate.XxApPsVendorAddr</opm:class>
+         <opm:alias>XxApPsVendorAddr</opm:alias>
+         <opm:primary-key>
+            <opm:field table="XX_AP_PS_VENDOR_ADDR" name="SETID" xsi:type="opm:column"/>
+            <opm:field table="XX_AP_PS_VENDOR_ADDR" name="VENDOR_ID" xsi:type="opm:column"/>
+         </opm:primary-key>
+         <opm:events xsi:type="toplink:event-policy"/>
+         <opm:querying xsi:type="toplink:query-policy">
+            <opm:queries>
+               <opm:query name="findAllXxApPsVendorAddr" xsi:type="toplink:read-all-query">
+                  <toplink:timeout>0</toplink:timeout>
+                  <toplink:reference-class>ServicePeopleSoftTableInsertUpdate.XxApPsVendorAddr</toplink:reference-class>
+                  <toplink:cache-usage>primary-key</toplink:cache-usage>
+                  <toplink:lock-mode>none</toplink:lock-mode>
+                  <toplink:container xsi:type="toplink:list-container-policy">
+                     <toplink:collection-type>java.util.Vector</toplink:collection-type>
+                  </toplink:container>
+               </opm:query>
+            </opm:queries>
+            <toplink:does-exist-query xsi:type="toplink:does-exist-query">
+               <toplink:existence-check>check-database</toplink:existence-check>
+            </toplink:does-exist-query>
+         </opm:querying>
+         <opm:attribute-mappings>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>addressSeqNum</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_ADDR" name="ADDRESS_SEQ_NUM" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>effdt</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_ADDR" name="EFFDT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.sql.Timestamp</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>effStatus</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_ADDR" name="EFF_STATUS" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>name1</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_ADDR" name="NAME1" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>name2</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_ADDR" name="NAME2" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>emailid</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_ADDR" name="EMAILID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>country</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_ADDR" name="COUNTRY" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>address1</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_ADDR" name="ADDRESS1" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>address2</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_ADDR" name="ADDRESS2" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>address3</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_ADDR" name="ADDRESS3" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>address4</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_ADDR" name="ADDRESS4" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>city</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_ADDR" name="CITY" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>num1</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_ADDR" name="NUM1" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>num2</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_ADDR" name="NUM2" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>houseType</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_ADDR" name="HOUSE_TYPE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>addrField1</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_ADDR" name="ADDR_FIELD1" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>addrField2</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_ADDR" name="ADDR_FIELD2" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>addrField3</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_ADDR" name="ADDR_FIELD3" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>county</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_ADDR" name="COUNTY" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>state</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_ADDR" name="STATE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>postal</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_ADDR" name="POSTAL" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>geoCode</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_ADDR" name="GEO_CODE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>inCityLimit</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_ADDR" name="IN_CITY_LIMIT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+         </opm:attribute-mappings>
+         <toplink:descriptor-type>independent</toplink:descriptor-type>
+         <toplink:caching>
+            <toplink:cache-type>weak-reference</toplink:cache-type>
+            <toplink:always-refresh>true</toplink:always-refresh>
+         </toplink:caching>
+         <toplink:remote-caching>
+            <toplink:cache-type>weak-reference</toplink:cache-type>
+         </toplink:remote-caching>
+         <toplink:instantiation/>
+         <toplink:copying xsi:type="toplink:instantiation-copy-policy"/>
+         <toplink:change-policy xsi:type="toplink:deferred-detection-change-policy"/>
+         <toplink:tables>
+            <toplink:table name="XX_AP_PS_VENDOR_ADDR"/>
+         </toplink:tables>
+      </opm:class-mapping-descriptor>
+      <opm:class-mapping-descriptor xsi:type="toplink:relational-class-mapping-descriptor">
+         <opm:class>ServicePeopleSoftTableInsertUpdate.XxApPsVendorLoc</opm:class>
+         <opm:alias>XxApPsVendorLoc</opm:alias>
+         <opm:primary-key>
+            <opm:field table="XX_AP_PS_VENDOR_LOC" name="SETID" xsi:type="opm:column"/>
+            <opm:field table="XX_AP_PS_VENDOR_LOC" name="VENDOR_ID" xsi:type="opm:column"/>
+         </opm:primary-key>
+         <opm:events xsi:type="toplink:event-policy"/>
+         <opm:querying xsi:type="toplink:query-policy">
+            <opm:queries>
+               <opm:query name="findAllXxApPsVendorLoc" xsi:type="toplink:read-all-query">
+                  <toplink:timeout>0</toplink:timeout>
+                  <toplink:reference-class>ServicePeopleSoftTableInsertUpdate.XxApPsVendorLoc</toplink:reference-class>
+                  <toplink:cache-usage>primary-key</toplink:cache-usage>
+                  <toplink:lock-mode>none</toplink:lock-mode>
+                  <toplink:container xsi:type="toplink:list-container-policy">
+                     <toplink:collection-type>java.util.Vector</toplink:collection-type>
+                  </toplink:container>
+               </opm:query>
+            </opm:queries>
+            <toplink:does-exist-query xsi:type="toplink:does-exist-query">
+               <toplink:existence-check>check-database</toplink:existence-check>
+            </toplink:does-exist-query>
+         </opm:querying>
+         <opm:attribute-mappings>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vndrLoc</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="VNDR_LOC" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>effdt</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="EFFDT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.sql.Timestamp</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>effStatus</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="EFF_STATUS" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>currencyCd</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="CURRENCY_CD" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>curRtType</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="CUR_RT_TYPE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>freightTerms</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="FREIGHT_TERMS" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shipTypeId</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="SHIP_TYPE_ID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>dispMethod</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="DISP_METHOD" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>pymntTermsCd</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="PYMNT_TERMS_CD" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>matchCntrlId</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="MATCH_CNTRL_ID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>matchOpt</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="MATCH_OPT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>ersAction</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="ERS_ACTION" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>ersFlag</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="ERS_FLAG" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vchrApprvlFlg</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="VCHR_APPRVL_FLG" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>busprocname</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="BUSPROCNAME" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>apprRuleSet</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="APPR_RULE_SET" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vatDclrtnPoint</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="VAT_DCLRTN_POINT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vatCalcType</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="VAT_CALC_TYPE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vatTxnTypeCd</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="VAT_TXN_TYPE_CD" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vatTolFlg</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="VAT_TOL_FLG" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vatTolPct</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="VAT_TOL_PCT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vatTolAmt</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="VAT_TOL_AMT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vatTolCurCd</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="VAT_TOL_CUR_CD" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vatTolRtType</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="VAT_TOL_RT_TYPE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vatUseId</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="VAT_USE_ID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>buyerId</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="BUYER_ID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>remitSetid</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="REMIT_SETID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>remitVendor</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="REMIT_VENDOR" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>remitLoc</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="REMIT_LOC" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>remitAddrSeqNum</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="REMIT_ADDR_SEQ_NUM" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>addrSeqNumOrdr</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="ADDR_SEQ_NUM_ORDR" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>priceSetid</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="PRICE_SETID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>priceVendor</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="PRICE_VENDOR" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>priceLoc</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="PRICE_LOC" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>returnVendor</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="RETURN_VENDOR" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>retAddrSeqNum</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="RET_ADDR_SEQ_NUM" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>dstCntrlId</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="DST_CNTRL_ID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>preferredLanguage</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="PREFERRED_LANGUAGE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>rfqDispMthd</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="RFQ_DISP_MTHD" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>primaryVendor</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="PRIMARY_VENDOR" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>primAddrSeqNum</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="PRIM_ADDR_SEQ_NUM" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shiptoId</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="SHIPTO_ID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>sutBaseId</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="SUT_BASE_ID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>saletxTolAmt</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="SALETX_TOL_AMT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>saletxTolCurCd</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="SALETX_TOL_CUR_CD" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>saletxTolPct</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="SALETX_TOL_PCT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>saletxTolRtType</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="SALETX_TOL_RT_TYPE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>saletxCdErs</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="SALETX_CD_ERS" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>salesUseTxFlg</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="SALES_USE_TX_FLG" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>autoAsnFlg</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="AUTO_ASN_FLG" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>saletxTolFlg</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="SALETX_TOL_FLG" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shipLocFlg</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="SHIP_LOC_FLG" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>wthdCd</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="WTHD_CD" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>docType</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="DOC_TYPE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>docTypeFlg</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="DOC_TYPE_FLG" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>rtvDispatchMeth</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="RTV_DISPATCH_METH" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>rtvNotifyMeth</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="RTV_NOTIFY_METH" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>rtvDebitOpt</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="RTV_DEBIT_OPT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vndrSbiFlg</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="VNDR_SBI_FLG" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>sbiApprovalFlg</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="SBI_APPROVAL_FLG" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>account</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="ACCOUNT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>altacct</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="ALTACCT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>operatingUnit</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="OPERATING_UNIT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>deptid</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="DEPTID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>product</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="PRODUCT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>projectId</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="PROJECT_ID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>affiliate</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="AFFILIATE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>consignedFlag</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="CONSIGNED_FLAG" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vchrConsignOpt</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="VCHR_CONSIGN_OPT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>ersInvDtOpt</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="ERS_INV_DT_OPT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>bankAcctSeqNbr</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="BANK_ACCT_SEQ_NBR" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>acctTemplFlg</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="ACCT_TEMPL_FLG" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>payTrmBseDtDft</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="PAY_TRM_BSE_DT_DFT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>recvOnlyMtchFlg</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="RECV_ONLY_MTCH_FLG" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vchrMtchAdjDflt</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="VCHR_MTCH_ADJ_DFLT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>ersInvDtDflt</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="ERS_INV_DT_DFLT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>ersTaxTypeDflt</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="ERS_TAX_TYPE_DFLT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>ersTaxCdOpt</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="ERS_TAX_CD_OPT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>lastSbiNum</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="LAST_SBI_NUM" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.Integer</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>sbiDocDflt</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="SBI_DOC_DFLT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vchrTaxAdjDft</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="VCHR_TAX_ADJ_DFT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>rtvVchrAdjDflt</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="RTV_VCHR_ADJ_DFLT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vatSuspensionFlg</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="VAT_SUSPENSION_FLG" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vatRoundRule</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="VAT_ROUND_RULE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>comments2000</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VENDOR_LOC" name="COMMENTS_2000" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+         </opm:attribute-mappings>
+         <toplink:descriptor-type>independent</toplink:descriptor-type>
+         <toplink:caching>
+            <toplink:cache-type>weak-reference</toplink:cache-type>
+            <toplink:always-refresh>true</toplink:always-refresh>
+         </toplink:caching>
+         <toplink:remote-caching>
+            <toplink:cache-type>weak-reference</toplink:cache-type>
+         </toplink:remote-caching>
+         <toplink:instantiation/>
+         <toplink:copying xsi:type="toplink:instantiation-copy-policy"/>
+         <toplink:change-policy xsi:type="toplink:deferred-detection-change-policy"/>
+         <toplink:tables>
+            <toplink:table name="XX_AP_PS_VENDOR_LOC"/>
+         </toplink:tables>
+      </opm:class-mapping-descriptor>
+      <opm:class-mapping-descriptor xsi:type="toplink:relational-class-mapping-descriptor">
+         <opm:class>ServicePeopleSoftTableInsertUpdate.XxApPsVndrAddrScrol</opm:class>
+         <opm:alias>XxApPsVndrAddrScrol</opm:alias>
+         <opm:primary-key>
+            <opm:field table="XX_AP_PS_VNDR_ADDR_SCROL" name="SETID" xsi:type="opm:column"/>
+            <opm:field table="XX_AP_PS_VNDR_ADDR_SCROL" name="VENDOR_ID" xsi:type="opm:column"/>
+         </opm:primary-key>
+         <opm:events xsi:type="toplink:event-policy"/>
+         <opm:querying xsi:type="toplink:query-policy">
+            <opm:queries>
+               <opm:query name="findAllXxApPsVndrAddrScrol" xsi:type="toplink:read-all-query">
+                  <toplink:timeout>0</toplink:timeout>
+                  <toplink:reference-class>ServicePeopleSoftTableInsertUpdate.XxApPsVndrAddrScrol</toplink:reference-class>
+                  <toplink:cache-usage>primary-key</toplink:cache-usage>
+                  <toplink:lock-mode>none</toplink:lock-mode>
+                  <toplink:container xsi:type="toplink:list-container-policy">
+                     <toplink:collection-type>java.util.Vector</toplink:collection-type>
+                  </toplink:container>
+               </opm:query>
+            </opm:queries>
+            <toplink:does-exist-query xsi:type="toplink:does-exist-query">
+               <toplink:existence-check>check-database</toplink:existence-check>
+            </toplink:does-exist-query>
+         </opm:querying>
+         <opm:attribute-mappings>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>addressSeqNum</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VNDR_ADDR_SCROL" name="ADDRESS_SEQ_NUM" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>descr</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VNDR_ADDR_SCROL" name="DESCR" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vndrAddressType</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VNDR_ADDR_SCROL" name="VNDR_ADDRESS_TYPE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+         </opm:attribute-mappings>
+         <toplink:descriptor-type>independent</toplink:descriptor-type>
+         <toplink:caching>
+            <toplink:cache-type>weak-reference</toplink:cache-type>
+            <toplink:always-refresh>true</toplink:always-refresh>
+         </toplink:caching>
+         <toplink:remote-caching>
+            <toplink:cache-type>weak-reference</toplink:cache-type>
+         </toplink:remote-caching>
+         <toplink:instantiation/>
+         <toplink:copying xsi:type="toplink:instantiation-copy-policy"/>
+         <toplink:change-policy xsi:type="toplink:deferred-detection-change-policy"/>
+         <toplink:tables>
+            <toplink:table name="XX_AP_PS_VNDR_ADDR_SCROL"/>
+         </toplink:tables>
+      </opm:class-mapping-descriptor>
+      <opm:class-mapping-descriptor xsi:type="toplink:relational-class-mapping-descriptor">
+         <opm:class>ServicePeopleSoftTableInsertUpdate.XxApPsVndrLocScrol</opm:class>
+         <opm:alias>XxApPsVndrLocScrol</opm:alias>
+         <opm:primary-key>
+            <opm:field table="XX_AP_PS_VNDR_LOC_SCROL" name="SETID" xsi:type="opm:column"/>
+            <opm:field table="XX_AP_PS_VNDR_LOC_SCROL" name="VENDOR_ID" xsi:type="opm:column"/>
+         </opm:primary-key>
+         <opm:events xsi:type="toplink:event-policy"/>
+         <opm:querying xsi:type="toplink:query-policy">
+            <opm:queries>
+               <opm:query name="findAllXxApPsVndrLocScrol" xsi:type="toplink:read-all-query">
+                  <toplink:timeout>0</toplink:timeout>
+                  <toplink:reference-class>ServicePeopleSoftTableInsertUpdate.XxApPsVndrLocScrol</toplink:reference-class>
+                  <toplink:cache-usage>primary-key</toplink:cache-usage>
+                  <toplink:lock-mode>none</toplink:lock-mode>
+                  <toplink:container xsi:type="toplink:list-container-policy">
+                     <toplink:collection-type>java.util.Vector</toplink:collection-type>
+                  </toplink:container>
+               </opm:query>
+            </opm:queries>
+            <toplink:does-exist-query xsi:type="toplink:does-exist-query">
+               <toplink:existence-check>check-database</toplink:existence-check>
+            </toplink:does-exist-query>
+         </opm:querying>
+         <opm:attribute-mappings>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vndrLoc</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VNDR_LOC_SCROL" name="VNDR_LOC" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>descr</opm:attribute-name>
+               <opm:field table="XX_AP_PS_VNDR_LOC_SCROL" name="DESCR" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+         </opm:attribute-mappings>
+         <toplink:descriptor-type>independent</toplink:descriptor-type>
+         <toplink:caching>
+            <toplink:cache-type>weak-reference</toplink:cache-type>
+            <toplink:always-refresh>true</toplink:always-refresh>
+         </toplink:caching>
+         <toplink:remote-caching>
+            <toplink:cache-type>weak-reference</toplink:cache-type>
+         </toplink:remote-caching>
+         <toplink:instantiation/>
+         <toplink:copying xsi:type="toplink:instantiation-copy-policy"/>
+         <toplink:change-policy xsi:type="toplink:deferred-detection-change-policy"/>
+         <toplink:tables>
+            <toplink:table name="XX_AP_PS_VNDR_LOC_SCROL"/>
+         </toplink:tables>
+      </opm:class-mapping-descriptor>
+   </opm:class-mapping-descriptors>
+</toplink:object-persistence>

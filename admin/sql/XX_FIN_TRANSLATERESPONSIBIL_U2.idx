@@ -1,0 +1,18 @@
+-- +==================================================================================+
+-- | Office Depot - Project Simplify                                                  |
+-- | Providge Consulting                                                              |
+-- +==================================================================================+
+-- | SQL Script to create the index:  XX_FIN_TRANSLATERESPONSIBIL_U2                  |
+-- |                                                                                  |
+-- | For JIRA Rice item: E1017_OD Trans Table                                         |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       20-AUG-2007   BLooman              Initial version                      |
+-- |                                                                                  |
+-- +==================================================================================+
+
+CREATE UNIQUE INDEX XXFIN.XX_FIN_TRANSLATERESPONSIBIL_U2 
+ ON XXFIN.XX_FIN_TRANSLATERESPONSIBILITY (TRANSLATE_ID,RESPONSIBILITY_ID);

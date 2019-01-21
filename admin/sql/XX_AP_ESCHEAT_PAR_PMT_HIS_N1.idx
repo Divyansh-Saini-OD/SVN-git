@@ -1,0 +1,27 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                                                                          |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             INDEX       : XXFIN.XX_AP_ESCHEAT_PAR_PMT_HIS_N1             |
+-- |                         For XXFIN.XX_AP_ESCHEAT_PAR_PMT_HIS table used   |
+-- |                         by E2056                                         |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ===========  =============        ==============================|
+-- | V1.0     22-APR-2010  Peter Marco          Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX XXFIN.XX_AP_ESCHEAT_PAR_PMT_HIS_N1 ON XXFIN.XX_AP_ESCHEAT_PAR_PMT_HIS
+(ORG_CHECK_ID);

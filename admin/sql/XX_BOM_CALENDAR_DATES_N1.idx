@@ -1,0 +1,27 @@
+-- +====================================================================================+
+-- |                  Office Depot - Project Simplify                                   |
+-- +====================================================================================+
+-- | SQL Script to create                                                               |
+-- |                                                                                    |
+-- |                      INDEXES: XX_BOM_CALENDAR_DATES_N1                          |
+-- |                                                                                    |
+-- |                                                                                    |
+-- |                                                                                    |
+-- |Change Record:                                                                      |
+-- |===============                                                                     |
+-- |Version   Date         Author               Remarks                                 |
+-- |=======   ===========  ================     ========================================|
+-- |  1.0     05-MAR-2014  Arun gannarapu       Defect 28445 to fix the performance issue |
+-- +====================================================================================+
+
+DROP INDEX XXFIN.XX_BOM_CALENDAR_DATES_N1;
+
+CREATE INDEX XXFIN.XX_BOM_CALENDAR_DATES_N1 ON BOM.BOM_CALENDAR_DATES(TRUNC(CALENDAR_DATE), CALENDAR_CODE)
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS
+  STORAGE(INITIAL 131072 NEXT 131072 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE APPS_TS_TX_IDX;
+
+
+EXIT;

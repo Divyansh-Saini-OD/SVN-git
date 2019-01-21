@@ -1,0 +1,9 @@
+declare
+  cc_no varchar2(1000);
+  cc_segment_no varchar2(1000);
+  begin
+  cc_segment_no := iby_cc_security_pub.Secure_Card_Number( 'T', '4111111111111111' );
+  dbms_output.put_line('cc_segment_no : ' || cc_segment_no);
+  end;
+
+show err;

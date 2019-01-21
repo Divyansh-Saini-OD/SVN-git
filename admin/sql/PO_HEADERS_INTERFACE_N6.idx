@@ -1,0 +1,24 @@
+-- +===========================================================================+
+-- |                  Office Depot                                             |
+-- +===========================================================================+
+-- |Description : Create index PO_HEADERS_INTERFACE_N6                         |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | 1.0       19-JUL-17      Antonio Morales           Initial draft version  |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+CREATE INDEX PO.PO_HEADERS_INTERFACE_N6 ON PO.PO_HEADERS_INTERFACE
+(DOCUMENT_NUM)
+LOGGING
+NOPARALLEL;

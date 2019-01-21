@@ -1,0 +1,618 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Mon Jun 18 16:31:33 EDT 2007
+  Author:  bsonai
+  Purpose: Asynchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="SyncInvoicePaymentStatus"
+         targetNamespace="http://xmlns.oracle.com/SyncInvoicePaymentStatus"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns4="http://xmlns.oracle.com/ODTransactionLogger"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns16="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:ns5="http://xmlns.oracle.com/TransactionData"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:ns9="http://xmlns.oracle.com/pcbpel/adapter/ftp/ServiceMVS/"
+         xmlns:ns17="http://xmlns.oracle.com/pcbpel/adapter/ftp/GetInvoiceStatusFromEBS/"
+         xmlns:ns1="http://xmlns.oracle.com/ODFTP"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/ftp/ServiceEBSEscheats/"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:ns15="ODError"
+         xmlns:ns10="http://xmlns.oracle.com/pcbpel/adapter/ftp/ServiceRetail/"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns13="http://xmlns.oracle.com/pcbpel/adapter/ftp/FTPForAllSystemInterface/"
+         xmlns:wsa="http://schemas.xmlsoap.org/ws/2003/03/addressing"
+         xmlns:ns7="http://xmlns.oracle.com/BPELInvokeESP"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns12="http://xmlns.oracle.com/pcbpel/adapter/file/attachment/"
+         xmlns:client="http://xmlns.oracle.com/SyncInvoicePaymentStatus"
+         xmlns:ns6="http://schemas.oracle.com/service/bpel/common"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ns11="http://xmlns.oracle.com/pcbpel/adapter/ftp/ServiceDisputeResolution/"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ehdr="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:ns14="http://xmlns.oracle.com/pcbpel/adapter/ftp/"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/opaque/"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:ns8="http://xmlns.oracle.com/pcbpel/adapter/ftp/ServiceCentral/">
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        VARIABLES                                                        
+        List of messages and XML documents used within this BPEL process 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <partnerLinks>
+        <partnerLink name="ODErrorLogger" partnerRole="ODErrorLoggerProvider"
+                     partnerLinkType="ns16:ODErrorLogger"/>
+        <partnerLink name="GetInvoiceStatusFromEBS" myRole="Get_role"
+                     partnerLinkType="ns17:Get_plt"/>
+        <partnerLink name="ServiceEBSEscheats" partnerRole="Put_role"
+                     partnerLinkType="ns2:Put_plt"/>
+        <partnerLink name="ServiceCentral" partnerRole="Put_role"
+                     partnerLinkType="ns8:Put_plt"/>
+        <partnerLink name="ServiceMVS" partnerRole="Put_role"
+                     partnerLinkType="ns9:Put_plt"/>
+        <partnerLink name="ServiceRetail" partnerRole="Put_role"
+                     partnerLinkType="ns10:Put_plt"/>
+        <partnerLink myRole="BPELInvokeESPRequester" name="BPELInvokeESP"
+                     partnerRole="BPELInvokeESPProvider"
+                     partnerLinkType="ns7:BPELInvokeESP"/>
+        <partnerLink myRole="ODTransactionLoggerRequester"
+                     name="ODTransactionLogger"
+                     partnerRole="ODTransactionLoggerProvider"
+                     partnerLinkType="ns4:ODTransactionLogger"/>
+        <partnerLink name="ServiceDisputeResolution" partnerRole="Put_role"
+                     partnerLinkType="ns11:Put_plt"/>
+    </partnerLinks>
+    <variables>
+        <!-- Reference to the message passed as input during initiation -->
+        <!-- Reference to the message that will be sent back to the requester during callback -->
+        <variable name="rcvFtpHeader" messageType="ns14:InboundHeader_msg"/>
+        <variable name="asnFileName" type="xsd:string"/>
+        <variable name="FileDir" type="xsd:string"/>
+        <variable name="FTP_Header_In" messageType="ns14:OutboundHeader_msg"/>
+        <variable name="invkCatchAll_initiate"
+                  messageType="ns16:ODErrorLoggerRequestMessage"/>
+        <variable name="asnTargetFileName" type="xsd:string"/>
+        <variable name="asnJNDIName" type="xsd:string"/>
+        <variable name="asnServiceName" type="xsd:string"/>
+        <variable name="asnTargetDirectory" type="xsd:string"/>
+        <variable name="ErrorMessageText" type="xsd:string"/>
+        <variable name="logTransactionInput"
+                  messageType="ns4:ODTransactionLoggerRequestMessage"/>
+        <variable name="ProcessHeader" type="xsd:string"/>
+        <variable name="asnFullPathFileName" type="xsd:string"/>
+        <variable name="rcvFtpRead" messageType="ns17:attachmentElement_msg"/>
+        <variable name="TMP_File_Name" type="xsd:string"/>
+        <variable name="InvokeEBSEscheats_In"
+                  messageType="ns2:attachmentElement_msg"/>
+        <variable name="InvokeServiceCentral_In"
+                  messageType="ns8:attachmentElement_msg"/>
+        <variable name="InvokeSericeMVS_In"
+                  messageType="ns9:attachmentElement_msg"/>
+        <variable name="InvokeServiceRetail_In"
+                  messageType="ns10:attachmentElement_msg"/>
+        <variable name="InvokeProcessESP"
+                  messageType="ns7:BPELInvokeESPRequestMessage"/>
+        <variable name="InvokeDisputeResolution_In"
+                  messageType="ns11:attachmentElement_msg"/>
+    </variables>
+    <faultHandlers>
+        <catchAll>
+            <sequence name="Sequence_4">
+                <assign name="asnCatchAll">
+                    <copy>
+                        <from expression="concat(&quot;Error encountered in SyncInvoicePaymentStatus, while copying file &quot;,bpws:getVariableData('rcvFtpHeader','inboundHeader','/ns14:InboundFTPHeaderType/ns14:fileName'), &quot; to&quot;, bpws:getVariableData('asnFullPathFileName'))"/>
+                        <to variable="ErrorMessageText"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getProcessId()"/>
+                        <to variable="invkCatchAll_initiate" part="payload"
+                            query="/ns15:ErrorData/ns15:ProcessInfo/ns15:BusinessProcessName"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getInstanceId()"/>
+                        <to variable="invkCatchAll_initiate" part="payload"
+                            query="/ns15:ErrorData/ns15:ProcessInfo/ns15:BusinessProcessId"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getDomainId()"/>
+                        <to variable="invkCatchAll_initiate" part="payload"
+                            query="/ns15:ErrorData/ns15:ProcessInfo/ns15:BusinessProcessDomain"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getProcessURL()"/>
+                        <to variable="invkCatchAll_initiate" part="payload"
+                            query="/ns15:ErrorData/ns15:ProcessInfo/ns15:SystemName"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getCurrentDateTime()"/>
+                        <to variable="invkCatchAll_initiate" part="payload"
+                            query="/ns15:ErrorData/ns15:ErrorDetails/ns15:ErrorDateTime"/>
+                    </copy>
+                    <copy>
+                        <from expression="'Catch All on the Main Sequence'"/>
+                        <to variable="invkCatchAll_initiate" part="payload"
+                            query="/ns15:ErrorData/ns15:ProcessInfo/ns15:BusinessProcessStep"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getFaultName()"/>
+                        <to variable="invkCatchAll_initiate" part="payload"
+                            query="/ns15:ErrorData/ns15:ErrorDetails/ns15:ErrorCode"/>
+                    </copy>
+                    <copy>
+                        <from variable="ErrorMessageText"/>
+                        <to variable="invkCatchAll_initiate" part="payload"
+                            query="/ns15:ErrorData/ns15:ErrorDetails/ns15:ErrorDescription"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getFaultAsString()"/>
+                        <to variable="invkCatchAll_initiate" part="payload"
+                            query="/ns15:ErrorData/ns15:ErrorDetails/ns15:ErrorText"/>
+                    </copy>
+                    <copy>
+                        <from expression="'system'"/>
+                        <to variable="invkCatchAll_initiate" part="payload"
+                            query="/ns15:ErrorData/ns15:ErrorDetails/ns15:ErrorType"/>
+                    </copy>
+                    <copy>
+                        <from expression="'fatal'"/>
+                        <to variable="invkCatchAll_initiate" part="payload"
+                            query="/ns15:ErrorData/ns15:ErrorDetails/ns15:ErrorSeverity"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:doc('${server_url}/xmllib/fin/GlobalParameters.xml','/GlobalParameters/FaultNotification/SendNotification')"/>
+                        <to variable="invkCatchAll_initiate" part="payload"
+                            query="/ns15:ErrorData/ns15:Notification/ns15:sendNotification"/>
+                    </copy>
+                </assign>
+                <assign name="copyTransactionData">
+                    <copy>
+                        <from expression="'Error'"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns5:TransactionData/ns5:ProcessInfo/ns5:ProcessStatus"/>
+                    </copy>
+                </assign>
+                <invoke name="logTransaction" partnerLink="ODTransactionLogger"
+                        portType="ns4:ODTransactionLogger" operation="initiate"
+                        inputVariable="logTransactionInput"/>
+                <invoke name="invkCatchAll" partnerLink="ODErrorLogger"
+                        portType="ns16:ODErrorLogger" operation="initiate"
+                        inputVariable="invkCatchAll_initiate"/>
+                <terminate name="Terminate"/>
+            </sequence>
+        </catchAll>
+    </faultHandlers>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+       ORCHESTRATION LOGIC                                               
+       Set of activities coordinating the flow of messages across the    
+       services integrated within this business process                  
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <sequence name="main">
+        <!-- Receive input from requestor. (Note: This maps to operation defined in SyncInvoicePaymentStatus.wsdl) -->
+        <receive name="receiveInput" portType="ns17:Get_ptt"
+                 variable="rcvFtpRead" createInstance="yes"
+                 partnerLink="GetInvoiceStatusFromEBS" operation="Get"
+                 bpelx:headerVariable="rcvFtpHeader"/>
+        <!-- 
+          Asynchronous callback to the requester. (Note: the callback location and correlation id is transparently handled using WS-addressing.)
+        -->
+        <scope name="logTransactionStart">
+            <variables>
+                <variable name="xmlFragment" type="xsd:string"/>
+            </variables>
+            <sequence name="Sequence_13">
+                <assign name="copyTransactionData">
+                    <copy>
+                        <from expression="ora:getDomainId()"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns5:TransactionData/ns5:ProcessInfo/ns5:Domain"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getProcessId()"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns5:TransactionData/ns5:ProcessInfo/ns5:ProcessName"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getInstanceId()"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns5:TransactionData/ns5:ProcessInfo/ns5:InstanceId"/>
+                    </copy>
+                    <copy>
+                        <from expression="'Start'"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns5:TransactionData/ns5:ProcessInfo/ns5:ProcessStatus"/>
+                    </copy>
+                    <copy>
+                        <from expression="'FTP'"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns5:TransactionData/ns5:MessageDetails/ns5:MessageOperation"/>
+                    </copy>
+                    <copy>
+                        <from expression="'Concurrent Program Short Name: XXAPIPOB, Concurrent Manager Description: OD: AP Invoice Payments Outbound Interface'"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns5:TransactionData/ns5:MessageDetails/ns5:MessageSourceSystemComponent"/>
+                    </copy>
+                    <copy>
+                        <from expression="'Opaque'"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns5:TransactionData/ns5:MessageDetails/ns5:MessageType"/>
+                    </copy>
+                    <copy>
+                        <from>
+                            <EntiltyList xmlns="http://xmlns.oracle.com/TransactionData">
+                                <EntityID EntityType="SourceFileName"/>
+                            </EntiltyList>
+                        </from>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns5:TransactionData/ns5:EntiltyList"/>
+                    </copy>
+                    <copy>
+                        <from expression="concat('&lt;EntityID EntityType=&quot;SourceFileName&quot;>', bpws:getVariableData('rcvFtpHeader','inboundHeader','/ns14:InboundFTPHeaderType/ns14:fileName'), '&lt;/EntityID>')"/>
+                        <to variable="xmlFragment"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:parseEscapedXML(bpws:getVariableData('xmlFragment'))"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns5:TransactionData/ns5:EntiltyList/ns5:EntityID[1]"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getCurrentDateTime()"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns5:TransactionData/ns5:ProcessInfo/ns5:transactionStartTime"/>
+                    </copy>
+                    <copy>
+                        <from expression="'I0159_InvcPmt - EBS AP Outbound'"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns5:TransactionData/ns5:ProcessInfo/ns5:SystemName"/>
+                    </copy>
+                    <copy>
+                        <from expression="'EBS'"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns5:TransactionData/ns5:ProcessInfo/ns5:TradingPartnerDetails/ns5:TPFrom"/>
+                    </copy>
+                    <copy>
+                        <from expression="'EBS'"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns5:TransactionData/ns5:MessageDetails/ns5:MessageSourceSystem"/>
+                    </copy>
+                </assign>
+                <invoke name="logTransaction" partnerLink="ODTransactionLogger"
+                        portType="ns4:ODTransactionLogger" operation="initiate"
+                        inputVariable="logTransactionInput"/>
+            </sequence>
+        </scope>
+        <scope name="SetProcessHeader">
+            <sequence name="Sequence_9">
+                <assign name="initializeInstanceTitle">
+                    <copy>
+                        <from expression="substring(concat(&quot;Moving &quot;, bpws:getVariableData('rcvFtpHeader','inboundHeader','/ns14:InboundFTPHeaderType/ns14:fileName')),1,56)"/>
+                        <to variable="ProcessHeader"/>
+                    </copy>
+                    <copy>
+                        <from variable="rcvFtpHeader" part="inboundHeader"
+                              query="/ns14:InboundFTPHeaderType/ns14:fileName"/>
+                        <to variable="TMP_File_Name"/>
+                    </copy>
+                </assign>
+                <bpelx:exec name="setTitleCode" language="java" version="1.5">
+                    <![CDATA[try {                  
+  String title = (String)getVariableData("ProcessHeader");                  
+  setTitle(title);                  
+  addAuditTrailEntry(title) ;                  
+} catch (Exception ex) {                  
+  addAuditTrailEntry(ex.toString());                  
+  ex.printStackTrace();                  
+}]]>
+                </bpelx:exec>
+            </sequence>
+        </scope>
+        <assign name="AssignFTPContents">
+            <copy>
+                <from variable="rcvFtpHeader" part="inboundHeader"
+                      query="/ns14:InboundFTPHeaderType/ns14:fileName"/>
+                <to variable="asnFileName"/>
+            </copy>
+            <copy>
+                <from expression="substring-before(bpws:getVariableData('asnFileName'),'.txt')"/>
+                <to variable="asnFileName"/>
+            </copy>
+            <copy>
+                <from expression="ora:doc('${server_url}/xmllib/fin/GlobalParameters.xml','/GlobalParameters/SyncInvoicePaymentStatus/PartnerLink/Interface[@name=bpws:getVariableData(&quot;asnFileName&quot;)]/Address')"/>
+                <to variable="asnJNDIName"/>
+            </copy>
+            <copy>
+                <from expression="concat('ns1:',ora:doc('${server_url}/xmllib/fin/GlobalParameters.xml','/GlobalParameters/SyncInvoicePaymentStatus/PartnerLink/Interface[@name=bpws:getVariableData(&quot;asnFileName&quot;)]/ServiceName'))"/>
+                <to variable="asnServiceName"/>
+            </copy>
+            <copy>
+                <from expression="ora:doc('${server_url}/xmllib/fin/GlobalParameters.xml','/GlobalParameters/SyncInvoicePaymentStatus/PartnerLink/Interface[@name=bpws:getVariableData(&quot;asnFileName&quot;)]/TargetDirectory')"/>
+                <to variable="asnTargetDirectory"/>
+            </copy>
+            <copy>
+                <from expression="ora:doc('${server_url}/xmllib/fin/GlobalParameters.xml','/GlobalParameters/SyncInvoicePaymentStatus/PartnerLink/Interface[@name=bpws:getVariableData(&quot;asnFileName&quot;)]/TargetFileName')"/>
+                <to variable="asnTargetFileName"/>
+            </copy>
+            <copy>
+                <from expression="concat(bpws:getVariableData('asnTargetDirectory'),bpws:getVariableData('asnTargetFileName'))"/>
+                <to variable="asnFullPathFileName"/>
+            </copy>
+        </assign>
+        <scope name="SetProcessHeaderFinal">
+            <sequence name="Sequence_9">
+                <assign name="initializeInstanceTitle">
+                    <copy>
+                        <from expression="substring(concat(bpws:getVariableData('ProcessHeader'), &quot; to &quot;, bpws:getVariableData('asnFullPathFileName')),1,58)"/>
+                        <to variable="ProcessHeader"/>
+                    </copy>
+                </assign>
+                <bpelx:exec name="setTitleCode" language="java" version="1.5">
+                    <![CDATA[try {                  
+  String title = (String)getVariableData("ProcessHeader");                  
+  setTitle(title);                  
+  addAuditTrailEntry(title) ;                  
+} catch (Exception ex) {                  
+  addAuditTrailEntry(ex.toString());                  
+  ex.printStackTrace();                  
+}]]>
+                </bpelx:exec>
+            </sequence>
+        </scope>
+        <sequence name="Sequence_12">
+            <bpelx:exec name="AssignJNDI" language="java" version="1.3">
+                <![CDATA[String fileName = (String)getVariableData("TMP_File_Name");       
+       
+if (fileName.startsWith("DLKinvcpymt")){                        
+    fileName = "Escheats";          
+} else if (fileName.startsWith("BSinvcpymt")){                     
+    fileName = "Central";       
+} else if (fileName.startsWith("BSSinvcpymt")){                     
+    fileName = "Central";       
+} else if (fileName.startsWith("BSCinvcpymt")){                     
+    fileName = "Central";           
+}  else if (fileName.startsWith("TDMinvcpymt")){                     
+    fileName = "Central";         
+}  else if (fileName.startsWith("PMinvcpymt")){                     
+    fileName = "Central";       
+}  else if (fileName.startsWith("CIinvcpymt")){                     
+    fileName = "MVS";       
+}  else if (fileName.startsWith("SAinvcpymt")){                     
+    fileName = "MVS";       
+}  else if (fileName.startsWith("PAIDinvcpymt")){                     
+    fileName = "MVS";       
+}  else if (fileName.startsWith("GSSinvcpymt")){                     
+    fileName = "MVS";       
+}  else if (fileName.startsWith("RLinvcpymt")){                     
+    fileName = "RetailLease";       
+} else if (fileName.startsWith("DCIinvcpymt")){                     
+    fileName = "DispResl";       
+}          
+       
+setVariableData("TMP_File_Name", fileName);]]>
+            </bpelx:exec>
+            <assign name="AssignInputToFTP">
+                <copy>
+                    <from expression="bpws:getVariableData('asnTargetFileName')"/>
+                    <to variable="FTP_Header_In" part="outboundHeader"
+                        query="/ns14:OutboundFTPHeaderType/ns14:fileName"/>
+                </copy>
+                <copy>
+                    <from expression="bpws:getVariableData('asnTargetDirectory')"/>
+                    <to variable="FTP_Header_In" part="outboundHeader"
+                        query="/ns14:OutboundFTPHeaderType/ns14:directory"/>
+                </copy>
+            </assign>
+            <switch name="Switch_1">
+                <case condition="bpws:getVariableData('TMP_File_Name')='DispResl'">
+                    <sequence name="Sequence_23">
+                        <assign name="AssignDispResl">
+                            <copy>
+                                <from variable="rcvFtpRead"
+                                      part="attachmentElement"/>
+                                <to variable="InvokeDisputeResolution_In"
+                                    part="attachmentElement"/>
+                            </copy>
+                        </assign>
+                        <invoke name="InvokeDisputeResolution"
+                                partnerLink="ServiceDisputeResolution"
+                                portType="ns11:Put_ptt" operation="Put"
+                                inputVariable="InvokeDisputeResolution_In"
+                                bpelx:inputHeaderVariable="FTP_Header_In"/>
+                    </sequence>
+                </case>
+                <case condition="bpws:getVariableData('TMP_File_Name')='RetailLease'">
+                    <bpelx:annotation>
+                        <bpelx:pattern>Retail</bpelx:pattern>
+                    </bpelx:annotation>
+                    <sequence name="Sequence_22">
+                        <assign name="AssignRetail">
+                            <copy>
+                                <from variable="rcvFtpRead"
+                                      part="attachmentElement"/>
+                                <to variable="InvokeServiceRetail_In"
+                                    part="attachmentElement"/>
+                            </copy>
+                        </assign>
+                        <invoke name="InvokeServiceRetail"
+                                partnerLink="ServiceRetail"
+                                portType="ns10:Put_ptt" operation="Put"
+                                inputVariable="InvokeServiceRetail_In"
+                                bpelx:inputHeaderVariable="FTP_Header_In"/>
+                    </sequence>
+                </case>
+                <case condition="bpws:getVariableData('TMP_File_Name')='MVS'">
+                    <bpelx:annotation>
+                        <bpelx:pattern>MVS</bpelx:pattern>
+                    </bpelx:annotation>
+                    <sequence name="Sequence_21">
+                        <assign name="AssignMVS">
+                            <copy>
+                                <from variable="rcvFtpRead"
+                                      part="attachmentElement"/>
+                                <to variable="InvokeSericeMVS_In"
+                                    part="attachmentElement"/>
+                            </copy>
+                        </assign>
+                        <invoke name="InvokeSericeMVS" partnerLink="ServiceMVS"
+                                portType="ns9:Put_ptt" operation="Put"
+                                inputVariable="InvokeSericeMVS_In"
+                                bpelx:inputHeaderVariable="FTP_Header_In"/>
+                    </sequence>
+                </case>
+                <case condition="bpws:getVariableData('TMP_File_Name')='Central'">
+                    <bpelx:annotation>
+                        <bpelx:pattern>Central</bpelx:pattern>
+                    </bpelx:annotation>
+                    <sequence name="Sequence_20">
+                        <assign name="AssignCentral">
+                            <copy>
+                                <from variable="rcvFtpRead"
+                                      part="attachmentElement"/>
+                                <to variable="InvokeServiceCentral_In"
+                                    part="attachmentElement"/>
+                            </copy>
+                        </assign>
+                        <invoke name="InvokeServiceCentral"
+                                partnerLink="ServiceCentral"
+                                portType="ns8:Put_ptt" operation="Put"
+                                inputVariable="InvokeServiceCentral_In"
+                                bpelx:inputHeaderVariable="FTP_Header_In"/>
+                    </sequence>
+                </case>
+                <case condition="bpws:getVariableData('TMP_File_Name')='Escheats'">
+                    <bpelx:annotation>
+                        <bpelx:pattern>Escheats</bpelx:pattern>
+                    </bpelx:annotation>
+                    <sequence name="Sequence_19">
+                        <assign name="AssignFileName">
+                            <copy>
+                                <from expression="concat(substring-before(bpws:getVariableData('asnTargetFileName'),'.'),'_',xp20:format-dateTime(xp20:current-dateTime(),'[D01][M01][Y][H01][m01][s01][f01]'),'.txt')"/>
+                                <to variable="FTP_Header_In"
+                                    part="outboundHeader"
+                                    query="/ns14:OutboundFTPHeaderType/ns14:fileName"/>
+                            </copy>
+                        </assign>
+                        <assign name="AssignEBSEscheats">
+                            <copy>
+                                <from variable="rcvFtpRead"
+                                      part="attachmentElement"/>
+                                <to variable="InvokeEBSEscheats_In"
+                                    part="attachmentElement"/>
+                            </copy>
+                        </assign>
+                        <invoke name="InvokeEBSEscheats"
+                                partnerLink="ServiceEBSEscheats"
+                                portType="ns2:Put_ptt" operation="Put"
+                                inputVariable="InvokeEBSEscheats_In"
+                                bpelx:inputHeaderVariable="FTP_Header_In"/>
+                    </sequence>
+                </case>
+                <otherwise>
+                    <empty name="Empty_1"/>
+                </otherwise>
+            </switch>
+        </sequence>
+        <scope name="logESP">
+            <sequence name="Sequence_18">
+                <assign name="assignESPData">
+                    <copy>
+                        <from expression="ora:getDomainId()"/>
+                        <to part="payload"
+                            query="/ns7:BPELInvokeESPProcessRequest/ns7:processDomain"
+                            variable="InvokeProcessESP"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getProcessId()"/>
+                        <to part="payload"
+                            query="/ns7:BPELInvokeESPProcessRequest/ns7:processName"
+                            variable="InvokeProcessESP"/>
+                    </copy>
+                    <copy>
+                        <from variable="asnFileName"/>
+                        <to part="payload"
+                            query="/ns7:BPELInvokeESPProcessRequest/ns7:filePattern"
+                            variable="InvokeProcessESP"/>
+                    </copy>
+                </assign>
+                <invoke name="InvokeProcessESP" partnerLink="BPELInvokeESP"
+                        portType="ns7:BPELInvokeESP" operation="initiate"
+                        inputVariable="InvokeProcessESP"/>
+            </sequence>
+        </scope>
+        <scope name="logTransactionEnd">
+            <variables>
+                <variable name="xmlFragment" type="xsd:string"/>
+            </variables>
+            <sequence name="Sequence_14">
+                <assign name="logTransactionInput">
+                    <copy>
+                        <from expression="'Success'"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns5:TransactionData/ns5:ProcessInfo/ns5:ProcessStatus"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getCurrentDateTime()"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns5:TransactionData/ns5:ProcessInfo/ns5:transactionEndTime"/>
+                    </copy>
+                    <copy>
+                        <from expression="'EBS'"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns5:TransactionData/ns5:ProcessInfo/ns5:TradingPartnerDetails/ns5:TPFrom"/>
+                    </copy>
+                    <copy>
+                        <from expression="concat('Service Name: ', bpws:getVariableData('asnServiceName'), ' JNDI: ', bpws:getVariableData('asnJNDIName'))"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns5:TransactionData/ns5:ProcessInfo/ns5:TradingPartnerDetails/ns5:TPTo"/>
+                    </copy>
+                    <copy>
+                        <from>
+                            <EntiltyList xmlns="http://xmlns.oracle.com/TransactionData">
+                                <EntityID EntityType="SourceFileName"/>
+                                <EntityID EntityType="TargetFileName"/>
+                            </EntiltyList>
+                        </from>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns5:TransactionData/ns5:EntiltyList"/>
+                    </copy>
+                    <copy>
+                        <from expression="concat('&lt;EntityID EntityType=&quot;SourceFileName&quot;>', bpws:getVariableData('rcvFtpHeader','inboundHeader','/ns14:InboundFTPHeaderType/ns14:fileName'), '&lt;/EntityID>')"/>
+                        <to variable="xmlFragment"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:parseEscapedXML(bpws:getVariableData('xmlFragment'))"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns5:TransactionData/ns5:EntiltyList/ns5:EntityID[1]"/>
+                    </copy>
+                    <copy>
+                        <from expression="concat('&lt;EntityID EntityType=&quot;TargetFileName&quot;>', bpws:getVariableData('asnFullPathFileName'), '&lt;/EntityID>')"/>
+                        <to variable="xmlFragment"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:parseEscapedXML(bpws:getVariableData('xmlFragment'))"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns5:TransactionData/ns5:EntiltyList/ns5:EntityID[2]"/>
+                    </copy>
+                </assign>
+                <invoke name="logTransaction" partnerLink="ODTransactionLogger"
+                        portType="ns4:ODTransactionLogger" operation="initiate"
+                        inputVariable="logTransactionInput"/>
+            </sequence>
+        </scope>
+        <bpelx:exec import="org.w3c.dom.Element"/>
+    </sequence>
+</process>

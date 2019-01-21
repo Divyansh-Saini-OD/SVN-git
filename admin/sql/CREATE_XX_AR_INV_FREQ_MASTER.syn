@@ -1,0 +1,31 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating SYNONYM XX_AR_INV_FREQ_MASTER
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | Name        : APPS.XX_AR_INV_FREQ_MASTER                                 |
+-- | Description : Synonym for XX_AR_INV_FREQ_MASTER                          |
+-- |               Contains the document level information of the customer    |
+-- |               which is valid for the current billing cycle.              |
+-- |===============                                                           |
+-- |Version      Date              Author               Remarks               |
+-- |=======      ==========        =============        ===================== |
+-- | V1.0        12-MAR-2010       Tamil Vendhan L      Initial version       |
+-- |                                                    R1.3 Defect# 2766     |
+-- |                                                    CR 738                |
+-- +==========================================================================+
+
+CREATE SYNONYM apps.xx_ar_inv_freq_master FOR xxfin.xx_ar_inv_freq_master;
+
+SHOW ERROR

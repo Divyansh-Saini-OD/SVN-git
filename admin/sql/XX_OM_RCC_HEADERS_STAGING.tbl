@@ -1,0 +1,80 @@
+-- +===========================================================================+
+-- |                          Oracle - GSD                                     |
+-- +===========================================================================+
+-- | Name :XXFIN.XX_OM_RCC_HEADERS_STAGING                                     |
+-- | Description :   Script to create XX_OM_RCC_HEADERS_STAGING table	       |
+-- | RICE ID : I-3090                                                          |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author            Remarks                      |
+-- |=======    ==========     =============       ======================       |
+-- |  1.0      30-JUN-2014    Darshini G           Initial Version             |
+-- |  2.0      17-JUL-2014    Arun G               removed the syn script      |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+
+--+=====================================================================+
+--+               CREATE TABLE XXFIN.XX_OM_RCC_HEADERS_STAGING          +
+--+=====================================================================+
+
+
+CREATE TABLE xxfin.XX_OM_RCC_HEADERS_STAGING ( 
+                                               HEADER_ID                NUMBER NOT NULL UNIQUE,
+                                               ROUTING_LINE1            VARCHAR2(24),
+                                               ROUTING_LINE2            VARCHAR2(24),
+                                               ROUTING_LINE3            VARCHAR2(24),
+                                               ROUTING_LINE4            VARCHAR2(24),
+                                               CUSTOMER_PO_NUMBER       VARCHAR2(40),
+                                               ORACLE_INVOICE_NUMBER    VARCHAR2(20),
+                                               ORDER_DATE               VARCHAR2(10),
+                                               STORE_NUMBER             VARCHAR2(6),
+                                               REGISTER_NUMBER          VARCHAR2(10),
+                                               TRANSACTION_NUMBER       VARCHAR2(15),
+                                               TRANSACTION_TYPE         VARCHAR2(4),
+                                               ORIG_TRANACTION_DATE     VARCHAR2(8),
+                                               ORIG_STORE_NUMBER        VARCHAR2(6),
+                                               ORIG_REGISTER_NUMBER     VARCHAR2(10),
+                                               ORIG_TRANSACTION_NUMBER  VARCHAR2(15),
+                                               BOISE_CARD_NUMBER        VARCHAR2(20),
+                                               PROCESS_FLAG             VARCHAR2(20),
+                                               STORE_ADDRESS            VARCHAR2(240),
+                                               STORE_CITY               VARCHAR2(30),
+                                               STORE_STATE              VARCHAR2(60),
+                                               STORE_ZIP                VARCHAR2(30),
+                                               STATUS                   VARCHAR2(30),
+                                               REQUEST_ID               NUMBER,
+                                               CREATION_DATE            DATE       NOT NULL,
+                                               CREATED_BY               NUMBER(22) NOT NULL,
+                                               LAST_UPDATE_DATE         DATE       NOT NULL,
+                                               LAST_UPDATED_BY          NUMBER(22) NOT NULL,
+                                               LAST_UPDATE_LOGIN        NUMBER(22) NOT NULL
+                                              );
+
+SHOW ERROR
+
+--+=====================================================================+
+--+               GRANT TABLE XXFIN.XX_OM_RCC_HEADERS_STAGING           +
+--+=====================================================================+
+
+GRANT ALL ON XX_OM_RCC_HEADERS_STAGING TO APPS;
+
+GRANT DELETE, INSERT, SELECT, UPDATE on XXFIN.XX_OM_RCC_HEADERS_STAGING to APPS WITH GRANT OPTION;
+
+SHOW ERROR
+
+--+=====================================================================+
+--+               CREATE INDEX ON XXFIN.XX_OM_RCC_HEADERS_STAGING       +
+--+=====================================================================+
+
+CREATE INDEX XX_OM_RCC_HEADERS_STAGING_U1 ON XX_OM_RCC_HEADERS_STAGING(HEADER_ID);
+
+SHOW ERROR

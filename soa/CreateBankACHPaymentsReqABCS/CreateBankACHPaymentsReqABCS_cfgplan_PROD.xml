@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAConfigPlan xmlns:jca="http://platform.integration.oracle/blocks/adapter/fw/metadata" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:orawsp="http://schemas.oracle.com/ws/2006/01/policy" xmlns:edl="http://schemas.oracle.com/events/edl" xmlns="http://schemas.oracle.com/soa/configplan">
+   <composite name="CreateBankACHPaymentsReqABCS">
+      <!--Add search and replace rules for the import section of a composite
+	Example:
+	<searchReplace>
+		<search>http://my-dev-server</search>
+		<replace>http://my-test-server</replace>
+	<searchReplace>
+	<searchReplace>
+		<search>8888</search>
+		<replace>8889</replace>
+	<searchReplace>-->
+      <import>
+         <searchReplace>
+            <search/>
+            <replace/>
+         </searchReplace>
+      </import>
+      <service name="createbankachpaymentsreqabcsprocess_client_ep">
+         <binding type="ws">
+            <attribute name="port">
+               <replace>http://xmlns.oracle.com/CreateBankACHPayments/CreateBankACHPaymentsReqABCS/CreateBankACHPaymentsReqABCSProcess#wsdl.endpoint(createbankachpaymentsreqabcsprocess_client_ep/CreateBankACHPaymentsReqABCSProcess_pt)</replace>
+            </attribute>
+         </binding>
+      </service>
+      <!--Add search and replace rules for the component properties
+	For components and service/reference bindings, you can add policy references.
+	Example:
+	<component name="*">
+		<wsp:PolicyReference orawsp:category="management" orawsp:status="enabled" URI="oracle/log_policy"/>
+	</component>-->
+      <reference name="InsertErrorLoggerJMSProducer">
+         <binding type="jca"/>
+      </reference>
+      <reference name="CreateBankPaymentsHTTPAdapter">
+         <!--Add search and replace rules for the binding properties-->
+         <binding type="ws">
+            <attribute name="port">
+               <replace>http://xmlns.oracle.com/pcbpel/adapter/http/CreateBankACHPayments/CreateBankACHPaymentsReqABCS/CreateBankPaymentsHTTPAdapter#wsdl.endpoint(CreateBankPaymentsHTTPAdapter/Request_Response_pt)</replace>
+            </attribute>
+            <attribute name="location">
+               <replace>CreateBankPaymentsHTTPAdapter.wsdl</replace>
+            </attribute>
+            <property name="http.verb">
+               <replace>POST</replace>
+            </property>
+            <property name="endpointURI">
+               <replace>https://collectpay.princetonecom.com/connect/xml/createBankPayment1.do</replace>
+            </property>
+            <property name="http.payload">
+               <replace>url-encoded</replace>
+            </property>
+         </binding>
+      </reference>
+   </composite>
+   <!--To configure monitor.config: 
+	<property name="enabled"><replace>true</replace></property>
+	<property name="dataObjectsFolder"><searchReplace><search>mydev</search><replace>myproduction</replace></searchReplace></property>
+	
+	sample properties to configure for JMS adapter: 
+	<jca:property name="DestinationName"><replace>jms/DemoSupplierTopic</replace></jca:property>
+	<jca:property name="TimeToLive"><replace>0</replace></jca:property>
+	
+	To add search and replace rules for wsdls, xsd and jca files
+	Example:
+	<searchReplace>
+		<search>http://my-dev-server</search>
+		<replace>http://my-test-server</replace>
+	<searchReplace>
+	<searchReplace>
+		<search>8888</search>
+		<replace>8889</replace>
+	<searchReplace>
+	-->
+   <wsdlAndSchema name="CreateBankACHPaymentsReqABCSProcess.wsdl|CreateBankPaymentHTTPAdapter.wsdl|CreateBankPaymentsHTTPAdapter.wsdl|InsertErrorLoggerJMSProducer.wsdl|InsertErrorLoggerJMSProducer_jms.jca|xsd/bank_payment_request_1.xsd|xsd/bank_payment_response_1.xsd|xsd/CreateBankACHPaymentFaultMessage.xsd|xsd/HttpRequestResponseData.xsd">
+      <searchReplace>
+         <search/>
+         <replace/>
+      </searchReplace>
+   </wsdlAndSchema>
+</SOAConfigPlan>

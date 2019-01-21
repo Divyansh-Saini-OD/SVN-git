@@ -1,0 +1,24 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                                                                          |
+-- +==========================================================================+
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- |                      INDEXES: XX_CE_AJB996_N16                           |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     11-Apr-2011  Joe Klein            Initial version               |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX XXFIN.XX_CE_AJB996_N16 ON XXFIN.XX_CE_AJB996(INVOICE_NUM);

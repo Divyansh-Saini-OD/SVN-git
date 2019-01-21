@@ -1,0 +1,168 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | SQL Script to create the following object                                |
+-- |             Table    : XX_IBY_BATCH_TRXNS                                |
+-- |                        I0349 101 table                                   |
+-- |                        Consolidated various alter scripts to a single    |
+-- |                        CREATE table script                               |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version      Date              Author               Remarks               |
+-- |=======      ==========        =============        ===================== |
+-- | V1.0        28-FEB-2009       Aravind A.           Initial version       |
+-- |                                                    Defect 11482          |
+-- +==========================================================================+
+
+CREATE TABLE XXFIN.XX_IBY_BATCH_TRXNS
+(PRE1                         VARCHAR2(120)
+,PRE2                         VARCHAR2(120)
+,PRE3                         VARCHAR2(120)
+,IXRECORDTYPE                 VARCHAR2(240)
+,IXRESERVED2                  VARCHAR2(240)
+,IXRESERVED3                  VARCHAR2(240)
+,IXACTIONCODE                 VARCHAR2(240)
+,IXRESERVED5                  VARCHAR2(240)
+,IXMESSAGETYPE                VARCHAR2(240)
+,IXRESERVED7                  VARCHAR2(240)
+,IXSTORENUMBER                VARCHAR2(240)
+,IXREGISTERNUMBER             VARCHAR2(240)
+,IXTRANSACTIONTYPE            VARCHAR2(240)
+,IXRESERVED11                 VARCHAR2(240)
+,IXRESERVED12                 VARCHAR2(240)
+,IXACCOUNT                    VARCHAR2(240)
+,IXEXPDATE                    VARCHAR2(240)
+,IXSWIPE                      VARCHAR2(240)
+,IXAMOUNT                     VARCHAR2(240)
+,IXINVOICE                    VARCHAR2(240)
+,IXRESERVED18                 VARCHAR2(240)
+,IXRESERVED19                 VARCHAR2(240)
+,IXRESERVED20                 VARCHAR2(240)
+,IXOPTIONS                    VARCHAR2(240)
+,IXBANKUSERDATA               VARCHAR2(240)
+,IXRESERVED23                 VARCHAR2(240)
+,IXRESERVED24                 VARCHAR2(240)
+,IXISSUENUMBER                VARCHAR2(240)
+,IXTOTALSALESTAXAMOUNT        VARCHAR2(240)
+,IXTOTALSALESTAXCOLLIND       VARCHAR2(240)
+,IXRESERVED28                 VARCHAR2(240)
+,IXRESERVED29                 VARCHAR2(240)
+,IXRESERVED30                 VARCHAR2(240)
+,IXRESERVED31                 VARCHAR2(240)
+,IXRESERVED32                 VARCHAR2(240)
+,IXRESERVED33                 VARCHAR2(240)
+,IXRECEIPTNUMBER              VARCHAR2(240)
+,IXRESERVED35                 VARCHAR2(240)
+,IXRESERVED36                 VARCHAR2(240)
+,IXAUTHORIZATIONNUMBER        VARCHAR2(240)
+,IXRESERVED38                 VARCHAR2(240)
+,IXRESERVED39                 VARCHAR2(240)
+,IXRESERVED40                 VARCHAR2(240)
+,IXRESERVED41                 VARCHAR2(240)
+,IXRESERVED42                 VARCHAR2(240)
+,IXRESERVED43                 VARCHAR2(240)
+,IXPS2000                     VARCHAR2(240)
+,IXREFERENCE                  VARCHAR2(240)
+,IXRESERVED46                 VARCHAR2(240)
+,IXIPAYMENTBATCHNUMBER        VARCHAR2(240)
+,IXRESERVED48                 VARCHAR2(240)
+,IXRESERVED49                 VARCHAR2(240)
+,IXDATE                       VARCHAR2(240)
+,IXTIME                       VARCHAR2(240)
+,IXRESERVED52                 VARCHAR2(240)
+,IXRESERVED53                 VARCHAR2(240)
+,IXRESERVED54                 VARCHAR2(240)
+,IXRESERVED55                 VARCHAR2(240)
+,IXRESERVED56                 VARCHAR2(240)
+,IXRESERVED57                 VARCHAR2(240)
+,IXRESERVED58                 VARCHAR2(240)
+,IXRESERVED59                 VARCHAR2(240)
+,IXCUSTOMERREFERENCEID        VARCHAR2(240)
+,IXNATIONALTAXCOLLINDICATOR   VARCHAR2(240)
+,IXNATIONALTAXAMOUNT          VARCHAR2(240)
+,IXOTHERTAXAMOUNT             VARCHAR2(240)
+,IXDISCOUNTAMOUNT             VARCHAR2(240)
+,IXSHIPPINGAMOUNT             VARCHAR2(240)
+,IXTAXABLEAMOUNT              VARCHAR2(240)
+,IXDUTYAMOUNT                 VARCHAR2(240)
+,IXSHIPFROMZIPCODE            VARCHAR2(240)
+,IXSHIPTOCOMPANY              VARCHAR2(240)
+,IXSHIPTONAME                 VARCHAR2(240)
+,IXSHIPTOSTREET               VARCHAR2(240)
+,IXSHIPTOCITY                 VARCHAR2(240)
+,IXSHIPTOSTATE                VARCHAR2(240)
+,IXSHIPTOCOUNTRY              VARCHAR2(240)
+,IXSHIPTOZIPCODE              VARCHAR2(240)
+,IXPURCHASERNAME              VARCHAR2(240)
+,IXORDERDATE                  VARCHAR2(240)
+,IXMERCHANTVATNUMBER          VARCHAR2(240)
+,IXCUSTOMERVATNUMBER          VARCHAR2(240)
+,IXVATINVOICE                 VARCHAR2(240)
+,IXVATAMOUNT                  VARCHAR2(240)
+,IXVATRATE                    VARCHAR2(240)
+,IXMERCHANDISESHIPPED         VARCHAR2(240)
+,IXCUSTCOUNTRYCODE            VARCHAR2(240)
+,IXCUSTACCOUNTNO              VARCHAR2(240)
+,IXCOSTCENTER                 VARCHAR2(240)
+,IXDESKTOPLOCATION            VARCHAR2(240)
+,IXRELEASENUMBER              VARCHAR2(240)
+,IXORIGINALINVOICENO          VARCHAR2(240)
+,IXOTHERTAXAMOUNT2            VARCHAR2(240)
+,IXOTHERTAXAMOUNT3            VARCHAR2(240)
+,IXMISCCHARGE                 VARCHAR2(240)
+,IXCCNUMBER                   VARCHAR2(240)
+,LAST_UPDATE_DATE             DATE           NOT NULL 
+,LAST_UPDATED_BY              NUMBER(15)     NOT NULL
+,CREATION_DATE                DATE           NOT NULL
+,CREATED_BY                   NUMBER(15)     NOT NULL
+,LAST_UPDATE_LOGIN            NUMBER(15)
+,IXINSTRSUBTYPE               VARCHAR2(255)
+,ATTRIBUTE1                   VARCHAR2(255)
+,ATTRIBUTE2                   VARCHAR2(255)
+,ATTRIBUTE3                   VARCHAR2(255)
+,ATTRIBUTE4                   VARCHAR2(255)
+,ATTRIBUTE5                   VARCHAR2(255)
+,ATTRIBUTE6                   VARCHAR2(255)
+,ATTRIBUTE7                   VARCHAR2(255)
+,ATTRIBUTE8                   VARCHAR2(255)
+,ATTRIBUTE9                   VARCHAR2(255)
+,ATTRIBUTE10                  VARCHAR2(255)
+,ATTRIBUTE11                  VARCHAR2(255)
+,ATTRIBUTE12                  VARCHAR2(255)
+,ATTRIBUTE13                  VARCHAR2(255)
+,ATTRIBUTE14                  VARCHAR2(255)
+,ATTRIBUTE15                  VARCHAR2(255)
+,IXMERCHANTNUMBER             VARCHAR2(255)
+,IXSETTLEMENTDATE             VARCHAR2(25)
+,IXTRANSNUMBER                VARCHAR2(100)
+,IXRECPTNUMBER                VARCHAR2(100)
+,ORG_ID                       NUMBER
+,IS_DEPOSIT                   VARCHAR2(30)
+,IS_CUSTOM_REFUND             VARCHAR2(30)
+,IS_AMEX                      VARCHAR2(30)
+,PROCESS_INDICATOR            NUMBER
+,ATTRIBUTE16                  VARCHAR2(255)
+,ATTRIBUTE17                  VARCHAR2(255)
+,ATTRIBUTE18                  VARCHAR2(255)
+,ATTRIBUTE19                  VARCHAR2(255)
+,ATTRIBUTE20                  VARCHAR2(255)
+,ATTRIBUTE21                  VARCHAR2(255)
+,ATTRIBUTE22                  VARCHAR2(255)
+,ATTRIBUTE23                  VARCHAR2(255)
+,ATTRIBUTE24                  VARCHAR2(255)
+,ATTRIBUTE25                  VARCHAR2(255)
+,ATTRIBUTE26                  VARCHAR2(255)
+,ATTRIBUTE27                  VARCHAR2(255)
+,ATTRIBUTE28                  VARCHAR2(255)
+,ATTRIBUTE29                  VARCHAR2(255)
+,ATTRIBUTE30                  VARCHAR2(255)
+);
+
+SHOW ERROR

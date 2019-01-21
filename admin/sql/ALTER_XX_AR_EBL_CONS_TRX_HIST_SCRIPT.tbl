@@ -1,0 +1,32 @@
+-- +========================================================================+
+-- |                  Office Depot                                          |
+-- +========================================================================+
+-- | Name        : ALTER_XX_AR_EBL_CONS_TRX_HIST_SCRIPT.tbl                 |
+-- | Rice ID     : E2059                                                    |
+-- | Description : modified the data types length in the existing           |
+-- |               XX_AR_EBL_CONS_TRX_HIST table                            |
+-- |                                                                        |
+-- |Change Record:                                                          |
+-- |===============                                                         |
+-- |Version   Date        Author           Remarks                          |
+-- |=======  ===========  =============    =================================|
+-- |1.0      10-DEC-2015  Havish Kasina    Initial Version                  |
+-- +========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE XXFIN.XX_AR_EBL_CONS_TRX_HIST 
+        MODIFY(
+               SFDATA1    VARCHAR2(60),
+			   SFDATA2    VARCHAR2(60),
+			   SFDATA3    VARCHAR2(60),
+			   SFDATA4    VARCHAR2(60),
+			   SFDATA5    VARCHAR2(60),
+			   SFDATA6    VARCHAR2(60)
+          );
+
+SHOW ERROR;

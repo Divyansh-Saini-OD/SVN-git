@@ -1,0 +1,50 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_C2T_CC_TOKEN_CRYPTO_EXT.tbl                                         |
+-- | Rice Id      :                                                                             | 
+-- | Description  : XX_C2T_CC_TOKEN_CRYPTO_EXT Table Creation Script                            |  
+-- | Purpose      :                                                                             |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |1.0        12-OCT-2015  Harvinder Rakhra      Initial Version                               |
+-- |1.1        13-OCT-2015  Harvinder Rakhra      Created table in XXFIN Schema                 |
+-- |                                                                                            |
+-- +============================================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT
+PROMPT CREATING the Table XX_C2T_CC_TOKEN_CRYPTO_EXT.....
+PROMPT
+
+CREATE TABLE XXFIN.XX_C2T_CC_TOKEN_CRYPTO_EXT
+               (
+                 CARD_ID                      NUMBER
+               , CREDIT_CARD_NUMBER_ORIG      VARCHAR2(80)
+               , CC_KEY_LABEL_ORIG            VARCHAR2(80)
+               , TOKEN_NUMBER                 VARCHAR2(80)
+               , TOKEN_KEY_LABEL              VARCHAR2(80)
+               , MASKED                       VARCHAR2(80)
+               )			   
+           ORGANIZATION EXTERNAL
+               ( DEFAULT DIRECTORY XXFIN_INBOUND
+               ACCESS PARAMETERS
+               ( RECORDS DELIMITED BY NEWLINE
+               FIELDS TERMINATED BY ','
+               )
+            LOCATION ('XX_C2T_CC_TOKEN_CRYPTO.csv')  
+               );
+			   
+SHOW ERROR;
+
+

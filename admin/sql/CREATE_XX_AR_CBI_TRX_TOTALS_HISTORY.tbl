@@ -1,0 +1,47 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating TABLE XXFIN.xx_ar_cbi_trx_totals_history
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name :XXFIN.XX_AR_CBI_TRX_TOTALS_HISTORY                                 |
+-- | Description : Create history table for Certegy trx totals records.       |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0     05-feb-2009  Sambasiva Reddy D    Initial version                |
+-- |==========================================================================|
+
+
+CREATE TABLE XXFIN.xx_ar_cbi_trx_totals_history
+                    (REQUEST_ID                              NUMBER
+                    ,CONS_INV_ID                             NUMBER
+                    ,CUSTOMER_TRX_ID                         NUMBER
+                    ,LINE_TYPE                               VARCHAR2(20)
+                    ,LINE_SEQ                                NUMBER
+                    ,TRX_NUMBER                              VARCHAR2(30)
+                    ,SF_TEXT                                 VARCHAR2(80)
+                    ,SF_AMOUNT                               NUMBER
+                    ,PAGE_BREAK                              VARCHAR2(1)
+                    ,ORDER_COUNT                             NUMBER
+                    ,ORG_ID                                  NUMBER
+                    ,LAST_UPDATE_DATE                        DATE
+                    ,LAST_UPDATED_BY                         NUMBER(15)
+                    ,CREATION_DATE                           DATE
+                    ,CREATED_BY                              NUMBER(15)
+                    );
+
+SHOW ERROR

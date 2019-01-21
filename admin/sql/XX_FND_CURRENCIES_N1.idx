@@ -1,0 +1,30 @@
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       PROVIDGE Consulting                                |
+-- +==========================================================================+
+-- | SQL Script to create indexes                                             |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   ================     ==============================|
+-- | V1.0     10-SEP-2008  Deepak Gowda         Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX xxfin.XX_FND_CURRENCIES_N1 ON apps.FND_CURRENCIES(ATTRIBUTE1);
+
+
+
+

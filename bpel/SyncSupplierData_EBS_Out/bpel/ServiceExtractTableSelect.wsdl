@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions 
+    name="ServiceExtractTableSelect"
+    targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/ServiceExtractTableSelect/"
+    xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/ServiceExtractTableSelect/"
+    xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+    xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+    xmlns:pc="http://xmlns.oracle.com/pcbpel/"
+    xmlns:top="http://xmlns.oracle.com/pcbpel/adapter/db/top/ServiceExtractTableSelect"
+    xmlns:hdr="http://xmlns.oracle.com/pcbpel/adapter/db/"
+    xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/" location="DBAdapterOutboundHeader.wsdl"/>
+
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/ServiceExtractTableSelect"
+                schemaLocation="ServiceExtractTableSelect_table.xsd"/>
+        </schema>
+    </types>
+
+    <message name="XxApSuppExtractCollection_msg">
+        <part name="XxApSuppExtractCollection" element="top:XxApSuppExtractCollection"/>
+    </message>
+
+    <message name="ServiceExtractTableSelectSelect_P_Sys_Name_inparameters">
+        <part name="ServiceExtractTableSelectSelect_P_Sys_Name_inparameters" element="top:ServiceExtractTableSelectSelect_P_Sys_NameInputParameters"/>
+    </message>
+
+    <portType name="ServiceExtractTableSelect_ptt">
+        <operation name="ServiceExtractTableSelectSelect_P_Sys_Name">
+            <input message="tns:ServiceExtractTableSelectSelect_P_Sys_Name_inparameters"/>
+            <output message="tns:XxApSuppExtractCollection_msg"/>
+        </operation>
+    </portType>
+
+    <binding name="ServiceExtractTableSelect_binding" type="tns:ServiceExtractTableSelect_ptt">
+        <jca:binding />
+        <operation name="ServiceExtractTableSelectSelect_P_Sys_Name">
+            <jca:operation
+                InteractionSpec="oracle.tip.adapter.db.DBReadInteractionSpec"
+
+                DescriptorName="ServiceExtractTableSelect.XxApSuppExtract"
+                QueryName="ServiceExtractTableSelectSelect"
+                ReturnSingleResultSet="true"
+                MappingsMetaDataURL="ServiceExtractTableSelect_toplink_mappings.xml" />
+            <input>
+                <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+            </input>
+        </operation>
+    </binding>
+
+    <!-- Your runtime connection is declared in
+        J2EE_HOME/application-deployments/default/DbAdapter/oc4j-ra.xml
+        These 'mcf' properties here are from your design time connection and 
+        save you from having to edit that file and restart the application server
+        if eis/db/EBSApps is missing.
+        These 'mcf' properties are safe to remove.
+    -->
+    <service name="ServiceExtractTableSelect">
+        <port name="ServiceExtractTableSelect_pt" binding="tns:ServiceExtractTableSelect_binding">
+            <jca:address location="eis/db/EBSAppsFin"
+                UIConnectionName="EIS_APPS_EBS_APPS_DBConn"
+                ManagedConnectionFactory="oracle.tip.adapter.db.DBManagedConnectionFactory"
+            />
+        </port>
+    </service>
+
+    <plt:partnerLinkType name="ServiceExtractTableSelect_plt" >
+        <plt:role name="ServiceExtractTableSelect_role" >
+            <plt:portType name="tns:ServiceExtractTableSelect_ptt" />
+        </plt:role>
+    </plt:partnerLinkType>
+
+</definitions>

@@ -1,0 +1,32 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+whenever SQLERROR CONTINUE;
+whenever OSERROR EXIT FAILURE ROLLBACK;
+
+-- +==========================================================================+
+-- |                  Office Depot - Project IDMS                             |
+-- |                                                                          |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |         SYNONYM         : XX_AP_SUP_VENDOR_CONTACT_STG                       |
+-- |                                                                          |
+-- |   Rice ID : C0709                                                                        |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     08-JAN-2018  Sunil Kalal           Initial Version              | 
+-- |                                                                          |
+-- +==========================================================================+
+
+
+
+CREATE OR REPLACE public SYNONYM xx_ap_sup_vendor_contact_stg FOR xxfin.xx_ap_sup_vendor_contact_stg;
+
+
+  SHOW error
+ 

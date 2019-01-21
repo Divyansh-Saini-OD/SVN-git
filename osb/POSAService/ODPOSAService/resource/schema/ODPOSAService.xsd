@@ -1,0 +1,82 @@
+<schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+	targetNamespace="http://www.officedepot.com/officedepot/V1/ODPOSAServiceSchema"
+	xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.officedepot.com/officedepot/V1/ODPOSAServiceSchema">
+	<import schemaLocation="Dictionary.xsd"
+		namespace="http://www.officedepot.com/officedepot/V1/Serialization/Arrays" />
+	<element name="activateToken">
+		<complexType>
+			<sequence>
+				<element minOccurs="0" name="serialNumber" nillable="true"
+					type="string" />
+				<!--element minOccurs="0" name="serialNumber" nillable="true" > <simpleType> 
+					<restriction base="string"> <length value="30"/> </restriction> </simpleType> 
+					</element -->
+				<element minOccurs="0" name="storeId" nillable="true" type="string" />
+
+				<element minOccurs="0" name="attributes" nillable="true"
+					type="q2:ArrayOfKeyValueOfstringstring"
+					xmlns:q2="http://www.officedepot.com/officedepot/V1/Serialization/Arrays" />
+			</sequence>
+		</complexType>
+	</element>
+	<element name="activateTokenResponse">
+		<complexType>
+			<sequence>
+				<element minOccurs="0" name="activateTokenResult" type="int" />
+			</sequence>
+		</complexType>
+	</element>
+	<element name="deactivateToken">
+		<complexType>
+			<sequence>
+
+				<element minOccurs="0" name="serialNumber" nillable="true"
+					type="string" />
+				<!--element minOccurs="0" name="serialNumber" nillable="true" > <simpleType> 
+					<restriction base="string"> <length value="30"/> </restriction> </simpleType> 
+					</element -->
+				<element minOccurs="0" name="storeId" nillable="true" type="string" />
+
+				<element minOccurs="0" name="attributes" nillable="true"
+					type="q3:ArrayOfKeyValueOfstringstring"
+					xmlns:q3="http://www.officedepot.com/officedepot/V1/Serialization/Arrays" />
+			</sequence>
+		</complexType>
+	</element>
+	<element name="deactivateTokenResponse">
+		<complexType>
+			<sequence>
+				<element minOccurs="0" name="deactivateTokenResult" type="int" />
+			</sequence>
+		</complexType>
+	</element>
+	<element name="checkStatus">
+		<complexType>
+			<sequence>
+				<element minOccurs="0" name="serialNumber" nillable="true"
+					type="string" />
+				<!--element minOccurs="0" name="serialNumber" nillable="true" > <simpleType> 
+					<restriction base="string"> <length value="30"/> </restriction> </simpleType> 
+					</element -->
+
+			</sequence>
+		</complexType>
+	</element>
+	<element name="checkStatusResponse">
+		<complexType>
+			<sequence>
+				<element minOccurs="0" name="checkStatusResult" nillable="true"
+					type="tns:serialNumberStatus" />
+			</sequence>
+		</complexType>
+	</element>
+	<complexType name="serialNumberStatus">
+		<sequence>
+			<element minOccurs="0" name="tokenStatusCode" type="int" />
+			<element minOccurs="0" name="tokenStatusDescription"
+				nillable="true" type="string" />
+		</sequence>
+	</complexType>
+	<element name="serialNumberStatus" nillable="true"
+		type="tns:serialNumberStatus" />
+</schema>

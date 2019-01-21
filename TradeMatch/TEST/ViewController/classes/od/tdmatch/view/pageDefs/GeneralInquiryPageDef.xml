@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel" version="12.2.1.12.24" id="GeneralInquiryPageDef"
+                Package="od.tdmatch.view.pageDefs">
+  <parameters/>
+  <executables>
+    <variableIterator id="variables"/>
+    <iterator Binds="GeneralInquiryVO1" RangeSize="25" DataControl="TradeMatchAMDataControl"
+              id="GeneralInquiryVO1Iterator"/>
+    <searchRegion Criteria="GeneralInquiryVOCriteria" Customizer="oracle.jbo.uicli.binding.JUSearchBindingCustomizer"
+                  Binds="GeneralInquiryVO1Iterator" id="GeneralInquiryVOCriteriaQuery"/>
+    <iterator Binds="GeneralInquiryQueryVO1" RangeSize="25" DataControl="TradeMatchAMDataControl"
+              id="GeneralInquiryQueryVO1Iterator" Refresh="ifNeeded"
+              RefreshCondition="#{pageFlowScope.InvoicesNotValidateBean.load}"/>
+    <searchRegion Criteria="GeneralInquiryQueryVOCriteria"
+                  Customizer="oracle.jbo.uicli.binding.JUSearchBindingCustomizer" Binds="GeneralInquiryQueryVO1Iterator"
+                  id="GeneralInquiryQueryVOCriteriaQuery"/>
+    <searchRegion Criteria="GeneralInquiryQueryVOCriteria"
+                  Customizer="oracle.jbo.uicli.binding.JUSearchBindingCustomizer" Binds="GeneralInquiryQueryVO1Iterator"
+                  id="GeneralInquiryQueryVOCriteriaQuery1"/>
+    <iterator Binds="GeneralInquiryUpdateVO1" RangeSize="25" DataControl="TradeMatchAMDataControl"
+              id="GeneralInquiryUpdateVO1Iterator"/>
+    <iterator Binds="GeneralInquiryMassUpdateVO1" RangeSize="25" DataControl="TradeMatchAMDataControl"
+              id="GeneralInquiryMassUpdateVO1Iterator"/>
+    <iterator Binds="GeneralInquiryTVO1" RangeSize="25" DataControl="TradeMatchAMDataControl"
+              id="GeneralInquiryTVO1Iterator"/>
+    <iterator Binds="GeneralInquiryTVO1" RangeSize="25" DataControl="TradeMatchAMDataControl71"
+              id="GeneralInquiryTVO1Iterator1"/>
+    <iterator Binds="GeneralInquiryTVO1" RangeSize="25" DataControl="TradeMatchAMDataControl72"
+              id="GeneralInquiryTVO1Iterator2"/>
+    <iterator Binds="GeneralInquiryTVO1" RangeSize="25" DataControl="TradeMatchAMDataControl73"
+              id="GeneralInquiryTVO1Iterator3"/>
+    <iterator Binds="GeneralInquiryTVO1" RangeSize="25" DataControl="TradeMatchAMDataControl74"
+              id="GeneralInquiryTVO1Iterator4"/>
+    <iterator Binds="GeneralInquiryMassUpdateQueryVO1" RangeSize="25" DataControl="TradeMatchAMDataControl101"
+              id="GeneralInquiryMassUpdateQueryVO1Iterator"/>
+    <iterator Binds="GeneralInquiryMassUpdateQueryVO1" RangeSize="25" DataControl="TradeMatchAMDataControl102"
+              id="GeneralInquiryMassUpdateQueryVO1Iterator1"/>
+  </executables>
+  <bindings>
+    <tree IterBinding="GeneralInquiryVO1Iterator" id="GeneralInquiryVO1">
+      <nodeDefinition DefName="od.tdmatch.model.GeneralInquiryVO" Name="GeneralInquiryVO10">
+        <AttrNames>
+          <Item Value="SupplierNo"/>
+          <Item Value="SupplierName"/>
+          <Item Value="SupplierSiteNo"/>
+          <Item Value="Terms"/>
+          <Item Value="TermsDateBasis"/>
+          <Item Value="PayMethod"/>
+          <Item Value="PayGroup"/>
+          <Item Value="SiteHold"/>
+          <Item Value="SitePaymentHoldReason"/>
+          <Item Value="Status"/>
+          <Item Value="VendorAssistant"/>
+          <Item Value="SiteCategory"/>
+          <Item Value="OperatingUnitName"/>
+          <Item Value="OrganizationId"/>
+          <Item Value="EmployeeNumber"/>
+          <Item Value="SiteSelect"/>
+          <Item Value="NewVendorAssistant"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <button IterBinding="GeneralInquiryVO1Iterator" id="SiteSelect" DTSupportsMRU="false" StaticList="true">
+      <AttrNames>
+        <Item Value="SiteSelect"/>
+      </AttrNames>
+      <ValueList>
+        <Item Value="true"/>
+        <Item Value="false"/>
+      </ValueList>
+    </button>
+    <methodAction id="updateVA" RequiresUpdateModel="true" Action="invokeMethod" MethodName="updateVA"
+                  IsViewObjectMethod="false" DataControl="TradeMatchAMDataControl"
+                  InstanceName="bindings.updateVA.dataControl.dataProvider"/>
+    <tree IterBinding="GeneralInquiryQueryVO1Iterator" id="GeneralInquiryQueryVO1">
+      <nodeDefinition DefName="od.tdmatch.model.GeneralInquiryQueryVO" Name="GeneralInquiryQueryVO10">
+        <AttrNames>
+          <Item Value="SupplierNo"/>
+          <Item Value="SupplierName"/>
+          <Item Value="SupplierSiteNo"/>
+          <Item Value="Terms"/>
+          <Item Value="TermsDateBasis"/>
+          <Item Value="PayMethod"/>
+          <Item Value="PayGroup"/>
+          <Item Value="SiteHold"/>
+          <Item Value="SitePaymentHoldReason"/>
+          <Item Value="Status"/>
+          <Item Value="VendorAssistant"/>
+          <Item Value="SiteCategory"/>
+          <Item Value="OperatingUnitName"/>
+          <Item Value="OrganizationId"/>
+          <Item Value="EmployeeNumber"/>
+          <Item Value="EmployeeName"/>
+          <Item Value="EmployeeSelect" Binds="EmployeeSelect"/>
+          <Item Value="RemitAdviceEmail"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <button IterBinding="GeneralInquiryQueryVO1Iterator" id="EmployeeSelect" DTSupportsMRU="false" StaticList="true">
+      <AttrNames>
+        <Item Value="EmployeeSelect"/>
+      </AttrNames>
+      <ValueList>
+        <Item Value="true"/>
+        <Item Value="false"/>
+      </ValueList>
+    </button>
+    <listOfValues IterBinding="GeneralInquiryUpdateVO1Iterator" StaticList="false" Uses="LOV_fromVA" id="fromVA"/>
+    <listOfValues IterBinding="GeneralInquiryUpdateVO1Iterator" StaticList="false" Uses="LOV_toVA" id="toVA"/>
+    <methodAction id="createVendorUpdate" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="createVendorUpdate" IsViewObjectMethod="false" DataControl="TradeMatchAMDataControl"
+                  InstanceName="bindings.createVendorUpdate.dataControl.dataProvider"/>
+    <list IterBinding="GeneralInquiryMassUpdateVO1Iterator" StaticList="false" Uses="LOV_fromVA" id="fromVA1"
+          DTSupportsMRU="true" SelectItemValueMode="ListObject"/>
+    <list IterBinding="GeneralInquiryMassUpdateVO1Iterator" StaticList="false" Uses="LOV_toVA" id="toVA1"
+          DTSupportsMRU="true" SelectItemValueMode="ListObject"/>
+    <methodAction id="submitMassUpdate" RequiresUpdateModel="true" Action="invokeMethod" MethodName="submitMassUpdate"
+                  IsViewObjectMethod="false" DataControl="TradeMatchAMDataControl"
+                  InstanceName="bindings.submitMassUpdate.dataControl.dataProvider">
+      <NamedData NDName="param" NDType="java.util.HashMap"/>
+    </methodAction>
+    <listOfValues IterBinding="GeneralInquiryTVO1Iterator" StaticList="false" Uses="LOV_supName" id="supName"/>
+    <listOfValues IterBinding="GeneralInquiryTVO1Iterator" StaticList="false" Uses="LOV_supNo" id="supNo"/>
+    <listOfValues IterBinding="GeneralInquiryTVO1Iterator" StaticList="false" Uses="LOV_supSiteCode" id="supSiteCode"/>
+    <list IterBinding="GeneralInquiryTVO1Iterator" StaticList="false" Uses="LOV_vendorAssistant" id="vendorAssistant"
+          DTSupportsMRU="true" SelectItemValueMode="ListObject"/>
+    <list IterBinding="GeneralInquiryTVO1Iterator" StaticList="false" Uses="LOV_operatingId" id="operatingId"
+          DTSupportsMRU="true" SelectItemValueMode="ListObject"/>
+    <methodAction id="generalInquirySearchValidate" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="generalInquirySearchValidate" IsViewObjectMethod="false"
+                  DataControl="TradeMatchAMDataControl"
+                  InstanceName="bindings.generalInquirySearchValidate.dataControl.dataProvider"
+                  ReturnName="data.TradeMatchAMDataControl.methodResults.generalInquirySearchValidate_generalInquirySearchValidate_dataControl_dataProvider_generalInquirySearchValidate_result"/>
+    <action id="Rollback" RequiresUpdateModel="false" Action="rollbackTransaction"
+            DataControl="TradeMatchAMDataControl"/>
+    <list IterBinding="GeneralInquiryMassUpdateQueryVO1Iterator" StaticList="false" Uses="LOV_fromVA" id="fromVA2"
+          DTSupportsMRU="true" SelectItemValueMode="ListObject"/>
+    <list IterBinding="GeneralInquiryMassUpdateQueryVO1Iterator1" StaticList="false" Uses="LOV_toVA" id="toVA2"
+          DTSupportsMRU="true" SelectItemValueMode="ListObject"/>
+  </bindings>
+</pageDefinition>

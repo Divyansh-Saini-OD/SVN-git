@@ -1,0 +1,29 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name :     FA Mass Adjustments                                           |
+-- | Description : To create sequence for FA Mass Adjustments                 |
+-- |                                                                          |
+-- | SQL Script to create the following object                                |
+-- |             Sequence    : XX_FA_MADJ_STG_S                               |
+-- |RICE E3121                                                                |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0      21-SEP-2015  Paddy Sanjeevi       Initial version               |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF 
+SET TAB          OFF
+SET FEEDBACK     ON
+
+
+
+CREATE SEQUENCE xxfin.XX_FA_MADJ_STG_S START WITH 1000 INCREMENT BY 1;
+
+SHOW ERROR
+
+

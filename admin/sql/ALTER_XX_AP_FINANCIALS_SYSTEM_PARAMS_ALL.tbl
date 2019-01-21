@@ -1,0 +1,34 @@
+
+ SET SHOW         OFF
+ SET VERIFY       OFF
+ SET ECHO         OFF
+ SET TAB          OFF
+ SET FEEDBACK     ON
+
+ PROMPT Moving Tablespace for table AP.FINANCIALS_SYSTEM_PARAMS_ALL
+
+ PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+ WHENEVER SQLERROR CONTINUE
+
+ -- +============================================================================+
+ -- |                  Office Depot - Project Simplify                           |
+ -- |                                                                            |
+ -- +============================================================================+
+ -- |SQL Script to move the tablespace                                           |
+ -- |Table    : AP.FINANCIALS_SYSTEM_PARAMS_ALL                                  |
+ -- |Change Record:                                                              |
+ -- |===============                                                             |
+ -- |Version      Date              Author               Remarks                 |
+ -- |=======      ==========        =============        ======================= |
+ -- | V1.0        23-SEP-2010       Joe Klein            Initial version created |
+ -- |                                                    for performance reasons |
+ -- |                                                    under defect 3747.      |
+ -- +============================================================================+
+
+ALTER USER AP QUOTA UNLIMITED ON XXOD_TS_DATA;
+
+ALTER TABLE AP.FINANCIALS_SYSTEM_PARAMS_ALL MOVE TABLESPACE XXOD_TS_DATA;
+
+ SHOW ERROR
+

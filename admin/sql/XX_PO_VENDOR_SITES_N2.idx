@@ -1,0 +1,32 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- |                      INDEXES: XX_PO_VENDOR_SITES_N2                      |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date          Author               Remarks                      |
+-- |=======   ==========    ================     =============================|
+-- | V1.0     11-Nov-2009   Joe Klein            Created for defect 3273.     |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX "XXFIN"."XX_PO_VENDOR_SITES_N2" ON "PO"."PO_VENDOR_SITES_ALL"
+ (nvl(ltrim(attribute9,'0'),to_char(vendor_site_id)))
+TABLESPACE "XXOD_TS_DATA";
+
+SHOW ERROR
+
+
+
+

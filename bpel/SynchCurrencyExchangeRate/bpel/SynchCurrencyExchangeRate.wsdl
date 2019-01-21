@@ -1,0 +1,54 @@
+<definitions
+     name="SynchCurrencyExchangeRate"
+     targetNamespace="http://xmlns.oracle.com/SynchCurrencyExchangeRate"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:ns1="http://schemas.oracle.com/service/bpel/common"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:client="http://xmlns.oracle.com/SynchCurrencyExchangeRate"
+    >
+    <import namespace="http://schemas.oracle.com/bpel/extension" location="RuntimeFault.wsdl"/>
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/SynchCurrencyExchangeRate" schemaLocation="SynchCurrencyExchangeRate.xsd"/>
+        </schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://schemas.oracle.com/service/bpel/common" schemaLocation="params.xsd"/>
+        </xsd:schema>
+    </types>
+    <message name="SynchCurrencyExchangeRateRequestMessage">
+        <part name="payload" element="client:SynchCurrencyExchangeRateProcessRequest"/>
+    </message>
+    <message name="SynchCurrencyExchangeRateResponseMessage">
+        <part name="payload" element="client:SynchCurrencyExchangeRateProcessResponse"/>
+    </message>
+    <!--Changing to Sync as this is being called from PL/SQL -->
+     <!-- Added for defect 4981-->
+
+    <portType name="SynchCurrencyExchangeRate">
+        <operation name="initiate">
+            <input message="client:SynchCurrencyExchangeRateRequestMessage"/>
+        </operation>
+    </portType>
+    <portType name="SynchCurrencyExchangeRateCallback">
+        <operation name="onResult">
+            <input message="client:SynchCurrencyExchangeRateResponseMessage"/>
+        </operation>
+    </portType>
+   <!-- Commented for defect 4981-->
+   <!-- <portType name="SynchCurrencyExchangeRate">
+        <operation name="process">
+            <input message="client:SynchCurrencyExchangeRateRequestMessage"/>
+            <output message="client:SynchCurrencyExchangeRateResponseMessage"/>
+        </operation>
+    </portType>  -->  
+    <!-- Added for Defect 4981-->
+    <plnk:partnerLinkType name="SynchCurrencyExchangeRate">
+        <plnk:role name="SynchCurrencyExchangeRateProvider">
+            <plnk:portType name="client:SynchCurrencyExchangeRate"/>
+        </plnk:role>
+        <plnk:role name="SynchCurrencyExchangeRateRequester">
+            <plnk:portType name="client:SynchCurrencyExchangeRateCallback"/>
+        </plnk:role>
+    <!--End-->
+    </plnk:partnerLinkType>
+</definitions>

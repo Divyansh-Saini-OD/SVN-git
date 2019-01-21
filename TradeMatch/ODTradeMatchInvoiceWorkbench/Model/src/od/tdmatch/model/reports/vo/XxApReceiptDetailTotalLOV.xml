@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewObject
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="XxApReceiptDetailTotalLOV"
+  Version="12.2.1.12.24"
+  InheritPersonalization="merge"
+  BindingStyle="OracleName"
+  CustomQuery="true"
+  PageIterMode="Full"
+  RowClass="od.tdmatch.model.reports.vo.XxApReceiptDetailTotalLOVRowImpl"
+  ComponentClass="od.tdmatch.model.reports.vo.XxApReceiptDetailTotalLOVImpl"
+  FetchMode="FETCH_AS_NEEDED"
+  Passivate="All">
+  <DesignTime>
+    <Attr Name="_isExpertMode" Value="true"/>
+    <Attr Name="_codeGenFlag2" Value="Access|Coll"/>
+    <Attr Name="_isCodegen" Value="true"/>
+  </DesignTime>
+  <Properties>
+    <SchemaBasedProperties>
+      <LABEL
+        ResId="od.tdmatch.model.reports.vo.XxApReceiptDetailTotalLOV_LABEL"/>
+    </SchemaBasedProperties>
+  </Properties>
+  <Variable
+    Name="P_date_from"
+    Kind="where"
+    Type="oracle.jbo.domain.Date"/>
+  <Variable
+    Name="P_date_to"
+    Kind="where"
+    Type="oracle.jbo.domain.Date"/>
+  <Variable
+    Name="P_Period_From"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="P_Period_To"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="P_Supplier_Name"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="P_Supplier_Site"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="p_SKU"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="P_invoice_num"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="p_PO"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="P_Receipt_Num"
+    Kind="where"
+    Type="java.lang.String"/>
+  <Variable
+    Name="bindUserId"
+    Kind="where"
+    Type="java.lang.Integer"/>
+  <SQLQuery><![CDATA[select    
+SUM(a.Receipt_line_amt) TotalRECEIPT_LINE_AMT,        
+SUM(a.Uninv_Amt) TotalUNINV_AMT    
+from table (XX_AP_TRADE_RCT_INQ_PKG.XX_AP_TRADE_RCT_INQUIRY   
+( P_DATE_FROM => to_date(:P_date_from,'DD-MON-YY') , P_DATE_TO => to_date(:P_date_to,'DD-MON-YY'), P_PERIOD_FROM => :P_Period_From, P_PERIOD_TO => :P_Period_To, P_INVOICE_NUM=>:P_invoice_num, P_RECEIPT_NUM=>:P_Receipt_Num, P_PO_NUM=>:p_PO,P_USER_ID=>:bindUserId)) a         
+where  a.SUPPLIER_NAME= NVL( :P_Supplier_Name,a.SUPPLIER_NAME)     
+and  a.SUPPLIER_SITE = NVL(:P_Supplier_Site, a.SUPPLIER_SITE)     
+and a.SKU =NVL(:p_SKU,a.SKU )     
+order by a.RECEIPT_NUM asc,a.REC_LINE_NUM]]></SQLQuery>
+  <ViewAttribute
+    Name="TotalreceiptLineAmt"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="255"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="VARCHAR2"
+    AliasName="TOTALRECEIPT_LINE_AMT"
+    Expression="TOTALRECEIPT_LINE_AMT"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.reports.vo.XxApReceiptDetailTotalLOV.TotalreceiptLineAmt_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.reports.vo.XxApReceiptDetailTotalLOV.TotalreceiptLineAmt_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="TotaluninvAmt"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="VARCHAR2"
+    AliasName="TOTALUNINV_AMT"
+    Expression="TOTALUNINV_AMT"
+    SQLType="NUMERIC">
+    <Properties>
+      <SchemaBasedProperties>
+        <FMT_FORMATTER
+          ResId="od.tdmatch.model.reports.vo.XxApReceiptDetailTotalLOV.TotaluninvAmt_FMT_FORMATTER"/>
+        <FMT_FORMAT
+          ResId="od.tdmatch.model.reports.vo.XxApReceiptDetailTotalLOV.TotaluninvAmt_FMT_FORMAT"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ResourceBundle>
+    <PropertiesBundle
+      PropertiesFile="od.tdmatch.model.ModelBundle"/>
+  </ResourceBundle>
+</ViewObject>

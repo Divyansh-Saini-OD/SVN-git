@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EndUserLayerExport SourceEULId="20061121114954" SourceEULVersion="10.1.2.48.18" MinimumCodeVersion="10.0.0" ExportFileVersion="10.0.0" EULSecurityModel="OracleApplications">
+<Function Available="True" Description="Transaction header id  of books" DeveloperKey="GET_TRANSACTION_ID1" DeveloperKeyFrozen="False" ExternalDatabaseLink="" ExternalName="GET_TRANSACTION_ID" ExternalOwner="APPS" ExternalPackage="XXOD_DISCO_PKG" FunctionType="UserDefined" Hidden="False" Id="255598" MaximumArgs="3" MinimumArgs="3" Name="GET_TRANSACTION_ID" ReturnDataType="Number" UserProperty1="" UserProperty2="">
+<FunctionArg DataType="Date" Description="As of date" DeveloperKey="p_as_of_date" DeveloperKeyFrozen="False" Id="255611" Name="p_as_of_date" Optional="False" Position="3" UserProperty1="" UserProperty2="">
+<ElementRef Name="Function" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="GET_TRANSACTION_ID1"/>
+<UniqueIdent ConstraintName="FUN2" Name="GET_TRANSACTION_ID"/>
+</ElementRef>
+</FunctionArg>
+<FunctionArg DataType="Number" Description="asset id" DeveloperKey="p_asset_id" DeveloperKeyFrozen="False" Id="255612" Name="p_asset_id" Optional="False" Position="1" UserProperty1="" UserProperty2="">
+<ElementRef Name="Function" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="GET_TRANSACTION_ID1"/>
+<UniqueIdent ConstraintName="FUN2" Name="GET_TRANSACTION_ID"/>
+</ElementRef>
+</FunctionArg>
+<FunctionArg DataType="Varchar" Description="Book" DeveloperKey="p_book_type_code" DeveloperKeyFrozen="False" Id="255615" Name="p_book_type_code" Optional="False" Position="2" UserProperty1="" UserProperty2="">
+<ElementRef Name="Function" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="GET_TRANSACTION_ID1"/>
+<UniqueIdent ConstraintName="FUN2" Name="GET_TRANSACTION_ID"/>
+</ElementRef>
+</FunctionArg>
+</Function>
+</EndUserLayerExport>

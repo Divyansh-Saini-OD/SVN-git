@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel" version="12.2.1.12.24" id="TradeMatchNonDedInquiryPageDef"
+                Package="reports">
+  <parameters/>
+  <executables>
+    <variableIterator id="variables"/>
+    <iterator Binds="XxApNonDedInqSearchVO" RangeSize="25" DataControl="ODTradeMatchReportsAMDataControl"
+              id="XxApNonDedInqSearchVOIterator"/>
+    <iterator Binds="XxApNonDedInqResultVO" RangeSize="15" DataControl="ODTradeMatchReportsAMDataControl"
+              id="XxApNonDedInqResultVOIterator"/>
+  </executables>
+  <bindings>
+    <listOfValues IterBinding="XxApNonDedInqSearchVOIterator" StaticList="false" Uses="LOV_Suppliername"
+                  id="Suppliername"/>
+    <listOfValues IterBinding="XxApNonDedInqSearchVOIterator" StaticList="false" Uses="LOV_Suppliernum"
+                  id="Suppliernum"/>
+      <listOfValues IterBinding="XxApNonDedInqSearchVOIterator" StaticList="false" Uses="LOV_Reasoncode"
+                  id="Reasoncode"/>
+    <attributeValues IterBinding="XxApNonDedInqSearchVOIterator" id="OrgIdVal">
+      <AttrNames>
+        <Item Value="OrgIdVal"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApNonDedInqSearchVOIterator" id="Daterangfrom">
+      <AttrNames>
+        <Item Value="Daterangfrom"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApNonDedInqSearchVOIterator" id="Daterangto">
+      <AttrNames>
+        <Item Value="Daterangto"/>
+      </AttrNames>
+    </attributeValues>
+    <tree IterBinding="XxApNonDedInqResultVOIterator" id="XxApNonDedInqResultVO">
+      <nodeDefinition DefName="od.tdmatch.model.reports.vo.XxApNonDedInqResultVO" Name="XxApNonDedInqResultVO0">
+        <AttrNames>
+          <Item Value="SupplierName"/>
+          <Item Value="SupplierNum"/>
+          <Item Value="SupplierSite"/>
+          <Item Value="SalesDate"/>
+          <Item Value="RtnOrder"/>
+          <Item Value="RtnSub"/>
+          <Item Value="OrigOrder"/>
+          <Item Value="OrigSub"/>
+          <Item Value="Location"/>
+          <Item Value="PoNum"/>
+          <Item Value="Sku"/>
+          <Item Value="Qty"/>
+          <Item Value="Cost"/>
+          <Item Value="RtnReasonCode"/>
+          <Item Value="RtnAuthCode"/>
+          <Item Value="ImportDate"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <listOfValues IterBinding="XxApNonDedInqSearchVOIterator" StaticList="false" Uses="LOV_Ponum" id="Ponum"/>
+    <methodAction id="searchTraMatNonDedInq" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="searchTraMatNonDedInq" IsViewObjectMethod="false"
+                  DataControl="ODTradeMatchReportsAMDataControl"
+                  InstanceName="bindings.searchTraMatNonDedInq.dataControl.dataProvider"
+                  ReturnName="data.ODTradeMatchReportsAMDataControl.methodResults.searchTraMatNonDedInq_searchTraMatNonDedInq_dataControl_dataProvider_searchTraMatNonDedInq_result">
+      <NamedData NDName="trMaNonDedInqSearchMap" NDType="java.util.HashMap"/>
+    </methodAction>
+    <listOfValues Uses="LOV_Suppliersiteno" StaticList="false" IterBinding="XxApNonDedInqSearchVOIterator"
+                  id="Suppliersiteno"/>
+    <listOfValues IterBinding="XxApNonDedInqSearchVOIterator" StaticList="false" Uses="LOV_Orgid" id="Orgid1"/>
+  </bindings>
+</pageDefinition>

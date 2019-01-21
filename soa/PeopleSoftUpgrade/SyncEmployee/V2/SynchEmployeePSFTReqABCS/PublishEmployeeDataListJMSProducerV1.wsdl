@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions name="PublishEmployeeDataListJMSProducerV1" targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/jms/PeopleSoftMigration/SynchEmployeePSFTReqABCS/PublishEmployeeDataListJMSProducerV1" xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/" xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/jms/PeopleSoftMigration/SynchEmployeePSFTReqABCS/PublishEmployeeDataListJMSProducerV1" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:imp1="http://xmlns.officedepot.com/EnterpriseObjects/Core/EBO/Employee/V1" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/">
+   <plt:partnerLinkType name="Produce_Message_plt">
+      <plt:role name="Produce_Message_role">
+         <plt:portType name="tns:Produce_Message_ptt"/>
+      </plt:role>
+   </plt:partnerLinkType>
+   <wsdl:types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema">
+         <import namespace="http://xmlns.officedepot.com/EnterpriseObjects/Core/EBO/Employee/V1" schemaLocation="oramds:/apps/ODCommon/EnterpriseObjects/Core/EBO/Employee/V1/EmployeeEBM.xsd"/>
+      </schema>
+   </wsdl:types>
+   <wsdl:message name="Produce_Message_msg">
+      <wsdl:part name="body" element="imp1:SyncEmployeeEBM"/>
+   </wsdl:message>
+   <wsdl:portType name="Produce_Message_ptt">
+      <wsdl:operation name="Produce_Message">
+         <wsdl:input message="tns:Produce_Message_msg"/>
+      </wsdl:operation>
+   </wsdl:portType>
+</wsdl:definitions>

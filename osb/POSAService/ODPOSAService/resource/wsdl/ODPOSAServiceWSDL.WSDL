@@ -1,0 +1,120 @@
+<wsdl:definitions name="ODPOSAService" targetNamespace="http://www.officedepot.com/officedepot/V1/ODPOSAServicewsdl" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:client="http://www.officedepot.com/officedepot/V1/ODPOSAServiceSchema" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.officedepot.com/officedepot/V1/ODPOSAServicewsdl">
+ <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	TYPE DEFINITION - List of services participating in this BPEL process
+	The default output of the BPEL designer uses strings as input and 
+	output to the BPEL Process. But you can define or import any XML 
+	Schema type and use them as part of the message types.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+ <wsdl:types>
+  <schema xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://www.officedepot.com/officedepot/V1/ODPOSAServiceSchema" schemaLocation="../schema/ODPOSAService.xsd"/>
+   <import namespace="http://www.officedepot.com/officedepot/V1/POSAExceptions" schemaLocation="../schema/POSAExceptions.xsd"/>
+  </schema>
+ </wsdl:types>
+ <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	MESSAGE TYPE DEFINITION - Definition of the message types used as 
+	part of the port type defintions
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+ <wsdl:message name="POSAActivateTokenRequestMessage">
+  <wsdl:part name="payload" element="client:activateToken"/>
+ </wsdl:message>
+ <wsdl:message name="POSAActivateTokenResponseMessage">
+  <wsdl:part name="payload" element="client:activateTokenResponse"/>
+ </wsdl:message>
+ <wsdl:message name="POSADeactivateTokenRequestMessage">
+  <wsdl:part name="payload" element="client:deactivateToken"/>
+ </wsdl:message>
+ <wsdl:message name="POSADeactivateTokenResponseMessage">
+  <wsdl:part name="payload" element="client:deactivateTokenResponse"/>
+ </wsdl:message>
+ <wsdl:message name="POSACheckStatusRequestMessage">
+  <wsdl:part name="payload" element="client:checkStatus"/>
+ </wsdl:message>
+ <wsdl:message name="POSACheckStatusResponseMessage">
+  <wsdl:part name="payload" element="client:checkStatusResponse"/>
+ </wsdl:message>
+ <wsdl:message name="POSADService_DeactivateToken_PartnerServiceFaultFault_FaultMessage">
+  <wsdl:part name="detail" element="q2:PartnerServiceFault" xmlns:q2="http://www.officedepot.com/officedepot/V1/POSAExceptions"/>
+ </wsdl:message>
+ <wsdl:message name="POSADService_CheckStatus_PartnerServiceFaultFault_FaultMessage">
+  <wsdl:part name="detail" element="q2:PartnerServiceFault" xmlns:q2="http://www.officedepot.com/officedepot/V1/POSAExceptions"/>
+ </wsdl:message>
+ <wsdl:message name="POSADService_ActivateToken_PartnerServiceFaultFault_FaultMessage">
+  <wsdl:part name="detail" element="q2:PartnerServiceFault" xmlns:q2="http://www.officedepot.com/officedepot/V1/POSAExceptions"/>
+ </wsdl:message>
+ <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PORT TYPE DEFINITION - A port type groups a set of operations into
+	a logical service unit.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+ <!-- portType implemented by the ODPOSAService BPEL process -->
+ <wsdl:portType name="POSAService">
+  <wsdl:operation name="activateToken">
+   <wsdl:input message="tns:POSAActivateTokenRequestMessage"/>
+   <wsdl:output message="tns:POSAActivateTokenResponseMessage"/>
+   <wsdl:fault name="PartnerServiceFaultFault" message="tns:POSADService_ActivateToken_PartnerServiceFaultFault_FaultMessage"/>
+  </wsdl:operation>
+  <wsdl:operation name="deactivateToken">
+   <wsdl:input message="tns:POSADeactivateTokenRequestMessage"/>
+   <wsdl:output message="tns:POSADeactivateTokenResponseMessage"/>
+   <wsdl:fault name="PartnerServiceFaultFault" message="tns:POSADService_DeactivateToken_PartnerServiceFaultFault_FaultMessage"/>
+  </wsdl:operation>
+  <wsdl:operation name="checkStatus">
+   <wsdl:input message="tns:POSACheckStatusRequestMessage"/>
+   <wsdl:output message="tns:POSACheckStatusResponseMessage"/>
+   <wsdl:fault name="PartnerServiceFaultFault" message="tns:POSADService_CheckStatus_PartnerServiceFaultFault_FaultMessage"/>
+  </wsdl:operation>
+ </wsdl:portType>
+ <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PARTNER LINK TYPE DEFINITION
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+ <!--plnk:partnerLinkType name="ODPOSAService">
+		<plnk:role name="ODPOSAServiceProvider">
+			<plnk:portType name="client:ODPOSAService"/>
+		</plnk:role>
+	</plnk:partnerLinkType-->
+ <wsdl:binding name="POSAServiceSOAP11Binding" type="tns:POSAService">
+  <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+  <wsdl:operation name="activateToken">
+   <soap:operation style="document" soapAction="http://www.officedepot.com/officedepot/V1/ODPOSAServiceSchema/activateToken"/>
+   <wsdl:input>
+    <soap:body use="literal" parts="payload"/>
+   </wsdl:input>
+   <wsdl:output>
+    <soap:body use="literal" parts="payload"/>
+   </wsdl:output>
+   <wsdl:fault name="PartnerServiceFaultFault">
+    <soap:fault name="PartnerServiceFaultFault" use="literal"/>
+   </wsdl:fault>
+  </wsdl:operation>
+  <wsdl:operation name="deactivateToken">
+   <soap:operation style="document" soapAction="http://www.officedepot.com/officedepot/V1/ODPOSAServiceSchema/deactivateToken"/>
+   <wsdl:input>
+    <soap:body use="literal" parts="payload"/>
+   </wsdl:input>
+   <wsdl:output>
+    <soap:body use="literal" parts="payload"/>
+   </wsdl:output>
+   <wsdl:fault name="PartnerServiceFaultFault">
+    <soap:fault name="PartnerServiceFaultFault" use="literal"/>
+   </wsdl:fault>
+  </wsdl:operation>
+  <wsdl:operation name="checkStatus">
+   <soap:operation style="document" soapAction="http://www.officedepot.com/officedepot/V1/ODPOSAServiceSchema/checkStatus"/>
+   <wsdl:input>
+    <soap:body use="literal" parts="payload"/>
+   </wsdl:input>
+   <wsdl:output>
+    <soap:body use="literal" parts="payload"/>
+   </wsdl:output>
+   <wsdl:fault name="PartnerServiceFaultFault">
+    <soap:fault name="PartnerServiceFaultFault" use="literal"/>
+   </wsdl:fault>
+  </wsdl:operation>
+ </wsdl:binding>
+<wsdl:service name="POSAServService">
+		<wsdl:port name="POSAServicePort" binding="tns:POSAServiceSOAP11Binding">
+			<soap:address location="http://www.od.com/"/>
+		</wsdl:port>
+	</wsdl:service>
+
+</wsdl:definitions>

@@ -1,0 +1,33 @@
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | RICE ID     :  R0426                                                     |
+-- | Name        :  R0426 AR_Aging_Buckets                                    |
+-- | Description :                                                            |
+-- |                                                                          |
+-- | SQL Script to drop table                                                 |
+-- |                                                                          |
+-- |     Table name:  XXFIN.XX_AR_CUST_PAYMENT_TEMP                           |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   ================     ==============================|
+-- |Draft 1A  02-Nov-10    Mohammed Appas A     Initial version               |
+-- |                                            Defect 7792                   |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+DROP TABLE XXFIN.XX_AR_CUST_PAYMENT_TEMP
+/
+
+SHOW ERROR

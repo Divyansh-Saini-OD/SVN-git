@@ -1,0 +1,19 @@
+SET TIMING ON;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- Step 2
+-- QC Defect 13923
+-- Index created to improve performance of OD AR Credit Check Direct Viking Extract program
+
+CREATE INDEX xxfin.xx_ar_cash_receipts_n14
+ON ar.ar_cash_receipts_all ( pay_from_customer, org_id, receipt_date ) 
+PARALLEL;
+
+ALTER INDEX xxfin.xx_ar_cash_receipts_n14
+NOPARALLEL;
+
+
+EXIT;
+
+SHO ERR;

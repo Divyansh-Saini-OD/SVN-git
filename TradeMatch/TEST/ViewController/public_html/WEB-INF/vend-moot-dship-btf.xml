@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<adfc-config xmlns="http://xmlns.oracle.com/adf/controller" version="1.2">
+  <task-flow-definition id="vend-moot-dship-btf">
+    <default-activity>setDefaultParamsDShip</default-activity>
+    <data-control-scope>
+      <shared/>
+    </data-control-scope>
+    <managed-bean id="__1">
+      <managed-bean-name>MyDate</managed-bean-name>
+      <managed-bean-class>java.util.Date</managed-bean-class>
+      <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean id="__2">
+      <managed-bean-name>vendorMootBean</managed-bean-name>
+      <managed-bean-class>od.tdmatch.view.managedBeans.vendorMootBean</managed-bean-class>
+      <managed-bean-scope>pageFlow</managed-bean-scope>
+    </managed-bean>
+    <view id="VendorMootDropship">
+      <page>/VendorMootDropShip.jsff</page>
+    </view>
+    <method-call id="setDefaultParamsDShip">
+      <method>#{bindings.setDefaultParamsDShip.execute}</method>
+      <outcome>
+        <fixed-outcome>setDefaultParamsDShip</fixed-outcome>
+      </outcome>
+    </method-call>
+    <method-call id="executeVOForDropship">
+      <method>#{bindings.executeVOForDropship.execute}</method>
+      <outcome>
+        <fixed-outcome>executeVOForDropship</fixed-outcome>
+      </outcome>
+    </method-call>
+    <control-flow-rule id="__3">
+      <from-activity-id>setDefaultParamsDShip</from-activity-id>
+      <control-flow-case id="__4">
+        <to-activity-id>executeVOForDropship</to-activity-id>
+      </control-flow-case>
+    </control-flow-rule>
+    <control-flow-rule id="__5">
+      <from-activity-id>executeVOForDropship</from-activity-id>
+      <control-flow-case id="__6">
+        <from-outcome>executeVOForDropship</from-outcome>
+        <to-activity-id>VendorMootDropship</to-activity-id>
+      </control-flow-case>
+    </control-flow-rule>
+    <use-page-fragments/>
+  </task-flow-definition>
+</adfc-config>

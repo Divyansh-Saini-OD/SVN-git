@@ -1,0 +1,325 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:af="http://xmlns.oracle.com/adf/faces/rich"
+                xmlns:f="http://java.sun.com/jsf/core">
+  <af:panelGroupLayout id="pgl4" layout="horizontal">
+    <af:messages id="m1" globalOnly="true"/>
+    <af:outputFormatted value="Office Depot- AP Trade- Invoices Never Validated :" id="of1"
+                            inlineStyle="font-size:large;"/>
+    <af:spacer width="10" height="10" id="s16"/>
+    <af:outputFormatted value="#{MyDate}" id="of2" inlineStyle="font-size:large;">
+          <af:convertDateTime pattern="MM/dd/YYYY"/>
+        </af:outputFormatted>
+  </af:panelGroupLayout>
+  <af:panelGroupLayout layout="vertical" id="pgl1">
+   <!-- <af:panelHeader text="" id="ph1">
+      <af:query id="qryId1" headerText="" disclosed="true"
+                value="#{bindings.InvoicesNotValidatedVOCriteriaQuery.queryDescriptor}"
+                model="#{bindings.InvoicesNotValidatedVOCriteriaQuery.queryModel}"
+                queryListener="#{bindings.InvoicesNotValidatedVOCriteriaQuery.processQuery}"
+                queryOperationListener="#{bindings.InvoicesNotValidatedVOCriteriaQuery.processQueryOperation}"
+                resultComponentId="::resId1" saveQueryMode="hidden" modeChangeVisible="false" maxColumns="2" rows="6"/>
+    </af:panelHeader> -->
+   
+     <af:panelHeader text="" id="ph1">
+      <!--<af:panelGroupLayout id="pgl3">-->
+        <!--<af:inputText label="Label 1" id="it1"/>
+        <af:inputText label="Label 2" id="it2"/>
+        <af:inputDate label="Label 1" id="id1"/>
+        <af:inputDate label="Label 2" id="id2"/>
+        <af:inputDate label="Label 3" id="id3"/>
+        <af:inputDate label="Label 4" id="id4"/>-->
+      <af:panelFormLayout id="pfl1" maxColumns="3" rows="1">
+        <af:panelGroupLayout id="pgl12" layout="vertical" partialTriggers="b4">
+        <af:panelGroupLayout id="pgl2" layout="horizontal">
+          <af:outputText value="Invoice #" id="ot17"/>
+            <af:spacer width="26" height="10" id="s5"/>
+           <!-- <af:inputText value="#{bindings.invoiceNumber.inputValue}" simple="true"
+                      required="#{bindings.invoiceNumber.hints.mandatory}"
+                      columns="#{bindings.invoiceNumber.hints.displayWidth}"
+                      maximumLength="#{bindings.invoiceNumber.hints.precision}"
+                      shortDesc="#{bindings.invoiceNumber.hints.tooltip}" id="it3">
+          <f:validator binding="#{bindings.invoiceNumber.validator}"/>
+        </af:inputText>-->
+            <af:inputListOfValues id="invoiceNumber1Id"
+                                  popupTitle="Invoice #"
+                                  value="#{bindings.invoiceNumber1.inputValue}"
+                                  
+                                  model="#{bindings.invoiceNumber1.listOfValuesModel}"
+                                  required="#{bindings.invoiceNumber1.hints.mandatory}"
+                                  columns="#{bindings.invoiceNumber1.hints.displayWidth}"
+                                  shortDesc="#{bindings.invoiceNumber1.hints.tooltip}">
+              <f:validator binding="#{bindings.invoiceNumber1.validator}"/>
+            </af:inputListOfValues>
+          </af:panelGroupLayout>
+          <af:spacer  height="2" id="s10"/>
+          <af:panelGroupLayout id="pgl3" layout="horizontal">
+          <af:outputText value="PO # " id="ot18"/>
+            <af:spacer width="47" height="10" id="s1"/>
+            <!--<af:inputText value="#{bindings.poNumber.inputValue}" simple="true"
+                      required="#{bindings.poNumber.hints.mandatory}" columns="#{bindings.poNumber.hints.displayWidth}"
+                      maximumLength="#{bindings.poNumber.hints.precision}"
+                      shortDesc="#{bindings.poNumber.hints.tooltip}" id="it4">
+          <f:validator binding="#{bindings.poNumber.validator}"/>
+        </af:inputText>-->
+            <af:inputListOfValues id="poNumber1Id" popupTitle="PO #"
+                                  value="#{bindings.poNumber1.inputValue}" 
+                                  model="#{bindings.poNumber1.listOfValuesModel}"
+                                  required="#{bindings.poNumber1.hints.mandatory}"
+                                  columns="#{bindings.poNumber1.hints.displayWidth}"
+                                  shortDesc="#{bindings.poNumber1.hints.tooltip}">
+              <f:validator binding="#{bindings.poNumber1.validator}"/>
+            </af:inputListOfValues>
+          </af:panelGroupLayout>
+          <af:spacer  height="2" id="s13"/>
+          <af:panelGroupLayout id="pgl5" layout="horizontal">
+          <af:outputText value="Invoice Date" id="ot19" noWrap="true"/>
+            <af:spacer width="8" height="10" id="s8"/>
+            <af:inputDate value="#{bindings.invoiceFrom.inputValue}" required="#{bindings.invoiceFrom.hints.mandatory}"
+                      columns="#{bindings.invoiceFrom.hints.displayWidth}"
+                      shortDesc="#{bindings.invoiceFrom.hints.tooltip}" id="id5">
+          <f:validator binding="#{bindings.invoiceFrom.validator}"/>
+          <af:convertDateTime pattern="#{bindings.invoiceFrom.format}"/>
+        </af:inputDate>
+            <af:spacer  height="2" id="s14"/>
+            <af:outputText value=" - " id="ot25"/>
+            <af:inputDate value="#{bindings.invoiceTo.inputValue}" required="#{bindings.invoiceTo.hints.mandatory}"
+                      columns="#{bindings.invoiceTo.hints.displayWidth}" shortDesc="#{bindings.invoiceTo.hints.tooltip}"
+                      id="id6">
+          <f:validator binding="#{bindings.invoiceTo.validator}"/>
+          <af:convertDateTime pattern="#{bindings.invoiceTo.format}"/>
+        </af:inputDate>
+        </af:panelGroupLayout>
+          <af:spacer  height="2" id="s17"/>
+          <af:panelGroupLayout id="pgl6" layout="horizontal">
+          <af:outputText value="Due Date" id="ot20" noWrap="true"/>
+            <af:spacer width="24" height="10" id="s9"/>
+            <af:inputDate value="#{bindings.dueFrom.inputValue}" required="#{bindings.dueFrom.hints.mandatory}"
+                      columns="#{bindings.dueFrom.hints.displayWidth}" shortDesc="#{bindings.dueFrom.hints.tooltip}"
+                      id="id7">
+          <f:validator binding="#{bindings.dueFrom.validator}"/>
+          <af:convertDateTime pattern="#{bindings.dueFrom.format}"/>
+        </af:inputDate>
+            <af:spacer  height="2" id="s15"/>
+            <af:outputText value=" - " id="ot26"/>
+            <af:inputDate value="#{bindings.dueTo.inputValue}" required="#{bindings.dueTo.hints.mandatory}"
+                      columns="#{bindings.dueTo.hints.displayWidth}" shortDesc="#{bindings.dueTo.hints.tooltip}"
+                      id="id8">
+          <f:validator binding="#{bindings.dueTo.validator}"/>
+          <af:convertDateTime pattern="#{bindings.dueTo.format}"/>
+        </af:inputDate>
+        </af:panelGroupLayout>
+        </af:panelGroupLayout>
+        <af:panelGroupLayout id="pgl13" layout="vertical">
+        <af:panelGroupLayout id="pgl8" layout="horizontal">
+          <af:outputText value="Supplier Name" id="ot22" noWrap="false"/>
+          <af:inputListOfValues id="supNameId" popupTitle="Supplier Name"
+                              value="#{bindings.supName.inputValue}" 
+                              model="#{bindings.supName.listOfValuesModel}"
+                              required="#{bindings.supName.hints.mandatory}"
+                              columns="#{bindings.supName.hints.displayWidth}"
+                              shortDesc="#{bindings.supName.hints.tooltip}">
+          <f:validator binding="#{bindings.supName.validator}"/>
+        </af:inputListOfValues>
+        </af:panelGroupLayout>
+        <af:spacer  height="2" id="s11"/>
+        <af:panelGroupLayout id="pgl7" layout="horizontal">
+          <af:outputText value="Supplier #   " id="ot21" noWrap="false"/>
+            <af:spacer width="24" height="10" id="s6"/>
+            <af:inputListOfValues id="supNoId" popupTitle="Supplier #"
+                              value="#{bindings.supNo.inputValue}" 
+                              model="#{bindings.supNo.listOfValuesModel}" required="#{bindings.supNo.hints.mandatory}"
+                              columns="#{bindings.supNo.hints.displayWidth}"
+                              shortDesc="#{bindings.supNo.hints.tooltip}">
+          <f:validator binding="#{bindings.supNo.validator}"/>
+        </af:inputListOfValues>
+        </af:panelGroupLayout>
+          
+          
+          <af:spacer  height="2" id="s12"/>
+          <af:panelGroupLayout id="pgl9" layout="horizontal">
+          <af:outputText value="Supplier Site #" id="ot23" noWrap="false"/>
+            <af:spacer width="3" height="10" id="s7"/>
+            <af:inputListOfValues id="supSiteCodeId" popupTitle="Supplier Site"
+                              value="#{bindings.supSiteCode.inputValue}" 
+                              model="#{bindings.supSiteCode.listOfValuesModel}"
+                              required="#{bindings.supSiteCode.hints.mandatory}"
+                              columns="#{bindings.supSiteCode.hints.displayWidth}"
+                              shortDesc="#{bindings.supSiteCode.hints.tooltip}">
+          <f:validator binding="#{bindings.supSiteCode.validator}"/>
+        </af:inputListOfValues>
+        </af:panelGroupLayout>
+        </af:panelGroupLayout>
+        <af:panelGroupLayout id="pgl15" layout="vertical">
+        <af:panelGroupLayout id="pgl10" layout="horizontal">
+          <af:outputText value="Vendor Assistant" id="ot24"/>
+          <af:selectOneChoice value="#{bindings.vendorAssistant.inputValue}" 
+                            required="#{bindings.vendorAssistant.hints.mandatory}"
+                            shortDesc="#{bindings.vendorAssistant.hints.tooltip}" id="soc4">
+          <f:selectItems value="#{bindings.vendorAssistant.items}" id="si4"/>
+          <f:validator binding="#{bindings.vendorAssistant.validator}"/>
+        </af:selectOneChoice>
+        </af:panelGroupLayout>
+          <af:spacer width="10" height="80" id="s18"/>
+          <af:panelGroupLayout id="pgl11" layout="horizontal" halign="left">
+        <af:spacer width="110" height="60" id="s2"/>
+        <af:button text=" Go " id="b1" action="#{pageFlowScope.InvoicesNotValidateBean.invoicesSearchAction}"/>
+        <af:spacer width="10" height="10" id="s3"/>
+        <!--<af:button text=" Clear" id="b2" actionListener="#{pageFlowScope.InvoicesNotValidateBean.clearInvoice}">
+          
+        </af:button>-->
+            <af:button actionListener="#{bindings.Rollback.execute}" text="Clear"
+                        immediate="true" id="b4">
+              <af:resetActionListener/>
+            </af:button>
+          </af:panelGroupLayout>
+        </af:panelGroupLayout>
+     <!-- </af:panelGroupLayout>-->
+     <f:facet name="footer"/>
+      </af:panelFormLayout>
+      
+
+     </af:panelHeader>
+    <af:selectBooleanCheckbox 
+                                  
+                                  shortDesc="#{bindings.InvoicesNotValidatedVO1.hints.EmployeeSelect.tooltip}"
+                                  id="sbc2" text="Select All"
+                                  valueChangeListener="#{pageFlowScope.InvoicesNotValidateBean.selectAllCheckBoxVCL}" autoSubmit="true"/>
+
+    <af:table value="#{bindings.InvoicesNotValidatedVO1.collectionModel}" var="row"
+              rows="#{bindings.InvoicesNotValidatedVO1.rangeSize}"
+              emptyText="#{bindings.InvoicesNotValidatedVO1.viewable ? 'No data to display.' : 'Access Denied.'}"
+              rowBandingInterval="0" selectedRowKeys="#{bindings.InvoicesNotValidatedVO1.collectionModel.selectedRow}"
+              rowSelection="multiple" fetchSize="#{bindings.InvoicesNotValidatedVO1.rangeSize}" id="resId1" styleClass="AFStretchWidth" partialTriggers="b1">
+      <af:column headerText="" id="c1" width="10">
+        <af:selectBooleanCheckbox value="#{row.bindings.EmployeeSelect.inputValue}"
+                                  label="#{row.bindings.EmployeeSelect.label}"
+                                  shortDesc="#{bindings.InvoicesNotValidatedVO1.hints.EmployeeSelect.tooltip}"
+                                  id="sbc1"/>
+        <f:facet name="header">
+                </f:facet>
+      </af:column>
+      <af:column headerText="#{bindings.InvoicesNotValidatedVO1.hints.VendorNo.label}" id="resId1c1">
+        <af:outputText value="#{row.VendorNo}" shortDesc="#{bindings.InvoicesNotValidatedVO1.hints.VendorNo.tooltip}"
+                       id="ot1"/>
+      </af:column>
+      <af:column headerText="#{bindings.InvoicesNotValidatedVO1.hints.VendorName.label}" id="resId1c2" width="190">
+        <!--<af:selectOneChoice value="#{row.bindings.VendorName.inputValue}" label="#{row.bindings.VendorName.label}"
+                            required="#{bindings.InvoicesNotValidatedVO1.hints.VendorName.mandatory}"
+                            shortDesc="#{bindings.InvoicesNotValidatedVO1.hints.VendorName.tooltip}" readOnly="true"
+                            id="soc1">
+          <f:selectItems value="#{row.bindings.VendorName.items}" id="si1"/>
+          <f:validator binding="#{row.bindings.VendorName.validator}"/>
+        </af:selectOneChoice>-->
+        <af:outputText value="#{row.VendorName}" shortDesc="#{bindings.InvoicesNotValidatedVO1.hints.VendorNo.tooltip}"
+                       id="ot27"/>
+      </af:column>
+      <af:column headerText="#{bindings.InvoicesNotValidatedVO1.hints.Site.label}" id="resId1c3" width="130">
+        <!--<af:selectOneChoice value="#{row.bindings.Site.inputValue}" label="#{row.bindings.Site.label}"
+                            required="#{bindings.InvoicesNotValidatedVO1.hints.Site.mandatory}"
+                            shortDesc="#{bindings.InvoicesNotValidatedVO1.hints.Site.tooltip}" readOnly="true"
+                            id="soc2">
+          <f:selectItems value="#{row.bindings.Site.items}" id="si2"/>
+          <f:validator binding="#{row.bindings.Site.validator}"/>
+        </af:selectOneChoice>-->
+        <af:outputText value="#{row.Site}" shortDesc="#{bindings.InvoicesNotValidatedVO1.hints.VendorNo.tooltip}"
+                       id="ot28"/>
+      </af:column>
+      <af:column headerText="#{bindings.InvoicesNotValidatedVO1.hints.Discount.label}" id="resId1c4" width="50">
+        <af:outputText value="#{row.Discount}" shortDesc="#{bindings.InvoicesNotValidatedVO1.hints.Discount.tooltip}"
+                       id="ot2"/>
+      </af:column>
+      <af:column headerText="#{bindings.InvoicesNotValidatedVO1.hints.InvoiceNum.label}" id="resId1c5">
+        <af:outputText value="#{row.InvoiceNum}"
+                       shortDesc="#{bindings.InvoicesNotValidatedVO1.hints.InvoiceNum.tooltip}" id="ot3"/>
+      </af:column>
+      <af:column headerText="#{bindings.InvoicesNotValidatedVO1.hints.InvoiceDate.label}" id="resId1c6">
+        <af:outputText value="#{row.InvoiceDate}"
+                       shortDesc="#{bindings.InvoicesNotValidatedVO1.hints.InvoiceDate.tooltip}" id="ot4">
+          <af:convertDateTime pattern="#{bindings.InvoicesNotValidatedVO1.hints.InvoiceDate.format}"/>
+        </af:outputText>
+      </af:column>
+      <af:column headerText="#{bindings.InvoicesNotValidatedVO1.hints.InvoiceAmount.label}" id="resId1c7" align="right">
+        <af:outputText value="#{row.InvoiceAmount}"
+                       shortDesc="#{bindings.InvoicesNotValidatedVO1.hints.InvoiceAmount.tooltip}" id="ot5">
+          <af:convertNumber groupingUsed="false"
+                            pattern="#{bindings.InvoicesNotValidatedVO1.hints.InvoiceAmount.format}"/>
+        </af:outputText>
+      </af:column>
+      <af:column headerText="#{bindings.InvoicesNotValidatedVO1.hints.PoNumber.label}" id="resId1c8">
+        <af:outputText value="#{row.PoNumber}" shortDesc="#{bindings.InvoicesNotValidatedVO1.hints.PoNumber.tooltip}"
+                       id="ot6"/>
+      </af:column>
+      <af:column headerText="#{bindings.InvoicesNotValidatedVO1.hints.Sitelocation.label}" id="c2">
+        <af:outputText value="#{row.Sitelocation}"
+                       shortDesc="#{bindings.InvoicesNotValidatedVO1.hints.Sitelocation.tooltip}" id="ot29"/>
+      </af:column>
+      <af:column headerText="#{bindings.InvoicesNotValidatedVO1.hints.PaymenrTerms.label}" id="resId1c9"
+                 rowHeader="false">
+        <af:outputText value="#{row.PaymenrTerms}"
+                       shortDesc="#{bindings.InvoicesNotValidatedVO1.hints.PaymenrTerms.tooltip}" id="ot7"/>
+      </af:column>
+      <af:column headerText="#{bindings.InvoicesNotValidatedVO1.hints.TermsDate.label}" id="resId1c10">
+        <af:outputText value="#{row.TermsDate}" shortDesc="#{bindings.InvoicesNotValidatedVO1.hints.TermsDate.tooltip}"
+                       id="ot8">
+          <af:convertDateTime pattern="#{bindings.InvoicesNotValidatedVO1.hints.TermsDate.format}"/>
+        </af:outputText>
+      </af:column>
+      <af:column headerText="#{bindings.InvoicesNotValidatedVO1.hints.DiscountDueDate.label}" id="resId1c11">
+        <af:outputText value="#{row.DiscountDueDate}"
+                       shortDesc="#{bindings.InvoicesNotValidatedVO1.hints.DiscountDueDate.tooltip}" id="ot9">
+          <af:convertDateTime pattern="#{bindings.InvoicesNotValidatedVO1.hints.DiscountDueDate.format}"/>
+        </af:outputText>
+      </af:column>
+      <af:column headerText="#{bindings.InvoicesNotValidatedVO1.hints.GlDate.label}" id="resId1c12">
+        <af:outputText value="#{row.GlDate}" shortDesc="#{bindings.InvoicesNotValidatedVO1.hints.GlDate.tooltip}"
+                       id="ot10">
+          <af:convertDateTime pattern="#{bindings.InvoicesNotValidatedVO1.hints.GlDate.format}"/>
+        </af:outputText>
+      </af:column>
+      <af:column headerText="#{bindings.InvoicesNotValidatedVO1.hints.Currency.label}" id="resId1c13">
+        <af:outputText value="#{row.Currency}" shortDesc="#{bindings.InvoicesNotValidatedVO1.hints.Currency.tooltip}"
+                       id="ot11"/>
+      </af:column>
+      <af:column headerText="#{bindings.InvoicesNotValidatedVO1.hints.PaymentMethodCode.label}" id="resId1c14">
+        <af:outputText value="#{row.PaymentMethodCode}"
+                       shortDesc="#{bindings.InvoicesNotValidatedVO1.hints.PaymentMethodCode.tooltip}" id="ot12"/>
+      </af:column>
+      <af:column headerText="#{bindings.InvoicesNotValidatedVO1.hints.PayGroupLookupCode.label}" id="resId1c15" width="190">
+        <af:outputText value="#{row.PayGroupLookupCode}"
+                       shortDesc="#{bindings.InvoicesNotValidatedVO1.hints.PayGroupLookupCode.tooltip}" id="ot13"/>
+      </af:column>
+      <af:column headerText="#{bindings.InvoicesNotValidatedVO1.hints.Source.label}" id="resId1c16" width="190">
+        <af:outputText value="#{row.Source}" shortDesc="#{bindings.InvoicesNotValidatedVO1.hints.Source.tooltip}"
+                       id="ot14"/>
+      </af:column>
+      <af:column headerText="#{bindings.InvoicesNotValidatedVO1.hints.PoType.label}" id="resId1c17">
+        <af:outputText value="#{row.PoType}" shortDesc="#{bindings.InvoicesNotValidatedVO1.hints.PoType.tooltip}"
+                       id="ot15"/>
+      </af:column>
+      <af:column headerText="#{bindings.InvoicesNotValidatedVO1.hints.TargetValue1.label}" id="resId1c18">
+        <af:selectOneChoice value="#{row.bindings.TargetValue1.inputValue}" label="#{row.bindings.TargetValue1.label}"
+                            required="#{bindings.InvoicesNotValidatedVO1.hints.TargetValue1.mandatory}"
+                            shortDesc="#{bindings.InvoicesNotValidatedVO1.hints.TargetValue1.tooltip}" readOnly="true"
+                            id="soc3">
+          <f:selectItems value="#{row.bindings.TargetValue1.items}" id="si3"/>
+          <f:validator binding="#{row.bindings.TargetValue1.validator}"/>
+        </af:selectOneChoice>
+      </af:column>
+      <af:column headerText="#{bindings.InvoicesNotValidatedVO1.hints.TargetValue2.label}" id="resId1c19"
+                 visible="false">
+        <af:outputText value="#{row.TargetValue2}"
+                       shortDesc="#{bindings.InvoicesNotValidatedVO1.hints.TargetValue2.tooltip}" id="ot16"/>
+      </af:column>
+    </af:table>
+  </af:panelGroupLayout>
+  <af:spacer  height="10" id="s25"/>
+  <af:panelGroupLayout id="pgl24" halign="left" layout="horizontal">
+    <af:outputText value="Total # of Records : " id="ot30"/>
+    <af:spacer width="10" height="10" id="s37"/>
+    <af:outputText value="#{bindings.InvoicesNotValidatedVO1Iterator.estimatedRowCount}" id="ot31" partialTriggers="b1"/>
+  </af:panelGroupLayout>
+  <af:panelGroupLayout id="pgl14">
+    <af:spacer  height="30" id="s4"/>
+    <af:button text="Release for Validation" id="b3" action="#{pageFlowScope.InvoicesNotValidateBean.updateAction}"/>
+  </af:panelGroupLayout>
+</ui:composition>

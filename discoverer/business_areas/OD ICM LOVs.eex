@@ -1,0 +1,657 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EndUserLayerExport SourceEULId="20061121114954" SourceEULVersion="10.1.2.48.18" MinimumCodeVersion="10.0.0" ExportFileVersion="10.0.0" EULSecurityModel="OracleApplications">
+<BusinessArea Description="Contains Custom folders with the queries to select and display values for OD ICM Reports" DeveloperKey="ODICMLOVS" DeveloperKeyFrozen="False" ExternalName="" Id="251000" Name="OD LOVs" UserProperty1="" UserProperty2="">
+<GrantedBusinessArea DeveloperKeyFrozen="False" Id="251006" PrivilegeType="ReadOnly">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODICMLOVS"/>
+<UniqueIdent ConstraintName="BA2" Name="OD LOVs"/>
+</ElementRef>
+<ElementRef Name="EulUser" Type="EulUser">
+<UniqueIdent ConstraintName="EU2" ResponsibilityKey="" RoleFlag="False" Username="OD_DISCO"/>
+</ElementRef>
+</GrantedBusinessArea>
+<GrantedBusinessArea DeveloperKeyFrozen="False" Id="251007" PrivilegeType="ReadOnly">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODICMLOVS"/>
+<UniqueIdent ConstraintName="BA2" Name="OD LOVs"/>
+</ElementRef>
+<ElementRef Name="EulUser" Type="EulUser">
+<UniqueIdent ConstraintName="EU2" ResponsibilityKey="AMW_CTRL_REP_RESP" RoleFlag="True" Username="Oracle ICM Discoverer Reports"/>
+</ElementRef>
+</GrantedBusinessArea>
+<BAOBJLink DeveloperKeyFrozen="False" Id="251062" Sequence="1">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODICMLOVS"/>
+<UniqueIdent ConstraintName="BA2" Name="OD LOVs"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="ICM_INSTANCE_NAME_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Instance Name"/>
+</ElementRef>
+</BAOBJLink>
+<BAOBJLink DeveloperKeyFrozen="False" Id="251072" Sequence="2">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODICMLOVS"/>
+<UniqueIdent ConstraintName="BA2" Name="OD LOVs"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_REPORTING_GROUP_NAME_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Reporting Group Name"/>
+</ElementRef>
+</BAOBJLink>
+<BAOBJLink DeveloperKeyFrozen="False" Id="251066" Sequence="2">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODICMLOVS"/>
+<UniqueIdent ConstraintName="BA2" Name="OD LOVs"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_ENGAGEMENT_NAME_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Engagement Name"/>
+</ElementRef>
+</BAOBJLink>
+<BAOBJLink DeveloperKeyFrozen="False" Id="251074" Sequence="3">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODICMLOVS"/>
+<UniqueIdent ConstraintName="BA2" Name="OD LOVs"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_SETUP_GROUP_NAME_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Setup Group Name"/>
+</ElementRef>
+</BAOBJLink>
+<BAOBJLink DeveloperKeyFrozen="False" Id="251069" Sequence="3">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODICMLOVS"/>
+<UniqueIdent ConstraintName="BA2" Name="OD LOVs"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_ORGANIZATION_NAME_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Organization Name"/>
+</ElementRef>
+</BAOBJLink>
+<BAOBJLink DeveloperKeyFrozen="False" Id="251075" Sequence="4">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODICMLOVS"/>
+<UniqueIdent ConstraintName="BA2" Name="OD LOVs"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_SETUP_PARAMETER_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Setup  Parameter Name"/>
+</ElementRef>
+</BAOBJLink>
+<BAOBJLink DeveloperKeyFrozen="False" Id="251070" Sequence="4">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODICMLOVS"/>
+<UniqueIdent ConstraintName="BA2" Name="OD LOVs"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_PROCESS_NAME_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Process Name"/>
+</ElementRef>
+</BAOBJLink>
+<BAOBJLink DeveloperKeyFrozen="False" Id="251076" Sequence="5">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODICMLOVS"/>
+<UniqueIdent ConstraintName="BA2" Name="OD LOVs"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_VICE_PRESIDENT_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Vice President"/>
+</ElementRef>
+</BAOBJLink>
+<BAOBJLink DeveloperKeyFrozen="False" Id="251067" Sequence="6">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODICMLOVS"/>
+<UniqueIdent ConstraintName="BA2" Name="OD LOVs"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_KEY_USER_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Key User"/>
+</ElementRef>
+</BAOBJLink>
+<BAOBJLink DeveloperKeyFrozen="False" Id="251065" Sequence="7">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODICMLOVS"/>
+<UniqueIdent ConstraintName="BA2" Name="OD LOVs"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_CONTROL_OWNER_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Control Owner"/>
+</ElementRef>
+</BAOBJLink>
+<BAOBJLink DeveloperKeyFrozen="False" Id="251068" Sequence="8">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODICMLOVS"/>
+<UniqueIdent ConstraintName="BA2" Name="OD LOVs"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_NEED_BY_DATE_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Need by Date"/>
+</ElementRef>
+</BAOBJLink>
+<BAOBJLink DeveloperKeyFrozen="False" Id="251071" Sequence="9">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODICMLOVS"/>
+<UniqueIdent ConstraintName="BA2" Name="OD LOVs"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_REASON_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Reason"/>
+</ElementRef>
+</BAOBJLink>
+<BAOBJLink DeveloperKeyFrozen="False" Id="251073" Sequence="10">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODICMLOVS"/>
+<UniqueIdent ConstraintName="BA2" Name="OD LOVs"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_REQUESTOR_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Requestor"/>
+</ElementRef>
+</BAOBJLink>
+<BAOBJLink DeveloperKeyFrozen="False" Id="251064" Sequence="11">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODICMLOVS"/>
+<UniqueIdent ConstraintName="BA2" Name="OD LOVs"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_ASSIGNED_TO_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Assigned To"/>
+</ElementRef>
+</BAOBJLink>
+<BAOBJLink DeveloperKeyFrozen="False" Id="251063" Sequence="12">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODICMLOVS"/>
+<UniqueIdent ConstraintName="BA2" Name="OD LOVs"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="ICM_PARENT_PROCESS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Parent Process"/>
+</ElementRef>
+</BAOBJLink>
+</BusinessArea>
+<EulUser BatchCommitSize="" BatchExpiry="" BatchJobsLimit="" BatchQueryTimeLimit="" BatchRepositoryUser="" BatchWindowEnd="" BatchWindowStart="" DeveloperKeyFrozen="False" Id="251004" LastBatchAccess="13/02/2007 11:42:43" QueryEstimateLimit="" QueryTimeLimit="" ResponsibilityKey="" RoleFlag="False" RowFetchLimit="" SecurityModel="OracleApplications" UsePublicPrivileges="True" Username="OD_DISCO">
+</EulUser>
+<EulUser BatchCommitSize="" BatchExpiry="" BatchJobsLimit="" BatchQueryTimeLimit="" BatchRepositoryUser="" BatchWindowEnd="" BatchWindowStart="" DeveloperKeyFrozen="False" Id="100305" LastBatchAccess="" QueryEstimateLimit="" QueryTimeLimit="" ResponsibilityKey="AMW_CTRL_REP_RESP" RoleFlag="True" RowFetchLimit="" SecurityModel="OracleApplications" UsePublicPrivileges="True" Username="Oracle ICM Discoverer Reports">
+</EulUser>
+<CustomObject CBOHint="" CustomSQL="-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                      Oracle/Office Depot                          |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  : OD_ICM_INSTANCE_NAME_LOV                                   |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Discoverer Reports.|&#x000d;&#x000a;-- |              Selects only Instance Names That are Active          |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  R.Kundavaram        Initial version         |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;SELECT   Distinct tl.Instance_Name&#x000d;&#x000a;FROM    Apps.ITA_SETUP_INSTANCES_B b,&#x000d;&#x000a;        Apps.ITA_SETUP_INSTANCES_TL tl &#x000d;&#x000a;WHERE   b.INSTANCE_CODE = tl.INSTANCE_CODE &#x000d;&#x000a;And     tl.LANGUAGE = userenv(&apos;LANG&apos;)&#x000d;&#x000a;And     b.current_flag = &apos;Y&apos;" Description="OD ICM Instance Name LOV" DeveloperKey="ICM_INSTANCE_NAME_LOV" DeveloperKeyFrozen="False" DistinctFlag="False" ExternalDatabaseLink="" ExternalObjectName="" ExternalObjectOwner="" Hidden="False" Id="251015" Name="OD ICM Instance Name" NonDeterministic="False" SQL="( SELECT INSTANCE_NAME AS i251134 FROM (-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                      Oracle/Office Depot                          |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  : OD_ICM_INSTANCE_NAME_LOV                                   |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Discoverer Reports.|&#x000d;&#x000a;-- |              Selects only Instance Names That are Active          |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  R.Kundavaram        Initial version         |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;SELECT   Distinct tl.Instance_Name&#x000d;&#x000a;FROM    Apps.ITA_SETUP_INSTANCES_B b,&#x000d;&#x000a;        Apps.ITA_SETUP_INSTANCES_TL tl &#x000d;&#x000a;WHERE   b.INSTANCE_CODE = tl.INSTANCE_CODE &#x000d;&#x000a;And     tl.LANGUAGE = userenv(&apos;LANG&apos;)&#x000d;&#x000a;And     b.current_flag = &apos;Y&apos;) CUO251015 )" UserProperty1="" UserProperty2="">
+<ColumnItem Alignment="Default" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="INSTANCE_NAME" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="INSTANCE_NAME" FormatMask="" Heading="Instance Name" Hidden="False" Id="251134" MaxDataWidth="240" MaxDisplayWidth="" Name="Instance Name" Nullable="True" Placement="XAxis" Sequence="1" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Domain" Type="Domain">
+<UniqueIdent ConstraintName="DOM1" DeveloperKey="ICM_INSTANCE_NAME"/>
+<UniqueIdent ConstraintName="DOM2" Name="ICM Instance Name"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="ICM_INSTANCE_NAME_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Instance Name"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+</CustomObject>
+<CustomObject CBOHint="" CustomSQL="-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                      Oracle/Office Depot                          |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  : OD_ICM_PARENT_PROCESS_LOV                                 |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Discoverer Reports.|&#x000d;&#x000a;-- |              Selects only &apos;Parent&apos; Processes for the parameter     |&#x000d;&#x000a;-- |             &apos;Process Name&apos;.                                       |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  M.Gautier        Initial version            |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;SELECT DISTINCT apn1.display_name &quot;Parent Process&quot;&#x000d;&#x000a;FROM        amw.AMW_APPROVED_HIERARCHIES aah,&#x000d;&#x000a;                amw.AMW_PROCESS amp1,&#x000d;&#x000a;                amw.AMW_PROCESS_NAMES_TL apn1,&#x000d;&#x000a;                amw.AMW_PROCESS amp2,&#x000d;&#x000a;                amw.AMW_PROCESS_NAMES_TL apn2&#x000d;&#x000a;WHERE   amp1.process_id = aah.parent_id&#x000d;&#x000a;             AND   amp2.process_id = aah.child_id&#x000d;&#x000a;             AND   amp1.process_rev_id  = apn1.process_rev_id&#x000d;&#x000a;             AND   amp2.process_rev_id  = apn2.process_rev_id&#x000d;&#x000a;             AND   aah.end_date IS NULL&#x000d;&#x000a;             AND   amp1.end_date IS NULL&#x000d;&#x000a;             AND   amp1.approval_status = &apos;A&apos;&#x000d;&#x000a;             AND   amp2.end_date IS NULL&#x000d;&#x000a;             AND   amp2.approval_status = &apos;A&apos;&#x000d;&#x000a;             AND   apn1.language = userenv(&apos;LANG&apos;)&#x000d;&#x000a;             AND   apn2.language = userenv(&apos;LANG&apos;)" Description="OD ICM Parent Process LOV" DeveloperKey="ICM_PARENT_PROCESS" DeveloperKeyFrozen="False" DistinctFlag="False" ExternalDatabaseLink="" ExternalObjectName="" ExternalObjectOwner="" Hidden="False" Id="251018" Name="OD ICM Parent Process" NonDeterministic="False" SQL="( SELECT &quot;Parent Process&quot; AS i251153 FROM (-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                      Oracle/Office Depot                          |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  : OD_ICM_PARENT_PROCESS_LOV                                 |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Discoverer Reports.|&#x000d;&#x000a;-- |              Selects only &apos;Parent&apos; Processes for the parameter     |&#x000d;&#x000a;-- |             &apos;Process Name&apos;.                                       |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  M.Gautier        Initial version            |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;SELECT DISTINCT apn1.display_name &quot;Parent Process&quot;&#x000d;&#x000a;FROM        amw.AMW_APPROVED_HIERARCHIES aah,&#x000d;&#x000a;                amw.AMW_PROCESS amp1,&#x000d;&#x000a;                amw.AMW_PROCESS_NAMES_TL apn1,&#x000d;&#x000a;                amw.AMW_PROCESS amp2,&#x000d;&#x000a;                amw.AMW_PROCESS_NAMES_TL apn2&#x000d;&#x000a;WHERE   amp1.process_id = aah.parent_id&#x000d;&#x000a;             AND   amp2.process_id = aah.child_id&#x000d;&#x000a;             AND   amp1.process_rev_id  = apn1.process_rev_id&#x000d;&#x000a;             AND   amp2.process_rev_id  = apn2.process_rev_id&#x000d;&#x000a;             AND   aah.end_date IS NULL&#x000d;&#x000a;             AND   amp1.end_date IS NULL&#x000d;&#x000a;             AND   amp1.approval_status = &apos;A&apos;&#x000d;&#x000a;             AND   amp2.end_date IS NULL&#x000d;&#x000a;             AND   amp2.approval_status = &apos;A&apos;&#x000d;&#x000a;             AND   apn1.language = userenv(&apos;LANG&apos;)&#x000d;&#x000a;             AND   apn2.language = userenv(&apos;LANG&apos;)) CUO251018 )" UserProperty1="" UserProperty2="">
+<ColumnItem Alignment="Default" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="PARENT_PROCESS" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="Parent Process" FormatMask="" Heading="Parent Process" Hidden="False" Id="251153" MaxDataWidth="80" MaxDisplayWidth="" Name="Parent Process" Nullable="True" Placement="XAxis" Sequence="1" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Domain" Type="Domain">
+<UniqueIdent ConstraintName="DOM1" DeveloperKey="ICM_PARENT_PROCESS_NAME"/>
+<UniqueIdent ConstraintName="DOM2" Name="ICM Parent Process Name"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="ICM_PARENT_PROCESS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Parent Process"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+</CustomObject>
+<CustomObject CBOHint="" CustomSQL="-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                       Oracle/Office Depot                         |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  :  xxap.OD_ICM_ASSIGNED_TO_LOV                              |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Findings Tracking  |&#x000d;&#x000a;-- |              Discoverer Report.                                   |&#x000d;&#x000a;-- |              Selects Assignee Name for the parameter              |&#x000d;&#x000a;-- |              &apos;Assigned to&apos;.                                    |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  M.Gautier        Initial version            |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- +===================================================================+                                                                  |&#x000d;&#x000a;select  DISTINCT hzp.party_name &quot;Assigned To&quot;&#x000d;&#x000a;from    ar.HZ_PARTIES hzp, &#x000d;&#x000a;       eng.eng_engineering_changes eec&#x000d;&#x000a;where eec.assignee_id = hzp.party_id&#x000d;&#x000a;and hzp.status = &apos;A&apos;" Description="OD ICM Assigned To LOV" DeveloperKey="OD_ICM_ASSIGNED_TO_LOV" DeveloperKeyFrozen="False" DistinctFlag="False" ExternalDatabaseLink="" ExternalObjectName="" ExternalObjectOwner="" Hidden="False" Id="251022" Name="OD ICM Assigned To" NonDeterministic="False" SQL="( SELECT &quot;Assigned To&quot; AS i251097 FROM (-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                       Oracle/Office Depot                         |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  :  xxap.OD_ICM_ASSIGNED_TO_LOV                              |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Findings Tracking  |&#x000d;&#x000a;-- |              Discoverer Report.                                   |&#x000d;&#x000a;-- |              Selects Assignee Name for the parameter              |&#x000d;&#x000a;-- |              &apos;Assigned to&apos;.                                    |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  M.Gautier        Initial version            |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- +===================================================================+                                                                  |&#x000d;&#x000a;select  DISTINCT hzp.party_name &quot;Assigned To&quot;&#x000d;&#x000a;from    ar.HZ_PARTIES hzp, &#x000d;&#x000a;       eng.eng_engineering_changes eec&#x000d;&#x000a;where eec.assignee_id = hzp.party_id&#x000d;&#x000a;and hzp.status = &apos;A&apos;) CUO251022 )" UserProperty1="" UserProperty2="">
+<ColumnItem Alignment="Default" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="ASSIGNED_TO" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="Assigned To" FormatMask="" Heading="Assigned To" Hidden="False" Id="251097" MaxDataWidth="360" MaxDisplayWidth="" Name="Assigned To" Nullable="False" Placement="XAxis" Sequence="1" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Domain" Type="Domain">
+<UniqueIdent ConstraintName="DOM1" DeveloperKey="ICM_ASSIGNED_TO"/>
+<UniqueIdent ConstraintName="DOM2" Name="ICM Assigned To"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_ASSIGNED_TO_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Assigned To"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+</CustomObject>
+<CustomObject CBOHint="" CustomSQL="-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                       Oracle/Office Depot                         |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  :  xxap.OD_ICM_CONTROL_OWNER_LOV                            |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Discoverer Reports.|&#x000d;&#x000a;-- |              Selects Control Owner name for the parameter         |&#x000d;&#x000a;-- |              &apos;Control Owner&apos;.                                     |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- | 1.0      13-SEP-2006  M.Gautier        Initial version            |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |&#x000d;&#x000a;-- +===================================================================+                                                                  |&#x000d;&#x000a;SELECT  DISTINCT act.physical_evidence  &quot;Control Owner&quot;&#x000d;&#x000a; FROM   amw.amw_control_associations aca,&#x000d;&#x000a;      amw.AMW_CONTROLS_B  acb,&#x000d;&#x000a;        amw.AMW_CONTROLS_TL act&#x000d;&#x000a;WHERE   acb.control_id = aca.control_id&#x000d;&#x000a;  AND act.physical_evidence is not null&#x000d;&#x000a;  AND act.language = userenv(&apos;LANG&apos;)" Description="OD ICM Control Owner LOV" DeveloperKey="OD_ICM_CONTROL_OWNER_LOV" DeveloperKeyFrozen="False" DistinctFlag="False" ExternalDatabaseLink="" ExternalObjectName="" ExternalObjectOwner="" Hidden="False" Id="251025" Name="OD ICM Control Owner" NonDeterministic="False" SQL="( SELECT &quot;Control Owner&quot; AS i251118 FROM (-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                       Oracle/Office Depot                         |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  :  xxap.OD_ICM_CONTROL_OWNER_LOV                            |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Discoverer Reports.|&#x000d;&#x000a;-- |              Selects Control Owner name for the parameter         |&#x000d;&#x000a;-- |              &apos;Control Owner&apos;.                                     |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- | 1.0      13-SEP-2006  M.Gautier        Initial version            |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |&#x000d;&#x000a;-- +===================================================================+                                                                  |&#x000d;&#x000a;SELECT  DISTINCT act.physical_evidence  &quot;Control Owner&quot;&#x000d;&#x000a; FROM   amw.amw_control_associations aca,&#x000d;&#x000a;      amw.AMW_CONTROLS_B  acb,&#x000d;&#x000a;        amw.AMW_CONTROLS_TL act&#x000d;&#x000a;WHERE   acb.control_id = aca.control_id&#x000d;&#x000a;  AND act.physical_evidence is not null&#x000d;&#x000a;  AND act.language = userenv(&apos;LANG&apos;)) CUO251025 )" UserProperty1="" UserProperty2="">
+<ColumnItem Alignment="Default" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="CONTROL_OWNER" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="Control Owner" FormatMask="" Heading="Control Owner" Hidden="False" Id="251118" MaxDataWidth="240" MaxDisplayWidth="" Name="Control Owner" Nullable="True" Placement="XAxis" Sequence="1" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Domain" Type="Domain">
+<UniqueIdent ConstraintName="DOM1" DeveloperKey="ICM_CONTROL_ONWER"/>
+<UniqueIdent ConstraintName="DOM2" Name="ICM Control Onwer"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_CONTROL_OWNER_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Control Owner"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+</CustomObject>
+<CustomObject CBOHint="" CustomSQL="-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                       Oracle/Office Depot                         |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  :  xxap.OD_ICM_ENGAGEMENT_NAME_LOV                              |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Discoverer Reports.|&#x000d;&#x000a;-- |              Selects Engagement name for the parameter            |&#x000d;&#x000a;-- |              &apos;Engagement&apos;.                                        |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  M.Gautier        Initial version            |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;SELECT DISTINCT apt.name &quot;Engagement&quot;&#x000d;&#x000a;  FROM      amw.AMW_AUDIT_PROJECTS_TL apt,&#x000d;&#x000a;          amw.AMW_AUDIT_PROJECTS apr&#x000d;&#x000a;WHERE       apt.audit_project_id = apr.audit_project_id&#x000d;&#x000a;     AND    NVL(apr.template_flag, &apos;N&apos;) = &apos;N&apos;&#x000d;&#x000a;     AND    SUBSTR(apr.audit_project_status, 1, 1) = &apos;A&apos;" Description="OD ICM Engagement Name LOV" DeveloperKey="OD_ICM_ENGAGEMENT_NAME_LOV" DeveloperKeyFrozen="False" DistinctFlag="False" ExternalDatabaseLink="" ExternalObjectName="" ExternalObjectOwner="" Hidden="False" Id="251028" Name="OD ICM Engagement Name" NonDeterministic="False" SQL="( SELECT &quot;Engagement&quot; AS i251124 FROM (-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                       Oracle/Office Depot                         |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  :  xxap.OD_ICM_ENGAGEMENT_NAME_LOV                              |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Discoverer Reports.|&#x000d;&#x000a;-- |              Selects Engagement name for the parameter            |&#x000d;&#x000a;-- |              &apos;Engagement&apos;.                                        |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  M.Gautier        Initial version            |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;SELECT DISTINCT apt.name &quot;Engagement&quot;&#x000d;&#x000a;  FROM      amw.AMW_AUDIT_PROJECTS_TL apt,&#x000d;&#x000a;          amw.AMW_AUDIT_PROJECTS apr&#x000d;&#x000a;WHERE       apt.audit_project_id = apr.audit_project_id&#x000d;&#x000a;     AND    NVL(apr.template_flag, &apos;N&apos;) = &apos;N&apos;&#x000d;&#x000a;     AND    SUBSTR(apr.audit_project_status, 1, 1) = &apos;A&apos;) CUO251028 )" UserProperty1="" UserProperty2="">
+<ColumnItem Alignment="Default" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="ENGAGEMENT" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="Engagement" FormatMask="" Heading="Engagement" Hidden="False" Id="251124" MaxDataWidth="80" MaxDisplayWidth="" Name="Engagement" Nullable="True" Placement="XAxis" Sequence="1" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Domain" Type="Domain">
+<UniqueIdent ConstraintName="DOM1" DeveloperKey="OD_ICM_ENGAGEMENT"/>
+<UniqueIdent ConstraintName="DOM2" Name="ICM Engagement"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_ENGAGEMENT_NAME_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Engagement Name"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+</CustomObject>
+<CustomObject CBOHint="" CustomSQL="-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                       Oracle/Office Depot                         |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  :  xxap.OD_ICM_KEY_USER_LOV                                 |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Discoverer Reports.|&#x000d;&#x000a;-- |              Selects Key User name for the parameter              |&#x000d;&#x000a;-- |              &apos;Key User&apos;.                                          |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  M.Gautier        Initial version            |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |&#x000d;&#x000a;-- +===================================================================+                                                                  |&#x000d;&#x000a;SELECT  DISTINCT act.verification_source_name &quot;Key User&quot;&#x000d;&#x000a; FROM   amw.amw_control_associations aca,&#x000d;&#x000a;      amw.AMW_CONTROLS_B  acb,&#x000d;&#x000a;        amw.AMW_CONTROLS_TL act&#x000d;&#x000a;WHERE   acb.control_id = aca.control_id&#x000d;&#x000a;  AND act.verification_source_name IS NOT NULL&#x000d;&#x000a;  AND act.language = userenv(&apos;LANG&apos;)" Description="OD ICM Key User" DeveloperKey="OD_ICM_KEY_USER_LOV" DeveloperKeyFrozen="False" DistinctFlag="False" ExternalDatabaseLink="" ExternalObjectName="" ExternalObjectOwner="" Hidden="False" Id="251031" Name="OD ICM Key User" NonDeterministic="False" SQL="( SELECT &quot;Key User&quot; AS i251138 FROM (-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                       Oracle/Office Depot                         |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  :  xxap.OD_ICM_KEY_USER_LOV                                 |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Discoverer Reports.|&#x000d;&#x000a;-- |              Selects Key User name for the parameter              |&#x000d;&#x000a;-- |              &apos;Key User&apos;.                                          |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  M.Gautier        Initial version            |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |&#x000d;&#x000a;-- +===================================================================+                                                                  |&#x000d;&#x000a;SELECT  DISTINCT act.verification_source_name &quot;Key User&quot;&#x000d;&#x000a; FROM   amw.amw_control_associations aca,&#x000d;&#x000a;      amw.AMW_CONTROLS_B  acb,&#x000d;&#x000a;        amw.AMW_CONTROLS_TL act&#x000d;&#x000a;WHERE   acb.control_id = aca.control_id&#x000d;&#x000a;  AND act.verification_source_name IS NOT NULL&#x000d;&#x000a;  AND act.language = userenv(&apos;LANG&apos;)) CUO251031 )" UserProperty1="" UserProperty2="">
+<ColumnItem Alignment="Default" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="KEY_USER" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="Key User" FormatMask="" Heading="Key User" Hidden="False" Id="251138" MaxDataWidth="240" MaxDisplayWidth="" Name="Key User" Nullable="True" Placement="XAxis" Sequence="1" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Domain" Type="Domain">
+<UniqueIdent ConstraintName="DOM1" DeveloperKey="ICM_KEY_USER"/>
+<UniqueIdent ConstraintName="DOM2" Name="ICM Key User"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_KEY_USER_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Key User"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+</CustomObject>
+<CustomObject CBOHint="" CustomSQL="-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                      Oracle/Office Depot                          |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  : OD_ICM_NEED_BY_DATE_LOV                                   |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Discoverer Findings| &#x000d;&#x000a;-- |              Tracking Report.                                     |&#x000d;&#x000a;-- |              Selects Need by Date value for the parameter         |&#x000d;&#x000a;-- |             &apos;Need by Date&apos;.                                       |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  M.Gautier        Initial version            |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;SELECT DISTINCT TO_CHAR(eec.need_by_date, &apos;DD-MON-YYYY&apos;)  &quot;Need By Date&quot;&#x000d;&#x000a;FROM            eng.eng_engineering_changes eec,&#x000d;&#x000a;                eng.eng_change_subjects esb&#x000d;&#x000a;WHERE esb.change_id = eec.change_id&#x000d;&#x000a; -- and esb.entity_name = &apos;PROJ_ORG_AP_STEP&apos;&#x000d;&#x000a;  and eec.change_mgmt_type_code = &apos;AMW_PROJ_FINDING&apos;&#x000d;&#x000a;  and eec.need_by_date is not null&#x000d;&#x000a;  and    esb.subject_level = 1&#x000d;&#x000a;  and    eec.organization_id = -1" Description="OD ICM Need by Date LOV" DeveloperKey="OD_ICM_NEED_BY_DATE_LOV" DeveloperKeyFrozen="False" DistinctFlag="False" ExternalDatabaseLink="" ExternalObjectName="" ExternalObjectOwner="" Hidden="False" Id="251034" Name="OD ICM Need by Date" NonDeterministic="False" SQL="( SELECT &quot;Need By Date&quot; AS i251142 FROM (-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                      Oracle/Office Depot                          |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  : OD_ICM_NEED_BY_DATE_LOV                                   |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Discoverer Findings| &#x000d;&#x000a;-- |              Tracking Report.                                     |&#x000d;&#x000a;-- |              Selects Need by Date value for the parameter         |&#x000d;&#x000a;-- |             &apos;Need by Date&apos;.                                       |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  M.Gautier        Initial version            |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;SELECT DISTINCT TO_CHAR(eec.need_by_date, &apos;DD-MON-YYYY&apos;)  &quot;Need By Date&quot;&#x000d;&#x000a;FROM            eng.eng_engineering_changes eec,&#x000d;&#x000a;                eng.eng_change_subjects esb&#x000d;&#x000a;WHERE esb.change_id = eec.change_id&#x000d;&#x000a; -- and esb.entity_name = &apos;PROJ_ORG_AP_STEP&apos;&#x000d;&#x000a;  and eec.change_mgmt_type_code = &apos;AMW_PROJ_FINDING&apos;&#x000d;&#x000a;  and eec.need_by_date is not null&#x000d;&#x000a;  and    esb.subject_level = 1&#x000d;&#x000a;  and    eec.organization_id = -1) CUO251034 )" UserProperty1="" UserProperty2="">
+<ColumnItem Alignment="Default" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="NEED_BY_DATE" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="Need By Date" FormatMask="" Heading="Need By Date" Hidden="False" Id="251142" MaxDataWidth="17" MaxDisplayWidth="" Name="Need By Date" Nullable="True" Placement="XAxis" Sequence="1" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Domain" Type="Domain">
+<UniqueIdent ConstraintName="DOM1" DeveloperKey="ICM_NEED_BY_DATE"/>
+<UniqueIdent ConstraintName="DOM2" Name="ICM Need By Date"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_NEED_BY_DATE_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Need by Date"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+</CustomObject>
+<CustomObject CBOHint="" CustomSQL="-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                       Oracle/Office Depot                         |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  :  xxap.OD_ICM_ORG_NAME_LOV                                 |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Discoverer Reports.|&#x000d;&#x000a;-- |              Selects Organization name for the parameter          |&#x000d;&#x000a;-- |              &apos;Organizaion&apos;.                                       |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  M.Gautier        Initial version            |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;SELECT DISTINCT name &quot;Organization&quot;&#x000d;&#x000a;FROM apps.amw_audit_units_v" Description="OD ICM Organization Name LOV" DeveloperKey="OD_ICM_ORGANIZATION_NAME_LOV" DeveloperKeyFrozen="False" DistinctFlag="False" ExternalDatabaseLink="" ExternalObjectName="" ExternalObjectOwner="" Hidden="False" Id="251037" Name="OD ICM Organization Name" NonDeterministic="False" SQL="( SELECT &quot;Organization&quot; AS i251147 FROM (-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                       Oracle/Office Depot                         |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  :  xxap.OD_ICM_ORG_NAME_LOV                                 |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Discoverer Reports.|&#x000d;&#x000a;-- |              Selects Organization name for the parameter          |&#x000d;&#x000a;-- |              &apos;Organizaion&apos;.                                       |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  M.Gautier        Initial version            |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;SELECT DISTINCT name &quot;Organization&quot;&#x000d;&#x000a;FROM apps.amw_audit_units_v) CUO251037 )" UserProperty1="" UserProperty2="">
+<ColumnItem Alignment="Default" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="ORGANIZATION" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="Organization" FormatMask="" Heading="Organization" Hidden="False" Id="251147" MaxDataWidth="240" MaxDisplayWidth="" Name="Organization" Nullable="False" Placement="XAxis" Sequence="1" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Domain" Type="Domain">
+<UniqueIdent ConstraintName="DOM1" DeveloperKey="_ICM_ORGANIZATION_NAME"/>
+<UniqueIdent ConstraintName="DOM2" Name="ICM Organization Name"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_ORGANIZATION_NAME_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Organization Name"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+</CustomObject>
+<CustomObject CBOHint="" CustomSQL="-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                      Oracle/Office Depot                          |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  : OD_ICM_PROCESS_NAME_LOV                                   |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Discoverer Reports.|&#x000d;&#x000a;-- |              Selects only &apos;Child&apos; Processes for the parameter     |&#x000d;&#x000a;-- |             &apos;Process Name&apos;.                                       |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  M.Gautier        Initial version            |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;SELECT DISTINCT apn2.display_name &quot;Process Name&quot;&#x000d;&#x000a;FROM            amw.AMW_AUDIT_SCOPE_PROCESSES asp,&#x000d;&#x000a;       amw.AMW_APPROVED_HIERARCHIES aah,&#x000d;&#x000a;                amw.AMW_PROCESS amp1,&#x000d;&#x000a;                amw.AMW_PROCESS_NAMES_TL apn1,&#x000d;&#x000a;                amw.AMW_PROCESS amp2,&#x000d;&#x000a;                amw.AMW_PROCESS_NAMES_TL apn2&#x000d;&#x000a;WHERE         amp1.process_id = aah.parent_id&#x000d;&#x000a;             AND   amp2.process_id = aah.child_id&#x000d;&#x000a;             AND   amp1.process_rev_id  = apn1.process_rev_id&#x000d;&#x000a;             AND   amp2.process_rev_id  = apn2.process_rev_id&#x000d;&#x000a;             AND   aah.end_date IS NULL&#x000d;&#x000a;             AND   amp1.end_date IS NULL&#x000d;&#x000a;             AND   amp1.approval_status = &apos;A&apos;&#x000d;&#x000a;             AND   amp2.end_date IS NULL&#x000d;&#x000a;             AND   amp2.approval_status = &apos;A&apos;&#x000d;&#x000a;             AND   apn1.language = userenv(&apos;LANG&apos;)&#x000d;&#x000a;             AND   apn2.language = userenv(&apos;LANG&apos;)&#x000d;&#x000a;             AND   aah.organization_id =  asp.organization_id&#x000d;&#x000a;             AND   amp2.process_id  = asp.process_id" Description="OD ICM Process Name LOV" DeveloperKey="OD_ICM_PROCESS_NAME_LOV" DeveloperKeyFrozen="False" DistinctFlag="False" ExternalDatabaseLink="" ExternalObjectName="" ExternalObjectOwner="" Hidden="False" Id="251040" Name="OD ICM Process Name" NonDeterministic="False" SQL="( SELECT &quot;Process Name&quot; AS i251159 FROM (-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                      Oracle/Office Depot                          |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  : OD_ICM_PROCESS_NAME_LOV                                   |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Discoverer Reports.|&#x000d;&#x000a;-- |              Selects only &apos;Child&apos; Processes for the parameter     |&#x000d;&#x000a;-- |             &apos;Process Name&apos;.                                       |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  M.Gautier        Initial version            |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;SELECT DISTINCT apn2.display_name &quot;Process Name&quot;&#x000d;&#x000a;FROM            amw.AMW_AUDIT_SCOPE_PROCESSES asp,&#x000d;&#x000a;       amw.AMW_APPROVED_HIERARCHIES aah,&#x000d;&#x000a;                amw.AMW_PROCESS amp1,&#x000d;&#x000a;                amw.AMW_PROCESS_NAMES_TL apn1,&#x000d;&#x000a;                amw.AMW_PROCESS amp2,&#x000d;&#x000a;                amw.AMW_PROCESS_NAMES_TL apn2&#x000d;&#x000a;WHERE         amp1.process_id = aah.parent_id&#x000d;&#x000a;             AND   amp2.process_id = aah.child_id&#x000d;&#x000a;             AND   amp1.process_rev_id  = apn1.process_rev_id&#x000d;&#x000a;             AND   amp2.process_rev_id  = apn2.process_rev_id&#x000d;&#x000a;             AND   aah.end_date IS NULL&#x000d;&#x000a;             AND   amp1.end_date IS NULL&#x000d;&#x000a;             AND   amp1.approval_status = &apos;A&apos;&#x000d;&#x000a;             AND   amp2.end_date IS NULL&#x000d;&#x000a;             AND   amp2.approval_status = &apos;A&apos;&#x000d;&#x000a;             AND   apn1.language = userenv(&apos;LANG&apos;)&#x000d;&#x000a;             AND   apn2.language = userenv(&apos;LANG&apos;)&#x000d;&#x000a;             AND   aah.organization_id =  asp.organization_id&#x000d;&#x000a;             AND   amp2.process_id  = asp.process_id) CUO251040 )" UserProperty1="" UserProperty2="">
+<ColumnItem Alignment="Default" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="PROCESS_NAME" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="Process Name" FormatMask="" Heading="Process Name" Hidden="False" Id="251159" MaxDataWidth="80" MaxDisplayWidth="" Name="Process Name" Nullable="True" Placement="XAxis" Sequence="1" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Domain" Type="Domain">
+<UniqueIdent ConstraintName="DOM1" DeveloperKey="ICM_PROCEES_NAME"/>
+<UniqueIdent ConstraintName="DOM2" Name="ICM Procees Name"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_PROCESS_NAME_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Process Name"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+</CustomObject>
+<CustomObject CBOHint="" CustomSQL="-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                      Oracle/Office Depot                          |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  : OD_ICM_REASON_LOV                                         |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Discoverer Findings|&#x000d;&#x000a;-- |              Tracking Report.                                     |&#x000d;&#x000a;-- |              Selects Reason Code for the parameter                |&#x000d;&#x000a;-- |             &apos;Reason&apos;.                                             |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  M.Gautier        Initial version            |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;SELECT DISTINCT eec.reason_code  &quot;Reason&quot;&#x000d;&#x000a;from eng.eng_engineering_changes eec&#x000d;&#x000a;where eec.change_mgmt_type_code = &apos;AMW_PROJ_FINDING&apos;" Description="OD ICM Reason LOV" DeveloperKey="OD_ICM_REASON_LOV" DeveloperKeyFrozen="False" DistinctFlag="False" ExternalDatabaseLink="" ExternalObjectName="" ExternalObjectOwner="" Hidden="False" Id="251044" Name="OD ICM Reason" NonDeterministic="False" SQL="( SELECT &quot;Reason&quot; AS i251161 FROM (-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                      Oracle/Office Depot                          |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  : OD_ICM_REASON_LOV                                         |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Discoverer Findings|&#x000d;&#x000a;-- |              Tracking Report.                                     |&#x000d;&#x000a;-- |              Selects Reason Code for the parameter                |&#x000d;&#x000a;-- |             &apos;Reason&apos;.                                             |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  M.Gautier        Initial version            |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;SELECT DISTINCT eec.reason_code  &quot;Reason&quot;&#x000d;&#x000a;from eng.eng_engineering_changes eec&#x000d;&#x000a;where eec.change_mgmt_type_code = &apos;AMW_PROJ_FINDING&apos;) CUO251044 )" UserProperty1="" UserProperty2="">
+<ColumnItem Alignment="Default" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="REASON" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="Reason" FormatMask="" Heading="Reason" Hidden="False" Id="251161" MaxDataWidth="10" MaxDisplayWidth="" Name="Reason" Nullable="True" Placement="XAxis" Sequence="1" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Domain" Type="Domain">
+<UniqueIdent ConstraintName="DOM1" DeveloperKey="ICM_REASON"/>
+<UniqueIdent ConstraintName="DOM2" Name="ICM Reason"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_REASON_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Reason"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+</CustomObject>
+<CustomObject CBOHint="" CustomSQL="-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                      Oracle/Office Depot                          |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  : OD_ICM_REPORTING_GROUP_NAME_LOV                                   |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Discoverer Reports.|&#x000d;&#x000a;-- |              Selects only the namesof the Reporting Group&apos;s That are Active|&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  R.Kundavaram        Initial version         |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;Select  Distinct RTL.reporting_group_name &quot;Reporting Group Name&quot;&#x000d;&#x000a;From  Apps.ITA_SETUP_RPT_GROUPS_B RB,&#x000d;&#x000a;      Apps.ITA_SETUP_RPT_GROUPS_TL RTL&#x000d;&#x000a;Where RB.instance_code = RTL.instance_code&#x000d;&#x000a;And   RB.reporting_group_id = RTL.reporting_group_id &#x000d;&#x000a;And   RTL.LANGUAGE = userenv(&apos;LANG&apos;)&#x000d;&#x000a;And   RB.end_date &gt; = sysdate" Description="OD ICM Reporting Group Name LOV" DeveloperKey="OD_ICM_REPORTING_GROUP_NAME_LOV" DeveloperKeyFrozen="False" DistinctFlag="False" ExternalDatabaseLink="" ExternalObjectName="" ExternalObjectOwner="" Hidden="False" Id="251047" Name="OD ICM Reporting Group Name" NonDeterministic="False" SQL="( SELECT &quot;Reporting Group Name&quot; AS i251164 FROM (-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                      Oracle/Office Depot                          |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  : OD_ICM_REPORTING_GROUP_NAME_LOV                                   |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Discoverer Reports.|&#x000d;&#x000a;-- |              Selects only the namesof the Reporting Group&apos;s That are Active|&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  R.Kundavaram        Initial version         |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;Select  Distinct RTL.reporting_group_name &quot;Reporting Group Name&quot;&#x000d;&#x000a;From  Apps.ITA_SETUP_RPT_GROUPS_B RB,&#x000d;&#x000a;      Apps.ITA_SETUP_RPT_GROUPS_TL RTL&#x000d;&#x000a;Where RB.instance_code = RTL.instance_code&#x000d;&#x000a;And   RB.reporting_group_id = RTL.reporting_group_id &#x000d;&#x000a;And   RTL.LANGUAGE = userenv(&apos;LANG&apos;)&#x000d;&#x000a;And   RB.end_date &gt; = sysdate) CUO251047 )" UserProperty1="" UserProperty2="">
+<ColumnItem Alignment="Default" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="REPORTING_GROUP_NAME" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="Reporting Group Name" FormatMask="" Heading="Reporting Group Name" Hidden="False" Id="251164" MaxDataWidth="240" MaxDisplayWidth="" Name="Reporting Group Name" Nullable="True" Placement="XAxis" Sequence="1" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Domain" Type="Domain">
+<UniqueIdent ConstraintName="DOM1" DeveloperKey="ICM_REPORTING_GROUP_NAME"/>
+<UniqueIdent ConstraintName="DOM2" Name="ICM Reporting Group Name"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_REPORTING_GROUP_NAME_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Reporting Group Name"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+</CustomObject>
+<CustomObject CBOHint="" CustomSQL="-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                       Oracle/Office Depot                         |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  :  xxap.OD_ICM_REQUESTOR_LOV                                |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Findings Tracking  |&#x000d;&#x000a;-- |              Discoverer Report.                                   |&#x000d;&#x000a;-- |              Selects Requestor Name for the parameter   |&#x000d;&#x000a;-- |              &apos;Vice President&apos;.                                    |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  M.Gautier        Initial version            |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- +===================================================================+                                                                  |&#x000d;&#x000a;select  DISTINCT hzp.party_name &quot;Requestor&quot;&#x000d;&#x000a;from    ar.HZ_PARTIES hzp, &#x000d;&#x000a;       eng.eng_engineering_changes eec&#x000d;&#x000a;where eec.requestor_id = hzp.party_id&#x000d;&#x000a;and hzp.status = &apos;A&apos;" Description="OD ICM Requestor LOV" DeveloperKey="OD_ICM_REQUESTOR_LOV" DeveloperKeyFrozen="False" DistinctFlag="False" ExternalDatabaseLink="" ExternalObjectName="" ExternalObjectOwner="" Hidden="False" Id="251050" Name="OD ICM Requestor" NonDeterministic="False" SQL="( SELECT &quot;Requestor&quot; AS i251166 FROM (-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                       Oracle/Office Depot                         |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  :  xxap.OD_ICM_REQUESTOR_LOV                                |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Findings Tracking  |&#x000d;&#x000a;-- |              Discoverer Report.                                   |&#x000d;&#x000a;-- |              Selects Requestor Name for the parameter   |&#x000d;&#x000a;-- |              &apos;Vice President&apos;.                                    |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  M.Gautier        Initial version            |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- +===================================================================+                                                                  |&#x000d;&#x000a;select  DISTINCT hzp.party_name &quot;Requestor&quot;&#x000d;&#x000a;from    ar.HZ_PARTIES hzp, &#x000d;&#x000a;       eng.eng_engineering_changes eec&#x000d;&#x000a;where eec.requestor_id = hzp.party_id&#x000d;&#x000a;and hzp.status = &apos;A&apos;) CUO251050 )" UserProperty1="" UserProperty2="">
+<ColumnItem Alignment="Default" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="REQUESTOR" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="Requestor" FormatMask="" Heading="Requestor" Hidden="False" Id="251166" MaxDataWidth="360" MaxDisplayWidth="" Name="Requestor" Nullable="False" Placement="XAxis" Sequence="1" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Domain" Type="Domain">
+<UniqueIdent ConstraintName="DOM1" DeveloperKey="ICM_REQUESTOR_"/>
+<UniqueIdent ConstraintName="DOM2" Name="ICM Requestor "/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_REQUESTOR_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Requestor"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+</CustomObject>
+<CustomObject CBOHint="" CustomSQL="-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                      Oracle/Office Depot                          |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  : OD_ICM_SETUP_GROUP_NAME_LOV                                   |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Discoverer Reports.|&#x000d;&#x000a;-- |              Selects only the names of the Setup&apos;s Group&apos;s That are Active|&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  R.Kundavaram        Initial version         |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;select  Distinct STL.setup_group_name &quot;Setup Group&quot;&#x000d;&#x000a;from    Apps.ITA_SETUP_GROUPS_B SB,&#x000d;&#x000a;        Apps.ITA_SETUP_GROUPS_TL STL&#x000d;&#x000a;Where   SB.setup_group_code = STL.setup_group_code&#x000d;&#x000a;And     STL.LANGUAGE = userenv(&apos;LANG&apos;)" Description="OD ICM Setup Group Name LOV" DeveloperKey="OD_ICM_SETUP_GROUP_NAME_LOV" DeveloperKeyFrozen="False" DistinctFlag="False" ExternalDatabaseLink="" ExternalObjectName="" ExternalObjectOwner="" Hidden="False" Id="251053" Name="OD ICM Setup Group Name" NonDeterministic="False" SQL="( SELECT &quot;Setup Group&quot; AS i251174 FROM (-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                      Oracle/Office Depot                          |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  : OD_ICM_SETUP_GROUP_NAME_LOV                                   |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Discoverer Reports.|&#x000d;&#x000a;-- |              Selects only the names of the Setup&apos;s Group&apos;s That are Active|&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  R.Kundavaram        Initial version         |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;select  Distinct STL.setup_group_name &quot;Setup Group&quot;&#x000d;&#x000a;from    Apps.ITA_SETUP_GROUPS_B SB,&#x000d;&#x000a;        Apps.ITA_SETUP_GROUPS_TL STL&#x000d;&#x000a;Where   SB.setup_group_code = STL.setup_group_code&#x000d;&#x000a;And     STL.LANGUAGE = userenv(&apos;LANG&apos;)) CUO251053 )" UserProperty1="" UserProperty2="">
+<ColumnItem Alignment="Default" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="SETUP_GROUP" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="Setup Group" FormatMask="" Heading="Setup Group" Hidden="False" Id="251174" MaxDataWidth="240" MaxDisplayWidth="" Name="Setup Group" Nullable="True" Placement="XAxis" Sequence="1" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Domain" Type="Domain">
+<UniqueIdent ConstraintName="DOM1" DeveloperKey="ICM_SETUP_GROUP_NAME"/>
+<UniqueIdent ConstraintName="DOM2" Name="ICM Setup Group Name"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_SETUP_GROUP_NAME_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Setup Group Name"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+</CustomObject>
+<CustomObject CBOHint="" CustomSQL="-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                      Oracle/Office Depot                          |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  : OD_ICM_SETUP_PARAMETER_LOV                                   |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Discoverer Reports.|&#x000d;&#x000a;-- |              Selects only the names of the Setup&apos;s Parameters that |&#x000d;&#x000a;-- |              are  audit enabled                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  R.Kundavaram        Initial version         |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;Select Distinct SPTL.parameter_name &quot;Setup Parameter&quot;&#x000d;&#x000a;From  Apps.ITA_SETUP_PARAMETERS_B SP,&#x000d;&#x000a;      Apps.ITA_SETUP_PARAMETERS_TL SPTL&#x000d;&#x000a;Where SP.parameter_code = SPTL.parameter_code&#x000d;&#x000a;And   SPTL.LANGUAGE = userenv(&apos;LANG&apos;)&#x000d;&#x000a;And   SP.audit_enabled_flag = &apos;Y&apos;" Description="OD ICM Setup  Parameter Name LOV" DeveloperKey="OD_ICM_SETUP_PARAMETER_LOV" DeveloperKeyFrozen="False" DistinctFlag="False" ExternalDatabaseLink="" ExternalObjectName="" ExternalObjectOwner="" Hidden="False" Id="251056" Name="OD ICM Setup  Parameter Name" NonDeterministic="False" SQL="( SELECT &quot;Setup Parameter&quot; AS i251176 FROM (-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                      Oracle/Office Depot                          |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  : OD_ICM_SETUP_PARAMETER_LOV                                   |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Discoverer Reports.|&#x000d;&#x000a;-- |              Selects only the names of the Setup&apos;s Parameters that |&#x000d;&#x000a;-- |              are  audit enabled                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  R.Kundavaram        Initial version         |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;Select Distinct SPTL.parameter_name &quot;Setup Parameter&quot;&#x000d;&#x000a;From  Apps.ITA_SETUP_PARAMETERS_B SP,&#x000d;&#x000a;      Apps.ITA_SETUP_PARAMETERS_TL SPTL&#x000d;&#x000a;Where SP.parameter_code = SPTL.parameter_code&#x000d;&#x000a;And   SPTL.LANGUAGE = userenv(&apos;LANG&apos;)&#x000d;&#x000a;And   SP.audit_enabled_flag = &apos;Y&apos;) CUO251056 )" UserProperty1="" UserProperty2="">
+<ColumnItem Alignment="Default" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="SETUP_PARAMETER" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="Setup Parameter" FormatMask="" Heading="Setup Parameter" Hidden="False" Id="251176" MaxDataWidth="240" MaxDisplayWidth="" Name="Setup Parameter" Nullable="True" Placement="XAxis" Sequence="1" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Domain" Type="Domain">
+<UniqueIdent ConstraintName="DOM1" DeveloperKey="ICM_SETUP_PARAMETER_NAME"/>
+<UniqueIdent ConstraintName="DOM2" Name="ICM Setup Parameter Name"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_SETUP_PARAMETER_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Setup  Parameter Name"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+</CustomObject>
+<CustomObject CBOHint="" CustomSQL="-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                       Oracle/Office Depot                         |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  :  xxap.OD_ICM_VP_NAME_LOV                                  |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Discoverer Reports.|&#x000d;&#x000a;-- |              Selects Vice President Name name for the parameter   |&#x000d;&#x000a;-- |              &apos;Vice President&apos;.                                    |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  M.Gautier        Initial version            |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |&#x000d;&#x000a;-- +===================================================================+                                                                  |&#x000d;&#x000a;SELECT  DISTINCT act.verification_instruction &quot;Vice President&quot;&#x000d;&#x000a; FROM   amw.amw_control_associations aca,&#x000d;&#x000a;      amw.AMW_CONTROLS_B  acb,&#x000d;&#x000a;        amw.AMW_CONTROLS_TL act&#x000d;&#x000a;WHERE   acb.control_id = aca.control_id&#x000d;&#x000a;  AND act.verification_instruction is not null&#x000d;&#x000a;  AND act.language = userenv(&apos;LANG&apos;)" Description="OD ICM Vice President LOV" DeveloperKey="OD_ICM_VICE_PRESIDENT_LOV" DeveloperKeyFrozen="False" DistinctFlag="False" ExternalDatabaseLink="" ExternalObjectName="" ExternalObjectOwner="" Hidden="False" Id="251059" Name="OD ICM Vice President" NonDeterministic="False" SQL="( SELECT &quot;Vice President&quot; AS i251183 FROM (-- +===================================================================+&#x000d;&#x000a;-- |                  Office Depot - Project Simplify                  |&#x000d;&#x000a;-- |                       Oracle/Office Depot                         |&#x000d;&#x000a;-- +===================================================================+&#x000d;&#x000a;-- | Name  :  xxap.OD_ICM_VP_NAME_LOV                                  |&#x000d;&#x000a;-- | Description: List of Values for the Oracle ICM Discoverer Reports.|&#x000d;&#x000a;-- |              Selects Vice President Name name for the parameter   |&#x000d;&#x000a;-- |              &apos;Vice President&apos;.                                    |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |Change Record:                                                     |&#x000d;&#x000a;-- |===============                                                    |&#x000d;&#x000a;-- |Version   Date         Author           Remarks                    |&#x000d;&#x000a;-- |=======   ==========   =============    ===========================|&#x000d;&#x000a;-- |1.0       13-SEP-2006  M.Gautier        Initial version            |&#x000d;&#x000a;-- |                                                                   |&#x000d;&#x000a;-- |&#x000d;&#x000a;-- +===================================================================+                                                                  |&#x000d;&#x000a;SELECT  DISTINCT act.verification_instruction &quot;Vice President&quot;&#x000d;&#x000a; FROM   amw.amw_control_associations aca,&#x000d;&#x000a;      amw.AMW_CONTROLS_B  acb,&#x000d;&#x000a;        amw.AMW_CONTROLS_TL act&#x000d;&#x000a;WHERE   acb.control_id = aca.control_id&#x000d;&#x000a;  AND act.verification_instruction is not null&#x000d;&#x000a;  AND act.language = userenv(&apos;LANG&apos;)) CUO251059 )" UserProperty1="" UserProperty2="">
+<ColumnItem Alignment="Default" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="VICE_PRESIDENT" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="Vice President" FormatMask="" Heading="Vice President" Hidden="False" Id="251183" MaxDataWidth="2000" MaxDisplayWidth="" Name="Vice President" Nullable="True" Placement="XAxis" Sequence="1" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Domain" Type="Domain">
+<UniqueIdent ConstraintName="DOM1" DeveloperKey="ICM_VICE_PRESIDENT"/>
+<UniqueIdent ConstraintName="DOM2" Name="ICM Vice President"/>
+</ElementRef>
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_VICE_PRESIDENT_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Vice President"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+</CustomObject>
+<Domain ArrayFetchSize="100" Cached="True" Cardinality="0" DataType="Varchar" Description="ICM Assigned To" DeveloperKey="ICM_ASSIGNED_TO" DeveloperKeyFrozen="False" FetchFirst="True" Id="251081" LastExecuteTime="0" LogicalItemFlag="False" Name="ICM Assigned To" ShowInItemNavigator="True" SystemGenerated="False" UseDistinctOrderBy="True" UserProperty1="" UserProperty2="">
+<ElementRef Name="ValuesItem" Type="ColumnItem">
+<UniqueIdent ConstraintName="ITE1" DeveloperKey="ASSIGNED_TO">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_ASSIGNED_TO_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Assigned To"/>
+</ElementRef>
+</UniqueIdent>
+<UniqueIdent ConstraintName="ITE2" Name="Assigned To">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_ASSIGNED_TO_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Assigned To"/>
+</ElementRef>
+</UniqueIdent>
+</ElementRef>
+</Domain>
+<Domain ArrayFetchSize="100" Cached="True" Cardinality="0" DataType="Varchar" Description="ICM Control Onwer" DeveloperKey="ICM_CONTROL_ONWER" DeveloperKeyFrozen="False" FetchFirst="True" Id="251082" LastExecuteTime="3" LogicalItemFlag="False" Name="ICM Control Onwer" ShowInItemNavigator="True" SystemGenerated="False" UseDistinctOrderBy="True" UserProperty1="" UserProperty2="">
+<ElementRef Name="ValuesItem" Type="ColumnItem">
+<UniqueIdent ConstraintName="ITE1" DeveloperKey="CONTROL_OWNER">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_CONTROL_OWNER_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Control Owner"/>
+</ElementRef>
+</UniqueIdent>
+<UniqueIdent ConstraintName="ITE2" Name="Control Owner">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_CONTROL_OWNER_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Control Owner"/>
+</ElementRef>
+</UniqueIdent>
+</ElementRef>
+</Domain>
+<Domain ArrayFetchSize="100" Cached="True" Cardinality="0" DataType="Varchar" Description="ICM Instance Name" DeveloperKey="ICM_INSTANCE_NAME" DeveloperKeyFrozen="False" FetchFirst="True" Id="251083" LastExecuteTime="0" LogicalItemFlag="False" Name="ICM Instance Name" ShowInItemNavigator="True" SystemGenerated="False" UseDistinctOrderBy="True" UserProperty1="" UserProperty2="">
+<ElementRef Name="ValuesItem" Type="ColumnItem">
+<UniqueIdent ConstraintName="ITE1" DeveloperKey="INSTANCE_NAME">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="ICM_INSTANCE_NAME_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Instance Name"/>
+</ElementRef>
+</UniqueIdent>
+<UniqueIdent ConstraintName="ITE2" Name="Instance Name">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="ICM_INSTANCE_NAME_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Instance Name"/>
+</ElementRef>
+</UniqueIdent>
+</ElementRef>
+</Domain>
+<Domain ArrayFetchSize="100" Cached="True" Cardinality="0" DataType="Varchar" Description="ICM Key User" DeveloperKey="ICM_KEY_USER" DeveloperKeyFrozen="False" FetchFirst="True" Id="251084" LastExecuteTime="2" LogicalItemFlag="False" Name="ICM Key User" ShowInItemNavigator="True" SystemGenerated="False" UseDistinctOrderBy="True" UserProperty1="" UserProperty2="">
+<ElementRef Name="ValuesItem" Type="ColumnItem">
+<UniqueIdent ConstraintName="ITE1" DeveloperKey="KEY_USER">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_KEY_USER_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Key User"/>
+</ElementRef>
+</UniqueIdent>
+<UniqueIdent ConstraintName="ITE2" Name="Key User">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_KEY_USER_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Key User"/>
+</ElementRef>
+</UniqueIdent>
+</ElementRef>
+</Domain>
+<Domain ArrayFetchSize="100" Cached="True" Cardinality="0" DataType="Varchar" Description="ICM Need By Date" DeveloperKey="ICM_NEED_BY_DATE" DeveloperKeyFrozen="False" FetchFirst="True" Id="251085" LastExecuteTime="0" LogicalItemFlag="False" Name="ICM Need By Date" ShowInItemNavigator="True" SystemGenerated="False" UseDistinctOrderBy="True" UserProperty1="" UserProperty2="">
+<ElementRef Name="ValuesItem" Type="ColumnItem">
+<UniqueIdent ConstraintName="ITE1" DeveloperKey="NEED_BY_DATE">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_NEED_BY_DATE_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Need by Date"/>
+</ElementRef>
+</UniqueIdent>
+<UniqueIdent ConstraintName="ITE2" Name="Need By Date">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_NEED_BY_DATE_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Need by Date"/>
+</ElementRef>
+</UniqueIdent>
+</ElementRef>
+</Domain>
+<Domain ArrayFetchSize="100" Cached="True" Cardinality="0" DataType="Varchar" Description="ICM Parent Process Name" DeveloperKey="ICM_PARENT_PROCESS_NAME" DeveloperKeyFrozen="False" FetchFirst="True" Id="251086" LastExecuteTime="0" LogicalItemFlag="False" Name="ICM Parent Process Name" ShowInItemNavigator="True" SystemGenerated="False" UseDistinctOrderBy="True" UserProperty1="" UserProperty2="">
+<ElementRef Name="ValuesItem" Type="ColumnItem">
+<UniqueIdent ConstraintName="ITE1" DeveloperKey="PARENT_PROCESS">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="ICM_PARENT_PROCESS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Parent Process"/>
+</ElementRef>
+</UniqueIdent>
+<UniqueIdent ConstraintName="ITE2" Name="Parent Process">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="ICM_PARENT_PROCESS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Parent Process"/>
+</ElementRef>
+</UniqueIdent>
+</ElementRef>
+</Domain>
+<Domain ArrayFetchSize="100" Cached="True" Cardinality="0" DataType="Varchar" Description="ICM Child Procees Name" DeveloperKey="ICM_PROCEES_NAME" DeveloperKeyFrozen="False" FetchFirst="True" Id="251087" LastExecuteTime="0" LogicalItemFlag="False" Name="ICM Procees Name" ShowInItemNavigator="True" SystemGenerated="False" UseDistinctOrderBy="True" UserProperty1="" UserProperty2="">
+<ElementRef Name="ValuesItem" Type="ColumnItem">
+<UniqueIdent ConstraintName="ITE1" DeveloperKey="PROCESS_NAME">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_PROCESS_NAME_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Process Name"/>
+</ElementRef>
+</UniqueIdent>
+<UniqueIdent ConstraintName="ITE2" Name="Process Name">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_PROCESS_NAME_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Process Name"/>
+</ElementRef>
+</UniqueIdent>
+</ElementRef>
+</Domain>
+<Domain ArrayFetchSize="100" Cached="True" Cardinality="0" DataType="Varchar" Description="ICM Reason Code" DeveloperKey="ICM_REASON" DeveloperKeyFrozen="False" FetchFirst="True" Id="251088" LastExecuteTime="0" LogicalItemFlag="False" Name="ICM Reason" ShowInItemNavigator="True" SystemGenerated="False" UseDistinctOrderBy="True" UserProperty1="" UserProperty2="">
+<ElementRef Name="ValuesItem" Type="ColumnItem">
+<UniqueIdent ConstraintName="ITE1" DeveloperKey="REASON">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_REASON_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Reason"/>
+</ElementRef>
+</UniqueIdent>
+<UniqueIdent ConstraintName="ITE2" Name="Reason">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_REASON_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Reason"/>
+</ElementRef>
+</UniqueIdent>
+</ElementRef>
+</Domain>
+<Domain ArrayFetchSize="100" Cached="True" Cardinality="0" DataType="Varchar" Description="ICM Reporting Group Name" DeveloperKey="ICM_REPORTING_GROUP_NAME" DeveloperKeyFrozen="False" FetchFirst="True" Id="251089" LastExecuteTime="0" LogicalItemFlag="False" Name="ICM Reporting Group Name" ShowInItemNavigator="True" SystemGenerated="False" UseDistinctOrderBy="True" UserProperty1="" UserProperty2="">
+<ElementRef Name="ValuesItem" Type="ColumnItem">
+<UniqueIdent ConstraintName="ITE1" DeveloperKey="REPORTING_GROUP_NAME">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_REPORTING_GROUP_NAME_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Reporting Group Name"/>
+</ElementRef>
+</UniqueIdent>
+<UniqueIdent ConstraintName="ITE2" Name="Reporting Group Name">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_REPORTING_GROUP_NAME_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Reporting Group Name"/>
+</ElementRef>
+</UniqueIdent>
+</ElementRef>
+</Domain>
+<Domain ArrayFetchSize="100" Cached="True" Cardinality="0" DataType="Varchar" Description="ICM Requestor " DeveloperKey="ICM_REQUESTOR_" DeveloperKeyFrozen="False" FetchFirst="True" Id="251090" LastExecuteTime="0" LogicalItemFlag="False" Name="ICM Requestor " ShowInItemNavigator="True" SystemGenerated="False" UseDistinctOrderBy="True" UserProperty1="" UserProperty2="">
+<ElementRef Name="ValuesItem" Type="ColumnItem">
+<UniqueIdent ConstraintName="ITE1" DeveloperKey="REQUESTOR">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_REQUESTOR_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Requestor"/>
+</ElementRef>
+</UniqueIdent>
+<UniqueIdent ConstraintName="ITE2" Name="Requestor">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_REQUESTOR_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Requestor"/>
+</ElementRef>
+</UniqueIdent>
+</ElementRef>
+</Domain>
+<Domain ArrayFetchSize="100" Cached="True" Cardinality="13" DataType="Varchar" Description="ICM Setup Group Name" DeveloperKey="ICM_SETUP_GROUP_NAME" DeveloperKeyFrozen="False" FetchFirst="True" Id="251091" LastExecuteTime="0" LogicalItemFlag="False" Name="ICM Setup Group Name" ShowInItemNavigator="True" SystemGenerated="False" UseDistinctOrderBy="True" UserProperty1="" UserProperty2="">
+<ElementRef Name="ValuesItem" Type="ColumnItem">
+<UniqueIdent ConstraintName="ITE1" DeveloperKey="SETUP_GROUP">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_SETUP_GROUP_NAME_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Setup Group Name"/>
+</ElementRef>
+</UniqueIdent>
+<UniqueIdent ConstraintName="ITE2" Name="Setup Group">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_SETUP_GROUP_NAME_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Setup Group Name"/>
+</ElementRef>
+</UniqueIdent>
+</ElementRef>
+</Domain>
+<Domain ArrayFetchSize="100" Cached="True" Cardinality="674" DataType="Varchar" Description="ICM Setup Parameter Name" DeveloperKey="ICM_SETUP_PARAMETER_NAME" DeveloperKeyFrozen="False" FetchFirst="True" Id="251092" LastExecuteTime="0" LogicalItemFlag="False" Name="ICM Setup Parameter Name" ShowInItemNavigator="True" SystemGenerated="False" UseDistinctOrderBy="True" UserProperty1="" UserProperty2="">
+<ElementRef Name="ValuesItem" Type="ColumnItem">
+<UniqueIdent ConstraintName="ITE1" DeveloperKey="SETUP_PARAMETER">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_SETUP_PARAMETER_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Setup  Parameter Name"/>
+</ElementRef>
+</UniqueIdent>
+<UniqueIdent ConstraintName="ITE2" Name="Setup Parameter">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_SETUP_PARAMETER_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Setup  Parameter Name"/>
+</ElementRef>
+</UniqueIdent>
+</ElementRef>
+</Domain>
+<Domain ArrayFetchSize="100" Cached="True" Cardinality="0" DataType="Varchar" Description="ICM Vice President" DeveloperKey="ICM_VICE_PRESIDENT" DeveloperKeyFrozen="False" FetchFirst="True" Id="251093" LastExecuteTime="6" LogicalItemFlag="False" Name="ICM Vice President" ShowInItemNavigator="True" SystemGenerated="False" UseDistinctOrderBy="True" UserProperty1="" UserProperty2="">
+<ElementRef Name="ValuesItem" Type="ColumnItem">
+<UniqueIdent ConstraintName="ITE1" DeveloperKey="VICE_PRESIDENT">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_VICE_PRESIDENT_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Vice President"/>
+</ElementRef>
+</UniqueIdent>
+<UniqueIdent ConstraintName="ITE2" Name="Vice President">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_VICE_PRESIDENT_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Vice President"/>
+</ElementRef>
+</UniqueIdent>
+</ElementRef>
+</Domain>
+<Domain ArrayFetchSize="100" Cached="True" Cardinality="0" DataType="Varchar" Description="" DeveloperKey="OD_ICM_ENGAGEMENT" DeveloperKeyFrozen="False" FetchFirst="True" Id="251094" LastExecuteTime="0" LogicalItemFlag="False" Name="ICM Engagement" ShowInItemNavigator="True" SystemGenerated="False" UseDistinctOrderBy="True" UserProperty1="" UserProperty2="">
+<ElementRef Name="ValuesItem" Type="ColumnItem">
+<UniqueIdent ConstraintName="ITE1" DeveloperKey="ENGAGEMENT">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_ENGAGEMENT_NAME_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Engagement Name"/>
+</ElementRef>
+</UniqueIdent>
+<UniqueIdent ConstraintName="ITE2" Name="Engagement">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_ENGAGEMENT_NAME_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Engagement Name"/>
+</ElementRef>
+</UniqueIdent>
+</ElementRef>
+</Domain>
+<Domain ArrayFetchSize="100" Cached="True" Cardinality="0" DataType="Varchar" Description=" ICM Organization Name" DeveloperKey="_ICM_ORGANIZATION_NAME" DeveloperKeyFrozen="False" FetchFirst="True" Id="251095" LastExecuteTime="0" LogicalItemFlag="False" Name="ICM Organization Name" ShowInItemNavigator="True" SystemGenerated="False" UseDistinctOrderBy="True" UserProperty1="" UserProperty2="">
+<ElementRef Name="ValuesItem" Type="ColumnItem">
+<UniqueIdent ConstraintName="ITE1" DeveloperKey="ORGANIZATION">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_ORGANIZATION_NAME_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Organization Name"/>
+</ElementRef>
+</UniqueIdent>
+<UniqueIdent ConstraintName="ITE2" Name="Organization">
+<ElementRef Name="Object" Type="CustomObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="OD_ICM_ORGANIZATION_NAME_LOV"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD ICM Organization Name"/>
+</ElementRef>
+</UniqueIdent>
+</ElementRef>
+</Domain>
+</EndUserLayerExport>

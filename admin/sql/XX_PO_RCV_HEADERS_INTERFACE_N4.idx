@@ -1,0 +1,24 @@
+-- +===========================================================================+
+-- |                  Office Depot                                             |
+-- +===========================================================================+
+-- |Description : Create index PO.RCV_HEADERS_INTERFACE_N4                     |
+-- |              (On Satish Rachapudi's suggestion.                           |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | 1.0       19-OCT-17      Antonio Morales           Initial draft version  |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE
+
+CREATE INDEX xxfin.rcv_headers_interface_n4 ON po.rcv_headers_interface
+(receipt_num,processing_status_code);
+

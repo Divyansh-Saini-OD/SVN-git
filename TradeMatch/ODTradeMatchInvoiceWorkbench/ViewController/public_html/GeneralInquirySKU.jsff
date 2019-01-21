@@ -1,0 +1,302 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:af="http://xmlns.oracle.com/adf/faces/rich"
+            xmlns:trh="http://myfaces.apache.org/trinidad/html"    xmlns:f="http://java.sun.com/jsf/core" >
+  <af:panelGridLayout id="pgl2">
+    <af:gridRow marginTop="5px" height="auto" id="gr1">
+      <af:gridCell marginStart="5px" width="100%" marginEnd="5px" id="gc1" inlineStyle="border-color:Black;">
+        <af:outputFormatted value="Office Depot-SKU Information :" id="of1"
+                            inlineStyle="font-size:large;"/>
+        <af:spacer width="10" height="10" id="s2"/>
+        <af:outputFormatted value="#{MyDate}" id="of2" inlineStyle="font-size:large;">
+          <af:convertDateTime pattern="MM/dd/YYYY"/>
+        </af:outputFormatted>
+      </af:gridCell>
+    </af:gridRow>
+      </af:panelGridLayout>
+    
+  <af:panelGroupLayout id="pgl3">
+  <af:inputText label="SKU #" id="it1" value="#{pageFlowScope.GeneralInquirySKUBean.sku}" partialTriggers="b2"/>
+    <af:panelGroupLayout id="pgl7" layout="horizontal" halign="center">
+    <af:button text="Go" id="b3" actionListener="#{pageFlowScope.GeneralInquirySKUBean.seachSKUAction}"/>
+      <af:spacer width="10" height="10" id="s1"/>
+      <af:button text="Clear" id="b2" 
+                 actionListener="#{pageFlowScope.GeneralInquirySKUBean.clearListener}">
+        
+      </af:button>
+    </af:panelGroupLayout>
+  </af:panelGroupLayout>
+  <!--<af:panelGridLayout id="pgl9"  partialTriggers="b3">
+    <af:gridRow  height="auto" id="gr2">
+      <af:gridCell   id="gc2" inlineStyle="padding-top:5px; padding-bottom:5px; padding-right:223px; padding-left:20px; border-right:solid thin; border-left:solid thin; border-top:solid thin; border-bottom:solid thin; border-color:Silver;"
+                   width="25%">
+      <af:inputText value="SKU#     "  maximumLength="20" id="ot1" readOnly="true"/>
+      </af:gridCell>
+      <af:gridCell    id="gc3" inlineStyle="padding-top:5px; padding-bottom:5px; padding-right:280px; padding-left:20px; border-right:solid thin; border-left:solid thin; border-top:solid thin; border-bottom:solid thin; border-color:Silver;" width="75%">
+      <af:inputText value="#{bindings.Sku.inputValue}" 
+                      required="#{bindings.Sku.hints.mandatory}" readOnly="true"
+                       maximumLength="50"
+                      shortDesc="#{bindings.Sku.hints.tooltip}" id="it2">
+          <f:validator binding="#{bindings.Sku.validator}"/>
+        </af:inputText>
+      </af:gridCell>
+    </af:gridRow>
+    <af:gridRow  height="auto" id="gr3">
+      <af:gridCell   id="gc4" inlineStyle="padding-top:5px; padding-bottom:5px; padding-right:195px; padding-left:20px; border-right:solid thin; border-left:solid thin; border-top:solid thin; border-bottom:solid thin; border-color:Silver;" width="25%">
+      <af:inputText value="Description" id="ot2" maximumLength="20" readOnly="true"/>
+      </af:gridCell>
+      <af:gridCell    id="gc5" inlineStyle="padding-top:5px; padding-bottom:5px; padding-right:140px; padding-left:20px; border-right:solid thin; border-left:solid thin; border-top:solid thin; border-bottom:solid thin; border-color:Silver;" width="75%">
+      <af:inputText value="#{bindings.Description.inputValue}" 
+                      required="#{bindings.Description.hints.mandatory}" readOnly="true"
+                      
+                      maximumLength="50"
+                      shortDesc="#{bindings.Description.hints.tooltip}" id="it3">
+          <f:validator binding="#{bindings.Description.validator}"/>
+        </af:inputText>
+      </af:gridCell>
+    </af:gridRow>
+    <af:gridRow  height="auto" id="gr4">
+      <af:gridCell  id="gc6" inlineStyle="padding-top:5px; padding-bottom:5px; padding-right:226px; padding-left:20px; border-right:solid thin; border-left:solid thin; border-top:solid thin; border-bottom:solid thin; border-color:Silver;" width="25%">
+      <af:inputText value="UOM" id="ot3" maximumLength="20" readOnly="true"/>
+      </af:gridCell>
+      <af:gridCell    id="gc7" inlineStyle="padding-top:5px; padding-bottom:5px; padding-right:289px; padding-left:20px; border-right:solid thin; border-left:solid thin; border-top:solid thin; border-bottom:solid thin; border-color:Silver;" width="75%">
+      <af:inputText value="#{bindings.Uom.inputValue}" 
+                      required="#{bindings.Uom.hints.mandatory}" readOnly="true"
+                       maximumLength="50"
+                      shortDesc="#{bindings.Uom.hints.tooltip}" id="it4">
+          <f:validator binding="#{bindings.Uom.validator}"/>
+        </af:inputText>
+      </af:gridCell>
+    </af:gridRow>
+    <af:gridRow  height="auto" id="gr5">
+      <af:gridCell   id="gc8" inlineStyle="padding-top:5px; padding-bottom:5px; padding-right:177px; padding-left:20px; border-right:solid thin; border-left:solid thin; border-top:solid thin; border-bottom:solid thin; border-color:Silver;" width="25%">
+      <af:inputText value="Units per Pack" id="ot5" maximumLength="20" readOnly="true"/>
+      </af:gridCell>
+      <af:gridCell    id="gc9" inlineStyle="padding-top:5px; padding-bottom:5px; padding-right:315px; padding-left:20px; border-right:solid thin; border-left:solid thin; border-top:solid thin; border-bottom:solid thin; border-color:Silver;" width="75%">
+      <af:inputText value="#{bindings.PackageSize.inputValue}" 
+                      required="#{bindings.PackageSize.hints.mandatory}" readOnly="true"
+                      
+                      maximumLength="50"
+                      shortDesc="#{bindings.PackageSize.hints.tooltip}" id="it6">
+          <f:validator binding="#{bindings.PackageSize.validator}"/>
+          <af:convertNumber groupingUsed="false" pattern="#{bindings.PackageSize.format}"/>
+        </af:inputText>
+      </af:gridCell>
+    </af:gridRow>
+    <af:gridRow  height="auto" id="gr6">
+      <af:gridCell   id="gc10" inlineStyle="padding-top:5px; padding-bottom:5px; padding-right:191px; padding-left:20px; border-right:solid thin; border-left:solid thin; border-top:solid thin; border-bottom:solid thin; border-color:Silver;" width="25%">
+      <af:inputText value="Department" id="ot4" maximumLength="20" readOnly="true"/>
+      </af:gridCell>
+      <af:gridCell    id="gc11" inlineStyle="padding-top:5px; padding-bottom:5px; padding-right:199px; padding-left:20px; border-right:solid thin; border-left:solid thin; border-top:solid thin; border-bottom:solid thin; border-color:Silver;" width="75%">
+      <af:inputText value="#{bindings.Dept.inputValue}" 
+                      required="#{bindings.Dept.hints.mandatory}" readOnly="true"
+                      maximumLength="50"
+                      shortDesc="#{bindings.Dept.hints.tooltip}" id="it5">
+          <f:validator binding="#{bindings.Dept.validator}"/>
+        </af:inputText>
+      </af:gridCell>
+    </af:gridRow>
+    <af:gridRow  height="auto" id="gr7">
+      <af:gridCell   id="gc12" inlineStyle="padding-top:5px; padding-bottom:5px; padding-right:172px; padding-left:20px; border-right:solid thin; border-left:solid thin; border-top:solid thin; border-bottom:solid thin; border-color:Silver;" width="25%">
+      <af:inputText value="Primary Vendor" id="ot6" maximumLength="20" readOnly="true"/>
+      </af:gridCell>
+      <af:gridCell    id="gc13" inlineStyle="padding-top:5px; padding-bottom:5px; padding-right:305px; padding-left:20px; border-right:solid thin; border-left:solid thin; border-top:solid thin; border-bottom:solid thin; border-color:Silver;" width="75%">
+      <af:inputText value="#{bindings.PrimarySupp.inputValue}" 
+                      required="#{bindings.PrimarySupp.hints.mandatory}" readOnly="true"
+                      
+                      maximumLength="50"
+                      shortDesc="#{bindings.PrimarySupp.hints.tooltip}" id="it7">
+          <f:validator binding="#{bindings.PrimarySupp.validator}"/>
+          <af:convertNumber groupingUsed="false" pattern="#{bindings.PrimarySupp.format}"/>
+        </af:inputText>
+      </af:gridCell>
+    </af:gridRow>
+    <af:gridRow height="auto" marginBottom="5px" id="gr8">
+      <af:gridCell   id="gc14"/>
+      <af:gridCell    id="gc15"/>
+    </af:gridRow>
+  </af:panelGridLayout>-->
+  <af:panelGroupLayout id="pgl1" layout="horizontal">
+        
+        
+      </af:panelGroupLayout>
+      <af:panelGroupLayout id="pgl8" layout="horizontal">
+        
+        
+      </af:panelGroupLayout>
+      <af:panelGroupLayout id="pg14" layout="horizontal">
+        
+        
+      </af:panelGroupLayout>
+      <af:panelGroupLayout id="pgl5" layout="horizontal">
+        
+        
+      </af:panelGroupLayout>
+      <af:panelGroupLayout id="pgl4" layout="horizontal">
+        
+        
+      </af:panelGroupLayout>
+      
+      <af:panelGroupLayout id="pgl6" layout="horizontal" partialTriggers="b3">
+        
+        
+      
+   
+ <trh:tableLayout width="100%" id="tl1" borderWidth="2" 
+halign="left" >
+
+  <trh:rowLayout id="rl1"
+valign="top" halign="left">
+
+    <trh:cellFormat id="cf1"
+width="300" header="true">
+<af:inputText value="SKU#     "  maximumLength="100" id="it8" readOnly="true"/>
+</trh:cellFormat>
+<trh:cellFormat id="cf2"
+width="500" header="true">
+<af:inputText value="#{bindings.Sku.inputValue}" 
+                      required="#{bindings.Sku.hints.mandatory}" readOnly="true"
+                       maximumLength="100"
+                      shortDesc="#{bindings.Sku.hints.tooltip}" id="it9">
+          <f:validator binding="#{bindings.Sku.validator}"/>
+        </af:inputText>
+        </trh:cellFormat>
+        </trh:rowLayout>
+        <trh:rowLayout id="rl2"
+valign="top" halign="left">
+
+    <trh:cellFormat id="cf3"
+width="100" header="true">
+<af:inputText value="Description" id="ot2" maximumLength="20" readOnly="true"/>
+</trh:cellFormat>
+<trh:cellFormat id="cf4"
+width="100" header="true">
+<af:inputText value="#{bindings.Description.inputValue}" 
+                      required="#{bindings.Description.hints.mandatory}" readOnly="true"
+                      
+                      maximumLength="100"
+                      shortDesc="#{bindings.Description.hints.tooltip}" id="it3" wrap="hard">
+          <f:validator binding="#{bindings.Description.validator}"/>
+        </af:inputText>
+        </trh:cellFormat>
+        </trh:rowLayout>
+        <trh:rowLayout id="rl3"
+valign="top" halign="left">
+
+    <trh:cellFormat id="cf5"
+width="100" header="true">
+<af:inputText value="UOM" id="ot3" maximumLength="20" readOnly="true"/>
+</trh:cellFormat>
+<trh:cellFormat id="cf6"
+width="100" header="true">
+<af:inputText value="#{bindings.Uom.inputValue}" 
+                      required="#{bindings.Uom.hints.mandatory}" readOnly="true"
+                       maximumLength="100"
+                      shortDesc="#{bindings.Uom.hints.tooltip}" id="it4">
+          <f:validator binding="#{bindings.Uom.validator}"/>
+        </af:inputText>
+        </trh:cellFormat>
+        </trh:rowLayout>
+        <trh:rowLayout id="rl4"
+valign="top" halign="left">
+
+    <trh:cellFormat id="cf7"
+width="100" header="true">
+<af:inputText value="Units per Pack" id="ot5" maximumLength="20" readOnly="true"/>
+</trh:cellFormat>
+<trh:cellFormat id="cf8"
+width="100" header="true">
+<af:inputText value="#{bindings.PackageSize.inputValue}" 
+                      required="#{bindings.PackageSize.hints.mandatory}" readOnly="true"
+                      
+                      maximumLength="100"
+                      shortDesc="#{bindings.PackageSize.hints.tooltip}" id="it6">
+          <f:validator binding="#{bindings.PackageSize.validator}"/>
+          <af:convertNumber groupingUsed="false" pattern="#{bindings.PackageSize.format}"/>
+        </af:inputText>
+        </trh:cellFormat>
+        </trh:rowLayout>
+        <trh:rowLayout id="rl5"
+valign="top" halign="left">
+
+    <trh:cellFormat id="cf9"
+width="100" header="true">
+<af:inputText value="Department" id="ot4" maximumLength="20" readOnly="true"/>
+</trh:cellFormat>
+<trh:cellFormat id="cf10"
+width="100" header="true">
+<af:inputText value="#{bindings.Dept.inputValue}" 
+                      required="#{bindings.Dept.hints.mandatory}" readOnly="true"
+                      maximumLength="100"
+                      shortDesc="#{bindings.Dept.hints.tooltip}" id="it5">
+          <f:validator binding="#{bindings.Dept.validator}"/>
+        </af:inputText>
+        </trh:cellFormat>
+        </trh:rowLayout>
+        <trh:rowLayout id="rl6"
+valign="top" halign="left">
+
+    <trh:cellFormat id="cf11"
+width="100" header="true">
+<af:inputText value="Primary Vendor" id="ot6" maximumLength="20" readOnly="true"/>
+</trh:cellFormat>
+<trh:cellFormat id="cf12"
+width="100" header="true">
+          <!--<af:outputText value="#{bindings.PrimarySupp.inputValue}" id="ot1"/>-->
+          <af:inputText value="#{bindings.PrimarySupp.inputValue}" 
+                      required="#{bindings.PrimarySupp.hints.mandatory}" readOnly="true"
+                      
+                      maximumLength="100"
+                      shortDesc="#{bindings.PrimarySupp.hints.tooltip}" id="it7" inlineStyle="text-align:left;">
+          <f:validator binding="#{bindings.PrimarySupp.validator}"/>
+          <af:convertNumber groupingUsed="false" pattern="#{bindings.PrimarySupp.format}"/>
+        </af:inputText>
+        </trh:cellFormat>
+        </trh:rowLayout>
+        <trh:rowLayout id="rl8"
+valign="top" halign="left">
+
+    <trh:cellFormat id="cf15"
+width="100" header="true">
+<af:inputText value="Primary Vendor Name" id="it11" maximumLength="20" readOnly="true"/>
+</trh:cellFormat>
+<trh:cellFormat id="cf16"
+width="100" header="true">
+        <af:inputText value="#{bindings.PrimarySuppName.inputValue}" 
+                      required="#{bindings.PrimarySuppName.hints.mandatory}"
+                      columns="#{bindings.PrimarySuppName.hints.displayWidth}"
+                      maximumLength="100"
+                      shortDesc="#{bindings.PrimarySuppName.hints.tooltip}" id="it13" inlineStyle="text-align:left;">
+          <f:validator binding="#{bindings.PrimarySuppName.validator}"/>
+        </af:inputText>
+        <!--<af:inputText value="#{bindings.PrimarySupp.inputValue}" 
+                      required="#{bindings.PrimarySupp.hints.mandatory}" readOnly="true"
+                      
+                      maximumLength="50"
+                      shortDesc="#{bindings.PrimarySupp.hints.tooltip}" id="it12">
+          <f:validator binding="#{bindings.PrimarySupp.validator}"/>
+          <af:convertNumber groupingUsed="false" pattern="#{bindings.PrimarySupp.format}"/>
+        </af:inputText>-->
+        </trh:cellFormat>
+        </trh:rowLayout>
+        <trh:rowLayout id="rl7"
+valign="top" halign="left">
+
+    <trh:cellFormat id="cf13"
+width="100" header="true">
+<af:inputText value="Secondary Vendors" id="it2" maximumLength="20" readOnly="true"/>
+</trh:cellFormat>
+<trh:cellFormat id="cf14"
+width="100" header="true">
+<af:inputText value="" 
+                      required="#{bindings.PrimarySupp.hints.mandatory}" readOnly="true"
+                      
+                      maximumLength="100"
+                      shortDesc="#{bindings.PrimarySupp.hints.tooltip}" id="it10">
+          <f:validator binding="#{bindings.PrimarySupp.validator}"/>
+          <af:convertNumber groupingUsed="false" pattern="#{bindings.PrimarySupp.format}"/>
+        </af:inputText>
+        </trh:cellFormat>
+        </trh:rowLayout>
+        </trh:tableLayout>
+        </af:panelGroupLayout>
+</ui:composition>

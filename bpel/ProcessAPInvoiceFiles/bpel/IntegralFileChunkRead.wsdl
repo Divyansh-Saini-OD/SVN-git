@@ -1,0 +1,57 @@
+<definitions
+     name="IntegralFileChunkRead"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/file/IntegralFileChunkRead/"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/file/IntegralFileChunkRead/"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+     xmlns:imp1="http://TargetNamespace.com/Integral"
+     xmlns:hdr="http://xmlns.oracle.com/pcbpel/adapter/file/"
+    >
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/file/" location="fileAdapterOutboundHeader.wsdl"/>
+    <types>
+      <schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/file/IntegralFileChunkRead/"
+              xmlns="http://www.w3.org/2001/XMLSchema" >
+        <import namespace="http://TargetNamespace.com/Integral" schemaLocation="Integral.xsd" />
+        <element name="empty"><complexType/></element>
+      </schema>
+    </types>
+    <message name="Empty_msg">
+        <part name="Empty" element="tns:empty"/>
+    </message>
+    <message name="container_msg">
+        <part name="container" element="imp1:container"/>
+    </message>
+    <portType name="SynchChunkedRead_ptt">
+        <operation name="SynchChunkedRead">
+            <input message="tns:Empty_msg"/>
+            <output message="tns:container_msg"/>
+        </operation>
+    </portType>
+    <binding name="SynchChunkedRead_binding" type="tns:SynchChunkedRead_ptt">
+    <jca:binding  />
+        <operation name="SynchChunkedRead">
+      <jca:operation
+          LogicalDirectory="Inbound_Path"
+          InteractionSpec="oracle.tip.adapter.file.outbound.ChunkedInteractionSpec"
+          ChunkSize="20"
+          DeleteFile="true"
+          FileName="File_Name_In"
+          OpaqueSchema="false" >
+      </jca:operation>
+      <input>
+        <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+      </input>
+        </operation>
+    </binding>
+    <service name="IntegralFileChunkRead">
+        <port name="SynchChunkedRead_pt" binding="tns:SynchChunkedRead_binding">
+      <jca:address location="eis/FileAdapter" />
+        </port>
+    </service>
+  <plt:partnerLinkType name="SynchChunkedRead_plt" >
+    <plt:role name="SynchChunkedRead_role" >
+      <plt:portType name="tns:SynchChunkedRead_ptt" />
+    </plt:role>
+  </plt:partnerLinkType>
+</definitions>

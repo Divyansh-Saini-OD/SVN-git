@@ -1,0 +1,70 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   :  XX_FA_UNP_DEPRN_STG.tbl                                                   |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_FA_UNP_DEPRN_STG   (OD MidMonth FA Mass Unplanned Depriciation Staging Table) |--
+--| RICE ID : E3120                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              16-JUL-2015       Madhu Bolli         Initial                              |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_FA_UNP_DEPRN_STG......
+PROMPT
+
+Create table XXFIN.XX_FA_UNP_DEPRN_STG
+  (BATCH_ID               NUMBER,
+   ASSET_ID               NUMBER,
+   BOOK_TYPE_CODE         VARCHAR2(15),
+   UNP_DEPR_CC            VARCHAR2(100),
+   UNP_AMOUNT             NUMBER,
+   UNP_TYPE               VARCHAR2(80),
+   UNP_DEPR_CCID          VARCHAR2(100),
+   UNP_TYPE_CODE          VARCHAR2(9),      
+   CREATION_DATE	        DATE,
+   CREATED_BY	            NUMBER,
+   LAST_UPDATE_DATE       DATE,
+   LAST_UPDATED_BY        NUMBER,
+   LAST_UPDATE_LOGIN      NUMBER,
+   PROCESS_FLAG	          NUMBER,
+   PROCESS_MODE           VARCHAR2(30),
+   REQUEST_ID	            NUMBER,
+   ERROR_FLAG	            VARCHAR2(1),
+   ERROR_MESSAGE          VARCHAR2(4000)
+);
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT 
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

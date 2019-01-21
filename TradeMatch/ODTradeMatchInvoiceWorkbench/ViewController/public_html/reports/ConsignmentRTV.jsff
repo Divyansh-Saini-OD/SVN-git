@@ -1,0 +1,348 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1" xmlns:af="http://xmlns.oracle.com/adf/faces/rich"
+          xmlns:f="http://java.sun.com/jsf/core">
+   <!-- <af:panelGroupLayout id="pgl10" layout="horizontal"> 
+        <af:spacer width="15" height="10" id="s13"/> -->
+        <af:panelGroupLayout id="pgl9" layout="vertical">
+            <af:panelGroupLayout id="pgl13" layout="horizontal">
+                <af:outputFormatted value="Office Depot - AP- Consignment RTV Details : " id="of1"
+                                    inlineStyle="font-size:large;"/>
+                <af:outputFormatted value="#{MyDate}" id="of2" inlineStyle="font-size:large;">
+                    <af:convertDateTime pattern="MM/dd/YYYY"/>
+                </af:outputFormatted>
+            </af:panelGroupLayout>
+            <af:panelGroupLayout layout="vertical" id="pgl2">
+                <af:panelGroupLayout id="pgl1" layout="vertical" halign="right">
+                    <af:selectOneChoice value="#{bindings.Orgid.inputValue}" label="#{bindings.Orgid.label}"
+                                        required="#{bindings.Orgid.hints.mandatory}"
+                                        shortDesc="#{bindings.Orgid.hints.tooltip}" id="soc1">
+                        <f:selectItems value="#{bindings.Orgid.items}" id="si1"/>
+                        <f:validator binding="#{bindings.Orgid.validator}"/>
+                    </af:selectOneChoice>
+                    <af:inputText value="#{bindings.OrgIdValue.inputValue}" label="#{bindings.OrgIdValue.hints.label}"
+                                  required="#{bindings.OrgIdValue.hints.mandatory}"
+                                  columns="#{bindings.OrgIdValue.hints.displayWidth}"
+                                  maximumLength="#{bindings.OrgIdValue.hints.precision}"
+                                  shortDesc="#{bindings.OrgIdValue.hints.tooltip}" id="it3" rendered="false"
+                                  binding="#{pageFlowScope.ConsignmentRTVSearchBean.orgIdValBind}">
+                        <f:validator binding="#{bindings.OrgIdValue.validator}"/>
+                        <af:convertNumber groupingUsed="false" pattern="#{bindings.OrgIdValue.format}"/>
+                    </af:inputText>
+                </af:panelGroupLayout>
+                <af:panelGroupLayout id="pgl6" layout="horizontal" halign="start"
+                                     binding="#{pageFlowScope.ConsignmentRTVSearchBean.searchAreaBind}">
+                    <af:panelGroupLayout id="pgl3" layout="vertical">
+                        <af:panelLabelAndMessage label="#{bindings.Suppliername.hints.label}" id="plam1">
+                            <af:spacer width="2" height="10" id="s2"/>
+                            <af:inputListOfValues id="suppliernameId"
+                                                  popupTitle="Search and Select: #{bindings.Suppliername.hints.label}"
+                                                  value="#{bindings.Suppliername.inputValue}"
+                                                  label="#{bindings.Suppliername.hints.label}"
+                                                  model="#{bindings.Suppliername.listOfValuesModel}"
+                                                  required="#{bindings.Suppliername.hints.mandatory}"
+                                                  columns="#{bindings.Suppliername.hints.displayWidth}"
+                                                  shortDesc="#{bindings.Suppliername.hints.tooltip}" simple="true"
+                                                  binding="#{pageFlowScope.ConsignmentRTVSearchBean.supNameValBind}"
+                                                  autoSubmit="true">
+                                <f:validator binding="#{bindings.Suppliername.validator}"/>
+                            </af:inputListOfValues>
+                        </af:panelLabelAndMessage>
+                        <af:panelLabelAndMessage label="#{bindings.Suppliersiteno.hints.label}" id="plam2">
+                            <af:spacer width="3" height="10" id="s11"/>
+                            <af:inputListOfValues id="suppliersitenoId"
+                                                  popupTitle="Search and Select: #{bindings.Suppliersiteno.hints.label}"
+                                                  value="#{bindings.Suppliersiteno.inputValue}"
+                                                  label="#{bindings.Suppliersiteno.hints.label}"
+                                                  model="#{bindings.Suppliersiteno.listOfValuesModel}"
+                                                  required="#{bindings.Suppliersiteno.hints.mandatory}"
+                                                  columns="#{bindings.Suppliersiteno.hints.displayWidth}"
+                                                  shortDesc="#{bindings.Suppliersiteno.hints.tooltip}" simple="true"
+                                                  binding="#{pageFlowScope.ConsignmentRTVSearchBean.supSiteValBind}">
+                                <f:validator binding="#{bindings.Suppliersiteno.validator}"/>
+                            </af:inputListOfValues>
+                            <f:facet name="end"/>
+                        </af:panelLabelAndMessage>
+                        <af:panelLabelAndMessage label="SKU" id="plam3">
+                            <af:spacer width="61" height="10" id="s3"/>
+                            <af:inputText value="#{bindings.Sku1.inputValue}" simple="true"
+                                          required="#{bindings.Sku1.hints.mandatory}"
+                                          columns="#{bindings.Sku1.hints.displayWidth}"
+                                          maximumLength="#{bindings.Sku1.hints.precision}"
+                                          shortDesc="#{bindings.Sku1.hints.tooltip}" id="it1"
+                                          binding="#{pageFlowScope.ConsignmentRTVSearchBean.skUValueInput}">
+                                <f:validator binding="#{bindings.Sku1.validator}"/>
+                            </af:inputText>
+                            <!--  <af:inputListOfValues id="skuId" popupTitle="Search and Select: #{bindings.Sku.hints.label}"
+                                                  value="#{bindings.Sku.inputValue}" label="#{bindings.Sku.hints.label}"
+                                                  model="#{bindings.Sku.listOfValuesModel}"
+                                                  required="#{bindings.Sku.hints.mandatory}"
+                                                  columns="#{bindings.Sku.hints.displayWidth}"
+                                                  shortDesc="#{bindings.Sku.hints.tooltip}" simple="true"
+                                                  binding="#{pageFlowScope.ConsignmentRTVSearchBean.skuValBind}">
+                                <f:validator binding="#{bindings.Sku.validator}"/>
+                            </af:inputListOfValues> -->
+                        </af:panelLabelAndMessage>
+                        <af:panelLabelAndMessage label="#{bindings.OrgRtv.hints.label}" id="plam4">
+                            <af:spacer width="17" height="10" id="s15"/>
+                            <af:inputListOfValues id="orgRtvId"
+                                                  popupTitle="Search and Select: #{bindings.OrgRtv.hints.label}"
+                                                  value="#{bindings.OrgRtv.inputValue}"
+                                                  label="#{bindings.OrgRtv.hints.label}"
+                                                  model="#{bindings.OrgRtv.listOfValuesModel}"
+                                                  required="#{bindings.OrgRtv.hints.mandatory}"
+                                                  columns="#{bindings.OrgRtv.hints.displayWidth}"
+                                                  shortDesc="#{bindings.OrgRtv.hints.tooltip}" simple="true"
+                                                  autoSubmit="true">
+                                <f:validator binding="#{bindings.OrgRtv.validator}"/>
+                            </af:inputListOfValues>
+                        </af:panelLabelAndMessage>
+                    </af:panelGroupLayout>
+                    <af:spacer width="20" height="10" id="s6"/>
+                    <af:panelGroupLayout id="pgl4" layout="vertical">
+                        <!--<af:panelLabelAndMessage label="#{bindings.Rtvno.hints.label}" id="plam4">
+          <af:spacer width="41" height="10" id="s4"/>
+          <af:inputListOfValues id="rtvnoId" popupTitle="Search and Select: #{bindings.Rtvno.hints.label}"
+                                value="#{bindings.Rtvno.inputValue}" label="#{bindings.Rtvno.hints.label}"
+                                model="#{bindings.Rtvno.listOfValuesModel}" required="#{bindings.Rtvno.hints.mandatory}"
+                                columns="#{bindings.Rtvno.hints.displayWidth}"
+                                shortDesc="#{bindings.Rtvno.hints.tooltip}" simple="true"
+                                binding="#{pageFlowScope.ConsignmentRTVSearchBean.rtvValBind}">
+            <f:validator binding="#{bindings.Rtvno.validator}"/>
+          </af:inputListOfValues>
+        </af:panelLabelAndMessage>-->
+                        <af:panelLabelAndMessage label="#{bindings.Transactiondatefrom.hints.label}" id="plam5">
+                            <af:spacer width="13" height="10" id="s5"/>
+                            <af:inputDate value="#{bindings.Transactiondatefrom.inputValue}"
+                                          label="#{bindings.Transactiondatefrom.hints.label}"
+                                          required="#{bindings.Transactiondatefrom.hints.mandatory}"
+                                          columns="#{bindings.Transactiondatefrom.hints.displayWidth}"
+                                          shortDesc="#{bindings.Transactiondatefrom.hints.tooltip}" id="id1"
+                                          simple="true"
+                                          binding="#{pageFlowScope.ConsignmentRTVSearchBean.transDateFromValBind}">
+                                <f:validator binding="#{bindings.Transactiondatefrom.validator}"/>
+                                <af:convertDateTime pattern="#{bindings.Transactiondatefrom.format}"/>
+                            </af:inputDate>
+                            <f:facet name="end">
+                                <af:inputDate value="#{bindings.Transactiondateto.inputValue}"
+                                              label="#{bindings.Transactiondateto.hints.label}"
+                                              required="#{bindings.Transactiondateto.hints.mandatory}"
+                                              columns="#{bindings.Transactiondateto.hints.displayWidth}"
+                                              shortDesc="#{bindings.Transactiondateto.hints.tooltip}" id="id2"
+                                              simple="true"
+                                              binding="#{pageFlowScope.ConsignmentRTVSearchBean.transDateToValueBind}">
+                                    <f:validator binding="#{bindings.Transactiondateto.validator}"/>
+                                    <af:convertDateTime pattern="#{bindings.Transactiondateto.format}"/>
+                                </af:inputDate>
+                            </f:facet>
+                        </af:panelLabelAndMessage>
+                        <af:panelLabelAndMessage label="#{bindings.Transactionperiodfrom.hints.label}" id="plam6">
+                            <f:facet name="end">
+                                <af:inputListOfValues id="transactionperiodtoId"
+                                                      popupTitle="Search and Select: #{bindings.Transactionperiodto.hints.label}"
+                                                      value="#{bindings.Transactionperiodto.inputValue}"
+                                                      label="#{bindings.Transactionperiodto.hints.label}"
+                                                      model="#{bindings.Transactionperiodto.listOfValuesModel}"
+                                                      required="#{bindings.Transactionperiodto.hints.mandatory}"
+                                                      columns="#{bindings.Transactionperiodto.hints.displayWidth}"
+                                                      shortDesc="#{bindings.Transactionperiodto.hints.tooltip}"
+                                                      simple="true"
+                                                      binding="#{pageFlowScope.ConsignmentRTVSearchBean.perToValueBind}">
+                                    <f:validator binding="#{bindings.Transactionperiodto.validator}"/>
+                                </af:inputListOfValues>
+                            </f:facet>
+                            <af:spacer width="3" height="10" id="s12"/>
+                            <af:inputListOfValues id="transactionperiodfrom1Id"
+                                                  popupTitle="Search and Select: #{bindings.Transactionperiodfrom1.hints.label}"
+                                                  value="#{bindings.Transactionperiodfrom1.inputValue}"
+                                                  label="#{bindings.Transactionperiodfrom1.hints.label}"
+                                                  model="#{bindings.Transactionperiodfrom1.listOfValuesModel}"
+                                                  required="#{bindings.Transactionperiodfrom1.hints.mandatory}"
+                                                  columns="#{bindings.Transactionperiodfrom1.hints.displayWidth}"
+                                                  shortDesc="#{bindings.Transactionperiodfrom1.hints.tooltip}"
+                                                  simple="true"
+                                                  binding="#{pageFlowScope.ConsignmentRTVSearchBean.perDateFromValueBind}">
+                                <f:validator binding="#{bindings.Transactionperiodfrom1.validator}"/>
+                            </af:inputListOfValues>
+                        </af:panelLabelAndMessage>
+                        <af:spacer width="10" height="30" id="s4"/>
+                    </af:panelGroupLayout>
+                    <af:spacer width="10" height="10" id="s8"/>
+                    <af:panelGroupLayout id="pgl5" layout="vertical">
+                        <af:panelLabelAndMessage label="#{bindings.Rgano.hints.label}" id="plam7">
+                            <af:spacer width="16" height="10" id="s7"/>
+                            <af:inputListOfValues id="rganoId"
+                                                  popupTitle="Search and Select: #{bindings.Rgano.hints.label}"
+                                                  value="#{bindings.Rgano.inputValue}"
+                                                  label="#{bindings.Rgano.hints.label}"
+                                                  model="#{bindings.Rgano.listOfValuesModel}"
+                                                  required="#{bindings.Rgano.hints.mandatory}"
+                                                  columns="#{bindings.Rgano.hints.displayWidth}"
+                                                  shortDesc="#{bindings.Rgano.hints.tooltip}" simple="true"
+                                                  binding="#{pageFlowScope.ConsignmentRTVSearchBean.rgaValueBind}">
+                                <f:validator binding="#{bindings.Rgano.validator}"/>
+                            </af:inputListOfValues>
+                        </af:panelLabelAndMessage>
+                        <af:panelLabelAndMessage label="#{bindings.Location.hints.label}" id="plam8">
+                            <af:spacer width="2" height="10" id="s14"/>
+                            <af:inputListOfValues id="locationId"
+                                                  popupTitle="Search and Select: #{bindings.Location.hints.label}"
+                                                  value="#{bindings.Location.inputValue}"
+                                                  label="#{bindings.Location.hints.label}"
+                                                  model="#{bindings.Location.listOfValuesModel}"
+                                                  required="#{bindings.Location.hints.mandatory}"
+                                                  columns="#{bindings.Location.hints.displayWidth}"
+                                                  shortDesc="#{bindings.Location.hints.tooltip}" simple="true"
+                                                  binding="#{pageFlowScope.ConsignmentRTVSearchBean.locationValueBind}">
+                                <f:validator binding="#{bindings.Location.validator}"/>
+                            </af:inputListOfValues>
+                        </af:panelLabelAndMessage>
+                        <af:spacer width="10" height="30" id="s9"/>
+                    </af:panelGroupLayout>
+                </af:panelGroupLayout>
+                <af:panelGroupLayout id="pgl7" layout="horizontal" halign="center">
+                    <af:button text="Go" id="b2"
+                               action="#{pageFlowScope.ConsignmentRTVSearchBean.consiRTVSearchAction}"/>
+                    <af:spacer width="10" height="10" id="s10"/>
+                    <af:button text="Clear" id="b1"
+                               action="#{pageFlowScope.ConsignmentRTVSearchBean.clearConsignRTVSearch}"/>
+                </af:panelGroupLayout>
+                <af:spacer width="10" height="10" id="s1"/>
+                <af:panelCollection id="pc1" styleClass="AFStretchWidth"
+                                    binding="#{pageFlowScope.ConsignmentRTVSearchBean.resultPanelGrpBind}">
+                    <f:facet name="menus">
+                        <af:menu text="File" id="m2">
+                            <af:commandMenuItem text="Export to Excel" id="cmi1">
+                                <af:exportCollectionActionListener type="excelHTML" exportedId="resId1"
+                                                                   filename="ConsignmentRTV.xls"
+                                                                   title="Consignment RTV"/>
+                            </af:commandMenuItem>
+                        </af:menu>
+                    </f:facet>
+                    <f:facet name="toolbar"/>
+                    <f:facet name="statusbar"/>
+                    <af:table value="#{bindings.ConsgnmntRTVVO.collectionModel}" var="row"
+                              rows="#{bindings.ConsgnmntRTVVO.rangeSize}"
+                              emptyText="#{bindings.ConsgnmntRTVVO.viewable ? 'No data to display.' : 'Access Denied.'}"
+                              rowBandingInterval="0" fetchSize="#{bindings.ConsgnmntRTVVO.rangeSize}" id="resId1"
+                              scrollPolicy="scroll" partialTriggers=":::b2" contentDelivery="immediate">
+                        <af:column sortProperty="#{bindings.ConsgnmntRTVVO.hints.SupplierSite.name}" sortable="true"
+                                   headerText="Supplier Site #" id="resId1c1" width="77">
+                            <!--<af:selectOneChoice value="#{row.bindings.SupplierSite.inputValue}" label="#{row.bindings.SupplierSite.label}"
+                            required="#{bindings.ConsgnmntRTVVO.hints.SupplierSite.mandatory}"
+                            shortDesc="#{bindings.ConsgnmntRTVVO.hints.SupplierSite.tooltip}" readOnly="true"
+                            id="soc1">
+          <f:selectItems value="#{row.bindings.SupplierSite.items}" id="si1"/>
+          <f:validator binding="#{row.bindings.SupplierSite.validator}"/>
+        </af:selectOneChoice>-->
+                            <af:outputText value="#{row.SupplierSite}"
+                                           shortDesc="#{bindings.ConsgnmntRTVVO.hints.SupplierSite.tooltip}" id="odt1">
+                                <af:convertNumber pattern="########"/>
+                            </af:outputText>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.ConsgnmntRTVVO.hints.SupplierName.name}" sortable="true"
+                                   headerText="Supplier Name" id="resId1c2" width="96" displayIndex="-1">
+                            <af:outputText value="#{row.SupplierName}"
+                                           shortDesc="#{bindings.ConsgnmntRTVVO.hints.SupplierName.tooltip}" id="ot1"/>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.ConsgnmntRTVVO.hints.OriginalRtv.name}" sortable="true"
+                                   headerText="Original RTV#" id="resId1c3" width="71">
+                            <af:outputText value="#{row.OriginalRtv}"
+                                           shortDesc="#{bindings.ConsgnmntRTVVO.hints.OriginalRtv.tooltip}" id="ot2"/>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.ConsgnmntRTVVO.hints.TransactionDate.name}" sortable="true"
+                                   headerText="Date" id="resId1c5" width="70">
+                            <af:outputText value="#{row.TransactionDate}"
+                                           shortDesc="#{bindings.ConsgnmntRTVVO.hints.TransactionDate.tooltip}"
+                                           id="ot4">
+                                <af:convertDateTime pattern="#{bindings.ConsgnmntRTVVO.hints.TransactionDate.format}"/>
+                            </af:outputText>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.ConsgnmntRTVVO.hints.Location.name}" sortable="true"
+                                   headerText="#{bindings.ConsgnmntRTVVO.hints.Location.label}" id="resId1c6"
+                                   width="70">
+                            <af:outputText value="#{row.Location}"
+                                           shortDesc="#{bindings.ConsgnmntRTVVO.hints.Location.tooltip}" id="ot5"/>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.ConsgnmntRTVVO.hints.FreightCarrier.name}" sortable="true"
+                                   headerText="Freight Carrier" id="resId1c8" width="104">
+                            <af:outputText value="#{row.FreightCarrier}"
+                                           shortDesc="#{bindings.ConsgnmntRTVVO.hints.FreightCarrier.tooltip}"
+                                           id="ot7"/>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.ConsgnmntRTVVO.hints.FreightBill.name}" sortable="true"
+                                   headerText="Freight Bill" id="resId1c9" width="90">
+                            <af:outputText value="#{row.FreightBill}"
+                                           shortDesc="#{bindings.ConsgnmntRTVVO.hints.FreightBill.tooltip}" id="ot8"/>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.ConsgnmntRTVVO.hints.Rga.name}" sortable="true"
+                                   headerText="RGA #" id="resId1c10" width="64">
+                            <af:outputText value="#{row.Rga}" shortDesc="#{bindings.ConsgnmntRTVVO.hints.Rga.tooltip}"
+                                           id="ot9"/>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.ConsgnmntRTVVO.hints.Sku.name}" sortable="true"
+                                   headerText="#{bindings.ConsgnmntRTVVO.hints.Sku.label}" id="resId1c7" width="74">
+                            <af:outputText value="#{row.Sku}" shortDesc="#{bindings.ConsgnmntRTVVO.hints.Sku.tooltip}"
+                                           id="ot6"/>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.ConsgnmntRTVVO.hints.VendorProduct.name}" sortable="true"
+                                   id="resId1c11" width="120"
+                                   headerText="#{bindings.ConsgnmntRTVVO.hints.VendorProduct.label}">
+                            <af:outputText value="#{row.VendorProduct}"
+                                           shortDesc="#{bindings.ConsgnmntRTVVO.hints.VendorProduct.tooltip}"
+                                           id="ot10"/>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.ConsgnmntRTVVO.hints.Description.name}" sortable="true"
+                                   headerText="#{bindings.ConsgnmntRTVVO.hints.Description.label}" id="resId1c12"
+                                   width="120">
+                            <af:outputText value="#{row.Description}"
+                                           shortDesc="#{bindings.ConsgnmntRTVVO.hints.Description.tooltip}" id="ot11"/>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.ConsgnmntRTVVO.hints.TransactionQuantity.name}"
+                                   sortable="true" headerText="RTV Qty" id="resId1c13" width="30">
+                            <af:panelGroupLayout id="pgl11" layout="horizontal" halign="right">
+                                <af:outputText value="#{row.TransactionQuantity}"
+                                               shortDesc="#{bindings.ConsgnmntRTVVO.hints.TransactionQuantity.tooltip}"
+                                               id="ot12">
+                                    <af:convertNumber groupingUsed="false"
+                                                      pattern="#{bindings.ConsgnmntRTVVO.hints.TransactionQuantity.format}"/>
+                                </af:outputText>
+                            </af:panelGroupLayout>
+                        </af:column>
+                        <af:column sortProperty="#{bindings.ConsgnmntRTVVO.hints.TransactionCost.name}" sortable="true"
+                                   headerText="Item Cost" id="resId1c14" width="30">
+                            <af:panelGroupLayout id="pgl12" halign="right" layout="horizontal">
+                                <af:outputText value="#{row.TransactionCost}"
+                                               shortDesc="#{bindings.ConsgnmntRTVVO.hints.TransactionCost.tooltip}"
+                                               id="ot13">
+                                    <af:convertNumber groupingUsed="false"
+                                                      pattern="#{bindings.ConsgnmntRTVVO.hints.TransactionCost.format}"/>
+                                </af:outputText>
+                            </af:panelGroupLayout>
+                        </af:column>
+                        <af:column headerText="Extended Cost" id="c1"
+                                   align="right">
+                            <af:outputText value="#{row.ExtendedCost}"
+                                           shortDesc="#{bindings.ConsgnmntRTVVO.hints.ExtendedCost.tooltip}" id="ot14">
+                                <af:convertNumber groupingUsed="false"
+                                                  pattern="#{bindings.ConsgnmntRTVVO.hints.ExtendedCost.format}"/>
+                            </af:outputText>
+                            <f:facet name="footer">
+                                <af:panelGroupLayout id="pgl8" layout="horizontal" halign="end">
+                                    <af:outputText id="ot15"
+                                                   binding="#{pageFlowScope.ConsignmentRTVSearchBean.totalExtendVal}">
+                                        <af:convertNumber groupingUsed="true" pattern="#,###.00"/>
+                                    </af:outputText>
+                                </af:panelGroupLayout>
+                            </f:facet>
+                        </af:column>
+                    </af:table>
+                </af:panelCollection>
+                <af:panelGroupLayout id="pgl28">
+                    <af:outputText value="Total # of Records : " id="total40"/>
+                    <af:outputText value="#{bindings.ConsgnmntRTVVO1Iterator.estimatedRowCount}" id="total41"
+                                   partialTriggers="b2"/>
+                </af:panelGroupLayout>
+            </af:panelGroupLayout>
+        </af:panelGroupLayout>
+    <!--</af:panelGroupLayout> -->
+</jsp:root>

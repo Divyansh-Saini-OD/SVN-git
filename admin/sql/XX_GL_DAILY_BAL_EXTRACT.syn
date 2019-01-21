@@ -1,0 +1,34 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating SYNONYMN XX_GL_DAILY_BAL_EXTRACT
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |                                                                          |
+-- | Synonymn : XXOD_GL_DAILY_BAL_EXTRACT                                     |
+-- |            For I1360 - Oracle GL Feed to Hyperion.                       |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     14-JUN-2008  Hemalatha S          Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+--DROP SYNONYM xx_gl_daily_bal_extract;
+
+CREATE SYNONYM xx_gl_daily_bal_extract FOR xxfin.xx_gl_daily_bal_extract;
+
+SHOW ERR

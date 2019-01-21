@@ -1,0 +1,710 @@
+# $Header$
+
+# dbdrv: exec fnd bin FNDLOAD bin &phase=daa+52 checkfile:~PROD:~PATH:~FILE &ui_apps 0 Y UPLOAD @ALR:patch/115/import/alr.lct @~PROD:~PATH/~FILE
+LANGUAGE = "US"
+LDRCONFIG = "alr.lct"
+
+#Source Database GSIDEV02
+
+#RELEASE_NAME 12.1.3
+
+# -- Begin Entity Definitions -- 
+
+DEFINE ALR_ALERTS
+  KEY   APPLICATION_SHORT_NAME          VARCHAR2(50)
+  KEY   ALERT_NAME                      VARCHAR2(50)
+  CTX   OWNER                           VARCHAR2(4000)
+  BASE  ALERT_CONDITION_TYPE            VARCHAR2(1)
+  BASE  ENABLED_FLAG                    VARCHAR2(1)
+  BASE  START_DATE_ACTIVE               VARCHAR2(25)
+  BASE  END_DATE_ACTIVE                 VARCHAR2(25)
+  BASE  TABLE_APPLICATION_SHORT_NAME    VARCHAR2(50)
+  BASE  DESCRIPTION                     VARCHAR2(240)
+  BASE  FREQUENCY_TYPE                  VARCHAR2(1)
+  BASE  WEEKLY_CHECK_DAY                VARCHAR2(3)
+  BASE  MONTHLY_CHECK_DAY_NUM           VARCHAR2(50)
+  BASE  DAYS_BETWEEN_CHECKS             VARCHAR2(50)
+  BASE  CHECK_BEGIN_DATE                VARCHAR2(25)
+  BASE  DATE_LAST_CHECKED               VARCHAR2(25)
+  BASE  INSERT_FLAG                     VARCHAR2(1)
+  BASE  UPDATE_FLAG                     VARCHAR2(1)
+  BASE  DELETE_FLAG                     VARCHAR2(1)
+  BASE  MAINTAIN_HISTORY_DAYS           VARCHAR2(50)
+  BASE  CHECK_TIME                      VARCHAR2(50)
+  BASE  CHECK_START_TIME                VARCHAR2(50)
+  BASE  CHECK_END_TIME                  VARCHAR2(50)
+  BASE  SECONDS_BETWEEN_CHECKS          VARCHAR2(50)
+  BASE  CHECK_ONCE_DAILY_FLAG           VARCHAR2(1)
+  BASE  SQL_STATEMENT_TEXT              VARCHAR2(32000)
+  BASE  ONE_TIME_ONLY_FLAG              VARCHAR2(50)
+  BASE  TABLE_NAME                      VARCHAR2(31)
+  BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+
+  DEFINE ALR_RESPONSE_SETS
+    KEY   RESP_SET_NAME                   VARCHAR2(30)
+    CTX   OWNER                           VARCHAR2(4000)
+    BASE  DESCRIPTION                     VARCHAR2(240)
+    BASE  ENABLED_FLAG                    VARCHAR2(1)
+    BASE  END_DATE_ACTIVE                 VARCHAR2(25)
+    BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+
+    DEFINE ALR_RESPONSE_VARIABLES
+      KEY   RESP_VAR_NAME                   VARCHAR2(30)
+      CTX   OWNER                           VARCHAR2(4000)
+      BASE  DESCRIPTION                     VARCHAR2(240)
+      BASE  TYPE                            VARCHAR2(1)
+      BASE  DEFAULT_VALUE                   VARCHAR2(240)
+      BASE  DATA_TYPE                       VARCHAR2(1)
+      BASE  DETAIL_MAX_LEN                  VARCHAR2(50)
+      BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+    END ALR_RESPONSE_VARIABLES
+
+      DEFINE ALR_RESPONSE_ACTIONS
+        KEY   RESPONSE_NAME                   VARCHAR2(240)
+        KEY   SEQUENCE                        VARCHAR2(50)
+        CTX   OWNER                           VARCHAR2(4000)
+        BASE  ACTION_NAME                     VARCHAR2(80)
+        BASE  ENABLED_FLAG                    VARCHAR2(1)
+        BASE  END_DATE_ACTIVE                 VARCHAR2(25)
+        BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+      END ALR_RESPONSE_ACTIONS
+
+        DEFINE ALR_VALID_RESPONSES
+          KEY   RESPONSE_NAME                   VARCHAR2(240)
+          CTX   OWNER                           VARCHAR2(4000)
+          BASE  TYPE                            VARCHAR2(1)
+          BASE  RESPONSE_TEXT                   VARCHAR2(32000)
+          BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+        END ALR_VALID_RESPONSES
+  END ALR_RESPONSE_SETS
+
+    DEFINE ALR_ACTION_SETS
+      KEY   NAME                            VARCHAR2(50)
+      CTX   OWNER                           VARCHAR2(4000)
+      BASE  END_DATE_ACTIVE                 VARCHAR2(25)
+      BASE  ENABLED_FLAG                    VARCHAR2(1)
+      BASE  RECIPIENTS_VIEW_ONLY_FLAG       VARCHAR2(1)
+      BASE  DESCRIPTION                     VARCHAR2(240)
+      BASE  SUPPRESS_FLAG                   VARCHAR2(1)
+      BASE  SUPPRESS_DAYS                   VARCHAR2(50)
+      BASE  SEQUENCE                        VARCHAR2(50)
+      BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+
+      DEFINE ALR_ACTION_SET_MEMBERS
+        CTX   OWNER                           VARCHAR2(4000)
+        BASE  ACTION_NAME                     VARCHAR2(80)
+        BASE  GROUP_NAME                      VARCHAR2(80)
+        BASE  GROUP_TYPE                      VARCHAR2(1)
+        BASE  SEQUENCE                        VARCHAR2(50)
+        BASE  END_DATE_ACTIVE                 VARCHAR2(25)
+        BASE  ENABLED_FLAG                    VARCHAR2(1)
+        BASE  SUMMARY_THRESHOLD               VARCHAR2(50)
+        BASE  ABORT_FLAG                      VARCHAR2(1)
+        BASE  ERROR_ACTION_SEQUENCE           VARCHAR2(50)
+        BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+      END ALR_ACTION_SET_MEMBERS
+
+        DEFINE ALR_ACTION_SET_OUTPUTS
+          KEY   ACTION_SET_OUTPUT_NAME          VARCHAR2(30)
+          CTX   OWNER                           VARCHAR2(4000)
+          BASE  SEQUENCE                        VARCHAR2(50)
+          BASE  SUPPRESS_FLAG                   VARCHAR2(1)
+          BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+        END ALR_ACTION_SET_OUTPUTS
+
+          DEFINE ALR_ACTION_SET_INPUTS
+            KEY   ACTION_SET_INPUT_NAME           VARCHAR2(30)
+            CTX   OWNER                           VARCHAR2(4000)
+            BASE  VALUE                           VARCHAR2(240)
+            BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+          END ALR_ACTION_SET_INPUTS
+    END ALR_ACTION_SETS
+
+      DEFINE ALR_ACTION_GROUPS
+        KEY   NAME                            VARCHAR2(80)
+        KEY   GROUP_TYPE                      VARCHAR2(1)
+        CTX   OWNER                           VARCHAR2(4000)
+        BASE  ACTION_GROUP_TYPE               VARCHAR2(1)
+        BASE  END_DATE_ACTIVE                 VARCHAR2(25)
+        BASE  ENABLED_FLAG                    VARCHAR2(1)
+        BASE  DESCRIPTION                     VARCHAR2(240)
+        BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+
+        DEFINE ALR_ACTION_GROUP_MEMBERS
+          CTX   OWNER                           VARCHAR2(4000)
+          BASE  ACTION_NAME                     VARCHAR2(80)
+          BASE  END_DATE_ACTIVE                 VARCHAR2(25)
+          BASE  ENABLED_FLAG                    VARCHAR2(1)
+          BASE  ACTION_LEVEL                    VARCHAR2(50)
+          BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+        END ALR_ACTION_GROUP_MEMBERS
+      END ALR_ACTION_GROUPS
+
+        DEFINE ALR_ACTIONS
+          KEY   ACTION_NAME                     VARCHAR2(80)
+          KEY   ACTION_END_DATE_ACTIVE          VARCHAR2(25)
+          CTX   OWNER                           VARCHAR2(4000)
+          BASE  ACTION_TYPE                     VARCHAR2(1)
+          BASE  ENABLED_FLAG                    VARCHAR2(1)
+          BASE  DESCRIPTION                     VARCHAR2(240)
+          BASE  ACTION_LEVEL_TYPE               VARCHAR2(1)
+          BASE  DATE_LAST_EXECUTED              VARCHAR2(25)
+          BASE  FILE_NAME                       VARCHAR2(240)
+          BASE  ARGUMENT_STRING                 VARCHAR2(240)
+          BASE  PROGRAM_APPLICATION_NAME        VARCHAR2(50)
+          BASE  CONCURRENT_PROGRAM_NAME         VARCHAR2(30)
+          BASE  LIST_APPLICATION_NAME           VARCHAR2(50)
+          BASE  LIST_NAME                       VARCHAR2(30)
+          BASE  TO_RECIPIENTS                   VARCHAR2(240)
+          BASE  CC_RECIPIENTS                   VARCHAR2(240)
+          BASE  BCC_RECIPIENTS                  VARCHAR2(240)
+          BASE  PRINT_RECIPIENTS                VARCHAR2(240)
+          BASE  PRINTER                         VARCHAR2(30)
+          BASE  SUBJECT                         VARCHAR2(240)
+          BASE  REPLY_TO                        VARCHAR2(240)
+          BASE  RESPONSE_SET_NAME               VARCHAR2(30)
+          BASE  FOLLOW_UP_AFTER_DAYS            VARCHAR2(50)
+          BASE  COLUMN_WRAP_FLAG                VARCHAR2(1)
+          BASE  MAXIMUM_SUMMARY_MESSAGE_WIDTH   VARCHAR2(50)
+          BASE  BODY                            VARCHAR2(2000)
+          BASE  VERSION_NUMBER                  VARCHAR2(50)
+          BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+
+          DEFINE ALR_ACTION_OUTPUTS
+            KEY   ACTION_OUT_NAME                 VARCHAR2(30)
+            CTX   OWNER                           VARCHAR2(4000)
+            BASE  CRITICAL_FLAG                   VARCHAR2(1)
+            BASE  END_DATE_ACTIVE                 VARCHAR2(25)
+            BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+          END ALR_ACTION_OUTPUTS
+        END ALR_ACTIONS
+
+          DEFINE ALR_ALERT_OUTPUTS
+            KEY   NAME                            VARCHAR2(30)
+            CTX   OWNER                           VARCHAR2(4000)
+            BASE  SEQUENCE                        VARCHAR2(50)
+            BASE  ENABLED_FLAG                    VARCHAR2(1)
+            BASE  START_DATE_ACTIVE               VARCHAR2(25)
+            BASE  END_DATE_ACTIVE                 VARCHAR2(25)
+            BASE  TITLE                           VARCHAR2(240)
+            BASE  DETAIL_MAX_LEN                  VARCHAR2(50)
+            BASE  SUMMARY_MAX_LEN                 VARCHAR2(50)
+            BASE  DEFAULT_SUPPRESS_FLAG           VARCHAR2(1)
+            BASE  FORMAT_MASK                     VARCHAR2(30)
+            BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+          END ALR_ALERT_OUTPUTS
+
+            DEFINE ALR_ALERT_INSTALLATIONS
+              KEY   ORACLE_USERNAME                 VARCHAR2(30)
+              KEY   DATA_GROUP_NAME                 VARCHAR2(240)
+              CTX   OWNER                           VARCHAR2(4000)
+              BASE  ENABLED_FLAG                    VARCHAR2(1)
+              BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+            END ALR_ALERT_INSTALLATIONS
+
+              DEFINE ALR_ALERT_INPUTS
+                KEY   NAME                            VARCHAR2(30)
+                CTX   OWNER                           VARCHAR2(4000)
+                BASE  ENABLED_FLAG                    VARCHAR2(1)
+                BASE  START_DATE_ACTIVE               VARCHAR2(25)
+                BASE  END_DATE_ACTIVE                 VARCHAR2(25)
+                BASE  TITLE                           VARCHAR2(240)
+                BASE  DATA_TYPE                       VARCHAR2(1)
+                BASE  DEFAULT_VALUE                   VARCHAR2(240)
+                BASE  LAST_UPDATE_DATE                VARCHAR2(10)
+              END ALR_ALERT_INPUTS
+END ALR_ALERTS
+
+# -- End Entity Definitions -- 
+
+
+BEGIN ALR_ALERTS "SQLAP" "XX_AP_INVOICE_INT_STATUS"
+  OWNER = "513031"
+  ALERT_CONDITION_TYPE = "P"
+  ENABLED_FLAG = "Y"
+  START_DATE_ACTIVE = "2008/10/28 00:00:00"
+  DESCRIPTION = "Alert to monitor invoices stuck in ap_invoices_all"
+  FREQUENCY_TYPE = "B"
+  DAYS_BETWEEN_CHECKS = "1"
+  DATE_LAST_CHECKED = "2013/06/18 06:37:02"
+  MAINTAIN_HISTORY_DAYS = "0"
+  CHECK_START_TIME = "25200"
+  SQL_STATEMENT_TEXT =
+ "SELECT org_id, \n\
+wfapproval_status, \n\
+APPROVAL_STATUS_LOOKUP_CODE \"INVOICE STATUS\", \n\
+count(1), \n\
+name \n\
+INTO &org_id, \n\
+&appv_status, \n\
+&inv_status, \n\
+&COUNT1, \n\
+&DB_NAME\n\
+FROM ap_invoices_v, v$database\n\
+WHERE source <> 'Manual Invoice Entry'\n\
+AND  invoice_id  \n\
+IN (SELECT a.invoice_id from ap_invoices_v a\n\
+WHERE a.wfapproval_status \n\
+IN ('INITIATED', 'REQUIRED')\n\
+AND a.APPROVAL_STATUS_LOOKUP_CODE <> \n\
+'NEEDS REAPPROVAL')\n\
+GROUP BY org_id, wfapproval_status, name, \n\
+APPROVAL_STATUS_LOOKUP_CODE"
+  LAST_UPDATE_DATE = "2009/03/02"
+
+
+  BEGIN ALR_ALERT_INSTALLATIONS "APPS" "OU_CA"
+    OWNER = "513031"
+    ENABLED_FLAG = "Y"
+    LAST_UPDATE_DATE = "2009/02/27"
+  END ALR_ALERT_INSTALLATIONS
+  
+  BEGIN ALR_ALERT_INSTALLATIONS "APPS" "OU_US"
+    OWNER = "513031"
+    ENABLED_FLAG = "Y"
+    LAST_UPDATE_DATE = "2009/02/27"
+  END ALR_ALERT_INSTALLATIONS
+  
+
+  BEGIN ALR_ALERT_OUTPUTS "APPV_STATUS"
+    OWNER = "513031"
+    SEQUENCE = "2"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2009/02/27 15:13:41"
+    TITLE = "APPV_STATUS"
+    DEFAULT_SUPPRESS_FLAG = "Y"
+    LAST_UPDATE_DATE = "2009/02/27"
+  END ALR_ALERT_OUTPUTS
+  
+  BEGIN ALR_ALERT_OUTPUTS "COUNT1"
+    OWNER = "513031"
+    SEQUENCE = "4"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2009/03/02 10:35:53"
+    TITLE = "COUNT1"
+    DEFAULT_SUPPRESS_FLAG = "Y"
+    LAST_UPDATE_DATE = "2009/03/02"
+  END ALR_ALERT_OUTPUTS
+  
+  BEGIN ALR_ALERT_OUTPUTS "DB_NAME"
+    OWNER = "513031"
+    SEQUENCE = "5"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2009/02/27 15:13:41"
+    TITLE = "DB_NAME"
+    DEFAULT_SUPPRESS_FLAG = "Y"
+    LAST_UPDATE_DATE = "2009/02/27"
+  END ALR_ALERT_OUTPUTS
+  
+  BEGIN ALR_ALERT_OUTPUTS "INV_STATUS"
+    OWNER = "513031"
+    SEQUENCE = "3"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2009/02/27 15:13:41"
+    TITLE = "INV_STATUS"
+    DEFAULT_SUPPRESS_FLAG = "Y"
+    LAST_UPDATE_DATE = "2009/02/27"
+  END ALR_ALERT_OUTPUTS
+  
+  BEGIN ALR_ALERT_OUTPUTS "ORG_ID"
+    OWNER = "513031"
+    SEQUENCE = "1"
+    ENABLED_FLAG = "Y"
+    START_DATE_ACTIVE = "2009/02/27 15:13:41"
+    TITLE = "ORG_ID"
+    DEFAULT_SUPPRESS_FLAG = "Y"
+    LAST_UPDATE_DATE = "2009/02/27"
+  END ALR_ALERT_OUTPUTS
+  
+
+  BEGIN ALR_ACTIONS "EMAILSUM" "2013/06/12 09:29:35"
+    OWNER = "596704"
+    ACTION_TYPE = "M"
+    ENABLED_FLAG = "N"
+    DESCRIPTION = "Summary message of invoices stuck"
+    ACTION_LEVEL_TYPE = "S"
+    TO_RECIPIENTS =
+ "peter.marco@officedepot.com Brian.Bagley@officedepot.com Expense.Payables@officedepot.com"
+    SUBJECT = "&DB_NAME - Summary of AP invoices stuck in approval workflow"
+    COLUMN_WRAP_FLAG = "Y"
+    MAXIMUM_SUMMARY_MESSAGE_WIDTH = "80"
+    VERSION_NUMBER = "4"
+    LAST_UPDATE_DATE = "2013/06/12"
+  
+  END ALR_ACTIONS
+  
+  BEGIN ALR_ACTIONS "EMAILSUM" "2013/06/12 09:42:32"
+    OWNER = "596704"
+    ACTION_TYPE = "M"
+    ENABLED_FLAG = "N"
+    DESCRIPTION = "Summary message of invoices stuck"
+    ACTION_LEVEL_TYPE = "S"
+    TO_RECIPIENTS =
+ "peter.marco@officedepot.com Brian.Bagley@officedepot.com Expense.Payables@officedepot.com arun.pandian@oracle.com"
+    SUBJECT = "&DB_NAME - Summary of AP invoices stuck in approval workflow"
+    COLUMN_WRAP_FLAG = "Y"
+    MAXIMUM_SUMMARY_MESSAGE_WIDTH = "80"
+    VERSION_NUMBER = "5"
+    LAST_UPDATE_DATE = "2013/06/12"
+  
+  END ALR_ACTIONS
+  
+  BEGIN ALR_ACTIONS "EMAILSUM" ""
+    OWNER = "596704"
+    ACTION_TYPE = "M"
+    ENABLED_FLAG = "Y"
+    DESCRIPTION = "Summary message of invoices stuck"
+    ACTION_LEVEL_TYPE = "S"
+    TO_RECIPIENTS =
+ "peter.marco@officedepot.com Brian.Bagley@officedepot.com Expense.Payables@officedepot.com"
+    SUBJECT = "&DB_NAME - Summary of AP invoices stuck in approval workflow"
+    COLUMN_WRAP_FLAG = "Y"
+    MAXIMUM_SUMMARY_MESSAGE_WIDTH = "80"
+    BODY =
+ "Below is a count of invoice(s) stuck in the AP_INVOICES_ALL\n\
+Table. The script was run to update all invoices with a Approval Status of INITIATED to REQUIRED.  Please review and take any other corrective actions.\n\
+\n\
+ORG_ID = &org_id\n\
+\n\
+Approval Status      Invoice Status          Invoice Count\n\
+---------------      --------------          ------------- \n\
+=**= Enter summary template below this line =**=\n\
+**&appv_status        &inv_status         &COUNT1  \n\
+=**= Enter summary template above this line =**="
+    VERSION_NUMBER = "6"
+    LAST_UPDATE_DATE = "2013/06/12"
+  
+    BEGIN ALR_ACTION_OUTPUTS "APPV_STATUS"
+      OWNER = "513031"
+      CRITICAL_FLAG = "N"
+      LAST_UPDATE_DATE = "2009/02/27"
+    END ALR_ACTION_OUTPUTS
+    
+    BEGIN ALR_ACTION_OUTPUTS "COUNT1"
+      OWNER = "513031"
+      CRITICAL_FLAG = "N"
+      LAST_UPDATE_DATE = "2009/03/02"
+    END ALR_ACTION_OUTPUTS
+    
+    BEGIN ALR_ACTION_OUTPUTS "DB_NAME"
+      OWNER = "596704"
+      CRITICAL_FLAG = "Y"
+      LAST_UPDATE_DATE = "2013/06/12"
+    END ALR_ACTION_OUTPUTS
+    
+    BEGIN ALR_ACTION_OUTPUTS "INV_STATUS"
+      OWNER = "513031"
+      CRITICAL_FLAG = "N"
+      LAST_UPDATE_DATE = "2009/02/27"
+    END ALR_ACTION_OUTPUTS
+    
+    BEGIN ALR_ACTION_OUTPUTS "ORG_ID"
+      OWNER = "596704"
+      CRITICAL_FLAG = "Y"
+      LAST_UPDATE_DATE = "2013/06/12"
+    END ALR_ACTION_OUTPUTS
+    
+  END ALR_ACTIONS
+  
+  BEGIN ALR_ACTIONS "UPDATE_INVOICES" "2013/06/12 09:19:55"
+    OWNER = "596704"
+    ACTION_TYPE = "S"
+    ENABLED_FLAG = "N"
+    DESCRIPTION = "Update Status of invoice stuck"
+    ACTION_LEVEL_TYPE = "S"
+    COLUMN_WRAP_FLAG = "Y"
+    MAXIMUM_SUMMARY_MESSAGE_WIDTH = "80"
+    VERSION_NUMBER = "7"
+    LAST_UPDATE_DATE = "2013/06/12"
+  
+  END ALR_ACTIONS
+  
+  BEGIN ALR_ACTIONS "UPDATE_INVOICES" "2013/06/12 09:53:18"
+    OWNER = "596704"
+    ACTION_TYPE = "S"
+    ENABLED_FLAG = "N"
+    DESCRIPTION = "Update Status of invoice stuck"
+    ACTION_LEVEL_TYPE = "S"
+    COLUMN_WRAP_FLAG = "Y"
+    MAXIMUM_SUMMARY_MESSAGE_WIDTH = "80"
+    VERSION_NUMBER = "8"
+    LAST_UPDATE_DATE = "2013/06/12"
+  
+  END ALR_ACTIONS
+  
+  BEGIN ALR_ACTIONS "UPDATE_INVOICES" "2013/06/12 09:57:59"
+    OWNER = "596704"
+    ACTION_TYPE = "S"
+    ENABLED_FLAG = "N"
+    DESCRIPTION = "Update Status of invoice stuck"
+    ACTION_LEVEL_TYPE = "S"
+    COLUMN_WRAP_FLAG = "Y"
+    MAXIMUM_SUMMARY_MESSAGE_WIDTH = "80"
+    VERSION_NUMBER = "9"
+    LAST_UPDATE_DATE = "2013/06/12"
+  
+  END ALR_ACTIONS
+  
+  BEGIN ALR_ACTIONS "UPDATE_INVOICES" "2013/06/12 10:03:21"
+    OWNER = "596704"
+    ACTION_TYPE = "S"
+    ENABLED_FLAG = "N"
+    DESCRIPTION = "Update Status of invoice stuck"
+    ACTION_LEVEL_TYPE = "S"
+    COLUMN_WRAP_FLAG = "Y"
+    MAXIMUM_SUMMARY_MESSAGE_WIDTH = "80"
+    VERSION_NUMBER = "10"
+    LAST_UPDATE_DATE = "2013/06/12"
+  
+  END ALR_ACTIONS
+  
+  BEGIN ALR_ACTIONS "UPDATE_INVOICES" "2013/06/18 06:30:59"
+    OWNER = "596704"
+    ACTION_TYPE = "S"
+    ENABLED_FLAG = "N"
+    DESCRIPTION = "Update Status of invoice stuck"
+    ACTION_LEVEL_TYPE = "S"
+    COLUMN_WRAP_FLAG = "Y"
+    MAXIMUM_SUMMARY_MESSAGE_WIDTH = "80"
+    VERSION_NUMBER = "11"
+    LAST_UPDATE_DATE = "2013/06/18"
+  
+  END ALR_ACTIONS
+  
+  BEGIN ALR_ACTIONS "UPDATE_INVOICES" "2013/06/18 06:36:27"
+    OWNER = "596704"
+    ACTION_TYPE = "S"
+    ENABLED_FLAG = "N"
+    DESCRIPTION = "Update Status of invoice stuck"
+    ACTION_LEVEL_TYPE = "S"
+    COLUMN_WRAP_FLAG = "Y"
+    MAXIMUM_SUMMARY_MESSAGE_WIDTH = "80"
+    VERSION_NUMBER = "12"
+    LAST_UPDATE_DATE = "2013/06/18"
+  
+  END ALR_ACTIONS
+  
+  BEGIN ALR_ACTIONS "UPDATE_INVOICES" ""
+    OWNER = "596704"
+    ACTION_TYPE = "S"
+    ENABLED_FLAG = "Y"
+    DESCRIPTION = "Update Status of invoice stuck"
+    ACTION_LEVEL_TYPE = "S"
+    COLUMN_WRAP_FLAG = "Y"
+    MAXIMUM_SUMMARY_MESSAGE_WIDTH = "80"
+    BODY =
+ "BEGIN\n\
+FOR I IN (SELECT invoice_id from ap_invoices_v \n\
+WHERE wfapproval_status IN ('INITIATED','REQUIRED')\n\
+AND APPROVAL_STATUS_LOOKUP_CODE <> 'NEEDS REAPPROVAL') \n\
+LOOP\n\
+UPDATE ap_invoices_all\n\
+SET wfapproval_status = 'REQUIRED', last_update_date = Sysdate\n\
+WHERE source <> 'Manual Invoice Entry'\n\
+AND  invoice_id = i.invoice_id;\n\
+END LOOP;\n\
+END;\n\
+/\n\
+commit;\n\
+/\n\
+\n\
+\n\
+" 
+    VERSION_NUMBER = "13"
+    LAST_UPDATE_DATE = "2013/06/18"
+  
+    BEGIN ALR_ACTION_OUTPUTS "APPV_STATUS"
+      OWNER = "513031"
+      CRITICAL_FLAG = "N"
+      LAST_UPDATE_DATE = "2009/02/27"
+    END ALR_ACTION_OUTPUTS
+    
+    BEGIN ALR_ACTION_OUTPUTS "COUNT1"
+      OWNER = "513031"
+      CRITICAL_FLAG = "N"
+      LAST_UPDATE_DATE = "2009/03/02"
+    END ALR_ACTION_OUTPUTS
+    
+    BEGIN ALR_ACTION_OUTPUTS "DB_NAME"
+      OWNER = "513031"
+      CRITICAL_FLAG = "N"
+      LAST_UPDATE_DATE = "2009/02/27"
+    END ALR_ACTION_OUTPUTS
+    
+    BEGIN ALR_ACTION_OUTPUTS "INV_STATUS"
+      OWNER = "513031"
+      CRITICAL_FLAG = "N"
+      LAST_UPDATE_DATE = "2009/02/27"
+    END ALR_ACTION_OUTPUTS
+    
+    BEGIN ALR_ACTION_OUTPUTS "ORG_ID"
+      OWNER = "513031"
+      CRITICAL_FLAG = "N"
+      LAST_UPDATE_DATE = "2009/02/27"
+    END ALR_ACTION_OUTPUTS
+    
+  END ALR_ACTIONS
+  
+
+
+  BEGIN ALR_ACTION_SETS "EMAILSUM"
+    OWNER = "513031"
+    ENABLED_FLAG = "Y"
+    RECIPIENTS_VIEW_ONLY_FLAG = "N"
+    DESCRIPTION = "Email Action Details"
+    SUPPRESS_FLAG = "N"
+    SEQUENCE = "1"
+    LAST_UPDATE_DATE = "2009/02/12"
+  
+  
+    BEGIN ALR_ACTION_SET_OUTPUTS "APPV_STATUS"
+      OWNER = "513031"
+      SEQUENCE = "2"
+      SUPPRESS_FLAG = "Y"
+      LAST_UPDATE_DATE = "2009/02/27"
+    END ALR_ACTION_SET_OUTPUTS
+    
+    BEGIN ALR_ACTION_SET_OUTPUTS "COUNT1"
+      OWNER = "513031"
+      SEQUENCE = "4"
+      SUPPRESS_FLAG = "Y"
+      LAST_UPDATE_DATE = "2009/03/02"
+    END ALR_ACTION_SET_OUTPUTS
+    
+    BEGIN ALR_ACTION_SET_OUTPUTS "DB_NAME"
+      OWNER = "513031"
+      SEQUENCE = "5"
+      SUPPRESS_FLAG = "Y"
+      LAST_UPDATE_DATE = "2009/02/27"
+    END ALR_ACTION_SET_OUTPUTS
+    
+    BEGIN ALR_ACTION_SET_OUTPUTS "INV_STATUS"
+      OWNER = "513031"
+      SEQUENCE = "3"
+      SUPPRESS_FLAG = "Y"
+      LAST_UPDATE_DATE = "2009/02/27"
+    END ALR_ACTION_SET_OUTPUTS
+    
+    BEGIN ALR_ACTION_SET_OUTPUTS "ORG_ID"
+      OWNER = "513031"
+      SEQUENCE = "1"
+      SUPPRESS_FLAG = "Y"
+      LAST_UPDATE_DATE = "2009/02/27"
+    END ALR_ACTION_SET_OUTPUTS
+    
+  
+    BEGIN ALR_ACTION_SET_MEMBERS
+      OWNER = "513031"
+      ACTION_NAME = "EMAILSUM"
+      SEQUENCE = "1"
+      ENABLED_FLAG = "Y"
+      ABORT_FLAG = "A"
+      LAST_UPDATE_DATE = "2009/02/12"
+    END ALR_ACTION_SET_MEMBERS
+    
+    BEGIN ALR_ACTION_SET_MEMBERS
+      OWNER = "513031"
+      ACTION_NAME = "Exit Action Set Successfully"
+      SEQUENCE = "6"
+      ENABLED_FLAG = "Y"
+      ABORT_FLAG = "A"
+      LAST_UPDATE_DATE = "2009/02/27"
+    END ALR_ACTION_SET_MEMBERS
+    
+  END ALR_ACTION_SETS
+  
+  BEGIN ALR_ACTION_SETS "UPDATE TABLE"
+    OWNER = "513031"
+    ENABLED_FLAG = "Y"
+    RECIPIENTS_VIEW_ONLY_FLAG = "N"
+    DESCRIPTION = "Update Stuck invoices"
+    SUPPRESS_FLAG = "N"
+    SEQUENCE = "10"
+    LAST_UPDATE_DATE = "2009/02/27"
+  
+  
+    BEGIN ALR_ACTION_SET_OUTPUTS "APPV_STATUS"
+      OWNER = "513031"
+      SEQUENCE = "2"
+      SUPPRESS_FLAG = "Y"
+      LAST_UPDATE_DATE = "2009/02/27"
+    END ALR_ACTION_SET_OUTPUTS
+    
+    BEGIN ALR_ACTION_SET_OUTPUTS "COUNT1"
+      OWNER = "513031"
+      SEQUENCE = "4"
+      SUPPRESS_FLAG = "Y"
+      LAST_UPDATE_DATE = "2009/03/02"
+    END ALR_ACTION_SET_OUTPUTS
+    
+    BEGIN ALR_ACTION_SET_OUTPUTS "DB_NAME"
+      OWNER = "513031"
+      SEQUENCE = "5"
+      SUPPRESS_FLAG = "Y"
+      LAST_UPDATE_DATE = "2009/02/27"
+    END ALR_ACTION_SET_OUTPUTS
+    
+    BEGIN ALR_ACTION_SET_OUTPUTS "INV_STATUS"
+      OWNER = "513031"
+      SEQUENCE = "3"
+      SUPPRESS_FLAG = "Y"
+      LAST_UPDATE_DATE = "2009/02/27"
+    END ALR_ACTION_SET_OUTPUTS
+    
+    BEGIN ALR_ACTION_SET_OUTPUTS "ORG_ID"
+      OWNER = "513031"
+      SEQUENCE = "1"
+      SUPPRESS_FLAG = "Y"
+      LAST_UPDATE_DATE = "2009/02/27"
+    END ALR_ACTION_SET_OUTPUTS
+    
+  
+    BEGIN ALR_ACTION_SET_MEMBERS
+      OWNER = "513031"
+      ACTION_NAME = "UPDATE_INVOICES"
+      SEQUENCE = "1"
+      ENABLED_FLAG = "Y"
+      ABORT_FLAG = "A"
+      LAST_UPDATE_DATE = "2009/02/27"
+    END ALR_ACTION_SET_MEMBERS
+    
+  END ALR_ACTION_SETS
+  
+
+  BEGIN ALR_RESPONSE_SETS "Response"
+    OWNER = "513031"
+    ENABLED_FLAG = "N"
+    LAST_UPDATE_DATE = "2009/02/12"
+  
+    BEGIN ALR_VALID_RESPONSES "Invalid Response"
+      OWNER = "ORACLE12.1.3"
+      TYPE = "I"
+      LAST_UPDATE_DATE = "2008/12/11"
+    END ALR_VALID_RESPONSES
+    
+    BEGIN ALR_VALID_RESPONSES "No Response Followup"
+      OWNER = "ORACLE12.1.3"
+      TYPE = "N"
+      LAST_UPDATE_DATE = "2008/12/11"
+    END ALR_VALID_RESPONSES
+    
+    BEGIN ALR_VALID_RESPONSES "Yes"
+      OWNER = "513031"
+      TYPE = "V"
+      RESPONSE_TEXT = "yes"
+      LAST_UPDATE_DATE = "2008/12/11"
+    END ALR_VALID_RESPONSES
+    
+    BEGIN ALR_VALID_RESPONSES "No"
+      OWNER = "513031"
+      TYPE = "V"
+      RESPONSE_TEXT = "No"
+      LAST_UPDATE_DATE = "2008/12/11"
+    END ALR_VALID_RESPONSES
+    
+  
+  
+  END ALR_RESPONSE_SETS
+  
+END ALR_ALERTS
+

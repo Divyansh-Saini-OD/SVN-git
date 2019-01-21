@@ -1,0 +1,34 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+PROMPT Creating SYNONYM XX_AR_INVOICE_FREQUENCY
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE
+
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- +===================================================================================+
+-- | Name :XX_AR_INVOICE_FREQUENCY                                                     |
+-- | Description : Create the Synonym for the table XX_AR_INVOICE_FREQUENCY            |
+-- |               ,extension I0381                                                    |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date         Author               Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | V1.0     09-AUG-2007  Gowri Shankar        Initial version                        |
+-- | V1.1     17-NOV-2007  Anitha Devarajulu    Drop statement and slash are removed   |
+-- +===================================================================================+
+
+--DROP SYNONYM XX_AR_INVOICE_FREQUENCY;
+
+CREATE SYNONYM XX_AR_INVOICE_FREQUENCY FOR XXFIN.XX_AR_INVOICE_FREQUENCY;
+
+SHOW ERROR

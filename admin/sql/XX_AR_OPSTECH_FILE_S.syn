@@ -1,0 +1,33 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+  ---+============================================================================================+
+  ---|                              Office Depot - Project Simplify                               |
+  ---|                                   Providge Consulting                                      |
+  ---+============================================================================================+
+  ---|    Application  :        AR                                                                |
+  ---|                                                                                            |
+  ---|    Name         :        XX_AR_OPSTECH_FILE_S.syn                                          |
+  ---|                                                                                            |
+  ---|    Description  :        Synonym for OPSTECH tracking table 								  |
+  ---|                                                                                            |
+  ---|                                                                                            |
+  ---|                                                                                            |
+  ---|    Change Record                                                                           |
+  ---|    ---------------------------------                                                       |
+  ---|    Version         DATE              AUTHOR             DESCRIPTION                        |
+  ---|    ------------    ----------------- ---------------    ---------------------              |
+  ---|    1.0             20-AUG-2018       Aniket J           Initial Version                    |
+  ---+============================================================================================+
+
+
+CREATE OR REPLACE SYNONYM XX_AR_OPSTECH_FILE_S FOR XXFIN.XX_AR_OPSTECH_FILE_S;  
+ 
+SHOW ERROR;

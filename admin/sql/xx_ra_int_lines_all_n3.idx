@@ -1,0 +1,29 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- +===================================================================+
+-- | Name        : xx_ra_int_lines_all_n3.idx                          |
+-- |              		                                       |
+-- | Rice ID     : E0080   (SDR)                                       |
+-- |              			                               |
+-- | Description : Index Creation Script                               |
+-- |                                                                   |
+-- |              			                               |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======  ===========  =============    ============================|
+-- |1.0      09-DEC-2010  P.Marco          Initial Version             |
+-- +===================================================================+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX xxfin.xx_ra_int_lines_all_n3 ON XXFIN.xx_ra_int_lines_all  (related_trx_number)  
+COMPUTE STATISTICS TABLESPACE APPS_TS_TX_IDX_16M;
+
+
+
+
+SHOW ERROR

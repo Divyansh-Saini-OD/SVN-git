@@ -1,0 +1,30 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===========================================================================+
+-- |                  Office Depot - Project C2FO                              |
+-- +===========================================================================+
+-- | Name :          XX_AP_C2FO_AWARD_DATA_STAGING                             |
+-- | Description :   Script to create synonym for                              |
+-- |                 XXFIN.XX_AP_C2FO_AWARD_DATA_STAGING table                 |
+-- |                                                                           |
+-- |  RICE_ID: I3123                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     ===============           ====================== |
+-- |1.0        31-AUG-2018    Antonio Morales           Initial version        |
+-- +===========================================================================+
+
+ 
+
+Create  or replace synonym XX_AP_C2FO_AWARD_DATA_STAGING for XXFIN.XX_AP_C2FO_AWARD_DATA_STAGING;
+ 
+Show error

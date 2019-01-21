@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel" version="12.2.1.12.24" id="VendorMootDropShipPageDef"
+                Package="od.tdmatch.view.pageDefs">
+  <parameters/>
+  <executables>
+    <variableIterator id="variables"/>
+    <iterator Binds="VendorMootDShipQPanelVO1" RangeSize="25" DataControl="TradeMatchAMDataControl"
+              id="VendorMootDShipQPanelVO1Iterator"/>
+    <iterator id="VendMootDtVO2Iterator" Binds="VendMootDtVO2" DataControl="TradeMatchAMDataControl" RangeSize="25"/>
+  </executables>
+  <bindings>
+    <list IterBinding="VendorMootDShipQPanelVO1Iterator" StaticList="false" Uses="LOV_OrgId" id="OrgId"
+          DTSupportsMRU="true" SelectItemValueMode="ListObject"/>
+    <attributeValues IterBinding="VendorMootDShipQPanelVO1Iterator" id="InvoiceFrom">
+      <AttrNames>
+        <Item Value="InvoiceFrom"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="VendorMootDShipQPanelVO1Iterator" id="InvoiceTo">
+      <AttrNames>
+        <Item Value="InvoiceTo"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="VendorMootDShipQPanelVO1Iterator" id="DueFrom">
+      <AttrNames>
+        <Item Value="DueFrom"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="VendorMootDShipQPanelVO1Iterator" id="DueTo">
+      <AttrNames>
+        <Item Value="DueTo"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="VendorMootDShipQPanelVO1Iterator" id="FrontDoor">
+      <AttrNames>
+        <Item Value="FrontDoor"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="VendorMootDShipQPanelVO1Iterator" id="NonCode">
+      <AttrNames>
+        <Item Value="NonCode"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="VendorMootDShipQPanelVO1Iterator" id="DropShip">
+      <AttrNames>
+        <Item Value="DropShip"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="VendorMootDShipQPanelVO1Iterator" id="AllExcepts">
+      <AttrNames>
+        <Item Value="AllExcepts"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="VendorMootDShipQPanelVO1Iterator" id="PricingExcepts">
+      <AttrNames>
+        <Item Value="PricingExcepts"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="VendorMootDShipQPanelVO1Iterator" id="QtyExcepts">
+      <AttrNames>
+        <Item Value="QtyExcepts"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="VendorMootDShipQPanelVO1Iterator" id="FrtExcepts">
+      <AttrNames>
+        <Item Value="FrtExcepts"/>
+      </AttrNames>
+    </attributeValues>
+    <listOfValues IterBinding="VendorMootDShipQPanelVO1Iterator" StaticList="false" Uses="LOV_SupplierName"
+                  id="SupplierName"/>
+    <list IterBinding="VendorMootDShipQPanelVO1Iterator" StaticList="false" Uses="LOV_InvoiceSource"
+          id="InvoiceSource" DTSupportsMRU="true" SelectItemValueMode="ListObject"/>
+    <listOfValues IterBinding="VendorMootDShipQPanelVO1Iterator" StaticList="false" Uses="LOV_SupplierNumber"
+                  id="SupplierNumber"/>
+    <listOfValues IterBinding="VendorMootDShipQPanelVO1Iterator" StaticList="false" Uses="LOV_InvoiceNumber"
+                  id="InvoiceNumber"/>
+    <listOfValues IterBinding="VendorMootDShipQPanelVO1Iterator" StaticList="false" Uses="LOV_SupplierSite"
+                  id="SupplierSite"/>
+    <listOfValues IterBinding="VendorMootDShipQPanelVO1Iterator" StaticList="false" Uses="LOV_PONumber" id="PONumber"/>
+    <listOfValues IterBinding="VendorMootDShipQPanelVO1Iterator" StaticList="false" Uses="LOV_SKUNumber"
+                  id="SKUNumber"/>
+    <list IterBinding="VendorMootDShipQPanelVO1Iterator" StaticList="false" Uses="LOV_VendorAssistant"
+          id="VendorAssistant" DTSupportsMRU="true" SelectItemValueMode="ListObject"/>
+    <tree IterBinding="VendMootDtVO2Iterator" id="VendMootDtVO2">
+      <nodeDefinition DefName="od.tdmatch.model.VendMootDtVO" Name="VendMootDtVO20">
+        <AttrNames>
+          <Item Value="VendorAssistant"/>
+          <Item Value="SupplierName"/>
+          <Item Value="SupplierNo"/>
+          <Item Value="SupplierSite"/>
+          <Item Value="Discount"/>
+          <Item Value="InvoiceNum"/>
+          <Item Value="VoucherNum"/>
+          <Item Value="InvoiceDate"/>
+          <Item Value="PoNumber"/>
+          <Item Value="Location"/>
+          <Item Value="DueDate"/>
+          <Item Value="InvoiceAmount"/>
+          <Item Value="QtyHoldAmt"/>
+          <Item Value="PriceHoldAmt"/>
+          <Item Value="FrontDoorc"/>
+          <Item Value="NonCodec"/>
+          <Item Value="DropShipc"/>
+          <Item Value="FrtHold"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <attributeValues IterBinding="VendMootDtVO2Iterator" id="SumInvAmount">
+      <AttrNames>
+        <Item Value="SumInvAmount"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="VendMootDtVO2Iterator" id="SumQtyHoldAmt">
+      <AttrNames>
+        <Item Value="SumQtyHoldAmt"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="VendMootDtVO2Iterator" id="SumPriceHoldAmt">
+      <AttrNames>
+        <Item Value="SumPriceHoldAmt"/>
+      </AttrNames>
+    </attributeValues>
+    <methodAction id="vendMootDshipSearchAction" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="vendMootDshipSearchAction" IsViewObjectMethod="false"
+                  DataControl="TradeMatchAMDataControl"
+                  InstanceName="bindings.vendMootDshipSearchAction.dataControl.dataProvider"
+                  ReturnName="data.TradeMatchAMDataControl.methodResults.vendMootDshipSearchAction_vendMootDshipSearchAction_dataControl_dataProvider_vendMootDshipSearchAction_result"/>
+    <methodAction id="clearVendMootDShipSearch" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="clearVendMootDShipSearch" IsViewObjectMethod="false" DataControl="TradeMatchAMDataControl"
+                  InstanceName="bindings.clearVendMootDShipSearch.dataControl.dataProvider"/>
+    <button IterBinding="VendorMootDShipQPanelVO1Iterator" id="FrtExcepts1" DTSupportsMRU="false" StaticList="true">
+      <AttrNames>
+        <Item Value="FrtExcepts"/>
+      </AttrNames>
+      <ValueList>
+        <Item Value="Y"/>
+        <Item Value="N"/>
+      </ValueList>
+    </button>
+    <button IterBinding="VendorMootDShipQPanelVO1Iterator" id="AllExcepts1" DTSupportsMRU="false" StaticList="true">
+      <AttrNames>
+        <Item Value="AllExcepts"/>
+      </AttrNames>
+      <ValueList>
+        <Item Value="Y"/>
+        <Item Value="N"/>
+      </ValueList>
+    </button>
+    <button IterBinding="VendorMootDShipQPanelVO1Iterator" id="FrontDoor1" DTSupportsMRU="false" StaticList="true">
+      <AttrNames>
+        <Item Value="FrontDoor"/>
+      </AttrNames>
+      <ValueList>
+        <Item Value="Y"/>
+        <Item Value="N"/>
+      </ValueList>
+    </button>
+    <button IterBinding="VendorMootDShipQPanelVO1Iterator" id="NonCode1" DTSupportsMRU="false" StaticList="true">
+      <AttrNames>
+        <Item Value="NonCode"/>
+      </AttrNames>
+      <ValueList>
+        <Item Value="Y"/>
+        <Item Value="N"/>
+      </ValueList>
+    </button>
+    <button IterBinding="VendorMootDShipQPanelVO1Iterator" id="DropShip1" DTSupportsMRU="false" StaticList="true">
+      <AttrNames>
+        <Item Value="DropShip"/>
+      </AttrNames>
+      <ValueList>
+        <Item Value="Y"/>
+        <Item Value="N"/>
+      </ValueList>
+    </button>
+    <button IterBinding="VendorMootDShipQPanelVO1Iterator" id="PricingExcepts1" DTSupportsMRU="false" StaticList="true">
+      <AttrNames>
+        <Item Value="PricingExcepts"/>
+      </AttrNames>
+      <ValueList>
+        <Item Value="Y"/>
+        <Item Value="N"/>
+      </ValueList>
+    </button>
+    <button IterBinding="VendorMootDShipQPanelVO1Iterator" id="QtyExcepts1" DTSupportsMRU="false" StaticList="true">
+      <AttrNames>
+        <Item Value="QtyExcepts"/>
+      </AttrNames>
+      <ValueList>
+        <Item Value="Y"/>
+        <Item Value="N"/>
+      </ValueList>
+    </button>
+  </bindings>
+</pageDefinition>

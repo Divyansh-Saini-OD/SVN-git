@@ -1,0 +1,28 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- |                      INDEXES: XX_IBY_BATCH_TRXNS_HISTORY                 |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     28-JUN-2008  Aravind A.           Initial version               |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+DROP INDEX XXFIN.XX_IBY_BATCH_TRXNS_HISTORY_N3;
+DROP INDEX XXFIN.XX_IBY_BATCH_TRXNS_HISTORY_N6;
+DROP INDEX XXFIN.XX_IBY_BATCH_TRXNS_HISTORY_N7;
+
+SHOW ERROR

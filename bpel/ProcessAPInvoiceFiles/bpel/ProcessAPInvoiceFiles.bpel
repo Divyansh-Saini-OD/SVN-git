@@ -1,0 +1,2068 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Thu May 29 14:12:54 IST 2008
+  Author:  rajesh
+  Purpose: Asynchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="ProcessAPInvoiceFiles"
+         targetNamespace="http://xmlns.oracle.com/ProcessAPInvoiceFiles"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns24="http://xmlns.oracle.com/TransactionData"
+         xmlns:ns30="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_AP_DEL_INV_INTFC/"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns27="http://xmlns.oracle.com/pcbpel/adapter/file/ZeroByte/"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:ns31="http://xmlns.oracle.com/pcbpel/adapter/db/top/StgTableInsert"
+         xmlns:ns9="http://xmlns.oracle.com/pcbpel/adapter/db/StgTableInsert/"
+         xmlns:ns37="http://TargetNamespace.com/HRGarnish"
+         xmlns:ns17="http://TargetNamespace.com/ProcessInvoiceInbound_TDM"
+         xmlns:ns1="http://xmlns.oracle.com/PostJournalEntry"
+         xmlns:ns25="http://xmlns.oracle.com/BPELInvokeESP"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/file/IntegralFileChunkRead/"
+         xmlns:ns26="http://xmlns.oracle.com/ias/pcbpel/NotificationService"
+         xmlns:ns15="http://xmlns.oracle.com/pcbpel/adapter/file/GSSFileChunkRead/"
+         xmlns:ns10="http://xmlns.oracle.com/pcbpel/adapter/db/StgBatchTableInsert/"
+         xmlns:ns7="http://www.openapplications.org/oagis/9/officedepot/1"
+         xmlns:ns12="ODError"
+         xmlns:ns18="http://xmlns.oracle.com/pcbpel/adapter/file/StandardFileChunkRead/"
+         xmlns:ns28="http://TargetNamespace.com/ZeroByte"
+         xmlns:ns11="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:ns22="http://xmlns.oracle.com/pcbpel/adapter/file/FileDelete/"
+         xmlns:ehdr="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:ns3="http://TargetNamespace.com/Integral"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:ns21="http://xmlns.oracle.com/pcbpel/adapter/file/RetailLeaseChunkRead/"
+         xmlns:ns4="http://xmlns.oracle.com/pcbpel/adapter/file/"
+         xmlns:ns16="http://officedepot.simplify.com/FTPInvoiceInbound"
+         xmlns:ns5="http://xmlns.oracle.com/ProcessInvoiceInbound_OAGIS"
+         xmlns:ns32="http://xmlns.oracle.com/pcbpel/adapter/file/PcardChunkRead/"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns13="http://xmlns.oracle.com/pcbpel/adapter/file/TDMChunkRead/"
+         xmlns:ns20="http://www.na.odcorp.com/ExtensityInvoiceRead"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns34="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_AP_INV_IN_PCARD_BPEL_PKG/PROCESS_PCARD_INVOICE/"
+         xmlns:ns29="http://xmlns.oracle.com/pcbpel/adapter/db/DeletePartiallyLoadedRecords/"
+         xmlns:client="http://xmlns.oracle.com/ProcessAPInvoiceFiles"
+         xmlns:ns23="http://xmlns.oracle.com/ODTransactionLogger"
+         xmlns:ns35="http://xmlns.oracle.com/pcbpel/adapter/db/top/StgBatchTableInsert"
+         xmlns:ns6="http://www.openapplications.org/oagis/9"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ns19="http://xmlns.oracle.com/pcbpel/adapter/file/ExtensityChunkFileRead/"
+         xmlns:ns36="http://xmlns.oracle.com/pcbpel/adapter/file/PcardFileRead/"
+         xmlns:ns14="http://xmlns.oracle.com/pcbpel/adapter/file/PeopleSoftFileChunkRead/"
+         xmlns:ns8="http://schemas.oracle.com/service/bpel/common"
+         xmlns:ns33="http://xmlns.oracle.com/pcbpel/adapter/apps/OASrvcPCard/">
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <partnerLinks>
+        <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+        <partnerLink name="client"
+                     partnerLinkType="client:ProcessAPInvoiceFiles"
+                     myRole="ProcessAPInvoiceFilesProvider"
+                     partnerRole="ProcessAPInvoiceFilesRequester"/>
+        <partnerLink name="IntegralFileChunkRead"
+                     partnerRole="SynchChunkedRead_role"
+                     partnerLinkType="ns2:SynchChunkedRead_plt"
+                     myRole="SynchChunkedRead_role"/>
+        <partnerLink name="StgTableInsert" partnerRole="StgTableInsert_role"
+                     partnerLinkType="ns9:StgTableInsert_plt"/>
+        <partnerLink name="StgBatchTableInsert"
+                     partnerRole="StgBatchTableInsert_role"
+                     partnerLinkType="ns10:StgBatchTableInsert_plt"/>
+        <partnerLink myRole="ODErrorLoggerRequester" name="ODErrorLogger"
+                     partnerRole="ODErrorLoggerProvider"
+                     partnerLinkType="ns11:ODErrorLogger"/>
+        <partnerLink myRole="SynchChunkedRead_role" name="TDMChunkRead"
+                     partnerRole="SynchChunkedRead_role"
+                     partnerLinkType="ns13:SynchChunkedRead_plt"/>
+        <partnerLink myRole="SynchChunkedRead_role"
+                     name="PeopleSoftFileChunkRead"
+                     partnerRole="SynchChunkedRead_role"
+                     partnerLinkType="ns14:SynchChunkedRead_plt"/>
+        <partnerLink name="GSSFileChunkRead" partnerRole="SynchChunked_role"
+                     partnerLinkType="ns15:SynchChunked_plt"
+                     myRole="SynchChunked_role"/>
+        <partnerLink name="StandardFileChunkRead"
+                     partnerRole="SynchChunked_role"
+                     partnerLinkType="ns18:SynchChunked_plt"
+                     myRole="SynchChunked_role"/>
+        <partnerLink name="ExtensityChunkFileRead"
+                     partnerRole="SynchChunked_role"
+                     partnerLinkType="ns19:SynchChunked_plt"
+                     myRole="SynchChunked_role"/>
+        <partnerLink name="RetailLeaseChunkRead" partnerRole="SynchChunked_role"
+                     partnerLinkType="ns21:SynchChunked_plt"
+                     myRole="SynchChunked_role"/>
+        <partnerLink name="FileDelete" partnerRole="Write_role"
+                     partnerLinkType="ns22:Write_plt"/>
+        <partnerLink myRole="ODTransactionLoggerRequester"
+                     name="ODTransactionLogger"
+                     partnerRole="ODTransactionLoggerProvider"
+                     partnerLinkType="ns23:ODTransactionLogger"/>
+        <partnerLink name="BPELInvokeESP" partnerRole="BPELInvokeESPProvider"
+                     partnerLinkType="ns25:BPELInvokeESP"
+                     myRole="BPELInvokeESPRequester"/>
+        <partnerLink name="NotificationService"
+                     partnerRole="NotificationServiceProvider"
+                     partnerLinkType="ns26:NotificationServiceLink"/>
+        <partnerLink name="ZeroByte" partnerRole="SynchChunked_role"
+                     partnerLinkType="ns27:SynchChunked_plt"/>
+        <partnerLink name="DeletePartiallyLoadedRecords"
+                     partnerRole="DeletePartiallyLoadedRecords_role"
+                     partnerLinkType="ns29:DeletePartiallyLoadedRecords_plt"/>
+      <!--  <partnerLink name="PcardChunkedRead" partnerRole="SynchChunkedRead_role"
+                     partnerLinkType="ns32:SynchChunkedRead_plt"
+                     myRole="SynchChunkedRead_role"/> -->
+        <partnerLink name="OASrvcPCard" partnerRole="OASrvcPCard_role"
+                     partnerLinkType="ns33:OASrvcPCard_plt"/>
+        <partnerLink name="PcardFileRead" partnerRole="SynchChunkRead_role"
+                     partnerLinkType="ns36:SynchChunkRead_plt"
+                     myRole="SynchChunkRead_role"/>
+    </partnerLinks>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        VARIABLES                                                        
+        List of messages and XML documents used within this BPEL process 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <variables>
+        <!-- Reference to the message passed as input during initiation -->
+        <variable name="inputVariable"
+                  messageType="client:ProcessAPInvoiceFilesRequestMessage"/>
+        <!-- Reference to the message that will be sent back to the requester during callback -->
+        <variable name="outputVariable"
+                  messageType="client:ProcessAPInvoiceFilesResponseMessage"/>
+        <variable name="Integral_SynchChunkedRead" messageType="ns2:Empty_msg"/>
+        <variable name="FileName" type="xsd:string"/>
+        <variable name="ErrorMessageText" type="xsd:string"/>
+        <variable name="Integral_SynchChunkedRead_Out"
+                  messageType="ns2:container_msg"/>
+        <variable name="SyncChunkReadInboundHeader"
+                  messageType="ns4:OutboundHeader_msg"/>
+        <variable name="SyncChunkReadOutboundHeader"
+                  messageType="ns4:OutboundHeader_msg"/>
+        <variable name="XSLT_PARAM" element="ns8:parameters"/>
+        <variable name="InvokeStgTableInsert"
+                  messageType="ns9:XxApInvInterfaceStgCollection_msg"/>
+        <variable name="OAGIS_Var" element="ns6:ProcessInvoice"/>
+        <variable name="Invoke_BatchInsert"
+                  messageType="ns10:XxApInvBatchInterfaceStgCollection_msg"/>
+        <variable name="TMP_File_Name" type="xsd:string"/>
+        <variable name="invkCatchAll_initiate"
+                  messageType="ns11:ODErrorLoggerRequestMessage"/>
+        <variable name="TDM_SynchChunkedRead" messageType="ns13:Empty_msg"/>
+        <variable name="TDM_SynchChunkedRead_Out"
+                  messageType="ns13:container_msg"/>
+        <variable name="PeopleSoft_SynchChunkedRead"
+                  messageType="ns14:Empty_msg"/>
+        <variable name="PeopleSoft_SynchChunkedRead_Out"
+                  messageType="ns14:container_msg"/>
+        <variable name="InvokeGSSChunkRead" messageType="ns15:Empty_msg"/>
+        <variable name="InvokeGSSChunkRead_Out"
+                  messageType="ns15:container_msg"/>
+        <variable name="InvokeStandardFileRead" messageType="ns18:Empty_msg"/>
+        <variable name="InvokeStandardFileRead_Out"
+                  messageType="ns18:container_msg"/>
+        <variable name="InvokeExtensityFileRead" messageType="ns19:Empty_msg"/>
+        <variable name="InvokeExtensityFileRead_Out"
+                  messageType="ns19:Extensity_msg"/>
+        <variable name="InvokeRetailLeaseFileRead"
+                  messageType="ns21:Empty_msg"/>
+        <variable name="InvokeRetailLeaseFileRead_Out"
+                  messageType="ns21:RetailLeases_msg"/>
+        <variable name="InvokeFileDelete" messageType="ns22:Write_msg"/>
+        <variable name="Outbound_Var" element="ns4:OutboundFileHeaderType"/>
+        <variable name="ProcessHeader" type="xsd:string"/>
+        <variable name="Exception" messageType="bpelx:RuntimeFaultMessage"/>
+        <variable name="logTransactionInput"
+                  messageType="ns23:ODTransactionLoggerRequestMessage"/>
+        <variable name="ESP_File_Name" type="xsd:string"/>
+        <variable name="InvokeProcessESP"
+                  messageType="ns25:BPELInvokeESPRequestMessage"/>
+        <variable name="XSLT_PARAM1" element="ns8:parameters"/>
+        <variable name="counter" type="xsd:int"/>
+        <variable name="status" type="xsd:string"/>
+        <variable name="EmailAddress" type="xsd:string"/>
+        <variable name="InvokeZeroByteXSD_SynchChunked_In"
+                  messageType="ns27:Empty_msg"/>
+        <variable name="InvokeZeroByteXSD_SynchChunked_Out"
+                  messageType="ns27:ZeroByte_msg"/>
+        <variable name="InvokeDeletePartiallyLoadedRecords_In"
+                  messageType="ns29:args_in_msg"/>
+        <variable name="FileName_Error" type="xsd:string"/>
+        <variable name="xmlFragment" type="xsd:string"/>
+        <variable name="RecordCount" type="xsd:integer"/>
+        <variable name="BatchId" type="xsd:integer"/>
+        <variable name="Total_Rec_Cnt" type="xsd:int"/>
+        <variable name="CountNode" type="xsd:int"/>
+        <!--<variable name="InvokePcardFileRead" messageType="ns32:Empty_msg"/>
+        <variable name="InvokePcardFileRead_Out"
+                  messageType="ns32:container_msg"/> -->
+        <variable name="OASrvcPCard_In" messageType="ns33:args_in_msg"/>
+        <variable name="OASrvcPCard_Out" messageType="ns33:args_out_msg"/>
+        <!--  <variable name="InvokePcardFileRead_SynchRead_InputVariable_temp"
+                  messageType="ns36:Empty_msg"/>
+        <variable name="InvokePcardFileRead_SynchRead_OutputVariable_temp"
+                  messageType="ns36:container_msg"/> -->
+        <!-- <variable name="InvokePcardFileRead_SynchRead_InputVariable_temp1"
+                  messageType="ns36:Empty_msg"/> 
+        <variable name="InvokePcardFileRead_SynchRead_OutputVariable_temp1" 
+                  messageType="ns36:Root-Element_msg"/> -->
+        <variable name="InvokePcardFileRead_In" messageType="ns36:Empty_msg"/>
+        <variable name="InvokePcardFileRead_Output"
+                  messageType="ns36:Root-Element_msg"/>
+      <!--  <variable name="PcardHeader" type="xsd:string"/> -->
+    </variables>
+    <faultHandlers>
+        <catchAll>
+            <sequence name="Sequence_5">
+                <assign name="asnCatchAll">
+                    <copy>
+                        <from expression="concat(&quot;Error encountered in ProcessAPInvoiceFiles, while processing file &quot;,bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:fileName'), &quot; from directory: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:directory'), &quot;. Error occured at line number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:lineNumber'), &quot;, column number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:columnNumber'), &quot;, record number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:recordNumber'), &quot;, Is Message Rejected: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected'), &quot;, Rejection Reason: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:rejectionReason'), &quot;, No Data Found: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound'), &quot;, is EOF: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF'), &quot; . &quot;  )"/>
+                        <to variable="ErrorMessageText"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getProcessId()"/>
+                        <to variable="invkCatchAll_initiate" part="payload"
+                            query="/ns12:ErrorData/ns12:ProcessInfo/ns12:BusinessProcessName"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getInstanceId()"/>
+                        <to variable="invkCatchAll_initiate" part="payload"
+                            query="/ns12:ErrorData/ns12:ProcessInfo/ns12:BusinessProcessId"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getDomainId()"/>
+                        <to variable="invkCatchAll_initiate" part="payload"
+                            query="/ns12:ErrorData/ns12:ProcessInfo/ns12:BusinessProcessDomain"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getProcessURL()"/>
+                        <to variable="invkCatchAll_initiate" part="payload"
+                            query="/ns12:ErrorData/ns12:ProcessInfo/ns12:SystemName"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getCurrentDateTime()"/>
+                        <to variable="invkCatchAll_initiate" part="payload"
+                            query="/ns12:ErrorData/ns12:ErrorDetails/ns12:ErrorDateTime"/>
+                    </copy>
+                    <copy>
+                        <from expression="'Catch All on the Main Sequence'"/>
+                        <to variable="invkCatchAll_initiate" part="payload"
+                            query="/ns12:ErrorData/ns12:ProcessInfo/ns12:BusinessProcessStep"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getFaultName()"/>
+                        <to variable="invkCatchAll_initiate" part="payload"
+                            query="/ns12:ErrorData/ns12:ErrorDetails/ns12:ErrorCode"/>
+                    </copy>
+                    <copy>
+                        <from variable="ErrorMessageText"/>
+                        <to variable="invkCatchAll_initiate" part="payload"
+                            query="/ns12:ErrorData/ns12:ErrorDetails/ns12:ErrorDescription"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getFaultAsString()"/>
+                        <to variable="invkCatchAll_initiate" part="payload"
+                            query="/ns12:ErrorData/ns12:ErrorDetails/ns12:ErrorText"/>
+                    </copy>
+                    <copy>
+                        <from expression="'system'"/>
+                        <to variable="invkCatchAll_initiate" part="payload"
+                            query="/ns12:ErrorData/ns12:ErrorDetails/ns12:ErrorType"/>
+                    </copy>
+                    <copy>
+                        <from expression="'fatal'"/>
+                        <to variable="invkCatchAll_initiate" part="payload"
+                            query="/ns12:ErrorData/ns12:ErrorDetails/ns12:ErrorSeverity"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:doc('${server_url}/xmllib/fin/GlobalParameters.xml','/GlobalParameters/FaultNotification/SendNotification')"/>
+                        <to variable="invkCatchAll_initiate" part="payload"
+                            query="/ns12:ErrorData/ns12:Notification/ns12:sendNotification"/>
+                    </copy>
+                </assign>
+                <assign name="copyTransactionData">
+                    <copy>
+                        <from expression="'Error'"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns24:TransactionData/ns24:ProcessInfo/ns24:ProcessStatus"/>
+                    </copy>
+                </assign>
+                <assign name="TransformBatchId">
+                    <bpelx:annotation>
+                        <bpelx:pattern>transformation</bpelx:pattern>
+                    </bpelx:annotation>
+                    <copy>
+                        <from expression="ora:processXSLT('TransformBatchIdStoredProc.xsl',bpws:getVariableData('InvokeStgTableInsert','XxApInvInterfaceStgCollection'))"/>
+                        <to variable="InvokeDeletePartiallyLoadedRecords_In"
+                            part="InputParameters"/>
+                    </copy>
+                </assign>
+                <scope name="DeletePartiallyLoadedRecords">
+                    <faultHandlers>
+                        <catchAll>
+                            <sequence name="InvkCatchAl">
+                                <invoke name="logTransaction"
+                                        partnerLink="ODTransactionLogger"
+                                        portType="ns23:ODTransactionLogger"
+                                        operation="initiate"
+                                        inputVariable="logTransactionInput"/>
+                                <invoke name="invkCatchAll"
+                                        partnerLink="ODErrorLogger"
+                                        portType="ns11:ODErrorLogger"
+                                        operation="initiate"
+                                        inputVariable="invkCatchAll_initiate"/>
+                                <terminate name="Terminate_1"/>
+                            </sequence>
+                        </catchAll>
+                    </faultHandlers>
+                    <invoke name="InvokeDeletePartiallyLoadedRecords"
+                            partnerLink="DeletePartiallyLoadedRecords"
+                            portType="ns29:DeletePartiallyLoadedRecords_ptt"
+                            operation="DeletePartiallyLoadedRecords"
+                            inputVariable="InvokeDeletePartiallyLoadedRecords_In"/>
+                </scope>
+                <invoke name="logTransaction" partnerLink="ODTransactionLogger"
+                        portType="ns23:ODTransactionLogger" operation="initiate"
+                        inputVariable="logTransactionInput"/>
+                <invoke name="invkCatchAll" partnerLink="ODErrorLogger"
+                        portType="ns11:ODErrorLogger" operation="initiate"
+                        inputVariable="invkCatchAll_initiate"/>
+                <terminate name="Terminate_1"/>
+            </sequence>
+        </catchAll>
+    </faultHandlers>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+       ORCHESTRATION LOGIC                                               
+       Set of activities coordinating the flow of messages across the    
+       services integrated within this business process                  
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <sequence name="main">
+        <!-- Receive input from requestor. (Note: This maps to operation defined in ProcessAPInvoiceFiles.wsdl) -->
+        <receive name="receiveInput" partnerLink="client"
+                 portType="client:ProcessAPInvoiceFiles" operation="initiate"
+                 variable="inputVariable" createInstance="yes"/>
+        <scope name="setProcessHeader">
+            <sequence name="Sequence_20">
+                <assign name="initializeInstanceTitle">
+                    <copy>
+                        <from expression="substring( concat( &quot;Process &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:fileName')),1,50)"/>
+                        <to variable="ProcessHeader"/>
+                    </copy>
+                    <copy>
+                        <from expression="'APFileName'"/>
+                        <to variable="XSLT_PARAM"
+                            query="/ns8:parameters/ns8:item/ns8:name"/>
+                    </copy>
+                    <copy>
+                        <from variable="inputVariable" part="payload"
+                              query="/ns1:fileHeader/ns1:fileName"/>
+                        <to variable="XSLT_PARAM"
+                            query="/ns8:parameters/ns8:item/ns8:value"/>
+                    </copy>
+                </assign>
+                <bpelx:exec name="setTitle" language="java" version="1.5">
+                    <![CDATA[try {             
+  String title = (String)getVariableData("ProcessHeader");             
+  setTitle(title);             
+  addAuditTrailEntry(title) ;             
+} catch (Exception ex) {             
+  addAuditTrailEntry(ex.toString());             
+  ex.printStackTrace();             
+}]]>
+                </bpelx:exec>
+            </sequence>
+        </scope>
+        <assign name="initializeChunkReadHeaders">
+            <copy>
+                <from variable="inputVariable"
+                      query="/ns1:fileHeader/ns1:fileName" part="payload"/>
+                <to variable="FileName"/>
+            </copy>
+            <copy>
+                <from expression="''"/>
+                <to variable="SyncChunkReadInboundHeader" part="outboundHeader"
+                    query="/ns4:OutboundFileHeaderType/ns4:lineNumber"/>
+            </copy>
+            <copy>
+                <from expression="''"/>
+                <to variable="SyncChunkReadInboundHeader" part="outboundHeader"
+                    query="/ns4:OutboundFileHeaderType/ns4:columnNumber"/>
+            </copy>
+            <copy>
+                <from expression="''"/>
+                <to variable="SyncChunkReadInboundHeader" part="outboundHeader"
+                    query="/ns4:OutboundFileHeaderType/ns4:recordNumber"/>
+            </copy>
+            <copy>
+                <from expression="'false'"/>
+                <to variable="SyncChunkReadOutboundHeader" part="outboundHeader"
+                    query="/ns4:OutboundFileHeaderType/ns4:isEOF"/>
+            </copy>
+            <copy>
+                <from variable="inputVariable" part="payload"
+                      query="/ns1:fileHeader/ns1:directory"/>
+                <to variable="SyncChunkReadInboundHeader" part="outboundHeader"
+                    query="/ns4:OutboundFileHeaderType/ns4:directory"/>
+            </copy>
+            <copy>
+                <from variable="inputVariable" part="payload"
+                      query="/ns1:fileHeader/ns1:fileName"/>
+                <to variable="SyncChunkReadInboundHeader" part="outboundHeader"
+                    query="/ns4:OutboundFileHeaderType/ns4:fileName"/>
+            </copy>
+            <copy>
+                <from variable="inputVariable" part="payload"
+                      query="/ns1:fileHeader/ns1:directory"/>
+                <to variable="SyncChunkReadInboundHeader" part="outboundHeader"
+                    query="/ns4:OutboundFileHeaderType/ns4:directory"/>
+            </copy>
+            <copy>
+                <from variable="inputVariable" part="payload"
+                      query="/ns1:fileHeader/ns1:fileName"/>
+                <to variable="TMP_File_Name"/>
+            </copy>
+            <copy>
+                <from variable="inputVariable" part="payload"
+                      query="/ns1:fileHeader/ns1:fileName"/>
+                <to variable="ESP_File_Name"/>
+            </copy>
+            <copy>
+                <from expression="0"/>
+                <to variable="counter"/>
+            </copy>
+            <copy>
+                <from expression="0"/>
+                <to variable="Total_Rec_Cnt"/>
+            </copy>
+        </assign>
+        <!-- 
+          Asynchronous callback to the requester. (Note: the callback location and correlation id is transparently handled using WS-addressing.)
+        -->
+        <assign name="GetBatchId">
+            <bpelx:annotation>
+                <bpelx:pattern>transformation</bpelx:pattern>
+            </bpelx:annotation>
+            <copy>
+                <from expression="ora:processXSLT('Transformation_2.xsl',bpws:getVariableData('inputVariable','payload'))"/>
+                <to variable="XSLT_PARAM"/>
+            </copy>
+        </assign>
+        <assign name="AssignBatchId">
+            <copy>
+                <from expression="bpws:getVariableData('XSLT_PARAM','/ns8:parameters/ns8:item[1]/ns8:value')"/>
+                <to variable="BatchId"/>
+            </copy>
+        </assign>
+        <bpelx:exec name="SwitchFileNames" language="java" version="1.5">
+            <![CDATA[String fileName = (String)getVariableData("TMP_File_Name");           
+String espName = (String)getVariableData("ESP_File_Name");           
+                                       
+if (fileName.startsWith("AP_TRADE")){                                       
+    fileName = "INTEGRAL";           
+    espName = "AP_TRADE";           
+}if (fileName.startsWith("AP_EXPENSE_NA_TDM")){                                       
+    fileName = "TDM";            
+    espName = "AP_EXPENSE_NA_TDM";           
+}if (fileName.startsWith("AP_GARNISHMENT_HR_US")){                                       
+    fileName = "PEOPLESOFT";           
+    espName = "AP_GARNISHMENT_HR_US";           
+}if (fileName.startsWith("AP_GARNISHMENT_HR_CA")){                                       
+    fileName = "PEOPLESOFT";           
+    espName = "AP_GARNISHMENT_HR_CA";           
+}if (fileName.startsWith("AP_EXPENSE_NA_GSS")){                                       
+    fileName = "GSS";           
+    espName = "AP_EXPENSE_NA_GSS";           
+}if (fileName.startsWith("AP_EXPENSE_NA_AVISTA")){                                       
+    fileName = "STANDARD";           
+    espName = "AP_EXPENSE_NA_AVISTA";           
+}if (fileName.startsWith("AP_EXPENSE_NA_BIGSKY_S")){                                       
+    fileName = "STANDARD";           
+    espName = "AP_EXPENSE_NA_BIGSKY_STORES";           
+}if (fileName.startsWith("AP_EXPENSE_NA_BIGSKY_C")){                                       
+    fileName = "STANDARD";           
+    espName = "AP_EXPENSE_NA_BIGSKY_CORP";           
+}if (fileName.startsWith("AP_EXPENSE_NA_TY")){                                       
+    fileName = "STANDARD";           
+    espName = "AP_EXPENSE_NA_TYMETRIX";           
+}if (fileName.startsWith("AP_EXPENSE_NA_PROJECT")){                                       
+    fileName = "STANDARD";           
+    espName = "AP_EXPENSE_NA_PROJECTMATES";           
+}if (fileName.startsWith("AP_EXPENSE_NA_EXTENSITY")){                                       
+    fileName = "EXTENSITY";           
+    espName = "AP_EXPENSE_NA_EXTENSITY";           
+}if (fileName.startsWith("AP_EXPENSE_NA_RETAIL")){                                       
+    fileName = "RETAILLEASE";           
+    espName = "AP_EXPENSE_NA_RETAILEASE";           
+}if (fileName.startsWith("AP_EXPENSE_NA_PCARD")){                                       
+    fileName = "PCARD";           
+    espName = "AP_EXPENSE_NA_PCARD";           
+}              
+      
+setVariableData("TMP_File_Name", fileName);           
+setVariableData("ESP_File_Name", espName);]]>
+        </bpelx:exec>
+        <scope name="logTransactionStart">
+            <sequence name="Sequence_80">
+                <assign name="copyTransactionData">
+                    <copy>
+                        <from expression="ora:getDomainId()"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns24:TransactionData/ns24:ProcessInfo/ns24:Domain"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getProcessId()"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns24:TransactionData/ns24:ProcessInfo/ns24:ProcessName"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getInstanceId()"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns24:TransactionData/ns24:ProcessInfo/ns24:InstanceId"/>
+                    </copy>
+                    <copy>
+                        <from expression="'Start'"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns24:TransactionData/ns24:ProcessInfo/ns24:ProcessStatus"/>
+                    </copy>
+                    <copy>
+                        <from expression="'File Chunked Read'"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns24:TransactionData/ns24:MessageDetails/ns24:MessageOperation"/>
+                    </copy>
+                    <copy>
+                        <from expression="'AP Invoice Files'"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns24:TransactionData/ns24:MessageDetails/ns24:MessageSourceSystem"/>
+                    </copy>
+                    <copy>
+                        <from expression="'payload'"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns24:TransactionData/ns24:MessageDetails/ns24:MessageType"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getCurrentDateTime()"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns24:TransactionData/ns24:MessageDetails/ns24:MessageDateTime"/>
+                    </copy>
+                    <copy>
+                        <from variable="inputVariable" part="payload"
+                              query="/ns1:fileHeader/ns1:fileName"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns24:TransactionData/ns24:EntiltyList/ns24:EntityID"/>
+                    </copy>
+                    <copy>
+                        <from expression="concat('&lt;EntityID EntityType=&quot;SourceFileName&quot;>', bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:fileName'), '&lt;/EntityID>')"/>
+                        <to variable="xmlFragment"/>
+                    </copy>
+                    <copy>
+                        <from>
+                            <EntiltyList xmlns="http://xmlns.oracle.com/TransactionData">
+                                <EntityID EntityType="SourceFileName"/>
+                            </EntiltyList>
+                        </from>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns24:TransactionData/ns24:EntiltyList"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:parseEscapedXML(bpws:getVariableData('xmlFragment'))"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns24:TransactionData/ns24:EntiltyList/ns24:EntityID[1]"/>
+                    </copy>
+                    <copy>
+                        <from expression="'I0013_APInvc - EBS AP InboundInvoices'"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns24:TransactionData/ns24:ProcessInfo/ns24:SystemName"/>
+                    </copy>
+                    <copy>
+                        <from expression="'External Vendors'"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns24:TransactionData/ns24:ProcessInfo/ns24:TradingPartnerDetails/ns24:TPFrom"/>
+                    </copy>
+                    <copy>
+                        <from expression="'EBS'"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns24:TransactionData/ns24:ProcessInfo/ns24:TradingPartnerDetails/ns24:TPTo"/>
+                    </copy>
+                </assign>
+                <invoke name="logTransaction" partnerLink="ODTransactionLogger"
+                        portType="ns23:ODTransactionLogger" operation="initiate"
+                        inputVariable="logTransactionInput"/>
+            </sequence>
+        </scope>
+        <invoke name="InvokeZeroByteXSD" partnerLink="ZeroByte"
+                portType="ns27:SynchChunked_ptt" operation="SynchChunked"
+                inputVariable="InvokeZeroByteXSD_SynchChunked_In"
+                outputVariable="InvokeZeroByteXSD_SynchChunked_Out"
+                bpelx:outputHeaderVariable="SyncChunkReadOutboundHeader"
+                bpelx:inputHeaderVariable="SyncChunkReadInboundHeader"/>
+        <assign name="Reinitialise">
+            <copy>
+                <from expression="''"/>
+                <to variable="SyncChunkReadInboundHeader" part="outboundHeader"
+                    query="/ns4:OutboundFileHeaderType/ns4:lineNumber"/>
+            </copy>
+            <copy>
+                <from expression="''"/>
+                <to variable="SyncChunkReadInboundHeader" part="outboundHeader"
+                    query="/ns4:OutboundFileHeaderType/ns4:columnNumber"/>
+            </copy>
+            <copy>
+                <from expression="''"/>
+                <to variable="SyncChunkReadInboundHeader" part="outboundHeader"
+                    query="/ns4:OutboundFileHeaderType/ns4:recordNumber"/>
+            </copy>
+            <copy>
+                <from expression="'false'"/>
+                <to variable="SyncChunkReadOutboundHeader" part="outboundHeader"
+                    query="/ns4:OutboundFileHeaderType/ns4:isEOF"/>
+            </copy>
+            <copy>
+                <from variable="inputVariable" part="payload"
+                      query="/ns1:fileHeader/ns1:fileName"/>
+                <to variable="SyncChunkReadInboundHeader" part="outboundHeader"
+                    query="/ns4:OutboundFileHeaderType/ns4:fileName"/>
+            </copy>
+            <copy>
+                <from variable="inputVariable" part="payload"
+                      query="/ns1:fileHeader/ns1:directory"/>
+                <to variable="SyncChunkReadInboundHeader" part="outboundHeader"
+                    query="/ns4:OutboundFileHeaderType/ns4:directory"/>
+            </copy>
+            <copy>
+                <from variable="inputVariable" part="payload"
+                      query="/ns1:fileHeader/ns1:directory"/>
+                <to variable="SyncChunkReadInboundHeader" part="outboundHeader"
+                    query="/ns4:OutboundFileHeaderType/ns4:directory"/>
+            </copy>
+            <copy>
+                <from variable="InvokeZeroByteXSD_SynchChunked_Out"
+                      part="ZeroByte" query="/ns28:ZeroByte/ns28:Filler"/>
+                <to variable="XSLT_PARAM1"
+                    query="/ns8:parameters/ns8:item/ns8:value"/>
+            </copy>
+            <copy>
+                <from expression="'PcardHeader'"/>
+                <to variable="XSLT_PARAM1"
+                    query="/ns8:parameters/ns8:item/ns8:name"/>
+            </copy>
+        </assign>
+        <switch name="ZeroByteFileCheck">
+            <case condition="bpws:getVariableData('InvokeZeroByteXSD_SynchChunked_Out','ZeroByte','/ns28:ZeroByte/ns28:Filler') ='&amp;#0;'">
+                <bpelx:annotation>
+                    <bpelx:pattern>ZeroByteFile</bpelx:pattern>
+                </bpelx:annotation>
+                <sequence name="Sequence_85">
+                    <assign name="GetEmailAddress">
+                        <copy>
+                            <from expression="ora:doc('${server_url}/xmllib/fin/GlobalParameters.xml','/GlobalParameters/ProcessAPInvoiceFiles/EmailAddress')"/>
+                            <to variable="EmailAddress"/>
+                        </copy>
+                        <copy>
+                            <from expression="bpws:getVariableData('counter') + 1"/>
+                            <to variable="counter"/>
+                        </copy>
+                        <copy>
+                            <from expression="concat('Processing Chunk number: ', bpws:getVariableData('counter'), ' from file: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:fileName'), ' located in: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:directory'), '. Line number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:lineNumber'), ', Column Number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:columnNumber'), ', Record Number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:recordNumber'), '. Is message rejected: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected'), ', Rejection reason: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:rejectionReason'), '. No data found: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound'), ', is EOF: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF'))"/>
+                            <to variable="status"/>
+                        </copy>
+                        <copy>
+                            <from expression="0"/>
+                            <to variable="RecordCount"/>
+                        </copy>
+                    </assign>
+                    <scope name="Scope_2">
+                        <scope name="Email_2">
+                            <bpelx:annotation>
+                                <bpelx:pattern patternName="bpelx:email"></bpelx:pattern>
+                            </bpelx:annotation>
+                            <variables>
+                                <variable name="varNotificationReq"
+                                          messageType="ns26:EmailNotificationRequest"/>
+                                <variable name="varNotificationResponse"
+                                          messageType="ns26:ArrayOfResponse"/>
+                                <variable name="NotificationServiceFaultVariable"
+                                          messageType="ns26:NotificationServiceErrorMessage"/>
+                            </variables>
+                            <sequence name="Sequence_86">
+                                <assign name="EmailParamsAssign">
+                                    <copy>
+                                        <from expression="string('SOAEmailNotify')"/>
+                                        <to variable="varNotificationReq"
+                                            part="EmailPayload"
+                                            query="/EmailPayload/ns26:FromAccountName"/>
+                                    </copy>
+                                    <copy>
+                                        <from expression="string('')"/>
+                                        <to variable="varNotificationReq"
+                                            part="EmailPayload"
+                                            query="/EmailPayload/ns26:Bcc"/>
+                                    </copy>
+                                    <copy>
+                                        <from expression="string('')"/>
+                                        <to variable="varNotificationReq"
+                                            part="EmailPayload"
+                                            query="/EmailPayload/ns26:Cc"/>
+                                    </copy>
+                                    <copy>
+                                        <from expression="string('')"/>
+                                        <to variable="varNotificationReq"
+                                            part="EmailPayload"
+                                            query="/EmailPayload/ns26:ReplyToAddress"/>
+                                    </copy>
+                                    <copy>
+                                        <from expression="string('Empty file Notification')"/>
+                                        <to variable="varNotificationReq"
+                                            part="EmailPayload"
+                                            query="/EmailPayload/ns26:Subject"/>
+                                    </copy>
+                                    <copy>
+                                        <from expression="bpws:getVariableData('EmailAddress')"/>
+                                        <to variable="varNotificationReq"
+                                            part="EmailPayload"
+                                            query="/EmailPayload/ns26:To"/>
+                                    </copy>
+                                    <copy>
+                                        <from>
+                                            <Content xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">
+                                                <MimeType xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">multipart/mixed</MimeType>
+                                                <ContentBody xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">
+                                                    <MultiPart xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">
+                                                        <BodyPart xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">
+                                                            <MimeType xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/>
+                                                            <ContentBody xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/>
+                                                            <BodyPartName xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/>
+                                                        </BodyPart>
+                                                        <BodyPart xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">
+                                                            <MimeType xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/>
+                                                            <ContentBody xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/>
+                                                            <BodyPartName xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/>
+                                                        </BodyPart>
+                                                    </MultiPart>
+                                                </ContentBody>
+                                            </Content>
+                                        </from>
+                                        <to variable="varNotificationReq"
+                                            part="EmailPayload"
+                                            query="/EmailPayload/ns26:Content"/>
+                                    </copy>
+                                    <copy>
+                                        <from expression="string('text/html; charset=UTF-8')"/>
+                                        <to variable="varNotificationReq"
+                                            part="EmailPayload"
+                                            query="/EmailPayload/ns26:Content/ns26:ContentBody/ns26:MultiPart/ns26:BodyPart[1]/ns26:MimeType"/>
+                                    </copy>
+                                    <!--               
+                                    <copy>
+                                        <from expression="string('NotificationAttachment1.html')"/>
+                                        <to variable="varNotificationReq"
+                                            part="EmailPayload"
+                                            query="/EmailPayload/ns26:Content/ns26:ContentBody/ns26:MultiPart/ns26:BodyPart[1]/ns26:BodyPartName"/>
+                                    </copy>
+     -->
+                                    <copy>
+                                        <from expression="concat('File  ', bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:fileName'), ' received on ' , xp20:current-dateTime() , ' has 0 records' )"/>
+                                        <to variable="varNotificationReq"
+                                            part="EmailPayload"
+                                            query="/EmailPayload/ns26:Content/ns26:ContentBody/ns26:MultiPart/ns26:BodyPart[1]/ns26:ContentBody"/>
+                                    </copy>
+                                    <!--                                       
+                                    <copy>
+                                        <from expression="string('text/html; charset=UTF-8')"/>
+                                        <to variable="varNotificationReq"
+                                            part="EmailPayload"
+                                            query="/EmailPayload/ns26:Content/ns26:ContentBody/ns26:MultiPart/ns26:BodyPart[2]/ns26:MimeType"/>
+                                    </copy>
+                                        
+                                    <copy>
+                                        <from expression="string('NotificationAttachment2.html')"/>
+                                        <to variable="varNotificationReq"
+                                            part="EmailPayload"
+                                            query="/EmailPayload/ns26:Content/ns26:ContentBody/ns26:MultiPart/ns26:BodyPart[2]/ns26:BodyPartName"/>
+                                    </copy>
+   -->
+                                    <!--                               
+                                    <copy>
+                                        <from expression="string('message2')"/>
+                                        <to variable="varNotificationReq"
+                                            part="EmailPayload"
+                                            query="/EmailPayload/ns26:Content/ns26:ContentBody/ns26:MultiPart/ns26:BodyPart[2]/ns26:ContentBody"/>
+                                    </copy>
+   -->
+                                </assign>
+                                <invoke name="InvokeNotificationService"
+                                        partnerLink="NotificationService"
+                                        portType="ns26:NotificationService"
+                                        operation="sendEmailNotification"
+                                        inputVariable="varNotificationReq"
+                                        outputVariable="varNotificationResponse"/>
+                            </sequence>
+                        </scope>
+                    </scope>
+                </sequence>
+            </case>
+            <otherwise>
+                <sequence name="Sequence_84">
+                    <while name="While_1"
+                           condition="bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF') != 'true'">
+                        <sequence name="Sequence_1">
+                            <switch name="Switch_1">
+                                <case condition="bpws:getVariableData('TMP_File_Name') ='PCARD'">
+                                    <bpelx:annotation>
+                                        <bpelx:pattern>PCARD</bpelx:pattern>
+                                    </bpelx:annotation>
+                                    <sequence name="Sequence_90">
+                                        <invoke name="InvokePcardFileRead"
+                                                partnerLink="PcardFileRead"
+                                                portType="ns36:SynchChunkRead_ptt"
+                                                operation="SynchChunkRead"
+                                                inputVariable="InvokePcardFileRead_In"
+                                                outputVariable="InvokePcardFileRead_Output"
+                                                bpelx:outputHeaderVariable="SyncChunkReadOutboundHeader"
+                                                bpelx:inputHeaderVariable="SyncChunkReadInboundHeader"/>
+                                        <assign name="AssignChunkHeaderPCard">
+                                            <copy>
+                                                <from variable="SyncChunkReadOutboundHeader"/>
+                                                <to variable="SyncChunkReadInboundHeader"/>
+                                            </copy>
+                                            <copy>
+                                                <from expression="bpws:getVariableData('counter') + 1"/>
+                                                <to variable="counter"/>
+                                            </copy>
+                                            <copy>
+                                                <from expression="concat('Processing Chunk number: ', bpws:getVariableData('counter'), ' from file: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:fileName'), ' located in: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:directory'), '. Line number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:lineNumber'), ', Column Number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:columnNumber'), ', Record Number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:recordNumber'), '. Is message rejected: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected'), ', Rejection reason: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:rejectionReason'), '. No data found: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound'), ', is EOF: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF'))"/>
+                                                <to variable="status"/>
+                                            </copy>
+                                        </assign>
+                                        <switch name="Switch_14">
+                                            <case condition="bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected')!='true'">
+                                                <bpelx:annotation>
+                                                    <bpelx:pattern>Valid Message</bpelx:pattern>
+                                                </bpelx:annotation>
+                                                <sequence name="Sequence_94">
+                                                    <switch name="Switch_16">
+                                                        <case condition="bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound')!='true'">
+                                                            <bpelx:annotation>
+                                                                <bpelx:pattern>Data Found</bpelx:pattern>
+                                                            </bpelx:annotation>
+                                                            <assign name="TransformPcardOagis">
+                                                                <bpelx:annotation>
+                                                                    <bpelx:pattern>transformation</bpelx:pattern>
+                                                                </bpelx:annotation>
+                                                                <copy>
+                                                                    <!-- <from expression="ora:processXSLT('TransformPcardOagis_F1.xsl',bpws:getVariableData('InvokePcardFileRead_Output','Root-Element'),bpws:getVariableData('XSLT_PARAM'))"/> -->
+                                                                    <from expression="ora:processXSLT('TransformPcardOagis.xsl',bpws:getVariableData('InvokePcardFileRead_Output','Root-Element'),bpws:getVariableData('XSLT_PARAM'))"/>
+                                                                    <to variable="OAGIS_Var"/>
+                                                                </copy>
+                                                            </assign>
+                                                        </case>
+                                                        <otherwise>
+                                                            <sequence name="Sequence_95">
+                                                                <assign name="Assign_NoDataFound">
+                                                                    <copy>
+                                                                        <from expression="string('No Data Found')"/>
+                                                                        <to variable="Exception"
+                                                                            part="summary"/>
+                                                                    </copy>
+                                                                    <copy>
+                                                                        <from expression="concat(&quot;Exception caught while processing batch file: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:fileName'), &quot; from directory: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:directory'), &quot; . The error occurred while processing the data chunk starting at line:  &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:lineNumber'), &quot; Column Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:columnNumber'), &quot; Record Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:recordNumber'), &quot; is the Message Rejected: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected'), &quot; The Rejection Reason is &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:rejectionReason'), &quot; No Data Found &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound'), &quot; Is EOF &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF')  )"/>
+                                                                        <to variable="Exception"
+                                                                            part="detail"/>
+                                                                    </copy>
+                                                                    <copy>
+                                                                        <from expression="string('ReadChunkFile.NoDataFound')"/>
+                                                                        <to variable="Exception"
+                                                                            part="code"/>
+                                                                    </copy>
+                                                                </assign>
+                                                                <throw name="Throw_NoDataFound"
+                                                                       faultName="bpelx:bindingFault"
+                                                                       faultVariable="Exception"/>
+                                                            </sequence>
+                                                        </otherwise>
+                                                    </switch>
+                                                </sequence>
+                                            </case>
+                                            <otherwise>
+                                                <sequence name="Sequence_91">
+                                                    <assign name="AssignInvalidMessage">
+                                                        <copy>
+                                                            <from expression="concat(&quot;Exception caught while processing batch file: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:fileName'), &quot; from directory: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:directory'), &quot; . The error occurred while processing the data chunk starting at line:  &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:lineNumber'), &quot; Column Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:columnNumber'), &quot; Record Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:recordNumber'), &quot; is the Message Rejected: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected'), &quot; The Rejection Reason is &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:rejectionReason'), &quot; No Data Found &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound'), &quot; Is EOF &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF')  )"/>
+                                                            <to variable="Exception"
+                                                                part="summary"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from expression="string('ReadChunkFile.Invalid_Message')"/>
+                                                            <to variable="Exception"
+                                                                part="code"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from variable="status"/>
+                                                            <to variable="Exception"
+                                                                part="detail"/>
+                                                        </copy>
+                                                    </assign>
+                                                    <throw name="Throw_InvalidMessage"
+                                                           faultName="bpelx:bindingFault"
+                                                           faultVariable="Exception"/>
+                                                </sequence>
+                                            </otherwise>
+                                        </switch>
+                                    </sequence>
+                                </case>
+                                <case condition="bpws:getVariableData('TMP_File_Name') ='RETAILLEASE'">
+                                    <bpelx:annotation>
+                                        <bpelx:pattern>RetailLease</bpelx:pattern>
+                                    </bpelx:annotation>
+                                    <sequence name="Sequence_12">
+                                        <invoke name="InvokeRetailLeaseFileRead"
+                                                partnerLink="RetailLeaseChunkRead"
+                                                portType="ns21:SynchChunked_ptt"
+                                                operation="SynchChunked"
+                                                inputVariable="InvokeRetailLeaseFileRead"
+                                                outputVariable="InvokeRetailLeaseFileRead_Out"
+                                                bpelx:outputHeaderVariable="SyncChunkReadOutboundHeader"
+                                                bpelx:inputHeaderVariable="SyncChunkReadInboundHeader"/>
+                                        <assign name="AssignChunkHeaderRetailLease">
+                                            <copy>
+                                                <from variable="SyncChunkReadOutboundHeader"/>
+                                                <to variable="SyncChunkReadInboundHeader"/>
+                                            </copy>
+                                            <copy>
+                                                <from expression="bpws:getVariableData('counter') + 1"/>
+                                                <to variable="counter"/>
+                                            </copy>
+                                            <copy>
+                                                <from expression="concat('Processing Chunk number: ', bpws:getVariableData('counter'), ' from file: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:fileName'), ' located in: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:directory'), '. Line number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:lineNumber'), ', Column Number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:columnNumber'), ', Record Number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:recordNumber'), '. Is message rejected: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected'), ', Rejection reason: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:rejectionReason'), '. No data found: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound'), ', is EOF: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF'))"/>
+                                                <to variable="status"/>
+                                            </copy>
+                                        </assign>
+                                        <switch name="ValidMessageSwitch">
+                                            <case condition="bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected')!='true'">
+                                                <bpelx:annotation>
+                                                    <bpelx:pattern>Valid Message</bpelx:pattern>
+                                                </bpelx:annotation>
+                                                <switch name="DataFoundSwitch">
+                                                    <case condition="bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound')!='true'">
+                                                        <assign name="TransformRetailLeaseOagis">
+                                                            <bpelx:annotation>
+                                                                <bpelx:pattern>transformation</bpelx:pattern>
+                                                            </bpelx:annotation>
+                                                            <copy>
+                                                                <from expression="ora:processXSLT('TransformRetailLeaseOagis.xsl',bpws:getVariableData('InvokeRetailLeaseFileRead_Out','RetailLeases'),bpws:getVariableData('XSLT_PARAM'))"/>
+                                                                <to variable="OAGIS_Var"/>
+                                                            </copy>
+                                                        </assign>
+                                                    </case>
+                                                    <otherwise>
+                                                        <sequence name="Sequence_21">
+                                                            <assign name="NoData_Found">
+                                                                <copy>
+                                                                    <from expression="string('No Data Found')"/>
+                                                                    <to variable="Exception"
+                                                                        part="summary"/>
+                                                                </copy>
+                                                                <copy>
+                                                                    <from expression="concat(&quot;Exception caught while processing batch file: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:fileName'), &quot; from directory: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:directory'), &quot; . The error occurred while processing the data chunk starting at line:  &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:lineNumber'), &quot; Column Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:columnNumber'), &quot; Record Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:recordNumber'), &quot; is the Message Rejected: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected'), &quot; The Rejection Reason is &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:rejectionReason'), &quot; No Data Found &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound'), &quot; Is EOF &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF')  )"/>
+                                                                    <to variable="Exception"
+                                                                        part="detail"/>
+                                                                </copy>
+                                                                <copy>
+                                                                    <from expression="string('ReadChunkFile.NoDataFound')"/>
+                                                                    <to variable="Exception"
+                                                                        part="code"/>
+                                                                </copy>
+                                                            </assign>
+                                                            <throw name="Throw_NoData_Found"
+                                                                   faultName="bpelx:bindingFault"
+                                                                   faultVariable="Exception"/>
+                                                        </sequence>
+                                                    </otherwise>
+                                                </switch>
+                                            </case>
+                                            <otherwise>
+                                                <sequence name="Sequence_67">
+                                                    <assign name="Invalid_Message">
+                                                        <copy>
+                                                            <from expression="concat(&quot;Exception caught while processing batch file: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:fileName'), &quot; from directory: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:directory'), &quot; . The error occurred while processing the data chunk starting at line:  &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:lineNumber'), &quot; Column Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:columnNumber'), &quot; Record Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:recordNumber'), &quot; is the Message Rejected: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected'), &quot; The Rejection Reason is &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:rejectionReason'), &quot; No Data Found &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound'), &quot; Is EOF &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF')  )"/>
+                                                            <to variable="Exception"
+                                                                part="summary"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from expression="string('ReadChunkFile.Invalid_Message')"/>
+                                                            <to variable="Exception"
+                                                                part="code"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from variable="status"/>
+                                                            <to variable="Exception"
+                                                                part="detail"/>
+                                                        </copy>
+                                                    </assign>
+                                                    <throw name="Throw_invalid_Message"
+                                                           faultName="bpelx:bindingFault"
+                                                           faultVariable="Exception"/>
+                                                </sequence>
+                                            </otherwise>
+                                        </switch>
+                                    </sequence>
+                                </case>
+                                <case condition="bpws:getVariableData('TMP_File_Name') ='EXTENSITY'">
+                                    <bpelx:annotation>
+                                        <bpelx:pattern>Extensity</bpelx:pattern>
+                                    </bpelx:annotation>
+                                    <sequence name="Sequence_11">
+                                        <invoke name="InvokeExtensityFileRead"
+                                                partnerLink="ExtensityChunkFileRead"
+                                                portType="ns19:SynchChunked_ptt"
+                                                operation="SynchChunked"
+                                                inputVariable="InvokeExtensityFileRead"
+                                                outputVariable="InvokeExtensityFileRead_Out"
+                                                bpelx:outputHeaderVariable="SyncChunkReadOutboundHeader"
+                                                bpelx:inputHeaderVariable="SyncChunkReadInboundHeader"/>
+                                        <assign name="AssignChunkHeaderExtensity">
+                                            <copy>
+                                                <from variable="SyncChunkReadOutboundHeader"/>
+                                                <to variable="SyncChunkReadInboundHeader"/>
+                                            </copy>
+                                            <copy>
+                                                <from expression="bpws:getVariableData('counter') + 1"/>
+                                                <to variable="counter"/>
+                                            </copy>
+                                            <copy>
+                                                <from expression="concat('Processing Chunk number: ', bpws:getVariableData('counter'), ' from file: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:fileName'), ' located in: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:directory'), '. Line number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:lineNumber'), ', Column Number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:columnNumber'), ', Record Number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:recordNumber'), '. Is message rejected: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected'), ', Rejection reason: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:rejectionReason'), '. No data found: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound'), ', is EOF: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF'))"/>
+                                                <to variable="status"/>
+                                            </copy>
+                                        </assign>
+                                        <switch name="Switch_2">
+                                            <case condition="bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected')!='true'">
+                                                <bpelx:annotation>
+                                                    <bpelx:pattern>Valid Message</bpelx:pattern>
+                                                </bpelx:annotation>
+                                                <switch name="Switch_3">
+                                                    <case condition="bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound')!='true'">
+                                                        <assign name="TransformExtensityOagis">
+                                                            <bpelx:annotation>
+                                                                <bpelx:pattern>transformation</bpelx:pattern>
+                                                            </bpelx:annotation>
+                                                            <copy>
+                                                                <from expression="ora:processXSLT('TransformExtensityOagis.xsl',bpws:getVariableData('InvokeExtensityFileRead_Out','Extensity'),bpws:getVariableData('XSLT_PARAM'))"/>
+                                                                <to variable="OAGIS_Var"/>
+                                                            </copy>
+                                                        </assign>
+                                                    </case>
+                                                    <otherwise>
+                                                        <sequence name="Sequence_68">
+                                                            <assign name="NoData_Found">
+                                                                <copy>
+                                                                    <from expression="string('No Data Found')"/>
+                                                                    <to variable="Exception"
+                                                                        part="summary"/>
+                                                                </copy>
+                                                                <copy>
+                                                                    <from expression="concat(&quot;Exception caught while processing batch file: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:fileName'), &quot; from directory: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:directory'), &quot; . The error occurred while processing the data chunk starting at line:  &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:lineNumber'), &quot; Column Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:columnNumber'), &quot; Record Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:recordNumber'), &quot; is the Message Rejected: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected'), &quot; The Rejection Reason is &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:rejectionReason'), &quot; No Data Found &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound'), &quot; Is EOF &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF')  )"/>
+                                                                    <to variable="Exception"
+                                                                        part="detail"/>
+                                                                </copy>
+                                                                <copy>
+                                                                    <from expression="string('ReadChunkFile.NoDataFound')"/>
+                                                                    <to variable="Exception"
+                                                                        part="code"/>
+                                                                </copy>
+                                                            </assign>
+                                                            <throw name="Throw_NoData_Found"
+                                                                   faultName="bpelx:bindingFault"
+                                                                   faultVariable="Exception"/>
+                                                        </sequence>
+                                                    </otherwise>
+                                                </switch>
+                                            </case>
+                                            <otherwise>
+                                                <sequence name="Sequence_69">
+                                                    <assign name="Invalid_Message">
+                                                        <copy>
+                                                            <from expression="concat(&quot;Exception caught while processing batch file: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:fileName'), &quot; from directory: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:directory'), &quot; . The error occurred while processing the data chunk starting at line:  &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:lineNumber'), &quot; Column Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:columnNumber'), &quot; Record Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:recordNumber'), &quot; is the Message Rejected: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected'), &quot; The Rejection Reason is &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:rejectionReason'), &quot; No Data Found &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound'), &quot; Is EOF &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF')  )"/>
+                                                            <to variable="Exception"
+                                                                part="summary"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from expression="string('ReadChunkFile.Invalid_Message')"/>
+                                                            <to variable="Exception"
+                                                                part="code"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from variable="status"/>
+                                                            <to variable="Exception"
+                                                                part="detail"/>
+                                                        </copy>
+                                                    </assign>
+                                                    <throw name="Throw_invalid_Message"
+                                                           faultName="bpelx:bindingFault"
+                                                           faultVariable="Exception"/>
+                                                </sequence>
+                                            </otherwise>
+                                        </switch>
+                                    </sequence>
+                                </case>
+                                <case condition="bpws:getVariableData('TMP_File_Name') ='STANDARD'">
+                                    <bpelx:annotation>
+                                        <bpelx:pattern>Standard</bpelx:pattern>
+                                    </bpelx:annotation>
+                                    <sequence name="Sequence_10">
+                                        <invoke name="InvokeStandardFileRead"
+                                                partnerLink="StandardFileChunkRead"
+                                                portType="ns18:SynchChunked_ptt"
+                                                operation="SynchChunked"
+                                                inputVariable="InvokeStandardFileRead"
+                                                outputVariable="InvokeStandardFileRead_Out"
+                                                bpelx:outputHeaderVariable="SyncChunkReadOutboundHeader"
+                                                bpelx:inputHeaderVariable="SyncChunkReadInboundHeader"/>
+                                        <assign name="AssignChunkHeaderStandard">
+                                            <copy>
+                                                <from variable="SyncChunkReadOutboundHeader"/>
+                                                <to variable="SyncChunkReadInboundHeader"/>
+                                            </copy>
+                                            <copy>
+                                                <from expression="bpws:getVariableData('counter') + 1"/>
+                                                <to variable="counter"/>
+                                            </copy>
+                                            <copy>
+                                                <from expression="concat('Processing Chunk number: ', bpws:getVariableData('counter'), ' from file: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:fileName'), ' located in: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:directory'), '. Line number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:lineNumber'), ', Column Number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:columnNumber'), ', Record Number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:recordNumber'), '. Is message rejected: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected'), ', Rejection reason: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:rejectionReason'), '. No data found: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound'), ', is EOF: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF'))"/>
+                                                <to variable="status"/>
+                                            </copy>
+                                        </assign>
+                                        <switch name="Switch_4">
+                                            <case condition="bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected')!='true'">
+                                                <bpelx:annotation>
+                                                    <bpelx:pattern>Valid Message</bpelx:pattern>
+                                                </bpelx:annotation>
+                                                <switch name="Switch_5">
+                                                    <case condition="bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound')!='true'">
+                                                        <sequence name="Sequence_96">
+                                                            <assign name="TransformStandardOagis">
+                                                                <bpelx:annotation>
+                                                                    <bpelx:pattern>transformation</bpelx:pattern>
+                                                                </bpelx:annotation>
+                                                                <copy>
+                                                                    <from expression="ora:processXSLT('TransformStandardOagis.xsl',bpws:getVariableData('InvokeStandardFileRead_Out','container'),bpws:getVariableData('XSLT_PARAM'))"/>
+                                                                    <to variable="OAGIS_Var"/>
+                                                                </copy>
+                                                            </assign>
+                                                        </sequence>
+                                                    </case>
+                                                    <otherwise>
+                                                        <sequence name="Sequence_71">
+                                                            <assign name="NoData_Found">
+                                                                <copy>
+                                                                    <from expression="string('No Data Found')"/>
+                                                                    <to variable="Exception"
+                                                                        part="summary"/>
+                                                                </copy>
+                                                                <copy>
+                                                                    <from expression="concat(&quot;Exception caught while processing batch file: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:fileName'), &quot; from directory: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:directory'), &quot; . The error occurred while processing the data chunk starting at line:  &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:lineNumber'), &quot; Column Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:columnNumber'), &quot; Record Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:recordNumber'), &quot; is the Message Rejected: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected'), &quot; The Rejection Reason is &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:rejectionReason'), &quot; No Data Found &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound'), &quot; Is EOF &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF')  )"/>
+                                                                    <to variable="Exception"
+                                                                        part="detail"/>
+                                                                </copy>
+                                                                <copy>
+                                                                    <from expression="string('ReadChunkFile.NoDataFound')"/>
+                                                                    <to variable="Exception"
+                                                                        part="code"/>
+                                                                </copy>
+                                                            </assign>
+                                                            <throw name="Throw_NoData_Found"
+                                                                   faultName="bpelx:bindingFault"
+                                                                   faultVariable="Exception"/>
+                                                        </sequence>
+                                                    </otherwise>
+                                                </switch>
+                                            </case>
+                                            <otherwise>
+                                                <sequence name="Sequence_70">
+                                                    <assign name="Invalid_Message">
+                                                        <copy>
+                                                            <from expression="concat(&quot;Exception caught while processing batch file: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:fileName'), &quot; from directory: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:directory'), &quot; . The error occurred while processing the data chunk starting at line:  &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:lineNumber'), &quot; Column Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:columnNumber'), &quot; Record Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:recordNumber'), &quot; is the Message Rejected: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected'), &quot; The Rejection Reason is &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:rejectionReason'), &quot; No Data Found &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound'), &quot; Is EOF &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF')  )"/>
+                                                            <to variable="Exception"
+                                                                part="summary"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from expression="string('ReadChunkFile.Invalid_Message')"/>
+                                                            <to variable="Exception"
+                                                                part="code"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from variable="status"/>
+                                                            <to variable="Exception"
+                                                                part="detail"/>
+                                                        </copy>
+                                                    </assign>
+                                                    <throw name="Throw_invalid_Message"
+                                                           faultName="bpelx:bindingFault"
+                                                           faultVariable="Exception"/>
+                                                </sequence>
+                                            </otherwise>
+                                        </switch>
+                                    </sequence>
+                                </case>
+                                <case condition="bpws:getVariableData('TMP_File_Name') ='GSS'">
+                                    <bpelx:annotation>
+                                        <bpelx:pattern>GSS</bpelx:pattern>
+                                    </bpelx:annotation>
+                                    <sequence name="Sequence_8">
+                                        <invoke name="InvokeGSSChunkRead"
+                                                partnerLink="GSSFileChunkRead"
+                                                portType="ns15:SynchChunked_ptt"
+                                                operation="SynchChunked"
+                                                inputVariable="InvokeGSSChunkRead"
+                                                outputVariable="InvokeGSSChunkRead_Out"
+                                                bpelx:outputHeaderVariable="SyncChunkReadOutboundHeader"
+                                                bpelx:inputHeaderVariable="SyncChunkReadInboundHeader"/>
+                                        <assign name="AssignChunkHeaderGSS">
+                                            <copy>
+                                                <from variable="SyncChunkReadOutboundHeader"/>
+                                                <to variable="SyncChunkReadInboundHeader"/>
+                                            </copy>
+                                            <copy>
+                                                <from expression="bpws:getVariableData('counter') + 1"/>
+                                                <to variable="counter"/>
+                                            </copy>
+                                            <copy>
+                                                <from expression="concat('Processing Chunk number: ', bpws:getVariableData('counter'), ' from file: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:fileName'), ' located in: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:directory'), '. Line number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:lineNumber'), ', Column Number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:columnNumber'), ', Record Number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:recordNumber'), '. Is message rejected: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected'), ', Rejection reason: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:rejectionReason'), '. No data found: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound'), ', is EOF: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF'))"/>
+                                                <to variable="status"/>
+                                            </copy>
+                                        </assign>
+                                        <switch name="Switch_6">
+                                            <case condition="bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected')!='true'">
+                                                <bpelx:annotation>
+                                                    <bpelx:pattern>Valid Message</bpelx:pattern>
+                                                </bpelx:annotation>
+                                                <switch name="Switch_7">
+                                                    <case condition="bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound')!='true'">
+                                                        <assign name="TransformGSSOagis">
+                                                            <bpelx:annotation>
+                                                                <bpelx:pattern>transformation</bpelx:pattern>
+                                                            </bpelx:annotation>
+                                                            <copy>
+                                                                <from expression="ora:processXSLT('TransformGSSOagis.xsl',bpws:getVariableData('InvokeGSSChunkRead_Out','container'),bpws:getVariableData('XSLT_PARAM'))"/>
+                                                                <to variable="OAGIS_Var"/>
+                                                            </copy>
+                                                        </assign>
+                                                    </case>
+                                                    <otherwise>
+                                                        <sequence name="Sequence_73">
+                                                            <assign name="NoData_Found">
+                                                                <copy>
+                                                                    <from expression="string('No Data Found')"/>
+                                                                    <to variable="Exception"
+                                                                        part="summary"/>
+                                                                </copy>
+                                                                <copy>
+                                                                    <from expression="concat(&quot;Exception caught while processing batch file: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:fileName'), &quot; from directory: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:directory'), &quot; . The error occurred while processing the data chunk starting at line:  &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:lineNumber'), &quot; Column Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:columnNumber'), &quot; Record Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:recordNumber'), &quot; is the Message Rejected: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected'), &quot; The Rejection Reason is &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:rejectionReason'), &quot; No Data Found &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound'), &quot; Is EOF &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF')  )"/>
+                                                                    <to variable="Exception"
+                                                                        part="detail"/>
+                                                                </copy>
+                                                                <copy>
+                                                                    <from expression="string('ReadChunkFile.NoDataFound')"/>
+                                                                    <to variable="Exception"
+                                                                        part="code"/>
+                                                                </copy>
+                                                            </assign>
+                                                            <throw name="Throw_NoData_Found"
+                                                                   faultName="bpelx:bindingFault"
+                                                                   faultVariable="Exception"/>
+                                                        </sequence>
+                                                    </otherwise>
+                                                </switch>
+                                            </case>
+                                            <otherwise>
+                                                <sequence name="Sequence_72">
+                                                    <assign name="Invalid_Message">
+                                                        <copy>
+                                                            <from expression="concat(&quot;Exception caught while processing batch file: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:fileName'), &quot; from directory: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:directory'), &quot; . The error occurred while processing the data chunk starting at line:  &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:lineNumber'), &quot; Column Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:columnNumber'), &quot; Record Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:recordNumber'), &quot; is the Message Rejected: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected'), &quot; The Rejection Reason is &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:rejectionReason'), &quot; No Data Found &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound'), &quot; Is EOF &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF')  )"/>
+                                                            <to variable="Exception"
+                                                                part="summary"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from expression="string('ReadChunkFile.Invalid_Message')"/>
+                                                            <to variable="Exception"
+                                                                part="code"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from variable="status"/>
+                                                            <to variable="Exception"
+                                                                part="detail"/>
+                                                        </copy>
+                                                    </assign>
+                                                    <throw name="Throw_invalid_Message"
+                                                           faultName="bpelx:bindingFault"
+                                                           faultVariable="Exception"/>
+                                                </sequence>
+                                            </otherwise>
+                                        </switch>
+                                    </sequence>
+                                </case>
+                                <case condition="bpws:getVariableData('TMP_File_Name') ='PEOPLESOFT'">
+                                    <bpelx:annotation>
+                                        <bpelx:pattern>PeopleSoft</bpelx:pattern>
+                                    </bpelx:annotation>
+                                    <sequence name="Sequence_7">
+                                        <invoke name="InvokePeopleSoftChunkRead"
+                                                partnerLink="PeopleSoftFileChunkRead"
+                                                portType="ns14:SynchChunkedRead_ptt"
+                                                operation="SynchChunkedRead"
+                                                inputVariable="PeopleSoft_SynchChunkedRead"
+                                                outputVariable="PeopleSoft_SynchChunkedRead_Out"
+                                                bpelx:outputHeaderVariable="SyncChunkReadOutboundHeader"
+                                                bpelx:inputHeaderVariable="SyncChunkReadInboundHeader"/>
+                                        <assign name="AssignChunkHeaderPeopleSoft">
+                                            <copy>
+                                                <from variable="SyncChunkReadOutboundHeader"/>
+                                                <to variable="SyncChunkReadInboundHeader"/>
+                                            </copy>
+                                            <copy>
+                                                <from expression="bpws:getVariableData('counter') + 1"/>
+                                                <to variable="counter"/>
+                                            </copy>
+                                            <copy>
+                                                <from expression="concat('Processing Chunk number: ', bpws:getVariableData('counter'), ' from file: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:fileName'), ' located in: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:directory'), '. Line number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:lineNumber'), ', Column Number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:columnNumber'), ', Record Number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:recordNumber'), '. Is message rejected: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected'), ', Rejection reason: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:rejectionReason'), '. No data found: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound'), ', is EOF: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF'))"/>
+                                                <to variable="status"/>
+                                            </copy>
+                                        </assign>
+                                        <switch name="Switch_8">
+                                            <case condition="bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected')!='true'">
+                                                <bpelx:annotation>
+                                                    <bpelx:pattern>Valid Message</bpelx:pattern>
+                                                </bpelx:annotation>
+                                                <switch name="Switch_9">
+                                                    <case condition="bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound')!='true'">
+                                                        <assign name="TransformPeopleSoftOAGIS">
+                                                            <bpelx:annotation>
+                                                                <bpelx:pattern>transformation</bpelx:pattern>
+                                                            </bpelx:annotation>
+                                                            <copy>
+                                                                <from expression="ora:processXSLT('TransformPeoplSoftOAGIS.xsl',bpws:getVariableData('PeopleSoft_SynchChunkedRead_Out','container'),bpws:getVariableData('XSLT_PARAM'))"/>
+                                                                <to variable="OAGIS_Var"/>
+                                                            </copy>
+                                                        </assign>
+                                                    </case>
+                                                    <otherwise>
+                                                        <sequence name="Sequence_75">
+                                                            <assign name="NoData_Found">
+                                                                <copy>
+                                                                    <from expression="string('No Data Found')"/>
+                                                                    <to variable="Exception"
+                                                                        part="summary"/>
+                                                                </copy>
+                                                                <copy>
+                                                                    <from expression="concat(&quot;Exception caught while processing batch file: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:fileName'), &quot; from directory: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:directory'), &quot; . The error occurred while processing the data chunk starting at line:  &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:lineNumber'), &quot; Column Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:columnNumber'), &quot; Record Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:recordNumber'), &quot; is the Message Rejected: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected'), &quot; The Rejection Reason is &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:rejectionReason'), &quot; No Data Found &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound'), &quot; Is EOF &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF')  )"/>
+                                                                    <to variable="Exception"
+                                                                        part="detail"/>
+                                                                </copy>
+                                                                <copy>
+                                                                    <from expression="string('ReadChunkFile.NoDataFound')"/>
+                                                                    <to variable="Exception"
+                                                                        part="code"/>
+                                                                </copy>
+                                                            </assign>
+                                                            <throw name="Throw_NoData_Found"
+                                                                   faultName="bpelx:bindingFault"
+                                                                   faultVariable="Exception"/>
+                                                        </sequence>
+                                                    </otherwise>
+                                                </switch>
+                                            </case>
+                                            <otherwise>
+                                                <sequence name="Sequence_74">
+                                                    <assign name="Invalid_Message">
+                                                        <copy>
+                                                            <from expression="concat(&quot;Exception caught while processing batch file: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:fileName'), &quot; from directory: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:directory'), &quot; . The error occurred while processing the data chunk starting at line:  &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:lineNumber'), &quot; Column Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:columnNumber'), &quot; Record Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:recordNumber'), &quot; is the Message Rejected: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected'), &quot; The Rejection Reason is &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:rejectionReason'), &quot; No Data Found &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound'), &quot; Is EOF &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF')  )"/>
+                                                            <to variable="Exception"
+                                                                part="summary"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from expression="string('ReadChunkFile.Invalid_Message')"/>
+                                                            <to variable="Exception"
+                                                                part="code"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from variable="status"/>
+                                                            <to variable="Exception"
+                                                                part="detail"/>
+                                                        </copy>
+                                                    </assign>
+                                                    <throw name="Throw_invalid_Message"
+                                                           faultName="bpelx:bindingFault"
+                                                           faultVariable="Exception"/>
+                                                </sequence>
+                                            </otherwise>
+                                        </switch>
+                                    </sequence>
+                                </case>
+                                <case condition="bpws:getVariableData('TMP_File_Name') ='TDM'">
+                                    <bpelx:annotation>
+                                        <bpelx:pattern>TDM</bpelx:pattern>
+                                    </bpelx:annotation>
+                                    <sequence name="Sequence_6">
+                                        <invoke name="InvokeTDMChunkRead"
+                                                partnerLink="TDMChunkRead"
+                                                portType="ns13:SynchChunkedRead_ptt"
+                                                operation="SynchChunkedRead"
+                                                inputVariable="TDM_SynchChunkedRead"
+                                                outputVariable="TDM_SynchChunkedRead_Out"
+                                                bpelx:outputHeaderVariable="SyncChunkReadOutboundHeader"
+                                                bpelx:inputHeaderVariable="SyncChunkReadInboundHeader"/>
+                                        <assign name="AssignChunkHeaderTDM">
+                                            <copy>
+                                                <from variable="SyncChunkReadOutboundHeader"/>
+                                                <to variable="SyncChunkReadInboundHeader"/>
+                                            </copy>
+                                            <copy>
+                                                <from expression="bpws:getVariableData('counter') + 1"/>
+                                                <to variable="counter"/>
+                                            </copy>
+                                            <copy>
+                                                <from expression="concat('Processing Chunk number: ', bpws:getVariableData('counter'), ' from file: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:fileName'), ' located in: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:directory'), '. Line number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:lineNumber'), ', Column Number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:columnNumber'), ', Record Number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:recordNumber'), '. Is message rejected: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected'), ', Rejection reason: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:rejectionReason'), '. No data found: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound'), ', is EOF: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF'))"/>
+                                                <to variable="status"/>
+                                            </copy>
+                                        </assign>
+                                        <switch name="Switch_10">
+                                            <case condition="bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected')!='true'">
+                                                <bpelx:annotation>
+                                                    <bpelx:pattern>Valid Message</bpelx:pattern>
+                                                </bpelx:annotation>
+                                                <switch name="Switch_11">
+                                                    <case condition="bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound')!='true'">
+                                                        <assign name="TransformTDMOAGIS">
+                                                            <bpelx:annotation>
+                                                                <bpelx:pattern>transformation</bpelx:pattern>
+                                                            </bpelx:annotation>
+                                                            <copy>
+                                                                <from expression="ora:processXSLT('TransformTDMOagis.xsl',bpws:getVariableData('TDM_SynchChunkedRead_Out','container'),bpws:getVariableData('XSLT_PARAM'))"/>
+                                                                <to variable="OAGIS_Var"/>
+                                                            </copy>
+                                                        </assign>
+                                                    </case>
+                                                    <otherwise>
+                                                        <sequence name="Sequence_77">
+                                                            <assign name="NoData_Found">
+                                                                <copy>
+                                                                    <from expression="string('No Data Found')"/>
+                                                                    <to variable="Exception"
+                                                                        part="summary"/>
+                                                                </copy>
+                                                                <copy>
+                                                                    <from expression="concat(&quot;Exception caught while processing batch file: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:fileName'), &quot; from directory: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:directory'), &quot; . The error occurred while processing the data chunk starting at line:  &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:lineNumber'), &quot; Column Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:columnNumber'), &quot; Record Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:recordNumber'), &quot; is the Message Rejected: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected'), &quot; The Rejection Reason is &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:rejectionReason'), &quot; No Data Found &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound'), &quot; Is EOF &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF')  )"/>
+                                                                    <to variable="Exception"
+                                                                        part="detail"/>
+                                                                </copy>
+                                                                <copy>
+                                                                    <from expression="string('ReadChunkFile.NoDataFound')"/>
+                                                                    <to variable="Exception"
+                                                                        part="code"/>
+                                                                </copy>
+                                                            </assign>
+                                                            <throw name="Throw_NoData_Found"
+                                                                   faultName="bpelx:bindingFault"
+                                                                   faultVariable="Exception"/>
+                                                        </sequence>
+                                                    </otherwise>
+                                                </switch>
+                                            </case>
+                                            <otherwise>
+                                                <sequence name="Sequence_76">
+                                                    <assign name="Invalid_Message">
+                                                        <copy>
+                                                            <from expression="concat(&quot;Exception caught while processing batch file: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:fileName'), &quot; from directory: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:directory'), &quot; . The error occurred while processing the data chunk starting at line:  &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:lineNumber'), &quot; Column Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:columnNumber'), &quot; Record Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:recordNumber'), &quot; is the Message Rejected: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected'), &quot; The Rejection Reason is &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:rejectionReason'), &quot; No Data Found &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound'), &quot; Is EOF &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF')  )"/>
+                                                            <to variable="Exception"
+                                                                part="summary"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from expression="string('ReadChunkFile.Invalid_Message')"/>
+                                                            <to variable="Exception"
+                                                                part="code"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from variable="status"/>
+                                                            <to variable="Exception"
+                                                                part="detail"/>
+                                                        </copy>
+                                                    </assign>
+                                                    <throw name="Throw_invalid_Message"
+                                                           faultName="bpelx:bindingFault"
+                                                           faultVariable="Exception"/>
+                                                </sequence>
+                                            </otherwise>
+                                        </switch>
+                                    </sequence>
+                                </case>
+                                <case condition="bpws:getVariableData('TMP_File_Name') ='INTEGRAL'">
+                                    <bpelx:annotation>
+                                        <bpelx:pattern>Integral</bpelx:pattern>
+                                    </bpelx:annotation>
+                                    <sequence name="Sequence_2">
+                                        <invoke name="InvokeIntegralFileRead"
+                                                partnerLink="IntegralFileChunkRead"
+                                                portType="ns2:SynchChunkedRead_ptt"
+                                                operation="SynchChunkedRead"
+                                                inputVariable="Integral_SynchChunkedRead"
+                                                outputVariable="Integral_SynchChunkedRead_Out"
+                                                bpelx:outputHeaderVariable="SyncChunkReadOutboundHeader"
+                                                bpelx:inputHeaderVariable="SyncChunkReadInboundHeader"/>
+                                        <assign name="AssignChunkHeaderIntegral">
+                                            <copy>
+                                                <from variable="SyncChunkReadOutboundHeader"/>
+                                                <to variable="SyncChunkReadInboundHeader"/>
+                                            </copy>
+                                            <copy>
+                                                <from expression="bpws:getVariableData('counter') + 1"/>
+                                                <to variable="counter"/>
+                                            </copy>
+                                            <copy>
+                                                <from expression="concat('Processing Chunk number: ', bpws:getVariableData('counter'), ' from file: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:fileName'), ' located in: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:directory'), '. Line number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:lineNumber'), ', Column Number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:columnNumber'), ', Record Number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:recordNumber'), '. Is message rejected: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected'), ', Rejection reason: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:rejectionReason'), '. No data found: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound'), ', is EOF: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF'))"/>
+                                                <to variable="status"/>
+                                            </copy>
+                                            <copy>
+                                                <from expression="concat('Processing Chunk number: ', bpws:getVariableData('counter'), ' from file: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:fileName'), ' located in: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:directory'), '. Line number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:lineNumber'), ', Column Number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:columnNumber'), ', Record Number: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:recordNumber'), '. Is message rejected: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected'), ', Rejection reason: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:rejectionReason'), '. No data found: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound'), ', is EOF: ', bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF'))"/>
+                                                <to variable="status"/>
+                                            </copy>
+                                        </assign>
+                                        <switch name="Switch_12">
+                                            <case condition="bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected')!='true'">
+                                                <bpelx:annotation>
+                                                    <bpelx:pattern>Valid Message</bpelx:pattern>
+                                                </bpelx:annotation>
+                                                <switch name="Switch_13">
+                                                    <case condition="bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound')!='true'">
+                                                        <assign name="TransformIntegralOAGIS">
+                                                            <bpelx:annotation>
+                                                                <bpelx:pattern>transformation</bpelx:pattern>
+                                                            </bpelx:annotation>
+                                                            <copy>
+                                                                <from expression="ora:processXSLT('TransformIntegralOAGIS.xsl',bpws:getVariableData('Integral_SynchChunkedRead_Out','container'),bpws:getVariableData('XSLT_PARAM'))"/>
+                                                                <to variable="OAGIS_Var"/>
+                                                            </copy>
+                                                        </assign>
+                                                    </case>
+                                                    <otherwise>
+                                                        <sequence name="Sequence_79">
+                                                            <assign name="NoData_Found">
+                                                                <copy>
+                                                                    <from expression="string('No Data Found')"/>
+                                                                    <to variable="Exception"
+                                                                        part="summary"/>
+                                                                </copy>
+                                                                <copy>
+                                                                    <from expression="concat(&quot;Exception caught while processing batch file: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:fileName'), &quot; from directory: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:directory'), &quot; . The error occurred while processing the data chunk starting at line:  &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:lineNumber'), &quot; Column Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:columnNumber'), &quot; Record Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:recordNumber'), &quot; is the Message Rejected: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected'), &quot; The Rejection Reason is &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:rejectionReason'), &quot; No Data Found &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound'), &quot; Is EOF &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF')  )"/>
+                                                                    <to variable="Exception"
+                                                                        part="detail"/>
+                                                                </copy>
+                                                                <copy>
+                                                                    <from expression="string('ReadChunkFile.NoDataFound')"/>
+                                                                    <to variable="Exception"
+                                                                        part="code"/>
+                                                                </copy>
+                                                            </assign>
+                                                            <throw name="Throw_NoData_Found"
+                                                                   faultName="bpelx:bindingFault"
+                                                                   faultVariable="Exception"/>
+                                                        </sequence>
+                                                    </otherwise>
+                                                </switch>
+                                            </case>
+                                            <otherwise>
+                                                <sequence name="Sequence_78">
+                                                    <assign name="Invalid_Message">
+                                                        <copy>
+                                                            <from expression="concat(&quot;Exception caught while processing batch file: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:fileName'), &quot; from directory: &quot;, bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:directory'), &quot; . The error occurred while processing the data chunk starting at line:  &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:lineNumber'), &quot; Column Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:columnNumber'), &quot; Record Number: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:recordNumber'), &quot; is the Message Rejected: &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isMessageRejected'), &quot; The Rejection Reason is &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:rejectionReason'), &quot; No Data Found &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:NoDataFound'), &quot; Is EOF &quot;, bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF')  )"/>
+                                                            <to variable="Exception"
+                                                                part="summary"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from expression="string('ReadChunkFile.Invalid_Message')"/>
+                                                            <to variable="Exception"
+                                                                part="code"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from variable="status"/>
+                                                            <to variable="Exception"
+                                                                part="detail"/>
+                                                        </copy>
+                                                    </assign>
+                                                    <throw name="Throw_invalid_Message"
+                                                           faultName="bpelx:bindingFault"
+                                                           faultVariable="Exception"/>
+                                                </sequence>
+                                            </otherwise>
+                                        </switch>
+                                    </sequence>
+                                </case>
+                                <otherwise>
+                                    <sequence name="Sequence_87">
+                                        <assign name="FileNameIncorrect">
+                                            <copy>
+                                                <from expression="concat('The file name ', bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:fileName'),' is incorrect')"/>
+                                                <to variable="FileName_Error"/>
+                                            </copy>
+                                            <copy>
+                                                <from expression="ora:getProcessId()"/>
+                                                <to variable="invkCatchAll_initiate"
+                                                    part="payload"
+                                                    query="/ns12:ErrorData/ns12:ProcessInfo/ns12:BusinessProcessName"/>
+                                            </copy>
+                                            <copy>
+                                                <from expression="ora:getInstanceId()"/>
+                                                <to variable="invkCatchAll_initiate"
+                                                    part="payload"
+                                                    query="/ns12:ErrorData/ns12:ProcessInfo/ns12:BusinessProcessId"/>
+                                            </copy>
+                                            <copy>
+                                                <from expression="ora:getDomainId()"/>
+                                                <to variable="invkCatchAll_initiate"
+                                                    part="payload"
+                                                    query="/ns12:ErrorData/ns12:ProcessInfo/ns12:BusinessProcessDomain"/>
+                                            </copy>
+                                            <copy>
+                                                <from expression="ora:getProcessURL()"/>
+                                                <to variable="invkCatchAll_initiate"
+                                                    part="payload"
+                                                    query="/ns12:ErrorData/ns12:ProcessInfo/ns12:SystemName"/>
+                                            </copy>
+                                            <copy>
+                                                <from expression="ora:getCurrentDateTime()"/>
+                                                <to variable="invkCatchAll_initiate"
+                                                    part="payload"
+                                                    query="/ns12:ErrorData/ns12:ErrorDetails/ns12:ErrorDateTime"/>
+                                            </copy>
+                                            <copy>
+                                                <from expression="'Catch All on the Main Sequence'"/>
+                                                <to variable="invkCatchAll_initiate"
+                                                    part="payload"
+                                                    query="/ns12:ErrorData/ns12:ProcessInfo/ns12:BusinessProcessStep"/>
+                                            </copy>
+                                            <copy>
+                                                <from variable="FileName_Error"/>
+                                                <to variable="invkCatchAll_initiate"
+                                                    part="payload"
+                                                    query="/ns12:ErrorData/ns12:ErrorDetails/ns12:ErrorDescription"/>
+                                            </copy>
+                                            <copy>
+                                                <from expression="'File'"/>
+                                                <to variable="invkCatchAll_initiate"
+                                                    part="payload"
+                                                    query="/ns12:ErrorData/ns12:ErrorDetails/ns12:ErrorType"/>
+                                            </copy>
+                                            <copy>
+                                                <from expression="'fatal'"/>
+                                                <to variable="invkCatchAll_initiate"
+                                                    part="payload"
+                                                    query="/ns12:ErrorData/ns12:ErrorDetails/ns12:ErrorSeverity"/>
+                                            </copy>
+                                            <copy>
+                                                <from expression="ora:doc('${server_url}/xmllib/fin/GlobalParameters.xml','/GlobalParameters/FaultNotification/SendNotification')"/>
+                                                <to variable="invkCatchAll_initiate"
+                                                    part="payload"
+                                                    query="/ns12:ErrorData/ns12:Notification/ns12:sendNotification"/>
+                                            </copy>
+                                        </assign>
+                                        <invoke name="Invoke_ODErrorLogger"
+                                                partnerLink="ODErrorLogger"
+                                                portType="ns11:ODErrorLogger"
+                                                operation="initiate"
+                                                inputVariable="invkCatchAll_initiate"/>
+                                        <terminate name="FileNameIncorrect"/>
+                                    </sequence>
+                                </otherwise>
+                            </switch>
+                            <switch name="HeaderFound">
+                                <case condition="(bpws:getVariableData('OAGIS_Var','/ns6:ProcessInvoice/ns6:DataArea/ns6:Invoice/ns6:InvoiceHeader/ns6:DocumentReference/ns6:DocumentID/ns6:ID')= 'NULL' ) and (bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF')='true') and (bpws:getVariableData('counter') = 1)and (bpws:getVariableData('TMP_File_Name')!='RETAILLEASE')">
+                                    <bpelx:annotation>
+                                        <bpelx:pattern>Only Trailer Record exists</bpelx:pattern>
+                                    </bpelx:annotation>
+                                    <sequence name="Sequence_83">
+                                        <assign name="GetEmailAddress">
+                                            <copy>
+                                                <from expression="ora:doc('${server_url}/xmllib/fin/GlobalParameters.xml','/GlobalParameters/ProcessAPInvoiceFiles/EmailAddress')"/>
+                                                <to variable="EmailAddress"/>
+                                            </copy>
+                                            <copy>
+                                                <from expression="0"/>
+                                                <to variable="RecordCount"/>
+                                            </copy>
+                                        </assign>
+                                        <scope name="Scope_1">
+                                            <scope name="Email_1">
+                                                <bpelx:annotation>
+                                                    <bpelx:pattern patternName="bpelx:email"></bpelx:pattern>
+                                                </bpelx:annotation>
+                                                <variables>
+                                                    <variable name="varNotificationReq"
+                                                              messageType="ns26:EmailNotificationRequest"/>
+                                                    <variable name="varNotificationResponse"
+                                                              messageType="ns26:ArrayOfResponse"/>
+                                                    <variable name="NotificationServiceFaultVariable"
+                                                              messageType="ns26:NotificationServiceErrorMessage"/>
+                                                </variables>
+                                                <sequence name="Sequence_82">
+                                                    <assign name="EmailParamsAssign">
+                                                        <!-- 
+                                                        <copy>
+                                                            <from expression="string('NotificationAttachment1.html')"/>
+                                                            <to variable="varNotificationReq"
+                                                                part="EmailPayload"
+                                                                query="/EmailPayload/ns26:Content/ns26:ContentBody/ns26:MultiPart/ns26:BodyPart[1]/ns26:BodyPartName"/>
+                                                        </copy>
+   -->
+                                                        <copy>
+                                                            <from expression="string('SOAEmailNotify')"/>
+                                                            <to variable="varNotificationReq"
+                                                                part="EmailPayload"
+                                                                query="/EmailPayload/ns26:FromAccountName"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from expression="string('')"/>
+                                                            <to variable="varNotificationReq"
+                                                                part="EmailPayload"
+                                                                query="/EmailPayload/ns26:Bcc"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from expression="string('')"/>
+                                                            <to variable="varNotificationReq"
+                                                                part="EmailPayload"
+                                                                query="/EmailPayload/ns26:Cc"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from expression="string('')"/>
+                                                            <to variable="varNotificationReq"
+                                                                part="EmailPayload"
+                                                                query="/EmailPayload/ns26:ReplyToAddress"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from expression="concat('The File which was processed by BPEL  ', bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:fileName'), ' Only has trailer record')"/>
+                                                            <to variable="varNotificationReq"
+                                                                part="EmailPayload"
+                                                                query="/EmailPayload/ns26:Subject"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from expression="bpws:getVariableData('EmailAddress')"/>
+                                                            <to variable="varNotificationReq"
+                                                                part="EmailPayload"
+                                                                query="/EmailPayload/ns26:To"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from expression="concat('The File which was processed by BPEL  ', bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:fileName'), ' Only has trailer record')"/>
+                                                            <to variable="varNotificationReq"
+                                                                part="EmailPayload"
+                                                                query="/EmailPayload/ns26:Content/ns26:ContentBody"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from expression="string('text/html; charset=UTF-8')"/>
+                                                            <to variable="varNotificationReq"
+                                                                part="EmailPayload"
+                                                                query="/EmailPayload/ns26:Content/ns26:MimeType"/>
+                                                        </copy>
+                                                    </assign>
+                                                    <invoke name="InvokeNotificationService"
+                                                            partnerLink="NotificationService"
+                                                            portType="ns26:NotificationService"
+                                                            operation="sendEmailNotification"
+                                                            inputVariable="varNotificationReq"
+                                                            outputVariable="varNotificationResponse"/>
+                                                </sequence>
+                                            </scope>
+                                        </scope>
+                                    </sequence>
+                                </case>
+                                <case condition="bpws:getVariableData('OAGIS_Var','/ns6:ProcessInvoice/ns6:DataArea/ns6:Invoice/ns6:InvoiceHeader/ns6:DocumentReference/ns6:DocumentID/ns6:ID')!= 'NULL' ">
+                                    <bpelx:annotation>
+                                        <bpelx:pattern>Header Found</bpelx:pattern>
+                                    </bpelx:annotation>
+                                    <sequence name="Sequence_9">
+                                        <switch name="Switch_15">
+                                            <case condition="bpws:getVariableData('TMP_File_Name') ='PCARD'">
+                                                <bpelx:annotation>
+                                                    <bpelx:pattern>PCARD</bpelx:pattern>
+                                                </bpelx:annotation>
+                                                <sequence name="Sequence_93">
+                                                    <assign name="TransformOAsrvc">
+                                                        <bpelx:annotation>
+                                                            <bpelx:pattern>transformation</bpelx:pattern>
+                                                        </bpelx:annotation>
+                                                        <copy>
+                                                            <from expression="ora:processXSLT('TransformOagistToOASrvc.xsl',bpws:getVariableData('OAGIS_Var'),bpws:getVariableData('XSLT_PARAM1'))"/>
+                                                            <to variable="OASrvcPCard_In"
+                                                                part="InputParameters"/>
+                                                        </copy>
+                                                    </assign>
+                                                    <invoke name="InvokeOASrvc"
+                                                            partnerLink="OASrvcPCard"
+                                                            portType="ns33:OASrvcPCard_ptt"
+                                                            operation="OASrvcPCard"
+                                                            inputVariable="OASrvcPCard_In"
+                                                            outputVariable="OASrvcPCard_Out"/>
+                                                    <assign name="GetNumberOfRecords">
+                                                        <copy>
+                                                            <from variable="ESP_File_Name"/>
+                                                            <to variable="OASrvcPCard_Out"
+                                                                part="OutputParameters"
+                                                                query="/ns34:OutputParameters/ns34:P_HEADER_REC/ns34:ATTRIBUTE2"/>
+                                                        </copy>
+                                                    </assign>
+                                                </sequence>
+                                            </case>
+                                            <otherwise>
+                                                <sequence name="Sequence_92">
+                                                    <assign name="TransformOAGISStgTable">
+                                                        <bpelx:annotation>
+                                                            <bpelx:pattern>transformation</bpelx:pattern>
+                                                        </bpelx:annotation>
+                                                        <copy>
+                                                            <from expression="ora:processXSLT('TransformOAGISStgTable.xsl',bpws:getVariableData('OAGIS_Var'))"/>
+                                                            <to variable="InvokeStgTableInsert"
+                                                                part="XxApInvInterfaceStgCollection"/>
+                                                        </copy>
+                                                    </assign>
+                                                    <invoke name="InvokeStgTableInsert"
+                                                            partnerLink="StgTableInsert"
+                                                            portType="ns9:StgTableInsert_ptt"
+                                                            operation="insert"
+                                                            inputVariable="InvokeStgTableInsert"/>
+                                                    <assign name="GetNumberOfRecords">
+                                                        <copy>
+                                                            <from expression="ora:countNodes('InvokeStgTableInsert','XxApInvInterfaceStgCollection','/ns31:XxApInvInterfaceStgCollection/ns31:XxApInvInterfaceStg')"/>
+                                                            <to variable="RecordCount"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from expression="ora:countNodes('InvokeStgTableInsert','XxApInvInterfaceStgCollection','/ns31:XxApInvInterfaceStgCollection/ns31:XxApInvInterfaceStg') + bpws:getVariableData('Total_Rec_Cnt')"/>
+                                                            <to variable="Total_Rec_Cnt"/>
+                                                        </copy>
+                                                    </assign>
+                                                </sequence>
+                                            </otherwise>
+                                        </switch>
+                                    </sequence>
+                                </case>
+                                <otherwise>
+                                    <sequence name="Sequence_89">
+                                        <empty name="HeaderNotFound"/>
+                                    </sequence>
+                                </otherwise>
+                            </switch>
+                            <switch name="LastChunk">
+                                <case condition="bpws:getVariableData('SyncChunkReadOutboundHeader','outboundHeader','/ns4:OutboundFileHeaderType/ns4:isEOF') = 'true'">
+                                    <bpelx:annotation>
+                                        <bpelx:pattern>Batch Record Found</bpelx:pattern>
+                                    </bpelx:annotation>
+                                    <sequence name="Sequence_3">
+                                        <switch name="Switch_17">
+                                            <case condition="bpws:getVariableData('TMP_File_Name') ='PCARD'">
+                                                <bpelx:annotation>
+                                                    <bpelx:pattern>PCARD</bpelx:pattern>
+                                                </bpelx:annotation>
+                                                <sequence name="Sequence_97">
+                                                    <assign name="TransformBatch">
+                                                        <bpelx:annotation>
+                                                            <bpelx:pattern>transformation</bpelx:pattern>
+                                                        </bpelx:annotation>
+                                                        <copy>
+                                                          <!--  <from expression="ora:processXSLT('TransformPcardBatch_1.xsl',bpws:getVariableData('OASrvcPCard_Out','OutputParameters'))"/> -->
+                                                           <from expression="ora:processXSLT('TransformPcardBatch.xsl',bpws:getVariableData('OASrvcPCard_Out','OutputParameters'))"/> 
+                                                            <to variable="Invoke_BatchInsert"
+                                                                part="XxApInvBatchInterfaceStgCollection"/>
+                                                        </copy>
+                                                    </assign>
+                                                </sequence>
+                                            </case>
+                                            <otherwise>
+                                                <assign name="TransformBatch">
+                                                    <bpelx:annotation>
+                                                        <bpelx:pattern>transformation</bpelx:pattern>
+                                                    </bpelx:annotation>
+                                                    <copy>
+                                                        <from expression="ora:processXSLT('TransformBacth.xsl',bpws:getVariableData('OAGIS_Var'))"/>
+                                                        <to variable="Invoke_BatchInsert"
+                                                            part="XxApInvBatchInterfaceStgCollection"/>
+                                                    </copy>
+                                                </assign>
+                                            </otherwise>
+                                        </switch>
+                                        <invoke name="InvokeBatchInsert"
+                                                partnerLink="StgBatchTableInsert"
+                                                portType="ns10:StgBatchTableInsert_ptt"
+                                                operation="insert"
+                                                inputVariable="Invoke_BatchInsert"/>
+                                    </sequence>
+                                </case>
+                                <otherwise>
+                                    <sequence name="Sequence_4">
+                                        <empty name="BatchNotFound"/>
+                                    </sequence>
+                                </otherwise>
+                            </switch>
+                        </sequence>
+                    </while>
+                </sequence>
+            </otherwise>
+        </switch>
+        <scope name="InvokeESP">
+            <sequence name="Sequence_88">
+                <assign name="assignESPData">
+                    <copy>
+                        <from expression="ora:getDomainId()"/>
+                        <to variable="InvokeProcessESP" part="payload"
+                            query="/ns25:BPELInvokeESPProcessRequest/ns25:processDomain"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getProcessId()"/>
+                        <to variable="InvokeProcessESP" part="payload"
+                            query="/ns25:BPELInvokeESPProcessRequest/ns25:processName"/>
+                    </copy>
+                    <copy>
+                        <from variable="ESP_File_Name"/>
+                        <to variable="InvokeProcessESP" part="payload"
+                            query="/ns25:BPELInvokeESPProcessRequest/ns25:filePattern"/>
+                    </copy>
+                </assign>
+                <invoke name="InvokeProcessESP" partnerLink="BPELInvokeESP"
+                        portType="ns25:BPELInvokeESP" operation="initiate"
+                        inputVariable="InvokeProcessESP"/>
+            </sequence>
+        </scope>
+        <scope name="logTransactionEnd">
+            <sequence name="Sequence_81">
+                <assign name="logTransactionInput">
+                    <copy>
+                        <from expression="'Success'"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns24:TransactionData/ns24:ProcessInfo/ns24:ProcessStatus"/>
+                    </copy>
+                    <copy>
+                        <from expression="'FileSize'"/>
+                        <to variable="XSLT_PARAM1"
+                            query="/ns8:parameters/ns8:item/ns8:name"/>
+                    </copy>
+                    <copy>
+                        <from variable="SyncChunkReadOutboundHeader"
+                              part="outboundHeader"
+                              query="/ns4:OutboundFileHeaderType/ns4:lineNumber"/>
+                        <to variable="XSLT_PARAM1"
+                            query="/ns8:parameters/ns8:item/ns8:value"/>
+                    </copy>
+                    <copy>
+                        <from variable="status"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns24:TransactionData/ns24:MessageDetails/ns24:MessageData"/>
+                    </copy>
+                    <copy>
+                        <from>
+                            <EntiltyList xmlns="http://xmlns.oracle.com/TransactionData">
+                                <EntityID EntityType="SourceFileName"/>
+                                <EntityID EntityType="TableName"/>
+                                <EntityID EntityType="NumberOfInvoices"/>
+                                <EntityID EntityType="BatchId"/>
+                                <EntityID EntityType="ReleaseESPJob"/>
+                            </EntiltyList>
+                        </from>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns24:TransactionData/ns24:EntiltyList"/>
+                    </copy>
+                    <copy>
+                        <from expression="concat('&lt;EntityID EntityType=&quot;SourceFileName&quot;>', bpws:getVariableData('inputVariable','payload','/ns1:fileHeader/ns1:fileName'), '&lt;/EntityID>')"/>
+                        <to variable="xmlFragment"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:parseEscapedXML(bpws:getVariableData('xmlFragment'))"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns24:TransactionData/ns24:EntiltyList/ns24:EntityID[1]"/>
+                    </copy>
+                    <copy>
+                        <from expression="concat('&lt;EntityID EntityType=&quot;TableName&quot;>', 'XX_AP_INV_INTERFACE_STG,','XX_AP_INV_LINES_INTERFACE_STG,','XX_AP_INV_BATCH_INTERFACE_STG', '&lt;/EntityID>')"/>
+                        <to variable="xmlFragment"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:parseEscapedXML(bpws:getVariableData('xmlFragment'))"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns24:TransactionData/ns24:EntiltyList/ns24:EntityID[2]"/>
+                    </copy>
+                    <copy>
+                        <from expression="concat('&lt;EntityID EntityType=&quot;NumberOfInvoices&quot;>', bpws:getVariableData('Total_Rec_Cnt'), '&lt;/EntityID>')"/>
+                        <to variable="xmlFragment"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:parseEscapedXML(bpws:getVariableData('xmlFragment'))"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns24:TransactionData/ns24:EntiltyList/ns24:EntityID[3]"/>
+                    </copy>
+                    <copy>
+                        <from expression="concat('&lt;EntityID EntityType=&quot;BatchId&quot;>', bpws:getVariableData('BatchId'), '&lt;/EntityID>')"/>
+                        <to variable="xmlFragment"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:parseEscapedXML(bpws:getVariableData('xmlFragment'))"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns24:TransactionData/ns24:EntiltyList/ns24:EntityID[4]"/>
+                    </copy>
+                    <copy>
+                        <from expression="concat('&lt;EntityID EntityType=&quot;ReleaseESPJob&quot;>', 'YES', '&lt;/EntityID>')"/>
+                        <to variable="xmlFragment"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:parseEscapedXML(bpws:getVariableData('xmlFragment'))"/>
+                        <to variable="logTransactionInput" part="payload"
+                            query="/ns24:TransactionData/ns24:EntiltyList/ns24:EntityID[5]"/>
+                    </copy>
+                </assign>
+                <invoke name="logTransaction" partnerLink="ODTransactionLogger"
+                        portType="ns23:ODTransactionLogger" operation="initiate"
+                        inputVariable="logTransactionInput"/>
+            </sequence>
+        </scope>
+        <assign name="AssignDeleteDetails">
+            <copy>
+                <from variable="inputVariable" part="payload"
+                      query="/ns1:fileHeader/ns1:fileName"/>
+                <to variable="Outbound_Var"
+                    query="/ns4:OutboundFileHeaderType/ns4:sourceFileName"/>
+            </copy>
+            <copy>
+                <from variable="inputVariable" part="payload"
+                      query="/ns1:fileHeader/ns1:directory"/>
+                <to variable="Outbound_Var"
+                    query="/ns4:OutboundFileHeaderType/ns4:sourceDirectory"/>
+            </copy>
+            <copy>
+                <from variable="inputVariable" part="payload"
+                      query="/ns1:fileHeader/ns1:fileName"/>
+                <to variable="Outbound_Var"
+                    query="/ns4:OutboundFileHeaderType/ns4:targetFileName"/>
+            </copy>
+            <copy>
+                <from variable="inputVariable" part="payload"
+                      query="/ns1:fileHeader/ns1:directory"/>
+                <to variable="Outbound_Var"
+                    query="/ns4:OutboundFileHeaderType/ns4:targetDirectory"/>
+            </copy>
+        </assign>
+        <invoke name="InvokeFileDelete" partnerLink="FileDelete"
+                portType="ns22:Write_ptt" operation="Write"
+                inputVariable="InvokeFileDelete"
+                bpelx:inputHeaderVariable="Outbound_Var"/>
+    </sequence>
+</process>

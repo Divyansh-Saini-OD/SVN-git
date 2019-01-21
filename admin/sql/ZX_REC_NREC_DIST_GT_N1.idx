@@ -1,0 +1,25 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name        :ZX_REC_NREC_DIST_GT_N1                                   |
+-- | Description : Index for Table ZX_REC_NREC_DIST_GT                     |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      03-FEB-2014 Deepak V           Initial  Version (Defect 28765)|
+-- +=======================================================================+
+
+
+CREATE INDEX ZX.ZX_REC_NREC_DIST_GT_N1 on ZX.ZX_REC_NREC_DIST_GT(TAX_LINE_ID);
+
+/
+

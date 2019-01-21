@@ -1,0 +1,18 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK; 
+
+-- +============================================================================================+
+-- |                                     Office Depot                                           |
+-- +============================================================================================+
+-- | Name        : XX_AR_SERV_CONTR_API_ERRORS.tbl                                         	    |
+-- | Description : Script to drop XX_AR_SERV_CONTR_API_ERRORS table                             |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        12-JULY-2018    Sahithi K            Drop table XX_AR_SERV_CONTR_API_ERRORS      |
+-- +============================================================================================+
+
+DROP TABLE xxfin.XX_AR_SERV_CONTR_API_ERRORS;

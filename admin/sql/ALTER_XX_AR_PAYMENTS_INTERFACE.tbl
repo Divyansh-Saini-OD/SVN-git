@@ -1,0 +1,38 @@
+-- +============================================================================================+
+-- |  Office Depot - CR#872                                                                     |
+-- |  Oracle GSD Consulting                                                                     |
+-- +============================================================================================+
+-- | Name         : ALTER_XX_AR_PAYMENTS_INTERFACE                                              |
+-- | Rice Id      : E0062                                                                       |
+-- | Description  : Add a new colum SENDING_COMPANY_ID to the Custom Table                      |
+-- |                XX_AR_PAYMENTS_INTERFACE                                                    |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      |
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   23-MAY-2011   Deepti S               Initial Version                             |
+-- |                                                                                            |
+-- +============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT MODIFYING the Table XX_AR_PAYMENTS_INTERFACE
+PROMPT
+
+Alter table xxfin.XX_AR_PAYMENTS_INTERFACE ADD (SENDING_COMPANY_ID VARCHAR2(10) );
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

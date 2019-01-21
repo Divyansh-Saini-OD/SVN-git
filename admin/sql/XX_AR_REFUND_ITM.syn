@@ -1,0 +1,39 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- +===================================================================+
+-- |                        Office Depot                               |
+-- |                                                                   |
+-- +===================================================================+
+-- | Synonym Name:  XX_AR_REFUND_ITM.syn                               |
+-- | Rice Id     :  E055                                               |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author             Remarks                  |
+-- |=======   ===========  =================  =========================|
+-- |1.0       22-OCT-2015  Vasu Raparla      Initial draft version    |
+-- +===================================================================+
+
+PROMPT
+PROMPT Creating Synonym XX_AR_REFUND_ITM
+PROMPT    
+
+CREATE OR REPLACE SYNONYM XX_AR_REFUND_ITM FOR XXFIN.XX_AR_REFUND_ITM; 
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

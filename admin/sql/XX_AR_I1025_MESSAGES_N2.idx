@@ -1,0 +1,21 @@
+-- +==================================================================================+  
+-- | Office Depot - Project Simplify                                                  |
+-- | Providge Consulting                                                              |
+-- +==================================================================================+
+-- | SQL Script to create indexes on the table:  XXFIN.XX_AR_I1025_MESSAGES           |
+-- |                                                                                  |
+-- | For the Extension I1025 Create and Apply Receipts                                |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- | 1.0      25-MAR-2009    Sowmya M S                Inital Version                 |
+-- |                                                                                  |
+-- +==================================================================================+
+
+  
+--DROP INDEX XXFIN.XX_AR_I1025_MESSAGES_N2;
+ 
+CREATE INDEX XXFIN.XX_AR_I1025_MESSAGES_N2 
+ ON XX_AR_I1025_MESSAGES (REQUEST_ID,MESSAGE_CODE);

@@ -1,0 +1,27 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | SQL Script to create the following object                                |
+-- | Synonym  : xx_ar_bill_exceptions_temp                                    |
+-- | For R0539 , OD: AR Billing Exceptions Report                             |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version          Date            Author                   Remarks         |
+-- |=======      ==========        =============        ======================|
+-- | V1.0         19-Feb-09       Jennifer Jegam           Initial version    |
+-- |  1.1         19-FEB-09	   Jennifer Jegam          Recreate synonym   |
+-- +==========================================================================+
+
+--DROP SYNONYM xx_ar_bill_exceptions_temp;
+
+CREATE SYNONYM APPS.xx_ar_bill_exceptions_temp FOR XXFIN.xx_ar_bill_exceptions_temp;
+
+SHOW ERROR;

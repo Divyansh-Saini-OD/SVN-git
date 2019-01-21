@@ -1,0 +1,30 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | Name        : ALTER_XX_AR_CBI_RPRN_TRX_LINES_ALL_KITTING.tbl             |
+-- | RICE ID     :  E0286                                                     |
+-- | Name        :  Consolidated Billing Invoice                              |
+-- |                                                                          |
+-- | SQL Script to alter the table XX_AR_CBI_RPRN_TRX_LINES_ALL               |
+-- |  for adding the column "KIT_SKU".                            |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author          Remarks                            |
+-- |=======   ==========   =============   ===================================|
+-- |1.0       10-MAY-2016  Havish Kasina   Initial version (Defect# 37670)    |
+-- +==========================================================================+
+
+	SET SHOW         OFF
+	SET VERIFY       OFF
+	SET ECHO         OFF
+	SET TAB          OFF
+	SET FEEDBACK     ON
+        
+	PROMPT
+	PROMPT Altering the Table XX_AR_CBI_RPRN_TRX_LINES_ALL .....
+	PROMPT
+		
+	ALTER TABLE xxfin.xx_ar_cbi_rprn_trx_lines_all
+				ADD( KIT_SKU     VARCHAR2(120));
+
+	SHOW ERROR;

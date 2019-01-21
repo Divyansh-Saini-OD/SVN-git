@@ -1,0 +1,19 @@
+<schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified"
+	targetNamespace="http://xmlns.oracle.com/ExtensityInvoiceProcess"
+	xmlns="http://www.w3.org/2001/XMLSchema">
+	<element name="ExtensityInvoiceProcessProcessRequest">
+		<complexType>
+			<sequence>
+				<element name="input" type="string"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="ExtensityInvoiceProcessProcessResponse">
+		<complexType>
+			<sequence>
+				<element name="result" type="string"/>
+			</sequence>
+		</complexType>
+	</element>
+</schema>

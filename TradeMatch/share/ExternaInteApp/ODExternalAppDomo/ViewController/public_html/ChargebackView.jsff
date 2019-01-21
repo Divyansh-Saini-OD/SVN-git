@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1" xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:af="http://xmlns.oracle.com/adf/faces/rich">
+  <af:panelGroupLayout layout="vertical" id="pgl1">
+  <af:panelGroupLayout id="pgl10">
+        <af:outputFormatted value="Office Depot - AP Trade - Employee/Vendor Match Analysis Summary:" id="of1"
+                            inlineStyle="font-size:large;"/>
+      
+    
+      </af:panelGroupLayout>
+    <af:panelHeader text="User: #{sessionScope.fndUserBean.userName} Availavle roles: #{sessionScope.fndUserBean.ebsRoles} " id="ph1"
+                    >
+      <af:quickQuery label="Search" searchDesc="Search" id="qryId1"
+                     value="#{bindings.ImplicitViewCriteriaQuery.quickQueryDescriptor}"
+                     model="#{bindings.ImplicitViewCriteriaQuery.queryModel}"
+                     queryListener="#{bindings.ImplicitViewCriteriaQuery.processQuery}">
+        <f:facet name="end">
+          <af:commandLink text="Advanced" rendered="false" id="cl1"/>
+        </f:facet>
+      </af:quickQuery>
+    </af:panelHeader>
+    <af:table value="#{bindings.XxApChargeBackTempVO.collectionModel}" var="row"
+              rows="#{bindings.XxApChargeBackTempVO.rangeSize}"
+              emptyText="#{bindings.XxApChargeBackTempVO.viewable ? 'No data to display.' : 'Access Denied.'}"
+              rowBandingInterval="0" fetchSize="#{bindings.XxApChargeBackTempVO.rangeSize}" partialTriggers="::qryId1"
+              id="t1">
+      <af:column sortProperty="#{bindings.XxApChargeBackTempVO.hints.VendorAssistant.name}" sortable="true"
+                 headerText="#{bindings.XxApChargeBackTempVO.hints.VendorAssistant.label}" id="c1">
+        <af:outputText value="#{row.VendorAssistant}"
+                       shortDesc="#{bindings.XxApChargeBackTempVO.hints.VendorAssistant.tooltip}" id="ot1"/>
+      </af:column>
+      <af:column sortProperty="#{bindings.XxApChargeBackTempVO.hints.SupplierNo.name}" sortable="true"
+                 headerText="#{bindings.XxApChargeBackTempVO.hints.SupplierNo.label}" id="c2">
+        <af:outputText value="#{row.SupplierNo}" shortDesc="#{bindings.XxApChargeBackTempVO.hints.SupplierNo.tooltip}"
+                       id="ot2"/>
+      </af:column>
+      <af:column sortProperty="#{bindings.XxApChargeBackTempVO.hints.SupplierName.name}" sortable="true"
+                 headerText="#{bindings.XxApChargeBackTempVO.hints.SupplierName.label}" id="c3">
+        <af:outputText value="#{row.SupplierName}"
+                       shortDesc="#{bindings.XxApChargeBackTempVO.hints.SupplierName.tooltip}" id="ot3"/>
+      </af:column>
+      <af:column sortProperty="#{bindings.XxApChargeBackTempVO.hints.PricingAmt.name}" sortable="true"
+                 headerText="#{bindings.XxApChargeBackTempVO.hints.PricingAmt.label}" id="c4">
+        <af:outputText value="#{row.PricingAmt}" shortDesc="#{bindings.XxApChargeBackTempVO.hints.PricingAmt.tooltip}"
+                       id="ot4">
+          <af:convertNumber groupingUsed="false" pattern="#{bindings.XxApChargeBackTempVO.hints.PricingAmt.format}"/>
+        </af:outputText>
+      </af:column>
+      <af:column sortProperty="#{bindings.XxApChargeBackTempVO.hints.PricingCount.name}" sortable="true"
+                 headerText="#{bindings.XxApChargeBackTempVO.hints.PricingCount.label}" id="c5">
+        <af:outputText value="#{row.PricingCount}"
+                       shortDesc="#{bindings.XxApChargeBackTempVO.hints.PricingCount.tooltip}" id="ot5">
+          <af:convertNumber groupingUsed="false" pattern="#{bindings.XxApChargeBackTempVO.hints.PricingCount.format}"/>
+        </af:outputText>
+      </af:column>
+      <af:column sortProperty="#{bindings.XxApChargeBackTempVO.hints.PricingVchrCount.name}" sortable="true"
+                 headerText="#{bindings.XxApChargeBackTempVO.hints.PricingVchrCount.label}" id="c6">
+        <af:outputText value="#{row.PricingVchrCount}"
+                       shortDesc="#{bindings.XxApChargeBackTempVO.hints.PricingVchrCount.tooltip}" id="ot6">
+          <af:convertNumber groupingUsed="false"
+                            pattern="#{bindings.XxApChargeBackTempVO.hints.PricingVchrCount.format}"/>
+        </af:outputText>
+      </af:column>
+      <af:column sortProperty="#{bindings.XxApChargeBackTempVO.hints.ShortageAmt.name}" sortable="true"
+                 headerText="#{bindings.XxApChargeBackTempVO.hints.ShortageAmt.label}" id="c7">
+        <af:outputText value="#{row.ShortageAmt}" shortDesc="#{bindings.XxApChargeBackTempVO.hints.ShortageAmt.tooltip}"
+                       id="ot7">
+          <af:convertNumber groupingUsed="false" pattern="#{bindings.XxApChargeBackTempVO.hints.ShortageAmt.format}"/>
+        </af:outputText>
+      </af:column>
+      <af:column sortProperty="#{bindings.XxApChargeBackTempVO.hints.ShortageCount.name}" sortable="true"
+                 headerText="#{bindings.XxApChargeBackTempVO.hints.ShortageCount.label}" id="c8">
+        <af:outputText value="#{row.ShortageCount}"
+                       shortDesc="#{bindings.XxApChargeBackTempVO.hints.ShortageCount.tooltip}" id="ot8">
+          <af:convertNumber groupingUsed="false" pattern="#{bindings.XxApChargeBackTempVO.hints.ShortageCount.format}"/>
+        </af:outputText>
+      </af:column>
+      <af:column sortProperty="#{bindings.XxApChargeBackTempVO.hints.ShortageVchrCount.name}" sortable="true"
+                 headerText="#{bindings.XxApChargeBackTempVO.hints.ShortageVchrCount.label}" id="c9">
+        <af:outputText value="#{row.ShortageVchrCount}"
+                       shortDesc="#{bindings.XxApChargeBackTempVO.hints.ShortageVchrCount.tooltip}" id="ot9">
+          <af:convertNumber groupingUsed="false"
+                            pattern="#{bindings.XxApChargeBackTempVO.hints.ShortageVchrCount.format}"/>
+        </af:outputText>
+      </af:column>
+      <af:column sortProperty="#{bindings.XxApChargeBackTempVO.hints.OtherAmt.name}" sortable="true"
+                 headerText="#{bindings.XxApChargeBackTempVO.hints.OtherAmt.label}" id="c10">
+        <af:outputText value="#{row.OtherAmt}" shortDesc="#{bindings.XxApChargeBackTempVO.hints.OtherAmt.tooltip}"
+                       id="ot10">
+          <af:convertNumber groupingUsed="false" pattern="#{bindings.XxApChargeBackTempVO.hints.OtherAmt.format}"/>
+        </af:outputText>
+      </af:column>
+      <af:column sortProperty="#{bindings.XxApChargeBackTempVO.hints.TotalShortPriceAmt.name}" sortable="true"
+                 headerText="#{bindings.XxApChargeBackTempVO.hints.TotalShortPriceAmt.label}" id="c11">
+        <af:outputText value="#{row.TotalShortPriceAmt}"
+                       shortDesc="#{bindings.XxApChargeBackTempVO.hints.TotalShortPriceAmt.tooltip}" id="ot11">
+          <af:convertNumber groupingUsed="false"
+                            pattern="#{bindings.XxApChargeBackTempVO.hints.TotalShortPriceAmt.format}"/>
+        </af:outputText>
+      </af:column>
+      <af:column sortProperty="#{bindings.XxApChargeBackTempVO.hints.OtherVchrCount.name}" sortable="true"
+                 headerText="#{bindings.XxApChargeBackTempVO.hints.OtherVchrCount.label}" id="c12">
+        <af:outputText value="#{row.OtherVchrCount}"
+                       shortDesc="#{bindings.XxApChargeBackTempVO.hints.OtherVchrCount.tooltip}" id="ot12">
+          <af:convertNumber groupingUsed="false"
+                            pattern="#{bindings.XxApChargeBackTempVO.hints.OtherVchrCount.format}"/>
+        </af:outputText>
+      </af:column>
+      <af:column sortProperty="#{bindings.XxApChargeBackTempVO.hints.Sku.name}" sortable="true"
+                 headerText="#{bindings.XxApChargeBackTempVO.hints.Sku.label}" id="c13">
+        <af:outputText value="#{row.Sku}" shortDesc="#{bindings.XxApChargeBackTempVO.hints.Sku.tooltip}" id="ot13"/>
+      </af:column>
+      <af:column sortProperty="#{bindings.XxApChargeBackTempVO.hints.OpUnit.name}" sortable="true"
+                 headerText="#{bindings.XxApChargeBackTempVO.hints.OpUnit.label}" id="c14">
+        <af:outputText value="#{row.OpUnit}" shortDesc="#{bindings.XxApChargeBackTempVO.hints.OpUnit.tooltip}"
+                       id="ot14"/>
+      </af:column>
+    </af:table>
+  </af:panelGroupLayout>
+</jsp:root>

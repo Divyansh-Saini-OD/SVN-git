@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXPOXPOROM" description="OD: ROM For Internal Order Report" Version="1.0">
+		<parameters>
+		<parameter name="P_FROM_DATE" dataType="date" />
+		<parameter name="P_TO_DATE" dataType="date" />
+		<parameter name="P_LOB" dataType="character" />
+        	</parameters>
+		<dataQuery>
+<sqlStatement name="Q1">
+     <![CDATA[ SELECT poha.segment1 req_no ,
+  fu.user_name PREPARER_NAME ,
+  MSI.SEGMENT1 ITEM_NUMBER ,
+  --TRANSLATE(prl.item_description, '!@#$%^&*()', ' ')item_description,
+  REGEXP_REPLACE(prl.item_description, '[^0-9A-Za-z]', ' ') item_description,
+  HRL.LOCATION_CODE ,
+  PRL.QUANTITY ,
+  TO_NUMBER(ROUND((PRL.QUANTITY*PRL.UNIT_PRICE),2)) AMOUNT ,
+  TO_CHAR(POHA.creation_date,'DD-MON-YYYY') REQ_DATE ,
+  OOH.order_number ISO_NUM ,
+  TO_CHAR(ooh.ordered_date,'DD-MON-YYYY') ordered_date ,
+  TO_CHAR(ooh.last_update_date,'DD-MON-YYYY') ORDER_LAST_UPDATE_DATE,
+  GCCK.CONCATENATED_SEGMENTS CHARGE_ACCOUNT
+FROM APPS.PO_REQUISITION_HEADERS_ALL POHA,
+  APPS.OE_ORDER_HEADERS_ALL OOH,
+  APPS.PO_REQUISITION_LINES_ALL PRL,
+  APPS.PO_REQ_DISTRIBUTIONS_ALL PRD,
+  APPS.GL_CODE_COMBINATIONS_KFV GCCK,
+  APPS.HR_LOCATIONS HRL,
+  APPS.mtl_system_items_b msi,
+  APPS.FND_USER fu
+WHERE 1                         =1
+AND OOH.ORIG_SYS_DOCUMENT_REF   =POHA.SEGMENT1
+AND ooh.source_document_id           = poha.requisition_header_id
+AND POHA.TYPE_LOOKUP_CODE      IN ('PURCHASE','INTERNAL')
+AND POHA.REQUISITION_HEADER_ID  =PRL.REQUISITION_HEADER_ID
+AND PRD.REQUISITION_LINE_ID (+) =PRL.REQUISITION_LINE_ID
+AND PRD.CODE_COMBINATION_ID     =GCCK.CODE_COMBINATION_ID (+)
+AND fu.employee_id              = poha.preparer_id
+and GCCk.SEGMENT6 = nvl(:p_lob,gcck.segment6)
+AND POHA.AUTHORIZATION_STATUS='APPROVED'
+AND HRL.LOCATION_ID          =PRL.DELIVER_TO_LOCATION_ID
+AND MSI.INVENTORY_ITEM_ID    = PRL.ITEM_ID
+and msi.organization_id(+)   = prl.destination_organization_id
+--and poha.segment1='599270'
+and (to_date(poha.creation_date,'DD-MON-YY')     >= nvl(:p_from_date,to_date(poha.creation_date,'DD-MON-YY'))
+and to_date(poha.creation_date,'DD-MON-YY')       <= nvl(:p_to_date,to_date(poha.creation_date,'DD-MON-YY')))		
+                      ]]>
+			</sqlStatement>		 
+		</dataQuery>
+		<dataStructure>
+		<group name="G_PO_HDR" source="Q1">
+			<element name="req_no" value="req_no" />
+			<element name="PREPARER_NAME" value="PREPARER_NAME" />
+			<element name="ITEM_NUMBER" value="ITEM_NUMBER" />
+			<element name="item_description" value="item_description" />
+			<element name="LOCATION_CODE" value="LOCATION_CODE" />
+			<element name="QUANTITY" value="QUANTITY" />
+            <element name="AMOUNT" value="AMOUNT" />
+			<element name="REQ_DATE" value="REQ_DATE" />
+			<element name="ISO_NUM" value="ISO_NUM" />
+			<element name="ordered_date" value="ordered_date" />
+			<element name="ORDER_LAST_UPDATE_DATE" value="ORDER_LAST_UPDATE_DATE" />
+			<element name="CHARGE_ACCOUNT" value="CHARGE_ACCOUNT" />
+		</group>
+	</dataStructure>
+</dataTemplate>

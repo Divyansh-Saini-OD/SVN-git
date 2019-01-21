@@ -1,0 +1,18 @@
+-- Testing Subversion keyword substitution
+-- $Author$
+-- $Rev$
+-- $Date$
+-- $HeadURL$
+--
+-- $Id$
+--
+-- Now, attempting formatted substitution
+-- ## Revision of last commit:    	$Rev$
+-- ## Author of last commit:		$Author$
+-- ## Date of last commit:			$Date$
+--
+-- One more try:
+-- $Rev::                                                                   $: ## Revision of last commit
+-- $Author::                                                                $: ## Author of last commit
+-- $Date::                                                                  $: ## Date of last commit
+select * from dual;

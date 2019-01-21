@@ -1,0 +1,47 @@
+ SET SHOW         OFF
+ SET VERIFY       OFF
+ SET ECHO         OFF
+ SET TAB          OFF
+ SET FEEDBACK     ON
+
+ PROMPT Creating INDEX XX_AR_ORDER_RECEIPT_DTL_N12
+
+ PROMPT Program exits IF the script IS NOT SUCCESSFUL
+
+ WHENEVER SQLERROR CONTINUE
+ WHENEVER OSERROR EXIT FAILURE ROLLBACK
+
+ -- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | SQL Script to create index                                               |
+-- |                                                                          |
+-- |             INDEX       : XXFIN.XX_AR_ORDER_RECEIPT_DTL_N12              |
+-- |                         For E3019 - Amazon Marketplace                   |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |                                                                          |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   ================     ==============================|
+-- | V1.0     13-JAN-2015  Suresh Ponnambalam   Amazon Marketplace            |
+-- |                                                                          |
+-- +==========================================================================+
+
+
+ CREATE INDEX xxfin.XX_AR_ORDER_RECEIPT_DTL_N12
+ ON xxfin.xx_ar_order_receipt_dtl (mpl_order_id)
+ TABLESPACE APPS_TS_TX_IDX_AR_16M nologging parallel 16;
+
+ ALTER INDEX xxfin.XX_AR_ORDER_RECEIPT_DTL_N12 NOPARALLEL LOGGING;
+
+ EXIT;
+
+ SHOW ERROR;
+
+
+
+
+
+
+

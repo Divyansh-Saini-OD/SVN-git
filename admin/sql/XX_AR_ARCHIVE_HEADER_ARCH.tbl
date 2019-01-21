@@ -1,0 +1,150 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                         WIPRO Technologies                               |
+-- +==========================================================================+
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- |                      TABLE: XX_AR_ARCHIVE_HEADER_ARCH                    |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date          Author               Remarks                      |
+-- |=======   ===========   ================     =============================|
+-- | V1.0     10-JAN-2011   K.Dhillon            Initial version              |
+-- |                                             Created for Defect 8950      |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE TABLE "XXFIN"."XX_AR_ARCHIVE_HEADER_ARCH"
+  (
+    "ARCHIVE_ID"                VARCHAR2(15 BYTE) NOT NULL ENABLE,
+    "TRANSACTION_CLASS"         VARCHAR2(20 BYTE) NOT NULL ENABLE,
+    "TRANSACTION_TYPE"          VARCHAR2(20 BYTE),
+    "TRANSACTION_ID"            NUMBER NOT NULL ENABLE,
+    "RELATED_TRANSACTION_CLASS" VARCHAR2(20 BYTE),
+    "RELATED_TRANSACTION_TYPE"  VARCHAR2(20 BYTE),
+    "RELATED_TRANSACTION_ID"    NUMBER,
+    "TRANSACTION_NUMBER"        VARCHAR2(30 BYTE),
+    "TRANSACTION_DATE" DATE,
+    "BATCH_NAME"                    VARCHAR2(50 BYTE),
+    "BATCH_SOURCE_NAME"             VARCHAR2(50 BYTE),
+    "SET_OF_BOOKS_NAME"             VARCHAR2(30 BYTE),
+    "AMOUNT"                        NUMBER,
+    "ACCTD_AMOUNT"                  NUMBER,
+    "EXCHANGE_GAIN_LOSS"            NUMBER,
+    "EARNED_DISCOUNT_TAKEN"         NUMBER,
+    "UNEARNED_DISCOUNT_TAKEN"       NUMBER,
+    "ACCTD_EARNED_DISCOUNT_TAKEN"   NUMBER,
+    "ACCTD_UNEARNED_DISCOUNT_TAKEN" NUMBER,
+    "TYPE"                          VARCHAR2(30 BYTE),
+    "ADJUSTMENT_TYPE"               VARCHAR2(30 BYTE),
+    "POST_TO_GL"                    VARCHAR2(1 BYTE),
+    "ACCOUNTING_AFFECT_FLAG"        VARCHAR2(1 BYTE),
+    "REASON_CODE_MEANING"           VARCHAR2(80 BYTE),
+    "CASH_RECEIPT_STATUS"           VARCHAR2(30 BYTE),
+    "CASH_RECEIPT_HISTORY_STATUS"   VARCHAR2(30 BYTE),
+    "BILL_TO_CUSTOMER_NUMBER"       VARCHAR2(30 BYTE),
+    "BILL_TO_CUSTOMER_NAME"         VARCHAR2(50 BYTE),
+    "BILL_TO_CUSTOMER_LOCATION"     VARCHAR2(40 BYTE),
+    "BILL_TO_CUSTOMER_ADDRESS1"     VARCHAR2(240 BYTE),
+    "BILL_TO_CUSTOMER_ADDRESS2"     VARCHAR2(240 BYTE),
+    "BILL_TO_CUSTOMER_ADDRESS3"     VARCHAR2(240 BYTE),
+    "BILL_TO_CUSTOMER_ADDRESS4"     VARCHAR2(240 BYTE),
+    "BILL_TO_CUSTOMER_CITY"         VARCHAR2(60 BYTE),
+    "BILL_TO_CUSTOMER_STATE"        VARCHAR2(60 BYTE),
+    "BILL_TO_CUSTOMER_COUNTRY"      VARCHAR2(60 BYTE),
+    "BILL_TO_CUSTOMER_POSTAL_CODE"  VARCHAR2(60 BYTE),
+    "SHIP_TO_CUSTOMER_NUMBER"       VARCHAR2(30 BYTE),
+    "SHIP_TO_CUSTOMER_NAME"         VARCHAR2(50 BYTE),
+    "SHIP_TO_CUSTOMER_LOCATION"     VARCHAR2(40 BYTE),
+    "SHIP_TO_CUSTOMER_ADDRESS1"     VARCHAR2(240 BYTE),
+    "SHIP_TO_CUSTOMER_ADDRESS2"     VARCHAR2(240 BYTE),
+    "SHIP_TO_CUSTOMER_ADDRESS3"     VARCHAR2(240 BYTE),
+    "SHIP_TO_CUSTOMER_ADDRESS4"     VARCHAR2(240 BYTE),
+    "SHIP_TO_CUSTOMER_CITY"         VARCHAR2(60 BYTE),
+    "SHIP_TO_CUSTOMER_STATE"        VARCHAR2(60 BYTE),
+    "SHIP_TO_CUSTOMER_COUNTRY"      VARCHAR2(60 BYTE),
+    "SHIP_TO_CUSTOMER_POSTAL_CODE"  VARCHAR2(60 BYTE),
+    "REMIT_TO_ADDRESS1"             VARCHAR2(240 BYTE),
+    "REMIT_TO_ADDRESS2"             VARCHAR2(240 BYTE),
+    "REMIT_TO_ADDRESS3"             VARCHAR2(240 BYTE),
+    "REMIT_TO_ADDRESS4"             VARCHAR2(240 BYTE),
+    "REMIT_TO_CITY"                 VARCHAR2(60 BYTE),
+    "REMIT_TO_STATE"                VARCHAR2(60 BYTE),
+    "REMIT_TO_COUNTRY"              VARCHAR2(60 BYTE),
+    "REMIT_TO_POSTAL_CODE"          VARCHAR2(60 BYTE),
+    "SALESREP_NAME"                 VARCHAR2(240 BYTE),
+    "TERM_NAME"                     VARCHAR2(15 BYTE),
+    "TERM_DUE_DATE" DATE,
+    "PRINTING_LAST_PRINTED" DATE,
+    "PRINTING_OPTION"    VARCHAR2(20 BYTE),
+    "PURCHASE_ORDER"     VARCHAR2(50 BYTE),
+    "COMMENTS"           VARCHAR2(240 BYTE),
+    "EXCHANGE_RATE_TYPE" VARCHAR2(30 BYTE),
+    "EXCHANGE_RATE_DATE" DATE,
+    "EXCHANGE_RATE" NUMBER,
+    "CURRENCY_CODE" VARCHAR2(15 BYTE),
+    "GL_DATE" DATE,
+    "REVERSAL_DATE" DATE,
+    "REVERSAL_CATEGORY"            VARCHAR2(20 BYTE),
+    "REVERSAL_REASON_CODE_MEANING" VARCHAR2(80 BYTE),
+    "REVERSAL_COMMENTS"            VARCHAR2(240 BYTE),
+    "ATTRIBUTE_CATEGORY"           VARCHAR2(30 BYTE),
+    "ATTRIBUTE1"                   VARCHAR2(150 BYTE),
+    "ATTRIBUTE2"                   VARCHAR2(150 BYTE),
+    "ATTRIBUTE3"                   VARCHAR2(150 BYTE),
+    "ATTRIBUTE4"                   VARCHAR2(150 BYTE),
+    "ATTRIBUTE5"                   VARCHAR2(150 BYTE),
+    "ATTRIBUTE6"                   VARCHAR2(150 BYTE),
+    "ATTRIBUTE7"                   VARCHAR2(150 BYTE),
+    "ATTRIBUTE8"                   VARCHAR2(150 BYTE),
+    "ATTRIBUTE9"                   VARCHAR2(150 BYTE),
+    "ATTRIBUTE10"                  VARCHAR2(150 BYTE),
+    "ATTRIBUTE11"                  VARCHAR2(150 BYTE),
+    "ATTRIBUTE12"                  VARCHAR2(150 BYTE),
+    "ATTRIBUTE13"                  VARCHAR2(150 BYTE),
+    "ATTRIBUTE14"                  VARCHAR2(150 BYTE),
+    "ATTRIBUTE15"                  VARCHAR2(150 BYTE),
+    "RECEIPT_METHOD_NAME"          VARCHAR2(30 BYTE),
+    "WAYBILL_NUMBER"               VARCHAR2(50 BYTE),
+    "DOCUMENT_SEQUENCE_NAME"       VARCHAR2(50 BYTE),
+    "DOCUMENT_SEQUENCE_VALUE"      NUMBER(15,0),
+    "START_DATE_COMMITMENT" DATE,
+    "END_DATE_COMMITMENT" DATE,
+    "INVOICING_RULE_NAME"        VARCHAR2(30 BYTE),
+    "CUSTOMER_BANK_ACCOUNT_NAME" VARCHAR2(80 BYTE),
+    "DEPOSIT_DATE" DATE,
+    "FACTOR_DISCOUNT_AMOUNT"       NUMBER,
+    "INTERFACE_HEADER_CONTEXT"     VARCHAR2(30 BYTE),
+    "INTERFACE_HEADER_ATTRIBUTE1"  VARCHAR2(150 BYTE),
+    "INTERFACE_HEADER_ATTRIBUTE2"  VARCHAR2(150 BYTE),
+    "INTERFACE_HEADER_ATTRIBUTE3"  VARCHAR2(150 BYTE),
+    "INTERFACE_HEADER_ATTRIBUTE4"  VARCHAR2(150 BYTE),
+    "INTERFACE_HEADER_ATTRIBUTE5"  VARCHAR2(150 BYTE),
+    "INTERFACE_HEADER_ATTRIBUTE6"  VARCHAR2(150 BYTE),
+    "INTERFACE_HEADER_ATTRIBUTE7"  VARCHAR2(150 BYTE),
+    "INTERFACE_HEADER_ATTRIBUTE8"  VARCHAR2(150 BYTE),
+    "INTERFACE_HEADER_ATTRIBUTE9"  VARCHAR2(150 BYTE),
+    "INTERFACE_HEADER_ATTRIBUTE10" VARCHAR2(150 BYTE),
+    "INTERFACE_HEADER_ATTRIBUTE11" VARCHAR2(150 BYTE),
+    "INTERFACE_HEADER_ATTRIBUTE12" VARCHAR2(150 BYTE),
+    "INTERFACE_HEADER_ATTRIBUTE13" VARCHAR2(150 BYTE),
+    "INTERFACE_HEADER_ATTRIBUTE14" VARCHAR2(150 BYTE),
+    "INTERFACE_HEADER_ATTRIBUTE15" VARCHAR2(150 BYTE),
+    "BANK_DEPOSIT_NUMBER"          VARCHAR2(30 BYTE),
+    "REFERENCE_TYPE"               VARCHAR2(30 BYTE),
+    "REFERENCE_ID"                 NUMBER,
+    "CUSTOMER_RECEIPT_REFERENCE"   VARCHAR2(30 BYTE),
+    "BANK_ACCOUNT_NAME"            VARCHAR2(80 BYTE)
+  )
+  TABLESPACE "APPS_TS_TX_DATA_32M" ;
+  
+SHOW ERROR
+

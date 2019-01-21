@@ -1,0 +1,19 @@
+WHENEVER SQLERROR EXIT
+                  
+CREATE TABLE XXFIN.XX_AR_ADJ_WC_STG
+(
+       ADJUSTMENT_ID                 NUMBER(15),
+       ADJUSTMENT_NUMBER             VARCHAR2(20),
+       ACCOUNT_NUMBER                VARCHAR2(30),
+       TYPE                          VARCHAR2(15),
+       CUSTOMER_TRX_ID               NUMBER(15),
+      TRX_NUMBER                    VARCHAR2(20),
+      APPLY_DATE                    DATE,
+      AMOUNT                        NUMBER,
+      TAX_ADJUSTED                  NUMBER,
+      RECEIVABLES_CHARGES_ADJUSTED  NUMBER,
+      REASON_CODE                   VARCHAR2(30),
+      COMMENTS                      VARCHAR2(2000),
+      NAME                          VARCHAR2(50),
+      ADJUSTMENT_TYPE               VARCHAR2(3),
+      STATUS                        VARCHAR2(30));

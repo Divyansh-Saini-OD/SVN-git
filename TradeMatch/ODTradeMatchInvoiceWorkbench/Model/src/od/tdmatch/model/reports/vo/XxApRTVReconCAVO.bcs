@@ -1,0 +1,19 @@
+//Groovy Scripts for od.tdmatch.model.vo.XxApRTVReconCAVO
+
+package od.tdmatch.model.vo
+
+import oracle.jbo.script.annotation.VariableExpression;
+
+@VariableExpression(path="bindInvFromDate")
+def bindInvFromDate_VariableScript_Variable()
+{
+adf.currentDBDate
+}
+
+
+@VariableExpression(path="bindInvToDate")
+def bindInvToDate_VariableScript_Variable()
+{
+adf.currentDBDate
+}
+

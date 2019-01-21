@@ -1,0 +1,166 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1" xmlns:af="http://xmlns.oracle.com/adf/faces/rich"
+          xmlns:f="http://java.sun.com/jsf/core" xmlns:dvt="http://xmlns.oracle.com/dss/adf/faces">
+    <af:panelGridLayout id="pgl1" partialTriggers="::b1">
+        <af:gridRow id="gr1">
+            <af:gridCell width="100%" halign="start" valign="stretch" id="gc1">
+                <!-- Content -->
+                <af:panelGroupLayout id="pgl4" layout="horizontal">
+                <af:outputFormatted value="Office Depot - Merchandising Department Contacts- As of Date "
+                                    id="of1" inlineStyle="font-size:large;"/>
+                    <af:spacer width="10" height="10" id="s4"/>
+                    <af:outputFormatted value=" #{bindings.LastUpdateDate.inputValue}"
+                                    id="of6" inlineStyle="font-size:large;">
+                                    <af:convertDateTime pattern="MM/dd/YYYY"/>
+                                    </af:outputFormatted>
+   
+                <!--<af:inputDate value="#{bindings.LastUpdateDate.inputValue}"
+                              required="#{bindings.LastUpdateDate.hints.mandatory}"
+                              columns="#{bindings.LastUpdateDate.hints.displayWidth}"
+                              shortDesc="#{bindings.LastUpdateDate.hints.tooltip}" id="id1" readOnly="true"
+                              inlineStyle="font-size:large; font-weight:bold;">
+                    <f:validator binding="#{bindings.LastUpdateDate.validator}"/>
+                    <af:convertDateTime pattern="#{bindings.LastUpdateDate.format}"/>
+                </af:inputDate>-->
+                </af:panelGroupLayout>
+            </af:gridCell>
+        </af:gridRow>
+    </af:panelGridLayout>
+    <af:panelGroupLayout id="pgl3" rendered="true" partialTriggers="::b1" layout="vertical">
+        <af:panelGridLayout id="pgl2" partialTriggers="b2">
+            <af:gridRow marginTop="5px" height="auto" id="gr2">
+                <af:gridCell marginStart="5px" width="120px" id="gc2" inlineStyle="text-align:right;"
+                             valign="middle">
+                    <af:outputFormatted value="#{bindings.DeptNo.hints.label}" id="of2"/>
+                </af:gridCell>
+                <af:gridCell marginStart="5px" width="400px" id="gc3">
+                    <af:inputListOfValues id="deptNoId" popupTitle="Search and Select: #{bindings.DeptNo.hints.label}"
+                                          value="#{bindings.DeptNo.inputValue}"
+                                          model="#{bindings.DeptNo.listOfValuesModel}"
+                                          required="#{bindings.DeptNo.hints.mandatory}"
+                                          columns="#{bindings.DeptNo.hints.displayWidth}"
+                                          shortDesc="#{bindings.DeptNo.hints.tooltip}">
+                        <f:validator binding="#{bindings.DeptNo.validator}"/>
+                        <af:convertNumber groupingUsed="false" pattern="#{bindings.DeptNo.format}"/>
+                    </af:inputListOfValues>
+                </af:gridCell>
+            </af:gridRow>
+            <af:gridRow marginTop="5px" height="auto" id="gr3">
+                <af:gridCell marginStart="5px" width="15%" id="gc8" valign="middle">
+                    <af:outputFormatted value="#{bindings.Vp.hints.label}" id="of3"/>
+                </af:gridCell>
+                <af:gridCell marginStart="5px" width="30%" id="gc9">
+                    <af:inputListOfValues id="vpId" popupTitle="Search and Select: #{bindings.Vp.hints.label}"
+                                          value="#{bindings.Vp.inputValue}"
+                                          model="#{bindings.Vp.listOfValuesModel}"
+                                          required="#{bindings.Vp.hints.mandatory}"
+                                          columns="#{bindings.Vp.hints.displayWidth}"
+                                          shortDesc="#{bindings.Vp.hints.tooltip}">
+                        <f:validator binding="#{bindings.Vp.validator}"/>
+                    </af:inputListOfValues>
+                </af:gridCell>
+            </af:gridRow>
+            <af:gridRow marginTop="5px" height="auto" id="gr4">
+                <af:gridCell marginStart="5px" width="15%" id="gc14" valign="middle">
+                    <af:outputFormatted value="#{bindings.MerchMgr.hints.label}" id="of4"/>
+                </af:gridCell>
+                <af:gridCell marginStart="5px" width="30%" id="gc15">
+                    <af:inputListOfValues id="merchMgrId"
+                                          popupTitle="Search and Select: #{bindings.MerchMgr.hints.label}"
+                                          value="#{bindings.MerchMgr.inputValue}"
+                                          model="#{bindings.MerchMgr.listOfValuesModel}"
+                                          required="#{bindings.MerchMgr.hints.mandatory}"
+                                          columns="#{bindings.MerchMgr.hints.displayWidth}"
+                                          shortDesc="#{bindings.MerchMgr.hints.tooltip}">
+                        <f:validator binding="#{bindings.MerchMgr.validator}"/>
+                    </af:inputListOfValues>
+                </af:gridCell>
+            </af:gridRow>
+            <af:gridRow marginTop="5px" height="auto" id="gr5">
+                <af:gridCell marginStart="5px" width="15%" id="gc20" valign="middle">
+                    <af:outputFormatted value="#{bindings.Merch.hints.label}" id="of5"/>
+                </af:gridCell>
+                <af:gridCell marginStart="5px" width="30%" id="gc21">
+                    <af:inputListOfValues id="merchId" popupTitle="Search and Select: #{bindings.Merch.hints.label}"
+                                          value="#{bindings.Merch.inputValue}"
+                                          model="#{bindings.Merch.listOfValuesModel}"
+                                          required="#{bindings.Merch.hints.mandatory}"
+                                          columns="#{bindings.Merch.hints.displayWidth}"
+                                          shortDesc="#{bindings.Merch.hints.tooltip}">
+                        <f:validator binding="#{bindings.Merch.validator}"/>
+                    </af:inputListOfValues>
+                </af:gridCell>
+            </af:gridRow>
+        </af:panelGridLayout>
+        <af:panelGroupLayout id="pgl27" layout="horizontal" halign="right" inlineStyle="width: 1020px">
+            <af:button text="Go" id="b1" partialSubmit="true"
+                       action="#{pageFlowScope.GeneralInquiryBean.DeptContactSearchAction}"/>
+            <af:spacer width="10" height="10" id="s3"/>
+            <af:button text="Clear" id="b2"
+                       actionListener="#{pageFlowScope.GeneralInquiryBean.clearDeptContactSearch}"/>
+        </af:panelGroupLayout>
+        <af:panelCollection id="pc1">
+            <f:facet name="menus">
+                <af:menu text="File" id="m1">
+                    <af:commandMenuItem text="Export to Excel" id="cmi1">
+                        <af:exportCollectionActionListener type="excelHTML" exportedId="t1"
+                                                           filename="DepartmentContacts.xls" title="DepartmentContacts"/>
+                    </af:commandMenuItem>
+                </af:menu>
+            </f:facet>
+            <f:facet name="toolbar"/>
+            <f:facet name="statusbar"/>
+            <af:table value="#{bindings.MerchDeptContVO1.collectionModel}" var="row"
+                      rows="#{bindings.MerchDeptContVO1.rangeSize}"
+                      emptyText="#{bindings.MerchDeptContVO1.viewable ? 'No data to display.' : 'Access Denied.'}"
+                      rowBandingInterval="0" selectedRowKeys="#{bindings.MerchDeptContVO1.collectionModel.selectedRow}"
+                      selectionListener="#{bindings.MerchDeptContVO1.collectionModel.makeCurrent}" rowSelection="single"
+                      fetchSize="#{bindings.MerchDeptContVO1.rangeSize}" id="t1" width="1050px" >
+                <af:column headerText="#{bindings.MerchDeptContVO1.hints.DeptName.label}" id="c2" width="120">
+                    <af:outputText value="#{row.DeptName}"
+                                   shortDesc="#{bindings.MerchDeptContVO1.hints.DeptName.tooltip}" id="ot2"/>
+                </af:column>
+                <af:column headerText="#{bindings.MerchDeptContVO1.hints.Vp.label}" id="c3">
+                    <af:outputText value="#{row.Vp}" shortDesc="#{bindings.MerchDeptContVO1.hints.Vp.tooltip}"
+                                   id="ot3"/>
+                </af:column>
+                <af:column headerText="#{bindings.MerchDeptContVO1.hints.Dmm.label}" id="c4">
+                    <af:outputText value="#{row.Dmm}" shortDesc="#{bindings.MerchDeptContVO1.hints.Dmm.tooltip}"
+                                   id="ot4"/>
+                </af:column>
+                <af:column headerText="#{bindings.MerchDeptContVO1.hints.Channel.label}" id="c5" align="center"
+                           width="50">
+                    <af:outputText value="#{row.Channel}" shortDesc="#{bindings.MerchDeptContVO1.hints.Channel.tooltip}"
+                                   id="ot5"/>
+                </af:column>
+                <af:column headerText="#{bindings.MerchDeptContVO1.hints.Scm.label}" id="c6">
+                    <af:outputText value="#{row.Scm}" shortDesc="#{bindings.MerchDeptContVO1.hints.Scm.tooltip}"
+                                   id="ot6"/>
+                </af:column>
+                <af:column headerText="#{bindings.MerchDeptContVO1.hints.Cm.label}" id="c7">
+                    <af:outputText value="#{row.Cm}" shortDesc="#{bindings.MerchDeptContVO1.hints.Cm.tooltip}"
+                                   id="ot7"/>
+                </af:column>
+                <af:column headerText="#{bindings.MerchDeptContVO1.hints.Acm.label}" id="c8">
+                    <af:outputText value="#{row.Acm}" shortDesc="#{bindings.MerchDeptContVO1.hints.Acm.tooltip}"
+                                   id="ot8"/>
+                </af:column>
+                <af:column headerText="#{bindings.MerchDeptContVO1.hints.Ca.label}" id="c9">
+                    <af:outputText value="#{row.Ca}" shortDesc="#{bindings.MerchDeptContVO1.hints.Ca.tooltip}"
+                                   id="ot9"/>
+                </af:column>
+                <af:column headerText="#{bindings.MerchDeptContVO1.hints.ReplPlannaer.label}" id="c10"
+                           headerNoWrap="true" width="150">
+                    <af:outputText value="#{row.ReplPlannaer}"
+                                   shortDesc="#{bindings.MerchDeptContVO1.hints.ReplPlannaer.tooltip}" id="ot10"/>
+                </af:column>
+            </af:table>
+        </af:panelCollection>
+    </af:panelGroupLayout>
+    <af:separator id="s1"/>
+    <af:panelGroupLayout id="pgl6" layout="horizontal" halign="left">
+        <af:outputText value="Total # of Records" id="ot27"/>
+        <af:spacer width="10" height="10" id="s2"/>
+        <af:outputText value="#{bindings.MerchDeptContVO1Iterator.estimatedRowCount}" id="ot31"/>
+    </af:panelGroupLayout>
+</jsp:root>

@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1" xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:af="http://xmlns.oracle.com/adf/faces/rich">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <f:view>
+        <af:document title="Login.jspx" id="d1">
+            <af:form id="f1">
+                <af:panelFormLayout id="pfl1">
+                    <f:facet name="footer"/>
+                    <af:panelGroupLayout id="pgl1" layout="vertical">
+                        <af:inputText label="Username" id="it1" value="#{LoginBean.username}"/>
+                        <af:spacer width="10" height="5" id="s1"/>
+                        <af:inputText label="Password" id="it2" secret="true" value="#{LoginBean.password}"/>
+                        <af:spacer width="10" height="5" id="s2"/>
+                        <af:button text="Submit" id="b1" action="#{LoginBean.doLogin}"/>
+                    </af:panelGroupLayout>
+                </af:panelFormLayout>
+            </af:form>
+        </af:document>
+    </f:view>
+</jsp:root>

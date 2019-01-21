@@ -1,0 +1,50 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | Table Script to create the following object                              |
+-- |             Table  : XX_IBY_STORE_MERCHANT_STG                           |
+-- |                      to load the Merchant, Store number into Oracle EBS  |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     29-JAN-2008  Gowri Shankar        Initial version               |
+-- |                                                                          |
+-- +==========================================================================+
+
+CREATE TABLE XXFIN.xx_iby_store_merchant_stg(
+     store_number          VARCHAR2(240)
+    ,merchant_number       VARCHAR2(240)
+    ,brand_code            VARCHAR2(240)
+    ,card_code             VARCHAR2(240)
+    ,attribute1            VARCHAR2(240)
+    ,attribute2            VARCHAR2(240)
+    ,attribute3            VARCHAR2(240)            
+    ,attribute4            VARCHAR2(240)
+    ,attribute5            VARCHAR2(240)
+    ,attribute6            VARCHAR2(240)
+    ,attribute7            VARCHAR2(240)
+    ,attribute8            VARCHAR2(240)
+    ,attribute9            VARCHAR2(240)
+    ,attribute10           VARCHAR2(240)
+    ,attribute11           VARCHAR2(240)
+    ,attribute12           VARCHAR2(240)
+    ,attribute13           VARCHAR2(240)
+    ,attribute14           VARCHAR2(240)
+    ,attribute15           VARCHAR2(240)
+    ,created_by            NUMBER(15)
+    ,creation_date         DATE
+    ,last_update_date      DATE
+    ,last_updated_by       NUMBER(15)
+    ,last_update_login     NUMBER(15)
+);
+
+SHOW ERROR;

@@ -1,0 +1,9 @@
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/file/attachment/"
+        elementFormDefault="qualified">
+  <element name="attachmentElement">
+    <complexType>
+      <attribute name="href" type="string"/>
+    </complexType>
+  </element>
+</schema>

@@ -1,0 +1,90 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- +==================================================================================+  
+-- | Office Depot - Project Simplify                                                  |
+-- |                                                              |
+-- +==================================================================================+
+-- | SQL Script to create the table:  XX_AP_INV_MATCH_DETAIL_219                |
+-- |                                                                                  |
+-- | AP MATCH RATE DASHBOARD
+-- |                                                                                  |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       31-JAN-2018    Jitendra Atale       Initial DRAFT version                      |
+-- |                                                                                  |
+-- +==================================================================================+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET TERM OFF
+
+SET TERM ON
+
+PROMPT
+PROMPT Creating the Table XX_AP_INV_MATCH_DETAIL_219
+PROMPT
+
+--+=====================================================================+
+--+               DROP TABLE XX_AP_INV_MATCH_DETAIL_219
+--+=====================================================================+
+
+--DROP TABLE XX_AP_INV_MATCH_DETAIL_219;
+
+SHOW ERROR;
+
+--+=====================================================================+
+--+               CREATE TABLE XX_AP_INV_MATCH_DETAIL_219
+--+=====================================================================+
+
+CREATE TABLE XX_AP_INV_MATCH_DETAIL_219(
+RUN_DATE                                           DATE,
+INVOICE_ID                                         NUMBER,
+SUPPLIERNUM                                        VARCHAR2(100),
+SUPPLIER_SITE                                      VARCHAR2(50),
+INV_CREATION_DATE                                  DATE,
+GL_DATE                                            DATE,
+RELEASE_DATE                                       DATE,
+VALIDATION_DATE                                    DATE,
+PO_MATCH_TYPE                                      VARCHAR2(50),
+PO_TYPE                                            VARCHAR2(150),
+PAY_DUE_DATE                                       DATE,
+MATCHED_BY                                         VARCHAR2(50),
+MATCH_CRITERIA                                     VARCHAR2(50),
+FIRST_PASS_FLAG                                    VARCHAR2(1),
+TRUE_MATCH_FLAG                                    VARCHAR2(1),
+ALL_FINALIZED_FLAG                                 VARCHAR2(1),
+PAYMENT_DUE_TDY_FLAG                               VARCHAR2(1),
+DUE_8_DAYS_FLAG                                    VARCHAR2(1),
+OU_NAME                                            VARCHAR2(50))
+/
+PROMPT
+PROMPT Grant XX_AP_INV_MATCH_DETAIL_219 to ERP_SYSTEM_TABLE_SELECT_ROLE
+PROMPT    
+GRANT SELECT ON XX_AP_INV_MATCH_DETAIL_219 TO ERP_SYSTEM_TABLE_SELECT_ROLE
+/
+
+PROMPT
+PROMPT Grant XX_AP_INV_MATCH_DETAIL_219 to APPS
+PROMPT   
+GRANT ALL ON XX_AP_INV_MATCH_DETAIL_219 TO APPS 
+/         
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+--EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================						 

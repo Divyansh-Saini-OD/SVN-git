@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel" version="12.2.1.12.24" id="ApTradeMatchSummaryPageDef"
+                Package="od.tdmatch.view.pageDefs">
+  <parameters/>
+  <executables>
+    <variableIterator id="variables"/>
+    <iterator Binds="XxApTradeMatchSearchVO" RangeSize="25" DataControl="ODTradeMatchReportsAMDataControl"
+              id="XxApTradeMatchSearchVO1Iterator"/>
+    <iterator Binds="XxApVendorMatchAnaVendVO" RangeSize="15" DataControl="ODTradeMatchReportsAMDataControl"
+              id="XxApVendorMatchAnaVendVO1Iterator" ChangeEventPolicy="ppr"/>
+    <iterator Binds="XxApVendMatchAnaDummVO" RangeSize="25" DataControl="ODTradeMatchReportsAMDataControl"
+              id="XxApVendMatchAnaDummVO1Iterator"/>
+    <iterator Binds="XxApVendorMatchAnaEmpVO" RangeSize="15" DataControl="ODTradeMatchReportsAMDataControl"
+              id="XxApVendorMatchAnaEmpVO1Iterator" ChangeEventPolicy="push"/>
+  </executables>
+  <bindings>
+    <listOfValues IterBinding="XxApTradeMatchSearchVO1Iterator" StaticList="false" Uses="LOV_Orgid" id="Orgid"/>
+    <list IterBinding="XxApTradeMatchSearchVO1Iterator" StaticList="false" Uses="LOV_Reportoption" id="Reportoption"
+          DTSupportsMRU="false" SelectItemValueMode="ListObject"/>
+    <listOfValues IterBinding="XxApTradeMatchSearchVO1Iterator" StaticList="false" Uses="LOV_Suppliername"
+                  id="Suppliername"/>
+
+    <attributeValues IterBinding="XxApTradeMatchSearchVO1Iterator" id="Daterangefrom">
+      <AttrNames>
+        <Item Value="Daterangefrom"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApTradeMatchSearchVO1Iterator" id="Daterangeto">
+      <AttrNames>
+        <Item Value="Daterangeto"/>
+      </AttrNames>
+    </attributeValues>
+    <listOfValues IterBinding="XxApTradeMatchSearchVO1Iterator" StaticList="false" Uses="LOV_Periodrangefrom"
+                  id="Periodrangefrom"/>
+    <listOfValues IterBinding="XxApTradeMatchSearchVO1Iterator" StaticList="false" Uses="LOV_Periodrangeto"
+                  id="Periodrangeto"/>
+    <listOfValues IterBinding="XxApTradeMatchSearchVO1Iterator" StaticList="false" Uses="LOV_Supplier" id="Supplier"/>
+    <tree IterBinding="XxApVendorMatchAnaVendVO1Iterator" id="XxApVendorMatchAnaVendVO1" ChangeEventPolicy="ppr">
+      <nodeDefinition DefName="od.tdmatch.model.reports.vo.XxApVendorMatchAnaVendVO" Name="XxApVendorMatchAnaVendVO10">
+        <AttrNames>
+          <Item Value="Vendorasistant"/>
+          <Item Value="SupNum"/>
+          <Item Value="Supplier"/>
+          <Item Value="ManualInv"/>
+          <Item Value="TdmInv"/>
+          <Item Value="EdiInv"/>
+          <Item Value="OtherInv"/>
+          <Item Value="ManualyMatched"/>
+          <Item Value="SystemMatched"/>
+          <Item Value="TotalInvoice"/>
+          <Item Value="SystemMatchedPer"/>
+          <Item Value="ManuallyMatchedPer"/>
+          <Item Value="VendorSiteCode"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <tree IterBinding="XxApVendMatchAnaDummVO1Iterator" id="XxApVendMatchAnaDummVO1">
+      <nodeDefinition DefName="od.tdmatch.model.reports.vo.XxApVendMatchAnaDummVO" Name="XxApVendMatchAnaDummVO10">
+        <AttrNames>
+          <Item Value="Vendorasistant"/>
+           <!--<Item Value="OracleUserName"/>-->
+          <Item Value="SupNum"/>
+          <Item Value="Supplier"/>
+          <Item Value="VendorSiteCode"/>
+          <Item Value="ManualInv"/>
+          <Item Value="TdmInv"/>
+          <Item Value="EdiInv"/>
+          <Item Value="OtherInv"/>
+          <Item Value="ManualyMatched"/>
+          <Item Value="TotalInvoice"/>
+          <Item Value="SystemMatchedPer"/>
+          <Item Value="ManuallyMatchedPer"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <methodAction id="searchMatchAnalysis" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="searchMatchAnalysis" IsViewObjectMethod="false" DataControl="ODTradeMatchReportsAMDataControl"
+                  InstanceName="bindings.searchMatchAnalysis.dataControl.dataProvider"
+                  ReturnName="data.ODTradeMatchReportsAMDataControl.methodResults.searchMatchAnalysis_searchMatchAnalysis_dataControl_dataProvider_searchMatchAnalysis_result">
+      <NamedData NDName="trMaMatchAnalysisMap" NDType="java.util.HashMap"/>
+    </methodAction>
+    <tree IterBinding="XxApVendorMatchAnaEmpVO1Iterator" id="XxApVendorMatchAnaEmpVO1" ChangeEventPolicy="ppr">
+      <nodeDefinition DefName="od.tdmatch.model.reports.vo.XxApVendorMatchAnaEmpVO" Name="XxApVendorMatchAnaEmpVO10">
+        <AttrNames>
+          <Item Value="Vendorasistant"/>
+          <Item Value="SupNum"/>
+          <Item Value="Supplier"/>
+          <Item Value="ManualInv"/>
+          <Item Value="TdmInv"/>
+          <Item Value="EdiInv"/>
+          <Item Value="OtherInv"/>
+          <Item Value="ManualyMatched"/>
+          <Item Value="TotalInvoice"/>
+          <Item Value="SystemMatchedPer"/>
+          <Item Value="ManuallyMatchedPer"/>
+          <Item Value="VendorSiteCode"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <methodAction id="searchMatchAnalysisEmp" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="searchMatchAnalysisEmp" IsViewObjectMethod="false" DataControl="ODTradeMatchReportsAMDataControl"
+                  InstanceName="bindings.searchMatchAnalysisEmp.dataControl.dataProvider"
+                  ReturnName="data.ODTradeMatchReportsAMDataControl.methodResults.searchMatchAnalysisEmp_searchMatchAnalysisEmp_dataControl_dataProvider_searchMatchAnalysisEmp_result">
+      <NamedData NDName="trMaMatchAnalysisMap" NDType="java.util.HashMap"/>
+    </methodAction>
+    <methodAction id="searchMatchAnalysisVendAss" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="searchMatchAnalysisVendAss" IsViewObjectMethod="false"
+                  DataControl="ODTradeMatchReportsAMDataControl"
+                  InstanceName="bindings.searchMatchAnalysisVendAss.dataControl.dataProvider"
+                  ReturnName="data.ODTradeMatchReportsAMDataControl.methodResults.searchMatchAnalysisVendAss_searchMatchAnalysisVendAss_dataControl_dataProvider_searchMatchAnalysisVendAss_result">
+      <NamedData NDName="trMaMatchAnalysisMap" NDType="java.util.HashMap"/>
+    </methodAction>
+    <listOfValues IterBinding="XxApTradeMatchSearchVO1Iterator" StaticList="false" Uses="LOV_Suppliersiteno"
+                  id="Suppliersiteno"/>
+    <attributeValues IterBinding="XxApTradeMatchSearchVO1Iterator" id="OrgIdVal">
+      <AttrNames>
+        <Item Value="OrgIdVal"/>
+      </AttrNames>
+    </attributeValues>
+  </bindings>
+</pageDefinition>

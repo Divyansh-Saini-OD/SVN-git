@@ -1,0 +1,40 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- +==========================================================================+
+-- | RICE ID     :  E3023                                                     |
+-- | Name        :  AP Trade Match Dashboard                                  |
+-- |                                                                          |
+-- | SQL Script to create the following object                                |
+-- |             Table       : xxfin.xx_ap_inv_match_detail_219                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0      25-jan-2018  Priyam         Added new columns             |
+-- |          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+ALTER TABLE xx_ap_inv_match_detail_219 
+ADD (invoice_source VARCHAR2(25),
+invoice_num VARCHAR2(50), 
+CREATED_BY VARCHAR2(64),
+LAST_UPDATE_DATE DATE,
+LAST_UPDATED_BY VARCHAR2(64), 
+validation_flag VARCHAR2(5),
+hold_count NUMBER,
+HOLD_LAST_UPDATED_BY VARCHAR2(64),
+HOLD_LAST_UPDATE_DATE DATE, 
+vendor_id number,
+vendor_site_id number,
+invoice_date date,
+invoice_amount number,
+vendor_name  VARCHAR2(240));     
+	   
+SHOW ERROR;

@@ -1,0 +1,31 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - VPS Project		                       |
+-- +=======================================================================+
+-- | Name             :XX_FIN_VPS_SYS_NETTING_STG.idx                      |
+-- | Description      :E7030:Index on XX_FIN_VPS_SYS_NETTING_STG       	   | 
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |DRAFT 1A 04-OCT-2017 Uday Jadhav   Initial draft version          	   |
+-- +=======================================================================+
+
+
+-- -------------------------------------------------
+-- Creating Index XXFIN.XX_FIN_VPS_SYS_NETTING_STG
+-- -------------------------------------------------
+
+CREATE INDEX XXFIN.XX_FIN_VPS_SYS_NETTING_STG_N1 ON XXFIN.XX_FIN_VPS_SYS_NETTING_STG (CREATION_DATE);
+CREATE INDEX XXFIN.XX_FIN_VPS_SYS_NETTING_STG_N2 ON XXFIN.XX_FIN_VPS_SYS_NETTING_STG (RECEIPT_NUMBER);
+CREATE INDEX XXFIN.XX_FIN_VPS_SYS_NETTING_STG_N3 ON XXFIN.XX_FIN_VPS_SYS_NETTING_STG (TRX_NUMBER); 
+CREATE INDEX XXFIN.XX_FIN_VPS_SYS_NETTING_STG_N5 ON XXFIN.XX_FIN_VPS_SYS_NETTING_STG (REQUEST_ID);
+CREATE INDEX XXFIN.XX_FIN_VPS_SYS_NETTING_STG_N6 ON XXFIN.XX_FIN_VPS_SYS_NETTING_STG (CUST_ACCOUNT_ID,CUSTOMER_TRX_TYPE_ID,VPS_PROGRAM_ID,REQUEST_ID) 
+/
+
+SHOW ERRORS;

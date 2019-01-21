@@ -1,0 +1,178 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Tue Aug 14 17:14:46 EDT 2007
+  Author:  Krishnan-Govindaraja
+  Purpose: Empty BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="ProcessAJB998Inbound"
+         targetNamespace="http://xmlns.oracle.com/ProcessAJB998Inbound"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns4="http://TargetNamespace.com/InboundService"
+         xmlns:ns7="ODError"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/ftp/"
+         xmlns:client="http://xmlns.oracle.com/ProcessAJB998Inbound"
+         xmlns:ns6="http://xmlns.oracle.com/Recipient6"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/ftp/ServiceFileRead/"
+         xmlns:ns3="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/db/ServiceTableInsert/"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <partnerLink myRole="ODErrorLoggerRequester" name="ODErrorLogger"
+                 partnerRole="ODErrorLoggerProvider"
+                 partnerLinkType="ns3:ODErrorLogger"/>
+    <partnerLink myRole="Get_role" name="ServiceFileRead"
+                 partnerLinkType="ns1:Get_plt"/>
+    <partnerLink name="ServiceTableInsert" partnerRole="ServiceTableInsert_role"
+                 partnerLinkType="ns2:ServiceTableInsert_plt"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <variable name="invkCatchAll_initiate"
+              messageType="ns3:ODErrorLoggerRequestMessage"/>
+    <variable name="ReceiveFileRead_Get_In" messageType="ns1:Root-Element_msg"/>
+    <variable name="InvokeTableInsert_insert_In"
+              messageType="ns2:XxCeAjb998Collection_msg"/>
+    <variable name="FileName_In" messageType="ns5:InboundHeader_msg"/>
+    <variable name="File_Name_In" type="xsd:string"/>
+    <variable name="VarRecipient" element="ns6:RecipientList"/>
+  </variables>
+  <faultHandlers>
+    <catchAll>
+      <sequence name="Sequence_4">
+        <assign name="asnCatchAll">
+          <copy>
+            <from expression="concat(ora:getProcessId(), ora:getProcessVersion())"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="ora:getInstanceId()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessId"/>
+          </copy>
+          <copy>
+            <from expression="ora:getDomainId()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessDomain"/>
+          </copy>
+          <copy>
+            <from expression="ora:getProcessURL()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-dateTime()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDateTime"/>
+          </copy>
+          <copy>
+            <from expression="'ProcessAJB998Inbound'"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessStep"/>
+          </copy>
+          <copy>
+            <from expression="ora:getFaultName()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorCode"/>
+          </copy>
+          <copy>
+            <from expression="ora:getFaultAsString()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorText"/>
+          </copy>
+          <copy>
+            <from expression="'system'"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorType"/>
+          </copy>
+          <copy>
+            <from expression="'fatal'"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorSeverity"/>
+          </copy>
+          <copy>
+            <from expression="ora:doc('${server_url}/xmllib/fin/GlobalParameters.xml','/GlobalParameters/FaultNotification/RecipientList')"/>
+            <to variable="VarRecipient" query="/ns6:RecipientList"/>
+          </copy>
+          <copy>
+            <from variable="VarRecipient" query="/ns6:RecipientList"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:Notification/ns7:RecipientList"/>
+          </copy>
+          <copy>
+            <from expression="'BPEL Process AJB998Inbound has been Errored Out'"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:Notification/ns7:Subject"/>
+          </copy>
+          <copy>
+            <from expression="ora:getFaultAsString()"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:Notification/ns7:Body"/>
+          </copy>
+          <copy>
+            <from expression="concat(&quot;The File  &quot;, bpws:getVariableData('File_Name_In'),&quot; has Errored Out.&quot;)"/>
+            <to variable="invkCatchAll_initiate" part="payload"
+                query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDescription"/>
+          </copy>
+        </assign>
+        <invoke name="invkCatchAll" partnerLink="ODErrorLogger"
+                portType="ns3:ODErrorLogger" operation="initiate"
+                inputVariable="invkCatchAll_initiate"/>
+        <terminate name="Terminate"/>
+      </sequence>
+    </catchAll>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <receive name="ReceiveFileRead" partnerLink="ServiceFileRead"
+             portType="ns1:Get_ptt" operation="Get"
+             variable="ReceiveFileRead_Get_In" createInstance="yes"
+             bpelx:headerVariable="FileName_In"/>
+    <assign name="Assign_File_Name">
+      <copy>
+        <from variable="FileName_In" part="inboundHeader"
+              query="/ns5:InboundFTPHeaderType/ns5:fileName"/>
+        <to variable="File_Name_In"/>
+      </copy>
+    </assign>
+    <assign name="TransformToTable">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:processXSLT('TransformToTable.xsl',bpws:getVariableData('ReceiveFileRead_Get_In','Root-Element'))"/>
+        <to part="XxCeAjb998Collection" variable="InvokeTableInsert_insert_In"/>
+      </copy>
+    </assign>
+    <invoke name="InvokeTableInsert" portType="ns2:ServiceTableInsert_ptt"
+            inputVariable="InvokeTableInsert_insert_In"
+            partnerLink="ServiceTableInsert" operation="insert"/>
+  </sequence>
+</process>

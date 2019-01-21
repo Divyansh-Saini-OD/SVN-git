@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataTemplate name ="CsiSale" description="CsiSale" Version="1.0" >
+<parameters>
+<parameter name="p_from_date" dataType="date" /> 
+<parameter name="p_to_date" dataType="date" /> 
+</parameters>
+<dataQuery>
+<sqlStatement name="Q1">
+<![CDATA[
+SELECT 'CNTR' ap_company,
+       lines.ap_vendor,
+       lines.invoice_number,
+       lines.location_number,
+       to_char(lines.invoice_date,'DD-MON-YYYY') sales_date,
+       lines.sku,
+       lines.cost avg_cost,
+       lines.quantity invoice_quantity,
+       lines.po_cost,
+       to_char(hdr.invoice_date,'DD-MON-YYYY') invoice_date
+  FROM xx_ap_trade_inv_lines lines,
+       xx_ap_trade_inv_hdr hdr
+WHERE lines.invoice_id = hdr.invoice_id
+   AND lines.source = 'US_OD_CONSIGNMENT_SALES'
+   AND lines.record_status = 'C'
+   AND lines.consign_flag = 'Y'
+   AND lines.invoice_date > hdr.invoice_date
+   AND hdr.invoice_date  BETWEEN :p_from_date
+	 				    AND :p_to_date
+ORDER BY lines.invoice_number
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_SALE" source="Q1">
+<element name="AP_COMPANY" value="AP_COMPANY" />
+<element name="AP_VENDOR" value="AP_VENDOR" />
+<element name="invoice_number" value="invoice_number" />
+<element name="location_number" value="location_number" />
+<element name="sales_date" value="sales_date" />
+<element name="SKU" value="SKU" />
+<element name="avg_cost" value="avg_cost" />
+<element name="invoice_quantity" value="invoice_quantity" />
+<element name="po_cost" value="po_cost" />
+<element name="invoice_date" value="invoice_date" />  
+</group>
+</dataStructure>
+</dataTemplate>

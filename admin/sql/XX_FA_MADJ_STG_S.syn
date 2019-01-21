@@ -1,0 +1,59 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+--+==============================================================================================+--
+--|                                                                                              |--
+--| Object Name    : Synonym for OD OD MidMonth FA Mass Adjustment Staging Table                 |--
+--|                                                                                              |--
+--| Program Name   : XX_FA_MADJ_STG_S.syn                                                        |--        
+--|                                                                                              |--   
+--|RICE E3121                                                                                    |
+--| Purpose        : Create Custom synonyms                                                      |--
+--|                                                                                              |--
+--|                                                                                              |-- 
+--| Change History  :                                                                            |--
+--| Version           Date             Changed By              Description                       |--
+--+==============================================================================================+--
+--| 1.0            10-JUL-2015        Madhu Bolli           Baselined                             |
+--+==============================================================================================+-- 
+                                     
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating Synonym in APPS...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM XX_FA_MADJ_STG_S
+PROMPT
+
+
+CREATE SYNONYM XX_FA_MADJ_STG_S FOR xxfin.XX_FA_MADJ_STG_S;
+
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+
+EXIT;
+
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================
+

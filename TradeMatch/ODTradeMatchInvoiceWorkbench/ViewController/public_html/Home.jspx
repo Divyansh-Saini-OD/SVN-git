@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1" xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:af="http://xmlns.oracle.com/adf/faces/rich">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <f:view>
+        <af:document title="Home.jspx" id="d1" >
+            <af:messages id="m1"/>
+            <af:outputText value="Deployed 12-7 6 PM" id="ot1"/>
+            <af:panelHeader text="User: #{sessionScope.fndUserBean.userName} Availavle roles: #{sessionScope.fndUserBean.ebsRoles} " id="ph1"
+                    >
+                    </af:panelHeader>
+            <af:form id="f1">
+                <af:pageTemplate viewId="/ODTradeMatchTemplate.jspx" id="pt1">
+                    <f:facet name="LeftFacet">
+                        <af:group id="g1">
+                           <af:panelList id="pl1" inlineStyle="background-color:ThreeDFace;">
+                                <af:link text="MOOT Summary" id="l1"
+                                         action="#{viewScope.MootSummaryBean.setMootSummary}"
+                                         inlineStyle="text-align:justify;"/>
+                                <af:link text="Employee's Vendor Summary" id="l2"
+                                         action="#{viewScope.MootSummaryBean.setEmployeeVendorSummary}"/>
+                                <af:link text="Vendor's MOOT Details" id="l6"
+                                         action="#{viewScope.MootSummaryBean.setVendMootDetail}"/>
+								<af:link text="Vendor's MOOT Details- Dropship" id="l9"
+                                         action="#{viewScope.MootSummaryBean.setVendMootDropShip}"/>		 
+                                <af:link text="Vendor Maintenance" id="l3"
+                                         action="#{viewScope.MootSummaryBean.setGeneralInquiry}"
+                                         />
+                            <af:link text="Inquiry - Vendor Information" id="l7"
+                                         action="#{viewScope.MootSummaryBean.setGeneralInquiryUser}"/>
+
+                            <af:link text="Inquiry - SKU Information" id="l4"
+                                         action="#{viewScope.MootSummaryBean.setGeneralInquirySKU}"/>
+                                <af:link text="Inquiry - Dept Info" id="l12"
+                                         action="#{viewScope.MootSummaryBean.setDepartmentCont}"/>
+                                <af:link text="Invoices Never Validated (6 days wait)" id="l5"
+                                         action="#{viewScope.MootSummaryBean.setInvoicesNotValidated}"
+                                         />
+                            <af:link text="Mass Update Payment Attributes" id="l8"
+                                         action="#{viewScope.MootSummaryBean.setPaymentAttributes}"
+                                     />
+<af:link text="Mass Release Invoice Holds" id="l10"
+                                         action="#{viewScope.MootSummaryBean.setMassReleaseHold}"
+         />
+<!--<af:link text="Cost Variance" id="l13"
+                                         action="#{viewScope.MootSummaryBean.setCostVariance}"/>-->
+<af:link text="Cost Variance - Inquiry" id="l14"
+                                         action="#{viewScope.MootSummaryBean.setCostVarianceUser}"/>
+                                         
+<!--<af:link text="Chargeback Summary" id="l15"  
+                                         action="#{viewScope.MootSummaryBean.setChargeBack}"/>-->
+ <!--<af:link text="Consignment RTV" id="l11"
+                                         action="#{viewScope.MootSummaryBean.setConsignmentRTV}"/>-->
+<!--<af:link text="RTV Reconcilation" id="l16"
+                                         action="#{viewScope.MootSummaryBean.setRTVRecon}"/>-->
+
+                            </af:panelList>
+                            <af:poll interval="120000"
+               pollListener="#{pageFlowScope.MootUtilityBean.autosave}"
+               id="pp2"/>
+                        </af:group>
+                    </f:facet>
+                    <f:facet name="RightFacet">
+                        <af:region value="#{bindings.dynamicRegion1.regionModel}" id="r1"
+                                   partialTriggers="::l1 ::l2 ::l6 ::l8 ::l12"
+                                   inlineStyle="column-fill:auto;" text="Sample1"
+                                   binding="#{viewScope.MootSummaryBean.dynamicregionbind}"/>
+                    </f:facet>
+                    <f:attribute name="HeaderTitle"
+                                 value="Office Depot - Trade AP Invoice Exception Handling Workbench"/>
+                    <f:attribute name="TabLabel" value="#{pageFlowScope.MootUtilityBean.tabTitle}"/>
+                </af:pageTemplate>
+            </af:form>
+            
+            
+        </af:document>
+    </f:view>
+</jsp:root>

@@ -1,0 +1,104 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+--+========================================================================================================+--
+--|                                                                                                        |--
+--| Program Name   : CREATE_XX_CE_MPL_SETTLEMENT_DTL.tbl                                                   |--
+--| RICE ID        : EXXXX                                                                                 |--
+--| Purpose        : Create Custom Tables .                                                                |--
+--|                  The Objects created are:                                                              |--
+--|                                                                                                        |--
+--|                1. XX_CE_MPL_SETTLEMENT_DTL(OD CE MPL Settlement Hdr)                                   |--
+--|                                                                                                        |--
+--| Change History  :                                                                                      |--
+--| Version           Date             Changed By              Description                                 |--
+--+========================================================================================================+--
+--| 1.0              18-MAY-2018       Paddy Sanjeevi          Original                                    |--
+--| 1.1              11-JUN-2018       M K Pramod Kumar        Modified as per changes in Design           |--
+--|                                                            Added AOPS#,Store#,Order Payment Id etc.    |--
+--+========================================================================================================+--
+SET VERIFY OFF
+SET TERM ON
+SET FEEDBACK OFF
+SET SHOW OFF
+SET ECHO OFF
+SET TAB OFF
+WHENEVER SQLERROR CONTINUE;
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+PROMPT
+PROMPT Creating the Table XX_CE_MPL_SETTLEMENT_DTL......
+PROMPT
+CREATE TABLE XX_CE_MPL_SETTLEMENT_DTL
+  (
+    mpl_header_id                NUMBER,
+    marketplace_name             VARCHAR2(25),
+    order_id                     VARCHAR2(100),
+    settlement_id                NUMBER,
+    adjustment_id                VARCHAR2(100),
+    shipment_id                  VARCHAR2(50),
+    Transaction_id		 VARCHAR2(150),
+    shipment_fee_type            VARCHAR2(50),
+    shipment_fee_amount          VARCHAR2(25),
+    order_fee_type               VARCHAR2(50),
+    order_fee_amount             VARCHAR2(25),
+    fulfillment_id               VARCHAR2(50),
+    order_item_code              VARCHAR2(50),
+    merchant_order_item_id       VARCHAR2(25),
+    merchant_adjustment_item_id  VARCHAR2(50),
+    order_payment_id             NUMBER,
+    aops_order_number            VARCHAR2(30),
+    store_number                 VARCHAR2(30),
+    sku                          VARCHAR2(50),
+    quantity_purchased           VARCHAR2(25),
+    unit_price                    Number,
+    price_type                   VARCHAR2(50),
+    price_amount                 VARCHAR2(25),
+    item_related_fee_type        VARCHAR2(50),
+    item_related_fee_amount      VARCHAR2(25),
+    misc_fee_amount              VARCHAR2(25),
+    other_fee_amount             VARCHAR2(25),
+    other_fee_reason_description VARCHAR2(1000),
+    promotion_id                 VARCHAR2(2000),
+    promotion_type               VARCHAR2(50),
+    promotion_amount             VARCHAR2(25),
+    direct_payment_type          VARCHAR2(50),
+    direct_payment_amount        VARCHAR2(25),
+    other_amount                 VARCHAR2(25),
+    record_status                VARCHAR2(30),
+    error_description            VARCHAR2(1000),
+    attribute1                   VARCHAR2(150),
+    attribute2                   VARCHAR2(150),
+    attribute3                   VARCHAR2(150),
+    attribute4                   VARCHAR2(150),
+    attribute5                   VARCHAR2(150),
+    attribute6                   VARCHAR2(150),
+    attribute7                   VARCHAR2(150),
+    attribute8                   VARCHAR2(150),
+    attribute9                   VARCHAR2(150),
+    attribute10                  VARCHAR2(150),
+    attribute11                  VARCHAR2(150),
+    attribute12                  VARCHAR2(150),
+    attribute13                  VARCHAR2(150),
+    attribute14                  VARCHAR2(150),
+    attribute15                  VARCHAR2(150),
+    request_id                   NUMBER,
+    created_by                   NUMBER,
+    creation_date                DATE,
+    last_updated_by              NUMBER,
+    last_update_date             DATE,
+    last_update_login            NUMBER
+  );
+
+Grant  all on XX_CE_MPL_SETTLEMENT_DTL to APPS;
+
+WHENEVER SQLERROR CONTINUE;
+PROMPT
+PROMPT Exiting....
+PROMPT
+SET FEEDBACK ON
+EXIT;
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

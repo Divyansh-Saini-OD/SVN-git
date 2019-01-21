@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templateDefinition xmlns="http://xmlns.oracle.com/uix/ui"
+          xmlns:ui="http://xmlns.oracle.com/uix/ui"
+          xmlns:data="http://xmlns.oracle.com/uix/ui"
+          xmlns:struts="http://xmlns.oracle.com/uix/struts"
+          xmlns:bibeans="http://xmlns.oracle.com/bibeans"
+          xmlns:html="http://www.w3.org/TR/REC-html40"
+          targetNamespace="http://xmlns.oracle.com/discoverer/templates"
+          localName="commonPageLayout"
+          expressionLanguage="el">
+
+  <type base="ui:pageLayout">
+    <attribute name="preferencesRendered" javaType="boolean" required="false" />
+    <attribute name="prefReturnDestination" javaType="string" required="false" />
+    <attribute name="exitRendered" javaType="boolean" required="false" />
+    <attribute name="logoutRendered" javaType="boolean" required="false" />
+    <attribute name="saveAndReturnToPortalRendered" javaType="boolean" required="false" />
+    <attribute name="cancelAndReturnToPortalRendered" javaType="boolean" required="false" />
+    <attribute name="helpRendered" javaType="boolean" required="false" />
+    <attribute name="helpID" javaType="string" required="false" />
+    <attribute name="progressPage" javaType="boolean" required="false" />
+  </type>
+  
+  <content>
+    <struts:dataScope>
+      <provider>
+        <data name="imageData">
+          <inline
+            plusImage="/images/logo_plus.gif"
+            viewerImage="/images/logo_viewer.gif"
+          />
+        </data>
+        <data name="nls">
+          <bundle class="oracle.discoverer.applications.viewer.resources.ApplicationResources" />
+        </data>
+        <data name="constants">
+          <method class="oracle.discoverer.applications.viewer.view.dataprovider.ConstantsMapping" method="getConstants" />
+        </data>
+      </provider>
+      
+      <contents>
+        <pageLayout chromeType="expanded">
+          <attributeMap><rootAttributeMap/></attributeMap>
+          
+          <childMap><rootChildMap/></childMap>
+          
+          <globalButtons>
+            <globalButtonBar>
+              <contents>
+                <globalButton rendered="${ui:cond(uix.eventResult.preferencesRendered eq 'true' and uix.rootAttr.preferencesRendered ne 'false' and uix.rootAttr.prefReturnDestination ne null, 'true', 'false')}" text="${uix.data.nls['text.preferences']}" shortDesc="${uix.data.nls['text.preferences']}"> 
+                  <boundAttribute name="destination">
+                    <concat>
+                      <contextProperty select="ui:contextURI" />
+                      <dataObject select="ACTION_SERVLET" source="constants" />
+                      options?event=displayOptions&amp;destination=
+                      <dataObject default="${uix.rootAttr.prefReturnDestination}" />
+                    </concat>
+                  </boundAttribute> 
+                </globalButton>
+                <globalButton rendered="${ui:cond(uix.eventResult.saveAndReturnToPortalRendered eq 'true' and uix.rootAttr.saveAndReturnToPortalRendered ne 'false', 'true', 'false')}" text="${uix.data.nls['text.portal.save']}">
+                  <boundAttribute name="destination">
+                    <concat>
+                      javascript:discoSWP('aForm','
+                      <contextProperty select="ui:contextURI" />
+                      <dataObject select="ACTION_SERVLET" source="constants" />
+                      portal?event=saveAndReturnToPortal');
+                    </concat>
+                  </boundAttribute>
+                </globalButton>
+                <globalButton rendered="${ui:cond(uix.eventResult.cancelAndReturnToPortalRendered eq 'true' and uix.rootAttr.cancelAndReturnToPortalRendered ne 'false', 'true', 'false')}" text="${uix.data.nls['text.portal.cancel']}">
+                  <boundAttribute name="destination">
+                    <concat>
+                      javascript:discoSWP('aForm','
+                      <contextProperty select="ui:contextURI" />
+                      <dataObject select="ACTION_SERVLET" source="constants" />
+                      portal?event=cancelAndReturnToPortal');
+                    </concat>
+                  </boundAttribute>             
+                </globalButton>
+                <globalButton rendered="${ui:cond(uix.eventResult.exitRendered eq 'true' and uix.rootAttr.exitRendered ne 'false', 'true', 'false')}" text="Logout" shortDesc="Logout">
+                  <boundAttribute name="destination">
+                    <concat>
+                      <contextProperty select="ui:contextURI" />
+                      <dataObject select="ACTION_SERVLET" source="constants" />
+                      exit?event=exit&amp;clientType=
+                      <dataObject default="${uix.eventResult.clientType}" />
+                      &amp;customUrl=<dataObject default="${uix.eventResult.exit}"/>
+                    </concat>
+                  </boundAttribute>
+                </globalButton>
+                <globalButton rendered="${ui:cond(uix.eventResult.logoutRendered eq 'true' and uix.rootAttr.logoutRendered ne 'false', 'true', 'false')}" text="${uix.data.nls['text.logout']}" shortDesc="${uix.data.nls['text.logout']}">
+                  <boundAttribute name="destination">
+                    <concat>
+                      <contextProperty select="ui:contextURI" />
+                      <dataObject select="ACTION_SERVLET" source="constants" />
+                      exit?event=disconnect&amp;clientType=
+                      <dataObject default="${uix.eventResult.clientType}" />
+                      &amp;customUrl=<dataObject default="${uix.eventResult.logout}"/>
+                    </concat>
+                  </boundAttribute>                      
+                </globalButton>
+                <globalButton rendered="${uix.eventResult.helpRendered}" text="${uix.data.nls['text.help']}" shortDesc="${uix.data.nls['text.help']}" 
+                	destination="${ui:cond(uix.eventResult.help ne '', uix.eventResult.help, ui:cond(uix.rootAttr.helpID ne null, uix.helpTopic[uix.rootAttr.helpID], uix.helpSystem.frontPage))}" >
+                </globalButton>
+              </contents>
+            </globalButtonBar>
+          </globalButtons>
+          
+          <messages>
+            <stackLayout>
+            <contents>
+            <bibeans:pageMessages biThinBean="${uix.eventResult.messageBean}">
+            </bibeans:pageMessages>
+            <messageBox messageType="error" rendered="${ui:cond(uix.eventResult.errorProviderRendered and uix.rootAttr.progressPage ne 'true', 'true', 'false')}">
+              <contents>
+                <tableLayout>
+                  <contents childData="${uix.eventResult.errorProvider}">
+                    <rowLayout>
+                      <contents>
+                        <cellFormat>
+                          <contents>
+                            <spacer width="${uix.current.exceptionIndentation}" height="1" />
+                            <styledText styleClass="OraInstructionText" text="${uix.current.applicationException}" />
+                          </contents>
+                        </cellFormat>
+                      </contents>
+                    </rowLayout>
+                  </contents>
+                </tableLayout>
+              </contents>
+            </messageBox>
+            <messageBox messageType="info" rendered="${ui:cond(uix.eventResult.messageProviderRendered and uix.rootAttr.progressPage ne 'true', 'true', 'false')}">
+              <contents>
+                <tableLayout>
+                  <contents childData="${uix.eventResult.messageProvider}">
+                    <rowLayout>
+                      <contents>
+                        <styledText styleClass="OraInstructionText" text="${uix.current.applicationMessages}" />
+                      </contents>
+                    </rowLayout>
+                  </contents>
+                </tableLayout>
+              </contents>
+            </messageBox>
+            </contents>
+            </stackLayout>
+          </messages>
+          
+          <productBranding >
+            <image rendered="${uix.eventResult.logoRendered}" shortDesc="${uix.data.nls['text.discovererViewer']}">
+              <boundAttribute name="source">
+                  <if>
+                    <dataObject default="${uix.eventResult.logo}" />
+                    <if>
+                      <dataObject default="${uix.eventResult.isFullySpecifiedLogoURL}" />
+                      <concat>
+                        <dataObject default="${uix.eventResult.logoSrc}" />
+                      </concat>
+                      <concat>
+                        <contextProperty select="ui:contextURI" />
+                        <dataObject default="${uix.eventResult.logoSrc}" />
+                      </concat>
+                    </if>
+                    <if>
+                      <dataObject default="${uix.eventResult.isViewer}" />
+                      <concat>
+                        <contextProperty select="ui:contextURI" />
+                        <dataObject select="viewerImage" source="imageData" />
+                      </concat>
+                      <concat>
+                        <contextProperty select="ui:contextURI" />
+                        <dataObject select="plusImage" source="imageData" />
+                      </concat>
+                    </if>
+                  </if>
+              </boundAttribute>
+              <boundAttribute name="shortDesc">
+                  <if>
+                    <dataObject default="${uix.eventResult.logo}" />
+                    <dataObject default="${uix.eventResult.logoSrc}" />
+                    <if>
+                      <dataObject default="${uix.eventResult.isViewer}" />
+                      <concat>
+                        Discoverer Viewer
+                      </concat>
+                      <concat>
+                        Discoverer Plus
+                      </concat>
+                    </if>
+                  </if>
+              </boundAttribute>
+              
+            </image>
+          </productBranding>
+          <contents>
+            <!-- Add named children here -->
+            <!-- Add contents of pageLayout here -->
+            <rootChild name="contents" />
+          </contents>
+          
+          <!--Following can be used for Return to previous page from About Page, but when rendered value is
+          kept as true\false it works perfectly, but when using dynamic boolean value "isAboutPage" it is not
+          working-->
+          <!--returnNavigation-->
+            <!--link  rendered="false" text="Return to previous page" destination="javascript:history.go(-1)"></link-->
+          <!--/returnNavigation-->
+          <font size="-1">External reporting is limited to the first 100 thousand transactions. Please contact your sales representative for larger reports.</font> 
+          <about>
+          <stackLayout>
+	     <contents>
+	       <link disabled="true"  text="Online BSD Usage reporting is limited to the first hundred thousand transaction lines." shortDesc="Online BSD Usage reporting is limited to the first hundred thousand transaction lines. Please contact your sales representative for larger reports."> 
+  	     </link> 
+  	     </contents>
+	   </stackLayout>
+	   </about>
+        </pageLayout>
+      </contents>
+    </struts:dataScope>
+  </content>
+</templateDefinition>
+

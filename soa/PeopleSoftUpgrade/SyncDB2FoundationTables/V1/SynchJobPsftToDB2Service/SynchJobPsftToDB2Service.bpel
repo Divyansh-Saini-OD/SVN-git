@@ -1,0 +1,294 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Fri Jun 22 18:15:48 IST 2012
+  Author:  putrao
+  Type: BPEL 1.1 Process
+  Purpose: One Way BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="SynchJobPsftToDB2Service"
+               targetNamespace="http://xmlns.oracle.com/OfficeDepotSOAApps/SynchJobPsftToDB2Service/SynchJobPsftToDB2Service"
+               xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+               xmlns:client="http://xmlns.oracle.com/OfficeDepotSOAApps/SynchJobPsftToDB2Service/SynchJobPsftToDB2Service"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/Application1/DB2FoundationTbls/InsertUpdateJobDB2Data"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+          xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+          xmlns:ns6="http://www.officedepot.com/officedepot/ODComnErrorStructure/1.0"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/jms/OfficeDepotSOAApps/SynchJobPsftToDB2Service/CommonErrorLoggingService"
+         xmlns:ns5="http://schemas.xmlsoap.org/ws/2003/03/addressing"
+         xmlns:ns3="http://xmlns.officedepot.com/EnterpriseObjectLibrary/EBO/Job/V1"
+         xmlns:ns4="http://xmlns.officedepot.com/EnterpriseObjects/Core/Common/V3"
+         xmlns:ns7="urn:oasis:names:tc:xacml:2.0:context:schema:cd:04">
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="synchjobpsfttodb2service_client" partnerLinkType="client:SynchJobPsftToDB2Service" myRole="SynchJobPsftToDB2ServiceProvider"/>
+
+    <partnerLink name="InsertUpdateJobDB2Data1"
+                 partnerLinkType="ns1:InsertUpdateJobDB2Data_plt"
+                 partnerRole="InsertUpdateJobDB2Data_role"/>
+    <partnerLink name="CommonErrorLoggingService"
+                 partnerLinkType="ns2:Produce_Message_plt"
+                 partnerRole="Produce_Message_role"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:SynchJobPsftToDB2ServiceRequestMessage"/>
+    <variable name="Invoke_InsertUpdateJobCodeDB2Data_merge_InputVariable"
+              messageType="ns1:PsJobcodeTblCollection_msg"/>
+    <variable name="InvokeCommonErrorLoggerToSendEmailToPeopleSoftTeam_Produce_Message_InputVariable"
+              messageType="ns2:Produce_Message_msg"/>
+    <variable name="Invoke_CommonErrorLoggingService_Produce_Message_InputVariable"
+              messageType="ns2:Produce_Message_msg"/>
+  </variables>
+  <faultHandlers>
+    <catchAll>
+      <scope name="ScopeSendNotification">
+       <variables>
+              <variable name="messagePayload" type="xsd:string"/>
+              <variable name="emailSubject" type="xsd:string"/>
+              <variable name="errorText" type="xsd:string"/>
+              <variable name="systemName" type="xsd:string"/>
+              <variable name="messageOperation" type="xsd:string"/>
+              <variable name="applicationTeamErrorText" type="xsd:string"/>
+               <variable name="errorLoopIndex" type="xsd:integer"/>
+          <variable name="errorNumberOfJobs" type="xsd:integer"/>
+          <variable name="jobList" type="xsd:string"/>
+            </variables>
+        <sequence name="Sequence1">
+         <assign name="InitLoopIndex">
+            <copy>
+              <from expression="1"/>
+              <to variable="errorLoopIndex"/>
+            </copy>
+            <copy>
+              <from expression="ora:countNodes(bpws:getVariableData('inputVariable','payload','/ns3:SyncJobEBM/ns3:DataArea/ns3:JobList/ns3:Job/ns3:JobIdentification/ns3:JobCode'))"/>
+              <to variable="errorNumberOfJobs"/>
+            </copy>
+          </assign>
+          <while name="ForEachJob"
+                   condition="bpws:getVariableData('errorLoopIndex') &lt;= bpws:getVariableData('errorNumberOfJobs')">
+              <sequence name="Sequence3">
+                <assign name="AssignJobFunctionSpecificData">
+                <copy>
+                  <from expression="concat(bpws:getVariableData('jobList'),' ',bpws:getVariableData('inputVariable','payload','/ns3:SyncJobEBM/ns3:DataArea/ns3:JobList[$errorLoopIndex]/ns3:Job/ns3:JobIdentification/ns3:JobCode'),'')"/>
+                  <to variable="jobList"/>
+                </copy>
+                <copy>
+                  <from expression="bpws:getVariableData('errorLoopIndex') + 1"/>
+                  <to variable="errorLoopIndex"/>
+                </copy>
+              </assign>
+               
+              </sequence>
+            </while>
+          <assign name="AssignRunTimeErrorRelatedData">
+             <copy>
+                <from expression='concat(ora:getPreference("SOA_ADMIN_ERROR_MESSAGE"),ora:getCurrentDateTime())'/>
+                <to variable="emailSubject"/>
+              </copy>
+              <copy>
+                <from expression="substring(ora:getFaultAsString(),1,500)"/>
+                <to variable="errorText"/>
+              </copy>
+              <copy>
+                <from expression='string("")'/>
+                <to variable="messagePayload"/>
+              </copy>
+              <copy>
+                <from expression="ora:getPreference('SOA_ADMIN_APP_NAME')"/>
+                <to variable="systemName"/>
+              </copy>
+              <copy>
+                <from expression="ora:getPreference('APPLICATION_EMAIL_SUBJECT')"/>
+                <to variable="applicationTeamErrorText"/>
+              </copy>
+          </assign>
+          <assign name="AssignPopulateCommonErrorLoggingData">
+            <copy>
+                  <from expression="ora:getProcessId()"/>
+                  <to variable="Invoke_CommonErrorLoggingService_Produce_Message_InputVariable"
+                      part="body"
+                      query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:ProcessInfo/ns6:ProcessName"/>
+                </copy>
+                <copy>
+                  <from expression="ora:getPreference('ERROR_TYPE')"/>
+                  <to variable="Invoke_CommonErrorLoggingService_Produce_Message_InputVariable"
+                      part="body"
+                      query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:ErrorDetails/ns6:ErrorType"/>
+                </copy>
+                <copy>
+                  <from expression="ora:getPreference('ERROR_SEVERITY')"/>
+                  <to variable="Invoke_CommonErrorLoggingService_Produce_Message_InputVariable"
+                      part="body"
+                      query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:ErrorDetails/ns6:ErrorSeverity"/>
+                </copy>
+                <copy>
+                  <from expression="bpws:getVariableData('errorText')"/>
+                  <to variable="Invoke_CommonErrorLoggingService_Produce_Message_InputVariable"
+                      part="body"
+                      query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:ErrorDetails/ns6:ErrorText"/>
+                </copy>
+                <copy>
+                  <from expression="ora:getCurrentDateTime()"/>
+                  <to variable="Invoke_CommonErrorLoggingService_Produce_Message_InputVariable"
+                      part="body"
+                      query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:ErrorDetails/ns6:ErrorDateTime"/>
+                </copy>
+                <copy>
+                  <from expression="ora:getPreference('CATCH_ALL_PROCESS_STEP')"/>
+                  <to variable="Invoke_CommonErrorLoggingService_Produce_Message_InputVariable"
+                      part="body"
+                      query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:ErrorDetails/ns6:ProcessStep"/>
+                </copy>
+                <copy>
+                  <from expression="ora:getFaultName()"/>
+                  <to variable="Invoke_CommonErrorLoggingService_Produce_Message_InputVariable"
+                      part="body"
+                      query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:ErrorDetails/ns6:ErrorCode"/>
+                </copy>
+                <copy>
+                  <from expression="ora:getDomainId()"/>
+                  <to variable="Invoke_CommonErrorLoggingService_Produce_Message_InputVariable"
+                      part="body"
+                      query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:ProcessInfo/ns6:Domain"/>
+                </copy>
+                <copy>
+                  <from expression="ora:getCompositeInstanceId()"/>
+                  <to variable="Invoke_CommonErrorLoggingService_Produce_Message_InputVariable"
+                      part="body"
+                      query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:MessageDetails/ns6:MessageID"/>
+                </copy>
+                <copy>
+                  <from expression="ora:getCurrentDateTime()"/>
+                  <to variable="Invoke_CommonErrorLoggingService_Produce_Message_InputVariable"
+                      part="body"
+                      query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:MessageDetails/ns6:MessageDateTime"/>
+                </copy>
+                <copy>
+                  <from expression="ora:getPreference('MESSAGE_TYPE')"/>
+                  <to variable="Invoke_CommonErrorLoggingService_Produce_Message_InputVariable"
+                      part="body"
+                      query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:MessageDetails/ns6:MessageType"/>
+                </copy>
+                <copy>
+                  <from expression="ora:getPreference('MESSAGE_VERSION')"/>
+                  <to variable="Invoke_CommonErrorLoggingService_Produce_Message_InputVariable"
+                      part="body"
+                      query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:MessageDetails/ns6:MessageVersion"/>
+                </copy>
+                <copy>
+                  <from expression="bpws:getVariableData('messageOperation')"/>
+                  <to variable="Invoke_CommonErrorLoggingService_Produce_Message_InputVariable"
+                      part="body"
+                      query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:MessageDetails/ns6:MessageOperation"/>
+                </copy>
+                <copy>
+                  <from expression="ora:getPreference('SOURCE_SYSTEM_NAME')"/>
+                  <to variable="Invoke_CommonErrorLoggingService_Produce_Message_InputVariable"
+                      part="body"
+                      query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:MessageDetails/ns6:MessageSourceSystem"/>
+                </copy>
+                <copy>
+                  <from expression="bpws:getVariableData('systemName')"/>
+                  <to variable="Invoke_CommonErrorLoggingService_Produce_Message_InputVariable"
+                      part="body"
+                      query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:ProcessInfo/ns6:SystemName"/>
+                </copy>
+                <copy>
+                  <from expression="bpws:getVariableData('emailSubject')"/>
+                  <to variable="Invoke_CommonErrorLoggingService_Produce_Message_InputVariable"
+                      part="body"
+                      query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:ErrorDetails/ns6:ErrorDescription"/>
+                </copy>
+                <copy>
+                  <from expression="bpws:getVariableData('messagePayload')"/>
+                  <to variable="Invoke_CommonErrorLoggingService_Produce_Message_InputVariable"
+                      part="body"
+                      query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:MessageDetails/ns6:MessagePayload"/>
+                </copy>
+          </assign>
+          <invoke name="Invoke_CommonErrorLoggingService"
+                  inputVariable="Invoke_CommonErrorLoggingService_Produce_Message_InputVariable"
+                  partnerLink="CommonErrorLoggingService"
+                  portType="ns2:Produce_Message_ptt"
+                  operation="Produce_Message" bpelx:invokeAsDetail="no"/>
+          <assign name="AssignErrorDetailsToApplicationTeam">
+           
+                 <copy>
+                  <from expression="concat(ora:getPreference('APPLICATION_EMAIL_SUBJECT'),ora:getCurrentDateTime())"/>
+                  <to variable="InvokeCommonErrorLoggerToSendEmailToPeopleSoftTeam_Produce_Message_InputVariable" part="body"
+                      query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:ErrorDetails/ns6:ErrorDescription"/>
+                </copy>
+                <copy>
+                  <from expression="concat(ora:getPreference('APPLICATION_ERROR_MESSAGE'),&quot;&quot;,bpws:getVariableData('jobList'))"/>
+                  <to variable="InvokeCommonErrorLoggerToSendEmailToPeopleSoftTeam_Produce_Message_InputVariable" part="body"
+                      query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:ErrorDetails/ns6:ErrorText"/>
+                </copy>
+                <copy>
+                  <from expression="ora:getPreference('SYSTEM_NAME')"/>
+                  <to variable="InvokeCommonErrorLoggerToSendEmailToPeopleSoftTeam_Produce_Message_InputVariable" part="body"
+                      query="/ns6:ODComnErrorStructure/ns6:ODComnErrorStructureList/ns6:ProcessInfo/ns6:SystemName"/>
+                </copy>
+             
+          </assign>
+          <invoke name="InvokeCommonErrorLoggerToSendEmailToPeopleSoftTeam"
+                  inputVariable="InvokeCommonErrorLoggerToSendEmailToPeopleSoftTeam_Produce_Message_InputVariable"
+                  partnerLink="CommonErrorLoggingService"
+                  portType="ns2:Produce_Message_ptt" operation="Produce_Message"
+                  bpelx:invokeAsDetail="no"/>
+        </sequence>
+      </scope>
+    </catchAll>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in SynchJobPsftToDB2Service.wsdl) -->
+    <receive name="receiveInput" partnerLink="synchjobpsfttodb2service_client" portType="client:SynchJobPsftToDB2Service" operation="synchronizeJobData" variable="inputVariable" createInstance="yes"/>
+    <assign name="XFormJobCodeToDB2Format">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:doXSLTransformForDoc('xsl/XFormJobCodeToDB2Format.xsl', $inputVariable.payload)"/>
+        <to variable="Invoke_InsertUpdateJobCodeDB2Data_merge_InputVariable"
+            part="PsJobcodeTblCollection"/>
+      </copy>
+    </assign>
+    <invoke name="Invoke_InsertUpdateJobCodeDB2Data"
+            inputVariable="Invoke_InsertUpdateJobCodeDB2Data_merge_InputVariable"
+            partnerLink="InsertUpdateJobDB2Data1"
+            portType="ns1:InsertUpdateJobDB2Data_ptt" operation="merge"
+            bpelx:invokeAsDetail="no"/>
+  </sequence>
+</process>

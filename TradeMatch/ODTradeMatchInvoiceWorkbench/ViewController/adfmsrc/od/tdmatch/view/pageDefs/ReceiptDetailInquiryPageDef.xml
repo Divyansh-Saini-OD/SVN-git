@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel" version="12.2.1.12.24" id="ReceiptDetailInquiryPageDef"
+                Package="od.tdmatch.view.pageDefs">
+  <parameters/>
+  <executables>
+    <variableIterator id="variables"/>
+    <iterator Binds="XxApReceiptDetailInquirySearchVO" RangeSize="25" DataControl="ODTradeMatchReportsAMDataControl"
+              id="XxApReceiptDetailInquirySearchVO1Iterator"/>
+    <iterator Binds="XxApReceiptDetailSummVO" RangeSize="25" DataControl="ODTradeMatchReportsAMDataControl"
+              id="XxApReceiptDetailSummVO1Iterator"/>
+    <iterator Binds="XxApReceiptDetailTempVO" RangeSize="25" DataControl="ODTradeMatchReportsAMDataControl"
+              id="XxApReceiptDetailTempVO1Iterator"/>
+    <iterator Binds="XxApReceiptDetailSummaryVO" RangeSize="15" DataControl="ODTradeMatchReportsAMDataControl"
+              id="XxApReceiptDetailSummaryVO3Iterator"/>
+  </executables>
+  <bindings>
+    <listOfValues IterBinding="XxApReceiptDetailInquirySearchVO1Iterator" StaticList="false" Uses="LOV_Suppliername"
+                  id="Suppliername"/>
+    <listOfValues IterBinding="XxApReceiptDetailInquirySearchVO1Iterator" StaticList="false" Uses="LOV_Suppliersite"
+                  id="Suppliersite"/>
+    <listOfValues IterBinding="XxApReceiptDetailInquirySearchVO1Iterator" StaticList="false" Uses="LOV_Sku" id="Sku"/>
+    <listOfValues IterBinding="XxApReceiptDetailInquirySearchVO1Iterator" StaticList="false" Uses="LOV_Invoice"
+                  id="Invoice"/>
+    <listOfValues IterBinding="XxApReceiptDetailInquirySearchVO1Iterator" StaticList="false" Uses="LOV_Po" id="Po"/>
+    <attributeValues IterBinding="XxApReceiptDetailInquirySearchVO1Iterator" id="Daterangefrom">
+      <AttrNames>
+        <Item Value="Daterangefrom"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="XxApReceiptDetailInquirySearchVO1Iterator" id="Daterangeto">
+      <AttrNames>
+        <Item Value="Daterangeto"/>
+      </AttrNames>
+    </attributeValues>
+    <listOfValues IterBinding="XxApReceiptDetailInquirySearchVO1Iterator" StaticList="false" Uses="LOV_Receipt"
+                  id="Receipt"/>
+    <tree IterBinding="XxApReceiptDetailSummVO1Iterator" id="XxApReceiptDetailSummVO1">
+      <nodeDefinition DefName="od.tdmatch.model.reports.vo.XxApReceiptDetailSummVO" Name="XxApReceiptDetailSummVO10">
+        <AttrNames>
+          <Item Value="ReceiptNum"/>
+          <Item Value="RctDate"/>
+          <Item Value="SupplierNum"/>
+          <Item Value="SupplierName"/>
+          <Item Value="SupplierSite"/>
+          <Item Value="PoNum"/>
+          <Item Value="PoLineNum"/>
+          <Item Value="Sku"/>
+          <Item Value="Location"/>
+          <Item Value="Uom"/>
+          <Item Value="RecLineNum"/>
+          <Item Value="ReceiptLineAmt"/>
+          <Item Value="PoQty"/>
+          <Item Value="ReceiptQty"/>
+          <Item Value="InvQtty"/>
+          <Item Value="InvNum"/>
+          <Item Value="UninvQtty"/>
+          <Item Value="UninvAmt"/>
+          <Item Value="RctAge"/>
+          <Item Value="UnitPrice"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <tree IterBinding="XxApReceiptDetailTempVO1Iterator" id="XxApReceiptDetailTempVO1">
+      <nodeDefinition DefName="od.tdmatch.model.reports.vo.XxApReceiptDetailTempVO" Name="XxApReceiptDetailTempVO10">
+        <AttrNames>
+          <Item Value="InvoiceNum"/>
+          <Item Value="InvAppliedAmt"/>
+          <Item Value="InvVal"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <methodAction id="searchInvoiceNum" RequiresUpdateModel="true" Action="invokeMethod" MethodName="searchInvoiceNum"
+                  IsViewObjectMethod="false" DataControl="ODTradeMatchReportsAMDataControl"
+                  InstanceName="bindings.searchInvoiceNum.dataControl.dataProvider"
+                  ReturnName="data.ODTradeMatchReportsAMDataControl.methodResults.searchInvoiceNum_searchInvoiceNum_dataControl_dataProvider_searchInvoiceNum_result">
+      <NamedData NDName="invNumMap" NDType="java.util.HashMap"/>
+    </methodAction>
+    <tree IterBinding="XxApReceiptDetailSummaryVO3Iterator" id="XxApReceiptDetailSummaryVO3">
+      <nodeDefinition DefName="od.tdmatch.model.reports.vo.XxApReceiptDetailSummaryVO"
+                      Name="XxApReceiptDetailSummaryVO30">
+        <AttrNames>
+          <Item Value="ReceiptNum"/>
+          <Item Value="RcpDate"/>
+          <Item Value="SupplierNum"/>
+          <Item Value="SupplierName"/>
+          <Item Value="SupplierSite"/>
+          <Item Value="Po"/>
+          <Item Value="PoLineNum"/>
+          <Item Value="Sku"/>
+          <Item Value="Location"/>
+          <Item Value="Uom"/>
+          <Item Value="RecLineNum"/>
+          <Item Value="ReceiptLineAmt"/>
+          <Item Value="PoQty"/>
+          <Item Value="RcpQty"/>
+          <Item Value="InvQtty"/>
+          <Item Value="InvNumFifo"/>
+          <Item Value="UninvQtty"/>
+          <Item Value="UninvAmt"/>
+          <Item Value="UnitPrice"/>
+          <Item Value="PoLineId"/>
+          <Item Value="RctAge"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <methodAction id="searchReceiptDetailInquiry" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="searchReceiptDetailInquiry" IsViewObjectMethod="false"
+                  DataControl="ODTradeMatchReportsAMDataControl"
+                  InstanceName="bindings.searchReceiptDetailInquiry.dataControl.dataProvider"
+                  ReturnName="data.ODTradeMatchReportsAMDataControl.methodResults.searchReceiptDetailInquiry_searchReceiptDetailInquiry_dataControl_dataProvider_searchReceiptDetailInquiry_result">
+      <NamedData NDName="userId" NDType="int"/>
+    </methodAction>
+    <attributeValues IterBinding="XxApReceiptDetailSummaryVO3Iterator" id="TotalRecLineAmt">
+     
+    </attributeValues>
+    <methodAction id="searchReceiptDetInqConReq" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="searchReceiptDetInqConReq" IsViewObjectMethod="false"
+                  DataControl="ODTradeMatchReportsAMDataControl"
+                  InstanceName="bindings.searchReceiptDetInqConReq.dataControl.dataProvider"
+                  ReturnName="data.ODTradeMatchReportsAMDataControl.methodResults.searchReceiptDetInqConReq_searchReceiptDetInqConReq_dataControl_dataProvider_searchReceiptDetInqConReq_result">
+      <NamedData NDName="userId" NDType="int"/>
+    </methodAction>
+  </bindings>
+</pageDefinition>

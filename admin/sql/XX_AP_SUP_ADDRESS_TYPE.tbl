@@ -1,0 +1,53 @@
+
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +==========================================================================+
+-- |                      Office Depot - IDMS                                 |
+-- |                      Capgemini Technology Services                       |
+-- +==========================================================================+
+-- | SQL Script to create the following objects                               |
+-- |             Table       : XX_AP_SUP_ADDRESS_TYPE                         |
+-- |             Schema      : XXFIN                                          |
+-- |    Rice ID : C0709                                                                      |
+-- |Create Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | 1.0     08-JAN-2018   Sunil Kalal          New Table to store Address    |
+-- |                                            Type Information.             | 
+-- |                                                                          |
+-- +==========================================================================+
+
+
+CREATE TABLE XX_AP_SUP_ADDRESS_TYPE 
+   (	ADDRESS_TYPE NUMBER NOT NULL, 
+	ADDRESS_TYPE_DESC VARCHAR2(150) NOT NULL,
+	DASHBOARD_IND                VARCHAR2(1),
+	VENDOR_EXTRANET_IND          VARCHAR2(1),
+	ATTRIBUTE1 VARCHAR2(60), 
+	ATTRIBUTE2 VARCHAR2(60), 
+	ATTRIBUTE3 VARCHAR2(60), 
+	ATTRIBUTE4 VARCHAR2(60), 
+	CREATION_DATE DATE NOT NULL, 
+	CREATED_BY NUMBER NOT NULL , 
+	LAST_UPDATE_DATE DATE, 
+	LAST_UPDATED_BY NUMBER , 
+	LAST_UPDATE_LOGIN NUMBER,
+        ENABLE_FLAG  VARCHAR2(1),
+        ADDR_TYPE_ID  NUMBER NOT NULL PRIMARY KEY,
+        CONSTRAINT ADDR_TYPE_UNIQUE UNIQUE (ADDRESS_TYPE)
+   );
+  
+GRANT ALL ON xx_ap_sup_address_type TO apps;
+
+   /
+Show error
+

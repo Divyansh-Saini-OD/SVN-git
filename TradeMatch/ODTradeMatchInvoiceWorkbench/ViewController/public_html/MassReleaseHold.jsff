@@ -1,0 +1,649 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:af="http://xmlns.oracle.com/adf/faces/rich">
+  
+  <af:panelGroupLayout id="pgl4" layout="horizontal">
+    <af:messages id="m1" globalOnly="true"/>
+    <af:outputFormatted value="Office Depot- AP Trade Mass Release Invoice Holds :" id="of1"
+                            inlineStyle="font-size:large;"/>
+    <af:spacer width="10" height="10" id="s5"/>
+    <af:outputFormatted value="#{MyDate}" id="of2" inlineStyle="font-size:large;">
+          <af:convertDateTime pattern="MM/dd/YYYY"/>
+        </af:outputFormatted>
+  </af:panelGroupLayout>
+  <af:panelGroupLayout id="pgl10" layout="horizontal" halign="right" partialTriggers="b4 b3">
+        <af:outputText value="Operating Unit" id="ot13"/>
+        <af:spacer width="3" height="10" id="s18"/>
+        <af:selectOneChoice value="#{bindings.operatingId.inputValue}"
+                            required="#{bindings.operatingId.hints.mandatory}"
+                            shortDesc="#{bindings.operatingId.hints.tooltip}" id="soc2" partialTriggers="b4 b3">
+          <f:selectItems value="#{bindings.operatingId.items}" id="si2"/>
+          <f:validator binding="#{bindings.operatingId.validator}"/>
+        </af:selectOneChoice>
+      </af:panelGroupLayout>
+  <af:panelFormLayout id="pfl1" maxColumns="3" rows="1">
+    <f:facet name="footer"/>
+    <af:panelGroupLayout id="pgl11" layout="vertical" partialTriggers="b4 b3">
+      
+      <!--<af:spacer width="10" height="10" id="s25"/>-->
+      <af:panelGroupLayout id="pgl1" layout="horizontal" partialTriggers="b4 b3">
+    <af:outputText value="PO #" id="ot1"/>
+        <af:spacer width="53" height="10" id="s4"/>
+        <af:inputListOfValues id="poNumId" popupTitle="PO #"
+                          value="#{bindings.poNum.inputValue}" 
+                          model="#{bindings.poNum.listOfValuesModel}" required="#{bindings.poNum.hints.mandatory}"
+                          columns="#{bindings.poNum.hints.displayWidth}" shortDesc="#{bindings.poNum.hints.tooltip}" partialTriggers="b4 b3">
+      <f:validator binding="#{bindings.poNum.validator}"/>
+    </af:inputListOfValues>
+    </af:panelGroupLayout>
+      <af:spacer  height="2" id="s8"/>
+      <af:panelGroupLayout id="pgl2" layout="horizontal" partialTriggers="b4 b3">
+    <af:outputText value="PO Date" id="ot2" noWrap="true"/>
+        <af:spacer width="35" height="10" id="s6"/>
+        <af:inputDate value="#{bindings.poFrom.inputValue}" required="#{bindings.poFrom.hints.mandatory}"
+                  columns="#{bindings.poFrom.hints.displayWidth}" shortDesc="#{bindings.poFrom.hints.tooltip}" id="id1" partialTriggers="b4 b3">
+      <f:validator binding="#{bindings.poFrom.validator}"/>
+      <af:convertDateTime pattern="#{bindings.poFrom.format}"/>
+    </af:inputDate>
+    <af:outputText value=" - " id="ot3"/>
+    <af:inputDate value="#{bindings.poTo.inputValue}" required="#{bindings.poTo.hints.mandatory}"
+                  columns="#{bindings.poTo.hints.displayWidth}" shortDesc="#{bindings.poTo.hints.tooltip}" id="id2" partialTriggers="b4 b3">
+      <f:validator binding="#{bindings.poTo.validator}"/>
+      <af:convertDateTime pattern="#{bindings.poTo.format}"/>
+    </af:inputDate>
+    </af:panelGroupLayout>
+      <af:spacer  height="2" id="s9"/>
+      <af:panelGroupLayout id="pgl3" layout="horizontal" partialTriggers="b4 b3">
+    <af:outputText value="Invoice Date" id="ot4" noWrap="true"/>
+        <af:spacer width="14" height="10" id="s26"/>
+        <af:inputDate value="#{bindings.invoiceFrom.inputValue}" required="#{bindings.invoiceFrom.hints.mandatory}"
+                  columns="#{bindings.invoiceFrom.hints.displayWidth}" shortDesc="#{bindings.invoiceFrom.hints.tooltip}"
+                  id="id3" partialTriggers="b4 b3">
+      <f:validator binding="#{bindings.invoiceFrom.validator}"/>
+      <af:convertDateTime pattern="#{bindings.invoiceFrom.format}"/>
+    </af:inputDate>
+    <af:outputText value=" - " id="ot5"/>
+    <af:inputDate value="#{bindings.invoiceTo.inputValue}" required="#{bindings.invoiceTo.hints.mandatory}"
+                  columns="#{bindings.invoiceTo.hints.displayWidth}" shortDesc="#{bindings.invoiceTo.hints.tooltip}"
+                  id="id4" partialTriggers="b4 b3">
+      <f:validator binding="#{bindings.invoiceTo.validator}"/>
+      <af:convertDateTime pattern="#{bindings.invoiceTo.format}"/>
+    </af:inputDate>
+    </af:panelGroupLayout>
+      <af:spacer  height="2" id="s10"/>
+      <af:panelGroupLayout id="pgl14" layout="horizontal" partialTriggers="b4 b3">
+    <af:outputText value="Due Date" id="ot6" noWrap="true"/>
+        <af:spacer width="30" height="10" id="s7"/>
+        <af:inputDate value="#{bindings.dueFrom.inputValue}" required="#{bindings.dueFrom.hints.mandatory}"
+                  columns="#{bindings.dueFrom.hints.displayWidth}" shortDesc="#{bindings.dueFrom.hints.tooltip}"
+                  id="id5" partialTriggers="b4 b3">
+      <f:validator binding="#{bindings.dueFrom.validator}"/>
+      <af:convertDateTime pattern="#{bindings.dueFrom.format}"/>
+    </af:inputDate>
+    <af:outputText value=" - " id="ot7"/>
+    <af:inputDate value="#{bindings.dueTo.inputValue}" 
+                  required="#{bindings.dueTo.hints.mandatory}" columns="#{bindings.dueTo.hints.displayWidth}"
+                  shortDesc="#{bindings.dueTo.hints.tooltip}" id="id6" partialTriggers="b4 b3">
+      <f:validator binding="#{bindings.dueTo.validator}"/>
+      <af:convertDateTime pattern="#{bindings.dueTo.format}"/>
+    </af:inputDate>
+    </af:panelGroupLayout>
+    <af:spacer  height="2" id="s38"/>
+      <af:panelGroupLayout id="pgl23" layout="horizontal" partialTriggers="b4 b3">
+        <af:outputText value="GL Date" id="ot23"/>
+        <af:spacer width="35" height="10" id="s39"/>
+        <af:inputDate value="#{bindings.glDateFrom.inputValue}" required="#{bindings.glDateFrom.hints.mandatory}"
+                    columns="#{bindings.glDateFrom.hints.displayWidth}" shortDesc="#{bindings.glDateFrom.hints.tooltip}"
+                    id="id9">
+        <f:validator binding="#{bindings.glDateFrom.validator}"/>
+        <af:convertDateTime pattern="#{bindings.glDateFrom.format}"/>
+            
+      </af:inputDate>
+            <af:outputText value=" - " id="ot24"/>
+            <af:inputDate value="#{bindings.glDateTo.inputValue}" required="#{bindings.glDateTo.hints.mandatory}"
+                        columns="#{bindings.glDateTo.hints.displayWidth}" shortDesc="#{bindings.glDateTo.hints.tooltip}"
+                        id="id10">
+            <f:validator binding="#{bindings.glDateTo.validator}"/>
+            <af:convertDateTime pattern="#{bindings.glDateTo.format}"/>
+          </af:inputDate>
+        
+      </af:panelGroupLayout>
+    </af:panelGroupLayout>
+    <af:panelGroupLayout id="pgl12" layout="vertical" partialTriggers="b4 b3">
+    <af:panelGroupLayout id="pgl6" layout="horizontal" partialTriggers="b4 b3">
+    <af:outputText value="Supplier Name" id="ot9" noWrap="true"/>
+        <af:spacer width="8" height="10" id="s27"/>
+        <af:inputListOfValues id="supNameId" popupTitle="Search and Select: #{bindings.supName.hints.label}"
+                          value="#{bindings.supName.inputValue}" 
+                          model="#{bindings.supName.listOfValuesModel}" required="#{bindings.supName.hints.mandatory}"
+                          columns="#{bindings.supName.hints.displayWidth}"
+                          shortDesc="#{bindings.supName.hints.tooltip}" partialTriggers="b4 b3">
+      <f:validator binding="#{bindings.supName.validator}"/>
+    </af:inputListOfValues>
+    </af:panelGroupLayout>
+    <af:spacer  height="2" id="s11"/>
+    <af:panelGroupLayout id="pgl5" layout="horizontal" partialTriggers="b4 b3">
+    <af:outputText value="Supplier #" id="ot8" noWrap="true"/>
+        <af:spacer width="33" height="10" id="s16"/>
+        <af:inputListOfValues id="supNoId" popupTitle="Search and Select: #{bindings.supNo.hints.label}"
+                          value="#{bindings.supNo.inputValue}" 
+                          model="#{bindings.supNo.listOfValuesModel}" required="#{bindings.supNo.hints.mandatory}"
+                          columns="#{bindings.supNo.hints.displayWidth}" shortDesc="#{bindings.supNo.hints.tooltip}" partialTriggers="b4 b3">
+      <f:validator binding="#{bindings.supNo.validator}"/>
+    </af:inputListOfValues>
+    </af:panelGroupLayout>
+      
+      
+      <af:spacer  height="2" id="s15"/>
+      <af:panelGroupLayout id="pgl7" layout="horizontal" partialTriggers="b4 b3">
+    <af:outputText value="Supplier Site" id="ot10" noWrap="true"/>
+        <af:spacer width="20" height="10" id="s24"/>
+        <af:inputListOfValues id="supSiteCodeId" popupTitle="Search and Select: #{bindings.supSiteCode.hints.label}"
+                          value="#{bindings.supSiteCode.inputValue}" 
+                          model="#{bindings.supSiteCode.listOfValuesModel}"
+                          required="#{bindings.supSiteCode.hints.mandatory}"
+                          columns="#{bindings.supSiteCode.hints.displayWidth}"
+                          shortDesc="#{bindings.supSiteCode.hints.tooltip}" partialTriggers="b4 b3">
+      <f:validator binding="#{bindings.supSiteCode.validator}"/>
+    </af:inputListOfValues>
+    </af:panelGroupLayout>
+      <af:spacer  height="2" id="s12"/>
+      <!--<af:spacer width="10" height="30" id="s2"/>-->
+      
+        <af:panelGroupLayout id="pgl8" layout="horizontal" partialTriggers="b4 b3">
+          <af:outputText value="SKU #" id="ot11" noWrap="true"/>
+          <af:spacer width="55" height="10" id="s17"/>
+          <af:inputListOfValues id="skuNoId" popupTitle="Search and Select: #{bindings.skuNo.hints.label}"
+                                value="#{bindings.skuNo.inputValue}" model="#{bindings.skuNo.listOfValuesModel}"
+                                required="#{bindings.skuNo.hints.mandatory}"
+                                columns="15"
+                                shortDesc="#{bindings.skuNo.hints.tooltip}" partialTriggers="b4 b3">
+            <f:validator binding="#{bindings.skuNo.validator}"/>
+          </af:inputListOfValues>
+        </af:panelGroupLayout>
+        <af:spacer  height="2" id="s2"/>
+        <af:panelGroupLayout id="pgl9" layout="horizontal" partialTriggers="b4 b3">
+          <af:outputText value="Vendor Assistant" id="ot12"/>
+          <af:selectOneChoice value="#{bindings.vendorAssistant.inputValue}"
+                              required="#{bindings.vendorAssistant.hints.mandatory}"
+                              shortDesc="#{bindings.vendorAssistant.hints.tooltip}" id="soc1" partialTriggers="b4 b3">
+            <f:selectItems value="#{bindings.vendorAssistant.items}" id="si1"/>
+            <f:validator binding="#{bindings.vendorAssistant.validator}"/>
+          </af:selectOneChoice>
+        </af:panelGroupLayout>
+        <af:spacer width="10" height="10" id="s19"/>
+        <af:spacer width="10" height="10" id="s20"/>
+        <af:spacer width="10" height="45" id="s3"/>
+      
+    </af:panelGroupLayout>
+    <af:panelGroupLayout id="pgl19" layout="vertical" partialTriggers="b4 b3">
+      <!--<af:outputText value="PO Type" id="ot22" inlineStyle="font-weight:bold;"/>-->
+      <af:panelGroupLayout id="pgl17" layout="horizontal" partialTriggers="b4 b3">
+        <af:outputText value="Front Door" id="ot20"/>
+        <af:spacer width="39" height="10" id="s30"/>
+        <af:selectBooleanCheckbox value="#{bindings.frontDoor.inputValue}"
+                                  shortDesc="#{bindings.frontDoor.hints.tooltip}" id="sbc3" partialTriggers="b4 b3"/>
+      </af:panelGroupLayout>
+      <af:spacer  height="2" id="s32"/>
+      
+      <af:panelGroupLayout id="pgl16" layout="horizontal" partialTriggers="b4 b3">
+        <af:outputText value="Non-Code" id="ot19"/>
+        <af:spacer width="42" height="10" id="s29"/>
+        <af:selectBooleanCheckbox value="#{bindings.nonCode.inputValue}" shortDesc="#{bindings.nonCode.hints.tooltip}" partialTriggers="b4 b3"
+                                  id="sbc2"/>
+      </af:panelGroupLayout>
+      <af:spacer  height="2" id="s14"/>
+      <af:panelGroupLayout id="pgl15" layout="horizontal" partialTriggers="b4 b3">
+        <af:outputText value="Drop Ship" id="ot14"/>
+        <af:spacer width="45" height="10" id="s28"/>
+        <af:selectBooleanCheckbox value="#{bindings.dropShip.inputValue}" shortDesc="#{bindings.dropShip.hints.tooltip}"
+                                  id="sbc1" partialTriggers="b4 b3"/>
+      </af:panelGroupLayout>
+      <af:spacer  height="20" id="s13"/>
+      <af:panelGroupLayout id="pgl20" layout="vertical" partialTriggers="b4 b3">
+        <!--<af:outputText value="Invoice Exceptions" id="ot23" inlineStyle="font-weight:bold;"/>-->
+        <af:panelGroupLayout id="pgl13" layout="horizontal" partialTriggers="b4 b3">
+        <af:outputText value="Pricing Exceptions" id="ot16"/>
+          <af:spacer width="1" height="10" id="s35"/>
+          <af:selectBooleanCheckbox value="#{bindings.pricingExcp.inputValue}" 
+                                  shortDesc="#{bindings.pricingExcp.hints.tooltip}" id="sbc7" partialTriggers="b4 b3"/>
+        </af:panelGroupLayout>
+        <af:spacer  height="2" id="s33"/>
+        <!--<af:panelGroupLayout id="pgl22" layout="horizontal" partialTriggers="b4 b3">
+        <af:outputText value="Qty Exceptions" id="ot17"/>
+          <af:spacer width="19" height="10" id="s31"/>
+          <af:selectBooleanCheckbox value="#{bindings.quantityExcp.inputValue}" 
+                                  shortDesc="#{bindings.quantityExcp.hints.tooltip}" id="sbc8" partialTriggers="b4 b3"/>
+        </af:panelGroupLayout>
+        <af:spacer  height="2" id="s34"/>-->
+        <af:panelGroupLayout id="pgl18" layout="horizontal" partialTriggers="b4 b3">
+          <af:outputText value="Freight Exceptions" id="ot21"/>
+          <af:spacer width="1" height="10" id="s36"/>
+          <af:selectBooleanCheckbox value="#{bindings.freightExcp.inputValue}"
+                                    shortDesc="#{bindings.freightExcp.hints.tooltip}" id="sbc4" partialTriggers="b4 b3"/>
+        </af:panelGroupLayout>
+      </af:panelGroupLayout>
+      <af:spacer width="10" height="60" id="s1"/>
+  
+  
+      <af:panelGroupLayout id="pgl21" layout="horizontal">
+  <af:spacer width="25" height="10" id="s22"/>
+  <af:button text="Go" id="b1" action="#{pageFlowScope.MassReleaseHoldBean.massReleaseAction}" partialSubmit="true"/>
+  <af:spacer width="10" height="10" id="s21"/>
+  <af:button text="Clear" id="b4" actionListener="#{pageFlowScope.MassReleaseHoldBean.clearMassRelease}" partialSubmit="true">
+          
+        </af:button>
+        <!--<af:button actionListener="#{bindings.Rollback.execute}" text="Clear"
+                    immediate="true" id="b4">
+          <af:resetActionListener/>
+        </af:button>-->
+      </af:panelGroupLayout>
+    </af:panelGroupLayout>
+  </af:panelFormLayout>
+  <af:panelFormLayout id="pfl2" maxColumns="2" rows="1"/>
+    
+  
+  <af:selectBooleanCheckbox 
+                                  
+                                  shortDesc="#{bindings.MassReleaseHoldVO1.hints.EmployeeSelect.tooltip}"
+                                  id="sbc6" text="Select All"
+                                  valueChangeListener="#{pageFlowScope.MassReleaseHoldBean.selectAllCheckBoxVCL}" autoSubmit="true"/>
+
+  <af:panelCollection id="pc1" styleClass="AFStretchWidth" partialTriggers="::b1 ::sbc6">
+    <f:facet name="menus">
+      <af:menu text="File" id="m2">
+        <af:commandMenuItem text="Export to Excel" id="cmi1">
+          <!--<af:exportCollectionActionListener type="excelHTML" exportedId="t1" filename="MassReleaseHold.xls" title="Mass Release Hold"/>-->
+          <af:fileDownloadActionListener contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" filename="Home.xls" method="#{pageFlowScope.MassReleaseHoldBean.generateExcel}"/>
+        </af:commandMenuItem>
+      </af:menu>
+    </f:facet>
+    <f:facet name="toolbar"/>
+    <f:facet name="statusbar"/>
+  
+  <af:table value="#{bindings.MassReleaseHoldVO1.collectionModel}" var="row"
+            rows="#{bindings.MassReleaseHoldVO1.rangeSize}"
+            emptyText="#{bindings.MassReleaseHoldVO1.viewable ? 'No data to display.' : 'Access Denied.'}"
+            rowBandingInterval="0" fetchSize="#{bindings.MassReleaseHoldVO1.rangeSize}" id="t1" >
+      <af:column headerText="" id="c29" width="10">
+        <af:selectBooleanCheckbox value="#{row.bindings.EmployeeSelect.inputValue}"
+                                  label="#{row.bindings.EmployeeSelect.label}"
+                                  shortDesc="#{bindings.MassReleaseHoldVO1.hints.EmployeeSelect.tooltip}" id="sbc5"/>
+      </af:column>
+      <!--<af:column headerText="#{bindings.MassReleaseHoldVO1.hints.InvoiceId.label}" id="c1" visible="false">
+      <af:inputText value="#{row.bindings.InvoiceId.inputValue}"
+                    label="#{bindings.MassReleaseHoldVO1.hints.InvoiceId.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.InvoiceId.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.InvoiceId.displayWidth}"
+                    maximumLength="#{bindings.MassReleaseHoldVO1.hints.InvoiceId.precision}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.InvoiceId.tooltip}" id="it1">
+        <f:validator binding="#{row.bindings.InvoiceId.validator}"/>
+        <af:convertNumber groupingUsed="false" pattern="#{bindings.MassReleaseHoldVO1.hints.InvoiceId.format}"/>
+      </af:inputText>
+    </af:column>-->
+    <af:column headerText="#{bindings.MassReleaseHoldVO1.hints.VendorAssistant.label}" id="c2" width="190">
+      <af:inputText value="#{row.bindings.VendorAssistant.inputValue}"
+                    label="#{bindings.MassReleaseHoldVO1.hints.VendorAssistant.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.VendorAssistant.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.VendorAssistant.displayWidth}"
+                    maximumLength="#{bindings.MassReleaseHoldVO1.hints.VendorAssistant.precision}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.VendorAssistant.tooltip}" id="it2">
+        <f:validator binding="#{row.bindings.VendorAssistant.validator}"/>
+      </af:inputText>
+    </af:column>
+    <!--<af:column headerText="#{bindings.MassReleaseHoldVO1.hints.OrgId.label}" id="c3" visible="false">
+      <af:inputText value="#{row.bindings.OrgId.inputValue}" label="#{bindings.MassReleaseHoldVO1.hints.OrgId.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.OrgId.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.OrgId.displayWidth}"
+                    maximumLength="#{bindings.MassReleaseHoldVO1.hints.OrgId.precision}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.OrgId.tooltip}" id="it3">
+        <f:validator binding="#{row.bindings.OrgId.validator}"/>
+        <af:convertNumber groupingUsed="false" pattern="#{bindings.MassReleaseHoldVO1.hints.OrgId.format}"/>
+      </af:inputText>
+    </af:column>-->
+    <!--<af:column headerText="#{bindings.MassReleaseHoldVO1.hints.Source.label}" id="c4" visible="false">
+      <af:inputText value="#{row.bindings.Source.inputValue}" label="#{bindings.MassReleaseHoldVO1.hints.Source.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.Source.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.Source.displayWidth}"
+                    maximumLength="#{bindings.MassReleaseHoldVO1.hints.Source.precision}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.Source.tooltip}" id="it4">
+        <f:validator binding="#{row.bindings.Source.validator}"/>
+      </af:inputText>
+    </af:column>-->
+    <af:column headerText="#{bindings.MassReleaseHoldVO1.hints.SupplierName.label}" id="c12" width="190">
+      <af:inputText value="#{row.bindings.SupplierName.inputValue}"
+                    label="#{bindings.MassReleaseHoldVO1.hints.SupplierName.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.SupplierName.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.SupplierName.displayWidth}"
+                    maximumLength="#{bindings.MassReleaseHoldVO1.hints.SupplierName.precision}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.SupplierName.tooltip}" id="it10">
+        <f:validator binding="#{row.bindings.SupplierName.validator}"/>
+      </af:inputText>
+    </af:column>
+    <af:column headerText="#{bindings.MassReleaseHoldVO1.hints.SupplierNo.label}" id="c13" width="80">
+      <af:inputText value="#{row.bindings.SupplierNo.inputValue}"
+                    label="#{bindings.MassReleaseHoldVO1.hints.SupplierNo.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.SupplierNo.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.SupplierNo.displayWidth}"
+                    maximumLength="#{bindings.MassReleaseHoldVO1.hints.SupplierNo.precision}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.SupplierNo.tooltip}" id="it11">
+        <f:validator binding="#{row.bindings.SupplierNo.validator}"/>
+      </af:inputText>
+    </af:column>
+    <af:column headerText="#{bindings.MassReleaseHoldVO1.hints.SupplierSite.label}" id="c14" width="130">
+      <af:inputText value="#{row.bindings.SupplierSite.inputValue}"
+                    label="#{bindings.MassReleaseHoldVO1.hints.SupplierSite.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.SupplierSite.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.SupplierSite.displayWidth}"
+                    maximumLength="#{bindings.MassReleaseHoldVO1.hints.SupplierSite.precision}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.SupplierSite.tooltip}" id="it12">
+        <f:validator binding="#{row.bindings.SupplierSite.validator}"/>
+      </af:inputText>
+    </af:column>
+    <af:column headerText="#{bindings.MassReleaseHoldVO1.hints.Discount.label}" id="c15" width="30">
+      <af:inputText value="#{row.bindings.Discount.inputValue}"
+                    label="#{bindings.MassReleaseHoldVO1.hints.Discount.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.Discount.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.Discount.displayWidth}"
+                    maximumLength="#{bindings.MassReleaseHoldVO1.hints.Discount.precision}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.Discount.tooltip}" id="it13">
+        <f:validator binding="#{row.bindings.Discount.validator}"/>
+      </af:inputText>
+    </af:column>
+    <af:column headerText="#{bindings.MassReleaseHoldVO1.hints.InvoiceNum.label}" id="c5" width="140">
+      <af:inputText value="#{row.bindings.InvoiceNum.inputValue}"
+                    label="#{bindings.MassReleaseHoldVO1.hints.InvoiceNum.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.InvoiceNum.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.InvoiceNum.displayWidth}"
+                    maximumLength="#{bindings.MassReleaseHoldVO1.hints.InvoiceNum.precision}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.InvoiceNum.tooltip}" id="it5">
+        <f:validator binding="#{row.bindings.InvoiceNum.validator}"/>
+      </af:inputText>
+    </af:column>
+    <af:column headerText="#{bindings.MassReleaseHoldVO1.hints.VoucherNum.label}" id="c7" width="90">
+      <af:inputText value="#{row.bindings.VoucherNum.inputValue}"
+                    label="#{bindings.MassReleaseHoldVO1.hints.VoucherNum.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.VoucherNum.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.VoucherNum.displayWidth}"
+                    maximumLength="#{bindings.MassReleaseHoldVO1.hints.VoucherNum.precision}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.VoucherNum.tooltip}" id="it6">
+        <f:validator binding="#{row.bindings.VoucherNum.validator}"/>
+      </af:inputText>
+    </af:column>
+    <af:column headerText="#{bindings.MassReleaseHoldVO1.hints.InvoiceDate.label}" id="c6" width="60" noWrap="false">
+      <af:inputDate value="#{row.bindings.InvoiceDate.inputValue}"
+                    label="#{bindings.MassReleaseHoldVO1.hints.InvoiceDate.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.InvoiceDate.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.InvoiceDate.displayWidth}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.InvoiceDate.tooltip}" id="id7">
+        <f:validator binding="#{row.bindings.InvoiceDate.validator}"/>
+        <af:convertDateTime pattern="#{bindings.MassReleaseHoldVO1.hints.InvoiceDate.format}"/>
+      </af:inputDate>
+    </af:column>
+      <af:column headerText="#{bindings.MassReleaseHoldVO1.hints.GlDate.label}" id="c1">
+        <af:inputDate value="#{row.bindings.GlDate.inputValue}"
+                      label="#{bindings.MassReleaseHoldVO1.hints.GlDate.label}"
+                      required="#{bindings.MassReleaseHoldVO1.hints.GlDate.mandatory}"
+                      columns="#{bindings.MassReleaseHoldVO1.hints.GlDate.displayWidth}"
+                      shortDesc="#{bindings.MassReleaseHoldVO1.hints.GlDate.tooltip}" id="id11" readOnly="true">
+          <f:validator binding="#{row.bindings.GlDate.validator}"/>
+          <af:convertDateTime pattern="#{bindings.MassReleaseHoldVO1.hints.GlDate.format}"/>
+        </af:inputDate>
+      </af:column>
+      <af:column headerText="#{bindings.MassReleaseHoldVO1.hints.PoNumber.label}" id="c11">
+      <af:inputText value="#{row.bindings.PoNumber.inputValue}"
+                    label="#{bindings.MassReleaseHoldVO1.hints.PoNumber.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.PoNumber.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.PoNumber.displayWidth}"
+                    maximumLength="#{bindings.MassReleaseHoldVO1.hints.PoNumber.precision}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.PoNumber.tooltip}" id="it9">
+        <f:validator binding="#{row.bindings.PoNumber.validator}"/>
+      </af:inputText>
+    </af:column>
+    <af:column headerText="#{bindings.MassReleaseHoldVO1.hints.Location.label}" id="c16" width="80">
+      <af:inputText value="#{row.bindings.Location.inputValue}"
+                    label="#{bindings.MassReleaseHoldVO1.hints.Location.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.Location.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.Location.displayWidth}"
+                    maximumLength="#{bindings.MassReleaseHoldVO1.hints.Location.precision}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.Location.tooltip}" id="it14">
+        <f:validator binding="#{row.bindings.Location.validator}"/>
+      </af:inputText>
+    </af:column>
+    <af:column headerText="#{bindings.MassReleaseHoldVO1.hints.DueDate.label}" id="c10" width="60" noWrap="false">
+      <af:inputDate value="#{row.bindings.DueDate.inputValue}"
+                    label="#{bindings.MassReleaseHoldVO1.hints.DueDate.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.DueDate.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.DueDate.displayWidth}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.DueDate.tooltip}" id="id8">
+        <f:validator binding="#{row.bindings.DueDate.validator}"/>
+        <af:convertDateTime pattern="#{bindings.MassReleaseHoldVO1.hints.DueDate.format}"/>
+      </af:inputDate>
+        <f:facet name="footer">
+          <af:outputText value="TOTAL" id="ot15"/>
+        </f:facet>
+      </af:column>
+    <af:column headerText="#{bindings.MassReleaseHoldVO1.hints.InvoiceAmount.label}" id="c8" align="right">
+      <af:inputText value="#{row.bindings.InvoiceAmount.inputValue}"
+                    label="#{bindings.MassReleaseHoldVO1.hints.InvoiceAmount.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.InvoiceAmount.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.InvoiceAmount.displayWidth}"
+                    maximumLength="#{bindings.MassReleaseHoldVO1.hints.InvoiceAmount.precision}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.InvoiceAmount.tooltip}" id="it7">
+        <f:validator binding="#{row.bindings.InvoiceAmount.validator}"/>
+        <af:convertNumber groupingUsed="false" pattern="#{bindings.MassReleaseHoldVO1.hints.InvoiceAmount.format}"/>
+      </af:inputText>
+        <f:facet name="footer">
+          <!--<af:inputText value="#{pageFlowScope.MassReleaseHoldBean.invoiceSum}" id="ot16" readOnly="true">
+          <af:convertNumber groupingUsed="false" pattern="#,###.00" type="number"/>
+          </af:inputText>-->
+          
+            <af:outputFormatted value="$ #{bindings.SumInvAmount.inputValue}" id="of3">
+              <af:convertNumber groupingUsed="false"
+                                pattern="#{bindings.MassReleaseHoldVO1.hints.SumInvAmount.format}"/>
+            </af:outputFormatted>
+          
+        </f:facet>
+      </af:column>
+    <!--<af:column headerText="#{bindings.MassReleaseHoldVO1.hints.PoType.label}" id="c9" visible="false">
+      <af:inputText value="#{row.bindings.PoType.inputValue}" label="#{bindings.MassReleaseHoldVO1.hints.PoType.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.PoType.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.PoType.displayWidth}"
+                    maximumLength="#{bindings.MassReleaseHoldVO1.hints.PoType.precision}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.PoType.tooltip}" id="it8">
+        <f:validator binding="#{row.bindings.PoType.validator}"/>
+      </af:inputText>
+    </af:column>-->
+    
+    
+    
+    
+    <af:column headerText="#{bindings.MassReleaseHoldVO1.hints.QtyHoldAmt.label}" id="c17" align="right" noWrap="false" width="80">
+      <af:inputText value="#{row.bindings.QtyHoldAmt.inputValue}"
+                    label="#{bindings.MassReleaseHoldVO1.hints.QtyHoldAmt.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.QtyHoldAmt.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.QtyHoldAmt.displayWidth}"
+                    maximumLength="#{bindings.MassReleaseHoldVO1.hints.QtyHoldAmt.precision}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.QtyHoldAmt.tooltip}" id="it15">
+        <f:validator binding="#{row.bindings.QtyHoldAmt.validator}"/>
+        <af:convertNumber groupingUsed="false" pattern="#{bindings.MassReleaseHoldVO1.hints.QtyHoldAmt.format}"/>
+      </af:inputText>
+        <f:facet name="footer">
+          <!--<af:outputText value="#{pageFlowScope.MassReleaseHoldBean.quantityHoldSum}" id="ot17"/>-->
+          
+            <af:outputFormatted value="$ #{bindings.SumQtyAmount.inputValue}" id="of4">
+              <af:convertNumber groupingUsed="false"
+                                pattern="#{bindings.MassReleaseHoldVO1.hints.SumQtyAmount.format}"/>
+            </af:outputFormatted>
+          
+        </f:facet>
+      </af:column>
+    <af:column headerText="#{bindings.MassReleaseHoldVO1.hints.PriceHoldAmt.label}" id="c18" align="right"
+               noWrap="false" width="80">
+      <af:inputText value="#{row.bindings.PriceHoldAmt.inputValue}"
+                    label="#{bindings.MassReleaseHoldVO1.hints.PriceHoldAmt.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.PriceHoldAmt.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.PriceHoldAmt.displayWidth}"
+                    maximumLength="#{bindings.MassReleaseHoldVO1.hints.PriceHoldAmt.precision}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.PriceHoldAmt.tooltip}" id="it16">
+        <f:validator binding="#{bindings.PriceHoldAmt.validator}"/>
+        <af:convertNumber groupingUsed="false" pattern="#{bindings.MassReleaseHoldVO1.hints.PriceHoldAmt.format}"/>
+      </af:inputText>
+        <f:facet name="footer">
+       <!-- <af:outputText value="#{pageFlowScope.MassReleaseHoldBean.priceHoldSum}" id="ot18"/>
+          <af:panelLabelAndMessage label="#{bindings.MassReleaseHoldVO1.hints.SumPriceAmount.label}" id="plam1">-->
+            <af:outputFormatted value="$ #{bindings.SumPriceAmount.inputValue}" id="of5">
+              <af:convertNumber groupingUsed="false"
+                                pattern="#{bindings.MassReleaseHoldVO1.hints.SumPriceAmount.format}"/>
+            </af:outputFormatted>
+          <!--</af:panelLabelAndMessage>-->
+        </f:facet>
+      </af:column>
+    
+    <!--<af:column headerText="#{bindings.MassReleaseHoldVO1.hints.PoHoldChr.label}" id="c20" visible="false">
+      <af:inputText value="#{row.bindings.PoHoldChr.inputValue}"
+                    label="#{bindings.MassReleaseHoldVO1.hints.PoHoldChr.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.PoHoldChr.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.PoHoldChr.displayWidth}"
+                    maximumLength="#{bindings.MassReleaseHoldVO1.hints.PoHoldChr.precision}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.PoHoldChr.tooltip}" id="it18">
+        <f:validator binding="#{row.bindings.PoHoldChr.validator}"/>
+      </af:inputText>
+    </af:column>-->
+    <af:column headerText="#{bindings.MassReleaseHoldVO1.hints.FrontDoorc.label}" id="c21" width="30">
+      <af:inputText value="#{row.bindings.FrontDoorc.inputValue eq 'Y' ? row.bindings.FrontDoorc.inputValue : null}"
+                    label="#{bindings.MassReleaseHoldVO1.hints.FrontDoorc.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.FrontDoorc.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.FrontDoorc.displayWidth}"
+                    maximumLength="#{bindings.MassReleaseHoldVO1.hints.FrontDoorc.precision}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.FrontDoorc.tooltip}" id="it19">
+        <f:validator binding="#{row.bindings.FrontDoorc.validator}"/>
+      </af:inputText>
+    </af:column>
+    <af:column headerText="#{bindings.MassReleaseHoldVO1.hints.NonCodec.label}" id="c22" width="30">
+      <af:inputText value="#{row.bindings.NonCodec.inputValue eq 'Y' ?row.bindings.NonCodec.inputValue : null}"
+                    label="#{bindings.MassReleaseHoldVO1.hints.NonCodec.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.NonCodec.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.NonCodec.displayWidth}"
+                    maximumLength="#{bindings.MassReleaseHoldVO1.hints.NonCodec.precision}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.NonCodec.tooltip}" id="it20">
+        <f:validator binding="#{row.bindings.NonCodec.validator}"/>
+      </af:inputText>
+    </af:column>
+    <af:column headerText="#{bindings.MassReleaseHoldVO1.hints.DropShipc.label}" id="c23" width="30">
+      <af:inputText value="#{row.bindings.DropShipc.inputValue eq 'Y' ? row.bindings.DropShipc.inputValue : null}"
+                    label="#{bindings.MassReleaseHoldVO1.hints.DropShipc.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.DropShipc.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.DropShipc.displayWidth}"
+                    maximumLength="#{bindings.MassReleaseHoldVO1.hints.DropShipc.precision}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.DropShipc.tooltip}" id="it21">
+        <f:validator binding="#{row.bindings.DropShipc.validator}"/>
+      </af:inputText>
+    </af:column>
+    <!--<af:column headerText="#{bindings.MassReleaseHoldVO1.hints.FrtHold.label}" id="c19" visible="false">
+      <af:inputText value="#{row.bindings.FrtHold.inputValue eq 'Y' ? row.bindings.FrtHold.inputValue : null}"
+                    label="#{bindings.MassReleaseHoldVO1.hints.FrtHold.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.FrtHold.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.FrtHold.displayWidth}"
+                    maximumLength="#{bindings.MassReleaseHoldVO1.hints.FrtHold.precision}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.FrtHold.tooltip}" id="it17">
+        <f:validator binding="#{row.bindings.FrtHold.validator}"/>
+      </af:inputText>
+    </af:column>-->
+    <!--<af:column headerText="#{bindings.MassReleaseHoldVO1.hints.Podate.label}" id="c24" visible="false">
+      <af:inputDate value="#{row.bindings.Podate.inputValue}" label="#{bindings.MassReleaseHoldVO1.hints.Podate.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.Podate.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.Podate.displayWidth}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.Podate.tooltip}" id="id9">
+        <f:validator binding="#{row.bindings.Podate.validator}"/>
+        <af:convertDateTime pattern="#{bindings.MassReleaseHoldVO1.hints.Podate.format}"/>
+      </af:inputDate>
+    </af:column>-->
+    <!--<af:column headerText="#{bindings.MassReleaseHoldVO1.hints.Sku.label}" id="c25" visible="false">
+      <af:inputText value="#{row.bindings.Sku.inputValue}" label="#{bindings.MassReleaseHoldVO1.hints.Sku.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.Sku.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.Sku.displayWidth}"
+                    maximumLength="#{bindings.MassReleaseHoldVO1.hints.Sku.precision}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.Sku.tooltip}" id="it22">
+        <f:validator binding="#{row.bindings.Sku.validator}"/>
+        <af:convertNumber groupingUsed="false" pattern="#{bindings.MassReleaseHoldVO1.hints.Sku.format}"/>
+      </af:inputText>
+    </af:column>-->
+    <!--<af:column headerText="#{bindings.MassReleaseHoldVO1.hints.Pricingexcp.label}" id="c26" visible="false">
+      <af:inputText value="#{row.bindings.Pricingexcp.inputValue eq 'Y' ? row.bindings.Pricingexcp.inputValue : null}"
+                    label="#{bindings.MassReleaseHoldVO1.hints.Pricingexcp.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.Pricingexcp.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.Pricingexcp.displayWidth}"
+                    maximumLength="#{bindings.MassReleaseHoldVO1.hints.Pricingexcp.precision}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.Pricingexcp.tooltip}" id="it23">
+        <f:validator binding="#{row.bindings.Pricingexcp.validator}"/>
+      </af:inputText>
+    </af:column>-->
+    <!--<af:column headerText="#{bindings.MassReleaseHoldVO1.hints.Quantityexcp.label}" id="c27" visible="false">
+      <af:inputText value="#{row.bindings.Quantityexcp.inputValue eq 'Y' ? row.bindings.Quantityexcp.inputValue : null}"
+                    label="#{bindings.MassReleaseHoldVO1.hints.Quantityexcp.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.Quantityexcp.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.Quantityexcp.displayWidth}"
+                    maximumLength="#{bindings.MassReleaseHoldVO1.hints.Quantityexcp.precision}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.Quantityexcp.tooltip}" id="it24">
+        <f:validator binding="#{row.bindings.Quantityexcp.validator}"/>
+      </af:inputText>
+    </af:column>-->
+    <af:column headerText="#{bindings.MassReleaseHoldVO1.hints.Freightexcp.label}" id="c28" width="35">
+      <af:inputText value="#{row.bindings.Freightexcp.inputValue eq 'Y' ? row.bindings.Freightexcp.inputValue : null}"
+                    label="#{bindings.MassReleaseHoldVO1.hints.Freightexcp.label}"
+                    required="#{bindings.MassReleaseHoldVO1.hints.Freightexcp.mandatory}"
+                    columns="#{bindings.MassReleaseHoldVO1.hints.Freightexcp.displayWidth}"
+                    maximumLength="#{bindings.MassReleaseHoldVO1.hints.Freightexcp.precision}"
+                    shortDesc="#{bindings.MassReleaseHoldVO1.hints.Freightexcp.tooltip}" id="it25">
+        <f:validator binding="#{row.bindings.Freightexcp.validator}"/>
+      </af:inputText>
+    </af:column>
+      <!--<af:column headerText="#{bindings.MassReleaseHoldVO1.hints.QtyHoldReason.label}" id="c30">
+        <af:inputText value="#{row.bindings.QtyHoldReason.inputValue}"
+                      label="#{bindings.MassReleaseHoldVO1.hints.QtyHoldReason.label}"
+                      required="#{bindings.MassReleaseHoldVO1.hints.QtyHoldReason.mandatory}"
+                      columns="#{bindings.MassReleaseHoldVO1.hints.QtyHoldReason.displayWidth}"
+                      maximumLength="#{bindings.MassReleaseHoldVO1.hints.QtyHoldReason.precision}"
+                      shortDesc="#{bindings.MassReleaseHoldVO1.hints.QtyHoldReason.tooltip}" id="it26">
+          <f:validator binding="#{row.bindings.QtyHoldReason.validator}"/>
+        </af:inputText>
+      </af:column>
+      <af:column headerText="#{bindings.MassReleaseHoldVO1.hints.PriceHoldReason.label}" id="c31">
+        <af:inputText value="#{row.bindings.PriceHoldReason.inputValue}"
+                      label="#{bindings.MassReleaseHoldVO1.hints.PriceHoldReason.label}"
+                      required="#{bindings.MassReleaseHoldVO1.hints.PriceHoldReason.mandatory}"
+                      columns="#{bindings.MassReleaseHoldVO1.hints.PriceHoldReason.displayWidth}"
+                      maximumLength="#{bindings.MassReleaseHoldVO1.hints.PriceHoldReason.precision}"
+                      shortDesc="#{bindings.MassReleaseHoldVO1.hints.PriceHoldReason.tooltip}" id="it27">
+          <f:validator binding="#{row.bindings.PriceHoldReason.validator}"/>
+        </af:inputText>
+      </af:column>-->
+      <!--<af:column headerText="#{bindings.MassReleaseHoldVO1.hints.QtyHoldReason.label}" id="c30">
+        <af:selectOneChoice value="#{row.bindings.QtyHoldReason.inputValue}" label="#{row.bindings.QtyHoldReason.label}"
+                            required="#{bindings.MassReleaseHoldVO1.hints.QtyHoldReason.mandatory}"
+                            shortDesc="#{bindings.MassReleaseHoldVO1.hints.QtyHoldReason.tooltip}" id="soc3">
+          <f:selectItems value="#{row.bindings.QtyHoldReason.items}" id="si3"/>
+          <f:validator binding="#{row.bindings.QtyHoldReason.validator}"/>
+        </af:selectOneChoice>
+      </af:column>-->
+      <af:column headerText="#{bindings.MassReleaseHoldVO1.hints.PriceHoldReason.label}" id="c31">
+        <af:selectOneChoice value="#{row.bindings.PriceHoldReason.inputValue}"
+                            label="#{row.bindings.PriceHoldReason.label}"
+                            required="#{bindings.MassReleaseHoldVO1.hints.PriceHoldReason.mandatory}"
+                            shortDesc="#{bindings.MassReleaseHoldVO1.hints.PriceHoldReason.tooltip}" id="soc4">
+          <f:selectItems value="#{row.bindings.PriceHoldReason.items}" id="si4"/>
+          <f:validator binding="#{row.bindings.PriceHoldReason.validator}"/>
+        </af:selectOneChoice>
+      </af:column>
+    </af:table>
+  </af:panelCollection>
+  <af:spacer  height="10" id="s25"/>
+  <af:panelGroupLayout id="pgl24" halign="left" layout="horizontal">
+    <af:outputText value="Total # of Records : " id="ot18"/>
+    <af:spacer width="10" height="10" id="s37"/>
+    <af:outputText value="#{bindings.MassReleaseHoldVO1Iterator.estimatedRowCount}" id="ot22" partialTriggers="b1"/>
+  </af:panelGroupLayout>
+  <af:spacer  height="30" id="s23"/>
+  <af:button text="Release for Validation" id="b3" action="#{pageFlowScope.MassReleaseHoldBean.updateAction}"/>
+</ui:composition>

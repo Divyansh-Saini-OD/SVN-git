@@ -1,0 +1,57 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF 
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : XX_FA_TAX_INTERFACE_STG                                                    |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Synonym                                                      |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_FA_TAX_INTERFACE_STG(FA Conversion )                                   |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              22-JAN-2015       Mark Schmit             Original                         |--
+--+=============================================================================================+--
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating Synonym in APPS... 
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM XX_FA_TAX_INTERFACE_STG
+PROMPT
+
+
+create synonym XX_FA_TAX_INTERFACE_STG for xxcnv.XX_FA_TAX_INTERFACE_STG;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+
+EXIT;
+
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================
+
