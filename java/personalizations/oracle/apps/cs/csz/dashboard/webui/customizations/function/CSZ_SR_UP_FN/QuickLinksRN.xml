@@ -1,0 +1,22 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.6.0.0_64" xml:lang="en-US" customizes="/oracle/apps/cs/csz/dashboard/webui/QuickLinksRN" developerMode="true" MDSActiveDoc="true" xmlns:oa="http://xmlns.oracle.com/oa">
+   <modifications>
+      <insert after="WebConference1">
+         <oa:link id="Print_SR_details" adminCustomizable="true" destination="http://gsidev02.na.odcorp.net/pls/GSIDEV02/XX_CS_PRINT_NOTES.PRINT_SR_DETAILS?P_INCIDENT_ID={@IncidentId}" popupEnabled="true" popupRenderEvent="onClick" rendered="true" serverUnvalidated="false" targetFrame="_blank" text="Print SR Details" userCustomizable="false" viewName="SRAM.IncidentEOVO" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <modify element="WebConference2" rendered="false"/>
+      <insert after="WebConference2">
+         <oa:link id="Order_Details" adminCustomizable="true" destination="http://gmil.na.odcorp.net/web/service.do?key={@IncidentAttribute1}" popupEnabled="true" popupRenderEvent="onClick" rendered="true" scope="." serverUnvalidated="false" targetFrame="_blank" text="GMill Order Details" userCustomizable="false" viewName="SRAM.IncidentEOVO" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <modify element="QuickLinksRow2" rendered="true"/>
+      <insert after="WebConference3">
+         <oa:link id="Send_mail" adminCustomizable="true" destination="OA.jsp?page=/od/oracle/apps/xxcrm/cs/csz/sendmail/webui/SendMailPG&amp;hdnIncidentNo={@IncidentId}" rendered="true" scope="." serverUnvalidated="false" text="Send Mail" userCustomizable="false" viewName="SRAM.IncidentEOVO" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <insert after="WebConference4">
+         <oa:link id="Service_det" adminCustomizable="true" destination="OA.jsp?page=/od/oracle/apps/xxcrm/cs/csz/incident/webui/XXCSQuestionAnswersPG&amp;OAFunc=OD_CSZ_SR_QA_FN&amp;IncidentId={@IncidentId}" popupEnabled="true" popupRenderEvent="onClick" rendered="true" scope="." serverUnvalidated="false" targetFrame="_blank" text="Service Details" userCustomizable="false" viewName="SRAM.IncidentEOVO" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <modify element="NotificationLink" rendered="false"/>
+      <modify element="WebConference1" rendered="false"/>
+      <modify element="QuickLinksRow4" rendered="true"/>
+   </modifications>
+</customization>

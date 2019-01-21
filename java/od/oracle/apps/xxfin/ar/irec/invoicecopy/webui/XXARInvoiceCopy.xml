@@ -1,0 +1,146 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1550" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="PageLayoutRN" amDefName="oracle.apps.ar.irec.accountDetails.server.AccountDetailsAM" globalMenu="XXARIMENUGLOBAL" windowTitle="OD Send Invoice Copy" title="Invoice Copy" controllerClass="od.oracle.apps.xxfin.ar.irec.invoicecopy.webui.XXARInvoiceCopyCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:header id="CustomerHeader" text="Customer"/>
+            <oa:messageComponentLayout id="CustomerRN">
+               <ui:contents>
+                  <oa:messageLayout id="CustomerLayout">
+                     <ui:contents>
+                        <oa:rowLayout id="CustomerRow">
+                           <ui:contents>
+                              <oa:cellFormat id="CustomerCell1">
+                                 <ui:contents>
+                                    <oa:messageTextInput id="CustomerName" maximumLength="360" queryable="true" prompt="Customer Name:" translatableDefaultValue="" readOnly="true"/>
+                                    <oa:messageTextInput id="AccountNumber" maximumLength="30" readOnly="true" prompt="Account Number:" translatableDefaultValue=""/>
+                                    <oa:messageTextInput id="CustAccountId" dataType="NUMBER" maximumLength="15" readOnly="true" prompt="Customer Id:" rendered="false" translatableDefaultValue=""/>
+                                 </ui:contents>
+                              </oa:cellFormat>
+                           </ui:contents>
+                        </oa:rowLayout>
+                     </ui:contents>
+                  </oa:messageLayout>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:header id="InvoiceHeader" text="Selected Transactions"/>
+            <oa:messageComponentLayout id="InvoiceRN">
+               <ui:contents>
+                  <oa:messageLayout id="InvoiceLayout">
+                     <ui:contents>
+                        <oa:rowLayout id="InvoiceRow1">
+                           <ui:contents>
+                              <oa:cellFormat id="InvoiceCell1">
+                                 <ui:contents>
+                                    <oa:messageTextInput id="InvoiceNumber" prompt="Transaction Numbers:" maximumLength="2000" translatableDefaultValue="" readOnly="true"/>
+                                 </ui:contents>
+                              </oa:cellFormat>
+                           </ui:contents>
+                        </oa:rowLayout>
+                     </ui:contents>
+                  </oa:messageLayout>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:header id="ConsBillHeader" text="Corresponding Consolidated Bills" rendered="false" />
+            <oa:messageComponentLayout id="ConsBillRN" rendered="false" >
+               <ui:contents>
+                  <oa:messageLayout id="ConsBillLayout">
+                     <ui:contents>
+                        <oa:rowLayout id="ConsBillRow1">
+                           <ui:contents>
+                              <oa:cellFormat id="ConsBillCell1">
+                                 <ui:contents>
+                                    <oa:messageTextInput id="ConsBillNumber" prompt="Consolidated Bill Numbers:" maximumLength="2000" translatableDefaultValue="" readOnly="true"/>
+                                 </ui:contents>
+                              </oa:cellFormat>
+                           </ui:contents>
+                        </oa:rowLayout>
+                        <oa:rowLayout id="ConsBillRow2">
+                           <ui:contents>
+                              <oa:cellFormat id="ConsBillCellSpacer" height="50" width="65"/>
+                              <oa:cellFormat id="ConsBillCell2">
+                                 <ui:contents>
+                                    <oa:messageCheckBox id="SendConsBillsCheckBox" defaultValue="1" checkedValue="Y" unCheckedValue="N" text="" prompt="Send copy of these Consolidated Bill(s) instead of individual transactions"/>
+                                 </ui:contents>
+                              </oa:cellFormat>
+                           </ui:contents>
+                        </oa:rowLayout>
+                     </ui:contents>
+                  </oa:messageLayout>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:header id="DeliveryHeader" text="Delivery Options"/>
+            <oa:messageComponentLayout id="DeliveryRN">
+               <ui:contents>
+                  <oa:messageLayout id="DeliveryLayout">
+                     <ui:contents>
+                        <oa:rowLayout id="EmailRow1">
+                           <ui:contents>
+                              <oa:cellFormat id="EmailCellSpacer" height="30" width="20"/>
+                              <oa:cellFormat id="EmailCell1" height="30" width="45">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="EmailLabel" prompt="Email"/>
+                                 </ui:contents>
+                              </oa:cellFormat>
+                              <oa:cellFormat id="EmailCell2" width="60" height="30">
+                                 <ui:contents>
+                                    <oa:messageCheckBox id="EmailCheckBox" defaultValue="1" checkedValue="Y" unCheckedValue="N" text="" prompt=""/>
+                                 </ui:contents>
+                              </oa:cellFormat>
+                              <oa:cellFormat id="EmailCell3" height="30" width="120">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="EmailAddressLabel" prompt="Email Address:"/>
+                                 </ui:contents>
+                              </oa:cellFormat>
+                              <oa:cellFormat id="EmailCell4" height="30">
+                                 <ui:contents>
+                                    <oa:messageTextInput id="EmailAddress" maximumLength="500" prompt=""/>
+                                 </ui:contents>
+                              </oa:cellFormat>
+                           </ui:contents>
+                        </oa:rowLayout>
+                        <oa:rowLayout id="FaxRow1">
+                           <ui:contents>
+                              <oa:cellFormat id="FaxCellSpacer" height="30" width="20"/>
+                              <oa:cellFormat id="FaxCell1" height="30" width="45">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="FaxLabel" prompt="Fax"/>
+                                 </ui:contents>
+                              </oa:cellFormat>
+                              <oa:cellFormat id="FaxCell2" height="30" width="60">
+                                 <ui:contents>
+                                    <oa:messageCheckBox id="FaxCheckBox" defaultValue="1" checkedValue="Y" unCheckedValue="N" text="" prompt=""/>
+                                 </ui:contents>
+                              </oa:cellFormat>
+                              <oa:cellFormat id="FaxCell3" height="30" width="120">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="FaxlAddressLabel" prompt="Fax Number:"/>
+                                 </ui:contents>
+                              </oa:cellFormat>
+                              <oa:cellFormat id="FaxCell4" height="30">
+                                 <ui:contents>
+                                    <oa:messageTextInput id="FaxNumber" maximumLength="20" prompt=""/>
+                                 </ui:contents>
+                              </oa:cellFormat>
+                           </ui:contents>
+                        </oa:rowLayout>
+                     </ui:contents>
+                  </oa:messageLayout>
+                  <oa:messageCheckBox id="PrintCheckBox" defaultValue="1" checkedValue="Y" unCheckedValue="N" text="Print" prompt="Print" rendered="false"/>
+                  <oa:messageTextInput id="PrinterName" maximumLength="100" prompt="Printer" rendered="false"/>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:pageButtonBar id="PageButtonBar">
+               <ui:contents>
+                  <oa:submitButton id="CancelButton" text="&amp;Cancel" use="/oracle/apps/fnd/attributesets/Buttons/Cancel"/>
+                  <oa:submitButton id="SubmitButton" text="&amp;Submit" use="/oracle/apps/fnd/attributesets/Buttons/Submit"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

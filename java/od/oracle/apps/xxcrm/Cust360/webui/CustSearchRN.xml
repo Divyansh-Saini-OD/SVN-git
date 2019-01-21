@@ -1,0 +1,143 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<oa:pageLayout version="9.0.3.8.12_1330" xml:lang="en-US" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:ui="http://xmlns.oracle.com/uix/ui" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$" scope="/" controllerClass="od.oracle.apps.xxcrm.Cust360.webui.CustSearchCO" amDefName="od.oracle.apps.xxcrm.Cust360.server.Cust360AM" windowTitle="Customer Search 360" title="Customer Search 360">
+   <ui:corporateBranding>
+      <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+   </ui:corporateBranding>
+   <ui:contents>
+      <oa:flowLayout id="region1">
+         <ui:contents>
+            <oa:tableLayout id="region2">
+               <ui:contents>
+                  <oa:rowLayout id="region7">
+                     <ui:contents>
+                        <oa:cellFormat id="region8" columnSpan="1">
+                           <ui:contents>
+                              <oa:rawText id="CustNameL" prompt="" text="&lt;font size=2>Customer Name&amp;nbsp&lt;/font>"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="region9" columnSpan="5">
+                           <ui:contents>
+                              <oa:messageTextInput id="CustNameV"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="region3">
+                     <ui:contents>
+                        <oa:cellFormat id="region4">
+                           <ui:contents>
+                              <oa:rawText id="PhoneNumL" text="&lt;font size=2>Phone Number&lt;/font>" prompt=""/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="region10">
+                           <ui:contents>
+                              <oa:messageTextInput id="PhoneNumV" columns="3" tipType="none"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="region114" hAlign="center">
+                           <ui:contents>
+                              <oa:messageStyledText id="item212" prompt="-"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="region115">
+                           <ui:contents>
+                              <oa:messageTextInput id="PhoneNumV2" columns="5"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="region116" hAlign="center">
+                           <ui:contents>
+                              <oa:messageStyledText id="item213" prompt="-"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="region117">
+                           <ui:contents>
+                              <oa:messageTextInput id="PhoneNumV3"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:tableLayout>
+            <oa:submitButton id="Search" text="Search" prompt="Search"/>
+         </ui:contents>
+      </oa:flowLayout>
+      <oa:spacer id="item211" height="20"/>
+      <oa:hideShow id="region111" disclosedText="CDH - Search Results" undisclosedText="CDH - Search Results" disclosed="true">
+         <ui:contents>
+            <oa:table id="CdhSearchV" width="100%">
+               <ui:contents>
+                  <oa:link id="CustomerID1" viewName="CdhSearchV" viewAttr="CustomerID" destination="OA.jsp?page=/od/oracle/apps/xxcrm/Cust360/webui/Customer360PG&amp;CustID={@CustomerID}" text="Customer ID"/>
+                  <oa:messageStyledText id="BusinessName1" dataType="VARCHAR2" prompt="BusinessName" viewName="CdhSearchV" viewAttr="BusinessName"/>
+                  <oa:messageStyledText id="StreetAddress11" dataType="VARCHAR2" prompt="StreetAddress1" viewName="CdhSearchV" viewAttr="StreetAddress1"/>
+                  <oa:messageStyledText id="StreetAddress21" dataType="VARCHAR2" prompt="StreetAddress2" viewName="CdhSearchV" viewAttr="StreetAddress2"/>
+                  <oa:messageStyledText id="City1" dataType="VARCHAR2" prompt="City" viewName="CdhSearchV" viewAttr="City"/>
+                  <oa:messageStyledText id="State1" dataType="VARCHAR2" prompt="State" viewName="CdhSearchV" viewAttr="State"/>
+                  <oa:messageStyledText id="Province1" dataType="VARCHAR2" prompt="Province" viewName="CdhSearchV" viewAttr="Province"/>
+                  <oa:messageStyledText id="ZipCode1" dataType="VARCHAR2" prompt="ZipCode" viewName="CdhSearchV" viewAttr="ZipCode"/>
+                  <oa:messageStyledText id="Country1" dataType="VARCHAR2" prompt="Country" viewName="CdhSearchV" viewAttr="Country"/>
+               </ui:contents>
+            </oa:table>
+         </ui:contents>
+      </oa:hideShow>
+      <oa:spacer id="item1" height="20"/>
+      <oa:hideShow id="region11" disclosedText="AOPS - Search Results" undisclosedText="AOPS - Search Results" disclosed="true">
+         <ui:contents>
+            <oa:table id="AopsSearchV" width="100%">
+               <ui:contents>
+                  <oa:link id="CustomerID" viewName="AopsSearchV" viewAttr="CustomerID" destination="OA.jsp?page=/od/oracle/apps/xxcrm/Cust360/webui/Customer360PG&amp;CustID={@CustomerID}" text="Customer ID"/>
+                  <oa:messageStyledText id="BusinessName" dataType="VARCHAR2" prompt="BusinessName" viewName="AopsSearchV" viewAttr="BusinessName"/>
+                  <oa:messageStyledText id="StreetAddress1" dataType="VARCHAR2" prompt="StreetAddress1" viewName="AopsSearchV" viewAttr="StreetAddress1"/>
+                  <oa:messageStyledText id="StreetAddress2" dataType="VARCHAR2" prompt="StreetAddress2" viewName="AopsSearchV" viewAttr="StreetAddress2"/>
+                  <oa:messageStyledText id="City" dataType="VARCHAR2" prompt="City" viewName="AopsSearchV" viewAttr="City"/>
+                  <oa:messageStyledText id="State" dataType="VARCHAR2" prompt="State" viewName="AopsSearchV" viewAttr="State"/>
+                  <oa:messageStyledText id="Province" dataType="VARCHAR2" prompt="Province" viewName="AopsSearchV" viewAttr="Province"/>
+                  <oa:messageStyledText id="ZipCode" dataType="VARCHAR2" prompt="ZipCode" viewName="AopsSearchV" viewAttr="ZipCode"/>
+                  <oa:messageStyledText id="Country" dataType="VARCHAR2" prompt="Country" viewName="AopsSearchV" viewAttr="Country"/>
+               </ui:contents>
+            </oa:table>
+         </ui:contents>
+      </oa:hideShow>
+      <oa:spacer id="item2" height="20"/>
+      <oa:hideShow id="region113" disclosedText="AOPS - Search Results (Phone)" undisclosedText="AOPS - Search Results (Phone)" disclosed="true">
+         <ui:contents>
+            <oa:table id="SearchByPhoneV" width="100%">
+               <ui:contents>
+                  <oa:link id="CustomerId" viewName="SearchByPhoneV" viewAttr="CustomerId" destination="OA.jsp?page=/od/oracle/apps/xxcrm/Cust360/webui/Customer360PG&amp;CustID={@CustomerID}" text="Customer ID"/>
+                  <oa:messageStyledText id="BusinessName2" dataType="VARCHAR2" prompt="BusinessName" viewName="SearchByPhoneV" viewAttr="BusinessName"/>
+                  <oa:messageStyledText id="StreetAddress12" dataType="VARCHAR2" prompt="StreetAddress1" viewName="SearchByPhoneV" viewAttr="StreetAddress1"/>
+                  <oa:messageStyledText id="StreetAddress22" dataType="VARCHAR2" prompt="StreetAddress2" viewName="SearchByPhoneV" viewAttr="StreetAddress2"/>
+                  <oa:messageStyledText id="City2" dataType="VARCHAR2" prompt="City" viewName="SearchByPhoneV" viewAttr="City"/>
+                  <oa:messageStyledText id="State2" dataType="VARCHAR2" prompt="State" viewName="SearchByPhoneV" viewAttr="State"/>
+                  <oa:messageStyledText id="Province2" dataType="VARCHAR2" prompt="Province" viewName="SearchByPhoneV" viewAttr="Province"/>
+                  <oa:messageStyledText id="ZipCode2" dataType="VARCHAR2" prompt="ZipCode" viewName="SearchByPhoneV" viewAttr="ZipCode"/>
+                  <oa:messageStyledText id="Country2" dataType="VARCHAR2" prompt="Country" viewName="SearchByPhoneV" viewAttr="Country"/>
+               </ui:contents>
+            </oa:table>
+         </ui:contents>
+      </oa:hideShow>
+      <oa:spacer id="item21" height="20"/>
+      <oa:hideShow id="region112" disclosedText="Loyalty - Search Results" undisclosedText="Loyalty - Search Results" disclosed="true">
+         <ui:contents>
+            <oa:table id="LoySearchV" width="100%">
+               <ui:contents>
+                  <oa:link id="MemberId" viewName="LoySearchV" viewAttr="MemberId" destination="OA.jsp?page=/od/oracle/apps/xxcrm/Cust360/webui/Customer360PG&amp;LoyID={@MemberId}" text="Member ID"/>
+                  <oa:messageStyledText id="FirstName" dataType="VARCHAR2" prompt="FirstName" viewName="LoySearchV" viewAttr="FirstName"/>
+                  <oa:messageStyledText id="LastName" dataType="VARCHAR2" prompt="LastName" viewName="LoySearchV" viewAttr="LastName"/>
+                  <oa:messageStyledText id="Company" dataType="VARCHAR2" prompt="Company" viewName="LoySearchV" viewAttr="Company"/>
+                  <oa:messageStyledText id="Address1" dataType="VARCHAR2" prompt="Address1" viewName="LoySearchV" viewAttr="Address1"/>
+                  <oa:messageStyledText id="Address2" dataType="VARCHAR2" prompt="Address2" viewName="LoySearchV" viewAttr="Address2"/>
+                  <oa:messageStyledText id="City3" dataType="VARCHAR2" prompt="City" viewName="LoySearchV" viewAttr="City"/>
+                  <oa:messageStyledText id="State3" dataType="VARCHAR2" prompt="State" viewName="LoySearchV" viewAttr="State"/>
+                  <oa:messageStyledText id="ZipCode3" dataType="VARCHAR2" prompt="ZipCode" viewName="LoySearchV" viewAttr="ZipCode"/>
+                  <oa:messageStyledText id="Country3" dataType="VARCHAR2" prompt="Country" viewName="LoySearchV" viewAttr="Country"/>
+                  <oa:messageStyledText id="Phone" dataType="VARCHAR2" prompt="Phone" viewName="LoySearchV" viewAttr="Phone"/>
+                  <oa:messageStyledText id="Email" dataType="VARCHAR2" prompt="Email" viewName="LoySearchV" viewAttr="Email"/>
+                  <oa:messageStyledText id="AddedDate" dataType="VARCHAR2" prompt="AddedDate" viewName="LoySearchV" viewAttr="AddedDate"/>
+                  <oa:messageStyledText id="ActivatedDate" dataType="VARCHAR2" prompt="ActivatedDate" viewName="LoySearchV" viewAttr="ActivatedDate"/>
+               </ui:contents>
+            </oa:table>
+         </ui:contents>
+      </oa:hideShow>
+   </ui:contents>
+</oa:pageLayout>

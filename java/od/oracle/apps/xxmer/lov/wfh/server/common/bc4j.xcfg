@@ -1,0 +1,28 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BC4JConfig>
+   <AppModuleConfigBag>
+      <AppModuleConfig name="WorkflowHierarchyLovAMLocal">
+         <AppModuleJndiName>od.oracle.apps.xxmer.lov.wfh.server.WorkflowHierarchyLovAM</AppModuleJndiName>
+         <DeployPlatform>LOCAL</DeployPlatform>
+         <JDBCName>GSIDEV03</JDBCName>
+         <ApplicationName>od.oracle.apps.xxmer.lov.wfh.server.WorkflowHierarchyLovAM</ApplicationName>
+         <jbo.project>WorkflowHierarchy</jbo.project>
+      </AppModuleConfig>
+   </AppModuleConfigBag>
+   <ConnectionDefinition name="GSIDEV03">
+      <ENTRY name="JDBC_PORT" value="1544"/>
+      <ENTRY name="ConnectionType" value="JDBC"/>
+      <ENTRY name="HOSTNAME" value="choldbr18d.na.odcorp.net"/>
+      <ENTRY name="DeployPassword" value="true"/>
+      <ENTRY name="user" value="apps"/>
+      <ENTRY name="ConnectionName" value="GSIDEV03"/>
+      <ENTRY name="SID" value="GSIDEV03"/>
+      <ENTRY name="Role" value="normal"/>
+      <ENTRY name="password">
+         <![CDATA[appsp2p]]>
+      </ENTRY>
+      <ENTRY name="JdbcDriver" value="oracle.jdbc.driver.OracleDriver"/>
+      <ENTRY name="ORACLE_JDBC_TYPE" value="thin"/>
+      <ENTRY name="DeployPassword" value="true"/>
+   </ConnectionDefinition>
+</BC4JConfig>

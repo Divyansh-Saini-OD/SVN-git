@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="NewPlannerVO"
+   SelectList="PlannerHierarchyEO.PLANNER_ID, 
+       PlannerHierarchyEO.MANAGER_ID, 
+       PlannerHierarchyEO.ORG_ID"
+   FromList="XX_WFH_PLANNER_HIERARCHY_ALL PlannerHierarchyEO"
+   BindingStyle="Oracle"
+   CustomQuery="false"
+   RowClass="od.oracle.apps.xxmer.wfh.server.NewPlannerVORowImpl"
+   ComponentClass="od.oracle.apps.xxmer.wfh.server.NewPlannerVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <EntityUsage
+      Name="PlannerHierarchyEO"
+      Entity="od.oracle.apps.xxmer.schema.wfh.server.PlannerHierarchyEO" >
+      <DesignTime>
+         <Attr Name="_EntireObjectTable" Value="false" />
+         <Attr Name="_queryClause" Value="false" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="PlannerId"
+      IsNotNull="true"
+      EntityAttrName="PlannerId"
+      EntityUsage="PlannerHierarchyEO"
+      AliasName="PLANNER_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ManagerId"
+      EntityAttrName="ManagerId"
+      EntityUsage="PlannerHierarchyEO"
+      AliasName="MANAGER_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrgId"
+      IsNotNull="true"
+      EntityAttrName="OrgId"
+      EntityUsage="PlannerHierarchyEO"
+      AliasName="ORG_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+</ViewObject>

@@ -1,0 +1,42 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.6.0.0_64" xml:lang="en-US" customizes="/oracle/apps/icx/por/reqmgmt/webui/ReqDetailsPG" xmlns:oa="http://xmlns.oracle.com/oa">
+   <modifications>
+      <move element="LineNumFlow" after="ClinSlinICon"/>
+      <move element="LineNumDisplayFlow" after="LineNumFlow"/>
+      <move element="InfoFlag" after="LineNumDisplayFlow"/>
+      <insert before="InfoFlag">
+         <oa:messageStyledText id="xItemName" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" popupEnabled="false" popupRenderEvent="onClick" prompt="Item Number" queryable="false" rendered="true" required="no" scope="." selectiveSearchCriteria="false" serverUnvalidated="false" sortState="no" tipType="none" totalValue="false" userCustomizable="false" vAlign="middle" viewAttr="ItemName" viewName="ReqDetailsVO" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <move element="ItemDescFlow" after="InfoFlag"/>
+      <move element="NeedBy" after="ItemDescFlow"/>
+      <move element="POPStartDate" after="NeedBy"/>
+      <move element="POPEndDate" after="POPStartDate"/>
+      <move element="DeliverToLocation" after="POPEndDate"/>
+      <move element="ContractType" after="DeliverToLocation"/>
+      <move element="ContractorName" after="ContractType"/>
+      <move element="ContractorStatus" after="ContractorName"/>
+      <move element="Unit" after="ContractorStatus"/>
+      <move element="QuantitySwitcher" after="Unit"/>
+      <move element="QuantityDelivered" after="QuantitySwitcher"/>
+      <move element="QtyCancSwitcher" after="QuantityDelivered"/>
+      <move element="OpenQuantity" after="QtyCancSwitcher"/>
+      <move element="TxnPriceSwitcher" after="OpenQuantity"/>
+      <move element="UnitPrice" after="TxnPriceSwitcher"/>
+      <move element="TrxnAmountFlow" after="UnitPrice"/>
+      <move element="FunctionalAmount" after="TrxnAmountFlow"/>
+      <move element="OptionControls" after="FunctionalAmount"/>
+      <move element="Details" after="OptionControls"/>
+      <move element="ItemInfoLabelRN" after="Details"/>
+      <move element="LineStatus" after="ItemInfoLabelRN"/>
+      <move element="OrderType" after="LineStatus"/>
+      <move element="OrderNumberSwitcher" after="OrderType"/>
+      <move element="PurchasingOrg" after="OrderNumberSwitcher"/>
+      <move element="SourceTypeCode" after="PurchasingOrg"/>
+      <move element="OrderStatusSwitcher" after="SourceTypeCode"/>
+      <move element="Buyer" after="OrderStatusSwitcher"/>
+      <move element="SupplierConfigID" after="Buyer"/>
+      <move element="ParentReqLineId" after="SupplierConfigID"/>
+      <move element="GroupLineId" after="ParentReqLineId"/>
+      <move element="ClmMIPRObligationType" after="GroupLineId"/>
+   </modifications>
+</customization>

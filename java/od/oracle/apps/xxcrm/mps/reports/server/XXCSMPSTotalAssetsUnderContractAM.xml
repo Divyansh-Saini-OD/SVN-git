@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<AppModule
+   Name="XXCSMPSTotalAssetsUnderContractAM"
+   ComponentClass="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSTotalAssetsUnderContractAMImpl"
+   LoadComponentsLazily="true" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.14.00" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="XXCSMPSTotalAssetsUnderContractVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSTotalAssetsUnderContractVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="XXCSMPSProgramTypeVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSProgramTypeVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="XXCSMPSPartyNameVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.mps.reports.lov.server.XXCSMPSPartyNameVO" >
+   </ViewUsage>
+</AppModule>

@@ -1,0 +1,1422 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!-- $Header: ODContactPointEO.xml $ -->
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+
+<Entity
+   Name="ODContactPointEO"
+   DBObjectType="table"
+   DBObjectName="HZ_CONTACT_POINTS"
+   AliasName="ODContactPointEO"
+   BindingStyle="Oracle"
+   UseGlueCode="false"
+   CodeGenFlag="79"
+   RowClass="od.oracle.apps.xxcrm.asn.partysite.schema.server.ODContactPointEOImpl"
+   DefClass="oracle.apps.fnd.framework.server.OAEntityDefImpl"
+   CollClass="oracle.apps.fnd.framework.server.OAEntityCache" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <AttrArray Name="_publishEvents">
+      </AttrArray>
+   </DesignTime>
+   <Attribute
+      Name="ContactPointId"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CONTACT_POINT_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_CONTACT_POINTS"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ContactPointType"
+      IsNotNull="true"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="CONTACT_POINT_TYPE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Status"
+      IsNotNull="true"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="STATUS"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="OwnerTableName"
+      IsNotNull="true"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="OWNER_TABLE_NAME"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="OwnerTableId"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="OWNER_TABLE_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PrimaryFlag"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnName="PRIMARY_FLAG"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="OrigSystemReference"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="ORIG_SYSTEM_REFERENCE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateDate"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="LAST_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdatedBy"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreationDate"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="CREATION_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreatedBy"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CREATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateLogin"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATE_LOGIN"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="WhUpdateDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="WH_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="RequestId"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="REQUEST_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ProgramApplicationId"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PROGRAM_APPLICATION_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ProgramId"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PROGRAM_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ProgramUpdateDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="PROGRAM_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="AttributeCategory"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE_CATEGORY"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute1"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE1"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute2"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE2"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute3"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE3"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute4"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE4"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute5"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE5"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute6"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE6"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute7"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE7"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute8"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE8"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute9"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE9"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute10"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE10"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute11"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE11"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute12"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE12"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute13"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE13"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute14"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE14"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute15"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE15"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute16"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE16"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute17"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE17"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute18"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE18"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute19"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE19"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute20"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE20"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttributeCategory"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE_CATEGORY"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute1"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE1"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute2"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE2"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute3"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE3"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute4"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE4"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute5"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE5"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute6"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE6"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute7"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE7"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute8"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE8"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute9"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE9"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute10"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE10"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute11"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE11"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute12"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE12"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute13"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE13"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute14"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE14"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute15"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE15"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute16"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE16"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute17"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE17"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute18"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE18"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute19"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE19"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="GlobalAttribute20"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="GLOBAL_ATTRIBUTE20"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EdiTransactionHandling"
+      Precision="25"
+      Type="java.lang.String"
+      ColumnName="EDI_TRANSACTION_HANDLING"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="25" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EdiIdNumber"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="EDI_ID_NUMBER"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EdiPaymentMethod"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="EDI_PAYMENT_METHOD"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EdiPaymentFormat"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="EDI_PAYMENT_FORMAT"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EdiRemittanceMethod"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="EDI_REMITTANCE_METHOD"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EdiRemittanceInstruction"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="EDI_REMITTANCE_INSTRUCTION"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EdiTpHeaderId"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="EDI_TP_HEADER_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EdiEceTpLocationCode"
+      Precision="40"
+      Type="java.lang.String"
+      ColumnName="EDI_ECE_TP_LOCATION_CODE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EmailFormat"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="EMAIL_FORMAT"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EmailAddress"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnName="EMAIL_ADDRESS"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="BestTimeToContactStart"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="BEST_TIME_TO_CONTACT_START"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="BestTimeToContactEnd"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="BEST_TIME_TO_CONTACT_END"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PhoneCallingCalendar"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="PHONE_CALLING_CALENDAR"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ContactAttempts"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CONTACT_ATTEMPTS"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Contacts"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CONTACTS"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DeclaredBusinessPhoneFlag"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnName="DECLARED_BUSINESS_PHONE_FLAG"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DoNotUseFlag"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnName="DO_NOT_USE_FLAG"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DoNotUseReason"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnName="DO_NOT_USE_REASON"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastContactDtTime"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="LAST_CONTACT_DT_TIME"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PhonePreferredOrder"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PHONE_PREFERRED_ORDER"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PriorityOfUseCode"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="PRIORITY_OF_USE_CODE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TelephoneType"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="TELEPHONE_TYPE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TimeZone"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="TIME_ZONE"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PhoneTouchToneTypeFlag"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnName="PHONE_TOUCH_TONE_TYPE_FLAG"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PhoneAreaCode"
+      Precision="10"
+      Type="java.lang.String"
+      ColumnName="PHONE_AREA_CODE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="10" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PhoneCountryCode"
+      Precision="10"
+      Type="java.lang.String"
+      ColumnName="PHONE_COUNTRY_CODE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="10" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PhoneNumber"
+      Precision="40"
+      Type="java.lang.String"
+      ColumnName="PHONE_NUMBER"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PhoneExtension"
+      Precision="20"
+      Type="java.lang.String"
+      ColumnName="PHONE_EXTENSION"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="20" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PhoneLineType"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="PHONE_LINE_TYPE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TelexNumber"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnName="TELEX_NUMBER"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="WebType"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnName="WEB_TYPE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Url"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnName="URL"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ContentSourceType"
+      IsNotNull="true"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="CONTENT_SOURCE_TYPE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="RawPhoneNumber"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnName="RAW_PHONE_NUMBER"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ObjectVersionNumber"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="OBJECT_VERSION_NUMBER"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreatedByModule"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="CREATED_BY_MODULE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ApplicationId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="APPLICATION_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TimezoneId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="TIMEZONE_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ContactPointPurpose"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="CONTACT_POINT_PURPOSE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PrimaryByPurpose"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="PRIMARY_BY_PURPOSE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TransposedPhoneNumber"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnName="TRANSPOSED_PHONE_NUMBER"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EftTransmissionProgramId"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="EFT_TRANSMISSION_PROGRAM_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EftPrintingProgramId"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="EFT_PRINTING_PROGRAM_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EftUserNumber"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="EFT_USER_NUMBER"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EftSwiftCode"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="EFT_SWIFT_CODE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ActualContentSource"
+      IsNotNull="true"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="ACTUAL_CONTENT_SOURCE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="HZ_CONTACT_POINTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Key
+      Name="SysC00134801" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.asn.partysite.schema.server.ODContactPointEO.ActualContentSource" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00134801" />
+         <Attr Name="_checkCondition" Value="&#34;ACTUAL_CONTENT_SOURCE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC003309" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.asn.partysite.schema.server.ODContactPointEO.ContactPointType" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C003309" />
+         <Attr Name="_checkCondition" Value="&#34;CONTACT_POINT_TYPE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC003311" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.asn.partysite.schema.server.ODContactPointEO.OwnerTableName" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C003311" />
+         <Attr Name="_checkCondition" Value="&#34;OWNER_TABLE_NAME&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC003313" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.asn.partysite.schema.server.ODContactPointEO.LastUpdateDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C003313" />
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATE_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC003315" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.asn.partysite.schema.server.ODContactPointEO.CreationDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C003315" />
+         <Attr Name="_checkCondition" Value="&#34;CREATION_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC003317" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.asn.partysite.schema.server.ODContactPointEO.ContentSourceType" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C003317" />
+         <Attr Name="_checkCondition" Value="&#34;CONTENT_SOURCE_TYPE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC003308" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.asn.partysite.schema.server.ODContactPointEO.ContactPointId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C003308" />
+         <Attr Name="_checkCondition" Value="&#34;CONTACT_POINT_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC003312" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.asn.partysite.schema.server.ODContactPointEO.OwnerTableId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C003312" />
+         <Attr Name="_checkCondition" Value="&#34;OWNER_TABLE_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC003316" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.asn.partysite.schema.server.ODContactPointEO.CreatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C003316" />
+         <Attr Name="_checkCondition" Value="&#34;CREATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC003310" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.asn.partysite.schema.server.ODContactPointEO.Status" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C003310" />
+         <Attr Name="_checkCondition" Value="&#34;STATUS&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="HzContactPointsPk" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.asn.partysite.schema.server.ODContactPointEO.ContactPointId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="HZ_CONTACT_POINTS_PK" />
+         <Attr Name="_isPrimary" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC003314" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxcrm.asn.partysite.schema.server.ODContactPointEO.LastUpdatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C003314" />
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+</Entity>

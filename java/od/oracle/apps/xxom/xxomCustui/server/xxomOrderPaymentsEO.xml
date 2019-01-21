@@ -1,0 +1,677 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+
+<Entity
+   Name="xxomOrderPaymentsEO"
+   DBObjectType="table"
+   DBObjectName="OE_PAYMENTS"
+   AliasName="xxomOrderPaymentsEO"
+   BindingStyle="Oracle"
+   UseGlueCode="false"
+   CodeGenFlag="71"
+   RowClass="od.oracle.apps.xxom.xxomCustui.server.xxomOrderPaymentsEOImpl"
+   DefClass="oracle.apps.fnd.framework.server.OAEntityDefImpl"
+   CollClass="oracle.apps.fnd.framework.server.OAEntityCache" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <AttrArray Name="_publishEvents">
+      </AttrArray>
+   </DesignTime>
+   <Attribute
+      Name="PaymentTrxId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PAYMENT_TRX_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_PAYMENTS"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CommitmentAppliedAmount"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="COMMITMENT_APPLIED_AMOUNT"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CommitmentInterfacedAmount"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="COMMITMENT_INTERFACED_AMOUNT"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PaymentLevelCode"
+      IsNotNull="true"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="PAYMENT_LEVEL_CODE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="HeaderId"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="HEADER_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LineId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LINE_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreationDate"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="CREATION_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreatedBy"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CREATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateDate"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="LAST_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdatedBy"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateLogin"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATE_LOGIN"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="RequestId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="REQUEST_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ProgramApplicationId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PROGRAM_APPLICATION_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ProgramId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PROGRAM_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ProgramUpdateDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="PROGRAM_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Context"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="CONTEXT"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute1"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE1"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute2"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE2"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute3"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE3"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute4"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE4"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute5"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE5"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute6"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE6"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute7"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE7"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute8"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE8"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute9"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE9"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute10"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE10"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute11"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE11"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute12"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE12"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute13"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE13"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute14"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE14"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute15"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE15"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PaymentTypeCode"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="PAYMENT_TYPE_CODE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreditCardCode"
+      Precision="80"
+      Type="java.lang.String"
+      ColumnName="CREDIT_CARD_CODE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreditCardNumber"
+      Precision="80"
+      Type="java.lang.String"
+      ColumnName="CREDIT_CARD_NUMBER"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreditCardHolderName"
+      Precision="80"
+      Type="java.lang.String"
+      ColumnName="CREDIT_CARD_HOLDER_NAME"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreditCardExpirationDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="CREDIT_CARD_EXPIRATION_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PrepaidAmount"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PREPAID_AMOUNT"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PaymentSetId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PAYMENT_SET_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ReceiptMethodId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="RECEIPT_METHOD_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PaymentCollectionEvent"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="PAYMENT_COLLECTION_EVENT"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreditCardApprovalCode"
+      Precision="80"
+      Type="java.lang.String"
+      ColumnName="CREDIT_CARD_APPROVAL_CODE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreditCardApprovalDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="CREDIT_CARD_APPROVAL_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TangibleId"
+      Precision="80"
+      Type="java.lang.String"
+      ColumnName="TANGIBLE_ID"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CheckNumber"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnName="CHECK_NUMBER"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PaymentAmount"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PAYMENT_AMOUNT"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PaymentNumber"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PAYMENT_NUMBER"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LockControl"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LOCK_CONTROL"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="OrigSysPaymentRef"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnName="ORIG_SYS_PAYMENT_REF"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DeferPaymentProcessingFlag"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnName="DEFER_PAYMENT_PROCESSING_FLAG"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="OE_PAYMENTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <AccessorAttribute
+      Name="xxomOrderSearchEO"
+      Association="od.oracle.apps.xxom.xxomCustui.server.xxomOrderPaymentsAO"
+      AssociationEnd="od.oracle.apps.xxom.xxomCustui.server.xxomOrderPaymentsAO.xxomOrderSearchEO"
+      AssociationOtherEnd="od.oracle.apps.xxom.xxomCustui.server.xxomOrderPaymentsAO.xxomOrderPaymentsEO"
+      Type="od.oracle.apps.xxom.xxomCustui.server.xxomOrderSearchEOImpl" >
+   </AccessorAttribute>
+   <Key
+      Name="SysC0084703" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxom.xxomCustui.server.xxomOrderPaymentsEO.HeaderId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C0084703" />
+         <Attr Name="_checkCondition" Value="&#34;HEADER_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC0084705" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxom.xxomCustui.server.xxomOrderPaymentsEO.CreatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C0084705" />
+         <Attr Name="_checkCondition" Value="&#34;CREATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC0084707" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxom.xxomCustui.server.xxomOrderPaymentsEO.LastUpdatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C0084707" />
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC0084702" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxom.xxomCustui.server.xxomOrderPaymentsEO.PaymentLevelCode" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C0084702" />
+         <Attr Name="_checkCondition" Value="&#34;PAYMENT_LEVEL_CODE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC0084706" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxom.xxomCustui.server.xxomOrderPaymentsEO.LastUpdateDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C0084706" />
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATE_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC0084704" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxom.xxomCustui.server.xxomOrderPaymentsEO.CreationDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C0084704" />
+         <Attr Name="_checkCondition" Value="&#34;CREATION_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="XxomorderpaymentseoPrimaryKey" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxom.xxomCustui.server.xxomOrderPaymentsEO.PaymentTrxId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="XXOMORDERPAYMENTSEO_PRIMARY_KE" />
+         <Attr Name="_isPrimary" Value="true" />
+      </DesignTime>
+   </Key>
+</Entity>

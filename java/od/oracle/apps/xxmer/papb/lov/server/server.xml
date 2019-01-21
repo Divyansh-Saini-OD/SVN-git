@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE JboPackage SYSTEM "jbo_03_01.dtd">
+
+<JboPackage
+   Name="server"
+   SeparateXMLFiles="true"
+   PackageName="od.oracle.apps.xxmer.papb.lov.server" >
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_ejbPackage" Value="false" />
+   </DesignTime>
+   <Containee
+      Name="PAPBLOVAM"
+      FullName="od.oracle.apps.xxmer.papb.lov.server.PAPBLOVAM"
+      ObjectType="AppModule" >
+   </Containee>
+   <Containee
+      Name="BrandLOVVO"
+      FullName="od.oracle.apps.xxmer.papb.lov.server.BrandLOVVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="SrcAgentLovVO"
+      FullName="od.oracle.apps.xxmer.papb.lov.server.SrcAgentLovVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="TrackerTypeLovVO"
+      FullName="od.oracle.apps.xxmer.papb.lov.server.TrackerTypeLovVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="TrackerYearLovVO"
+      FullName="od.oracle.apps.xxmer.papb.lov.server.TrackerYearLovVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="SubClassLovVO"
+      FullName="od.oracle.apps.xxmer.papb.lov.server.SubClassLovVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ClassLovVO"
+      FullName="od.oracle.apps.xxmer.papb.lov.server.ClassLovVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="DeptLovVO"
+      FullName="od.oracle.apps.xxmer.papb.lov.server.DeptLovVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="DivisionLovVO"
+      FullName="od.oracle.apps.xxmer.papb.lov.server.DivisionLovVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ProjectNumLovVO"
+      FullName="od.oracle.apps.xxmer.papb.lov.server.ProjectNumLovVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="DomesticMerchantLovVO"
+      FullName="od.oracle.apps.xxmer.papb.lov.server.DomesticMerchantLovVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="DIMerchantLovVO"
+      FullName="od.oracle.apps.xxmer.papb.lov.server.DIMerchantLovVO"
+      ObjectType="ViewObject" >
+   </Containee>
+</JboPackage>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE JboPackage SYSTEM "jbo_03_01.dtd">
+
+<JboPackage
+   Name="server"
+   SeparateXMLFiles="true"
+   PackageName="od.oracle.apps.xxmer.lov.wfh.server" >
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_ejbPackage" Value="false" />
+   </DesignTime>
+   <Containee
+      Name="WorkflowHierarchyLovAM"
+      FullName="od.oracle.apps.xxmer.lov.wfh.server.WorkflowHierarchyLovAM"
+      ObjectType="AppModule" >
+   </Containee>
+   <Containee
+      Name="AvailablePlannerVO"
+      FullName="od.oracle.apps.xxmer.lov.wfh.server.AvailablePlannerVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="ExistingPlannerVO"
+      FullName="od.oracle.apps.xxmer.lov.wfh.server.ExistingPlannerVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="LeafPlannerVO"
+      FullName="od.oracle.apps.xxmer.lov.wfh.server.LeafPlannerVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="MerchClassVO"
+      FullName="od.oracle.apps.xxmer.lov.wfh.server.MerchClassVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="VendorVO"
+      FullName="od.oracle.apps.xxmer.lov.wfh.server.VendorVO"
+      ObjectType="ViewObject" >
+   </Containee>
+</JboPackage>

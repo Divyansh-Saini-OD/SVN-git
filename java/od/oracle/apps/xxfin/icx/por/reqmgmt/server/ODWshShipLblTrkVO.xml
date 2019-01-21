@@ -1,0 +1,464 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODWshShipLblTrkVO"
+   OrderBy="TRACKING_ID"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxfin.icx.por.reqmgmt.server.ODWshShipLblTrkVOImpl"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT xwslt.TRACKING_ID ,
+  xwslt.ORDER_NBR ,
+  xwslt.ORDER_DT ,
+  xwslt.DELIVERY_DT ,
+  xwslt.DELIVERY_ID ,
+  xwslt.TRIP_ID ,
+  xwslt.CONTAINER_ID ,
+  xwslt.LANE_NBR ,
+  src_loc_hl.location_code source_location_code ,
+  ship_to_loc_hl.location_code ship_to_location_code ,
+  xwslt.SCAN_IN_TMSTMP ,
+  xwslt.SCAN_OUT_TMSTMP ,
+  xwslt.ILP ,
+  xwslt.STATUSCODE ,
+  xwslt.STATUSDESC ,
+  xwslt.ATTRIBUTE1 ,
+  xwslt.ATTRIBUTE2 ,
+  xwslt.ATTRIBUTE3 ,
+  xwslt.ATTRIBUTE4 ,
+  xwslt.ATTRIBUTE5 ,
+  xwslt.ATTRIBUTE_CATEGORY ,
+  xwslt.CREATED_BY ,
+  xwslt.CREATION_DATE ,
+  xwslt.LAST_UPDATED_BY ,
+  xwslt.LAST_UPDATE_DATE ,
+  xwslt.LAST_UPDATE_LOGIN ,
+  xwslt.DELIVERY_DETAIL_ID
+FROM XX_WSH_SHIP_LBL_TRACKING xwslt ,
+  HR_LOCATIONS src_loc_hl ,
+  hr_locations ship_to_loc_hl ,
+  oe_order_headers_all OOH ,
+  hz_cust_accounts HCA ,
+  hz_party_sites HPS ,
+  hz_cust_acct_sites_all HCASA ,
+  hz_cust_site_uses_all HCSUA ,
+  po_location_associations_all PLAA
+WHERE 1                        =1
+AND src_loc_hl.location_id     = xwslt.src_loc_id
+AND OOH.order_number           = xwslt.order_nbr
+AND HPS.party_id               = HCA.party_id
+AND HCASA.party_site_id        = HPS.party_site_id
+AND HCSUA.cust_acct_site_id    = HCASA.cust_acct_site_id
+AND PLAA.site_use_id           = HCSUA.site_use_id
+AND ship_to_loc_hl.location_id = PLAA.location_id
+AND HCSUA.site_use_code        = 'SHIP_TO'
+AND HCA.cust_account_id        = OOH.sold_to_org_id
+AND HPS.location_id            = xwslt.LOC_ID
+AND HCASA.cust_account_id      = OOH.sold_to_org_id
+AND HCASA.org_id               = FND_PROFILE.VALUE('ORG_ID')
+AND PLAA.org_id                = FND_PROFILE.VALUE('ORG_ID')
+AND xwslt.ORDER_NBR            = :1
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isExpertMode" Value="true" />
+      <Attr Name="_version" Value="10.1.3.43.6" />
+      <Attr Name="_codeGenFlag2" Value="Access|Coll|VarAccess" />
+   </DesignTime>
+   <ViewAttribute
+      Name="TrackingId"
+      IsUpdateable="false"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="TRACKING_ID"
+      Expression="TRACKING_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrderNbr"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="12"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ORDER_NBR"
+      Expression="ORDER_NBR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="12" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrderDt"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      AliasName="ORDER_DT"
+      Expression="ORDER_DT"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeliveryDt"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      AliasName="DELIVERY_DT"
+      Expression="DELIVERY_DT"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeliveryId"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="DELIVERY_ID"
+      Expression="DELIVERY_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TripId"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="20"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="TRIP_ID"
+      Expression="TRIP_ID"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="20" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContainerId"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="250"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CONTAINER_ID"
+      Expression="CONTAINER_ID"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="250" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LaneNbr"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="250"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="LANE_NBR"
+      Expression="LANE_NBR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="250" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SrcLocId"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="SRC_LOC_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LocId"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="LOC_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SourceLocationCode"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SOURCE_LOCATION_CODE"
+      Expression="SOURCE_LOCATION_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToLocationCode"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SHIP_TO_LOCATION_CODE"
+      Expression="SHIP_TO_LOCATION_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ScanInTmstmp"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="TIMESTAMP"
+      AliasName="SCAN_IN_TMSTMP"
+      Expression="SCAN_IN_TMSTMP"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="11" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ScanOutTmstmp"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="TIMESTAMP"
+      AliasName="SCAN_OUT_TMSTMP"
+      Expression="SCAN_OUT_TMSTMP"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="11" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Ilp"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="250"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ILP"
+      Expression="ILP"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="250" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Statuscode"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="25"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="STATUSCODE"
+      Expression="STATUSCODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="25" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Statusdesc"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="STATUSDESC"
+      Expression="STATUSDESC"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute1"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ATTRIBUTE1"
+      Expression="ATTRIBUTE1"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute2"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ATTRIBUTE2"
+      Expression="ATTRIBUTE2"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute3"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ATTRIBUTE3"
+      Expression="ATTRIBUTE3"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute4"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ATTRIBUTE4"
+      Expression="ATTRIBUTE4"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute5"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ATTRIBUTE5"
+      Expression="ATTRIBUTE5"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AttributeCategory"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ATTRIBUTE_CATEGORY"
+      Expression="ATTRIBUTE_CATEGORY"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="CREATED_BY"
+      Expression="CREATED_BY"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      AliasName="CREATION_DATE"
+      Expression="CREATION_DATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdatedBy"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="LAST_UPDATED_BY"
+      Expression="LAST_UPDATED_BY"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateDate"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      AliasName="LAST_UPDATE_DATE"
+      Expression="LAST_UPDATE_DATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateLogin"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="LAST_UPDATE_LOGIN"
+      Expression="LAST_UPDATE_LOGIN"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeliveryDetailId"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="DELIVERY_DETAIL_ID"
+      Expression="DELIVERY_DETAIL_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <AttrArray Name="KeyAttributes">
+      <Item Value="TrackingId" />
+   </AttrArray>
+</ViewObject>

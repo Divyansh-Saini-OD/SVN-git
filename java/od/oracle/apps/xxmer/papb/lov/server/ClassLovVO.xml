@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ClassLovVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxmer.papb.lov.server.ClassLovVORowImpl"
+   ComponentClass="oracle.apps.fnd.framework.server.OAViewObjectImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select ffv.flex_value class_no,ffv.description 
+  from fnd_flex_value_sets ffvs,
+       fnd_flex_values_vl ffv
+  where ffvs.flex_value_set_id = ffv.flex_value_set_id
+    and ffvs.flex_value_set_name = 'XX_GI_CLASS_VS'   
+and ffv.enabled_flag = 'Y'
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_CodeGenFlagNew" Value="4" />
+   </DesignTime>
+   <ViewAttribute
+      Name="ClassNo"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="CLASS_NO"
+      ColumnType="VARCHAR2"
+      Expression="CLASS_NO"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Description"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      AliasName="DESCRIPTION"
+      ColumnType="VARCHAR2"
+      Expression="DESCRIPTION"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

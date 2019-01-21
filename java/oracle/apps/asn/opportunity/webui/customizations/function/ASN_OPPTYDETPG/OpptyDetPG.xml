@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8'?> 
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.5.4.89_560" xml:lang="en-US" customizes="/oracle/apps/asn/opportunity/webui/OpptyDetPG" developerMode="true" 
+xmlns:oa="http://xmlns.oracle.com/oa"> 
+<modifications> 
+<modify element="ASNNotesRN.ASNNoteStatusTable" rendered="false"/> 
+<modify element="ASNSubtabNoteRN.ASNNoteStatusRow" rendered="false"/> 
+<modify element="ASNOpptyDetFrcstAmt" prompt="Opp"/> 
+<modify element="ASNSubtabPrdtTable.ASNPrdtQuanCol" rendered="false"/> 
+<modify element="ASNSTAccCol" rendered="false"/> 
+<modify element="ASNPrdtUomCol" rendered="false"/> 
+<modify element="ASNQotPrpHdrLnk" rendered="false"/> 
+<modify element="ASNInfoHdrLnk" rendered="false"/> 
+<modify element="ASNSubtabAnlHdrTable.ASNCustOpptyLstRN.ASNCustOpptyLstOw" rendered="false"/> 
+<modify element="ASNSubtabAnlHdrTable.ASNCustOpptyLstRN.ASNCustOpptyLstOwPhone" rendered="false"/> 
+<modify element="ASNSubtabPrdtTable.ASNNonRevFrcstBestAmountCol" rendered="false"/> 
+<modify element="ASNSubtabPrdtTable.ASNPrdtBestHdr" rendered="false"/> 
+<modify element="ASNSubtabPrdtTable.ASNPrdtBestCol" rendered="false"/> 
+<modify element="ASNSubtabPrdtTable.ASNPrdtWorstCol" rendered="false"/> 
+<modify element="ASNSubtabPrdtTable.ASNPrdtDateCol" rendered="false"/> 
+<modify element="ASNSubtabPrdtTable.ASNBestExCol" rendered="false"/> 
+<modify element="ASNSubtabPrdtTable.ASNPrdtFrcstExCol" rendered="false"/> 
+<modify element="ASNSubtabPrdtTable.ASNPrdtWorstExCol" rendered="false"/> 
+<modify element="ASNCustSelButton" rendered="false"/> 
+<modify element="ASNSTGroup" readOnly="true"/> 
+<modify element="ASNPrdtFrcstCol" rendered="false"/> 
+<modify element="ASNOpptyDetAvtNm" rendered="true"/> 
+<move element="ASNLovNmToSrcNm" after="ASNSrcNmToLovNm"/> 
+<move element="ASNLovSrcPromIdToSrcPromId" after="ASNLovNmToSrcNm"/> 
+<modify element="ASNOpptyDetChnl" rendered="false"/> 
+<modify element="ASNOpptyDetMeth" required="yes"/> 
+<modify element="ASNOpptyDetStage" required="yes"/> 
+<modify element="ASNSCStgStack.ASNSCStgVwWkShtButton" rendered="false"/> 
+<modify element="ASNSCStgStack.ASNSCStgSel" rendered="false"/> 
+<modify element="ASNSCStgStack.ASNSCStgSlsCoach" rendered="false"/> 
+<modify element="ASNSCStgStack.ASNSCStgApcblty" rendered="false"/> 
+<move element="ASNOpptyDetNbr" after="ASNOpptyDetNm"/> 
+<move element="ASNOpptyDetCustRN" after="ASNOpptyDetNbr"/> 
+<move element="ASNOpptyDetAddrRN" after="ASNOpptyDetCustRN"/> 
+<move element="ASNOpptyDetDate" after="ASNOpptyDetAddrRN"/> 
+<move element="ASNOpptyDetRefDet" after="ASNOpptyDetDate"/> 
+<move element="ASNOpptyDetSpacerRN" after="ASNOpptyDetRefDet"/> 
+<move element="ASNOpptyDetMeth" after="ASNOpptyDetSpacerRN"/> 
+<move element="ASNOpptyDetStage" after="ASNOpptyDetMeth"/> 
+<move element="ASNOpptyDetWinProb" after="ASNOpptyDetStage"/> 
+<move element="ASNOpptyDetStatus" after="ASNOpptyDetWinProb"/> 
+<move element="ASNOpptyDetRsn" after="ASNOpptyDetStatus"/> 
+<move element="ASNOpptyDetCurr" after="ASNOpptyDetRsn"/> 
+<move element="ASNOpptyDetAmt" after="ASNOpptyDetCurr"/> 
+<move element="ASNOpptyDetFrcstAmt" after="ASNOpptyDetAmt"/> 
+<move element="ASNOpptyDetFrcstAmtEx" after="ASNOpptyDetFrcstAmt"/> 
+<move element="ASNOpptyDetChnl" after="ASNOpptyDetFrcstAmtEx"/> 
+<move element="ASNOpptyDetAvtNm" after="ASNOpptyDetChnl"/> 
+<move element="ASNOpptyDetAvtNmEx" after="ASNOpptyDetAvtNm"/> 
+<move element="ASNOpptyDetRespChan" after="ASNOpptyDetAvtNmEx"/> 
+<insert after="ASNOpptyDetRespChan"> 
+               <oa:formValue id="ODStoreNoFrm" adminCustomizable="true" dataType="VARCHAR2" encrypted="false" queryable="false" rendered="false" scope="." securityMode="standard" selectiveSearchCriteria="false" userCustomizable="false"
+                             viewAttr="Attribute4" viewName="OpportunityDetailsVO1"/>
+<oa:messageLovInput id="ODStoreNumID" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2"  disabled= "false" 
+externalListOfValues="/od/oracle/apps/xxcrm/asn/common/lov/webui/ODStoreNumRN" initSortSeq="none" prompt="OD Store #" 
+queryable="false" readOnly="false" rendered="true" required="no" rows="1" scope="." selectiveSearchCriteria="false" sortState="no" tipType="none" unvalidated="false" userCustomizable="false" vAlign="middle" 
+viewAttr="Attribute4" viewName="OpportunityDetailsVO1" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"> 
+<lovMappings> 
+<lovMap id="ODStoreNumLovMap1" criteriaFrom="ODStoreNumID" lovItem="Value" programmaticQuery="false" requiredForLOV="false" resultTo="ODStoreNumID" scope="." useForValidation="default"/>
+<lovMap id="ODStoreNoFrmMap" lovItem="Value" programmaticQuery="false" requiredForLOV="false" resultTo="ODStoreNoFrm" scope="." useForValidation="yes"/>
+</lovMappings> 
+</oa:messageLovInput> 
+</insert> 
+</modifications> 
+</customization> 
+

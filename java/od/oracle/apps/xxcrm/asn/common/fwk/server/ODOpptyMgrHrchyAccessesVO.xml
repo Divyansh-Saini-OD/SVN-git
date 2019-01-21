@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODOpptyMgrHrchyAccessesVO"
+   Extends="oracle.apps.asn.common.fwk.server.OpptyMgrHrchyAccessesVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.asn.common.fwk.server.ODOpptyMgrHrchyAccessesVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.asn.common.fwk.server.ODOpptyMgrHrchyAccessesVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT 1  
+FROM JTF_RS_REP_MANAGERS jrrm,        
+JTF_RS_GROUP_USAGES jrgu,        
+XX_TM_NAM_TERR_CURR_ASSIGN_V aaa 
+WHERE jrgu.usage IN ('SALES', 'PRM')   
+AND jrgu.group_id = jrrm.group_id   
+AND jrrm.hierarchy_type IN ('MGR_TO_MGR', 'MGR_TO_REP')   
+AND jrrm.resource_id = aaa.resource_id   
+AND TRUNC(jrrm.start_date_active) <= TRUNC(SYSDATE)   
+AND TRUNC(NVL(jrrm.end_date_active, SYSDATE)) >= TRUNC(SYSDATE)   
+AND aaa.group_id = jrrm.group_id   
+AND aaa.entity_type='OPPORTUNITY'   
+AND aaa.entity_id = :1   
+AND jrrm.parent_resource_id = :2   
+AND jrrm.parent_resource_id <> jrrm.resource_id   
+AND ROWNUM = 1
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.66" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="J1"
+      IsUpdateable="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      AliasName="J1"
+      ColumnType="VARCHAR2"
+      Expression="1"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

@@ -1,0 +1,42 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.12_1330" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="PageLayoutRN" amDefName="od.oracle.apps.xxmer.wfh.server.WorkflowHierarchyAM" windowTitle="Planner Hierarchy" title="Planner Hierarchy Maintenance">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:productBranding>
+            <oa:image id="ProdBrand" shortDesc="Product branding"/>
+         </ui:productBranding>
+         <ui:contents>
+            <oa:hGrid id="HGridRN" childBlockSize="15" controllerClass="od.oracle.apps.xxmer.wfh.webui.PlannerHierarchyCO">
+               <ui:contents>
+                  <oa:tree usage="hGrid" id="TreeRN" text="Associate ID">
+                     <members>
+                        <oa:nodeDef id="Manager" viewName="PlannerVO1" viewAttr="EmployeeId"/>
+                        <oa:childNode id="Planners" ancestorNode="/od/oracle/apps/xxmer/wfh/webui/PlannerHierarchyPG.TreeRN" viewLinkAccessorName="DirectReports"/>
+                     </members>
+                  </oa:tree>
+                  <oa:messageStyledText id="FullName" viewName="PlannerVO1" viewAttr="FullName" prompt="Associate Name"/>
+               </ui:contents>
+               <ui:tableActions>
+                  <oa:flowLayout id="TableActionsRN">
+                     <ui:contents>
+                        <oa:submitButton id="Add" text="Add Planner" prompt="Add Planner"/>
+                        <oa:separator id="item1"/>
+                        <oa:staticStyledText id="Text" text="Select a Planner and..." prompt="Select a Planner and..." styleClass="OraInstructionText"/>
+                        <oa:submitButton id="Update" text="Update Planner" prompt="Update Planner"/>
+                        <oa:spacer id="item2" width="10"/>
+                        <oa:submitButton id="Delete" text="Delete Planner" prompt="Delete Planner"/>
+                     </ui:contents>
+                  </oa:flowLayout>
+               </ui:tableActions>
+               <ui:tableSelection>
+                  <oa:singleSelection id="singleSelection1" viewName="PlannerVO1" viewAttr="Selected"/>
+               </ui:tableSelection>
+            </oa:hGrid>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

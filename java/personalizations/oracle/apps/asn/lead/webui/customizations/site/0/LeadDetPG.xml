@@ -1,0 +1,33 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.5.4.89_560" xml:lang="en-US" customizes="/oracle/apps/asn/lead/webui/LeadDetPG" developerMode="true" package="/oracle/apps/asn/lead/webui/customizations/site/0" xmlns:oa="http://xmlns.oracle.com/oa">
+   <modifications>
+      <modify element="PageLayoutRN" controllerClass="od.oracle.apps.xxcrm.asn.lead.webui.ODLeadDetCO"/>
+      <modify element="ASNSubtabLeadNoteRN" controllerClass="od.oracle.apps.xxcrm.asn.common.webui.ODASNNotesCO"/>
+      <modify element="ASNCtctLstRN" controllerClass="od.oracle.apps.xxcrm.asn.lead.webui.ODLeadCtctTableCO"/>
+      <move element="ASNAddrSelButton" after="ASNLeadDetAddr"/>
+      <insert before="ASNAddrSelButton">
+         <oa:link id="ASNLeadDetAddrLink" adminCustomizable="true" destination="OA.jsp?page=/od/oracle/apps/xxcrm/asn/partysite/webui/ODSiteViewPG&amp;OAFunc=XX_ASN_SITEVIEWPG&amp;ASNReqFrmFuncName=ASN_LEADDETPG&amp;ASNReqFrmCustId={@CustomerId}&amp;ASNReqFrmSiteId={@AddressId}&amp;addBreadCrumb=Y" rendered="true" scope="." serverUnvalidated="false" userCustomizable="false" viewAttr="Address" viewName="LeadHeaderDetailsVO" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <modify element="ASNLeadDetAddr" rendered="false"/>
+      <modify element="ASNSTAddButton" rendered="false"/>
+      <modify element="ASNSTAcc" readOnly="true"/>
+      <modify element="ASNSTKeepCol" rendered="false"/>
+      <modify element="ASNSTOwCol" rendered="false"/>
+      <modify element="ASNSTRmLnkCol" rendered="false"/>
+      <modify element="ASNLeadDetCust" destination="OA.jsp?page=/od/oracle/apps/xxcrm/asn/common/customer/webui/ODOrgViewPG&amp;OAFunc=ASN_ORGVIEWPG&amp;addBreadCrumb=Y&amp;ASNReqFrmCustId={@CustomerId}&amp;ASNReqFrmSalesLeadId={@SalesLeadId}" rendered="true"/>
+      <modify element="ASNAddrSelButton" rendered="false"/>
+      <move element="ASNLeadDetKeyRN.spacer1" after="ASNLeadDetKeyRN.RequiredFieldIcon"/>
+      <move element="ASNLeadDetKeyRN.RequiredFieldText" after="ASNLeadDetKeyRN.spacer1"/>
+      <insert after="ASNLeadDetKeyRN.RequiredFieldText">
+         <oa:tip id="XX_OD_CTCT_TIP_TEXT" adminCustomizable="true" rendered="true" scope="." text="Contact and Contact phone are mandatory for leads being sent to Tech Depot." xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <modify element="ASNLeadDetChnl" rendered="false"/>
+      <modify element="ASNSubtabSugCtctLstRN" rendered="false"/>
+      <modify element="ASNPrdtAddButton" prompt="Select Product"/>
+      <modify element="ASNLeadTaskRN.CacSmrTaskDueDate" prompt="Date"/>
+      <modify element="ASNLeadTaskRN.CacSmrTaskDueDateRO" prompt="Date"/>
+	  <modify element="ASNCtctAddButton" rendered="true"/>
+      <modify element="ASNCtctCrteButton" rendered="true"/>
+   </modifications>
+</customization>
+

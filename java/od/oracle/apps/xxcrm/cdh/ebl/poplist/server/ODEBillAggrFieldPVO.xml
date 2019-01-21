@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODEBillAggrFieldPVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="oracle.apps.fnd.framework.server.OAViewObjectImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT EF.field_name                                           
+       ,EF.field_id                                            
+       ,xcetd.cust_doc_id    
+  FROM xx_cdh_ebilling_fields_v EF
+       ,XX_CDH_EBL_TEMPL_DTL xcetd
+   WHERE EF.field_id = xcetd.field_id                       
+   AND   xcetd.attribute1 = 'Y'                             
+   AND   xcetd.attribute20 = 'Y'      
+ AND EF.include_in_standard = 'Y'
+ AND EF.field_id             IS NOT NULL
+ AND EF.field_name           IS NOT NULL
+UNION                                                       
+SELECT                                                      
+  xcecf.conc_field_label field_name,                        
+CAST (xcecf.CONC_FIELD_ID AS VARCHAR2(240)) field_id ,      
+  xcetd.cust_doc_id                                         
+FROM XX_CDH_EBL_TEMPL_DTL xcetd,                            
+  XX_CDH_EBL_CONCAT_FIELDS xcecf                            
+WHERE xcetd.FIELD_ID  = xcecf.CONC_FIELD_ID                 
+AND xcetd.cust_doc_id = xcecf.cust_doc_id                   
+AND xcetd.attribute20 = 'Y'                                 
+UNION                                                       
+SELECT                                                      
+  xcetd.label field_name,                                   
+CAST (xcetd.FIELD_ID AS VARCHAR2(240)) field_id,            
+  xcetd.cust_doc_id                                         
+FROM XX_CDH_EBL_TEMPL_DTL xcetd                             
+WHERE base_field_id IS NOT NULL                             
+AND attribute20      = 'Y'                                  
+   ]]></SQLQuery>                                           
+   <DesignTime>                                             
+      <Attr Name="_version" Value="9.0.3.12.53" />          
+      <Attr Name="_CodeGenFlagNew" Value="4" />             
+   </DesignTime>                                            
+   <ViewAttribute                                           
+      Name="FieldName"                                      
+      IsPersistent="false"                                  
+      Precision="240"                                       
+      Type="java.lang.String"                               
+      AliasName="FIELD_NAME"                                
+      ColumnType="VARCHAR2"                                 
+      Expression="FIELD_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FieldId"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      AliasName="FIELD_ID"
+      ColumnType="VARCHAR2"
+      Expression="FIELD_ID"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

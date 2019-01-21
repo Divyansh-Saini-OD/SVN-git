@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODAcctSiteVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.imc.softacct.server.ODAcctSiteVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.imc.softacct.server.ODAcctSiteVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT   * FROM   (SELECT HWASUV.SITE_USE_ID,  HWASUV.CUST_ACCT_SITE_ID,  HWASUV.SITE_USE_CODE,  HWASUV.PRIMARY_FLAG,  HWASUV.STATUS,  HWASUV.LOCATION,  HWASUV2.LOCATION AS BILL_TO_LOCATION,  HWASUV.bill_to_site_use_id AS BILL_TO_SITE_USE_ID,  'Readonly' purpose_style,  decode(HWASUV.SITE_USE_CODE,  'SHIP_TO',  'billToLocUpdatable',  'billToLocReadonly') bill_to_location_style,  AUTO_SITE_NUMBERING   FROM HZ_WSRVC_ACCT_SITE_USES_V    HWASUV,  HZ_WSRVC_ACCT_SITE_USES_V    HWASUV2,  AR_SYSTEM_PARAMETERS WHERE   HWASUV.STATUS = 'A' and HWASUV2.STATUS (+) = 'A' and HWASUV.bill_to_site_use_id = HWASUV2.site_use_id (+)and HWASUV.site_use_code = :0) QRSLT WHERE   CUST_ACCT_SITE_ID =:1
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="SiteUseId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="SITE_USE_ID"
+      Expression="SITE_USE_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustAcctSiteId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="CUST_ACCT_SITE_ID"
+      Expression="CUST_ACCT_SITE_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SiteUseCode"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SITE_USE_CODE"
+      Expression="SITE_USE_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PrimaryFlag"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PRIMARY_FLAG"
+      Expression="PRIMARY_FLAG"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Status"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="STATUS"
+      Expression="STATUS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Location"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="40"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="LOCATION"
+      Expression="LOCATION"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BillToLocation"
+      IsPersistent="false"
+      Precision="40"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="BILL_TO_LOCATION"
+      Expression="BILL_TO_LOCATION"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BillToSiteUseId"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="BILL_TO_SITE_USE_ID"
+      Expression="BILL_TO_SITE_USE_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PurposeStyle"
+      IsPersistent="false"
+      Precision="8"
+      Type="java.lang.String"
+      ColumnType="CHAR"
+      AliasName="PURPOSE_STYLE"
+      Expression="PURPOSE_STYLE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="8" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BillToLocationStyle"
+      IsPersistent="false"
+      Precision="18"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="BILL_TO_LOCATION_STYLE"
+      Expression="BILL_TO_LOCATION_STYLE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="18" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AutoSiteNumbering"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="AUTO_SITE_NUMBERING"
+      Expression="AUTO_SITE_NUMBERING"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

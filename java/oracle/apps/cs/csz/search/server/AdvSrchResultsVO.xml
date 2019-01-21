@@ -1,0 +1,923 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<!-- $Header: AdvSrchResultsVO.xml 115.1.115102.3 2005/12/06 20:12:57 gesubram noship $ -->
+
+<ViewObject
+   Name="AdvSrchResultsVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.cs.csz.oa.server.CszViewRowImpl"
+   ComponentClass="oracle.apps.cs.csz.search.server.AdvSrchResultsVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select
+    (select serial_number from csi_item_instances where instance_id= sr.Customer_Product_Id) InstSerialNumber, 
+    (select external_reference from csi_item_instances where instance_id= sr.Customer_Product_Id) InstTag, 
+    (select name from csi_systems_vl where sr.system_id = system_id) SysNumber,
+    sr.incident_id IncidentId,
+    sr.incident_number IncidentNumber,
+    (select  resource_name from jtf_rs_resource_extns_vl where sr.incident_owner_id = resource_id) OwnerName,
+    (select summary from cs_incidents_all_tl where incident_id=sr.incident_id and language=userenv('lang')) Summary,
+    (select party_name from hz_parties where party_id = sr.customer_id) CustomerName,
+    (select known_as from hz_parties where party_id = sr.customer_id) Alias,
+    (select party_number from hz_parties where party_id = sr.customer_id) CustomerNumber,
+apps.CSZ_SERVICEREQUEST_UTIL_PVT.get_contact_name(sr.incident_id, sr.customer_id) ContactName,
+    (select name from cs_incident_statuses_tl where incident_status_id = sr.incident_status_id and language = userenv('lang')) IncidentStatus,
+    (select name from cs_incident_types_tl where incident_type_id = sr.incident_type_id and language=userenv('LANG')) IncidentType,
+    (select name from cs_incident_urgencies_tl where incident_urgency_id = sr.incident_urgency_id and language=userenv('LANG')) IncidentUrgency,
+    (select name from cs_incident_severities_tl where incident_severity_id = sr.incident_severity_id and language=userenv('LANG')) IncidentSeverity,
+    sr.contract_number ContractNumber,
+    channel.meaning CreationChannel,
+    problem.meaning ProblemMeaning,
+    resolution.meaning ResolutionMeaning,
+/*apps.CSZ_SERVICEREQUEST_UTIL_PVT_A.get_sr_escalated(sr.incident_id)*/ 'X' EscalatedFlag,
+    /*decode(sr.status_flag, 'O', 'Y', 'N')*/ 'X' ActiveFlag,
+    /*decode(sr.unassigned_indicator, 1,'N',3,'N','Y') */ 'X' OwnerNotExistFlag,
+/*apps.CSZ_SERVICEREQUEST_UTIL_PVT.get_sr_jeopardy(sr.Incident_Id,sr.Obligation_Date,sr.Expected_Resolution_Date,sr.Inc_Responded_By_Date,sr.Actual_Resolution_Date)*/ 'N' JeopardyFlag,
+    /*decode(
+     decode( sign(sr.actual_resolution_date - sr.expected_resolution_date), 1, 1, 0) +
+     decode( sign(sr.inc_responded_by_date - sr.obligation_date), 1, 1, 0), 2, 'Y', 1, 'Y', 'N')*/ 'X'  MissDeadline,
+   (select concatenated_segments from mtl_system_items_vl
+      where sr.platform_id = inventory_item_id and organization_id =sr.inv_platform_org_id) PlatformName,
+   (select concatenated_segments from mtl_system_items_vl
+      where sr.inventory_item_id = inventory_item_id and organization_id =sr.inv_organization_id) ProductName,
+    (select account_number from hz_cust_accounts where sr.account_id = cust_account_id) AccountNumber,
+  sr.account_id AccountId,
+  sr.incident_owner_id OwnerId,
+  sr.customer_id CustomerId,
+  sr.incident_type_id IncidentTypeId,
+  sr.incident_urgency_id IncidentUrgencyId,
+  sr.incident_severity_id IncidentSeverityId,
+  sr.sr_creation_channel CreationChannelCode,
+  sr.inventory_item_id ProductId,
+  sr.inv_organization_id ProductOrgId,
+  sr.customer_product_id CustomerProductId,
+  sr.platform_id PlatformId,
+  sr.inv_platform_org_id PlatformOrgId,
+  sr.problem_code ProblemCode,
+  sr.resolution_code ResolutionCode,
+  sr.incident_date IncidentDate,
+  sr.incident_occurred_date OccurredDate,
+  sr.incident_resolved_date ResolvedDate,
+  sr.close_date CloseDate,
+  sr.inc_responded_by_date RespondedByDate,
+  sr.expected_resolution_date ExpResolutionDate,
+  sr.incident_last_modified_date LastModifiedDate,
+ /*sr.status_flag StatusFlag,*/
+  'O' StatusFlag,
+  sr.resource_type srownertypecode,
+  sr.group_type srgrouptypecode,
+  sr.owner_group_id SrGroupId,
+  sr.system_id SystemId,
+  sr.actual_resolution_date ActualResolutionDate,
+  sr.Obligation_Date ObligationDate,
+ (SELECT decode(status.sort_order,
+		NULL,
+		'9999'||status.name,
+		substr('0000',1,(4 -length(to_char(status.sort_order))))
+        	  || to_char(status.sort_order) 
+   		      ||status.name) 
+	FROM cs_incident_statuses_vl status
+	WHERE status.incident_status_id = sr.incident_status_id)statusordattr,
+(SELECT sev.importance_level
+	FROM cs_incident_severities_b sev
+	WHERE sev.incident_severity_id = sr.incident_severity_id) SevImportanceLevel,
+(SELECT urg.importance_level
+	FROM cs_incident_urgencies_b urg
+	WHERE urg.incident_urgency_id = sr.incident_urgency_id)UrgImportanceLevel,
+sr.unassigned_indicator UnassignedIndicator,
+  sr.incident_status_id IncidentStatusId,
+(SELECT 
+grp.group_name 
+from 
+jtf_rs_groups_vl grp  
+where 
+grp.group_id = sr.owner_group_id) AssignedGroup
+
+from
+  cs_incidents_b_sec sr, 
+  cs_lookups channel,
+  cs_lookups problem,    
+  cs_lookups resolution
+where   
+  sr.sr_creation_channel = channel.lookup_code(+)   and
+  channel.lookup_type(+) = 'CS_SR_CREATION_CHANNEL' and 
+  sr.problem_code = problem.lookup_code(+)   and       
+  problem.lookup_type(+) = 'REQUEST_PROBLEM_CODE' and 
+  sr.resolution_code =  resolution.lookup_code(+) and        
+  resolution.lookup_type(+) = 'REQUEST_RESOLUTION_CODE'
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+      <Attr Name="_rowSuperClassName" Value="oracle.apps.cs.csz.oa.server.CszViewRowImpl" />
+      <Attr Name="_objectSuperClassName" Value="oracle.apps.cs.csz.oa.server.CszViewObjectImpl" />
+   </DesignTime>
+   <ViewAttribute
+      Name="InstSerialNumber"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="INSTSERIALNUMBER"
+      ColumnType="VARCHAR2"
+      Expression="INSTSERIALNUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InstTag"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="INSTTAG"
+      ColumnType="VARCHAR2"
+      Expression="INSTTAG"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SysNumber"
+      IsPersistent="false"
+      Precision="50"
+      Type="java.lang.String"
+      AliasName="SYSNUMBER"
+      ColumnType="VARCHAR2"
+      Expression="SYSNUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IncidentId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      AliasName="INCIDENTID"
+      ColumnType="VARCHAR2"
+      Expression="INCIDENTID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IncidentNumber"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="64"
+      Type="java.lang.String"
+      AliasName="INCIDENTNUMBER"
+      ColumnType="VARCHAR2"
+      Expression="INCIDENTNUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="64" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OwnerName"
+      IsPersistent="false"
+      Precision="360"
+      Type="java.lang.String"
+      AliasName="OWNERNAME"
+      ColumnType="VARCHAR2"
+      Expression="OWNERNAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="360" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Summary"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      AliasName="SUMMARY"
+      ColumnType="VARCHAR2"
+      Expression="SUMMARY"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustomerName"
+      IsPersistent="false"
+      Precision="360"
+      Type="java.lang.String"
+      AliasName="CUSTOMERNAME"
+      ColumnType="VARCHAR2"
+      Expression="CUSTOMERNAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="360" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Alias"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      AliasName="ALIAS"
+      ColumnType="VARCHAR2"
+      Expression="ALIAS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustomerNumber"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="CUSTOMERNUMBER"
+      ColumnType="VARCHAR2"
+      Expression="CUSTOMERNUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContactName"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      AliasName="CONTACTNAME"
+      ColumnType="VARCHAR2"
+      Expression="CONTACTNAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IncidentStatus"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="INCIDENTSTATUS"
+      ColumnType="VARCHAR2"
+      Expression="INCIDENTSTATUS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IncidentType"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="INCIDENTTYPE"
+      ColumnType="VARCHAR2"
+      Expression="INCIDENTTYPE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IncidentUrgency"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="INCIDENTURGENCY"
+      ColumnType="VARCHAR2"
+      Expression="INCIDENTURGENCY"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IncidentSeverity"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="INCIDENTSEVERITY"
+      ColumnType="VARCHAR2"
+      Expression="INCIDENTSEVERITY"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContractNumber"
+      IsPersistent="false"
+      Precision="120"
+      Type="java.lang.String"
+      AliasName="CONTRACTNUMBER"
+      ColumnType="VARCHAR2"
+      Expression="CONTRACTNUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="120" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationChannel"
+      IsPersistent="false"
+      Precision="80"
+      Type="java.lang.String"
+      AliasName="CREATIONCHANNEL"
+      ColumnType="VARCHAR2"
+      Expression="CREATIONCHANNEL"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProblemMeaning"
+      IsPersistent="false"
+      Precision="80"
+      Type="java.lang.String"
+      AliasName="PROBLEMMEANING"
+      ColumnType="VARCHAR2"
+      Expression="PROBLEMMEANING"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ResolutionMeaning"
+      IsPersistent="false"
+      Precision="80"
+      Type="java.lang.String"
+      AliasName="RESOLUTIONMEANING"
+      ColumnType="VARCHAR2"
+      Expression="RESOLUTIONMEANING"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EscalatedFlag"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      AliasName="ESCALATEDFLAG"
+      ColumnType="VARCHAR2"
+      Expression="ESCALATEDFLAG"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ActiveFlag"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      AliasName="ACTIVEFLAG"
+      ColumnType="VARCHAR2"
+      Expression="ACTIVEFLAG"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OwnerNotExistFlag"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      AliasName="OWNERNOTEXISTFLAG"
+      ColumnType="VARCHAR2"
+      Expression="OWNERNOTEXISTFLAG"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="JeopardyFlag"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      AliasName="JEOPARDYFLAG"
+      ColumnType="VARCHAR2"
+      Expression="JEOPARDYFLAG"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MissDeadline"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      AliasName="MISSDEADLINE"
+      ColumnType="VARCHAR2"
+      Expression="MISSDEADLINE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PlatformName"
+      IsPersistent="false"
+      Precision="40"
+      Type="java.lang.String"
+      AliasName="PLATFORMNAME"
+      ColumnType="VARCHAR2"
+      Expression="PLATFORMNAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProductName"
+      IsPersistent="false"
+      Precision="40"
+      Type="java.lang.String"
+      AliasName="PRODUCTNAME"
+      ColumnType="VARCHAR2"
+      Expression="PRODUCTNAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AccountNumber"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="ACCOUNTNUMBER"
+      ColumnType="VARCHAR2"
+      Expression="ACCOUNTNUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AccountId"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      AliasName="ACCOUNTID"
+      ColumnType="VARCHAR2"
+      Expression="ACCOUNTID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OwnerId"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      AliasName="OWNERID"
+      ColumnType="VARCHAR2"
+      Expression="OWNERID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustomerId"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      AliasName="CUSTOMERID"
+      ColumnType="VARCHAR2"
+      Expression="CUSTOMERID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IncidentTypeId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      AliasName="INCIDENTTYPEID"
+      ColumnType="VARCHAR2"
+      Expression="INCIDENTTYPEID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IncidentUrgencyId"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      AliasName="INCIDENTURGENCYID"
+      ColumnType="VARCHAR2"
+      Expression="INCIDENTURGENCYID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IncidentSeverityid"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      AliasName="INCIDENTSEVERITYID"
+      ColumnType="VARCHAR2"
+      Expression="INCIDENTSEVERITYID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationChannelCode"
+      IsPersistent="false"
+      Precision="50"
+      Type="java.lang.String"
+      AliasName="CREATIONCHANNELCODE"
+      ColumnType="VARCHAR2"
+      Expression="CREATIONCHANNELCODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProductId"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      AliasName="PRODUCTID"
+      ColumnType="VARCHAR2"
+      Expression="PRODUCTID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProductOrgId"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      AliasName="PRODUCTORGID"
+      ColumnType="VARCHAR2"
+      Expression="PRODUCTORGID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustomerProductId"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      AliasName="CUSTOMERPRODUCTID"
+      ColumnType="VARCHAR2"
+      Expression="CUSTOMERPRODUCTID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PlatformId"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      AliasName="PLATFORMID"
+      ColumnType="VARCHAR2"
+      Expression="PLATFORMID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PlatformOrgId"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      AliasName="PLATFORMORGID"
+      ColumnType="VARCHAR2"
+      Expression="PLATFORMORGID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProblemCode"
+      IsPersistent="false"
+      Precision="50"
+      Type="java.lang.String"
+      AliasName="PROBLEMCODE"
+      ColumnType="VARCHAR2"
+      Expression="PROBLEMCODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ResolutionCode"
+      IsPersistent="false"
+      Precision="50"
+      Type="java.lang.String"
+      AliasName="RESOLUTIONCODE"
+      ColumnType="VARCHAR2"
+      Expression="RESOLUTIONCODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IncidentDate"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Date"
+      AliasName="INCIDENTDATE"
+      ColumnType="VARCHAR2"
+      Expression="INCIDENTDATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OccurredDate"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Date"
+      AliasName="OCCURREDDATE"
+      ColumnType="VARCHAR2"
+      Expression="OCCURREDDATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ResolvedDate"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Date"
+      AliasName="RESOLVEDDATE"
+      ColumnType="VARCHAR2"
+      Expression="RESOLVEDDATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CloseDate"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Date"
+      AliasName="CLOSEDATE"
+      ColumnType="VARCHAR2"
+      Expression="CLOSEDATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RespondedByDate"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Date"
+      AliasName="RESPONDEDBYDATE"
+      ColumnType="VARCHAR2"
+      Expression="RESPONDEDBYDATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ExpResolutionDate"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Date"
+      AliasName="EXPRESOLUTIONDATE"
+      ColumnType="VARCHAR2"
+      Expression="EXPRESOLUTIONDATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastModifiedDate"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Date"
+      AliasName="LASTMODIFIEDDATE"
+      ColumnType="VARCHAR2"
+      Expression="LASTMODIFIEDDATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="StatusFlag"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="3"
+      Type="java.lang.String"
+      AliasName="STATUSFLAG"
+      ColumnType="VARCHAR2"
+      Expression="STATUSFLAG"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="3" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Srownertypecode"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="SROWNERTYPECODE"
+      ColumnType="VARCHAR2"
+      Expression="SROWNERTYPECODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Srgrouptypecode"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="SRGROUPTYPECODE"
+      ColumnType="VARCHAR2"
+      Expression="SRGROUPTYPECODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Srgroupid"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="SRGROUPID"
+      ColumnType="VARCHAR2"
+      Expression="SRGROUPID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SystemId"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      AliasName="SYSTEMID"
+      ColumnType="VARCHAR2"
+      Expression="SYSTEMID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ActualResolutionDate"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Date"
+      AliasName="ACTUALRESOLUTIONDATE"
+      ColumnType="VARCHAR2"
+      Expression="ACTUALRESOLUTIONDATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ObligationDate"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Date"
+      AliasName="OBLIGATIONDATE"
+      ColumnType="VARCHAR2"
+      Expression="OBLIGATIONDATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Statusordattr"
+      IsPersistent="false"
+      Precision="82"
+      Type="java.lang.String"
+      AliasName="STATUSORDATTR"
+      ColumnType="VARCHAR2"
+      Expression="STATUSORDATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="82" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Sevimportancelevel"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      AliasName="SEVIMPORTANCELEVEL"
+      ColumnType="VARCHAR2"
+      Expression="SEVIMPORTANCELEVEL"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Urgimportancelevel"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      AliasName="URGIMPORTANCELEVEL"
+      ColumnType="VARCHAR2"
+      Expression="URGIMPORTANCELEVEL"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="UnassignedIndicator"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      AliasName="UNASSIGNEDINDICATOR"
+      ColumnType="VARCHAR2"
+      Expression="UNASSIGNEDINDICATOR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IncidentStatusId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      AliasName="INCIDENTSTATUSID"
+      ColumnType="VARCHAR2"
+      Expression="INCIDENTSTATUSID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Assignedgroup"
+      IsPersistent="false"
+      Precision="60"
+      Type="java.lang.String"
+      AliasName="Assignedgroup"
+      ColumnType="VARCHAR2"
+      Expression="Assignedgroup"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+</ViewObject>

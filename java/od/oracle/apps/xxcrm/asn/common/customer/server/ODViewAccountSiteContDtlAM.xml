@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<AppModule
+   Name="ODViewAccountSiteContDtlAM"
+   ComponentClass="od.oracle.apps.xxcrm.asn.common.customer.server.ODViewAccountSiteContDtlAMImpl"
+   LoadComponentsLazily="true" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="ODAccContactsRolesVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.hz.account.customer.server.ODAccContactsRolesVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODContactNumberVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.hz.account.customer.server.ODContactNumberVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODEmailAddressVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.hz.account.customer.server.ODEmailAddressVO" >
+   </ViewUsage>
+</AppModule>

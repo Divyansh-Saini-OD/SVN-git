@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODHzPuiPartySiteVO"
+   Extends="oracle.apps.ar.hz.components.address.server.HzPuiPartySiteVO"
+   SelectList="HzPuiPartySiteEOEx.PARTY_SITE_ID, 
+       HzPuiPartySiteEOEx.PARTY_ID, 
+
+       HzPuiPartySiteEOEx.LOCATION_ID, 
+       HzPuiPartySiteEOEx.IDENTIFYING_ADDRESS_FLAG, 
+
+       HzPuiPartySiteEOEx.STATUS, 
+       HzPuiPartySiteEOEx.ATTRIBUTE_CATEGORY, 
+
+       HzPuiPartySiteEOEx.ATTRIBUTE1, 
+       HzPuiPartySiteEOEx.ATTRIBUTE2, 
+
+       HzPuiPartySiteEOEx.ATTRIBUTE3, 
+       HzPuiPartySiteEOEx.ATTRIBUTE4, 
+
+       HzPuiPartySiteEOEx.ATTRIBUTE5, 
+       HzPuiPartySiteEOEx.ATTRIBUTE6, 
+
+       HzPuiPartySiteEOEx.ATTRIBUTE7, 
+       HzPuiPartySiteEOEx.ATTRIBUTE8, 
+
+       HzPuiPartySiteEOEx.ATTRIBUTE9, 
+       HzPuiPartySiteEOEx.ATTRIBUTE10, 
+
+       HzPuiPartySiteEOEx.ATTRIBUTE11, 
+       HzPuiPartySiteEOEx.ATTRIBUTE12, 
+
+       HzPuiPartySiteEOEx.ATTRIBUTE13, 
+       HzPuiPartySiteEOEx.ATTRIBUTE14, 
+
+       HzPuiPartySiteEOEx.ATTRIBUTE15, 
+       HzPuiPartySiteEOEx.ATTRIBUTE16, 
+
+       HzPuiPartySiteEOEx.ATTRIBUTE17, 
+       HzPuiPartySiteEOEx.ATTRIBUTE18, 
+
+       HzPuiPartySiteEOEx.ATTRIBUTE19, 
+       HzPuiPartySiteEOEx.ATTRIBUTE20, 
+
+       HzPuiPartySiteEOEx.GLOBAL_LOCATION_NUMBER, 
+       HzPuiPartySiteEOEx.ADDRESSEE, 
+
+       HzPuiPartySiteEOEx.PARTY_SITE_NAME, 
+       HzPuiPartySiteEOEx.ORIG_SYSTEM_REFERENCE 
+AS ORIG_SYSTEM_REFERENCE"
+   BindingStyle="Oracle"
+   CustomQuery="false"
+   RowClass="od.oracle.apps.xxcrm.ar.hz.components.address.server.ODHzPuiPartySiteVORowImpl"
+   ComponentClass="oracle.apps.ar.hz.components.address.server.HzPuiPartySiteVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   FetchMode="FETCH_AS_NEEDED"
+   UseGlueCode="false" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.66" />
+      <Attr Name="_CodeGenFlagNew" Value="4" />
+   </DesignTime>
+   <ViewAttribute
+      Name="OrigSystemReference"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      AliasName="ORIG_SYSTEM_REFERENCE"
+      ColumnType="VARCHAR2"
+      Expression="HzPuiPartySiteEOEx.ORIG_SYSTEM_REFERENCE"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+</ViewObject>

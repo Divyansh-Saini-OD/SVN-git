@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="DomesticMerchantLovVO"
+   OrderBy="domestic_merchant_name"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxmer.papb.lov.server.DomesticMerchantLovVORowImpl"
+   ComponentClass="oracle.apps.fnd.framework.server.OAViewObjectImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select ffv.flex_value domestic_merchant_name
+  from fnd_flex_value_sets ffvs,
+       fnd_flex_values_vl ffv
+  where ffvs.flex_value_set_id = ffv.flex_value_set_id
+    and ffvs.flex_value_set_name = 'XX_PB_DOMESTIC_MERCHANT'   
+and ffv.enabled_flag = 'Y'
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_CodeGenFlagNew" Value="4" />
+   </DesignTime>
+   <ViewAttribute
+      Name="DomesticMerchantName"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="DOMESTIC_MERCHANT_NAME"
+      ColumnType="VARCHAR2"
+      Expression="DOMESTIC_MERCHANT_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

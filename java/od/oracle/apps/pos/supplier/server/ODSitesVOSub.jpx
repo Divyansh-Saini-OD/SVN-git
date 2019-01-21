@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE JboProject SYSTEM "jbo_03_01.dtd">
+
+<JboProject
+   Name="ODR12Upgrade"
+   SeparateXMLFiles="true"
+   PackageName="" >
+   <DesignTime>
+      <Attr Name="_ejbPackage" Value="false" />
+      <Attr Name="_NamedConnection" Value="ODR12Upgrade" />
+      <Attr Name="_version" Value="10.1.3.41.57" />
+      <Attr Name="_jprName" Value="ODR12Upgrade.jpr" />
+   </DesignTime>
+   <Containee
+      Name="server"
+      FullName="oracle.apps.pos.supplier.server.server"
+      ObjectType="JboPackage" >
+   </Containee>   
+   <Containee
+      Name="server"
+      FullName="od.oracle.apps.pos.supplier.server.server"
+      ObjectType="JboPackage" >
+   </Containee>   
+   <Substitutes>
+      <Substitute OldName ="oracle.apps.pos.supplier.server.SitesVO" NewName ="od.oracle.apps.pos.supplier.server.XXODSitesVO" />
+   </Substitutes>
+</JboProject>   

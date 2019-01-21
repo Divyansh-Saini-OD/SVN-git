@@ -1,0 +1,145 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="XXSupAddressVO"
+   SelectList="XXSupAddressEO.ADDRESS_TYPE, 
+       XXSupAddressEO.ADDRESS_TYPE_DESC, 
+       XXSupAddressEO.ATTRIBUTE1, 
+       XXSupAddressEO.ATTRIBUTE2, 
+       XXSupAddressEO.ATTRIBUTE3, 
+       XXSupAddressEO.ATTRIBUTE4, 
+       XXSupAddressEO.CREATION_DATE, 
+       XXSupAddressEO.CREATED_BY, 
+       XXSupAddressEO.LAST_UPDATE_DATE, 
+       XXSupAddressEO.LAST_UPDATED_BY, 
+       XXSupAddressEO.LAST_UPDATE_LOGIN, 
+       XXSupAddressEO.ENABLE_FLAG, 
+       XXSupAddressEO.DASHBOARD_IND, 
+       XXSupAddressEO.VENDOR_EXTRANET_IND, 
+       XXSupAddressEO.ADDR_TYPE_ID"
+   FromList="XX_AP_SUP_ADDRESS_TYPE XXSupAddressEO"
+   OrderBy="XXSupAddressEO.ADDRESS_TYPE"
+   BindingStyle="Oracle"
+   CustomQuery="false"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxfin.ap.idms.addresstypes.server.XXSupAddressVOImpl"
+   UseGlueCode="false" >
+   <DesignTime>
+      <Attr Name="_version" Value="10.1.3.43.6" />
+      <Attr Name="_codeGenFlag2" Value="Access|Coll|VarAccess" />
+   </DesignTime>
+   <EntityUsage
+      Name="XXSupAddressEO"
+      Entity="od.oracle.apps.xxfin.ap.idms.addresstypes.schema.server.XXSupAddressEO" >
+      <DesignTime>
+         <Attr Name="_queryClause" Value="true" />
+         <Attr Name="_queryOrderBy" Value="XXSupAddressEO.ADDRESS_TYPE" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="AddressType"
+      IsNotNull="true"
+      EntityAttrName="AddressType"
+      EntityUsage="XXSupAddressEO"
+      AliasName="ADDRESS_TYPE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AddressTypeDesc"
+      IsNotNull="true"
+      EntityAttrName="AddressTypeDesc"
+      EntityUsage="XXSupAddressEO"
+      AliasName="ADDRESS_TYPE_DESC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute1"
+      EntityAttrName="Attribute1"
+      EntityUsage="XXSupAddressEO"
+      AliasName="ATTRIBUTE1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute2"
+      EntityAttrName="Attribute2"
+      EntityUsage="XXSupAddressEO"
+      AliasName="ATTRIBUTE2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute3"
+      EntityAttrName="Attribute3"
+      EntityUsage="XXSupAddressEO"
+      AliasName="ATTRIBUTE3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute4"
+      EntityAttrName="Attribute4"
+      EntityUsage="XXSupAddressEO"
+      AliasName="ATTRIBUTE4" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate"
+      IsNotNull="true"
+      EntityAttrName="CreationDate"
+      EntityUsage="XXSupAddressEO"
+      AliasName="CREATION_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy"
+      IsNotNull="true"
+      EntityAttrName="CreatedBy"
+      EntityUsage="XXSupAddressEO"
+      AliasName="CREATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateDate"
+      EntityAttrName="LastUpdateDate"
+      EntityUsage="XXSupAddressEO"
+      AliasName="LAST_UPDATE_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdatedBy"
+      IsUpdateable="while_insert"
+      EntityAttrName="LastUpdatedBy"
+      EntityUsage="XXSupAddressEO"
+      AliasName="LAST_UPDATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateLogin"
+      EntityAttrName="LastUpdateLogin"
+      EntityUsage="XXSupAddressEO"
+      AliasName="LAST_UPDATE_LOGIN" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DisableTrans"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EnableFlag"
+      EntityAttrName="EnableFlag"
+      EntityUsage="XXSupAddressEO"
+      AliasName="ENABLE_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DashboardInd"
+      EntityAttrName="DashboardInd"
+      EntityUsage="XXSupAddressEO"
+      AliasName="DASHBOARD_IND" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="VendorExtranetInd"
+      EntityAttrName="VendorExtranetInd"
+      EntityUsage="XXSupAddressEO"
+      AliasName="VENDOR_EXTRANET_IND" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AddrTypeId"
+      IsNotNull="true"
+      EntityAttrName="AddrTypeId"
+      EntityUsage="XXSupAddressEO"
+      AliasName="ADDR_TYPE_ID" >
+   </ViewAttribute>
+</ViewObject>

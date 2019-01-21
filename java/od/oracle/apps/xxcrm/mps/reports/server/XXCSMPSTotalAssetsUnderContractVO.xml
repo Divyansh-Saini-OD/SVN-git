@@ -1,0 +1,208 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="XXCSMPSTotalAssetsUnderContractVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSTotalAssetsUnderContractVOImpl"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT        
+   A.PARTY_NAME     AS CUSTOMER_NAME,
+   A.MANUFACTURER   AS MANUFACTURER,
+   A.MODEL          AS MODEL,
+   A.PROGRAM_TYPE   AS PROGRAM_TYPE,
+   A.SERIAL_NO      AS SERIAL_NO,
+   A.PERIOD_COVERED_ST_DATE AS START_DATE, 
+   A.EXPIRED_DATE AS EXPIRED_DATE,
+   A.CONTRACT_NUMBER AS CONTRACT_NUMBER,
+   A.ACTIVE_STATUS AS  ACTIVE_STATUS,
+   A.MANAGED_STATUS AS MANAGED_STATUS,
+   sum(NVL(total_count,0)) as totalcount, 
+   SUM(NVL(TOTAL_BLACK_COUNT,0)) AS TOTAL_BLACK_COUNT, 
+   sum(NVL(total_color_count,0)) as total_color_count
+FROM  xx_cs_mps_device_b a ,
+      xx_cs_mps_device_details md
+       WHERE MD.SERIAL_NO = A.SERIAL_NO
+        AND MD.SUPPLIES_LABEL = 'USAGE'
+        AND A.PROGRAM_TYPE IS NOT NULL
+        AND A.PARTY_ID IS NOT NULL
+        AND A.PARTY_NAME = NVL(:1,A.PARTY_NAME)
+        AND A.PROGRAM_TYPE =        NVL(:2,A.PROGRAM_TYPE)
+        AND TO_DATE(A.PERIOD_COVERED_ST_DATE,'dd-mon-yy' ) >= TO_DATE(NVL(:3, A.PERIOD_COVERED_ST_DATE), 'dd-mon-yy')
+        AND TO_DATE(A.PERIOD_COVERED_END_DATE,'dd-mon-yy' ) <= TO_DATE(NVL(:4, A.PERIOD_COVERED_END_DATE), 'dd-mon-yy')
+        GROUP BY  A.PARTY_NAME, A.MANUFACTURER ,A.MODEL,   A.PROGRAM_TYPE,A.SERIAL_NO,A.PERIOD_COVERED_ST_DATE ,A.EXPIRED_DATE, A.CONTRACT_NUMBER,A.ACTIVE_STATUS, A.MANAGED_STATUS
+        order by sum(NVL(total_count,0)) DESC
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isExpertMode" Value="true" />
+      <Attr Name="_version" Value="10.1.3.41.57" />
+      <Attr Name="_codeGenFlag2" Value="Access|Coll" />
+   </DesignTime>
+   <ViewAttribute
+      Name="CustomerName"
+      IsPersistent="false"
+      Precision="250"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CUSTOMER_NAME"
+      Expression="CUSTOMER_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="250" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Manufacturer"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="MANUFACTURER"
+      Expression="MANUFACTURER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Model"
+      IsPersistent="false"
+      Precision="250"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="MODEL"
+      Expression="MODEL"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="250" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProgramType"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PROGRAM_TYPE"
+      Expression="PROGRAM_TYPE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SerialNo"
+      IsPersistent="false"
+      Precision="100"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SERIAL_NO"
+      Expression="SERIAL_NO"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="100" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="StartDate"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      AliasName="START_DATE"
+      Expression="START_DATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ExpiredDate"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      AliasName="EXPIRED_DATE"
+      Expression="EXPIRED_DATE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContractNumber"
+      IsPersistent="false"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CONTRACT_NUMBER"
+      Expression="CONTRACT_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ActiveStatus"
+      IsPersistent="false"
+      Precision="250"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ACTIVE_STATUS"
+      Expression="ACTIVE_STATUS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="250" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ManagedStatus"
+      IsPersistent="false"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="MANAGED_STATUS"
+      Expression="MANAGED_STATUS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Totalcount"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="TOTALCOUNT"
+      Expression="TOTALCOUNT"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TotalBlackCount"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="TOTAL_BLACK_COUNT"
+      Expression="TOTAL_BLACK_COUNT"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TotalColorCount"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="TOTAL_COLOR_COUNT"
+      Expression="TOTAL_COLOR_COUNT"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

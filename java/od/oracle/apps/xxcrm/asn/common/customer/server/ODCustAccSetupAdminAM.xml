@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<AppModule
+   Name="ODCustAccSetupAdminAM"
+   ComponentClass="od.oracle.apps.xxcrm.asn.common.customer.server.ODCustAccSetupAdminAMImpl"
+   LoadComponentsLazily="true" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="ODContractTemplatesVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.customer.server.ODContractTemplatesVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODDefaultValuesVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.customer.server.ODDefaultValuesVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODDocumentTemplatesVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.customer.server.ODDocumentTemplatesVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAccSetupCntrtNumVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.poplist.server.ODAccSetupLookupsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAccSetupCntrtPriorVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.poplist.server.ODAccSetupLookupsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAccSetupCntrtCustomVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.poplist.server.ODAccSetupLookupsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAccSetupPayMethVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.poplist.server.ODAccSetupLookupsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAccSetupDocTypVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.poplist.server.ODAccSetupLookupsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAccSetupDocNameVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.poplist.server.ODAccSetupLookupsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAccSetupDocFreqVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.poplist.server.ODAccSetupLookupsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAccSetupPricePlanVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.poplist.server.ODAccSetupLookupsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAccSetupDocSortVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.poplist.server.ODAccSetupLookupsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODRevenueBandVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.poplist.server.ODRevenueBandVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODSalesRoleLookupsVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.poplist.server.ODSalesRoleLookupsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAcctSetupAdminDocSortShuttleVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.poplist.server.ODAcctSetupAdminDocSortShuttleVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODDocTemplateAttributesVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.customer.server.ODDocTemplateAttributesVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAcctSetupAdminDocPageBreakShuttleVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.poplist.server.ODAcctSetupAdminDocPageBreakShuttleVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAcctSetupAdminDocTotalsShuttleVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.common.poplist.server.ODAcctSetupAdminDocTotalsShuttleVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODAcctSetupDocSortLokkupVO"
+      ViewObjectName="od.oracle.apps.xxcrm.customer.account.poplist.server.ODAcctSetupDocSortLokkupVO" >
+   </ViewUsage>
+</AppModule>

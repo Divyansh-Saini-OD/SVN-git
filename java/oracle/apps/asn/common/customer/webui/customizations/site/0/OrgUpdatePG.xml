@@ -1,0 +1,14 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.5.4.81_481" xml:lang="en-US" customizes="/oracle/apps/asn/common/customer/webui/OrgUpdatePG" developerMode="true" package="/oracle/apps/asn/common/customer/webui/customizations/site/0" xmlns:oa="http://xmlns.oracle.com/oa">
+   <modifications>
+      <modify element="PageLayoutRN" controllerClass="od.oracle.apps.xxcrm.asn.common.customer.webui.ODOrgUpdateCO"/>
+      <insert before="ASNRelInfoTopSpacerRN">
+         <oa:button id="viewHierBtn" adminCustomizable="true" dataType="VARCHAR2" disabled="false" hAlign="start" prompt="View Hierarchy" rendered="true" scope="." serverUnvalidated="false" shortDesc="View Hierarchy" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <move element="ASNRelInfoRN" after="ASNRelInfoTopSpacerRN"/>
+      <move element="ASNRelInfoSpacerRN" after="ASNRelInfoRN"/>
+      <insert after="ASNRelInfoSpacerRN">
+         <oa:button id="viewRelaBtn" adminCustomizable="true" dataType="VARCHAR2" disabled="false" hAlign="start" prompt="Visualize Relationships" rendered="true" scope="." serverUnvalidated="false" shortDesc="Visualize Relationships" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+   </modifications>
+</customization>

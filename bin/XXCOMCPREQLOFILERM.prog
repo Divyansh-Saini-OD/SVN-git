@@ -1,0 +1,80 @@
+# +===================================================================+
+# |     	Office Depot - Project Simplify                  		  |
+# |      			 				                			      |
+# +===================================================================+
+# | Name  : 	   XXCOMCPREQLOFILERM	                              |
+# | Description:   This program does:                   			  |
+# |             1) Selects the concurrent requests and remove their   |
+# |                log and output files								  |
+# |Change Record:                                                     |
+# |===============                                                    |
+# |Version   Date        Author           Remarks                     |
+# |=======   ==========  =============    ============================|
+# |DRAFT 1A  30-MAY-2017 MADHU BOLLI      Initial Version             |
+# +===================================================================+
+
+
+# Displaying program arguments
+   
+ echo "1 st argument = username/password"
+ echo "2 nd argument = $2"
+ echo "3 rd argument = $3"
+ echo "4 th argument = $4"
+ echo "5 th argument - group = $5"
+
+ l_grp=$5
+ 
+echo "Started to retrieve the list of concurrent requests" 
+
+export SQLPATH=$APPL_TOP
+echo $SQLPATH
+ 
+# Retrieve the CP Requests log and output file list to remove
+IFS=$'\n'
+for line in `sqlplus -s $1 <<EOF
+set pagesize 0
+set linesize 255
+set sqlprompt " "
+set serveroutput on
+set feedback off 
+set verify off
+	select  
+		'rm -f ' || req.logfile_name || ' ' || req.outfile_name || CHR(10)    
+	from  fnd_concurrent_requests req
+		  ,fnd_concurrent_programs_vl prg
+      ,xx_fin_translatedefinition DEF
+      ,xx_fin_translatevalues VAL
+      ,fnd_application fap
+    where req.concurrent_program_id = prg.concurrent_program_id
+      and DEF.translate_id = VAL.translate_id
+      and DEF.translation_name = 'OD_COMN_CP_LOG_OUT_RETAIN'
+      and fap.application_short_name = VAL.source_value2
+	  and prg.concurrent_program_name = VAL.source_value3
+      and prg.application_id = fap.application_id
+      and req.program_application_id = prg.application_id
+      and req.actual_completion_date < sysdate - VAL.target_value1
+	  and (
+			(VAL.target_value2 is not NULL and (req.actual_completion_date >= to_date(VAL.target_value2) - VAL.target_value1)) 
+			or (VAL.target_value2 is NULL)
+		)
+	  and NOT (VAL.target_value3 = 'Y' and req.status_code in ('E', 'G'))
+	  and sysdate between VAL.start_date_active and NVL(VAL.end_date_active, sysdate+1)
+	  and VAL.source_value1 = decode(NVL('$l_grp', 'ALL'), 'ALL', VAL.source_value1, '$l_grp');  
+	   
+exit
+EOF` 
+do 
+  echo $line
+  eval $line
+done
+
+echo "Updating last run date in translation target_value2" 
+l_update==`sqlplus -s $1 <<EOF 
+update xx_fin_translatevalues VAL set VAL.target_value2 = sysdate WHERE VAL.source_value1 = decode(NVL('$l_grp', 'ALL'), 'ALL', VAL.source_value1, '$l_grp') and exists (
+SELECT 'Exists' FROM xx_fin_translatedefinition DEF  where DEF.translate_id = VAL.translate_id and DEF.translation_name = 'OD_COMN_CP_LOG_OUT_RETAIN');
+commit;
+echo "Update completed" 
+echo $l_update
+exit
+EOF` 
+echo "Completed" 

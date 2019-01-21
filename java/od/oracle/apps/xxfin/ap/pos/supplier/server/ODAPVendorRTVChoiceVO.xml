@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODAPVendorRTVChoiceVO"
+   BindingStyle="OracleName"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxfin.ap.pos.supplier.server.ODAPVendorRTVChoiceVOImpl"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select 
+(POV.VENDOR_NAME 
+||' : '||POVS.VENDOR_SITE_CODE) as RTV_SITE_CODE,POVS.VENDOR_SITE_ID, POVS.VENDOR_ID
+from ap_supplier_sites_all POVS, ap_suppliers POV
+WHERE POVS.PAY_SITE_FLAG = 'N'
+AND   POVS.PURCHASING_SITE_FLAG = 'N'
+AND   POVS.VENDOR_SITE_CODE LIKE '%RTV%'
+AND   POVS.ATTRIBUTE8 LIKE '%RTV%'
+AND    POVS.VENDOR_ID = POV.VENDOR_ID
+ORDER BY POV.VENDOR_NAME
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isExpertMode" Value="true" />
+      <Attr Name="_version" Value="10.1.3.41.57" />
+      <Attr Name="_codeGenFlag2" Value="Access|Coll|VarAccess" />
+   </DesignTime>
+   <ViewAttribute
+      Name="RtvSiteCode"
+      IsPersistent="false"
+      Precision="258"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="RTV_SITE_CODE"
+      Expression="RTV_SITE_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="258" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="VendorSiteId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="VENDOR_SITE_ID"
+      Expression="VENDOR_SITE_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="VendorId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="VENDOR_ID"
+      Expression="VENDOR_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

@@ -1,0 +1,4744 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="OD_PoRequisitionLinesVO"
+   Extends="oracle.apps.icx.por.req.server.PoRequisitionLinesVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.icx.por.req.server.OD_PoRequisitionLinesVORowImpl"
+   ComponentClass="od.oracle.apps.icx.por.req.server.OD_PoRequisitionLinesVOImpl"
+   FetchMode="FETCH_AS_NEEDED"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT PoRequisitionLineEO.REQUISITION_LINE_ID, 
+       PoRequisitionLineEO.REQUISITION_HEADER_ID, 
+       PoRequisitionLineEO.LINE_NUM, 
+       PoRequisitionLineEO.LAST_UPDATE_DATE, 
+       PoRequisitionLineEO.LAST_UPDATED_BY, 
+       PoRequisitionLineEO.LAST_UPDATE_LOGIN, 
+       PoRequisitionLineEO.CREATION_DATE, 
+       PoRequisitionLineEO.CREATED_BY, 
+       PoRequisitionLineEO.DELIVER_TO_LOCATION_ID, 
+       PoRequisitionLineEO.TO_PERSON_ID, 
+       PoRequisitionLineEO.ITEM_DESCRIPTION, 
+       PoRequisitionLineEO.CATEGORY_ID, 
+       PoRequisitionLineEO.UNIT_MEAS_LOOKUP_CODE, 
+       PoRequisitionLineEO.UNIT_PRICE, 
+       PoRequisitionLineEO.QUANTITY, 
+       PoRequisitionLineEO.LINE_TYPE_ID, 
+       PoRequisitionLineEO.SOURCE_TYPE_CODE, 
+       PoRequisitionLineEO.ITEM_ID, 
+       PoRequisitionLineEO.ITEM_REVISION, 
+       PoRequisitionLineEO.QUANTITY_DELIVERED, 
+       PoRequisitionLineEO.SUGGESTED_BUYER_ID, 
+       PoRequisitionLineEO.ENCUMBERED_FLAG, 
+       PoRequisitionLineEO.RFQ_REQUIRED_FLAG, 
+       PoRequisitionLineEO.NEED_BY_DATE, 
+       PoRequisitionLineEO.LINE_LOCATION_ID, 
+       PoRequisitionLineEO.MODIFIED_BY_AGENT_FLAG, 
+       PoRequisitionLineEO.PARENT_REQ_LINE_ID, 
+       PoRequisitionLineEO.JUSTIFICATION, 
+       PoRequisitionLineEO.NOTE_TO_AGENT, 
+       PoRequisitionLineEO.NOTE_TO_RECEIVER, 
+       PoRequisitionLineEO.PURCHASING_AGENT_ID, 
+       PoRequisitionLineEO.DOCUMENT_TYPE_CODE, 
+       PoRequisitionLineEO.BLANKET_PO_HEADER_ID, 
+       PoRequisitionLineEO.BLANKET_PO_LINE_NUM, 
+       PoRequisitionLineEO.CURRENCY_CODE, 
+       PoRequisitionLineEO.RATE_TYPE, 
+       PoRequisitionLineEO.RATE_DATE, 
+       PoRequisitionLineEO.RATE, 
+       PoRequisitionLineEO.CURRENCY_UNIT_PRICE, 
+       PoRequisitionLineEO.SUGGESTED_VENDOR_NAME, 
+       PoRequisitionLineEO.SUGGESTED_VENDOR_LOCATION, 
+       PoRequisitionLineEO.SUGGESTED_VENDOR_CONTACT, 
+       PoRequisitionLineEO.SUGGESTED_VENDOR_PHONE, 
+       PoRequisitionLineEO.SUGGESTED_VENDOR_PRODUCT_CODE, 
+       PoRequisitionLineEO.UN_NUMBER_ID, 
+       PoRequisitionLineEO.HAZARD_CLASS_ID, 
+       PoRequisitionLineEO.MUST_USE_SUGG_VENDOR_FLAG, 
+       PoRequisitionLineEO.REFERENCE_NUM, 
+       PoRequisitionLineEO.ON_RFQ_FLAG, 
+       PoRequisitionLineEO.URGENT_FLAG, 
+       PoRequisitionLineEO.CANCEL_FLAG, 
+       PoRequisitionLineEO.SOURCE_ORGANIZATION_ID, 
+       PoRequisitionLineEO.SOURCE_SUBINVENTORY, 
+       PoRequisitionLineEO.DESTINATION_TYPE_CODE, 
+       PoRequisitionLineEO.DESTINATION_ORGANIZATION_ID, 
+       PoRequisitionLineEO.DESTINATION_SUBINVENTORY, 
+       PoRequisitionLineEO.QUANTITY_CANCELLED, 
+       PoRequisitionLineEO.CANCEL_DATE, 
+       PoRequisitionLineEO.CANCEL_REASON, 
+       PoRequisitionLineEO.CLOSED_CODE, 
+       PoRequisitionLineEO.AGENT_RETURN_NOTE, 
+       PoRequisitionLineEO.CHANGED_AFTER_RESEARCH_FLAG, 
+       PoRequisitionLineEO.VENDOR_ID, 
+       PoRequisitionLineEO.VENDOR_SITE_ID, 
+       PoRequisitionLineEO.VENDOR_CONTACT_ID, 
+       PoRequisitionLineEO.RESEARCH_AGENT_ID, 
+       PoRequisitionLineEO.ON_LINE_FLAG, 
+       PoRequisitionLineEO.WIP_ENTITY_ID, 
+       PoRequisitionLineEO.WIP_LINE_ID, 
+       PoRequisitionLineEO.WIP_REPETITIVE_SCHEDULE_ID, 
+       PoRequisitionLineEO.WIP_OPERATION_SEQ_NUM, 
+       PoRequisitionLineEO.WIP_RESOURCE_SEQ_NUM, 
+       PoRequisitionLineEO.ATTRIBUTE_CATEGORY, 
+       PoRequisitionLineEO.DESTINATION_CONTEXT, 
+       PoRequisitionLineEO.INVENTORY_SOURCE_CONTEXT, 
+       PoRequisitionLineEO.VENDOR_SOURCE_CONTEXT, 
+       PoRequisitionLineEO.BOM_RESOURCE_ID, 
+       PoRequisitionLineEO.REQUEST_ID, 
+       PoRequisitionLineEO.PROGRAM_APPLICATION_ID, 
+       PoRequisitionLineEO.PROGRAM_ID, 
+       PoRequisitionLineEO.PROGRAM_UPDATE_DATE, 
+       PoRequisitionLineEO.USSGL_TRANSACTION_CODE, 
+       PoRequisitionLineEO.GOVERNMENT_CONTEXT, 
+       PoRequisitionLineEO.CLOSED_REASON, 
+       PoRequisitionLineEO.CLOSED_DATE, 
+       PoRequisitionLineEO.TRANSACTION_REASON_CODE, 
+       PoRequisitionLineEO.QUANTITY_RECEIVED, 
+       PoRequisitionLineEO.SOURCE_REQ_LINE_ID, 
+       PoRequisitionLineEO.ORG_ID, 
+       PoRequisitionLineEO.KANBAN_CARD_ID, 
+       PoRequisitionLineEO.CATALOG_TYPE, 
+       PoRequisitionLineEO.CATALOG_SOURCE, 
+       PoRequisitionLineEO.MANUFACTURER_ID, 
+       PoRequisitionLineEO.MANUFACTURER_NAME, 
+       PoRequisitionLineEO.MANUFACTURER_PART_NUMBER, 
+       PoRequisitionLineEO.REQUESTER_EMAIL, 
+       PoRequisitionLineEO.REQUESTER_FAX, 
+       PoRequisitionLineEO.REQUESTER_PHONE, 
+       PoRequisitionLineEO.UNSPSC_CODE, 
+       PoRequisitionLineEO.OTHER_CATEGORY_CODE, 
+       PoRequisitionLineEO.SUPPLIER_DUNS, 
+       PoRequisitionLineEO.TAX_STATUS_INDICATOR, 
+       PoRequisitionLineEO.PCARD_FLAG, 
+       PoRequisitionLineEO.NEW_SUPPLIER_FLAG, 
+       PoRequisitionLineEO.AUTO_RECEIVE_FLAG, 
+       PoRequisitionLineEO.TAX_USER_OVERRIDE_FLAG, 
+       PoRequisitionLineEO.TAX_CODE_ID, 
+       PoRequisitionLineEO.NOTE_TO_VENDOR, 
+       PoRequisitionLineEO.OKE_CONTRACT_VERSION_ID, 
+       PoRequisitionLineEO.OKE_CONTRACT_HEADER_ID, 
+       PoRequisitionLineEO.ITEM_SOURCE_ID, 
+       PoRequisitionLineEO.SUPPLIER_REF_NUMBER, 
+       PoRequisitionLineEO.SECONDARY_UNIT_OF_MEASURE, 
+       PoRequisitionLineEO.SECONDARY_QUANTITY, 
+       PoRequisitionLineEO.PREFERRED_GRADE, 
+       PoRequisitionLineEO.SECONDARY_QUANTITY_RECEIVED, 
+       PoRequisitionLineEO.SECONDARY_QUANTITY_CANCELLED, 
+       PoRequisitionLineEO.AUCTION_HEADER_ID, 
+       PoRequisitionLineEO.AUCTION_DISPLAY_NUMBER, 
+       PoRequisitionLineEO.AUCTION_LINE_NUMBER, 
+       PoRequisitionLineEO.REQS_IN_POOL_FLAG, 
+       PoRequisitionLineEO.VMI_FLAG, 
+       PoRequisitionLineEO.ATTRIBUTE1, 
+       PoRequisitionLineEO.ATTRIBUTE2, 
+       PoRequisitionLineEO.ATTRIBUTE3, 
+       PoRequisitionLineEO.ATTRIBUTE4, 
+       PoRequisitionLineEO.ATTRIBUTE5, 
+       PoRequisitionLineEO.ATTRIBUTE6, 
+       PoRequisitionLineEO.ATTRIBUTE7, 
+       PoRequisitionLineEO.ATTRIBUTE8, 
+       PoRequisitionLineEO.ATTRIBUTE9, 
+       PoRequisitionLineEO.ATTRIBUTE10, 
+       PoRequisitionLineEO.ATTRIBUTE11, 
+       PoRequisitionLineEO.ATTRIBUTE12, 
+       PoRequisitionLineEO.ATTRIBUTE13, 
+       PoRequisitionLineEO.ATTRIBUTE14, 
+       PoRequisitionLineEO.ATTRIBUTE15, 
+       PoRequisitionLineEO.GLOBAL_ATTRIBUTE1, 
+       PoRequisitionLineEO.GLOBAL_ATTRIBUTE2, 
+       PoRequisitionLineEO.GLOBAL_ATTRIBUTE3, 
+       PoRequisitionLineEO.GLOBAL_ATTRIBUTE4, 
+       PoRequisitionLineEO.GLOBAL_ATTRIBUTE5, 
+       PoRequisitionLineEO.GLOBAL_ATTRIBUTE6, 
+       PoRequisitionLineEO.GLOBAL_ATTRIBUTE7, 
+       PoRequisitionLineEO.GLOBAL_ATTRIBUTE8, 
+       PoRequisitionLineEO.GLOBAL_ATTRIBUTE9, 
+       PoRequisitionLineEO.GLOBAL_ATTRIBUTE10, 
+       PoRequisitionLineEO.GLOBAL_ATTRIBUTE11, 
+       PoRequisitionLineEO.GLOBAL_ATTRIBUTE12, 
+       PoRequisitionLineEO.GLOBAL_ATTRIBUTE13, 
+       PoRequisitionLineEO.GLOBAL_ATTRIBUTE14, 
+       PoRequisitionLineEO.GLOBAL_ATTRIBUTE15, 
+       PoRequisitionLineEO.GLOBAL_ATTRIBUTE16, 
+       PoRequisitionLineEO.GLOBAL_ATTRIBUTE17, 
+       PoRequisitionLineEO.GLOBAL_ATTRIBUTE18, 
+       PoRequisitionLineEO.GLOBAL_ATTRIBUTE19, 
+       PoRequisitionLineEO.GLOBAL_ATTRIBUTE20, 
+       PoRequisitionLineEO.GLOBAL_ATTRIBUTE_CATEGORY, 
+       PoRequisitionLineEO.BID_NUMBER, 
+       PoRequisitionLineEO.BID_LINE_NUMBER, 
+       PoRequisitionLineEO.AMOUNT, 
+       PoRequisitionLineEO.CURRENCY_AMOUNT, 
+       PoRequisitionLineEO.NONCAT_TEMPLATE_ID, 
+       PoRequisitionLineEO.JOB_ID, 
+       PoRequisitionLineEO.CONTACT_INFORMATION, 
+       PoRequisitionLineEO.CANDIDATE_SCREENING_REQD_FLAG, 
+       PoRequisitionLineEO.SUGGESTED_SUPPLIER_FLAG, 
+       PoRequisitionLineEO.ASSIGNMENT_END_DATE, 
+       PoRequisitionLineEO.OVERTIME_ALLOWED_FLAG, 
+       PoRequisitionLineEO.CONTRACTOR_REQUISITION_FLAG, 
+       PoRequisitionLineEO.LABOR_REQ_LINE_ID, 
+       PoRequisitionLineEO.JOB_LONG_DESCRIPTION, 
+       PoRequisitionLineEO.CONTRACTOR_STATUS, 
+       PoRequisitionLineEO.SUGGESTED_VENDOR_CONTACT_FAX, 
+       PoRequisitionLineEO.SUGGESTED_VENDOR_CONTACT_EMAIL, 
+       PoRequisitionLineEO.CANDIDATE_FIRST_NAME, 
+       PoRequisitionLineEO.CANDIDATE_LAST_NAME, 
+       PoRequisitionLineEO.ASSIGNMENT_START_DATE, 
+       PoRequisitionLineEO.ORDER_TYPE_LOOKUP_CODE, 
+       PoRequisitionLineEO.PURCHASE_BASIS, 
+       PoRequisitionLineEO.MATCHING_BASIS, 
+       PoRequisitionLineEO.NEGOTIATED_BY_PREPARER_FLAG, 
+       PoRequisitionLineEO.BASE_UNIT_PRICE, 
+       PoRequisitionLineEO.AT_SOURCING_FLAG, 
+       PoRequisitionLineEO.TAX_ATTRIBUTE_UPDATE_CODE, 
+       PoRequisitionLineEO.DROP_SHIP_FLAG, 
+       PoRequisitionLineEO.SHIP_METHOD, 
+       PoRequisitionLineEO.ESTIMATED_PICKUP_DATE, 
+       PoRequisitionLineEO.SUPPLIER_NOTIFIED_FOR_CANCEL, 
+       PoRequisitionLineEO.TAX_NAME, 
+       PoRequisitionLineEO.CLM_BASE_LINE_NUM, 
+       PoRequisitionLineEO.CLM_FUNDED_FLAG, 
+       PoRequisitionLineEO.CLM_INFO_FLAG, 
+       PoRequisitionLineEO.CLM_OPTION_FROM_DATE, 
+       PoRequisitionLineEO.CLM_OPTION_INDICATOR, 
+       PoRequisitionLineEO.CLM_OPTION_NUM, 
+       PoRequisitionLineEO.CLM_OPTION_TO_DATE, 
+       PoRequisitionLineEO.GROUP_LINE_ID, 
+       PoRequisitionLineEO.LINE_NUM_DISPLAY, 
+       PoRequisitionLineEO.CONFORMED_LINE_ID, 
+       PoRequisitionLineEO.AMENDMENT_TYPE, 
+       PoRequisitionLineEO.AMENDMENT_STATUS, 
+       PoRequisitionLineEO.CONTRACT_TYPE, 
+       PoRequisitionLineEO.COST_CONSTRAINT, 
+       PoRequisitionLineEO.UDA_TEMPLATE_ID, 
+       PoRequisitionLineEO.CLM_PERIOD_PERF_END_DATE, 
+       PoRequisitionLineEO.CLM_PERIOD_PERF_START_DATE, 
+       PoRequisitionLineEO.CLM_EXTENDED_ITEM_DESCRIPTION, 
+       PoRequisitionLineEO.CLM_OPTION_EXERCISED, 
+       PoRequisitionLineEO.IS_LINE_NUM_DISPLAY_MODIFIED, 
+       PoRequisitionLineEO.CLM_EXERCISED_DATE, 
+       PoRequisitionLineEO.FUND_SOURCE_NOT_KNOWN, 
+       PoRequisitionLineEO.CLM_MIPR_OBLIGATION_TYPE, 
+       PoRequisitionLineEO.REQ_TEMPLATE_NAME, 
+       PoRequisitionLineEO.REQ_TEMPLATE_LINE_NUM, 
+       PoRequisitionLineEO.PUNCHOUT_ITEM_ID,
+       (SELECT msi.Segment1
+        FROM mtl_system_items_B msi
+        WHERE msi.inventory_item_id =  PoRequisitionLineEO.item_id 
+        AND msi.organization_id = fnd_profile.value('AMS_ITEM_ORGANIZATION_ID')) ITEM_NAME
+       FROM PO_REQUISITION_LINES_ALL PoRequisitionLineEO
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_isExpertMode" Value="true" />
+      <Attr Name="_version" Value="10.1.3.43.6" />
+      <Attr Name="_codeGenFlag2" Value="Access|Coll|VarAccess" />
+   </DesignTime>
+   <ViewAttribute
+      Name="Selected"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="Selected"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="REQUISITION_LINE_ID"
+      IsUpdateable="false"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SuggestedBuyer"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DestinationType"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeliverToLocation"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Requester"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="UnitOfMeasure"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Total"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CostCenter"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="200"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NonrecoverableTax"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RecoverableTax"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EstimatedTax"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ServiceCost"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SupplierContact"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SupplierSite"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Supplier"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InvReplenishment"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Category"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CategoryDescription"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ItemNumber"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OperationReference"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="WorkOrder"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="UnNumber"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="HazardClass"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LineType"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="VendorNumber"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DestinationOrganization"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SourceDocType"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SourceDocNum"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DisplayRateType"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InfoTemplateName"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="INVENTORY_ITEM_ID"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ORGANIZATION_ID"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProjectNumber"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="25"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ReqAwardId"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CodeCombinationId"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AwardNumber"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="15"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaskId"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaskNumber"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="25"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProjectId"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ChargeAccount"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TrasactionCode"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GLDate"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ExpenditureItemDate"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ExpenditureOrganizationId"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ExpenditureOrg"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ExpenditureType"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CategoryEditable"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ItemDescEditable"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LineDisabled"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RateDateEditable"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RateTypeEditable"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RateEditable"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CurrencyEditable"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AmountEditable"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PriceEditable"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="QuantityEditable"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="UomEditable"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContractNumEditable"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MfrPartNumEditable"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MfrEditable"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SupplItemNumEditable"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SupplFaxEditable"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SupplEmailEditable"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SupplPhoneEditable"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SupplContactEditable"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SupplSiteEditable"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SupplEditable"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TxnTotal"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ApprovalTotal"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EnterChargeAccount"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Multiple"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GlEncumberedDate"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InfoTemplateInternalName"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NewSupplier"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PcardUsed"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RestrictSupplierType"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RestrictCategoryFlag"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CommodityId"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Urgent"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Job"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SupplierSelected"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SupplierSwitcher"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ExpenseAmount"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CandidateFullName"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsAddAccountDistributionRendered"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsAddOneTimeAddrRendered"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsAddProjectDistributionRendered"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsAmountRendered"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsAwardMultiple"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsAwardMultipleRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsAwardRendered"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsChargeAccountMultiple"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsChargeAccountMultipleRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsChargeAccountReadOnly"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsChargeAccountRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsDeliverToLocationReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsDestinationTypeReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsEditDelOneTimeAddrRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsEnterChargeAccountRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsExpenditureItemDateMultiple"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsExpenditureItemDateMultipleRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsExpenditureItemDateRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsExpenditureOrgMultiple"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsExpenditureOrgMultipleRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsExpenditureOrgRendered"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsExpenditureTypeMultiple"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsExpenditureTypeMultipleRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsExpenditureTypeRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsExpenseLine"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsGLDateMultiple"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsGLDateRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsInventoryCheckboxRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsInventoryLine"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsInventoryPossibleLine"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsInventoryPossibleLineStr"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsLocationOneTime"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsPreferredSupplier"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsProjectMultiple"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsProjectMultipleRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsProjectReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsProjectRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsProjectsTabRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsQuantityRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsShopFloorCheckboxRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsShopFloorLine"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsShopFloorPossibleLine"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsShopFloorPossibleLineStr"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsSplitDisabledRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsSplitEnabledRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsSuggestedBuyerRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsSuggestSupplier"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsSupplierRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsSupplierTextRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsSupplSiteRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsSupplSiteTextRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsTaskMultiple"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsTaskMultipleRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsTaskReadOnly"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsTaskRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsTaxRecoveryRateReadOnly"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OvertimeAllowed"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AssignContractorIconDisabled"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AssignContractorIconEnabled"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CategoryReadOnly"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContractNumReadOnly"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContractNumRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CopyIconDisabled"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CopyIconEnabled"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CurrencyReadOnly"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeleteIconDisabled"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeleteIconEnabled"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EditIconDisabled"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EditIconEnabled"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FuncAmountReadOnly"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InfoTemplateLinkRendered"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InfoTemplateTextRendered"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ItemDescInputRendered"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ItemDescReadOnly"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ItemDescLinkRendered"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MfrPartNumReadOnly"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MfrReadOnly"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NewSupplCheckboxRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="QuantityReadOnly"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RateDateReadOnly"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RateInfoRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RateReadOnly"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RateTypeReadOnly"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SupplContactReadOnly"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SupplEmailReadOnly"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SupplFaxReadOnly"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SupplAndSiteInputsRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SupplAndSiteLovsRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SupplItemNumReadOnly"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SupplPhoneReadOnly"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SupplReadOnly"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SupplSiteReadOnly"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TxnAmountReadOnly"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TxnPriceReadOnly"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="UomReadOnly"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsContractorLaborLine"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsGLDateMultipleRendered"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TxnPriceCurrencyCode"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TxnAmountCurrencyCode"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsAccountNicknameRendered"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AddToFavIconEnabled"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AddToFavIconDisabled"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RepunchoutLink"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContractorStatusLookup"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SupplierInfo"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SourceOrganization"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RecoveryRate"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsTaxRecoveryRateRendered"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DisplayCurrencyCode"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DisplayTxnPrice"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DisplayTxnAmount"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DisplayFuncAmount"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InsecItemDescInputRendered"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InsecItemDescLinkRendered"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SupplInfoRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SourceOrgRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="QuantityRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TxnPriceRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SourceSubinventoryDisplay"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CancelIconRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OnOrderIconRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ModifiedByBuyerIconRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CategoryRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ItemDescRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsTaskDisabled"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsAwardDisabled"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsUomRendered"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DisplayRfqRequiredFlag"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RfqRequiredFlagReadOnly"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaxClass"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TxnBusinessCat"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProdFiscalClass"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IntendedUse"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="UserFiscalClass"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AssessableVal"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProdCat"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AreTaxAttributesOverridden"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProdType"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AreTaxAttributesDisabled"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.Boolean"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsProjectShopFloorOrInvRendered"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsProjectExpenseRendered"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsTaskShopFloorOrInvRendered"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsTaskExpenseRendered"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="BOOLEAN"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsClinSLINEnabled"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsOptionsEnabled"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CLINIconEnabled"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SLINIconEnabled"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsCLINSLINDisabled"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsOptionsDisabled"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ClinSlinSwitcher"
+      IsSelected="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OptionsSwitcher"
+      IsSelected="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Disabled"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsSplitButtonEnabled"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsSplitButtonDisabled"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NeedByDateReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="UrgentReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RequesterReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RequesterPhoneReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RequesterEmailReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RequesterFaxReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeliverToInventoryReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeliverToMaintenanceReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SubinventoryReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="WorkOrderReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OperationReferenceReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SuggestedBuyerReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="UNNumberReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="HazardClassReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsComplexPricingEnabled"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CostConstraintDisplay"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContractTypeDisplay"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsUnitPriceReadOnly"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsAmountReadOnly"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CancelAmend"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CancelSwitcher"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsCancelSwitcherRendered"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsLinePlacedOnApprvPO"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProjectReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaskReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AwardReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ExpenditureTypeReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ExpenditureOrgReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ExpenditureItemDateReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TransactionNatureReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GLDateReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaxClassReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaxBusinessCatReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProdFiscalClassReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProdTypeReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IntendedUseReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="UseFiscalClassReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AssessableValReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProdCatReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DestinationTypeReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OptionDTReq"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsFederalFieldsEnabled"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsDisplayNeedByDate"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsDisplayPeriodDates"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsNeedByDateRequired"
+      IsSelected="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MiscLoa"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EnterMiscLoa"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsMiscLoaMultiple"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsMiscLoaRendered"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsMiscLoaReadOnly"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsMiscLoaMultipleRendered"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsEnterMiscLoaRendered"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PartialFundedFlag"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FundedValue"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsPartialFundedFlagMultiple"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsPartialFundedFlagRendered"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsFundedValueReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsPartialFundedFlagMultipleRendered"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PartialFundedFlagMultiple"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsFundedValueRendered"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="QuantityFunded"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AmountFunded"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsQuantityFundedRendered"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsAmountFundedRendered"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsClmOptionExercisedReadOnly"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsClmOptionExercisedRendered"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsLineNumDisplayReadOnly"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsPricingDetailsRendered"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ClmBaseLineNumDisplay"
+      IsSelected="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsInfoCheckboxReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsCancelCheckboxReadOnly"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ClickHere"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsOptionCheckBoxReadOnly"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsBaseLineNumReadOnly"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsOptionFieldsRendered"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsOptionLine"
+      IsSelected="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsFundSourceNotKnownRendered"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsFundSourceNotKnownReadOnly"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsObligationTypeRendered"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsObligationTypeReadOnly"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsMiprEnabled"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ItemLongDesc"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ItemImage"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsThumbnailFile"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="HideShow"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="QuantitySwitcher"
+      IsSelected="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TxnPriceSwitcher"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="UomSwitcher"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ItemDescTrunc"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AttachmentSwitcher"
+      IsSelected="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="HiringRequirementsRendered"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IsStandardJobRateSupplier"
+      IsSelected="false"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="NUMBER"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ItemName"
+      IsPersistent="false"
+      Precision="40"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ITEM_NAME"
+      Expression="ITEM_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

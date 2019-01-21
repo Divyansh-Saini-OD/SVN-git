@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE JboProject SYSTEM "jbo_03_01.dtd">
+
+<JboProject
+   Name="HzPuiCustProfileDisplayPVO"
+   SeparateXMLFiles="true"
+   PackageName="" >
+   <Containee
+      Name="server"
+      FullName="od.oracle.apps.ar.hz.components.account.customer.server"
+      ObjectType="JboPackage" >
+   </Containee>
+   <Containee
+      Name="server"
+      FullName="oracle.apps.ar.hz.components.account.customer.server.HzPuiCustProfileDisplayPVO"
+      ObjectType="JboPackage" >
+   </Containee>
+   <Substitutes>
+      <Substitute OldName ="oracle.apps.ar.hz.components.account.customer.server.HzPuiCustProfileDisplayPVO" NewName ="od.oracle.apps.ar.hz.components.account.customer.server.ODHzPuiCustProfileDisplayPVO" />      
+   </Substitutes>
+</JboProject>

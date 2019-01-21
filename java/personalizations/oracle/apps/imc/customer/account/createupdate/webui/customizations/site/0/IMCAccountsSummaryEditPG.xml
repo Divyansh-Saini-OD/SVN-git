@@ -1,0 +1,16 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.5.4.89_555" xml:lang="en-US" customizes="/oracle/apps/imc/customer/account/createupdate/webui/IMCAccountsSummaryEditPG" developerMode="true" xmlns:oa="http://xmlns.oracle.com/oa" package="/oracle/apps/imc/customer/account/createupdate/webui/customizations/site/0">
+   <modifications>
+      <move element="AccountName" after="AccountNum"/>
+      <move element="ProfileClass" after="AccountName"/>
+      <move element="PaymentTerms" after="ProfileClass"/>
+      <move element="Status" after="PaymentTerms"/>
+      <move element="CreationDate" after="Status"/>
+      <move element="CreditSummary" after="CreationDate"/>
+      <move element="Update" after="CreditSummary"/>
+      <insert after="Update">
+         <oa:button id="XX_CDH_ACCOUNT_EXT_ID" adminCustomizable="true" dataType="VARCHAR2" destination="javascript:window.open('OA.jsp?page=/od/oracle/apps/xxcrm/cdh/extension/webui/ODExtAttributeGenericPG&amp;EntGroup=XX_CDH_CUST_ACCOUNT&amp;VOClass=od.oracle.apps.xxcrm.addattr.account.server.ODAccountVO&amp;EOClass=od.oracle.apps.xxcrm.addattr.account.server.ODAccountEO&amp;EntKey={@CustAccountId}', 'self', '');void(0);" disabled="false" hAlign="start" prompt="Extensibles" rendered="true" scope="." serverUnvalidated="false" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <modify element="AccountNum" prompt="Billing Number"/>
+   </modifications>
+</customization>

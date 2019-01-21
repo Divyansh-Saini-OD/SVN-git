@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+<!--
+Subversion Info:
+$HeadURL$
+$Rev$
+$Date$
+-->
+
+<AppModule
+   Name="ODImportToolAM"
+   ComponentClass="od.oracle.apps.xxcrm.cdh.uploads.bulk.server.ODImportToolAMImpl"
+   LoadComponentsLazily="true" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="ODImportToolsVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.uploads.bulk.server.ODImportToolsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODImportToolTempVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.uploads.bulk.server.ODImportToolTempVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODImportToolTemplatePVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.uploads.poplist.server.ODImportToolTemplatePVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODImportTempNameFilesPVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cdh.uploads.poplist.server.ODImportTempNameFilesPVO" >
+   </ViewUsage>
+</AppModule>

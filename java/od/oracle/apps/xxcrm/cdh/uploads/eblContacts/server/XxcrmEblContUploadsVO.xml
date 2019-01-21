@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="XxcrmEblContUploadsVO"
+   SelectList="XxcrmEblContUploads.FILE_UPLOAD_ID, 
+       XxcrmEblContUploads.FILE_NAME, 
+       XxcrmEblContUploads.FILE_STATUS, 
+       XxcrmEblContUploads.FILE_CONTENT_TYPE, 
+       XxcrmEblContUploads.FILE_DATA, 
+       XxcrmEblContUploads.PROGRAM, 
+       XxcrmEblContUploads.CREATED_BY, 
+       XxcrmEblContUploads.CREATION_DATE, 
+       XxcrmEblContUploads.LAST_UPDATED_BY, 
+       XxcrmEblContUploads.LAST_UPDATE_DATE, 
+       XxcrmEblContUploads.REQUEST_ID, 
+       XxcrmEblContUploads.ROWID"
+   FromList="XXCRM_EBL_CONT_UPLOADS XxcrmEblContUploads"
+   BindingStyle="Oracle"
+   CustomQuery="false"
+   RowClass="od.oracle.apps.xxcrm.cdh.uploads.eblContacts.server.XxcrmEblContUploadsVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.cdh.uploads.eblContacts.server.XxcrmEblContUploadsVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.14.00" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <EntityUsage
+      Name="XxcrmEblContUploads"
+      Entity="od.oracle.apps.xxcrm.cdh.uploads.eblContacts.server.XxcrmEblContUploads" >
+      <DesignTime>
+         <Attr Name="_queryClause" Value="false" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="FileUploadId"
+      IsNotNull="true"
+      EntityAttrName="FileUploadId"
+      EntityUsage="XxcrmEblContUploads"
+      AliasName="FILE_UPLOAD_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FileName"
+      IsNotNull="true"
+      Precision="120"
+      EntityAttrName="FileName"
+      EntityUsage="XxcrmEblContUploads"
+      AliasName="FILE_NAME" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FileStatus"
+      IsNotNull="true"
+      Precision="1"
+      EntityAttrName="FileStatus"
+      EntityUsage="XxcrmEblContUploads"
+      AliasName="FILE_STATUS" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FileContentType"
+      IsNotNull="true"
+      Precision="120"
+      EntityAttrName="FileContentType"
+      EntityUsage="XxcrmEblContUploads"
+      AliasName="FILE_CONTENT_TYPE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FileData"
+      IsQueriable="false"
+      EntityAttrName="FileData"
+      EntityUsage="XxcrmEblContUploads"
+      AliasName="FILE_DATA" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Program"
+      Precision="30"
+      EntityAttrName="Program"
+      EntityUsage="XxcrmEblContUploads"
+      AliasName="PROGRAM" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy"
+      EntityAttrName="CreatedBy"
+      EntityUsage="XxcrmEblContUploads"
+      AliasName="CREATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate"
+      EntityAttrName="CreationDate"
+      EntityUsage="XxcrmEblContUploads"
+      AliasName="CREATION_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdatedBy"
+      EntityAttrName="LastUpdatedBy"
+      EntityUsage="XxcrmEblContUploads"
+      AliasName="LAST_UPDATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateDate"
+      EntityAttrName="LastUpdateDate"
+      EntityUsage="XxcrmEblContUploads"
+      AliasName="LAST_UPDATE_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RequestId"
+      EntityAttrName="RequestId"
+      EntityUsage="XxcrmEblContUploads"
+      AliasName="REQUEST_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RowID"
+      IsUpdateable="false"
+      EntityAttrName="RowID"
+      EntityUsage="XxcrmEblContUploads"
+      AliasName="ROWID" >
+   </ViewAttribute>
+</ViewObject>

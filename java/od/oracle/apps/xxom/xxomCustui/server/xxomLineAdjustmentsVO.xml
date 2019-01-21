@@ -1,0 +1,915 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="xxomLineAdjustmentsVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxom.xxomCustui.server.xxomLineAdjustmentsVORowImpl"
+   ComponentClass="od.oracle.apps.xxom.xxomCustui.server.xxomLineAdjustmentsVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT xxomOrderLinesEO.LINE_ID, 
+       xxomOrderLinesEO.HEADER_ID, 
+       xxomOrderLinesEO.LINE_NUMBER, 
+       xxomLineAdjustmentsEO.PRICE_ADJUSTMENT_ID, 
+       xxomLineAdjustmentsEO.CREATION_DATE, 
+       xxomLineAdjustmentsEO.CREATED_BY, 
+       xxomLineAdjustmentsEO.LAST_UPDATE_DATE, 
+       xxomLineAdjustmentsEO.LAST_UPDATED_BY, 
+       xxomLineAdjustmentsEO.LAST_UPDATE_LOGIN, 
+       xxomLineAdjustmentsEO.PROGRAM_APPLICATION_ID, 
+       xxomLineAdjustmentsEO.PROGRAM_ID, 
+       xxomLineAdjustmentsEO.PROGRAM_UPDATE_DATE, 
+       xxomLineAdjustmentsEO.REQUEST_ID, 
+       xxomLineAdjustmentsEO.HEADER_ID AS HEADER_ID1, 
+       xxomLineAdjustmentsEO.DISCOUNT_ID, 
+       xxomLineAdjustmentsEO.DISCOUNT_LINE_ID, 
+       xxomLineAdjustmentsEO.AUTOMATIC_FLAG, 
+       xxomLineAdjustmentsEO.PERCENT, 
+       xxomLineAdjustmentsEO.LINE_ID AS LINE_ID1, 
+       xxomLineAdjustmentsEO.CONTEXT, 
+       xxomLineAdjustmentsEO.ATTRIBUTE1, 
+       xxomLineAdjustmentsEO.ATTRIBUTE2, 
+       xxomLineAdjustmentsEO.ATTRIBUTE3, 
+       xxomLineAdjustmentsEO.ATTRIBUTE4, 
+       xxomLineAdjustmentsEO.ATTRIBUTE5, 
+       xxomLineAdjustmentsEO.ATTRIBUTE6, 
+       xxomLineAdjustmentsEO.ATTRIBUTE7, 
+       xxomLineAdjustmentsEO.ATTRIBUTE8, 
+       xxomLineAdjustmentsEO.ATTRIBUTE9, 
+       xxomLineAdjustmentsEO.ATTRIBUTE10, 
+       xxomLineAdjustmentsEO.ATTRIBUTE11, 
+       xxomLineAdjustmentsEO.ATTRIBUTE12, 
+       xxomLineAdjustmentsEO.ATTRIBUTE13, 
+       xxomLineAdjustmentsEO.ATTRIBUTE14, 
+       xxomLineAdjustmentsEO.ATTRIBUTE15, 
+       xxomLineAdjustmentsEO.ORIG_SYS_DISCOUNT_REF, 
+       xxomLineAdjustmentsEO.CHANGE_SEQUENCE, 
+       xxomLineAdjustmentsEO.LIST_HEADER_ID, 
+       xxomLineAdjustmentsEO.LIST_LINE_ID, 
+       xxomLineAdjustmentsEO.LIST_LINE_TYPE_CODE, 
+       xxomLineAdjustmentsEO.MODIFIED_FROM, 
+       xxomLineAdjustmentsEO.MODIFIED_TO, 
+       xxomLineAdjustmentsEO.UPDATE_ALLOWED, 
+       xxomLineAdjustmentsEO.CHANGE_REASON_CODE, 
+       xxomLineAdjustmentsEO.CHANGE_REASON_TEXT, 
+       xxomLineAdjustmentsEO.MODIFIER_MECHANISM_TYPE_CODE, 
+       xxomLineAdjustmentsEO.UPDATED_FLAG, 
+       xxomLineAdjustmentsEO.APPLIED_FLAG, 
+       xxomLineAdjustmentsEO.OPERAND, 
+       xxomLineAdjustmentsEO.ARITHMETIC_OPERATOR, 
+       xxomLineAdjustmentsEO.COST_ID, 
+       xxomLineAdjustmentsEO.TAX_CODE, 
+       xxomLineAdjustmentsEO.TAX_EXEMPT_FLAG, 
+       xxomLineAdjustmentsEO.TAX_EXEMPT_NUMBER, 
+       xxomLineAdjustmentsEO.TAX_EXEMPT_REASON_CODE, 
+       xxomLineAdjustmentsEO.PARENT_ADJUSTMENT_ID, 
+       xxomLineAdjustmentsEO.INVOICED_FLAG, 
+       xxomLineAdjustmentsEO.ESTIMATED_FLAG, 
+       xxomLineAdjustmentsEO.INC_IN_SALES_PERFORMANCE, 
+       xxomLineAdjustmentsEO.SPLIT_ACTION_CODE, 
+       Round(xxomLineAdjustmentsEO.ADJUSTED_AMOUNT,3), 
+       xxomLineAdjustmentsEO.PRICING_PHASE_ID, 
+       xxomLineAdjustmentsEO.CHARGE_TYPE_CODE, 
+       xxomLineAdjustmentsEO.CHARGE_SUBTYPE_CODE, 
+       xxomLineAdjustmentsEO.RANGE_BREAK_QUANTITY, 
+       xxomLineAdjustmentsEO.ACCRUAL_CONVERSION_RATE, 
+       xxomLineAdjustmentsEO.PRICING_GROUP_SEQUENCE, 
+       xxomLineAdjustmentsEO.ACCRUAL_FLAG, 
+       xxomLineAdjustmentsEO.LIST_LINE_NO, 
+       xxomLineAdjustmentsEO.SOURCE_SYSTEM_CODE, 
+       xxomLineAdjustmentsEO.BENEFIT_QTY, 
+       xxomLineAdjustmentsEO.BENEFIT_UOM_CODE, 
+       xxomLineAdjustmentsEO.PRINT_ON_INVOICE_FLAG, 
+       xxomLineAdjustmentsEO.EXPIRATION_DATE, 
+       xxomLineAdjustmentsEO.REBATE_TRANSACTION_TYPE_CODE, 
+       xxomLineAdjustmentsEO.REBATE_TRANSACTION_REFERENCE, 
+       xxomLineAdjustmentsEO.REBATE_PAYMENT_SYSTEM_CODE, 
+       xxomLineAdjustmentsEO.REDEEMED_DATE, 
+       xxomLineAdjustmentsEO.REDEEMED_FLAG, 
+       xxomLineAdjustmentsEO.MODIFIER_LEVEL_CODE, 
+       xxomLineAdjustmentsEO.PRICE_BREAK_TYPE_CODE, 
+       xxomLineAdjustmentsEO.SUBSTITUTION_ATTRIBUTE, 
+       xxomLineAdjustmentsEO.PRORATION_TYPE_CODE, 
+       xxomLineAdjustmentsEO.INCLUDE_ON_RETURNS_FLAG, 
+       xxomLineAdjustmentsEO.CREDIT_OR_CHARGE_FLAG, 
+       xxomLineAdjustmentsEO.AC_CONTEXT, 
+       xxomLineAdjustmentsEO.AC_ATTRIBUTE1, 
+       xxomLineAdjustmentsEO.AC_ATTRIBUTE2, 
+       xxomLineAdjustmentsEO.AC_ATTRIBUTE3, 
+       xxomLineAdjustmentsEO.AC_ATTRIBUTE4, 
+       xxomLineAdjustmentsEO.AC_ATTRIBUTE5, 
+       xxomLineAdjustmentsEO.AC_ATTRIBUTE6, 
+       xxomLineAdjustmentsEO.AC_ATTRIBUTE7, 
+       xxomLineAdjustmentsEO.AC_ATTRIBUTE8, 
+       xxomLineAdjustmentsEO.AC_ATTRIBUTE9, 
+       xxomLineAdjustmentsEO.AC_ATTRIBUTE10, 
+       xxomLineAdjustmentsEO.AC_ATTRIBUTE11, 
+       xxomLineAdjustmentsEO.AC_ATTRIBUTE12, 
+       xxomLineAdjustmentsEO.AC_ATTRIBUTE13, 
+       xxomLineAdjustmentsEO.AC_ATTRIBUTE14, 
+       xxomLineAdjustmentsEO.AC_ATTRIBUTE15, 
+       xxomLineAdjustmentsEO.LOCK_CONTROL, 
+       xxomLineAdjustmentsEO.OPERAND_PER_PQTY, 
+       Round(xxomLineAdjustmentsEO.ADJUSTED_AMOUNT_PER_PQTY,3), 
+       xxomLineAdjustmentsEO.INTERCO_INVOICED_FLAG, 
+       xxomLineAdjustmentsEO.INVOICED_AMOUNT, 
+       xxomLineAdjustmentsEO.RETROBILL_REQUEST_ID
+FROM OE_ORDER_LINES_V xxomOrderLinesEO, OE_PRICE_ADJUSTMENTS xxomLineAdjustmentsEO
+WHERE xxomOrderLinesEO.LINE_ID = xxomLineAdjustmentsEO.LINE_ID AND xxomOrderLinesEO.HEADER_ID = xxomLineAdjustmentsEO.HEADER_ID
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <EntityUsage
+      Name="xxomOrderLinesEO"
+      Entity="od.oracle.apps.xxom.xxomCustui.server.xxomOrderLinesEO" >
+      <DesignTime>
+         <Attr Name="_EntireObjectTable" Value="false" />
+         <Attr Name="_queryClause" Value="false" />
+      </DesignTime>
+   </EntityUsage>
+   <EntityUsage
+      Name="xxomLineAdjustmentsEO"
+      Entity="od.oracle.apps.xxom.xxomCustui.server.xxomLineAdjustmentsEO"
+      SourceUsage="od.oracle.apps.xxom.xxomCustui.server.xxomLineAdjustmentsVO.xxomOrderLinesEO"
+      Reference="true" >
+      <DesignTime>
+         <Attr Name="_EntireObjectTable" Value="false" />
+         <Attr Name="_queryClause" Value="false" />
+         <AttrArray Name="_srcAttributes">
+            <Item Value="od.oracle.apps.xxom.xxomCustui.server.xxomOrderLinesEO.LineId" />
+            <Item Value="od.oracle.apps.xxom.xxomCustui.server.xxomOrderLinesEO.HeaderId" />
+            <Item Value="od.oracle.apps.xxom.xxomCustui.server.xxomOrderLinesEO.TaxExemptFlag" />
+         </AttrArray>
+         <AttrArray Name="_dstAttributes">
+            <Item Value="od.oracle.apps.xxom.xxomCustui.server.xxomLineAdjustmentsEO.LineId" />
+            <Item Value="od.oracle.apps.xxom.xxomCustui.server.xxomLineAdjustmentsEO.HeaderId" />
+            <Item Value="od.oracle.apps.xxom.xxomCustui.server.xxomLineAdjustmentsEO.TaxExemptFlag" />
+         </AttrArray>
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="LineId"
+      IsNotNull="true"
+      EntityAttrName="LineId"
+      EntityUsage="xxomOrderLinesEO"
+      AliasName="LINE_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="HeaderId"
+      IsNotNull="true"
+      EntityAttrName="HeaderId"
+      EntityUsage="xxomOrderLinesEO"
+      AliasName="HEADER_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LineNumber"
+      IsNotNull="true"
+      EntityAttrName="LineNumber"
+      EntityUsage="xxomOrderLinesEO"
+      AliasName="LINE_NUMBER"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PriceAdjustmentId"
+      IsNotNull="true"
+      EntityAttrName="PriceAdjustmentId"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="PRICE_ADJUSTMENT_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate"
+      IsNotNull="true"
+      EntityAttrName="CreationDate"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="CREATION_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy"
+      IsNotNull="true"
+      EntityAttrName="CreatedBy"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="CREATED_BY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateDate"
+      IsNotNull="true"
+      EntityAttrName="LastUpdateDate"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="LAST_UPDATE_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdatedBy"
+      IsNotNull="true"
+      EntityAttrName="LastUpdatedBy"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="LAST_UPDATED_BY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateLogin"
+      EntityAttrName="LastUpdateLogin"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="LAST_UPDATE_LOGIN"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProgramApplicationId"
+      EntityAttrName="ProgramApplicationId"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="PROGRAM_APPLICATION_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProgramId"
+      EntityAttrName="ProgramId"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="PROGRAM_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProgramUpdateDate"
+      EntityAttrName="ProgramUpdateDate"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="PROGRAM_UPDATE_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RequestId"
+      EntityAttrName="RequestId"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="REQUEST_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="HeaderId1"
+      IsNotNull="true"
+      EntityAttrName="HeaderId"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="HEADER_ID1"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DiscountId"
+      EntityAttrName="DiscountId"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="DISCOUNT_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DiscountLineId"
+      EntityAttrName="DiscountLineId"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="DISCOUNT_LINE_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AutomaticFlag"
+      IsNotNull="true"
+      EntityAttrName="AutomaticFlag"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="AUTOMATIC_FLAG"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Percent"
+      EntityAttrName="Percent"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="PERCENT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LineId1"
+      EntityAttrName="LineId"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="LINE_ID1"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Context"
+      EntityAttrName="Context"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="CONTEXT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute1"
+      EntityAttrName="Attribute1"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="ATTRIBUTE1"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute2"
+      EntityAttrName="Attribute2"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="ATTRIBUTE2"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute3"
+      EntityAttrName="Attribute3"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="ATTRIBUTE3"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute4"
+      EntityAttrName="Attribute4"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="ATTRIBUTE4"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute5"
+      EntityAttrName="Attribute5"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="ATTRIBUTE5"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute6"
+      EntityAttrName="Attribute6"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="ATTRIBUTE6"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute7"
+      EntityAttrName="Attribute7"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="ATTRIBUTE7"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute8"
+      EntityAttrName="Attribute8"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="ATTRIBUTE8"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute9"
+      EntityAttrName="Attribute9"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="ATTRIBUTE9"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute10"
+      EntityAttrName="Attribute10"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="ATTRIBUTE10"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute11"
+      EntityAttrName="Attribute11"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="ATTRIBUTE11"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute12"
+      EntityAttrName="Attribute12"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="ATTRIBUTE12"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute13"
+      EntityAttrName="Attribute13"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="ATTRIBUTE13"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute14"
+      EntityAttrName="Attribute14"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="ATTRIBUTE14"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute15"
+      EntityAttrName="Attribute15"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="ATTRIBUTE15"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrigSysDiscountRef"
+      EntityAttrName="OrigSysDiscountRef"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="ORIG_SYS_DISCOUNT_REF"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ChangeSequence"
+      EntityAttrName="ChangeSequence"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="CHANGE_SEQUENCE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ListHeaderId"
+      EntityAttrName="ListHeaderId"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="LIST_HEADER_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ListLineId"
+      EntityAttrName="ListLineId"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="LIST_LINE_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ListLineTypeCode"
+      EntityAttrName="ListLineTypeCode"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="LIST_LINE_TYPE_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ModifiedFrom"
+      EntityAttrName="ModifiedFrom"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="MODIFIED_FROM"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ModifiedTo"
+      EntityAttrName="ModifiedTo"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="MODIFIED_TO"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="UpdateAllowed"
+      EntityAttrName="UpdateAllowed"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="UPDATE_ALLOWED"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ChangeReasonCode"
+      EntityAttrName="ChangeReasonCode"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="CHANGE_REASON_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ChangeReasonText"
+      EntityAttrName="ChangeReasonText"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="CHANGE_REASON_TEXT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ModifierMechanismTypeCode"
+      EntityAttrName="ModifierMechanismTypeCode"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="MODIFIER_MECHANISM_TYPE_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="UpdatedFlag"
+      EntityAttrName="UpdatedFlag"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="UPDATED_FLAG"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AppliedFlag"
+      EntityAttrName="AppliedFlag"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="APPLIED_FLAG"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Operand"
+      EntityAttrName="Operand"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="OPERAND"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ArithmeticOperator"
+      EntityAttrName="ArithmeticOperator"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="ARITHMETIC_OPERATOR"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CostId"
+      EntityAttrName="CostId"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="COST_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaxCode"
+      EntityAttrName="TaxCode"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="TAX_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaxExemptFlag"
+      EntityAttrName="TaxExemptFlag"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="TAX_EXEMPT_FLAG"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaxExemptNumber"
+      EntityAttrName="TaxExemptNumber"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="TAX_EXEMPT_NUMBER"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaxExemptReasonCode"
+      EntityAttrName="TaxExemptReasonCode"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="TAX_EXEMPT_REASON_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ParentAdjustmentId"
+      EntityAttrName="ParentAdjustmentId"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="PARENT_ADJUSTMENT_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InvoicedFlag"
+      EntityAttrName="InvoicedFlag"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="INVOICED_FLAG"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EstimatedFlag"
+      EntityAttrName="EstimatedFlag"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="ESTIMATED_FLAG"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IncInSalesPerformance"
+      EntityAttrName="IncInSalesPerformance"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="INC_IN_SALES_PERFORMANCE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SplitActionCode"
+      EntityAttrName="SplitActionCode"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="SPLIT_ACTION_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AdjustedAmount"
+      EntityAttrName="AdjustedAmount"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="ADJUSTED_AMOUNT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PricingPhaseId"
+      EntityAttrName="PricingPhaseId"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="PRICING_PHASE_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ChargeTypeCode"
+      EntityAttrName="ChargeTypeCode"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="CHARGE_TYPE_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ChargeSubtypeCode"
+      EntityAttrName="ChargeSubtypeCode"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="CHARGE_SUBTYPE_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RangeBreakQuantity"
+      EntityAttrName="RangeBreakQuantity"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="RANGE_BREAK_QUANTITY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AccrualConversionRate"
+      EntityAttrName="AccrualConversionRate"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="ACCRUAL_CONVERSION_RATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PricingGroupSequence"
+      EntityAttrName="PricingGroupSequence"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="PRICING_GROUP_SEQUENCE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AccrualFlag"
+      EntityAttrName="AccrualFlag"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="ACCRUAL_FLAG"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ListLineNo"
+      EntityAttrName="ListLineNo"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="LIST_LINE_NO"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SourceSystemCode"
+      EntityAttrName="SourceSystemCode"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="SOURCE_SYSTEM_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BenefitQty"
+      EntityAttrName="BenefitQty"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="BENEFIT_QTY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BenefitUomCode"
+      EntityAttrName="BenefitUomCode"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="BENEFIT_UOM_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PrintOnInvoiceFlag"
+      EntityAttrName="PrintOnInvoiceFlag"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="PRINT_ON_INVOICE_FLAG"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ExpirationDate"
+      EntityAttrName="ExpirationDate"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="EXPIRATION_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RebateTransactionTypeCode"
+      EntityAttrName="RebateTransactionTypeCode"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="REBATE_TRANSACTION_TYPE_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RebateTransactionReference"
+      EntityAttrName="RebateTransactionReference"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="REBATE_TRANSACTION_REFERENCE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RebatePaymentSystemCode"
+      EntityAttrName="RebatePaymentSystemCode"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="REBATE_PAYMENT_SYSTEM_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RedeemedDate"
+      EntityAttrName="RedeemedDate"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="REDEEMED_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RedeemedFlag"
+      EntityAttrName="RedeemedFlag"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="REDEEMED_FLAG"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ModifierLevelCode"
+      EntityAttrName="ModifierLevelCode"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="MODIFIER_LEVEL_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PriceBreakTypeCode"
+      EntityAttrName="PriceBreakTypeCode"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="PRICE_BREAK_TYPE_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SubstitutionAttribute"
+      EntityAttrName="SubstitutionAttribute"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="SUBSTITUTION_ATTRIBUTE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProrationTypeCode"
+      EntityAttrName="ProrationTypeCode"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="PRORATION_TYPE_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IncludeOnReturnsFlag"
+      EntityAttrName="IncludeOnReturnsFlag"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="INCLUDE_ON_RETURNS_FLAG"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreditOrChargeFlag"
+      EntityAttrName="CreditOrChargeFlag"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="CREDIT_OR_CHARGE_FLAG"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AcContext"
+      EntityAttrName="AcContext"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="AC_CONTEXT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AcAttribute1"
+      EntityAttrName="AcAttribute1"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="AC_ATTRIBUTE1"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AcAttribute2"
+      EntityAttrName="AcAttribute2"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="AC_ATTRIBUTE2"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AcAttribute3"
+      EntityAttrName="AcAttribute3"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="AC_ATTRIBUTE3"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AcAttribute4"
+      EntityAttrName="AcAttribute4"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="AC_ATTRIBUTE4"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AcAttribute5"
+      EntityAttrName="AcAttribute5"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="AC_ATTRIBUTE5"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AcAttribute6"
+      EntityAttrName="AcAttribute6"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="AC_ATTRIBUTE6"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AcAttribute7"
+      EntityAttrName="AcAttribute7"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="AC_ATTRIBUTE7"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AcAttribute8"
+      EntityAttrName="AcAttribute8"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="AC_ATTRIBUTE8"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AcAttribute9"
+      EntityAttrName="AcAttribute9"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="AC_ATTRIBUTE9"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AcAttribute10"
+      EntityAttrName="AcAttribute10"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="AC_ATTRIBUTE10"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AcAttribute11"
+      EntityAttrName="AcAttribute11"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="AC_ATTRIBUTE11"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AcAttribute12"
+      EntityAttrName="AcAttribute12"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="AC_ATTRIBUTE12"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AcAttribute13"
+      EntityAttrName="AcAttribute13"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="AC_ATTRIBUTE13"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AcAttribute14"
+      EntityAttrName="AcAttribute14"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="AC_ATTRIBUTE14"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AcAttribute15"
+      EntityAttrName="AcAttribute15"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="AC_ATTRIBUTE15"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LockControl"
+      EntityAttrName="LockControl"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="LOCK_CONTROL"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OperandPerPqty"
+      EntityAttrName="OperandPerPqty"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="OPERAND_PER_PQTY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AdjustedAmountPerPqty"
+      EntityAttrName="AdjustedAmountPerPqty"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="ADJUSTED_AMOUNT_PER_PQTY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IntercoInvoicedFlag"
+      EntityAttrName="IntercoInvoicedFlag"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="INTERCO_INVOICED_FLAG"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InvoicedAmount"
+      EntityAttrName="InvoicedAmount"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="INVOICED_AMOUNT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RetrobillRequestId"
+      EntityAttrName="RetrobillRequestId"
+      EntityUsage="xxomLineAdjustmentsEO"
+      AliasName="RETROBILL_REQUEST_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+</ViewObject>

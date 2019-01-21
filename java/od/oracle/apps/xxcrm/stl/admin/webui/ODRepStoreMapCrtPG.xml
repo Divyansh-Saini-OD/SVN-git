@@ -1,0 +1,45 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.12_1330" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="MainRN" controllerClass="od.oracle.apps.xxcrm.stl.admin.webui.ODRepStoreCrteCO" amDefName="od.oracle.apps.xxcrm.stl.admin.server.ODAdminAM" windowTitle="Create Rep to Store Mapping" title="Rep To Store Mapping">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:defaultSingleColumn id="ODRepStoreMapVORN">
+               <ui:contents>
+                  <oa:messageLovInput id="ResourceName" dataType="VARCHAR2" prompt="Sales Rep Name" externalListOfValues="/od/oracle/apps/xxcrm/stl/admin/lov/webui/ODRepSrchRN" maximumLength="200" required="yes">
+                     <lovMappings>
+                        <lovMap id="lovMap1" lovItem="ResourceName" resultTo="ResourceName" criteriaFrom="ResourceName"/>
+                        <lovMap id="lovMap2" lovItem="LegacySalesId" resultTo="LegacyRepId" criteriaFrom="LegacyRepId"/>
+                        <lovMap id="lovMap4" lovItem="GroupId" resultTo="GroupId"/>
+                        <lovMap id="lovMap5" lovItem="RoleId" resultTo="RoleId"/>
+                        <lovMap id="lovMap6" lovItem="ResourceId" resultTo="ResourceId"/>
+                        <lovMap id="lovMap7" lovItem="LegacySalesId" resultTo="LegacyRepId1"/>
+                     </lovMappings>
+                  </oa:messageLovInput>
+                  <oa:messageLovInput id="StoreId" dataType="VARCHAR2" prompt="OD Store#" viewName="ODRepStoreMapVO1" viewAttr="StoreId" maximumLength="250" externalListOfValues="/od/oracle/apps/xxcrm/stl/admin/lov/webui/ODStoreSrchRN" required="yes">
+                     <lovMappings>
+                        <lovMap id="lovMap3" lovItem="Value" resultTo="StoreId" criteriaFrom="StoreId"/>
+                     </lovMappings>
+                  </oa:messageLovInput>
+                  <oa:messageTextInput id="StartDateActive" dataType="DATE" prompt="Start Date" viewName="ODRepStoreMapVO1" viewAttr="StartDateActive" required="yes"/>
+                  <oa:messageTextInput id="EndDateActive" dataType="DATE" prompt="End Date" viewName="ODRepStoreMapVO1" viewAttr="EndDateActive"/>
+                  <oa:formValue id="RoleId" dataType="NUMBER" prompt="RoleId" viewName="ODRepStoreMapVO1" viewAttr="RoleId"/>
+                  <oa:formValue id="ResourceId" dataType="NUMBER" prompt="GroupId" viewName="ODRepStoreMapVO1" viewAttr="ResourceId"/>
+                  <oa:formValue id="GroupId" dataType="NUMBER" prompt="GroupId" viewName="ODRepStoreMapVO1" viewAttr="GroupId"/>
+                  <oa:formValue id="LegacyRepId" viewName="ODRepStoreMapVO1" viewAttr="LegacyRepId" prompt="Legacy Rep"/>
+                  <oa:formValue id="LegacyRepId1" viewName="ODRepStoreMapVO1" viewAttr="LegacyRepId" prompt="Legacy Rep" rendered="true"/>
+               </ui:contents>
+            </oa:defaultSingleColumn>
+            <oa:pageButtonBar id="ButtonRN">
+               <ui:contents>
+                  <oa:submitButton id="Save" text="OK" prompt="OK"/>
+                  <oa:submitButton id="Cancel" text="Cancel" prompt="Cancel"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

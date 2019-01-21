@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+
+<Entity
+   Name="AllocationLinesEO"
+   DBObjectType="synonym"
+   DBObjectName="xx_po_ALLOCATION_LINES"
+   AliasName="AllocationLinesEO"
+   BindingStyle="Oracle"
+   UseGlueCode="false"
+   CodeGenFlag="71"
+   RowClass="od.oracle.apps.xxmer.schema.server.AllocationLinesEOImpl"
+   DefClass="oracle.apps.fnd.framework.server.OAEntityDefImpl"
+   CollClass="oracle.apps.fnd.framework.server.OAEntityCache" >
+   <Properties>
+      <Property Name ="ExpertClass" Value ="od.oracle.apps.xxmer.schema.server.AllocationEntityExpert" />
+      <Property Name ="VAMDef" Value ="od.oracle.apps.xxmer.schema.server.AllocationVAM" />
+   </Properties>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <AttrArray Name="_publishEvents">
+      </AttrArray>
+   </DesignTime>
+   <Attribute
+      Name="AllocationHeaderId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="ALLOCATION_HEADER_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="xx_po_ALLOCATION_LINES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="AllocationLineId"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="ALLOCATION_LINE_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="xx_po_ALLOCATION_LINES"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PoHeaderId"
+      IsUnique="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PO_HEADER_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="xx_po_ALLOCATION_LINES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PoLineId"
+      IsUnique="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PO_LINE_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="xx_po_ALLOCATION_LINES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LineLocationId"
+      IsUnique="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LINE_LOCATION_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="xx_po_ALLOCATION_LINES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LockedIn"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnName="LOCKED_IN"
+      ColumnType="CHAR"
+      SQLType="CHAR"
+      TableName="xx_po_ALLOCATION_LINES"
+      RetrievedOnUpdate="true"
+      RetrievedOnInsert="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="AllocOrganizationId"
+      IsUnique="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="ALLOC_ORGANIZATION_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="xx_po_ALLOCATION_LINES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ShipToOrganizationId"
+      IsUnique="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="SHIP_TO_ORGANIZATION_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="xx_po_ALLOCATION_LINES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="AllocationQty"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="ALLOCATION_QTY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="xx_po_ALLOCATION_LINES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="AllocationType"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnName="ALLOCATION_TYPE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="xx_po_ALLOCATION_LINES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PoLineShipment"
+      Precision="20"
+      Type="java.lang.String"
+      ColumnName="PO_LINE_SHIPMENT"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="xx_po_ALLOCATION_LINES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="20" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="JitaQty"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="JITA_QTY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="xx_po_ALLOCATION_LINES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="WmosQty"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="WMOS_QTY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="xx_po_ALLOCATION_LINES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="LAST_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="xx_po_ALLOCATION_LINES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdatedBy"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="xx_po_ALLOCATION_LINES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreationDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="CREATION_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="xx_po_ALLOCATION_LINES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreatedBy"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CREATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="xx_po_ALLOCATION_LINES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateLogin"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATE_LOGIN"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="xx_po_ALLOCATION_LINES" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <AccessorAttribute
+      Name="AllocationHeaderEO"
+      Association="od.oracle.apps.xxmer.schema.server.AllocationLineToHeaderAO"
+      AssociationEnd="od.oracle.apps.xxmer.schema.server.AllocationLineToHeaderAO.AllocationHeaderEO"
+      AssociationOtherEnd="od.oracle.apps.xxmer.schema.server.AllocationLineToHeaderAO.AllocationLinesEO"
+      Type="od.oracle.apps.xxmer.schema.server.AllocationHeaderEOImpl" >
+   </AccessorAttribute>
+   <Key
+      Name="AllocationlineseoPrimaryKey" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.server.AllocationLinesEO.AllocationLineId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="ALLOCATIONLINESEO_PRIMARY_KEY" />
+         <Attr Name="_isPrimary" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00248172" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.server.AllocationLinesEO.AllocationHeaderId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00248172" />
+         <Attr Name="_referencedKey" Value="SYS_C00248170" />
+         <Attr Name="_isForeign" Value="true" />
+      </DesignTime>
+   </Key>
+</Entity>

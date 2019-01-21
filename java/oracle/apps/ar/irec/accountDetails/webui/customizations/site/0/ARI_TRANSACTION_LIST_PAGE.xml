@@ -1,0 +1,14 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.5.4.89_560" xml:lang="en-US" customizes="/oracle/apps/ar/irec/accountDetails/webui/ARI_TRANSACTION_LIST_PAGE" developerMode="false" package="/oracle/apps/ar/irec/accountDetails/webui/customizations/site/0" xmlns:oa="http://xmlns.oracle.com/oa">
+   <modifications>
+      <move element="TrxListClear" after="TrxListRemove"/>
+      <move element="TrxListPrint" after="TrxListClear"/>
+      <move element="TrxListPay" after="TrxListPrint"/>
+      <move element="TrxApplyCredits" after="TrxListPay"/>
+      <insert after="TrxApplyCredits">
+         <oa:button id="XX_AR_SEND_INV_COPY_BTN" adminCustomizable="true" dataType="VARCHAR2" destination="OA.jsp?OAFunc=XX_AR_SEND_INV_COPY&amp;retainAM=Y&amp;custAccountId={!CustomerId}" disabled="false" hAlign="start" prompt="Email/Fax Copies" rendered="true" scope="." serverUnvalidated="false" shortDesc="Email/Fax Copies" targetFrame="_blank" viewName="TransactionListVO" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <modify element="TrxListPrint" rendered="false"/>
+      <modify element="SoNumberCol" rendered="false"/>
+   </modifications>
+</customization>

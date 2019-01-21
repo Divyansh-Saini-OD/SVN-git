@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODHzCustAccountsVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.hz.account.customer.server.ODHzCustAccountsVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.hz.account.customer.server.ODHzCustAccountsVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select
+HCA.cust_account_id,
+HCA.party_id,
+HCA.account_number,
+HCA.account_name,
+HCA.orig_system_reference,
+HCA.status,
+HCA.tax_code,
+(select  COUNT(1)
+from xx_cdh_cust_acct_ext_b ae,   
+     ego_fnd_dsc_flx_ctx_ext edff
+where ae.cust_account_id = HCA.cust_account_id
+      and ae.attr_group_id = edff.attr_group_id
+      and edff.descriptive_flexfield_name = 'XX_CDH_CUST_ACCOUNT'
+      and  edff.descriptive_flex_context_code = 'SPC_INFO') numspccard,
+(select REQUEST_ID 
+from XX_CDH_ACCOUNT_SETUP_REQ
+where cust_account_id = HCA.cust_account_id) request_id,
+(select BILL_TO_SITE_ID 
+from XX_CDH_ACCOUNT_SETUP_REQ
+where cust_account_id = HCA.cust_account_id) billtositeid,
+DECODE((select REQUEST_ID 
+from XX_CDH_ACCOUNT_SETUP_REQ
+where cust_account_id = HCA.cust_account_id),NULL,'DN','DY') details
+from hz_cust_accounts HCA
+where HCA.party_id = :1
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="CustAccountId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="CUST_ACCOUNT_ID"
+      Expression="CUST_ACCOUNT_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PartyId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="PARTY_ID"
+      Expression="PARTY_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AccountNumber"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ACCOUNT_NUMBER"
+      Expression="ACCOUNT_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AccountName"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ACCOUNT_NAME"
+      Expression="ACCOUNT_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrigSystemReference"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ORIG_SYSTEM_REFERENCE"
+      Expression="ORIG_SYSTEM_REFERENCE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Status"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="STATUS"
+      Expression="STATUS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaxCode"
+      IsPersistent="false"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="TAX_CODE"
+      Expression="TAX_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Numspccard"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="NUMSPCCARD"
+      Expression="NUMSPCCARD"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SelectFlag"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SelectFlag"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RequestId"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="RequestId"
+      Expression="RequestId"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Billtositeid"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="Billtositeid"
+      Expression="Billtositeid"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Details"
+      IsPersistent="false"
+      Precision="2"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="Details"
+      Expression="Details"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+</ViewObject>

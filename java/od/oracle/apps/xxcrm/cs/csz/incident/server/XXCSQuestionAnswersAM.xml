@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<AppModule
+   Name="XXCSQuestionAnswersAM"
+   ComponentClass="od.oracle.apps.xxcrm.cs.csz.incident.server.XXCSQuestionAnswersAMImpl" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="10.1.3.41.57" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="XXCSGetQuestionAnswerIDVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.cs.csz.incident.server.XXCSGetQuestionAnswerIDVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="XXCSQAPanelsVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.cs.csz.incident.server.XXCSQAPanelsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="XXCSQuestionAnswersVO1"
+      ViewObjectName="od.oracle.apps.xxcrm.cs.csz.incident.server.XXCSQuestionAnswersVO" >
+   </ViewUsage>
+   <ViewLinkUsage
+      Name="XXCSPanelsToQAVL1"
+      ViewLinkObjectName="od.oracle.apps.xxcrm.cs.csz.incident.server.XXCSPanelsToQAVL"
+      SrcViewUsageName="od.oracle.apps.xxcrm.cs.csz.incident.server.XXCSQuestionAnswersAM.XXCSQAPanelsVO1"
+      DstViewUsageName="od.oracle.apps.xxcrm.cs.csz.incident.server.XXCSQuestionAnswersAM.XXCSQuestionAnswersVO1" >
+      <DesignTime>
+         <Attr Name="_isCodegen" Value="true" />
+         <Attr Name="_version" Value="10.1.3.41.57" />
+      </DesignTime>
+   </ViewLinkUsage>
+</AppModule>

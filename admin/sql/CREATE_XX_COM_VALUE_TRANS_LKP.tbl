@@ -1,0 +1,41 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :CREATE_XX_COM_VALUE_TRANS_LKP.tbl                   |
+-- | Description      :Custom table for E0200_ConvCommonElements_EBS       |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  25-May-2007 Ambarish Mukherjee Initial Draft Version          |
+-- |Draft1b  25-Jun-2007 Ashok Kumar T J    Removed synonym creation script|
+-- |Draft1c  06-Nov-2007 Abhradip Ghosh     Removed the DROP Command       |
+-- +=======================================================================+
+
+-- -----------------------------------------------------
+--      Create Custom Table XX_COM_VALUE_TRANS_LKP    --
+-- -----------------------------------------------------
+
+CREATE TABLE xxcomn.xx_com_value_trans_lkp
+        (    lookup_name                   VARCHAR2(30)
+            ,source_system_code            VARCHAR2(5)
+            ,lookup_value                  VARCHAR2(50)
+            ,translated_value              VARCHAR2(50)
+            ,translation_description       VARCHAR2(100)
+            ,created_by                    NUMBER
+            ,creation_date                 VARCHAR2(20)
+            ,last_updated_by               NUMBER
+            ,last_update_date              VARCHAR2(20)
+        );
+
+/
+SHOW ERRORS;
+EXIT;

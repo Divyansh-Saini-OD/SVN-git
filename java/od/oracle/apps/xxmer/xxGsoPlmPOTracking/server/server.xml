@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE JboPackage SYSTEM "jbo_03_01.dtd">
+
+<JboPackage
+   Name="server"
+   SeparateXMLFiles="true"
+   PackageName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server" >
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.14.01" />
+      <Attr Name="_ejbPackage" Value="false" />
+   </DesignTime>
+   <Containee
+      Name="xxGsoPO_hdrNdtl_VO"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPO_hdrNdtl_VO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxGsoPO_dtlNkndtl_VO"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPO_dtlNkndtl_VO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxGsoPO_dtlNbvdtl_VO"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPO_dtlNbvdtl_VO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxGsoPlmPOTracking_AM"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPlmPOTracking_AM"
+      ObjectType="AppModule" >
+   </Containee>
+   <Containee
+      Name="xxGsoPlmPO_HdrDtl"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPlmPO_HdrDtl"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxGsoPoHdr_EO"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoHdr_EO"
+      ObjectType="Entity" >
+   </Containee>
+   <Containee
+      Name="xxGsoPoDtl_EO"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoDtl_EO"
+      ObjectType="Entity" >
+   </Containee>
+   <Containee
+      Name="xxGsoPoKnDtl_EO"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoKnDtl_EO"
+      ObjectType="Entity" >
+   </Containee>
+   <Containee
+      Name="xxGsoPoBvDtl_EO"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoBvDtl_EO"
+      ObjectType="Entity" >
+   </Containee>
+   <Containee
+      Name="xxGsoPO_Hdr_VO"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPO_Hdr_VO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxGsoPO_Dtl_VO"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPO_Dtl_VO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxGsoPoBagentPoplist"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoBagentPoplist"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxGsoPoStatusPoplist"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoStatusPoplist"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxGsoReasonCd_VO"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoReasonCd_VO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxGsoPoCategoryPoplist"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoCategoryPoplist"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxGsoPoCountryPoplist"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoCountryPoplist"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxGsoPoVendorNoPoplist"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoVendorNoPoplist"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxGsoPoCtnMovePoplist"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoCtnMovePoplist"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxGsoHdrDtl_VL"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoHdrDtl_VL"
+      ObjectType="ViewLink" >
+   </Containee>
+   <Containee
+      Name="xxPOHdr_shipNinsp_EO"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxPOHdr_shipNinsp_EO"
+      ObjectType="Entity" >
+   </Containee>
+   <Containee
+      Name="xxPODtl_shipNinsp_EO"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxPODtl_shipNinsp_EO"
+      ObjectType="Entity" >
+   </Containee>
+   <Containee
+      Name="xxPOShipmentDtl_EO"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxPOShipmentDtl_EO"
+      ObjectType="Entity" >
+   </Containee>
+   <Containee
+      Name="xxGsoPoshipmentHdrKnDtlAO"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoshipmentHdrKnDtlAO"
+      ObjectType="Association" >
+   </Containee>
+   <Containee
+      Name="xxPOInspectionDtl_EO"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxPOInspectionDtl_EO"
+      ObjectType="Entity" >
+   </Containee>
+   <Containee
+      Name="xxGsoPoMoNamePoplist"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoMoNamePoplist"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxGsoPoDeptPoplist"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoDeptPoplist"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxGsoPoInspStatusPoplist"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoInspStatusPoplist"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxGsoPoShipStatusPoplist"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoShipStatusPoplist"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxGsoPoShipReasonCdLOV_VO"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoShipReasonCdLOV_VO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxGsoPoGsoMOPoplist"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoGsoMOPoplist"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxGsoPoBvcodeLOV_VO"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoBvcodeLOV_VO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="MasterDetailVL"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.MasterDetailVL"
+      ObjectType="ViewLink" >
+   </Containee>
+   <Containee
+      Name="xxGsoPO_KN_DTL_Vlink"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPO_KN_DTL_Vlink"
+      ObjectType="ViewLink" >
+   </Containee>
+   <Containee
+      Name="xxPObuyingAgenpoplist"
+      FullName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxPObuyingAgenpoplist"
+      ObjectType="ViewObject" >
+   </Containee>
+</JboPackage>

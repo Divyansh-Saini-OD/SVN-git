@@ -1,0 +1,676 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODCustAcctExtVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.addattr.account.server.ODCustAcctExtVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.addattr.account.server.ODCustAcctExtVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT ODCustAcctExtEO.EXTENSION_ID, 
+       ODCustAcctExtEO.CUST_ACCOUNT_ID, 
+       ODCustAcctExtEO.ATTR_GROUP_ID, 
+       ODCustAcctExtEO.CREATED_BY, 
+       ODCustAcctExtEO.CREATION_DATE, 
+       ODCustAcctExtEO.LAST_UPDATED_BY, 
+       ODCustAcctExtEO.LAST_UPDATE_DATE, 
+       ODCustAcctExtEO.LAST_UPDATE_LOGIN, 
+       ODCustAcctExtEO.C_EXT_ATTR1, 
+       ODCustAcctExtEO.C_EXT_ATTR2, 
+       ODCustAcctExtEO.C_EXT_ATTR3, 
+       ODCustAcctExtEO.C_EXT_ATTR4, 
+       ODCustAcctExtEO.C_EXT_ATTR5, 
+       ODCustAcctExtEO.C_EXT_ATTR6, 
+       ODCustAcctExtEO.C_EXT_ATTR7, 
+       ODCustAcctExtEO.C_EXT_ATTR8, 
+       ODCustAcctExtEO.C_EXT_ATTR9, 
+       ODCustAcctExtEO.C_EXT_ATTR10, 
+       ODCustAcctExtEO.C_EXT_ATTR11, 
+       ODCustAcctExtEO.C_EXT_ATTR12, 
+       ODCustAcctExtEO.C_EXT_ATTR13, 
+       ODCustAcctExtEO.C_EXT_ATTR14, 
+       ODCustAcctExtEO.C_EXT_ATTR15, 
+       ODCustAcctExtEO.C_EXT_ATTR16, 
+       ODCustAcctExtEO.C_EXT_ATTR17, 
+       ODCustAcctExtEO.C_EXT_ATTR18, 
+       ODCustAcctExtEO.C_EXT_ATTR19, 
+       ODCustAcctExtEO.C_EXT_ATTR20, 
+       ODCustAcctExtEO.N_EXT_ATTR1, 
+       ODCustAcctExtEO.N_EXT_ATTR2, 
+       ODCustAcctExtEO.N_EXT_ATTR3, 
+       ODCustAcctExtEO.N_EXT_ATTR4, 
+       ODCustAcctExtEO.N_EXT_ATTR5, 
+       ODCustAcctExtEO.N_EXT_ATTR6, 
+       ODCustAcctExtEO.N_EXT_ATTR7, 
+       ODCustAcctExtEO.N_EXT_ATTR8, 
+       ODCustAcctExtEO.N_EXT_ATTR9, 
+       ODCustAcctExtEO.N_EXT_ATTR10, 
+       ODCustAcctExtEO.N_EXT_ATTR11, 
+       ODCustAcctExtEO.N_EXT_ATTR12, 
+       ODCustAcctExtEO.N_EXT_ATTR13, 
+       ODCustAcctExtEO.N_EXT_ATTR14, 
+       ODCustAcctExtEO.N_EXT_ATTR15, 
+       ODCustAcctExtEO.N_EXT_ATTR16, 
+       ODCustAcctExtEO.N_EXT_ATTR17, 
+       ODCustAcctExtEO.N_EXT_ATTR18, 
+       ODCustAcctExtEO.N_EXT_ATTR19, 
+       ODCustAcctExtEO.N_EXT_ATTR20, 
+       ODCustAcctExtEO.D_EXT_ATTR1, 
+       ODCustAcctExtEO.D_EXT_ATTR2, 
+       ODCustAcctExtEO.D_EXT_ATTR3, 
+       ODCustAcctExtEO.D_EXT_ATTR4, 
+       ODCustAcctExtEO.D_EXT_ATTR5, 
+       ODCustAcctExtEO.D_EXT_ATTR6, 
+       ODCustAcctExtEO.D_EXT_ATTR7, 
+       ODCustAcctExtEO.D_EXT_ATTR8, 
+       ODCustAcctExtEO.D_EXT_ATTR9, 
+       ODCustAcctExtEO.D_EXT_ATTR10, 
+       ODCustAcctExtEO.TL_EXT_ATTR1, 
+       ODCustAcctExtEO.TL_EXT_ATTR2, 
+       ODCustAcctExtEO.TL_EXT_ATTR3, 
+       ODCustAcctExtEO.TL_EXT_ATTR4, 
+       ODCustAcctExtEO.TL_EXT_ATTR5, 
+       ODCustAcctExtEO.TL_EXT_ATTR6, 
+       ODCustAcctExtEO.TL_EXT_ATTR7, 
+       ODCustAcctExtEO.TL_EXT_ATTR8, 
+       ODCustAcctExtEO.TL_EXT_ATTR9, 
+       ODCustAcctExtEO.TL_EXT_ATTR10, 
+       ODCustAcctExtEO.TL_EXT_ATTR11, 
+       ODCustAcctExtEO.TL_EXT_ATTR12, 
+       ODCustAcctExtEO.TL_EXT_ATTR13, 
+       ODCustAcctExtEO.TL_EXT_ATTR14, 
+       ODCustAcctExtEO.TL_EXT_ATTR15, 
+       ODCustAcctExtEO.TL_EXT_ATTR16, 
+       ODCustAcctExtEO.TL_EXT_ATTR17, 
+       ODCustAcctExtEO.TL_EXT_ATTR18, 
+       ODCustAcctExtEO.TL_EXT_ATTR19, 
+       ODCustAcctExtEO.TL_EXT_ATTR20
+FROM XX_CDH_CUST_ACCT_EXT_VL ODCustAcctExtEO
+WHERE
+c_ext_attr2 IN (select internal_name from ego_value_set_values_v where value_set_name= 'XXOD_CDH_SPC_TENDER_CODE')
+and attr_group_id=:1 
+and cust_account_id=:2
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <EntityUsage
+      Name="ODCustAcctExtEO"
+      Entity="od.oracle.apps.xxcrm.addattr.account.server.ODCustAcctExtEO" >
+      <DesignTime>
+         <Attr Name="_queryClause" Value="false" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="ExtensionId"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="ExtensionId"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="EXTENSION_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustAccountId"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="CustAccountId"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="CUST_ACCOUNT_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AttrGroupId"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="AttrGroupId"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="ATTR_GROUP_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="CreatedBy"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="CREATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate"
+      IsNotNull="true"
+      EntityAttrName="CreationDate"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="CREATION_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdatedBy"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="LastUpdatedBy"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="LAST_UPDATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateDate"
+      IsNotNull="true"
+      EntityAttrName="LastUpdateDate"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="LAST_UPDATE_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateLogin"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="LastUpdateLogin"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="LAST_UPDATE_LOGIN" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr1"
+      Precision="150"
+      EntityAttrName="CExtAttr1"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="C_EXT_ATTR1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr2"
+      Precision="150"
+      EntityAttrName="CExtAttr2"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="C_EXT_ATTR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr3"
+      Precision="150"
+      EntityAttrName="CExtAttr3"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="C_EXT_ATTR3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr4"
+      Precision="150"
+      EntityAttrName="CExtAttr4"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="C_EXT_ATTR4" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr5"
+      Precision="150"
+      EntityAttrName="CExtAttr5"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="C_EXT_ATTR5" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr6"
+      Precision="150"
+      EntityAttrName="CExtAttr6"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="C_EXT_ATTR6" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr7"
+      Precision="150"
+      EntityAttrName="CExtAttr7"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="C_EXT_ATTR7" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr8"
+      Precision="150"
+      EntityAttrName="CExtAttr8"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="C_EXT_ATTR8" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr9"
+      Precision="150"
+      EntityAttrName="CExtAttr9"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="C_EXT_ATTR9" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr10"
+      Precision="150"
+      EntityAttrName="CExtAttr10"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="C_EXT_ATTR10" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr11"
+      Precision="150"
+      EntityAttrName="CExtAttr11"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="C_EXT_ATTR11" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr12"
+      Precision="150"
+      EntityAttrName="CExtAttr12"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="C_EXT_ATTR12" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr13"
+      Precision="150"
+      EntityAttrName="CExtAttr13"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="C_EXT_ATTR13" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr14"
+      Precision="150"
+      EntityAttrName="CExtAttr14"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="C_EXT_ATTR14" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr15"
+      Precision="150"
+      EntityAttrName="CExtAttr15"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="C_EXT_ATTR15" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr16"
+      Precision="150"
+      EntityAttrName="CExtAttr16"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="C_EXT_ATTR16" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr17"
+      Precision="150"
+      EntityAttrName="CExtAttr17"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="C_EXT_ATTR17" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr18"
+      Precision="150"
+      EntityAttrName="CExtAttr18"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="C_EXT_ATTR18" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr19"
+      Precision="150"
+      EntityAttrName="CExtAttr19"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="C_EXT_ATTR19" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr20"
+      Precision="150"
+      EntityAttrName="CExtAttr20"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="C_EXT_ATTR20" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr1"
+      Precision="22"
+      Scale="5"
+      EntityAttrName="NExtAttr1"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="N_EXT_ATTR1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr2"
+      Precision="22"
+      Scale="5"
+      EntityAttrName="NExtAttr2"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="N_EXT_ATTR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr3"
+      Precision="22"
+      Scale="5"
+      EntityAttrName="NExtAttr3"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="N_EXT_ATTR3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr4"
+      Precision="22"
+      Scale="5"
+      EntityAttrName="NExtAttr4"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="N_EXT_ATTR4" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr5"
+      Precision="22"
+      Scale="5"
+      EntityAttrName="NExtAttr5"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="N_EXT_ATTR5" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr6"
+      Precision="22"
+      Scale="5"
+      EntityAttrName="NExtAttr6"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="N_EXT_ATTR6" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr7"
+      Precision="22"
+      Scale="5"
+      EntityAttrName="NExtAttr7"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="N_EXT_ATTR7" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr8"
+      Precision="22"
+      Scale="5"
+      EntityAttrName="NExtAttr8"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="N_EXT_ATTR8" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr9"
+      Precision="22"
+      Scale="5"
+      EntityAttrName="NExtAttr9"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="N_EXT_ATTR9" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr10"
+      Precision="22"
+      Scale="5"
+      EntityAttrName="NExtAttr10"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="N_EXT_ATTR10" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr11"
+      Precision="22"
+      Scale="5"
+      EntityAttrName="NExtAttr11"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="N_EXT_ATTR11" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr12"
+      Precision="22"
+      Scale="5"
+      EntityAttrName="NExtAttr12"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="N_EXT_ATTR12" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr13"
+      Precision="22"
+      Scale="5"
+      EntityAttrName="NExtAttr13"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="N_EXT_ATTR13" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr14"
+      Precision="22"
+      Scale="5"
+      EntityAttrName="NExtAttr14"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="N_EXT_ATTR14" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr15"
+      Precision="22"
+      Scale="5"
+      EntityAttrName="NExtAttr15"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="N_EXT_ATTR15" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr16"
+      Precision="22"
+      Scale="5"
+      EntityAttrName="NExtAttr16"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="N_EXT_ATTR16" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr17"
+      Precision="22"
+      Scale="5"
+      EntityAttrName="NExtAttr17"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="N_EXT_ATTR17" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr18"
+      Precision="22"
+      Scale="5"
+      EntityAttrName="NExtAttr18"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="N_EXT_ATTR18" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr19"
+      Precision="22"
+      Scale="5"
+      EntityAttrName="NExtAttr19"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="N_EXT_ATTR19" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr20"
+      Precision="22"
+      Scale="5"
+      EntityAttrName="NExtAttr20"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="N_EXT_ATTR20" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr1"
+      EntityAttrName="DExtAttr1"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="D_EXT_ATTR1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr2"
+      EntityAttrName="DExtAttr2"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="D_EXT_ATTR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr3"
+      EntityAttrName="DExtAttr3"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="D_EXT_ATTR3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr4"
+      EntityAttrName="DExtAttr4"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="D_EXT_ATTR4" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr5"
+      EntityAttrName="DExtAttr5"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="D_EXT_ATTR5" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr6"
+      EntityAttrName="DExtAttr6"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="D_EXT_ATTR6" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr7"
+      EntityAttrName="DExtAttr7"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="D_EXT_ATTR7" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr8"
+      EntityAttrName="DExtAttr8"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="D_EXT_ATTR8" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr9"
+      EntityAttrName="DExtAttr9"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="D_EXT_ATTR9" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr10"
+      EntityAttrName="DExtAttr10"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="D_EXT_ATTR10" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TlExtAttr1"
+      Precision="1000"
+      EntityAttrName="TlExtAttr1"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="TL_EXT_ATTR1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TlExtAttr2"
+      Precision="1000"
+      EntityAttrName="TlExtAttr2"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="TL_EXT_ATTR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TlExtAttr3"
+      Precision="1000"
+      EntityAttrName="TlExtAttr3"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="TL_EXT_ATTR3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TlExtAttr4"
+      Precision="1000"
+      EntityAttrName="TlExtAttr4"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="TL_EXT_ATTR4" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TlExtAttr5"
+      Precision="1000"
+      EntityAttrName="TlExtAttr5"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="TL_EXT_ATTR5" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TlExtAttr6"
+      Precision="1000"
+      EntityAttrName="TlExtAttr6"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="TL_EXT_ATTR6" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TlExtAttr7"
+      Precision="1000"
+      EntityAttrName="TlExtAttr7"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="TL_EXT_ATTR7" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TlExtAttr8"
+      Precision="1000"
+      EntityAttrName="TlExtAttr8"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="TL_EXT_ATTR8" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TlExtAttr9"
+      Precision="1000"
+      EntityAttrName="TlExtAttr9"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="TL_EXT_ATTR9" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TlExtAttr10"
+      Precision="1000"
+      EntityAttrName="TlExtAttr10"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="TL_EXT_ATTR10" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TlExtAttr11"
+      Precision="1000"
+      EntityAttrName="TlExtAttr11"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="TL_EXT_ATTR11" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TlExtAttr12"
+      Precision="1000"
+      EntityAttrName="TlExtAttr12"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="TL_EXT_ATTR12" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TlExtAttr13"
+      Precision="1000"
+      EntityAttrName="TlExtAttr13"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="TL_EXT_ATTR13" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TlExtAttr14"
+      Precision="1000"
+      EntityAttrName="TlExtAttr14"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="TL_EXT_ATTR14" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TlExtAttr15"
+      Precision="1000"
+      EntityAttrName="TlExtAttr15"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="TL_EXT_ATTR15" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TlExtAttr16"
+      Precision="1000"
+      EntityAttrName="TlExtAttr16"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="TL_EXT_ATTR16" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TlExtAttr17"
+      Precision="1000"
+      EntityAttrName="TlExtAttr17"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="TL_EXT_ATTR17" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TlExtAttr18"
+      Precision="1000"
+      EntityAttrName="TlExtAttr18"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="TL_EXT_ATTR18" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TlExtAttr19"
+      Precision="1000"
+      EntityAttrName="TlExtAttr19"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="TL_EXT_ATTR19" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TlExtAttr20"
+      Precision="1000"
+      EntityAttrName="TlExtAttr20"
+      EntityUsage="ODCustAcctExtEO"
+      AliasName="TL_EXT_ATTR20" >
+   </ViewAttribute>
+</ViewObject>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="MileStoneNameVO"
+   OrderBy="name"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxmer.gsopo.milestone.server.MileStoneNameVORowImpl"
+   ComponentClass="od.oracle.apps.xxmer.gsopo.milestone.server.MileStoneNameVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   FetchMode="FETCH_AS_NEEDED"
+   Passivate="All"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select a.flex_value_set_name name,b.flex_value value,b.description
+  from apps.fnd_flex_values_vl b, apps.fnd_flex_value_sets a
+where a.flex_value_set_name='XX_GSO_PO_MILESTONE_NAMES'
+and b.flex_value_set_id=a.flex_value_set_id
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.97" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="Name"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="NAME"
+      Expression="NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Value"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VALUE"
+      Expression="VALUE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Description"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="DESCRIPTION"
+      Expression="DESCRIPTION"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

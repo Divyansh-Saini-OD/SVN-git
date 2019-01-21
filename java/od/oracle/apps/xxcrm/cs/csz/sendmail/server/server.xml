@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE JboPackage SYSTEM "jbo_03_01.dtd">
+
+<JboPackage
+   Name="server"
+   SeparateXMLFiles="true"
+   PackageName="od.oracle.apps.xxcrm.cs.csz.sendmail.server" >
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_ejbPackage" Value="false" />
+   </DesignTime>
+   <Containee
+      Name="SendMailAM"
+      FullName="od.oracle.apps.xxcrm.cs.csz.sendmail.server.SendMailAM"
+      ObjectType="AppModule" >
+   </Containee>
+   <Containee
+      Name="ActionsPicklistVO"
+      FullName="od.oracle.apps.xxcrm.cs.csz.sendmail.server.ActionsPicklistVO"
+      ObjectType="ViewObject" >
+   </Containee>
+</JboPackage>

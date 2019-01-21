@@ -1,0 +1,112 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.10_1080" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="XX_GSO_INSP_BATCH_UPD_PG_RN" amDefName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPlmPOTracking_AM" windowTitle="Inspection Batch Update" title="Inspection Batch Update" controllerClass="od.oracle.apps.xxmer.xxGsoPlmPOTracking.webui.xxGsoInspectBatchUpdate_CO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:tableLayout id="XX_GSO_INSP_BATCH_UPD_TBL1_RN" hAlign="center">
+               <ui:contents>
+                  <oa:rowLayout id="XX_GSO_INSP_BATCH_UPD_TBL1__ROW1_RN">
+                     <ui:contents>
+                        <oa:cellFormat id="ROW1_CELL1_RN">
+                           <ui:contents>
+                              <oa:messageComponentLayout id="ROW1_CELL1_MCL_RN">
+                                 <ui:contents>
+                                    <oa:messageTextInput id="itemInspRptNbr" dataType="VARCHAR2" prompt="Inspection Report NO"/>
+                                    <oa:messageTextInput id="itemInspQty" dataType="VARCHAR2" prompt="Inspection Quantity"/>
+                                    <oa:messageTextInput id="itemInspResult" prompt="Inspection Result"/>
+                                 </ui:contents>
+                              </oa:messageComponentLayout>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="ROW1_CELL2_RN">
+                           <ui:contents>
+                              <oa:messageComponentLayout id="ROW1_CELL2_MCL_RN">
+                                 <ui:contents>
+                                    <oa:messageTextInput id="itemBvSchDate" dataType="DATETIME" prompt="Inspection Schduled Date"/>
+                                    <oa:messageTextInput id="itemBvActDate" dataType="DATETIME" prompt="Inspection Actual Date"/>
+                                    <oa:messageTextInput id="itemBvBookDate" dataType="DATETIME" prompt="Inspection Book Date"/>
+                                 </ui:contents>
+                              </oa:messageComponentLayout>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:tableLayout>
+            <oa:tableLayout id="XX_GSO_INSP_BATCH_UPD_TBL2_RN" hAlign="center">
+               <ui:contents>
+                  <oa:rowLayout id="XX_GSO_INSP_BATCH_UPD_TBL2__ROW2_RN">
+                     <ui:contents>
+                        <oa:cellFormat id="ROW2_CELL1_RN" hAlign="center">
+                           <ui:contents>
+                              <oa:spacer id="itemSpacer" height="10" width="10"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="XX_GSO_INSP_BATCH_UPD_TBL2_ROW3_RN" hAlign="center">
+                     <ui:contents>
+                        <oa:cellFormat id="ROW3_CELL1_RN">
+                           <ui:contents>
+                              <oa:button id="butApply" text="Confirm Changes" prompt="Confirm Changes">
+                                 <ui:primaryClientAction>
+                                    <ui:fireAction event="applySelection" id="fireAction1"/>
+                                 </ui:primaryClientAction>
+                              </oa:button>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:tableLayout>
+            <oa:query id="XX_GSO_INSP_BATCH_UPD_QRY_RN" mode="resultsBasedSearch" dispCustomized="false" defaultPanel="customized">
+               <ui:contents>
+                  <oa:header id="XX_GSO_INSP_BATCH_UPD_HDR_RN" text="Selected Inspection Records">
+                     <ui:contents>
+                        <oa:rawText id="DivStart"/>
+                        <oa:table id="xxGsoPO_dtlNbvdtl_VO1" userCustomizable="true">
+                           <ui:contents>
+                              <oa:messageTextInput id="PoNumber" dataType="VARCHAR2" prompt="PoNumber" viewName="xxGsoPO_dtlNbvdtl_VO1" viewAttr="PoNumber" maximumLength="50" readOnly="true"/>
+                              <oa:messageTextInput id="PoDate" dataType="DATE" prompt="PoDate" viewName="xxGsoPO_dtlNbvdtl_VO1" viewAttr="PoDate" readOnly="true" userCustomizable="true"/>
+                              <oa:messageTextInput id="PoType" dataType="VARCHAR2" prompt="PoType" viewName="xxGsoPO_dtlNbvdtl_VO1" viewAttr="PoType" maximumLength="30" readOnly="true" userCustomizable="true"/>
+                              <oa:messageTextInput id="BvSchedDate" dataType="DATE" prompt="BvSchedDate" viewName="xxGsoPO_dtlNbvdtl_VO1" viewAttr="BvSchedDate"/>
+                              <oa:messageTextInput id="BvActlDate" dataType="DATE" prompt="BvActlDate" viewName="xxGsoPO_dtlNbvdtl_VO1" viewAttr="BvActlDate"/>
+                              <oa:messageTextInput id="InspQty" dataType="NUMBER" prompt="InspQty" viewName="xxGsoPO_dtlNbvdtl_VO1" viewAttr="InspQty"/>
+                              <oa:messageTextInput id="InspectionResult" dataType="VARCHAR2" prompt="InspectionResult" viewName="xxGsoPO_dtlNbvdtl_VO1" viewAttr="InspectionResult" maximumLength="50"/>
+                              <oa:messageTextInput id="InspectionNo" dataType="VARCHAR2" prompt="InspectionNo" viewName="xxGsoPO_dtlNbvdtl_VO1" viewAttr="InspectionNo" maximumLength="50"/>
+                              <oa:messageTextInput id="VendorNo" dataType="VARCHAR2" prompt="VendorNo" viewName="xxGsoPO_dtlNbvdtl_VO1" viewAttr="VendorNo" maximumLength="30" readOnly="true" userCustomizable="true"/>
+                              <oa:messageTextInput id="VendorName" dataType="VARCHAR2" prompt="VendorName" viewName="xxGsoPO_dtlNbvdtl_VO1" viewAttr="VendorName" maximumLength="100" readOnly="true" userCustomizable="true"/>
+                              <oa:messageTextInput id="Version" dataType="NUMBER" prompt="Version" viewName="xxGsoPO_dtlNbvdtl_VO1" viewAttr="Version" readOnly="true" userCustomizable="true"/>
+                              <oa:messageTextInput id="ManufacturerName" dataType="VARCHAR2" prompt="ManufacturerName" viewName="xxGsoPO_dtlNbvdtl_VO1" viewAttr="ManufacturerName" maximumLength="100" readOnly="true" cellNoWrapFormat="true" userCustomizable="true"/>
+                              <oa:messageTextInput id="PoStatusCd" dataType="VARCHAR2" prompt="PoStatusCd" viewName="xxGsoPO_dtlNbvdtl_VO1" viewAttr="PoStatusCd" maximumLength="25" readOnly="true" userCustomizable="true"/>
+                              <oa:messageTextInput id="EdiStatus" dataType="VARCHAR2" prompt="EdiStatus" viewName="xxGsoPO_dtlNbvdtl_VO1" viewAttr="EdiStatus" maximumLength="25" readOnly="true" userCustomizable="true"/>
+                              <oa:messageTextInput id="BuyingAgent" dataType="VARCHAR2" prompt="BuyingAgent" viewName="xxGsoPO_dtlNbvdtl_VO1" viewAttr="BuyingAgent" maximumLength="40" readOnly="true" userCustomizable="true"/>
+                              <oa:messageTextInput id="OdMerchant" dataType="VARCHAR2" prompt="OdMerchant" viewName="xxGsoPO_dtlNbvdtl_VO1" viewAttr="OdMerchant" maximumLength="40" readOnly="true" userCustomizable="true"/>
+                              <oa:messageTextInput id="PoShipDate" dataType="DATE" prompt="PoShipDate" viewName="xxGsoPO_dtlNbvdtl_VO1" viewAttr="PoShipDate" readOnly="true" userCustomizable="true"/>
+                              <oa:messageTextInput id="VendComtShipDate" dataType="DATE" prompt="VendComtShipDate" viewName="xxGsoPO_dtlNbvdtl_VO1" viewAttr="VendComtShipDate" readOnly="true" userCustomizable="true"/>
+                              <oa:messageTextInput id="PoRecdJdaDate" dataType="DATE" prompt="PoRecdJdaDate" viewName="xxGsoPO_dtlNbvdtl_VO1" viewAttr="PoRecdJdaDate" readOnly="true" userCustomizable="true"/>
+                              <oa:messageTextInput id="PoHeaderId" dataType="NUMBER" prompt="PoHeaderId" viewName="xxGsoPO_dtlNbvdtl_VO1" viewAttr="PoHeaderId" readOnly="true" disabled="true" rendered="false"/>
+                              <oa:messageTextInput id="BookingDate" dataType="DATE" prompt="BookingDate" viewName="xxGsoPO_dtlNbvdtl_VO1" viewAttr="BookingDate" userCustomizable="true"/>
+                              <oa:messageTextInput id="LastUpdateLogin" dataType="NUMBER" prompt="Inspection Last Update Login" viewName="xxGsoPO_dtlNbvdtl_VO1" viewAttr="LastUpdateLogin"/>
+                              <oa:messageTextInput id="LastUpdateDate" dataType="DATE" prompt="Inspection Last Update Date" viewName="xxGsoPO_dtlNbvdtl_VO1" viewAttr="LastUpdateDate"/>
+                              <oa:messageTextInput id="LastUpdatedBy" dataType="NUMBER" prompt="Inspection  Last Updated By" viewName="xxGsoPO_dtlNbvdtl_VO1" viewAttr="LastUpdatedBy"/>
+                           </ui:contents>
+                        </oa:table>
+                        <oa:rawText id="DivEnd"/>
+                     </ui:contents>
+                  </oa:header>
+               </ui:contents>
+            </oa:query>
+            <oa:header id="XX_GSO_INSP_BATCH_UPD_HDR1_RN">
+               <ui:contents>
+                  <oa:link id="lnkBackToSearch" text="Back To Inspection Search" destination="OA.jsp?page=/od/oracle/apps/xxmer/xxGsoPlmPOTracking/webui/xxGsoPOInspecSearchPG"/>
+               </ui:contents>
+            </oa:header>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

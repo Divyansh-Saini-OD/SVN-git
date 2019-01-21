@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!-- $Header: KpiDateVO.xml 120.2 2005/06/11 17:49:15 appldev  $ -->
+<ViewObject
+   Name="KpiDateVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="oracle.apps.cs.csy.kpi.server.KpiDateVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select to_date(profile_option_value,  'YYYYMMDD HH24:mi:ss')
+  from fnd_profile_options opt,
+       fnd_profile_option_values val
+ where opt.profile_option_id = val.profile_option_id
+   and level_id = 10001
+   and profile_option_name = 'CS_CSY_LAST_PROGRAM_RUN_DATE'
+   and opt.application_Id = val.application_id
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.11.44" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="ProfileOptionValue"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Date"
+      AliasName="PROFILE_OPTION_VALUE"
+      ColumnType="Date"
+      Expression="PROFILE_OPTION_VALUE"
+      SQLType="DATE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

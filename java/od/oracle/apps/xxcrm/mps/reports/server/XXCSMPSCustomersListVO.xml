@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="XXCSMPSCustomersListVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSCustomersListVOImpl"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT DISTINCT HC.ACCOUNT_NUMBER,  
+                MB.AOPS_CUST_NUMBER, 
+                MB.PARTY_NAME
+               ,DECODE(nvl(MB.ESSENTIALS_ATR_FLAG,'N'),'Y','ATR','MPS') PROGRAM_TYPE 
+               ,MB.ACTIVE_STATUS
+               ,MB.MANAGED_STATUS
+from hz_parties hp,
+     hz_cust_accounts hc,
+     xx_cs_mps_device_b mb
+WHERE MB.PARTY_ID = HP.PARTY_ID
+  AND HP.PARTY_ID = HC.PARTY_ID
+  AND MB.PARTY_ID IS NOT NULL
+order by mb.party_name
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isExpertMode" Value="true" />
+      <Attr Name="_version" Value="10.1.3.41.57" />
+      <Attr Name="_codeGenFlag2" Value="Access|Coll" />
+   </DesignTime>
+   <ViewAttribute
+      Name="AccountNumber"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ACCOUNT_NUMBER"
+      Expression="ACCOUNT_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AopsCustNumber"
+      IsPersistent="false"
+      Precision="40"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="AOPS_CUST_NUMBER"
+      Expression="AOPS_CUST_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PartyName"
+      IsPersistent="false"
+      Precision="250"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PARTY_NAME"
+      Expression="PARTY_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="250" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProgramType"
+      IsPersistent="false"
+      Precision="3"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PROGRAM_TYPE"
+      Expression="PROGRAM_TYPE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="3" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ActiveStatus"
+      IsPersistent="false"
+      Precision="250"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ACTIVE_STATUS"
+      Expression="ACTIVE_STATUS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="250" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ManagedStatus"
+      IsPersistent="false"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="MANAGED_STATUS"
+      Expression="MANAGED_STATUS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

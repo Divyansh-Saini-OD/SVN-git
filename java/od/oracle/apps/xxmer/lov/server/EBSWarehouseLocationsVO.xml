@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="EBSWarehouseLocationsVO"
+   SelectList="EbsHoldBackQtyWhEO.WAREHOUSE_LOCATION, 
+       EbsHoldBackQtyWhEO.ITEM"
+   FromList="XXMER.EBS_HB_ITEM_WH EbsHoldBackQtyWhEO"
+   BindingStyle="Oracle"
+   CustomQuery="false"
+   RowClass="od.oracle.apps.xxmer.lov.server.EBSWarehouseLocationsVORowImpl"
+   ComponentClass="oracle.apps.fnd.framework.server.OAViewObjectImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_CodeGenFlagNew" Value="4" />
+   </DesignTime>
+   <EntityUsage
+      Name="EbsHoldBackQtyWhEO"
+      Entity="od.oracle.apps.xxmer.schema.server.EbsHoldBackQtyWhEO" >
+      <DesignTime>
+         <Attr Name="_EntireObjectTable" Value="false" />
+         <Attr Name="_queryClause" Value="false" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="WarehouseLocation"
+      IsNotNull="true"
+      EntityAttrName="WarehouseLocation"
+      EntityUsage="EbsHoldBackQtyWhEO"
+      AliasName="WAREHOUSE_LOCATION"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Item"
+      IsNotNull="true"
+      EntityAttrName="Item"
+      EntityUsage="EbsHoldBackQtyWhEO"
+      AliasName="ITEM"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+</ViewObject>

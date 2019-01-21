@@ -1,0 +1,71 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : E1365_AuditCapture Table creation                                          |--
+--|                                                                                             |--
+--| Program Name   : XX_COM_AUDIT_SET_TABLES.tbl                                                |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Table .                                                      |--
+--|                  The Objects created are:                                                   |--
+--|                1. XX_COM_AUDIT_SET_TABLES(E1365_AuditCapture Table)                         |--
+--|                                                                                             |--
+--| Version   Date        Changed By      Description                                           |--
+--+=========  =========== =============== ======================================================+--
+--| Draft 1a  18-Sep-2007 Lalitha Budithi Draft Version                                         |--
+--| Draft 1b  12-Nov-2007 Lalitha budithi Removed the command to drop the table                 |--
+--+=============================================================================================+--
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+SET TERM ON
+
+WHENEVER SQLERROR CONTINUE;
+
+
+PROMPT
+PROMPT Creating the Table XXCOMN.XX_COM_AUDIT_SET_TABLES
+PROMPT
+
+CREATE TABLE XXCOMN.XX_COM_AUDIT_SET_TABLES
+      (
+      AUDIT_SET_ID      NUMBER
+     ,SOURCE_SCHEMA     VARCHAR2(30)
+     ,SOURCE_TABLE      VARCHAR2(30)
+     ,FILTER_CONDITION  VARCHAR2(4000)
+     ,TARGET_SCHEMA     VARCHAR2(30)
+     ,TARGET_TABLE      VARCHAR2(30)
+     ,PRIMARY_KEY_NAME  VARCHAR2(30)
+     ,PRIMARY_KEY_SEQ   VARCHAR2(30)
+     ,CREATION_DATE     DATE
+     ,CREATED_BY        NUMBER
+     ,LAST_UPDATE_DATE  DATE
+     ,LAST_UPDATE_LOGIN NUMBER
+     ,LAST_UPDATED_BY   NUMBER
+     ,CONSTRAINT AUDIT_SET_ID_FK FOREIGN KEY (AUDIT_SET_ID)
+      REFERENCES XX_COM_AUDIT_SET(AUDIT_SET_ID)
+     ,CONSTRAINT SOURCE_TABLE_U1 UNIQUE (SOURCE_SCHEMA,SOURCE_TABLE)
+     ,CONSTRAINT TARGET_TABLE_U2 UNIQUE (TARGET_SCHEMA,TARGET_TABLE)
+     );
+     
+WHENEVER SQLERROR CONTINUE;
+
+SHOW ERRORS;
+
+PROMPT
+PROMPT Exiting
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

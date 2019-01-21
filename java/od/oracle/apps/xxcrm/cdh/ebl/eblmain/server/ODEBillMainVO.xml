@@ -1,0 +1,351 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODEBillMainVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.cdh.ebl.eblmain.server.ODEBillMainVORowImpl"
+   ComponentClass="oracle.apps.fnd.framework.server.OAViewObjectImpl"
+   FetchMode="FETCH_AS_NEEDED"
+   PageIterMode="Partial"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT ODEBillMainEO.CUST_DOC_ID, 
+       ODEBillMainEO.CUST_ACCOUNT_ID, 
+       ODEBillMainEO.EBILL_TRANSMISSION_TYPE, 
+       ODEBillMainEO.EBILL_ASSOCIATE, 
+       ODEBillMainEO.FILE_PROCESSING_METHOD, 
+       ODEBillMainEO.MAX_FILE_SIZE, 
+       ODEBillMainEO.MAX_TRANSMISSION_SIZE, 
+       ODEBillMainEO.ZIP_REQUIRED, 
+       ODEBillMainEO.ZIPPING_UTILITY, 
+       ODEBillMainEO.ZIP_FILE_NAME_EXT, 
+       ODEBillMainEO.OD_FIELD_CONTACT, 
+       ODEBillMainEO.OD_FIELD_CONTACT_EMAIL, 
+       ODEBillMainEO.OD_FIELD_CONTACT_PHONE, 
+       ODEBillMainEO.CLIENT_TECH_CONTACT, 
+       ODEBillMainEO.CLIENT_TECH_CONTACT_EMAIL, 
+       ODEBillMainEO.CLIENT_TECH_CONTACT_PHONE, 
+       ODEBillMainEO.FILE_NAME_SEQ_RESET, 
+       ODEBillMainEO.FILE_NEXT_SEQ_NUMBER, 
+       ODEBillMainEO.FILE_SEQ_RESET_DATE, 
+       ODEBillMainEO.FILE_NAME_MAX_SEQ_NUMBER, 
+       ODEBillMainEO.ATTRIBUTE1, 
+       ODEBillMainEO.ATTRIBUTE2, 
+       ODEBillMainEO.ATTRIBUTE3, 
+       ODEBillMainEO.ATTRIBUTE4, 
+       ODEBillMainEO.ATTRIBUTE5, 
+       ODEBillMainEO.ATTRIBUTE6, 
+       ODEBillMainEO.ATTRIBUTE7, 
+       ODEBillMainEO.ATTRIBUTE8, 
+       ODEBillMainEO.ATTRIBUTE9, 
+       ODEBillMainEO.ATTRIBUTE10, 
+       ODEBillMainEO.ATTRIBUTE11, 
+       ODEBillMainEO.ATTRIBUTE12, 
+       ODEBillMainEO.ATTRIBUTE13, 
+       ODEBillMainEO.ATTRIBUTE14, 
+       ODEBillMainEO.ATTRIBUTE15, 
+       ODEBillMainEO.ATTRIBUTE16, 
+       ODEBillMainEO.ATTRIBUTE17, 
+       ODEBillMainEO.ATTRIBUTE18, 
+       ODEBillMainEO.ATTRIBUTE19, 
+       ODEBillMainEO.ATTRIBUTE20, 
+       ODEBillMainEO.FILE_NAME_EXT, 
+       ODEBillMainEO.DELIMITER_CHAR, 
+       ODEBillMainEO.FILE_CREATION_TYPE, 
+       ODEBillMainEO.SUMMARY_BILL, 
+       ODEBillMainEO.NONDT_QUANTITY,
+       ODEBillMainEO.PARENT_DOC_ID
+FROM XX_CDH_EBL_MAIN ODEBillMainEO
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_isExpertMode" Value="true" />
+      <Attr Name="_version" Value="10.1.3.43.6" />
+      <Attr Name="_codeGenFlag2" Value="Access" />
+   </DesignTime>
+   <EntityUsage
+      Name="ODEBillMainEO"
+      Entity="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillMainEO" >
+      <DesignTime>
+         <Attr Name="_queryClause" Value="false" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="CustDocId"
+      EntityAttrName="CustDocId"
+      EntityUsage="ODEBillMainEO"
+      AliasName="CUST_DOC_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustAccountId"
+      EntityAttrName="CustAccountId"
+      EntityUsage="ODEBillMainEO"
+      AliasName="CUST_ACCOUNT_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EbillTransmissionType"
+      EntityAttrName="EbillTransmissionType"
+      EntityUsage="ODEBillMainEO"
+      AliasName="EBILL_TRANSMISSION_TYPE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EbillAssociate"
+      EntityAttrName="EbillAssociate"
+      EntityUsage="ODEBillMainEO"
+      AliasName="EBILL_ASSOCIATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FileProcessingMethod"
+      EntityAttrName="FileProcessingMethod"
+      EntityUsage="ODEBillMainEO"
+      AliasName="FILE_PROCESSING_METHOD" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MaxFileSize"
+      EntityAttrName="MaxFileSize"
+      EntityUsage="ODEBillMainEO"
+      AliasName="MAX_FILE_SIZE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MaxTransmissionSize"
+      EntityAttrName="MaxTransmissionSize"
+      EntityUsage="ODEBillMainEO"
+      AliasName="MAX_TRANSMISSION_SIZE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ZipRequired"
+      EntityAttrName="ZipRequired"
+      EntityUsage="ODEBillMainEO"
+      AliasName="ZIP_REQUIRED" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ZippingUtility"
+      EntityAttrName="ZippingUtility"
+      EntityUsage="ODEBillMainEO"
+      AliasName="ZIPPING_UTILITY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ZipFileNameExt"
+      EntityAttrName="ZipFileNameExt"
+      EntityUsage="ODEBillMainEO"
+      AliasName="ZIP_FILE_NAME_EXT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdFieldContact"
+      EntityAttrName="OdFieldContact"
+      EntityUsage="ODEBillMainEO"
+      AliasName="OD_FIELD_CONTACT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdFieldContactEmail"
+      EntityAttrName="OdFieldContactEmail"
+      EntityUsage="ODEBillMainEO"
+      AliasName="OD_FIELD_CONTACT_EMAIL" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OdFieldContactPhone"
+      EntityAttrName="OdFieldContactPhone"
+      EntityUsage="ODEBillMainEO"
+      AliasName="OD_FIELD_CONTACT_PHONE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ClientTechContact"
+      EntityAttrName="ClientTechContact"
+      EntityUsage="ODEBillMainEO"
+      AliasName="CLIENT_TECH_CONTACT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ClientTechContactEmail"
+      EntityAttrName="ClientTechContactEmail"
+      EntityUsage="ODEBillMainEO"
+      AliasName="CLIENT_TECH_CONTACT_EMAIL" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ClientTechContactPhone"
+      EntityAttrName="ClientTechContactPhone"
+      EntityUsage="ODEBillMainEO"
+      AliasName="CLIENT_TECH_CONTACT_PHONE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FileNameSeqReset"
+      EntityAttrName="FileNameSeqReset"
+      EntityUsage="ODEBillMainEO"
+      AliasName="FILE_NAME_SEQ_RESET" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FileNextSeqNumber"
+      EntityAttrName="FileNextSeqNumber"
+      EntityUsage="ODEBillMainEO"
+      AliasName="FILE_NEXT_SEQ_NUMBER" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FileSeqResetDate"
+      EntityAttrName="FileSeqResetDate"
+      EntityUsage="ODEBillMainEO"
+      AliasName="FILE_SEQ_RESET_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FileNameMaxSeqNumber"
+      EntityAttrName="FileNameMaxSeqNumber"
+      EntityUsage="ODEBillMainEO"
+      AliasName="FILE_NAME_MAX_SEQ_NUMBER" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute1"
+      EntityAttrName="Attribute1"
+      EntityUsage="ODEBillMainEO"
+      AliasName="ATTRIBUTE1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute2"
+      EntityAttrName="Attribute2"
+      EntityUsage="ODEBillMainEO"
+      AliasName="ATTRIBUTE2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute3"
+      EntityAttrName="Attribute3"
+      EntityUsage="ODEBillMainEO"
+      AliasName="ATTRIBUTE3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute4"
+      EntityAttrName="Attribute4"
+      EntityUsage="ODEBillMainEO"
+      AliasName="ATTRIBUTE4" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute5"
+      EntityAttrName="Attribute5"
+      EntityUsage="ODEBillMainEO"
+      AliasName="ATTRIBUTE5" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute6"
+      EntityAttrName="Attribute6"
+      EntityUsage="ODEBillMainEO"
+      AliasName="ATTRIBUTE6" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute7"
+      EntityAttrName="Attribute7"
+      EntityUsage="ODEBillMainEO"
+      AliasName="ATTRIBUTE7" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute8"
+      EntityAttrName="Attribute8"
+      EntityUsage="ODEBillMainEO"
+      AliasName="ATTRIBUTE8" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute9"
+      EntityAttrName="Attribute9"
+      EntityUsage="ODEBillMainEO"
+      AliasName="ATTRIBUTE9" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute10"
+      EntityAttrName="Attribute10"
+      EntityUsage="ODEBillMainEO"
+      AliasName="ATTRIBUTE10" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute11"
+      EntityAttrName="Attribute11"
+      EntityUsage="ODEBillMainEO"
+      AliasName="ATTRIBUTE11" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute12"
+      EntityAttrName="Attribute12"
+      EntityUsage="ODEBillMainEO"
+      AliasName="ATTRIBUTE12" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute13"
+      EntityAttrName="Attribute13"
+      EntityUsage="ODEBillMainEO"
+      AliasName="ATTRIBUTE13" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute14"
+      EntityAttrName="Attribute14"
+      EntityUsage="ODEBillMainEO"
+      AliasName="ATTRIBUTE14" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute15"
+      EntityAttrName="Attribute15"
+      EntityUsage="ODEBillMainEO"
+      AliasName="ATTRIBUTE15" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute16"
+      EntityAttrName="Attribute16"
+      EntityUsage="ODEBillMainEO"
+      AliasName="ATTRIBUTE16" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute17"
+      EntityAttrName="Attribute17"
+      EntityUsage="ODEBillMainEO"
+      AliasName="ATTRIBUTE17" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute18"
+      EntityAttrName="Attribute18"
+      EntityUsage="ODEBillMainEO"
+      AliasName="ATTRIBUTE18" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute19"
+      EntityAttrName="Attribute19"
+      EntityUsage="ODEBillMainEO"
+      AliasName="ATTRIBUTE19" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute20"
+      EntityAttrName="Attribute20"
+      EntityUsage="ODEBillMainEO"
+      AliasName="ATTRIBUTE20" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FileNameExt"
+      EntityAttrName="FileNameExt"
+      EntityUsage="ODEBillMainEO"
+      AliasName="FILE_NAME_EXT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DelimiterChar"
+      EntityAttrName="DelimiterChar"
+      EntityUsage="ODEBillMainEO"
+      AliasName="DELIMITER_CHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FileCreationType"
+      EntityAttrName="FileCreationType"
+      EntityUsage="ODEBillMainEO"
+      AliasName="FILE_CREATION_TYPE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SummaryBill"
+      EntityAttrName="SummaryBill"
+      EntityUsage="ODEBillMainEO"
+      AliasName="SUMMARY_BILL" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NondtQuantity"
+      EntityAttrName="NondtQuantity"
+      EntityUsage="ODEBillMainEO"
+      AliasName="NONDT_QUANTITY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ParentDocId"
+      EntityAttrName="ParentDocId"
+      EntityUsage="ODEBillMainEO"
+      AliasName="PARENT_DOC_ID" >
+   </ViewAttribute>
+</ViewObject>

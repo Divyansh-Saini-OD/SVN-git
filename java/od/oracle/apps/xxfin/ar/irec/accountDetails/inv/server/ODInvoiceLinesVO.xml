@@ -1,0 +1,814 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<!-- $Header: InvoiceLinesVO.xml 120.3 2004/09/17 10:21:09 vnb noship $ -->
+<!--
+  Author: Sridevi Kondoju
+  Component Id: E1327 and E2052
+  Script Location: $CUSTOM_JAVA_TOP/od/oracle/apps/xxfin/ar/irec/accountDetails/inv/server
+  Description: Considered R12 version and added custom code.
+  History:
+  Name            Date         Version    Description
+  Sridevi Kondoju 27-Jul-2013   1.0    Retrofitted for R12 Upgrade.
+  Sridevi Kondoju 30-Jun-2016   2.0    Modified for Defect37673 KITTING Project
+  Sridevi Kondoju 14-Jul-2016   2.1    Modified for Defect2337
+-->
+
+
+<ViewObject
+   Name="ODInvoiceLinesVO"
+   BindingStyle="Oracle"
+   OrderBy="line_number ASC"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxfin.ar.irec.accountDetails.inv.server.ODInvoiceLinesVORowImpl"
+   ComponentClass="od.oracle.apps.xxfin.ar.irec.accountDetails.inv.server.ODInvoiceLinesVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   FetchMode="FETCH_AS_NEEDED"
+   FetchSize="25"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT lines.line_number line_number,
+       /*
+	   nvl(AR_INVOICE_SQL_FUNC_PUB.get_description( lines.customer_trx_line_id ), 
+          lines.description) item_description,*/
+	   /*Added for R12 upgrade retrofit*/
+       (select '(KIT-' || lines.attribute4 || '-' || description || ')-' from mtl_system_items_b where segment1=lines.attribute4 and organization_id=lines.warehouse_id) 
+	   || lines.description item_description, /* redefined for defect 7723*/
+       lines.sales_order sales_order,
+       nvl(lines.quantity_invoiced, lines.quantity_credited) quantity,
+       AR_INVOICE_SQL_FUNC_PUB.get_taxyn ( lines.customer_trx_line_id ) 
+           tax_exists_for_this_line_flag,
+       to_char(nvl(lines.unit_selling_price,0), 
+               fnd_currency.get_format_mask( :1 ,40 )) unit_selling_price_formatted,
+       to_char(lines.extended_amount, 
+               fnd_currency.get_format_mask( :2 ,40 )) extended_amount_formatted,
+       nvl(lines.unit_selling_price,0) unit_selling_price,
+       lines.customer_trx_line_id customer_trx_line_id,
+       lines.extended_amount extended_amount,
+       lines.attribute_category,
+       lines.attribute1,
+       lines.attribute2,
+       lines.attribute3,
+       lines.attribute4,
+       lines.attribute5,
+       lines.attribute6,
+       lines.attribute7,
+       lines.attribute8,
+       lines.attribute9,
+       lines.attribute10,
+       lines.attribute11,
+       lines.attribute12,
+       lines.attribute13,
+       lines.attribute14,
+       lines.attribute15,
+       lines.interface_line_context,
+       lines.interface_line_attribute1,
+       lines.interface_line_attribute2,
+       lines.interface_line_attribute3,
+       lines.interface_line_attribute4,
+       lines.interface_line_attribute5,
+       lines.interface_line_attribute6,
+       lines.interface_line_attribute7,
+       lines.interface_line_attribute8,
+       lines.interface_line_attribute9,
+       lines.interface_line_attribute10,
+       lines.interface_line_attribute11,
+       lines.interface_line_attribute12,
+       lines.interface_line_attribute13,
+       lines.interface_line_attribute14,
+       lines.interface_line_attribute15
+        /*Added for R12 upgrade retrofit - ODInvoiceLinesVO*/
+	   ,lines.translated_description xx_item_translated_description /* added for defect 7723 */
+       ,items.segment1 xx_item_number /* added for defect 7723 */
+FROM   ra_customer_trx_lines lines
+/*Added for R12 upgrade retrofit ODInvoiceLinesVO*/
+/* added for defect 772*/
+      ,(SELECT L.customer_trx_line_id
+              ,I.segment1 
+          FROM RA_CUSTOMER_TRX_LINES L
+              ,MTL_SYSTEM_ITEMS_B I
+              ,HR_ALL_ORGANIZATION_UNITS O
+         WHERE L.customer_trx_id = :4
+           AND L.line_type IN ('LINE','CB')
+           AND O.name='OD_ITEM_MASTER' 
+           AND O.organization_id=I.organization_id
+           AND I.inventory_item_id=L.inventory_item_id) items
+/* end of defect 7723*/
+WHERE  lines.customer_trx_id = :3
+AND    line_type IN  ('LINE','CB')
+AND    lines.customer_trx_line_id=items.customer_trx_line_id (+) 
+AND NVL(lines.attribute5, 'N') != 'Y'
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="LineNumber"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="LINE_NUMBER"
+      ColumnType="NUMBER"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="NUMERIC" >
+	        <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ItemDescription"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      AliasName="ITEM_DESCRIPTION"
+      ColumnType="VARCHAR2"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="VARCHAR" >
+	       
+      <DesignTime>
+	  <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SalesOrder"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="50"
+      Type="java.lang.String"
+      AliasName="SALES_ORDER"
+      ColumnType="VARCHAR2"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="VARCHAR" >
+      <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Quantity"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="QUANTITY"
+      ColumnType="NUMBER"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="NUMERIC" >
+	   <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TaxExistsForThisLineFlag"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      AliasName="TAX_EXISTS_FOR_THIS_LINE_FLAG"
+      ColumnType="VARCHAR2"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="VARCHAR" >
+      <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="UnitSellingPriceFormatted"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      AliasName="UNIT_SELLING_PRICE_FORMATTED"
+      ColumnType="VARCHAR2"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="VARCHAR" >
+      <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ExtendedAmountFormatted"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      AliasName="EXTENDED_AMOUNT_FORMATTED"
+      ColumnType="VARCHAR2"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="VARCHAR" >
+      <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="UnitSellingPrice"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="UNIT_SELLING_PRICE"
+      ColumnType="NUMBER"
+      Expression="UNIT_SELLING_PRICE"
+      SQLType="NUMERIC" >
+	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustomerTrxLineId"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      AliasName="CUSTOMER_TRX_LINE_ID"
+      ColumnType="NUMBER"
+      Expression="CUSTOMER_TRX_LINE_ID"
+      SQLType="NUMERIC" >
+	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ExtendedAmount"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="EXTENDED_AMOUNT"
+      ColumnType="NUMBER"
+      Expression="EXTENDED_AMOUNT"
+      SQLType="NUMERIC" >
+	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DisputedQuantity"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="DISPUTED_QUANTITY"
+      ColumnType="$none$"
+      SQLType="NUMERIC" >
+	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DisputedExtendedAmount"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="DISPUTED_EXTENDED_AMOUNT"
+      ColumnType="$none$"
+      SQLType="NUMERIC" >
+	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Validated"
+      IsUpdateable="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      AliasName="VALIDATED"
+      ColumnType="$none$"
+      SQLType="VARCHAR" >
+	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DisputedExtendedAmountEntryFormatted"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      AliasName="DISPUTED_EXTENDED_AMOUNT_FORMATTED"
+      ColumnType="$none$"
+      SQLType="VARCHAR" >
+	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DisputedExtendedAmountFormatted"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      AliasName="DISPUTED_EXTENDED_AMOUNT_FORMATTED"
+      ColumnType="$none$"
+      SQLType="VARCHAR" >
+	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AttributeCategory"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="Attribute_Category"
+      ColumnType="VARCHAR2"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="VARCHAR" >
+	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute1"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="Attribute1"
+      ColumnType="VARCHAR2"
+      Expression="Attribute1"
+      SQLType="VARCHAR" >
+	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute2"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="Attribute2"
+      ColumnType="VARCHAR2"
+      Expression="Attribute2"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute3"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="Attribute3"
+      ColumnType="VARCHAR2"
+      Expression="Attribute3"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute4"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="Attribute4"
+      ColumnType="VARCHAR2"
+      Expression="Attribute4"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute5"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="Attribute5"
+      ColumnType="VARCHAR2"
+      Expression="Attribute5"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute6"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="Attribute6"
+      ColumnType="VARCHAR2"
+      Expression="Attribute6"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute7"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="Attribute7"
+      ColumnType="VARCHAR2"
+      Expression="Attribute7"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute8"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="Attribute8"
+      ColumnType="VARCHAR2"
+      Expression="Attribute8"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute9"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="Attribute9"
+      ColumnType="VARCHAR2"
+      Expression="Attribute9"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute10"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="Attribute10"
+      ColumnType="VARCHAR2"
+      Expression="Attribute10"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute11"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="Attribute11"
+      ColumnType="VARCHAR2"
+      Expression="Attribute11"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute12"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="Attribute12"
+      ColumnType="VARCHAR2"
+      Expression="Attribute12"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute13"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="Attribute13"
+      ColumnType="VARCHAR2"
+      Expression="Attribute13"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute14"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="Attribute14"
+      ColumnType="VARCHAR2"
+      Expression="Attribute14"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute15"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="Attribute15"
+      ColumnType="VARCHAR2"
+      Expression="Attribute15"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InterfaceLineContext"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="Interface_Line_Context"
+      ColumnType="VARCHAR2"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InterfaceLineAttribute1"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="Interface_Line_Attribute1"
+      ColumnType="VARCHAR2"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InterfaceLineAttribute2"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="Interface_Line_Attribute2"
+      ColumnType="VARCHAR2"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InterfaceLineAttribute3"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="Interface_Line_Attribute3"
+      ColumnType="VARCHAR2"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InterfaceLineAttribute4"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="Interface_Line_Attribute4"
+      ColumnType="VARCHAR2"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InterfaceLineAttribute5"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="Interface_Line_Attribute5"
+      ColumnType="VARCHAR2"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InterfaceLineAttribute6"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="Interface_Line_Attribute6"
+      ColumnType="VARCHAR2"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InterfaceLineAttribute7"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="Interface_Line_Attribute7"
+      ColumnType="VARCHAR2"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InterfaceLineAttribute8"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="Interface_Line_Attribute8"
+      ColumnType="VARCHAR2"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InterfaceLineAttribute9"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="Interface_Line_Attribute9"
+      ColumnType="VARCHAR2"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InterfaceLineAttribute10"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="Interface_Line_Attribute10"
+      ColumnType="VARCHAR2"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InterfaceLineAttribute11"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="Interface_Line_Attribute11"
+      ColumnType="VARCHAR2"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InterfaceLineAttribute12"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="Interface_Line_Attribute12"
+      ColumnType="VARCHAR2"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InterfaceLineAttribute13"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="Interface_Line_Attribute13"
+      ColumnType="VARCHAR2"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InterfaceLineAttribute14"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="Interface_Line_Attribute14"
+      ColumnType="VARCHAR2"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InterfaceLineAttribute15"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="Interface_Line_Attribute15"
+      ColumnType="VARCHAR2"
+      Expression="&#39;See the SQL...&#39;"
+      SQLType="VARCHAR" >
+	  	   <DesignTime>
+	   <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+
+   </ViewAttribute>
+      <ViewAttribute
+      Name="XXItemTranslatedDesc"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="1000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="xx_item_translated_description"
+      Expression="NULL"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="XXItemNumber"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="xx_item_number"
+      Expression="NULL"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <AttrArray Name="KeyAttributes">
+      <Item Value="LineNumber" />
+   </AttrArray>
+</ViewObject>

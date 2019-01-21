@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<!-- $Header: ODCustSearchAM.xml 115.7 2007/30/11 09:36:21 achaudhu ship $ -->
+
+<AppModule
+   Name="ODCustSearchAM"
+   Extends="oracle.apps.asn.common.fwk.server.ASNApplicationModule"
+   ComponentClass="od.oracle.apps.xxcrm.asn.custsrch.common.customer.server.ODCustSearchAMImpl" >
+   <Properties>
+      <Property Name ="RETENTION_LEVEL" Value ="MANAGE_STATE" />
+   </Properties>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="CustSearchResultsSVO1"
+      ViewObjectName="oracle.apps.asn.common.customer.server.CustSearchResultsSVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="CustSearchPVO1"
+      ViewObjectName="oracle.apps.asn.common.customer.server.CustSearchPVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODCustSearchResultsSVO"
+      ViewObjectName="od.oracle.apps.xxcrm.asn.custsrch.common.customer.server.ODCustSearchResultsSVO" >
+   </ViewUsage>
+</AppModule>

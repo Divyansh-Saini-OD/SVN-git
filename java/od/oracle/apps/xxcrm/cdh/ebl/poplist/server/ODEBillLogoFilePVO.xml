@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODEBillLogoFilePVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="oracle.apps.fnd.framework.server.OAViewObjectImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT FLV.lookup_code code
+     , FLV.meaning 
+  FROM fnd_lookup_values FLV
+ WHERE lookup_type = 'XXOD_EBL_LOGO_FILE'
+   AND FLV.enabled_flag = 'Y'
+   AND sysdate BETWEEN nvl(start_date_active,sysdate) AND nvl(end_date_active,sysdate)
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_CodeGenFlagNew" Value="4" />
+   </DesignTime>
+   <ViewAttribute
+      Name="Code"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="30"
+      Type="java.lang.String"
+      AliasName="CODE"
+      ColumnType="VARCHAR2"
+      Expression="CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Meaning"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="80"
+      Type="java.lang.String"
+      AliasName="MEANING"
+      ColumnType="VARCHAR2"
+      Expression="MEANING"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

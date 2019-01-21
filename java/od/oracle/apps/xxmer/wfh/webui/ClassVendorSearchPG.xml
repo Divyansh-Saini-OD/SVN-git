@@ -1,0 +1,67 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.12_1330" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="PageLayoutRN" amDefName="od.oracle.apps.xxmer.wfh.server.WorkflowHierarchyAM" windowTitle="Class Vendor Search" title="Class Vendor Search">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:query id="QueryRN" mode="autoCustomizationCriteria" dispSimple="true" dispCustomized="false" controllerClass="od.oracle.apps.xxmer.wfh.webui.ClassVendorSearchCO">
+               <ui:contents>
+                  <oa:table id="ResultsTable" text="Class Vendor Table" shortDesc="Class Vendor Table" width="100%">
+                     <ui:contents>
+                        <oa:image id="UpdateImage" use="/oracle/apps/fnd/attributesets/Buttons/Update" source="updateicon_enabled.gif" shortDesc="Select to Update planner association" imageHeight="24" imageWidth="24">
+                           <ui:primaryClientAction>
+                              <ui:fireAction>
+                                 <ui:parameters>
+                                    <ui:parameter key="merchClassId" value="${oa.ClassVendorSummaryVO1.MerchClassId}"/>
+                                    <ui:parameter key="vendorSiteId" value="${oa.ClassVendorSummaryVO1.VendorId}"/>
+                                 </ui:parameters>
+                              </ui:fireAction>
+                           </ui:primaryClientAction>
+                        </oa:image>
+                        <oa:messageStyledText id="MerchClassId" dataType="NUMBER" prompt="Merch Class Id" viewName="ClassVendorSummaryVO1" viewAttr="MerchClassId" queryable="true" sortState="ascending" initSortSeq="first" selectiveSearchCriteria="true" shortDesc="Merch Class Id"/>
+                        <oa:messageStyledText id="MerchClassDescription" dataType="VARCHAR2" prompt="Merch Class Description" viewName="ClassVendorSummaryVO1" viewAttr="MerchClassDescription" maximumLength="50" shortDesc="Merch Class Description"/>
+                        <oa:messageStyledText id="VendorId" dataType="NUMBER" prompt="Vendor Id" viewName="ClassVendorSummaryVO1" viewAttr="VendorId" queryable="true" selectiveSearchCriteria="true" shortDesc="Vendor Id"/>
+                        <oa:messageStyledText id="VendorDescription" dataType="VARCHAR2" prompt="Vendor Description" viewName="ClassVendorSummaryVO1" viewAttr="VendorDescription" maximumLength="15" shortDesc="Vendor Description"/>
+                        <oa:messageStyledText id="PlannerId" dataType="NUMBER" prompt="Planner Id" viewName="ClassVendorSummaryVO1" viewAttr="PlannerId" queryable="true" selectiveSearchCriteria="true" shortDesc="Planner Id"/>
+                        <oa:messageStyledText id="PlannerName" dataType="VARCHAR2" prompt="Planner Name" viewName="ClassVendorSummaryVO1" viewAttr="PlannerName" maximumLength="51" shortDesc="Planner Name"/>
+                     </ui:contents>
+                  </oa:table>
+               </ui:contents>
+               <oa:simpleSearchPanel>
+                  <oa:header text="Simple Search" id="SimpleSearchHdr">
+                     <ui:contents>
+                        <oa:messageComponentLayout id="CustomSimpleSearch">
+                           <ui:contents>
+                              <oa:messageLovInput id="SearchMerchClass" selectiveSearchCriteria="true" maximumLength="10" prompt="Merch Class Id" shortDesc="Merch Class Id" styleClass="OraFieldText" columns="10" externalListOfValues="/od/oracle/apps/xxmer/lov/wfh/webui/MerchClassLovRN" unvalidated="true">
+                                 <lovMappings>
+                                    <lovMap id="lovMap1" lovItem="MerchClassId" resultTo="SearchMerchClass" criteriaFrom="SearchMerchClass"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageLovInput id="SearchVendorId" selectiveSearchCriteria="true" maximumLength="25" prompt="Vendor Id" shortDesc="Vendor Id" styleClass="OraFieldText" columns="25" externalListOfValues="/od/oracle/apps/xxmer/lov/wfh/webui/VendorLovRN" unvalidated="true">
+                                 <lovMappings>
+                                    <lovMap id="lovMap2" lovItem="VendorSiteId" resultTo="SearchVendorId" criteriaFrom="SearchVendorId"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageLovInput id="SearchPlannerId" selectiveSearchCriteria="true" maximumLength="10" prompt="Planner Id" shortDesc="Planner Id" styleClass="OraFieldText" columns="10" externalListOfValues="/od/oracle/apps/xxmer/lov/wfh/webui/LeafPlannerLovRN" unvalidated="true">
+                                 <lovMappings>
+                                    <lovMap id="lovMap3" lovItem="PlannerId" resultTo="SearchPlannerId" criteriaFrom="SearchPlannerId"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                           </ui:contents>
+                        </oa:messageComponentLayout>
+                     </ui:contents>
+                  </oa:header>
+               </oa:simpleSearchPanel>
+               <oa:simpleSearchMappings>
+                  <oa:queryCriteriaMap id="MerchClassMap" criteriaItem="SearchMerchClass" resultsItem="MerchClassId"/>
+                  <oa:queryCriteriaMap id="VendorIdMap" criteriaItem="SearchVendorId" resultsItem="VendorId"/>
+                  <oa:queryCriteriaMap id="PlannerIdMap" criteriaItem="SearchPlannerId" resultsItem="PlannerId"/>
+               </oa:simpleSearchMappings>
+            </oa:query>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

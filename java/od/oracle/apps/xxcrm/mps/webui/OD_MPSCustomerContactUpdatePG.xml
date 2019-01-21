@@ -1,0 +1,220 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1579" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="CustomerContactUpdateMainRN" amDefName="od.oracle.apps.xxcrm.mps.server.OD_MPSCustomerContractAM" windowTitle="Updatge Customer Contacts" controllerClass="od.oracle.apps.xxcrm.mps.webui.OD_MPSCustomerContactUpdateCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:rowLayout id="Spacer">
+               <ui:contents>
+                  <oa:spacer id="SpacerItem" height="15"/>
+               </ui:contents>
+            </oa:rowLayout>
+            <oa:header id="CustContactUpdateHDR" text="Customer Contact Update"/>
+            <oa:messageComponentLayout id="CustomerContactRN" rows="4" columns="2">
+               <ui:contents>
+                  <oa:messageTextInput id="Contact" prompt="Contact" viewAttr="SiteContact" viewName="OD_MPSCustContactUpdateVO" maximumLength="250"/>
+                  <oa:messageTextInput id="Phone" prompt="Phone" viewAttr="SiteContactPhone" viewName="OD_MPSCustContactUpdateVO" maximumLength="25"/>
+                  <oa:messageTextInput id="Address" prompt="Address" viewAttr="SiteAddress1" viewName="OD_MPSCustContactUpdateVO" maximumLength="250"/>
+                  <oa:messageTextInput id="Address1" prompt="Address 2" viewAttr="SiteAddress2" viewName="OD_MPSCustContactUpdateVO" maximumLength="250"/>
+                  <oa:messageTextInput id="City" prompt="City" viewAttr="SiteCity" viewName="OD_MPSCustContactUpdateVO" maximumLength="100"/>
+                  <oa:messageTextInput id="State" prompt="State" viewAttr="SiteState" viewName="OD_MPSCustContactUpdateVO" maximumLength="100"/>
+                  <oa:messageTextInput id="Zip" prompt="Zip" viewAttr="SiteZipCode" viewName="OD_MPSCustContactUpdateVO" maximumLength="50"/>
+                  <oa:messageTextInput id="CostCenter" prompt="Cost Center" viewAttr="DeviceCostCenter" viewName="OD_MPSCustContactUpdateVO" maximumLength="150"/>
+                  <oa:messageTextInput id="Location" viewAttr="DeviceLocation" prompt="Location" viewName="OD_MPSCustContactUpdateVO" maximumLength="150" readOnly="false"/>
+                  <oa:messageTextInput id="PONumber" viewAttr="PoNumber" prompt="PO Number" viewName="OD_MPSCustContactUpdateVO" maximumLength="50" readOnly="false"/>
+                  <oa:messageTextInput id="ShipToSeq" viewAttr="Attribute5" prompt="Ship Seq" viewName="OD_MPSCustContactUpdateVO" maximumLength="5" readOnly="false"/>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:tableLayout id="ButtonRN" hAlign="center">
+               <ui:contents>
+                  <oa:rowLayout id="region2" hAlign="center">
+                     <ui:contents>
+                        <oa:cellFormat id="region3" hAlign="center">
+                           <ui:contents>
+                              <oa:submitButton id="Save" text="Save" prompt="Save"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="region32" hAlign="center">
+                           <ui:contents>
+                              <oa:spacer id="SpacerBtn" width="25"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="region31" hAlign="center">
+                           <ui:contents>
+                              <oa:submitButton id="Back" text="Back" prompt="Back" warnAboutChanges="true">
+                                 <ui:primaryClientAction>
+                                    <ui:fireAction event="Back">
+                                       <ui:parameters>
+                                          <ui:parameter key="partyName" value="${oa.OD_MPSCustContactUpdateVO.PartyName}"/>
+                                          <ui:parameter key="partyId" value="${oa.OD_MPSCustContactUpdateVO.PartyId}"/>
+                                          <ui:parameter key="customerNumber" value="${oa.OD_MPSCustContactUpdateVO.AopsCustNumber}"/>
+                                          <ui:parameter key="serialNo" value="${oa.OD_MPSCustContactUpdateVO.SerialNo}"/>
+                                       </ui:parameters>
+                                    </ui:fireAction>
+                                 </ui:primaryClientAction>
+                              </oa:submitButton>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:tableLayout>
+            <oa:advancedTable id="LocationDetailsRN" viewName="OD_MPSCustLocationDetailsVO" width="100%" rendered="true" text="Location Details">
+               <ui:contents>
+                  <oa:column id="SerialNoCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="SerialNosortableHeader" prompt="Serial No"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="SerialNo" viewAttr="SerialNo"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="IPAddressCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="IPAddresssortableHeader" prompt="IP Address"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="IPAddress" viewAttr="IpAddress"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ManufactureCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ManufacturesortableHeader" prompt="Manufacture"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="Manufacture" viewAttr="Manufacturer"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ModelCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ModelsortableHeader" prompt="Model"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="Model" viewAttr="Model"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ProgramTypeCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ProgramTypesortableHeader" prompt="Program Type"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ProgramType" viewAttr="ProgramType"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ManagedStatusCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ManagedStatusrogramTypezsortableHeader" prompt="Managed Status"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ManagedStatus" viewAttr="ManagedStatus"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ActiveStatusCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ActiveStatussortableHeader" prompt="Active Status"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ActiveStatus" viewAttr="ActiveStatus"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="BlockCPCCol" rendered="false">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="BlockCPCsortableHeader" prompt="Block CPC"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="BlockCPC" viewAttr="BlackCpc"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="ColorCPCCol" rendered="false">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="ColorCPCsortableHeader" prompt="Color CPC"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="ColorCPC" viewAttr="ColorCpc"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="AllowancesCol" rendered="false">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="AllowancessortableHeader" prompt="Allowances"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="Allowances" viewAttr="Allowances"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="OverageCostCol" rendered="false">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="OverageCostsortableHeader" prompt="Overage Cost"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="OverageCost" viewAttr="OverageCost"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="DeviceContactCol" rendered="true">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="DeviceContactsortableHeader" prompt="Device Contact"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="DeviceContact" viewAttr="DeviceContact"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="DevicePhoneColl" rendered="true">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="DevicePhonesortableHeader" prompt="Device Phone"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="DevicePhone" viewAttr="DevicePhone"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="SupportCoverageCol" rendered="false">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="SupportCoveragesortableHeader" prompt="Support Coverage"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="SupportCoverage" viewAttr="SupportCoverage"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="SLACoverageCol" rendered="false">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="SLACoveragesortableHeader" prompt="SLA Coverage"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="SLACoverage" viewAttr="SlaCoverage"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="FlatRateCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="FlatRatesortableHeader" prompt="Flat Rate"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageStyledText id="FlatRate" viewAttr="FlatRate"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="UpdateCol">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="UpdatesortableHeader" prompt="Update"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:image id="Update" source="/OA_MEDIA/updateicon_enabled.gif">
+                           <ui:primaryClientAction>
+                              <ui:fireAction>
+                                 <ui:parameters>
+                                    <ui:parameter key="location" value="${oa.OD_MPSCustLocationDetailsVO.DeviceLocation}"/>
+                                    <ui:parameter key="deviceId" value="${oa.OD_MPSCustLocationDetailsVO.DeviceId}"/>
+                                    <ui:parameter key="partyId" value="${oa.OD_MPSCustLocationDetailsVO.PartyId}"/>
+                                    <ui:parameter key="serialNo" value="${oa.OD_MPSCustLocationDetailsVO.SerialNo}"/>
+                                    <ui:parameter key="address" value="${oa.OD_MPSCustLocationDetailsVO.SiteAddress1}"/>
+                                 </ui:parameters>
+                              </ui:fireAction>
+                           </ui:primaryClientAction>
+                        </oa:image>
+                     </ui:contents>
+                  </oa:column>
+               </ui:contents>
+            </oa:advancedTable>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

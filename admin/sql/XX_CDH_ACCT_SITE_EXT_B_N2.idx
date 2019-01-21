@@ -1,0 +1,29 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                        WIPRO Technologies                         |
+-- +===================================================================+
+-- | Name        : XX_CDH_ACCT_SITE_EXT_B_N2.idx                       |
+-- | Rice ID     :                                                     |
+-- | Description : This scipt creates index XX_CDH_ACCT_SITE_EXT_B_N2  |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |1.0       14-SEP-2008 Kathirvel        Initial Version             |
+-- |                                                                   |
+-- |                                                                   |
+-- +===================================================================+
+
+-- ----------------------------------------------------------
+--   CREATE Custom index XX_CDH_ACCT_SITE_EXT_B_N2         --
+-- ----------------------------------------------------------
+
+CREATE INDEX XXCRM.XX_CDH_ACCT_SITE_EXT_B_N2 ON XXCRM.XX_CDH_ACCT_SITE_EXT_B(C_EXT_ATTR20); 
+
+SHOW ERRORS;

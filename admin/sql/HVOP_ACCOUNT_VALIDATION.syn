@@ -1,0 +1,24 @@
+SET VERIFY OFF;
+SET TERM ON
+PROMPT Creating Synonym XX_EXTERNAL_USERS_S
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name  :        HVOP_ACCOUNT_VALIDATION                                |
+-- | Description:   Synonym for APPS                                        |
+-- |                                                                       |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version   Date        Author           Remarks                         |
+-- |=======   ==========  =============    ================================|
+-- |1.0       11-JUN-2008 Yusuf Ali	   Initial version                 |
+-- +=======================================================================+
+
+CREATE OR REPLACE SYNONYM  APPS.HVOP_ACCOUNT_VALIDATION for XXCOMN.HVOP_ACCOUNT_VALIDATION;
+
+EXIT;

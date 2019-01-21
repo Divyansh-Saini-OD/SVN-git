@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<!-- $Header: TransactionListSummaryVO.xml 115.4 2011/05/06 13:15:16 nkanchan noship $ -->
+
+<ViewObject
+   Name="TransactionListSummaryVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.ar.irec.accountDetails.server.TransactionListSummaryVORowImpl"
+   ComponentClass="oracle.apps.ar.irec.accountDetails.server.TransactionListSummaryVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT customer_id,
+       :1 customer_site_use_id,
+       currency_code,
+       total_due_original,
+       total_due_remaining,
+       total_discount,       
+       TO_CHAR(total_due_original , FND_CURRENCY_CACHE.GET_FORMAT_MASK( currency_code , 30 )) as total_due_original_formatted,
+       TO_CHAR(total_due_remaining , FND_CURRENCY_CACHE.GET_FORMAT_MASK( currency_code , 30 )) as total_due_remaining_formatted,      
+       TO_CHAR( -total_discount , FND_CURRENCY_CACHE.GET_FORMAT_MASK( currency_code , 30 )) as total_discount_formatted
+FROM
+(SELECT CUSTOMER_ID, 
+        currency_code,
+        sum(AMOUNT_DUE_ORIGINAL) total_due_original,
+        sum(AMOUNT_DUE_REMAINING) total_due_remaining,
+        sum(DISCOUNT_AMOUNT) total_discount
+ FROM AR_IREC_PAYMENT_LIST
+ WHERE session_id = :2
+group by CUSTOMER_ID, currency_code
+)
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="CustomerId"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      AliasName="CUSTOMER_ID"
+      ColumnType="VARCHAR2"
+      Expression="CUSTOMER_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustomerSiteUseId"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      AliasName="CUSTOMER_SITE_USE_ID"
+      ColumnType="VARCHAR2"
+      Expression="CUSTOMER_SITE_USE_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CurrencyCode"
+      IsPersistent="false"
+      Precision="15"
+      Type="java.lang.String"
+      AliasName="CURRENCY_CODE"
+      ColumnType="VARCHAR2"
+      Expression="CURRENCY_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="15" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TotalDueOriginal"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="TOTAL_DUE_ORIGINAL"
+      ColumnType="VARCHAR2"
+      Expression="TOTAL_DUE_ORIGINAL"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TotalDueRemaining"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="TOTAL_DUE_REMAINING"
+      ColumnType="VARCHAR2"
+      Expression="TOTAL_DUE_REMAINING"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TotalDiscount"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="TOTAL_DISCOUNT"
+      ColumnType="VARCHAR2"
+      Expression="TOTAL_DISCOUNT"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TotalDueOriginalFormatted"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      AliasName="TOTAL_DUE_ORIGINAL_FORMATTED"
+      ColumnType="VARCHAR2"
+      Expression="TOTAL_DUE_ORIGINAL_FORMATTED"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TotalDueRemainingFormatted"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      AliasName="TOTAL_DUE_REMAINING_FORMATTED"
+      ColumnType="VARCHAR2"
+      Expression="TOTAL_DUE_REMAINING_FORMATTED"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TotalDiscountFormatted"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      AliasName="TOTAL_DISCOUNT_FORMATTED"
+      ColumnType="VARCHAR2"
+      Expression="TOTAL_DISCOUNT_FORMATTED"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

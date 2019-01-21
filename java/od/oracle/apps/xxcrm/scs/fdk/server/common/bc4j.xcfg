@@ -1,0 +1,34 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BC4JConfig>
+   <AppModuleConfigBag>
+      <AppModuleConfig name="ODSCSDshbdAMLocal">
+         <AppModuleJndiName>od.oracle.apps.xxcrm.scs.fdk.server.ODSCSDshbdAM</AppModuleJndiName>
+         <DeployPlatform>LOCAL</DeployPlatform>
+         <JDBCName>GSIDEV02</JDBCName>
+         <ApplicationName>od.oracle.apps.xxcrm.scs.fdk.server.ODSCSDshbdAM</ApplicationName>
+         <jbo.project>OAProject5</jbo.project>
+      </AppModuleConfig>
+      <AppModuleConfig name="ODSCSAdminAMLocal">
+         <AppModuleJndiName>od.oracle.apps.xxcrm.scs.fdk.server.ODSCSAdminAM</AppModuleJndiName>
+         <DeployPlatform>LOCAL</DeployPlatform>
+         <JDBCName>GSIDEV02</JDBCName>
+         <ApplicationName>od.oracle.apps.xxcrm.scs.fdk.server.ODSCSAdminAM</ApplicationName>
+         <jbo.project>OAProject5</jbo.project>
+      </AppModuleConfig>
+   </AppModuleConfigBag>
+   <ConnectionDefinition name="GSIDEV02">
+      <ENTRY name="JDBC_PORT" value="1541"/>
+      <ENTRY name="ConnectionType" value="JDBC"/>
+      <ENTRY name="HOSTNAME" value="choldbr17d.na.odcorp.net"/>
+      <ENTRY name="user" value="apps"/>
+      <ENTRY name="ConnectionName" value="GSIDEV02"/>
+      <ENTRY name="SID" value="GSIDEV02"/>
+      <ENTRY name="Role" value="Normal"/>
+      <ENTRY name="JdbcDriver" value="oracle.jdbc.driver.OracleDriver"/>
+      <ENTRY name="password">
+         <![CDATA[dev02apps]]>
+      </ENTRY>
+      <ENTRY name="ORACLE_JDBC_TYPE" value="thin"/>
+      <ENTRY name="DeployPassword" value="true"/>
+   </ConnectionDefinition>
+</BC4JConfig>

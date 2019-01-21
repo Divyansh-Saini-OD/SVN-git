@@ -1,0 +1,43 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.5.4.89_560" xml:lang="en-US" customizes="/oracle/apps/asn/opportunity/webui/ASNMgrOpptyQryRN" developerMode="true" package="/oracle/apps/asn/opportunity/webui/customizations/site/0">
+   <modifications>
+      <modify element="ASNOpptyLstCustNm" rendered="false"/>
+      <move element="ASNOpptyLstCustNm" after="ASNOpptyLstNm"/>
+      <insert before="ASNOpptyLstCustNm">
+         <oa:messageStyledText id="ASNOpptyLstCustName" adminCustomizable="true" destination="OA.jsp?page=/od/oracle/apps/xxcrm/asn/common/customer/webui/ODOrgViewPG&amp;OAFunc=ASN_ORGVIEWPG&amp;addBreadCrumb=Y&amp;ASNReqFrmCustId={@CustomerId}" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" prompt="Prospect/Customer" queryable="false" rendered="true" required="no" scope="." selectiveSearchCriteria="false" serverUnvalidated="false" sortState="yes" tipType="none" viewAttr="PartyName" viewName="OpptySearchVO1" totalValue="false" userCustomizable="false" vAlign="middle" warnAboutChanges="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <move element="ASNOpptyLstDate" after="ASNOpptyLstCustNm"/>
+      <move element="ASNOpptyLstStatus" after="ASNOpptyLstDate"/>
+      <move element="ASNOpptyLstStage" after="ASNOpptyLstStatus"/>
+      <move element="ASNOpptyLstAmt" after="ASNOpptyLstStage"/>
+      <move element="ASNOpptyLstCurr" after="ASNOpptyLstAmt"/>
+      <move element="ASNOpptyLstWinProb" after="ASNOpptyLstCurr"/>
+      <move element="ASNOpptyLstNbr" after="ASNOpptyLstWinProb"/>
+      <move element="ASNOpptyLstLastUpdDate" after="ASNOpptyLstNbr"/>
+      <move element="ASNOpptyLstOw" after="ASNOpptyLstLastUpdDate"/>
+      <move element="ASNOpptyLstSourcNm" after="ASNOpptyLstOw"/>
+      <move element="ASNOpptyLstChnl" after="ASNOpptyLstSourcNm"/>
+      <move element="ASNOpptyLstUpdatedBy" after="ASNOpptyLstChnl"/>
+      <move element="ASNOpptyLstClsRsnNm" after="ASNOpptyLstUpdatedBy"/>
+      <move element="ASNOpptyLstDispFrcstAmt" after="ASNOpptyLstClsRsnNm"/>
+      <move element="ASNOpptyLstAssgnStat" after="ASNOpptyLstDispFrcstAmt"/>
+      <move element="ASNOpptyLstDispRef" after="ASNOpptyLstAssgnStat"/>
+      <move element="ASNOpptyLstMethNm" after="ASNOpptyLstDispRef"/>
+      <move element="ASNOpptyLstPartnerNm" after="ASNOpptyLstMethNm"/>
+      <move element="ASNOpptyLstPartnerId" after="ASNOpptyLstPartnerNm"/>
+      <move element="ASNOpptyLstRefCode" after="ASNOpptyLstPartnerId"/>
+      <move element="ASNOpptyLstFrcstAmt" after="ASNOpptyLstRefCode"/>
+      <move element="ASNOpptyLstAssgnStatCode" after="ASNOpptyLstFrcstAmt"/>
+      <move element="ASNOpptyLstSlsRepId" after="ASNOpptyLstAssgnStatCode"/>
+      <move element="ASNOpptyLstSlsGrpNm" after="ASNOpptyLstSlsRepId"/>
+      <move element="ASNOpptyLstSlsGrpId" after="ASNOpptyLstSlsGrpNm"/>
+      <move element="ASNOpptyLstClsRsnCode" after="ASNOpptyLstSlsGrpId"/>
+      <move element="ASNOpptyLstRscNm" after="ASNOpptyLstClsRsnCode"/>
+      <move element="ASNOpptyLstRscId" after="ASNOpptyLstRscNm"/>
+      <move element="ASNOpptyLstStatMgr" after="ASNOpptyLstRscId"/>
+      <move element="ASNOpptyLstDateRange" after="ASNOpptyLstStatMgr"/>
+      <move element="ASNOpptyLstWinProRange" after="ASNOpptyLstDateRange"/>
+      <move element="ASNOpptyLstStageId" after="ASNOpptyLstWinProRange"/>
+      <move element="ASNOpptyLstSrc" after="ASNOpptyLstStageId"/>
+   </modifications>
+</customization>

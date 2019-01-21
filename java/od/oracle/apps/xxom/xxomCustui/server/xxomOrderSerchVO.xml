@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="xxomOrderSerchVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxom.xxomCustui.server.xxomOrderSerchVOImpl"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT xxomOrderSearchEO.ORDER_NUMBER, 
+       xxomOrderSearchEO.HEADER_ID, 
+       xxomOrderSearchEO.ORIG_SYS_DOCUMENT_REF,
+       xxomOrderSearchEO.ORDER_SOURCE_ID,
+       xxomOeOrderSourcesEO.NAME        
+FROM OE_ORDER_HEADERS_ALL xxomOrderSearchEO,
+      OE_ORDER_SOURCES xxomOeOrderSourcesEO
+WHERE xxomOrderSearchEO.ORDER_SOURCE_ID = xxomOeOrderSourcesEO.ORDER_SOURCE_ID
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isExpertMode" Value="true" />
+      <Attr Name="_version" Value="10.1.3.41.57" />
+      <Attr Name="_codeGenFlag2" Value="Access|Coll" />
+   </DesignTime>
+   <EntityUsage
+      Name="xxomOrderSearchEO"
+      Entity="od.oracle.apps.xxom.xxomCustui.server.xxomOrderSearchEO" >
+      <DesignTime>
+         <Attr Name="_queryClause" Value="true" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="OrderNumber"
+      IsNotNull="true"
+      EntityAttrName="OrderNumber"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ORDER_NUMBER" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="HeaderId"
+      IsNotNull="true"
+      EntityAttrName="HeaderId"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="HEADER_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrigSysDocumentRef"
+      EntityAttrName="OrigSysDocumentRef"
+      EntityUsage="xxomOrderSearchEO"
+      AliasName="ORIG_SYS_DOCUMENT_REF" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrderSourceId"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="ORDER_SOURCE_ID"
+      Expression="ORDER_SOURCE_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Name"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="NAME"
+      Expression="NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrderSource"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ORDER_SOURCE"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+</ViewObject>

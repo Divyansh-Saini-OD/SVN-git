@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<AppModule
+   Name="OD_PLMPJRDashboardAM"
+   ComponentClass="od.oracle.apps.xxmer.plmpjrdashboard.server.OD_PLMPJRDashboardAMImpl"
+   LoadComponentsLazily="true" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.14.01" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="OD_MyAssignmentsVO"
+      ViewObjectName="od.oracle.apps.xxmer.plmpjrdashboard.server.OD_MyAssignmentsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="OD_NotesVO"
+      ViewObjectName="od.oracle.apps.xxmer.plmpjrdashboard.server.OD_NotesVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="OD_PA_NOTES_VO"
+      ViewObjectName="od.oracle.apps.xxmer.plmpjrdashboard.server.OD_PA_NOTES_VO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="OD_MyProjectPortfolioVO"
+      ViewObjectName="od.oracle.apps.xxmer.plmpjrdashboard.server.OD_MyProjectPortfolioVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="OD_MyProjectPortfolioResultsVO"
+      ViewObjectName="od.oracle.apps.xxmer.plmpjrdashboard.server.OD_MyProjectPortfolioResultsVO" >
+   </ViewUsage>
+</AppModule>

@@ -1,0 +1,29 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                        WIPRO Technologies                         |
+-- +===================================================================+
+-- | Name        : XX_EXTERNAL_USERS_N3.idx                            |
+-- | Rice ID     :                                                     |
+-- | Description : This scipt creates index XX_EXTERNAL_USERS_N3       |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |1.0       14-SEP-2008 Kathirvel        Initial Version             |
+-- |                                                                   |
+-- |                                                                   |
+-- +===================================================================+
+
+-- ----------------------------------------------------------
+--   CREATE Custom index XX_EXTERNAL_USERS_N3              --
+-- ----------------------------------------------------------
+
+CREATE INDEX XXCOMN.XX_EXTERNAL_USERS_N3 ON XXCOMN.XX_EXTERNAL_USERS(CONTACT_OSR); 
+
+SHOW ERRORS;

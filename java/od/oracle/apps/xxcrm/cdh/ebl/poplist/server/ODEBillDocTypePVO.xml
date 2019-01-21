@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODEBillDocTypePVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.cdh.ebl.poplist.server.ODEBillDocTypePVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT FFVV.FLEX_VALUE CODE
+      ,FFVV.FLEX_VALUE_MEANING DESCRIPTION
+FROM   FND_FLEX_VALUES_VL FFVV,
+       FND_FLEX_VALUE_SETS FFVS
+WHERE ffvs.flex_value_set_id = ffvv.flex_value_set_id
+AND ffvs.flex_value_set_name= 'XXOD_CDH_BILLDOCS_DOC_TYPE'
+AND ffvv.enabled_flag='Y'
+AND sysdate between nvl(ffvv.start_date_active,sysdate) and nvl(ffvv.end_date_active,sysdate)
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="Code"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="CODE"
+      ColumnType="VARCHAR2"
+      Expression="CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Description"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="DESCRIPTION"
+      ColumnType="VARCHAR2"
+      Expression="DESCRIPTION"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

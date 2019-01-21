@@ -1,0 +1,8 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.6.0.0_64" xml:lang="en-US" customizes="/oracle/apps/icx/por/reqmgmt/webui/ReqSummaryPG" xmlns:oa="http://xmlns.oracle.com/oa">
+   <modifications>
+      <insert before="ResultsRN">
+         <oa:formattedText id="xx_po_iproc_cpd_banner" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" queryable="false" rendered="true" scope="." sortState="no" text="&lt;font face=&quot;Helvetica&quot; size=&quot;2pt&quot; weight=&quot;bold&quot;>&lt;b style=&quot;color:red&quot;>UPDATE: Select CPD Papers and Jan/San supplies are now ordered through a punchout catalog. If the item you order returns this error message: &quot;No Results Found&quot;, proceed to &quot;SUPPLIER WEBSITE CATALOGS (Punchouts)&quot; and then click on the applicable punchout, i.e., &quot;CPD Store Supplies&quot; or &quot;Jan/San Supplies&quot; to place an order instead of searching by iPro #. &lt;br>&lt;br> For further information regarding CPD paper ordering process changes, reference the Inventory Supply Sheet found on the Store Portal. For further information regarding Jan/San supplies, refer to the Jan/San Buy from Ourselves Memo found on the Store Portal.&lt;/b>&lt;/font>" totalValue="false" userCustomizable="false" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+   </modifications>
+</customization>

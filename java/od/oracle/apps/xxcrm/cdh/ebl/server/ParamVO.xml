@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ParamVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.cdh.ebl.server.ParamVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select * from xx_cdh_ebl_param_map
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.14.00" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="ParamName"
+      IsPersistent="false"
+      Precision="500"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PARAM_NAME"
+      Expression="PARAM_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="500" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ParamDescription"
+      IsPersistent="false"
+      Precision="500"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PARAM_DESCRIPTION"
+      Expression="PARAM_DESCRIPTION"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="500" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

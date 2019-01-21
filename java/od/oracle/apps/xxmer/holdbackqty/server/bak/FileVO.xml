@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="FileVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxmer.holdbackqty.server.FileVORowImpl"
+   ComponentClass="od.oracle.apps.xxmer.holdbackqty.server.FileVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <EntityUsage
+      Name="HoldBackQtyEO"
+      Entity="od.oracle.apps.xxmer.schema.server.HoldBackQtyEO" >
+      <DesignTime>
+         <Attr Name="_EntireObjectTable" Value="false" />
+         <Attr Name="_queryClause" Value="false" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="File"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.BlobDomain"
+      AliasName="VIEW_ATTR"
+      ColumnType="VARCHAR2"
+      SQLType="BLOB" >
+   </ViewAttribute>
+</ViewObject>

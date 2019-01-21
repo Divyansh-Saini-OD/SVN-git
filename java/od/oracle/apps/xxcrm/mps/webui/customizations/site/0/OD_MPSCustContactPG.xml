@@ -1,0 +1,31 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.6.0.0_50" xml:lang="en-US" customizes="/od/oracle/apps/xxcrm/mps/webui/OD_MPSCustContactPG" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui">
+   <modifications>
+      <move element="PhoneCol" after="ContactCol"/>
+      <move element="AddressCol" after="PhoneCol"/>
+      <move element="CityCol" after="AddressCol"/>
+      <move element="StateCol" after="CityCol"/>
+      <move element="ZipCol" after="StateCol"/>
+      <move element="CostCenterCol" after="ZipCol"/>
+      <move element="SerialNoCol" after="CostCenterCol"/>
+      <move element="LocationCol" after="SerialNoCol"/>
+      <move element="DeviceContactCol" after="LocationCol"/>
+      <move element="DevicePhoneColl" after="DeviceContactCol"/>
+      <move element="SupportCoverageCol" after="DevicePhoneColl"/>
+      <move element="SLACoverageCol" after="SupportCoverageCol"/>
+      <insert after="SLACoverageCol">
+         <oa:column id="AUTOID" adminCustomizable="true" bandingShade="none" cellNoWrapFormat="false" columnDataFormat="textFormat" displayGrid="true" rendered="true" scope="." totalValue="false" userCustomizable="false" xmlns:oa="http://xmlns.oracle.com/oa">
+            <ui:columnHeader xmlns:ui="http://xmlns.oracle.com/uix/ui">
+               <oa:sortableHeader id="AutoTonerRelease" adminCustomizable="true" cellNoWrapFormat="false" initSortSeq="none" prompt="Auto Release" rendered="true" required="no" scope="." sortByViewAttr="AutoTonerRelease" sortState="yes" userCustomizable="true"/>
+            </ui:columnHeader>
+            <ui:contents xmlns:ui="http://xmlns.oracle.com/uix/ui">
+               <oa:messageStyledText id="AutoRelease" adminCustomizable="true" cellNoWrapFormat="false" dataType="VARCHAR2" initSortSeq="none" popupEnabled="false" popupRenderEvent="onClick" prompt="Auto Release" queryable="false" rendered="true" required="no" scope="." selectiveSearchCriteria="false" serverUnvalidated="false" sortState="no" tipType="none" totalValue="false" userCustomizable="false" vAlign="middle" viewAttr="AutoTonerRelease" viewName="OD_MPSCustContactVO" warnAboutChanges="true"/>
+            </ui:contents>
+         </oa:column>
+      </insert>
+      <modify element="SerialNosortableHeader1" sortState="yes"/>
+      <modify element="ZipsortableHeader" sortState="yes"/>
+      <modify element="CostCentersortableHeader" sortState="yes"/>
+      <modify element="StatesortableHeader" sortState="yes"/>
+   </modifications>
+</customization>

@@ -1,0 +1,31 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================================+
+-- |               Office Depot - Project Simplify                                         |
+-- +=======================================================================================+
+-- | Name             :DROP_XX_HVOP_ACCOUNT_VALIDATION.tbl                             |
+-- | Description      :Custom table to verify HVOP's request for account and account site  |
+-- |                    (bill_to, ship_to) exist prior to submitting for auto re-extraction|
+-- |                                                                                       |
+-- |Change History:                                                                        |
+-- |---------------                                                                        |
+-- |                                                                                       |
+-- |Version  Date        Author             Remarks                                        |
+-- |-------  ----------- -----------------  -----------------------------------------------|
+-- | 1.0     10-Jun-2008 Yusuf Ali          Initial Draft Version                          |
+-- +=======================================================================================+
+
+-- ---------------------------------------------------------
+--      Drop Custom Table XXCOMN.XX_HVOP_ACCOUNT_VALIDATION      --
+-- ---------------------------------------------------------
+
+DROP TABLE XXCOMN.XX_HVOP_ACCOUNT_VALIDATION;
+
+
+COMMIT;
+
+/
+SHOW ERRORS;
+EXIT;

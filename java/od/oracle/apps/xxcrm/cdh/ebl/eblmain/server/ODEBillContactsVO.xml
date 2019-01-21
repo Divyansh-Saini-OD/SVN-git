@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODEBillContactsVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.cdh.ebl.eblmain.server.ODEBillContactsVORowImpl"
+   ComponentClass="oracle.apps.fnd.framework.server.OAViewObjectImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT ODEBillContactsEO.EBL_DOC_CONTACT_ID, 
+       ODEBillContactsEO.CUST_DOC_ID, 
+       ODEBillContactsEO.ORG_CONTACT_ID, 
+       ODEBillContactsEO.CUST_ACCT_SITE_ID, 
+       ODEBillContactsEO.ATTRIBUTE1, 
+       ODEBillContactsEO.ATTRIBUTE2, 
+       ODEBillContactsEO.ATTRIBUTE3, 
+       ODEBillContactsEO.ATTRIBUTE4, 
+       ODEBillContactsEO.ATTRIBUTE5, 
+       ODEBillContactsEO.ATTRIBUTE6, 
+       ODEBillContactsEO.ATTRIBUTE7, 
+       ODEBillContactsEO.ATTRIBUTE8, 
+       ODEBillContactsEO.ATTRIBUTE9, 
+       ODEBillContactsEO.ATTRIBUTE10, 
+       ODEBillContactsEO.ATTRIBUTE11, 
+       ODEBillContactsEO.ATTRIBUTE12, 
+       ODEBillContactsEO.ATTRIBUTE13, 
+       ODEBillContactsEO.ATTRIBUTE14, 
+       ODEBillContactsEO.ATTRIBUTE15, 
+       ODEBillContactsEO.ATTRIBUTE16, 
+       ODEBillContactsEO.ATTRIBUTE17, 
+       ODEBillContactsEO.ATTRIBUTE18, 
+       ODEBillContactsEO.ATTRIBUTE19, 
+       ODEBillContactsEO.ATTRIBUTE20,
+       (SELECT HP.party_name 
+          FROM hz_org_contacts HOC
+            ,  hz_relationships HR
+            ,  hz_parties HP
+        WHERE  HOC.party_relationship_id = HR.relationship_id
+          AND  HR.subject_id = HP.party_id
+          AND  HR.relationship_code = 'CONTACT_OF'
+          AND  HOC.org_contact_id = ODEBillContactsEO.ORG_CONTACT_ID) contact_name,
+        (SELECT  arp_addr_pkg.format_address( HL.address_style ,HL.address1
+                                    , HL.address2 ,HL.address3
+                                    , HL.address4 ,HL.city
+                                    , HL.county ,HL.state
+                                    , HL.province ,HL.postal_code
+                                    , HTV.territory_short_name )    
+          FROM fnd_territories_vl HTV
+             , hz_cust_acct_sites_all HCAS
+             , hz_party_sites HPS
+             , hz_locations HL  
+          WHERE HL.country = HTV.territory_code(+) 
+            AND HCAS.party_site_id = HPS.party_site_id 
+            AND HL.location_id = HPS.location_id 
+            AND HCAS.status = 'A' 
+            AND HCAS.cust_acct_site_id = ODEBillContactsEO.CUST_ACCT_SITE_ID ) Location                           
+        ,(SELECT DECODE(c_ext_attr2, 'Y', 'BILL_TO', 'SHIP_TO')
+            FROM XX_CDH_CUST_ACCT_EXT_B DOC
+               , ego_attr_groups_v EAG
+           WHERE DOC.n_ext_attr2 = ODEBillContactsEO.CUST_DOC_ID
+             AND DOC.cust_account_id= ODEBillContactsEO.attribute1
+             AND DOC.attr_group_id = EAG.attr_group_id
+             AND EAG.attr_group_type = 'XX_CDH_CUST_ACCOUNT'
+             AND EAG.attr_group_name = 'BILLDOCS') site_use_code
+FROM XX_CDH_EBL_CONTACTS ODEBillContactsEO
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.14.01" />
+      <Attr Name="_CodeGenFlagNew" Value="4" />
+   </DesignTime>
+   <EntityUsage
+      Name="ODEBillContactsEO"
+      Entity="od.oracle.apps.xxcrm.cdh.ebl.eblmain.schema.server.ODEBillContactsEO" >
+      <DesignTime>
+         <Attr Name="_queryClause" Value="false" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="EblDocContactId"
+      EntityAttrName="EblDocContactId"
+      EntityUsage="ODEBillContactsEO"
+      AliasName="EBL_DOC_CONTACT_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustDocId"
+      EntityAttrName="CustDocId"
+      EntityUsage="ODEBillContactsEO"
+      AliasName="CUST_DOC_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrgContactId"
+      EntityAttrName="OrgContactId"
+      EntityUsage="ODEBillContactsEO"
+      AliasName="ORG_CONTACT_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustAcctSiteId"
+      EntityAttrName="CustAcctSiteId"
+      EntityUsage="ODEBillContactsEO"
+      AliasName="CUST_ACCT_SITE_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute1"
+      EntityAttrName="Attribute1"
+      EntityUsage="ODEBillContactsEO"
+      AliasName="ATTRIBUTE1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute2"
+      EntityAttrName="Attribute2"
+      EntityUsage="ODEBillContactsEO"
+      AliasName="ATTRIBUTE2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute3"
+      EntityAttrName="Attribute3"
+      EntityUsage="ODEBillContactsEO"
+      AliasName="ATTRIBUTE3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute4"
+      EntityAttrName="Attribute4"
+      EntityUsage="ODEBillContactsEO"
+      AliasName="ATTRIBUTE4" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute5"
+      EntityAttrName="Attribute5"
+      EntityUsage="ODEBillContactsEO"
+      AliasName="ATTRIBUTE5" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute6"
+      EntityAttrName="Attribute6"
+      EntityUsage="ODEBillContactsEO"
+      AliasName="ATTRIBUTE6" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute7"
+      EntityAttrName="Attribute7"
+      EntityUsage="ODEBillContactsEO"
+      AliasName="ATTRIBUTE7" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute8"
+      EntityAttrName="Attribute8"
+      EntityUsage="ODEBillContactsEO"
+      AliasName="ATTRIBUTE8" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute9"
+      EntityAttrName="Attribute9"
+      EntityUsage="ODEBillContactsEO"
+      AliasName="ATTRIBUTE9" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute10"
+      EntityAttrName="Attribute10"
+      EntityUsage="ODEBillContactsEO"
+      AliasName="ATTRIBUTE10" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute11"
+      EntityAttrName="Attribute11"
+      EntityUsage="ODEBillContactsEO"
+      AliasName="ATTRIBUTE11" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute12"
+      EntityAttrName="Attribute12"
+      EntityUsage="ODEBillContactsEO"
+      AliasName="ATTRIBUTE12" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute13"
+      EntityAttrName="Attribute13"
+      EntityUsage="ODEBillContactsEO"
+      AliasName="ATTRIBUTE13" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute14"
+      EntityAttrName="Attribute14"
+      EntityUsage="ODEBillContactsEO"
+      AliasName="ATTRIBUTE14" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute15"
+      EntityAttrName="Attribute15"
+      EntityUsage="ODEBillContactsEO"
+      AliasName="ATTRIBUTE15" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute16"
+      EntityAttrName="Attribute16"
+      EntityUsage="ODEBillContactsEO"
+      AliasName="ATTRIBUTE16" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute17"
+      EntityAttrName="Attribute17"
+      EntityUsage="ODEBillContactsEO"
+      AliasName="ATTRIBUTE17" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute18"
+      EntityAttrName="Attribute18"
+      EntityUsage="ODEBillContactsEO"
+      AliasName="ATTRIBUTE18" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute19"
+      EntityAttrName="Attribute19"
+      EntityUsage="ODEBillContactsEO"
+      AliasName="ATTRIBUTE19" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute20"
+      EntityAttrName="Attribute20"
+      EntityUsage="ODEBillContactsEO"
+      AliasName="ATTRIBUTE20" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContactName"
+      IsPersistent="false"
+      Precision="360"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CONTACT_NAME"
+      Expression="CONTACT_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="360" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Location"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="LOCATION"
+      Expression="LOCATION"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SiteUseCode"
+      IsPersistent="false"
+      Precision="7"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SITE_USE_CODE"
+      Expression="SITE_USE_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DeleteImageSwitch"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      Passivate="true"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+</ViewObject>

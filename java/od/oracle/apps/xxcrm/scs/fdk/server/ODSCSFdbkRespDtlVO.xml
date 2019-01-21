@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODSCSFdbkRespDtlVO"
+   SelectList="ODSCSFdbkRespEO.FDBK_RESP_ID, 
+       ODSCSFdbkRespEO.FDBK_QSTN_ID, 
+
+       ODSCSFdbkRespEO.FDK_CODE, 
+       ODSCSFdbkRespEO.FDK_VALUE, 
+
+       ODSCSFdbkRespEO.FDK_VALUE_DESC, 
+       ODSCSFdbkRespEO.FDK_GDW_CODE, 
+
+       ODSCSFdbkRespEO.FDK_GDW_VALUE, 
+       ODSCSFdbkRespEO.FDK_GDW_VALUE_DESC, 
+
+       ODSCSFdbkRespEO.EFFECTIVE_START_DT, 
+       ODSCSFdbkRespEO.EFFECTIVE_END_DT, 
+
+       ODSCSFdbkRespEO.LANGUAGE, 
+       ODSCSFdbkRespEO.SOURCE_LANG, 
+
+       ODSCSFdbkRespEO.CREATED_BY, 
+       ODSCSFdbkRespEO.CREATION_DATE, 
+
+       ODSCSFdbkRespEO.LAST_UPDATED_BY, 
+       ODSCSFdbkRespEO.LAST_UPDATE_DATE, 
+
+       ODSCSFdbkRespEO.LAST_UPDATE_LOGIN, 
+       ODSCSFdbkRespEO.REQUEST_ID, 
+
+       ODSCSFdbkRespEO.PROGRAM_APPLICATION_ID, 
+       ODSCSFdbkRespEO.PROGRAM_ID, 
+
+       ODSCSFdbkRespEO.PROGRAM_UPDATE_DATE, 
+       ODSCSFdbkRespEO.ATTRIBUTE_CATEGORY, 
+
+       ODSCSFdbkRespEO.ATTRIBUTE1, 
+       ODSCSFdbkRespEO.ATTRIBUTE2, 
+
+       ODSCSFdbkRespEO.ATTRIBUTE3, 
+       ODSCSFdbkRespEO.ATTRIBUTE4, 
+
+       ODSCSFdbkRespEO.ATTRIBUTE5, 
+       ODSCSFdbkRespEO.ATTRIBUTE6, 
+
+       ODSCSFdbkRespEO.ATTRIBUTE7, 
+       ODSCSFdbkRespEO.ATTRIBUTE8, 
+
+       ODSCSFdbkRespEO.ATTRIBUTE9, 
+       ODSCSFdbkRespEO.ATTRIBUTE10, 
+
+       ODSCSFdbkRespEO.ATTRIBUTE11, 
+       ODSCSFdbkRespEO.ATTRIBUTE12, 
+
+       ODSCSFdbkRespEO.ATTRIBUTE13, 
+       ODSCSFdbkRespEO.ATTRIBUTE14, 
+
+       ODSCSFdbkRespEO.ATTRIBUTE15, 
+       ODSCSFdbkRespEO.ATTRIBUTE16, 
+
+       ODSCSFdbkRespEO.ATTRIBUTE17, 
+       ODSCSFdbkRespEO.ATTRIBUTE18, 
+
+       ODSCSFdbkRespEO.ATTRIBUTE19, 
+       ODSCSFdbkRespEO.ATTRIBUTE20, 
+
+       ODSCSFdbkRespEO.ORA_PICK_FLAG, 
+       ODSCSFdbkRespEO.GDW_PICK_FLAG, 
+
+       ODSCSFdbkRespEO.ACTION_CODE, 
+       ODSCSFdbkRespEO.OPPORTUNITY, 
+
+       ODSCSFdbkRespEO.LEAD, 
+       ODSCSFdbkRespEO.ACTION_STATUS, 
+
+       ODSCSFdbkRespEO.ACTION_TYPE, 
+       ODSCSFdbkRespEO.ORA_SEQ, 
+
+       ODSCSFdbkRespEO.ENTITY_STATUS, 
+       ODSCSFdbkRespEO.ENTITY_REASON, 
+
+       ODSCSFdbkRespEO.FDK_VALUE_CODE, 
+       ODSCSFdbkRespEO.ENTITY_RANK, 
+
+       ODSCSFdbkRespEO.PRECEDENCE"
+   FromList="XXSCS_FDBK_RESP ODSCSFdbkRespEO"
+   BindingStyle="Oracle"
+   CustomQuery="false"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSFdbkRespDtlVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   FetchMode="FETCH_AS_NEEDED"
+   FetchSize="20"
+   UseGlueCode="false" >
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <EntityUsage
+      Name="ODSCSFdbkRespEO"
+      Entity="od.oracle.apps.xxcrm.scs.fdk.schema.server.ODSCSFdbkRespEO" >
+      <DesignTime>
+         <Attr Name="_EntireObjectTable" Value="false" />
+         <Attr Name="_queryClause" Value="false" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="FdbkRespId"
+      IsNotNull="true"
+      EntityAttrName="FdbkRespId"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="FDBK_RESP_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FdbkQstnId"
+      EntityAttrName="FdbkQstnId"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="FDBK_QSTN_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FdkCode"
+      EntityAttrName="FdkCode"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="FDK_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FdkValue"
+      EntityAttrName="FdkValue"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="FDK_VALUE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FdkValueDesc"
+      EntityAttrName="FdkValueDesc"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="FDK_VALUE_DESC"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FdkGdwCode"
+      EntityAttrName="FdkGdwCode"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="FDK_GDW_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FdkGdwValue"
+      EntityAttrName="FdkGdwValue"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="FDK_GDW_VALUE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FdkGdwValueDesc"
+      EntityAttrName="FdkGdwValueDesc"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="FDK_GDW_VALUE_DESC"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EffectiveStartDt"
+      EntityAttrName="EffectiveStartDt"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="EFFECTIVE_START_DT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EffectiveEndDt"
+      EntityAttrName="EffectiveEndDt"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="EFFECTIVE_END_DT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Language"
+      EntityAttrName="Language"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="LANGUAGE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SourceLang"
+      EntityAttrName="SourceLang"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="SOURCE_LANG"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy"
+      EntityAttrName="CreatedBy"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="CREATED_BY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate"
+      EntityAttrName="CreationDate"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="CREATION_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdatedBy"
+      EntityAttrName="LastUpdatedBy"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="LAST_UPDATED_BY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateDate"
+      EntityAttrName="LastUpdateDate"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="LAST_UPDATE_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateLogin"
+      EntityAttrName="LastUpdateLogin"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="LAST_UPDATE_LOGIN"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RequestId"
+      EntityAttrName="RequestId"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="REQUEST_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProgramApplicationId"
+      EntityAttrName="ProgramApplicationId"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="PROGRAM_APPLICATION_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProgramId"
+      EntityAttrName="ProgramId"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="PROGRAM_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProgramUpdateDate"
+      EntityAttrName="ProgramUpdateDate"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="PROGRAM_UPDATE_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AttributeCategory"
+      EntityAttrName="AttributeCategory"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ATTRIBUTE_CATEGORY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute1"
+      EntityAttrName="Attribute1"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ATTRIBUTE1"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute2"
+      EntityAttrName="Attribute2"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ATTRIBUTE2"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute3"
+      EntityAttrName="Attribute3"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ATTRIBUTE3"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute4"
+      EntityAttrName="Attribute4"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ATTRIBUTE4"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute5"
+      EntityAttrName="Attribute5"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ATTRIBUTE5"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute6"
+      EntityAttrName="Attribute6"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ATTRIBUTE6"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute7"
+      EntityAttrName="Attribute7"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ATTRIBUTE7"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute8"
+      EntityAttrName="Attribute8"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ATTRIBUTE8"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute9"
+      EntityAttrName="Attribute9"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ATTRIBUTE9"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute10"
+      EntityAttrName="Attribute10"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ATTRIBUTE10"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute11"
+      EntityAttrName="Attribute11"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ATTRIBUTE11"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute12"
+      EntityAttrName="Attribute12"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ATTRIBUTE12"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute13"
+      EntityAttrName="Attribute13"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ATTRIBUTE13"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute14"
+      EntityAttrName="Attribute14"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ATTRIBUTE14"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute15"
+      EntityAttrName="Attribute15"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ATTRIBUTE15"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute16"
+      EntityAttrName="Attribute16"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ATTRIBUTE16"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute17"
+      EntityAttrName="Attribute17"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ATTRIBUTE17"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute18"
+      EntityAttrName="Attribute18"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ATTRIBUTE18"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute19"
+      EntityAttrName="Attribute19"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ATTRIBUTE19"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute20"
+      EntityAttrName="Attribute20"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ATTRIBUTE20"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OraPickFlag"
+      EntityAttrName="OraPickFlag"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ORA_PICK_FLAG"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="GdwPickFlag"
+      EntityAttrName="GdwPickFlag"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="GDW_PICK_FLAG"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ActionCode"
+      EntityAttrName="ActionCode"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ACTION_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Opportunity"
+      EntityAttrName="Opportunity"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="OPPORTUNITY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Lead"
+      EntityAttrName="Lead"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="LEAD"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ActionStatus"
+      EntityAttrName="ActionStatus"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ACTION_STATUS"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ActionType"
+      EntityAttrName="ActionType"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ACTION_TYPE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OraSeq"
+      EntityAttrName="OraSeq"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ORA_SEQ"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EntityStatus"
+      EntityAttrName="EntityStatus"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ENTITY_STATUS"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EntityReason"
+      EntityAttrName="EntityReason"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ENTITY_REASON"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FdkValueCode"
+      EntityAttrName="FdkValueCode"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="FDK_VALUE_CODE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EntityRank"
+      EntityAttrName="EntityRank"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="ENTITY_RANK"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Precedence"
+      EntityAttrName="Precedence"
+      EntityUsage="ODSCSFdbkRespEO"
+      AliasName="PRECEDENCE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewLinkAccessor
+      Name="ODSCSFdbkQstnMstrVO"
+      ViewLink="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSFdkQAVL"
+      Type="oracle.jbo.Row"
+      Reversed="true"
+      IsUpdateable="false" >
+   </ViewLinkAccessor>
+</ViewObject>

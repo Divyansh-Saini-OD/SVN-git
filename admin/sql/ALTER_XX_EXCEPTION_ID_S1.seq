@@ -1,0 +1,38 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |             Oracle NAIO Consulting Organization                       |
+-- +=======================================================================+
+-- | Name             :ALTER_XX_EXCEPTION_ID_S1.seq                        |
+-- | Description      :Custom sequence for E0200_ConvCommonElements_EBS    |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  07-Jun-2007 Ambarish Mukherjee Initial Draft Version          |
+-- +=======================================================================+
+
+-- ----------------------------------------------
+-- Alter Custom Sequence XX_EXCEPTION_ID_S1    --
+-- ----------------------------------------------
+
+ALTER SEQUENCE xxcomn.xx_exception_id_s1 
+NOMAXVALUE
+NOCYCLE NOCACHE NOORDER;
+
+
+------------------------------------------------------
+-- Dropping the existing synonym and creating new.  --
+------------------------------------------------------
+
+CREATE OR REPLACE SYNONYM apps.xx_exception_id_s1 FOR xxcomn.xx_exception_id_s1;
+
+SHOW ERRORS;
+
+EXIT;

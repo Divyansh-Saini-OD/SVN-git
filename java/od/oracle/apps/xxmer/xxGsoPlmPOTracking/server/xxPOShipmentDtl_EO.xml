@@ -1,0 +1,578 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+
+<Entity
+   Name="xxPOShipmentDtl_EO"
+   DBObjectType="synonym"
+   DBObjectName="XX_GSO_PO_KN_DTL"
+   AliasName="xxPOShipmentDtl_EO"
+   BindingStyle="Oracle"
+   UseGlueCode="false"
+   CodeGenFlag="127"
+   RowClass="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxPOShipmentDtl_EOImpl"
+   DefClass="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxPOShipmentDtl_EODefImpl"
+   CollClass="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxPOShipmentDtl_EOCollImpl" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <AttrArray Name="_publishEvents">
+      </AttrArray>
+   </DesignTime>
+   <Attribute
+      Name="SupplierName"
+      Precision="100"
+      Type="java.lang.String"
+      ColumnName="SUPPLIER_NAME"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="100" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="SupplierEdiCode"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="SUPPLIER_EDI_CODE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PoNumber"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnName="PO_NUMBER"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PoHeaderId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PO_HEADER_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PoLineId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PO_LINE_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Sku"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="SKU"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="VendBookDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="VEND_BOOK_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="KnBeforeBvAlert"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnName="KN_BEFORE_BV_ALERT"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PoLineCfsRecdD"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="PO_LINE_CFS_RECD_D"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FclCntnrCyRecdD"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="FCL_CNTNR_CY_RECD_D"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CargoReceivedAlert"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnName="CARGO_RECEIVED_ALERT"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CargoReceivedDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="CARGO_RECEIVED_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ShipmentType"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="SHIPMENT_TYPE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="KnStatus"
+      Precision="25"
+      Type="java.lang.String"
+      ColumnName="KN_STATUS"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="25" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ShipWindowStart"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="SHIP_WINDOW_START"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ShipWindowEnd"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="SHIP_WINDOW_END"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EtsAtsD"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="ETS_ATS_D"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DateShipped"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="DATE_SHIPPED"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Container"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnName="CONTAINER"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ContainerMovement"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="CONTAINER_MOVEMENT"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ActualQuantity"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="ACTUAL_QUANTITY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TotalFobShipped"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="TOTAL_FOB_SHIPPED"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Uom"
+      Precision="5"
+      Type="java.lang.String"
+      ColumnName="UOM"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="5" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Volume"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="VOLUME"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Grossweight"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="GROSSWEIGHT"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="KnReference"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnName="KN_REFERENCE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EtaAtaD"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="ETA_ATA_D"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EtaPlaceDeliveryD"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="ETA_PLACE_DELIVERY_D"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PlaceOfDelivery"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnName="PLACE_OF_DELIVERY"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="RequiredDeliveryD"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="REQUIRED_DELIVERY_D"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DelayCode"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnName="DELAY_CODE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DelayReason"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnName="DELAY_REASON"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LoadingPlace"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnName="LOADING_PLACE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ImportAgentFlag"
+      Precision="10"
+      Type="java.lang.String"
+      ColumnName="IMPORT_AGENT_FLAG"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="10" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreationDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="CREATION_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreatedBy"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CREATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdatedBy"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="LAST_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateLogin"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATE_LOGIN"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PoLineNo"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PO_LINE_NO"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Upc"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnName="UPC"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DeptCode"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="DEPT_CODE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ShArrivalPlace"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnName="SH_ARRIVAL_PLACE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ExchgRate"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="EXCHG_RATE"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FinReportDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="FIN_REPORT_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FinReportFlag"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnName="FIN_REPORT_FLAG"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_KN_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="KnId"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="KN_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_GSO_PO_KN_DTL"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <AccessorAttribute
+      Name="xxPOHdr_shipNinsp_EO"
+      Association="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoshipmentHdrKnDtlAO"
+      AssociationEnd="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoshipmentHdrKnDtlAO.xxPOHdr_shipNinsp_EO"
+      AssociationOtherEnd="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoshipmentHdrKnDtlAO.xxPOShipmentDtl_EO"
+      Type="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxPOHdr_shipNinsp_EOImpl" >
+   </AccessorAttribute>
+   <Key
+      Name="SysC00353353" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxPOShipmentDtl_EO.KnId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00353353" />
+         <Attr Name="_isPrimary" Value="true" />
+      </DesignTime>
+   </Key>
+</Entity>

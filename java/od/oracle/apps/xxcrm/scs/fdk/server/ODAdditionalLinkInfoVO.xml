@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!--
+Subversion Info:
+$HeadURL$
+$Rev$
+$Date$
+-->
+<ViewObject
+   Name="ODAdditionalLinkInfoVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.scs.fdk.server.ODAdditionalLinkInfoVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.scs.fdk.server.ODAdditionalLinkInfoVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select
+party_name,
+(CASE (SELECT COUNT(1)	
+       FROM DUAL	
+       WHERE EXISTS
+       (SELECT 1
+       	FROM hz_cust_accounts hca
+       	WHERE hca.party_id = hp.party_id
+       	AND ROWNUM = 1
+       	AND status = 'A'))
+  WHEN 0
+  THEN hp.party_number
+  ELSE (SELECT orig_system_reference
+        FROM hz_cust_accounts
+        WHERE party_id = hp.party_id
+	AND ROWNUM = 1
+        AND status = 'A')
+   END) party_number,
+(CASE (	SELECT COUNT(1)	
+       	FROM DUAL	
+       	WHERE EXISTS
+	(SELECT 1
+         FROM hz_cust_accounts hca
+         WHERE hca.party_id = hp.party_id
+         AND ROWNUM = 1
+	 AND status = 'A'))
+  WHEN 0
+  THEN 'P'
+  ELSE 'C'
+  END) org_type,
+party_id,
+(select substr(orig_system_reference,1,8) FROM hz_cust_accounts where party_id = hp.party_id and ROWNUM = 1) CUST_NUMBER,
+(1 * (REGEXP_SUBSTR((select orig_system_reference FROM hz_cust_acct_sites_all where party_site_id = :3 and status='A' and ROWNUM = 1),'[[:digit:]]+',1,2))) ADDR_SEQ,
+(select cust_account_id FROM hz_cust_accounts hca WHERE hca.party_id = hp.party_id AND ROWNUM = 1 AND status = 'A') cust_account_id,
+(select CURRENCY_CODE from hz_cust_profile_amts hcpa where
+CUST_ACCOUNT_PROFILE_ID = (select CUST_ACCOUNT_PROFILE_ID from hz_customer_profiles where rownum=1 and cust_account_id = (select cust_account_id FROM hz_cust_accounts hca WHERE hca.party_id = hp.party_id AND ROWNUM = 1 AND status = 'A'))
+and hcpa.OVERALL_CREDIT_LIMIT > 0
+and hcpa.site_use_id is null
+AND ROWNUM=1
+and hcpa.currency_code in
+         (select sob.currency_code
+          from apps.hz_cust_acct_sites   cas,
+               apps.ar_system_parameters asp,
+               apps.gl_sets_of_books     sob
+          where cas.org_id          = asp.org_id
+             and asp.set_of_books_id = sob.set_of_books_id
+             and cas.status          = 'A'
+             and cas.bill_to_flag    = 'P'
+             and cas.cust_account_id = (select cust_account_id FROM hz_cust_accounts hca WHERE hca.party_id = hp.party_id AND ROWNUM = 1 AND status = 'A'))) CURRENCY_CODE,
+(select
+hz_utility_v2pub.get_yahoo_map_url(
+loc.address1, loc.address2, loc.address3,
+loc.address4, loc.city, loc.country,
+loc.state, loc.postal_code) 
+from 
+hz_party_sites hps, 
+hz_locations loc where 
+hps.location_id = loc.location_id
+and hps.party_site_id = :1) map_url,
+(select
+REPLACE(loc.address1, ' ', '+')||'+'||REPLACE(loc.city, ' ', '+')||'+'||RTRIM(loc.state)||'+'||(postal_code)||'+'||rtrim(loc.country)
+from 
+hz_party_sites hps, 
+hz_locations loc where 
+hps.location_id = loc.location_id
+and hps.party_site_id = :2) map_url_google
+from
+hz_parties hp
+where
+hp.party_id = (select party_id from hz_party_sites where party_site_id = :3)
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="PartyName"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="360"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PARTY_NAME"
+      Expression="PARTY_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="360" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PartyNumber"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PARTY_NUMBER"
+      Expression="PARTY_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OrgType"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnType="CHAR"
+      AliasName="ORG_TYPE"
+      Expression="ORG_TYPE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PartyId"
+      IsPersistent="false"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="PARTY_ID"
+      Expression="PARTY_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustNumber"
+      IsPersistent="false"
+      Precision="240"
+	  Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CUST_NUMBER"
+      Expression="CUST_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AddrSeq"
+      IsPersistent="false"
+      Precision="240"
+	  Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ADDR_SEQ"
+      Expression="ADDR_SEQ"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustAccountId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="CUST_ACCOUNT_ID"
+      Expression="CUST_ACCOUNT_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CurrencyCode"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CURRENCY_CODE"
+      Expression="CURRENCY_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="15" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MapUrl"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="MAPURL"
+      Expression="MAPURL"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MapUrlGoogle"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="MAPURLGOOGLE"
+      Expression="MAPURLGOOGLE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

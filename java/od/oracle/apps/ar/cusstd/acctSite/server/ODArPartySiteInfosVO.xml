@@ -1,0 +1,185 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODArPartySiteInfosVO"
+   Extends="oracle.apps.ar.cusstd.acctSite.server.ArPartySiteInfosVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.ar.cusstd.acctSite.server.ODArPartySiteInfosVORowImpl"
+   ComponentClass="od.oracle.apps.ar.cusstd.acctSite.server.ODArPartySiteInfosVOImpl"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select ArHzPartySitesEO.party_site_id,
+       ArHzPartySitesEO.party_site_number, 
+       ArHzPartySitesEO.party_site_name, 
+       decode(ArHzPartySitesEO.status, 'A', 'Y', 'N') Active,
+       hz_format_pub.format_address(ArHzPartySitesEO.location_id, null, null, ' ') address,
+       ArHzLocationsEO.address_lines_phonetic AlternateName,
+       ArHzLocationsEO.location_id,
+       ArHzPartySitesEO.status,
+       CASE WHEN (instr(ArHzPartySitesEO.orig_system_reference,'-OMX') > 0)  THEN REGEXP_REPLACE(ArHzPartySitesEO.orig_system_reference,'-OMX', '') ELSE null  END  OMX_Consignee_ID 
+from hz_party_sites ArHzPartySitesEO,
+     hz_locations ArHzLocationsEO
+where ArHzPartySitesEO.party_site_id = :1
+and ArHzPartySitesEO.location_id = ArHzLocationsEO.location_id
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_isExpertMode" Value="true" />
+      <Attr Name="_version" Value="10.1.3.43.6" />
+      <Attr Name="_codeGenFlag2" Value="Access|Coll|VarAccess" />
+   </DesignTime>
+   <ViewAttribute
+      Name="PartySiteId"
+      IsUpdateable="false"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="PARTY_SITE_ID"
+      Expression="PARTY_SITE_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PartySiteNumber"
+      IsUpdateable="false"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PARTY_SITE_NUMBER"
+      Expression="PARTY_SITE_NUMBER"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PartySiteName"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PARTY_SITE_NAME"
+      Expression="PARTY_SITE_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Active"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ACTIVE"
+      Expression="Active"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Address"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ADDRESS"
+      Expression="ADDRESS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AlternateName"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="560"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ALTERNATENAME"
+      Expression="ALTERNATENAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="560" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LocationId"
+      IsUpdateable="false"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="LOCATION_ID"
+      Expression="LOCATION_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Status"
+      IsUpdateable="false"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="STATUS"
+      Expression="STATUS"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustAccountProfileId"
+      IsUpdateable="false"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="VARCHAR2"
+      AliasName="CUST_ACCOUNT_PROFILE_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OmxConsigneeId"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="OMX_CONSIGNEE_ID"
+      Expression="OMX_CONSIGNEE_ID"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+</ViewObject>

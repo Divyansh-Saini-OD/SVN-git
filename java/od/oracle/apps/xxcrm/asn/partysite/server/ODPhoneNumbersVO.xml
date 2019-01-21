@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<!-- $Header: ODPhoneNumbersVO.xml $ -->
+
+<ViewObject
+   Name="ODPhoneNumbersVO"
+   OrderBy="primary_flag DESC"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.asn.partysite.server.ODPhoneNumbersVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.asn.partysite.server.ODPhoneNumbersVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT 
+  DECODE(ContactPointEO.primary_flag,'Y','P','O') primary_flag,
+  ContactPointEO.contact_point_purpose,
+  ContactPointEO.Do_NOT_use_flag,
+  TZ.TIMEZONE_CODE time_zone,
+  ContactPointEO.contact_point_id,
+  ContactPointEO.contact_point_type,
+  '+' || ContactPointEO.phone_country_code || ' '||
+  ContactPointEO.phone_area_code || ' ' ||
+  ContactPointEO.phone_number || ' ' ||
+  ContactPointEO.phone_extension phone_number,
+  ContactPointEO.owner_table_id, ContactPointEO.owner_table_name,
+'UEN' UpdateUENUDI,
+'RE' RemoveRERD,
+lookup.meaning
+FROM 
+  hz_contact_points ContactPointEO,
+  fnd_lookup_values lookup,
+  fnd_timezones_vl TZ
+WHERE 
+  ContactPointEO.contact_point_type = 'PHONE'
+  and ContactPointEO.owner_table_name = 'HZ_PARTY_SITES' 
+  and ContactPointEO.PHONE_LINE_TYPE = lookup.lookup_code
+  and trunc(nvl(lookup.start_date_active, SYSDATE)) <= trunc(SYSDATE)
+AND    trunc(nvl(lookup.end_date_active, SYSDATE))  >= trunc(SYSDATE)
+AND    lookup.enabled_flag = 'Y'
+AND    lookup.language = USERENV('LANG')
+AND    lookup.lookup_type ='XX_ASN_ADDR_BK_TYPES'
+AND   ContactPointEO.TIMEZONE_ID = TZ.UPGRADE_TZ_ID (+)
+and ContactPointEO.owner_table_id = :1
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <EntityUsage
+      Name="ContactPointEO"
+      Entity="od.oracle.apps.xxcrm.asn.partysite.schema.server.ODContactPointEO" >
+      <DesignTime>
+         <Attr Name="_queryClause" Value="true" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="PrimaryFlag"
+      Precision="1"
+      EntityAttrName="PrimaryFlag"
+      EntityUsage="ContactPointEO"
+      AliasName="PRIMARY_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContactPointPurpose"
+      Precision="30"
+      EntityAttrName="ContactPointPurpose"
+      EntityUsage="ContactPointEO"
+      AliasName="CONTACT_POINT_PURPOSE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DoNotUseFlag"
+      EntityAttrName="DoNotUseFlag"
+      EntityUsage="ContactPointEO"
+      AliasName="DoNotUseFlag" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TimeZone"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="50"
+      Type="java.lang.String"
+      AliasName="TIME_ZONE"
+      ColumnType="VARCHAR2"
+      Expression="TIME_ZONE"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContactPointId"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="ContactPointId"
+      EntityUsage="ContactPointEO"
+      AliasName="CONTACT_POINT_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContactPointType"
+      IsNotNull="true"
+      Precision="30"
+      EntityAttrName="ContactPointType"
+      EntityUsage="ContactPointEO"
+      AliasName="CONTACT_POINT_TYPE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PhoneNumber"
+      EntityAttrName="PhoneNumber"
+      EntityUsage="ContactPointEO"
+      AliasName="PhoneNumber" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OwnerTableId"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="OwnerTableId"
+      EntityUsage="ContactPointEO"
+      AliasName="OWNER_TABLE_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OwnerTableName"
+      IsNotNull="true"
+      Precision="30"
+      EntityAttrName="OwnerTableName"
+      EntityUsage="ContactPointEO"
+      AliasName="OWNER_TABLE_NAME" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Updateuenudi"
+      IsPersistent="false"
+      Precision="3"
+      Type="java.lang.String"
+      ColumnType="CHAR"
+      AliasName="UPDATEUENUDI"
+      Expression="UPDATEUENUDI"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="3" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Removererd"
+      IsPersistent="false"
+      Precision="2"
+      Type="java.lang.String"
+      ColumnType="CHAR"
+      AliasName="REMOVERERD"
+      Expression="REMOVERERD"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Meaning"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="80"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="MEANING"
+      Expression="MEANING"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

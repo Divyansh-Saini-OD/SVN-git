@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="OD_ServiceRequestMasterVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.cs.csz.servicerequest.server.OD_ServiceRequestMasterVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.cs.csz.servicerequest.server.OD_ServiceRequestMasterVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT OD_ServiceRequestMasterEO.REQUEST_NUMBER, 
+       OD_ServiceRequestMasterEO.STORE_ID, 
+       OD_ServiceRequestMasterEO.LINE_NUMBER, 
+       OD_ServiceRequestMasterEO.ITEM_NUMBER, 
+       OD_ServiceRequestMasterEO.ITEM_DESCRIPTION, 
+       OD_ServiceRequestMasterEO.RMS_SKU, 
+       OD_ServiceRequestMasterEO.QUANTITY, 
+       OD_ServiceRequestMasterEO.ITEM_CATEGORY, 
+       OD_ServiceRequestMasterEO.PURCHASE_PRICE, 
+       OD_ServiceRequestMasterEO.SELLING_PRICE, 
+       OD_ServiceRequestMasterEO.EXCHANGE_PRICE, 
+       OD_ServiceRequestMasterEO.CORE_FLAG, 
+       OD_ServiceRequestMasterEO.UOM, 
+       OD_ServiceRequestMasterEO.SCHEDULE_DATE, 
+       OD_ServiceRequestMasterEO.CREATION_DATE, 
+       OD_ServiceRequestMasterEO.CREATED_BY, 
+       OD_ServiceRequestMasterEO.LAST_UDATE_DATE, 
+       OD_ServiceRequestMasterEO.LAST_UPDATED_BY, 
+       OD_ServiceRequestMasterEO.ATTRIBUTE1, 
+       OD_ServiceRequestMasterEO.ATTRIBUTE2, 
+       OD_ServiceRequestMasterEO.ATTRIBUTE3, 
+       OD_ServiceRequestMasterEO.ATTRIBUTE4, 
+       OD_ServiceRequestMasterEO.ATTRIBUTE5, 
+       OD_ServiceRequestMasterEO.SALES_FLAG, 
+       OD_ServiceRequestMasterEO.MANUFACTURER, 
+       OD_ServiceRequestMasterEO.MODEL, 
+       OD_ServiceRequestMasterEO.SERIAL_NUMBER, 
+       OD_ServiceRequestMasterEO.PROBLEM_DESCR, 
+       OD_ServiceRequestMasterEO.SPECIAL_INSTR, 
+       OD_ServiceRequestMasterEO.INVENTORY_ITEM_ID, 
+       OD_ServiceRequestMasterEO.STORE_NUMBER, 
+       OD_ServiceRequestMasterEO.QUOTE_NUMBER, 
+       OD_ServiceRequestMasterEO.EXPIRE_DATE, 
+       OD_ServiceRequestMasterEO.EXCESS_QUANTITY, 
+       OD_ServiceRequestMasterEO.EXCESS_FLAG, 
+       OD_ServiceRequestMasterEO.RECEIVED_QUANTITY, 
+       OD_ServiceRequestMasterEO.RECEIVED_SHIPMENT_FLAG, 
+       OD_ServiceRequestMasterEO.COMPLETION_DATE, 
+       OD_ServiceRequestMasterEO.ROWID, 
+       OD_ServiceRequestMasterEO.TOT_RECEIVED_QTY, (select nvl((select 'Y'
+         --into  lc_recpt_flag
+         from cs_incident_statuses_tl ct,
+             cs_incidents_all_b cb
+         where cb.incident_status_id = ct.incident_status_id
+         and ct.name not in ('Waiting for Parts' , 'Waiting for Approval','Approved')
+         AND CB.INCIDENT_NUMBER = OD_SERVICEREQUESTMASTEREO.REQUEST_NUMBER
+        ),'N') from dual) as Recpt_Flag
+FROM XX_CS_TDS_PARTS OD_ServiceRequestMasterEO
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.14.01" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <EntityUsage
+      Name="OD_ServiceRequestMasterEO"
+      Entity="od.oracle.apps.xxcrm.cs.csz.servicerequest.schema.server.OD_ServiceRequestMasterEO" >
+      <DesignTime>
+         <Attr Name="_queryClause" Value="false" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="RequestNumber"
+      Precision="25"
+      EntityAttrName="RequestNumber"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="REQUEST_NUMBER" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="StoreId"
+      EntityAttrName="StoreId"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="STORE_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LineNumber"
+      EntityAttrName="LineNumber"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="LINE_NUMBER" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ItemNumber"
+      Precision="25"
+      EntityAttrName="ItemNumber"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="ITEM_NUMBER" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ItemDescription"
+      Precision="250"
+      EntityAttrName="ItemDescription"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="ITEM_DESCRIPTION" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RmsSku"
+      Precision="25"
+      EntityAttrName="RmsSku"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="RMS_SKU" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Quantity"
+      EntityAttrName="Quantity"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="QUANTITY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ItemCategory"
+      Precision="150"
+      EntityAttrName="ItemCategory"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="ITEM_CATEGORY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PurchasePrice"
+      EntityAttrName="PurchasePrice"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="PURCHASE_PRICE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SellingPrice"
+      EntityAttrName="SellingPrice"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="SELLING_PRICE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ExchangePrice"
+      EntityAttrName="ExchangePrice"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="EXCHANGE_PRICE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CoreFlag"
+      Precision="1"
+      EntityAttrName="CoreFlag"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="CORE_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Uom"
+      Precision="15"
+      EntityAttrName="Uom"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="UOM" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ScheduleDate"
+      EntityAttrName="ScheduleDate"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="SCHEDULE_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate"
+      EntityAttrName="CreationDate"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="CREATION_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy"
+      Precision="25"
+      EntityAttrName="CreatedBy"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="CREATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUdateDate"
+      EntityAttrName="LastUdateDate"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="LAST_UDATE_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdatedBy"
+      Precision="25"
+      EntityAttrName="LastUpdatedBy"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="LAST_UPDATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute1"
+      Precision="250"
+      EntityAttrName="Attribute1"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="ATTRIBUTE1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute2"
+      Precision="250"
+      EntityAttrName="Attribute2"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="ATTRIBUTE2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute3"
+      Precision="250"
+      EntityAttrName="Attribute3"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="ATTRIBUTE3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute4"
+      Precision="250"
+      EntityAttrName="Attribute4"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="ATTRIBUTE4" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Attribute5"
+      Precision="250"
+      EntityAttrName="Attribute5"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="ATTRIBUTE5" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SalesFlag"
+      Precision="1"
+      EntityAttrName="SalesFlag"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="SALES_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Manufacturer"
+      Precision="50"
+      EntityAttrName="Manufacturer"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="MANUFACTURER" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Model"
+      Precision="25"
+      EntityAttrName="Model"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="MODEL" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SerialNumber"
+      Precision="50"
+      EntityAttrName="SerialNumber"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="SERIAL_NUMBER" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProblemDescr"
+      Precision="250"
+      EntityAttrName="ProblemDescr"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="PROBLEM_DESCR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SpecialInstr"
+      Precision="1000"
+      EntityAttrName="SpecialInstr"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="SPECIAL_INSTR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InventoryItemId"
+      EntityAttrName="InventoryItemId"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="INVENTORY_ITEM_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="StoreNumber"
+      EntityAttrName="StoreNumber"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="STORE_NUMBER" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="QuoteNumber"
+      Precision="25"
+      EntityAttrName="QuoteNumber"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="QUOTE_NUMBER" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ExpireDate"
+      EntityAttrName="ExpireDate"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="EXPIRE_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ExcessQuantity"
+      EntityAttrName="ExcessQuantity"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="EXCESS_QUANTITY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ExcessFlag"
+      Precision="1"
+      EntityAttrName="ExcessFlag"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="EXCESS_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ReceivedQuantity"
+      EntityAttrName="ReceivedQuantity"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="RECEIVED_QUANTITY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ReceivedShipmentFlag"
+      Precision="1"
+      EntityAttrName="ReceivedShipmentFlag"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="RECEIVED_SHIPMENT_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CompletionDate"
+      EntityAttrName="CompletionDate"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="COMPLETION_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RowID"
+      IsUpdateable="false"
+      EntityAttrName="RowID"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="ROWID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NotUsed"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="BOOLEAN"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ReceivedShipment"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="BOOLEAN"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Complete"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="BOOLEAN"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="setFlag"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="BOOLEAN"
+      AliasName="SET_FLAG"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Core_Flag"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="BOOLEAN"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NotUsedQty"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="BOOLEAN"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Receive_Quantity"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="BOOLEAN"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Tracking_Number"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="BOOLEAN"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ReceivedShipmentRender"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="BOOLEAN"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FreightCarrier"
+      IsPersistent="false"
+      Type="java.lang.Boolean"
+      ColumnType="BOOLEAN"
+      AliasName="VIEW_ATTR"
+      SQLType="BIT" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TotReceivedQty"
+      EntityAttrName="TotReceivedQty"
+      EntityUsage="OD_ServiceRequestMasterEO"
+      AliasName="TOT_RECEIVED_QTY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RecptFlag"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="RecptFlag"
+      Expression="RecptFlag"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewLinkAccessor
+      Name="OD_ServiceRequestDetailsVO"
+      ViewLink="od.oracle.apps.xxcrm.cs.csz.servicerequest.server.OD_ServiceRequestMasterDetailVL"
+      Type="oracle.jbo.RowIterator"
+      IsUpdateable="false" >
+   </ViewLinkAccessor>
+</ViewObject>

@@ -1,0 +1,153 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="region1" controllerClass="od.oracle.apps.xxfin.ap.idms.traitmatrix.webui.XXSupplierMatrixCO" amDefName="od.oracle.apps.xxfin.ap.idms.traitmatrix.server.XXSupplierMatrixAM" windowTitle="Supplier Matrix" title="Search" amStateRequired="false">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:messageComponentLayout id="XXSupplierMatrix" sortState="descending">
+               <ui:contents>
+                  <oa:messageLovInput id="Supplier" prompt="Supplier Name" sortState="ascending" required="yes">
+                     <lovContents>
+                        <oa:listOfValues id="region2">
+                           <ui:contents>
+                              <oa:table name="region2" id="XXSupplierLovVO1" shortDesc="Supplier">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="SupplierName" viewName="xxsuppliernamelov1" viewAttr="SupplierName" prompt="Supplier" maximumLength="30" queryable="true" sortState="descending" required="yes"/>
+                                    <oa:messageStyledText id="SupplierNumber" prompt="Supplier Number" maximumLength="30" viewName="xxsuppliernamelov1" viewAttr="SupplierNumber" queryable="true"/>
+                                    <oa:messageStyledText id="Alt_Supplier" viewName="xxsuppliernamelov1" viewAttr="AlternateSupplier" prompt="Site Name"/>
+                                 </ui:contents>
+                              </oa:table>
+                           </ui:contents>
+                        </oa:listOfValues>
+                     </lovContents>
+                     <lovMappings>
+                        <lovMap id="lovMap1" lovItem="SupplierName" resultTo="Supplier" criteriaFrom="Supplier"/>
+                        <lovMap id="lovMap2" lovItem="SupplierNumber" resultTo="XXSupplierNumber" criteriaFrom="XXSupplierNumber"/>
+                        <lovMap id="lovMap5" lovItem="Alt_Supplier" resultTo="AlternateSupplier" criteriaFrom="AlternateSupplier"/>
+                     </lovMappings>
+                  </oa:messageLovInput>
+                  <oa:messageTextInput id="XXSupplierNumber" prompt="Supplier Number"/>
+                  <oa:messageTextInput id="AlternateSupplier" prompt="Site Name" maximumLength="30"/>
+                  <oa:messageLayout id="messageLayout1">
+                     <ui:contents>
+                        <oa:submitButton id="Go" text="Go" prompt="Go"/>
+                        <oa:submitButton id="Clear" text="Clear" prompt="Clear"/>
+                     </ui:contents>
+                  </oa:messageLayout>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:header id="region11" text="Supplier Sites"/>
+            <oa:rowLayout id="region10" hAlign="left" rendered="true">
+               <ui:contents>
+                  <oa:messageChoice id="SiteStatus" prompt="Site Status" pickListViewDef="od.oracle.apps.xxfin.ap.idms.traitmatrix.PopList.StatusPopListVO" pickListValAttr="Active" pickListDispAttr="Active">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="Site_Status"/>
+                     </ui:primaryClientAction>
+                  </oa:messageChoice>
+                  <oa:spacer id="item10" width="250"/>
+                  <oa:messageTextInput id="SiteName" prompt="Site Name">
+                     <ui:primaryClientAction>
+                        <ui:fireAction event="SITE_NAME"/>
+                     </ui:primaryClientAction>
+                  </oa:messageTextInput>
+                  <oa:spacer id="item11" width="250"/>
+                  <oa:messageLovInput id="OperatingUnit" prompt="Operating Unit">
+                     <lovContents>
+                        <oa:listOfValues id="region15">
+                           <ui:contents>
+                              <oa:table name="region15" id="region16">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="item9" viewName="XXOperatingUnitLovVO1" viewAttr="Name" queryable="true"/>
+                                 </ui:contents>
+                              </oa:table>
+                           </ui:contents>
+                        </oa:listOfValues>
+                     </lovContents>
+                     <lovMappings>
+                        <lovMap id="lovMap4" lovItem="item9" resultTo="OperatingUnit" criteriaFrom="OperatingUnit"/>
+                     </lovMappings>
+                  </oa:messageLovInput>
+               </ui:contents>
+            </oa:rowLayout>
+            <oa:header id="region12" text="Supplier Trait Matrix" rendered="${oa.XXTransVO1.XXDispAttr}"/>
+            <oa:advancedTable id="region5" viewName="SupplierMatrixAdvVO1" text="" adminCustomizable="false" columnHideShowEnabled="false" colReorderEnabled="true" rendered="${oa.XXTransVO1.XXDispAttr}">
+               <ui:contents>
+                  <oa:column id="column1">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeader1" prompt="Site Name"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageTextInput id="item2" viewAttr="Sitename" readOnly="${oa.SupplierMatrixAdvVO1.DisableTrans}" prompt="Site Name"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="column2">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeader2" prompt="Supplier Trait"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageTextInput id="item3" readOnly="${oa.SupplierMatrixAdvVO1.DisableTrans}" viewAttr="Suptrait" prompt="Supplier Trait"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="column3">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeader3" prompt="Description"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageTextInput id="Desc" readOnly="${oa.SupplierMatrixAdvVO1.DisableTrans}" prompt="Description" maximumLength="240" viewAttr="Description"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="column4">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeader4" prompt="Master Supplier Indicator"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageCheckBox id="item5" readOnly="${oa.SupplierMatrixAdvVO1.DisableTrans}" viewAttr="MasterIndicator" text="" prompt=""/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="column6">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeader6" prompt="Enable Flag"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageCheckBox id="Enabled" viewAttr="EnableFlag" readOnly="${oa.SupplierMatrixAdvVO1.DisableTrans}"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="column5">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeader5" prompt="Update"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:image id="item6" prompt="Update" source="updateicon_enabled.gif">
+                           <ui:primaryClientAction>
+                              <ui:fireAction event="UPD_MATRIX">
+                                 <ui:parameters>
+                                    <ui:parameter key="uTId" value="${oa.SupplierMatrixAdvVO1.Suptrait}"/>
+                                    <ui:parameter key="uNo" value="${oa.SupplierMatrixAdvVO1.Supplier}"/>
+                                 </ui:parameters>
+                              </ui:fireAction>
+                           </ui:primaryClientAction>
+                        </oa:image>
+                     </ui:contents>
+                  </oa:column>
+               </ui:contents>
+               <ui:tableActions>
+                  <oa:flowLayout id="region9">
+                     <ui:contents>
+                        <oa:submitButton id="Create" text="Create" prompt="Create"/>
+                        <oa:exportButton id="Export" exportAllRows="true" viewName="SupplierMatrixAdvVO1" text="Export"/>
+                     </ui:contents>
+                  </oa:flowLayout>
+               </ui:tableActions>
+            </oa:advancedTable>
+            <oa:pageButtonBar id="region6">
+               <ui:contents>
+                  <oa:submitButton id="Apply" text="Apply" prompt="Apply"/>
+                  <oa:submitButton id="Cancel" text="Cancel" prompt="Cancel"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

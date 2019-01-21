@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+
+<Entity
+   Name="PlannerHierarchyEO"
+   DBObjectType="synonym"
+   DBObjectName="XX_WFH_PLANNER_HIERARCHY_ALL"
+   AliasName="PlannerHierarchyEO"
+   BindingStyle="Oracle"
+   UseGlueCode="false"
+   CodeGenFlag="4"
+   RowClass="od.oracle.apps.xxmer.schema.wfh.server.PlannerHierarchyEOImpl"
+   DefClass="oracle.apps.fnd.framework.server.OAEntityDefImpl"
+   CollClass="oracle.apps.fnd.framework.server.OAEntityCache" >
+   <Properties>
+      <Property Name ="ExpertClass" Value ="od.oracle.apps.xxmer.schema.wfh.server.PlannerHierarchyEntityExpert" />
+      <Property Name ="VAMDef" Value ="od.oracle.apps.xxmer.schema.wfh.server.PlannerHierarchyVAM" />
+   </Properties>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <AttrArray Name="_publishEvents">
+      </AttrArray>
+   </DesignTime>
+   <Attribute
+      Name="PlannerId"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PLANNER_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_WFH_PLANNER_HIERARCHY_ALL"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ManagerId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="MANAGER_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_WFH_PLANNER_HIERARCHY_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="OrgId"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="ORG_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_WFH_PLANNER_HIERARCHY_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateDate"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="LAST_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_WFH_PLANNER_HIERARCHY_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdatedBy"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_WFH_PLANNER_HIERARCHY_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreationDate"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="CREATION_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_WFH_PLANNER_HIERARCHY_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreatedBy"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CREATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_WFH_PLANNER_HIERARCHY_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateLogin"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATE_LOGIN"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_WFH_PLANNER_HIERARCHY_ALL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Key
+      Name="SysC00268331" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.wfh.server.PlannerHierarchyEO.LastUpdateDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00268331" />
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATE_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="PkXxWfhPlannerHierarchy" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.wfh.server.PlannerHierarchyEO.PlannerId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="PK_XX_WFH_PLANNER_HIERARCHY" />
+         <Attr Name="_isPrimary" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00268330" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.wfh.server.PlannerHierarchyEO.OrgId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00268330" />
+         <Attr Name="_checkCondition" Value="&#34;ORG_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00268329" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.wfh.server.PlannerHierarchyEO.PlannerId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00268329" />
+         <Attr Name="_checkCondition" Value="&#34;PLANNER_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00268332" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.wfh.server.PlannerHierarchyEO.LastUpdatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00268332" />
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00268333" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.wfh.server.PlannerHierarchyEO.CreationDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00268333" />
+         <Attr Name="_checkCondition" Value="&#34;CREATION_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00268334" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.wfh.server.PlannerHierarchyEO.CreatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00268334" />
+         <Attr Name="_checkCondition" Value="&#34;CREATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="FkXxWfhPlannerHierarchy" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.schema.wfh.server.PlannerHierarchyEO.PlannerId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="FK_XX_WFH_PLANNER_HIERARCHY" />
+         <Attr Name="_referencedKey" Value="PK_XX_TEMP_WFH_EMPLOYEE" />
+         <Attr Name="_isForeign" Value="true" />
+         <Attr Name="_isDeferrableConstraint" Value="true" />
+         <Attr Name="_isInitiallyDeferredConstraint" Value="true" />
+      </DesignTime>
+   </Key>
+</Entity>

@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+
+<Entity
+   Name="PrdQATestResEO"
+   DBObjectType="synonym"
+   DBObjectName="XX_PA_PB_PRD_QATSTR"
+   AliasName="PrdQATestResEO"
+   BindingStyle="Oracle"
+   UseGlueCode="false"
+   CodeGenFlag="4"
+   RowClass="od.oracle.apps.xxmer.papb.server.PrdQATestResEOImpl"
+   DefClass="oracle.apps.fnd.framework.server.OAEntityDefImpl"
+   CollClass="oracle.apps.fnd.framework.server.OAEntityCache" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <AttrArray Name="_publishEvents">
+      </AttrArray>
+   </DesignTime>
+   <Attribute
+      Name="ProdDtlId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PROD_DTL_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TestResultId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="TEST_RESULT_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TaskDescription"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnName="TASK_DESCRIPTION"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Status"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="STATUS"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DueDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="DUE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ReportNo"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnName="REPORT_NO"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Cap"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnName="CAP"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Comments"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnName="COMMENTS"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute1"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE1"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute2"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE2"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute3"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE3"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute4"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE4"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute5"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE5"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute6"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE6"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute7"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE7"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute8"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE8"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute9"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE9"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute10"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE10"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute11"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE11"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute12"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE12"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute13"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE13"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute14"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE14"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute15"
+      Precision="150"
+      Type="java.lang.String"
+      ColumnName="ATTRIBUTE15"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreationDate"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="CREATION_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreatedBy"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CREATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateDate"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="LAST_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdatedBy"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateLogin"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATE_LOGIN"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="TaskSeq"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="TASK_SEQ"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="RowID"
+      IsUpdateable="false"
+      Type="oracle.jbo.domain.RowID"
+      ColumnName="ROWID"
+      ColumnType="ROWID"
+      SQLType="VARCHAR"
+      PrimaryKey="true" >
+   </Attribute>
+   <Attribute
+      Name="Result"
+      Precision="100"
+      Type="java.lang.String"
+      ColumnName="RESULT"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_PA_PB_PRD_QATSTR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="100" />
+      </DesignTime>
+   </Attribute>
+   <Key
+      Name="SysC00349611" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.papb.server.PrdQATestResEO.CreationDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00349611" />
+         <Attr Name="_checkCondition" Value="&#34;CREATION_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00349612" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.papb.server.PrdQATestResEO.CreatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00349612" />
+         <Attr Name="_checkCondition" Value="&#34;CREATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00349613" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.papb.server.PrdQATestResEO.LastUpdateDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00349613" />
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATE_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00349614" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.papb.server.PrdQATestResEO.LastUpdatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00349614" />
+         <Attr Name="_checkCondition" Value="&#34;LAST_UPDATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+      </DesignTime>
+   </Key>
+</Entity>

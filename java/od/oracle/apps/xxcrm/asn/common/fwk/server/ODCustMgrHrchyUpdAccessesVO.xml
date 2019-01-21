@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODCustMgrHrchyUpdAccessesVO"
+   Extends="oracle.apps.asn.common.fwk.server.CustMgrHrchyUpdAccessesVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.asn.common.fwk.server.ODCustMgrHrchyUpdAccessesVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.asn.common.fwk.server.ODCustMgrHrchyUpdAccessesVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT 
+  1
+FROM 
+  JTF_RS_REP_MANAGERS jrrm,
+  JTF_RS_GROUP_USAGES jrgu,
+  XX_TM_NAM_TERR_CURR_ASSIGN_V aaa,
+  HZ_PARTY_SITES               hzps,
+  HZ_PARTY_SITE_USES           hzpsu,
+  FND_LOOKUP_VALUES            fndl
+WHERE 
+  jrgu.usage IN ('SALES', 'PRM')    and
+  jrgu.group_id = jrrm.group_id    and
+  jrrm.hierarchy_type IN ('MGR_TO_MGR', 'MGR_TO_REP')    and
+  jrrm.resource_id = aaa.resource_id    and
+  TRUNC(jrrm.start_date_active) <= TRUNC(SYSDATE)    and
+  TRUNC(NVL(jrrm.end_date_active, SYSDATE)) >= TRUNC(SYSDATE)    and
+  aaa.group_id = jrrm.group_id    and
+  aaa.entity_type = 'PARTY_SITE'    and
+  nvl(aaa.full_access_flag,'Y') = 'Y'    and
+  aaa.entity_id = hzps.party_site_id    and
+  hzpsu.party_site_id(+) = hzps.party_site_id    and
+  fndl.lookup_type = 'XXOD_ASN_PARTY_SEC_SITE_TYPES'    and
+  (nvl(hzps.identifying_address_flag,'N') = 'Y' OR NVL(hzpsu.site_use_type,'*') = fndl.lookup_code)    and
+  hzps.status = 'A'     and
+  NVL(hzpsu.status,'A') = 'A'       and
+  hzps.party_id = :1    and
+  jrrm.parent_resource_id = :2    and
+  jrrm.parent_resource_id <> jrrm.resource_id    and
+  ROWNUM = 1    and
+  fnd_profile.value('ASN_CUST_ACCESS')= 'S'
+  UNION   
+  SELECT 
+  1
+FROM 
+  JTF_RS_REP_MANAGERS jrrm,
+  JTF_RS_GROUP_USAGES jrgu,
+  XX_TM_NAM_TERR_CURR_ASSIGN_V aaa,
+  HZ_PARTY_SITES      hzps
+WHERE 
+  jrgu.usage IN ('SALES', 'PRM')    and
+  jrgu.group_id = jrrm.group_id    and
+  jrrm.hierarchy_type IN ('MGR_TO_MGR', 'MGR_TO_REP')    and
+  jrrm.resource_id = aaa.resource_id    and
+  TRUNC(jrrm.start_date_active) <= TRUNC(SYSDATE)    and
+  TRUNC(NVL(jrrm.end_date_active, SYSDATE)) >= TRUNC(SYSDATE)    and
+  aaa.group_id = jrrm.group_id    and
+  aaa.entity_type ='PARTY_SITE'    and
+  nvl(aaa.full_access_flag,'Y') = 'Y'       and
+  aaa.entity_id = hzps.party_site_id     and
+  hzps.party_id = :3    and
+  hzps.status = 'A'     and
+  jrrm.parent_resource_id = :4    and
+  jrrm.parent_resource_id <> jrrm.resource_id    and
+  ROWNUM = 1       and
+  fnd_profile.value('ASN_CUST_ACCESS')= 'T'
+
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.66" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="J1"
+      IsUpdateable="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="oracle.jbo.domain.Number"
+      AliasName="J1"
+      ColumnType="VARCHAR2"
+      Expression="1"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_OverrideAttr" Value="true" />
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

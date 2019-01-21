@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="xxTDSrexceptionsVO"
+   OrderBy="CREATION_DATE"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxom.xxTDSrexceptions.server.xxTDSrexceptionsVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT xxTDSrexceptionsEO.EXCEPTION_ID, 
+       xxTDSrexceptionsEO.PROCESS_NAME, 
+       xxTDSrexceptionsEO.MODULE_NAME, 
+       xxTDSrexceptionsEO.EXCEPTION_MSG, 
+       xxTDSrexceptionsEO.EXCEPTION_STATUS_FLAG, 
+       xxTDSrexceptionsEO.NOTIFY_FLAG, 
+       xxTDSrexceptionsEO.EXCEPTION_PAYLOAD, 
+       xxTDSrexceptionsEO.REPROCESS_FLAG, 
+       xxTDSrexceptionsEO.REPROCESSED_DATE, 
+       xxTDSrexceptionsEO.REPROCESSED, 
+       xxTDSrexceptionsEO.CREATION_DATE
+FROM XX_OM_SR_EXCEPTIONS xxTDSrexceptionsEO
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <EntityUsage
+      Name="xxTDSrexceptionsEO"
+      Entity="od.oracle.apps.xxom.xxTDSrexceptions.server.xxTDSrexceptionsEO" >
+      <DesignTime>
+         <Attr Name="_EntireObjectTable" Value="false" />
+         <Attr Name="_queryClause" Value="true" />
+         <Attr Name="_queryOrderBy" Value="CREATION_DATE" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="ExceptionId"
+      IsNotNull="true"
+      EntityAttrName="ExceptionId"
+      EntityUsage="xxTDSrexceptionsEO"
+      AliasName="EXCEPTION_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ProcessName"
+      EntityAttrName="ProcessName"
+      EntityUsage="xxTDSrexceptionsEO"
+      AliasName="PROCESS_NAME"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ModuleName"
+      EntityAttrName="ModuleName"
+      EntityUsage="xxTDSrexceptionsEO"
+      AliasName="MODULE_NAME"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ExceptionMsg"
+      IsQueriable="false"
+      EntityAttrName="ExceptionMsg"
+      EntityUsage="xxTDSrexceptionsEO"
+      AliasName="EXCEPTION_MSG"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ExceptionStatusFlag"
+      EntityAttrName="ExceptionStatusFlag"
+      EntityUsage="xxTDSrexceptionsEO"
+      AliasName="EXCEPTION_STATUS_FLAG"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NotifyFlag"
+      EntityAttrName="NotifyFlag"
+      EntityUsage="xxTDSrexceptionsEO"
+      AliasName="NOTIFY_FLAG"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ExceptionPayload"
+      IsQueriable="false"
+      EntityAttrName="ExceptionPayload"
+      EntityUsage="xxTDSrexceptionsEO"
+      AliasName="EXCEPTION_PAYLOAD"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ReprocessFlag"
+      EntityAttrName="ReprocessFlag"
+      EntityUsage="xxTDSrexceptionsEO"
+      AliasName="REPROCESS_FLAG"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ReprocessedDate"
+      EntityAttrName="ReprocessedDate"
+      EntityUsage="xxTDSrexceptionsEO"
+      AliasName="REPROCESSED_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Reprocessed"
+      EntityAttrName="Reprocessed"
+      EntityUsage="xxTDSrexceptionsEO"
+      AliasName="REPROCESSED"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate"
+      EntityAttrName="CreationDate"
+      EntityUsage="xxTDSrexceptionsEO"
+      AliasName="CREATION_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+</ViewObject>

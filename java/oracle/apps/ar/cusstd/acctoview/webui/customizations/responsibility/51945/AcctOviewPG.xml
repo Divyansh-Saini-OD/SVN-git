@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.6.0.0_50" xml:lang="en-US" customizes="/oracle/apps/ar/cusstd/acctoview/webui/AcctOviewPG">
+   <modifications>
+      <modify element="PageLayoutRN" controllerClass="od.oracle.apps.xxcrm.ar.cusstd.acctoview.webui.ODAcctOviewPageCO"/>
+      <modify element="PageButtons" rendered="false"/>
+      <modify element="DeleteHdr" rendered="false"/>
+      <modify element="deleteColumn" rendered="false"/>
+      <modify element="DuplicateHdr" rendered="false"/>
+      <modify element="PymtDtlsdRN" rendered="false"/>
+   </modifications>
+</customization>

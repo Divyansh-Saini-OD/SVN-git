@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE JboPackage SYSTEM "jbo_03_01.dtd">
+
+<JboPackage
+   Name="server"
+   SeparateXMLFiles="true"
+   PackageName="od.oracle.apps.xxmer.plmpjrdashboard.server" >
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.14.01" />
+      <Attr Name="_ejbPackage" Value="false" />
+   </DesignTime>
+   <Containee
+      Name="OD_PLMPJRDashboardAM"
+      FullName="od.oracle.apps.xxmer.plmpjrdashboard.server.OD_PLMPJRDashboardAM"
+      ObjectType="AppModule" >
+   </Containee>
+   <Containee
+      Name="OD_MyAssignmentsVO"
+      FullName="od.oracle.apps.xxmer.plmpjrdashboard.server.OD_MyAssignmentsVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="OD_NotesVO"
+      FullName="od.oracle.apps.xxmer.plmpjrdashboard.server.OD_NotesVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="OD_PA_NOTES_VO"
+      FullName="od.oracle.apps.xxmer.plmpjrdashboard.server.OD_PA_NOTES_VO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="OD_MyProjectPortfolioVO"
+      FullName="od.oracle.apps.xxmer.plmpjrdashboard.server.OD_MyProjectPortfolioVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="OD_MyProjectPortfolioResultsVO"
+      FullName="od.oracle.apps.xxmer.plmpjrdashboard.server.OD_MyProjectPortfolioResultsVO"
+      ObjectType="ViewObject" >
+   </Containee>
+</JboPackage>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<AppModule
+   Name="ODCsDshbdAM"
+   ComponentClass="od.oracle.apps.xxcrm.scs.fdk.server.ODCsDshbdAMImpl"
+   ComponentInterface="od.oracle.apps.xxcrm.scs.fdk.ODCsDshbdAM"
+   LoadComponentsLazily="true" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="FDKFMVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cs.custom.server.FDKFMVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="OptyCnctVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cs.custom.lov.server.OptyCnctVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODFdkActyTypVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cs.custom.poplist.server.ODFdkActyTypVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODFlwUpOnCallVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cs.custom.poplist.server.ODFlwUpOnCallVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODOptyCnfmdVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cs.custom.poplist.server.ODOptyCnfmdVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODOtcmOfCallVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cs.custom.poplist.server.ODOtcmOfCallVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODRatnlBhvrVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cs.custom.poplist.server.ODRatnlBhvrVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODCustCntctedVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cs.custom.poplist.server.ODCustCntctedVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODRskCnfmdVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cs.custom.poplist.server.ODRskCnfmdVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="FeedbackFormResponseVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cs.custom.server.FeedbackFormResponseVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="FdkBkRsltVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cs.custom.server.FdkBkRsltVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="FdkFmDtlsVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cs.custom.server.FdkFmDtlsVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="TempMasterVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cs.custom.server.TempMasterVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="TempDtlVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cs.custom.server.TempDtlVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="TempPropertiesVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cs.custom.server.TempPropertiesVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="DymamicVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cs.custom.server.DymamicVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="XxcsFdbkQstnVO"
+      ViewObjectName="od.oracle.apps.xxcrm.cs.custom.server.XxcsFdbkQstnVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODSCSFdbkHdrStgVO"
+      ViewObjectName="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSFdbkHdrStgVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODSCSFdbkLineDtlStgVO"
+      ViewObjectName="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSFdbkLineDtlStgVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="ODSCSOpportunityDtlsVO"
+      ViewObjectName="od.oracle.apps.xxcrm.scs.fdk.server.ODSCSOpportunityDtlsVO" >
+   </ViewUsage>
+</AppModule>

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODContractsAssignedVO"
+   SelectList="ODCdhContractsAssignedEO.ASSIGNED_CONTRACT_ID, 
+       ODCdhContractsAssignedEO.CONTRACT_TEMPLATE_ID, 
+
+       ODCdhContractsAssignedEO.CONTRACT_NUMBER, 
+       ODCdhContractsAssignedEO.CONTRACT_DESCRIPTION, 
+
+       ODCdhContractsAssignedEO.PRIORITY, 
+       ODCdhContractsAssignedEO.CREATED_BY, 
+
+       ODCdhContractsAssignedEO.CREATION_DATE, 
+       ODCdhContractsAssignedEO.LAST_UPDATED_BY, 
+
+       ODCdhContractsAssignedEO.LAST_UPDATE_DATE, 
+       ODCdhContractsAssignedEO.LAST_UPDATE_LOGIN"
+   FromList="XX_CDH_CONTRACTS_ASSIGNED ODCdhContractsAssignedEO"
+   BindingStyle="Oracle"
+   CustomQuery="false"
+   RowClass="od.oracle.apps.xxcrm.customer.account.server.ODContractsAssignedVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.customer.account.server.ODContractsAssignedVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <EntityUsage
+      Name="ODCdhContractsAssignedEO"
+      Entity="od.oracle.apps.xxcrm.customer.account.schema.server.ODCdhContractsAssignedEO" >
+      <DesignTime>
+         <Attr Name="_queryClause" Value="false" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="AssignedContractId"
+      EntityAttrName="AssignedContractId"
+      EntityUsage="ODCdhContractsAssignedEO"
+      AliasName="ASSIGNED_CONTRACT_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContractTemplateId"
+      EntityAttrName="ContractTemplateId"
+      EntityUsage="ODCdhContractsAssignedEO"
+      AliasName="CONTRACT_TEMPLATE_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContractNumber"
+      Precision="20"
+      EntityAttrName="ContractNumber"
+      EntityUsage="ODCdhContractsAssignedEO"
+      AliasName="CONTRACT_NUMBER" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContractDescription"
+      Precision="80"
+      EntityAttrName="ContractDescription"
+      EntityUsage="ODCdhContractsAssignedEO"
+      AliasName="CONTRACT_DESCRIPTION" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Priority"
+      Precision="10"
+      EntityAttrName="Priority"
+      EntityUsage="ODCdhContractsAssignedEO"
+      AliasName="PRIORITY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="CreatedBy"
+      EntityUsage="ODCdhContractsAssignedEO"
+      AliasName="CREATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate"
+      IsNotNull="true"
+      EntityAttrName="CreationDate"
+      EntityUsage="ODCdhContractsAssignedEO"
+      AliasName="CREATION_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdatedBy"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="LastUpdatedBy"
+      EntityUsage="ODCdhContractsAssignedEO"
+      AliasName="LAST_UPDATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateDate"
+      IsNotNull="true"
+      EntityAttrName="LastUpdateDate"
+      EntityUsage="ODCdhContractsAssignedEO"
+      AliasName="LAST_UPDATE_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateLogin"
+      Precision="15"
+      Scale="0"
+      EntityAttrName="LastUpdateLogin"
+      EntityUsage="ODCdhContractsAssignedEO"
+      AliasName="LAST_UPDATE_LOGIN" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ContDelete"
+      IsPersistent="false"
+      DefaultValue="CY"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PPDelete"
+      IsPersistent="false"
+      DefaultValue="Y"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SelectFlag"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="VIEW_ATTR"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+</ViewObject>

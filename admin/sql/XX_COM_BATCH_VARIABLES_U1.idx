@@ -1,0 +1,22 @@
+-- +==========================================================================++
+-- |                  Office Depot - Project Simplify                          |
+-- +==========================================================================++
+-- | Name :XXCOMN.XX_COM_BATCH_VARIABLES_U1                                    |
+-- | Description : Create unique index for table XXCOMN.XX_COM_BATCH_VARIABLES.|
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version   Date         Author               Remarks                        |
+-- |=======   ==========   =============        ===============================|
+-- | V1.0     01/28/2009   Joe Klein            Initial version                |
+-- |                                                                           |
+-- +===========================================================================+
+
+   SET SHOW         OFF
+   SET VERIFY       OFF
+   SET ECHO         OFF
+   SET TAB          OFF
+   SET FEEDBACK     ON
+
+
+   CREATE UNIQUE INDEX "XXCOMN"."XX_COM_BATCH_VARIABLES_U1" ON "XXCOMN"."XX_COM_BATCH_VARIABLES" ("SUBTRACK", "VARIABLE_NAME");

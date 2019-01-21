@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<AppModule
+   Name="OD_PLMPJRDashboardLOVAM"
+   ComponentClass="od.oracle.apps.xxmer.plmpjrdashboard.lov.server.OD_PLMPJRDashboardLOVAMImpl"
+   LoadComponentsLazily="true" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.14.01" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="OD_TaskNameLOVVO"
+      ViewObjectName="od.oracle.apps.xxmer.plmpjrdashboard.lov.server.OD_TaskNameLOVVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="OD_ProjectNameNumberLOVVO"
+      ViewObjectName="od.oracle.apps.xxmer.plmpjrdashboard.lov.server.OD_ProjectNameNumberLOVVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="OD_DivisionNameLOVVO"
+      ViewObjectName="od.oracle.apps.xxmer.plmpjrdashboard.lov.server.OD_DivisionNameLOVVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="OD_DepartmentLOVVO"
+      ViewObjectName="od.oracle.apps.xxmer.plmpjrdashboard.lov.server.OD_DepartmentLOVVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="OD_ClassNameLOVVO"
+      ViewObjectName="od.oracle.apps.xxmer.plmpjrdashboard.lov.server.OD_ClassNameLOVVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="OD_TaskStatusLOVVO"
+      ViewObjectName="od.oracle.apps.xxmer.plmpjrdashboard.lov.server.OD_TaskStatusLOVVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="OD_AssingUserLOVVO"
+      ViewObjectName="od.oracle.apps.xxmer.plmpjrdashboard.lov.server.OD_AssingUserLOVVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="OD_ProjectResourceLOVVO"
+      ViewObjectName="od.oracle.apps.xxmer.plmpjrdashboard.lov.server.OD_ProjectResourceLOVVO" >
+   </ViewUsage>
+</AppModule>

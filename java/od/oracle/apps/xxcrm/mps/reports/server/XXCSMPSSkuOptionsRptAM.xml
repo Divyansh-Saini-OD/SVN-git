@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<AppModule
+   Name="XXCSMPSSkuOptionsRptAM"
+   ComponentClass="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSSkuOptionsRptAMImpl"
+   LoadComponentsLazily="true" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.14.01" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="XXCSMPSSkuOptionsRptVO"
+      ViewObjectName="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSSkuOptionsRptVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="XXCSMPSDeviceSkuOptionsRptVO"
+      ViewObjectName="od.oracle.apps.xxcrm.mps.reports.server.XXCSMPSDeviceSkuOptionsRptVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="XXCSMPSPartyNameVO"
+      ViewObjectName="od.oracle.apps.xxcrm.mps.reports.lov.server.XXCSMPSPartyNameVO" >
+   </ViewUsage>
+</AppModule>

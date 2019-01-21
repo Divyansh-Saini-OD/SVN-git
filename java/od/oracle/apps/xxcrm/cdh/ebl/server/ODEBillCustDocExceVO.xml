@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODEBillCustDocExceVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxcrm.cdh.ebl.server.ODEBillCustDocExceVORowImpl"
+   ComponentClass="oracle.apps.fnd.framework.server.OAViewObjectImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT cust_acct_site_id
+     , billdocs_cust_doc_id
+     , billdocs_send_to_addr
+     , billdocs_atten 
+  FROM XX_CDH_AS_EXT_BILLDOCS_V
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <Attr Name="_CodeGenFlagNew" Value="4" />
+   </DesignTime>
+   <ViewAttribute
+      Name="CustAcctSiteId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="15"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      AliasName="CUST_ACCT_SITE_ID"
+      ColumnType="VARCHAR2"
+      Expression="CUST_ACCT_SITE_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BilldocsCustDocId"
+      IsPersistent="false"
+      Precision="22"
+      Scale="5"
+      Type="oracle.jbo.domain.Number"
+      AliasName="BILLDOCS_CUST_DOC_ID"
+      ColumnType="VARCHAR2"
+      Expression="BILLDOCS_CUST_DOC_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BilldocsSendToAddr"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="BILLDOCS_SEND_TO_ADDR"
+      ColumnType="VARCHAR2"
+      Expression="BILLDOCS_SEND_TO_ADDR"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BilldocsAtten"
+      IsPersistent="false"
+      Precision="150"
+      Type="java.lang.String"
+      AliasName="BILLDOCS_ATTEN"
+      ColumnType="VARCHAR2"
+      Expression="BILLDOCS_ATTEN"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

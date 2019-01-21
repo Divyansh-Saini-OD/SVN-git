@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="AllocationLinesVO"
+   OrderBy="ALLOC_ORGANIZATION_ID"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="od.oracle.apps.xxmer.allocation.server.AllocationLinesVORowImpl"
+   ComponentClass="od.oracle.apps.xxmer.allocation.server.AllocationLinesVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   RowInterface="od.oracle.apps.xxmer.allocation.AllocationLinesVORow"
+   FetchMode="FETCH_AS_NEEDED"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT AllocationLinesEO.ALLOCATION_HEADER_ID, 
+       AllocationLinesEO.ALLOCATION_LINE_ID, 
+       AllocationLinesEO.PO_HEADER_ID, 
+       AllocationLinesEO.PO_LINE_ID, 
+       AllocationLinesEO.LINE_LOCATION_ID, 
+       AllocationLinesEO.LOCKED_IN, 
+       AllocationLinesEO.ALLOC_ORGANIZATION_ID, 
+       AllocationLinesEO.SHIP_TO_ORGANIZATION_ID, 
+       AllocationLinesEO.ALLOCATION_QTY, 
+       AllocationLinesEO.ALLOCATION_TYPE, 
+       AllocationLinesEO.PO_LINE_SHIPMENT, 
+       AllocationLinesEO.JITA_QTY, 
+       AllocationLinesEO.WMOS_QTY, 
+       AllocationLinesEO.LAST_UPDATE_DATE, 
+       AllocationLinesEO.LAST_UPDATED_BY, 
+       AllocationLinesEO.CREATION_DATE, 
+       AllocationLinesEO.CREATED_BY, 
+       AllocationLinesEO.LAST_UPDATE_LOGIN,
+	po.segment1 as "PO",	
+	AH.BATCH_NO,
+	adv.RUTL,
+	adv.RTC as "ReplenTypeCd",
+	adv.QOH,
+	adv.ONORDER,
+	adv.INTRANSIT,	
+	adv.AWS,
+	adv.WEEKS_SUPPLY,
+	adv.INNER_PK,
+	adv.CASE_PK,
+	' ' as "LegacyShipTO",
+        ' ' as "LegacyLocation",
+	'N' as "DeleteAllocation"
+       
+
+	
+	
+FROM xx_po_ALLOCATION_LINES AllocationLinesEO, 
+	 po_headers_all po, 
+	xx_po_ALLOCATION_HEADER AH,
+	XX_PO_ALLOCATION_DETAILS_V adv
+	 
+	 
+where po.po_header_id = AllocationLinesEO.po_header_id
+AND AH.ALLOCATION_HEADER_ID = AllocationLinesEO.ALLOCATION_HEADER_ID
+and AllocationLinesEO.ALLOCATION_LINE_ID = adv.ALLOCATION_LINE_ID
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <EntityUsage
+      Name="AllocationLinesEO"
+      Entity="od.oracle.apps.xxmer.schema.server.AllocationLinesEO" >
+      <DesignTime>
+         <Attr Name="_EntireObjectTable" Value="false" />
+         <Attr Name="_queryClause" Value="false" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="AllocationHeaderId"
+      EntityAttrName="AllocationHeaderId"
+      EntityUsage="AllocationLinesEO"
+      AliasName="ALLOCATION_HEADER_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AllocationLineId"
+      IsNotNull="true"
+      EntityAttrName="AllocationLineId"
+      EntityUsage="AllocationLinesEO"
+      AliasName="ALLOCATION_LINE_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoHeaderId"
+      EntityAttrName="PoHeaderId"
+      EntityUsage="AllocationLinesEO"
+      AliasName="PO_HEADER_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoLineId"
+      EntityAttrName="PoLineId"
+      EntityUsage="AllocationLinesEO"
+      AliasName="PO_LINE_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LineLocationId"
+      EntityAttrName="LineLocationId"
+      EntityUsage="AllocationLinesEO"
+      AliasName="LINE_LOCATION_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LockedIn"
+      EntityAttrName="LockedIn"
+      EntityUsage="AllocationLinesEO"
+      AliasName="LOCKED_IN"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AllocOrganizationId"
+      EntityAttrName="AllocOrganizationId"
+      EntityUsage="AllocationLinesEO"
+      AliasName="ALLOC_ORGANIZATION_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ShipToOrganizationId"
+      EntityAttrName="ShipToOrganizationId"
+      EntityUsage="AllocationLinesEO"
+      AliasName="SHIP_TO_ORGANIZATION_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AllocationQty"
+      EntityAttrName="AllocationQty"
+      EntityUsage="AllocationLinesEO"
+      AliasName="ALLOCATION_QTY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AllocationType"
+      EntityAttrName="AllocationType"
+      EntityUsage="AllocationLinesEO"
+      AliasName="ALLOCATION_TYPE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PoLineShipment"
+      EntityAttrName="PoLineShipment"
+      EntityUsage="AllocationLinesEO"
+      AliasName="PO_LINE_SHIPMENT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="JitaQty"
+      EntityAttrName="JitaQty"
+      EntityUsage="AllocationLinesEO"
+      AliasName="JITA_QTY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="WmosQty"
+      EntityAttrName="WmosQty"
+      EntityUsage="AllocationLinesEO"
+      AliasName="WMOS_QTY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateDate"
+      EntityAttrName="LastUpdateDate"
+      EntityUsage="AllocationLinesEO"
+      AliasName="LAST_UPDATE_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdatedBy"
+      EntityAttrName="LastUpdatedBy"
+      EntityUsage="AllocationLinesEO"
+      AliasName="LAST_UPDATED_BY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate"
+      EntityAttrName="CreationDate"
+      EntityUsage="AllocationLinesEO"
+      AliasName="CREATION_DATE"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy"
+      EntityAttrName="CreatedBy"
+      EntityUsage="AllocationLinesEO"
+      AliasName="CREATED_BY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateLogin"
+      EntityAttrName="LastUpdateLogin"
+      EntityUsage="AllocationLinesEO"
+      AliasName="LAST_UPDATE_LOGIN"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Po"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="20"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="Po"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BatchNo"
+      IsPersistent="false"
+      Precision="40"
+      Type="oracle.jbo.domain.Number"
+      AliasName="BATCH_NO"
+      ColumnType="VARCHAR2"
+      Expression="BATCH_NO"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Rutl"
+      IsPersistent="false"
+      Precision="40"
+      Type="java.lang.String"
+      AliasName="RUTL"
+      ColumnType="VARCHAR2"
+      Expression="RUTL"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Replentypecd"
+      IsPersistent="false"
+      Precision="40"
+      Type="java.lang.String"
+      AliasName="ReplenTypeCd"
+      ColumnType="VARCHAR2"
+      Expression="ReplenTypeCd"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="40" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Qoh"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="Qoh"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Onorder"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      Expression="Onorder"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Intransit"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="INTRANSIT"
+      ColumnType="VARCHAR2"
+      Expression="INTRANSIT"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Aws"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="AWS"
+      ColumnType="VARCHAR2"
+      Expression="AWS"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="WeeksSupply"
+      IsPersistent="false"
+      Precision="40"
+      Type="oracle.jbo.domain.Number"
+      AliasName="WEEKS_SUPPLY"
+      ColumnType="VARCHAR2"
+      Expression="WEEKS_SUPPLY"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="InnerPk"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="INNER_PK"
+      ColumnType="VARCHAR2"
+      Expression="INNER_PK"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CasePk"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      AliasName="CASE_PK"
+      ColumnType="VARCHAR2"
+      Expression="CASE_PK"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Legacyshipto"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      AliasName="LegacyShipTO"
+      ColumnType="VARCHAR2"
+      Expression="LegacyShipTO"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Legacylocation"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      AliasName="LegacyLocation"
+      ColumnType="VARCHAR2"
+      Expression="LegacyLocation"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Deleteallocation"
+      IsPersistent="false"
+      Precision="1"
+      Type="java.lang.String"
+      AliasName="DeleteAllocation"
+      ColumnType="VARCHAR2"
+      Expression="DeleteAllocation"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </ViewAttribute>
+   <AttrArray Name="KeyAttributes">
+      <Item Value="AllocationHeaderId" />
+      <Item Value="AllocationLineId" />
+   </AttrArray>
+</ViewObject>

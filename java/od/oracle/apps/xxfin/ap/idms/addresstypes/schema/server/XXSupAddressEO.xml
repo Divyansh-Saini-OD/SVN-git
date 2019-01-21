@@ -1,0 +1,374 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+
+<Entity
+   Name="XXSupAddressEO"
+   DBObjectType="table"
+   DBObjectName="XX_AP_SUP_ADDRESS_TYPE"
+   AliasName="XXSupAddressEO"
+   BindingStyle="OracleName"
+   UseGlueCode="false"
+   RowClass="od.oracle.apps.xxfin.ap.idms.addresstypes.schema.server.XXSupAddressEOImpl"
+   DefClass="oracle.apps.fnd.framework.server.OAEntityDefImpl"
+   CollClass="oracle.apps.fnd.framework.server.OAEntityCache" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="10.1.3.43.6" />
+      <AttrArray Name="_publishEvents">
+      </AttrArray>
+      <Attr Name="_panelSchema" Value="table|alias" />
+      <Attr Name="_codeGenFlag2" Value="Init|Delete|Access|DML|Val" />
+   </DesignTime>
+   <Attribute
+      Name="AddressType"
+      IsUnique="true"
+      IsNotNull="true"
+      ColumnName="ADDRESS_TYPE"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="VARCHAR"
+      TableName="XX_AP_SUP_ADDRESS_TYPE"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="AddressTypeDesc"
+      Precision="150"
+      ColumnName="ADDRESS_TYPE_DESC"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_AP_SUP_ADDRESS_TYPE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute1"
+      Precision="60"
+      ColumnName="ATTRIBUTE1"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_AP_SUP_ADDRESS_TYPE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute2"
+      Precision="60"
+      ColumnName="ATTRIBUTE2"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_AP_SUP_ADDRESS_TYPE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute3"
+      Precision="60"
+      ColumnName="ATTRIBUTE3"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_AP_SUP_ADDRESS_TYPE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Attribute4"
+      Precision="60"
+      ColumnName="ATTRIBUTE4"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_AP_SUP_ADDRESS_TYPE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreationDate"
+      IsNotNull="true"
+      ColumnName="CREATION_DATE"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_AP_SUP_ADDRESS_TYPE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreatedBy"
+      IsNotNull="true"
+      ColumnName="CREATED_BY"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="VARCHAR"
+      TableName="XX_AP_SUP_ADDRESS_TYPE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateDate"
+      ColumnName="LAST_UPDATE_DATE"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_AP_SUP_ADDRESS_TYPE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdatedBy"
+      ColumnName="LAST_UPDATED_BY"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="VARCHAR"
+      TableName="XX_AP_SUP_ADDRESS_TYPE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateLogin"
+      ColumnName="LAST_UPDATE_LOGIN"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_AP_SUP_ADDRESS_TYPE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="EnableFlag"
+      Precision="1"
+      ColumnName="ENABLE_FLAG"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_AP_SUP_ADDRESS_TYPE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DashboardInd"
+      Precision="1"
+      ColumnName="DASHBOARD_IND"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_AP_SUP_ADDRESS_TYPE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="VendorExtranetInd"
+      Precision="1"
+      ColumnName="VENDOR_EXTRANET_IND"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_AP_SUP_ADDRESS_TYPE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="AddrTypeId"
+      IsNotNull="true"
+      ColumnName="ADDR_TYPE_ID"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_AP_SUP_ADDRESS_TYPE" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Key
+      Name="AddrTypeUnique" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.addresstypes.schema.server.XXSupAddressEO.AddressType" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_isUnique" Value="true" />
+         <Attr Name="_DBObjectName" Value="ADDR_TYPE_UNIQUE" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00783663" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.addresstypes.schema.server.XXSupAddressEO.AddressType" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;ADDRESS_TYPE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00783663" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00783665" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.addresstypes.schema.server.XXSupAddressEO.CreationDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CREATION_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00783665" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00783666" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.addresstypes.schema.server.XXSupAddressEO.CreatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CREATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00783666" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00787911" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.addresstypes.schema.server.XXSupAddressEO.AddressType" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;ADDRESS_TYPE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00787911" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00787912" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.addresstypes.schema.server.XXSupAddressEO.CreationDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CREATION_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00787912" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00787913" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.addresstypes.schema.server.XXSupAddressEO.CreatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CREATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00787913" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00788532" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.addresstypes.schema.server.XXSupAddressEO.AddressType" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;ADDRESS_TYPE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00788532" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00788533" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.addresstypes.schema.server.XXSupAddressEO.CreationDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CREATION_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00788533" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00788534" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.addresstypes.schema.server.XXSupAddressEO.CreatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CREATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00788534" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00794754" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.addresstypes.schema.server.XXSupAddressEO.AddressType" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;ADDRESS_TYPE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00794754" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00794755" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.addresstypes.schema.server.XXSupAddressEO.CreationDate" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CREATION_DATE&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00794755" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00794756" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.addresstypes.schema.server.XXSupAddressEO.CreatedBy" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;CREATED_BY&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00794756" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="SysC00794757" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.addresstypes.schema.server.XXSupAddressEO.AddrTypeId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_checkCondition" Value="&#34;ADDR_TYPE_ID&#34; IS NOT NULL" />
+         <Attr Name="_isCheck" Value="true" />
+         <Attr Name="_DBObjectName" Value="SYS_C00794757" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="XxsupaddresseoPrimaryKey" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.addresstypes.schema.server.XXSupAddressEO.AddressType" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_isPrimary" Value="true" />
+         <Attr Name="_DBObjectName" Value="XXSUPADDRESSEO_PRIMARY_KEY" />
+      </DesignTime>
+   </Key>
+   <Key
+      Name="XxapsupaddresstypeeoPrimaryKey" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxfin.ap.idms.addresstypes.schema.server.XXSupAddressEO.AddressType" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_isForeign" Value="true" />
+         <Attr Name="_DBObjectName" Value="XXAPSUPADDRESSTYPEEO_PRIMARY_K" />
+      </DesignTime>
+   </Key>
+</Entity>

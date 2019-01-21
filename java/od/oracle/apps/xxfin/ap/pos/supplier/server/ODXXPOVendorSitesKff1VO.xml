@@ -1,0 +1,806 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODXXPOVendorSitesKff1VO"
+   SelectList="ODXXPOVendorSitesKff1EO.VS_KFF_ID, 
+       ODXXPOVendorSitesKff1EO.STRUCTURE_ID, 
+       ODXXPOVendorSitesKff1EO.ENABLED_FLAG, 
+       ODXXPOVendorSitesKff1EO.SUMMARY_FLAG, 
+       ODXXPOVendorSitesKff1EO.START_DATE_ACTIVE, 
+       ODXXPOVendorSitesKff1EO.END_DATE_ACTIVE, 
+       ODXXPOVendorSitesKff1EO.CREATED_BY, 
+       ODXXPOVendorSitesKff1EO.CREATION_DATE, 
+       ODXXPOVendorSitesKff1EO.LAST_UPDATED_BY, 
+       ODXXPOVendorSitesKff1EO.LAST_UPDATE_DATE, 
+       ODXXPOVendorSitesKff1EO.LAST_UPDATE_LOGIN, 
+       ODXXPOVendorSitesKff1EO.SEGMENT1, 
+       ODXXPOVendorSitesKff1EO.SEGMENT2, 
+       ODXXPOVendorSitesKff1EO.SEGMENT3, 
+       ODXXPOVendorSitesKff1EO.SEGMENT4, 
+       ODXXPOVendorSitesKff1EO.SEGMENT5, 
+       ODXXPOVendorSitesKff1EO.SEGMENT6, 
+       ODXXPOVendorSitesKff1EO.SEGMENT7, 
+       ODXXPOVendorSitesKff1EO.SEGMENT8, 
+       ODXXPOVendorSitesKff1EO.SEGMENT9, 
+       ODXXPOVendorSitesKff1EO.SEGMENT10, 
+       ODXXPOVendorSitesKff1EO.SEGMENT11, 
+       ODXXPOVendorSitesKff1EO.SEGMENT12, 
+       ODXXPOVendorSitesKff1EO.SEGMENT13, 
+       ODXXPOVendorSitesKff1EO.SEGMENT14, 
+       ODXXPOVendorSitesKff1EO.SEGMENT15, 
+       ODXXPOVendorSitesKff1EO.SEGMENT16, 
+       ODXXPOVendorSitesKff1EO.SEGMENT17, 
+       ODXXPOVendorSitesKff1EO.SEGMENT18, 
+       ODXXPOVendorSitesKff1EO.SEGMENT19, 
+       ODXXPOVendorSitesKff1EO.SEGMENT20, 
+       ODXXPOVendorSitesKff1EO.SEGMENT21, 
+       ODXXPOVendorSitesKff1EO.SEGMENT22, 
+       ODXXPOVendorSitesKff1EO.SEGMENT23, 
+       ODXXPOVendorSitesKff1EO.SEGMENT24, 
+       ODXXPOVendorSitesKff1EO.SEGMENT25, 
+       ODXXPOVendorSitesKff1EO.SEGMENT26, 
+       ODXXPOVendorSitesKff1EO.SEGMENT27, 
+       ODXXPOVendorSitesKff1EO.SEGMENT28, 
+       ODXXPOVendorSitesKff1EO.SEGMENT29, 
+       ODXXPOVendorSitesKff1EO.SEGMENT30, 
+       ODXXPOVendorSitesKff1EO.SEGMENT31, 
+       ODXXPOVendorSitesKff1EO.SEGMENT32, 
+       ODXXPOVendorSitesKff1EO.SEGMENT33, 
+       ODXXPOVendorSitesKff1EO.SEGMENT34, 
+       ODXXPOVendorSitesKff1EO.SEGMENT35, 
+       ODXXPOVendorSitesKff1EO.SEGMENT36, 
+       ODXXPOVendorSitesKff1EO.SEGMENT37, 
+       ODXXPOVendorSitesKff1EO.SEGMENT38, 
+       ODXXPOVendorSitesKff1EO.SEGMENT39, 
+       ODXXPOVendorSitesKff1EO.SEGMENT40, 
+       ODXXPOVendorSitesKff1EO.SEGMENT41, 
+       ODXXPOVendorSitesKff1EO.SEGMENT42, 
+       ODXXPOVendorSitesKff1EO.SEGMENT43, 
+       ODXXPOVendorSitesKff1EO.SEGMENT44, 
+       ODXXPOVendorSitesKff1EO.SEGMENT45, 
+       ODXXPOVendorSitesKff1EO.SEGMENT46, 
+       ODXXPOVendorSitesKff1EO.SEGMENT47, 
+       ODXXPOVendorSitesKff1EO.SEGMENT48, 
+       ODXXPOVendorSitesKff1EO.SEGMENT49, 
+       ODXXPOVendorSitesKff1EO.SEGMENT50, 
+       ODXXPOVendorSitesKff1EO.SEGMENT51, 
+       ODXXPOVendorSitesKff1EO.SEGMENT52, 
+       ODXXPOVendorSitesKff1EO.SEGMENT53, 
+       ODXXPOVendorSitesKff1EO.SEGMENT54, 
+       ODXXPOVendorSitesKff1EO.SEGMENT55, 
+       ODXXPOVendorSitesKff1EO.SEGMENT56, 
+       ODXXPOVendorSitesKff1EO.SEGMENT57, 
+       ODXXPOVendorSitesKff1EO.SEGMENT58, 
+       ODXXPOVendorSitesKff1EO.SEGMENT59, 
+       ODXXPOVendorSitesKff1EO.SEGMENT60, 
+       ODXXPOVendorSitesKff1EO.SEGMENT61, 
+       ODXXPOVendorSitesKff1EO.SEGMENT62, 
+       ODXXPOVendorSitesKff1EO.SEGMENT63, 
+       ODXXPOVendorSitesKff1EO.SEGMENT64, 
+       ODXXPOVendorSitesKff1EO.SEGMENT65, 
+       ODXXPOVendorSitesKff1EO.SEGMENT66, 
+       ODXXPOVendorSitesKff1EO.SEGMENT67, 
+       ODXXPOVendorSitesKff1EO.SEGMENT68, 
+       ODXXPOVendorSitesKff1EO.SEGMENT69, 
+       ODXXPOVendorSitesKff1EO.SEGMENT70, 
+       ODXXPOVendorSitesKff1EO.SEGMENT71, 
+       ODXXPOVendorSitesKff1EO.SEGMENT72, 
+       ODXXPOVendorSitesKff1EO.SEGMENT73, 
+       ODXXPOVendorSitesKff1EO.SEGMENT74, 
+       ODXXPOVendorSitesKff1EO.SEGMENT75, 
+       ODXXPOVendorSitesKff1EO.SEGMENT76, 
+       ODXXPOVendorSitesKff1EO.SEGMENT77, 
+       ODXXPOVendorSitesKff1EO.SEGMENT78, 
+       ODXXPOVendorSitesKff1EO.SEGMENT79, 
+       ODXXPOVendorSitesKff1EO.SEGMENT80, 
+       ODXXPOVendorSitesKff1EO.SEGMENT81, 
+       ODXXPOVendorSitesKff1EO.SEGMENT82, 
+       ODXXPOVendorSitesKff1EO.SEGMENT83, 
+       ODXXPOVendorSitesKff1EO.SEGMENT84, 
+       ODXXPOVendorSitesKff1EO.SEGMENT85, 
+       ODXXPOVendorSitesKff1EO.SEGMENT86, 
+       ODXXPOVendorSitesKff1EO.SEGMENT87, 
+       ODXXPOVendorSitesKff1EO.SEGMENT88, 
+       ODXXPOVendorSitesKff1EO.SEGMENT89, 
+       ODXXPOVendorSitesKff1EO.SEGMENT90, 
+       ODXXPOVendorSitesKff1EO.SEGMENT91, 
+       ODXXPOVendorSitesKff1EO.SEGMENT92, 
+       ODXXPOVendorSitesKff1EO.SEGMENT93, 
+       ODXXPOVendorSitesKff1EO.SEGMENT94, 
+       ODXXPOVendorSitesKff1EO.SEGMENT95, 
+       ODXXPOVendorSitesKff1EO.SEGMENT96, 
+       ODXXPOVendorSitesKff1EO.SEGMENT97, 
+       ODXXPOVendorSitesKff1EO.SEGMENT98, 
+       ODXXPOVendorSitesKff1EO.SEGMENT99, 
+       ODXXPOVendorSitesKff1EO.SEGMENT100"
+   FromList="XX_PO_VENDOR_SITES_KFF ODXXPOVendorSitesKff1EO"
+   Where="VS_KFF_ID = :1"
+   BindingStyle="OracleName"
+   CustomQuery="false"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxfin.ap.pos.supplier.server.ODXXPOVendorSitesKff1VOImpl"
+   UseGlueCode="false" >
+   <DesignTime>
+      <Attr Name="_version" Value="10.1.3.41.57" />
+      <Attr Name="_codeGenFlag2" Value="Access|Coll|VarAccess" />
+   </DesignTime>
+   <EntityUsage
+      Name="ODXXPOVendorSitesKff1EO"
+      Entity="od.oracle.apps.xxfin.ap.pos.supplier.server.ODXXPOVendorSitesKff1EO" >
+      <DesignTime>
+         <Attr Name="_queryClause" Value="true" />
+         <Attr Name="_queryWhere" Value="VS_KFF_ID = :1" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="VsKffId"
+      IsNotNull="true"
+      EntityAttrName="VsKffId"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="VS_KFF_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="StructureId"
+      IsNotNull="true"
+      EntityAttrName="StructureId"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="STRUCTURE_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EnabledFlag"
+      IsNotNull="true"
+      EntityAttrName="EnabledFlag"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="ENABLED_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SummaryFlag"
+      IsNotNull="true"
+      EntityAttrName="SummaryFlag"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SUMMARY_FLAG" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="StartDateActive"
+      EntityAttrName="StartDateActive"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="START_DATE_ACTIVE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="EndDateActive"
+      EntityAttrName="EndDateActive"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="END_DATE_ACTIVE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy"
+      EntityAttrName="CreatedBy"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="CREATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate"
+      EntityAttrName="CreationDate"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="CREATION_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdatedBy"
+      EntityAttrName="LastUpdatedBy"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="LAST_UPDATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateDate"
+      EntityAttrName="LastUpdateDate"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="LAST_UPDATE_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateLogin"
+      EntityAttrName="LastUpdateLogin"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="LAST_UPDATE_LOGIN" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment1"
+      EntityAttrName="Segment1"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment2"
+      EntityAttrName="Segment2"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment3"
+      EntityAttrName="Segment3"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment4"
+      EntityAttrName="Segment4"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT4" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment5"
+      EntityAttrName="Segment5"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT5" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment6"
+      EntityAttrName="Segment6"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT6" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment7"
+      EntityAttrName="Segment7"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT7" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment8"
+      EntityAttrName="Segment8"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT8" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment9"
+      EntityAttrName="Segment9"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT9" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment10"
+      EntityAttrName="Segment10"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT10" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment11"
+      EntityAttrName="Segment11"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT11" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment12"
+      EntityAttrName="Segment12"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT12" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment13"
+      EntityAttrName="Segment13"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT13" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment14"
+      EntityAttrName="Segment14"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT14" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment15"
+      EntityAttrName="Segment15"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT15" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment16"
+      EntityAttrName="Segment16"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT16" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment17"
+      EntityAttrName="Segment17"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT17" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment18"
+      EntityAttrName="Segment18"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT18" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment19"
+      EntityAttrName="Segment19"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT19" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment20"
+      EntityAttrName="Segment20"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT20" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment21"
+      EntityAttrName="Segment21"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT21" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment22"
+      EntityAttrName="Segment22"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT22" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment23"
+      EntityAttrName="Segment23"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT23" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment24"
+      EntityAttrName="Segment24"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT24" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment25"
+      EntityAttrName="Segment25"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT25" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment26"
+      EntityAttrName="Segment26"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT26" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment27"
+      EntityAttrName="Segment27"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT27" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment28"
+      EntityAttrName="Segment28"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT28" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment29"
+      EntityAttrName="Segment29"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT29" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment30"
+      EntityAttrName="Segment30"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT30" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment31"
+      EntityAttrName="Segment31"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT31" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment32"
+      EntityAttrName="Segment32"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT32" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment33"
+      EntityAttrName="Segment33"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT33" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment34"
+      EntityAttrName="Segment34"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT34" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment35"
+      EntityAttrName="Segment35"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT35" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment36"
+      EntityAttrName="Segment36"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT36" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment37"
+      EntityAttrName="Segment37"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT37" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment38"
+      EntityAttrName="Segment38"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT38" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment39"
+      EntityAttrName="Segment39"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT39" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment40"
+      EntityAttrName="Segment40"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT40" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment41"
+      EntityAttrName="Segment41"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT41" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment42"
+      EntityAttrName="Segment42"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT42" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment43"
+      EntityAttrName="Segment43"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT43" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment44"
+      EntityAttrName="Segment44"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT44" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment45"
+      EntityAttrName="Segment45"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT45" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment46"
+      EntityAttrName="Segment46"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT46" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment47"
+      EntityAttrName="Segment47"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT47" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment48"
+      EntityAttrName="Segment48"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT48" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment49"
+      EntityAttrName="Segment49"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT49" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment50"
+      EntityAttrName="Segment50"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT50" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment51"
+      EntityAttrName="Segment51"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT51" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment52"
+      EntityAttrName="Segment52"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT52" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment53"
+      EntityAttrName="Segment53"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT53" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment54"
+      EntityAttrName="Segment54"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT54" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment55"
+      EntityAttrName="Segment55"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT55" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment56"
+      EntityAttrName="Segment56"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT56" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment57"
+      EntityAttrName="Segment57"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT57" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment58"
+      EntityAttrName="Segment58"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT58" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment59"
+      EntityAttrName="Segment59"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT59" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment60"
+      EntityAttrName="Segment60"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT60" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment61"
+      EntityAttrName="Segment61"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT61" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment62"
+      EntityAttrName="Segment62"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT62" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment63"
+      EntityAttrName="Segment63"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT63" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment64"
+      EntityAttrName="Segment64"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT64" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment65"
+      EntityAttrName="Segment65"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT65" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment66"
+      EntityAttrName="Segment66"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT66" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment67"
+      EntityAttrName="Segment67"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT67" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment68"
+      EntityAttrName="Segment68"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT68" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment69"
+      EntityAttrName="Segment69"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT69" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment70"
+      EntityAttrName="Segment70"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT70" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment71"
+      EntityAttrName="Segment71"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT71" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment72"
+      EntityAttrName="Segment72"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT72" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment73"
+      EntityAttrName="Segment73"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT73" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment74"
+      EntityAttrName="Segment74"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT74" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment75"
+      EntityAttrName="Segment75"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT75" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment76"
+      EntityAttrName="Segment76"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT76" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment77"
+      EntityAttrName="Segment77"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT77" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment78"
+      EntityAttrName="Segment78"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT78" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment79"
+      EntityAttrName="Segment79"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT79" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment80"
+      EntityAttrName="Segment80"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT80" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment81"
+      EntityAttrName="Segment81"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT81" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment82"
+      EntityAttrName="Segment82"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT82" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment83"
+      EntityAttrName="Segment83"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT83" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment84"
+      EntityAttrName="Segment84"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT84" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment85"
+      EntityAttrName="Segment85"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT85" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment86"
+      EntityAttrName="Segment86"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT86" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment87"
+      EntityAttrName="Segment87"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT87" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment88"
+      EntityAttrName="Segment88"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT88" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment89"
+      EntityAttrName="Segment89"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT89" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment90"
+      EntityAttrName="Segment90"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT90" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment91"
+      EntityAttrName="Segment91"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT91" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment92"
+      EntityAttrName="Segment92"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT92" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment93"
+      EntityAttrName="Segment93"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT93" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment94"
+      EntityAttrName="Segment94"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT94" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment95"
+      EntityAttrName="Segment95"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT95" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment96"
+      EntityAttrName="Segment96"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT96" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment97"
+      EntityAttrName="Segment97"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT97" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment98"
+      EntityAttrName="Segment98"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT98" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment99"
+      EntityAttrName="Segment99"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT99" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Segment100"
+      EntityAttrName="Segment100"
+      EntityUsage="ODXXPOVendorSitesKff1EO"
+      AliasName="SEGMENT100" >
+   </ViewAttribute>
+</ViewObject>

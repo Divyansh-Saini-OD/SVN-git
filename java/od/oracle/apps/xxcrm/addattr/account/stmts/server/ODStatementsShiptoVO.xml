@@ -1,0 +1,494 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+
+<!-- $Header: ODStatementsShiptoVO.xml 120.0 2015/03/27 05:49:01 skondoju $ -->
+<!--
+  Author: Sridevi Kondoju
+  Component Id: E0255
+  Script Location: $CUSTOM_JAVA_TOP\od\oracle\apps\xxcrm\addattr\account\stmts\server
+  Description: 
+  History:
+  Name            Date         Version    Description
+  Sridevi Kondoju 24-June-2015   1.0       Initial Version
+-->
+
+
+<ViewObject
+   Name="ODStatementsShiptoVO"
+   SelectList="ODStatementsShiptoEO.ATTR_GROUP_ID, 
+       ODStatementsShiptoEO.CREATED_BY, 
+       ODStatementsShiptoEO.CREATION_DATE, 
+       ODStatementsShiptoEO.CUST_ACCOUNT_ID, 
+       ODStatementsShiptoEO.C_EXT_ATTR1, 
+       ODStatementsShiptoEO.C_EXT_ATTR10, 
+       ODStatementsShiptoEO.C_EXT_ATTR11, 
+       ODStatementsShiptoEO.C_EXT_ATTR12, 
+       ODStatementsShiptoEO.C_EXT_ATTR13, 
+       ODStatementsShiptoEO.C_EXT_ATTR14, 
+       ODStatementsShiptoEO.C_EXT_ATTR15, 
+       ODStatementsShiptoEO.C_EXT_ATTR16, 
+       ODStatementsShiptoEO.C_EXT_ATTR17, 
+       ODStatementsShiptoEO.C_EXT_ATTR18, 
+       ODStatementsShiptoEO.C_EXT_ATTR19, 
+       ODStatementsShiptoEO.C_EXT_ATTR2, 
+       ODStatementsShiptoEO.C_EXT_ATTR20, 
+       ODStatementsShiptoEO.C_EXT_ATTR3, 
+       ODStatementsShiptoEO.C_EXT_ATTR4, 
+       ODStatementsShiptoEO.C_EXT_ATTR5, 
+       ODStatementsShiptoEO.C_EXT_ATTR6, 
+       ODStatementsShiptoEO.C_EXT_ATTR7, 
+       ODStatementsShiptoEO.C_EXT_ATTR8, 
+       ODStatementsShiptoEO.C_EXT_ATTR9, 
+       ODStatementsShiptoEO.D_EXT_ATTR1, 
+       ODStatementsShiptoEO.D_EXT_ATTR10, 
+       ODStatementsShiptoEO.D_EXT_ATTR2, 
+       ODStatementsShiptoEO.D_EXT_ATTR3, 
+       ODStatementsShiptoEO.D_EXT_ATTR4, 
+       ODStatementsShiptoEO.D_EXT_ATTR5, 
+       ODStatementsShiptoEO.D_EXT_ATTR6, 
+       ODStatementsShiptoEO.D_EXT_ATTR7, 
+       ODStatementsShiptoEO.D_EXT_ATTR8, 
+       ODStatementsShiptoEO.D_EXT_ATTR9, 
+       ODStatementsShiptoEO.EXTENSION_ID, 
+       ODStatementsShiptoEO.LAST_UPDATED_BY, 
+       ODStatementsShiptoEO.LAST_UPDATE_DATE, 
+       ODStatementsShiptoEO.LAST_UPDATE_LOGIN, 
+       ODStatementsShiptoEO.N_EXT_ATTR1, 
+       ODStatementsShiptoEO.N_EXT_ATTR10, 
+       ODStatementsShiptoEO.N_EXT_ATTR11, 
+       ODStatementsShiptoEO.N_EXT_ATTR12, 
+       ODStatementsShiptoEO.N_EXT_ATTR13, 
+       ODStatementsShiptoEO.N_EXT_ATTR14, 
+       ODStatementsShiptoEO.N_EXT_ATTR15, 
+       ODStatementsShiptoEO.N_EXT_ATTR16, 
+       ODStatementsShiptoEO.N_EXT_ATTR17, 
+       ODStatementsShiptoEO.N_EXT_ATTR18, 
+       ODStatementsShiptoEO.N_EXT_ATTR19, 
+       ODStatementsShiptoEO.N_EXT_ATTR2, 
+       ODStatementsShiptoEO.N_EXT_ATTR20, 
+       ODStatementsShiptoEO.N_EXT_ATTR3, 
+       ODStatementsShiptoEO.N_EXT_ATTR4, 
+       ODStatementsShiptoEO.N_EXT_ATTR5, 
+       ODStatementsShiptoEO.N_EXT_ATTR6, 
+       ODStatementsShiptoEO.N_EXT_ATTR7, 
+       ODStatementsShiptoEO.N_EXT_ATTR8, 
+       ODStatementsShiptoEO.N_EXT_ATTR9, 
+       ODStatementsShiptoEO.ROWID, 
+       (SELECT FU.USER_NAME FROM FND_USER FU WHERE FU.USER_ID
+= ODStatementsShiptoEO.LAST_UPDATED_BY) AS LAST_UPDATED_BY_USER"
+   FromList="XX_CDH_CUST_ACCT_EXT_B ODStatementsShiptoEO"
+   Where="ATTR_GROUP_ID = ( SELECT grp.ATTR_GROUP_ID FROM EGO_ATTR_GROUPS_V grp WHERE grp.APPLICATION_ID = 222 AND grp.ATTR_GROUP_NAME = &#39;STATEMENTS_AT_SHIP_TO&#39; AND grp.ATTR_GROUP_TYPE = &#39;XX_CDH_CUST_ACCOUNT&#39;) AND CUST_ACCOUNT_ID = :1"
+   BindingStyle="OracleName"
+   CustomQuery="false"
+   RowClass="od.oracle.apps.xxcrm.addattr.account.stmts.server.ODStatementsShiptoVORowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.addattr.account.stmts.server.ODStatementsShiptoVOImpl"
+   FetchMode="FETCH_AS_NEEDED"
+   UseGlueCode="false" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="10.1.3.41.57" />
+      <Attr Name="_codeGenFlag2" Value="Access|Coll|VarAccess" />
+   </DesignTime>
+   <EntityUsage
+      Name="ODStatementsShiptoEO"
+      Entity="od.oracle.apps.xxcrm.addattr.account.stmts.schema.server.ODStatementsShiptoEO" >
+      <DesignTime>
+         <Attr Name="_queryClause" Value="true" />
+         <Attr Name="_queryWhere" Value="ATTR_GROUP_ID = ( SELECT grp.ATTR_GROUP_ID FROM EGO_ATTR_GROUPS_V grp WHERE grp.APPLICATION_ID = 222 AND grp.ATTR_GROUP_NAME = &#39;STATEMENTS_AT_SHIP_TO&#39; AND grp.ATTR_GROUP_TYPE = &#39;XX_CDH_CUST_ACCOUNT&#39;) AND CUST_ACCOUNT_ID = :1" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="AttrGroupId"
+      IsNotNull="true"
+      EntityAttrName="AttrGroupId"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="ATTR_GROUP_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreatedBy"
+      IsNotNull="true"
+      EntityAttrName="CreatedBy"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="CREATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CreationDate"
+      IsNotNull="true"
+      EntityAttrName="CreationDate"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="CREATION_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustAccountId"
+      IsNotNull="true"
+      EntityAttrName="CustAccountId"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="CUST_ACCOUNT_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr1"
+      EntityAttrName="CExtAttr1"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="C_EXT_ATTR1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr10"
+      EntityAttrName="CExtAttr10"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="C_EXT_ATTR10" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr11"
+      EntityAttrName="CExtAttr11"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="C_EXT_ATTR11" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr12"
+      EntityAttrName="CExtAttr12"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="C_EXT_ATTR12" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr13"
+      EntityAttrName="CExtAttr13"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="C_EXT_ATTR13" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr14"
+      EntityAttrName="CExtAttr14"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="C_EXT_ATTR14" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr15"
+      EntityAttrName="CExtAttr15"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="C_EXT_ATTR15" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr16"
+      EntityAttrName="CExtAttr16"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="C_EXT_ATTR16" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr17"
+      EntityAttrName="CExtAttr17"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="C_EXT_ATTR17" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr18"
+      EntityAttrName="CExtAttr18"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="C_EXT_ATTR18" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr19"
+      EntityAttrName="CExtAttr19"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="C_EXT_ATTR19" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr2"
+      EntityAttrName="CExtAttr2"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="C_EXT_ATTR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr20"
+      EntityAttrName="CExtAttr20"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="C_EXT_ATTR20" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr3"
+      EntityAttrName="CExtAttr3"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="C_EXT_ATTR3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr4"
+      EntityAttrName="CExtAttr4"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="C_EXT_ATTR4" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr5"
+      EntityAttrName="CExtAttr5"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="C_EXT_ATTR5" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr6"
+      EntityAttrName="CExtAttr6"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="C_EXT_ATTR6" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr7"
+      EntityAttrName="CExtAttr7"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="C_EXT_ATTR7" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr8"
+      EntityAttrName="CExtAttr8"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="C_EXT_ATTR8" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CExtAttr9"
+      EntityAttrName="CExtAttr9"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="C_EXT_ATTR9" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr1"
+      EntityAttrName="DExtAttr1"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="D_EXT_ATTR1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr10"
+      EntityAttrName="DExtAttr10"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="D_EXT_ATTR10" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr2"
+      EntityAttrName="DExtAttr2"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="D_EXT_ATTR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr3"
+      EntityAttrName="DExtAttr3"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="D_EXT_ATTR3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr4"
+      EntityAttrName="DExtAttr4"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="D_EXT_ATTR4" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr5"
+      EntityAttrName="DExtAttr5"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="D_EXT_ATTR5" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr6"
+      EntityAttrName="DExtAttr6"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="D_EXT_ATTR6" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr7"
+      EntityAttrName="DExtAttr7"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="D_EXT_ATTR7" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr8"
+      EntityAttrName="DExtAttr8"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="D_EXT_ATTR8" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DExtAttr9"
+      EntityAttrName="DExtAttr9"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="D_EXT_ATTR9" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ExtensionId"
+      IsNotNull="true"
+      EntityAttrName="ExtensionId"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="EXTENSION_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdatedBy"
+      IsNotNull="true"
+      EntityAttrName="LastUpdatedBy"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="LAST_UPDATED_BY" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateDate"
+      IsNotNull="true"
+      EntityAttrName="LastUpdateDate"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="LAST_UPDATE_DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LastUpdateLogin"
+      EntityAttrName="LastUpdateLogin"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="LAST_UPDATE_LOGIN" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr1"
+      EntityAttrName="NExtAttr1"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="N_EXT_ATTR1" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr10"
+      EntityAttrName="NExtAttr10"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="N_EXT_ATTR10" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr11"
+      EntityAttrName="NExtAttr11"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="N_EXT_ATTR11" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr12"
+      EntityAttrName="NExtAttr12"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="N_EXT_ATTR12" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr13"
+      EntityAttrName="NExtAttr13"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="N_EXT_ATTR13" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr14"
+      EntityAttrName="NExtAttr14"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="N_EXT_ATTR14" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr15"
+      EntityAttrName="NExtAttr15"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="N_EXT_ATTR15" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr16"
+      EntityAttrName="NExtAttr16"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="N_EXT_ATTR16" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr17"
+      EntityAttrName="NExtAttr17"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="N_EXT_ATTR17" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr18"
+      EntityAttrName="NExtAttr18"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="N_EXT_ATTR18" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr19"
+      EntityAttrName="NExtAttr19"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="N_EXT_ATTR19" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr2"
+      EntityAttrName="NExtAttr2"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="N_EXT_ATTR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr20"
+      EntityAttrName="NExtAttr20"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="N_EXT_ATTR20" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr3"
+      EntityAttrName="NExtAttr3"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="N_EXT_ATTR3" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr4"
+      EntityAttrName="NExtAttr4"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="N_EXT_ATTR4" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr5"
+      EntityAttrName="NExtAttr5"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="N_EXT_ATTR5" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr6"
+      EntityAttrName="NExtAttr6"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="N_EXT_ATTR6" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr7"
+      EntityAttrName="NExtAttr7"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="N_EXT_ATTR7" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr8"
+      EntityAttrName="NExtAttr8"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="N_EXT_ATTR8" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="NExtAttr9"
+      EntityAttrName="NExtAttr9"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="N_EXT_ATTR9" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RowID"
+      IsUpdateable="false"
+      EntityAttrName="RowID"
+      EntityUsage="ODStatementsShiptoEO"
+      AliasName="ROWID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LAST_UPDATED_BY_USER"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="LAST_UPDATED_BY_USER"
+      Expression="(SELECT FU.USER_NAME FROM FND_USER FU WHERE FU.USER_ID = ODStatementsShiptoEO.LAST_UPDATED_BY)"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+
+   <ViewAttribute
+      Name="LastUpdateDateDisp"
+      IsSelected="false"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="LastUpdateDateDisp"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+  
+   <ViewAttribute
+      Name="InitialCExtAttr1"
+      IsQueriable="false"
+      IsPersistent="false"
+      EntityAttrName="InitialCExtAttr1"
+      EntityUsage="ODStatementsShiptoEO" >
+   </ViewAttribute>
+</ViewObject>

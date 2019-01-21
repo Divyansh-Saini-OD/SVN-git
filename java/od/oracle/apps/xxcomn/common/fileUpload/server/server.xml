@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE JboPackage SYSTEM "jbo_03_01.dtd">
+
+<JboPackage
+   Name="server"
+   SeparateXMLFiles="true"
+   PackageName="od.oracle.apps.xxcomn.common.fileUpload.server" >
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.14.00" />
+      <Attr Name="_ejbPackage" Value="false" />
+   </DesignTime>
+   <Containee
+      Name="fileUploadAM"
+      FullName="od.oracle.apps.xxcomn.common.fileUpload.server.fileUploadAM"
+      ObjectType="AppModule" >
+   </Containee>
+   <Containee
+      Name="FndFlexValuesVO"
+      FullName="od.oracle.apps.xxcomn.common.fileUpload.server.FndFlexValuesVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxConcProgDetailVO"
+      FullName="od.oracle.apps.xxcomn.common.fileUpload.server.xxConcProgDetailVO"
+      ObjectType="ViewObject" >
+   </Containee>
+   <Containee
+      Name="xxGetAppsNameVO"
+      FullName="od.oracle.apps.xxcomn.common.fileUpload.server.xxGetAppsNameVO"
+      ObjectType="ViewObject" >
+   </Containee>
+</JboPackage>

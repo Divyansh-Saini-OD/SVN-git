@@ -1,0 +1,718 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+
+<Entity
+   Name="xxPOInspectionDtl_EO"
+   DBObjectType="synonym"
+   DBObjectName="XX_GSO_PO_BV_DTL"
+   AliasName="xxPOInspectionDtl_EO"
+   BindingStyle="Oracle"
+   UseGlueCode="false"
+   CodeGenFlag="79"
+   RowClass="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxPOInspectionDtl_EOImpl"
+   DefClass="oracle.apps.fnd.framework.server.OAEntityDefImpl"
+   CollClass="oracle.apps.fnd.framework.server.OAEntityCache" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.12.53" />
+      <AttrArray Name="_publishEvents">
+      </AttrArray>
+   </DesignTime>
+   <Attribute
+      Name="PoHeaderId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PO_HEADER_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PoLineId"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PO_LINE_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="InspectionNo"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnName="INSPECTION_NO"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="InspectionDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="INSPECTION_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="InspectionQty"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="INSPECTION_QTY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="InspServType"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnName="INSP_SERV_TYPE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="InspectionResult"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnName="INSPECTION_RESULT"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Disposition"
+      Precision="100"
+      Type="java.lang.String"
+      ColumnName="DISPOSITION"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="100" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ReInspDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="RE_INSP_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ReInspResult"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnName="RE_INSP_RESULT"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ShortShipment"
+      Precision="5"
+      Type="java.lang.String"
+      ColumnName="SHORT_SHIPMENT"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="5" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PoNumber"
+      Precision="500"
+      Type="java.lang.String"
+      ColumnName="PO_NUMBER"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="500" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="OrderedQty"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="ORDERED_QTY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ItemStyleNo"
+      Precision="500"
+      Type="java.lang.String"
+      ColumnName="ITEM_STYLE_NO"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="500" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Sku"
+      Precision="25"
+      Type="java.lang.String"
+      ColumnName="SKU"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="25" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Description"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnName="DESCRIPTION"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="VendorRef"
+      Precision="100"
+      Type="java.lang.String"
+      ColumnName="VENDOR_REF"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="100" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="SkuUpcNo"
+      Precision="100"
+      Type="java.lang.String"
+      ColumnName="SKU_UPC_NO"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="100" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="BookingDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="BOOKING_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="BvBookingAlert"
+      Precision="1"
+      Type="java.lang.String"
+      ColumnName="BV_BOOKING_ALERT"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="BvSchedDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="BV_SCHED_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="BvActlDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="BV_ACTL_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="BvStatus"
+      Precision="25"
+      Type="java.lang.String"
+      ColumnName="BV_STATUS"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="25" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="QaContact"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnName="QA_CONTACT"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ClientRequestDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="CLIENT_REQUEST_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="OperationOffice"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnName="OPERATION_OFFICE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="VendorName"
+      Precision="100"
+      Type="java.lang.String"
+      ColumnName="VENDOR_NAME"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="100" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FactoryName"
+      Precision="100"
+      Type="java.lang.String"
+      ColumnName="FACTORY_NAME"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="100" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FactoryCity"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnName="FACTORY_CITY"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FactoryCountry"
+      Precision="35"
+      Type="java.lang.String"
+      ColumnName="FACTORY_COUNTRY"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="35" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CountryOrigin"
+      Precision="35"
+      Type="java.lang.String"
+      ColumnName="COUNTRY_ORIGIN"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="35" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CollectionNo"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnName="COLLECTION_NO"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ClientDeptNo"
+      Precision="5"
+      Type="java.lang.String"
+      ColumnName="CLIENT_DEPT_NO"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="5" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FirstShipDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="FIRST_SHIP_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ShipDestination"
+      Precision="50"
+      Type="java.lang.String"
+      ColumnName="SHIP_DESTINATION"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ReasonCode"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnName="REASON_CODE"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Remarks"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnName="REMARKS"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="IcIssueDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="IC_ISSUE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreationDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="CREATION_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="CreatedBy"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CREATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="LAST_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdatedBy"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LastUpdateLogin"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATE_LOGIN"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="PoLineNo"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PO_LINE_NO"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="VendorNo"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="VENDOR_NO"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ManufacturerName"
+      Precision="100"
+      Type="java.lang.String"
+      ColumnName="MANUFACTURER_NAME"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="100" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ShipDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="SHIP_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="InspBookingNo"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="INSP_BOOKING_NO"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FactoryAddress"
+      Precision="200"
+      Type="java.lang.String"
+      ColumnName="FACTORY_ADDRESS"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="200" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="InvoiceNo"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="INVOICE_NO"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="InvoiceDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="INVOICE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="InvoiceContact"
+      Precision="100"
+      Type="java.lang.String"
+      ColumnName="INVOICE_CONTACT"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="100" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="InvoiceCompany"
+      Precision="100"
+      Type="java.lang.String"
+      ColumnName="INVOICE_COMPANY"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="100" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="OprnOfficeCntry"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="OPRN_OFFICE_CNTRY"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="BvId"
+      IsQueriable="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="BV_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="XX_GSO_PO_BV_DTL"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FinalBookEntryDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="FINAL_BOOK_ENTRY_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Announced"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnName="ANNOUNCED"
+      ColumnType="VARCHAR2"
+      SQLType="VARCHAR"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="30" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="BvConfirmDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="BV_CONFIRM_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="BvServiceDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="BV_SERVICE_DATE"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="XX_GSO_PO_BV_DTL" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Key
+      Name="SysC00353354" >
+      <AttrArray Name="Attributes">
+         <Item Value="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxPOInspectionDtl_EO.BvId" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="SYS_C00353354" />
+         <Attr Name="_isPrimary" Value="true" />
+      </DesignTime>
+   </Key>
+</Entity>

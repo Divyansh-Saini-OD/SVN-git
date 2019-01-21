@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="ODSiteOpenLeadsVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxcrm.asn.partysite.common.server.ODSiteOpenLeadsVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT asl.sales_lead_id,
+       asl.description,
+       jrt.source_name as resource_name,
+       alrt.meaning as rank_name,
+       flv.meaning as source_type,
+       decode(amsc.arc_source_code_for ,
+              'CAMP', (SELECT campaign_name
+                       FROM AMS_CAMPAIGNS_ALL_TL
+                       WHERE campaign_id = amsc.source_code_for_id
+                       AND language = USERENV('LANG')),
+              'EVEH', (SELECT event_header_name
+                       FROM AMS_EVENT_HEADERS_ALL_TL
+                       WHERE event_header_id = amsc.source_code_for_id
+                       AND language = USERENV('LANG')),
+              'EONE', (SELECT event_offer_name
+                       FROM AMS_EVENT_OFFERS_ALL_TL
+                       WHERE event_offer_id = amsc.source_code_for_id
+                       AND language = USERENV('LANG')),
+              'EVEO', (SELECT event_offer_name
+                       FROM AMS_EVENT_OFFERS_ALL_TL
+                       WHERE event_offer_id = amsc.source_code_for_id
+                       AND language = USERENV('LANG')),
+              'CSCH', (SELECT schedule_name
+                       FROM   ams_campaign_schedules_tl
+                       WHERE  schedule_id = amsc.source_code_for_id
+                       AND language = USERENV('LANG')),
+              'OFFR', ( SELECT  description
+                        FROM    qp_list_headers_tl
+                        WHERE  list_header_id = amsc.source_code_for_id
+                        AND language = USERENV('LANG')),
+               NULL ) as source_name,
+       asl.budget_amount,
+       fct.name as currency_name,
+       fct.currency_code
+FROM   as_sales_leads  asl,
+       as_sales_lead_ranks_tl alrt,
+       jtf_rs_resource_extns jrt,
+       ams_source_codes amsc,
+       fnd_lookup_values flv,
+       fnd_currencies_tl fct
+WHERE  asl.status_open_flag  = 'Y'
+AND    asl.assign_to_salesforce_id = jrt.resource_id (+)
+AND    asl.lead_rank_id = alrt.rank_id (+)
+AND    alrt.language  (+)= USERENV('LANG')
+AND    asl.source_promotion_id = amsc.source_code_id(+)
+AND    asl.source_system = flv.lookup_code (+)
+AND    flv.lookup_type (+) = 'SOURCE_SYSTEM'
+AND    flv.view_application_id (+) = 279
+AND    flv.language (+) = USERENV('LANG')
+AND    asl.address_id = :1
+AND    asl.currency_code = fct.currency_code (+)
+AND    fct.language (+) = USERENV ('LANG')
+ORDER BY asl.creation_date DESC
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.13.93" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <ViewAttribute
+      Name="SalesLeadId"
+      IsPersistent="false"
+      IsNotNull="true"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="SALES_LEAD_ID"
+      Expression="SALES_LEAD_ID"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Description"
+      IsPersistent="false"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="DESCRIPTION"
+      Expression="DESCRIPTION"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ResourceName"
+      IsPersistent="false"
+      Precision="360"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="RESOURCE_NAME"
+      Expression="RESOURCE_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="360" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RankName"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="RANK_NAME"
+      Expression="RANK_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SourceType"
+      IsPersistent="false"
+      Precision="80"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SOURCE_TYPE"
+      Expression="SOURCE_TYPE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="SourceName"
+      IsPersistent="false"
+      Precision="2000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="SOURCE_NAME"
+      Expression="SOURCE_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="2000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BudgetAmount"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="BUDGET_AMOUNT"
+      Expression="BUDGET_AMOUNT"
+      SQLType="NUMERIC" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CurrencyName"
+      IsPersistent="false"
+      Precision="80"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CURRENCY_NAME"
+      Expression="CURRENCY_NAME"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="80" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CurrencyCode"
+      IsPersistent="false"
+      Precision="15"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CURRENCY_CODE"
+      Expression="CURRENCY_CODE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="15" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

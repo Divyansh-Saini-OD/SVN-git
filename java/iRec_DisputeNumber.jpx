@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE JboProject SYSTEM "jbo_03_01.dtd">
+
+<JboProject
+   Name="iRec_DisputeNumber"
+   SeparateXMLFiles="true"
+   PackageName="" >
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.14.01" />
+      <Attr Name="_jprName" Value="iRec_DisputeNumber.jpr" />
+      <Attr Name="_ejbPackage" Value="false" />
+      <Attr Name="_NamedConnection" Value="GSIDEV01" />
+   </DesignTime>
+   <Substitutes>
+	<Substitute OldName ="oracle.apps.ar.irec.accountDetails.cmreq.server.CMRequestVO" NewName ="od.oracle.apps.ar.irec.accountDetails.cmreq.server.OD_CMRequestVO" />
+      <Substitute OldName ="oracle.apps.ar.irec.accountDetails.server.RequestTableVO" NewName ="od.oracle.apps.ar.irec.accountDetails.server.OD_RequestTableVO" />
+   </Substitutes>
+</JboProject>

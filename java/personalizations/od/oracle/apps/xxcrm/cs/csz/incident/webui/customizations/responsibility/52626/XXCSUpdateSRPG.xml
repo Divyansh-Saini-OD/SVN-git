@@ -1,0 +1,13 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.6.0.0_64" xml:lang="en-US" customizes="/od/oracle/apps/xxcrm/cs/csz/incident/webui/XXCSUpdateSRPG" MDSActiveDoc="true" xmlns:user="http://xmlns.oracle.com/jrad/user" user:responsibilityKey="od_tech_portal" user:responsibilityAppShortName="IBU">
+   <modifications>
+      <modify element="SRSuperTab1Link" rendered="false"/>
+      <modify element="UpdateSR" controllerClass="od.oracle.apps.xxcrm.cs.csz.incident.webui.XXCSTDSLinksRNCO3"/>
+      <modify element="SRSuperTab2Link" rendered="false"/>
+      <modify element="SRSuperTab3Link" text="Additional Details"/>
+      <modify element="ResolutionSummaryFC" rendered="false"/>
+      <modify element="SRHeaderSummaryxRN.summary" prompt="Details" readOnly="true"/>
+      <modify element="HistoryTabRN.SRLogxRN.LogSelectionTLRN" rendered="false"/>
+      <modify element="TaskSummaryRN" text="Services"/>
+   </modifications>
+</customization>

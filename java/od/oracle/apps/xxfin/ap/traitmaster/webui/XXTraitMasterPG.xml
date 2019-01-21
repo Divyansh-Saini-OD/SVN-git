@@ -1,0 +1,117 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="10.1.3_" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="region1" amDefName="od.oracle.apps.xxfin.ap.idms.traitmaster.server.XXTraitMasterAM" windowTitle="Trait Master" title="Trait Master" controllerClass="od.oracle.apps.xxfin.ap.idms.traitmaster.webui.XXTraitMasterPGCO">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:messageComponentLayout id="XXSearchHeader" rows="0" columns="0">
+               <ui:contents>
+                  <oa:messageLovInput id="Trait" prompt="Trait" required="no">
+                     <lovContents>
+                        <oa:listOfValues id="region2">
+                           <ui:contents>
+                              <oa:table name="region2" id="XXtraitLovVO1">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="SupTrait" dataType="VARCHAR2" prompt="SupTrait" viewName="XXtraitLovVO1" viewAttr="SupTrait" maximumLength="30" queryable="true"/>
+                                    <oa:messageStyledText id="Description" dataType="VARCHAR2" prompt="Description" viewName="XXtraitLovVO1" viewAttr="Description" maximumLength="120"/>
+                                 </ui:contents>
+                              </oa:table>
+                           </ui:contents>
+                        </oa:listOfValues>
+                     </lovContents>
+                     <lovMappings>
+                        <lovMap id="lovMap1" lovItem="SupTrait" resultTo="Trait" criteriaFrom="Trait"/>
+                        <lovMap id="lovMap2" lovItem="Description" resultTo="XXDescription"/>
+                        <lovMap id="lovMap3" lovItem="Description" resultTo="item4"/>
+                     </lovMappings>
+                  </oa:messageLovInput>
+                  <oa:messageStyledText id="XXDescription" prompt="Description" rendered="false"/>
+                  <oa:messageLayout id="messageLayout1">
+                     <ui:contents>
+                        <oa:submitButton id="Go" text="Go" prompt="Go"/>
+                        <oa:submitButton id="Clear" text="Clear" prompt="Clear"/>
+                     </ui:contents>
+                  </oa:messageLayout>
+               </ui:contents>
+            </oa:messageComponentLayout>
+            <oa:header id="Traitmaster" text="Trait Master"/>
+            <oa:advancedTable id="region4" viewName="XxApSupTraitsVO1" text="Trait Master" adminCustomizable="false" regionName="''">
+               <ui:contents>
+                  <oa:column id="column1">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeader1" prompt="Trait"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageTextInput id="item1" viewAttr="SupTrait" readOnly="true"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="column2">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeader2" prompt="Description"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageTextInput id="Desc" readOnly="${oa.XxApSupTraitsVO1.DisableTrans}" viewAttr="Description"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="column3">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeader3" prompt="Master Supplier Indicator"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageCheckBox id="MasterInd" viewAttr="MasterSupInd" readOnly="${oa.XxApSupTraitsVO1.DisableTrans}"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="column4">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeader4" prompt="Master Supplier"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageTextInput id="MasterSupplier" viewAttr="MasterSup" readOnly="${oa.XxApSupTraitsVO1.DisableTrans}"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="column6">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeader6" prompt="Enable Flag"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageCheckBox id="EnableFlag" viewAttr="EnableFlag" text="" prompt="" readOnly="${oa.XxApSupTraitsVO1.DisableTrans}"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="column5">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="sortableHeader5" prompt="Update"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:image id="Update" source="updateicon_enabled.gif">
+                           <ui:primaryClientAction>
+                              <ui:fireAction>
+                                 <ui:parameters>
+                                    <ui:parameter key="UpdateTrait" value="${oa.XxApSupTraitsVO1.SupTrait}"/>
+                                 </ui:parameters>
+                              </ui:fireAction>
+                           </ui:primaryClientAction>
+                        </oa:image>
+                     </ui:contents>
+                  </oa:column>
+               </ui:contents>
+               <ui:tableActions>
+                  <oa:flowLayout id="region6">
+                     <ui:contents>
+                        <oa:submitButton id="Create" text="Create" prompt="Create"/>
+                        <oa:exportButton id="Export" exportAllRows="true" text="Export" viewName="XxApSupTraitsVO1"/>
+                     </ui:contents>
+                  </oa:flowLayout>
+               </ui:tableActions>
+            </oa:advancedTable>
+            <oa:pageButtonBar id="region5">
+               <ui:contents>
+                  <oa:submitButton id="Save" text="Apply" prompt="Apply"/>
+                  <oa:submitButton id="Cancel" text="Cancel" prompt="Cancel"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

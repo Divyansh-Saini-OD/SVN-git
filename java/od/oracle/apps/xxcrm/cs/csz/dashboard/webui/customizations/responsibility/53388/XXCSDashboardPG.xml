@@ -1,0 +1,67 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.6.0.0_64" xml:lang="en-US" customizes="/od/oracle/apps/xxcrm/cs/csz/dashboard/webui/XXCSDashboardPG" xmlns:user="http://xmlns.oracle.com/jrad/user" user:responsibilityKey="xx_oks_cont_dashboard" user:responsibilityAppShortName="OKS">
+   <modifications>
+      <modify element="topHeader" text="Dashboard"/>
+      <modify element="xAgentQueueRN" rendered="false"/>
+      <modify element="xGroupQueueRN" text="Contract and Supplies Requests"/>
+      <modify element="xGroupQueueRN.GroupTableRN" blockSize="100"/>
+      <move element="xGroupQueueRN.GrpSummary" after="xGroupQueueRN.GrpIncidentnumber"/>
+      <move element="xGroupQueueRN.Escalated" after="xGroupQueueRN.GrpSummary"/>
+      <move element="xGroupQueueRN.GrpDueDateStr" after="xGroupQueueRN.Escalated"/>
+      <move element="xGroupQueueRN.GrpCustomername" after="xGroupQueueRN.GrpDueDateStr"/>
+      <move element="xGroupQueueRN.GrpSrgroup" after="xGroupQueueRN.GrpCustomername"/>
+      <move element="xGroupQueueRN.GrpSrstatusswitcher" after="xGroupQueueRN.GrpSrgroup"/>
+      <move element="xGroupQueueRN.GrpIncidenttype" after="xGroupQueueRN.GrpSrstatusswitcher"/>
+      <move element="xGroupQueueRN.GrpCreationdate" after="xGroupQueueRN.GrpIncidenttype"/>
+      <move element="xGroupQueueRN.AssignIcon" after="xGroupQueueRN.GrpCreationdate"/>
+      <move element="xGroupQueueRN.GrpIncidentseverity" after="xGroupQueueRN.AssignIcon"/>
+      <move element="xGroupQueueRN.DueAction" after="xGroupQueueRN.GrpIncidentseverity"/>
+      <move element="xGroupQueueRN.GrpWaitingon" after="xGroupQueueRN.DueAction"/>
+      <move element="xGroupQueueRN.GrpDueDate" after="xGroupQueueRN.GrpWaitingon"/>
+      <move element="xGroupQueueRN.GrpIncidenturgency" after="xGroupQueueRN.GrpDueDate"/>
+      <move element="xGroupQueueRN.Problemcodeid" after="xGroupQueueRN.GrpIncidenturgency"/>
+      <move element="xGroupQueueRN.GrpProblemcode" after="xGroupQueueRN.Problemcodeid"/>
+      <move element="xGroupQueueRN.Resolutioncodeid" after="xGroupQueueRN.GrpProblemcode"/>
+      <move element="xGroupQueueRN.GrpResolutioncode" after="xGroupQueueRN.Resolutioncodeid"/>
+      <move element="xGroupQueueRN.GrpTimezonename" after="xGroupQueueRN.GrpResolutioncode"/>
+      <move element="xGroupQueueRN.GrpAccountnumber" after="xGroupQueueRN.GrpTimezonename"/>
+      <move element="xGroupQueueRN.GrpProduct" after="xGroupQueueRN.GrpAccountnumber"/>
+      <move element="xGroupQueueRN.GrpProductdescription" after="xGroupQueueRN.GrpProduct"/>
+      <move element="xGroupQueueRN.GrpIncidentdate" after="xGroupQueueRN.GrpProductdescription"/>
+      <move element="xGroupQueueRN.GrpExpectedreactiondate" after="xGroupQueueRN.GrpIncidentdate"/>
+      <move element="xGroupQueueRN.GrpExpectedresolutiondate" after="xGroupQueueRN.GrpExpectedreactiondate"/>
+      <move element="xGroupQueueRN.GrpDatefirstreacted" after="xGroupQueueRN.GrpExpectedresolutiondate"/>
+      <move element="xGroupQueueRN.GrpCustomerphone" after="xGroupQueueRN.GrpDatefirstreacted"/>
+      <move element="xGroupQueueRN.GrpCustomeremail" after="xGroupQueueRN.GrpCustomerphone"/>
+      <move element="xGroupQueueRN.GrpContractName" after="xGroupQueueRN.GrpCustomeremail"/>
+      <move element="xGroupQueueRN.GrpCoverageName" after="xGroupQueueRN.GrpContractName"/>
+      <move element="xGroupQueueRN.GrpCoverageDescription" after="xGroupQueueRN.GrpCoverageName"/>
+      <move element="xGroupQueueRN.GrpContactname" after="xGroupQueueRN.GrpCoverageDescription"/>
+      <move element="xGroupQueueRN.SrJeopardy" after="xGroupQueueRN.GrpContactname"/>
+      <move element="xGroupQueueRN.LateSr" after="xGroupQueueRN.SrJeopardy"/>
+      <move element="xGroupQueueRN.GrpResolutionsummary" after="xGroupQueueRN.LateSr"/>
+      <move element="xGroupQueueRN.GrpContacttype" after="xGroupQueueRN.GrpResolutionsummary"/>
+      <move element="xGroupQueueRN.GrpSrcreationchannel" after="xGroupQueueRN.GrpContacttype"/>
+      <move element="xGroupQueueRN.GrpCreatedby" after="xGroupQueueRN.GrpSrcreationchannel"/>
+      <move element="xGroupQueueRN.GrpLastupdatedate" after="xGroupQueueRN.GrpCreatedby"/>
+      <move element="xGroupQueueRN.GrpPublishflag" after="xGroupQueueRN.GrpLastupdatedate"/>
+      <move element="xGroupQueueRN.GrpCustomernumber" after="xGroupQueueRN.GrpPublishflag"/>
+      <move element="xGroupQueueRN.Srownerid" after="xGroupQueueRN.GrpCustomernumber"/>
+      <move element="xGroupQueueRN.Srgroupid" after="xGroupQueueRN.Srownerid"/>
+      <move element="xGroupQueueRN.Incidentid" after="xGroupQueueRN.Srgroupid"/>
+      <move element="xGroupQueueRN.GrpResolutioncodedesc" after="xGroupQueueRN.Incidentid"/>
+      <move element="xGroupQueueRN.GrpProblemcodedesc" after="xGroupQueueRN.GrpResolutioncodedesc"/>
+      <move element="xGroupQueueRN.GrpDateresolved" after="xGroupQueueRN.GrpProblemcodedesc"/>
+      <move element="xGroupQueueRN.ResponsibilityId" after="xGroupQueueRN.GrpDateresolved"/>
+      <move element="xGroupQueueRN.IncidentTypeId" after="xGroupQueueRN.ResponsibilityId"/>
+      <move element="xGroupQueueRN.GrpquickUpdateFlowLayout" after="xGroupQueueRN.IncidentTypeId"/>
+      <move element="xGroupQueueRN.GrpsrNotesFlowLayout" after="xGroupQueueRN.GrpquickUpdateFlowLayout"/>
+      <modify element="xGroupQueueRN.Escalated" rendered="false"/>
+      <modify element="xGroupQueueRN.GrpDueDateStr" rendered="false"/>
+      <modify element="xGroupQueueRN.GrpSrstatusswitcher" rendered="true"/>
+      <modify element="xGroupQueueRN.GrpIncidenttype" rendered="true"/>
+      <modify element="xGroupQueueRN.GrpCreationdate" rendered="true"/>
+      <modify element="GetNextWorkFC" rendered="false"/>
+      <modify element="AgentToolHdr" rendered="false"/>
+   </modifications>
+</customization>

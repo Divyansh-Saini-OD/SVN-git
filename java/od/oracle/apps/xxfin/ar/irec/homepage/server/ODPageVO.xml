@@ -1,0 +1,506 @@
+<?xml version='1.0' encoding='WINDOWS-1252' ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<!-- $Header: PageVO.xml 120.12.12020000.5 2014/11/20 11:28:14 gnramasa ship $ -->
+
+<ViewObject
+   Name="ODPageVO"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   Extends="oracle.apps.ar.irec.homepage.server.PageVO"   
+   RowClass="od.oracle.apps.xxfin.ar.irec.homepage.server.ODPageVORowImpl"
+   ComponentClass="od.oracle.apps.xxfin.ar.irec.homepage.server.ODPageVOImpl"
+   FetchMode="FETCH_AS_NEEDED"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select TOTAL_OVERDUE_INVOICES,
+       to_char(TOTAL_OVERDUE_INVOICES, fnd_currency_cache.get_format_mask(currency_code, 30))
+       AS Overdue_Invoices_Formatted,
+       TOTAL_OPEN_INVOICES,
+       to_char(TOTAL_OPEN_INVOICES, fnd_currency_cache.get_format_mask(currency_code, 30)) 
+       AS Open_Invoices_Formatted,
+       UNAPPL_PAYMENTS,
+       to_char(UNAPPL_PAYMENTS, fnd_currency_cache.get_format_mask(currency_code, 30)) AS Payments_Formatted,
+       UNAPPLIED_CM,
+       to_char(UNAPPLIED_CM, fnd_currency_cache.get_format_mask(currency_code, 30)) AS Unapplied_Cm_Formatted,
+       PENDING_REQUEST,
+       to_char(PENDING_REQUEST, fnd_currency_cache.get_format_mask(currency_code, 30)) 
+       AS Pending_Request_Formatted,
+       CURRENCY_CODE,
+       CUSTOMER_ID,
+       (TOTAL_OPEN_INVOICES +UNAPPL_PAYMENTS +UNAPPLIED_CM) AS ACCOUNT_BALANCE,
+       to_char( (TOTAL_OPEN_INVOICES +UNAPPL_PAYMENTS +UNAPPLIED_CM),
+       fnd_currency_cache.get_format_mask(currency_code, 30)) AS Account_Balance_Formatted,
+       trunc(sysdate) as AS_OF_DATE,
+       REMAINING_GUARANTEE,
+       to_char(REMAINING_GUARANTEE, fnd_currency_cache.get_format_mask(currency_code, 30)) 
+       AS Remaining_Guarantee_Formatted
+from
+(SELECT
+  (
+  SELECT nvl(SUM ( amount_due_remaining ), 0) AS SUM_AMOUNT 
+    FROM AR_PAYMENT_SCHEDULES ArPaymentSchedules, ar_irec_user_acct_sites_all AcctSites
+    WHERE 1=1
+    AND AcctSites.user_id=:1
+    AND AcctSites.session_id=:2  
+    AND AcctSites.customer_id = ArPaymentSchedules.customer_id
+    AND ArPaymentSchedules.invoice_currency_code = :3 
+    AND ArPaymentSchedules.customer_site_use_id= decode(AcctSites.customer_site_use_id,-1,ArPaymentSchedules.customer_site_use_id, AcctSites.customer_site_use_id)
+    AND status = 'OP'  
+    AND ( class = 'INV' OR class = 'CB' OR class = 'DM' OR class = 'DEP' ) 
+    AND (  trunc(sysdate) > due_date )
+    AND ArPaymentSchedules.org_id=AcctSites.org_id
+  ) AS total_overdue_invoices,
+ ( 
+   SELECT nvl(SUM ( amount_due_remaining ), 0) AS SUM_AMOUNT 
+    FROM AR_PAYMENT_SCHEDULES ArPaymentSchedules, ar_irec_user_acct_sites_all AcctSites
+    WHERE 1=1
+    AND AcctSites.user_id=:4
+    AND AcctSites.session_id=:5  
+    AND AcctSites.customer_id = ArPaymentSchedules.customer_id
+    AND ArPaymentSchedules.invoice_currency_code = :6 
+    AND ArPaymentSchedules.customer_site_use_id= decode(AcctSites.customer_site_use_id,-1,ArPaymentSchedules.customer_site_use_id, AcctSites.customer_site_use_id)
+    AND status = 'OP'  
+    AND ( class = 'INV' OR class = 'CB' OR class = 'DM' OR class = 'DEP' ) 
+    AND ArPaymentSchedules.org_id=AcctSites.org_id
+  ) 
+  AS total_open_invoices,
+ (
+    SELECT nvl(SUM ( amount_due_remaining ), 0) AS SUM_AMOUNT 
+    FROM AR_PAYMENT_SCHEDULES ArPaymentSchedules, ar_irec_user_acct_sites_all AcctSites
+    WHERE 1=1
+    AND AcctSites.user_id=:7
+    AND AcctSites.session_id=:8  
+    AND AcctSites.customer_id = ArPaymentSchedules.customer_id
+    AND ArPaymentSchedules.invoice_currency_code = :9 
+    AND ArPaymentSchedules.customer_site_use_id= decode(AcctSites.customer_site_use_id,-1,ArPaymentSchedules.customer_site_use_id, AcctSites.customer_site_use_id)
+    AND (status = 'OP'  AND amount_due_remaining <> 0 ) 
+    AND class = 'PMT' 
+    AND ArPaymentSchedules.org_id=AcctSites.org_id
+  )
+  AS unappl_payments,
+ (
+    SELECT nvl(SUM ( amount_due_remaining ), 0) AS SUM_AMOUNT 
+    FROM AR_PAYMENT_SCHEDULES ArPaymentSchedules, ar_irec_user_acct_sites_all AcctSites
+    WHERE 1=1
+    AND AcctSites.user_id=:10
+    AND AcctSites.session_id=:11  
+    AND AcctSites.customer_id = ArPaymentSchedules.customer_id
+    AND ArPaymentSchedules.invoice_currency_code = :12 
+    AND ArPaymentSchedules.customer_site_use_id= decode(AcctSites.customer_site_use_id,-1,ArPaymentSchedules.customer_site_use_id, AcctSites.customer_site_use_id)
+    AND class = 'CM' 
+    AND status = 'OP'
+  ) 
+  AS unapplied_cm,
+  ari_utilities.get_pending_cmreq_amount(:13,:14,:15,:16) AS pending_request,
+  (
+    SELECT nvl(SUM ( amount_due_remaining ), 0) AS SUM_AMOUNT 
+    FROM AR_PAYMENT_SCHEDULES ArPaymentSchedules, ar_irec_user_acct_sites_all AcctSites
+    WHERE 1=1
+    AND AcctSites.user_id=:17
+    AND AcctSites.session_id=:18  
+    AND AcctSites.customer_id = ArPaymentSchedules.customer_id
+    AND ArPaymentSchedules.invoice_currency_code = :19 
+    AND ArPaymentSchedules.customer_site_use_id= decode(AcctSites.customer_site_use_id,-1,ArPaymentSchedules.customer_site_use_id, AcctSites.customer_site_use_id)
+    AND status = 'OP'
+    AND class = 'GUAR' 
+  )
+  AS Remaining_Guarantee,
+  ( select :20 from dual ) AS CURRENCY_CODE,
+  ( select to_char(:21) from dual ) AS CUSTOMER_ID
+FROM dual)
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_isExpertMode" Value="true" />
+      <Attr Name="_version" Value="10.1.3.41.57" />
+      <Attr Name="_codeGenFlag2" Value="Access|Coll" />
+   </DesignTime>
+   <ViewAttribute
+      Name="TotalOverdueInvoices"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="TOTAL_OVERDUE_INVOICES"
+      Expression="TOTAL_OVERDUE_INVOICES"
+      SQLType="NUMERIC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OverdueInvoicesFormatted"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="OVERDUE_INVOICES_FORMATTED"
+      Expression="OVERDUE_INVOICES_FORMATTED"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="TotalOpenInvoices"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="TOTAL_OPEN_INVOICES"
+      Expression="TOTAL_OPEN_INVOICES"
+      SQLType="NUMERIC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="OpenInvoicesFormatted"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="OPEN_INVOICES_FORMATTED"
+      Expression="OPEN_INVOICES_FORMATTED"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="UnapplPayments"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="UNAPPL_PAYMENTS"
+      Expression="UNAPPL_PAYMENTS"
+      SQLType="NUMERIC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PaymentsFormatted"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PAYMENTS_FORMATTED"
+      Expression="PAYMENTS_FORMATTED"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="UnappliedCm"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="UNAPPLIED_CM"
+      Expression="UNAPPLIED_CM"
+      SQLType="NUMERIC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="UnappliedCmFormatted"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="UNAPPLIED_CM_FORMATTED"
+      Expression="UNAPPLIED_CM_FORMATTED"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PendingRequest"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="PENDING_REQUEST"
+      Expression="PENDING_REQUEST"
+      SQLType="NUMERIC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="PendingRequestFormatted"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="PENDING_REQUEST_FORMATTED"
+      Expression="PENDING_REQUEST_FORMATTED"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CurrencyCode"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CURRENCY_CODE"
+      Expression="CURRENCY_CODE"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="CustomerId"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="255"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CUSTOMER_ID"
+      Expression="CUSTOMER_ID"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AccountBalance"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="ACCOUNT_BALANCE"
+      Expression="ACCOUNT_BALANCE"
+      SQLType="NUMERIC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AccountBalanceFormatted"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ACCOUNT_BALANCE_FORMATTED"
+      Expression="ACCOUNT_BALANCE_FORMATTED"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="4000" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AsOfDate"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="4000"
+      Type="oracle.jbo.domain.Date"
+      ColumnType="DATE"
+      AliasName="AS_OF_DATE"
+      Expression="AS_OF_DATE"
+      SQLType="DATE" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RemainingGuarantee"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="oracle.jbo.domain.Number"
+      ColumnType="NUMBER"
+      AliasName="REMAINING_GUARANTEE"
+      Expression="REMAINING_GUARANTEE"
+      SQLType="NUMERIC" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RemainingGuaranteeFormatted"
+      IsQueriable="false"
+      IsPersistent="false"
+      Precision="4000"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="REMAINING_GUARANTEE_FORMATTED"
+      Expression="REMAINING_GUARANTEE_FORMATTED"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BucketTitle0"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="bucket_title_0"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BucketTitle6"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="bucket_title_6"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BucketTitle5"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="bucket_title_5"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BucketTitle4"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="bucket_title_4"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BucketTitle3"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="bucket_title_3"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BucketTitle2"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="bucket_title_2"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BucketTitle1"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="Bucket_Title_1"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BucketAmountFormatted2"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="Bucket_Amount_Formatted_2"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BucketAmountFormatted1"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="Bucket_Amount_Formatted_1"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BucketAmountFormatted0"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="Bucket_Amount_Formatted_0"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BucketAmountFormatted6"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="Bucket_Amount_Formatted_6"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BucketAmountFormatted5"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="Bucket_Amount_Formatted_5"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BucketAmountFormatted4"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="Bucket_Amount_Formatted_4"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BucketAmountFormatted3"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="Bucket_Amount_Formatted_3"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BucketStatusCode6"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="Bucket_Status_Code_6"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BucketStatusCode5"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="Bucket_Status_Code_5"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BucketStatusCode4"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="Bucket_Status_Code_4"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BucketStatusCode3"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="Bucket_Status_Code_3"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BucketStatusCode2"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="Bucket_Status_Code_2"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BucketStatusCode1"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="Bucket_Status_Code_1"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="BucketStatusCode0"
+      IsQueriable="false"
+      IsPersistent="false"
+      Type="java.lang.String"
+      ColumnType="$none$"
+      AliasName="Bucket_Status_Code_0"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+</ViewObject>

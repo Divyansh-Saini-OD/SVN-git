@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="CollectorNameLOVVO"
+   OrderBy="full_name"
+   BindingStyle="Oracle"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="oracle.apps.fnd.framework.server.OAViewObjectImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+SELECT C.name, C.description, P.full_name
+  FROM AR_COLLECTORS C
+  JOIN PER_ALL_PEOPLE_F P
+    ON C.employee_id=P.person_id
+   AND trunc(sysdate) BETWEEN P.effective_start_date and P.effective_end_date
+ WHERE C.STATUS != 'I'
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.14.00" />
+      <Attr Name="_CodeGenFlagNew" Value="0" />
+   </DesignTime>
+   <ViewAttribute
+      Name="name"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="30"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="name"
+      Expression="NULL"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="description"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="description"
+      Expression="NULL"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="full_name"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="full_name"
+      Expression="NULL"
+      SQLType="VARCHAR" >
+   </ViewAttribute>
+</ViewObject>

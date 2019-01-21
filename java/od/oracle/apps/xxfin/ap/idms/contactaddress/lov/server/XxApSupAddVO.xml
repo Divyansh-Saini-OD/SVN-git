@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   xmlns="http://xmlns.oracle.com/bc4j"
+   Name="XxApSupAddVO"
+   Version="11.1.1.59.23"
+   BindingStyle="OracleName"
+   CustomQuery="true"
+   RowClass="oracle.apps.fnd.framework.server.OAViewRowImpl"
+   ComponentClass="od.oracle.apps.xxfin.ap.idms.contactaddress.lov.server.XxApSupAddVOImpl"
+   PageIterMode="Partial"
+   UseGlueCode="false" >
+   <SQLQuery><![CDATA[
+select address1 Address1,
+address2 Address2,
+address3 Address3,
+City||','||postal_code City,
+State State,
+Country Country
+from hz_locations
+   ]]></SQLQuery>
+   <DesignTime>
+      <Attr Name="_codeGenFlag2" Value="Access|Coll|VarAccess" />
+      <Attr Name="_isExpertMode" Value="true" />
+   </DesignTime>
+   <ViewAttribute
+      Name="Address1"
+      IsUpdateable="false"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ADDRESS1"
+      Expression="ADDRESS1"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Address2"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ADDRESS2"
+      Expression="ADDRESS2"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Address3"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="240"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="ADDRESS3"
+      Expression="ADDRESS3"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="240" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="City"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="121"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="CITY"
+      Expression="CITY"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="121" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="State"
+      IsUpdateable="false"
+      IsPersistent="false"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="STATE"
+      Expression="STATE"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Country"
+      IsPersistent="false"
+      IsNotNull="true"
+      Precision="60"
+      Type="java.lang.String"
+      ColumnType="VARCHAR2"
+      AliasName="COUNTRY"
+      Expression="COUNTRY"
+      SQLType="VARCHAR" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="60" />
+      </DesignTime>
+   </ViewAttribute>
+</ViewObject>

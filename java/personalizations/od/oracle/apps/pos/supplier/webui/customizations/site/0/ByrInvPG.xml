@@ -1,0 +1,24 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<customization xmlns="http://xmlns.oracle.com/jrad" version="9.0.6.0.0_64" xml:lang="en-US" customizes="/oracle/apps/pos/supplier/webui/ByrInvPG" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui">
+   <modifications>
+      <move element="termsCode" after="PayTermsRN"/>
+      <move element="termsId" after="termsCode"/>
+      <move element="PaymentRN" after="InvoiceRN"/>
+      <move element="TermsRN" after="PaymentRN"/>
+      <move element="SuppPrefRN" after="TermsRN"/>
+      <insert after="SuppPrefRN">
+         <oa:stackLayout id="StackLayoutSUppSiteTol" extends="/od/oracle/apps/pos/supplier/webui/SubTabTolRN" addChildren="true" adminCustomizable="true" cellNoWrapFormat="false" controllerClass="od.oracle.apps.pos.supplier.webui.SubTabTolCO" initSortSeq="none" postDefault="true" prompt="Supplier Site Tolerances" rendered="true" scope="." securityMode="standard" sortState="no" standalone="false" userCustomizable="true" xmlns:oa="http://xmlns.oracle.com/oa"/>
+      </insert>
+      <insert parent="PageLayoutRN" grouping="flexibleContents">
+         <oa:flexibleContentList id="OAInternalInsertedFlexibleContentList" xmlns:oa="http://xmlns.oracle.com/oa">
+            <ui:contents xmlns:ui="http://xmlns.oracle.com/uix/ui">
+               <oa:flexibleContent id="SupSiteTolRN" adminCustomizable="true" flexibleLayoutRef="SuppSiteTol" showBorder="false" userCustomizable="false">
+                  <ui:contents>
+                     <oa:stackLayout id="SupSiteTolRN_stackLayout_auto" extends="/od/oracle/apps/pos/supplier/webui/SubTabTolRN" addChildren="true" adminCustomizable="true" cellNoWrapFormat="true" initSortSeq="none" postDefault="true" prompt="Supplier Site Tolerance" rendered="true" securityMode="standard" sortState="yes" standalone="true" userCustomizable="true"/>
+                  </ui:contents>
+               </oa:flexibleContent>
+            </ui:contents>
+         </oa:flexibleContentList>
+      </insert>
+   </modifications>
+</customization>
