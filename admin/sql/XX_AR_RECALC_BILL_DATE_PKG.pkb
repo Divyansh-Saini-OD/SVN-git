@@ -12,6 +12,7 @@ AS
 -- | Version     Date         Author          Remarks                                           |
 -- | =========   ===========  =============   ==================================================|
 -- | 1.0         18-OCT-2018  Havish Kasina   Initial version                                   |  
+-- | 1.1         21-JAN-2019  Havish Kasina   Added new parameter p_billing_date                |
 -- +============================================================================================+
 
 gc_debug 	                VARCHAR2(2);
@@ -118,7 +119,8 @@ END print_out_msg;
 -- ===========================================================================================================|
 PROCEDURE update_new_bill_date(p_errbuf         OUT  VARCHAR2
                               ,p_retcode        OUT  VARCHAR2
-                              ,p_debug          IN   VARCHAR2)
+                              ,p_debug          IN   VARCHAR2
+							  ,p_billing_date   IN   VARCHAR2)
 AS 
   /* Declaration */
   CURSOR get_bill_signal_trx_dtls
@@ -309,17 +311,33 @@ BEGIN
 		   ----------------------------------------------------------------------------
 		   /* Step 3: To derive the new BILLING date */
 		   ----------------------------------------------------------------------------
-		   BEGIN
-		       SELECT MAX(billable_date)
-                 INTO ld_new_bill_date
-                 FROM ar_cons_bill_cycle_dates
-                WHERE billing_cycle_id = ln_billing_cycle_id
-                  AND billable_date BETWEEN  TRUNC(ld_billing_date) AND TRUNC(SYSDATE);
-		   EXCEPTION
-		   WHEN OTHERS
+		   IF p_billing_date IS NULL
 		   THEN
-		       ld_new_bill_date := NULL;
-		   END;
+		       BEGIN
+		            SELECT MAX(billable_date)
+                      INTO ld_new_bill_date
+                      FROM ar_cons_bill_cycle_dates
+                     WHERE billing_cycle_id = ln_billing_cycle_id
+                       AND billable_date BETWEEN  TRUNC(ld_billing_date) AND TRUNC(SYSDATE);
+		       EXCEPTION
+		       WHEN OTHERS
+		       THEN
+		           ld_new_bill_date := NULL;
+		       END;
+		   ELSE
+		       BEGIN
+		            SELECT MAX(billable_date)
+                      INTO ld_new_bill_date
+                      FROM ar_cons_bill_cycle_dates
+                     WHERE billing_cycle_id = ln_billing_cycle_id
+                       AND billable_date BETWEEN  TRUNC(ld_billing_date) AND TRUNC(TO_DATE(p_billing_date,'YYYY/MM/DD'));
+		       EXCEPTION
+		       WHEN OTHERS
+		       THEN
+		           ld_new_bill_date := NULL;
+		       END;
+		   END IF;
+		   
 		   IF ld_new_bill_date IS NULL
 		   THEN
 		       SELECT MAX(billable_date)
