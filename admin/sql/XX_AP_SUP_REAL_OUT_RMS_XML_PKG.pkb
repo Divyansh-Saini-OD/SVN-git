@@ -1,12 +1,12 @@
-SET VERIFY OFF;
-SET SHOW OFF;
-SET ECHO OFF;
-SET TAB OFF;
-SET FEEDBACK OFF;
+--SET VERIFY OFF;
+--SET SHOW OFF;
+--SET ECHO OFF;
+--SET TAB OFF;
+--SET FEEDBACK OFF;
  
-WHENEVER SQLERROR CONTINUE;
+--WHENEVER SQLERROR CONTINUE;
  
-WHENEVER OSERROR EXIT FAILURE ROLLBACK
+--WHENEVER OSERROR EXIT FAILURE ROLLBACK
 
 
 create or replace 
@@ -1367,7 +1367,7 @@ BEGIN
     fnd_file.put_line(fnd_file.log, 'Error while updating Telex as INTFCD for vendor_site_id = ' || v_vendor_site_id );
     retcode :=2;
   END;
-  xx_ap_supp_out_track( v_transaction_id, v_globalvendor_id , v_name , v_vendor_site_id , v_vendor_site_code , v_site_orgid , v_user_id , v_user_name , ''--p_xml_payload
+  xx_ap_supp_out_track( v_transaction_id, v_globalvendor_id , v_name , v_vendor_site_id , v_vendor_site_code , v_site_orgid , v_user_id , v_user_name , p_xml_payload
   , v_request_id , v_response_status_code, v_response_reason , v_error_message );
 END xx_ap_sup_invoke_xml_out;
 PROCEDURE create_data_line
@@ -5573,4 +5573,4 @@ END;
 END XX_AP_SUP_REAL_OUT_RMS_XML_PKG;
 /
 
-SHOW ERRORS;
+--SHOW ERRORS;
