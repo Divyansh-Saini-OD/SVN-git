@@ -142,23 +142,6 @@ AS
    		BEGIN
 			IF p_header_id IS NOT NULL
 			THEN
-				/*
-				Select trx_number	
-				INTO lc_trx_number
-				from ra_customer_trx_all 
-				where customer_trx_id	=	p_trx_id;					
-				
-				SELECT 	 COUNT(1)
-				INTO   	 ln_bill_comp_trx_cnt
-				FROM Oe_Order_Headers_All ooh,
-					 Xx_Om_Header_Attributes_All Xoha
-				Where Ooh.Order_Number = lc_trx_number
-				AND parent_order_num     IS NOT NULL
-				AND p_customer_id IS NULL
-				AND Ooh.Header_Id      = Xoha.Header_Id
-				AND ROWNUM        <=1;					
-				*/
-				
 				SELECT 	 COUNT(1)
 				INTO   	 ln_bill_comp_trx_cnt
 				FROM xx_om_header_attributes_all xoha
@@ -177,27 +160,6 @@ AS
 			IF p_customer_id IS NOT NULL
 			THEN
 				BEGIN
-					/*
-					SELECT 	COUNT(1)
-					INTO ln_bill_comp_trx_cnt
-					FROM Ra_Customer_Trx_All Trx,
-					  ar_payment_schedules_all Api
-					WHERE 1                 =1
-					AND Bill_To_Customer_Id = p_customer_id --33059690
-					AND Trx.Customer_TRX_Id = Api.customer_trx_id
-					AND Api.Status          = 'OP'
-					AND EXISTS
-						  (SELECT 1
-						  FROM 	Oe_Order_Headers_All ooh,
-								Xx_Om_Header_Attributes_All Xoha
-						  WHERE ooh.Order_Number = Trx.TRX_NUMBER
-						  AND Ooh.Header_Id      = Xoha.Header_Id
-						  AND parent_order_num	IS NOT NULL
-						  AND NVL(BILL_COMP_FLAG,'Y')     = 'Y'
-						  AND ROWNUM            <=1
-						  );
-						 */
-					
 				   SELECT 	COUNT(1)
 				   INTO ln_bill_comp_trx_cnt
 				   FROM ar_payment_schedules_all Api
@@ -903,9 +865,9 @@ END;
 				THEN 
 					l_bypass_trx	:=	TRUE;
 				END IF;	
-					FND_FILE.PUT_LINE(FND_FILE.LOG, 'Inserting record for Cust account id '|| lcu_cons_cust_tbl_type(ln_cnt).cust_account_id ||
-                                 'AND account number '|| lcu_cons_cust_tbl_type(ln_cnt).account_number);
 				IF NOT l_bypass_trx THEN  
+					FND_FILE.PUT_LINE(FND_FILE.LOG, 'Inserting into Interim table for Cust account id '|| lcu_cons_cust_tbl_type(ln_cnt).cust_account_id ||
+                                 'AND account number '|| lcu_cons_cust_tbl_type(ln_cnt).account_number);
 					INSERT INTO xx_ar_interim_cust_acct_id ( 	  cust_account_id
 																 ,account_number
 																 ,org_id

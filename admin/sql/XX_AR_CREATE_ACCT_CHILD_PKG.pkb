@@ -1257,16 +1257,15 @@ AS
 				EXCEPTION
 				WHEN NO_DATA_FOUND THEN
 					 lc_Bill_Comp_Flag	:='N';
-					 FND_FILE.PUT_LINE(FND_FILE.LOG,'NO_DATA_FOUND: Xx_Om_Header_Attributes_All ');
 				WHEN OTHERS THEN
 					lc_Bill_Comp_Flag	:='N';
-					FND_FILE.PUT_LINE(FND_FILE.LOG,'Other EXCEPTION: lc_Bill_Comp_Flag '||SQLERRM );
 				END;
 				
 				-----------------------------------------------------------------------------------------
 				-- If Bill Complete and no SCM Signal push billing date of invoice to future + 90 days.
 				-----------------------------------------------------------------------------------------
 				IF NVL(lc_Bill_Comp_Flag,'N') IN ('B','Y')  THEN
+					FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill Complete Customer : '||lcu_process_interface_lines.sales_order ||' with Amount : '||lcu_process_interface_lines.amount);
 					IF lc_prev_order <>	lcu_process_interface_lines.sales_order 
 					THEN
 						lc_bill_comp_upd_flag	:='N';
@@ -1274,6 +1273,7 @@ AS
 						IF lcu_process_interface_lines.amount < 0
 						THEN
 							BEGIN
+								FND_FILE.PUT_LINE(FND_FILE.LOG,'Inserting Return Order into Bill Signal Table for : '||lcu_process_interface_lines.sales_order );
 								INSERT
 								INTO xx_scm_bill_signal
 								  (
@@ -1333,7 +1333,7 @@ AS
 						IF lc_bill_comp_upd_flag ='N'
 						THEN
 							BEGIN
-								UPDATE xx_scm_bill_signal
+								UPDATE  xx_scm_bill_signal
 								SET 	billing_date_flag    = 'C'
 									,	customer_id			 = lcu_process_interface_lines.orig_system_bill_customer_id
 									,	site_use_id			 = ln_site_use_id
@@ -1343,6 +1343,7 @@ AS
 								WHERE child_order_number 	 = lcu_process_interface_lines.sales_order
 								AND billing_date_flag    	 = 'N';	
 								lc_bill_comp_upd_flag		 :='C';
+								FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill Complete Customer Updated Customer id and Site Use Id for Order : '||lcu_process_interface_lines.sales_order);
 							EXCEPTION
 							WHEN NO_DATA_FOUND THEN
 								 FND_FILE.PUT_LINE(FND_FILE.LOG,'NO_DATA_FOUND: TO Update to future for Bill Complete ');
