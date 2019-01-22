@@ -893,7 +893,7 @@ AS
       FROM   ra_customer_trx_lines_all
       WHERE  customer_trx_id   = p_customer_trx_id
       AND    line_number       = p_line_number
-      AND    inventory_item_id = p_inventory_item_id
+      --AND    inventory_item_id = p_inventory_item_id
       AND    line_type         = 'LINE';
     END IF;
 
