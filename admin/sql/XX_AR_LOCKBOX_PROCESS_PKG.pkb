@@ -8812,6 +8812,7 @@ END IF;
 							UPDATE xx_ar_payments_interface xapi
 							SET    invoice1      		  = ln_cons_inv_id1
 							WHERE  XAPI.rowid             = get_lockbox_rec.rowid
+							AND    XAPI.invoice1	      = get_lockbox_det_rec.invoice1
 							AND    XAPI.process_num       = get_lockbox_rec.process_num;
 							
 						   UPDATE xx_ar_inbound_lockbox_data xapi
@@ -9257,6 +9258,7 @@ record type 6';
 							UPDATE xx_ar_payments_interface xapi
 							SET    invoice2      		  = ln_cons_inv_id2
 							WHERE  XAPI.rowid             = get_lockbox_rec.rowid
+							AND    XAPI.invoice2	      = get_lockbox_det_rec.invoice2
 							AND    XAPI.process_num       = get_lockbox_rec.process_num;
 							
 						   UPDATE xx_ar_inbound_lockbox_data xapi
@@ -9714,6 +9716,7 @@ record type 6';
 							UPDATE xx_ar_payments_interface xapi
 							SET    invoice3      		  = ln_cons_inv_id3
 							WHERE  XAPI.rowid             = get_lockbox_rec.rowid
+							AND    XAPI.invoice3	      = get_lockbox_det_rec.invoice3
 							AND    XAPI.process_num       = get_lockbox_rec.process_num;
 							
 						   UPDATE xx_ar_inbound_lockbox_data xapi
