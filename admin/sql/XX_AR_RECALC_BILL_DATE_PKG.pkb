@@ -320,12 +320,12 @@ BEGIN
                       FROM ar_cons_bill_cycle_dates
                      WHERE billing_cycle_id = ln_billing_cycle_id
                        AND billable_date BETWEEN  TRUNC(ld_billing_date) AND TRUNC(SYSDATE);
-					-- print_debug_msg('p_billing_date - Test 1');
+					print_debug_msg('p_billing_date - Test 1');
 		       EXCEPTION
 		       WHEN OTHERS
 		       THEN
 		           ld_new_bill_date := NULL;
-				   -- print_debug_msg('p_billing_date - Test 2');
+				   print_debug_msg('p_billing_date - Test 2');
 		       END;
 		   ELSE
 		       print_debug_msg('p_billing_date :'||p_billing_date);
@@ -334,13 +334,13 @@ BEGIN
                       INTO ld_new_bill_date
                       FROM ar_cons_bill_cycle_dates
                      WHERE billing_cycle_id = ln_billing_cycle_id
-                       AND billable_date BETWEEN  TRUNC(ld_billing_date) AND TRUNC(TO_DATE(p_billing_date,'DD-MON-YYYY'));
-				-- print_debug_msg('p_billing_date - Test 3');
+                       AND billable_date BETWEEN  TRUNC(ld_billing_date) AND TRUNC(TO_DATE(p_billing_date,'YYYY/MM/DD HH24:MI:SS'));
+				print_debug_msg('p_billing_date - Test 3');
 		       EXCEPTION
 		       WHEN OTHERS
 		       THEN
-			       -- print_debug_msg('p_billing_date - Test 4');
-		           ld_new_bill_date := TO_DATE(p_billing_date,'DD-MON-YYYY');
+			       print_debug_msg('p_billing_date - Test 4');
+		           ld_new_bill_date := TRUNC(TO_DATE(p_billing_date,'YYYY/MM/DD HH24:MI:SS'));
 		       END;
 		   END IF;
 		   
@@ -351,7 +351,7 @@ BEGIN
                  FROM ar_cons_bill_cycle_dates
                 WHERE billing_cycle_id = ln_billing_cycle_id
                   AND billable_date <= TRUNC(SYSDATE);
-				-- print_debug_msg('p_billing_date - Test 5');
+			   print_debug_msg('p_billing_date - Test 5');
 			END IF;
 		   print_debug_msg('New Billing Date :'||ld_new_bill_date);
 		   
