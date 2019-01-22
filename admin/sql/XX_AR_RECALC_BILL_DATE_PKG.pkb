@@ -176,6 +176,7 @@ BEGIN
    print_debug_msg ('Debug Flag :'|| gc_debug ,TRUE);
    print_debug_msg ('Billing Date :'||p_billing_date, TRUE);
    print_debug_msg ('                  ',TRUE);
+   print_debug_msg('=============================================================================================================================');
    print_debug_msg ('Processing the Eligible Transactions',FALSE);
    
    OPEN get_bill_signal_trx_dtls;
@@ -185,63 +186,63 @@ BEGIN
         EXIT WHEN l_trx_dtls_tab.COUNT = 0;
 		    
 		ln_total_records_processed := ln_total_records_processed + l_trx_dtls_tab.COUNT;
-		print_debug_msg('Total number of Records :'||ln_total_records_processed);
 		
 		FOR indx IN l_trx_dtls_tab.FIRST..l_trx_dtls_tab.LAST 
         LOOP
 		print_debug_msg('                          ');
 		print_debug_msg('Processing Trx Number :'||l_trx_dtls_tab(indx).trx_number);
+		
         BEGIN 
-		   ln_cust_account_id   := NULL;
-		   lc_account_number    := NULL; 
-		   lc_cycle_name        := NULL;   
-		   ln_billing_cycle_id  := NULL;
-		   ld_billing_date      := NULL;
-		   ld_new_due_date      := NULL;
-		   ld_new_bill_date     := NULL; 
-		   ----------------------------------------------------------------------------
-		   /* Step 1: To get the billing cycle id */
-		   ----------------------------------------------------------------------------
-           BEGIN
-		       SELECT hca.cust_account_id ,
-                      hca.account_number , 
-	                  acbct.cycle_name , 
-	                  acbct.billing_cycle_id
-				 INTO ln_cust_account_id,
-					  lc_account_number,
-					  lc_cycle_name,
-					  ln_billing_cycle_id
-                 FROM ar_cons_bill_cycles_tl acbct,
-	                  ar_cons_bill_cycle_dates acbcd,
-	                  ra_terms rt,
-	                  hz_customer_profiles hcp ,
-	                  hz_cust_accounts hca 
-                WHERE 1 = 1              
-                  AND acbcd.billing_cycle_id = rt.billing_cycle_id
-                  AND acbcd.billing_cycle_id = acbct.billing_cycle_id
-                  AND acbct.language = 'US'
-                  AND rt.Term_Id = hcp.standard_Terms
-                  AND HCP.site_use_id IS NULL
-                  AND HCP.cons_inv_flag = 'Y' 
-                  AND EXISTS ( SELECT 1
-                                 FROM hz_cust_acct_sites_all hcasa
-                                WHERE hcasa.cust_account_id = hca.cust_account_id
-                                --  AND hcasa.org_id = hca.org_id
-							 )
-                  AND hcp.cust_account_id = hca.cust_account_id
-                  AND hca.cust_Account_id = l_trx_dtls_tab(indx).bill_to_customer_id 
-                GROUP BY hca.cust_account_id ,
-                         hca.account_number , 
-		                 acbct.cycle_name , 
-		                 acbct.billing_cycle_id; 
-		   EXCEPTION
-			   WHEN TOO_MANY_ROWS
-	           THEN 
+		    ln_cust_account_id   := NULL;
+		    lc_account_number    := NULL; 
+		    lc_cycle_name        := NULL;   
+		    ln_billing_cycle_id  := NULL;
+		    ld_billing_date      := NULL;
+		    ld_new_due_date      := NULL;
+		    ld_new_bill_date     := NULL; 
+		    ----------------------------------------------------------------------------
+		    /* Step 1: To get the billing cycle id */
+		    ----------------------------------------------------------------------------
+            BEGIN
+		        SELECT hca.cust_account_id ,
+                       hca.account_number , 
+	                   acbct.cycle_name , 
+	                   acbct.billing_cycle_id
+				  INTO ln_cust_account_id,
+					   lc_account_number,
+					   lc_cycle_name,
+					   ln_billing_cycle_id
+                  FROM ar_cons_bill_cycles_tl acbct,
+	                   ar_cons_bill_cycle_dates acbcd,
+	                   ra_terms rt,
+	                   hz_customer_profiles hcp ,
+	                   hz_cust_accounts hca 
+                 WHERE 1 = 1              
+                   AND acbcd.billing_cycle_id = rt.billing_cycle_id
+                   AND acbcd.billing_cycle_id = acbct.billing_cycle_id
+                   AND acbct.language = 'US'
+                   AND rt.Term_Id = hcp.standard_Terms
+                   AND HCP.site_use_id IS NULL
+                   AND HCP.cons_inv_flag = 'Y' 
+                   AND EXISTS ( SELECT 1
+                                  FROM hz_cust_acct_sites_all hcasa
+                                 WHERE hcasa.cust_account_id = hca.cust_account_id
+                                   --  AND hcasa.org_id = hca.org_id
+							   )
+                   AND hcp.cust_account_id = hca.cust_account_id
+                   AND hca.cust_Account_id = l_trx_dtls_tab(indx).bill_to_customer_id 
+                 GROUP BY hca.cust_account_id ,
+                          hca.account_number , 
+		                  acbct.cycle_name , 
+		                  acbct.billing_cycle_id; 
+		    EXCEPTION
+			    WHEN TOO_MANY_ROWS
+	            THEN 
 				   SELECT hca.cust_account_id ,
                           hca.account_number , 
 	                      acbct.cycle_name , 
 	                      acbct.billing_cycle_id
-					 INTO ln_cust_account_id,
+					 INTO l_trx_dtls_tab(indx).bill_to_customer_id,  -- ln_cust_account_id,
 						  lc_account_number,
 						  lc_cycle_name,
 						  ln_billing_cycle_id
@@ -265,156 +266,175 @@ BEGIN
                       AND hca.cust_Account_id = l_trx_dtls_tab(indx).bill_to_customer_id 
 					  AND ROWNUM = 1;
 						 
-		       WHEN OTHERS
-			   THEN
+		        WHEN OTHERS
+			    THEN
 				    ln_cust_account_id  := NULL;
 					lc_account_number   := NULL;
 					lc_cycle_name       := NULL;
 					ln_billing_cycle_id := NULL;
-		   END;
+		    END;
 		   
-		   print_debug_msg('Cust account ID :'||ln_cust_account_id);
-		   print_debug_msg('Cust account Number :'||lc_account_number);
-		   print_debug_msg('Cycle Name :'||lc_cycle_name);
-		   print_debug_msg('Billing Cycle ID :'||ln_billing_cycle_id);
-		   
-		   ----------------------------------------------------------------------------
-		   /* Step 2: To get the last bill date */
-		   ----------------------------------------------------------------------------
-		   print_debug_msg('Cust account Site use ID :'||l_trx_dtls_tab(indx).bill_to_site_use_id);
-		   BEGIN
-		     SELECT MAX(NVL(billing_date,cut_off_date))
-			   INTO ld_billing_date
-               FROM ar_cons_inv_all ci1
-              WHERE ci1.site_use_id   = l_trx_dtls_tab(indx).bill_to_site_use_id 
-                AND ci1.currency_code = 'USD'
-                AND (ci1.status IN ('ACCEPTED', 'FINAL')
-                AND NVL(ci1.billing_date,ci1.cut_off_date)  = (SELECT MAX(nvl(ci2.billing_date,ci2.cut_off_date))
-                                                                 FROM ar_cons_inv_all ci2
-                                                                WHERE ci2.site_use_id   = l_trx_dtls_tab(indx).bill_to_site_use_id 
-                                                                  AND ci2.currency_code = 'USD'
-                                                                  AND ci2.status IN ('ACCEPTED', 'FINAL'))
-                     OR (ci1.status = 'MERGE_PENDING'
+		    print_debug_msg('Cust account ID :'||ln_cust_account_id);
+		    print_debug_msg('Cust account Number :'||lc_account_number);
+		    print_debug_msg('Cycle Name :'||lc_cycle_name);
+		    print_debug_msg('Billing Cycle ID :'||ln_billing_cycle_id);
+				
+			IF l_trx_dtls_tab(indx).bill_to_customer_id IS NOT NULL
+		    THEN
+		        
+		        ----------------------------------------------------------------------------
+		        /* Step 2: To get the last bill date */
+		        ----------------------------------------------------------------------------
+		        print_debug_msg('Cust account Site use ID :'||l_trx_dtls_tab(indx).bill_to_site_use_id);
+		        BEGIN
+		            SELECT MAX(NVL(billing_date,cut_off_date))
+			          INTO ld_billing_date
+                      FROM ar_cons_inv_all ci1
+                     WHERE ci1.site_use_id   = l_trx_dtls_tab(indx).bill_to_site_use_id 
+                       AND ci1.currency_code = 'USD'
+                       AND (ci1.status IN ('ACCEPTED', 'FINAL')
+                       AND NVL(ci1.billing_date,ci1.cut_off_date)  = (SELECT MAX(nvl(ci2.billing_date,ci2.cut_off_date))
+                                                                        FROM ar_cons_inv_all ci2
+                                                                        WHERE ci2.site_use_id   = l_trx_dtls_tab(indx).bill_to_site_use_id 
+                                                                          AND ci2.currency_code = 'USD'
+                                                                          AND ci2.status IN ('ACCEPTED', 'FINAL'))
+                        OR (ci1.status = 'MERGE_PENDING'
                          AND NVL(ci1.billing_date,ci1.cut_off_date) <= TRUNC(SYSDATE)
 			            )
 	                );
-		   EXCEPTION
+		        EXCEPTION
 		        WHEN OTHERS
 		        THEN
 		            ld_billing_date := l_trx_dtls_tab(indx).billing_date;
-		   END;
-		   IF ld_billing_date IS NULL
-		   THEN
-		       ld_billing_date := l_trx_dtls_tab(indx).billing_date;
-		   END IF;
-		   print_debug_msg('Billing Date :'||ld_billing_date);
+		        END;
+				
+				-- To check whether the ld_billing_date IS NULL or not
+		        IF ld_billing_date IS NULL
+		        THEN
+		           ld_billing_date := l_trx_dtls_tab(indx).billing_date;
+		        END IF; -- ld_billing_date IS NULL
+		        print_debug_msg('Billing Date :'||ld_billing_date);
 		   
-		   ----------------------------------------------------------------------------
-		   /* Step 3: To derive the new BILLING date */
-		   ----------------------------------------------------------------------------
-		   IF p_billing_date IS NULL
-		   THEN
-		       BEGIN
+		        ----------------------------------------------------------------------------
+		        /* Step 3: To derive the new BILLING date */
+		        ----------------------------------------------------------------------------
+		        IF p_billing_date IS NULL
+		        THEN
+		            BEGIN
+		                SELECT MAX(billable_date)
+                          INTO ld_new_bill_date
+                          FROM ar_cons_bill_cycle_dates
+                         WHERE billing_cycle_id = ln_billing_cycle_id
+                           AND billable_date BETWEEN  TRUNC(ld_billing_date) AND TRUNC(SYSDATE);
+		            EXCEPTION
+		            WHEN OTHERS
+		            THEN
+		               ld_new_bill_date := NULL;
+		            END;
+		        ELSE
+		            BEGIN
+		                 SELECT MAX(billable_date)
+                           INTO ld_new_bill_date
+                           FROM ar_cons_bill_cycle_dates
+                          WHERE billing_cycle_id = ln_billing_cycle_id
+                            AND billable_date BETWEEN  TRUNC(ld_billing_date) AND TRUNC(TO_DATE(p_billing_date,'YYYY/MM/DD HH24:MI:SS'));
+		            EXCEPTION
+		            WHEN OTHERS
+		            THEN
+		                ld_new_bill_date := TRUNC(TO_DATE(p_billing_date,'YYYY/MM/DD HH24:MI:SS'));
+		            END;
+		        END IF; -- p_billing_date
+		   
+		        IF ld_new_bill_date IS NULL
+		        THEN
 		            SELECT MAX(billable_date)
                       INTO ld_new_bill_date
                       FROM ar_cons_bill_cycle_dates
                      WHERE billing_cycle_id = ln_billing_cycle_id
-                       AND billable_date BETWEEN  TRUNC(ld_billing_date) AND TRUNC(SYSDATE);
-					print_debug_msg('p_billing_date - Test 1');
-		       EXCEPTION
-		       WHEN OTHERS
-		       THEN
-		           ld_new_bill_date := NULL;
-				   print_debug_msg('p_billing_date - Test 2');
-		       END;
-		   ELSE
-		       print_debug_msg('p_billing_date :'||p_billing_date);
-		       BEGIN
-		            SELECT MAX(billable_date)
-                      INTO ld_new_bill_date
-                      FROM ar_cons_bill_cycle_dates
-                     WHERE billing_cycle_id = ln_billing_cycle_id
-                       AND billable_date BETWEEN  TRUNC(ld_billing_date) AND TRUNC(TO_DATE(p_billing_date,'YYYY/MM/DD HH24:MI:SS'));
-				print_debug_msg('p_billing_date - Test 3');
-		       EXCEPTION
-		       WHEN OTHERS
-		       THEN
-			       print_debug_msg('p_billing_date - Test 4');
-		           ld_new_bill_date := TRUNC(TO_DATE(p_billing_date,'YYYY/MM/DD HH24:MI:SS'));
-		       END;
-		   END IF;
+                       AND billable_date <= TRUNC(SYSDATE);
+			    END IF; -- IF ld_new_bill_date IS NULL
+		        print_debug_msg('New Billing Date :'||ld_new_bill_date);
 		   
-		   IF ld_new_bill_date IS NULL
-		   THEN
-		       SELECT MAX(billable_date)
-                 INTO ld_new_bill_date
-                 FROM ar_cons_bill_cycle_dates
-                WHERE billing_cycle_id = ln_billing_cycle_id
-                  AND billable_date <= TRUNC(SYSDATE);
-			   print_debug_msg('p_billing_date - Test 5');
-			END IF;
-		   print_debug_msg('New Billing Date :'||ld_new_bill_date);
-		   
-		   ----------------------------------------------------------------------------
-		   /* Step 4: To derive the new DUE date */
-		   ----------------------------------------------------------------------------		     
-		   l_trx_dtls_tab(indx).billing_date := NVL(ld_new_bill_date,l_trx_dtls_tab(indx).billing_date);
-		   print_debug_msg('New Billing Date1 :'||l_trx_dtls_tab(indx).billing_date);
-		   
-		   ld_new_due_date := ar_bfb_utils_pvt.get_due_date(l_trx_dtls_tab(indx).billing_date, l_trx_dtls_tab(indx).term_id);
-		   print_debug_msg('Due Date :'||ld_new_due_date);
-		   
-		   l_trx_dtls_tab(indx).due_date := NVL(ld_new_due_date,l_trx_dtls_tab(indx).term_due_date);
-		   print_debug_msg('Due Date1 :'||l_trx_dtls_tab(indx).due_date);
-		   
-		   ln_success_records  := ln_success_records + 1;
-		   l_trx_dtls_tab(indx).billing_date_flag := 'C';
-           l_trx_dtls_tab(indx).error_message := NULL;
-		   print_debug_msg('Sucess Records :'||ln_success_records); 
+		        ----------------------------------------------------------------------------
+		        /* Step 4: To derive the new DUE date */
+		        ----------------------------------------------------------------------------		     
+		        l_trx_dtls_tab(indx).billing_date := NVL(ld_new_bill_date,l_trx_dtls_tab(indx).billing_date);
+		        print_debug_msg('New Billing Date1 :'||l_trx_dtls_tab(indx).billing_date);
+		        
+		        ld_new_due_date := ar_bfb_utils_pvt.get_due_date(l_trx_dtls_tab(indx).billing_date, l_trx_dtls_tab(indx).term_id);
+		        print_debug_msg('Due Date :'||ld_new_due_date);
+		        
+		        l_trx_dtls_tab(indx).due_date := NVL(ld_new_due_date,l_trx_dtls_tab(indx).term_due_date);
+		        print_debug_msg('Due Date1 :'||l_trx_dtls_tab(indx).due_date);
+		        
+		        ln_success_records  := ln_success_records + 1;
+		        l_trx_dtls_tab(indx).billing_date_flag := 'C';
+                l_trx_dtls_tab(indx).error_message := NULL;
+		        
+		    ELSE
+		        print_debug_msg('Customer has Wrong Payment Terms');
+				ln_failed_records := ln_failed_records +1;
+				l_trx_dtls_tab(indx).billing_date_flag := 'N';
+		    END IF; -- l_trx_dtls_tab(indx).bill_to_customer_id  IS NOT NULL
+		        
 		EXCEPTION
-		WHEN OTHERS
-		THEN
-			ln_failed_records := ln_failed_records +1;
-            lc_error_msg := SUBSTR(sqlerrm,1,255);
-            print_debug_msg ('Customer_Trd_id=['||to_char(l_trx_dtls_tab(indx).customer_trx_id)||'], RB, '||lc_error_msg,FALSE);
-            l_trx_dtls_tab(indx).billing_date_flag := 'E';
-            l_trx_dtls_tab(indx).error_message :='Unable to get the new bill date for the customer_trx_id :'||l_trx_dtls_tab(indx).customer_trx_id||' '||lc_error_msg;
-			print_debug_msg('Failed Records :'||ln_failed_records); 
-			print_debug_msg('Error Message :'||l_trx_dtls_tab(indx).error_message); 
+		    WHEN OTHERS
+		    THEN
+			    ln_failed_records := ln_failed_records +1;
+                lc_error_msg := SUBSTR(sqlerrm,1,255);
+                print_debug_msg ('Customer_Trd_id=['||to_char(l_trx_dtls_tab(indx).customer_trx_id)||'], RB, '||lc_error_msg,FALSE);
+                l_trx_dtls_tab(indx).billing_date_flag := 'E';
+                l_trx_dtls_tab(indx).error_message :='Unable to get the new bill date for the customer_trx_id :'||l_trx_dtls_tab(indx).customer_trx_id||' '||lc_error_msg;
+			    
+			    print_debug_msg('Error Message :'||l_trx_dtls_tab(indx).error_message); 
         END;
+		
         END LOOP; -- l_trx_dtls_tab		
 		
 		BEGIN
+		    print_debug_msg('                          ');
+			print_debug_msg('=============================================================================================================================');
 	        print_debug_msg('Starting update of xx_scm_bill_signal #START Time : '||TO_CHAR(SYSDATE,'MM-DD-YYYY HH:Mi:SS'),FALSE);
 	       	--FORALL indx IN 1..l_trx_dtls_tab.COUNT
 	       	--SAVE EXCEPTIONS
 			FOR indx IN 1..l_trx_dtls_tab.COUNT
 			LOOP
-			    
-			-- update AR_PAYMENT_SCHEDULES_ALL			
-			    UPDATE ar_payment_schedules_all
-                   SET due_date = l_trx_dtls_tab(indx).due_date
-                 WHERE customer_trx_id = l_trx_dtls_tab(indx).customer_trx_id;
-				 
-			 -- update RA_CUSTOMER_TRX_ALL 
-			    UPDATE ra_customer_trx_all
-			       SET billing_date = l_trx_dtls_tab(indx).billing_date,
-                       term_due_date = l_trx_dtls_tab(indx).due_date,
-				       last_updated_by = gn_user_id,
-				       last_update_date = SYSDATE,
-				       last_update_login = gn_login_id
-			     WHERE customer_trx_id = l_trx_dtls_tab(indx).customer_trx_id;
-			
-            -- update XX_SCM_BILL_SIGNAL			
-   		        UPDATE xx_scm_bill_signal
-	       	       SET billing_date_flag = l_trx_dtls_tab(indx).billing_date_flag,
-	       		       error_message = l_trx_dtls_tab(indx).error_message, 
-				       customer_id = l_trx_dtls_tab(indx).bill_to_customer_id,
-					   site_use_id = l_trx_dtls_tab(indx).bill_to_site_use_id,
-	     		       last_update_date  = SYSDATE,
-	                   last_updated_by   = gn_user_id,
-	                   last_update_login = gn_login_id
-	       	     WHERE child_order_number = l_trx_dtls_tab(indx).child_order_number; 
+			    print_debug_msg('                          ');
+		        print_debug_msg('Processing Trx Number :'||l_trx_dtls_tab(indx).trx_number);
+				
+			    IF l_trx_dtls_tab(indx).bill_to_customer_id IS NOT NULL
+		        THEN
+				    print_debug_msg('Updating AR_PAYMENT_SCHEDULES_ALL');
+			        -- update AR_PAYMENT_SCHEDULES_ALL			
+			        UPDATE ar_payment_schedules_all
+                       SET due_date = l_trx_dtls_tab(indx).due_date
+                    WHERE customer_trx_id = l_trx_dtls_tab(indx).customer_trx_id;
+				    
+					print_debug_msg('Updating RA_CUSTOMER_TRX_ALL');
+			        -- update RA_CUSTOMER_TRX_ALL 
+			        UPDATE ra_customer_trx_all
+			           SET billing_date = l_trx_dtls_tab(indx).billing_date,
+                           term_due_date = l_trx_dtls_tab(indx).due_date,
+				           last_updated_by = gn_user_id,
+				           last_update_date = SYSDATE,
+				           last_update_login = gn_login_id
+			         WHERE customer_trx_id = l_trx_dtls_tab(indx).customer_trx_id;
+			        
+					print_debug_msg('Updating XX_SCM_BILL_SIGNAL');
+                    -- update XX_SCM_BILL_SIGNAL			
+   		            UPDATE xx_scm_bill_signal
+	       	           SET billing_date_flag = l_trx_dtls_tab(indx).billing_date_flag,
+	       		           error_message = l_trx_dtls_tab(indx).error_message, 
+				           customer_id = l_trx_dtls_tab(indx).bill_to_customer_id,
+					       site_use_id = l_trx_dtls_tab(indx).bill_to_site_use_id,
+	     		           last_update_date  = SYSDATE,
+	                       last_updated_by   = gn_user_id,
+	                       last_update_login = gn_login_id
+	       	         WHERE child_order_number = l_trx_dtls_tab(indx).child_order_number; 
+				ELSE
+				    print_debug_msg('Unable to update the Payment Schedules, Transactions and Bill Signals Tables');
+				END IF; -- l_trx_dtls_tab(indx).bill_to_customer_id IS NOT NULL
+				
 			END LOOP; 					
 		    COMMIT;
 	        EXCEPTION
@@ -435,6 +455,11 @@ BEGIN
    -- COMMIT;   
    CLOSE get_bill_signal_trx_dtls; -- get_bill_signal_trx_dtls
    
+   print_debug_msg('                          ');
+   print_debug_msg('=============================================================================================================================');
+   print_debug_msg('Total number of Records :'||ln_total_records_processed);
+   print_debug_msg('Sucess Records :'||ln_success_records); 
+   print_debug_msg('Failed Records :'||ln_failed_records); 
 EXCEPTION
 WHEN OTHERS
 THEN			   
