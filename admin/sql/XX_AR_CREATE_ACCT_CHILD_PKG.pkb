@@ -503,7 +503,7 @@ AS
       ln_ra_rows_del_sales_cnt   NUMBER := 0;
       ln_ra_rows_del_sales_cnt_gt NUMBER := 0;
 	  ln_site_use_id			 oe_order_headers_all.invoice_to_org_id%TYPE;					-- Added for Bill Complete NAIT-67165
-      lc_prev_order			     VARCHAR2(50):=''; 	                                            -- Added for Bill Complete NAIT-67165
+      lc_prev_order			     VARCHAR2(50):='1';	                                            -- Added for Bill Complete NAIT-67165
 	  lc_parent_order_num	   xx_om_header_attributes_all.parent_order_num%TYPE := NULL;		-- Added for Bill Complete NAIT-67165
       lc_kit_sku               ra_interface_lines_all.attribute6%TYPE := NULL;
       lc_bill_level            ra_interface_lines_all.attribute6%TYPE := NULL;
@@ -1265,15 +1265,14 @@ AS
 				-- If Bill Complete and no SCM Signal push billing date of invoice to future + 90 days.
 				-----------------------------------------------------------------------------------------
 				IF NVL(lc_Bill_Comp_Flag,'N') IN ('B','Y')  THEN
-					FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill Complete Customer : '||lcu_process_interface_lines.sales_order ||' with Amount : '||lcu_process_interface_lines.amount);
-					IF lc_prev_order <>	lcu_process_interface_lines.sales_order 
+					FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill Complete Customer : '||lcu_process_interface_lines.sales_order ||' with Amount : '||lcu_process_interface_lines.amount||' lc_prev_order : '||lc_prev_order);
+					IF  lc_prev_order <>	lcu_process_interface_lines.sales_order
 					THEN
 						lc_bill_comp_upd_flag	:='N';
 						-- Inserting Credit Memos into Bill Signal table
 						IF lcu_process_interface_lines.amount < 0
 						THEN
 							BEGIN
-								FND_FILE.PUT_LINE(FND_FILE.LOG,'Inserting Return Order into Bill Signal Table for : '||lcu_process_interface_lines.sales_order );
 								INSERT
 								INTO xx_scm_bill_signal
 								  (
@@ -1297,9 +1296,10 @@ AS
 									FND_PROFILE.VALUE('USER_ID'),
 									gn_ln_loginid
 								  );
+								FND_FILE.PUT_LINE(FND_FILE.LOG,'Inserted Return Order into Bill Signal Table for Order : '||lcu_process_interface_lines.sales_order );
 							EXCEPTION
 							WHEN OTHERS THEN
-								FND_FILE.PUT_LINE(FND_FILE.LOG,'Insertion Failed for Bill Complete customer into xx_scm_bill_signal' );
+								FND_FILE.PUT_LINE(FND_FILE.LOG,'Insertion Failed for Bill Complete customer into xx_scm_bill_signal '||SUBSTR(SQLERRM,1,255));
 							END;	  
 						END IF;
 					END IF;
