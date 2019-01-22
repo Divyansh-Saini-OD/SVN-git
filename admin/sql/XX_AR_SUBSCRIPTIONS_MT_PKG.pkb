@@ -6485,6 +6485,12 @@ AS
         lc_error := 'Termination SKU : ' || lr_contract_line_info.item_name;
         RAISE le_skip;
       END IF;
+      
+      IF TRUNC(px_subscription_array(indx).history_sent_date) = TRUNC(SYSDATE)
+      THEN 
+        lc_error := 'History Sent date : ' || px_subscription_array(indx).history_sent_date;
+        RAISE le_skip;
+      END IF;
 
     END LOOP;
 
