@@ -135,10 +135,19 @@ AS
 		   xsbs.child_order_number,
 		   xsbs.billing_date_flag,
 		   NULL due_date,
-		   xsbs.error_message
-      FROM ra_customer_trx_all rct,
+		   xsbs.error_message	   
+	  FROM hz_customer_profiles hcp ,
+	       hz_cust_accounts hca,
+           ra_customer_trx_all rct,
            xx_scm_bill_signal xsbs
      WHERE xsbs.billing_date_flag = 'N'
+       AND hcp.site_use_id IS NULL
+       AND hcp.cons_inv_flag = 'Y' 
+       AND hcp.status = 'A'
+       AND hca.status = 'A'
+       AND hcp.attribute6 IN ('B','Y')
+       AND hcp.cust_account_id = hca.cust_account_id
+       AND hca.cust_account_id = rct.bill_to_customer_id
        AND rct.trx_number = xsbs.child_order_number;
 	   
   TYPE trx_details IS TABLE OF get_bill_signal_trx_dtls%ROWTYPE
