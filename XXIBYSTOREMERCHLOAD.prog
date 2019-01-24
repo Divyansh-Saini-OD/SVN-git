@@ -1,0 +1,204 @@
+#!/usr/bin/ksh
+# +===================================================================+
+# |                  Office Depot - Project Simplify                  |
+# |                       WIPRO Technologies                          |
+# +===================================================================+
+# | Name :      IBY: Store and Merchant Number Loading                |
+# | Description : To Load the store and merchant number from the file |
+# |                      staging table XX_IBY_STORE_MERCHANT_STG      |
+# |                                                                   |
+# |                                                                   |
+# |Change Record:                                                     |
+# |===============                                                    |
+# |Version   Date          Author              Remarks                |
+# |=======   ==========   =============        =======================|
+# |1.0       29-JAN-2008  Gowri Shankar       Initial version         |
+# |1.1       02-Aug-2010  Priyanka Nagesh     Replaced '~' with       |
+# |                                          '$HOME' for Defect 7204  |
+# |1.2       14-NOV-2014  Kirubha Samuel      Modified for Defect 32284|
+# |-------------------------------------------------------------------|
+# |                                                                   |
+# +===================================================================+
+
+#Commented for defect 2482 
+#var1=`echo $1 | awk '{print $1}'` 
+#var2=`echo $1 | awk '{print $2}'`
+#var3=`echo $1 | awk '{print $3}'`
+#var4=`echo $1 | awk '{print $4}'`
+#var5=`echo $1 | awk '{print $5}'`
+#var6=`echo $1 | awk '{print $6}'`
+#var7=`echo $1 | awk '{print $7}'`
+#var8=`echo $1 | awk '{print $8}'`
+#var9=`echo $1 | awk '{print $9}' | tr -d '"'`
+#var10=`echo $1 | awk '{print $10}' | tr -d '"'`
+#var11=`echo $1 | awk '{print $11}' | tr -d '"'`
+
+
+var1=$4
+var2=$5
+var3=$6
+var4=$7
+
+echo "Request ID = " $var1
+echo "Control File Name = " $var2
+echo "File Directory = " $var3
+echo "Data File Name = " $var4
+echo 
+
+# -------------
+# Set variables
+# -------------
+
+REQ_ID=${var1}
+
+CTL_FILE=${var2}
+FILE_DIR=${var3}
+FILE_NAME=${var4}
+
+
+# ==========================================================================
+# Remove the temporary files if they exist
+# ==========================================================================
+
+if [ -s ${FILE_DIR}/${FILE_NAME}.log ]; then
+     rm -f ${FILE_DIR}/${FILE_NAME}..log; fi;
+
+if [ -s ${FILE_DIR}/${FILE_NAME}.bad ]; then
+     rm -f ${FILE_DIR}/${FILE_NAME}.bad; fi;
+
+if [ -s ${FILE_DIR}/${FILE_NAME}.dis ]; then
+     rm -f ${FILE_DIR}/${FILE_NAME}.dis; fi;
+
+CTL_DIR="$XXFIN_TOP/bin"
+DEST_FILE_NAME=${FILE_DIR}/${FILE_NAME}
+eval DEST_FILE_NAME_EXISTS=${FILE_DIR}/${FILE_NAME}
+
+if [[ ! -s ${CTL_DIR}/${CTL_FILE}  ]]; then
+   echo "Destination File Name = ${CTL_DIR}/${CTL_FILE}"                                       
+   echo "Error in locating Control file. File not uploaded correctly " 
+   echo "OR the file does not exist."              
+   exit 1
+fi
+
+# Changes for Defect 32284
+if [[ ! -s $HOME/parfile.apps ]]; then
+   echo "Par File Name = $HOME/parfile.apps"                                       
+   echo "Error in locating Par file. Par file does not exist" 
+   exit 1
+fi
+# Changes ends for Defect 32284
+
+LOG_FILE="${FILE_DIR}/${FILE_NAME}.log"
+BAD_FILE="${FILE_DIR}/${FILE_NAME}.bad"
+DIS_FILE="${FILE_DIR}/${FILE_NAME}.dis"
+
+#sqlldr_cmd="sqlldr parfile=~/parfile.apps"         -- Commented for Defect 7204
+sqlldr_cmd="sqlldr parfile=$HOME/parfile.apps"      # Added     for Defcet 7204
+
+which sqlldr
+echo ""
+echo "SQL*Loading the Stores..."                    
+echo ""
+
+#echo "Log File $LOG_FILE"
+echo ${sqlldr_cmd} control=${CTL_DIR}/${CTL_FILE} data=${DEST_FILE_NAME} log=${LOG_FILE} bad=${BAD_FILE} errors=0
+
+#sqlldr parfile=~/parfile.apps control=$CTL_DIR/$CTL_FILE data=$DEST_FILE_NAME log=$LOG_FILE bad=$BAD_FILE errors=0      -- Commented for Defect 7204
+ sqlldr parfile=$HOME/parfile.apps control=$CTL_DIR/$CTL_FILE data=$DEST_FILE_NAME log=$LOG_FILE bad=$BAD_FILE errors=0  # Added     for Defcet 7204
+
+
+# ==========================================================================
+# VERIFY TRANSFER PRICING RECORDS
+# ==========================================================================
+
+# ---------------------------------------------------------------------
+# Check for rejected SQLLOAD record
+#   if bad file exists then get count of rejected records from log file
+# ---------------------------------------------------------------------
+
+if [ -s ${BAD_FILE} ]; then
+   bad_errs=`grep -c 'Total logical records rejected:         0' \
+                 ${LOG_FILE}`
+
+   echo "Rejected record found"                            
+   
+   if [ "$bad_errs" -ne 1 ]; then
+      echo ""                                                  
+      echo "Rejected records..."                        
+      echo ""                                                  
+      echo "Please correct these Records."                    
+      echo "----------------------------------------------"   
+      cat ${BAD_FILE}
+      echo ""                                                  
+      echo ""                                                  
+      echo "SQLLOAD Log..."                                                  
+      echo ""                                                  
+      cat ${LOG_FILE}
+       
+      # -------------------
+      # Remove the BAD file
+      # -------------------
+
+      #rm -f ${BAD_FILE}
+
+   fi
+
+# --------------------------------------------
+# Continue processing with NO rejected records
+#    (bad file was not found)
+# --------------------------------------------
+
+else
+   echo "-- No rejected Records were found" 
+fi
+
+# -----------------------------------
+# Check for discarded SQLLOAD records
+# -----------------------------------
+
+echo ""                                         
+echo "Checking for discarded records..." 
+echo ""                                         
+
+if [ -s ${DIS_FILE} ]; then
+   dis_errs=`grep -c 'Total logical records discarded:        0' \
+                  ${LOG_FILE}`
+
+   echo "discard records found: "$dis_errs
+
+   dis_commas=`grep -c ',' $DIS_FILE`
+
+   if [ "$dis_errs" -ne 1 -a "$dis_commas" -ne 0 ]
+   then
+      echo ""                                                   
+      echo "Discarded records..."                        
+      echo ""                                                   
+      echo "Please correct these records."                     
+      echo "----------------------------------------------"
+      cat ${DIS_FILE}
+      echo ""                                                  
+      echo ""                                                  
+      echo "SQLLOAD Log..."                                                  
+      echo ""                                                  
+      cat ${LOG_FILE}
+      
+      # -----------------------
+      # Remove the DISCARD file
+      # -----------------------
+
+      #rm -f ${DIS_FILE}
+   fi
+
+# ---------------------------------------------
+# Continue processing with NO DISCARDED records
+# ---------------------------------------------
+
+else
+   echo "-- No discarded records were found" 
+fi  
+
+echo "Completion of Loading..."
+
+##############
+
+exit 0   # Success

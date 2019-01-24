@@ -1,0 +1,26 @@
+OPTIONS (errors=1, skip=1)
+LOAD DATA
+INFILE *
+APPEND
+INTO TABLE FA_TAX_INTERFACE
+FIELDS TERMINATED BY '|' OPTIONALLY ENCLOSED BY '"'
+TRAILING NULLCOLS
+(
+   BOOK_TYPE_CODE
+  ,ATTRIBUTE13  
+  ,ATTRIBUTE10
+  ,COST
+  ,DEPRN_RESERVE
+  ,YTD_DEPRN 
+  ,LIFE_IN_MONTHS
+  ,DEPRN_METHOD_CODE
+  ,PRORATE_CONVENTION_CODE
+  ,ASSET_NUMBER  "XX_FA_LOAD_ASSET_MSTR_PKG.GET_ASSET_NUMBER (:ATTRIBUTE13 ,:ATTRIBUTE10 )"
+  ,POSTING_STATUS CONSTANT 'POST' 
+  ,creation_date         SYSDATE
+  ,last_update_date      SYSDATE
+  ,last_updated_by       "fnd_global.user_id"
+  ,last_update_login     "fnd_global.login_id"      
+)
+
+

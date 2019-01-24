@@ -1,0 +1,150 @@
+#! /usr/bin/ksh
+#-- +=======================================================================+
+#-- |                          Office Depot 					            |
+#-- +=======================================================================+
+#-- | Name            : XX_PO_INTEGRAL_CNV_CUST.prog                        |
+#-- | Rice ID         :                            							|
+#-- | Description     : Shell script to load the PO Integral file           |
+#-- |                                                                       |
+#-- |Change History:                                                        |
+#-- |---------------                                                        |
+#-- |                                                                       |
+#-- |Version      Date        Author                Remarks                 |
+#-- |-------- -----------  -----------------     -------------------------- |
+#-- |DraftA    5-JUL-2017    Havish Kasina         Initial Draft version    |
+#-- |                                                                       |
+#-- +=======================================================================+
+
+#Shell Script for fetching the data files and loading them into the staging table.
+
+#Apps default parameters
+export APPSLOGIN=$FCP_LOGIN
+FCP_USERID=$2
+FCP_USERNAME=$3
+FCP_REQID=$4
+p_file_path=$5
+p_control_path=$6
+p_control_file=$7
+p_filename=$8
+
+echo "File Path:"$p_file_path
+echo "Control File Path:"$p_control_path
+echo "Control File Name:"$p_control_file
+echo "File Name:"$p_filename
+echo "Request ID:"$FCP_REQID 
+
+echo "================================================================================" 
+echo "Start Time          : `date`"                        
+echo "Program Name        : OD: PO Process Integral File"
+echo "================================================================================" 
+echo " ==============Concurrent Program Parameters===================================="
+
+#export XXFIN_DATA=/app/ebs/ctgsipth02/xxfin
+lc_custom_top="$XXFIN_DATA/inbound"
+echo "File Path:" $lc_custom_top
+FILE_ARCHIVE="$XXFIN_DATA/archive/inbound"
+
+lc_check_file="$lc_custom_top"
+lc_data_file="$lc_custom_top/$p_filename"
+
+echo "=========================================================================="
+echo "Check to see if at least one Data file exist in the source path ${lc_custom_top} "
+if [ -f  ${lc_data_file} ]
+then
+  echo "Data Files Exist"
+echo "*****************************************************************************"  
+else
+  echo "No Data Files to process" 
+  echo "program aborting .."
+  exit 0
+fi
+
+echo "=========================================================================="
+echo "Loop started to get all the files from the specific ${p_source} directory"
+echo "=========================================================================="
+
+echo "Data File Path :"$lc_custom_top
+echo "Data File Name :"$p_filename
+#control_path="$p_control_path/bin/"
+control_path="$XXFIN_TOP/bin"
+LOG_FILE="${error_path}xxpointegral.log"
+BAD_FILE="${error_path}xxpointegral.bad"
+echo "=========================================================================="
+echo "control_path/Control_File:"$control_path/${p_control_file} 
+echo "control_path : "$control_path
+echo "Control File Name   : "${p_control_file}  
+echo "Data File Name   : "${p_filename}
+
+# ==========================================================================
+#validating the control file
+# ==========================================================================
+echo "=========================================================================="
+if [[ ! -z "$p_control_file" ]]
+then
+  echo "The Control File Exist" $p_control_file  
+else
+  echo "The Control File does not Exist" 
+fi
+# Check to see if Data file Name is null
+if [[ ! -z "$p_filename" ]]
+then
+  echo "The Data File Name Exist" ${p_filename}
+else
+  echo "The Data File Name does not Exist" 
+fi
+
+echo "=========================================================================="
+echo "Start SQL*Loader script" 
+echo "=========================================================================="
+#Start SQL*Loader script
+echo "calling sqlldr.."
+sqlldr parfile=$HOME/parfile.apps control=${control_path}/${p_control_file} log=$LOG_FILE data=$lc_data_file bad=$BAD_FILE errors=0
+rc="$?"
+if [ "rc" -ne "0" ] && [ "rc" -ne "2" ]; then
+echo "sqlldr failed! - return code = " ${rc} 
+fi
+echo "=========================================================================="
+echo "sqlldr Loader script complete"
+echo "=========================================================================="
+# ---------------------------------------------------------------------
+# Check for rejected SQLLOAD records for Records
+# if bad file exists then get count of rejected records from log file
+# ---------------------------------------------------------------------
+if [ -s ${BAD_FILE} ]; then
+   bad_errs=`grep -c 'Total logical records rejected:         0' \
+                 ${LOG_FILE}`
+                          
+   
+   if [ "$bad_errs" -ne 1 ]; then
+      echo ""                                                  
+      echo "Rejected records..."                        
+      echo ""                                                  
+      echo "Please correct these Records."                    
+      echo "----------------------------------------------"   
+      cat ${BAD_FILE}
+      echo ""                                                  
+      echo ""                                                  
+      echo "SQLLOAD Log..."                                                  
+      echo ""                                                  
+      cat ${LOG_FILE}
+       
+      # -------------------
+      # Remove the BAD file
+      # -------------------
+
+      #rm -f ${BAD_FILE}
+
+   fi
+# --------------------------------------------
+# Continue processing with NO rejected records
+#    (bad file was not found)
+# --------------------------------------------
+else
+   echo "No rejected Records were found" 
+fi
+echo "*****************************************************************************" 
+cd $lc_custom_top
+DAT=`date '+_%y%m%d%H%M%S_%N'`
+mv $lc_data_file $FILE_ARCHIVE/$p_filename$DAT
+#Exiting from the shell program
+exit 0

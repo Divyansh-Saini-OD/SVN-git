@@ -1,0 +1,93 @@
+# +===================================================================+
+# |                  Office Depot - Project Simplify                  |
+# |                       WIPRO Technologies                          |
+# +===================================================================+
+# | Name :      FILE COPY                                             |
+# | Description : To transfer the output file from regular output     |
+# |               file path to /app/xptrrs/orarptdev                  |
+# |                                                                   |
+# |                                                                   |
+# |Change Record:                                                     |
+# |===============                                                    |
+# |Version   Date          Author              Remarks                |
+# |=======   ==========   =============        =======================|
+# |1.0       19-JUN-2007  KANTHARAJA        Initial version           |
+# |                                                                   |
+# +===================================================================+
+#!/bin/ksh
+#
+
+sleep 10
+
+
+var9=`echo $1 | awk '{print $9}' | tr -d '"'`
+
+# -------------
+# Set variables
+# -------------
+
+FILE_DIR="$APPLCSF/$APPLOUT"
+OUT_FILE=*"_"${var9}_1
+PROGRAM_NAME=${var10}
+SOURCE_FILE=$FILE_DIR/$OUT_FILE
+wordp=.PDF
+worde=.EXCEL
+
+echo "Outfile "${var9}
+echo "Var9 "$9
+
+                  
+VALUE=`sqlplus -s apps/dev02apps@gsidev02 <<EOF
+set pagesize 0 feedback off verify off heading off echo off
+select user_concurrent_program_name from fnd_conc_req_summary_v  
+where  request_id=${var9};
+exit;
+END`
+if [ -z "$VALUE" ]; then
+echo "No rows returned from database"
+exit 0
+else
+echo $VALUE
+fi
+
+
+b=`echo ${VALUE/:/_}  | tr -d " "` 
+
+
+if  (echo $SOURCE_FILE.* | grep -q $wordp)
+then
+v=$wordp
+fi
+
+
+if  (echo $SOURCE_FILE.* | grep -q $worde)
+then
+v=.XLS
+fi
+ 
+c=`echo $b$v`
+
+cp $SOURCE_FILE.*  $c
+
+echo $c
+
+if  (echo $c | grep -q "AP")
+then
+DEST_FILE="/app/xptrrs/orarpt/orclap"
+fi
+
+
+if  (echo $c | grep -q "AR")
+then
+DEST_FILE="/app/xptrrs/orarpt/orclar"
+fi
+
+
+echo ' '
+echo "SOURCE_FILE        = $SOURCE_FILE"
+echo "DEST_FILE          = $DEST_FILE"
+
+ cp $c  $DEST_FILE
+
+
+exit 0   # Success

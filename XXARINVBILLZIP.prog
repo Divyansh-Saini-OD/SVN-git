@@ -1,0 +1,359 @@
+# +===================================================================+
+# |                  Office Depot - Project Simplify                  |
+# |                       WIPRO Technologies                          |
+# +===================================================================+
+# | Name :   OD: AR Billing Zipping Program                           |
+# | Description : To ZIP the Invoice data files                       |                                                                   |
+# |                                                                   |
+# |Change Record:                                                     |
+# |===============                                                    |
+# |Version   Date          Author              Remarks                |
+# |=======   ==========   =============        =======================|
+# |1.0       08-JUL-2008  Gowri Shankar G      Initial version        |
+# |                                                                   |
+# |1.0       22-JUL-2008  Gowri Shankar G      Defect# 9131           |
+# |                                            Changes to Copy the O/P|
+# |                                           files of  Child Requests|
+# |                                                                   |
+# |1.1       01-Sep-2008  Mohan                Defect 10341 
+# |1.1       12-Sep-2008  Mohan                added chmod for zip file 
+# |1.2       08-Apr-2010  Sneha Anand          Added for defect# 3853  | 
+# |1.3       13-SEP-2016  Suresh Naragam       Changes related to defect#39261 |
+# +===================================================================+
+#
+# APPS Defined Concurrent Program Parameters, Do Not change the below parameters.
+#
+PROGNAME=$0
+FCP_LOGIN=$1
+FCP_USERID=$2
+FCP_USERNAME=$3
+FCP_REQID=$4
+#
+# User Defined Concurrent Program Parameters
+#
+eval DATA_FILE_NAME=$5
+eval ZIP_FILE_NAME=$6
+eval DONE_FILE_NAME=$7
+eval MAX_FILE_SIZE=$8
+eval ARCH_PATH_ZIPFILE=$9
+eval ARCH_PATH_DONEFILE=${10}
+eval DELETE_DATA_FILE=${11}
+eval MASTER_REQ_ID=${12}
+eval COPY_FILE_NAME=${13}
+eval DUMMY_FILE=${14}
+
+echo "************************Parameters************************"
+echo ""
+echo "Data File Name Pattern                                  = $DATA_FILE_NAME"
+echo "Zip File Name Pattern                                   = $ZIP_FILE_NAME"
+echo "Done File Name Pattern                                  = $DONE_FILE_NAME"
+echo "Maximum File Size                                       = $MAX_FILE_SIZE"
+echo "Archival Directory for ZIP File                         = $ARCH_PATH_ZIPFILE"
+echo "Archival Directory for DONE File                        = $ARCH_PATH_DONEFILE"
+echo "Deleting the Data File                                  = $DELETE_DATA_FILE"
+echo "Master Request ID(To Copy Child Requests Output File)   = $MASTER_REQ_ID"
+echo "Copy File Name Pattern                                  = $COPY_FILE_NAME"
+echo "DUMMY FILE                                              = $DUMMY_FILE"
+echo ""
+echo "************************Parameters************************"
+echo ""
+
+DAT_TIME_STAMP=`date '+%y%m%d%H%M%S'`
+TEMP_FILE=$XXFIN_DATA/outbound/commonbillzip_${FCP_REQID}.tmp.$$
+
+# Start for the Fix for the Defect# 10341
+
+if [ "$DUMMY_FILE" = "" ]
+then
+
+# Start for the Fix for the Defect# 9131
+
+if [ "$MASTER_REQ_ID" != "" ]
+then
+OUTPUT_TYPE=`echo $DATA_FILE_NAME|cut -d '_' -f3`
+echo "Individual Program: $OUTPUT_TYPE"
+
+# Start for the Fix for R1.3 Defect# 3853
+
+export SQLPATH=$APPL_TOP
+echo $SQLPATH
+
+if [ "$OUTPUT_TYPE" = "Invoice" ]
+then 
+echo "Individual Program: $OUTPUT_TYPE"
+
+        OUTPUT_FILE_NAMES=`sqlplus -s /nolog <<EOF
+
+        set heading off
+        set pagesize 0
+        set linesize 255
+        set sqlprompt ""
+        set echo off
+        set feedback off
+        set verify off
+        set serveroutput on
+
+        SELECT DISTINCT(FCR.outfile_name)
+        FROM 
+        fnd_concurrent_requests FCR
+       ,xx_ar_invoice_freq_history XAIFH
+        WHERE FCR.parent_request_id = ${MASTER_REQ_ID}
+        AND   FCR.request_id= TO_NUMBER(XAIFH.attribute1)
+        AND   FCR.phase_code = 'C'
+        AND   FCR.status_code = 'C';
+
+EOF`
+
+else
+
+        OUTPUT_FILE_NAMES=`sqlplus -s /nolog <<EOF
+
+        set heading off
+        set pagesize 0
+        set linesize 255
+        set sqlprompt ""
+        set echo off
+        set feedback off
+        set verify off
+        set serveroutput on
+
+        SELECT FCR.outfile_name
+        FROM 
+        fnd_concurrent_requests FCR
+        WHERE FCR.parent_request_id = ${MASTER_REQ_ID}
+        AND   FCR.phase_code = 'C'
+        AND   FCR.status_code = 'C';
+
+EOF`
+
+fi
+
+# End for the Fix for R1.3 Defect# 3853
+
+    echo "List of Output Files to be Copied"
+
+    echo "$OUTPUT_FILE_NAMES"
+
+    echo "$OUTPUT_FILE_NAMES" > $TEMP_FILE
+
+    echo "Copying the Output Files"
+
+    while read LINE_FILE_NAME
+    do
+
+        OUTPUT_FILE_NAME=`echo "Data File: ${LINE_FILE_NAME##*/}"`
+        REQUEST_ID=`echo $OUTPUT_FILE_NAME|cut -d '.' -f1|cut -d 'o' -f2`
+
+        cp $LINE_FILE_NAME ${COPY_FILE_NAME}_${DAT_TIME_STAMP}_${REQUEST_ID}_${MASTER_REQ_ID}.xml
+
+        if [ $? -ne 0 ]
+        then
+            echo "Error in Copying the Output File: $LINE_FILE_NAME"  
+            exit 1
+        fi
+
+    done < $TEMP_FILE
+
+    rm $TEMP_FILE
+
+fi;
+
+# End for the Fix for the Defect# 9131
+
+NUM_OF_ZIPFILES=1
+COUNTER=0
+TOT_FILE_SIZE=0
+eval TEMP_DONE_FILE=$XXFIN_DATA/outbound/commonbillzip_done.tmp.$$
+
+DONE_FILE_NAME=${DONE_FILE_NAME}_${DAT_TIME_STAMP}.txt
+
+echo "Getting the Size and Name of the Data File"
+
+du -sb $DATA_FILE_NAME > $TEMP_FILE
+
+if [ $? -ne 0 ]
+then
+    echo "Error in Writing Size and Name of the Data File to the temporary file: $TEMP_FILE"  
+    exit 1
+fi
+
+while read LINE
+do
+
+    COUNTER=`expr $COUNTER + 1`
+
+    if [ $COUNTER -eq 1 ]
+    then
+
+        ZIP_FILE_NAME_FORMAT=${ZIP_FILE_NAME}_${DAT_TIME_STAMP}_${NUM_OF_ZIPFILES}.zip
+        echo "ZIP File Name = ${ZIP_FILE_NAME_FORMAT##*/}" > $TEMP_DONE_FILE
+        ZIP_FILE_LIST[$NUM_OF_ZIPFILES]=${ZIP_FILE_NAME_FORMAT}
+        echo "ZIP File to be Created: ${ZIP_FILE_NAME_FORMAT##*/}"  
+
+    fi
+
+    FORMAT_LINE=`echo $LINE | sed y/\ /\ /`
+
+    FILE_SIZE=${FORMAT_LINE%% *}
+
+    TOT_FILE_SIZE=`expr $TOT_FILE_SIZE + $FILE_SIZE`
+    #echo "TOT_FILE_SIZE = $TOT_FILE_SIZE"
+
+    if [ $TOT_FILE_SIZE -gt $MAX_FILE_SIZE -a $COUNTER -ne 1 ]
+    then
+
+        NUM_OF_ZIPFILES=`expr $NUM_OF_ZIPFILES + 1`
+        ZIP_FILE_NAME_FORMAT=${ZIP_FILE_NAME}_${DAT_TIME_STAMP}_${NUM_OF_ZIPFILES}.zip
+        ZIP_FILE_LIST[$NUM_OF_ZIPFILES]=${ZIP_FILE_NAME_FORMAT}
+
+        echo "ZIP File to be Created: ${ZIP_FILE_NAME_FORMAT##*/}"
+        echo "ZIP File Name = ${ZIP_FILE_NAME_FORMAT##*/}" >> $TEMP_DONE_FILE
+        TOT_FILE_SIZE=$FILE_SIZE
+
+    fi
+
+    FILE_NAME=`echo $FORMAT_LINE|cut -d ' ' -f2-`
+    echo "  Data File to be Zipped: ${FILE_NAME##*/}"
+
+    zip $ZIP_FILE_NAME_FORMAT $FILE_NAME
+
+
+    if [ $? -ne 0 ]
+    then
+        echo "Error in Zipping the File, Zip File: ${ZIP_FILE_NAME_FORMAT##*/}, Data File: ${FILE_NAME##*/}"  
+        exit 1
+    fi
+
+    echo "  Data File Name = ${FILE_NAME##*/}" >> $TEMP_DONE_FILE
+
+done < $TEMP_FILE
+
+cp $TEMP_DONE_FILE $DONE_FILE_NAME
+
+if [ $? -ne 0 ]
+then
+
+    echo "Error in Creating the Done File: ${DONE_FILE_NAME##*/}"  
+    exit 1
+
+fi
+
+rm $TEMP_DONE_FILE
+
+rm $TEMP_FILE
+
+NUM_OF_ZIPFILES=${#ZIP_FILE_LIST[*]}
+
+echo ""
+echo "Number of ZIP Files Created: $NUM_OF_ZIPFILES"
+echo "Done File Created: ${DONE_FILE_NAME##*/}"
+echo ""
+echo "Content of the Done File: ${DONE_FILE_NAME##*/}"
+echo ""
+cat $DONE_FILE_NAME
+echo ""
+if [ "$ARCH_PATH_ZIPFILE" = "" ]
+then
+
+    echo "No Archival for the ZIP files"
+
+else
+
+    j=0
+
+    while [ $j -lt $NUM_OF_ZIPFILES ]
+    do
+
+        j=`expr $j + 1`
+        echo "Archiving the Zip File: ${ZIP_FILE_LIST[$j]##*/}"
+
+# added touch command to fix FTP issue.
+        
+
+	chmod 755 ${ZIP_FILE_LIST[$j]} 
+	touch ${ZIP_FILE_LIST[$j]}
+
+        cp ${ZIP_FILE_LIST[$j]} $ARCH_PATH_ZIPFILE/${ZIP_FILE_LIST[$j]##*/}
+
+        if [ $? -ne 0 ]
+        then
+
+            echo "Error in Archive the Zip File: ${ZIP_FILE_LIST[$j]##*/}"  
+
+        fi
+
+    done
+
+fi
+
+echo ""
+
+if [ "$ARCH_PATH_DONEFILE" = "" ]
+then
+
+    echo "No Archival for the Done File"
+
+else
+
+    echo "Archiving the DONE File: ${DONE_FILE_NAME##*/}"
+    cp $DONE_FILE_NAME $ARCH_PATH_DONEFILE/${DONE_FILE_NAME##*/}
+
+    if [ $? -ne 0 ]
+    then
+
+        echo "Error in Archive the Done File: ${DONE_FILE_NAME##*/}"  
+
+    fi
+
+fi
+
+if [ "$DELETE_DATA_FILE" = "Y" ]
+then
+
+    echo "Deleting the Data Files"
+    rm $DATA_FILE_NAME
+
+    if [ $? -ne 0 ]
+    then
+
+        echo "Error in Deleting the data Files"  
+
+    fi
+fi
+
+# logic to create dummy files ,Defect# 10341
+else
+   NUM_OF_ZIPFILES=1
+   ZIP_FILE_NAME_FORMAT=${ZIP_FILE_NAME}_${DAT_TIME_STAMP}_${NUM_OF_ZIPFILES}.zip
+   DATA_FILE_NAME=${DATA_FILE_NAME}_${DAT_TIME_STAMP}.xml
+   DONE_FILE_NAME=${DONE_FILE_NAME}_${DAT_TIME_STAMP}.txt
+   
+   echo "Creating Dummy  data Files" 
+   echo "<No data>Dummy </No data>" > $DATA_FILE_NAME 
+   zip $ZIP_FILE_NAME_FORMAT $DATA_FILE_NAME   
+
+   echo "ZIP File Name = ${ZIP_FILE_NAME_FORMAT##*/}" > $DONE_FILE_NAME
+   echo "  Data File Name = ${DATA_FILE_NAME##*/}" >> $DONE_FILE_NAME
+   rm $DATA_FILE_NAME
+
+# copying the files to archive directory
+   cp $DONE_FILE_NAME $ARCH_PATH_DONEFILE/${DONE_FILE_NAME##*/}
+   cp $ZIP_FILE_NAME_FORMAT $ARCH_PATH_ZIPFILE/${ZIP_FILE_NAME_FORMAT##*/}
+
+# added touch for ftp issue
+
+   chmod 755 $ZIP_FILE_NAME_FORMAT 
+   touch $ZIP_FILE_NAME_FORMAT
+
+   echo Zip file name    $ZIP_FILE_NAME_FORMAT 
+   echo Dummy done file  $DONE_FILE_NAME
+   
+   if [ $? -ne 0 ]
+    then
+
+        echo "Error in creating Dummy Zip file and done Files "  
+
+    fi
+fi
+#End logic to create dummy files ,Defect# 10341
+exit 0

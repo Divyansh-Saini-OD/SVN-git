@@ -1,0 +1,80 @@
+# +===================================================================+
+# |		     Office Depot - Project Simplify		                 |
+# |			Office Depot				                      |
+# +===================================================================+
+# | Name  :	  XXAPSUPPLIERLOAD (Shell Script)		           |
+# | Description : To Load the Vendors and Sites from flat file to     |
+# | tables XX_AP_SUPPLIER_STG ,XX_AP_SUPP_SITE_CONTACT_STG	           |
+# |								                           |
+# |								                           |
+# |Change Record:						                      |
+# |===============						                      |
+# |Version   Date	   Author	       Remarks		                 |
+# |=======   ===========  ================    =========================|
+# |1.0	   07-JAN-2015  Amar Modium	       Initial version      |
+# |1.1        30-Jan-2015  Paddy Sanjeevi      Modified to load by file|
+# |1.2	   20-May-2017  Ramesh Komaragiri  Commented for defect42127| 
+# |--------------------------------------------------------------------|
+# |								                            |
+# +===================================================================+
+
+echo "Input File Path : " [$5]
+echo "File Name : " [$6]
+p_request_id=`echo $1|awk '{print(substr($2,11))}'`
+FILE_DIR="$XXFIN_DATA/ftp/in"
+FILE_ARCHIVE="$XXFIN_DATA/archive/inbound"
+FILE=$FILE_DIR/$6
+echo " Path  :" [$FILE_DIR]
+
+#commented the below block for defect 42127
+#echo "Deleting old files"
+
+#rm ${FILE_DIR}/XX_AP_SUPPLIER*.log
+#rm ${FILE_DIR}/XX_AP_SUPPLIER*.bad
+#rm ${FILE_DIR}/XX_AP_SUPP_SITE*.log
+#rm ${FILE_DIR}/XX_AP_SUPP_SITE*.bad
+#end of defect 42127
+
+ls  ${FILE_DIR}/$6
+if [ $? -ne 0 ]
+then
+echo "No Data FIle Found"
+exit 2
+else
+echo "Data file found"
+echo $6
+fi
+
+if [ "${6}" = "XX_AP_SUPPLIER.csv" ]
+then
+  control_file="XX_AP_SUPPLIER_LOAD.ctl"
+else
+  control_file="XX_AP_SUPP_SITE_CONT_LOAD.ctl"
+fi
+
+echo $control_file
+
+sqlldr parfile=$HOME/parfile.apps data=$FILE control=$XXFIN_TOP/bin/$control_file log=$FILE.log bad=$FILE.bad
+if [ $? -ne 0 ]
+then
+echo "Error in running sqlloader. Please Check log for Error Details "
+
+else
+echo "Completed successfully "
+
+fi
+
+echo "------------ Log File--------------"
+cat $FILE.log
+
+echo "-------------Bad Data file----------"
+cat $FILE.bad
+
+cd $FILE_DIR
+
+DAT=`date '+_%y%m%d%H%M%S_%N'`
+
+mv $6 $FILE_ARCHIVE/$6$DAT
+
+# Exiting from the shell program.
+exit 0
