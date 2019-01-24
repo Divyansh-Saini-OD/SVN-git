@@ -40,8 +40,9 @@ create or replace PACKAGE BODY      XX_AP_TR_UI_ACTION_PKG
   -- |                                         be populated as null value.              |
   -- |2.4       18-Jul-2018 Chandra            Modified the code for                    |
   -- |                                         for defect #NAIT-41954                   |
-  -- |2.5       22-Oct-2018 Jitendra           Modified the code for                    |
-  -- |                                         for defect #NAIT-53803                   |
+  -- |2.5       17-Jan-2018 Atul Khard	      NAIT-53015 Added Hold Lookup Code 'OD Max |
+  -- |                                        Price' so the line amount will be         |
+  -- |                                        calculated only once.                     |
   -- +==================================================================================+
 AS
   gn_org_id              NUMBER;
@@ -1086,7 +1087,7 @@ SELECT a.hold_lookup_code,
                       FROM xx_ap_chbk_action_holds
                      WHERE invoice_id=a.invoice_id
                        AND line_number=a.line_number
-                       AND hold_lookup_code='PRICE')
+                       AND hold_lookup_code IN ('PRICE','OD Max Price'))  --Added 'OD Max Price' for NAIT-53015
 ORDER BY a.hold_lookup_code desc;
 
 CURSOR C3_price(p_invoice_id NUMBER,p_Line_Number NUMBER)
@@ -4399,8 +4400,7 @@ SELECT  decode(hold_lookup_code,NULL,'SPLIT',hold_lookup_code) hold_lookup_code,
         unmatched_qty,
         last_updated_by,
         po_line_id,
-        po_qty,
-		unit_price chbk_unit_price
+        po_qty
   FROM xx_ap_chbk_action_holds a
  WHERE invoice_id=p_invoice_id
    AND chargeback  = 'Y'
@@ -4714,12 +4714,7 @@ gcn_invoice_id:=NULL;----2.4# Added by Chandra for defect #NAIT-41954
           IF c.hold_lookup_code='QTY REC' THEN  
              ln_calc_rcv_qty:=get_unbilled_qty(cc.po_header_id,cc.po_line_id,cc.inventory_item_id,cc.invoice_id);  -- orig cc.qty_received
              lc_line_desc     := 'QTY: (BQ '||c.unmatched_qty||'- RQ '||(ln_calc_rcv_qty)||')* INV PR '|| cc.org_inv_price||''; 
-             ln_line_chbk_amt   :=ROUND(((c.unmatched_qty-ln_calc_rcv_qty) * cc.org_inv_price),2);
-	     --NAIT-53803 10/22/2018 by Jitendra Added chargeback unit price from dashboard 
-			IF c.chbk_unit_price > 0 THEN
-             lc_line_desc     := 'QTY: (BQ '||c.unmatched_qty||'- RQ '||(ln_calc_rcv_qty)||')* INV PR '|| c.chbk_unit_price||''; 
-             ln_line_chbk_amt   :=round(((c.unmatched_qty-ln_calc_rcv_qty) * c.chbk_unit_price),2);  
-           END IF; 
+             ln_line_chbk_amt   :=ROUND(((c.unmatched_qty-ln_calc_rcv_qty) * cc.org_inv_price),2);  
           END IF;
           IF c.hold_lookup_code='QTY ORD' THEN  
              /*v_multi:=xx_check_multi_inv(p_invoice_id,c.po_line_id);  
@@ -4737,11 +4732,7 @@ gcn_invoice_id:=NULL;----2.4# Added by Chandra for defect #NAIT-41954
              ln_calc_rcv_qty:=get_unbilled_qty(cc.po_header_id,cc.po_line_id,cc.inventory_item_id,cc.invoice_id);
              lc_line_desc     := 'QTY: (BQ '||c.unmatched_qty||'- RQ '||(ln_calc_rcv_qty)||')* INV PR '|| cc.org_inv_price||''; 
              ln_line_chbk_amt   :=ROUND(((c.unmatched_qty-ln_calc_rcv_qty) * cc.org_inv_price),2);
-             --NAIT-53803 10/22/2018 by Jitendra Added chargeback unit price from dashboard
-             if c.chbk_unit_price > 0 then
-               lc_line_desc     := 'QTY: (BQ '||c.unmatched_qty||'- RQ '||(ln_calc_rcv_qty)||')* INV PR '|| c.chbk_unit_price||''; 
-               ln_line_chbk_amt   :=round(((c.unmatched_qty-ln_calc_rcv_qty) * c.chbk_unit_price),2);  
-            end if;
+             
           END IF; 
           ln_total_chbk_amt     :=ln_total_chbk_amt+ln_line_chbk_amt;
           BEGIN
