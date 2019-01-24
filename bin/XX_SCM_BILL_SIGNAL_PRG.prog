@@ -30,7 +30,7 @@ cd $XXFIN_DATA/inbound/SCM/BC
 for file in xx_scm_bill_signal*.dat
 do
 
-sqlldr parfile=$HOME/parfile.apps data=$XXFIN_DATA/inbound/SCM/BC/$file control=$XXFIN_TOP/bin/$control_file log=$file.log bad=$file.bad
+sqlldr parfile=$HOME/parfile.apps data=$XXFIN_DATA/inbound/SCM/BC/$file control=$XXFIN_TOP/bin/$control_file log=$file.log bad=$file.bad errors=9999
 
 mv $XXFIN_DATA/inbound/SCM/BC/$file $XXFIN_DATA/archive/inbound/$file
 
