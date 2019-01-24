@@ -339,19 +339,19 @@ PACKAGE BODY XX_AR_EBL_RENDER_STUB_PKG AS
 --    l_anc NUMBER := 1;
 --    l_text VARCHAR2(300);
   
-    ls_bill_to_date          VARCHAR2(30);
-    ls_invoice_amount        VARCHAR2(100);
-	ls_message_bcc           VARCHAR2(1000):=NULL;  --Added for NAIT-65564
-    ls_account_number        XX_AR_EBL_FILE.account_number%TYPE;
-	ls_aops_customer_num	 XX_AR_EBL_FILE.aops_customer_number%TYPE;
-    ls_customer_name         XX_AR_EBL_FILE.customer_name%TYPE;
-    ls_cons_bill_number      XX_AR_EBL_FILE.cons_billing_number%TYPE;
-    ls_remit_to_address      XX_AR_EBL_FILE.remit_address%TYPE;
-    ls_flo_code              XX_AR_EBL_FILE.flo_code%TYPE;
-    ls_watermark             VARCHAR2(1000); -- := 'Please return the remittance stub below with your payment to ensure prompt credit to your account.';
-	ld_bill_due_date		 DATE := NULL;
-	lc_payment_terms		 VARCHAR2(150) := NULL;
-	ld_payment_term_disc_date	VARCHAR2(30) := NULL;
+    ls_bill_to_date             VARCHAR2(30);
+    ls_invoice_amount           VARCHAR2(100);
+	ls_message_bcc              VARCHAR2(1000):=NULL;  --Added for NAIT-65564
+    ls_account_number           XX_AR_EBL_FILE.account_number%TYPE;
+	ls_aops_customer_num	    XX_AR_EBL_FILE.aops_customer_number%TYPE;
+    ls_customer_name            XX_AR_EBL_FILE.customer_name%TYPE;
+    ls_cons_bill_number         XX_AR_EBL_FILE.cons_billing_number%TYPE;
+    ls_remit_to_address         XX_AR_EBL_FILE.remit_address%TYPE;
+    ls_flo_code                 XX_AR_EBL_FILE.flo_code%TYPE;
+    ls_watermark                VARCHAR2(1000); -- := 'Please return the remittance stub below with your payment to ensure prompt credit to your account.';
+	ld_bill_due_date		    DATE := NULL;
+	lc_payment_terms		    VARCHAR2(150) := NULL;
+	ld_payment_term_disc_date   VARCHAR2(30) := NULL;
 	ln_total_merchandise_amt	NUMBER := 0;
 	ln_total_salestax_amt		NUMBER := 0;
 	ln_total_misc_amt		 	NUMBER := 0;
@@ -363,29 +363,34 @@ PACKAGE BODY XX_AR_EBL_RENDER_STUB_PKG AS
 	lc_pod_text                 VARCHAR2(100) := NULL;	
     lc_pod_image                CLOB := NULL;
 	ln_pod_cnt                  NUMBER := 0;
+	ln_customer_id              NUMBER := 0;
+	ln_transmission_id          NUMBER := 0;
+
 
   -- Added below cursor for Defect#NAIT-70500 by Thilak 	 
-  CURSOR lcu_pod_details(p_cons_inv VARCHAR2)
+  CURSOR lcu_pod_details(p_cons_inv VARCHAR2,p_customer_id NUMBER,p_transmission_id NUMBER)
   IS
-    SELECT customer_trx_id 
-	  FROM AR_CONS_INV_TRX_ALL 
-	 WHERE cons_inv_id = p_cons_inv;
+    SELECT customer_trx_id
+	  FROM XX_AR_EBL_CONS_HDR_HIST 
+	 WHERE transmission_id = p_transmission_id 
+	   AND consolidated_bill_number = p_cons_inv
+       AND cust_account_id = p_customer_id;
 	     
   BEGIN
 --  SELECT TO_CHAR(SYSDATE,'DD-MON-RR'), '46078', 'ARCH COAL INC', '379169', '8360.68', 'PO Box 88040' || utl_tcp.CRLF || 'Chicago IL  60680-1040', '000460782 0000003791696 00000007178 1 1'
 --  SELECT TO_CHAR(T.billing_dt,'RRRR-MM-DD') billing_dt,F.account_number,F.customer_name,F.cons_billing_number,F.total_due,F.remit_address,F.flo_code
-    SELECT TO_CHAR(T.billing_dt,'DD-MON-RR') billing_dt,F.account_number,F.customer_name,F.cons_billing_number,F.total_due,F.remit_address,F.flo_code,
+    SELECT TO_CHAR(T.billing_dt,'DD-MON-RR') billing_dt,T.customer_id,T.transmission_id,F.account_number,F.customer_name,F.cons_billing_number,F.total_due,F.remit_address,F.flo_code,
 			AOPS_CUSTOMER_NUMBER, TO_CHAR(F.bill_due_dt,'DD-MON-RR') bill_due_dt,
 			--F.payment_terms, 
 			T.pay_terms, TO_CHAR(F.discount_due_date,'DD-MON-RR') discount_due_date, nvl(F.total_merchandise_amt,0), nvl(F.total_sales_tax_amt,0), nvl(F.total_misc_amt,0), nvl(F.total_gift_card_amt,0)	--Module 4B Release 1
 			,DECODE(xx_ar_ebl_common_util_pkg.get_cons_msg_bcc(t.customer_doc_id,f.cust_account_id,f.cons_billing_number),'X',NULL,xx_ar_ebl_common_util_pkg.get_cons_msg_bcc(t.customer_doc_id,f.cust_account_id,f.cons_billing_number)) cons_msg_bcc -- Added for NAIT-65564
-      INTO ls_bill_to_date, ls_account_number, ls_customer_name, ls_cons_bill_number, ls_invoice_amount, ls_remit_to_address, ls_flo_code,
+      INTO ls_bill_to_date, ln_customer_id, ln_transmission_id, ls_account_number, ls_customer_name, ls_cons_bill_number, ls_invoice_amount, ls_remit_to_address, ls_flo_code,
 		   ls_aops_customer_num, ld_bill_due_date, lc_payment_terms, ld_payment_term_disc_date, ln_total_merchandise_amt, ln_total_salestax_amt, ln_total_misc_amt, ln_total_gift_card_amt	--Module 4B Release 1
 		   ,ls_message_bcc
       FROM XX_AR_EBL_TRANSMISSION T
       JOIN XX_AR_EBL_FILE F
-        ON T.transmission_id=F.transmission_id
-     WHERE F.file_id=P_FILE_ID AND F.file_type='STUB';
+        ON T.transmission_id = F.transmission_id
+     WHERE F.file_id = P_FILE_ID AND F.file_type = 'STUB';
 
     get_translation('AR_EBL_CONFIG','RENDER_STUB','WATERMARK',ls_watermark);
 
@@ -490,7 +495,7 @@ PACKAGE BODY XX_AR_EBL_RENDER_STUB_PKG AS
 	
    -- Added below loop for Defect#NAIT-70500 by Thilak	
    ln_pod_cnt := 0;
-   FOR fetch_pod_details_rec IN lcu_pod_details(ls_cons_bill_number)
+   FOR fetch_pod_details_rec IN lcu_pod_details(ls_cons_bill_number,ln_customer_id,ln_transmission_id)
    LOOP
     lc_invoice_num     := NULL;
 	lc_pod_image       := NULL;
