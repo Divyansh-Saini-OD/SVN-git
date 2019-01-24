@@ -3964,7 +3964,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
    -- |                       WIPRO Technologies                                          |
    -- +===================================================================================+
    -- | Name        : INSERT_TRANSMISSION_DETAILS                                         |
-   -- | Description : Program to update transmisssion and file name                       |
+   -- | Description : Program to update transmission and file name                        |
    -- |Parameters   :                                                                     |
    -- |                                                                                   |
    -- |Change Record:                                                                     |
@@ -3980,6 +3980,8 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
    -- |1.4       28-Feb-2018  Aniket Jadhav CG        Wave 3 UAT Defect NAIT-29918        |
    -- |1.5       04-Sep-2018  Thilak CG               Added for the defect NAIT-27146     |
    -- |                                               Indirect merge docs transmission    |
+   -- |1.6       24-Jan-2019  Thilak CG               Added consolidated_bill_number in   |
+   -- |                                               Remit file_name for DefectNAIT-70500|
    -- +===================================================================================+
    PROCEDURE insert_transmission_details(p_batch_id IN NUMBER) IS
       CURSOR trans_details IS
@@ -4376,6 +4378,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                                                ,oracle_account_number
                                                ,aops_account_number
                                                ,customer_name
+											   ,consolidated_bill_number --Added consolidated_bill_number for Defect#NAIT-70500 by Thilak
                                 FROM   xx_ar_ebl_cons_hdr_main hdr
                                 WHERE  hdr.parent_cust_doc_id = trans_id.parent_cust_doc_id
                                 AND    hdr.transmission_id = trans_id.transmission_id
@@ -4475,7 +4478,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                      (xx_ebl_file_seq.NEXTVAL
                      ,trans_id.transmission_id
                      ,'STUB'
-                     ,to_char(stub_rec.cons_inv_id)|| lc_stub_suffix || '.pdf'
+                     ,to_char(stub_rec.consolidated_bill_number)|| lc_stub_suffix || '.pdf'   --Added cons_bill_number for Defect#NAIT-70500 by Thilak
                      ,'RENDER'
                      ,stub_rec.cons_inv_id
                      ,xx_ar_cbi_paydoc_ministmnt(stub_rec.cons_inv_id
