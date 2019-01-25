@@ -1265,7 +1265,9 @@ AS
 				-- If Bill Complete and no SCM Signal push billing date of invoice to future + 90 days.
 				-----------------------------------------------------------------------------------------
 				IF NVL(lc_Bill_Comp_Flag,'N') IN ('B','Y')  THEN
-					FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill Complete Customer : '||lcu_process_interface_lines.sales_order ||' with Amount : '||lcu_process_interface_lines.amount||' lc_prev_order : '||lc_prev_order);
+					IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
+						FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill Complete Customer : '||lcu_process_interface_lines.sales_order ||' with Amount : '||lcu_process_interface_lines.amount||' lc_prev_order : '||lc_prev_order);
+					END IF;
 					IF  lc_prev_order <>	lcu_process_interface_lines.sales_order
 					THEN
 						lc_bill_comp_upd_flag	:='N';
@@ -1296,7 +1298,9 @@ AS
 									FND_PROFILE.VALUE('USER_ID'),
 									gn_ln_loginid
 								  );
-								FND_FILE.PUT_LINE(FND_FILE.LOG,'Inserted Return Order into Bill Signal Table for Order : '||lcu_process_interface_lines.sales_order );
+								IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
+									FND_FILE.PUT_LINE(FND_FILE.LOG,'Inserted Return Order into Bill Signal Table for Order : '||lcu_process_interface_lines.sales_order );
+								END IF;
 							EXCEPTION
 							WHEN OTHERS THEN
 								FND_FILE.PUT_LINE(FND_FILE.LOG,'Insertion Failed for Bill Complete customer into xx_scm_bill_signal '||SUBSTR(SQLERRM,1,255));
@@ -1322,7 +1326,9 @@ AS
 							WHERE ril.sales_order       = lcu_process_interface_lines.sales_order
 							AND ril.batch_source_name 	= NVL(p_invoice_source,batch_source_name)
 							AND ril.org_id            	= gc_ln_orgid;
-							FND_FILE.PUT_LINE(FND_FILE.LOG,'Billing Date updated to future since no signal from SCM for order : '|| lcu_process_interface_lines.sales_order ||' for Count '||SQL%ROWCOUNT);
+							IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
+								FND_FILE.PUT_LINE(FND_FILE.LOG,'Billing Date updated to future since no signal from SCM for order : '|| lcu_process_interface_lines.sales_order ||' for Count '||SQL%ROWCOUNT);
+							END IF;
 						EXCEPTION
 						WHEN NO_DATA_FOUND THEN
 							 FND_FILE.PUT_LINE(FND_FILE.LOG,'NO_DATA_FOUND: TO Update to future for Bill Complete ');
@@ -1343,7 +1349,9 @@ AS
 								WHERE child_order_number 	 = lcu_process_interface_lines.sales_order
 								AND billing_date_flag    	 = 'N';	
 								lc_bill_comp_upd_flag		 :='C';
+							IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
 								FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill Complete Customer Updated Customer id and Site Use Id for Order : '||lcu_process_interface_lines.sales_order);
+							END IF;
 							EXCEPTION
 							WHEN NO_DATA_FOUND THEN
 								 FND_FILE.PUT_LINE(FND_FILE.LOG,'NO_DATA_FOUND: TO Update to future for Bill Complete ');
