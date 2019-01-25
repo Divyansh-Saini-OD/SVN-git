@@ -243,7 +243,350 @@ BEGIN
 EXCEPTION
 WHEN OTHERS THEN
   logit(p_message=> 'INSERT_FILE_REC : Error - '||sqlerrm);
-END;
+end;
+
+-- +============================================================================================+
+-- |  Name  : INSERT_PRE_STG_EXCPN                                                                 |
+-- |  Description: Procedure to insert bad records to exception table                |
+-- =============================================================================================|
+PROCEDURE insert_pre_stg_excpn
+  (
+    p_process_name VARCHAR2,
+    p_request_id   NUMBER,
+    p_report_date  DATE,
+    p_err_msg      VARCHAR2 DEFAULT NULL,
+    p_file_name    VARCHAR2,
+    p_record_type  VARCHAR2,
+    p_attribute1   VARCHAR2 DEFAULT NULL,
+    p_attribute2   VARCHAR2 DEFAULT NULL,
+    p_attribute3   VARCHAR2 DEFAULT NULL,
+    p_attribute4   VARCHAR2 DEFAULT NULL,
+    p_attribute5   VARCHAR2 DEFAULT NULL,
+    p_attribute6   VARCHAR2 DEFAULT NULL,
+    p_attribute7   VARCHAR2 DEFAULT NULL,
+    p_attribute8   VARCHAR2 DEFAULT NULL,
+    p_attribute9   VARCHAR2 DEFAULT NULL,
+    p_attribute10  VARCHAR2 DEFAULT NULL,
+    p_attribute11  VARCHAR2 DEFAULT NULL,
+    p_attribute12  VARCHAR2 DEFAULT NULL,
+    p_attribute13  VARCHAR2 DEFAULT NULL,
+    p_attribute14  VARCHAR2 DEFAULT NULL,
+    p_attribute15  VARCHAR2 DEFAULT NULL,
+    p_attribute16  VARCHAR2 DEFAULT NULL,
+    p_attribute17  VARCHAR2 DEFAULT NULL,
+    p_attribute18  VARCHAR2 DEFAULT NULL,
+    p_attribute19  VARCHAR2 DEFAULT NULL,
+    p_attribute20  VARCHAR2 DEFAULT NULL,
+    p_attribute21  VARCHAR2 DEFAULT NULL,
+    p_attribute22  VARCHAR2 DEFAULT NULL,
+    p_attribute23  VARCHAR2 DEFAULT NULL,
+    p_attribute24  VARCHAR2 DEFAULT NULL,
+    p_attribute25  VARCHAR2 DEFAULT NULL,
+    p_attribute26  VARCHAR2 DEFAULT NULL,
+    p_attribute27  VARCHAR2 DEFAULT NULL,
+    p_attribute28  VARCHAR2 DEFAULT NULL,
+    p_attribute29  VARCHAR2 DEFAULT NULL,
+    p_attribute30  VARCHAR2 DEFAULT NULL,
+    p_attribute31  VARCHAR2 DEFAULT NULL,
+    p_attribute32  VARCHAR2 DEFAULT NULL,
+    p_attribute33  VARCHAR2 DEFAULT NULL,
+    p_attribute34  VARCHAR2 DEFAULT NULL,
+    p_attribute35  VARCHAR2 DEFAULT NULL,
+    p_attribute36  VARCHAR2 DEFAULT NULL,
+    p_attribute37  VARCHAR2 DEFAULT NULL,
+    p_attribute38  VARCHAR2 DEFAULT NULL,
+    p_attribute39  VARCHAR2 DEFAULT NULL,
+    p_attribute40  VARCHAR2 DEFAULT NULL,
+    p_attribute41  VARCHAR2 DEFAULT NULL,
+    p_attribute42  VARCHAR2 DEFAULT NULL,
+    p_attribute43  VARCHAR2 DEFAULT NULL,
+    p_attribute44  VARCHAR2 DEFAULT NULL,
+    p_attribute45  VARCHAR2 DEFAULT NULL,
+    p_attribute46  VARCHAR2 DEFAULT NULL,
+    p_attribute47  VARCHAR2 DEFAULT NULL,
+    p_attribute48  VARCHAR2 DEFAULT NULL,
+    p_attribute49  VARCHAR2 DEFAULT NULL,
+    p_attribute50  VARCHAR2 DEFAULT NULL,
+    p_attribute51  VARCHAR2 DEFAULT NULL,
+    p_attribute52  VARCHAR2 DEFAULT NULL,
+    p_attribute53  VARCHAR2 DEFAULT NULL,
+    p_attribute54  VARCHAR2 DEFAULT NULL,
+    p_attribute55  VARCHAR2 DEFAULT NULL,
+    p_attribute56  VARCHAR2 DEFAULT NULL,
+    p_attribute57  VARCHAR2 DEFAULT NULL,
+    p_attribute58  VARCHAR2 DEFAULT NULL,
+    p_attribute59  VARCHAR2 DEFAULT NULL,
+    p_attribute60  VARCHAR2 DEFAULT NULL,
+    p_attribute61  VARCHAR2 DEFAULT NULL,
+    p_attribute62  VARCHAR2 DEFAULT NULL,
+    p_attribute63  VARCHAR2 DEFAULT NULL,
+    p_attribute64  VARCHAR2 DEFAULT NULL,
+    p_attribute65  VARCHAR2 DEFAULT NULL,
+    p_attribute66  VARCHAR2 DEFAULT NULL,
+    p_attribute67  VARCHAR2 DEFAULT NULL,
+    p_attribute68  VARCHAR2 DEFAULT NULL,
+    p_attribute69  VARCHAR2 DEFAULT NULL,
+    p_attribute70  VARCHAR2 DEFAULT NULL,
+    p_attribute71  VARCHAR2 DEFAULT NULL,
+    p_attribute72  VARCHAR2 DEFAULT NULL,
+    p_attribute73  VARCHAR2 DEFAULT NULL,
+    p_attribute74  VARCHAR2 DEFAULT NULL,
+    p_attribute75  VARCHAR2 DEFAULT NULL,
+    p_attribute76  VARCHAR2 DEFAULT NULL,
+    p_attribute77  VARCHAR2 DEFAULT NULL,
+    p_attribute78  VARCHAR2 DEFAULT NULL,
+    p_attribute79  VARCHAR2 DEFAULT NULL,
+    p_attribute80  VARCHAR2 DEFAULT NULL,
+    p_attribute81  VARCHAR2 DEFAULT NULL,
+    p_attribute82  VARCHAR2 DEFAULT NULL,
+    p_attribute83  VARCHAR2 DEFAULT NULL,
+    p_attribute84  VARCHAR2 DEFAULT NULL,
+    p_attribute85  VARCHAR2 DEFAULT NULL,
+    p_attribute86  VARCHAR2 DEFAULT NULL,
+    p_attribute87  VARCHAR2 DEFAULT NULL,
+    p_attribute88  VARCHAR2 DEFAULT NULL,
+    p_attribute89  VARCHAR2 DEFAULT NULL,
+    p_attribute90  VARCHAR2 DEFAULT NULL,
+    p_attribute91  VARCHAR2 DEFAULT NULL,
+    p_attribute92  VARCHAR2 DEFAULT NULL,
+    p_attribute93  VARCHAR2 DEFAULT NULL,
+    p_attribute94  VARCHAR2 DEFAULT NULL,
+    p_attribute95  VARCHAR2 DEFAULT NULL,
+    p_attribute96  VARCHAR2 DEFAULT NULL,
+    p_attribute97  VARCHAR2 DEFAULT NULL,
+    p_attribute98  VARCHAR2 DEFAULT NULL,
+    p_attribute99  VARCHAR2 DEFAULT NULL,
+    p_attribute100 VARCHAR2 DEFAULT NULL
+  )
+AS
+  pragma autonomous_transaction;
+BEGIN
+  --select XX_CE_MKT_PRE_STG_S.nextval from dual
+  INSERT
+  INTO xx_ce_mktplc_pre_stg_excpn
+    (
+      process_name ,
+      request_id ,
+      report_date,
+      err_msg,
+      file_name ,
+      record_type,
+      attribute1 ,
+      attribute2 ,
+      attribute3 ,
+      attribute4 ,
+      attribute5 ,
+      attribute6 ,
+      attribute7 ,
+      attribute8 ,
+      attribute9 ,
+      attribute10 ,
+      attribute11 ,
+      attribute12 ,
+      attribute13 ,
+      attribute14 ,
+      attribute15 ,
+      attribute16 ,
+      attribute17 ,
+      attribute18 ,
+      attribute19 ,
+      attribute20 ,
+      attribute21 ,
+      attribute22 ,
+      attribute23 ,
+      attribute24 ,
+      attribute25 ,
+      attribute26 ,
+      attribute27 ,
+      attribute28 ,
+      attribute29 ,
+      attribute30 ,
+      attribute31 ,
+      attribute32 ,
+      attribute33 ,
+      attribute34 ,
+      attribute35 ,
+      attribute36 ,
+      attribute37 ,
+      attribute38 ,
+      attribute39 ,
+      attribute40 ,
+      attribute41 ,
+      attribute42 ,
+      attribute43 ,
+      attribute44 ,
+      attribute45 ,
+      attribute46 ,
+      attribute47 ,
+      attribute48 ,
+      attribute49 ,
+      attribute50 ,
+      attribute51 ,
+      attribute52 ,
+      attribute53 ,
+      attribute54 ,
+      attribute55 ,
+      attribute56 ,
+      attribute57 ,
+      attribute58 ,
+      attribute59 ,
+      attribute60 ,
+      attribute61 ,
+      attribute62 ,
+      attribute63 ,
+      attribute64 ,
+      attribute65 ,
+      attribute66 ,
+      attribute67 ,
+      attribute68 ,
+      attribute69 ,
+      attribute70 ,
+      attribute71 ,
+      attribute72 ,
+      attribute73 ,
+      attribute74 ,
+      attribute75 ,
+      attribute76 ,
+      attribute77 ,
+      attribute78 ,
+      attribute79 ,
+      attribute80 ,
+      attribute81 ,
+      attribute82 ,
+      attribute83 ,
+      attribute84 ,
+      attribute85 ,
+      attribute86 ,
+      attribute87 ,
+      attribute88 ,
+      attribute89 ,
+      attribute90 ,
+      attribute91 ,
+      attribute92 ,
+      attribute93 ,
+      attribute94 ,
+      attribute95 ,
+      attribute96 ,
+      attribute97 ,
+      attribute98 ,
+      attribute99 ,
+      attribute100
+    )
+    VALUES
+    (
+      p_process_name ,
+      p_request_id ,
+      p_report_date,
+      p_err_msg ,
+      p_file_name ,
+      p_record_type,
+      p_attribute1 ,
+      p_attribute2 ,
+      p_attribute3 ,
+      p_attribute4 ,
+      p_attribute5 ,
+      p_attribute6 ,
+      p_attribute7 ,
+      p_attribute8 ,
+      p_attribute9 ,
+      p_attribute10 ,
+      p_attribute11 ,
+      p_attribute12 ,
+      p_attribute13 ,
+      p_attribute14 ,
+      p_attribute15 ,
+      p_attribute16 ,
+      p_attribute17 ,
+      p_attribute18 ,
+      p_attribute19 ,
+      p_attribute20 ,
+      p_attribute21 ,
+      p_attribute22 ,
+      p_attribute23 ,
+      p_attribute24 ,
+      p_attribute25 ,
+      p_attribute26 ,
+      p_attribute27 ,
+      p_attribute28 ,
+      p_attribute29 ,
+      p_attribute30 ,
+      p_attribute31 ,
+      p_attribute32 ,
+      p_attribute33 ,
+      p_attribute34 ,
+      p_attribute35 ,
+      p_attribute36 ,
+      p_attribute37 ,
+      p_attribute38 ,
+      p_attribute39 ,
+      p_attribute40 ,
+      p_attribute41 ,
+      p_attribute42 ,
+      p_attribute43 ,
+      p_attribute44 ,
+      p_attribute45 ,
+      p_attribute46 ,
+      p_attribute47 ,
+      p_attribute48 ,
+      p_attribute49 ,
+      p_attribute50 ,
+      p_attribute51 ,
+      p_attribute52 ,
+      p_attribute53 ,
+      p_attribute54 ,
+      p_attribute55 ,
+      p_attribute56 ,
+      p_attribute57 ,
+      p_attribute58 ,
+      p_attribute59 ,
+      p_attribute60 ,
+      p_attribute61 ,
+      p_attribute62 ,
+      p_attribute63 ,
+      p_attribute64 ,
+      p_attribute65 ,
+      p_attribute66 ,
+      p_attribute67 ,
+      p_attribute68 ,
+      p_attribute69 ,
+      p_attribute70 ,
+      p_attribute71 ,
+      p_attribute72 ,
+      p_attribute73 ,
+      p_attribute74 ,
+      p_attribute75 ,
+      p_attribute76 ,
+      p_attribute77 ,
+      p_attribute78 ,
+      p_attribute79 ,
+      p_attribute80 ,
+      p_attribute81 ,
+      p_attribute82 ,
+      p_attribute83 ,
+      p_attribute84 ,
+      p_attribute85 ,
+      p_attribute86 ,
+      p_attribute87 ,
+      p_attribute88 ,
+      p_attribute89 ,
+      p_attribute90 ,
+      p_attribute91 ,
+      p_attribute92 ,
+      p_attribute93 ,
+      p_attribute94 ,
+      p_attribute95 ,
+      p_attribute96 ,
+      p_attribute97 ,
+      p_attribute98 ,
+      p_attribute99 ,
+      p_attribute100
+    ) ;
+  COMMIT;
+EXCEPTION
+WHEN OTHERS THEN
+  --DBMS_OUTPUT.PUT_LINE('Error '||SQLERRM);
+  logit(p_message =>'INSERT_PRE_STG: Error :'||sqlerrm);
+END insert_pre_stg_excpn;
 /**********************************************************************
 * This procedure will get the  Newegg Transaction and Summary request id
 **********************************************************************/
@@ -445,31 +788,31 @@ WHEN utl_file.invalid_operation THEN
   utl_file.fclose(l_filehandle);
   v_error:='XX_CE_MRKTPLC_FILE_DOWNLOAD.create_newegg_trx_file: Invalid Operation '||SUBSTR(sqlerrm,1,200);
   log_exception (p_program_name => 'create_newegg_trx_file' ,p_error_location => l_error_loc ,p_error_msg => v_error);
-  XX_CE_MRKTPLC_PRESTG_PKG.INSERT_PRE_STG_EXCPN ( P_PROCESS_NAME , P_REQUEST_ID, SYSDATE, v_error , P_FILE_NAME, 'F');
+  INSERT_PRE_STG_EXCPN ( P_PROCESS_NAME , P_REQUEST_ID, SYSDATE, v_error , P_FILE_NAME, 'F');
   insert_file_rec( p_process_name => p_process_name, p_file_name => p_file_name,p_err_msg => v_error,p_process_flag=>'E',p_requestid=>p_request_id) ;
 WHEN utl_file.invalid_filehandle THEN
   utl_file.fclose(l_filehandle);
   v_error:='XX_CE_MRKTPLC_FILE_DOWNLOAD.create_newegg_trx_file: invalid_filehandle'||SUBSTR(sqlerrm,1,200);
   log_exception (p_program_name => 'create_newegg_trx_file' ,p_error_location => l_error_loc ,p_error_msg => v_error);
-  xx_ce_mrktplc_prestg_pkg.insert_pre_stg_excpn ( p_process_name , p_request_id, sysdate, v_error , p_file_name, 'F');
+  INSERT_PRE_STG_EXCPN ( p_process_name , p_request_id, sysdate, v_error , p_file_name, 'F');
   insert_file_rec( p_process_name => p_process_name, p_file_name => p_file_name,p_err_msg => v_error,p_process_flag=>'E',p_requestid=>p_request_id) ;
 WHEN utl_file.read_error THEN
   utl_file.fclose(l_filehandle);
   v_error:='XX_CE_MRKTPLC_FILE_DOWNLOAD.create_newegg_trx_file: read_error '||SUBSTR(sqlerrm,1,200);
   log_exception (p_program_name => 'create_newegg_trx_file' ,p_error_location => l_error_loc ,p_error_msg => v_error);
-  xx_ce_mrktplc_prestg_pkg.insert_pre_stg_excpn ( p_process_name , p_request_id, sysdate, v_error , p_file_name, 'F');
+  INSERT_PRE_STG_EXCPN ( p_process_name , p_request_id, sysdate, v_error , p_file_name, 'F');
   insert_file_rec( p_process_name => p_process_name, p_file_name => p_file_name,p_err_msg => v_error,p_process_flag=>'E',p_requestid=>p_request_id) ;
 WHEN utl_file.invalid_path THEN
   utl_file.fclose(l_filehandle);
   v_error:='XX_CE_MRKTPLC_FILE_DOWNLOAD.create_newegg_trx_file: invalid_path'||SUBSTR(sqlerrm,1,200);
   log_exception (p_program_name => 'create_newegg_trx_file' ,p_error_location => l_error_loc ,p_error_msg => v_error);
-  xx_ce_mrktplc_prestg_pkg.insert_pre_stg_excpn ( p_process_name , p_request_id, sysdate, v_error , p_file_name, 'F');
+  INSERT_PRE_STG_EXCPN ( p_process_name , p_request_id, sysdate, v_error , p_file_name, 'F');
   insert_file_rec( p_process_name => p_process_name, p_file_name => p_file_name,p_err_msg => v_error,p_process_flag=>'E',p_requestid=>p_request_id) ;
 WHEN utl_file.invalid_mode THEN
   utl_file.fclose(l_filehandle);
   v_error:='XX_CE_MRKTPLC_FILE_DOWNLOAD.create_newegg_trx_file: invalid_mode '||SUBSTR(sqlerrm,1,200);
   log_exception (p_program_name => 'create_newegg_trx_file' ,p_error_location => l_error_loc ,p_error_msg => v_error);
-  xx_ce_mrktplc_prestg_pkg.insert_pre_stg_excpn ( p_process_name , p_request_id, sysdate, v_error , p_file_name, 'F');
+  INSERT_PRE_STG_EXCPN ( p_process_name , p_request_id, sysdate, v_error , p_file_name, 'F');
   insert_file_rec( p_process_name => p_process_name, p_file_name => p_file_name,p_err_msg => v_error,p_process_flag=>'E',p_requestid=>p_request_id) ;
 WHEN utl_file.internal_error THEN
   utl_file.fclose(l_filehandle);
@@ -571,19 +914,19 @@ BEGIN
 </PageInfo>
 </RequestBody>
 </NeweggAPIRequest>';
-      --  get_http_details(p_process_name);
-      utl_http.set_wallet('file:/app/ebs/ctgsidev02/xxfin/ewallet/newegg', 'welcome123');
-      utl_http.set_response_error_check ( enable => true );
-      utl_http.set_detailed_excp_support ( enable => true );
-      l_request := utl_http.begin_request('https://api.newegg.com/marketplace/reportmgmt/report/result?sellerid=AJ62&version=306', 'PUT', 'HTTP/1.1');
-      utl_http.set_header(l_request, 'accept', 'application/xml');
-      utl_http.set_header(l_request, 'authorization', 'bd3063eb785d48d3801ed61d09612a9c');
-      utl_http.set_header(l_request, 'secretkey', '42d953c8-f7b3-4679-9f42-7b2c4bc19ed2');
-      utl_http.set_header(l_request, 'user-agent', 'mozilla/4.0');
-      UTL_HTTP.set_header(l_request, 'content-type', 'application/xml');
-      utl_http.set_header(l_request, 'Content-Length', LENGTH(lc_auth_payload));
-      utl_http.write_text(l_request, lc_auth_payload);
-      l_response := utl_http.get_response(l_request);
+       get_http_details(p_process_name);
+  utl_http.set_wallet(gb_Walletpath, gb_walletpwd);
+  utl_http.set_response_error_check ( enable => true );
+  utl_http.set_detailed_excp_support ( enable => true );
+  l_request := utl_http.begin_request(gb_url3, 'PUT', 'HTTP/1.1');
+  utl_http.set_header(l_request, 'accept', 'application/xml');
+  utl_http.set_header(l_request, 'authorization', gb_accesskeyid);
+  utl_http.set_header(l_request, 'secretkey', gb_secretaccesskey);
+  utl_http.set_header(l_request, 'user-agent', 'mozilla/4.0');
+  UTL_HTTP.set_header(l_request, 'content-type', 'application/xml');
+  utl_http.set_header(l_request, 'Content-Length', LENGTH(lc_auth_payload));
+  utl_http.write_text(l_request, lc_auth_payload);
+  l_response := utl_http.get_response(l_request);
       COMMIT;
       --lclob_buffer := empty_clob;
       --*********************************
