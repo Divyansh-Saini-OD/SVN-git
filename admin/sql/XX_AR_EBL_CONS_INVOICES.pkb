@@ -67,6 +67,8 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
    -- |1.14      09-SEP-2018  Atul Khard			  NAIT-63607 SKU Not Populating for   |
    -- |                                               SPC Invoices in eXLS Bills. Changed |
    -- |                                               logic to populate 'productcdentered'|   
+   -- |1.15		 11-OCT-2018  Dinesh Nagapuri         Made Changes for Bill Complete      |
+   -- |                                               NAIT-61963                          |  
    -- +===================================================================================+
    PROCEDURE cons_data_extract_main(x_errbuff     OUT VARCHAR2
                                    ,x_retcode     OUT NUMBER
@@ -3802,6 +3804,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                                                      ,'I'
                                                      ,cust_acct_site_id
                                                      ,NULL) cust_acct_site_id
+													 ,cons_inv_id		--NAIT-61963 Added cons_inv_id to print separate bills for consolidated bill.
                                       FROM   xx_ar_ebl_cons_hdr_main
                                       WHERE  parent_cust_doc_id = cust_doc_id_rec.parent_cust_doc_id
                                       AND    extract_batch_id = p_batch_id)
@@ -3820,6 +3823,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                                           ,'X')
                     AND    cust_acct_site_id = nvl(file_ids_rec.cust_acct_site_id
                                                   ,cust_acct_site_id)
+    				AND    cons_inv_id		= file_ids_rec.cons_inv_id				--NAIT-61963 Added cons_inv_id to print separate bills for consolidated bill.
                     AND    extract_batch_id = p_batch_id;
                  END LOOP;
                  FOR trans_ids_rec IN (SELECT DISTINCT file_id
@@ -3908,6 +3912,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                                                      ,'I'
                                                      ,cust_acct_site_id
                                                      ,NULL) cust_acct_site_id
+													 , cons_inv_id  -- Added for Bill complete to get consolidated bills NAIT-61963
                                FROM   xx_ar_ebl_cons_hdr_main
                                WHERE  parent_cust_doc_id = cust_doc_id_rec.parent_cust_doc_id
                                AND    extract_batch_id = p_batch_id)
@@ -3927,10 +3932,12 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                  AND    cust_acct_site_id = nvl(file_ids.cust_acct_site_id
                                                ,cust_acct_site_id)
                  AND    parent_cust_doc_id = cust_doc_id_rec.parent_cust_doc_id
+				 AND    cons_inv_id = file_ids.cons_inv_id  -- Added for Bill complete to get consolidated bills NAIT-61963
                  AND    extract_batch_id = p_batch_id;
                  END LOOP;
                  FOR trans_ids_rec IN (SELECT --- DISTINCT DISTINCT file_id
                                        DISTINCT email_address
+									   		   ,cons_inv_id  -- Added for Bill complete to get consolidated bills NAIT-61963
                                        FROM   xx_ar_ebl_cons_hdr_main
                                        WHERE  parent_cust_doc_id = cust_doc_id_rec.parent_cust_doc_id
                                        AND    extract_batch_id = p_batch_id)
@@ -3945,6 +3952,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                     SET    transmission_id = ln_transmission_id
                     --      , file_id = ln_file_id -- added
                     WHERE  parent_cust_doc_id = cust_doc_id_rec.parent_cust_doc_id
+					AND    cons_inv_id = trans_ids_rec.cons_inv_id  -- Added for Bill complete to get consolidated bills NAIT-61963
                     AND    nvl(email_address
                               ,'X') = nvl(trans_ids_rec.email_address
                                           ,'X')
@@ -4181,7 +4189,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                END;
                gc_debug_msg := 'Getting cons Bill Number';
                BEGIN
-                  SELECT DISTINCT cons_inv_id, 
+                  SELECT DISTINCT consolidated_bill_number, 				--NAIT-61963
                          payment_term  --Module 4B Release 1
                   INTO   ln_cons_inv_id, 
                          lc_payment_terms  --Module 4B Release 1
@@ -4378,7 +4386,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                                                ,oracle_account_number
                                                ,aops_account_number
                                                ,customer_name
-											   ,consolidated_bill_number --Added consolidated_bill_number for Defect#NAIT-70500 by Thilak
+											   ,consolidated_bill_number --Added consolidated_bill_number for Defect#NAIT-70500 by Thilak --NAIT-61963
                                 FROM   xx_ar_ebl_cons_hdr_main hdr
                                 WHERE  hdr.parent_cust_doc_id = trans_id.parent_cust_doc_id
                                 AND    hdr.transmission_id = trans_id.transmission_id
@@ -4480,7 +4488,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                      ,'STUB'
                      ,to_char(stub_rec.consolidated_bill_number)|| lc_stub_suffix || '.pdf'   --Added cons_bill_number for Defect#NAIT-70500 by Thilak
                      ,'RENDER'
-                     ,stub_rec.cons_inv_id
+                     ,stub_rec.consolidated_bill_number											--	NAIT-61963
                      ,xx_ar_cbi_paydoc_ministmnt(stub_rec.cons_inv_id
                                                 ,'TOTAL')
                      ,xx_ar_ebl_common_util_pkg.xx_fin_check_digit(stub_rec.oracle_account_number
