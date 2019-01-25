@@ -374,6 +374,12 @@ PACKAGE BODY XX_AR_EBL_RENDER_STUB_PKG AS
 	  FROM XX_AR_EBL_CONS_HDR_HIST 
 	 WHERE transmission_id = p_transmission_id 
 	   AND consolidated_bill_number = p_cons_inv
+       AND cust_account_id = p_customer_id
+	UNION
+    SELECT customer_trx_id
+	  FROM XX_AR_EBL_CONS_HDR_MAIN 
+	 WHERE transmission_id = p_transmission_id 
+	   AND consolidated_bill_number = p_cons_inv
        AND cust_account_id = p_customer_id;
 	     
   BEGIN
