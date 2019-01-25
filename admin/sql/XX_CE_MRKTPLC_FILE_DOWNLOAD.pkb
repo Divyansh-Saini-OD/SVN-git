@@ -8,7 +8,7 @@ WHENEVER SQLERROR CONTINUE;
  
 WHENEVER OSERROR EXIT FAILURE ROLLBACK;
 
-CREATE OR REPLACE
+create or replace 
 PACKAGE body xx_ce_mrktplc_file_download
 AS
   -- +============================================================================================|
@@ -605,14 +605,14 @@ BEGIN
       END;
       lc_xmltype := xmltype(lclob_buffer);
       utl_http.end_response(l_response);
-      fnd_file.put_line(fnd_file.log, 'Response received from Newegg Third URL '||l_response.status_code);
+      logit(p_message=>'Response received from Newegg Third URL '||l_response.status_code);
     EXCEPTION
     WHEN utl_http.too_many_requests THEN
       utl_http.end_response(l_response);
-      fnd_file.put_line(fnd_file.log,'In exception in procedure newegg_get_request_id utl_http.too_many_requests'|| SUBSTR(SQLERRM,1,150));
+      logit(p_message=>'In exception in procedure newegg_get_request_id utl_http.too_many_requests'|| SUBSTR(SQLERRM,1,150));
     WHEN UTL_HTTP.end_of_body THEN
       utl_http.end_response(l_response);
-      fnd_file.put_line(fnd_file.log,'In exception in procedure newegg_get_request_id UTL_HTTP.end_of_body'|| SUBSTR(SQLERRM,1,150));
+      logit(p_message=>'In exception in procedure newegg_get_request_id UTL_HTTP.end_of_body'|| SUBSTR(SQLERRM,1,150));
     END;
     BEGIN
       INSERT
@@ -649,8 +649,8 @@ BEGIN
       ----  l_insert_cnt:=sql%rowcount;
       COMMIT;
     EXCEPTION
-    WHEN OTHERS THEN
-      fnd_file.put_line(fnd_file.log,'In exception for insert  '||sqlerrm);
+    when others then
+      logit(p_message=>'In exception for insert into xx_ce_mktplc_pre_stg_files '||sqlerrm);
     END;
     BEGIN
       SELECT COUNT(1),
@@ -671,14 +671,14 @@ BEGIN
     EXCEPTION
     WHEN OTHERS THEN
       l_insert_cnt:=0;
-      fnd_file.put_line(fnd_file.log,'No file downloaded count '||l_insert_cnt);
+      logit(p_message=>'No file downloaded'||substr(SQLERRM,1,150));
     END;
     IF l_insert_cnt > 0 THEN
-      fnd_file.put_line(fnd_file.log,'File '''||v_file_name||''' loaded successfully to xx_ce_mktplc_pre_stg_files table ');
+      logit(p_message=>'File '''||v_file_name||''' loaded successfully to xx_ce_mktplc_pre_stg_files table ');
       insert_file_rec( p_process_name => p_process_name, p_file_name => v_file_name,p_err_msg => NULL,p_process_flag=>'P',p_requestid=>p_request_id);
       XX_CE_MRKTPLC_FILE_DOWNLOAD.create_newegg_trx_file( p_file_name=>v_file_name, p_process_name=>p_process_name, p_request_id=>p_request_id );
     ELSE
-      fnd_file.put_line(fnd_file.log,'File '''||v_file_name||''' load failed');
+      logit(p_message=>'File '''||v_file_name||''' load failed');
       insert_file_rec( p_process_name => p_process_name, p_file_name => p_file_name,p_err_msg => 'Error while parsing the file '||p_file_name,p_process_flag=>'E',p_requestid=>p_request_id);
     END IF;
   END LOOP;
