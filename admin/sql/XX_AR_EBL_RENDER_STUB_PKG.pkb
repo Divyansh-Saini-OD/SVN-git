@@ -363,6 +363,7 @@ PACKAGE BODY XX_AR_EBL_RENDER_STUB_PKG AS
 	lc_pod_text                 VARCHAR2(100) := NULL;	
     lc_pod_image                CLOB := NULL;
 	ln_pod_cnt                  NUMBER := 0;
+	ln_pod_flag_cnt             NUMBER := 0;
 	ln_customer_id              NUMBER := 0;
 	ln_transmission_id          NUMBER := 0;
 
@@ -501,6 +502,23 @@ PACKAGE BODY XX_AR_EBL_RENDER_STUB_PKG AS
 	
    -- Added below loop for Defect#NAIT-70500 by Thilak	
    ln_pod_cnt := 0;
+   ln_pod_flag_cnt := 0;
+   BEGIN	
+	SELECT COUNT(1) 
+	  INTO ln_pod_flag_cnt
+	  FROM hz_customer_profiles
+	 WHERE cust_account_id = ln_customer_id	
+	   AND cons_inv_flag   = 'Y' 
+	   AND attribute6 IN ('Y','P')				   
+	   AND site_use_id IS NULL;
+   EXCEPTION
+	WHEN OTHERS	THEN
+	 ln_pod_flag_cnt := 0;
+   END; 
+		
+   IF ln_pod_flag_cnt != 0 
+   THEN   
+   
    FOR fetch_pod_details_rec IN lcu_pod_details(ls_cons_bill_number,ln_customer_id,ln_transmission_id)
    LOOP
     lc_invoice_num     := NULL;
@@ -585,8 +603,9 @@ PACKAGE BODY XX_AR_EBL_RENDER_STUB_PKG AS
     item_node := xmldom.appendChild(stub_node,xmldom.makeNode(item_elmt)); 
     item_text := xmldom.createTextNode(doc,ln_pod_cnt); 
     item_node := xmldom.appendChild(item_node,xmldom.makeNode(item_text));	
-   -- End loop for Defect#NAIT-70500 by Thilak
-   
+	END IF;
+    -- End loop for Defect#NAIT-70500 by Thilak
+    
     item_elmt := xmldom.createElement(doc,'CP_WATERMARK_MSG');
     item_node := xmldom.appendChild(root_node,xmldom.makeNode(item_elmt));
     IF ls_watermark IS NOT NULL THEN 
