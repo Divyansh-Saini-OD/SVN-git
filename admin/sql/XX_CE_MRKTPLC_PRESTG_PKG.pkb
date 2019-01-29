@@ -15,7 +15,7 @@ AS
   -- |  Name:  XX_CE_MRKTPLC_PRESTG_PKG                                                           |
   -- |                                                                                            |
   -- |  Description: This package body is for uploading files into MarketPlaces Pre-staging Area  |
-  -- |  RICE ID   :  I3123_CM MarketPlaces Expansion               |
+  -- |  RICE ID   :  I3123_CM MarketPlaces Expansion               | 
   -- |  Description: Insert file Data  into Pre-staging Table XX_CE_MARKETPLACE_PRE_STG           |
   -- |  Change Record:                                                                            |
   -- +============================================================================================|
