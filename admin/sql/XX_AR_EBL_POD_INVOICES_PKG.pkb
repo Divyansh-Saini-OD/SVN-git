@@ -92,7 +92,8 @@ BEGIN
 			last_updated_by,
 			last_update_date,
 			last_update_login)
-		   (SELECT RCT.customer_trx_id ,
+		   (SELECT /*+ leading(HCP PAYDOC_CUST APS) use_nl(HCP APS)index(HCP XX_HZ_CUSTOMER_PROFILES_N7 ) */
+		           RCT.customer_trx_id ,
 				   RCT.trx_number,
 				   SUBSTR(RCT.trx_number,1, LENGTH(RCT.trx_number)-3)
 				   ||'-'
@@ -109,27 +110,50 @@ BEGIN
 				   ln_login_id
 			  FROM ra_customer_trx RCT,
 				   hz_customer_profiles HCP,
-				   (SELECT DISTINCT cust_account_id
+				   ar_payment_schedules APS
+				   /*(SELECT DISTINCT cust_account_id
                                FROM xx_cdh_cust_acct_ext_b
                               WHERE c_ext_attr16            = 'COMPLETE'
                                 AND d_ext_attr1              <= TRUNC(SYSDATE)
                                 AND NVL(d_ext_attr2,SYSDATE) >= TRUNC(SYSDATE)
                                 AND c_ext_attr2               = 'Y'
-                   ) PAYDOC_CUST
+                   ) PAYDOC_CUST*/ --commented for performance issues
 			 WHERE 1 = 1
 			   AND RCT.complete_flag = 'Y'
 			   AND (RCT.attribute15 IS NULL
-				OR RCT.attribute15   <> 'P')
+				OR RCT.attribute15   <> 'Z')
 			   AND HCP.site_use_id  IS NULL
 			   AND HCP.status        = 'A'
 			   AND HCP.attribute6   IN ('Y','P')
 			   AND HCP.cust_account_id = RCT.bill_to_customer_id
-			   AND PAYDOC_CUST.cust_account_id = HCP.cust_account_id
+			   --AND PAYDOC_CUST.cust_account_id = HCP.cust_account_id -- commented for performance issues
+			   AND APS.customer_id     = HCP.cust_Account_id
+               AND APS.status          ='OP'
+               AND APS.customer_trx_id = RCT.customer_trx_id
+			   AND EXISTS
+				  (SELECT 1
+				     FROM xx_cdh_cust_acct_ext_b PAYDOC_CUST
+				    WHERE PAYDOC_CUST.cust_account_id = HCP.cust_account_id
+				      AND c_ext_attr16                  = 'COMPLETE'
+				      AND d_ext_attr1                  <= TRUNC(SYSDATE)
+				      AND NVL(d_ext_attr2,SYSDATE)     >= TRUNC(SYSDATE)
+				      AND c_ext_attr2                   = 'Y'
+				  )
 			   AND NOT EXISTS
 				  (SELECT 1
 					 FROM xx_ar_ebl_pod_dtl XAEPD
 					WHERE XAEPD.customer_trx_id   = RCT.customer_trx_id
 				   )
+			   AND NOT EXISTS
+				  (SELECT 1
+				     FROM xx_ar_ebl_cons_hdr_hist XAECHH
+				    WHERE XAECHH.customer_trx_id = RCT.customer_trx_id
+				  )
+			   AND NOT EXISTS  
+			      (SELECT 1
+			         FROM xx_ar_ebl_ind_hdr_hist XAEIHH
+			        WHERE XAEIHH.customer_trx_id = RCT.customer_trx_id
+			      )	   
 		    );
   COMMIT;
   
@@ -331,6 +355,7 @@ IS
   le_dts_srvc_cred_error   EXCEPTION;
   le_dts_srvc_url_error    EXCEPTION;
   lc_transaction_code      VARCHAR2(60)    := 'c66f342d-98da';
+  lc_username_pwd_encode   VARCHAR2(3600)   := NULL;
 	
 BEGIN
   --FND_FILE.PUT_LINE(FND_FILE.LOG,'Fetching Wallet Location from translation XX_FIN_IREC_TOKEN_PARAMS ');
@@ -410,6 +435,9 @@ BEGIN
        AND XFT.source_value1    = 'DTS_REST_SERVICE'
        AND XFT.enabled_flag     = 'Y'
        AND SYSDATE BETWEEN XFT.start_date_active AND NVL(XFT.end_date_active, SYSDATE+1);
+	   
+	lc_username_pwd_encode := UTL_RAW.CAST_TO_VARCHAR2(UTL_ENCODE.BASE64_ENCODE(UTL_RAW.CAST_TO_RAW(lc_username||':'||lc_password)));
+	
   EXCEPTION
   WHEN OTHERS THEN
     FND_FILE.PUT_LINE(FND_FILE.LOG,'Exception while fetching the details from translation XX_AR_EBL_REST_SERVICE_DT: '||SQLERRM);
@@ -443,7 +471,8 @@ BEGIN
 		  --Setting of http headers 
 		  lc_request := UTL_HTTP.BEGIN_REQUEST(lc_dts_service_url, 'GET',' HTTP/1.1');
 		  UTL_HTTP.SET_HEADER(lc_request, 'content-type', 'application/json');
-		  UTL_HTTP.SET_HEADER(lc_request, 'Authorization', 'Basic ' || UTL_RAW.CAST_TO_VARCHAR2(UTL_ENCODE.BASE64_ENCODE(UTL_RAW.CAST_TO_RAW(lc_username||':'||lc_password))));
+		  --UTL_HTTP.SET_HEADER(lc_request, 'Authorization', 'Basic ' || UTL_RAW.CAST_TO_VARCHAR2(UTL_ENCODE.BASE64_ENCODE(UTL_RAW.CAST_TO_RAW(lc_username||':'||lc_password))));
+		  UTL_HTTP.SET_HEADER(lc_request, 'Authorization', 'Basic ' || lc_username_pwd_encode);
 		  lc_response := UTL_HTTP.GET_RESPONSE(lc_request);
 		  COMMIT;
 		EXCEPTION
