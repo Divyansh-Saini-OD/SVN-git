@@ -8805,21 +8805,28 @@ END IF;
 						BEGIN
 							SELECT cons_inv_id
 							INTO ln_cons_inv_id1
-							FROM ar_cons_inv_all
+							FROM ar_cons_inv_all xx
 							WHERE 1                 =1
-							AND cons_billing_number = get_lockbox_det_rec.invoice1;
-
+							AND cons_billing_number = get_lockbox_det_rec.invoice1
+							AND EXISTS
+							  (SELECT 1
+							  FROM apps.ar_cons_inv_trx_all t
+							  WHERE 1         =1
+							  AND t.cons_inv_id = xx.cons_inv_id
+							  );
+							  
 							UPDATE xx_ar_payments_interface xapi
 							SET    invoice1      		  = ln_cons_inv_id1
 							WHERE  XAPI.rowid             = get_lockbox_rec.rowid
 							AND    XAPI.invoice1	      = get_lockbox_det_rec.invoice1
 							AND    XAPI.process_num       = get_lockbox_rec.process_num;
 							
-						   UPDATE xx_ar_inbound_lockbox_data xapi
-						   SET    invoice      		 = ln_cons_inv_id1
-						   WHERE  invoice            = get_lockbox_det_rec.invoice1
-						   AND TRIM(File_Name)		 = get_lockbox_det_rec.file_name;
-						   get_lockbox_det_rec.invoice1	:=	ln_cons_inv_id1;									
+						    UPDATE xx_ar_inbound_lockbox_data xapi
+						    SET    invoice      		 = ln_cons_inv_id1
+						    WHERE  invoice            = get_lockbox_det_rec.invoice1
+						    AND TRIM(File_Name)		 = get_lockbox_det_rec.file_name;
+						    get_lockbox_det_rec.invoice1	:=	ln_cons_inv_id1;	
+						    ln_invoice1_length         :=LENGTH(get_lockbox_det_rec.invoice1);
 					   EXCEPTION
 					   WHEN OTHERS THEN
 						   NULL;
@@ -9251,9 +9258,15 @@ record type 6';
 						BEGIN
 							SELECT cons_inv_id
 							INTO ln_cons_inv_id2
-							FROM ar_cons_inv_all
+							FROM ar_cons_inv_all xx
 							WHERE 1                 =1
-							AND cons_billing_number = get_lockbox_det_rec.invoice2;
+							AND cons_billing_number = get_lockbox_det_rec.invoice2
+							AND EXISTS
+								  (SELECT 1
+								  FROM apps.ar_cons_inv_trx_all t
+								  WHERE 1         =1
+								  AND t.cons_inv_id = xx.cons_inv_id
+								  );
 
 							UPDATE xx_ar_payments_interface xapi
 							SET    invoice2      		  = ln_cons_inv_id2
@@ -9261,11 +9274,12 @@ record type 6';
 							AND    XAPI.invoice2	      = get_lockbox_det_rec.invoice2
 							AND    XAPI.process_num       = get_lockbox_rec.process_num;
 							
-						   UPDATE xx_ar_inbound_lockbox_data xapi
-						   SET    invoice      		 = ln_cons_inv_id2
-						   WHERE  invoice            = get_lockbox_det_rec.invoice2
-						   AND TRIM(File_Name)		 = get_lockbox_det_rec.file_name;
-						   get_lockbox_det_rec.invoice2	:=	ln_cons_inv_id2;									
+						    UPDATE xx_ar_inbound_lockbox_data xapi
+						    SET    invoice      		 = ln_cons_inv_id2
+						    WHERE  invoice            	 = get_lockbox_det_rec.invoice2
+						    AND TRIM(File_Name)		 	 = get_lockbox_det_rec.file_name;
+						    get_lockbox_det_rec.invoice2	:=	ln_cons_inv_id2;
+						    ln_invoice2_length    			:= LENGTH(get_lockbox_det_rec.invoice2);
 					   EXCEPTION
 					   WHEN OTHERS THEN
 						   NULL;
@@ -9273,7 +9287,7 @@ record type 6';
 					END IF;
 				--------------------------------------------------------------------------
 				--End Changes for Bill Complete Added for Bill Complete Change NAIT-67168
-				--------------------------------------------------------------------------					
+				--------------------------------------------------------------------------
 --------------------------------------------------------------
 -- Start of Changes for Defect #4720 -- 16-MAR-10
 --------------------------------------------------------------
@@ -9709,9 +9723,15 @@ record type 6';
 						BEGIN
 							SELECT cons_inv_id
 							INTO ln_cons_inv_id3
-							FROM ar_cons_inv_all
+							FROM ar_cons_inv_all xx
 							WHERE 1                 =1
-							AND cons_billing_number = get_lockbox_det_rec.invoice3;
+							AND cons_billing_number = get_lockbox_det_rec.invoice3							
+							AND EXISTS
+							  (SELECT 1
+							  FROM apps.ar_cons_inv_trx_all t
+							  WHERE 1         =1
+							  AND t.cons_inv_id = xx.cons_inv_id
+							  );
 
 							UPDATE xx_ar_payments_interface xapi
 							SET    invoice3      		  = ln_cons_inv_id3
@@ -9723,7 +9743,8 @@ record type 6';
 						   SET    invoice      		 = ln_cons_inv_id3
 						   WHERE  invoice            = get_lockbox_det_rec.invoice3
 						   AND TRIM(File_Name)		 = get_lockbox_det_rec.file_name;
-						   get_lockbox_det_rec.invoice3	:=	ln_cons_inv_id3;									
+						   get_lockbox_det_rec.invoice3	:=	ln_cons_inv_id3;	
+						   ln_invoice3_length    		:= LENGTH(get_lockbox_det_rec.invoice3);
 					   EXCEPTION
 					   WHEN OTHERS THEN
 						   NULL;
