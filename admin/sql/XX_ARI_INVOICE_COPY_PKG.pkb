@@ -33,7 +33,7 @@ create or replace PACKAGE BODY      XX_ARI_INVOICE_COPY_PKG AS
 -- |                                           so that we can return request_id without waiting for Request Complete |
 -- | 2.5         21-Apr-2017  Madhu Bolli      Added new proc save_pdf_invoice_copy to store PDF Copy| 
 -- | 2.6         25-Apr-2017  Havish Kasina    Replacing the existing program XXCOMFILCOPY with new program XXCOMIRECFILCOPY| 
--- | 2.7 		 14-MAY-2018  Dinesh N         Retrofit OM tables with Views -NAIT-37762		|
+-- | 2.7 		 29-JAN-2019  Havish Kasina    Made changes as per Bill Complete NAIT-81131		|
 -- +============================================================================================+
 
 GC_XDO_TEMPLATE_FORMAT      CONSTANT VARCHAR2(30)     := 'PDF';
@@ -507,7 +507,7 @@ BEGIN
             IF ls_class='INV' THEN
               SELECT COUNT(*)
                 INTO ln_exists
-                FROM XX_OE_PAYMENTS_V							--Retrofit NAIT-37762		
+                FROM OE_PAYMENTS		
                WHERE header_id      = ls_om_header_id
                  AND prepaid_amount = ln_amount_due_original;
             ELSE -- CM
@@ -622,7 +622,9 @@ BEGIN
   SELECT   issue_Date -- Added for 23007
     INTO   n_issue_Date  -- Added for 23007
     FROM AR_CONS_INV
-   WHERE cons_inv_id=p_cons_inv_id;
+   WHERE 1 = 1
+     -- AND cons_inv_id=p_cons_inv_id  -- Commented for Bill Complete as per Version 2.7
+	 AND cons_billing_number = p_cons_inv_id; -- Added for Bill Complete as per Version 2.7
   -- End Added for defect 23007
   OPEN c_cust_doc
   ( cp_cust_account_id  => p_cust_account_id,cp_issue_Date => n_issue_Date); --cp_issue_Date Added for defect 23007
@@ -2112,7 +2114,9 @@ BEGIN
     INTO n_cust_account_id,
 	     n_issue_Date  -- Added for 23007
     FROM AR_CONS_INV
-   WHERE cons_inv_id=p_cons_inv_id;
+   WHERE 1 =1 
+     -- AND cons_inv_id=p_cons_inv_id -- Commented for Bill Complete as per Version 2.7
+	 AND cons_billing_number = p_cons_inv_id; -- Added for Bill Complete as per Version 2.7
 
   BEGIN
     SELECT n_ext_attr1
