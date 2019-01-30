@@ -22,6 +22,6 @@ SET TAB          OFF
 SET FEEDBACK     ON
 
 
-drop index XXCRM.XX_CDH_CUST_ACCT_EXT_B_N7;
+drop index XX_CDH_CUST_ACCT_EXT_B_N7;
 
 
