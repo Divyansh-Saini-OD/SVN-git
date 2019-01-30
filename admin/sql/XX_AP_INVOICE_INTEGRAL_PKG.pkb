@@ -8887,7 +8887,7 @@ EXCEPTION
         UTL_FILE.FCLOSE(l_filehandle);
         print_debug_msg ('ERROR - Internal Error',TRUE);
         p_retcode := 2;
-    WHEN OTHERSss
+    WHEN OTHERS
 	THEN
         ROLLBACK;
         UTL_FILE.FCLOSE(l_filehandle);
