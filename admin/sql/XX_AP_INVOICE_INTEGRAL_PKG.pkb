@@ -102,6 +102,9 @@ AS
 -- |                                              sources                                       |
 -- | 4.6         11/09/2018   Arun DSouza         Changes for PRG RTV Source                    |
 -- | 4.7         12/28/2018   Arun DSouza         Changes for PO Mismatch Defect                |
+-- | 4.5         08/27/2018   Vivek Kumar         Modified For NAIT - 57153 -Add Vendor Name and|
+-- |                                              Vendor Site Number to the Alert for           | 
+-- |                                              Consignment Supplier Coming in EDI file       |
 -- +============================================================================================+
 
 -- +============================================================================================+
@@ -5103,13 +5106,30 @@ AS
     INDEX BY PLS_INTEGER; 
 	
 	-- Cursor to fetch all the Consignment Suppliers Invoice Numbers for TDM and EDI Sources
-    CURSOR cons_inv_num_cur
+   /* CURSOR cons_inv_num_cur
     IS
 	    SELECT invoice_num
 	      FROM xx_ap_inv_interface_stg
 	     WHERE request_id = gn_request_id
 	       AND source = p_source
-		   AND status = 'CONS_REJECTED';
+		   AND status = 'CONS_REJECTED';*/  ---Commented For NAIT-57153 to print the vendor name and vendor site in the email
+	
+	---Added For NAIT-57153 to print the vendor name and vendor site in the email------
+	   CURSOR cons_inv_num_cur
+    IS   
+	    SELECT  A.INVOICE_NUM
+	           ,D.VENDOR_NAME "SUPPLIER_NAME"
+			   ,C.VENDOR_SITE_CODE "SUPPLIER_SITE"
+           FROM   XX_AP_INV_INTERFACE_STG A,
+                  PO_HEADERS_ALL B,
+                  AP_SUPPLIER_SITES_ALL C,
+                  AP_SUPPLIERS D
+           WHERE  A.REQUEST_ID = GN_REQUEST_ID
+	          AND B.VENDOR_SITE_ID = C.VENDOR_SITE_ID
+              AND C.VENDOR_ID = D.VENDOR_ID
+              AND A.PO_NUMBER = B.SEGMENT1
+	          AND A.SOURCE = P_SOURCE
+              AND A.STATUS = 'CONS_REJECTED';
 		   
 	-- Cursor to fetch the Consignment Suppliers Details to create the Miscellaneous Issue
     -- Modified by Antonio Morales 4/18/18 (Performance and skip type '02' items)
@@ -5276,6 +5296,7 @@ AS
 	ld_date                       DATE;
 	lc_misc_issue_flag            VARCHAR2(1);
     lc_od_sku_type_cd             VARCHAR2(10);
+	ln_log1                       VARCHAR2(32767); ---Added For NAIT-57153 to print the vendor name and vendor site in the email
 	
 BEGIN
     fnd_file.put_line(fnd_file.log,' Input Parameters ');
@@ -7739,14 +7760,26 @@ BEGIN
 	IF p_source = 'US_OD_TRADE_EDI' AND lc_cons_vendor_flag = 'Y'
 	THEN
 	    lc_cons_inv_num := NULL;
+
+		---Added For NAIT-57153 to print the vendor name and vendor site in the email------
+		
+    ln_log1 := ln_log1 ||CHR(10)|| 'INVOICE NUMBER          SUPPLIER NAME                  SUPPLIER SITE            '|| CHR(10);
+    ln_log1 := ln_log1 || '-------------------------------------------------------------------------'|| CHR(10);
+		
 	    FOR cons_inv_num IN cons_inv_num_cur
         LOOP
 		    BEGIN 
-		        lc_cons_inv_num := lc_cons_inv_num||chr(10)||cons_inv_num.invoice_num||chr(10);
+			--lc_cons_inv_num := lc_cons_inv_num||chr(10)||cons_inv_num.invoice_num||chr(10);
+              ln_log1 := ln_log1||cons_inv_num.invoice_num;
+			  ln_log1 := ln_log1||'        '||cons_inv_num.SUPPLIER_NAME;
+			  ln_log1 := ln_log1||'              '||cons_inv_num.SUPPLIER_SITE||chr(10);
 	        EXCEPTION
 		    WHEN OTHERS
 		    THEN
-                lc_cons_inv_num := lc_cons_inv_num||chr(10)||cons_inv_num.invoice_num||chr(10);
+            --lc_cons_inv_num := lc_cons_inv_num||chr(10)||cons_inv_num.invoice_num||chr(10);
+              ln_log1 := ln_log1||cons_inv_num.invoice_num;
+			  ln_log1 := ln_log1||'        '||cons_inv_num.SUPPLIER_NAME;
+			  ln_log1 := ln_log1||'              '||cons_inv_num.SUPPLIER_SITE||chr(10);
 		    END;
 	    END LOOP;
 		
@@ -7782,7 +7815,7 @@ BEGIN
 			lc_email_to      := NULL;
 			lc_email_cc      := NULL;
 			lc_email_subject := NULL;
-			lc_email_body    := NULL;
+		    lc_email_body    := NULL;
 		END;	
 	    
 		-- To send an email
@@ -7794,7 +7827,7 @@ BEGIN
                                              mime_type => xx_pa_pb_mail.MULTIPART_MIME_TYPE);
       
             xx_pa_pb_mail.attach_text( conn => conn,
-                                       data => lc_email_body|| lc_cons_inv_num
+                                       data => lc_email_body|| ln_log1
                                              );
            
             xx_pa_pb_mail.end_mail( conn => conn );
@@ -8854,7 +8887,7 @@ EXCEPTION
         UTL_FILE.FCLOSE(l_filehandle);
         print_debug_msg ('ERROR - Internal Error',TRUE);
         p_retcode := 2;
-    WHEN OTHERS
+    WHEN OTHERSss
 	THEN
         ROLLBACK;
         UTL_FILE.FCLOSE(l_filehandle);
