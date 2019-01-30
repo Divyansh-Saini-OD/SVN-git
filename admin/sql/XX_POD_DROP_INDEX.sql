@@ -22,6 +22,6 @@ SET TAB          OFF
 SET FEEDBACK     ON
 
 
-drop index XXFIN.XX_HZ_CUSTOMER_PROFILES_N7;
+drop index XX_HZ_CUSTOMER_PROFILES_N7;
 
 
