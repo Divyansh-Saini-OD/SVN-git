@@ -8810,7 +8810,7 @@ END IF;
 							AND cons_billing_number = get_lockbox_det_rec.invoice1
 							AND EXISTS
 							  (SELECT 1
-							  FROM apps.ar_cons_inv_trx_all t
+							  FROM ar_cons_inv_trx_all t
 							  WHERE 1         =1
 							  AND t.cons_inv_id = xx.cons_inv_id
 							  );
@@ -9263,7 +9263,7 @@ record type 6';
 							AND cons_billing_number = get_lockbox_det_rec.invoice2
 							AND EXISTS
 								  (SELECT 1
-								  FROM apps.ar_cons_inv_trx_all t
+								  FROM ar_cons_inv_trx_all t
 								  WHERE 1         =1
 								  AND t.cons_inv_id = xx.cons_inv_id
 								  );
@@ -9728,7 +9728,7 @@ record type 6';
 							AND cons_billing_number = get_lockbox_det_rec.invoice3							
 							AND EXISTS
 							  (SELECT 1
-							  FROM apps.ar_cons_inv_trx_all t
+							  FROM ar_cons_inv_trx_all t
 							  WHERE 1         =1
 							  AND t.cons_inv_id = xx.cons_inv_id
 							  );
