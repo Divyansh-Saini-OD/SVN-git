@@ -26,6 +26,7 @@ AS
   -- | 2.7         11/26/2018   M K Pramod Kumar     Modifed  for Defect NAIT-72064 Refund Transaction Mapping, Load into AJB998 table if ORDT information
   -- |             is missing,change deposit date
   -- | 2.8         11/26/2018   M K Pramod Kumar     Modified to derive Bank Rec ID for EBAY MPL for partial transactinos.
+  -- | 2.8.1         11/26/2018   M K Pramod Kumar     Modified to Include only Not null Order Id for RAKUTEN MPL
   -- +============================================================================================+
   gc_package_name      CONSTANT all_objects.object_name%TYPE := 'XX_CE_MRKTPLC_RECON_PKG';
   gc_ret_success       CONSTANT VARCHAR2(20)                 := 'SUCCESS';
@@ -662,7 +663,6 @@ IS
     WHERE dtl.settlement_id    =p_settlement_id
     AND dtl.marketplace_name   =p_marketplace_name
     AND record_status          ='V'
-    AND item_related_fee_type IN ('Commission','SalesTaxServiceFee','ShippingHB','RefundCommission')
     GROUP BY dtl.settlement_id,
       dtl.store_number,
       dtl.marketplace_name ;
@@ -1306,7 +1306,8 @@ IS
     FROM xx_ce_rakuten_pre_stg_v hdr
     WHERE 1               =1
     AND hdr.filename      =p_filename
-    AND hdr.process_flag IN ('N','E');
+    AND hdr.process_flag IN ('N','E')
+	and orderid is not null;
   CURSOR dup_check_cur(lc_settlement_id NUMBER)
   IS
     SELECT settlement_id
