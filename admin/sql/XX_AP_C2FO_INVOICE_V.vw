@@ -31,6 +31,7 @@
    1.2        09/12/2018    Antonio Morales             OD          Modified this for performance
    1.3        09/19/2018    Madhu Bolli            		OD          Modified to allow invoices if it contains item,misc, freight
    1.4        09/24/2018    Madhu Bolli            		OD          Modified to restrict invoices if the supplier site is inactive
+   1.5        01/31/2019    Vivek Kumar                 OD          Modified for NAIT-81968 to include Organization Type = null  
 *************************************************************************************************************************/
 
 
@@ -203,7 +204,8 @@
    AND    aia.source NOT IN ('US_OD_C2FO', 'US_OD_AR_REFUND', 'US_OD_PCARD','US_OD_RETAIL_REFUND')
    AND    assa.attribute8 NOT IN ('EX-ESC','EX-REB','EX-RNT','TR-IMP','TR-OMXREGIMP','TR-OMXVSIIMP','TR-RTV-ADDR')
    AND    sup.vendor_type_lookup_code NOT IN ('GARNISHMENT','TAX AUTHORITY')
-   AND    sup.organization_type_lookup_code <> 'GOVERNMENT AGENCY'
+-- AND    sup.organization_type_lookup_code <> 'GOVERNMENT AGENCY' -- Commented For NAIT-81968
+   AND     NVL (sup.organization_type_lookup_code, 'N') <> 'GOVERNMENT AGENCY' -- Added for NAIT-81968
    AND    aia.invoice_type_lookup_code NOT IN ('EXPENSE REPORT', 'PREPAYMENT')
    AND    NVL (aia.amount_paid, 0) = 0
    AND    aia.wfapproval_status IN ('MANUALLY APPROVED', 'NOT REQUIRED', 'WFAPPROVED')
