@@ -92,7 +92,7 @@ BEGIN
 			last_updated_by,
 			last_update_date,
 			last_update_login)
-		   (SELECT /*+ leading(HCP PAYDOC_CUST APS) use_nl(HCP APS)index(HCP XX_HZ_CUSTOMER_PROFILES_N7 ) */
+		   (SELECT /*+ leading(HCP PAYDOC_CUST APS) use_nl(HCP APS) index(HCP XX_HZ_CUSTOMER_PROFILES_N7 ) */
 		           RCT.customer_trx_id ,
 				   RCT.trx_number,
 				   SUBSTR(RCT.trx_number,1, LENGTH(RCT.trx_number)-3)
