@@ -107,7 +107,7 @@ dt       { font-weight     : bold; }
       ROUND(NVL(pda.amount_ordered,(pla.unit_price*pla.quantity)),2) final_line_amount ,
       NVL(plla.amount,
       (SELECT SUM(ROUND((pla2.unit_price*pla2.quantity),2))
-      FROM APPS.PO_LINES_ALL pla2
+      FROM PO_LINES_ALL pla2
       WHERE 1               =1
       AND pla2.po_header_id = pha.po_header_id
       )) final_po_amount ,
@@ -116,14 +116,14 @@ dt       { font-weight     : bold; }
       pha.po_header_id,
       pla.po_line_id,
       pha.agent_id
-    FROM APPS.PO_HEADERS_ALL pha ,
-      APPS.PO_LINES_ALL pla ,
-      APPS.AP_SUPPLIERS aps ,
-      APPS.PO_LINE_LOCATIONS_ALL plla ,
-      APPS.PO_DISTRIBUTIONS_ALL pda ,
-      APPS.PO_REQ_DISTRIBUTIONS_ALL prda ,
-      APPS.PO_REQUISITION_LINES_ALL prla ,
-      APPS.PO_REQUISITION_HEADERS_ALL prha
+    FROM PO_HEADERS_ALL pha ,
+      PO_LINES_ALL pla ,
+      AP_SUPPLIERS aps ,
+      PO_LINE_LOCATIONS_ALL plla ,
+      PO_DISTRIBUTIONS_ALL pda ,
+      PO_REQ_DISTRIBUTIONS_ALL prda ,
+      PO_REQUISITION_LINES_ALL prla ,
+      PO_REQUISITION_HEADERS_ALL prha
     WHERE 1                           =1
     AND pla.po_header_id              = pha.po_header_id
     AND plla.po_header_id             = pha.po_header_id
@@ -146,7 +146,7 @@ dt       { font-weight     : bold; }
     AND pha.attribute_category = 'Non-Trade'
 	 and pha.type_lookup_code not in ('BLANKET')
     AND ROUND(NVL(pda.amount_ordered,(pla.unit_price*pla.quantity)),2) > plla.amount_billed
-    AND NVL(plla.amount,(SELECT SUM(ROUND((pla2.unit_price*pla2.quantity),2))FROM APPS.PO_LINES_ALL pla2 WHERE 1=1AND pla2.po_header_id = pha.po_header_id)) > 5000
+    AND NVL(plla.amount,(SELECT SUM(ROUND((pla2.unit_price*pla2.quantity),2))FROM PO_LINES_ALL pla2 WHERE 1=1AND pla2.po_header_id = pha.po_header_id)) > 5000
     AND pha.creation_date  >= NVL(sysdate-P_number_of_days,sysdate-30)
     ORDER BY pha.segment1,
       pla.line_num;
@@ -161,8 +161,8 @@ dt       { font-weight     : bold; }
       pra.release_type ,
       pra.agent_id buyer_id ,
       (SELECT DISTINCT prha.preparer_id
-      FROM APPS.PO_REQUISITION_HEADERS_ALL prha ,
-        APPS.PO_REQUISITION_LINES_ALL prla
+      FROM PO_REQUISITION_HEADERS_ALL prha ,
+        PO_REQUISITION_LINES_ALL prla
       WHERE 1                        =1
       AND prha.requisition_header_id = prla.requisition_header_id
       AND prla.requisition_line_id   = prda.requisition_line_id
@@ -178,7 +178,7 @@ dt       { font-weight     : bold; }
       ROUND(NVL(pda.amount_ordered,(pla.unit_price*plla.quantity)),2) release_line_amount ,
       NVL(plla.amount,
       (SELECT SUM(plla2.quantity*pla.unit_price)
-      FROM APPS.PO_LINE_LOCATIONS_ALL plla2
+      FROM PO_LINE_LOCATIONS_ALL plla2
       WHERE 1                 =1
       AND plla2.po_release_id = pra.po_release_id
       )) release_total_amount ,
@@ -202,13 +202,13 @@ dt       { font-weight     : bold; }
       pla.cancel_flag bpa_line_cancel_flag,
       pha.po_header_id,
       pla.po_line_id
-    FROM APPS.PO_RELEASES_ALL pra ,
-      APPS.PO_HEADERS_ALL pha ,
-      APPS.PO_LINES_ALL pla ,
-      APPS.PO_LINE_LOCATIONS_ALL plla ,
-      APPS.PO_DISTRIBUTIONS_ALL pda ,
-      APPS.AP_SUPPLIERS aps ,
-      APPS.PO_REQ_DISTRIBUTIONS_ALL prda
+    FROM PO_RELEASES_ALL pra ,
+      PO_HEADERS_ALL pha ,
+      PO_LINES_ALL pla ,
+      PO_LINE_LOCATIONS_ALL plla ,
+      PO_DISTRIBUTIONS_ALL pda ,
+      AP_SUPPLIERS aps ,
+      PO_REQ_DISTRIBUTIONS_ALL prda
     WHERE 1                           =1
     AND pha.po_header_id              = pra.po_header_id
     AND pla.po_header_id              = pha.po_header_id
@@ -227,7 +227,7 @@ dt       { font-weight     : bold; }
      and plla.quantity_received = 0
     AND NVL(plla.amount,
       (SELECT SUM(plla2.quantity*pla.unit_price)
-      FROM APPS.PO_LINE_LOCATIONS_ALL plla2
+      FROM PO_LINE_LOCATIONS_ALL plla2
       WHERE 1                 =1
       AND plla2.po_release_id = pra.po_release_id
       ))                      > 5000
@@ -329,8 +329,8 @@ dt       { font-weight     : bold; }
       BEGIN
         SELECT DISTINCT prha.segment1
         INTO v_requistion_number
-        FROM APPS.PO_REQUISITION_HEADERS_ALL prha ,
-          APPS.PO_REQUISITION_LINES_ALL prla
+        FROM PO_REQUISITION_HEADERS_ALL prha ,
+          PO_REQUISITION_LINES_ALL prla
         WHERE 1                        =1
         AND prha.requisition_header_id = prla.requisition_header_id
         AND prla.requisition_line_id   = i.requisition_line_id ;
@@ -341,8 +341,8 @@ dt       { font-weight     : bold; }
       BEGIN
         SELECT DISTINCT prla.unit_price
         INTO v_unit_price
-        FROM APPS.PO_REQUISITION_HEADERS_ALL prha ,
-          APPS.PO_REQUISITION_LINES_ALL prla
+        FROM PO_REQUISITION_HEADERS_ALL prha ,
+          PO_REQUISITION_LINES_ALL prla
         WHERE 1                        =1
         AND prha.requisition_header_id = prla.requisition_header_id
         AND prla.requisition_line_id   = i.requisition_line_id ;
