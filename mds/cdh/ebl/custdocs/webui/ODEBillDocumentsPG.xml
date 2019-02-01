@@ -219,7 +219,7 @@
                               <oa:messageTextInput id="Comments2" viewName="ODEbillCustDocVO" viewAttr="CExtAttr18" prompt="Comments 2" rendered="false"/>
                               <oa:messageTextInput id="Comments3" viewName="ODEbillCustDocVO" viewAttr="CExtAttr19" prompt="Comments 3" rendered="false"/>
                               <oa:messageTextInput id="Comments4" viewName="ODEbillCustDocVO" viewAttr="CExtAttr20" prompt="Comments 4" rendered="false"/>
-                              <oa:messageChoice id="SpecialHandling" viewName="ODEbillCustDocVO" viewAttr="CExtAttr4" prompt="Special Handling" disabled="${oa.current.Readonlyflag}" pickListViewName="ODEBillCharYesNo" pickListDispAttr="Description" pickListValAttr="Code"/>
+                              <oa:messageTextInput id="SpecialHandling" viewName="ODEbillCustDocVO" viewAttr="CExtAttr4" prompt="Special Handling" disabled="${oa.current.Readonlyflag}"/>
                               <oa:messageChoice id="IsParent" viewName="ODEbillCustDocVO" viewAttr="NExtAttr17" prompt="Is Parent" dataType="NUMBER" defaultValue="0" disabled="${oa.current.Readonlyflag}" pickListViewName="ODEBillNumYesNoPVO" pickListDispAttr="Description" pickListValAttr="Code" allowBlankValue="false"/>
                               <oa:messageChoice id="SendToParent" viewName="ODEbillCustDocVO" viewAttr="NExtAttr16" prompt="Send To Parent" defaultValue="0" dataType="NUMBER" disabled="${oa.current.Readonlyflag}" pickListViewName="ODEBillNumYesNoPVO" pickListDispAttr="Description" pickListValAttr="Code" allowBlankValue="false">
                                  <ui:primaryClientAction>
