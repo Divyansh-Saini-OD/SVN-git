@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xapi:requestset xmlns:xapi="http://xmlns.oracle.com/oxp/xapi">
+   <xapi:request select="/XXAPDSDISTRPT/LIST_G_G_DROPSHIP_DIST/G_DROPSHIP_DIST">
+      <xapi:delivery>
+         <xapi:email server="${SMTP_SERVER}" port="25" from="AccountsPayable@officedepot.com">
+            <xapi:message id="123" to="${DISTRIBUTION_LIST}" attachment="true" subject="${EMAIL_SUBJECT}">"${EMAIL_CONTENT}"</xapi:message>
+         </xapi:email>
+      </xapi:delivery>
+      <xapi:document output="APDropshipDistributionsReport.xls" output-type="excel" delivery="123">
+         <xapi:template type="rtf" location="xdo://XXFIN.XXAPDSDISTRPT.en.US?getSource=true" />
+      </xapi:document>
+   </xapi:request>
+</xapi:requestset>

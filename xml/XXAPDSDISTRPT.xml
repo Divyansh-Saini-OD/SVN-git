@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataTemplate name="XXAPDSDISTRPT" defaultPackage="XX_AP_DSDISTRPT_PKG" dataSourceRef="ORCL" version="1.0">
+   <parameters>
+      <parameter name="P_VENDOR_SITE_ID" dataType="string" include_in_output="true" />
+      <parameter name="P_PERIOD_FROM" dataType="string" include_in_output="true" />
+      <parameter name="P_PERIOD_TO" dataType="string" include_in_output="true" />
+   </parameters>
+   <dataQuery>
+      <sqlStatement name="Q_PARAM"><![CDATA[SELECT VENDOR_SITE_CODE 
+	  FROM ap_supplier_sites_all 
+	  WHERE vendor_site_id = :P_VENDOR_SITE_ID]]></sqlStatement>
+      <sqlStatement name="Q_EMAIL_DETAILS"><![CDATA[SELECT :G_SMTP_SERVER SMTP_SERVER
+	, :G_EMAIL_SUBJECT EMAIL_SUBJECT
+	, :G_EMAIL_CONTENT EMAIL_CONTENT
+	, :G_DISTRIBUTION_LIST DISTRIBUTION_LIST
+FROM dual]]></sqlStatement>
+      <sqlStatement name="Q_DROPSHIP_DIST"><![CDATA[SELECT
+	/*+ LEADING(AIA AIDA) PARALLEL(AIA) PARALLEL(AIDA) NO_MERGE */
+	aps.vendor_name supplier_name
+	, assa.vendor_site_code site_number
+	, pha.segment1 po_number
+	, (
+		SELECT SUM(ROUND(pla.unit_price * pla.quantity, 2))
+		FROM apps.po_lines_all pla
+		WHERE pha.po_header_id = pla.po_header_id
+		) po_amount
+	, aia.invoice_num invoice_number
+	, aia.invoice_amount invoice_total
+	, SUM(CASE WHEN gcc.segment3 = '22003000' THEN aida.amount ELSE 0 END) dropship_liability_sum
+	, SUM(CASE WHEN gcc.segment3 = '51105000' THEN aida.amount ELSE 0 END) dropship_cogs_sum
+	, SUM(CASE WHEN gcc.segment3 = '51101000' THEN aida.amount ELSE 0 END) freight_sum
+	, aia.invoice_amount - SUM(CASE WHEN gcc.segment3 = '22003000' THEN aida.amount ELSE 0 END) variance
+FROM apps.ap_invoices_all aia
+	, apps.ap_invoice_distributions_all aida
+	, apps.gl_code_combinations gcc
+	, apps.po_headers_all pha
+	, apps.ap_suppliers aps
+	, apps.ap_supplier_sites_all assa
+	, apps.gl_period_statuses gps_from
+	, apps.gl_period_statuses gps_to
+WHERE aia.invoice_id = aida.invoice_id
+	AND aia.org_id = aida.org_id
+	AND aia.quick_po_header_id = pha.po_header_id
+	AND aia.vendor_id = aps.vendor_id
+	AND aia.vendor_id = assa.vendor_id
+	AND aia.vendor_site_id = assa.vendor_site_id
+	AND aps.vendor_id = assa.vendor_id
+	AND aida.dist_code_combination_id = gcc.code_combination_id
+	AND aida.posted_flag = 'Y'
+	AND gps_from.application_id = 200
+	AND gps_from.adjustment_period_flag <> 'Y'
+	AND aia.set_of_books_id = gps_from.set_of_books_id
+	AND gps_to.application_id = 200
+	AND gps_to.adjustment_period_flag <> 'Y'
+	AND aia.set_of_books_id = gps_to.set_of_books_id
+	AND aida.accounting_date BETWEEN gps_from.start_date AND gps_to.end_date
+	AND aia.creation_date >= to_date('18-JUN-18 00:00:00', 'DD-MON-RR HH24:MI:SS')
+	AND aia.source = 'US_OD_DROPSHIP'
+	AND NOT EXISTS (
+		SELECT 1
+		FROM apps.ap_invoice_distributions_all aida1
+		WHERE aia.invoice_id = aida1.invoice_id
+			AND aia.org_id = aida1.org_id
+			AND aida1.posted_flag = 'N'
+		)
+	AND gps_from.period_name = :p_period_from
+	AND gps_to.period_name = :p_period_to
+	AND assa.vendor_site_id = NVL(:p_vendor_site_id, assa.vendor_site_id)
+GROUP BY aps.vendor_name
+	, assa.vendor_site_code
+	, pha.segment1
+	, pha.po_header_id
+	, aia.invoice_num
+	, aia.invoice_amount
+HAVING aia.invoice_amount - SUM(CASE WHEN gcc.segment3 = '22003000' THEN aida.amount ELSE 0 END) <> 0
+	AND SUM(CASE WHEN gcc.segment3 = '22003000' THEN 1 ELSE 0 END) > 0
+ORDER BY ABS(variance) DESC
+	, supplier_name
+	, site_number
+	, invoice_number]]></sqlStatement>
+   </dataQuery>
+   <dataTrigger name="beforeReport" source="XX_AP_DSDISTRPT_PKG.beforeReport()" />
+   <dataStructure>
+      <group name="G_PARAM" source="Q_PARAM">
+         <element name="VENDOR_SITE_CODE" dataType="VARCHAR2" value="VENDOR_SITE_CODE" />
+      </group>
+      <group name="G_EMAIL_DETAILS" source="Q_EMAIL_DETAILS">
+         <element name="SMTP_SERVER" value="SMTP_SERVER" />
+         <element name="EMAIL_SUBJECT" value="EMAIL_SUBJECT" />
+         <element name="EMAIL_CONTENT" value="EMAIL_CONTENT" />
+         <element name="DISTRIBUTION_LIST" value="DISTRIBUTION_LIST" />
+      </group>
+      <group name="G_DROPSHIP_DIST" source="Q_DROPSHIP_DIST">
+         <element name="SUPPLIER_NAME" dataType="VARCHAR2" value="SUPPLIER_NAME" />
+         <element name="SITE_NUMBER" dataType="VARCHAR2" value="SITE_NUMBER" />
+         <element name="PO_NUMBER" dataType="VARCHAR2" value="PO_NUMBER" />
+         <element name="PO_AMOUNT" dataType="NUMBER" value="PO_AMOUNT" />
+         <element name="INVOICE_NUMBER" dataType="VARCHAR2" value="INVOICE_NUMBER" />
+         <element name="INVOICE_TOTAL" dataType="NUMBER" value="INVOICE_TOTAL" />
+         <element name="DROPSHIP_LIABILITY_SUM" dataType="NUMBER" value="DROPSHIP_LIABILITY_SUM" />
+         <element name="DROPSHIP_COGS_SUM" dataType="NUMBER" value="DROPSHIP_COGS_SUM" />
+         <element name="FREIGHT_SUM" dataType="NUMBER" value="FREIGHT_SUM" />
+         <element name="VARIANCE" dataType="NUMBER" value="VARIANCE" />
+      </group>
+      <element name="R_TOT_INVOICE_TOTAL" function="sum" dataType="NUMBER" value="G_DROPSHIP_DIST.INVOICE_TOTAL" />
+      <element name="R_TOT_DROPSHIP_LIABILITY_SUM" function="sum" dataType="NUMBER" value="G_DROPSHIP_DIST.DROPSHIP_LIABILITY_SUM" />
+      <element name="R_TOT_DROPSHIP_COGS_SUM" function="sum" dataType="NUMBER" value="G_DROPSHIP_DIST.DROPSHIP_COGS_SUM" />
+      <element name="R_TOT_FREIGHT_SUM" function="sum" dataType="NUMBER" value="G_DROPSHIP_DIST.FREIGHT_SUM" />
+      <element name="R_TOT_VARIANCE" function="sum" dataType="NUMBER" value="G_DROPSHIP_DIST.VARIANCE" />
+	  <element name="R_RECORD_COUNT" function="count" dataType="NUMBER" value="G_DROPSHIP_DIST.INVOICE_NUMBER" />
+   </dataStructure>
+   <dataTrigger name="afterReport" source="XX_AP_DSDISTRPT_PKG.afterReport()" />
+</dataTemplate>
