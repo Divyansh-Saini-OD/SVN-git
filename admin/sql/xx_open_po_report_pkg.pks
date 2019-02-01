@@ -41,5 +41,5 @@ TYPE SPLIT_TBL  IS TABLE OF VARCHAR2(32767);
    ) ;
    
    end xx_open_po_report_pkg;
-/
+   /
    
