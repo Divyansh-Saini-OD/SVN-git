@@ -97,8 +97,7 @@ public class ODEBillDocumentsCO extends OAControllerImpl
     utl.log("ODEBillDocumentsCO:Process Request Begin");
     String AccountNumber = pageContext.getParameter("accountNumber"); 
     String CustAccountId = pageContext.getParameter("custAccountId");
-    System.out.println("custAccountId"+CustAccountId);
-    String custName = pageContext.getParameter("custName");
+     String custName = pageContext.getParameter("custName");
     String deliveryMethod = pageContext.getParameter("deliveryMethod");
     //pageContext.getPageLayoutBean().setTitle("Billing Documents For Customer:"+custName+" Account Number:"+ AccountNumber); 
     pageContext.getPageLayoutBean().setTitle("Customer Billing Documents");
@@ -423,27 +422,41 @@ public class ODEBillDocumentsCO extends OAControllerImpl
                       rsCustDoc.reset();
                       while (rsCustDoc.hasNext()) {
                           Row custDocObj = rsCustDoc.next();
-                             if(("Y".equalsIgnoreCase(attribute6ResultPF5)||"B".equalsIgnoreCase(attribute6ResultPF5))&&!"Consolidated Bill".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr1").toString())&&"Y".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr2").toString())&&!"COMPLETE".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr16").toString()))
+                             if(("Y".equalsIgnoreCase(attribute6ResultPF5)||"B".equalsIgnoreCase(attribute6ResultPF5))
+                             &&!"Consolidated Bill".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr1").toString())
+                             &&"Y".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr2").toString())
+                             &&!"COMPLETE".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr16").toString()))
                          {
                                String rt=custDocObj.getAttribute("NExtAttr2").toString();
                           MessageToken[] tokens1 = { new MessageToken("CUST_DOC",rt)};
-                         throw new OAException("XXCRM", "XXOD_CDH_EBL_RST_INV_BC",tokens1);
+                           throw new OAException("XXCRM", "XXOD_CDH_EBL_RST_INV_BC",tokens1);
                                                                                 
                      }
                                  //Added By Reddy Sekhar K on 11th Jan 2019 for the NAIT-78901 ----START
                           String deliveryM=custDocObj.getAttribute("CExtAttr3").toString();
                            String billDOcStatus=custDocObj.getAttribute("CExtAttr16").toString();
-                                 System.out.println("bcPODFlagb");
-                          String bcPODFlag=(String)custDocObj.getAttribute("BcPodFlag");
-                                 System.out.println("bcPODFlagb");
-                          System.out.println("bcPODFlagbcPODFlag"+bcPODFlag);
-                           
-                            if("PRINT".equalsIgnoreCase(deliveryM)&& !"COMPLETE".equalsIgnoreCase(billDOcStatus) && custDocObj.getAttribute("CExtAttr4")==null  && !"N".equalsIgnoreCase(bcPODFlag))                        
+                                 String bcPODFlag=(String)custDocObj.getAttribute("BcPodFlag");                   
+                            if("PRINT".equalsIgnoreCase(deliveryM)&& !"COMPLETE".equalsIgnoreCase(billDOcStatus) 
+                            && custDocObj.getAttribute("CExtAttr4")==null  && !"N".equalsIgnoreCase(bcPODFlag)
+                            && "Consolidated Bill".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr1").toString()))                        
                                         {
-                              String Sphndlng=custDocObj.getAttribute("NExtAttr2").toString();
-                              MessageToken[] specialHandling = { new MessageToken("CUST_DOC",Sphndlng)};
-                              throw new OAException("XXCRM", "XXOD_EBL_PRINT_SPHDLNG_MAN",specialHandling);
-                          }
+                                 throw new OAException("XXCRM", "XXOD_EBL_PRINT_SPHDLNG_MAN");
+                              
+                                       }
+                                 if("P".equalsIgnoreCase(attribute6ResultPF5)&&!"Consolidated Bill".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr1").toString())
+                                 &&"Y".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr2").toString())&&!"COMPLETE".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr16").toString())
+                                 &&"PRINT".equalsIgnoreCase(deliveryM)){
+                                       throw new OAException("XXCRM", "XXOD_EBL_PRINT_INV_VALIDATION");
+                                 }
+
+                                  if("EDI".equalsIgnoreCase(deliveryM)||"eXLS".equalsIgnoreCase(deliveryM)&&"P".equalsIgnoreCase(attribute6ResultPF5)
+                                  &&!"Consolidated Bill".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr1").toString())
+                                  &&"Y".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr2").toString())
+                                  &&!"COMPLETE".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr16").toString())
+                                  )
+                                  {
+                                   throw new OAException("XXCRM", "XXOD_EBL_EDI_EXLS_INV_VALT"); 
+                                  }                                                                  
                                  //Added By Reddy Sekhar K on 11th Jan 2019 for the NAIT-78901 ----END
                       
                              }
@@ -500,6 +513,7 @@ public class ODEBillDocumentsCO extends OAControllerImpl
                                                       {
        String dlyMtd = pageContext.getParameter("DelyMtdUpdate");
         String custDocId=pageContext.getParameter("CustDocId");
+        
         utl.log("ODEBillDocumentsCO:Inside DelyMtdUpdate PPR for:"+custDocId);
         String qry="SELECT count(1) "+ 
                    "FROM xx_cdh_ebl_main "+
@@ -533,10 +547,11 @@ public class ODEBillDocumentsCO extends OAControllerImpl
         //Added By Reddy Sekhar K on 13 Nov 2018 for the Req# NAIT-61952 & 66520-----Start
          String rowRef = pageContext.getParameter(OAWebBeanConstants.EVENT_SOURCE_ROW_REFERENCE);
          ODEbillCustDocVORowImpl rowImpl= (ODEbillCustDocVORowImpl)am.findRowByRef(rowRef);
-         if (CustAccountId!=null )
+          if (CustAccountId!=null )
          {
                 String docuType=rowImpl.getCExtAttr1().toString();
                 String payDocInd=rowImpl.getCExtAttr2().toString();
+                String delyMthd=rowImpl.getCExtAttr3().toString();          
                String deliveryMethod=null;
             
             if("Consolidated Bill".equals(docuType)) {
@@ -555,11 +570,16 @@ public class ODEBillDocumentsCO extends OAControllerImpl
             else {
                      Serializable inputParams1[] = {CustAccountId };
                     String attribute6ResultPF1 = (String)am.invokeMethod("attribute6ValuePF",inputParams1);              
-                      if ("P".equalsIgnoreCase(attribute6ResultPF1)&&"Y".equalsIgnoreCase(payDocInd))
+                      if ("P".equalsIgnoreCase(attribute6ResultPF1)&&"Y".equalsIgnoreCase(payDocInd)&& "ePDF".equals(delyMthd))
                      {
                          rowImpl.setBcPodFlag("P");
                          
                      }
+                       else if ("P".equalsIgnoreCase(attribute6ResultPF1)&&"Y".equalsIgnoreCase(payDocInd)&& !"ePDF".equals(delyMthd))
+                        {
+                           rowImpl.setBcPodFlag("N");
+                           
+                        }
                          
                          else if("P".equalsIgnoreCase(attribute6ResultPF1)&&"N".equalsIgnoreCase(payDocInd))  {
                              rowImpl.setBcPodFlag("N");
@@ -603,8 +623,8 @@ public class ODEBillDocumentsCO extends OAControllerImpl
     {
       String custDocId=pageContext.getParameter("CustDocId");
       String rowCount  = pageContext.getParameter("RowCount");
-      String dlyMtd = pageContext.getParameter("DlyMtd");
-          String deliveryMtdBCPOD1=null;
+    String dlyMtd = pageContext.getParameter("DlyMtd");
+         String deliveryMtdBCPOD1=null;
         OARow curRow=null;
       try{
           Number nCustdoc  = new Number(custDocId);
@@ -614,13 +634,14 @@ public class ODEBillDocumentsCO extends OAControllerImpl
           String curDlyMtd=(String)curRow.getAttribute("CExtAttr3");
            String curDocuType=(String)curRow.getAttribute("CExtAttr1");//Add
           String payDocFlag=(String)curRow.getAttribute("CExtAttr2");
+         
          deliveryMtdBCPOD1=(String)curRow.getAttribute("BcPodFlag");
           utl.log("Invoking Delete method to Delete Conf Data for "+curDlyMtd);
           Serializable inputParams[] = {custDocId,curDlyMtd};
           am.invokeMethod("deleteTrans", inputParams);
         //Added By Reddy Sekhar K on 13 Nov 2018 for the Req# NAIT-61952 & 66520-----Start
-              
-          if (CustAccountId!=null)
+           String delmthd=(String)curRow.getAttribute("CExtAttr3");
+           if (CustAccountId!=null)
           {
               Serializable inputParams2[] = {CustAccountId };
               String attribute6ResultPF1 = (String)am.invokeMethod("attribute6ValuePF",inputParams2);
@@ -651,13 +672,18 @@ public class ODEBillDocumentsCO extends OAControllerImpl
           }
           else{
               
-              if ("P".equalsIgnoreCase(attribute6ResultPF1)&&"Y".equalsIgnoreCase(payDocFlag))
+              if ("P".equalsIgnoreCase(attribute6ResultPF1)&&"Y".equalsIgnoreCase(payDocFlag)&&"ePDF".equals(delmthd))
                                                           {
                                                               
                                                                curRow.setAttribute("BcPodFlag","P");
-                                                              
+                                                                                                                             
                                                           }
+             else if ("P".equalsIgnoreCase(attribute6ResultPF1)&&"Y".equalsIgnoreCase(payDocFlag)&&!"ePDF".equals(delmthd))
+                                                          {
                                                               
+                                                               curRow.setAttribute("BcPodFlag","N");
+                                                                                                                            
+                                                          } 
                                                               else if("P".equalsIgnoreCase(attribute6ResultPF1)&&"N".equalsIgnoreCase(payDocFlag))  {
                                                                  
                                                                   curRow.setAttribute("BcPodFlag","N");
@@ -768,6 +794,7 @@ public class ODEBillDocumentsCO extends OAControllerImpl
        
           String rowRef = pageContext.getParameter(OAWebBeanConstants.EVENT_SOURCE_ROW_REFERENCE);
           ODEbillCustDocVORowImpl rowImpl1= (ODEbillCustDocVORowImpl)am.findRowByRef(rowRef);
+          String  dmtd=rowImpl1.getCExtAttr3();
              if (CustAccountId!=null )
         {
            String docuType=rowImpl1.getCExtAttr1().toString(); 
@@ -789,14 +816,20 @@ public class ODEBillDocumentsCO extends OAControllerImpl
                else {
                        Serializable inputParams1[] = {CustAccountId };
                                            String attribute6ResultPF2 = (String)am.invokeMethod("attribute6ValuePF",inputParams1);
-                       if ("P".equalsIgnoreCase(attribute6ResultPF2)&&"Y".equalsIgnoreCase(PayDocAttr2))
+                       if ("P".equalsIgnoreCase(attribute6ResultPF2)&&"Y".equalsIgnoreCase(PayDocAttr2)&&"ePDF".equals(dmtd))
                                             {
                                                 rowImpl1.setBcPodFlag("P");
-                                                
+                                                                                                
                                             }
+                  else if ("P".equalsIgnoreCase(attribute6ResultPF2)&&"Y".equalsIgnoreCase(PayDocAttr2)&&!"ePDF".equals(dmtd))
+                                        {
+                                            rowImpl1.setBcPodFlag("N");
+                                                                                        
+                                        }
                                                    else if("P".equalsIgnoreCase(attribute6ResultPF2)&&"N".equalsIgnoreCase(PayDocAttr2))  {
                                                     rowImpl1.setBcPodFlag("N");
                                                           }
+                                                          
                                                else if("Y".equalsIgnoreCase(attribute6ResultPF2)&&"Y".equalsIgnoreCase(PayDocAttr2))  {
                                                    rowImpl1.setBcPodFlag("N");
                                                         }
