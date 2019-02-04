@@ -54,7 +54,7 @@ WHERE aia.invoice_id = aida.invoice_id
 	AND gps_to.adjustment_period_flag <> 'Y'
 	AND aia.set_of_books_id = gps_to.set_of_books_id
 	AND aida.accounting_date BETWEEN gps_from.start_date AND gps_to.end_date
-	AND aia.creation_date >= to_date('18-JUN-18 00:00:00', 'DD-MON-RR HH24:MI:SS')
+	AND aia.creation_date >= to_date('07-APR-18 00:00:00', 'DD-MON-RR HH24:MI:SS')
 	AND aia.source = 'US_OD_DROPSHIP'
 	AND NOT EXISTS (
 		SELECT 1
