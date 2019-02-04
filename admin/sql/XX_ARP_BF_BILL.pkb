@@ -3295,9 +3295,12 @@ BEGIN
 				   AND    line_type NOT IN ('TAX', 'FREIGHT');
 					--Added for Bill Complete. Marking as Completed if bill is generated for Child Order NAIT-61963.
 					BEGIN
-						UPDATE Xx_Scm_Bill_Signal
-						SET Bill_forward_flag	 =	'C'
-						WHERE Child_Order_Number =L_inv_trx.trx_number
+						UPDATE xx_scm_bill_signal
+						SET Bill_forward_flag	 =	'C',
+							last_update_date 	 = arp_global.last_update_date,
+							last_updated_by 	 = arp_global.last_updated_by,
+							last_update_login 	 = arp_global.last_update_login
+						WHERE child_order_number = L_inv_trx.trx_number
 						AND Bill_forward_flag    = 'N' ;
 					
 						FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill_forward_flag Updated Count : '|| sql%rowcount );
