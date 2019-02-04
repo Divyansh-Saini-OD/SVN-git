@@ -4395,7 +4395,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
 								-- start 
 								 AND NOT EXISTS (SELECT 1
                                                     FROM xx_ar_ebl_file eb
-                                                    WHERE eb.cons_billing_number = hdr.cons_inv_id
+                                                    WHERE eb.cons_billing_number = hdr.consolidated_bill_number
                                                     AND eb.paydoc_flag IS NULL  
                                                     AND eb.file_type             = 'STUB'
                                                     AND eb.status                = 'RENDER'
