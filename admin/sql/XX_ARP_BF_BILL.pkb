@@ -1615,7 +1615,7 @@ BEGIN
 						   xx_om_header_attributes_all xoha
 					  WHERE ooh.Order_Number = TO_NUMBER(api.trx_number)
 					  AND Ooh.Header_Id      = Xoha.Header_Id
-					  AND parent_order_num	IS NOT NULL
+					 -- AND parent_order_num	IS NOT NULL
 					  AND NVL(BILL_COMP_FLAG,'N')     IN ('B','Y'))
 				AND NOT EXISTS (SELECT 1 from xx_scm_bill_signal
 						  WHERE 1=1
