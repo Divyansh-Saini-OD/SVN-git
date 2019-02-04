@@ -136,6 +136,8 @@ PACKAGE BODY XX_AR_INV_FREQ_PKG AS
 -- |                                           payment type code                        |
 -- |2.33       02-APR-2018  Punit Gupta CG      Retrofit Billing Programs with           |
 -- |                                           custom OM Views- Defect NAIT-31697       |
+-- |2.34       28-JAN-2019  Dinesh Nagapuri    Bill Complete-No Billing files were      |
+-- |										   generated yet there were Info docs NAIT-80765|
 -- +====================================================================================+
 
         gn_gc_amt                     NUMBER;
@@ -4159,6 +4161,7 @@ PROCEDURE SYNCH  (x_error_buff         OUT VARCHAR2
            ,XAIFM.billdocs_combo_type
            ,RCT.customer_trx_id
            ,RCT.trx_number
+		   ,NVL(RCT.BILLING_DATE,TRX_DATE) BILLING_DATE						-- Added for NAIT-80765
            ,XAIFM.cust_account_id
            ,XAIFM.billdocs_payment_term
            ,XAIFM.billdocs_special_handling
@@ -4200,6 +4203,7 @@ PROCEDURE SYNCH  (x_error_buff         OUT VARCHAR2
            ,XAIFM.billdocs_combo_type
            ,RCT.customer_trx_id
            ,RCT.trx_number
+		   ,NVL(RCT.BILLING_DATE,TRX_DATE) BILLING_DATE						-- Added for NAIT-80765
            ,XAIFM.cust_account_id
            ,XAIFM.billdocs_payment_term
            ,XAIFM.billdocs_special_handling
@@ -4295,7 +4299,8 @@ PROCEDURE SYNCH  (x_error_buff         OUT VARCHAR2
     ln_not_insert_count_combo_pay   NUMBER := 0;   --To track the no: of Paydoc invoices not inserted into the frequency table (13337)
     ln_not_insert_count_combo_info  NUMBER := 0;   --To track the no: of Infodoc invoices not inserted into the frequency table(13337)
     --End of Changes for defect 12710
-
+	l_bypass_trx            		BOOLEAN:= FALSE;		--Added for NAIT-80765
+	lc_bill_comp_flag				VARCHAR2(1):= 'N' ;     --Added for NAIT-80765
     lc_mail_to_attention            xx_cdh_cust_acct_ext_b.c_ext_attr15%TYPE   := NULL; -- Added for R1.4 CR# 586 eBilling.
     ld_due_date                     ar_payment_schedules.due_date%TYPE;                 -- Added for R1.4 CR# 586 eBilling.
 
@@ -4469,6 +4474,34 @@ PROCEDURE SYNCH  (x_error_buff         OUT VARCHAR2
         FOR lcu_inv_cust_doc IN c_inv_cust_doc(ln_org_id, ln_attr_group_id,ld_as_of_date)              -- Added for R1.3 CR 738 Defect 2766
         LOOP
 
+		--- *** Start for Bill Complete Change NAIT-80765 *** ---
+			--- Skip the process, to exclude creation of docs if billing date for transaction is in future i.e if no consolidated bills got generated already
+		    l_bypass_trx    		 := FALSE;
+		    lc_bill_comp_flag	 	 := 'N';
+			BEGIN
+				SELECT 'Y'
+				INTO lc_bill_comp_flag
+				FROM oe_order_headers_all ooh,
+					 xx_om_header_attributes_all xoha
+				WHERE ooh.order_number       = TO_NUMBER(lcu_inv_cust_doc.trx_number)
+				AND ooh.header_id            = xoha.header_id
+				AND NVL(bill_comp_flag,'N') IN ('B','Y')
+				AND ROWNUM <2;
+			EXCEPTION
+			WHEN NO_DATA_FOUND THEN
+				lc_bill_comp_flag	:='N';
+			WHEN OTHERS THEN
+				lc_bill_comp_flag	:='N';
+				FND_FILE.PUT_LINE (FND_FILE.LOG,'Exception in finding Bill Complete Customer : '||SQLERRM);
+			END;
+			
+			IF lc_bill_comp_flag ='Y' AND lcu_inv_cust_doc.billing_date > ld_as_of_date
+			THEN
+				l_bypass_trx	:=	TRUE;
+			END IF;
+			
+			IF NOT l_bypass_trx THEN
+			/* --- *** End for Bill Complete Change NAIT-80765 *** --- */ 
            lc_eff_print_date_err := 'N';
            lc_combo_type   := lcu_inv_cust_doc.billdocs_combo_type;
            lc_payment_code := lcu_inv_cust_doc.payment_type_code;
@@ -4897,6 +4930,9 @@ PROCEDURE SYNCH  (x_error_buff         OUT VARCHAR2
               END IF;
 
            END IF;      -- lc_inv_processed           -- Added for the Defect 12710
+		   ELSE				--if for l_bypass_trx     -- Added for NAIT-80765
+				FND_FILE.PUT_LINE(FND_FILE.LOG, 'Skipping for Bill Complete Customer Since Billing Date is pushed to future trx_number : '||lcu_inv_cust_doc.trx_number);
+		   END	IF;
         END LOOP;
 
 -- updated added for defect 12227. to update the bills of consol invoices and transaction type set as "Do not print"
