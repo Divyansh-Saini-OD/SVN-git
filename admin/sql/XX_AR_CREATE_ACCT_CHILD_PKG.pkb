@@ -1243,7 +1243,7 @@ AS
 				BEGIN						
 					SELECT xoha.bill_comp_flag
 						,ooh.invoice_to_org_id
-						,xoha.parent_order_num
+						,NVL(xoha.parent_order_num,ooh.order_number)
 					INTO lc_Bill_Comp_Flag,
 						 ln_site_use_id,
 						 lc_parent_order_num
