@@ -610,7 +610,7 @@ EXCEPTION
   p_process_info.error_message := v_error_message;
   FND_FILE.PUT_LINE(FND_FILE.LOG,v_error_message);
   --*/
-  NULL
+  NULL;
 END Load_OrgHier_Data;
 /*===========================================================================+
 |                        Load_ItemXref_Data                                  |
@@ -745,7 +745,7 @@ EXCEPTION
   p_process_info.error_message := v_error_message;
   FND_FILE.PUT_LINE(FND_FILE.LOG,v_error_message);
   --*/
-  NULL
+  NULL;
 END Load_ItemXref_Data;
 /*===========================================================================+
 |                        Load_Location_Data                                  |
@@ -943,7 +943,7 @@ EXCEPTION
   p_process_info.error_message := v_error_message;
   FND_FILE.PUT_LINE(FND_FILE.LOG,v_error_message);
   --*/
-  NULL
+  NULL;
 END Load_Location_Data;
 
 END XX_INV_RMS_INT_LOAD;
