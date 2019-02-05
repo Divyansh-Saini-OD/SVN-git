@@ -422,10 +422,11 @@ public class ODEBillDocumentsCO extends OAControllerImpl
                       rsCustDoc.reset();
                       while (rsCustDoc.hasNext()) {
                           Row custDocObj = rsCustDoc.next();
+                                 String deliveryM=custDocObj.getAttribute("CExtAttr3").toString();
                              if(("Y".equalsIgnoreCase(attribute6ResultPF5)||"B".equalsIgnoreCase(attribute6ResultPF5))
                              &&!"Consolidated Bill".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr1").toString())
                              &&"Y".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr2").toString())
-                             &&!"COMPLETE".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr16").toString()))
+                             &&!"COMPLETE".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr16").toString())&&!"PRINT".equalsIgnoreCase(deliveryM))
                          {
                                String rt=custDocObj.getAttribute("NExtAttr2").toString();
                           MessageToken[] tokens1 = { new MessageToken("CUST_DOC",rt)};
@@ -433,21 +434,22 @@ public class ODEBillDocumentsCO extends OAControllerImpl
                                                                                 
                      }
                                  //Added By Reddy Sekhar K on 11th Jan 2019 for the NAIT-78901 ----START
-                          String deliveryM=custDocObj.getAttribute("CExtAttr3").toString();
+                          ///String deliveryM=custDocObj.getAttribute("CExtAttr3").toString();
                            String billDOcStatus=custDocObj.getAttribute("CExtAttr16").toString();
                                  String bcPODFlag=(String)custDocObj.getAttribute("BcPodFlag");                   
                             if("PRINT".equalsIgnoreCase(deliveryM)&& !"COMPLETE".equalsIgnoreCase(billDOcStatus) 
-                            && custDocObj.getAttribute("CExtAttr4")==null  && !"N".equalsIgnoreCase(bcPODFlag)
-                            && "Consolidated Bill".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr1").toString()))                        
+                                &&"Y".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr2").toString()))
+                            //&& !"N".equalsIgnoreCase(bcPODFlag)&&"Y".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr2").toString()))
+                            //&& "Consolidated Bill".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr1").toString())&&!"PRINT".equalsIgnoreCase(deliveryM))                        
                                         {
                                  throw new OAException("XXCRM", "XXOD_EBL_PRINT_SPHDLNG_MAN");
                               
                                        }
-                                 if("P".equalsIgnoreCase(attribute6ResultPF5)&&!"Consolidated Bill".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr1").toString())
+                                /* if("P".equalsIgnoreCase(attribute6ResultPF5)&&!"Consolidated Bill".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr1").toString())
                                  &&"Y".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr2").toString())&&!"COMPLETE".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr16").toString())
                                  &&"PRINT".equalsIgnoreCase(deliveryM)){
                                        throw new OAException("XXCRM", "XXOD_EBL_PRINT_INV_VALIDATION");
-                                 }
+                                 }*/
 
                                   if("EDI".equalsIgnoreCase(deliveryM)||"eXLS".equalsIgnoreCase(deliveryM)&&"P".equalsIgnoreCase(attribute6ResultPF5)
                                   &&!"Consolidated Bill".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr1").toString())
@@ -575,6 +577,11 @@ public class ODEBillDocumentsCO extends OAControllerImpl
                          rowImpl.setBcPodFlag("P");
                          
                      }
+                        else if ("P".equalsIgnoreCase(attribute6ResultPF1)&&"Y".equalsIgnoreCase(payDocInd)&&"PRINT".equals(delyMthd))
+                         {
+                            rowImpl.setBcPodFlag("P");
+                            
+                         }
                        else if ("P".equalsIgnoreCase(attribute6ResultPF1)&&"Y".equalsIgnoreCase(payDocInd)&& !"ePDF".equals(delyMthd))
                         {
                            rowImpl.setBcPodFlag("N");
@@ -584,6 +591,16 @@ public class ODEBillDocumentsCO extends OAControllerImpl
                          else if("P".equalsIgnoreCase(attribute6ResultPF1)&&"N".equalsIgnoreCase(payDocInd))  {
                              rowImpl.setBcPodFlag("N");
                              
+                         }
+                        
+                        else if ("Y".equalsIgnoreCase(attribute6ResultPF1)&&"Y".equalsIgnoreCase(payDocInd)&&"PRINT".equals(delyMthd))
+                         {
+                            rowImpl.setBcPodFlag("Y");
+                         }
+                        else if ("B".equalsIgnoreCase(attribute6ResultPF1)&&"Y".equalsIgnoreCase(payDocInd)&&"PRINT".equals(delyMthd))
+                         {
+                            rowImpl.setBcPodFlag("B");
+                            
                          }
                         else if("Y".equalsIgnoreCase(attribute6ResultPF1)&&"Y".equalsIgnoreCase(payDocInd))  {
                             rowImpl.setBcPodFlag("N");
@@ -671,6 +688,7 @@ public class ODEBillDocumentsCO extends OAControllerImpl
                              
           }
           else{
+          
               
               if ("P".equalsIgnoreCase(attribute6ResultPF1)&&"Y".equalsIgnoreCase(payDocFlag)&&"ePDF".equals(delmthd))
                                                           {
@@ -678,6 +696,11 @@ public class ODEBillDocumentsCO extends OAControllerImpl
                                                                curRow.setAttribute("BcPodFlag","P");
                                                                                                                              
                                                           }
+              else if ("P".equalsIgnoreCase(attribute6ResultPF1)&&"Y".equalsIgnoreCase(payDocFlag)&&"PRINT".equals(delmthd))
+                                       {
+                                           curRow.setAttribute("BcPodFlag","P");
+                                          
+                                       }
              else if ("P".equalsIgnoreCase(attribute6ResultPF1)&&"Y".equalsIgnoreCase(payDocFlag)&&!"ePDF".equals(delmthd))
                                                           {
                                                               
@@ -689,6 +712,16 @@ public class ODEBillDocumentsCO extends OAControllerImpl
                                                                   curRow.setAttribute("BcPodFlag","N");
                                                                   
                                                               }
+                                                              
+              else if ("Y".equalsIgnoreCase(attribute6ResultPF1)&&"Y".equalsIgnoreCase(payDocFlag)&&"PRINT".equals(delmthd))
+                                       {
+                                           curRow.setAttribute("BcPodFlag","Y");
+                                       }
+                                      else if ("B".equalsIgnoreCase(attribute6ResultPF1)&&"Y".equalsIgnoreCase(payDocFlag)&&"PRINT".equals(delmthd))
+                                       {
+                                           curRow.setAttribute("BcPodFlag","B");
+                                          
+                                       }
                                                              else if("Y".equalsIgnoreCase(attribute6ResultPF1)&&"Y".equalsIgnoreCase(payDocFlag))  {
                                                                 
                                                                  curRow.setAttribute("BcPodFlag","N");
@@ -816,10 +849,16 @@ public class ODEBillDocumentsCO extends OAControllerImpl
                else {
                        Serializable inputParams1[] = {CustAccountId };
                                            String attribute6ResultPF2 = (String)am.invokeMethod("attribute6ValuePF",inputParams1);
+                                           
                        if ("P".equalsIgnoreCase(attribute6ResultPF2)&&"Y".equalsIgnoreCase(PayDocAttr2)&&"ePDF".equals(dmtd))
                                             {
                                                 rowImpl1.setBcPodFlag("P");
                                                                                                 
+                                            }
+                   else if ("P".equalsIgnoreCase(attribute6ResultPF2)&&"Y".equalsIgnoreCase(PayDocAttr2)&&"PRINT".equals(dmtd))
+                                            {
+                                               rowImpl1.setBcPodFlag("P");
+                                               
                                             }
                   else if ("P".equalsIgnoreCase(attribute6ResultPF2)&&"Y".equalsIgnoreCase(PayDocAttr2)&&!"ePDF".equals(dmtd))
                                         {
@@ -830,6 +869,15 @@ public class ODEBillDocumentsCO extends OAControllerImpl
                                                     rowImpl1.setBcPodFlag("N");
                                                           }
                                                           
+                   else if ("Y".equalsIgnoreCase(attribute6ResultPF2)&&"Y".equalsIgnoreCase(PayDocAttr2)&&"PRINT".equals(dmtd))
+                                            {
+                                               rowImpl1.setBcPodFlag("Y");
+                                            }
+                                           else if ("B".equalsIgnoreCase(attribute6ResultPF2)&&"Y".equalsIgnoreCase(PayDocAttr2)&&"PRINT".equals(dmtd))
+                                            {
+                                               rowImpl1.setBcPodFlag("B");
+                                               
+                                            }
                                                else if("Y".equalsIgnoreCase(attribute6ResultPF2)&&"Y".equalsIgnoreCase(PayDocAttr2))  {
                                                    rowImpl1.setBcPodFlag("N");
                                                         }
