@@ -1,0 +1,77 @@
+15053
+REM============================================================================================
+REM                                 Start Of Script                                            
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : E0384b ConsignmentConversionCapture                                        |--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_GI_CONSIGN_CONV_PARMS.tbl                                        |--        
+--|                                                                                             |--   
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                  1. XX_ITM_CONSIGN_CONV_PARMS(OD ConsignmentConversionCapture custom Table) |--
+--|                                                                                             |-- 
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              27-SEP-2007       Madhukar Salunke        Original                         |--
+--| 2.0              31-OCT-2007       Siddharth Singh         Added columns status_code and    |-- 
+--|                                                            error_message.                   |-- 
+--+=============================================================================================+-- 
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+				   
+WHENEVER SQLERROR CONTINUE
+				   
+PROMPT			   
+PROMPT Dropping Existing Custom Tables......
+PROMPT			   
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Table XX_ITM_CONSIGN_CONV_PARMS
+PROMPT
+
+DROP TABLE XX_ITM_CONSIGN_CONV_PARMS;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating the Custom Table XX_ITM_CONSIGN_CONV_PARMS......
+PROMPT
+
+CREATE TABLE XX_ITM_CONSIGN_CONV_PARMS(
+                                      INVENTORY_ITEM_ID        NUMBER         NOT NULL
+                                     ,ORGANIZATION_ID          NUMBER         NOT NULL
+                                     ,EFFECTIVE_DATE           DATE           NOT NULL
+                                     ,ACTION_FLAG              VARCHAR2(1)
+                                     ,CONV_SUPPLIER_SITE       NUMBER
+                                     ,BUY_BACK_SUPPLIER_SITE   NUMBER
+                                     ,OLD_PO_COST              NUMBER
+                                     ,BUY_BACK_PO_COST         NUMBER
+                                     ,PROCESS_DATE             DATE
+                                     ,STATUS_CODE              VARCHAR2(1)
+                                     ,ERROR_MESSAGE            VARCHAR2(150)
+                                     );
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================
+

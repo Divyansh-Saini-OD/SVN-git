@@ -1,0 +1,120 @@
+REM============================================================================================
+REM                                 Start Of Script                                            
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : OD C0258 Items                                                             |--
+--|                                                                                             |--
+--| Program Name   : XX_INV_ITEM_ORG_ATTRIBUTES.tbl                                             |--        
+--|                                                                                             |--   
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                  1. XX_INV_ITEM_ORG_ATTRIBUTES (OD Item Location Attributes Staging Table)  |--
+--|                  2. XX_INV_ITEM_ORG_ATTRIBUTES (Synonym for XX_INV_ITEM_ORG_ATTRIBUTES)     |--  
+--|                                                                                             |-- 
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0               16-May-2007      Fajna Kottaparambil     Original                         |--
+--+=============================================================================================+-- 
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+                   
+WHENEVER SQLERROR CONTINUE
+                   
+PROMPT             
+PROMPT Dropping Existing Custom Tables......
+PROMPT             
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Table XXCNV.XX_INV_ITEM_ORG_ATTRIBUTES 
+PROMPT
+
+DROP TABLE XXCNV.XX_INV_ITEM_ORG_ATTRIBUTES;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping SYNONYM XX_INV_ITEM_ORG_ATTRIBUTES in APPS
+PROMPT
+
+DROP SYNONYM XX_INV_ITEM_ORG_ATTRIBUTES;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating the Custom Table XX_INV_ITEM_ORG_ATTRIBUTES......
+PROMPT
+
+CREATE TABLE XXCNV.XX_INV_ITEM_ORG_ATTRIBUTES(
+                                                CONTROL_ID                 NUMBER,          
+                                                PROCESS_FLAG               NUMBER,
+                                                CONV_ACTION                VARCHAR2(10),
+                                                LOAD_BATCH_ID              NUMBER,
+                                                EXTRACT_BATCH_ID           NUMBER,
+                                                SOURCE_SYSTEM_CODE         VARCHAR2(5),
+                                                SOURCE_SYSTEM_REF          VARCHAR2(50),
+                                                ERROR_CODE                 VARCHAR2(15),
+                                                ERROR_MESSAGE              VARCHAR2(2000),
+                                                LAST_UPDATE_DATE           DATE,
+                                                LAST_UPDATE_LOGIN          NUMBER,
+                                                LAST_UPDATED_BY            NUMBER,                                                
+                                                CREATION_DATE              DATE,
+                                                CREATED_BY                 NUMBER,
+                                                INVENTORY_ITEM_ID          NUMBER,
+                                                ORGANIZATION_ID            NUMBER,
+                                                OD_DIST_TARGET             NUMBER ,
+                                                OD_EBW_QTY                 NUMBER,
+                                                OD_INFINITE_QTY_CD         VARCHAR2(6),
+                                                OD_LOCK_UP_ITEM_FLG        VARCHAR2(1),
+                                                OD_PROPRIETORY_TYPE_CD     VARCHAR2(6),
+                                                OD_REPLEN_SUB_TYPE_CD      VARCHAR2(6),
+                                                OD_REPLEN_TYPE_CD          VARCHAR2(6),
+                                                OD_WHSE_ITEM_CD            VARCHAR2(6),
+                                                OD_FUTURE_IND              VARCHAR2(6),
+                                                OD_ABC_CLASS               VARCHAR2(6),
+                                                LOCAL_ITEM_DESC            VARCHAR2(100),
+                                                LOCAL_SHORT_DESC           VARCHAR2(20),
+                                                PRIMARY_SUPP               NUMBER,
+                                                OD_CHANNEL_BLOCK           VARCHAR2(1),
+                                                TEMPLATE_ID                NUMBER,
+                                                LOCATION_PROCESS_FLAG      NUMBER   
+                                             );
+
+PROMPT
+PROMPT Creating Synonym in APPS...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM XX_INV_ITEM_ORG_ATTRIBUTES
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_INV_ITEM_ORG_ATTRIBUTES FOR XXCNV.XX_INV_ITEM_ORG_ATTRIBUTES ;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+
+EXIT;
+
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================
+

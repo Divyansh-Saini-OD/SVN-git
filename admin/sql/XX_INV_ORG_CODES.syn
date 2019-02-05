@@ -1,0 +1,56 @@
+REM==================================================================================
+REM                             Start Of Script                                     =           
+REM==================================================================================
+--+===============================================================================+--
+--|                                                                               |--
+--| Object Name    : Synonym for XX_INV_ORG_CODES		                  |--
+--|                                                                               |--
+--| Program Name   : XX_INV_ORG_CODES.syn                                         |--        
+--|                                                                               |--   
+--| Purpose        : Create Custom Tables .                                       |--
+--|                  The Objects created are:                                     |--
+--|                                                                               |--
+--|                1. Synonym for XX_INV_ORG_CODES and                            |--
+--|                   synonym for XX_INV_ORG_CODES_S				  |--  
+--|                                                                               |-- 
+--| Change History  :                                                             |--
+--| Ver   Date           Changed By           Description                         |--
+--+===============================================================================+--
+--| 1.0   01-APR-2008    Ganesh B Nadakudhiti Initial Creation                    |--
+--+===============================================================================+--
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+                   
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM XX_INV_ORG_CODES
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_INV_ORG_CODES FOR XXPTP.XX_INV_ORG_CODES;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM XX_INV_ORG_CODES_S
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_INV_ORG_CODES_S FOR XXPTP.XX_INV_ORG_CODES_S;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================

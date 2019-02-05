@@ -1,0 +1,103 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : OD C0273, Merchandising Hierarchy                                          |--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_INV_MERCHIER_VAL_STG.tbl                                         |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_INV_MERCHIER_VAL_STG (OD Merchadising Hierarchy Staging Table)         |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              10-May-2007       Gowri Nagarajan         Original                         |--
+--| 1.1              05-Jun-2007       Gowri Nagarajan         Changed as per updated MD.040    |--
+--| 1.2              29-Jun-2007       Gowri Nagarajan         Removed the Synonym Creation     |--
+--| 1.3              29-Jun-2007       Parvez Siddiqui         TL Reviewed                      |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Dropping Existing Custom Tables......
+PROMPT
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Dropping Table XX_INV_MERCHIER_VAL_STG
+PROMPT
+
+DROP TABLE XX_INV_MERCHIER_VAL_STG ;
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_INV_MERCHIER_VAL_STG......
+PROMPT
+
+CREATE TABLE XX_INV_MERCHIER_VAL_STG
+                                    (
+                                       CONTROL_ID             NUMBER         NOT NULL
+                                     , PROCESS_FLAG           NUMBER         NOT NULL
+                                     , CONV_ACTION            VARCHAR2(10)
+                                     , LOAD_BATCH_ID          NUMBER         
+                                     , EXTRACT_BATCH_ID       NUMBER         
+                                     , SOURCE_SYSTEM_CODE     VARCHAR2(5)    NOT NULL
+                                     , SOURCE_SYSTEM_REF      VARCHAR2 (50)  NOT NULL
+                                     , ERROR_CODE             VARCHAR2(15)
+                                     , ERROR_MESSAGE          VARCHAR2(2000)
+                                     , FLEX_VALUE_SET_NAME    VARCHAR2(100)  NOT NULL
+                                     , FND_VALUE              NUMBER         NOT NULL
+                                     , FND_VALUE_DESCRIPTION  VARCHAR2(240)  NOT NULL
+                                     , LAST_UPDATE            DATE           NOT NULL
+                                     , LAST_UPDATED_BY        NUMBER         NOT NULL
+                                     , CREATION_DATE          DATE           NOT NULL
+                                     , CREATED_BY             NUMBER         NOT NULL
+                                     , VALUE_CATEGORY         VARCHAR2(30)
+                                     , ATTRIBUTE1             VARCHAR2(240)
+                                     , ATTRIBUTE2             VARCHAR2(240)
+                                     , ATTRIBUTE3             VARCHAR2(240)
+                                     , ATTRIBUTE4             VARCHAR2(240)
+                                     , ATTRIBUTE5             VARCHAR2(240)
+                                     , ATTRIBUTE6             VARCHAR2(240)
+                                     , ATTRIBUTE7             VARCHAR2(240)
+                                     , ATTRIBUTE8             VARCHAR2(240)
+                                     , ATTRIBUTE9             VARCHAR2(240)
+                                     , ATTRIBUTE10            VARCHAR2(240)
+                                     , ATTRIBUTE11            VARCHAR2(240)
+                                     , ATTRIBUTE12            VARCHAR2(240)
+                                     , ATTRIBUTE13            VARCHAR2(240)
+                                     , ATTRIBUTE14            VARCHAR2(240)
+                                     , ATTRIBUTE15            VARCHAR2(240)
+                                     );
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

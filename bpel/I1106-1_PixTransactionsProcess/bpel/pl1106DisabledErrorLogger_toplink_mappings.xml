@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toplink:object-persistence version="Oracle TopLink - 10g Release 3 (10.1.3.1.0) (Build 061004)" xmlns:opm="http://xmlns.oracle.com/ias/xsds/opm" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:toplink="http://xmlns.oracle.com/ias/xsds/toplink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <opm:name>pl1106DisabledErrorLogger</opm:name>
+   <opm:class-mapping-descriptors>
+      <opm:class-mapping-descriptor xsi:type="toplink:relational-class-mapping-descriptor">
+         <opm:class>pl1106DisabledErrorLogger.XxGiPixtransactions</opm:class>
+         <opm:alias>XxGiPixtransactions</opm:alias>
+         <opm:primary-key>
+            <opm:field table="XX_GI_PIXTRANSACTIONS" name="KEYREC" xsi:type="opm:column"/>
+            <opm:field table="XX_GI_PIXTRANSACTIONS" name="TO_LOC_ID" xsi:type="opm:column"/>
+         </opm:primary-key>
+         <opm:events xsi:type="toplink:event-policy"/>
+         <opm:querying xsi:type="toplink:query-policy">
+            <opm:queries>
+               <opm:query name="findAllXxGiPixtransactions" xsi:type="toplink:read-all-query">
+                  <toplink:timeout>0</toplink:timeout>
+                  <toplink:reference-class>pl1106DisabledErrorLogger.XxGiPixtransactions</toplink:reference-class>
+                  <toplink:cache-usage>primary-key</toplink:cache-usage>
+                  <toplink:lock-mode>none</toplink:lock-mode>
+                  <toplink:container xsi:type="toplink:list-container-policy">
+                     <toplink:collection-type>java.util.Vector</toplink:collection-type>
+                  </toplink:container>
+               </opm:query>
+            </opm:queries>
+            <toplink:does-exist-query xsi:type="toplink:does-exist-query">
+               <toplink:existence-check>check-database</toplink:existence-check>
+            </toplink:does-exist-query>
+         </opm:querying>
+         <opm:attribute-mappings>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>fromLocId</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="FROM_LOC_ID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>docNbr</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="DOC_NBR" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>keyrec</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="KEYREC" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>seq</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="SEQ" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>originCd</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="ORIGIN_CD" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>tranCode</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="TRAN_CODE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>reasonCd</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="REASON_CD" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>subCode</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="SUB_CODE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>activityDt</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="ACTIVITY_DT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>activityTm</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="ACTIVITY_TM" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>userIdEntBy</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="USER_ID_ENT_BY" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>toLocId</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="TO_LOC_ID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vendorId</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="VENDOR_ID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>targetTranTypeCd</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="TARGET_TRAN_TYPE_CD" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>sourceCd</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="SOURCE_CD" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>adjComments</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="ADJ_COMMENTS" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>adjTypeCd</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="ADJ_TYPE_CD" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>adjStatusCd</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="ADJ_STATUS_CD" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>adjRefExpAdjNbr</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="ADJ_REF_EXP_ADJ_NBR" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>adjGlLoc</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="ADJ_GL_LOC" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>adjCostCenter</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="ADJ_COST_CENTER" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>adjRefData</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="ADJ_REF_DATA" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>adjAdjNbr</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="ADJ_ADJ_NBR" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>strComments</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="STR_COMMENTS" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>strCartonCnt</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="STR_CARTON_CNT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>strStatusCd</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="STR_STATUS_CD" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>strStdPackQty</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="STR_STD_PACK_QTY" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>strBuybackNbr</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="STR_BUYBACK_NBR" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>strTotalCost</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="STR_TOTAL_COST" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>strShipDate</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="STR_SHIP_DATE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>rcvDispositionCd</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="RCV_DISPOSITION_CD" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>rcvCartonCnt</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="RCV_CARTON_CNT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>rcvFreightCd</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="RCV_FREIGHT_CD" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>rcvFobCd</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="RCV_FOB_CD" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>rcvFreightBillNbr</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="RCV_FREIGHT_BILL_NBR" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>rcvCarrierId</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="RCV_CARRIER_ID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>rtvRgaNbr</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="RTV_RGA_NBR" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>rtvBuybackNbr</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="RTV_BUYBACK_NBR" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>rtvComments</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="RTV_COMMENTS" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>rtvStatusCd</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="RTV_STATUS_CD" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>serialNbr</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="SERIAL_NBR" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>ucc128LicPlate</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="UCC_128_LIC_PLATE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>licensePlate</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="LICENSE_PLATE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>currencyCd</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="CURRENCY_CD" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>convRate</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="CONV_RATE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>nbrLines</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="NBR_LINES" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>filler</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="FILLER" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>sku</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="SKU" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>transactionQty</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="TRANSACTION_QTY" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>adjustedQty</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="ADJUSTED_QTY" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>cost</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="COST" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>uom</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="UOM" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>actCd</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="ACT_CD" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>tblFiller</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="TBL_FILLER" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>errorMessage</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="ERROR_MESSAGE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>errorCode</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="ERROR_CODE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>createdBy</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="CREATED_BY" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>creationDate</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="CREATION_DATE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.sql.Timestamp</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>lastUpdatedBy</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="LAST_UPDATED_BY" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>lastUpdateDate</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="LAST_UPDATE_DATE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.sql.Timestamp</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>lastUpdateLogin</opm:attribute-name>
+               <opm:field table="XX_GI_PIXTRANSACTIONS" name="LAST_UPDATE_LOGIN" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+         </opm:attribute-mappings>
+         <toplink:descriptor-type>independent</toplink:descriptor-type>
+         <toplink:caching>
+            <toplink:cache-type>weak-reference</toplink:cache-type>
+            <toplink:always-refresh>true</toplink:always-refresh>
+         </toplink:caching>
+         <toplink:remote-caching>
+            <toplink:cache-type>weak-reference</toplink:cache-type>
+         </toplink:remote-caching>
+         <toplink:instantiation/>
+         <toplink:copying xsi:type="toplink:instantiation-copy-policy"/>
+         <toplink:change-policy xsi:type="toplink:deferred-detection-change-policy"/>
+         <toplink:tables>
+            <toplink:table name="XX_GI_PIXTRANSACTIONS"/>
+         </toplink:tables>
+      </opm:class-mapping-descriptor>
+   </opm:class-mapping-descriptors>
+</toplink:object-persistence>

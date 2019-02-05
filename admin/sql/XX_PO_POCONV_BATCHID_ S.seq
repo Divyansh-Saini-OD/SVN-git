@@ -1,0 +1,66 @@
+REM============================================================================================
+REM                                 Start Of Script                                            
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : OD Purchase Order Batch Id Sequence Creation                               |--
+--|                                                                                             |--
+--| Program Name   : XX_PO_POCONV_BATCHID_S.seq                                                 |--        
+--|                                                                                             |--   
+--| Purpose        : Create Custom Sequences                                                    |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                  1. XX_PO_POCONV_BATCHID_S (Sequence for generation of load_batch_id)       |--  
+--|                                                                                             |-- 
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0               22-Jun-2007      Ritu Shukla             Original                         |--
+--+=============================================================================================+
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Existing Custom Sequences......
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Sequence XXCNV.XX_PO_POCONV_BATCHID_S......
+PROMPT
+
+DROP SEQUENCE XXCNV.XX_PO_POCONV_BATCHID_S;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating Custom Sequence XX_PO_POCONV_BATCHID_S
+PROMPT
+
+CREATE SEQUENCE XXCNV.XX_PO_POCONV_BATCHID_S INCREMENT BY 1 START WITH 1 NOCACHE NOORDER;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================
+
+
+

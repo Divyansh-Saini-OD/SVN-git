@@ -1,0 +1,90 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : I1078_PurchasePriceFromRms Staging Table creation                          |--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_PO_PRICE_FROM_RMS_STG.tbl                                        |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Table .                                                      |--
+--|                  The Objects created are:                                                   |--
+--|                1. XX_PO_PRICE_FROM_RMS_STG(I1078_PurchasePriceFromRms Staging Table)        |--
+--|                                                                                             |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              04-Jun-2007       Chandan U H             Baselined                        |--
+--| 1.1              20-Nov-2007       Chandan U H             Removed Drop Statements          |--
+--+=============================================================================================+--
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+SET TERM ON
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XXPTP.XX_PO_PRICE_FROM_RMS_STG......
+PROMPT
+
+CREATE TABLE XXPTP.XX_PO_PRICE_FROM_RMS_STG(
+					  CONTROL_ID            NUMBER
+                           		 ,ITEM        	        VARCHAR2(40)                             		
+                                	 ,SUPPLIER	       	VARCHAR2(100)      
+                                	 ,OPERATION_CODE	VARCHAR2(25)       
+                                	 ,COUNTRY_CODE	        VARCHAR2(25)       
+                                	 ,ACTIVE_DATE	        DATE	            
+                                	 ,PRICE_PROTECTION_FLAG VARCHAR2(1)      
+                                	 ,REAL_EFF_DATE	        DATE	            
+                                	 ,UNIT_QTY		NUMBER	            
+                                	 ,UNIT_COST		NUMBER	           
+                                	 ,TIER1_QTY	        NUMBER	          
+                                	 ,TIER1_COST		NUMBER	            
+                                	 ,TIER2_QTY	        NUMBER	          
+                                	 ,TIER2_COST	        NUMBER	           
+                                	 ,TIER3_QTY	        NUMBER	          
+                               		 ,TIER3_COST	        NUMBER	           
+                               	  	 ,TIER4_QTY	        NUMBER	          
+                                	 ,TIER4_COST	        NUMBER	           
+                              		 ,TIER5_QTY		NUMBER	           
+                                 	 ,TIER5_COST            NUMBER	          
+                               		 ,TIER6_QTY	      	NUMBER	           
+                             		 ,TIER6_COST	        NUMBER	           
+                                	 ,TOTAL_COST    	NUMBER	           
+                                	 ,CURRENCY_CODE	  	VARCHAR2(25)      
+                               		 ,OPERATING_UNIT	VARCHAR2(25)      
+                                	 ,CREATION_DATE	  	DATE	             
+                                	 ,CREATED_BY	  	NUMBER	            
+                               		 ,LAST_UPDATE_DATE	DATE	              
+                              		 ,LAST_UPDATED_BY	NUMBER	           
+                              		 ,STATUS	        NUMBER	           
+                                	 ,ERROR_MESSAGE	  	VARCHAR2(240)     
+                                	 ,ERROR_CODE	        VARCHAR2(100)
+                                	 ,REQUEST_ID            NUMBER
+                                	 ,PROGRAM_ID            NUMBER
+                                	 ,PROG_APPLICATION_ID   NUMBER
+                                	 );
+                                	 
+                                	 
+WHENEVER SQLERROR CONTINUE;
+
+SHOW ERRORS;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

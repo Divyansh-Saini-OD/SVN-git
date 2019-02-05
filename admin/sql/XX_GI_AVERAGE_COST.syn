@@ -1,0 +1,69 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+--+==============================================================================================+--
+--|                                                                                              |--
+--| Object Name    : Average Cost Update                                                         |--
+--|                                                                                              |--
+--| Program Name   : XX_GI_AVERAGE_COST.syn                                                      |--        
+--|                                                                                              |--   
+--| Purpose        : Create Custom Tables .                                                      |--
+--|                  The Objects created are:                                                    |--
+--|                                                                                              |--
+--|                  1.XX_GI_AVERAGE_COST (Synonym for XX_GI_AVERAGE_COST_STG)                   |--  
+--|                                                                                              |-- 
+--| Change History  :                                                                            |--
+--| Version           Date             Changed By              Description                       |--
+--+==============================================================================================+--
+-- |DRAFT 1A        06-JULY-2007       Meenu Goyal             Initial draft version             |
+-- |DRAFT 1B        18-SEP-2007        Meenu Goyal             Reviewed and Updated              |
+-- | 1.0            21-SEP-2007        Jayshree                Baselined                         |
+--+==============================================================================================+-- 
+                   
+WHENEVER SQLERROR CONTINUE
+                   
+PROMPT             
+PROMPT Dropping Existing Synonym xx_gi_average_cost......
+PROMPT             
+                   
+
+DROP SYNONYM XX_GI_AVERAGE_COST;
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating Synonym in APPS...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM XX_GI_AVERAGE_COST
+PROMPT
+
+CREATE OR REPLACE SYNONYM xx_gi_average_cost_stg FOR xxptp.xx_gi_average_cost_stg;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+
+EXIT;
+
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================
+

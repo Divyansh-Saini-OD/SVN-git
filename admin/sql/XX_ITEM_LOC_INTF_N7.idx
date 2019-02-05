@@ -1,0 +1,40 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name        : XX_ITEM_LOC_N7                                          |
+-- | Description : Non-Unique Index for Custom Table XX_ITEM_LOC_INTF      |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      10-Jun-2008 Paddy Sanjeevi     Initial Version                |
+-- +=======================================================================+
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+
+-- ----------------------------------
+-- Creating Index XX_ITEM_LOC_INTF_N7
+-- ----------------------------------
+
+CREATE INDEX XXPTP.XX_ITEM_LOC_INTF_N7 ON XXPTP.XX_ITEM_LOC_INTF(process_Flag,action_type);
+
+SHOW ERRORS;
+
+EXIT;
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================

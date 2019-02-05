@@ -1,0 +1,45 @@
+REM==================================================================================
+REM                             Start Of Script                                     =           
+REM==================================================================================
+--+===============================================================================+--
+--|                                                                               |--
+--| Object Name    : XX_INV_ORG_LOC_DEF_STG                                       |--
+--|                                                                               |--
+--| Program Name   : ALTER_XX_INV_ORG_LOC_DEF_STG.tbl                             |--        
+--|                                                                               |--   
+--| Purpose        : Alter Custom Tables .                                        |--
+--|                  The Objects created are:                                     |--
+--|                                                                               |--
+--|                1. XX_INV_ORG_LOC_DEF_STG                                      |--
+--|                                                                               |-- 
+--| Change History  :                                                             |--
+--| Ver   Date           Changed By           Description                         |--
+--+===============================================================================+--
+--| 1.0   12-MAY-2008    Ganesh B Nadakudhiti Initial Creation                    |--
+--+===============================================================================+-- 
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+                   
+WHENEVER SQLERROR CONTINUE
+                   
+PROMPT
+PROMPT Altering the custom table XX_INV_ORG_LOC_DEF_STG
+PROMPT
+
+ALTER TABLE xx_inv_org_loc_def_stg ADD(ebs_location_id NUMBER, ebs_location_code VARCHAR2(60));
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================

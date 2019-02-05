@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataTemplate name="XXPORECEIPT" description="Buy from ourselves Purchase Order Receipt Report" version="1.0">
+   <parameters>
+     <parameter name="p_receipt_from_date" datatype="character"/>
+     <parameter name="p_receipt_to_date"   datatype="character"/>
+   </parameters>
+   <dataQuery>
+    <sqlStatement name="Q_PO_RECEIPT">
+         <![CDATA[SELECT to_char(pha.creation_date,'DD-MON-RRRR') po_date,
+                          pha.segment1 po_number,
+                          pla.line_num po_line_num,
+						  pla.vendor_product_num item_number,
+                          pla.item_description sku_description,
+                          sum(rt.quantity) received_qty,
+						  rt.po_unit_price unit_price,
+                          round(sum(rt.quantity) * rt.po_unit_price,2) line_amount,
+                          to_char(rt.transaction_date,'DD-MON-RRRR') receipt_date,
+                          gcc.segment3 account,
+                          gcc.segment4 location,
+						  gcc.segment6 lob
+                   FROM rcv_transactions rt,
+                        po_headers_all pha,
+                        po_lines_all pla,
+                        po_distributions_all pda,
+                        gl_code_combinations gcc,
+						po_req_distributions_all prda,
+						po_requisition_lines_all prla
+                   WHERE 1=1
+                   AND rt.po_header_id = pha.po_header_id
+                   AND rt.po_line_id = pla.po_line_id
+                   AND rt.po_distribution_id = pda.po_distribution_id
+                   AND pda.code_combination_id = gcc.code_combination_id
+				   AND pda.req_distribution_id = prda.distribution_id
+				   AND prda.requisition_line_id = prla.requisition_line_id
+				   AND prla.supplier_duns in ( SELECT xftv.target_value1
+                                               FROM xx_fin_translatedefinition xft,
+                                                    xx_fin_translatevalues xftv
+                                               WHERE xft.translate_id    = xftv.translate_id
+                                               AND xft.enabled_flag      = 'Y'
+                                               AND xftv.enabled_flag     = 'Y'
+                                               AND xft.translation_name  = 'XXPO_PUNCHOUT_CONFIG'
+                                               AND xftv.source_value1    = 'SUPPLIER_DUNS'
+                                               AND xftv.target_value22   =  (
+                                                                           NVL((SELECT 
+                                                                                    pov.profile_option_value
+                                                                                    FROM 
+                                                                                    fnd_profile_option_values pov,
+                                                                                    fnd_profile_options pro
+                                                                                    WHERE
+                                                                                    pro.profile_option_name = 'OD_PO_PUNCHOUT_SUPPIER_TYPE'
+                                                                                    AND  pro.profile_option_id = pov.profile_option_id
+                                                                                    AND to_char(pov.level_id)='10004'  -- At User level
+                                                                                    AND pov.level_value =fnd_global.user_id
+                                                                                    ),
+                                                                                (SELECT 
+                                                                                    pov.profile_option_value
+                                                                                    FROM 
+                                                                                    fnd_profile_option_values pov,
+                                                                                    fnd_profile_options pro
+                                                                                    WHERE
+                                                                                    pro.profile_option_name = 'OD_PO_PUNCHOUT_SUPPIER_TYPE'
+                                                                                    AND  pro.profile_option_id = pov.profile_option_id
+                                                                                    AND to_char(pov.level_id)='10003'  -- At Responsibility level
+                                                                                    AND pov.level_value =fnd_global.resp_id
+                                                                                    ))
+                                                                                    )
+                                              )
+                   AND rt.transaction_type = 'RECEIVE'
+                   AND trunc(rt.transaction_date) >= fnd_conc_date.string_to_date(:p_receipt_from_date) 
+		           AND trunc(rt.transaction_date) <= fnd_conc_date.string_to_date(:p_receipt_to_date)
+				   GROUP BY TO_CHAR(pha.creation_date,'DD-MON-RRRR'), pha.segment1, pla.line_num, pla.vendor_product_num,
+					pla.item_description, rt.po_unit_price, TO_CHAR(rt.transaction_date,'DD-MON-RRRR'), gcc.segment3, gcc.segment4, gcc.segment6 ORDER BY po_number, po_line_num]]>
+    </sqlStatement>
+  </dataQuery>
+  <dataStructure>
+    <group name="G_PO_RECEIPT" source="Q_PO_RECEIPT">
+      <element name="PO_DATE" value="po_date"/>
+      <element name="PO_NUMBER" value="po_number"/>
+      <element name="PO_LINE_NUM" value="po_line_num"/>
+	  <element name="ITEM_NUMBER" value="item_number"/>
+      <element name="SKU_DESCRIPTION" value="sku_description"/>
+      <element name="RECEIVED_QTY" value="received_qty"/>
+	  <element name="UNIT_PRICE" value="unit_price"/>
+      <element name="LINE_AMOUNT" value="line_amount"/>
+      <element name="RECEIPT_DATE" value="receipt_date"/>
+      <element name="ACCOUNT" value="account"/>
+      <element name="LOCATION" value="location"/>
+	  <element name="LOB" value="lob"/>
+    </group>
+  </dataStructure>
+</dataTemplate>
+
+
+
+
+
+
+
+

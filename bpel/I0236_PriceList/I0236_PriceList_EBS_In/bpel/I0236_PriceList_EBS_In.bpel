@@ -1,0 +1,281 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Tue Jun 26 15:05:46 IST 2007
+  Author:  msalunke
+  Purpose: Asynchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="I0236_PriceList_EBS_In"
+         targetNamespace="http://xmlns.oracle.com/I0236_PriceList_EBS_In"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns4="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:ns7="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns5="ODError"
+         xmlns:client="http://xmlns.oracle.com/I0236_PriceList_EBS_In"
+         xmlns:ns6="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/plPriceListProcess/"
+         xmlns:ns3="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/db/top/ReadRMS10"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:ns8="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions">
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <partnerLinks>
+        <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+        <partnerLink name="client"
+                     partnerLinkType="client:I0236_PriceList_EBS_In"
+                     myRole="I0236_PriceList_EBS_InProvider"
+                     partnerRole="I0236_PriceList_EBS_InRequester"/>
+        <partnerLink name="plPriceListProcess"
+                     partnerRole="plPriceListProcess_role"
+                     partnerLinkType="ns1:plPriceListProcess_plt"/>
+        <partnerLink myRole="ODErrorLoggerRequester" name="ODErrorLogger"
+                     partnerRole="ODErrorLoggerProvider"
+                     partnerLinkType="ns4:ODErrorLogger"/>
+    </partnerLinks>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        VARIABLES                                                        
+        List of messages and XML documents used within this BPEL process 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <variables>
+        <!-- Reference to the message passed as input during initiation -->
+        <variable name="inputVariable"
+                  messageType="client:I0236_PriceList_EBS_InRequestMessage"/>
+        <!-- Reference to the message that will be sent back to the requester during callback -->
+        <variable name="outputVariable"
+                  messageType="client:I0236_PriceList_EBS_InResponseMessage"/>
+        <variable name="rcvPriceListIn"
+                  messageType="client:I0236_PriceList_EBS_InRequestMessage"/>
+        <variable name="invkPriceListProcessIn" messageType="ns1:args_in_msg"/>
+        <variable name="invkPriceListProcessOut"
+                  messageType="ns1:args_out_msg"/>
+        <variable name="catchbindingfault"
+                  messageType="bpelx:RuntimeFaultMessage"/>
+        <variable name="Invoke_catchbindingfault_Input"
+                  messageType="ns4:ODErrorLoggerRequestMessage"/>
+        <variable name="catchremotefault"
+                  messageType="bpelx:RuntimeFaultMessage"/>
+        <variable name="Invoke_catchremotefault_Input"
+                  messageType="ns4:ODErrorLoggerRequestMessage"/>
+        <variable name="Invoke_catchall_Input"
+                  messageType="ns4:ODErrorLoggerRequestMessage"/>
+    </variables>
+    <faultHandlers>
+        <catch faultName="bpelx:remoteFault" faultVariable="catchremotefault">
+            <sequence name="Seq_catchremotefault">
+                <assign name="setremotefault">
+                    <copy>
+                        <from expression="concat(ora:getProcessId(),ora:getProcessVersion())"/>
+                        <to variable="Invoke_catchremotefault_Input"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessName"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getInstanceId()"/>
+                        <to variable="Invoke_catchremotefault_Input"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessId"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getDomainId()"/>
+                        <to variable="Invoke_catchremotefault_Input"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessDomain"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getProcessURL()"/>
+                        <to variable="Invoke_catchremotefault_Input"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:SystemName"/>
+                    </copy>
+                    <copy>
+                        <from expression="'I0236_PriceList_EBS_In'"/>
+                        <to variable="Invoke_catchremotefault_Input"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessStep"/>
+                    </copy>
+                    <copy>
+                        <from expression="xp20:current-dateTime()"/>
+                        <to variable="Invoke_catchremotefault_Input"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorDateTime"/>
+                    </copy>
+                    <copy>
+                        <from expression="bpws:getVariableData('catchremotefault','code')"/>
+                        <to variable="Invoke_catchremotefault_Input"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorCode"/>
+                    </copy>
+                    <copy>
+                        <from expression="substring(bpws:getVariableData('catchremotefault','summary'),1,1000)"/>
+                        <to variable="Invoke_catchremotefault_Input"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorDescription"/>
+                    </copy>
+                </assign>
+                <invoke name="Invoke_catchremotefault"
+                        partnerLink="ODErrorLogger" portType="ns4:ODErrorLogger"
+                        operation="initiate"
+                        inputVariable="Invoke_catchremotefault_Input"/>
+            </sequence>
+        </catch>
+        <catch faultName="bpelx:bindingFault" faultVariable="catchbindingfault">
+            <sequence name="Seq_catchbindingfault">
+                <assign name="setbindingfault">
+                    <copy>
+                        <from expression="concat(ora:getProcessId(),ora:getProcessVersion())"/>
+                        <to variable="Invoke_catchbindingfault_Input"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessName"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getInstanceId()"/>
+                        <to variable="Invoke_catchbindingfault_Input"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessId"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getDomainId()"/>
+                        <to variable="Invoke_catchbindingfault_Input"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessDomain"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getProcessURL()"/>
+                        <to variable="Invoke_catchbindingfault_Input"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:SystemName"/>
+                    </copy>
+                    <copy>
+                        <from expression="xp20:current-dateTime()"/>
+                        <to variable="Invoke_catchbindingfault_Input"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorDateTime"/>
+                    </copy>
+                    <copy>
+                        <from expression="bpws:getVariableData('catchbindingfault','code')"/>
+                        <to variable="Invoke_catchbindingfault_Input"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorCode"/>
+                    </copy>
+                    <copy>
+                        <from expression="substring(bpws:getVariableData('catchbindingfault','summary'),1,1000)"/>
+                        <to variable="Invoke_catchbindingfault_Input"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorDescription"/>
+                    </copy>
+                    <copy>
+                        <from expression="'I0236_PriceList_EBS_In'"/>
+                        <to variable="Invoke_catchbindingfault_Input"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessStep"/>
+                    </copy>
+                </assign>
+                <invoke name="Invoke_catchbindingfault"
+                        partnerLink="ODErrorLogger" portType="ns4:ODErrorLogger"
+                        operation="initiate"
+                        inputVariable="Invoke_catchbindingfault_Input"/>
+            </sequence>
+        </catch>
+        <catchAll>
+            <sequence name="Seq_catchall">
+                <assign name="setcatchall">
+                    <copy>
+                        <from expression="concat(ora:getProcessId(),ora:getProcessVersion())"/>
+                        <to variable="Invoke_catchall_Input" part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessName"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getInstanceId()"/>
+                        <to variable="Invoke_catchall_Input" part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessId"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getDomainId()"/>
+                        <to variable="Invoke_catchall_Input" part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessDomain"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getProcessURL()"/>
+                        <to variable="Invoke_catchall_Input" part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:SystemName"/>
+                    </copy>
+                    <copy>
+                        <from expression="'I0236_PriceList_EBS_In'"/>
+                        <to variable="Invoke_catchall_Input" part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessStep"/>
+                    </copy>
+                    <copy>
+                        <from expression="xp20:current-dateTime()"/>
+                        <to variable="Invoke_catchall_Input" part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorDateTime"/>
+                    </copy>
+                    <copy>
+                        <from expression="bpws:getVariableData('catchremotefault','code')"/>
+                        <to variable="Invoke_catchall_Input" part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorCode"/>
+                    </copy>
+                    <copy>
+                        <from expression="substring(bpws:getVariableData('catchremotefault','summary'),1,1000)"/>
+                        <to variable="Invoke_catchall_Input" part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorDescription"/>
+                    </copy>
+                </assign>
+                <invoke name="Invoke_catchall" partnerLink="ODErrorLogger"
+                        portType="ns4:ODErrorLogger" operation="initiate"
+                        inputVariable="Invoke_catchall_Input"/>
+            </sequence>
+        </catchAll>
+    </faultHandlers>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+       ORCHESTRATION LOGIC                                               
+       Set of activities coordinating the flow of messages across the    
+       services integrated within this business process                  
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <sequence name="main">
+        <!-- Receive input from requestor. (Note: This maps to operation defined in I0236_PriceList_EBS_In.wsdl) -->
+        <receive name="rcvPriceList" partnerLink="client"
+                 portType="client:I0236_PriceList_EBS_In" operation="initiate"
+                 variable="rcvPriceListIn" createInstance="yes"/>
+        <!-- 
+          Asynchronous callback to the requester. (Note: the callback location and correlation id is transparently handled using WS-addressing.)
+        -->
+        <assign name="xformXML2API">
+            <bpelx:annotation>
+                <bpelx:pattern>transformation</bpelx:pattern>
+            </bpelx:annotation>
+            <copy>
+                <from expression="ora:processXSLT('Transformation_4.xsl',bpws:getVariableData('rcvPriceListIn','payload'))"/>
+                <to variable="invkPriceListProcessIn" part="InputParameters"/>
+            </copy>
+        </assign>
+        <invoke name="invkPriceListProcess" partnerLink="plPriceListProcess"
+                portType="ns1:plPriceListProcess_ptt"
+                operation="plPriceListProcess"
+                inputVariable="invkPriceListProcessIn"
+                outputVariable="invkPriceListProcessOut"/>
+        <invoke name="callbackClient" partnerLink="client"
+                portType="client:I0236_PriceList_EBS_InCallback"
+                operation="onResult" inputVariable="outputVariable"/>
+    </sequence>
+</process>

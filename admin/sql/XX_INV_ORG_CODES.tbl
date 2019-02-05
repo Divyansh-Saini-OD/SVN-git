@@ -1,0 +1,60 @@
+REM==================================================================================
+REM                             Start Of Script                                     =           
+REM==================================================================================
+--+===============================================================================+--
+--|                                                                               |--
+--| Object Name    : XX_INV_ORG_CODES		                                  |--
+--|                                                                               |--
+--| Program Name   : XX_INV_ORG_CODES.tbl                                         |--        
+--|                                                                               |--   
+--| Purpose        : Create Custom Tables .                                       |--
+--|                  The Objects created are:                                     |--
+--|                                                                               |--
+--|                1. XX_INV_ORG_CODES		                                  |--
+--|                                                                               |-- 
+--| Change History  :                                                             |--
+--| Ver   Date           Changed By           Description                         |--
+--+===============================================================================+--
+--| 1.0   01-APR-2008    Ganesh B Nadakudhiti Initial Creation                    |--
+--+===============================================================================+-- 
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+				   
+WHENEVER SQLERROR CONTINUE
+				   
+PROMPT
+PROMPT Creating the Custom Table XX_INV_ORG_CODES......
+PROMPT
+
+CREATE TABLE XX_INV_ORG_CODES(SNO           NUMBER	,
+			      ORG_CODE      VARCHAR2(3) ,
+			      PROCESS_FLAG  VARCHAR2(1)
+			     );
+
+PROMPT
+PROMPT Creating the Index XX_INV_ORG_CODES_U1......
+PROMPT
+
+CREATE UNIQUE INDEX XX_INV_ORG_CODES_U1 ON XX_INV_ORG_CODES(ORG_CODE);
+
+PROMPT
+PROMPT Creating the Index XX_INV_ORG_CODES_N1......
+PROMPT
+
+CREATE INDEX XX_INV_ORG_CODE_N1 ON XX_INV_ORG_CODES(PROCESS_FLAG);
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================

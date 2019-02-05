@@ -1,0 +1,73 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : E0341 Inventory transfer                                                   |--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_GI_SHIPMENT_TRACKING.tbl                                         |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                  1. XX_GI_SHIPMENT_TRACKING (Shipment tracking table)                       |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By        Description                            |--
+--|=============================================================================================|--
+--| 1.0              06-Dec-2007      Arun Andavar       No previous version                    |--
+--+=============================================================================================|
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Creating the Custom Table XX_GI_SHIPMENT_TRACKING......
+PROMPT
+
+  CREATE TABLE XX_GI_SHIPMENT_TRACKING
+  (
+   LINE_ID                      NUMBER       NOT NULL
+  ,HEADER_ID                    NUMBER       NOT NULL
+  ,DOCUMENT_NUMBER              VARCHAR2(10) NOT NULL
+  ,CARRIER_ID                   VARCHAR2(20) NOT NULL
+  ,CARRIER_TRACKING_NUMBER      VARCHAR2(20) NOT NULL
+  ,CARRIER_TRACKING_STATUS      VARCHAR2(20) NOT NULL
+  ,WEIGHT_UOM                   VARCHAR2(20)
+  ,WEIGHT                       NUMBER
+  ,PICKUP_NUMBER                VARCHAR2(20)
+  ,DECLARED_VALUE               VARCHAR2(20)
+  ,CARRIER_CONFIRMATION_NUMBER  VARCHAR2(20)
+  ,CREATED_BY                   NUMBER        NOT NULL
+  ,CREATION_DATE                DATE          NOT NULL
+  ,LAST_UPDATED_BY              NUMBER        NOT NULL
+  ,LAST_UPDATE_DATE             DATE          NOT NULL
+  ,LAST_UPDATE_LOGIN            NUMBER        NOT NULL
+ );                                   
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+
+EXIT;
+
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
+
+
+
+
+

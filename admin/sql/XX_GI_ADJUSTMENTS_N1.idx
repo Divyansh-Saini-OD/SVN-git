@@ -1,0 +1,59 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- |      Oracle NAIO/Office Depot/Consulting Organization                 |
+-- +=======================================================================+
+-- | Name             :XX_GI_ADJUSTMENTS_N1                                |
+-- | Description      :Non-Unique Index for Custom Table XX_GI_ADJUSTMENTS |
+-- |                   as part of E0352_MiscTransaction                    | 
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |Draft1a  04-May-2007 Remya Sasi         Initial Draft Version          |
+-- |1.0      16-Aug-2007 Remya Sasi         Baselined                      |
+-- +=======================================================================+
+
+PROMPT
+PROMPT Dropping Existing Index xx_gi_adjustments_n1....
+PROMPT
+-- ---------------------------------------------------
+-- Dropping existing index XX_GI_ADJUSTMENTS_N1
+-- ---------------------------------------------------
+
+DROP INDEX xx_gi_adjustments_n1;
+
+
+PROMPT
+PROMPT Creating Index xx_gi_adjustments_n1....
+PROMPT
+-- -------------------------------------------------
+-- Creating Index XX_GI_ADJUSTMENTS_N1
+-- -------------------------------------------------
+
+
+CREATE INDEX    xx_gi_adjustments_n1
+ON              xx_gi_adjustments(
+                                  new_adjustment_number
+                                 ,organization_id
+                                 ,transaction_reason_name
+                                  );
+
+SHOW ERRORS;
+
+EXIT;
+
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================

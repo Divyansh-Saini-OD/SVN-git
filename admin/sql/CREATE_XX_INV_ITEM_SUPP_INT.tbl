@@ -1,0 +1,105 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_INV_ITEM_SUPP_INT.tbl                                            |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_INV_ITEM_SUPP_INT(OD PO ASL Interface control Table)                   |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              21-Jun-2010       Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_INV_ITEM_SUPP_INT......
+PROMPT
+
+CREATE TABLE XX_po_ITEM_SUPP_INT
+( CONTROL_ID           NUMBER              ,
+  ITEM		       VARCHAR2(25),
+  SUPPLIER	       NUMBER,
+  VPN		       VARCHAR2(30),
+  PRIMARY_SUPP	       VARCHAR2(1),
+  VENDOR_ID	        NUMBER,
+  VENDOR_SITE_ID	NUMBER,
+  INVENTORY_ITEM_ID	NUMBER,
+  Operating_unit	NUMBER,
+  av_cost		NUMBER,
+  organization_id	NUMBER,
+  LOAD_BATCH_ID		NUMBER,
+  asl_process_Flag	NUMBER,
+  process_flag		NUMBER,
+  ERROR_MESSAGE		VARCHAR2(2000),
+  ERROR_FLAG		VARCHAR2(1),       	 
+  CREATION_DATE        DATE           NOT NULL,
+  CREATED_BY           NUMBER         NOT NULL,
+  LAST_UPDATE_DATE     DATE           NOT NULL,
+  LAST_UPDATED_BY      NUMBER         NOT NULL
+);
+
+
+WHENEVER SQLERROR CONTINUE;
+
+
+PROMPT
+PROMPT Creating the Table XX_INV_ITEM_SUPP_INT......
+PROMPT
+
+CREATE TABLE XX_po_ITEM_SUPP_LOC_INT
+( CONTROL_ID           NUMBER      ,
+  ITEM		       VARCHAR2(25),
+  SUPPLIER	       NUMBER,
+  LOC		       NUMBER,
+  VPN		       VARCHAR2(30),
+  PRIMARY_SUPP	       VARCHAR2(1),
+  VENDOR_ID	        NUMBER,
+  VENDOR_SITE_ID	NUMBER,
+  INVENTORY_ITEM_ID	NUMBER,
+  ORGANIZATION_ID	NUMBER,
+  av_cost		NUMBER,
+  LOAD_BATCH_ID		NUMBER,
+  loc_process_Flag	NUMBER,
+  process_flag		NUMBER,
+  ERROR_MESSAGE		VARCHAR2(2000),
+  ERROR_FLAG		VARCHAR2(1),       	 
+  CREATION_DATE        DATE           NOT NULL,
+  CREATED_BY           NUMBER         NOT NULL,
+  LAST_UPDATE_DATE     DATE           NOT NULL,
+  LAST_UPDATED_BY      NUMBER         NOT NULL
+);
+
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
