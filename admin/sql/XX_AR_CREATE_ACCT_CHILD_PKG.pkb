@@ -1272,7 +1272,10 @@ AS
 					THEN
 						lc_bill_comp_upd_flag	:='N';
 						-- Inserting Credit Memos into Bill Signal table
-						IF lcu_process_interface_lines.amount < 0 AND UPPER(lcu_process_interface_lines.interface_line_attribute2) like '%RETURN%'
+						IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
+							FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill Complete Customer : before xx_scm_bill_signal order : '||lcu_process_interface_lines.sales_order ||' attribute2 : '||NVL(UPPER(lcu_process_interface_lines.interface_line_attribute2),'XX'));
+						END IF;
+						IF lcu_process_interface_lines.amount < 0 AND NVL(UPPER(lcu_process_interface_lines.interface_line_attribute2),'XX') like '%RETURN%'
 						THEN
 							BEGIN
 								INSERT
