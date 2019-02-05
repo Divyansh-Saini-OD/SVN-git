@@ -1272,7 +1272,7 @@ AS
 					THEN
 						lc_bill_comp_upd_flag	:='N';
 						-- Inserting Credit Memos into Bill Signal table
-						IF lcu_process_interface_lines.amount < 0
+						IF lcu_process_interface_lines.amount < 0 AND UPPER(lcu_process_interface_lines.interface_line_attribute2) like '%RETURN%'
 						THEN
 							BEGIN
 								INSERT
@@ -1315,7 +1315,9 @@ AS
 							FROM xx_scm_bill_signal
 							WHERE child_order_number =	lcu_process_interface_lines.sales_order
 							AND billing_date_flag    = 'N' ;
-							FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill_Comp_Flag Exists Count : '|| ln_bill_comp_cnt );
+							IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
+								FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill_Comp_Flag Exists Count : '|| ln_bill_comp_cnt ||' for Order : '||lcu_process_interface_lines.sales_order);
+							END IF;
 						END;	
 					END IF;
 					IF ln_bill_comp_cnt =0
