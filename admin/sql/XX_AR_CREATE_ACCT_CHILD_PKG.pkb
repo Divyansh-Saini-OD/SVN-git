@@ -1189,6 +1189,7 @@ AS
 			lc_bill_comp_flag        := 'N';							-- Added for Bill Complete NAIT-67165
 			lc_parent_order_num		 := NULL;							-- Added for Bill Complete NAIT-67165
 			ln_site_use_id			 := NULL;							-- Added for Bill Complete NAIT-67165
+			lc_bill_comp_upd_flag	 := 'Y';
 			ln_bill_comp_cnt		 :=-1;
             lc_ret_org_order_num     := NULL;
             ln_cust_trx_line_id      := NULL;
@@ -1336,9 +1337,9 @@ AS
 							END IF;
 						EXCEPTION
 						WHEN NO_DATA_FOUND THEN
-							 FND_FILE.PUT_LINE(FND_FILE.LOG,'NO_DATA_FOUND: TO Update to future for Bill Complete ');
+							 FND_FILE.PUT_LINE(FND_FILE.LOG,'NO_DATA_FOUND: TO Update to future for Bill Complete order : '||lcu_process_interface_lines.sales_order);
 						WHEN OTHERS THEN
-							FND_FILE.PUT_LINE(FND_FILE.LOG,'Other EXCEPTION: TO Update to future for Bill Complete '||SQLERRM );
+							FND_FILE.PUT_LINE(FND_FILE.LOG,'Other EXCEPTION: TO Update to future for Bill Complete Order: '||lcu_process_interface_lines.sales_order||' '||SUBSTR(SQLERRM,1,255) );
 						END;
 					ELSE 
 						IF lc_bill_comp_upd_flag ='N'
@@ -1359,13 +1360,13 @@ AS
 							END IF;
 							EXCEPTION
 							WHEN NO_DATA_FOUND THEN
-								 FND_FILE.PUT_LINE(FND_FILE.LOG,'NO_DATA_FOUND: TO Update to future for Bill Complete ');
+								 FND_FILE.PUT_LINE(FND_FILE.LOG,'NO_DATA_FOUND: TO Update in xx_scm_bill_signal for order : '||lcu_process_interface_lines.sales_order);
 							WHEN OTHERS THEN
-								FND_FILE.PUT_LINE(FND_FILE.LOG,'Other EXCEPTION: TO Update to future for Bill Complete '||SQLERRM );
+								FND_FILE.PUT_LINE(FND_FILE.LOG,'Other EXCEPTION: TO Update in xx_scm_bill_signal for order : '||lcu_process_interface_lines.sales_order||SUBSTR(SQLERRM,1,255));
 							END;
 						END IF;
-						lc_prev_order	:=	lcu_process_interface_lines.sales_order;
 					END IF;
+					lc_prev_order	:=	lcu_process_interface_lines.sales_order;
 				END IF;
 				---/* End for Bill Comp Change NAIT-67165 /
 			
