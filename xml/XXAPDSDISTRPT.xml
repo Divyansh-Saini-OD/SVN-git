@@ -13,9 +13,10 @@
 	, :G_EMAIL_SUBJECT EMAIL_SUBJECT
 	, :G_EMAIL_CONTENT EMAIL_CONTENT
 	, :G_DISTRIBUTION_LIST DISTRIBUTION_LIST
+	, TO_CHAR(SYSDATE, 'DD-MON-RR HH24:MI') REPORTING_DATE
 FROM dual]]></sqlStatement>
       <sqlStatement name="Q_DROPSHIP_DIST"><![CDATA[SELECT
-	/*+ LEADING(AIA AIDA) PARALLEL(AIA) PARALLEL(AIDA) NO_MERGE */
+	/*+ LEADING(AIA AIDA) FULL(AIA) PARALLEL(AIA) PARALLEL(AIDA) NO_MERGE */
 	aps.vendor_name supplier_name
 	, assa.vendor_site_code site_number
 	, pha.segment1 po_number
@@ -85,10 +86,11 @@ ORDER BY ABS(variance) DESC
          <element name="VENDOR_SITE_CODE" dataType="VARCHAR2" value="VENDOR_SITE_CODE" />
       </group>
       <group name="G_EMAIL_DETAILS" source="Q_EMAIL_DETAILS">
-         <element name="SMTP_SERVER" value="SMTP_SERVER" />
-         <element name="EMAIL_SUBJECT" value="EMAIL_SUBJECT" />
-         <element name="EMAIL_CONTENT" value="EMAIL_CONTENT" />
-         <element name="DISTRIBUTION_LIST" value="DISTRIBUTION_LIST" />
+         <element name="SMTP_SERVER" dataType="VARCHAR2" value="SMTP_SERVER" />
+         <element name="EMAIL_SUBJECT" dataType="VARCHAR2" value="EMAIL_SUBJECT" />
+         <element name="EMAIL_CONTENT" dataType="VARCHAR2" value="EMAIL_CONTENT" />
+         <element name="DISTRIBUTION_LIST" dataType="VARCHAR2" value="DISTRIBUTION_LIST" />
+		 <element name="REPORTING_DATE" dataType="VARCHAR2" value="REPORTING_DATE" />
       </group>
       <group name="G_DROPSHIP_DIST" source="Q_DROPSHIP_DIST">
          <element name="SUPPLIER_NAME" dataType="VARCHAR2" value="SUPPLIER_NAME" />
