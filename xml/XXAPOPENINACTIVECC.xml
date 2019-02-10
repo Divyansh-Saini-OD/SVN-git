@@ -4,20 +4,20 @@
   </properties>
   <dataQuery>
     <sqlStatement name="Q1">
-       <![CDATA[SELECT MAX(WN.NOTIFICATION_ID) NOTIFICATION_ID,
-  WN.MESSAGE_TYPE ,
-  WN.MESSAGE_NAME,
-  WN.RECIPIENT_ROLE,
-  WN.TO_USER ,
-  WN.STATUS ,
+       <![CDATA[SELECT   WN.TO_USER ,
   papf.full_name ,
   PAPF.EMPLOYEE_NUMBER,
   WN.SUBJECT,
+  TO_CHAR(PPFS.ACTUAL_TERMINATION_DATE,'MM/DD/YYYY') 	ACTUAL_TERMINATION_DATE,
+  TO_CHAR(ppfs.final_process_date,'MM/DD/YYYY')FINAL_PROCESS_DATE, 
+  MAX(WN.NOTIFICATION_ID) NOTIFICATION_ID,
+  WN.MESSAGE_TYPE ,
+  WN.MESSAGE_NAME,
+  WN.RECIPIENT_ROLE,
   WN.CONTEXT ,
-  WN.SUBJECT ,
   WN.ITEM_KEY ,
-  NVL(to_char(sent_date , 'DD-MM-RRRR HH24:MI:SS'), NULL) SENT_DATE,
-  NULL COMMENTS
+  NVL(TO_CHAR(SENT_DATE ,'MM/DD/YYYY'), NULL)SENT_DATE,
+ WN.STATUS 
 FROM WF_NOTIFICATIONS WN,
   WF_ITEM_ACTIVITY_STATUSES WIAS ,
   WF_ITEM_ATTRIBUTE_VALUES WIAV ,
@@ -39,36 +39,38 @@ AND WIAV.NAME            ='INACT_EMP_NAME'
 AND TRUNC (SYSDATE) BETWEEN PAPF.EFFECTIVE_START_DATE AND PAPF.EFFECTIVE_END_DATE
 AND WN.MESSAGE_NAME = 'OIE_MSG_MGR_INACTIVE_EMPL_EX_1'
 AND WN.STATUS NOT  IN ('CANCELED','CLOSED')
-GROUP BY WN.NOTIFICATION_ID ,
-  WN.MESSAGE_TYPE ,
-  WN.MESSAGE_NAME,
-  WN.RECIPIENT_ROLE,
-  WN.TO_USER ,
-  WN.STATUS ,
+GROUP BY WN.TO_USER ,
   papf.full_name ,
   PAPF.EMPLOYEE_NUMBER,
   WN.SUBJECT,
+ppfs.ACTUAL_TERMINATION_DATE,
+  ppfs.FINAL_PROCESS_DATE,
+  WN.NOTIFICATION_ID,
+  WN.MESSAGE_TYPE ,
+  WN.MESSAGE_NAME,
+  WN.RECIPIENT_ROLE,
   WN.CONTEXT ,
-  WN.SUBJECT ,
   WN.ITEM_KEY ,
-  SENT_DATE]]>
+  SENT_DATE,
+  WN.STATUS]]>
     </sqlStatement>
   </dataQuery>
   <dataStructure>
     <group name="G_RESULTS" source="Q1">
-       <element name="NOTIFICATION_ID"     value="notification_id"/>
+        <element name="TO_USER"     value="to_user"/>
+	   <element name="FULL_NAME"   value="full_name"/>
+	   <element name="EMPLOYEE_NUMBER"   value="EMPLOYEE_NUMBER"/>
+       <element name="SUBJECT"   value="subject"/>
+	   <element name="ACTUAL_TERMINATION_DATE"   value="ACTUAL_TERMINATION_DATE"/>
+	   <element name="FINAL_PROCESS_DATE"   value="FINAL_PROCESS_DATE"/> 
+	   <element name="NOTIFICATION_ID"     value="notification_id"/>
        <element name="MESSAGE_TYPE"       value="message_type"/>
 	   <element name="MESSAGE_NAME"       value="MESSAGE_NAME"/>
 	   <element name="RECIPIENT_ROLE"   value="recipient_role"/>
-	   <element name="TO_USER"     value="to_user"/>
-	   <element name="STATUS"       value="status"/>
-	   <element name="FULL_NAME"   value="full_name"/>
-	   <element name="EMPLOYEE_NUMBER"   value="EMPLOYEE_NUMBER"/>
-       <element name="CONTEXT" value="context"/>
-       <element name="SUBJECT"   value="subject"/>
-       <element name="ITEM_KEY"  value="item_key"/>
+	   <element name="CONTEXT" value="context"/>
+	   <element name="ITEM_KEY"  value="item_key"/>
        <element name="SENT_DATE"         value="sent_date"/>
-	   <element name="COMMENTS"         value="comments"/>
-    </group>
+<element name="STATUS"       value="status"/>
+	    </group>
   </dataStructure> 
 </dataTemplate>
