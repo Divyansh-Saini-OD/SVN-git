@@ -4,21 +4,21 @@
   </properties>
   <dataQuery>
     <sqlStatement name="Q1">
-       <![CDATA[select MAX(wn.notification_id) notification_id,
-wn.item_key ,
-wn.message_type ,
-WN.MESSAGE_NAME ,
-wn.recipient_role,
-wn.to_user,
-wn.status ,
-wn.MAIL_STATUS ,
-accta.category ,
+       <![CDATA[select wn.to_user,
 papf.full_name ,
 PAPF.EMPLOYEE_NUMBER,
 WN.SUBJECT,
 TO_CHAR(PPFS.ACTUAL_TERMINATION_DATE,'MM/DD/YYYY') ACTUAL_TERMINATION_DATE,
-TO_CHAR(ppfs.final_process_date,'MM/DD/YYYY') final_process_date
-from wf_notifications wn ,
+TO_CHAR(ppfs.final_process_date,'MM/DD/YYYY') final_process_date,
+MAX(wn.notification_id) notification_id,
+wn.item_key ,
+wn.message_type ,
+WN.MESSAGE_NAME ,
+wn.recipient_role,
+wn.MAIL_STATUS ,
+accta.category ,
+wn.status 
+from wf_notifications wn, 
 wf_item_activity_statuses wias ,
 wf_item_attribute_values wiav ,
 per_all_people_f papf,
@@ -71,19 +71,20 @@ papf.employee_number , wn.subject, accta.report_header_id,ppfs.actual_terminatio
   </dataQuery>
   <dataStructure>
     <group name="G_RESULTS" source="Q1">
-       <element name="NOTIFICATION_ID"     value="notification_id"/>
-       <element name="ITEM_KEY"   value="item_key"/>
-       <element name="MESSAGE_TYPE"       value="message_type"/>
-       <element name="RECIPIENT_ROLE"   value="recipient_role"/>
 	<element name="TO_USER"   value="to_user"/>
-       <element name="STATUS" value="status"/>
-       <element name="MAIL_STATUS" value="mail_status"/>
-       <element name="CATEGORY"       value="category"/>
        <element name="FULL_NAME" value="full_name"/>
        <element name="EMPLOYEE_NUMBER"     value="employee_number"/>
-       <element name="SUBJECT"   value="subject"/>
+	   <element name="SUBJECT"   value="subject"/>
        <element name="ACTUAL_TERMINATION_DATE"  value="actual_termination_date"/>
        <element name="FINAL_PROCESS_DATE"         value="final_process_date"/>
+	   <element name="NOTIFICATION_ID"     value="notification_id"/>
+       <element name="ITEM_KEY"   value="item_key"/>
+       <element name="MESSAGE_TYPE"       value="message_type"/>
+	   <element name="MESSAGE_NAME"       value="message_name"/>
+       <element name="RECIPIENT_ROLE"   value="recipient_role"/>
+       <element name="MAIL_STATUS" value="mail_status"/>
+       <element name="CATEGORY"       value="category"/>
+	   <element name="STATUS" value="status"/>
     </group>
   </dataStructure> 
 </dataTemplate>
