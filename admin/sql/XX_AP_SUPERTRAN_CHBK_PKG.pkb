@@ -1,13 +1,3 @@
-SET VERIFY OFF
-SET ECHO OFF
-SET TAB OFF
-SET FEEDBACK OFF
-SET TERM ON
-
-PROMPT Creating PACKAGE BODY XX_AP_SUPERTRAN_CHBK_PKG
-
-PROMPT Program exits IF the creation IS NOT SUCCESSFUL
-
 CREATE OR REPLACE PACKAGE BODY XX_AP_SUPERTRAN_CHBK_PKG
 AS
 -- +============================================================================================+
@@ -32,6 +22,7 @@ AS
 -- | 1.7         03/15/2018   Paddy Sanjeevi   Modified to populate attribute10 in header       |
 -- | 1.8         04/13/2018   Paddy Sanjeevi   Modified to exclude held invoices                |
 -- | 1.9         05/22/2018   Paddy Sanjeevi   Modified for defect NAIT-42780                   |
+-- | 2.0         12/11/2018   Vivek Kumar      Modified for defect NAIT 64576                   |
 -- +============================================================================================+
 
 -- +============================================================================================+
@@ -806,7 +797,7 @@ BEGIN
 	   AND NOT EXISTS (SELECT 'x'
 	                     FROM xx_ap_cost_variance
 						WHERE invoice_id=a.invoice_id
-						  AND answer_code='OTH'
+						  AND answer_code IN ('OTH','PP')  ---NAIT 64576
 					   );					   
     IF ln_pay_po_exists<>0 THEN
 
@@ -865,5 +856,3 @@ END process_supertran;
 END XX_AP_SUPERTRAN_CHBK_PKG;
 /
 SHOW ERRORS;
-
-WHENEVER SQLERROR CONTINUE
