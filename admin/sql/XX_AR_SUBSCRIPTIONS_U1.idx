@@ -19,8 +19,10 @@ WHENEVER OSERROR EXIT FAILURE ROLLBACK;
 -- |DRAFT 1 11-DEC-2017 Sreedhar Mohan Initial draft version                   |
 -- +===========================================================================+
 
+ DROP INDEX XXFIN.XX_AR_SUBSCRIPTIONS_U1;
+
  CREATE UNIQUE INDEX XX_AR_SUBSCRIPTIONS_U1 
-      ON XXFIN.XX_AR_SUBSCRIPTIONS ( CONTRACT_NUMBER
+      ON XXFIN.XX_AR_SUBSCRIPTIONS ( CONTRACT_ID
                                    , CONTRACT_LINE_NUMBER
                                    , BILLING_SEQUENCE_NUMBER
                                    );
