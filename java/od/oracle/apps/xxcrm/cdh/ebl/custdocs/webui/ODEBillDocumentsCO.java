@@ -438,7 +438,7 @@ public class ODEBillDocumentsCO extends OAControllerImpl
                            String billDOcStatus=custDocObj.getAttribute("CExtAttr16").toString();
                                  String bcPODFlag=(String)custDocObj.getAttribute("BcPodFlag");                   
                             if("PRINT".equalsIgnoreCase(deliveryM)&& !"COMPLETE".equalsIgnoreCase(billDOcStatus) 
-                                &&"Y".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr2").toString()))
+                                &&"Y".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr2").toString())&&!"N".equalsIgnoreCase(bcPODFlag))
                             //&& !"N".equalsIgnoreCase(bcPODFlag)&&"Y".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr2").toString()))
                             //&& "Consolidated Bill".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr1").toString())&&!"PRINT".equalsIgnoreCase(deliveryM))                        
                                         {
@@ -451,14 +451,22 @@ public class ODEBillDocumentsCO extends OAControllerImpl
                                        throw new OAException("XXCRM", "XXOD_EBL_PRINT_INV_VALIDATION");
                                  }*/
 
-                                  if("EDI".equalsIgnoreCase(deliveryM)||"eXLS".equalsIgnoreCase(deliveryM)&&"P".equalsIgnoreCase(attribute6ResultPF5)
+                                  if("EDI".equalsIgnoreCase(deliveryM)&&"P".equalsIgnoreCase(attribute6ResultPF5)
                                   &&!"Consolidated Bill".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr1").toString())
                                   &&"Y".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr2").toString())
                                   &&!"COMPLETE".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr16").toString())
                                   )
                                   {
                                    throw new OAException("XXCRM", "XXOD_EBL_EDI_EXLS_INV_VALT"); 
-                                  }                                                                  
+                                  } 
+                                  
+                                 if("eXLS".equalsIgnoreCase(deliveryM)&&"P".equalsIgnoreCase(attribute6ResultPF5)
+                                 &&!"Consolidated Bill".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr1").toString())
+                                 &&"Y".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr2").toString())
+                                 &&!"COMPLETE".equalsIgnoreCase(custDocObj.getAttribute("CExtAttr16").toString()))
+                                 {
+                                  throw new OAException("XXCRM", "XXOD_EBL_EDI_EXLS_INV_VALT"); 
+                                 } 
                                  //Added By Reddy Sekhar K on 11th Jan 2019 for the NAIT-78901 ----END
                       
                              }
