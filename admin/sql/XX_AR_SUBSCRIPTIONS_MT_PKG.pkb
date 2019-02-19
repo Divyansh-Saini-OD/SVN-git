@@ -6285,7 +6285,7 @@ AS
                     "contractId": "'
                                 || px_subscription_array(indx).contract_id
                                 || '",
-                    "contractModifier": "'
+                    "contractNumberModifier": "'
                                 || p_contract_info.contract_number_modifier
                                 || '",
                     "billingSequenceNumber": "'
@@ -9662,7 +9662,11 @@ AS
         
       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
   END process_auto_invoice;
-PROCEDURE send_email_autorenew(errbuff            OUT VARCHAR2,
+  
+  /*************************************************************************
+  * Helper procedure to send billing email before 45 day contract expiration
+  *************************************************************************/
+  PROCEDURE send_email_autorenew(errbuff            OUT VARCHAR2,
                                  retcode            OUT NUMBER,
                                  p_debug_flag       IN  VARCHAR2 DEFAULT 'N'
                                 )
@@ -9675,11 +9679,12 @@ PROCEDURE send_email_autorenew(errbuff            OUT VARCHAR2,
      FROM   xx_ar_contract_lines XACL,
             xx_ar_contracts XAC,
             xx_ar_subscriptions XAS
-     WHERE  TO_DATE(sysdate,'DD-MON-YY')+45 = XACL.contract_line_end_date
+     WHERE  TRUNC(sysdate+45) = TRUNC(XACL.contract_line_end_date)
      AND    XACL.contract_id = XAC.contract_id
      AND    XAC.contract_status = 'ACTIVE'
      AND    XAC.contract_id = XAS.contract_id
      AND    XACL.contract_line_number = XAS.contract_line_number
+     AND    XAS.email_autorenew_sent_flag != 'Y'
      AND    XAS.billing_sequence_number IN (SELECT MAX(XAS1.billing_sequence_number) 
             FROM  xx_ar_subscriptions XAS1
             WHERE XAS1.contract_id = XAS.contract_id --XAS1.contract_number = XAS.contract_number
@@ -9844,13 +9849,8 @@ PROCEDURE send_email_autorenew(errbuff            OUT VARCHAR2,
             get_invoice_total_amount_info(p_customer_trx_id           => lr_invoice_header_info.customer_trx_id,
                                           x_invoice_total_amount_info => ln_invoice_total_amount_info);
 
-            IF lt_subscription_array(indx).contract_status = gc_contract_status
-            THEN
-              lc_cancel_date     := SYSDATE;
-              lc_reason_code     := 'TERMINATED_Non-Payment';
-            END IF;
-
-           /************************************************
+           
+            /************************************************
             * Assigning invoice status based on authorization
             ************************************************/
             lc_action := 'Assiging invoice status based on authorizaiton';
@@ -9860,6 +9860,8 @@ PROCEDURE send_email_autorenew(errbuff            OUT VARCHAR2,
 
               lc_invoice_status := 'SUCCESS';
               
+              lc_autorenew_status := 'SUCCESS';
+              
               lc_failure_message := NULL;
               
               lc_next_retry_date := NULL;
@@ -9867,6 +9869,8 @@ PROCEDURE send_email_autorenew(errbuff            OUT VARCHAR2,
             ELSE
 
               lc_invoice_status := 'FAILED';
+              
+              lc_autorenew_status := 'FAILED';
               
               lc_failure_message := lt_subscription_array(indx).auth_message;
                                                  
@@ -9927,44 +9931,6 @@ PROCEDURE send_email_autorenew(errbuff            OUT VARCHAR2,
 
             END IF;
  
-            /*******************************************************
-            * getting information of next retry day from translation
-            *******************************************************/
-            IF lt_subscription_array(indx).contract_status IS NULL
-            THEN
-
-              lc_action := 'fetching next Retry Day information';
-  
-              lc_day := TO_DATE(TO_CHAR(SYSDATE,'DD-MON-YYYY')||'00:00:00','DD-MON-YYYY HH24:MI:SS') - NVL(TO_DATE(lt_subscription_array(indx).initial_auth_attempt_date,'DD-MON-YYYY HH24:MI:SS')
-                                                                                        ,TO_DATE(TO_CHAR(SYSDATE,'DD-MON-YYYY')||'00:00:00','DD-MON-YYYY HH24:MI:SS'));
-           
-              get_auth_fail_info(p_payment_status    => lt_subscription_array(indx).payment_status,
-                                 p_auth_day          => lc_day,
-                                 px_translation_info => lr_translation_info); 
-              
-              IF lr_contract_info.contract_user_status = 'HOLD' and lt_subscription_array(indx).payment_status = 'SUCCESS'
-              THEN
-                lt_subscription_array(indx).contract_status  := 'REMOVE_HOLD';  
-                lt_subscription_array(indx).next_retry_day   := TO_NUMBER(lr_translation_info.target_value2);
-                
-                lc_contract_status := 'REMOVE_HOLD';
-                lc_next_retry_day  := TO_NUMBER(lr_translation_info.target_value2);
-              
-              ELSE
-                lt_subscription_array(indx).contract_status  := lr_translation_info.target_value1;  
-                lt_subscription_array(indx).next_retry_day   := TO_NUMBER(lr_translation_info.target_value2);
-                
-                lc_contract_status := lr_translation_info.target_value1;  
-                lc_next_retry_day  := TO_NUMBER(lr_translation_info.target_value2);
-              
-              END IF;
-
-              lc_action := 'Calling update_subscription_info';
-              
-              update_subscription_info(px_subscription_info => lt_subscription_array(indx));
-
-            END IF;
-                        
             /********************
             * Build email payload
             ********************/
@@ -10019,7 +9985,7 @@ PROCEDURE send_email_autorenew(errbuff            OUT VARCHAR2,
                     "serviceContractNumber": "'
                                 || lt_subscription_array(indx).contract_number
                                 || '",
-                    "contractModifier": "'
+                    "contractNumberModifier": "'
                                 || lr_contract_info.contract_number_modifier
                                 || '",
                     "billingSequenceNumber": "'
@@ -10032,44 +9998,26 @@ PROCEDURE send_email_autorenew(errbuff            OUT VARCHAR2,
                                 || TO_CHAR(lt_subscription_array(indx).billing_date,'DD-MON-YYYY HH24:MI:SS')
                                 || '",
                     "billingTime": "",
-                    "invoiceDate": "'
-                                || TO_CHAR(lr_invoice_header_info.trx_date,'DD-MON-YYYY HH24:MI:SS')
-                                || '",
+                    "invoiceDate": "",
                     "invoiceTime": "",
 					"autoRenewal" :"Y",
-					"autoRenewalStatus": "'
-                                || lc_autorenew_status
-                                || '",
-                    "invoiceStatus": "'
-                                || lc_invoice_status
-                                || '",
+					"autoRenewalStatus": "SUCCESS",
+                    "invoiceStatus": "",
                     "serviceType": "'
                                 || lr_contract_line_info.program
                                 || '",
-                    "contractStatus": "'
-                                || lt_subscription_array(indx).contract_status
-                                || '", 
-                    "action": "'
-                                || lr_translation_info.target_value3 --future use
-                                || '", 
-                    "nextRetryDate": "'
-                                || TO_CHAR(lc_next_retry_date,'DD-MON-YYYY')
-                                || '",
-                    "failureMessage": "'
-                                || lc_failure_message
-                                || '",  
+                    "contractStatus": "", 
+                    "action": "", 
+                    "nextRetryDate": "",
+                    "failureMessage": "",  
                     "itemName": "'
                                 || lr_contract_line_info.item_description
                                 || '",
                     "contractNumber": "'
                                 || lt_subscription_array(indx).contract_number
                                 || '",
-                    "cancelDate": "'
-                                || TO_CHAR(lc_cancel_date,'YYYY-MM-DD')
-                                || '",
-                    "reasonCode": "'
-                                || lc_reason_code
-                                || '",
+                    "cancelDate": "",
+                    "reasonCode": "",
                     "nextInvoiceDate": "'
                                 ||  TO_CHAR(lt_subscription_array(indx).next_billing_date,'DD-MON-YYYY HH24:MI:SS')
                                 || '",
@@ -10080,18 +10028,12 @@ PROCEDURE send_email_autorenew(errbuff            OUT VARCHAR2,
                                 || TO_CHAR(lt_subscription_array(indx).service_period_end_date,'DD-MON-YYYY HH24:MI:SS')
                                 || '",
                     "totals": {
-                            "subTotal": "'
-                                || (ln_invoice_total_amount_info - lt_subscription_array(indx).tax_amount) 
-                                || '",
-                            "tax": "'
-                                || TO_CHAR(lt_subscription_array(indx).tax_amount)
-                                || '",
+                            "subTotal": "",
+                            "tax": "",
                             "delivery": "String",
                             "discount": "String",
                             "misc": "String",
-                            "total": "'
-                                || ln_invoice_total_amount_info
-                                || '"
+                            "total": ""
                     },
                     "tenders": {
                             "tenderLineNumber": "1",
