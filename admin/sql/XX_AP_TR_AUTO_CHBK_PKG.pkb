@@ -1,4 +1,4 @@
-create or replace 
+CREATE OR REPLACE
 PACKAGE BODY XX_AP_TR_AUTO_CHBK_PKG
 AS
   -- +============================================================================================+
@@ -40,8 +40,6 @@ AS
   -- | 3.6         11/05/2018    Ragni Gupta     As per Business asked on 31-Oct, below changes:
   --                                             Qty Variance - multiplication of Inv price instead of PO price
   --                                             Price Variance - if multiple invoices single variance, multiply with billed qty otherwise avl po qty
-  -- | 3.7         11/29/2018   Ragni Gupta      NAIT-73009, Modified code to sum up all billed qty for po line 
-  --                                             in chargeback_tolerance_check
   -- +============================================================================================+
   gc_debug VARCHAR2(2);
   gn_request_id fnd_concurrent_requests.request_id%TYPE;
@@ -609,13 +607,13 @@ IS
     AND org_id           = p_org_id;
   CURSOR inv_lines_cur(p_invoice_id NUMBER)
   IS
-    SELECT MAX(l.line_number) LINE_NUMBER,
+    SELECT l.line_number,
       d.po_header_id,
       d.po_line_id,
       d.po_distribution_id,
       c.line_location_id,
       SUM(NVL(c.quantity_received,0)) rcv_qty,
-      SUM(NVL(l.quantity_invoiced,0)) inv_qty, --sum up qty for same po line, NAIT-73009
+      l.quantity_invoiced inv_qty,
       l.unit_price inv_price,
       l.default_dist_ccid,
       f.dist_code_combination_id,
@@ -641,12 +639,12 @@ IS
     AND b.po_header_id          = c.po_header_id
     AND b.po_line_id            = c.po_line_id
     AND a.po_header_id          = b.po_header_id
-    GROUP BY --l.line_number,
+    GROUP BY l.line_number,
       d.po_header_id,
       d.po_line_id,
       d.po_distribution_id,
       c.line_location_id,
-      --l.quantity_invoiced,
+      l.quantity_invoiced,
       l.unit_price,
       l.default_dist_ccid,
       f.dist_code_combination_id,
@@ -654,7 +652,7 @@ IS
       b.unit_price,
       d.variance_account_id,
       l.inventory_item_id,
-      l.item_description,
+      l.item_description,  expense header line mismatch
       l.invoice_id
     ORDER BY 2,1;
 TYPE inv_lines
@@ -893,7 +891,6 @@ BEGIN
         IF l_inv_lines_tab.COUNT >0 THEN
           FOR l_indx IN 1..l_inv_lines_tab.COUNT
           LOOP
-          --for loop 
             --print_debug_msg('inside lines cursor',FALSE);
             BEGIN
               ln_line_chargeback_amt := 0;
@@ -939,7 +936,7 @@ BEGIN
                   ln_pt_pct := ((NVL(l_inv_lines_tab(l_indx).inv_price,0)-NVL(l_inv_lines_tab(l_indx).po_price,0))/NVL(l_inv_lines_tab(l_indx).po_price,0))*100;
                   ----Changes starts for  NAIT-50192
                   --ln_qt_pct := ((l_inv_lines_tab(l_indx).inv_qty-(l_inv_lines_tab(l_indx).rcv_qty))/(l_inv_lines_tab(l_indx).rcv_qty))*100;
-                  ln_qt_pct := ((l_inv_lines_tab(l_indx).inv_qty-ln_calc_rcv_qty)/ln_quantity_received)*100;
+                  ln_qt_pct := ((l_inv_lines_tab(l_indx).inv_qty-ln_calc_rcv_qty)/ln_quantity_received)*100;   ---
                   --21-Sep-18, Ragni
                   --IF ln_calc_rcv_qty <=0 THEN
                   ln_total_billed_qty:=ln_total_billed_qty+l_inv_lines_tab(l_indx).inv_qty;
@@ -1065,6 +1062,7 @@ BEGIN
                   print_debug_msg('Price % <= Std Price Tolerance',FALSE);
                   --Version 3.6 changes
                   IF lc_both                ='Y' THEN
+
                     ln_line_chargeback_amt := ln_line_chargeback_amt + ROUND(((l_inv_lines_tab(l_indx).inv_price - l_inv_lines_tab(l_indx).po_price) * ln_calc_rcv_qty),2);
                   ELSIF lc_Both             = 'N' THEN
                     ln_line_chargeback_amt := ln_line_chargeback_amt + ROUND(((l_inv_lines_tab(l_indx).inv_price - l_inv_lines_tab(l_indx).po_price) * l_inv_lines_tab(l_indx).inv_qty),2);
@@ -1539,9 +1537,9 @@ BEGIN
         --Commented if condition and added new IF condition for NAIT-50192
         --IF l_inv_lines_freight_tab.count > 0 THEN
         IF l_inv_lines_freight_tab.count > 0 AND ln_total_qt_pct <= ln_std_qty_rcv_tolerance THEN
-          --Added NVL function in ln_maxfrieght_amt to handle null --Removed NVL condition, 28-NOV-18
+          --Added NVL function in ln_maxfrieght_amt to handle null
           --and commented fright amount cursor since it is pointing to wrong indx -- NAIT-50192
-          IF ln_max_freight_amt = 0 --AND NVL(l_inv_lines_freight_tab(indx).amount,0) > 0
+          IF NVL(ln_max_freight_amt,0) = 0 --AND NVL(l_inv_lines_freight_tab(indx).amount,0) > 0
             THEN
             FOR lf_indx IN 1..l_inv_lines_freight_tab.COUNT
             LOOP
