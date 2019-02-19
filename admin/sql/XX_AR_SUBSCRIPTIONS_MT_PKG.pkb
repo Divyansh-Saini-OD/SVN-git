@@ -33,6 +33,7 @@ AS
 -- | 11.0        23-OCT-2018  Sahithi K           code changes for AB customers NAIT-68178   |
 -- | 12.0        26-OCT-2018  Sahithi K           modified payload of recurring email to     |
 -- |                                              include cancelContractRequest NAIT-69296   |
+-- | 13.0        16-JAN-2019  Punit Gupta         Added new Procedure for NAIT-78415         |
 -- +=========================================================================================+
  
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -578,6 +579,23 @@ AS
     x_program_setups('email_service_url')  := lt_translation_info.target_value1;
     x_program_setups('email_service_user') := lt_translation_info.target_value2;
     x_program_setups('email_service_pwd')  := lt_translation_info.target_value3;
+	
+	/********************************************
+    * Get auto renewal email service information
+    **********************************************/
+
+    lc_action :=  'Calling get_translation_info for auto renewal email service info';
+
+    lt_translation_info := NULL;
+
+    lt_translation_info.source_value1 := 'BILL_AUTORENEWAL_EMAIL_SERVICE';
+
+    get_translation_info(p_translation_name  => 'XX_AR_SUBSCRIPTIONS',
+                         px_translation_info => lt_translation_info);
+
+    x_program_setups('autorenew_email_service_url')  := lt_translation_info.target_value1;
+    x_program_setups('autorenew_email_service_user') := lt_translation_info.target_value2;
+    x_program_setups('autorenew_email_service_pwd')  := lt_translation_info.target_value3;
 
     /********************************
     * Get history service information
@@ -4973,7 +4991,7 @@ AS
         THEN
         
           /*****************************************************
-          * Get day information when do we need to authorization
+          * Get day information when do we need to authorizaiton
           *****************************************************/
           
           lc_action := 'Calling get_auth_day_info';
@@ -9644,6 +9662,687 @@ AS
         
       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
   END process_auto_invoice;
+PROCEDURE send_email_autorenew(errbuff            OUT VARCHAR2,
+                                 retcode            OUT NUMBER,
+                                 p_debug_flag       IN  VARCHAR2 DEFAULT 'N'
+                                )
+  IS
 
+   CURSOR c_autorenew_contract_lines 
+   IS
+     
+     SELECT XACL.contract_id,XACL.contract_line_number,XAC.contract_number,XAS.billing_sequence_number
+     FROM   xx_ar_contract_lines XACL,
+            xx_ar_contracts XAC,
+            xx_ar_subscriptions XAS
+     WHERE  TO_DATE(sysdate,'DD-MON-YY')+45 = XACL.contract_line_end_date
+     AND    XACL.contract_id = XAC.contract_id
+     AND    XAC.contract_status = 'ACTIVE'
+     AND    XAC.contract_id = XAS.contract_id
+     AND    XACL.contract_line_number = XAS.contract_line_number
+     AND    XAS.billing_sequence_number IN (SELECT MAX(XAS1.billing_sequence_number) 
+            FROM  xx_ar_subscriptions XAS1
+            WHERE XAS1.contract_id = XAS.contract_id --XAS1.contract_number = XAS.contract_number
+            AND   XAS1.contract_line_number = XAS.contract_line_number
+            )
+     ORDER BY XACL.contract_id;
+
+    lc_procedure_name    CONSTANT  VARCHAR2(61) := gc_package_name || '.' || 'send_email_autorenew';
+
+    lt_program_setups           gt_translation_values;
+
+    lt_parameters                  gt_input_parameters;
+
+    lc_action                      VARCHAR2(1000);
+
+    lc_error                       VARCHAR2(1000);
+
+    ln_loop_counter                NUMBER := 0;
+
+    lr_contract_info            xx_ar_contracts%ROWTYPE;
+
+    lr_contract_line_info          xx_ar_contract_lines%ROWTYPE;
+
+    lt_subscription_array         subscription_table;
+
+    lc_wallet_id                   xx_ar_contracts.payment_identifier%TYPE;
+
+    lr_invoice_header_info         ra_customer_trx_all%ROWTYPE;
+
+    ln_invoice_total_amount_info   ra_customer_trx_lines_all.extended_amount%TYPE;
+
+    lc_masked_credit_card_number   xx_ar_subscriptions.settlement_cc_mask%TYPE;
+
+    lc_billing_agreement_id        xx_ar_contracts.payment_identifier%TYPE;
+
+    lc_email_autorenew_payload    VARCHAR2(32000) := NULL;
+
+    lc_card_expiration_date        VARCHAR2(4);
+
+    l_request                      UTL_HTTP.req;
+
+    l_response                     UTL_HTTP.resp;
+
+    lclob_buffer                   CLOB;
+
+    lc_buffer                      VARCHAR2(10000);
+
+    lr_subscription_payload_info   xx_ar_subscription_payloads%ROWTYPE;
+
+    lr_subscription_error_info     xx_ar_subscriptions_error%ROWTYPE;
+
+    lc_email_autorenew_sent_flag             VARCHAR2(2)  := 'N';
+
+    lc_email_sent_counter          NUMBER := 0;
+
+    lc_email_failed_counter        NUMBER := 0;
+
+    lc_invoice_status              VARCHAR2(30)  := NULL;
+	
+	lc_autorenew_status            VARCHAR2(30)  := NULL; 
+    
+    lc_failure_message             VARCHAR2(256) := NULL;
+
+    le_skip                        EXCEPTION;
+
+    le_processing                  EXCEPTION;
+    
+    lr_translation_info            xx_fin_translatevalues%ROWTYPE;
+
+    lc_next_retry_date             DATE;
+
+    lc_contract_status             xx_ar_subscriptions.contract_status%TYPE;
+
+    lc_next_retry_day              NUMBER;
+
+    lc_day                         NUMBER;
+
+    lc_cancel_date                 DATE;
+
+    lc_reason_code                 VARCHAR2(256) := NULL;
+
+    
+  BEGIN
+    
+    lt_parameters('p_debug_flag') := p_debug_flag;
+    
+    entering_main(p_procedure_name   => lc_procedure_name,
+                  p_rice_identifier  => 'E7044',
+                  p_debug_flag       => p_debug_flag,
+                  p_parameters       => lt_parameters);
+   
+
+    /***************************************************************************************
+    * Validate we have all the information in subscriptions needed to send the billing email
+    ***************************************************************************************/
+
+   /******************************
+    * Initialize program variables.
+    ******************************/
+
+    retcode := 0;
+
+    lc_action := 'Calling get_program_setups';
+
+    get_program_setups(x_program_setups => lt_program_setups);
+
+    /******************************
+     *Loop thru eligible contracts
+     ******************************/
+
+        lc_action := 'Calling c_autorenew_contract_lines';
+
+        FOR autorenew_contract_lines_rec IN c_autorenew_contract_lines
+        LOOP
+
+       
+      /*******************************************************
+      * Validate we are ready to send the auto renewal email
+      ********************************************************/
+
+       /**************************************
+        * Get contract header level information
+        **************************************/
+
+        lc_action := 'Calling get_contract_info';
+
+        get_contract_info(p_contract_id     => autorenew_contract_lines_rec.contract_id,
+                          x_contract_info   => lr_contract_info);
+
+     /******************************
+      * Get contract line information
+      ******************************/
+
+      lc_action := 'Calling get_contract_line_info';
+
+      get_contract_line_info(p_contract_id          => autorenew_contract_lines_rec.contract_id,
+                             p_contract_line_number => autorenew_contract_lines_rec.contract_line_number,
+                             x_contract_line_info   => lr_contract_line_info);
+
+      /********************************************
+        * Get all the associated subscription records
+        ********************************************/
+
+        lt_subscription_array.delete();
+
+        lc_action := 'Calling get_subscription_array';
+
+        get_subscription_array(p_contract_id             => autorenew_contract_lines_rec.contract_id,
+                               p_billing_sequence_number => autorenew_contract_lines_rec.billing_sequence_number,
+                               x_subscription_array      => lt_subscription_array);
+
+        FOR indx IN 1 .. lt_subscription_array.COUNT
+        LOOP
+         BEGIN
+
+            /******************************
+            * Get invoice total information
+            ******************************/
+
+            lc_action := 'Calling get_invoice_total_amount_info';
+
+            get_invoice_total_amount_info(p_customer_trx_id           => lr_invoice_header_info.customer_trx_id,
+                                          x_invoice_total_amount_info => ln_invoice_total_amount_info);
+
+            IF lt_subscription_array(indx).contract_status = gc_contract_status
+            THEN
+              lc_cancel_date     := SYSDATE;
+              lc_reason_code     := 'TERMINATED_Non-Payment';
+            END IF;
+
+           /************************************************
+            * Assigning invoice status based on authorization
+            ************************************************/
+            lc_action := 'Assiging invoice status based on authorizaiton';
+
+            IF lt_subscription_array(indx).auth_completed_flag = 'Y'
+            THEN
+
+              lc_invoice_status := 'SUCCESS';
+              
+              lc_failure_message := NULL;
+              
+              lc_next_retry_date := NULL;
+
+            ELSE
+
+              lc_invoice_status := 'FAILED';
+              
+              lc_failure_message := lt_subscription_array(indx).auth_message;
+                                                 
+              lc_next_retry_date := NVL(lt_subscription_array(indx).initial_auth_attempt_date,SYSDATE) + lt_subscription_array(indx).next_retry_day;
+
+            END IF;
+			
+           /***************************************
+            * Masking card details except for PAYPAL
+            ***************************************/
+            lc_action := 'Masking credit card';
+
+            IF lr_contract_info.card_type != 'PAYPAL'
+            THEN
+
+              IF lt_subscription_array(indx).settlement_cc_mask IS NOT NULL
+              THEN
+
+                lc_masked_credit_card_number :=  LPAD(SUBSTR(lt_subscription_array(indx).settlement_cc_mask, -4), 16, 'x');
+
+              ELSE
+
+                lc_masked_credit_card_number := 'BAD CARD'; 
+
+              END IF;
+
+            ELSE
+
+              lc_masked_credit_card_number := NULL;
+
+            END IF;
+
+            /**********************************************************************
+            * If paypal, pass billing application id, if masterpass, pass wallet id
+            **********************************************************************/
+
+            IF lr_contract_info.card_type = 'PAYPAL'
+            THEN
+
+              lc_billing_agreement_id  := lr_contract_info.payment_identifier;
+
+            ELSE
+
+              lc_wallet_id             := lr_contract_info.payment_identifier;
+
+            END IF;
+
+            /***********************
+            * Format expiration date
+            ***********************/
+
+            IF lr_contract_info.card_expiration_date IS NOT NULL
+            THEN
+
+              lc_action := 'Formating card_expiration_date';
+
+              lc_card_expiration_date := TO_CHAR(lr_contract_info.card_expiration_date, 'YYMM'); 
+
+            END IF;
+ 
+            /*******************************************************
+            * getting information of next retry day from translation
+            *******************************************************/
+            IF lt_subscription_array(indx).contract_status IS NULL
+            THEN
+
+              lc_action := 'fetching next Retry Day information';
+  
+              lc_day := TO_DATE(TO_CHAR(SYSDATE,'DD-MON-YYYY')||'00:00:00','DD-MON-YYYY HH24:MI:SS') - NVL(TO_DATE(lt_subscription_array(indx).initial_auth_attempt_date,'DD-MON-YYYY HH24:MI:SS')
+                                                                                        ,TO_DATE(TO_CHAR(SYSDATE,'DD-MON-YYYY')||'00:00:00','DD-MON-YYYY HH24:MI:SS'));
+           
+              get_auth_fail_info(p_payment_status    => lt_subscription_array(indx).payment_status,
+                                 p_auth_day          => lc_day,
+                                 px_translation_info => lr_translation_info); 
+              
+              IF lr_contract_info.contract_user_status = 'HOLD' and lt_subscription_array(indx).payment_status = 'SUCCESS'
+              THEN
+                lt_subscription_array(indx).contract_status  := 'REMOVE_HOLD';  
+                lt_subscription_array(indx).next_retry_day   := TO_NUMBER(lr_translation_info.target_value2);
+                
+                lc_contract_status := 'REMOVE_HOLD';
+                lc_next_retry_day  := TO_NUMBER(lr_translation_info.target_value2);
+              
+              ELSE
+                lt_subscription_array(indx).contract_status  := lr_translation_info.target_value1;  
+                lt_subscription_array(indx).next_retry_day   := TO_NUMBER(lr_translation_info.target_value2);
+                
+                lc_contract_status := lr_translation_info.target_value1;  
+                lc_next_retry_day  := TO_NUMBER(lr_translation_info.target_value2);
+              
+              END IF;
+
+              lc_action := 'Calling update_subscription_info';
+              
+              update_subscription_info(px_subscription_info => lt_subscription_array(indx));
+
+            END IF;
+                        
+            /********************
+            * Build email payload
+            ********************/
+
+            lc_action := 'Building email payload';
+
+            SELECT  '{
+                "billingStatusEmailRequest": {
+                "transactionHeader": {
+                "consumer": {
+                        "consumerName": "EBS"
+                    },
+                    "transactionId": "'
+                                || lt_subscription_array(indx).contract_number
+                                || '-'
+                                || lt_subscription_array(indx).initial_order_number
+                                || '-'
+                                || lt_subscription_array(indx).billing_sequence_number
+                                || '",
+                    "timeReceived": null
+                },
+                "customer": {
+                        "firstName": "'
+                                || lr_contract_info.bill_to_customer_name
+                                || '",
+                        "middleName": null,
+                        "lastName": "",
+                        "accountNumber": "'
+                                || lr_contract_info.bill_to_osr
+                                || '",
+                        "loyaltyNumber": "'
+                                || lr_contract_info.loyalty_member_number
+                                || '",
+                        "contact": {
+                                "email": "'
+                                    || lr_contract_info.customer_email
+                                    || '",
+                                "phoneNumber": "",
+                                "faxNumber": ""
+                        }
+                },
+                "invoice": {
+                    "invoiceNumber": "'
+                                || lt_subscription_array(indx).invoice_number
+                                || '",
+                    "orderNumber": "'
+                                || SUBSTR(lt_subscription_array(indx).contract_name,1,9)||SUBSTR(lt_subscription_array(indx).contract_name,11,13)
+                                || '",
+				    "contractId": "'
+                                || lt_subscription_array(indx).contract_id
+                                || '",
+                    "serviceContractNumber": "'
+                                || lt_subscription_array(indx).contract_number
+                                || '",
+                    "contractModifier": "'
+                                || lr_contract_info.contract_number_modifier
+                                || '",
+                    "billingSequenceNumber": "'
+                                || lt_subscription_array(indx).billing_sequence_number
+                                || '",
+                    "initialBillingSequence": "'
+                                || lr_contract_line_info.initial_billing_sequence
+                                || '",
+                    "billingDate": "'
+                                || TO_CHAR(lt_subscription_array(indx).billing_date,'DD-MON-YYYY HH24:MI:SS')
+                                || '",
+                    "billingTime": "",
+                    "invoiceDate": "'
+                                || TO_CHAR(lr_invoice_header_info.trx_date,'DD-MON-YYYY HH24:MI:SS')
+                                || '",
+                    "invoiceTime": "",
+					"autoRenewal" :"Y",
+					"autoRenewalStatus": "'
+                                || lc_autorenew_status
+                                || '",
+                    "invoiceStatus": "'
+                                || lc_invoice_status
+                                || '",
+                    "serviceType": "'
+                                || lr_contract_line_info.program
+                                || '",
+                    "contractStatus": "'
+                                || lt_subscription_array(indx).contract_status
+                                || '", 
+                    "action": "'
+                                || lr_translation_info.target_value3 --future use
+                                || '", 
+                    "nextRetryDate": "'
+                                || TO_CHAR(lc_next_retry_date,'DD-MON-YYYY')
+                                || '",
+                    "failureMessage": "'
+                                || lc_failure_message
+                                || '",  
+                    "itemName": "'
+                                || lr_contract_line_info.item_description
+                                || '",
+                    "contractNumber": "'
+                                || lt_subscription_array(indx).contract_number
+                                || '",
+                    "cancelDate": "'
+                                || TO_CHAR(lc_cancel_date,'YYYY-MM-DD')
+                                || '",
+                    "reasonCode": "'
+                                || lc_reason_code
+                                || '",
+                    "nextInvoiceDate": "'
+                                ||  TO_CHAR(lt_subscription_array(indx).next_billing_date,'DD-MON-YYYY HH24:MI:SS')
+                                || '",
+                    "servicePeriodStartDate": "'
+                                || TO_CHAR(lt_subscription_array(indx).service_period_start_date,'DD-MON-YYYY HH24:MI:SS')
+                                || '",
+                    "servicePeriodEndDate": "'
+                                || TO_CHAR(lt_subscription_array(indx).service_period_end_date,'DD-MON-YYYY HH24:MI:SS')
+                                || '",
+                    "totals": {
+                            "subTotal": "'
+                                || (ln_invoice_total_amount_info - lt_subscription_array(indx).tax_amount) 
+                                || '",
+                            "tax": "'
+                                || TO_CHAR(lt_subscription_array(indx).tax_amount)
+                                || '",
+                            "delivery": "String",
+                            "discount": "String",
+                            "misc": "String",
+                            "total": "'
+                                || ln_invoice_total_amount_info
+                                || '"
+                    },
+                    "tenders": {
+                            "tenderLineNumber": "1",
+                            "paymentType": "'
+                                    || lr_contract_info.payment_type
+                                    || '",
+                            "cardType": "'
+                                    || lr_contract_info.card_type
+                                    || '",
+                            "amount": "'
+                                    || ln_invoice_total_amount_info
+                                    || '",
+                            "cardnumber": "'
+                                    || lc_masked_credit_card_number
+                                    || '",
+                            "expirationDate": "'
+                                    || lc_card_expiration_date
+                                    || '",
+                            "walletId": "'
+                                    || lc_wallet_id
+                                    ||'",
+                            "billingAgreementId": "'
+                                    || lc_billing_agreement_id
+                                    || '"
+                    }
+                },
+                "storeNumber": "' || lr_contract_info.store_number || '"
+            }
+            }
+            '
+            INTO   lc_email_autorenew_payload
+            FROM   DUAL;
+
+            lc_action := 'Validating Wallet location';
+
+            IF lt_program_setups('wallet_location') IS NOT NULL
+            THEN
+
+              lc_action := 'calling UTL_HTTP.set_wallet';
+
+              UTL_HTTP.SET_WALLET(lt_program_setups('wallet_location'), lt_program_setups('wallet_password'));
+
+            END IF;
+
+            lc_action := 'Calling UTL_HTTP.set_response_error_check';
+
+            UTL_HTTP.set_response_error_check(FALSE);
+
+            lc_action := 'Calling UTL_HTTP.begin_request';
+
+            l_request := UTL_HTTP.begin_request(lt_program_setups('autorenew_email_service_url'), 'POST', ' HTTP/1.1');
+
+            lc_action := 'Calling UTL_HTTP.SET_HEADER: user-agent';
+
+            UTL_HTTP.SET_HEADER(l_request, 'user-agent', 'mozilla/4.0');
+
+            lc_action := 'Calling UTL_HTTP.SET_HEADER: content-type';
+
+            UTL_HTTP.SET_HEADER(l_request, 'content-type', 'application/json');
+
+            lc_action := 'Calling UTL_HTTP.SET_HEADER: Content-Length';
+
+            UTL_HTTP.SET_HEADER(l_request, 'Content-Length', LENGTH(lc_email_autorenew_payload));
+
+            lc_action := 'Calling UTL_HTTP.SET_HEADER: Authorization';
+
+            UTL_HTTP.SET_HEADER(l_request, 'Authorization', 'Basic ' || UTL_RAW.cast_to_varchar2(UTL_ENCODE.base64_encode(UTL_RAW.cast_to_raw(lt_program_setups('autorenew_email_service_user')
+                                                                                                                                              || ':' ||
+                                                                                                                                              lt_program_setups('autorenew_email_service_pwd')
+                                                                                                                                              ))));
+            lc_action := 'Calling UTL_HTTP.write_text';
+
+            UTL_HTTP.write_text(l_request, lc_email_autorenew_payload);
+
+            lc_action := 'Calling UTL_HTTP.get_response';
+
+            l_response := UTL_HTTP.get_response(l_request);
+
+            COMMIT;
+
+            logit(p_message => 'Response status_code' || l_response.status_code);
+
+            /*************************
+            * Get response into a CLOB
+            *************************/
+
+            lc_action := 'Getting response';
+
+            BEGIN
+
+              lclob_buffer := EMPTY_CLOB;
+              LOOP
+
+                UTL_HTTP.read_text(l_response, lc_buffer, LENGTH(lc_buffer));
+                lclob_buffer := lclob_buffer || lc_buffer;
+
+              END LOOP;
+
+              logit(p_message => 'Response Clob: ' || lclob_buffer);
+
+              UTL_HTTP.end_response(l_response);
+
+            EXCEPTION
+              WHEN UTL_HTTP.end_of_body
+              THEN
+
+                UTL_HTTP.end_response(l_response);
+
+            END;
+
+            /***********************
+            * Store request/response
+            ***********************/
+
+            lc_action := 'Store request/response';
+
+            lr_subscription_payload_info.payload_id              := xx_ar_subscription_payloads_s.NEXTVAL;
+            lr_subscription_payload_info.response_data           := lclob_buffer;
+            lr_subscription_payload_info.creation_date           := SYSDATE;
+            lr_subscription_payload_info.created_by              := FND_GLOBAL.USER_ID;
+            lr_subscription_payload_info.last_updated_by         := FND_GLOBAL.USER_ID;
+            lr_subscription_payload_info.last_update_date        := SYSDATE;
+            lr_subscription_payload_info.input_payload           := lc_email_autorenew_payload;
+            lr_subscription_payload_info.contract_number         := lt_subscription_array(indx).contract_number;
+            lr_subscription_payload_info.billing_sequence_number := lt_subscription_array(indx).billing_sequence_number;
+            lr_subscription_payload_info.contract_line_number    := lt_subscription_array(indx).contract_line_number; --NULL;
+            lr_subscription_payload_info.source                  := lc_procedure_name;
+
+            lc_action := 'Calling insert_subscription_payload_info';
+
+            insert_subscript_payload_info(p_subscription_payload_info => lr_subscription_payload_info);
+
+            IF (l_response.status_code = 200)
+            THEN
+
+              lc_email_sent_counter := lc_email_sent_counter + 1;
+ 
+              lt_subscription_array(indx).email_autorenew_sent_flag  := 'Y';
+              lt_subscription_array(indx).email_autorenew_sent_date  := SYSDATE;
+              lt_subscription_array(indx).last_update_date := SYSDATE;
+              lt_subscription_array(indx).last_updated_by  := FND_GLOBAL.USER_ID;
+
+            ELSE
+
+              lc_action := NULL;
+
+              lc_error  := 'Email sent failure - response code: ' || l_response.status_code;
+
+              RAISE le_processing;
+
+            END IF;
+        lc_action := 'Calling update_subscription_info';
+
+        update_subscription_info(px_subscription_info => lt_subscription_array(indx));
+
+      EXCEPTION
+        WHEN le_processing
+        THEN
+
+          lr_subscription_error_info                         := NULL;
+          lr_subscription_error_info.contract_id             := lt_subscription_array(indx).contract_id;
+          lr_subscription_error_info.contract_number         := lt_subscription_array(indx).contract_number;
+          lr_subscription_error_info.contract_line_number    := NULL;
+          lr_subscription_error_info.billing_sequence_number := lt_subscription_array(indx).billing_sequence_number;
+          lr_subscription_error_info.error_module            := lc_procedure_name;
+          lr_subscription_error_info.error_message           := SUBSTR('Action: ' || lc_action || ' Error: ' || lc_error, 1, gc_max_err_size);
+          lr_subscription_error_info.creation_date           := SYSDATE;
+
+          lc_action := 'Calling insert_subscription_error_info';
+
+          insert_subscription_error_info(p_subscription_error_info => lr_subscription_error_info);
+
+          lc_email_autorenew_sent_flag := 'E';
+          lc_error := SUBSTR(lr_subscription_error_info.error_message, 1, gc_max_sub_err_size);
+
+          RAISE le_processing;
+
+        WHEN OTHERS
+        THEN
+
+          lr_subscription_error_info                         := NULL;
+          lr_subscription_error_info.contract_id             := lt_subscription_array(indx).contract_id;
+          lr_subscription_error_info.contract_number         := lt_subscription_array(indx).contract_number;
+          lr_subscription_error_info.contract_line_number    := NULL;
+          lr_subscription_error_info.billing_sequence_number := lt_subscription_array(indx).billing_sequence_number;
+          lr_subscription_error_info.error_module            := lc_procedure_name;
+          lr_subscription_error_info.error_message           := SUBSTR('Action: ' || lc_action || ' Error: ' || SQLCODE || ' ' || SQLERRM, 1, gc_max_err_size);
+          lr_subscription_error_info.creation_date           := SYSDATE;
+
+          lc_action := 'Calling insert_subscription_error_info';
+
+          insert_subscription_error_info(p_subscription_error_info => lr_subscription_error_info);
+
+          lc_email_autorenew_sent_flag := 'E';
+          lc_error := SUBSTR(lr_subscription_error_info.error_message, 1, gc_max_sub_err_size);
+
+          RAISE le_processing;
+
+      END;
+
+       END LOOP; -- indx IN 1 .. lt_subscription_array.COUNT
+
+   END LOOP; --  autorenew_contract_lines_rec IN c_autorenew_contract_lines
+
+    logit(p_message => 'Autorenewal EMAIL service executed successfully ' || lc_email_sent_counter || ' time.');
+
+    exiting_sub(p_procedure_name => lc_procedure_name);
+
+  EXCEPTION
+    WHEN le_skip
+    THEN
+
+      logit(p_message => 'Skipping: ' || lc_error);
+
+    WHEN le_processing
+    THEN
+
+      FOR indx IN 1 .. lt_subscription_array.COUNT
+      LOOP
+
+        
+        lt_subscription_array(indx).email_autorenew_sent_flag    := lc_email_autorenew_sent_flag;
+        lt_subscription_array(indx).subscription_error := lc_error;
+
+        lc_action := 'Calling update_subscription_info to update with error info';
+
+        update_subscription_info(px_subscription_info => lt_subscription_array(indx));
+
+      END LOOP;
+
+      exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+
+      RAISE_APPLICATION_ERROR(-20101, lc_error);
+
+    WHEN OTHERS
+    THEN
+
+      FOR indx IN 1 .. lt_subscription_array.COUNT
+      LOOP
+
+        lt_subscription_array(indx).email_autorenew_sent_flag    := 'E';
+        lt_subscription_array(indx).subscription_error := SUBSTR('Action: ' || lc_action || 'SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM, 1, gc_max_sub_err_size);
+
+        lc_action := 'Calling update_subscription_info to update with error info';
+
+        update_subscription_info(px_subscription_info => lt_subscription_array(indx));
+
+      END LOOP;
+
+      exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+      RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' Action: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+  END send_email_autorenew;
 END xx_ar_subscriptions_mt_pkg;
 /
