@@ -135,4 +135,5 @@ AS
   AND qr.qa_last_updated_by = fu2.user_id
   AND QR.ORGANIZATION_ID    = HOU.ORGANIZATION_ID
   AND (Qr.status           IS NULL
-  OR qr.status              = 2)
+  OR qr.status              = 2);
+/
