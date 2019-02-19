@@ -718,7 +718,7 @@ AS
   * Helper procedure to get contract header information
   ****************************************************/
 
-  PROCEDURE get_contract_info(p_contract_number IN         xx_ar_contracts.contract_number%TYPE,
+  PROCEDURE get_contract_info(p_contract_id     IN         xx_ar_contracts.contract_id%TYPE,
                               x_contract_info   OUT NOCOPY xx_ar_contracts%ROWTYPE)
   IS
 
@@ -727,16 +727,16 @@ AS
 
   BEGIN
 
-    lt_parameters('p_contract_number') := p_contract_number;
+    lt_parameters('p_contract_id') := p_contract_id;
 
     entering_sub(p_procedure_name  => lc_procedure_name,
                  p_parameters      => lt_parameters);
     SELECT *
     INTO   x_contract_info
     FROM   xx_ar_contracts
-    WHERE  contract_number = p_contract_number;
+    WHERE  contract_id = p_contract_id;
 
-    logit(p_message => 'RESULT contract_id: ' || x_contract_info.contract_id);
+    logit(p_message => 'RESULT contract_number: ' || x_contract_info.contract_number);
 
     exiting_sub(p_procedure_name => lc_procedure_name);
 
@@ -1713,7 +1713,7 @@ AS
   * Get all the subscription records associated with a contract/billing sequence number
   ************************************************************************************/
 
-  PROCEDURE get_subscription_array(p_contract_number         IN         xx_ar_subscriptions.contract_number%TYPE,
+  PROCEDURE get_subscription_array(p_contract_id             IN         xx_ar_subscriptions.contract_id%TYPE,
                                    p_billing_sequence_number IN         xx_ar_subscriptions.billing_sequence_number%TYPE,
                                    x_subscription_array      OUT NOCOPY subscription_table)
   IS
@@ -1721,7 +1721,7 @@ AS
     lt_parameters      gt_input_parameters;
   BEGIN
 
-    lt_parameters('p_contract_number')         := p_contract_number;
+    lt_parameters('p_contract_id')             := p_contract_id;
     lt_parameters('p_billing_sequence_number') := p_billing_sequence_number;
 
     entering_sub(p_procedure_name  => lc_procedure_name,
@@ -1730,7 +1730,7 @@ AS
     SELECT * BULK COLLECT
     INTO   x_subscription_array
     FROM   xx_ar_subscriptions
-    WHERE  contract_number         = p_contract_number
+    WHERE  contract_id             = p_contract_id
     AND    billing_sequence_number = p_billing_sequence_number;
 
     logit(p_message => 'RESULT subscription array count: ' || x_subscription_array.COUNT);
@@ -1758,7 +1758,7 @@ AS
 
   BEGIN
 
-    lt_parameters('p_contract_number')         := px_subscription_info.contract_number;
+    lt_parameters('p_contract_id')             := px_subscription_info.contract_id;
     lt_parameters('p_contract_line_number')    := px_subscription_info.contract_line_number;
     lt_parameters('p_billing_sequence_number') := px_subscription_info.billing_sequence_number;
 
@@ -1770,7 +1770,7 @@ AS
 
     UPDATE xx_ar_subscriptions
     SET    ROW = px_subscription_info
-    WHERE  contract_number         = px_subscription_info.contract_number
+    WHERE  contract_id             = px_subscription_info.contract_id
     AND    contract_line_number    = px_subscription_info.contract_line_number
     AND    billing_sequence_number = px_subscription_info.billing_sequence_number;
 
@@ -2816,6 +2816,7 @@ AS
 
   END get_term_ab_info;
   
+
   /******************************************************
   * Helper procedure to check credit limit of AB customer
   ******************************************************/
@@ -3239,7 +3240,8 @@ AS
                                p_contract_line_number => px_subscription_array(indx).contract_line_number,
                                x_contract_line_info   => lr_contract_line_info); 
 
-        IF px_subscription_array(indx).billing_sequence_number = 1 AND lr_contract_line_info.program = 'SS'
+        IF  px_subscription_array(indx).billing_sequence_number < lr_contract_line_info.initial_billing_sequence
+        AND lr_contract_line_info.program = 'SS'
         THEN
           /**************************************
           * Get initial order header invoice info
@@ -4052,7 +4054,7 @@ AS
             lr_ra_intf_lines_info.set_of_books_id               := lr_operating_unit_info.set_of_books_id;
             
             lr_ra_intf_lines_info.translated_description        := lr_item_master_info.segment1;
-          
+            
             lr_ra_intf_lines_info.purchase_order                := lr_contract_line_info.purchase_order;
 
             lc_action :=  'Calling insert_ra_interface_lines_all for tax';
@@ -4961,7 +4963,8 @@ AS
                                p_contract_line_number => px_subscription_array(indx).contract_line_number,
                                x_contract_line_info   => lr_contract_line_info);
 
-        IF px_subscription_array(indx).billing_sequence_number = 1 AND lr_contract_line_info.program = 'SS'
+        IF  px_subscription_array(indx).billing_sequence_number < lr_contract_line_info.initial_billing_sequence 
+        AND lr_contract_line_info.program = 'SS'
         THEN
 
           px_subscription_array(indx).auth_completed_flag := 'Y';
@@ -4970,7 +4973,7 @@ AS
         THEN
         
           /*****************************************************
-          * Get day information when do we need to authorizaiton
+          * Get day information when do we need to authorization
           *****************************************************/
           
           lc_action := 'Calling get_auth_day_info';
@@ -5789,7 +5792,7 @@ AS
         RAISE le_skip;
 
       END IF;
- 
+
       /***********************************
       * Validate we are read to send email
       ***********************************/
@@ -5843,14 +5846,15 @@ AS
                                p_contract_line_number => px_subscription_array(indx).contract_line_number,
                                x_contract_line_info   => lr_contract_line_info);
 
-        IF px_subscription_array(indx).billing_sequence_number = 1 and lr_contract_line_info.program = 'SS'
+        IF  px_subscription_array(indx).billing_sequence_number < lr_contract_line_info.initial_billing_sequence 
+        AND lr_contract_line_info.program = 'SS'
         THEN 
 
           px_subscription_array(indx).email_sent_flag  := 'Y';
           
-        ELSIF px_subscription_array(indx).billing_sequence_number  = 1
-          and lr_contract_line_info.program = 'BS' 
-          and px_subscription_array(indx).auth_completed_flag='Y'
+        ELSIF px_subscription_array(indx).billing_sequence_number  >= lr_contract_line_info.initial_billing_sequence
+          AND lr_contract_line_info.program = 'BS' 
+          AND px_subscription_array(indx).auth_completed_flag='Y'
         THEN
 
           /**************************************************
@@ -6259,6 +6263,18 @@ AS
                                 || '",
                     "serviceContractNumber": "'
                                 || px_subscription_array(indx).contract_number
+                                || '",
+                    "contractId": "'
+                                || px_subscription_array(indx).contract_id
+                                || '",
+                    "contractModifier": "'
+                                || p_contract_info.contract_number_modifier
+                                || '",
+                    "billingSequenceNumber": "'
+                                || px_subscription_array(indx).billing_sequence_number
+                                || '",
+                    "initialBillingSequence": "'
+                                || lr_contract_line_info.initial_billing_sequence
                                 || '",
                     "billingDate": "'
                                 || TO_CHAR(px_subscription_array(indx).billing_date,'DD-MON-YYYY HH24:MI:SS')
@@ -6686,6 +6702,8 @@ AS
     lc_failure_message             VARCHAR2(256)   := NULL;
     
     lc_auth_time                   xx_ar_subscriptions.auth_datetime%TYPE;
+    
+    lc_next_retry_date             DATE;
 
   BEGIN
 
@@ -6780,7 +6798,8 @@ AS
                                p_contract_line_number => px_subscription_array(indx).contract_line_number,
                                x_contract_line_info   => lr_contract_line_info);
 
-        IF px_subscription_array(indx).billing_sequence_number = 1 AND lr_contract_line_info.program = 'SS'
+        IF  px_subscription_array(indx).billing_sequence_number < lr_contract_line_info.initial_billing_sequence
+        AND lr_contract_line_info.program = 'SS'
         THEN
 
           px_subscription_array(indx).history_sent_flag := 'Y';
@@ -6913,6 +6932,8 @@ AS
                 lc_failure_message := NULL;
                 
                 lc_auth_time       := NULL;
+                
+                lc_next_retry_date := NULL;
               
               ELSE
               
@@ -6921,6 +6942,8 @@ AS
                 lc_failure_message := px_subscription_array(indx).auth_message;
                 
                 lc_auth_time       := px_subscription_array(indx).auth_datetime;
+                
+                lc_next_retry_date := NVL(px_subscription_array(indx).initial_auth_attempt_date,SYSDATE) + px_subscription_array(indx).next_retry_day;
               
               END IF;
             ELSE
@@ -6979,6 +7002,19 @@ AS
                                 || '",
                          "serviceContractNumber": "'
                                 ||  px_subscription_array(indx).contract_number
+                                || '",
+                         "contractModifier": "'
+                                ||  p_contract_info.contract_number_modifier
+                                || '",
+                         "billingSequenceNumber": "'
+                                ||  px_subscription_array(indx).billing_sequence_number
+                                || '",
+                         "contractId": "'
+                                ||  px_subscription_array(indx).contract_id
+                                || '",
+                         "billingDate": "'
+                                || TO_CHAR(px_subscription_array(indx).billing_date,
+                                          'DD-MON-YYYY')
                                 || '",
                          "invoiceDate": "'
                                 || TO_CHAR(lr_invoice_header_info.trx_date,
@@ -7042,14 +7078,13 @@ AS
                          }
                     },
                     "contract": {
-                         "contractLines": {
-                             "contractLine": [
+                         "contractLines": [
                  '
             INTO   lc_history_payload_tender
             FROM   DUAL;
 
-            SELECT '         ]
-                         }
+            SELECT '         
+                         ]
                     }
                 }
                 }'
@@ -7104,6 +7139,21 @@ AS
                                          || '",
                                     "unitTotal": "'
                                          || lc_item_unit_total
+                                         || '",
+                                    "failureMessage": "'
+                                         || lc_failure_message
+                                         || '",
+                                    "authDateTime": "'
+                                         || lc_auth_time
+                                         || '",
+                                    "initialAuthDate": "'
+                                         || TO_CHAR(px_subscription_array(indx).initial_auth_attempt_date,'YYYY-MM-DD')
+                                         || '",
+                                    "lastAuthDate": "'
+                                         || TO_CHAR(px_subscription_array(indx).last_auth_attempt_date,'YYYY-MM-DD')
+                                         || '",
+                                    "nextRetryDate": "'
+                                         || TO_CHAR(lc_next_retry_date,'DD-MON-YYYY')
                                          || '"
                                   }'
           INTO   lc_history_payload_lines
@@ -7558,7 +7608,8 @@ AS
                                p_contract_line_number => px_subscription_array(indx).contract_line_number,
                                x_contract_line_info   => lr_contract_line_info);
 
-        IF px_subscription_array(indx).billing_sequence_number = 1 AND lr_contract_line_info.program = 'SS'
+        IF  px_subscription_array(indx).billing_sequence_number < lr_contract_line_info.initial_billing_sequence
+        AND lr_contract_line_info.program = 'SS'
         THEN
 
           /************************
@@ -8055,7 +8106,8 @@ AS
                                p_contract_line_number => px_subscription_array(indx).contract_line_number,
                                x_contract_line_info   => lr_contract_line_info);
 
-        IF px_subscription_array(indx).billing_sequence_number = 1 AND lr_contract_line_info.program = 'SS'
+        IF  px_subscription_array(indx).billing_sequence_number < lr_contract_line_info.initial_billing_sequence
+        AND lr_contract_line_info.program = 'SS'
         THEN
 
           /************************
@@ -8501,13 +8553,13 @@ AS
   IS
     CURSOR c_eligible_contracts
     IS
-      SELECT DISTINCT contract_number,
+      SELECT DISTINCT contract_id,
                       billing_sequence_number
       FROM   xx_ar_subscriptions
       WHERE  (       ordt_staged_flag  IN ('N', 'E')
               OR     email_sent_flag   IN ('N', 'E')
               OR     history_sent_flag IN ('N', 'E') )
-      ORDER BY contract_number         ASC,
+      ORDER BY contract_id             ASC,
                billing_sequence_number ASC;
 
     lc_procedure_name           CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'process_eligible_subscriptions';
@@ -8590,7 +8642,7 @@ AS
         * Keep track of the contract number and billing sequence being worked on.
         ************************************************************************/
 
-        lc_transaction := 'Processing contract_number: ' || eligible_contract_rec.contract_number ||
+        lc_transaction := 'Processing contract_id: ' || eligible_contract_rec.contract_id ||
                           ' billing_sequence_number: '   || eligible_contract_rec.billing_sequence_number;
 
         logit(p_message => 'Transaction: ' || lc_transaction);
@@ -8605,7 +8657,7 @@ AS
 
         lc_action := 'Calling get_contract_info';
 
-        get_contract_info(p_contract_number => eligible_contract_rec.contract_number,
+        get_contract_info(p_contract_id     => eligible_contract_rec.contract_id,
                           x_contract_info   => lr_contract_info);
 
         /********************************************
@@ -8616,7 +8668,7 @@ AS
 
         lc_action := 'Calling get_subscription_array';
 
-        get_subscription_array(p_contract_number         => eligible_contract_rec.contract_number,
+        get_subscription_array(p_contract_id             => eligible_contract_rec.contract_id,
                                p_billing_sequence_number => eligible_contract_rec.billing_sequence_number,
                                x_subscription_array      => lt_subscription_array);
 
@@ -8879,7 +8931,7 @@ AS
         * Keep track of the contract number and billing sequence being worked on.
         ************************************************************************/
 
-        lc_transaction := 'Processing contract_number: ' || eligible_contract_rec.contract_number;
+        lc_transaction := 'Processing contract_id: ' || eligible_contract_rec.contract_id;
 
         logit(p_message => 'Transaction: ' || lc_transaction);
 
@@ -8940,6 +8992,7 @@ AS
                    payment_last_update_date    = eligible_contract_line_rec.payment_last_update_date,
                    contract_user_status        = eligible_contract_line_rec.contract_user_status,
                    external_source             = eligible_contract_line_rec.external_source,
+                   contract_number_modifier    = eligible_contract_line_rec.contract_number_modifier,
                    last_update_date            = SYSDATE,
                    last_updated_by             = FND_GLOBAL.USER_ID,
                    last_update_login           = FND_GLOBAL.USER_ID,
@@ -8988,6 +9041,7 @@ AS
               lr_contract_info.payment_last_update_date    := eligible_contract_line_rec.payment_last_update_date;
               lr_contract_info.contract_user_status        := eligible_contract_line_rec.contract_user_status;
               lr_contract_info.external_source             := eligible_contract_line_rec.external_source;
+              lr_contract_info.contract_number_modifier    := eligible_contract_line_rec.contract_number_modifier;
               lr_contract_info.last_update_date            := SYSDATE;
               lr_contract_info.last_updated_by             := FND_GLOBAL.USER_ID;
               lr_contract_info.last_update_login           := FND_GLOBAL.USER_ID;
@@ -9147,7 +9201,7 @@ AS
     IS
       SELECT   *
       FROM     xx_ar_subscriptions_gtt
-      ORDER BY contract_number,
+      ORDER BY contract_id,
                billing_sequence_number,
                contract_line_number;
 
@@ -9227,8 +9281,8 @@ AS
         * Keep track of the contract number and billing sequence being worked on.
         ************************************************************************/
 
-        lc_transaction := 'Processing contract_number/billing_sequence_number/contract_line_number: ' ||
-                           eligible_recurring_bill_rec.contract_number || '/' ||
+        lc_transaction := 'Processing contract_id/billing_sequence_number/contract_line_number: ' ||
+                           eligible_recurring_bill_rec.contract_id || '/' ||
                            eligible_recurring_bill_rec.billing_sequence_number || '/' ||
                            eligible_recurring_bill_rec.contract_line_number;
 
@@ -9247,7 +9301,7 @@ AS
 
         lc_action := 'Calling get_contract_info';
 
-        get_contract_info(p_contract_number => eligible_recurring_bill_rec.contract_number,
+        get_contract_info(p_contract_id => eligible_recurring_bill_rec.contract_id,
                           x_contract_info   => lr_contract_info);
 
         /**********************************************
@@ -9261,7 +9315,7 @@ AS
           SELECT *
           INTO   lr_subscription_info
           FROM   xx_ar_subscriptions
-          WHERE  contract_number         = eligible_recurring_bill_rec.contract_number
+          WHERE  contract_id             = eligible_recurring_bill_rec.contract_id
           AND    billing_sequence_number = eligible_recurring_bill_rec.billing_sequence_number
           AND    contract_line_number    = eligible_recurring_bill_rec.contract_line_number;
 
@@ -9344,7 +9398,7 @@ AS
 
           UPDATE xx_ar_subscriptions
           SET    ROW = lr_subscription_info
-          WHERE  contract_number         = eligible_recurring_bill_rec.contract_number
+          WHERE  contract_id             = eligible_recurring_bill_rec.contract_id
           AND    billing_sequence_number = eligible_recurring_bill_rec.billing_sequence_number
           AND    contract_line_number    = eligible_recurring_bill_rec.contract_line_number;
 
@@ -9353,7 +9407,7 @@ AS
         END IF;
 
         DELETE FROM xx_ar_subscriptions_gtt
-        WHERE  contract_number         = eligible_recurring_bill_rec.contract_number
+        WHERE  contract_id             = eligible_recurring_bill_rec.contract_id
         AND    billing_sequence_number = eligible_recurring_bill_rec.billing_sequence_number
         AND    contract_line_number    = eligible_recurring_bill_rec.contract_line_number;
 
