@@ -233,6 +233,7 @@ public class ODEBillDocumentsCO extends OAControllerImpl
          }
            CustDocVO.previous();
       }
+        CustDocAM.getOADBTransaction().commit();
     }
         //Added By Reddy Sekhar K on 13 Oct 2018 for the Req# NAIT-61952 & 66520-----End
     }
