@@ -75,8 +75,8 @@ create or replace PACKAGE BODY xx_tdm_po_trade_extract AS
         -- One Off check
         IF ( v_one_off = 'Y' ) THEN
             OPEN tdm FOR SELECT
-                poh.segment1,
-                supa.vendor_site_code_alt,
+                lpad(translate(poh.segment1,'-','0'),14,'0'),
+                lpad(ltrim(supa.vendor_site_code_alt,'0'),9,'0'),
                 poh.attribute_category
             FROM
                 po_headers_all poh,
@@ -85,16 +85,17 @@ create or replace PACKAGE BODY xx_tdm_po_trade_extract AS
                 1 = 1
                 AND   poh.vendor_id = supa.vendor_id
                 AND   poh.vendor_site_id = supa.vendor_site_id
+                AND   supa.vendor_site_code_alt IS NOT NULL
                 --AND   nvl(poh.cancel_flag,'N') = 'N'
                 AND   poh.attribute1 IN ('NA-POINTR','NA-POCONV')
                 AND   nvl(poh.status_lookup_code,'NA') != 'C'
                 AND   poh.type_lookup_code NOT IN ('RFQ','QUOTATION');
         
-        --single PO check
+        -- single PO check
         ELSIF ( p_po_number IS NOT NULL ) THEN
             OPEN tdm FOR SELECT
-                poh.segment1,
-                supa.vendor_site_code_alt,
+                lpad(translate(poh.segment1,'-','0'),14,'0'),
+                lpad(ltrim(supa.vendor_site_code_alt,'0'),9,'0'),
                 poh.attribute_category
             FROM
                 po_headers_all poh,
@@ -103,6 +104,7 @@ create or replace PACKAGE BODY xx_tdm_po_trade_extract AS
                 1 = 1
                 AND   poh.vendor_id = supa.vendor_id
                 AND   poh.vendor_site_id = supa.vendor_site_id
+                AND   supa.vendor_site_code_alt IS NOT NULL
                 --AND   nvl(poh.cancel_flag,'N') = 'N'
                 AND   poh.attribute1 IN (
                     'NA-POINTR',
@@ -114,11 +116,11 @@ create or replace PACKAGE BODY xx_tdm_po_trade_extract AS
                     'QUOTATION'
                 )
                 AND   poh.segment1 = p_po_number;
-
+        -- Number of Days
         ELSIF (p_num_days IS NOT NULL) THEN
             OPEN tdm FOR SELECT
-                poh.segment1,
-                supa.vendor_site_code_alt,
+                lpad(translate(poh.segment1,'-','0'),14,'0'),
+                lpad(ltrim(supa.vendor_site_code_alt,'0'),9,'0'),
                 poh.attribute_category
             FROM
                 po_headers_all poh,
@@ -127,6 +129,7 @@ create or replace PACKAGE BODY xx_tdm_po_trade_extract AS
                 1 = 1
                 AND   poh.vendor_id = supa.vendor_id
                 AND   poh.vendor_site_id = supa.vendor_site_id
+                AND   supa.vendor_site_code_alt IS NOT NULL
                 --AND   nvl(poh.cancel_flag,'N') = 'N'
                 AND   poh.attribute1 IN (
                     'NA-POINTR',
@@ -141,8 +144,8 @@ create or replace PACKAGE BODY xx_tdm_po_trade_extract AS
                 
         ELSE
             OPEN tdm FOR SELECT
-                poh.segment1,
-                supa.vendor_site_code_alt,
+                lpad(translate(poh.segment1,'-','0'),14,'0'),
+                lpad(ltrim(supa.vendor_site_code_alt,'0'),9,'0'),
                 poh.attribute_category
             FROM
                 po_headers_all poh,
@@ -151,6 +154,7 @@ create or replace PACKAGE BODY xx_tdm_po_trade_extract AS
                 1 = 1
                 AND   poh.vendor_id = supa.vendor_id
                 AND   poh.vendor_site_id = supa.vendor_site_id
+                AND   supa.vendor_site_code_alt IS NOT NULL
                 --AND   nvl(poh.cancel_flag,'N') = 'N'
                 AND   poh.attribute1 IN (
                     'NA-POINTR',
@@ -184,12 +188,13 @@ create or replace PACKAGE BODY xx_tdm_po_trade_extract AS
                         'DropShip VW'
                     ) )
                 THEN
-                    v_file_line := ( 'A'|| lpad(translate(outtable.col1,'-','0'),14,'0')|| lpad(ltrim(outtable.col2,'0'),9,'0')|| 'Y' || CHR(13) || CHR(10));
-                    fnd_file.put(fnd_file.output,'A'|| lpad(translate(outtable.col1,'-','0'),14,'0')|| lpad(ltrim(outtable.col2,'0'),9,'0')||'Y'|| CHR(13) || CHR(10)); --||outtable.col4
+                    v_file_line := ( 'A'|| outtable.col1 || outtable.col2 || 'Y' || CHR(13) || CHR(10));
+                    fnd_file.put(fnd_file.output, 'A'|| outtable.col1 || outtable.col2 || 'Y' || CHR(13) || CHR(10));
 
                 ELSE
-                    v_file_line := ( 'A'|| lpad(translate(outtable.col1,'-','0'),14,'0')|| lpad(ltrim(outtable.col2,'0'),9,'0')|| 'N' || CHR(13) || CHR(10));
-                    fnd_file.put(fnd_file.output,'A'|| lpad(translate(outtable.col1,'-','0'),14,'0')|| lpad(ltrim(outtable.col2,'0'),9,'0')||'N'|| CHR(13) || CHR(10)); --||outtable.col4
+                    v_file_line := ( 'A'|| outtable.col1 || outtable.col2 || 'N' || CHR(13) || CHR(10));
+                    --v_file_line := ( 'A'|| lpad(translate(outtable.col1,'-','0'),14,'0')|| lpad(ltrim(outtable.col2,'0'),9,'0')|| 'N' || CHR(13) || CHR(10));
+                    fnd_file.put(fnd_file.output, 'A'|| outtable.col1 || outtable.col2 || 'N' || CHR(13) || CHR(10));
                 END IF;
                 utl_file.put_raw(v_file_handle,utl_raw.cast_to_raw(v_file_line));
                 
