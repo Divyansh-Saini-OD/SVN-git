@@ -330,12 +330,14 @@ BEGIN
 		            ld_billing_date := l_trx_dtls_tab(indx).billing_date;
 		        END;
 				
+				/*
 				-- To check whether the ld_billing_date IS NULL or not
 		        IF ld_billing_date IS NULL
 		        THEN
 		           ld_billing_date := l_trx_dtls_tab(indx).billing_date;
 		        END IF; -- ld_billing_date IS NULL
 		        print_debug_msg('Billing Date :'||ld_billing_date);
+				*/
 		   
 		        ----------------------------------------------------------------------------
 		        /* Step 3: To derive the new BILLING date */
@@ -368,17 +370,32 @@ BEGIN
 		                    ld_new_bill_date := TRUNC(TO_DATE(p_billing_date,'YYYY/MM/DD HH24:MI:SS'));
 		                END;
 					ELSE
-					    BEGIN
-		                    SELECT MAX(billable_date)
-                              INTO ld_new_bill_date
-                              FROM ar_cons_bill_cycle_dates
-                             WHERE billing_cycle_id = ln_billing_cycle_id
-                               AND billable_date BETWEEN  TRUNC(TO_DATE(p_billing_date,'YYYY/MM/DD HH24:MI:SS')) AND TRUNC(ld_billing_date);
-		                EXCEPTION
-		                WHEN OTHERS
-		                THEN
-		                    ld_new_bill_date := TRUNC(TO_DATE(p_billing_date,'YYYY/MM/DD HH24:MI:SS'));
-		                END;
+					    IF ld_billing_date IS NULL
+						THEN
+						    BEGIN
+		                        SELECT MIN(billable_date)
+                                  INTO ld_new_bill_date
+                                  FROM ar_cons_bill_cycle_dates
+                                 WHERE billing_cycle_id = ln_billing_cycle_id
+                                   AND billable_date >=  TRUNC(TO_DATE(p_billing_date,'YYYY/MM/DD HH24:MI:SS'));
+		                    EXCEPTION
+		                    WHEN OTHERS
+		                    THEN
+		                       ld_new_bill_date := TRUNC(TO_DATE(p_billing_date,'YYYY/MM/DD HH24:MI:SS'));
+		                    END;						
+						ELSE 
+					        BEGIN
+		                        SELECT MAX(billable_date)
+                                  INTO ld_new_bill_date
+                                  FROM ar_cons_bill_cycle_dates
+                                 WHERE billing_cycle_id = ln_billing_cycle_id
+                                   AND billable_date BETWEEN  TRUNC(TO_DATE(p_billing_date,'YYYY/MM/DD HH24:MI:SS')) AND TRUNC(ld_billing_date);
+		                    EXCEPTION
+		                    WHEN OTHERS
+		                    THEN
+		                       ld_new_bill_date := TRUNC(TO_DATE(p_billing_date,'YYYY/MM/DD HH24:MI:SS'));
+		                    END;
+						END IF;
 					END IF;
 		        END IF; -- p_billing_date
 		   
