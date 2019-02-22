@@ -3697,7 +3697,7 @@ AS
           lr_ra_intf_lines_info.unit_standard_price           := px_subscription_array(indx).item_unit_cost;
 
           lr_ra_intf_lines_info.interface_line_context        := 'RECURRING BILLING';
-          lr_ra_intf_lines_info.interface_line_attribute1     := p_contract_info.initial_order_number || '-' || px_subscription_array(indx).billing_sequence_number;
+          lr_ra_intf_lines_info.interface_line_attribute1     := p_contract_info.contract_id || '-' || px_subscription_array(indx).billing_sequence_number;
           lr_ra_intf_lines_info.interface_line_attribute2     := p_contract_info.contract_major_version;
           lr_ra_intf_lines_info.interface_line_attribute3     := px_subscription_array(indx).contract_line_number;
           lr_ra_intf_lines_info.interface_line_attribute4     := px_subscription_array(indx).billing_sequence_number;
@@ -3853,7 +3853,7 @@ AS
           lr_ra_intf_dists_info.interface_distribution_id       := NULL;
           lr_ra_intf_dists_info.interface_line_id               := ln_interface_line_id;
           lr_ra_intf_dists_info.interface_line_context          := 'RECURRING BILLING';
-          lr_ra_intf_dists_info.interface_line_attribute1       := p_contract_info.initial_order_number || '-' || px_subscription_array(indx).billing_sequence_number;
+          lr_ra_intf_dists_info.interface_line_attribute1       := p_contract_info.contract_id || '-' || px_subscription_array(indx).billing_sequence_number;
           lr_ra_intf_dists_info.interface_line_attribute2       := p_contract_info.contract_major_version;
           lr_ra_intf_dists_info.interface_line_attribute3       := px_subscription_array(indx).contract_line_number;
           lr_ra_intf_dists_info.interface_line_attribute4       := px_subscription_array(indx).billing_sequence_number;
@@ -4046,7 +4046,7 @@ AS
             lr_ra_intf_lines_info.orig_system_ship_address_id   := lr_bill_to_cust_acct_site_info.cust_acct_site_id; --??
 
             lr_ra_intf_lines_info.interface_line_context        := 'RECURRING BILLING';
-            lr_ra_intf_lines_info.interface_line_attribute1     := p_contract_info.initial_order_number || '-' || px_subscription_array(indx).billing_sequence_number || '-TAX';
+            lr_ra_intf_lines_info.interface_line_attribute1     := p_contract_info.contract_id || '-' || px_subscription_array(indx).billing_sequence_number || '-TAX';
             lr_ra_intf_lines_info.interface_line_attribute2     := p_contract_info.contract_major_version || '-TAX';
             lr_ra_intf_lines_info.interface_line_attribute3     := px_subscription_array(indx).contract_line_number || '-TAX';
             lr_ra_intf_lines_info.interface_line_attribute4     := px_subscription_array(indx).billing_sequence_number || '-TAX';
@@ -4214,7 +4214,7 @@ AS
             lr_ra_intf_dists_info.interface_distribution_id       := NULL;
             lr_ra_intf_dists_info.interface_line_id               := ln_interface_line_id;
             lr_ra_intf_dists_info.interface_line_context          := 'RECURRING BILLING';
-            lr_ra_intf_dists_info.interface_line_attribute1       := p_contract_info.initial_order_number || '-' || px_subscription_array(indx).billing_sequence_number || '-TAX';
+            lr_ra_intf_dists_info.interface_line_attribute1       := p_contract_info.contract_id || '-' || px_subscription_array(indx).billing_sequence_number || '-TAX';
             lr_ra_intf_dists_info.interface_line_attribute2       := p_contract_info.contract_major_version || '-TAX';
             lr_ra_intf_dists_info.interface_line_attribute3       := px_subscription_array(indx).contract_line_number || '-TAX';
             lr_ra_intf_dists_info.interface_line_attribute4       := px_subscription_array(indx).billing_sequence_number || '-TAX';
@@ -6949,7 +6949,7 @@ AS
                 
                 lc_failure_message := NULL;
                 
-                lc_auth_time       := NULL;
+                lc_auth_time       := px_subscription_array(indx).auth_datetime;
                 
                 lc_next_retry_date := NULL;
               
@@ -7160,9 +7160,6 @@ AS
                                          || '",
                                     "failureMessage": "'
                                          || lc_failure_message
-                                         || '",
-                                    "authDateTime": "'
-                                         || lc_auth_time
                                          || '",
                                     "initialAuthDate": "'
                                          || TO_CHAR(px_subscription_array(indx).initial_auth_attempt_date,'YYYY-MM-DD')
@@ -9381,6 +9378,7 @@ AS
           lr_subscription_info.invoice_created_flag        := 'N';
           lr_subscription_info.receipt_created_flag        := 'N';
           lr_subscription_info.auth_completed_flag         := 'N';
+          lr_subscription_info.email_autorenew_sent_flag   := 'N';
           
 
           lc_action := 'Insert into xx_ar_subscriptions';
