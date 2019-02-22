@@ -153,7 +153,7 @@ BEGIN
  	  logit(p_message =>'Exception raised while getting Source directory path '|| SQLERRM, p_force => TRUE);
   END;
   IF p_request_type<>'DAILY' THEN
-	 lc_source_file_name := lc_source_dir_path||'/rates/'||p_file;
+	 lc_source_file_name := lc_source_dir_path||'/hyperion/'||p_file;
   	 lc_dest_file_name   := lc_target_dir_path||'/'||p_file;
   ELSE
 	 lc_source_file_name := lc_source_dir_path||'/rates/'||p_file||'.zip';
@@ -214,7 +214,7 @@ BEGIN
   END;
   lc_source_file_name := lc_source_dir_path||'/'||p_copy_file;
   IF p_request_type<>'DAILY' THEN
-     lc_dest_file_name   := '/app/ebs/ct' || lc_instance_name || '/xxfin/ftp/out/rates/' || p_copy_file;
+     lc_dest_file_name   := '/app/ebs/ct' || lc_instance_name || '/xxfin/ftp/out/hyperion' || p_copy_file;
   ELSE
      lc_dest_file_name   := '/app/ebs/ct' || lc_instance_name || '/xxfin/ftp/out/rates/ratex/' || p_copy_file;
   END IF;
