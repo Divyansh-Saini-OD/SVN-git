@@ -12,6 +12,7 @@ AS
   -- | Version     Date         Author           Remarks                                          |
   -- | =========   ===========  =============    ===============================================  |
   -- | 1.0         07-AUG-2017  Thejaswini Rajula    Initial version                              |
+  -- | 1.1         25-FEB-2019  Satheesh Suthari     Defect#84541 Receipts did not apply to invoices |
   -- +============================================================================================+
   
 g_conc_request_id                       NUMBER:= fnd_global.conc_request_id;
@@ -998,6 +999,7 @@ BEGIN
               FROM ra_customer_trx_all rct,
                   ar_payment_schedules_all arp
             WHERE 1=1
+			        AND rct.org_id=l_org_id--Defect#84541 Receipts did not apply to invoices
               AND rct.trx_number=i_record.invoice_number
               AND rct.customer_trx_id=arp.customer_trx_id;
             EXCEPTION
