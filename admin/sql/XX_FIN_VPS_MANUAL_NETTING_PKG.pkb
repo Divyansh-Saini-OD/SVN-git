@@ -142,7 +142,7 @@ CURSOR cur_inv_details (p_org_id number) is
         FROM ar_payment_schedules_all arp
               ,ra_customer_trx_all rct
               ,ar_receivable_applications_all ARA
-              ,ar.ar_cash_receipts_all acr
+              ,ar_cash_receipts_all acr
               ,xx_fin_vps_receipts_stg stg
               ,ap_interface_rejections air
               ,ap_lookup_codes alc
