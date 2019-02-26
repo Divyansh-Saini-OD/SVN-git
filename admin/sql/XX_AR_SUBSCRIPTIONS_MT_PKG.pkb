@@ -5775,6 +5775,8 @@ AS
     lc_cancel_date                 DATE;
 
     lc_reason_code                 VARCHAR2(256) := NULL;
+    
+    lc_contract_number_modifier    xx_ar_contracts.contract_number_modifier%TYPE;
 
   BEGIN
 
@@ -6230,6 +6232,13 @@ AS
               lc_next_retry_date := NVL(px_subscription_array(indx).initial_auth_attempt_date,SYSDATE) + px_subscription_array(indx).next_retry_day;
 
             END IF;
+            
+            IF p_contract_info.contract_number_modifier IS NOT NULL
+            THEN
+              lc_contract_number_modifier := p_contract_info.contract_number_modifier;
+            ELSE
+              lc_contract_number_modifier := NULL;
+            END IF;
 
             /********************
             * Build email payload
@@ -6286,7 +6295,7 @@ AS
                                 || px_subscription_array(indx).contract_id
                                 || '",
                     "contractNumberModifier": "'
-                                || p_contract_info.contract_number_modifier
+                                || lc_contract_number_modifier
                                 || '",
                     "billingSequenceNumber": "'
                                 || px_subscription_array(indx).billing_sequence_number
@@ -6302,6 +6311,9 @@ AS
                                 || TO_CHAR(lr_invoice_header_info.trx_date,'DD-MON-YYYY HH24:MI:SS')
                                 || '",
                     "invoiceTime": "",
+                    "autoRenewalStatus": "'
+                                || lc_invoice_status
+                                || '",
                     "invoiceStatus": "'
                                 || lc_invoice_status
                                 || '",
@@ -6334,6 +6346,12 @@ AS
                                 || '",								
                     "nextInvoiceDate": "'
                                 ||  TO_CHAR(px_subscription_array(indx).next_billing_date,'DD-MON-YYYY HH24:MI:SS')
+                                || '",
+                    "contractStartDate": "'
+                                || TO_CHAR(p_contract_info.contract_start_date,'DD-MON-YYYY HH24:MI:SS')
+                                || '",
+                    "contractEndDate": "'
+                                || TO_CHAR(p_contract_info.contract_end_date,'DD-MON-YYYY HH24:MI:SS')
                                 || '",
                     "servicePeriodStartDate": "'
                                 || TO_CHAR(px_subscription_array(indx).service_period_start_date,'DD-MON-YYYY HH24:MI:SS')
@@ -10018,6 +10036,12 @@ AS
                     "reasonCode": "",
                     "nextInvoiceDate": "'
                                 ||  TO_CHAR(lt_subscription_array(indx).next_billing_date,'DD-MON-YYYY HH24:MI:SS')
+                                || '",
+                    "contractStartDate": "'
+                                || TO_CHAR(lr_contract_info.contract_start_date,'DD-MON-YYYY HH24:MI:SS')
+                                || '",
+                    "contractEndDate": "'
+                                || TO_CHAR(lr_contract_info.contract_end_date,'DD-MON-YYYY HH24:MI:SS')
                                 || '",
                     "servicePeriodStartDate": "'
                                 || TO_CHAR(lt_subscription_array(indx).service_period_start_date,'DD-MON-YYYY HH24:MI:SS')
