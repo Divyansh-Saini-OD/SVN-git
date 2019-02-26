@@ -22,7 +22,8 @@ PACKAGE BODY XX_AP_XXAUNMATCHRECEIPT_PKG
   -- |Version   Date        Author             Remarks                   |
   -- |========  =========== ================== ==========================|
   -- |1.0       14-Nov-2017 Ragni Gupta     Initial version              |
-  -- |1.1       14-FEB-2018  Priyam         Code change for Reciept Correction                                                                 |
+  -- |1.1       14-FEB-2018  Priyam         Code change for Reciept Correction |
+  -- |1.2       26-Feb-2019  Shanti Sethuraj Adding layout in after report trigger for jira NAIT-27081 |
   -- +===================================================================+
 AS
 FUNCTION BEFOREREPORT
@@ -59,7 +60,8 @@ WHEN OTHERS THEN
   FND_FILE.PUT_LINE(FND_FILE.LOG, 'ERROR at XX_AP_XXAPUNMATCHRECEIPT.beforeReport:- ' || SQLERRM);
 END BEFOREREPORT;
 
-/*------------------------new code-------------------------*/
+-- Start of changes : Added for the jira NAIT-27081 to add layout in after report trigger
+
  FUNCTION AFTERREPORT
   RETURN BOOLEAN
 IS
@@ -78,38 +80,11 @@ v_addlayout:=FND_REQUEST.ADD_LAYOUT( template_appl_name => 'XXFIN',
      fnd_file.put_line(fnd_file.LOG, 'The layout has not been submitted');
   END IF;
 return true;
-/*
-  LC_EMAIL_ADDRESS           VARCHAR2(100)  := 'shanti.sethuraj@officedepot.com';
-  lc_email_subject    VARCHAR2(100) := 'Unmatched Receipts/Summary Details Report - TEST';
-  lc_sender_address  varchar2(100)  := 'shanti.sethuraj@officedepot.com';
-  ln_this_request_id  number;
-  ln_conc_request_id  NUMBER;
-BEGIN
- ln_this_request_id := FND_GLOBAL.CONC_REQUEST_ID;
- FND_FILE.PUT_LINE(FND_FILE.LOG,'Calling the emailer program');
-                	
-				ln_conc_request_id := FND_REQUEST.SUBMIT_REQUEST(
-				'XXFIN','XXODROEMAILER','Unmatched Receipts/Summary Details Report',sysdate,FALSE
-                                                   ,NULL
-                                                   ,lc_email_address,lc_email_subject,'','Y',ln_this_request_id,lc_sender_address,'','',''
-                                                   ,'','','','','','','','','',''
-                                                   ,'','','','','','','','','',''
-                                                   ,'','','','','','','','','',''
-                                                   ,'','','','','','','','','',''
-                                                   ,'','','','','','','','','',''
-                                                   ,'','','','','','','','','',''
-                                                   ,'','','','','','','','','',''
-                                                   ,'','','','','','','','','',''
-                                                   ,'','','','','','','','','','') ;
-                 COMMIT;
-                 FND_FILE.PUT_LINE(FND_FILE.LOG,'Submitted Emailer program - Request id: '||ln_conc_request_id);
-				 return true;
-       EXCEPTION
-WHEN OTHERS THEN
-  FND_FILE.PUT_LINE(FND_FILE.LOG, 'ERROR at XX_AP_XXAPUNMATCHRECEIPT.afterReport:- ' || SQLERRM);*/
+
 END AFTERREPORT;
 
-/*-------------------------end of test code----------------------*/
+--End of changes : Added for the jira NAIT-27081 to add layout in after report trigger
+
 
 FUNCTION XX_AP_UNMATCH_DETAIL(
     P_DATE             VARCHAR2,
