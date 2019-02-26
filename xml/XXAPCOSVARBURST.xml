@@ -3,7 +3,7 @@
 <xapi:request select="/XXAPCOSVAR/LIST_G_HEADERS/G_HEADERS">
 <xapi:delivery>
 <xapi:email id="123" server="${SMTP_SERVER}" port="25" from="noreply@officedepot.com" reply-to="noreply@officedepot.com">
-<xapi:message id="123" to="${EMAIL1}" cc="${EMAIL2}" attachment="true" subject="${Instance_Name} Cost Variance Report for ${CURRENT_DATE}">
+<xapi:message id="123" to="${EMAIL1}" cc="${EMAIL2}" attachment="true" subject="${INSTANCE_NAME} Cost Variance Report for ${CURRENT_DATE}">
 Please find the Cost Variance Report for ${CURRENT_DATE} attached to the email
 </xapi:message> 
 </xapi:email>
