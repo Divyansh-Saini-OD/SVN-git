@@ -1,0 +1,72 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- +===================================================================+
+-- |                        Office Depot                               |
+-- |                                                                   |
+-- +===================================================================+
+-- | Table Name  :  XX_CDH_AOPS_EXTERNAL_USERS.tbl                     |
+-- | Rice Name: E1328                                                  |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date         Author             Remarks                  |
+-- |=======   ===========  =================  =========================|
+-- |1.0       31-DEC-2018  Havish Kasina      Initial draft version    |
+-- +===================================================================+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET TERM OFF
+
+SET TERM ON
+
+PROMPT
+PROMPT Creating the Table XXCOMN.XX_CDH_AOPS_EXTERNAL_USERS 
+PROMPT
+
+CREATE TABLE XXCOMN.XX_CDH_AOPS_EXTERNAL_USERS 	
+            ( EXTERNAL_USERS_STG_ID    NUMBER
+			, CONTACT_OSR              VARCHAR2(255)
+            , WEBUSER_OSR              VARCHAR2(255)
+            , USERID                   VARCHAR2(100)
+            , ACCT_SITE_OSR            VARCHAR2(255)
+            , RECORD_TYPE              VARCHAR2(30)
+            , ACCESS_CODE              VARCHAR2(100)
+            , BRAND_CODE               VARCHAR2(30)
+            , PASSWORD                 VARCHAR2(100)
+            , STATUS                   VARCHAR2(10)
+            , PWD_EXPIRATION_DAYS      NUMBER
+            , PWD_EXPIRATION_DATE      DATE
+            , PERSON_FIRST_NAME        VARCHAR2(150)
+            , PERSON_LAST_NAME         VARCHAR2(150)
+            , PERSON_MIDDLE_NAME       VARCHAR2(150)
+            , EMAIL                    VARCHAR2(150)
+            , PERMISSION_FLAG          VARCHAR2(1)
+            , PWD_LAST_CHANGE          DATE
+            , LOAD_STATUS              VARCHAR2(1)
+			, ERROR_MESSAGE            VARCHAR2(255)
+            , CREATED_BY               NUMBER
+            , CREATION_DATE            DATE
+            , LAST_UPDATE_DATE         DATE
+            , LAST_UPDATED_BY          NUMBER
+            , LAST_UPDATE_LOGIN        NUMBER
+			, REQUEST_ID               NUMBER
+            )
+/
+         
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

@@ -19,7 +19,7 @@ AS
 -- |===============                                                                                     |
 -- |Version   Date        Author             Remarks                                                    |
 -- |========  =========== ================== ===========================================================|
--- |1.0       30-Jan-2008 Alok Sahay         Initial draft version.      		                        	 	|
+-- |1.0       30-Jan-2008 Alok Sahay         Initial draft version.      		                        |
 -- |1.1       12-Jun-2008 Indra Varada       Added new procedure update_external_table_status           |
 -- |1.2       18-Nov-2008 Indra Varada       Modified logic to exit with warning if no users exist      |
 -- |                                         in AOPS table                                              |   
@@ -30,6 +30,9 @@ AS
 -- |                                         to Purge xx_external_users_stg and debug/update single user|
 -- |1.5       12-Sep-2016 Vasu Raparla       Made code changes to procedure process_new_user_access for |
 -- |                                         Defect 39239                                               |
+-- |1.6       26-Feb-2019 Havish Kasina      Made code changes for Lift and Shift to extract AOPS       |
+-- |                                         External users information from the new custom table       |
+-- |                                         XX_CDH_AOPS_EXTERNAL_USERS                                 |                  
 -- +====================================================================================================+
 */
 
@@ -341,7 +344,32 @@ AS
      lc_dev_phase                  VARCHAR2 (100);
      lc_dev_status                 VARCHAR2 (100);
      lc_message                    VARCHAR2 (100);
-     lc_oid_user_guid              fnd_user.user_guid%type := NULL;          
+     lc_oid_user_guid              fnd_user.user_guid%type := NULL;       
+
+     CURSOR c_ext_users
+     IS 
+       SELECT EXTERNAL_USERS_STG_ID
+            , trim(to_char(CONTACT_OSR, '00000000000000')) "CONTACT_OSR"
+            , trim(to_char(WEBUSER_OSR, '00000000000000')) "WEBUSER_OSR"
+            , trim(USERID) "USERID"
+            , trim(to_char(ACCT_SITE_OSR, '00000000')) || '-00001-A0' "ACCT_SITE_OSR"
+            , trim(RECORD_TYPE) "RECORD_TYPE"
+            , SUBSTR(ACCESS_CODE,1,2) "ACCESS_CODE"
+            , trim(PASSWORD) "PASSWORD"
+            , trim(STATUS) "STATUS"
+            , trim(PERSON_FIRST_NAME) "PERSON_FIRST_NAME"
+            , trim(PERSON_MIDDLE_NAME) "PERSON_MIDDLE_NAME"
+            , trim(PERSON_LAST_NAME) "PERSON_LAST_NAME"
+            , trim(EMAIL) "EMAIL"
+            , trim(PERMISSION_FLAG) "PERMISSION_FLAG"
+            , 'A0' "ORIG_SYSTEM"
+            , 'P' "LOAD_STATUS"
+            , XX_EXTERNAL_USERS_CONV.gen_batch_id() "BATCH_ID"
+            , PWD_LAST_CHANGE
+            , 'BATCH_PROCESS' "PROCESS_NAME"
+         FROM XX_CDH_AOPS_EXTERNAL_USERS
+        WHERE LOAD_STATUS = 'N';
+		
    BEGIN
 
       -- --------------------------------------------------------------
@@ -369,8 +397,12 @@ AS
       XX_EXTERNAL_USERS_DEBUG.log_debug_message(2,  'Batch Size : ' || g_batch_max_size);
       write_log ('Batch Size : ' || g_batch_max_size);
       DBMS_SESSION.SET_NLS('nls_timestamp_format','''YYYY-MM-DD HH24:MI:SS.FF''');
-      
-      lc_insert_sql :=  'INSERT INTO XX_EXTERNAL_USERS_STG
+	  
+	  write_log ('Inserting into XX_EXTERNAL_USERS_STG Table');
+	  FOR ext in c_ext_users
+	  LOOP
+	  l_rows_processed := 0;
+      INSERT INTO XX_EXTERNAL_USERS_STG
                            ( EXTERNAL_USERS_STG_ID
                            , CONTACT_OSR
                            , WEBUSER_OSR
@@ -392,40 +424,45 @@ AS
                            , EXT_UPD_TIMESTAMP
                            , PROCESS_NAME
                            )
-                         SELECT XX_EXTERNAL_USERS_STG_S.nextval
-                           , trim(to_char(SEL0001, ''00000000000000'')) "CONTACT_OSR"
-                           , trim(to_char(SEL0002, ''00000000000000'')) "WEBUSER_OSR"
-                           , trim(CCUSERID) "USERID"
-                           , trim(to_char(SEL0004, ''00000000'')) || ''-00001-A0'' "ACCT_SITE_OSR"
-                           , trim(CCACCTCODE) "RECORD_TYPE"
-                           , SUBSTR(CCACCTVAL,1,2) "ACCESS_CODE"
-                           , trim(CCU330F_PASSWORD_64) "PASSWORD"
-                           , trim(CCU330F_USER_LOCKED_FLG) "STATUS"
-                           , trim(CCU300F_NAME_1) "PERSON_FIRST_NAME"
-                           , trim(CCU300F_MID_INITIAL) "PERSON_MIDDLE_NAME"
-                           , trim(CCU300F_NAME_2) "PERSON_LAST_NAME"
-                           , trim(CCU340F_ADDRESS) "EMAIL"
-                           , trim(CCU330F_SHIPTO_MNT_OK) "PERMISSION_FLAG"
-                           , ''A0'' "ORIG_SYSTEM"
-                           , ''P'' "LOAD_STATUS"
-                           , XX_EXTERNAL_USERS_CONV.gen_batch_id() "BATCH_ID"
-                           , to_date(sysdate,''DD-MON-RRRR HH24:MI:SS'')
-                           , FNDIRLST_PSWD_LAST_CHG
-                           , ''BATCH_PROCESS'' "PROCESS_NAME"
-                         FROM ' || lc_src_table_name;
+				    VALUES ( ext.EXTERNAL_USERS_STG_ID
+                           , ext.CONTACT_OSR
+                           , ext.WEBUSER_OSR
+                           , ext.USERID
+                           , ext.ACCT_SITE_OSR
+                           , ext.RECORD_TYPE
+                           , ext.ACCESS_CODE
+                           , ext.PASSWORD
+                           , ext.STATUS
+                           , ext.PERSON_FIRST_NAME
+                           , ext.PERSON_MIDDLE_NAME
+                           , ext.PERSON_LAST_NAME
+                           , ext.EMAIL
+                           , ext.PERMISSION_FLAG
+                           , ext.ORIG_SYSTEM
+                           , ext.LOAD_STATUS
+                           , ext.BATCH_ID
+                           , to_date(sysdate,'DD-MON-RRRR HH24:MI:SS')
+                           , ext.PWD_LAST_CHANGE
+                           , ext.PROCESS_NAME
+						   );
 
-      XX_EXTERNAL_USERS_DEBUG.log_debug_message(2,  'SQL To Extract Data : ' || lc_insert_sql);
-      write_log ('SQL To Extract Data : ' || lc_insert_sql);
-      EXECUTE IMMEDIATE lc_insert_sql;
       l_rows_processed := SQL%ROWCOUNT;
       XX_EXTERNAL_USERS_DEBUG.log_debug_message(2,  'Rows Extracted : ' || l_rows_processed);
       write_log ('Rows Extracted : ' || l_rows_processed);
       
       IF l_rows_processed = 0 THEN
         RAISE no_records_excp;
+	  ELSE
+	    write_log ('Updating the Status to C in XX_CDH_AOPS_EXTERNAL_USERS Table');
+	    UPDATE XX_CDH_AOPS_EXTERNAL_USERS
+		   SET LOAD_STATUS = 'C'
+		 WHERE EXTERNAL_USERS_STG_ID = ext.EXTERNAL_USERS_STG_ID;
+		 
       END IF;
-      
-      COMMIT;
+	END LOOP;
+    write_log ('End of inserting into XX_EXTERNAL_USERS_STG Table');  
+    
+	COMMIT;
 
       -- -------------------------------------------------------
       -- Update Stats on the Staging Table

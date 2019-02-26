@@ -1,0 +1,42 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_CDH_AOPS_EXTERNAL_USERS.idx                                              |
+-- | Rice Id      : E1328                                                                       | 
+-- | Description  :                                                                             |  
+-- | Purpose      : Create Indexes for Table XX_CDH_AOPS_EXTERNAL_USERS on columns              |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   31-DEC-2018   Havish Kasina        Initial Version                               |
+-- +============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creation of Index on custom table.....
+PROMPT
+
+PROMPT
+PROMPT Creating index on INDEX XX_CDH_AOPS_EXTERNAL_USERS_N1 .....
+PROMPT
+CREATE INDEX XXCOMN.XX_CDH_AOPS_EXTERNAL_USERS_N1 ON XXCOMN.XX_CDH_AOPS_EXTERNAL_USERS(LOAD_STATUS); 
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
