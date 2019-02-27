@@ -130,7 +130,7 @@ AS
     FROM xx_ap_rtv_hdr_attr xarh,
       xx_ap_rtv_lines_attr xarl
     WHERE xarh.header_id    =xarl.header_id
-    AND xarh.frequency_code in ('DY','MY','WK','QY')                     ---added MY, WY and QY for Jira NAIT-71740
+    --AND xarh.frequency_code in ('DY','MY','WK','QY')                     ---commented for Jira NAIT-71740
     AND xarh.invoice_num    = ai.invoice_num
     ))
   AND NOT EXISTS
@@ -275,7 +275,7 @@ IS
     FROM XX_AP_RTV_HDR_ATTR xarh,
       XX_AP_RTV_LINES_ATTR xarl
     WHERE xarh.header_id    =xarl.header_id
-    AND xarh.frequency_code  in ('DY','MY','WK','QY')    ---added MY, WY and QY for Jira NAIT-71740
+   -- AND xarh.frequency_code  in ('DY','MY','WK','QY')    ---commented for jira NAIT-71740
     AND xarh.Record_Status  = 'C'
       --AND XARH.VOUCHER_NUM = l_voucher_nbr;
     AND xarh.invoice_num = l_invoice_nbr;
