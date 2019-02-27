@@ -55,8 +55,7 @@ PACKAGE BODY XX_AP_XXAPRTVAPDM_PKG
   -- |1.8       12-APR-2018 Digamber S     Added new function before_report_trigger_c
   --                                       for new RTV APDM consolidation report
   -- |1.9        14-Dec-2018 Ragni Gupta   NAIT-72725, to remove dblink dependency
-  -- |2.0      24-Feb-2019   Shanti Sethuraj  Added frequency MY, WY and QY in the before_report_trigger_c and get_invoice_batch
-  -- |                                         procedure for the Jira NAIT-71740
+  -- |2.0        27-Feb-2019  Shanti Sethuraj Added MY, WY and QY frequency for jira NAIT-71740
   -- +=========================================================================
   -- +
 AS
@@ -130,7 +129,7 @@ AS
     FROM xx_ap_rtv_hdr_attr xarh,
       xx_ap_rtv_lines_attr xarl
     WHERE xarh.header_id    =xarl.header_id
-    --AND xarh.frequency_code in ('DY','MY','WK','QY')                     ---commented for Jira NAIT-71740
+    AND xarh.frequency_code = 'DY'
     AND xarh.invoice_num    = ai.invoice_num
     ))
   AND NOT EXISTS
@@ -275,7 +274,7 @@ IS
     FROM XX_AP_RTV_HDR_ATTR xarh,
       XX_AP_RTV_LINES_ATTR xarl
     WHERE xarh.header_id    =xarl.header_id
-   -- AND xarh.frequency_code  in ('DY','MY','WK','QY')    ---commented for jira NAIT-71740
+    AND xarh.frequency_code in ( 'DY','MY','QY','WY')    -- added MY, WY and QY frequency for jira NAIT-71740 
     AND xarh.Record_Status  = 'C'
       --AND XARH.VOUCHER_NUM = l_voucher_nbr;
     AND xarh.invoice_num = l_invoice_nbr;
