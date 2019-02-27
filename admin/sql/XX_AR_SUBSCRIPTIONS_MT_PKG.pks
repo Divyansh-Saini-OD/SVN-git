@@ -60,5 +60,16 @@ AS
   PROCEDURE send_email_autorenew(errbuff      OUT  VARCHAR2,
                                  retcode      OUT  NUMBER,
                                  p_debug_flag IN   VARCHAR2 DEFAULT 'N');
+                                 
+  /**************************************
+  * Procedure to generate billing history
+  **************************************/
+
+  PROCEDURE generate_bill_history_payload(errbuff            OUT VARCHAR2,
+                                          retcode            OUT NUMBER,
+                                          p_file_path        IN  VARCHAR2,
+                                          p_debug_flag       IN  VARCHAR2 DEFAULT 'N',
+							              p_text_value       IN  VARCHAR2);
+                                          
 END;
 /
