@@ -5913,6 +5913,12 @@ AS
                         "contractNumber": "' 
                                       || px_subscription_array(indx).contract_number 
                                       || '",
+                        "contractId": "'
+                                      || px_subscription_array(indx).contract_id
+                                      || '",
+                        "contractNumberModifier": "'
+                                      || p_contract_info.contract_number_modifier
+                                      || '",
                         "billToAccountNumber": "' 
                                       || p_contract_info.bill_to_osr 
                                       || '",
@@ -10308,5 +10314,645 @@ AS
       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
       RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' Action: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
   END send_email_autorenew;
+  
+  /***********************************************
+  * Helper procedure to generate billing history
+  *********************************************/
+
+  PROCEDURE generate_bill_history_payload(errbuff            OUT VARCHAR2,
+                                          retcode            OUT NUMBER,
+                                          p_file_path        IN  VARCHAR2,
+                                          p_debug_flag       IN  VARCHAR2 DEFAULT 'N',
+							              p_text_value       IN  VARCHAR2)
+  IS
+  
+    CURSOR c_eligible_contracts
+    IS
+      select distinct xas.contract_id,
+                      xas.billing_sequence_number
+      from   xx_ar_subscriptions xas
+            ,xx_ar_contract_lines xacl
+      where  xas.contract_id              = xacl.contract_id
+      and    xas.contract_line_number     = xacl.contract_line_number
+      and    xas.billing_sequence_number >= xacl.initial_billing_sequence
+      and    xas.invoice_created_flag     = 'Y'
+      and    xas.invoice_number     is not null
+      order by xas.contract_id             asc,
+               xas.billing_sequence_number ASC;
+
+    lc_procedure_name    CONSTANT  VARCHAR2(61) := gc_package_name || '.' || 'generate_bill_history_payload';
+
+    lc_masked_credit_card_number  xx_ar_subscriptions.settlement_cc_mask%TYPE;
+
+    lt_parameters                  gt_input_parameters;
+
+    lc_action                      VARCHAR2(1000);
+
+    lc_error                       VARCHAR2(1000);
+
+    ln_loop_counter                NUMBER := 0;
+    
+    lr_contract_info               xx_ar_contracts%ROWTYPE;
+
+    lt_subscription_array          subscription_table;
+
+    lr_contract_line_info          xx_ar_contract_lines%ROWTYPE;
+
+    lr_invoice_header_info         ra_customer_trx_all%ROWTYPE;
+
+    ln_invoice_total_amount_info   ra_customer_trx_lines_all.extended_amount%TYPE;
+
+    lr_bill_to_cust_location_info  hz_locations%ROWTYPE;
+
+    lc_billing_agreement_id        xx_ar_contracts.payment_identifier%TYPE;
+
+    lc_wallet_id                   xx_ar_contracts.payment_identifier%TYPE;
+
+    lc_card_expiration_date        VARCHAR2(4);
+
+    lc_history_sent_flag           VARCHAR2(2) := 'N';
+
+    lr_subscription_payload_info   xx_ar_subscription_payloads%ROWTYPE;
+
+    lr_subscription_error_info     xx_ar_subscriptions_error%ROWTYPE;
+
+    lc_item_unit_total             xx_ar_subscriptions.total_contract_amount%TYPE;
+
+    le_skip                        EXCEPTION;
+
+    le_processing                  EXCEPTION;
+
+    lc_history_payload             VARCHAR2(32000) := NULL;
+
+    lb_history_hrd_processed       BOOLEAN := FALSE;
+
+    lc_history_payload_lines       VARCHAR2(32000) := NULL;
+
+    lc_history_payload_tender      VARCHAR2(32000) := NULL;
+
+    lr_order_header_info           oe_order_headers_all%ROWTYPE;
+
+    lr_bill_to_cust_acct_site_info hz_cust_acct_sites_all%ROWTYPE;
+
+    l_request                      UTL_HTTP.req;
+    
+    l_response                     UTL_HTTP.resp;
+
+    lc_buff                        VARCHAR2(32000);
+                                   
+    lc_clob_buff                   CLOB;
+
+    lc_parentheses                 VARCHAR2(100)   := NULL;
+
+    lc_contract_line               VARCHAR2(32000) := NULL;
+
+    lc_invoice_status              VARCHAR2(25)    := NULL;
+    
+    lr_pos_ordt_info               xx_ar_order_receipt_dtl%ROWTYPE;
+    
+    lr_pos_info                    xx_ar_pos_inv_order_ref%ROWTYPE;
+    
+    lr_customer_info               hz_cust_accounts%ROWTYPE;
+    
+    lc_failure_message             VARCHAR2(256)   := NULL;
+    
+    lc_auth_time                   xx_ar_subscriptions.auth_datetime%TYPE;
+    
+    lc_next_retry_date             DATE;
+
+    lr_termination_sku             xx_fin_translatevalues.target_value1%TYPE;
+    
+    ln_request_id                  NUMBER;
+    
+    lc_indx_value                  VARCHAR2(1000);
+       
+    lr_translation_info            xx_fin_translatevalues%ROWTYPE;
+    
+    lt_file_handle                 UTL_FILE.file_type;
+    
+    lt_file_name                   VARCHAR2(100)   := TO_CHAR(NULL);
+    
+    lt_translation_info            xx_fin_translatevalues%ROWTYPE;
+    
+    ln_max_linesize                NUMBER          := 32000;
+    
+  BEGIN
+       
+    lt_parameters('p_debug_flag') := p_debug_flag;
+       
+    entering_sub(p_procedure_name  => lc_procedure_name,
+                 p_parameters      => lt_parameters);
+   
+    ln_request_id := fnd_global.conc_request_id;
+	
+	lc_indx_value := '{"index":{"_index":';
+	      
+    lt_file_name    := 'XX_SUBSCR_BILLHISTORY'||'_'||TO_CHAR (SYSDATE,'DDMONYYYYHH24MISS')||'.txt';
+	
+    logit(p_message =>'VALUE OF lt_file_name is'||lt_file_name);	
+      
+    lt_file_handle := UTL_FILE.fopen (p_file_path,lt_file_name,'W',ln_max_linesize);
+       
+    
+    /********************
+    * Get termination_sku
+    ********************/
+    
+    lc_action :=  'Calling get_translation_info for termination sku';
+    
+    lt_translation_info := NULL;
+    
+    lt_translation_info.source_value1 := 'TERMINATION_SKU';
+    
+    get_translation_info(p_translation_name  => 'XX_AR_SUBSCRIPTIONS',
+                         px_translation_info => lt_translation_info);
+    
+    lr_termination_sku := lt_translation_info.target_value1;
+          
+    /***********************************************
+    *  Loop thru pending contracts/billing sequences
+    ***********************************************/
+
+    lc_action := 'Calling c_eligible_contracts cursor';
+
+    FOR eligible_contract_rec IN c_eligible_contracts
+    LOOP
+         
+      lb_history_hrd_processed     := FALSE;
+                                   
+      lc_history_payload           := NULL;
+                                   
+      lc_history_payload_lines     := NULL;
+                                   
+      lc_history_payload_tender    := NULL;
+                                   
+      lc_parentheses               := NULL;
+                                   
+      lc_contract_line             := NULL;
+                                   
+      ln_loop_counter              := 0;
+      
+      lc_masked_credit_card_number := NULL;
+      
+      lc_billing_agreement_id      := NULL;
+      
+      lc_wallet_id                 := NULL;
+      
+      lc_card_expiration_date      := NULL;
+      
+      lc_item_unit_total           := 0;
+      
+      lr_contract_info             := NULL;
+      
+      lr_contract_line_info        := NULL;
+      
+      lr_invoice_header_info       := NULL;
+      
+      ln_invoice_total_amount_info := 0;
+      
+      lr_order_header_info         := NULL;
+      
+      lr_bill_to_cust_acct_site_info := NULL;
+      
+      lr_bill_to_cust_location_info  := NULL;
+      
+      lc_invoice_status              := NULL;
+      
+      lc_failure_message             := NULL;
+      
+      lc_auth_time                   := NULL;
+            
+      lc_next_retry_date             := NULL;
+      /**************************************
+      * Get contract header level information
+      **************************************/
+      
+      lc_action := 'Calling get_contract_info';
+      
+      get_contract_info(p_contract_id     => eligible_contract_rec.contract_id,
+                        x_contract_info   => lr_contract_info);
+      
+      /********************************************
+      * Get all the associated subscription records
+      ********************************************/
+      
+      lt_subscription_array.delete();
+      
+      lc_action := 'Calling get_subscription_array';
+      
+      get_subscription_array(p_contract_id             => eligible_contract_rec.contract_id,
+                             p_billing_sequence_number => eligible_contract_rec.billing_sequence_number,
+                             x_subscription_array      => lt_subscription_array);
+                             
+      /*******************************************************************
+      * Loop thru all the information in subscriptions for sending history
+      *******************************************************************/
+      
+      lc_action := 'Looping thru subscription array for history service - header information';
+      
+      FOR indx IN 1 .. lt_subscription_array.COUNT
+      LOOP
+       
+       
+        BEGIN
+          
+          /************************************
+          * Get contract line level information
+          ************************************/
+          
+          lc_action := 'Calling get_contract_line_info';
+          
+          get_contract_line_info(p_contract_id          => lt_subscription_array(indx).contract_id,
+                                 p_contract_line_number => lt_subscription_array(indx).contract_line_number,
+                                 x_contract_line_info   => lr_contract_line_info);
+    
+          IF lr_contract_line_info.item_name = lr_termination_sku
+          THEN 
+            lc_error := 'Termination SKU : ' || lr_contract_line_info.item_name;
+            RAISE le_skip;
+          END IF;
+        
+          IF lt_subscription_array(indx).billing_sequence_number >= lr_contract_line_info.initial_billing_sequence
+          THEN
+      
+            IF lb_history_hrd_processed != TRUE
+            THEN
+      
+              /************************
+              * Get invoice information
+              ************************/
+      
+              lc_action := 'Calling get_invoice_header_info';
+      
+              get_invoice_header_info(p_invoice_number      => lt_subscription_array(indx).invoice_number,
+                                      x_invoice_header_info => lr_invoice_header_info);
+              
+              /******************************
+              * Get invoice total information
+              ******************************/
+              
+              lc_action := 'Calling get_invoice_total_amount_info';
+      
+              get_invoice_total_amount_info(p_customer_trx_id           => lr_invoice_header_info.customer_trx_id,
+                                            x_invoice_total_amount_info => ln_invoice_total_amount_info);
+               
+              /******************************
+              * Get initial order header info
+              ******************************/
+              
+              lc_action := 'Calling get_order_header_info';
+      
+              IF lr_contract_info.external_source = 'POS'
+              THEN
+                get_pos_ordt_info(p_order_number => lr_contract_info.initial_order_number,
+                      x_ordt_info    => lr_pos_ordt_info);
+                      
+                get_pos_info(p_header_id => lr_pos_ordt_info.header_id,
+                             x_pos_info  => lr_pos_info);
+                             
+                get_order_header_info(p_order_number      => lr_pos_info.sales_order,
+                                      x_order_header_info => lr_order_header_info);
+              ELSE
+                get_order_header_info(p_order_number      => lr_contract_info.initial_order_number,
+                                      x_order_header_info => lr_order_header_info);
+              END IF;
+              
+              /*************************************************
+              * Get initial order BILL_TO cust account site info
+              *************************************************/
+              
+              lc_action := 'Calling get_cust_account_site_info for BILL_TO';
+      
+              IF lr_contract_info.external_source = 'POS'
+              THEN
+                get_customer_pos_info(p_aops           => lr_contract_info.bill_to_osr,
+                                      x_customer_info  => lr_customer_info);
+                                    
+                get_cust_site_pos_info(p_customer_id     => lr_customer_info.cust_account_id,
+                                       x_cust_site_info  => lr_bill_to_cust_acct_site_info);
+              ELSE
+                get_cust_account_site_info(p_site_use_id            => lr_order_header_info.invoice_to_org_id,
+                                           p_site_use_code          => 'BILL_TO',
+                                           x_cust_account_site_info => lr_bill_to_cust_acct_site_info);
+              END IF;
+              
+              /***********************************
+              * Get initial order BILL_TO location
+              ***********************************/
+              
+              lc_action := 'Calling get_cust_location_info for BILL_TO';
+      
+              get_cust_location_info(p_cust_acct_site_id  => lr_bill_to_cust_acct_site_info.cust_acct_site_id,
+                                     x_cust_location_info => lr_bill_to_cust_location_info);
+              
+              /*********************
+              * Masking card details
+              *********************/
+      
+              lc_action := 'Masking credit card';
+      
+              lc_masked_credit_card_number := LPAD(SUBSTR(lt_subscription_array(indx).settlement_cc_mask, -4), 16, 'x');
+      
+              /**********************************************************************
+              * If paypal, pass billing application id, if masterpass, pass wallet id
+              **********************************************************************/
+      
+              IF lr_contract_info.card_type = 'PAYPAL'
+              THEN
+      
+                lc_billing_agreement_id := lr_contract_info.payment_identifier;
+      
+              ELSE
+      
+                lc_wallet_id := lr_contract_info.payment_identifier;
+      
+              END IF;
+      
+              /***********************
+              * Format expiration date
+              ***********************/
+      
+              IF lr_contract_info.card_expiration_date IS NOT NULL
+              THEN
+      
+                lc_action := 'Formating card_expiration_date';
+      
+                lc_card_expiration_date := TO_CHAR(lr_contract_info.card_expiration_date, 'YYMM'); 
+      
+              END IF;
+      
+              /************************************************
+              * Assigning invoice status based on authorization
+              ************************************************/
+              lc_action := 'Assiging invoice status based on authorizaiton';
+      
+              IF lr_contract_info.payment_type != 'AB'
+              THEN
+                IF lt_subscription_array(indx).auth_completed_flag = 'Y'
+                THEN
+                
+                  lc_invoice_status  := 'OK';
+                  
+                  lc_failure_message := NULL;
+                  
+                  lc_auth_time       := lt_subscription_array(indx).auth_datetime;
+                  
+                  lc_next_retry_date := NULL;
+                
+                ELSE
+                
+                  lc_invoice_status  := 'FAIL';
+                  
+                  lc_failure_message := lt_subscription_array(indx).auth_message;
+                  
+                  lc_auth_time       := lt_subscription_array(indx).auth_datetime;
+                  
+                  lc_next_retry_date := NVL(lt_subscription_array(indx).initial_auth_attempt_date,SYSDATE) + lt_subscription_array(indx).next_retry_day;
+                
+                END IF;
+              ELSE
+              
+                lc_invoice_status  := 'OK';
+                
+                lc_failure_message := NULL;
+                
+                lc_auth_time       := NULL;
+      
+              END IF;
+      
+              /**********************
+              * Build history payload
+              **********************/
+      
+              lc_action := 'Building history payload - header information';
+      
+              SELECT '{"billingHistoryRequest":{"transactionHeader":{"consumerName":"'|| lr_contract_info.bill_to_customer_name||'","consumerTransactionId":"'
+                         || lr_contract_info.contract_number||'-'|| lr_contract_info.initial_order_number||'-'|| lt_subscription_array(indx).billing_sequence_number||'-'
+                         || TO_CHAR(SYSDATE,'DDMONYYYYHH24MISS')||'","consumerTransactionDateTime":"'|| TO_CHAR(SYSDATE,'YYYY-MM-DD')|| 'T'|| TO_CHAR(SYSDATE,'HH24:MI:SS')
+                         ||'"},"customer":{"paymentDetails":{"paymentType":"'|| lr_contract_info.payment_type||'"}},"invoice":{"invoiceNumber":"'
+                         ||  lt_subscription_array(indx).invoice_number||'","orderNumber":"'||lt_subscription_array(indx).initial_order_number||'","serviceContractNumber":"'
+                         ||  lt_subscription_array(indx).contract_number||'","contractModifier":"'|| lr_contract_info.contract_number_modifier||'","billingSequenceNumber":"'
+                         ||  lt_subscription_array(indx).billing_sequence_number||'","contractId":"'||  lt_subscription_array(indx).contract_id|| '","billingDate":"'
+                         || TO_CHAR(lt_subscription_array(indx).billing_date,'DD-MON-YYYY')||'","invoiceDate":"'|| TO_CHAR(lr_invoice_header_info.trx_date,'DD-MON-YYYY')
+                         ||'","invoiceTime":"'||TO_CHAR(lr_invoice_header_info.trx_date,'HH24:MI:SS')||'","invoiceStatus":"'|| lc_invoice_status||'","servicePeriodStartDate":"'
+                         || TO_CHAR(lt_subscription_array(indx).service_period_start_date,'DD-MON-YYYY HH24:MI:SS')||'","servicePeriodEndDate":"'
+                         || TO_CHAR(lt_subscription_array(indx).service_period_end_date,'DD-MON-YYYY HH24:MI:SS')||'","nextBillingDate":"'
+                         || TO_CHAR(lt_subscription_array(indx).next_billing_date,'DD-MON-YYYY')||'","totals":{"subTotal":"'|| (ln_invoice_total_amount_info - lt_subscription_array(indx).tax_amount) 
+                         || '","tax":"'|| TO_CHAR(lt_subscription_array(indx).tax_amount)||'","delivery": "String","discount":"String","misc":"String","total":"'|| ln_invoice_total_amount_info
+                         || '"},"invoiceLines":{"invoiceLine":['
+              INTO  lc_history_payload
+              FROM  DUAL;
+      
+              lc_action := 'Building history payload - tender information';
+      
+              SELECT ']},"tenders":{"cardType":"'|| lr_contract_info.card_type||'","amount":"'||ln_invoice_total_amount_info||'","cardnumber":"'||lc_masked_credit_card_number
+                          ||'","expirationDate":"'|| lc_card_expiration_date||'"}},"contract":{"contractLines":['
+              INTO   lc_history_payload_tender
+              FROM   DUAL;
+      
+              SELECT ']}}}'
+              INTO     lc_parentheses
+              FROM     dual;
+      
+              ln_loop_counter := ln_loop_counter + 1;
+      
+              lb_history_hrd_processed := TRUE;
+      
+            END IF;--lb_history_hrd_processed := FALSE;
+      
+            /******************************************************************
+            * Calculating total line amount (contract_line_amount + tax_amount)
+            ******************************************************************/
+      
+            lc_action := 'Calculating total line amount';
+      
+            lc_item_unit_total := lt_subscription_array(indx).total_contract_amount * lr_contract_line_info.quantity
+                                         + NVL(lt_subscription_array(indx).tax_amount, 0);
+      
+            /***********************************
+            * Build history payload - line level
+            ***********************************/
+      
+            lc_action := 'Building history payload - line information';
+      
+            SELECT                 '{"orderLineNumber":"'|| lr_contract_line_info.initial_order_line||'","contractLineNumber":"'||lr_contract_line_info.contract_line_number
+                                  || '","itemNumber":"'||lr_contract_line_info.item_name||'","contractStartDate":"'||TO_CHAR(lr_contract_line_info.contract_line_start_date,'YYYY-MM-DD')
+                                  || '","contractEndDate":"'||TO_CHAR(lr_contract_line_info.contract_line_end_date,'YYYY-MM-DD')||'","billingFrequency":"'
+                                  || lr_contract_line_info.contract_line_billing_freq|| '","unitPrice":"'|| lt_subscription_array(indx).contract_line_amount||'","tax":"'
+                                  || NVL(lt_subscription_array(indx).tax_amount, 0)||'","unitTotal":"'|| lc_item_unit_total||'","failureMessage":"'|| lc_failure_message
+                                  || '","initialAuthDate":"'|| TO_CHAR(lt_subscription_array(indx).initial_auth_attempt_date,'YYYY-MM-DD')||'","lastAuthDate":"'
+                                  || TO_CHAR(lt_subscription_array(indx).last_auth_attempt_date,'YYYY-MM-DD')||'","nextRetryDate":"'|| TO_CHAR(lc_next_retry_date,'DD-MON-YYYY')||'"}'
+            INTO   lc_history_payload_lines
+            FROM   DUAL;
+      
+            SELECT '{"startDate":"'|| TO_CHAR(lr_contract_line_info.contract_line_start_date,'DD-MON-YYYY HH24:MI:SS')||'","endDate":"'
+                  || TO_CHAR(lr_contract_line_info.contract_line_end_date,'DD-MON-YYYY HH24:MI:SS')||'","serviceType":"'|| lr_contract_line_info.program
+                  || '","billingFrequency":"'|| lr_contract_line_info.contract_line_billing_freq|| '","vendorNumber":"'||lr_contract_line_info.vendor_number||'","lineNumber":"'
+                  || lr_contract_line_info.contract_line_number|| '","contractLineAmount":"'|| lt_subscription_array(indx).contract_line_amount||'","totalContractLineAmount":"'
+                  || lr_contract_line_info.contract_line_amount|| '"}'
+            INTO   lc_contract_line
+            FROM   DUAL;
+      
+            /************************************************
+            * Need a comma between payload line level records
+            ************************************************/
+      
+            IF ln_loop_counter = 1
+            THEN
+      
+              lc_history_payload := lc_history_payload
+                                    || ''
+                                    || lc_history_payload_lines;
+      
+              lc_history_payload_tender := lc_history_payload_tender
+                                           ||''
+                                           ||lc_contract_line;
+      
+              ln_loop_counter := ln_loop_counter + 1;
+      
+            ELSE
+      
+              lc_history_payload := lc_history_payload
+                                    || ','
+                                    || lc_history_payload_lines;
+      
+              lc_history_payload_tender := lc_history_payload_tender
+                                           ||','
+                                           ||lc_contract_line;
+      
+              ln_loop_counter := ln_loop_counter + 1;
+      
+            END IF;
+      
+            /**********************************************************************************
+            * This is the last lt_subscription_array record therefore appending tender payload,
+            * sending payload, recording response. 
+            *********************************************************************************/
+      
+            IF  (ln_loop_counter - 1) = lt_subscription_array.COUNT
+            THEN
+      
+              lc_action := 'Concatenating tender information to history payload';
+      
+              lc_history_payload := lc_history_payload
+                                    || ''
+                                    || lc_history_payload_tender
+                                    ||''
+                                    || lc_parentheses;
+                  
+            END IF;--ln_loop_counter = lt_subscription_array.COUNT
+      
+          END IF;--lt_subscription_array(indx).billing_sequence_number != 1 end if
+      
+        EXCEPTION
+          WHEN le_processing
+          THEN
+            fnd_file.put_line(fnd_file.LOG, 'Le Exception:' || SQLERRM);
+            lr_subscription_error_info                         := NULL;
+            lr_subscription_error_info.contract_id             := lt_subscription_array(indx).contract_id;
+            lr_subscription_error_info.contract_number         := lt_subscription_array(indx).contract_number;
+            lr_subscription_error_info.contract_line_number    := NULL;
+            lr_subscription_error_info.billing_sequence_number := lt_subscription_array(indx).billing_sequence_number;
+            lr_subscription_error_info.error_module            := lc_procedure_name;
+            lr_subscription_error_info.error_message           := SUBSTR('Action: ' || lc_action || ' Error: ' || lc_error, 1, gc_max_err_size);
+            lr_subscription_error_info.creation_date           := SYSDATE;
+      
+            lc_action := 'Calling insert_subscription_error_info';
+      
+            insert_subscription_error_info(p_subscription_error_info => lr_subscription_error_info);
+            
+            logit(p_message => 'contract_id : ' ||lt_subscription_array(indx).contract_id||' billing_sequence_number : ' ||lt_subscription_array(indx).billing_sequence_number
+                  ||' failed to write to file',
+            p_force   => TRUE);
+      
+            lc_error := SUBSTR(lr_subscription_error_info.error_message, 1, gc_max_sub_err_size);
+      
+            --RAISE le_processing;
+      
+          WHEN OTHERS
+          THEN
+            fnd_file.put_line(fnd_file.LOG, 'Othere Exception:' || SQLERRM);
+            lr_subscription_error_info                         := NULL;
+            lr_subscription_error_info.contract_id             := lt_subscription_array(indx).contract_id;
+            lr_subscription_error_info.contract_number         := lt_subscription_array(indx).contract_number;
+            lr_subscription_error_info.contract_line_number    := NULL;
+            lr_subscription_error_info.billing_sequence_number := lt_subscription_array(indx).billing_sequence_number;
+            lr_subscription_error_info.error_module            := lc_procedure_name;
+            lr_subscription_error_info.error_message           := SUBSTR('Action: ' || lc_action || ' Error: ' || SQLCODE || ' ' || SQLERRM, 1, gc_max_err_size);
+            lr_subscription_error_info.creation_date           := SYSDATE;
+      
+            lc_action := 'Calling insert_subscription_error_info';
+      
+            insert_subscription_error_info(p_subscription_error_info => lr_subscription_error_info);
+            
+            logit(p_message => 'contract_id : ' ||lt_subscription_array(indx).contract_id||' billing_sequence_number : ' ||lt_subscription_array(indx).billing_sequence_number
+                  ||' failed to write to file',
+            p_force   => TRUE);
+      
+            lc_error := SUBSTR(lr_subscription_error_info.error_message, 1, gc_max_sub_err_size);
+      
+            --RAISE le_processing;
+        END;
+      
+      END LOOP; --sub loop
+      
+      BEGIN
+	
+        UTL_FILE.PUT_LINE(lt_file_handle,lc_history_payload);	
+		
+	  EXCEPTION
+	    WHEN OTHERS THEN
+          fnd_file.put_line(fnd_file.LOG, 'Exception while writing data into file:' || SQLERRM);
+	      logit(p_message =>' Exception while writing data into file '|| SQLERRM || SQLCODE 
+               ,p_force   => TRUE);
+	      --RAISE le_processing;
+	  END;
+    
+    END LOOP;--eligible contracts loop
+    
+    UTL_FILE.fclose (lt_file_handle);
+    
+    exiting_sub(p_procedure_name => lc_procedure_name);
+
+  EXCEPTION
+
+    WHEN le_skip
+    THEN
+      fnd_file.put_line(fnd_file.LOG, 'Exception Skipping:' || SQLERRM);
+      logit(p_message => 'Skipping: ' || lc_error);
+
+    WHEN le_processing
+    THEN
+
+      FOR indx IN 1 .. lt_subscription_array.COUNT
+      LOOP
+
+        logit(p_message => 'contract_id : ' ||lt_subscription_array(indx).contract_id||' billing_sequence_number : ' ||lt_subscription_array(indx).billing_sequence_number
+                  ||' failed to write to file',
+            p_force   => TRUE);
+
+      END LOOP;
+
+      exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+      --RAISE_APPLICATION_ERROR(-20101, lc_error);
+
+    WHEN OTHERS
+    THEN
+      fnd_file.put_line(fnd_file.LOG, 'Exception2 others:' || SQLERRM);
+
+      FOR indx IN 1 .. lt_subscription_array.COUNT
+      LOOP
+
+        logit(p_message => 'contract_id : ' ||lt_subscription_array(indx).contract_id||' billing_sequence_number : ' ||lt_subscription_array(indx).billing_sequence_number
+                  ||' failed to write to file',
+            p_force   => TRUE);
+
+      END LOOP;
+
+      exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+      RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' Action: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+
+  END generate_bill_history_payload;
+  
 END xx_ar_subscriptions_mt_pkg;
 /
