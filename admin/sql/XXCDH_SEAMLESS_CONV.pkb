@@ -1,9 +1,4 @@
-SET VERIFY OFF;
-WHENEVER SQLERROR CONTINUE;
-WHENEVER OSERROR EXIT FAILURE ROLLBACK;
-
-create or replace
-PACKAGE BODY XXCDH_SEAMLESS_CONV
+create or replace PACKAGE BODY XXCDH_SEAMLESS_CONV
 
 -- +===================================================================+
 -- |                  Office Depot - Project Simplify                  |
@@ -18,9 +13,11 @@ PACKAGE BODY XXCDH_SEAMLESS_CONV
 -- |DRAFT 1a  10-Aug-2011 Sreedhar Mohan     Initial draft version     |
 -- |                                         copied from               |
 -- |                                         XXCDH_SEAMLESS_PKG        |
--- |DRAFT 1b 07-JUL-14   Sridhar Pamu       Modified seamless_conv_other_sources|
+-- |DRAFT 1b  07-JUL-14   Sridhar Pamu       Modified seamless_conv_other_sources|
 -- |                                         Procedure to fix the Request calling|
--- |                                         Defect 28730              |
+-- |                                         Defect 28730   
+-- |DRAFT 1c  27-JAN-2019 BIAS               Changed to replace user_lock 
+--                                           to dbms_lock              |
 -- +===================================================================+
 
 
@@ -97,7 +94,7 @@ BEGIN
    l_wait_time                  := NVL(fnd_profile.value('XX_CDH_SEAMLESS_WAIT_TIME'),30000);
 
    WHILE l_hold_value = 'ON_HOLD' LOOP
-      USER_LOCK.SLEEP(l_wait_time);
+      DBMS_LOCK.SLEEP(l_wait_time);
       l_hold_value                 := NVL(fnd_profile.value_wnps('XX_CDH_SEAMLESS_HOLD_VALUE'),'NO_HOLD');
    END LOOP;
 
@@ -106,10 +103,10 @@ BEGIN
    -----------------------------------
       --defect 29511 -- CA Conversion Program is not picking the batches to process
       lv_select_query := null;
-      
+
       IF FND_GLOBAL.ORG_ID = 404 THEN
 
-        lv_select_query := 
+        lv_select_query :=
           ' SELECT batch_id    '||
           ' FROM   hz_imp_batch_summary '||
           ' WHERE  original_system=''A0'''||
@@ -118,10 +115,10 @@ BEGIN
           ' AND TRUNC(CREATION_DATE) BETWEEN TRUNC(' || l_start_date || ') AND TRUNC(' || l_end_date || ') ' ||
           ' AND    load_type = '''||p_batch_type || '''' ||
           ' ORDER BY batch_id';
-      
+
       ELSIF FND_GLOBAL.ORG_ID = 403 THEN
 
-        lv_select_query := 
+        lv_select_query :=
           ' SELECT batch_id    '||
           ' FROM   hz_imp_batch_summary '||
           ' WHERE  original_system=''A0'''||
@@ -129,10 +126,10 @@ BEGIN
           ' AND    description LIKE ''DELTA%'''   ||
           ' AND TRUNC(CREATION_DATE) BETWEEN TRUNC(' || l_start_date || ') AND TRUNC(' || l_end_date || ') ' ||
           ' AND    load_type = '''||p_batch_type || '''' ||
-          ' ORDER BY batch_id';      
+          ' ORDER BY batch_id';
 
       END IF;
-      
+
 
    fnd_file.put_line (fnd_file.log, 'Query Used - ' || lv_select_query);
 
@@ -285,7 +282,7 @@ BEGIN
   l_wait_time                  := NVL(fnd_profile.value('XX_CDH_SEAMLESS_WAIT_TIME'),30000);
 
   WHILE l_hold_value = 'ON_HOLD' LOOP
-      USER_LOCK.SLEEP(l_wait_time);
+      DBMS_LOCK.SLEEP(l_wait_time);
       l_hold_value                 := NVL(fnd_profile.value_wnps('XX_CDH_SEAMLESS_HOLD_VALUE'),'NO_HOLD');
   END LOOP;
 
@@ -350,80 +347,80 @@ BEGIN
                            );
           IF ( NOT lb_success ) THEN
              RAISE le_submit_failed;
-          END IF;   
+          END IF;
           */ --- commented on 07-Jul-14 To fix the program sequence issue Defect 28730
-          
-          
-          
--------------------------------------------------------------------------  
+
+
+
+-------------------------------------------------------------------------
        ------ Added on 07-Jul-14  To fix the program sequence issue Defect 28730
---------------------------------------------------------------------------                 
+--------------------------------------------------------------------------
       ----------------------------------------------------------------------------------
       -- Submit program OD: CDH Load Oracle INT to STG Process which is in stage STAGE10
       ----------------------------------------------------------------------------------
-      
+
       lb_success := fnd_submit.submit_program
                        (  application => 'XXCNV',
                           program     => 'XX_CDH_CONV_LOAD_INT_STG1',
                           stage       => 'XX_CDH_CONV_LOAD_INT_STG_PKG',
                           argument1   => lt_active_batch_rec.batch_id
-                       );   
+                       );
       IF ( NOT lb_success ) THEN
          RAISE le_submit_failed;
       END IF;
        ----------------------------------------------------------------------------------
-      -- Submit program OD: CDH Load Oracle INT to STG Process which is in stage STAGE10 
+      -- Submit program OD: CDH Load Oracle INT to STG Process which is in stage STAGE10
       ----------------------------------------------------------------------------------
-      
+
       lb_success := fnd_submit.submit_program
                        (  application => 'XXCNV',
                           program     => 'XX_CDH_CONV_LOAD_INT_STG2',
                           stage       => 'XX_CDH_CONV_LOAD_INT_STG_PKG',
                           argument1   => lt_active_batch_rec.batch_id
-                       );   
+                       );
       IF ( NOT lb_success ) THEN
          RAISE le_submit_failed;
       END IF;
        ----------------------------------------------------------------------------------
-      -- Submit program OD: CDH Load Oracle INT to STG Process which is in stage STAGE10 
+      -- Submit program OD: CDH Load Oracle INT to STG Process which is in stage STAGE10
       ----------------------------------------------------------------------------------
-      
+
       lb_success := fnd_submit.submit_program
                        (  application => 'XXCNV',
                           program     => 'XX_CDH_CONV_LOAD_INT_STG3',
                           stage       => 'XX_CDH_CONV_LOAD_INT_STG_PKG',
                           argument1   => lt_active_batch_rec.batch_id
-                       );   
+                       );
       IF ( NOT lb_success ) THEN
          RAISE le_submit_failed;
       END IF;
        ----------------------------------------------------------------------------------
-      -- Submit program OD: CDH Load Oracle INT to STG Process which is in stage STAGE10 
+      -- Submit program OD: CDH Load Oracle INT to STG Process which is in stage STAGE10
       ----------------------------------------------------------------------------------
-      
+
       lb_success := fnd_submit.submit_program
                        (  application => 'XXCNV',
                           program     => 'XX_CDH_CONV_LOAD_INT_STG4',
                           stage       => 'XX_CDH_CONV_LOAD_INT_STG_PKG',
                           argument1   => lt_active_batch_rec.batch_id
-                       );   
+                       );
       IF ( NOT lb_success ) THEN
          RAISE le_submit_failed;
       END IF;
        ----------------------------------------------------------------------------------
-      -- Submit program OD: CDH Load Oracle INT to STG Process which is in stage STAGE10 
+      -- Submit program OD: CDH Load Oracle INT to STG Process which is in stage STAGE10
       ----------------------------------------------------------------------------------
-      
+
       lb_success := fnd_submit.submit_program
                        (  application => 'XXCNV',
                           program     => 'XX_CDH_CONV_LOAD_INT_STG5',
                           stage       => 'XX_CDH_CONV_LOAD_INT_STG_PKG',
                           argument1   => lt_active_batch_rec.batch_id
-                       );   
+                       );
       IF ( NOT lb_success ) THEN
          RAISE le_submit_failed;
       END IF;
-      
+
       -----------------------------------------------------------  Code Ends ---ADDED ON 07-Jul-14  to fix the  program sequence issue.
 
           ----------------------------------------------------------------------------------
@@ -639,5 +636,3 @@ EXCEPTION
 END seamless_conv_other_sources;
 
 END XXCDH_SEAMLESS_CONV;
-/
-SHOW ERRORS;

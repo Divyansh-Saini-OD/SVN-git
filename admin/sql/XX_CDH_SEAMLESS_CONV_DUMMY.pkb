@@ -1,12 +1,7 @@
-SET VERIFY OFF;
-WHENEVER SQLERROR CONTINUE;
-WHENEVER OSERROR EXIT FAILURE ROLLBACK;
-
-create or replace
-PACKAGE BODY XX_CDH_SEAMLESS_CONV_DUMMY
+create or replace PACKAGE BODY XX_CDH_SEAMLESS_CONV_DUMMY
 -- +==========================================================================+
 -- |                      Office Depot - Project Simplify                     |
--- |                      Office Depot CDH Team                               |
+-- |                      Office Depot CDH Team                             |
 -- +==========================================================================+
 -- | Name        : XX_CDH_SEAMLESS_CONV_DUMMY                                 |
 -- | Rice ID     : C0024 Conversions/Common View Loader                       |
@@ -18,6 +13,8 @@ PACKAGE BODY XX_CDH_SEAMLESS_CONV_DUMMY
 -- |Version  Date        Author                 Remarks                       |
 -- |=======  ==========  ===================    ==============================|
 -- |1.0      29-May-2008 Indra Varada           Initial Version               |
+-- |1.1      27-JAN-2019 Srinivas Reddy         Changed to replace user_lock  |
+--                                              to dbms_lock                  | 
 -- |                                                                          |
 -- +==========================================================================+
 AS
@@ -64,7 +61,7 @@ l_terminate_value          VARCHAR2(30);
 BEGIN
 
     l_wait_time           := NVL(fnd_profile.value('XX_CDH_SEAMLESS_WAIT_TIME'),30000);
-    
+
     contruct_dyn_query(
      p_orig_system  => p_source_system,
      p_wait_time    => l_wait_time,
@@ -73,14 +70,14 @@ BEGIN
     );
 
  WHILE l_wait_status   LOOP
-   
-   l_terminate_value     := NVL(fnd_profile.value_wnps('XX_CDH_SEAMLESS_TERMINATE'),'N');   
+
+   l_terminate_value     := NVL(fnd_profile.value_wnps('XX_CDH_SEAMLESS_TERMINATE'),'N');
 
    IF l_terminate_value = 'Y' THEN
       p_retcode := 2;
       raise le_terminated;
    END IF;
-   
+
    l_rec_count := 0;
 
    OPEN lc_batch_cur FOR lv_select_query_main;
@@ -124,7 +121,7 @@ BEGIN
    CLOSE lc_batch_cur;
 
    IF l_rec_count > 0 THEN
-    USER_LOCK.SLEEP(l_wait_time);
+    DBMS_LOCK.SLEEP(l_wait_time);
    ELSE
      l_wait_status := FALSE;
    END IF;
@@ -183,22 +180,22 @@ lc_batch_cur               lt_batch_cur_type;
 BEGIN
 
     l_hold_value    := NVL(fnd_profile.value_wnps('XX_CDH_SEAMLESS_HOLD_VALUE'),'NO_HOLD');
-    
+
     WHILE l_hold_value = 'ON_HOLD' LOOP
-         USER_LOCK.SLEEP(p_wait_time);
-         l_hold_value                 := NVL(fnd_profile.value_wnps('XX_CDH_SEAMLESS_HOLD_VALUE'),'NO_HOLD'); 
-    END LOOP;  
-    
+         DBMS_LOCK.SLEEP(p_wait_time);
+         l_hold_value                 := NVL(fnd_profile.value_wnps('XX_CDH_SEAMLESS_HOLD_VALUE'),'NO_HOLD');
+    END LOOP;
+
     IF p_orig_system != 'A0' THEN
 
       l_start_date    := NVL(fnd_profile.value('XX_CDH_SEAMLESS_START_DATE'),'SYSDATE-1');
       l_end_date      := NVL(fnd_profile.value('XX_CDH_SEAMLESS_END_DATE'),'SYSDATE');
-      
+
     ELSE
        l_lag_time      := NVL(fnd_profile.value('XX_CDH_SEAMLESS_LAG'),3600);
-       
-       USER_LOCK.SLEEP(l_lag_time*100); 
-       
+
+       DBMS_LOCK.SLEEP(l_lag_time*100);
+
        l_lag_time_day  := ROUND(l_lag_time/86400,3);
        l_start_date := 'SYSDATE-' || l_lag_time_day;
        l_end_date   := 'SYSDATE';
@@ -247,5 +244,3 @@ EXCEPTION WHEN OTHERS THEN
 END  contruct_dyn_query;
 
 END XX_CDH_SEAMLESS_CONV_DUMMY;
-/
-SHOW ERRORS;
