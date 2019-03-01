@@ -1,15 +1,3 @@
-SET VERIFY OFF
-SET ECHO OFF
-SET TAB OFF
-SET FEEDBACK OFF
-SET TERM ON
-
-PROMPT Creating PACKAGE  BODY XX_PO_POM_INT_PKG
-
-PROMPT Program exits IF the creation IS NOT SUCCESSFUL
-
-WHENEVER SQLERROR CONTINUE
-
 create or replace PACKAGE BODY XX_PO_POM_INT_PKG
 AS
   -- +============================================================================================+
@@ -28,9 +16,11 @@ AS
   -- |            07/14 update terms															  |
   -- | 1.1         10/03/2017   Suresh Ponnambalam Added po line procedure                        |
   -- | 1.2         01/08/2018   Havish Kasina      Modified the add_po_line procedure             |
-  -- | 1.3         04/18/2018   Madhu Bolli        add_po_line : max line number should start from 9001|  
+  -- | 1.3         04/18/2018   Madhu Bolli        add_po_line : max line number should start from 9001|
   -- |											   NAIT-37481 and corrected receipt required flag |
   -- | 1.4         04/20/2018   Madhu Bolli        Skip CLOSE_API if line already closed.         |
+  -- | 1.5         01/24/2019   BIAS               INSTANCE_NAME is replaced with DB_NAME for OCI   |  
+  -- |                                             Migration Project  
   -- +============================================================================================+
   -- +============================================================================================+
   -- |  Name  : Log Exception                                                              		  |
@@ -45,7 +35,7 @@ AS
   -- Read the profile option that enables/disables the debug log
   g_po_wf_debug VARCHAR2(1) := NVL(FND_PROFILE.VALUE('PO_SET_DEBUG_WORKFLOW_ON'),'N');
 
-  
+
 PROCEDURE log_exception(
     p_program_name   IN VARCHAR2 ,
     p_error_location IN VARCHAR2 ,
@@ -115,11 +105,11 @@ ln_request_id NUMBER;
 l_instance_name	VARCHAR2(30);
 BEGIN
 	print_debug_msg ('Begin - Sending email',TRUE);
-	
-	SELECT sys_context('userenv','instance_name') 
+
+	SELECT sys_context('userenv','DB_NAME')
 	  INTO l_instance_name
 	FROM dual;
-	
+
   BEGIN
 		SELECT target_value2||','||target_value3 INTO l_email_addr
                  FROM  xx_fin_translatedefinition xtd
@@ -131,9 +121,9 @@ BEGIN
 		WHEN OTHERS THEN
 			l_email_addr := NULL;
 			print_debug_msg ('Email Translation XX_AP_TRADE_INV_EMAIL not setup correctly for source_value1 PURCHASEORDER.'||substr(SQLERRM, 1, 500),TRUE);
-			
-	END; 
-	
+
+	END;
+
 	BEGIN
 		ln_request_id :=
 			fnd_request.submit_request
@@ -153,17 +143,17 @@ BEGIN
 				, l_request_id
 			);
 	   COMMIT;
-	   
+
 	EXCEPTION
 		WHEN OTHERS THEN
-			print_debug_msg ('Failed in execution of XXODROEMAILER with error as '||substr(SQLERRM, 1, 500),TRUE);	
+			print_debug_msg ('Failed in execution of XXODROEMAILER with error as '||substr(SQLERRM, 1, 500),TRUE);
 	END;
-	  
+
 	print_debug_msg ('End - Sent email for the output of the request_id '||ln_request_id,TRUE);
 
 	EXCEPTION
 		WHEN OTHERS THEN
-			print_debug_msg ('Error in send_output_email: '||substr(SQLERRM, 1, 500),TRUE);	
+			print_debug_msg ('Error in send_output_email: '||substr(SQLERRM, 1, 500),TRUE);
 END send_output_email;
 
 
@@ -196,13 +186,13 @@ IS
 		WHERE pmi.po_number 	= c_po_number
           AND (c_po_line_num IS NULL or pmi.po_line_num  = c_po_line_num)
 		  AND pmi.record_status = 'NEW';
-	
-	
-	
+
+
+
 	ln_count					NUMBER;
 	ln_count1					NUMBER;
 	ln_missed_po_rec_id			NUMBER;
-	
+
 
 BEGIN
 		-- Validate PO and line number
@@ -210,53 +200,53 @@ BEGIN
 		OPEN c_po_line_exists_in_int(p_po_number,p_po_line_num);
 		FETCH c_po_line_exists_in_int INTO ln_count;
 		CLOSE c_po_line_exists_in_int;
-		
+
 		print_debug_msg ('valid_and_mark_missed_po_int - Count of exists in xx_po_pom_hdr_int_stg '||ln_count, FALSE);
-		
+
 		IF ln_count > 0 THEN
 			-- PO exists in POM Staging table
 			p_result   := 'S';
 			return;
 		ELSE
 			-- Check If PO and line number exist in the table XX_PO_POM_MISSED_IN_INT
-		
+
 			ln_count1 := 0;
 			OPEN c_po_line_exists_in_missed(p_po_number,p_po_line_num);
 			FETCH c_po_line_exists_in_missed INTO ln_count1;
 			CLOSE c_po_line_exists_in_missed;
-			
+
 			print_debug_msg ('valid_and_mark_missed_po_int - Count of exists in xx_po_pom_missed_in_int '||ln_count1, FALSE);
-			
+
 			IF ln_count1 >0 THEN
 				p_result   := 'S';
 				return;
 			ELSE
-				
+
 				-- Insert XX_PO_POM_MISSED_IN_INT --
-                
+
 				SELECT xx_po_pom_missed_in_int_s.NEXTVAL
                 INTO ln_missed_po_rec_id
                 FROM dual;
-				
+
                 INSERT
                 INTO xx_po_pom_missed_in_int
                   (
-					record_id    		
-                    ,po_number			
-                    ,po_line_num       
-                    ,source				
-                    ,source_record_id	
-                    ,record_status		
-                    ,request_id			
-                    ,created_by        
-                    ,creation_date     
-                    ,last_updated_by   
-                    ,last_update_date  
-                    ,last_update_login 
+					record_id
+                    ,po_number
+                    ,po_line_num
+                    ,source
+                    ,source_record_id
+                    ,record_status
+                    ,request_id
+                    ,created_by
+                    ,creation_date
+                    ,last_updated_by
+                    ,last_update_date
+                    ,last_update_login
                   )
                   VALUES
                   (
-                    ln_missed_po_rec_id 
+                    ln_missed_po_rec_id
 					,p_po_number
 					,p_po_line_num
 					,p_source
@@ -268,10 +258,10 @@ BEGIN
                     ,FND_GLOBAL.USER_ID
                     ,SYSDATE
                     ,FND_GLOBAL.LOGIN_ID
-                  );	
+                  );
 				COMMIT;
 			END IF;
-		
+
 		END IF;  -- IF ln_count > 0 THEN
 
 		p_result   := 'S';
@@ -279,7 +269,7 @@ EXCEPTION
 WHEN OTHERS THEN
   print_debug_msg ('valid_and_mark_missed_po_int - Exception is '||substr(SQLERRM, 1, 500), TRUE);
   p_result   := 'F';
-END valid_and_mark_missed_po_int;			
+END valid_and_mark_missed_po_int;
 
 -- +============================================================================================+
 -- |  Name  : send_output_email                                                                 |
@@ -293,10 +283,10 @@ l_instance_name	VARCHAR2(30);
 BEGIN
 	print_debug_msg ('Begin - Sending email',TRUE);
 
-	SELECT sys_context('userenv','instance_name') 
+	SELECT sys_context('userenv','DB_NAME')
 	  INTO l_instance_name
 	FROM dual;
-	
+
 	 BEGIN
 		SELECT target_value2||','||target_value3 INTO l_email_addr
                  FROM  xx_fin_translatedefinition xtd
@@ -304,8 +294,8 @@ BEGIN
                 WHERE xtd.translation_name = 'XX_AP_TRADE_INV_EMAIL'
                 AND xtd.translate_id       = xtv.translate_id
                 AND xtv.source_value1 = 'MISSINGPOS';
-				
-				
+
+
 		ln_request_id :=
 			fnd_request.submit_request
 			('XXFIN'
@@ -323,18 +313,18 @@ BEGIN
 				, 'Y'  -- attachment
 				, l_request_id
 			);
-			
+
 	   COMMIT;
-	   
+
 	 EXCEPTION
 	 WHEN OTHERS THEN
-			print_debug_msg ('Missing PO - Failed in Email translation or execution of XXODROEMAILER with error as '||substr(SQLERRM, 1, 500),TRUE);	
+			print_debug_msg ('Missing PO - Failed in Email translation or execution of XXODROEMAILER with error as '||substr(SQLERRM, 1, 500),TRUE);
 	END;
-	   
+
 	print_debug_msg ('End - Sent email for the missing PO the request_id '||ln_request_id,TRUE);
 EXCEPTION
 		WHEN OTHERS THEN
-			print_debug_msg ('Error in send_missing_po_output_email: '||substr(SQLERRM, 1, 500),TRUE);	
+			print_debug_msg ('Error in send_missing_po_output_email: '||substr(SQLERRM, 1, 500),TRUE);
 END send_missing_po_output_email;
 -- +============================================================================================+
 -- |  Name  : Validate Missing PO                                                                 |
@@ -344,7 +334,7 @@ PROCEDURE validate_missing_po(
     p_errbuf OUT VARCHAR2 ,
     p_retcode OUT VARCHAR2)
 IS
-    
+
   CURSOR po_dtl_cr
   IS
 		SELECT po_number,
@@ -381,7 +371,7 @@ print_out_msg(RPAD('=',15,'=')||' '||RPAD('=',23,'=')||' '||RPAD('=',20,'=')||' 
         SET record_status='PROCESSED'
         WHERE po_number  =l_po_dtl_tab(i).po_number
 		  AND po_line_num = l_po_dtl_tab(i).po_line_num;
-      ELSE  
+      ELSE
         print_out_msg(	RPAD(l_po_dtl_tab(i).creation_date,15)||' '||
 						RPAD(NVL(l_po_dtl_tab(i).out_source,'   '),23)||' '||
 						RPAD(l_po_dtl_tab(i).request_id,20)||' '||
@@ -396,11 +386,11 @@ print_out_msg(RPAD('=',15,'=')||' '||RPAD('=',23,'=')||' '||RPAD('=',20,'=')||' 
 	END IF;
     END IF;
     CLOSE po_dtl_cr;
-    
+
     EXCEPTION
   WHEN OTHERS THEN
     lc_err_msg :=SQLCODE||SQLERRM;
-	print_debug_msg (lc_err_msg);    
+	print_debug_msg (lc_err_msg);
   END;
 -- +============================================================================================+
 -- |  Name  : parse                                                                 |
@@ -790,11 +780,11 @@ BEGIN
   gn_request_id := fnd_global.conc_request_id;
   gn_user_id    := fnd_global.user_id;
   gn_login_id   := fnd_global.login_id;
-  
-  SELECT SUBSTR(LOWER(SYS_CONTEXT('USERENV','INSTANCE_NAME')),1,8) 
+
+  SELECT SUBSTR(LOWER(SYS_CONTEXT('USERENV','DB_NAME')),1,8)
       INTO lc_instance_name
       FROM dual;
-	  
+
   print_debug_msg ('Start load_staging from File:'||p_file_name||' Path:'||p_filepath,TRUE);
   UTL_FILE.FGETATTR(lc_filedir,lc_filename,lb_file_exist,ln_size,ln_block_size);
   IF NOT lb_file_exist THEN
@@ -859,26 +849,26 @@ BEGIN
   print_out_msg(' ');
   print_out_msg('Total No. of records loaded :'||TO_CHAR(ln_count_tot));
   dbms_lock.sleep(5);
-  
+
   OPEN get_dir_path;
   FETCH get_dir_path INTO lc_dirpath;
   CLOSE get_dir_path;
-  
+
   print_debug_msg('Calling the Common File Copy to move the Inbound file to AP Invoice folder',TRUE);
-  lc_dest_file_name := '/app/ebs/ebsfinance/'||lc_instance_name||'/apinvoice/' 
-											 || SUBSTR(lc_filename,1,LENGTH(lc_filename) - 4) 
+  lc_dest_file_name := '/app/ebs/ebsfinance/'||lc_instance_name||'/apinvoice/'
+											 || SUBSTR(lc_filename,1,LENGTH(lc_filename) - 4)
 											 || TO_CHAR(SYSDATE, 'DD-MON-YYYYHHMMSS') || '.TXT';
-  
-  ln_conc_file_copy_request_id := fnd_request.submit_request('XXFIN', 
-															 'XXCOMFILCOPY', 
-															 '', 
-															 '', 
-															 FALSE, 
+
+  ln_conc_file_copy_request_id := fnd_request.submit_request('XXFIN',
+															 'XXCOMFILCOPY',
+															 '',
+															 '',
+															 FALSE,
 															 lc_dirpath||'/'||lc_filename, --Source File Name
 															 lc_dest_file_name,            --Dest File Name
 															 '', '', 'N'                   --Deleting the Source File
 															);
-  
+
 	IF ln_conc_file_copy_request_id > 0
 		THEN
 	        COMMIT;
@@ -894,15 +884,15 @@ BEGIN
 							                               dev_status   => lc_dev_status,
 							                               message      => lc_message
 														  );
-							   
+
 	        print_debug_msg('Status :'||lc_status);
 			print_debug_msg('dev_phase :'||lc_dev_phase);
 			print_debug_msg('dev_status :'||lc_dev_status);
 			print_debug_msg('message :'||lc_message);
-		END IF;					
-  
+		END IF;
+
   print_debug_msg('Calling the Common File Copy to move the Inbound file to Archive folder',TRUE);
- 
+
   lc_dest_file_name            := '$XXFIN_ARCHIVE/inbound/' || SUBSTR(lc_filename,1,LENGTH(lc_filename) - 4) || TO_CHAR(SYSDATE, 'DD-MON-YYYYHHMMSS') || '.TXT';
   ln_conc_file_copy_request_id := fnd_request.submit_request('XXFIN', 'XXCOMFILCOPY', '', '', FALSE, lc_dirpath||'/'||lc_filename, --Source File Name
   lc_dest_file_name,                                                                                                               --Dest File Name
@@ -962,31 +952,31 @@ AS
     FROM xx_po_pom_hdr_int_stg
     WHERE attribute2 = 'NEW'
 	AND (REQUEST_ID IS NOT NULL OR attribute3 NOT IN ('SCM'));
-	
+
   CURSOR req_stats_cur(c_request_id NUMBER)
   IS
     SELECT
          hdr.attribute5
-        ,hdr.process_code 
+        ,hdr.process_code
         ,DECODE(hdr.record_status,'E','Error','IE','Error','D','Error',hdr.record_status) record_status
         ,COUNT(1) COUNT
     FROM xx_po_pom_hdr_int_stg hdr
     WHERE hdr.request_id = c_request_id
-    GROUP BY hdr.attribute5, hdr.process_code, DECODE(hdr.record_status,'E','Error','IE','Error','D','Error',hdr.record_status);	
+    GROUP BY hdr.attribute5, hdr.process_code, DECODE(hdr.record_status,'E','Error','IE','Error','D','Error',hdr.record_status);
 
 -- NAIT-37088 grab all scm po via process code, attribute5 and attribute3.
-  CURSOR scm_stats_cur IS 
+  CURSOR scm_stats_cur IS
   SELECT
       hdr.attribute5
-	  ,hdr.attribute3 
-      ,hdr.process_code 
+	  ,hdr.attribute3
+      ,hdr.process_code
       ,DECODE(hdr.record_status,'E','Error','IE','Error','D','Error',hdr.record_status) record_status
 	  ,COUNT(1) COUNT
     FROM xx_po_pom_hdr_int_stg hdr
     WHERE hdr.attribute2 = 'NEW'
 	AND hdr.attribute3 = 'SCM'
-    GROUP BY hdr.attribute5, hdr.attribute3, hdr.process_code, DECODE(hdr.record_status,'E','Error','IE','Error','D','Error',hdr.record_status);		
-	
+    GROUP BY hdr.attribute5, hdr.attribute3, hdr.process_code, DECODE(hdr.record_status,'E','Error','IE','Error','D','Error',hdr.record_status);
+
 -- cursor to collect error details for POM by batch_id and request_id
   CURSOR err_details_cur
   IS
@@ -995,11 +985,11 @@ AS
       FROM fnd_concurrent_requests req
       WHERE req.parent_request_id  = gn_request_id
     )
-    SELECT    
+    SELECT
       hdr.creation_date,
-      hdr.batch_id batch_id,	
+      hdr.batch_id batch_id,
       hdr.record_id,
-      hdr.po_number,      
+      hdr.po_number,
       '' line_num,
       0 n_line_num,
 	  hdr.attribute3, -- NAIT-37088 SCM PO Indentifer
@@ -1013,7 +1003,7 @@ AS
       AND hdr.batch_id = batchTbl.batch_id
        AND (hdr.error_column IS NOT NULL)
      UNION ALL
-    SELECT    
+    SELECT
       ln.creation_date,
       NVL(ln.batch_id, hdr.batch_id) batch_id,
       ln.record_id,
@@ -1033,26 +1023,26 @@ AS
       AND ((hdr.batch_id = batchTbl.batch_id AND ln.error_column IS NOT NULL)
         OR (ln.batch_id = batchTbl.batch_id))
   ORDER BY creation_date DESC, batch_id ASC, record_id ASC, n_line_num ASC;
-  
-  
+
+
 TYPE stats
 IS
 	TABLE OF err_details_cur%ROWTYPE INDEX BY PLS_INTEGER;
 	stats_tab STATS;
-	
+
 	TYPE l_num_tab IS TABLE OF NUMBER;
 	l_stage_requests            l_num_tab;
 
 	TYPE l_var_tab IS TABLE OF VARCHAR2(10);
 	l_stage_reqs_date 	        l_var_tab;
-	
+
 	lc_error_message   VARCHAR2(200);
 	lc_error_column    VARCHAR2(150);
 	lc_error_value     VARCHAR2(100);
 
     -- variable for loop count
     indx                        NUMBER;
-	
+
     -- for POM PO count
 	ln_i_skip_cnt				NUMBER;
 	ln_u_skip_cnt				NUMBER;
@@ -1066,7 +1056,7 @@ IS
 	ln_total_new_po				NUMBER;
 	ln_total_update_po			NUMBER;
 	ln_new_req_cnt				NUMBER;
-	
+
 	--NAIT-37088 variables for SCM PO count
 	scm_ln_i_skip_cnt               NUMBER;
 	scm_ln_u_skip_cnt               NUMBER;
@@ -1084,26 +1074,26 @@ IS
 -- take each request and generate a count for POM
 BEGIN
   print_debug_msg ('Report Master Program Stats',FALSE);
-  
+
   print_out_msg('OD PO POM Inbound Interface');
   print_out_msg('==============================');
-  
+
   -- get the list of request_id's of staging program to use it in report_master_program_stats()
   OPEN c_staging_requests;
   FETCH c_staging_requests BULK COLLECT INTO l_stage_requests,l_stage_reqs_date;
-  CLOSE c_staging_requests;  
-  
+  CLOSE c_staging_requests;
+
   ln_new_req_cnt := l_stage_requests.COUNT;
-  
+
   -- probably needs to wrap around loop to short circuit if no POM POs exists
   IF ln_new_req_cnt = 0 THEN
 	print_out_msg('No PO data from POM was loaded recently.');
   END IF;
-  
+
   FOR i IN 1.. ln_new_req_cnt
-  LOOP	  	  
+  LOOP
 	  print_debug_msg ('Report for request_id '||l_stage_requests(i),TRUE);
-	  
+
 	-- generally, only one new load request exists. For Exception cases, we will display the request_id to differentiate
 	  IF ln_new_req_cnt > 1 THEN
 		print_out_msg ('');
@@ -1120,14 +1110,14 @@ BEGIN
 	ln_upd_po_other_status_cnt	:= 0;
 	ln_total_po					:= 0;
 	ln_total_new_po				:= 0;
-	ln_total_update_po			:= 0;	  
-	  
+	ln_total_update_po			:= 0;
+
 	  FOR l_po_stats IN req_stats_cur(l_stage_requests(i))
 	  LOOP
 		IF l_po_stats.process_code = 'I' THEN
-			
+
 			ln_total_new_po := ln_total_new_po + l_po_stats.count;
-			
+
 			IF l_po_stats.attribute5 like '%skip PO processing' THEN
 				ln_i_skip_cnt := ln_i_skip_cnt + l_po_stats.count;
 			ELSE
@@ -1138,12 +1128,12 @@ BEGIN
 				ELSE
 					print_debug_msg('For process_code - '||l_po_stats.process_code||', extra record_status is '||l_po_stats.record_status, TRUE);
 					ln_new_po_other_status_cnt := ln_new_po_other_status_cnt + l_po_stats.count;
-				END IF;		
-			END IF;	
+				END IF;
+			END IF;
 		ELSIF l_po_stats.process_code = 'U' THEN
-			
+
 			ln_total_update_po := ln_total_update_po + l_po_stats.count;
-		
+
 					--IF l_po_stats.attribute5 = 'Internal Vendor - skip PO processing' THEN
 			-- Add in skip count if it is 'Internal Vendor - skip PO processing' or 'No Changes - skip PO processing'
 			IF l_po_stats.attribute5 like '%skip PO processing' THEN
@@ -1156,39 +1146,39 @@ BEGIN
 				ELSE
 					print_debug_msg('For process_code - '||l_po_stats.process_code||', extra record_status is '||l_po_stats.record_status, TRUE);
 					ln_upd_po_other_status_cnt := ln_upd_po_other_status_cnt + l_po_stats.count;
-				END IF;		
-			END IF;	
-		END IF;	
+				END IF;
+			END IF;
+		END IF;
 	  END LOOP;
-	  
+
 	    ln_total_po := ln_total_new_po + ln_total_update_po;
-	    
+
 	    print_out_msg('Total No of POs(new and update) from POM :'||TO_CHAR(ln_total_po));
 	    print_out_msg(' ');
-	    print_out_msg('Total No of new POs from POM :'||TO_CHAR(ln_total_new_po));  
+	    print_out_msg('Total No of new POs from POM :'||TO_CHAR(ln_total_new_po));
 	    print_out_msg('    Total No of POs Successfully Imported :'||TO_CHAR(ln_new_po_success_cnt));
 	    print_out_msg('    Total No of POs failed to Import :'||TO_CHAR(ln_new_po_fail_cnt));
 	    print_out_msg('    Total No of new POs skipped :'||TO_CHAR(ln_i_skip_cnt));
-	    IF ln_new_po_other_status_cnt > 0 THEN 
+	    IF ln_new_po_other_status_cnt > 0 THEN
 	  	print_out_msg('    Total No of new POs processed and with different status :'||TO_CHAR(ln_new_po_other_status_cnt));
 	    END IF;
-	    print_out_msg(' ');	  
+	    print_out_msg(' ');
 	    print_out_msg('Total No of POs to update from POM :'||TO_CHAR(ln_total_update_po));
 	    print_out_msg('    Total No of POs Successfully update :'||TO_CHAR(ln_upd_po_success_cnt));
 	    print_out_msg('    Total No of POs failed to update :'||TO_CHAR(ln_upd_po_fail_cnt));
 	    print_out_msg('    Total No of POs to be updated and skipped :'||TO_CHAR(ln_u_skip_cnt));
-	    IF ln_upd_po_other_status_cnt > 0 THEN 
+	    IF ln_upd_po_other_status_cnt > 0 THEN
 	  	print_out_msg('    Total No of POs to update are processed and with different status :'||TO_CHAR(ln_upd_po_other_status_cnt));
-	    END IF;  
-	    
+	    END IF;
+
 	    print_out_msg(' ');
-  END LOOP; 
-  
+  END LOOP;
+
     -- NAIT-37088 -- include SCM Purchase Orders count
     print_out_msg(' ');
     print_out_msg('OD PO SCM Inbound Interface');
-    print_out_msg('==============================');  
-  
+    print_out_msg('==============================');
+
 	scm_ln_i_skip_cnt					:= 0;
 	scm_ln_u_skip_cnt					:= 0;
 	scm_ln_new_po_success_cnt			:= 0;
@@ -1199,8 +1189,8 @@ BEGIN
 	scm_ln_upd_po_other_status_cnt	    := 0;
 	scm_ln_total_po					    := 0;
 	scm_ln_total_new_po				    := 0;
-	scm_ln_total_update_po			    := 0;		
-	
+	scm_ln_total_update_po			    := 0;
+
 	FOR scm_po_stats IN scm_stats_cur
 	LOOP
 		--count SCM inserts
@@ -1212,16 +1202,16 @@ BEGIN
 				-- count successful SCM inserts
 	  			IF scm_po_stats.record_status = 'I' THEN
 	  				scm_ln_new_po_success_cnt := scm_ln_new_po_success_cnt + scm_po_stats.count;
-				-- count failed SCM inserts	
+				-- count failed SCM inserts
 	  			ELSIF scm_po_stats.record_status = 'Error' THEN
 	  				scm_ln_new_po_fail_cnt := scm_ln_new_po_fail_cnt + scm_po_stats.count;
 	  			ELSE
 				-- count other status SCM inserts
 	  				print_debug_msg('For process_code - '||scm_po_stats.process_code||', extra record_status is '||scm_po_stats.record_status, TRUE);
 	  				scm_ln_new_po_other_status_cnt := scm_ln_new_po_other_status_cnt + scm_po_stats.count;
-	  			END IF;		
+	  			END IF;
 	  		END IF;
-		-- count SCM updates	
+		-- count SCM updates
 	  	ELSIF scm_po_stats.process_code = 'U' THEN
 			-- count number of SCM PO updates
 	  		scm_ln_total_update_po := scm_ln_total_update_po + scm_po_stats.count;
@@ -1232,51 +1222,51 @@ BEGIN
 				-- count successful SCM updates
 	  			IF scm_po_stats.record_status = 'I' THEN
 	  				scm_ln_upd_po_success_cnt := scm_ln_upd_po_success_cnt + scm_po_stats.count;
-				-- count failed SCM updates	
+				-- count failed SCM updates
 	  			ELSIF scm_po_stats.record_status = 'Error' THEN
 	  				scm_ln_upd_po_fail_cnt := scm_ln_upd_po_fail_cnt + scm_po_stats.count;
 	  			ELSE
 				-- count other status SCM pdates
 	  				print_debug_msg('For process_code - '||scm_po_stats.process_code||', extra record_status is '||scm_po_stats.record_status, TRUE);
 	  				scm_ln_upd_po_other_status_cnt := scm_ln_upd_po_other_status_cnt + scm_po_stats.count;
-	  			END IF;		
+	  			END IF;
 	  		END IF;
         END IF;
 	END LOOP;
-	
+
 	-- count total inserted and updated SCM POs
 	scm_ln_total_po := scm_ln_total_new_po + scm_ln_total_update_po;
-	
+
 	IF scm_ln_total_po + scm_ln_upd_po_fail_cnt + scm_ln_new_po_fail_cnt + scm_ln_new_po_other_status_cnt= 0 THEN
 		print_out_msg('No PO data from SCM was loaded recently.');
 
 	ELSE
 		print_out_msg('Total No of POs(new and update) from SCM :'||TO_CHAR(scm_ln_total_po));
 		print_out_msg(' ');
-		print_out_msg('Total No of new POs from SCM :'||TO_CHAR(scm_ln_total_new_po));  
+		print_out_msg('Total No of new POs from SCM :'||TO_CHAR(scm_ln_total_new_po));
 		print_out_msg('    Total No of POs Successfully Imported :'||TO_CHAR(scm_ln_new_po_success_cnt));
 		print_out_msg('    Total No of POs failed to Import :'||TO_CHAR(scm_ln_new_po_fail_cnt));
 		print_out_msg('    Total No of new POs skipped :'||TO_CHAR(scm_ln_i_skip_cnt));
-		IF scm_ln_new_po_other_status_cnt > 0 THEN 
+		IF scm_ln_new_po_other_status_cnt > 0 THEN
 		print_out_msg('    Total No of new POs processed and with different status :'||TO_CHAR(scm_ln_new_po_other_status_cnt));
 		END IF;
-		print_out_msg(' ');	  
+		print_out_msg(' ');
 		print_out_msg('Total No of POs to update from SCM :'||TO_CHAR(scm_ln_total_update_po));
 		print_out_msg('    Total No of POs Successfully update :'||TO_CHAR(scm_ln_upd_po_success_cnt));
 		print_out_msg('    Total No of POs failed to update :'||TO_CHAR(scm_ln_upd_po_fail_cnt));
 		print_out_msg('    Total No of POs to be updated and skipped :'||TO_CHAR(scm_ln_u_skip_cnt));
-		IF scm_ln_new_po_other_status_cnt > 0 THEN 
+		IF scm_ln_new_po_other_status_cnt > 0 THEN
 		print_out_msg('    Total No of POs to update are processed and with different status :'||TO_CHAR(scm_ln_upd_po_other_status_cnt));
-		END IF;  
-	
+		END IF;
+
 		print_out_msg(' ');
 	END IF;
-  
+
   OPEN err_details_cur;
   FETCH err_details_cur BULK COLLECT INTO stats_tab;
   CLOSE err_details_cur;
-  
--- Template  
+
+-- Template
   print_out_msg(' ');
   print_out_msg(RPAD('Created On',10)||' '||RPAD('Record_ID',10)||' '||RPAD('PO Number',15)||' '||RPAD('Line #',6)||' '||RPAD('Source',10)||' '||RPAD('Error Column',20)||' '||RPAD('Error Value',20)||' '||RPAD('Error Details',100));
   print_out_msg(RPAD('=',10,'=')||' '||RPAD('=',10,'=')||' '||RPAD('=',15,'=')||' '||RPAD('=',6,'=')||' '||RPAD('=',10,'=')||' '||RPAD('=',20,'=')||' '||RPAD('=',20,'=')||' '||RPAD('=',100,'='));
@@ -1286,7 +1276,7 @@ BEGIN
   LOOP
     print_out_msg(RPAD(stats_tab(indx).creation_date,10)||' '||RPAD(stats_tab(indx).record_id,10)||' '||RPAD(stats_tab(indx).po_number,15)||' '||RPAD(NVL(stats_tab(indx).line_num,' '),6, ' ')||' '||RPAD(NVL(stats_tab(indx).attribute3,' '),10)||RPAD(NVL(stats_tab(indx).error_column,' '),20, ' ')||' '||RPAD(NVL(stats_tab(indx).error_value,' '),20, ' ')||' '||RPAD(stats_tab(indx).error_description,100));
   END LOOP;
-  
+
   -- Reset to NULL means these records are touched atleast once and these doesn't include in the Summary Report section count.
   UPDATE xx_po_pom_hdr_int_stg
   SET attribute2 = NULL
@@ -1295,7 +1285,7 @@ BEGIN
 
   print_debug_msg ('Total no of header records to set attribute2 to NULL are '||SQL%ROWCOUNT, TRUE);
   COMMIT;
-	
+
 EXCEPTION
 WHEN OTHERS THEN
   print_out_msg ('Report Master Program Stats failed'||SUBSTR(sqlerrm,1,150));
@@ -1310,10 +1300,10 @@ AS
   ln_count NUMBER;
 BEGIN
 	print_debug_msg ('Update record_status in staging incase of error in PO Standard Interface for batch_id '||p_batch_id,FALSE);
-	
+
 	UPDATE xx_po_pom_hdr_int_stg hs
 	SET (hs.record_status, hs.error_description, hs.error_column) =
-       ( select * from 
+       ( select * from
 			(SELECT 'IE', NVL(MIN('Error in PO Interface '
 			  ||SUBSTR(poe.error_message,1,1000)), 'Interface Line Failed.')
 				, MIN(poe.column_value)
@@ -1321,9 +1311,9 @@ BEGIN
 			WHERE poe.interface_header_id = hs.record_id
 			  AND poe.table_name     = 'PO_HEADERS_INTERFACE'
 			  AND poe.batch_id = p_batch_id
-			  order by   poe.interface_header_id   
-			) t where rownum  =1 
-		) 
+			  order by   poe.interface_header_id
+			) t where rownum  =1
+		)
 	WHERE hs.batch_id = p_batch_id
 	  AND EXISTS
 		(SELECT 'x'
@@ -1339,20 +1329,20 @@ BEGIN
 		);
 	ln_count:= SQL%ROWCOUNT;
 	print_debug_msg(TO_CHAR(ln_count)|| ' header record(s) updated with error status IE for batch_id '||p_batch_id, TRUE);
-	
+
 	UPDATE xx_po_pom_lines_int_stg ls
 	SET (ls.record_status, ls.error_description, ls.error_column) =
-       ( select * from 
+       ( select * from
 			(SELECT 'IE', NVL(MIN('Error in PO Interface '
 			  ||SUBSTR(poe.error_message,1,1000)), 'Interface Header Failed.')
 				, MIN(poe.column_value)
 			FROM po_interface_errors poe
 			WHERE poe.interface_line_id = ls.record_line_id
 			  AND poe.batch_id = p_batch_id
-			  order by   poe.interface_line_id   
-			) t where rownum  =1 
+			  order by   poe.interface_line_id
+			) t where rownum  =1
 		)
-	WHERE EXISTS 
+	WHERE EXISTS
 		(SELECT 'x'
 		FROM xx_po_pom_hdr_int_stg hs
 		WHERE hs.record_id = ls.record_id
@@ -1369,10 +1359,10 @@ BEGIN
 		FROM po_lines_interface poi
 		WHERE poi.interface_line_id = ls.record_line_id
 		  AND poi.process_code <> 'ACCEPTED'
-		);	
+		);
 	ln_count:= SQL%ROWCOUNT;
 	print_debug_msg(TO_CHAR(ln_count)|| ' line record(s) updated with error status IE for batch_id '||p_batch_id, TRUE);
-  
+
 	UPDATE xx_po_pom_lines_int_stg ls
 	SET ls.record_status    = 'IE',
 	ls.error_description  = 'Other lines in the PO failed during import'
@@ -1384,12 +1374,12 @@ BEGIN
 			WHERE hs.record_id = ls.record_id
 			AND hs.record_status = 'IE'
 			AND hs.batch_id = p_batch_id
-			);	
+			);
 	ln_count:= SQL%ROWCOUNT;
 	print_debug_msg(TO_CHAR(ln_count)|| ' line record(s)(with code U) updated with error status IE for batch_id '||p_batch_id, TRUE);
-	
+
 	COMMIT;
-	
+
 END update_staging_record_status;
 
 -- +============================================================================================+
@@ -1513,7 +1503,7 @@ IS
   TABLE OF upd_lines_cur%ROWTYPE INDEX BY PLS_INTEGER;
   CURSOR get_org_cur(p_po_number VARCHAR2, p_line_number VARCHAR2)
   IS
-    SELECT poh.po_header_id,	  
+    SELECT poh.po_header_id,
 	  poh.org_id,
       poh.revision_num,
 	  pol.po_line_id,
@@ -1529,14 +1519,14 @@ IS
     WHERE poh.segment1   = p_po_number
     AND poh.po_header_id = pol.po_header_id
     AND pol.line_num     = p_line_number;
-	
+
   CURSOR reconcile_po_line_item_cur(c_inv_item_id NUMBER)
-  IS	
+  IS
 	SELECT msi.segment1
 	FROM mtl_system_items_b msi
 	WHERE msi.inventory_item_id = c_inv_item_id
-	  ANd msi.organization_id = 441;	
-	
+	  ANd msi.organization_id = 441;
+
   CURSOR chk_po_status_cur(p_po_number VARCHAR2)
   IS
     SELECT poh.authorization_status
@@ -1568,7 +1558,7 @@ IS
   lc_error_msg        VARCHAR2(2000);
   data_exception      EXCEPTION;
   lc_ebs_item         VARCHAR2(150);
-  
+
   l_result			  VARCHAR2(30);
   ln_po_header_id	  po_headers_all.po_header_id%TYPE;
   ln_po_line_id  	  po_lines_all.po_line_id%TYPE;
@@ -1578,8 +1568,8 @@ IS
   lc_hdr_closedd	po_headers_all.closed_date%TYPE;
   lc_line_closedc	po_lines_all.closed_code%TYPE;
   lc_line_closedd	po_lines_all.closed_date%TYPE;
-  
-  
+
+
 BEGIN
   gc_debug      := p_debug;
   gn_request_id := fnd_global.conc_request_id;
@@ -1611,20 +1601,20 @@ BEGIN
 		  l_upd_lines_tab(indx).error_column      := 'LINE_NUM';
 		  l_upd_lines_tab(indx).error_value       := l_upd_lines_tab(indx).line_num;
 		  ln_upd_err_count := ln_upd_err_count + 1;
-		  
+
 			l_result := NULL;
 		    XX_PO_POM_INT_PKG. valid_and_mark_missed_po_int(p_source => 'NA-POINTR'
 		   		,p_source_record_id => l_upd_lines_tab(indx).record_line_id
 		   		,p_po_number => l_upd_lines_tab(indx).po_number
 		   		,p_po_line_num => l_upd_lines_tab(indx).line_num
 		   		,p_result  => l_result);
-			
+
 			IF (l_result IS NULL OR l_result <> 'S') THEN
 					print_debug_msg ('XX_PO_POM_INT_PKG. valid_and_mark_missed_po_int() failed for PO Line Number : PO=['||l_upd_lines_tab(indx).po_number||'], Line_number=['||l_upd_lines_tab(indx).line_num||']',TRUE);
-			END IF;		  
+			END IF;
           raise data_exception;
         END IF;
-		
+
         lc_po_status := NULL;
         OPEN chk_po_status_cur(l_upd_lines_tab(indx).po_number);
         FETCH chk_po_status_cur INTO lc_po_status;
@@ -1634,7 +1624,7 @@ BEGIN
           l_upd_lines_tab(indx).record_status     := 'E';
           l_upd_lines_tab(indx).error_description := 'PO status may be Pre-approved,  In-Process,  Frozen, Cancelled or Finally closed. PO=['||l_upd_lines_tab(indx).po_number||'], Line_number=['||l_upd_lines_tab(indx).line_num||']';
 		  l_upd_lines_tab(indx).error_column      := 'PO_NUMBER';
-		  l_upd_lines_tab(indx).error_value       := l_upd_lines_tab(indx).po_number;		  
+		  l_upd_lines_tab(indx).error_value       := l_upd_lines_tab(indx).po_number;
           raise data_exception;
         END IF;
 
@@ -1642,9 +1632,9 @@ BEGIN
         OPEN reconcile_po_line_item_cur(ln_item_id);
         FETCH reconcile_po_line_item_cur INTO lc_ebs_item;
         CLOSE reconcile_po_line_item_cur;
-		
+
 		IF (
-			(lc_ebs_item IS NULL)  
+			(lc_ebs_item IS NULL)
 				OR
 			(ltrim(lc_ebs_item, '0') <> ltrim(l_upd_lines_tab(indx).item ,'0') )
 		    ) THEN
@@ -1653,13 +1643,13 @@ BEGIN
           l_upd_lines_tab(indx).error_description := 'Item '||l_upd_lines_tab(indx).item||' does not match with existed EBS po line item '||lc_ebs_item;
 		  l_upd_lines_tab(indx).error_column      := 'ITEM';
 		  l_upd_lines_tab(indx).error_value       := l_upd_lines_tab(indx).item;
-          raise data_exception;			
+          raise data_exception;
 		END IF;
-		
+
         IF l_upd_lines_tab(indx).quantity = 0 THEN
 			l_upd_lines_tab(indx).quantity := 0.0000000001;
 		END IF;
-				
+
         IF l_upd_lines_tab(indx).process_code = 'U' THEN
           print_debug_msg ('Check if quantity or price is different for line num =['||l_upd_lines_tab(indx).line_num||']' ,FALSE);
           IF (ln_quantity                            = l_upd_lines_tab(indx).quantity) AND (ln_unit_price = l_upd_lines_tab(indx).unit_price) THEN
@@ -1673,7 +1663,7 @@ BEGIN
             --resp_id Purchasing Super User 20707
 			--          OD (US) PO Trade Batch Jobs  53148
             --resp_app_id po - 201
-			--fnd_global.apps_initialize (90102, 53148, 201);			
+			--fnd_global.apps_initialize (90102, 53148, 201);
             fnd_global.apps_initialize (gn_user_id, gn_resp_id, gn_resp_appl_id);
 
             mo_global.init('PO');
@@ -1704,40 +1694,40 @@ BEGIN
           print_debug_msg ('Cancel Line Num =['||l_upd_lines_tab(indx).line_num||']' ,FALSE);
           --user_id SVC_ESP_FIN 90102
           --resp_id Purchasing Super User 20707
-		  --        OD (US) PO Trade Batch Jobs  53148		  
+		  --        OD (US) PO Trade Batch Jobs  53148
           --resp_app_id po - 201
 		  -- fnd_global.apps_initialize (90102, 53148, 201);
-		  
+
           fnd_global.apps_initialize (gn_user_id, gn_resp_id, gn_resp_appl_id);
 
           mo_global.init('PO');
           mo_global.set_policy_context('S',ln_org_id);
           --Call the Cancel API for PO number
-		 
+
 		 -- 1.4
 		 lv_result_code := NULL;
-		 
-		 print_debug_msg ('Closed line details '||ln_po_line_id||':'||lc_hdr_closedc||':'||lc_hdr_closedd||':'||lc_line_closedc||':'||lc_line_closedd , TRUE);		
+
+		 print_debug_msg ('Closed line details '||ln_po_line_id||':'||lc_hdr_closedc||':'||lc_hdr_closedd||':'||lc_line_closedc||':'||lc_line_closedd , TRUE);
 		 -- IF po line is already closed then skip the call to CLOSE API and mark the record as 'I' and update attribute
-		 
+
 		 IF lc_line_closedc = 'CLOSED' THEN
 			l_upd_lines_tab(indx).record_status     := 'I';
 			l_upd_lines_tab(indx).attribute5		:= l_upd_lines_tab(indx).attribute5||':Line already closed - skip PO processing';
             ln_nochanges_count                      := ln_nochanges_count + 1;
-		 ELSE			 
-			 lc_close_status := PO_ACTIONS.CLOSE_PO(p_docid        => ln_po_header_id, 
-									   p_doctyp       => 'PO', 
-									   p_docsubtyp    => 'STANDARD', 
+		 ELSE
+			 lc_close_status := PO_ACTIONS.CLOSE_PO(p_docid        => ln_po_header_id,
+									   p_doctyp       => 'PO',
+									   p_docsubtyp    => 'STANDARD',
 									   p_lineid       => ln_po_line_id,
-									   p_shipid       => NULL, 
-									   p_action       => 'CLOSE', 
-									   p_reason       => 'PO Line Canceled in POM', 
-									   p_calling_mode => 'PO', 
-									   p_conc_flag    => 'N', 
-									   p_return_code  => lv_result_code, 
-									   p_auto_close   => 'N' 
+									   p_shipid       => NULL,
+									   p_action       => 'CLOSE',
+									   p_reason       => 'PO Line Canceled in POM',
+									   p_calling_mode => 'PO',
+									   p_conc_flag    => 'N',
+									   p_return_code  => lv_result_code,
+									   p_auto_close   => 'N'
 									  );
-				
+
 			  -- Check the return status
 
 			  print_debug_msg ('lv_result_code is  :'||lv_result_code ,TRUE);
@@ -1747,15 +1737,15 @@ BEGIN
 				ln_cancel_count                         := ln_cancel_count + 1;
 			  ELSE
 				print_debug_msg ('Cannot close the po because of lv_result_code is  :'||lv_result_code , TRUE);
-				
+
 				l_upd_lines_tab(indx).record_status     := 'E';
 				l_upd_lines_tab(indx).error_description := 'Cannot close the po because : '||lv_result_code;
 				l_upd_lines_tab(indx).error_column      := 'CLOSE_API';
 				ln_cancel_err_count                     := ln_cancel_err_count + 1;
 			  END IF;
-			  
+
 			  COMMIT;
-		 END IF;  -- IF c_line_closedc = 'CLOSED' THEN		 
+		 END IF;  -- IF c_line_closedc = 'CLOSED' THEN
         END IF;  -- IF l_upd_lines_tab(indx).process_code = 'D'
       EXCEPTION
       WHEN OTHERS THEN
@@ -2143,7 +2133,7 @@ BEGIN
             l_header_tab(indx).record_status     := 'E';
             l_header_tab(indx).error_description := 'PO does not exists';
 			l_header_tab(indx).error_column := 'PO_NUMBER';
-			l_header_tab(indx).error_value  := l_header_tab(indx).po_number;			
+			l_header_tab(indx).error_value  := l_header_tab(indx).po_number;
             RAISE data_exception;
           ELSIF check_po_rec.po_header_id IS NOT NULL AND l_header_tab(indx).process_code = 'T' THEN
             /*Check if its terms update*/
@@ -2170,23 +2160,23 @@ BEGIN
               l_header_tab(indx).error_description := l_header_tab(indx).error_description|| 'Term Validation : Invalid terms in hdr=['||l_header_tab(indx).disc_pct*100||'/'|| l_header_tab(indx).disc_days||'N'|| l_header_tab(indx).net_days||']';
 			  l_header_tab(indx).error_column := l_header_tab(indx).error_column||'/DISC_PCT-DISC_DAYS-NET_DAYS';
 			  l_header_tab(indx).error_value  := l_header_tab(indx).error_value||'/'||l_header_tab(indx).disc_pct||'-'||l_header_tab(indx).disc_days||'-'||l_header_tab(indx).net_days;
-              print_debug_msg ('Record_id=['||TO_CHAR(l_header_tab(indx).record_id)||'],        
+              print_debug_msg ('Record_id=['||TO_CHAR(l_header_tab(indx).record_id)||'],
 Invalid terms in hdr=['||l_header_tab(indx).disc_pct               *100||'/'|| l_header_tab(indx).disc_days||'N'||l_header_tab(indx).net_days||']',FALSE);
               RAISE data_exception;
             WHEN TOO_MANY_ROWS THEN
               l_header_tab(indx).record_status     := 'E';
               l_header_tab(indx).error_description := l_header_tab(indx).error_description|| 'Term Validation : Many terms in EBS for hdr=['||l_header_tab(indx).disc_pct*100||'/'|| l_header_tab(indx).disc_days||'N'|| l_header_tab(indx).net_days||']';
 			  l_header_tab(indx).error_column := l_header_tab(indx).error_column||'/DISC_PCT-DISC_DAYS-NET_DAYS';
-			  l_header_tab(indx).error_value  := l_header_tab(indx).error_value||'/'||l_header_tab(indx).disc_pct||'-'||l_header_tab(indx).disc_days||'-'||l_header_tab(indx).net_days;			  
-              print_debug_msg ('Record_id=['||TO_CHAR(l_header_tab(indx).record_id)||'],        
+			  l_header_tab(indx).error_value  := l_header_tab(indx).error_value||'/'||l_header_tab(indx).disc_pct||'-'||l_header_tab(indx).disc_days||'-'||l_header_tab(indx).net_days;
+              print_debug_msg ('Record_id=['||TO_CHAR(l_header_tab(indx).record_id)||'],
 Many terms in EBS for hdr=['||l_header_tab(indx).disc_pct               *100||'/'|| l_header_tab(indx).disc_days||'N'||l_header_tab(indx).net_days||']',FALSE);
               RAISE data_exception;
             WHEN OTHERS THEN
               l_header_tab(indx).record_status     := 'E';
               l_header_tab(indx).error_description := l_header_tab(indx).error_description|| 'Term Validation : Terms Valdation exception for hdr=['||l_header_tab(indx).disc_pct*100||'/'|| l_header_tab(indx).disc_days||'N'|| l_header_tab(indx).net_days||'] is '||SUBSTR(SQLERRM, 1, 100);
 			  l_header_tab(indx).error_column := l_header_tab(indx).error_column||'/DISC_PCT-DISC_DAYS-NET_DAYS';
-			  l_header_tab(indx).error_value  := l_header_tab(indx).error_value||'/'||l_header_tab(indx).disc_pct||'-'||l_header_tab(indx).disc_days||'-'||l_header_tab(indx).net_days;			  
-              print_debug_msg ('Record_id=['||TO_CHAR(l_header_tab(indx).record_id)||'],            
+			  l_header_tab(indx).error_value  := l_header_tab(indx).error_value||'/'||l_header_tab(indx).disc_pct||'-'||l_header_tab(indx).disc_days||'-'||l_header_tab(indx).net_days;
+              print_debug_msg ('Record_id=['||TO_CHAR(l_header_tab(indx).record_id)||'],
 Terms Valdation exception for hdr=['||l_header_tab(indx).disc_pct           *100||'/'|| l_header_tab(indx).disc_days||'N'||l_header_tab(indx).net_days||'] is '||SUBSTR(SQLERRM, 1, 100),FALSE);
               RAISE data_exception;
             END;
@@ -2227,9 +2217,9 @@ Terms Valdation exception for hdr=['||l_header_tab(indx).disc_pct           *100
               END IF;
             END IF;
           END IF; --process_code = 'T'
-					/**  As we are Retrying the Interface errors(reset the record_status), 
+					/**  As we are Retrying the Interface errors(reset the record_status),
 					we can skip this validation so that we retry from here.
-					
+
           print_debug_msg ('Check if PO exists in PO Interface',FALSE);
           lc_document_num := NULL;
           OPEN check_po_int_cur(l_header_tab(indx).po_number);
@@ -2240,7 +2230,7 @@ Terms Valdation exception for hdr=['||l_header_tab(indx).disc_pct           *100
             l_header_tab(indx).record_status     := 'E';
             l_header_tab(indx).error_description := 'Duplicate PO exists in PO Interface';
 						l_header_tab(indx).error_column := 'PO_NUMBER';
-						l_header_tab(indx).error_value  := l_header_tab(indx).po_number;						
+						l_header_tab(indx).error_value  := l_header_tab(indx).po_number;
             RAISE data_exception;
           END IF;
 					**/
@@ -2266,7 +2256,7 @@ Terms Valdation exception for hdr=['||l_header_tab(indx).disc_pct           *100
             l_header_tab(indx).record_status     := 'E';
             l_header_tab(indx).error_description := 'Invalid Vendor=['||l_header_tab(indx).vendor_site_code||']';
 			l_header_tab(indx).error_column := 'VENDOR_SITE_CODE';
-			l_header_tab(indx).error_value  := l_header_tab(indx).vendor_site_code;			
+			l_header_tab(indx).error_value  := l_header_tab(indx).vendor_site_code;
           END IF;
           -- validate/derive ship to location
           IF l_header_tab(indx).location_id IS NULL THEN
@@ -2274,7 +2264,7 @@ Terms Valdation exception for hdr=['||l_header_tab(indx).disc_pct           *100
             l_header_tab(indx).record_status     := 'E';
             l_header_tab(indx).error_description := l_header_tab(indx).error_description||', Invalid Location=['||l_header_tab(indx).loc_id||']';
 			l_header_tab(indx).error_column := l_header_tab(indx).error_column||'/SHIP_TO_LOCATION';
-			l_header_tab(indx).error_value  := l_header_tab(indx).error_value||'/NULL';			
+			l_header_tab(indx).error_value  := l_header_tab(indx).error_value||'/NULL';
           ELSE
             ln_ship_to_location_id := l_header_tab(indx).location_id;
           END IF;
@@ -2301,8 +2291,8 @@ Terms Valdation exception for hdr=['||l_header_tab(indx).disc_pct           *100
 				l_header_tab(indx).error_description := l_header_tab(indx).error_description|| 'Hdr Validation : Invalid terms in hdr=['||l_header_tab(indx).disc_pct*100||'/'|| l_header_tab(indx).disc_days||'N'|| l_header_tab(indx).net_days||']';
 				l_header_tab(indx).error_column := l_header_tab(indx).error_column||'/DISC_PCT-DISC_DAYS-NET_DAYS';
 				l_header_tab(indx).error_value  := l_header_tab(indx).error_value||'/'||l_header_tab(indx).disc_pct||'-'||l_header_tab(indx).disc_days||'-'||l_header_tab(indx).net_days;
-				
-				print_debug_msg ('Record_id=['||TO_CHAR(l_header_tab(indx).record_id)||'],      
+
+				print_debug_msg ('Record_id=['||TO_CHAR(l_header_tab(indx).record_id)||'],
 	Invalid terms in hdr=['||l_header_tab(indx).disc_pct                *100||'/'|| l_header_tab(indx).disc_days||'N'||l_header_tab(indx).net_days||']',FALSE);
 				RAISE data_exception;
           WHEN TOO_MANY_ROWS THEN
@@ -2310,16 +2300,16 @@ Terms Valdation exception for hdr=['||l_header_tab(indx).disc_pct           *100
             l_header_tab(indx).error_description := l_header_tab(indx).error_description|| 'Hdr Validation : Many terms in EBS for hdr=['||l_header_tab(indx).disc_pct*100||'/'|| l_header_tab(indx).disc_days||'N'|| l_header_tab(indx).net_days||']';
 			l_header_tab(indx).error_column := l_header_tab(indx).error_column||'/DISC_PCT-DISC_DAYS-NET_DAYS';
 			l_header_tab(indx).error_value  := l_header_tab(indx).error_value||'/'||l_header_tab(indx).disc_pct||'-'||l_header_tab(indx).disc_days||'-'||l_header_tab(indx).net_days;
-			
-            print_debug_msg ('Record_id=['||TO_CHAR(l_header_tab(indx).record_id)||'],      
+
+            print_debug_msg ('Record_id=['||TO_CHAR(l_header_tab(indx).record_id)||'],
 Many terms in EBS for hdr=['||l_header_tab(indx).disc_pct                *100||'/'|| l_header_tab(indx).disc_days||'N'||l_header_tab(indx).net_days||']',FALSE);
             RAISE data_exception;
           WHEN OTHERS THEN
             l_header_tab(indx).record_status     := 'E';
             l_header_tab(indx).error_description := l_header_tab(indx).error_description|| 'Hdr Validation : Terms Valdation exception for hdr=['||l_header_tab(indx).disc_pct*100||'/'|| l_header_tab(indx).disc_days||'N'|| l_header_tab(indx).net_days||'] is '||SUBSTR(SQLERRM, 1, 100);
 			l_header_tab(indx).error_column := l_header_tab(indx).error_column||'/DISC_PCT-DISC_DAYS-NET_DAYS';
-			l_header_tab(indx).error_value  := l_header_tab(indx).error_value||'/'||l_header_tab(indx).disc_pct||'-'||l_header_tab(indx).disc_days||'-'||l_header_tab(indx).net_days;			
-            print_debug_msg ('Record_id=['||TO_CHAR(l_header_tab(indx).record_id)||'],      
+			l_header_tab(indx).error_value  := l_header_tab(indx).error_value||'/'||l_header_tab(indx).disc_pct||'-'||l_header_tab(indx).disc_days||'-'||l_header_tab(indx).net_days;
+            print_debug_msg ('Record_id=['||TO_CHAR(l_header_tab(indx).record_id)||'],
 Terms Valdation exception for hdr=['||l_header_tab(indx).disc_pct                *100||'/'|| l_header_tab(indx).disc_days||'N'||l_header_tab(indx).net_days||'] is '||SUBSTR(SQLERRM, 1, 100),FALSE);
             RAISE data_exception;
           END;
@@ -2517,7 +2507,7 @@ Terms Valdation exception for hdr=['||l_header_tab(indx).disc_pct               
                 l_lines_tab(l_indx).record_status     := 'E';
                 l_lines_tab(l_indx).error_description := l_lines_tab(l_indx).error_description||'Invalid item Category=['||l_lines_tab(l_indx).item|| '], location=['||TO_CHAR(l_lines_tab(l_indx).location_id)||']';
 				l_lines_tab(l_indx).error_column      := l_lines_tab(l_indx).error_column||'/ITEM-LOCATION_ID';
-				l_lines_tab(l_indx).error_value       := l_lines_tab(l_indx).error_value||'/'||ltrim(l_lines_tab(l_indx).item,'0')||'-'||TO_CHAR(l_lines_tab(l_indx).location_id);				
+				l_lines_tab(l_indx).error_value       := l_lines_tab(l_indx).error_value||'/'||ltrim(l_lines_tab(l_indx).item,'0')||'-'||TO_CHAR(l_lines_tab(l_indx).location_id);
                 print_debug_msg ('Record_line_id=['||TO_CHAR(l_lines_tab(l_indx).record_line_id)|| '] Invalid item Category=['||l_lines_tab(l_indx).item|| '], location=['||TO_CHAR(l_lines_tab(l_indx).location_id)||']',FALSE);
               END IF;
               print_debug_msg ('Record_line_id='||TO_CHAR(l_lines_tab(l_indx).record_line_id)||', Validate PO Status',FALSE);
@@ -2551,7 +2541,7 @@ Terms Valdation exception for hdr=['||l_header_tab(indx).disc_pct               
                 l_lines_tab(l_indx).record_status     := 'E';
                 l_lines_tab(l_indx).error_description := l_lines_tab(l_indx).error_description||' UOM code not found legacy_uom=['||l_lines_tab(l_indx).uom_code||']';
 				l_lines_tab(l_indx).error_column      := l_lines_tab(l_indx).error_column||'/UOM_CODE';
-				l_lines_tab(l_indx).error_value       := l_lines_tab(l_indx).error_value||'/'||l_lines_tab(l_indx).uom_code;				
+				l_lines_tab(l_indx).error_value       := l_lines_tab(l_indx).error_value||'/'||l_lines_tab(l_indx).uom_code;
                 print_debug_msg ('Record_line_id='||TO_CHAR(l_lines_tab(l_indx).record_line_id)||', UOM code not found legacy_uom=['||l_lines_tab(l_indx).uom_code||']',FALSE);
               END IF;
               IF lc_hdr_action = 'UPDATE' AND (l_lines_tab(l_indx).process_code = 'I' or l_lines_tab(l_indx).process_code = 'M') THEN
@@ -2564,7 +2554,7 @@ Terms Valdation exception for hdr=['||l_header_tab(indx).disc_pct               
                   l_lines_tab(l_indx).record_status     := 'E';
                   l_lines_tab(l_indx).error_description := l_lines_tab(l_indx).error_description||' Line Number Already Exists=['||l_lines_tab(l_indx).line_num||']';
 				  l_lines_tab(l_indx).error_column      := l_lines_tab(l_indx).error_column||'/LINE_NUM';
-				  l_lines_tab(l_indx).error_value       := l_lines_tab(l_indx).error_value||'/'||l_lines_tab(l_indx).line_num;								  
+				  l_lines_tab(l_indx).error_value       := l_lines_tab(l_indx).error_value||'/'||l_lines_tab(l_indx).line_num;
                   print_debug_msg ('Record_line_id='||TO_CHAR(l_lines_tab(l_indx).record_line_id)||', Line Number Already Exists=['||l_lines_tab(l_indx).line_num||']',FALSE);
                 END IF;
               END IF;
@@ -2573,7 +2563,7 @@ Terms Valdation exception for hdr=['||l_header_tab(indx).disc_pct               
                 l_lines_tab(l_indx).record_status     := 'E';
                 l_lines_tab(l_indx).error_description := l_lines_tab(l_indx).error_description||' Invalid ship_to_location =['||l_lines_tab(l_indx).ship_to_location||']';
 				l_lines_tab(l_indx).error_column      := l_lines_tab(l_indx).error_column||'/SHIP_TO_LOCATION';
-				l_lines_tab(l_indx).error_value       := l_lines_tab(l_indx).error_value||'/'||l_lines_tab(l_indx).location_id;								  				
+				l_lines_tab(l_indx).error_value       := l_lines_tab(l_indx).error_value||'/'||l_lines_tab(l_indx).location_id;
                 print_debug_msg ('Record_line_id=['||TO_CHAR(l_lines_tab(l_indx).record_line_id)||'], Invalid ship_to_location in lines=['||l_lines_tab(l_indx).ship_to_location||']',FALSE);
               ELSE
                 ln_ship_to_location_id := l_lines_tab(l_indx).location_id;
@@ -2841,7 +2831,7 @@ Terms Valdation exception for hdr=['||l_header_tab(indx).disc_pct               
             SET record_status    = DECODE(lc_lines_validation,'E','E','I') ,
               error_description  = DECODE(lc_lines_validation,'E',NVL(l_lines_tab(i).error_description,'Other lines in the PO are not valid'),'') ,
 			  error_column       = l_lines_tab(i).error_column,
-			  error_value        = l_lines_tab(i).error_value,			  
+			  error_value        = l_lines_tab(i).error_value,
               last_update_date   = sysdate ,
               last_updated_by    = gn_user_id ,
               last_update_login  = gn_login_id
@@ -2879,7 +2869,7 @@ Terms Valdation exception for hdr=['||l_header_tab(indx).disc_pct               
           SET record_status   = l_header_tab(indx).record_status ,
             error_description = l_header_tab(indx).error_description ,
 			error_column      = l_header_tab(indx).error_column,
-			error_value       = l_header_tab(indx).error_value,			
+			error_value       = l_header_tab(indx).error_value,
             last_update_date  = sysdate ,
             last_updated_by   = gn_user_id ,
             last_update_login = gn_login_id
@@ -2890,7 +2880,7 @@ Terms Valdation exception for hdr=['||l_header_tab(indx).disc_pct               
             --error_description = l_header_tab(indx).error_description ,
 			error_description = 'Header Validation Failed' ,
 			--error_column      = l_header_tab(indx).error_column,
-			--error_value       = l_header_tab(indx).error_value,			
+			--error_value       = l_header_tab(indx).error_value,
             last_update_date  = sysdate ,
             last_updated_by   = gn_user_id ,
             last_update_login = gn_login_id
@@ -3021,7 +3011,7 @@ AS
 		AND l.process_code IN('I','M')
 
 		UNION ALL
-		
+
 		SELECT hs.record_id,
 		  rownum
 		FROM xx_po_pom_hdr_int_stg hs
@@ -3035,8 +3025,8 @@ AS
 
 	CURSOR batch_count_cur(c_min_batch_id NUMBER, c_max_batch_id NUMBER)
 	IS
-		SELECT 
-			hs.batch_id 
+		SELECT
+			hs.batch_id
 			,count(1) batch_count
 		FROM xx_po_pom_hdr_int_stg hs
 		WHERE hs.batch_id >= c_min_batch_id
@@ -3047,7 +3037,7 @@ AS
 IS
   TABLE OF threads_cur%ROWTYPE INDEX BY PLS_INTEGER;
   l_threads_tab threads;
-  
+
   TYPE l_number_tab IS TABLE OF NUMBER INDEX BY PLS_INTEGER;
   l_batch_list l_number_tab;
 
@@ -3082,20 +3072,20 @@ BEGIN
       ))
     OR h.process_code IN('T'));
     ln_batch_count    := SQL%ROWCOUNT;
-	
+
 	l_batch_list(indx) := ln_batch_id;
-	
+
     print_debug_msg(TO_CHAR(ln_batch_count)||' hdr record(s) updated with batchid '||TO_CHAR(ln_batch_id),TRUE);
     COMMIT;
 	END LOOP;
-	
-	IF l_batch_list.COUNT > 0 THEN	
-	
+
+	IF l_batch_list.COUNT > 0 THEN
+
 		FOR l_rec IN batch_count_cur(l_batch_list(1), l_batch_list(l_batch_list.COUNT))
 		LOOP
-			print_debug_msg(TO_CHAR(l_rec.batch_count)||' hdr record(s) going to submit with batchid '||TO_CHAR(l_rec.batch_id),TRUE);		
-		END LOOP;		
-	
+			print_debug_msg(TO_CHAR(l_rec.batch_count)||' hdr record(s) going to submit with batchid '||TO_CHAR(l_rec.batch_id),TRUE);
+		END LOOP;
+
 	  FOR ind IN 1..l_batch_list.COUNT
 	  LOOP
 		ln_request_id := fnd_request.submit_request(application => 'XXFIN' ,program => 'XXPOPOMINTC' ,sub_request => TRUE ,argument1 => l_batch_list(ind) ,argument2 => p_debug);
@@ -3239,12 +3229,12 @@ AS
 		SELECT record_id, po_headers_interface_s.NEXTVAL
 		FROM xx_po_pom_hdr_int_stg
 		WHERE record_status = 'IE';
-			
+
 	lc_error_msg            VARCHAR2(1000) := NULL;
 	lc_error_loc            VARCHAR2(100)  := 'XX_PO_POM_INT_PKG.INTERFACE_MASTER';
 	ln_retry_hdr_count      NUMBER;
 	ln_retry_lin_count      NUMBER;
-	ln_retry_int_hdr_count	NUMBER;	
+	ln_retry_int_hdr_count	NUMBER;
 	LN_RETRY_INT_LIN_COUNT  NUMBER;
 	lc_retcode              VARCHAR2(3) := NULL;
 	lc_iretcode             VARCHAR2(3) := NULL;
@@ -3256,10 +3246,10 @@ AS
 	ln_upd_cnt              NUMBER;
 
 	TYPE l_number_tab IS TABLE OF NUMBER INDEX BY PLS_INTEGER;
-	
+
 	l_old_recs l_number_tab;
 	l_new_recs l_number_tab;
-	
+
 	TYPE l_num_tab IS TABLE OF NUMBER;
 	l_upd_rec_list  l_num_tab;
 
@@ -3271,15 +3261,15 @@ BEGIN
   gn_login_id   := fnd_global.login_id;
   --Get value of global variable. It is null initially.
   lc_req_data := fnd_conc_global.request_data;
-  print_debug_msg('Begin - lc_req_data is '||lc_req_data,FALSE); 
+  print_debug_msg('Begin - lc_req_data is '||lc_req_data,FALSE);
   -- req_date will be null for first time parent scan by concurrent manager.
-  IF (lc_req_data IS NULL) THEN  
-	
+  IF (lc_req_data IS NULL) THEN
+
     print_debug_msg('Check Retry Errors',TRUE);
     IF p_retry_errors = 'Y' THEN
       --Retry will process only error records by using request_id
       print_debug_msg('Updating header records for retry',FALSE);
-			
+
       UPDATE xx_po_pom_hdr_int_stg
       SET record_status   = NULL ,
         error_description = NULL ,
@@ -3292,12 +3282,12 @@ BEGIN
       ln_retry_hdr_count := SQL%ROWCOUNT;
       print_debug_msg(TO_CHAR(ln_retry_hdr_count)||' header record(s) updated for retry',TRUE);
       print_debug_msg('Updating lines records for retry',FALSE);
-			
+
       UPDATE xx_po_pom_lines_int_stg
       SET record_status   = NULL ,
         error_description = NULL ,
 		error_column      = NULL ,
-		error_value       = NULL ,		
+		error_value       = NULL ,
         last_update_date  = sysdate ,
         last_updated_by   = gn_user_id ,
         last_update_login = gn_login_id
@@ -3333,9 +3323,9 @@ BEGIN
 					last_updated_by   = gn_user_id ,
 					last_update_login = gn_login_id
 				WHERE record_id = l_old_recs(i);
-				
+
        -- ln_retry_int_hdr_count := SQL%ROWCOUNT;
-       --  print_debug_msg(TO_CHAR(ln_retry_int_hdr_count)||' header record(s) updated for retry interface errors',TRUE);				
+       --  print_debug_msg(TO_CHAR(ln_retry_int_hdr_count)||' header record(s) updated for retry interface errors',TRUE);
 			EXCEPTION
       WHEN OTHERS THEN
 				print_debug_msg('Bulk Exception raised',FALSE);
@@ -3349,19 +3339,19 @@ BEGIN
         END LOOP; -- bulk_err_loop FOR UPDATE
 				raise;
       END;
-			
+
 			BEGIN
 				ln_err_count := 0;
 				ln_retry_int_hdr_count := 0;
-				
+
 				FORALL i IN 1..l_old_recs.COUNT
 			  SAVE EXCEPTIONS
 				UPDATE xx_po_pom_lines_int_stg
 				SET record_id = l_new_recs(i)
 				WHERE record_id = l_old_recs(i);
-				
+
 				--ln_retry_int_hdr_count := SQL%ROWCOUNT;
-				--print_debug_msg(TO_CHAR(ln_retry_int_hdr_count)||' header record(s), of lines, updated for retry interface errors',TRUE);				
+				--print_debug_msg(TO_CHAR(ln_retry_int_hdr_count)||' header record(s), of lines, updated for retry interface errors',TRUE);
 			EXCEPTION
       WHEN OTHERS THEN
 		print_debug_msg('Interface Retry Lines record_id - Bulk Exception raised',TRUE);
@@ -3382,8 +3372,8 @@ BEGIN
 				record_status     = NULL ,
 				error_description = NULL ,
 				error_column      = NULL ,
-				error_value       = NULL ,		
-				attribute5   	  = 'Retry IE' , 
+				error_value       = NULL ,
+				attribute5   	  = 'Retry IE' ,
         last_update_date  = sysdate ,
         last_updated_by   = gn_user_id ,
         last_update_login = gn_login_id
@@ -3392,11 +3382,11 @@ BEGIN
       print_debug_msg(TO_CHAR(ln_retry_int_lin_count)||' line record(s) updated for retry interface errors',TRUE);
       COMMIT;
     END IF;    -- END of IF p_retry_int_errors = 'Y' THEN
-	
-	
-	-- Skip the PO's if they belong to Internal Vendors.	
+
+
+	-- Skip the PO's if they belong to Internal Vendors.
 	BEGIN
-	
+
 		UPDATE xx_po_pom_hdr_int_stg hs
 		SET record_status = 'I'
 			,attribute5 = 'Internal Vendor - skip PO processing'
@@ -3412,12 +3402,12 @@ BEGIN
 				AND xtd.translate_id       = xtv.translate_id
 				AND xtv.source_value1 = ltrim(hs.vendor_site_code, '0')
 		)
-		RETURNING record_id 
+		RETURNING record_id
 		BULK COLLECT INTO l_upd_rec_list;
 
 		ln_upd_cnt := l_upd_rec_list.count;
 		print_debug_msg('Internal Vendor Updated Staged PO Headers are '||ln_upd_cnt,TRUE);
-		
+
 
 		FORALL i in 1..ln_upd_cnt
 		UPDATE xx_po_pom_lines_int_stg hs
@@ -3426,15 +3416,15 @@ BEGIN
 			,last_update_date  = sysdate
 			,last_updated_by   = gn_user_id
 			,last_update_login = gn_login_id
-		WHERE record_id = l_upd_rec_list(i); 
-		
+		WHERE record_id = l_upd_rec_list(i);
+
 		-- print_debug_msg('Internal Vendor Updated Staged PO Lines are '||ln_upd_cnt,TRUE);
 		COMMIT;
-		
+
 	END;
-	
-	
-		
+
+
+
     lc_iretcode := NULL;
     submit_int_child_threads(lc_error_msg,lc_iretcode,p_child_threads,p_retry_errors,p_debug);
     IF lc_iretcode = '0' THEN
@@ -3494,10 +3484,10 @@ BEGIN
     END IF;
   END IF;
   IF (lc_req_data = 'END') THEN
-	print_debug_msg('Restart program with lc_req_data as '||lc_req_data||' at '||TO_CHAR(SYSDATE,'MM-DD-YYYY HH:Mi:SS'),TRUE);  
+	print_debug_msg('Restart program with lc_req_data as '||lc_req_data||' at '||TO_CHAR(SYSDATE,'MM-DD-YYYY HH:Mi:SS'),TRUE);
     p_retcode                 := '0';
     ln_child_request_status   := child_request_status;
-	print_debug_msg('ln_child_request_status as '||ln_child_request_status,FALSE); 
+	print_debug_msg('ln_child_request_status as '||ln_child_request_status,FALSE);
     IF ln_child_request_status = 'C' THEN
 	  print_debug_msg('Invoking report_master_program_stats',FALSE);
       report_master_program_stats;
@@ -3510,10 +3500,10 @@ BEGIN
       p_retcode := '1'; --Warning
       p_errbuf  := 'One or more child program completed in error or warning';
     END IF;
-	
+
 	-- Sennds the Master program output as attachment in email
 	send_output_email(fnd_global.conc_request_id, p_retcode);
-	
+
   END IF;
 EXCEPTION
 WHEN OTHERS THEN
@@ -3570,13 +3560,13 @@ BEGIN
     ln_agent_id
   FROM po_headers_all pha
   WHERE segment1 = p_po_number;
-  
-  
+
+
   SELECT MAX(line_num) + 1
   INTO ln_line_num
   FROM po_lines_all pla
   WHERE po_header_id = ln_po_header_id;
-  
+
   BEGIN
     SELECT MAX(l.line_num) + 1
     INTO ln_int_line_num
@@ -3590,20 +3580,20 @@ BEGIN
   WHEN NO_DATA_FOUND THEN
     NULL;
   END;
-  
+
   IF ln_int_line_num < 9001 THEN
 	ln_int_line_num := 9001;
   END IF;
-  
+
   IF ln_line_num < 9001 THEN
 	ln_line_num := 9001;
   END IF;
-  
+
   ln_line_num := NVL(ln_int_line_num,ln_line_num);
   p_line_num  := ln_line_num;
-  
+
   lc_receipt_req_flag := NULL;
-  
+
   -- All PO lines must have same receipt_require_flag
   -- so, inherit this value from other lines
   SELECT MIN(receipt_required_flag)
@@ -3615,8 +3605,8 @@ BEGIN
   IF lc_receipt_req_flag IS NULL THEN
 	lc_receipt_req_flag := 'N';
   END IF;
-  
-  
+
+
   /*
   SELECT primary_uom_code
   INTO lc_uom_code
@@ -3783,7 +3773,7 @@ BEGIN
 	END IF;
 
 	ln_trade_po_cnt := 0;
-	
+
 	l_document_type := PO_WF_UTIL_PKG.GetItemAttrText(
                        itemtype => itemtype
                      , itemkey  => itemkey
@@ -3803,11 +3793,11 @@ BEGIN
 						   , itemkey  => itemkey
 						   , aname    => 'DOCUMENT_ID'
 						   );
-						   		
+
 		OPEN c_is_trade_po(l_po_header_id);
 		FETCH c_is_trade_po INTO ln_trade_po_cnt;
 		CLOSE c_is_trade_po;
-		
+
 	END IF;
 
 	IF ln_trade_po_cnt > 0 THEN
@@ -3815,14 +3805,14 @@ BEGIN
    		PO_WF_DEBUG_PKG.INSERT_DEBUG(ITEMTYPE, ITEMKEY,
    		'$$$$$$$ IS TRADE PO =  Y $$$$$$');
 		END IF;
-		
+
 		RESULT := 'Y';
 	ELSE
 		IF (g_po_wf_debug = 'Y') THEN
    		PO_WF_DEBUG_PKG.INSERT_DEBUG(ITEMTYPE, ITEMKEY,
    		'$$$$$$$ IS TRADE PO =  N $$$$$$');
 		END IF;
-		
+
 		RESULT := 'N';
 	END IF;
 
@@ -3842,5 +3832,3 @@ EXCEPTION
 END is_trade_po;
 
 END XX_PO_POM_INT_PKG;
-/
-SHOW ERR 

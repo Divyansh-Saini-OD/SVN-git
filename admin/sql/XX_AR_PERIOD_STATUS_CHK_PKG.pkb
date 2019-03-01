@@ -1,5 +1,4 @@
-create or replace
-PACKAGE BODY XX_AR_PERIOD_STATUS_CHK_PKG
+create or replace PACKAGE BODY XX_AR_PERIOD_STATUS_CHK_PKG
 AS
 ---+============================================================================================+
 ---|                              Office Depot - Project Simplify                               |
@@ -23,6 +22,8 @@ AS
 ---|    1.3             10-OCT-2013       Sathish Danda      Updated to include R12 Upgrade     |
 ---|                                                         retrofit  changes                  |
 ---|    1.4             11-NOV-2015       Vasu Raparla       Removed Schema References for R12.2|
+-- |    1.5             23-JAN-2019       BIAS               INSTANCE_NAME is replaced with     |
+-- |                                                         DB_NAME for OCI Migration          |
 ---+============================================================================================+
 
    FUNCTION XX_CLOSING_STATUS (p_application_id IN  NUMBER
@@ -39,7 +40,7 @@ AS
               AND view_application_id = p_application_id
               AND lookup_code = p_closing_status;
            RETURN(lc_closing_status);
-   
+
    EXCEPTION
            WHEN NO_DATA_FOUND THEN
              CASE p_closing_status
@@ -59,11 +60,11 @@ AS
            WHEN OTHERS THEN
              RETURN ('XXX');
    END  XX_CLOSING_STATUS;
-   
-   
+
+
    -- Added for QC Defect # 23956 - Start
    FUNCTION XX_PA_PERIOD_NAME (p_period_type IN VARCHAR2,
-                               p_date        IN DATE) 
+                               p_date        IN DATE)
     RETURN VARCHAR2 IS
 
         ln_current_period   NUMBER;
@@ -74,7 +75,7 @@ AS
         ln_current_period   := 0;
         lc_period_name      := NULL;
 
-        SELECT row_num 
+        SELECT row_num
           INTO ln_current_period
           FROM (SELECT ROWNUM row_num,
                        papl.period_name,
@@ -91,7 +92,7 @@ AS
 
         IF p_period_type = 'PRIOR' THEN
 
-            SELECT period_name 
+            SELECT period_name
               INTO lc_period_name
               FROM (SELECT ROWNUM row_num,
                            papl.period_name,
@@ -106,7 +107,7 @@ AS
 
         ELSIF p_period_type = 'CURR' THEN
 
-            SELECT period_name 
+            SELECT period_name
               INTO lc_period_name
               FROM (SELECT ROWNUM row_num,
                            papl.period_name,
@@ -121,7 +122,7 @@ AS
 
         ELSE
 
-            SELECT period_name 
+            SELECT period_name
               INTO lc_period_name
               FROM (SELECT ROWNUM row_num,
                            papl.period_name,
@@ -135,19 +136,19 @@ AS
             WHERE row_num = ln_current_period + 1;
 
         END IF;
-    
+
         RETURN lc_period_name;
-    
+
     EXCEPTION
         WHEN OTHERS THEN
-    
+
         BEGIN
-            SELECT papl.period_name 
+            SELECT papl.period_name
               INTO lc_period_name
               FROM pa_periods_all papl
              WHERE p_date BETWEEN papl.start_date AND papl.end_date
                AND papl.org_id = 404;
-        
+
             IF p_period_type = 'PRIOR' THEN
 
                 SELECT to_char (add_months (to_date (p_date, 'DD-MON-RR HH24:MI:SS'), -1), 'MON-YY') --Added DD-MON-RR HH24:MI:SS for Defect# 25112 by Divya Sidhaiyan
@@ -168,10 +169,10 @@ AS
 
             RETURN lc_period_name;
         END;
-    
+
     END XX_PA_PERIOD_NAME;
    -- Added for QC Defect # 23956 - End
-   
+
 
    PROCEDURE MAIN ( x_errbuf                   OUT NOCOPY      VARCHAR2
                    ,x_retcode                  OUT NOCOPY      NUMBER
@@ -179,7 +180,7 @@ AS
                    )
                    IS
 
-   CURSOR lcu_gl_period_status(p_date            DATE , 
+   CURSOR lcu_gl_period_status(p_date            DATE ,
                                p_fa_period_count NUMBER, -- Added for QC Defect # 23956
                                p_fa_next_count   NUMBER  -- Added for QC Defect # 23956
                               )
@@ -189,7 +190,7 @@ AS
               ,gps_post.period_name  POST_PERIOD_NAME
               ,fnd.application_name  APPLICATION
             --,GL_SOB.short_name     SOB                          --Commented/Added by Sathish on 10th OCT'13 for R12 Retrofit Upgrade
-              ,GL.short_name     SOB 
+              ,GL.short_name     SOB
               ,xx_closing_status(gps_pre.application_id,gps_pre.closing_status)     PRIOR_PERIOD
               ,xx_closing_status(gps_cur.application_id,gps_cur.closing_status)     CURRENT_PERIOD
               ,xx_closing_status(gps_post.application_id,gps_post.closing_status)   NEXT_PERIOD
@@ -205,7 +206,7 @@ AS
          AND GPS_CUR.ledger_id = GL.ledger_id
          AND GPS_PRE.application_id = GPS_CUR.application_id
        --AND GPS_PRE.set_of_books_id = GPS_CUR.set_of_books_id    --Commented/Added by Sathish on 10th OCT'13  for R12 Retrofit Upgrade
-         AND GPS_PRE.ledger_id = GPS_CUR.ledger_id 
+         AND GPS_PRE.ledger_id = GPS_CUR.ledger_id
          AND GPS_PRE.effective_period_num = DECODE(SUBSTR(GPS_CUR.effective_period_num,-2),
                                                          '01', (gps_cur.effective_period_num- 9989),
                                                          (gps_cur.effective_period_num-1)) --Updated for the defect# 3851
@@ -236,10 +237,10 @@ AS
               next_period
         FROM
           (SELECT DISTINCT fdp_prior.period_name PRIOR_PERIOD_NAME,
-                  fdp_curr.period_name CURRENT_PERIOD_NAME,    
+                  fdp_curr.period_name CURRENT_PERIOD_NAME,
                   (
                   CASE
-                    WHEN p_fa_next_count = p_fa_period_count 
+                    WHEN p_fa_next_count = p_fa_period_count
                     THEN to_char (add_months (to_date (fdp_curr.period_name, 'MON-YY'), +1), 'MON-YY')
                     WHEN p_fa_next_count <> p_fa_period_count
                     THEN fdp_next.period_name
@@ -250,7 +251,7 @@ AS
                   DECODE (fdp_curr.period_close_date, NULL, 'Open', 'Closed' ) CURRENT_PERIOD,
                   (
                   CASE
-                    WHEN p_fa_next_count = p_fa_period_count 
+                    WHEN p_fa_next_count = p_fa_period_count
                     THEN 'Never Opened'
                     WHEN p_fa_next_count <> p_fa_period_count
                     THEN  (
@@ -261,7 +262,7 @@ AS
                             THEN 'Open'
                             WHEN fdp_next.period_close_date IS NOT NULL
                             THEN 'Closed'
-                          END ) 
+                          END )
                   END ) NEXT_PERIOD
                 FROM fa_deprn_periods fdp_prior,
                   fa_deprn_periods fdp_curr,
@@ -290,7 +291,7 @@ AS
                       AND xftd.enabled_flag     = 'Y'
                       AND xftv.enabled_flag     = 'Y'
                   )
-          ) 
+          )
         UNION
         SELECT prior_period_name
               ,current_period_name
@@ -376,11 +377,11 @@ AS
          lc_error_loc  := 'Get the Instance Name';
          lc_debug      := 'Date of Run: '|| ld_run_date;
 
-         SELECT SYS_CONTEXT('USERENV','INSTANCE_NAME')
+         SELECT SYS_CONTEXT('USERENV','DB_NAME')
          INTO   lc_instance_name
          FROM   dual;
 
-      EXCEPTION 
+      EXCEPTION
          WHEN NO_DATA_FOUND THEN
          lc_instance_name := NULL;
          FND_FILE.PUT_LINE (FND_FILE.LOG,'No data found while getting the Instance Name : '||lc_instance_name);
@@ -388,42 +389,42 @@ AS
          WHEN OTHERS THEN
          lc_instance_name := NULL;
          FND_FILE.PUT_LINE (FND_FILE.LOG,'Exception while getting the Instance Name : '||lc_instance_name);
-         
+
       END;
       lc_email_subject := lc_instance_name || ' ' || lc_email_subject;
-      
+
       BEGIN
 
          lc_error_loc  := 'Get the FA Period Counter';
          lc_debug      := 'Date of Run: '|| ld_run_date;
-               
+
          ln_fa_period_count := 0;
          ln_fa_next_count   := 0;
-      
+
          SELECT DISTINCT fadp.period_counter
            INTO ln_fa_period_count
            FROM fa_deprn_periods fadp
-          WHERE fadp.book_type_code IN ('OD US CORP','OD CA CORP') 
+          WHERE fadp.book_type_code IN ('OD US CORP','OD CA CORP')
             AND ld_run_date BETWEEN fadp.calendar_period_open_date AND fadp.calendar_period_close_date;
-            
+
          BEGIN
-         
+
              SELECT DISTINCT fadp.period_counter
                INTO ln_fa_next_count
                FROM fa_deprn_periods fadp
-              WHERE fadp.book_type_code IN ('OD US CORP','OD CA CORP') 
+              WHERE fadp.book_type_code IN ('OD US CORP','OD CA CORP')
                 AND fadp.period_counter = ln_fa_period_count + 1;
-         
+
          EXCEPTION
             WHEN NO_DATA_FOUND THEN
             ln_fa_next_count := ln_fa_period_count;
-            
+
             WHEN OTHERS THEN
             ln_fa_next_count := -1;
-            
-         END;   
 
-      EXCEPTION 
+         END;
+
+      EXCEPTION
          WHEN NO_DATA_FOUND THEN
          ln_fa_period_count := NULL;
          FND_FILE.PUT_LINE (FND_FILE.LOG,'No data found while getting the FA Period Counter : '||ln_fa_period_count);
@@ -540,7 +541,3 @@ AS
    END MAIN;
 
 END XX_AR_PERIOD_STATUS_CHK_PKG;
-
-/
-
-SHOW ERROR;

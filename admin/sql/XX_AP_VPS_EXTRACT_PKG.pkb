@@ -1,5 +1,4 @@
-CREATE OR REPLACE 
-PACKAGE BODY APPS.XX_AP_VPS_EXTRACT_PKG
+create or replace PACKAGE BODY      XX_AP_VPS_EXTRACT_PKG
 -- +============================================================================================+
 -- |  					Office Depot - Project Simplify                                         |
 -- +============================================================================================+
@@ -13,6 +12,8 @@ PACKAGE BODY APPS.XX_AP_VPS_EXTRACT_PKG
 -- | 1.1         04/17/18     Paddy Sanjeevi   Defect 37766, fixed duplicate lines              |
 -- | 1.2         04/25/18     Paddy Sanjeevi   Added to use xla_ae_headers for accounting_date  |
 -- | 1.3         05/29/18     Paddy Sanjeevi   Added group by xla sql to avoid duplicate        |
+-- | 1.4         01/24/19     BIAS             INSTANCE_NAME is replaced with DB_NAME for OCI   |  
+-- |                                           Migration Project
 -- +============================================================================================+
 AS
 
@@ -40,13 +41,13 @@ IS
   lc_message                   VARCHAR2(100);
   ln_request_id				   NUMBER;
 BEGIN
-  SELECT SUBSTR(LOWER(SYS_CONTEXT('USERENV', 'INSTANCE_NAME') ), 1, 8)
+  SELECT SUBSTR(LOWER(SYS_CONTEXT('USERENV', 'DB_NAME') ), 1, 8)
   INTO lc_instance_name
   FROM DUAL;
 
     lc_source_file_name          := '/app/ebs/ct' || lc_instance_name || '/xxfin/ftp/out/vps/'||p_copy_file;
     lc_dest_file_name            := '/app/ebs/ct' || lc_instance_name || '/xxfin/archive/outbound/' || p_copy_file;
-    ln_request_id := fnd_request.submit_request('XXFIN', 'XXCOMFILCOPY', '', '', FALSE, 
+    ln_request_id := fnd_request.submit_request('XXFIN', 'XXCOMFILCOPY', '', '', FALSE,
 											    lc_source_file_name,
 									            lc_dest_file_name,
 												'', '', 'N'
@@ -55,12 +56,12 @@ BEGIN
       COMMIT;
       -- wait for request to finish
       lb_complete := fnd_concurrent.wait_for_request(request_id => ln_request_id,
-													 interval => 10, 
-													 max_wait => 0, 
-													 phase => lc_phase, 
-													 status => lc_status, 
-													 dev_phase => lc_dev_phase, 
-													 dev_status => lc_dev_status, 
+													 interval => 10,
+													 max_wait => 0,
+													 phase => lc_phase,
+													 status => lc_status,
+													 dev_phase => lc_dev_phase,
+													 dev_status => lc_dev_status,
 													 MESSAGE => lc_message);
     END IF;
     COMMIT;
@@ -90,7 +91,7 @@ ln_ccid NUMBER:=0;
 lc_acct VARCHAR2(500):=NULL;
 BEGIN
   IF p_line_type='ITEM' THEN
-     
+
 	 BEGIN
 	   SELECT dist_code_combination_id
 	     INTO ln_ccid
@@ -111,12 +112,12 @@ BEGIN
              AND invoice_line_number=p_line_no
              AND line_type_lookup_code='ACCRUAL'
 			 AND ROWNUM<2;
- 
+
           IF ln_ccid IS NOT NULL THEN
   		     SELECT gcc.segment1||'.'||gcc.segment2||'.'||gcc.segment3||'.'||gcc.segment4||'.'||gcc.segment5||'.'||gcc.segment6||'.'||gcc.segment7
 		       INTO lc_acct
 		       FROM gl_code_combinations gcc
-		      WHERE gcc.code_combination_id=ln_ccid;			 
+		      WHERE gcc.code_combination_id=ln_ccid;
 		  END IF;
 	    EXCEPTION
 	      WHEN others THEN
@@ -127,7 +128,7 @@ BEGIN
 		  INTO lc_acct
 		  FROM gl_code_combinations gcc
 		 WHERE code_combination_id=ln_ccid;
-	 
+
 	 END IF;
   ELSIF p_line_type='MISCELLANEOUS' THEN
     BEGIN
@@ -157,7 +158,7 @@ BEGIN
 	  WHEN others THEN
 	    lc_acct:=NULL;
 	END;
-  END IF;  
+  END IF;
   RETURN(lc_acct);
 EXCEPTION
   WHEN others THEN
@@ -174,7 +175,7 @@ END xx_ap_get_gl_acct;
 -- | Returns     :  v_location .                                          |
 -- |                                                                      |
 -- +======================================================================+
-	FUNCTION get_location(p_po_header_id IN NUMBER) 
+	FUNCTION get_location(p_po_header_id IN NUMBER)
 	RETURN VARCHAR2
 	IS
 		v_location VARCHAR2(10);
@@ -182,7 +183,7 @@ END xx_ap_get_gl_acct;
 		SELECT SUBSTR(hrl.location_code,1,6)
 		INTO v_location
 		FROM hr_locations_all hrl,
-			 po_line_locations_all pll 
+			 po_line_locations_all pll
 		WHERE pll.po_header_id=p_po_header_id
 		AND ROWNUM<2
 		AND hrl.location_id=pll.ship_to_location_id;
@@ -207,7 +208,7 @@ END xx_ap_get_gl_acct;
 							  ,p_retcode      OUT  VARCHAR2
 							 )
 	AS
-		CURSOR matched_inv_cur(p_inv_date DATE) 
+		CURSOR matched_inv_cur(p_inv_date DATE)
 		IS
 		SELECT	 /*+ LEADING (h) */
 				    a.source,
@@ -221,7 +222,7 @@ END xx_ap_get_gl_acct;
 					get_location(a.quick_po_header_id) location,
 					pol.unit_price po_price,
 					NULL avg_cost,
-					msi.segment1 item,		
+					msi.segment1 item,
 					l.line_type_lookup_code,
 					l.quantity_invoiced,
 					l.unit_price,
@@ -236,12 +237,12 @@ END xx_ap_get_gl_acct;
 					xx_ap_get_gl_acct(l.invoice_id,l.line_number,l.line_type_lookup_code) gl_account_id,
 					(	SELECT aid.period_name
 						FROM ap_invoice_distributions_all aid
-						WHERE aid.invoice_id            =a.invoice_id 
+						WHERE aid.invoice_id            =a.invoice_id
 						AND ROWNUM                 <2
 					) period_name
 			FROM	mtl_system_items_b msi,
 					po_lines_all pol,
-					hr_locations_all hrl, 
+					hr_locations_all hrl,
 					po_headers_all ph,
 					ap_supplier_sites_all aps,
 					ap_invoice_lines_all l,
@@ -257,11 +258,11 @@ END xx_ap_get_gl_acct;
 						AND xe.entity_id=xah.entity_id
 						AND xte.application_id=xe.application_id
 						AND XTE.ENTITY_CODE      = 'AP_INVOICES'
-						AND xte.entity_id=xe.entity_id                                  
+						AND xte.entity_id=xe.entity_id
 						AND xe.event_status_code='P'
 						AND xe.process_status_code='P'
 					  GROUP BY xte.source_id_int_1
-					) h           					
+					) h
 			WHERE a.invoice_id=h.source_id_int_1
 			AND l.invoice_id			=a.invoice_id
 			AND l.line_type_lookup_code<>'TAX'
@@ -295,7 +296,7 @@ END xx_ap_get_gl_acct;
 							AND XFTV.ENABLED_FLAG = 'Y'
 							AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE)
 					   )
-		UNION ALL 	
+		UNION ALL
 			SELECT   /*+ LEADING (j) */
 					a.source,
 					'USTR' "USTR",
@@ -310,19 +311,19 @@ END xx_ap_get_gl_acct;
 					trd.cost avg_cost,
 					trd.sku item,
 					trd.line_type line_type_lookup_code,
-					DECODE (quantity_sign,'+',TRD.QUANTITY, '-', (-1)*QUANTITY) quantity_invoiced,   
+					DECODE (quantity_sign,'+',TRD.QUANTITY, '-', (-1)*QUANTITY) quantity_invoiced,
 					NULL unit_price,
-					DECODE ((SELECT TARGET_VALUE8                                                                          
+					DECODE ((SELECT TARGET_VALUE8
 							FROM XX_FIN_TRANSLATEVALUES
-							WHERE TRANSLATE_ID IN (SELECT TRANSLATE_ID 
-							FROM XX_FIN_TRANSLATEDEFINITION 
-							WHERE TRANSLATION_NAME = 'AP_CONSIGN_LIABILITY' 
+							WHERE TRANSLATE_ID IN (SELECT TRANSLATE_ID
+							FROM XX_FIN_TRANSLATEDEFINITION
+							WHERE TRANSLATION_NAME = 'AP_CONSIGN_LIABILITY'
 							AND ENABLED_FLAG = 'Y')
 							AND SOURCE_VALUE2 = TRD.AP_VENDOR
 							AND SOURCE_VALUE1 = 'USA'),NULL,TRD.PO_COST * (DECODE (quantity_sign,'+',TRD.QUANTITY, '-', (-1)*QUANTITY)) ,TRD.COST * (DECODE (quantity_sign,'+',TRD.QUANTITY, '-', (-1)*QUANTITY)))  amount,     --trd.mdse_amount amount,
 					NULL reason_cd,
 					a.doc_sequence_value voucher_num,
-					DECODE(trd.consign_flag, 'Y', trd.line_description,'N', 'UNABSORBED COSTS', trd.line_description) voucher_line_desc, 
+					DECODE(trd.consign_flag, 'Y', trd.line_description,'N', 'UNABSORBED COSTS', trd.line_description) voucher_line_desc,
 					NULL original_po_qty,
 					NULL original_po_cost,
 					NULL ap_po_nbr,
@@ -331,7 +332,7 @@ END xx_ap_get_gl_acct;
 						FROM ap_invoice_distributions_all aid,
 							 gl_code_combinations gcc
 						WHERE 1                     =1
-						AND aid.invoice_id            =a.invoice_id 
+						AND aid.invoice_id            =a.invoice_id
 						AND gcc.code_combination_id =aid.dist_code_combination_id
 						AND ROWNUM                 <=1
 					) gl_account_id,
@@ -339,7 +340,7 @@ END xx_ap_get_gl_acct;
 						FROM ap_invoice_distributions_all aid,
 							 gl_code_combinations gcc
 						WHERE 1                     =1
-						AND aid.invoice_id            =a.invoice_id 
+						AND aid.invoice_id            =a.invoice_id
 						AND gcc.code_combination_id =aid.dist_code_combination_id
 						AND ROWNUM                 <=1
 					) period_name
@@ -357,19 +358,19 @@ END xx_ap_get_gl_acct;
 						AND xe.entity_id=xah.entity_id
 						AND xte.application_id=xe.application_id
 						AND XTE.ENTITY_CODE      = 'AP_INVOICES'
-						AND xte.entity_id=xe.entity_id                                  
+						AND xte.entity_id=xe.entity_id
 						AND xe.event_status_code='P'
 						AND xe.process_status_code='P'
 					  GROUP BY xte.source_id_int_1
-					) j           										 
+					) j
 				WHERE a.invoice_id=j.source_id_int_1
   	 			  AND aps.vendor_site_id =a.vendor_site_id
 				  AND a.invoice_num NOT LIKE '%ODDBUIA%'
 				  AND a.cancelled_date IS NULL
 				  AND a.source           ='US_OD_CONSIGNMENT_SALES'
 			      AND trd.invoice_number =a.invoice_num
-				  AND trd.cost    <> 0	
-				  AND trd.consign_flag   = 'Y'          
+				  AND trd.cost    <> 0
+				  AND trd.consign_flag   = 'Y'
 				ORDER BY invoice_num,line_number,source;
 
 		TYPE matched_inv_tab_type IS TABLE OF matched_inv_cur%ROWTYPE;
@@ -426,7 +427,7 @@ END xx_ap_get_gl_acct;
 					AND SYSDATE BETWEEN XFTV.START_DATE_ACTIVE AND NVL(XFTV.END_DATE_ACTIVE,SYSDATE)
 				  )
 				UNION ALL
-				SELECT /*+ LEADING (h) INDEX(aps AP_SUPPLIER_SITES_U1) */    
+				SELECT /*+ LEADING (h) INDEX(aps AP_SUPPLIER_SITES_U1) */
 				  AI.SOURCE SOURCE,
 				  'USTR',
 				  AI.INVOICE_NUM INVOICE_NUM,
@@ -437,7 +438,7 @@ END xx_ap_get_gl_acct;
 				  POL.LINE_NUM PO_LINE_NUM,
 				  POL.UNIT_PRICE PO_PRICE,
 				  NULL AVG_COST,
-				  MSI.SEGMENT1	SKU,	
+				  MSI.SEGMENT1	SKU,
 				  L.LINE_TYPE_LOOKUP_CODE,
 				  L.UNIT_PRICE LIST_PRICE_PER_UNIT,
 				  L.QUANTITY_INVOICED INVOICE_QTY,
@@ -449,7 +450,7 @@ END xx_ap_get_gl_acct;
 				  AP_INVOICE_LINES_ALL L,
 				  AP_INVOICES_ALL AI,
 				  (
-					SELECT /*+ INDEX(aph XX_AP_HOLDS_N1) */ 
+					SELECT /*+ INDEX(aph XX_AP_HOLDS_N1) */
 					  DISTINCT INVOICE_ID
 					FROM
 					  AP_HOLDS_ALL APH
@@ -508,11 +509,11 @@ END xx_ap_get_gl_acct;
 		TYPE unmatched_inv_tab_type IS TABLE OF unmatched_inv_cur%ROWTYPE;
 		CURSOR get_dir_path
 		IS
-			SELECT directory_path 
-			FROM dba_directories 
+			SELECT directory_path
+			FROM dba_directories
 			WHERE directory_name = 'XXFIN_OUTBOUND';
-		CURSOR get_inv_date 
-		IS 
+		CURSOR get_inv_date
+		IS
 			SELECT b.actual_start_date
   			  FROM fnd_concurrent_requests b
 			 WHERE request_id = (SELECT MAX(request_id)
@@ -520,14 +521,14 @@ END xx_ap_get_gl_acct;
 										fnd_concurrent_programs_vl a
 			                      WHERE a.concurrent_program_name = 'XXODAPVPSE'
 			                        AND b.concurrent_program_id=a.concurrent_program_id
-								    AND b.phase_code='C' 
+								    AND b.phase_code='C'
 									AND b.status_code='C'
 								);
-			
-			
-			
-		l_unmatched_tab 				unmatched_inv_tab_type; 
-		l_matched_tab 					matched_inv_tab_type; 
+
+
+
+		l_unmatched_tab 				unmatched_inv_tab_type;
+		l_matched_tab 					matched_inv_tab_type;
 		lf_um_file              		UTL_FILE.file_type;
 		l_um_file_header        		VARCHAR2(32000);
 		lc_um_file_content				VARCHAR2(32000);
@@ -564,7 +565,7 @@ BEGIN
 	IF ld_date IS NULL then
 	ld_date := SYSDATE-1;
 	END IF;
-	SELECT SUBSTR(LOWER(SYS_CONTEXT('USERENV','INSTANCE_NAME')),1,8) 
+	SELECT SUBSTR(LOWER(SYS_CONTEXT('USERENV','DB_NAME')),1,8)
 	INTO lc_instance_name
 	FROM dual;
 	SELECT NAME
@@ -581,7 +582,7 @@ BEGIN
 									   lc_m_file_name,
 									   'w',
 									   ln_chunk_size);
-			l_m_file_header := 
+			l_m_file_header :=
 								'SOURCE'
 								||'|'||'USTR'
 								||'|'||'AP_VENDOR'
@@ -617,34 +618,34 @@ BEGIN
 							||'|'||l_matched_tab(i).invoice_date
 							||'|'||l_matched_tab(i).entry_dt
 							||'|'||l_matched_tab(i).line_number
-							||'|'||l_matched_tab(i).location					
-							||'|'||l_matched_tab(i).po_price					
-							||'|'||l_matched_tab(i).avg_cost					
-							||'|'||l_matched_tab(i).item						
-							||'|'||l_matched_tab(i).line_type_lookup_code		
-							||'|'||l_matched_tab(i).quantity_invoiced			
-							||'|'||l_matched_tab(i).unit_price					
-							||'|'||l_matched_tab(i).amount						
-							||'|'||l_matched_tab(i).reason_cd					
-							||'|'||l_matched_tab(i).voucher_num					
-							||'|'||l_matched_tab(i).voucher_line_desc			
-							||'|'||l_matched_tab(i).original_po_qty				
-							||'|'||l_matched_tab(i).original_po_cost			
-							||'|'||l_matched_tab(i).ap_po_nbr					
-							||'|'||l_matched_tab(i).po_line_nbr					
-							||'|'||l_matched_tab(i).gl_account_id				
-							||'|'||l_matched_tab(i).period_name;				
+							||'|'||l_matched_tab(i).location
+							||'|'||l_matched_tab(i).po_price
+							||'|'||l_matched_tab(i).avg_cost
+							||'|'||l_matched_tab(i).item
+							||'|'||l_matched_tab(i).line_type_lookup_code
+							||'|'||l_matched_tab(i).quantity_invoiced
+							||'|'||l_matched_tab(i).unit_price
+							||'|'||l_matched_tab(i).amount
+							||'|'||l_matched_tab(i).reason_cd
+							||'|'||l_matched_tab(i).voucher_num
+							||'|'||l_matched_tab(i).voucher_line_desc
+							||'|'||l_matched_tab(i).original_po_qty
+							||'|'||l_matched_tab(i).original_po_cost
+							||'|'||l_matched_tab(i).ap_po_nbr
+							||'|'||l_matched_tab(i).po_line_nbr
+							||'|'||l_matched_tab(i).gl_account_id
+							||'|'||l_matched_tab(i).period_name;
 					UTL_FILE.put_line(lf_m_file,lc_m_file_content);
 			END LOOP;
 		UTL_FILE.fclose(lf_m_file);
 		fnd_file.put_line(fnd_file.LOG,'Matched Invoice File Created: '|| lc_m_file_name);
 		-- copy to matched invoice file to xxfin_data/vps dir
 		lc_dest_file_name := '/app/ebs/ct'||lc_instance_name||'/xxfin/ftp/out/vps/'||lc_m_file_name;
-		ln_conc_file_copy_request_id := fnd_request.submit_request('XXFIN', 
-																   'XXCOMFILCOPY', 
-																   '', 
-																   '', 
-																   FALSE, 
+		ln_conc_file_copy_request_id := fnd_request.submit_request('XXFIN',
+																   'XXCOMFILCOPY',
+																   '',
+																   '',
+																   FALSE,
 																   lc_dirpath||'/'||lc_m_file_name, --Source File Name
 																   lc_dest_file_name,            --Dest File Name
 																   '', '', 'Y'                   --Deleting the Source File
@@ -663,7 +664,7 @@ BEGIN
 															dev_status   => lc_dev_status,
 															message      => lc_message
 															);
-		END IF;					
+		END IF;
 		EXCEPTION WHEN OTHERS THEN
 		fnd_file.put_line(fnd_file.LOG,SQLCODE||SQLERRM);
 		END;
@@ -679,7 +680,7 @@ BEGIN
 		lf_um_file := UTL_FILE.fopen('XXFIN_OUTBOUND',
 									   lc_um_file_name,
 									   'w',
-									   ln_chunk_size);									   
+									   ln_chunk_size);
 		l_um_file_header :=
 							'SOURCE'
 							||'|'||'USTR'
@@ -693,7 +694,7 @@ BEGIN
 							||'|'||'LINE_NUM'
 							||'|'||'LIST_PRICE_PER_UNIT'
 							||'|'||'QTY'
-							||'|'||'AMOUNT';		
+							||'|'||'AMOUNT';
 		UTL_FILE.put_line(lf_um_file, l_um_file_header);
 		FOR i IN 1.. l_unmatched_tab.COUNT
 		LOOP
@@ -701,14 +702,14 @@ BEGIN
 							l_unmatched_tab(i).source
 							||'|'||
 							'USTR'
-							||'|'||							
+							||'|'||
 							l_unmatched_tab(i).invoice_num
 							||'|'||
 							l_unmatched_tab(i).invoice_date
 							||'|'||
 							l_unmatched_tab(i).ap_vendor
-							||'|'||							
-							get_location(l_unmatched_tab(i).quick_po_header_id)		
+							||'|'||
+							get_location(l_unmatched_tab(i).quick_po_header_id)
 							||'|'||
 							l_unmatched_tab(i).po_price
 							||'|'||
@@ -729,11 +730,11 @@ BEGIN
 		fnd_file.put_line(fnd_file.LOG,'Unmatched Invoice File Created: '|| lc_um_file_name);
 		-- copy unmatched invoice file to vps dir
 		lc_dest_file_name := '/app/ebs/ct'||lc_instance_name||'/xxfin/ftp/out/vps/'||lc_um_file_name;
-		ln_conc_file_copy_request_id := fnd_request.submit_request('XXFIN', 
-																   'XXCOMFILCOPY', 
-																   '', 
-																   '', 
-																   FALSE, 
+		ln_conc_file_copy_request_id := fnd_request.submit_request('XXFIN',
+																   'XXCOMFILCOPY',
+																   '',
+																   '',
+																   FALSE,
 																   lc_dirpath||'/'||lc_um_file_name, --Source File Name
 																   lc_dest_file_name,            --Dest File Name
 																   '', '', 'Y'                   --Deleting the Source File
@@ -752,7 +753,7 @@ BEGIN
 															dev_status   => lc_dev_status,
 															message      => lc_message
 															);
-		END IF;					
+		END IF;
 		EXCEPTION WHEN OTHERS THEN
 			fnd_file.put_line(fnd_file.LOG,SQLCODE||SQLERRM);
 		END;
@@ -763,9 +764,8 @@ BEGIN
 	IF lc_unmatch_file='Y' THEN
 	   xx_move_archive(lc_um_file_name);
 	END IF;
-	
+
 EXCEPTION WHEN OTHERS THEN
-	fnd_file.put_line(fnd_file.LOG,SQLCODE||SQLERRM);		
-END invoice_vps_extract;  
+	fnd_file.put_line(fnd_file.LOG,SQLCODE||SQLERRM);
+END invoice_vps_extract;
 END XX_AP_VPS_EXTRACT_PKG;
-/

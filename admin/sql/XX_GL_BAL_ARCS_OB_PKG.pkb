@@ -1,13 +1,4 @@
-SET VERIFY OFF
-SET ECHO OFF
-SET FEEDBACK OFF
-SET TERM ON
-PROMPT Creating PACKAGE  BODY XX_GL_BAL_ARCS_OB_PKG
-PROMPT Program exits IF the creation IS NOT SUCCESSFUL
-WHENEVER SQLERROR CONTINUE
-
-create or replace 
-PACKAGE BODY XX_GL_BAL_ARCS_OB_PKG
+create or replace PACKAGE BODY XX_GL_BAL_ARCS_OB_PKG
 AS
   -- +============================================================================================+
   -- |  Office Depot - Project Simplify                                                           |
@@ -24,6 +15,8 @@ AS
   -- | 1.1         15-MAY-18    M K Pramod Kumar   Modified to include active accounts and period_name validation
   -- | 1.2         12-SEP-18    Priyam Parmar      Modified to fetch enabled and disabled code combinations for  NAIT-59916
   -- | 1.3         09-OCT-18    Priyam Parmar      Added procedure to fetch reportin currency balance for NAIT-63426
+  -- | 1.4         24-JAN-19    BIAS               INSTANCE_NAME is replaced with DB_NAME for OCI |  
+  -- |                                             Migration Project                              |
   -- +============================================================================================+
   gc_debug VARCHAR2(2) := 'N';
   gn_request_id fnd_concurrent_requests.request_id%TYPE;
@@ -200,7 +193,7 @@ BEGIN
   WHEN OTHERS THEN
     l_file_path := NULL;
   END;
-  SELECT SUBSTR(LOWER(SYS_CONTEXT('USERENV', 'INSTANCE_NAME') ), 1, 8)
+  SELECT SUBSTR(LOWER(SYS_CONTEXT('USERENV', 'DB_NAME') ), 1, 8)
   INTO lc_instance_name
   FROM DUAL;
   l_file_name    := 'ARCS_EBSUS_' || p_period_name || '.txt';
@@ -487,7 +480,7 @@ BEGIN
   WHEN OTHERS THEN
     l_file_path := NULL;
   END;
-  SELECT SUBSTR(LOWER(SYS_CONTEXT('USERENV', 'INSTANCE_NAME') ), 1, 8)
+  SELECT SUBSTR(LOWER(SYS_CONTEXT('USERENV', 'DB_NAME') ), 1, 8)
   INTO lc_instance_name
   FROM DUAL;
   l_file_name    := 'ARCS_EBSGL_' || p_period_name || '.txt';
@@ -748,4 +741,3 @@ WHEN OTHERS THEN
   p_errbuf  := lc_error_msg;
 END PROCESS_GL_BALANCES_OB;
 END XX_GL_BAL_ARCS_OB_PKG;
-/

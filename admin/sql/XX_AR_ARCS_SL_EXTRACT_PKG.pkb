@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE BODY apps.xx_ar_arcs_sl_extract_pkg
+create or replace PACKAGE BODY      xx_ar_arcs_sl_extract_pkg
 -- +============================================================================================+
 -- |                      Office Depot - Project Simplify                                       |
 -- +============================================================================================+
@@ -11,6 +11,8 @@ CREATE OR REPLACE PACKAGE BODY apps.xx_ar_arcs_sl_extract_pkg
 -- | 1.0         012918       Dinesh Nagapuri  Initial version                                  |
 -- | 2.0         05/24/2018   Havish Kasina    Modified the enabled Flag from 'y' to 'Y'        |
 -- | 3.0         05/24/2018   Havish Kasina    Added Hints to the subledger_extract_cur cursor  |
+-- | 4.0         01/24/2019   BIAS             INSTANCE_NAME is replaced with DB_NAME for OCI   |
+-- |                                           Migration                                        |
 -- +============================================================================================+
 AS
     gc_debug       VARCHAR2(2)                                 := 'N';
@@ -97,7 +99,7 @@ AS
             p_start_date   DATE,
             p_end_date     DATE)
         IS
-            SELECT  /*+ full(gllookups.lv) full(gp) full(gb) full(gld) full(gcc) full(glcd) full(xll) */ 
+            SELECT  /*+ full(gllookups.lv) full(gp) full(gb) full(gld) full(gcc) full(glcd) full(xll) */
 			         gcc.segment1 company,
                      gcc.segment2 cost_center,
                      gcc.segment3 ACCOUNT,
@@ -366,7 +368,7 @@ AS
         CLOSE get_dir_path;
 
         SELECT SUBSTR(LOWER(SYS_CONTEXT('USERENV',
-                                        'INSTANCE_NAME') ),
+                                        'DB_NAME') ),
                       1,
                       8)
         INTO   lc_instance_name
@@ -883,4 +885,3 @@ AS
             p_retcode := 2;
     END subledger_arcs_extract;
 END xx_ar_arcs_sl_extract_pkg;
-/

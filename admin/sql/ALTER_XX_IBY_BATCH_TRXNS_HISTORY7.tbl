@@ -4,7 +4,7 @@ SET ECHO         OFF
 SET TAB          OFF
 SET FEEDBACK     ON
 
-PROMPT Altering TABLE XX_IBY_BATCH_TRXNS_HISTORY
+PROMPT Altering TABLE XXFND_CONCURRENT_REQUESTS_ARCH
 
 PROMPT Program exits IF the creation IS NOT SUCCESSFUL
 
@@ -13,9 +13,8 @@ WHENEVER SQLERROR CONTINUE
 -- +=======================================================================================+
 -- |                  Office Depot - Project Simplify                                      |
 -- +=======================================================================================+
--- | Name :ALTER_XX_IBY_BATCH_TRXNS_HISTORY7.tbl                                           |
--- | Description : Altering the  table XX_IBY_BATCH_TRXNS_HISTORY                          |
--- |               to add details of credit card code                                      |
+-- | Name :ALTER_XXFND_CONCURRENT_REQUESTS_ARCH.TBL                                           |
+-- | Description : Altering the  table XXFND_CONCURRENT_REQUESTS_ARCH                          |
 -- |                                                                                       |
 -- |                                                                                       |
 -- |                                                                                       |
@@ -23,11 +22,15 @@ WHENEVER SQLERROR CONTINUE
 -- |===============                                                                        |
 -- |Version   Date         Author               Remarks                                    |
 -- |=======   ==========   =============        ===========================================|
--- | V1.0     13-OCT-2015  Harvinder Rakhra     Initial Version                            |
+-- | V1.0     30-MAY-2017  Suresh Ponnambalam     Initial Version                            |
 -- |                                                                                       |
 -- +=======================================================================================+ 
 
-ALTER TABLE XXFIN.XX_IBY_BATCH_TRXNS_HISTORY  
-ADD ( IXCREDITCARDCODE VARCHAR2(80));
-
+ALTER TABLE xxdba.xxfnd_concurrent_requests_arch
+ADD (
+ edition_name                                       VARCHAR2(30),
+ recalc_parameters                                  VARCHAR2(1),
+ nls_sort                                           VARCHAR2(30)
+    );
+ 
 SHOW ERROR
