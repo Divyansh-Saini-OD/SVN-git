@@ -214,7 +214,7 @@ BEGIN
   END;
   lc_source_file_name := lc_source_dir_path||'/'||p_copy_file;
   IF p_request_type<>'DAILY' THEN
-     lc_dest_file_name   := '/app/ebs/ct' || lc_instance_name || '/xxfin/ftp/out/hyperion' || p_copy_file;
+     lc_dest_file_name   := '/app/ebs/ct' || lc_instance_name || '/xxfin/ftp/out/hyperion/' || p_copy_file;
   ELSE
      lc_dest_file_name   := '/app/ebs/ct' || lc_instance_name || '/xxfin/ftp/out/rates/ratex/' || p_copy_file;
   END IF;
