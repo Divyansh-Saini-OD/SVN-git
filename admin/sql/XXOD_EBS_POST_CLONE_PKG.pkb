@@ -120,6 +120,7 @@ AS
 -- |                                      translation                                                      |       
 -- |1.57     04-oct-2018   Havish Kasina  Added new identifier FND_NI_07 to udpate the OD_MAIL_GROUPS      |
 -- |                                      translation                                                      | 
+-- |1.58     23-JAN-2019   BIAS           INSTANCE_NAME is replaced with DB_NAME for OCI Migration         |
 -- +=======================================================================================================+
 
 -- +==========================================================+
@@ -181,11 +182,12 @@ AS
   p_instance_name  VARCHAR2(30);
 
   BEGIN
-     SELECT SUBSTR(UPPER(SYS_CONTEXT('USERENV','INSTANCE_NAME')),1,8) -- Commented by Havish Kasina as per Version 1.17--UPPER(SYS_CONTEXT('USERENV','INSTANCE_NAME')) 
+     --SELECT SUBSTR(UPPER(SYS_CONTEXT('USERENV','INSTANCE_NAME')),1,8) -- Commented by Havish Kasina as per Version 1.17--UPPER(SYS_CONTEXT('USERENV','INSTANCE_NAME'))
+     SELECT SUBSTR(UPPER(SYS_CONTEXT('USERENV','DB_NAME')),1,8) -- INSTANCE_NAME is changed to DB_NAME by BIAS as part of OCI Migration
        INTO p_instance_name
        FROM dual;
      RETURN p_instance_name;
-  EXCEPTION 
+  EXCEPTION
      WHEN NO_DATA_FOUND THEN
         p_instance_name := NULL;
         xx_write_to_log (p_filehandle,'No data found while getting the Instance Name : '||p_instance_name);
@@ -293,8 +295,11 @@ AS
   lc_filehandle_csv     UTL_FILE.file_type;
   lc_dirpath            VARCHAR2(2000) := 'XX_UTL_FILE_OUT_DIR';
   lc_curr_date          VARCHAR2(100)  := TO_CHAR (SYSDATE, 'YYYYMMDD_HH24MISS');
-  lc_order_file_name    VARCHAR2(100)  := UPPER(SYS_CONTEXT('USERENV','INSTANCE_NAME'))||'_'||lc_curr_date||'_'||'appdev_non_inst_post_clone'||'.log'; -- Changed as per Version 1.31 --'appdev_non_inst_post_clone_'||UPPER(SYS_CONTEXT('USERENV','INSTANCE_NAME'))||'_'||lc_curr_date||'.log';
-  lc_csv_file_name      VARCHAR2(100)  := UPPER(SYS_CONTEXT('USERENV','INSTANCE_NAME'))||'_'||lc_curr_date||'_'||'appdev_non_inst_post_clone'||'.csv'; -- Changed as per Version 1.31 --'appdev_non_inst_post_clone_'||UPPER(SYS_CONTEXT('USERENV','INSTANCE_NAME'))||'_'||lc_curr_date||'.csv';
+   -- INSTANCE_NAME is changed to DB_NAME by BIAS as part of OCI Migration
+  --lc_order_file_name    VARCHAR2(100)  := UPPER(SYS_CONTEXT('USERENV','INSTANCE_NAME'))||'_'||lc_curr_date||'_'||'appdev_non_inst_post_clone'||'.log'; -- Changed as per Version 1.31 --'appdev_non_inst_post_clone_'||UPPER(SYS_CONTEXT('USERENV','INSTANCE_NAME'))||'_'||lc_curr_date||'.log';
+  --lc_csv_file_name      VARCHAR2(100)  := UPPER(SYS_CONTEXT('USERENV','INSTANCE_NAME'))||'_'||lc_curr_date||'_'||'appdev_non_inst_post_clone'||'.csv'; -- Changed as per Version 1.31 --'appdev_non_inst_post_clone_'||UPPER(SYS_CONTEXT('USERENV','INSTANCE_NAME'))||'_'||lc_curr_date||'.csv';
+  lc_order_file_name    VARCHAR2(100)  := UPPER(SYS_CONTEXT('USERENV','DB_NAME'))||'_'||lc_curr_date||'_'||'appdev_non_inst_post_clone'||'.log'; -- Changed as per Version 1.31 --'appdev_non_inst_post_clone_'||UPPER(SYS_CONTEXT('USERENV','INSTANCE_NAME'))||'_'||lc_curr_date||'.log';
+  lc_csv_file_name      VARCHAR2(100)  := UPPER(SYS_CONTEXT('USERENV','DB_NAME'))||'_'||lc_curr_date||'_'||'appdev_non_inst_post_clone'||'.csv'; -- Changed as per Version 1.31 --'appdev_non_inst_post_clone_'||UPPER(SYS_CONTEXT('USERENV','INSTANCE_NAME'))||'_'||lc_curr_date||'.csv';
   lc_mode               VARCHAR2(1)    := 'W';
   lc_instance_name      VARCHAR2(30);
   lb_profile_chg_result BOOLEAN;
@@ -10430,8 +10435,11 @@ AS
   lc_filehandle_csv     UTL_FILE.file_type;
   lc_dirpath            VARCHAR2 (2000) := 'XX_UTL_FILE_OUT_DIR';
   lc_curr_date          VARCHAR2 (100)  := TO_CHAR (SYSDATE, 'YYYYMMDD_HH24MISS'); -- Added as per Version 1.31--TO_CHAR (SYSDATE, 'YYYYMMDD');
-  lc_order_file_name    VARCHAR2(100)   := UPPER(SYS_CONTEXT('USERENV','INSTANCE_NAME'))||'_'||lc_curr_date||'_'||'appdev_inst_spec_post_clone'||'.log'; -- Changed as per Version 1.31 --'appdev_inst_spec_post_clone_'||UPPER(SYS_CONTEXT('USERENV','INSTANCE_NAME'))||'_'||lc_curr_date||'.log';
-  lc_csv_file_name      VARCHAR2(100)   := UPPER(SYS_CONTEXT('USERENV','INSTANCE_NAME'))||'_'||lc_curr_date||'_'||'appdev_inst_spec_post_clone'||'.csv'; -- Changed as per Version 1.31 --'appdev_inst_spec_post_clone_'||UPPER(SYS_CONTEXT('USERENV','INSTANCE_NAME'))||'_'||lc_curr_date||'.csv';
+   -- INSTANCE_NAME is changed to DB_NAME by BIAS as part of OCI Migration 
+  --lc_order_file_name    VARCHAR2(100)   := UPPER(SYS_CONTEXT('USERENV','INSTANCE_NAME'))||'_'||lc_curr_date||'_'||'appdev_inst_spec_post_clone'||'.log'; -- Changed as per Version 1.31 --'appdev_inst_spec_post_clone_'||UPPER(SYS_CONTEXT('USERENV','INSTANCE_NAME'))||'_'||lc_curr_date||'.log';
+  --lc_csv_file_name      VARCHAR2(100)   := UPPER(SYS_CONTEXT('USERENV','INSTANCE_NAME'))||'_'||lc_curr_date||'_'||'appdev_inst_spec_post_clone'||'.csv'; -- Changed as per Version 1.31 --'appdev_inst_spec_post_clone_'||UPPER(SYS_CONTEXT('USERENV','INSTANCE_NAME'))||'_'||lc_curr_date||'.csv';
+  lc_order_file_name    VARCHAR2(100)   := UPPER(SYS_CONTEXT('USERENV','DB_NAME'))||'_'||lc_curr_date||'_'||'appdev_inst_spec_post_clone'||'.log'; -- Changed as per Version 1.31 --'appdev_inst_spec_post_clone_'||UPPER(SYS_CONTEXT('USERENV','INSTANCE_NAME'))||'_'||lc_curr_date||'.log';
+  lc_csv_file_name      VARCHAR2(100)   := UPPER(SYS_CONTEXT('USERENV','DB_NAME'))||'_'||lc_curr_date||'_'||'appdev_inst_spec_post_clone'||'.csv'; -- Changed as per Version 1.31 --'appdev_inst_spec_post_clone_'||UPPER(SYS_CONTEXT('USERENV','INSTANCE_NAME'))||'_'||lc_curr_date||'.csv';
   lc_mode               VARCHAR2 (1)    := 'W';
   lc_instance_name      VARCHAR2(30);
   lb_profile_chg_result BOOLEAN;
@@ -11632,14 +11640,15 @@ AS
               lc_status              := NULL;
               ln_count               := 0;
               
-              xx_write_to_log (lc_filehandle,'Start of update, for FND_IS_02');
+				xx_write_to_log (lc_filehandle,'Start of update, for FND_IS_02');
 
                 UPDATE FND_SVC_COMP_PARAM_VALS FSCPV
-                   SET FSCPV.PARAMETER_VALUE =  SUBSTR(UPPER(SYS_CONTEXT('USERENV','INSTANCE_NAME')),1,8)||' Office Depot Workflow Mailer' 
+                   -- INSTANCE_NAME is changed to DB_NAME by BIAS as part of OCI Migration
+				   SET FSCPV.PARAMETER_VALUE =  SUBSTR(UPPER(SYS_CONTEXT('USERENV','DB_NAME')),1,8)||' Office Depot Workflow Mailer' --SUBSTR(UPPER(SYS_CONTEXT('USERENV','INSTANCE_NAME')),1,8)||' Office Depot Workflow Mailer'
                  WHERE EXISTS ( SELECT 1 FROM FND_SVC_COMP_PARAMS_TL FSCPT
                                  WHERE FSCPT.PARAMETER_ID = FSCPV.PARAMETER_ID
                                    AND fscpt.display_name =  'From');
-                   
+
                 ln_count := SQL%rowcount;
 
               xx_write_to_log (lc_filehandle,'No of rows updated for FND_IS_02 is: ' || SQL%rowcount );
