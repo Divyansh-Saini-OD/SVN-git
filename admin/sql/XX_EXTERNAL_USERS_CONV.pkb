@@ -32,7 +32,8 @@ AS
 -- |                                         Defect 39239                                               |
 -- |1.6       26-Feb-2019 Havish Kasina      Made code changes for Lift and Shift to extract AOPS       |
 -- |                                         External users information from the new custom table       |
--- |                                         XX_CDH_AOPS_EXTERNAL_USERS                                 |                  
+-- |                                         XX_CDH_AOPS_EXTERNAL_USERS                                 |  
+-- |1.7       27-JAN-2019 BIAS               Changed to replace user_lock to dbms_lock                                              |                
 -- +====================================================================================================+
 */
 
@@ -2257,7 +2258,7 @@ AS
       END;
            
          
-      USER_LOCK.SLEEP(l_wait_time);
+      DBMS_LOCK.SLEEP(l_wait_time);
       
       BEGIN
            Select '1' INTO l_exists
