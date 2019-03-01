@@ -1,5 +1,4 @@
-create or replace 
-PACKAGE BODY xx_cdh_aops_ab_pkg
+create or replace PACKAGE BODY xx_cdh_aops_ab_pkg
 AS
 -- +===============================================================================+
 -- |                  Office Depot - Project Simplify                              |
@@ -18,8 +17,8 @@ AS
 -- |                                       for Defect #37159                       |
 -- | 1.2      04-May-18   Vivek Kumar	   Defect#45176 Extract the customers has  |
 -- |                                       active BIll doc.                        |
--- | 1.3      23-AUG-18   Sridhar Pamu	   Defect#54267 Include Start and requested|
--- |                                       date to the report.                     |
+-- | 1.3      03-JAN-19   BIAS             INSTANCE_NAME is replaced with DB_NAME  |
+-- |                                       for OCI Migration                       |
 -- +===============================================================================+
    g_db_link   VARCHAR2 (2000);
 
@@ -417,7 +416,7 @@ AS
           aops_credit_flag ,''N'' MISSING_BILL
 		  FROM  xxod_cdh_ab_cust_stg ap'
             || ' WHERE 1=1'
-            || ' AND ap.account_type = ''CONTRACT'' ' 
+            || ' AND ap.account_type = ''CONTRACT'' '
             || ' AND ap.account_status = ''A'' '
             || ' AND  EXISTS (
           SELECT 1
@@ -441,7 +440,7 @@ AS
 AND xb.cust_account_id=hc.cust_account_id
 AND Attr_group_id     in (166)
 and C_ext_attr2=''Y''
-AND (SYSDATE BETWEEN d_ext_attr1 AND NVL (d_ext_attr2, SYSDATE + 1) or d_ext_attr1>sysdate))';
+AND SYSDATE BETWEEN d_ext_attr1 AND NVL (d_ext_attr2, SYSDATE + 1))';
          wr_log ('Query used : ' || lc_query);
 
          BEGIN
@@ -485,7 +484,7 @@ AND (SYSDATE BETWEEN d_ext_attr1 AND NVL (d_ext_attr2, SYSDATE + 1) or d_ext_att
 			   FROM  xxod_cdh_ab_cust_stg ap'
             || ' WHERE 1=1'
             || ' AND ebs_credit_flag=''N'' '
-            || ' AND ap.account_type = ''CONTRACT'' ' 
+            || ' AND ap.account_type = ''CONTRACT'' '
             || ' AND ap.account_status = ''A'' '
             || ' AND  EXISTS (
            SELECT 1
@@ -509,7 +508,7 @@ WHERE 1               =1
 AND xb.cust_account_id=hc.cust_account_id
 AND Attr_group_id     in (166)
 and C_ext_attr2=''Y''
-AND (SYSDATE BETWEEN d_ext_attr1 AND NVL (d_ext_attr2, SYSDATE + 1) or d_ext_attr1>sysdate))';
+AND SYSDATE BETWEEN d_ext_attr1 AND NVL (d_ext_attr2, SYSDATE + 1))';
          wr_log ('Query used : ' || lc_query);
 
          OPEN c_aops_cur FOR lc_query;
@@ -573,45 +572,26 @@ AND (SYSDATE BETWEEN d_ext_attr1 AND NVL (d_ext_attr2, SYSDATE + 1) or d_ext_att
 
       CURSOR get_cust_det
       IS
-         SELECT   lpad(x.aops_number,8,0) aops_number, rpad(hca.account_name,30)account_name,  DECODE(hcp.standard_terms,5,'N','Y')ebs_credit_flag, 
+         SELECT   lpad(x.aops_number,8,0) aops_number, hca.account_name,  DECODE(hcp.standard_terms,5,'N','Y')ebs_credit_flag,
 		 (SELECT DECODE(COUNT(1),0,'N','Y')
             FROM XX_CDH_CUST_ACCT_EXT_B XB
             WHERE 1               =1
                AND xb.cust_account_id=hca.cust_account_id
                AND Attr_group_id    IN (166)
                AND C_ext_attr2       ='Y'
-               AND (SYSDATE BETWEEN d_ext_attr1 AND NVL (d_ext_attr2, SYSDATE + 1) or d_ext_attr1>sysdate)
-        )billdoc,
-		 (SELECT d_ext_attr1
-            FROM XX_CDH_CUST_ACCT_EXT_B XB
-            WHERE 1               =1
-               AND xb.cust_account_id=hca.cust_account_id
-               AND Attr_group_id    IN (166)
-               AND C_ext_attr2       ='Y'
-               AND (SYSDATE BETWEEN d_ext_attr1 AND NVL (d_ext_attr2, SYSDATE + 1) or d_ext_attr1>sysdate)
-			   and rownum=1
-        )Effective_start_date,
-		 (SELECT d_ext_attr9
-            FROM XX_CDH_CUST_ACCT_EXT_B XB
-            WHERE 1               =1
-               AND xb.cust_account_id=hca.cust_account_id
-               AND Attr_group_id    IN (166)
-               AND C_ext_attr2       ='Y'
-               AND (SYSDATE BETWEEN d_ext_attr1 AND NVL (d_ext_attr2, SYSDATE + 1) or d_ext_attr1>sysdate)
-			   and rownum=1
-        )Requested_date,
-		     RPAD(rt.name,20) payment_term
+               AND SYSDATE BETWEEN d_ext_attr1 AND NVL (d_ext_attr2, SYSDATE + 1)
+        )billdoc,RPAD(rt.name,20) payment_term
              FROM xxod_cdh_ab_cust_stg x, hz_cust_accounts hca,hz_customer_profiles hcp,ra_terms rt
             WHERE hca.orig_system_reference = lpad(x.aops_number,8,0) || '-00001-A0'
               AND hca.cust_account_id=hcp.cust_Account_id
               and hcp.site_use_id is null
               and rt.term_id=hcp.standard_terms
               AND NVL (ebs_credit_flag, 'Y') <> 'Y'
-			  AND x.account_type = 'CONTRACT'
-			  ORDER BY 4;
+              AND x.account_type = 'CONTRACT'
+			  ORDER BY 3;
    BEGIN
       BEGIN
-         SELECT SYS_CONTEXT ('USERENV', 'INSTANCE_NAME')
+         SELECT SYS_CONTEXT ('USERENV', 'DB_NAME')
            INTO lc_instance_name
            FROM DUAL;
       EXCEPTION
@@ -689,37 +669,27 @@ AND (SYSDATE BETWEEN d_ext_attr1 AND NVL (d_ext_attr2, SYSDATE + 1) or d_ext_att
       -- Added for QC Defect # 23956
       fnd_file.put_line (fnd_file.output, ' ');
       fnd_file.put_line (fnd_file.output,
-                            'AOPS Customer Number '
+                            'AOPS Customer Number     '
                          || '   '
-						 || 'Customer Name  '
-                         || '                   '
-                         
-						 || 'Terms      '
-                         || '               '
-						 || 'Credit Flag     '
+                         || 'Credit Flag     '
                          || '   '
                          || 'Billdoc     '
-                         || '      '
-                 		 || 'Start Date  '
-                         || '     '
-						 || 'Requested Date  '
+                         || '            '
+                         || 'Terms      '
+                         || '                     '
+                         || 'Customer Name  '
                          || '   '
-                       
                         );
       fnd_file.put_line (fnd_file.output,
-                            '-------------------- '
+                            '--------------------     '
                          || '   '
                          || '-----------     '
-                         || '                  '
+                         || '   '
                          || '------------  '
                          || '          '
-                         || '------------ '
-                         || '   '
-						 || '-------------  '
-                         || '     '
-						 || '-------------  '
-                         || '      '
-						 || '-------------  '
+                         || '-------------  '
+                         || '                 '
+                         || '-------------  '
                          || '   '
                         );
 
@@ -728,30 +698,22 @@ AND (SYSDATE BETWEEN d_ext_attr1 AND NVL (d_ext_attr2, SYSDATE + 1) or d_ext_att
          EXIT WHEN get_cust_det%NOTFOUND;
              fnd_file.put_line (fnd_file.output,
                                lc_rep.aops_number
-                            || '                '
-							 || lc_rep.account_name
-                            || '   '
-							|| lc_rep.payment_term
-                            || '            '
+                            || '                     '
                             || lc_rep.ebs_credit_flag
                             || '                 '
                             || lc_rep.billdoc
-                            || '               '
-                           	|| lc_rep.effective_start_date
-                            || '         '
-							|| lc_rep.requested_date
+                            || '                       '
+                            || lc_rep.payment_term
+                            || '            '
+                            || lc_rep.account_name
                             || '   '
-							
-                           
                            );
-						   
-						   
-						   
-						  
+
+
+
+
       END LOOP;
- fnd_file.put_line (fnd_file.output,
-                         ('                                                    ')
-                        );
+
       fnd_file.put_line (fnd_file.output,
                          LPAD ('*** End Of Report ***', 60, ' ')
                         );
@@ -790,7 +752,7 @@ AND (SYSDATE BETWEEN d_ext_attr1 AND NVL (d_ext_attr2, SYSDATE + 1) or d_ext_att
       x_errbuf      OUT NOCOPY      VARCHAR2,
       x_retcode     OUT NOCOPY      NUMBER,
       p_load_aops   IN              VARCHAR2 DEFAULT 'N'
-      
+
    )
    AS
       ln_retcode   NUMBER;
@@ -804,4 +766,3 @@ AND (SYSDATE BETWEEN d_ext_attr1 AND NVL (d_ext_attr2, SYSDATE + 1) or d_ext_att
       print_report (ln_retcode);
    END;
 END xx_cdh_aops_ab_pkg;
-/
