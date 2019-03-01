@@ -173,6 +173,27 @@ ODAJBServlet extends HttpServlet {
         HashMap responseHashMap = null;
         responseHashMap = new HashMap();
         String sCommCard = null;
+		String sAction = null;
+		String sOrderId = null;
+		String sAuthCode = null;
+		String sPrice = null;
+		String sCurr = null;
+		String sAuthType = null;
+		String sPmtInstrID = null;
+		String sPmtInstrExp = null;
+		String sStoreId = null;
+		String sCustName = null;
+		String sAddr1 = null;
+		String sAddr2 = null;
+		String sAddr3 = null;
+		String sCity = null;
+		String sState = null;
+		String sCntry = null;
+		String sPostalCode = null;
+		String sPhone = null;
+		String sEmail = null;
+		String sRetry = null;
+		String sNlsLang = null;
 
         HttpServletRequest oRequest = null;
         oRequest = request;
@@ -206,7 +227,49 @@ ODAJBServlet extends HttpServlet {
         oCommonAuth.setRetry(request.getParameter("OapfRetry"));
         oCommonAuth.setNlsLang(request.getParameter("OapfNlsLang"));
 
-
+        sAction = request.getParameter("OapfAction");
+		sOrderId = request.getParameter("OapfOrderId");
+		sAuthCode = request.getParameter("OapfAuthCode");
+		sPrice = request.getParameter("OapfPrice");
+		sCurr = request.getParameter("OapfCurr");
+		sAuthType = request.getParameter("OapfAuthType");
+		sPmtInstrID = request.getParameter("OapfPmtInstrID");
+		sPmtInstrExp = request.getParameter("OapfPmtInstrExp");
+		sStoreId = request.getParameter("OapfStoreId");
+		sCustName = request.getParameter("OapfCustName");
+		sAddr1 = request.getParameter("OapfAddr1");
+		sAddr2 = request.getParameter("OapfAddr2");
+		sAddr3 = request.getParameter("OapfAddr3");
+		sCity = request.getParameter("OapfCity");
+		sState = request.getParameter("OapfState");
+		sCntry = request.getParameter("OapfCntry");
+		sPostalCode = request.getParameter("OapfPostalCode");
+		sPhone = request.getParameter("OapfPhone");
+		sEmail = request.getParameter("OapfEmail");
+		sRetry = request.getParameter("OapfRetry");
+		sNlsLang = request.getParameter("OapfNlsLang");
+		
+		printwriter.println(" Action value :" + sAction);
+		printwriter.println(" OrderId value :" + sOrderId);
+		printwriter.println(" AuthCode value :" + sAuthCode);
+		printwriter.println(" Price value :" + sPrice);
+		printwriter.println(" Curr value :" + sCurr);
+		printwriter.println(" AuthType value :" + sAuthType);
+		printwriter.println(" PmtInstrExp value :" + sPmtInstrExp);
+		printwriter.println(" StoreId value :" + sStoreId);
+		printwriter.println(" CustName value :" + sCustName);
+		printwriter.println(" Addr1 value :" + sAddr1);
+		printwriter.println(" Addr2 value :" + sAddr2);
+		printwriter.println(" Addr3 value :" + sAddr3);
+		printwriter.println(" City value :" + sCity);
+		printwriter.println(" State value :" + sState);
+		printwriter.println(" Cntry value :" + sCntry);
+		printwriter.println(" PostalCode value :" + sPostalCode);
+		printwriter.println(" Phone value :" + sPhone);
+		printwriter.println(" Retry value :" + sRetry);
+		printwriter.println(" Email value :" + sEmail);
+		printwriter.println(" NlsLang value :" + sNlsLang);
+		
         // Checking for Purchase or Normal Authorization
         if ("oraauth".equals(request.getParameter("OapfAction"))) {
             printwriter.println(" Auth API ");
@@ -1653,7 +1716,6 @@ ODAJBServlet extends HttpServlet {
                                     (String)responseHashMap.get("OapfODPS2000"));
             }
 // Bushrod End for I0349 Defect 4180
-
 
             oResponse.setHeader("OapfAuxMsg",
                                 (String)responseHashMap.get("OapfAuxMsg"));
