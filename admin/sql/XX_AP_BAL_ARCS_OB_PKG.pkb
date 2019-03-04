@@ -449,3 +449,5 @@ WHEN OTHERS THEN
   p_errbuf  := lc_error_msg;
 END process_ap_balances_ob;
 END XX_AP_BAL_ARCS_OB_PKG;
+/
+SHOW ERRORS;
