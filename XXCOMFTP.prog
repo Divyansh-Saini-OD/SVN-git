@@ -237,6 +237,7 @@ else
      echo "Execution string = $EXECFILE = $TMPFILE"
 	 echo $FTPPARMS
      ftp -n $FTPPARMS > $TMPFILE
+	 echo "Execution string for FTP = $TMPFILE"
 fi
 
 #ftp -n < $EXECFILE > $TMPFILE
