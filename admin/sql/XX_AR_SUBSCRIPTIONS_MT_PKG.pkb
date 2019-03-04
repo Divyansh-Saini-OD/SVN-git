@@ -9706,7 +9706,7 @@ AS
      AND    XAC.contract_status = 'ACTIVE'
      AND    XAC.contract_id = XAS.contract_id
      AND    XACL.contract_line_number = XAS.contract_line_number
-     AND    XAS.email_autorenew_sent_flag != 'Y'
+     AND    NVL(XAS.email_autorenew_sent_flag,'N') != 'Y'
      AND    XAS.billing_sequence_number IN (SELECT MAX(XAS1.billing_sequence_number) 
             FROM  xx_ar_subscriptions XAS1
             WHERE XAS1.contract_id = XAS.contract_id --XAS1.contract_number = XAS.contract_number
