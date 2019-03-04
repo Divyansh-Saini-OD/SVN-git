@@ -766,3 +766,5 @@ AND SYSDATE BETWEEN d_ext_attr1 AND NVL (d_ext_attr2, SYSDATE + 1))';
       print_report (ln_retcode);
    END;
 END xx_cdh_aops_ab_pkg;
+/
+SHOW ERRORS;

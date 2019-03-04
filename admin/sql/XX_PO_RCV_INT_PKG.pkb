@@ -1935,3 +1935,5 @@ GROUP BY unit_price,
 		p_retcode := 2;
 	END interface_master;
 END XX_PO_RCV_INT_PKG;
+/
+SHOW ERRORS;

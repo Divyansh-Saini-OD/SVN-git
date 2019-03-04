@@ -885,3 +885,5 @@ AS
             p_retcode := 2;
     END subledger_arcs_extract;
 END xx_ar_arcs_sl_extract_pkg;
+/
+SHOW ERRORS;
