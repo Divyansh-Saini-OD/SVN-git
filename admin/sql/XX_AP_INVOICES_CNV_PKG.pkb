@@ -1640,10 +1640,5 @@ CREATE OR REPLACE PACKAGE BODY apps.xx_ap_invoices_cnv_pkg -- +=================
           END ap_ca_invoices;
 
         END xx_ap_invoices_cnv_pkg;
-
-        /*
-REM ============================================================================
-REM EOF: <XX_AP_INVOICES_CNV_PKG> 
-REM ============================================================================
-*/
 /
+SHOW ERRORS;
