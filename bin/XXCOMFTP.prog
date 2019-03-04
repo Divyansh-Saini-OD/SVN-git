@@ -224,26 +224,21 @@ if [ "$sftpflag" = "Y" ]
      echo "Executing SFTP"
      SFTPSIGNON="$user@$server"
      echo $SFTPSIGNON
-	 echo $EXECFILE
-	 echo $TMPFILE
      sftp -b $EXECFILE $SFTPSIGNON > $TMPFILE
 	 script -qc "sftp -b $EXECFILE $SFTPSIGNON" $TMPFILE
 elif [ "$scpflag" = "Y" ]
   then
   	 echo "Executing SCP"
   	 SCPPARMS="$source/$filename $user@$server:$dest/$destfile"
-	 echo $SCPPARMS
-	 echo $TMPFILE
      scp $SCPPARMS > $TMPFILE
 else
      echo "Executing FTP"
 	 FTPPARMS="@$server"
      echo "Execution string = $EXECFILE = $TMPFILE"
+	 echo $FTPPARMS
      ftp -n $EXECFILE $FTPPARMS > $TMPFILE
 fi
 
-#to wait for the TEMPFILE to be populated with the result fo the commands
-#BIAS added this as part of OCI migration
 #ftp -n < $EXECFILE > $TMPFILE
 Server_check=`grep 'Not connected' $TMPFILE`
 User_passwd=`grep 'Please login with USER and PASS'  $TMPFILE`
@@ -256,16 +251,6 @@ SFTPCheck=`egrep -i '(Permission denied)|(Connection refused)|(host key verifica
 Mframesuccess=`grep 'Transfer completed successfully'  $TMPFILE`
 AS400success=`grep 'transfer completed successfully'  $TMPFILE`
 
-echo "Server check   = $Server_check"
-echo "User Password  = $User_passwd"
-echo "Local Directory Error = $Local_directory_error"
-echo "Rem Dir Access Error = $Rem_dir_access_error"
-echo "Success  = $Success"
-echo "Success1 = $Success1"
-echo "SFTP Success = $SFTPSuccess"
-echo "SFTP Check = $SFTPCheck"
-echo "MFrame Success = $Mframesuccess"
-echo "AS400 Success = $AS400success"
 if [ "$Server_check" != "" ]
 then
     echo " "
