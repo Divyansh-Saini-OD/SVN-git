@@ -233,7 +233,7 @@ elif [ "$scpflag" = "Y" ]
      scp $SCPPARMS > $TMPFILE
 else
      echo "Executing FTP"
-	 FTPPARMS="@$server"
+	 FTPPARMS="$server"
      echo "Execution string = $EXECFILE = $TMPFILE"
 	 echo $FTPPARMS
      ftp -n $FTPPARMS > $TMPFILE
