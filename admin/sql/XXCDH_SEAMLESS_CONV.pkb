@@ -636,3 +636,5 @@ EXCEPTION
 END seamless_conv_other_sources;
 
 END XXCDH_SEAMLESS_CONV;
+/
+SHOW ERRORS;

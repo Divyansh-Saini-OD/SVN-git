@@ -220,3 +220,5 @@ l_current_time               := SYSDATE;
 END initialize_values;
 
 END XX_CDH_ESP_INITIATE;
+/
+SHOW ERRORS;
