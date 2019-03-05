@@ -10,7 +10,8 @@ create or replace PACKAGE BODY xx_tdm_po_trade_extract AS
   -- +============================================================================================+
   -- | Version     Date         Author           Remarks                                          |
   -- | =========   ===========  =============    ===============================================  |
-  -- | 1.0         08/16/2018   Phuoc Nguyen     Initial version                                  |
+  -- | 1.0         08/16/2018   Phuoc Nguyen     Initial version                                  
+  -- | 1.1         03/05/2019   Phuoc Nguyen     Added Footer                                     |
   -- +============================================================================================+
 
     PROCEDURE trade_po_extract (
@@ -42,6 +43,7 @@ create or replace PACKAGE BODY xx_tdm_po_trade_extract AS
         l_orgid           NUMBER := fnd_profile.value('ORG_ID');
         v_ftp_dir         VARCHAR2(200);
         lb_return         BOOLEAN;
+        countrow          NUMBER :=0;
         nodata EXCEPTION;
 
 -- cursor to collect all Open Trade POs
@@ -183,27 +185,29 @@ create or replace PACKAGE BODY xx_tdm_po_trade_extract AS
             --check for dropshipflag
                 EXIT WHEN tdm%notfound;
                 IF
-                    ( outtable.col3 IN (
-                        'DropShip NonCode-SPL Order',
-                        'DropShip VW'
-                    ) )
+                    ( outtable.col3 IN ('DropShip NonCode-SPL Order','DropShip VW') )
                 THEN
                     v_file_line := ( 'A'|| outtable.col1 || outtable.col2 || 'Y' || CHR(13) || CHR(10));
                     fnd_file.put(fnd_file.output, 'A'|| outtable.col1 || outtable.col2 || 'Y' || CHR(13) || CHR(10));
-
                 ELSE
                     v_file_line := ( 'A'|| outtable.col1 || outtable.col2 || 'N' || CHR(13) || CHR(10));
-                    --v_file_line := ( 'A'|| lpad(translate(outtable.col1,'-','0'),14,'0')|| lpad(ltrim(outtable.col2,'0'),9,'0')|| 'N' || CHR(13) || CHR(10));
+                    
                     fnd_file.put(fnd_file.output, 'A'|| outtable.col1 || outtable.col2 || 'N' || CHR(13) || CHR(10));
                 END IF;
                 utl_file.put_raw(v_file_handle,utl_raw.cast_to_raw(v_file_line));
+                countrow := countrow+1;
                 
             END IF;
 
         END LOOP;
-
+        
         CLOSE tdm;
-            --Close Line
+		--Footer
+		v_file_line := ('AP.TDM.TRADEPO.CHGS'||lpad(' ',11) || to_char(sysdate, 'YYYY-MM-DDHH24.MM.SS') || lpad(countrow,9,'0') || CHR(13) || CHR(10));
+        utl_file.put_raw(v_file_handle,utl_raw.cast_to_raw(v_file_line));
+        v_file_line := (CHR(26));
+        utl_file.put_raw(v_file_handle,utl_raw.cast_to_raw(v_file_line));
+        --Close File
         utl_file.fclose(v_file_handle);
         --fnd_global.apps_initialize(3811837,50660,20043);
         -- Login to OD Custom Applications for File copy to Archive and Emailing.
@@ -245,7 +249,7 @@ create or replace PACKAGE BODY xx_tdm_po_trade_extract AS
                 argument3 => '',                                                    --Source String
                 argument4 => '',                                                    --Dest. String
                 argument5 => 'Yes',                                                 --Delete Source File
-                argument6 => ''--'$XXFIN_DATA/archive/outbound/TDM_AMEX/'               --Archive File Path
+                argument6 => ''--'$XXFIN_DATA/archive/outbounOD_TDM_LAST_RUN_POd/TDM_AMEX/'               --Archive File Path
                 );
                 --update last RUN    
                 lb_return := fnd_profile.save(x_name => 'OD_TDM_LAST_RUN_PO',x_value => SYSDATE,x_level_name => 'SITE');
