@@ -676,8 +676,8 @@ AS
   l_end_date      DATE;
 BEGIN
    l_err_msg := NULL;
-   l_start_date := fnd_date.canonical_to_date(p_start_date);
-   l_end_date   := fnd_date.canonical_to_date(p_end_date);
+   l_start_date := to_date(p_start_date,'MM/DD/YYYY');
+   l_end_date   := to_date(p_end_date,'MM/DD/YYYY');
 
 /*  update_cash_rcpt_hist_ts(p_org_id
                            ,l_start_date
