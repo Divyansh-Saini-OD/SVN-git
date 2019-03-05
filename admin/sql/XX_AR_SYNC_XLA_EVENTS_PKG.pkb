@@ -22,8 +22,8 @@ AS
 -- | 1.1         11/11/2014   Madhan Sanjeevi  Adjustment recurring issue permanent fix added   |
 -- | 1.2         27/10/2015   Vasu Raparla     Removed Schema References for R12.2              |
 -- | 1.3         11/16/2018   Bhargavi Ankolekar  Modified as per the Jira #NAIT-62249          |
+-- | 1.4         03/05/2019   Bhargavi Ankolekar  Modified as per the Jira #NAIT-76213          |
 -- +============================================================================================+
-
 -- +===================================================================+
 -- | Name  : UPDATE_CASH_RCPT_HIST_TS                                             |
 -- |                                                                   |
@@ -676,8 +676,8 @@ AS
   l_end_date      DATE;
 BEGIN
    l_err_msg := NULL;
-   l_start_date := to_date(p_start_date,'MM/DD/YYYY');
-   l_end_date   := to_date(p_end_date,'MM/DD/YYYY');
+   l_start_date := to_date(p_start_date,'MM/DD/YYYY'); ----- This is for the NAIT-76213 to change the date format from 'DD-MON-YYYY' to 'MM/DD/YYYY'
+   l_end_date   := to_date(p_end_date,'MM/DD/YYYY');----- This is for the NAIT-76213 to change the date format from 'DD-MON-YYYY' to 'MM/DD/YYYY'
 
 /*  update_cash_rcpt_hist_ts(p_org_id
                            ,l_start_date
