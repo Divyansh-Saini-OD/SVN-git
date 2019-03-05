@@ -15,6 +15,7 @@ AS
   -- | Version     Date         Author           Remarks                                          |
   -- | =========   ===========  =============    ===============================================  |
   -- | 1.0         21-JUNE-2017  Thejaswini Rajula    Initial version                             |
+  -- | 1.1         05-MAR-2019   Dinesh Nagapuri      GSCC Violation Remove apps.                 |
   -- +============================================================================================+
   
 g_conc_request_id                       NUMBER:= fnd_global.conc_request_id;
@@ -36,7 +37,7 @@ BEGIN
 
 SELECT fnd_global.conc_request_id 
   INTO v_request_id
-  FROM apps.fnd_user, v$instance
+  FROM fnd_user, v$instance								--V1.1 Removed apps.
   WHERE user_id = fnd_global.user_id;
 
 fnd_file.put_line (fnd_file.LOG,'v_request_id =' || v_request_id);
