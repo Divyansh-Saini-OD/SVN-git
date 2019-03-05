@@ -15,6 +15,7 @@ AS
   -- | Version     Date         Author           Remarks                                          |
   -- | =========   ===========  =============    ===============================================  |
   -- | 1.0         13-JUN-2017  Thejaswini Rajula    Initial version                              |
+  -- | 1.1         05-MAR-2019  Dinesh Nagapuri      GSCC Violation Removing xxcrm                |
   -- +============================================================================================+
 PROCEDURE INSERT_VPS_CUST_UPLOAD(
     P_VENDOR_SITE_CODE          IN VARCHAR2,
@@ -65,7 +66,7 @@ IS
 v1    NUMBER;
 BEGIN
   INSERT
-  INTO xxcrm.XX_CDH_VPS_CUSTOMER_STG
+  INTO XX_CDH_VPS_CUSTOMER_STG						-- V1.1 Removed xxcrm
     (
       VENDOR_SITE_CODE ,
       VENDOR_NUM ,
