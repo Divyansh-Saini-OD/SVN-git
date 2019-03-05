@@ -50,7 +50,7 @@
 		(select directory_path
             from dba_directories
            where directory_name = 'XXVPS_OUTBOUND_EMAIL') DIRECTORY_PATH
-FROM XXFIN.XX_FIN_VPS_STMT_BACKUP_DATA bkdata
+FROM XX_FIN_VPS_STMT_BACKUP_DATA bkdata
 where  bkdata.program_id=:p_program_id
 and    bkdata.vendor_number = :p_vendor_num
 and    bkdata.backup_type in ('SKUS', 'INVOICES')
@@ -59,7 +59,7 @@ and    rownum=1
 </sqlStatement>
 <sqlStatement name="Q_INVOICE">
  <![CDATA[SELECT jt.*
-FROM XXFIN.XX_FIN_VPS_STMT_BACKUP_DATA bkdata
+FROM XX_FIN_VPS_STMT_BACKUP_DATA bkdata
        ,JSON_TABLE ( bkdata.vps_data, '$' COLUMNS ( 
            nested path '$.INVOICES[*]' columns (
              "INVOICE"  varchar2(20) path '$.INVOICE' null on error,
@@ -76,7 +76,7 @@ and    bkdata.backup_type='INVOICES'
 </sqlStatement>
 <sqlStatement name="Q_SKU">
  <![CDATA[SELECT jt.*
-FROM   XXFIN.XX_FIN_VPS_STMT_BACKUP_DATA bkdata
+FROM   XX_FIN_VPS_STMT_BACKUP_DATA bkdata
        ,JSON_TABLE ( bkdata.vps_data, '$' COLUMNS ( 
            nested path '$.SKUS[*]' columns (
              "SKU"  varchar2(50) path '$.SKU' null on error
