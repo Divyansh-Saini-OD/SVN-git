@@ -236,7 +236,7 @@ else
 	 FTPPARMS="$server"
      echo "Execution string = $EXECFILE = $TMPFILE"
 	 echo $FTPPARMS
-     ftp -n $FTPPARMS > $TMPFILE
+     ftp -n $EXECFILE $FTPPARMS > $TMPFILE
 	 echo "Execution string for FTP = $TMPFILE"
 fi
 #to wait for the TEMPFILE to be populated with the result for the commands
