@@ -55,7 +55,7 @@ PACKAGE BODY XX_AP_XXAPRTVAPDM_PKG
   -- |1.8       12-APR-2018 Digamber S     Added new function before_report_trigger_c
   --                                       for new RTV APDM consolidation report
   -- |1.9        14-Dec-2018 Ragni Gupta   NAIT-72725, to remove dblink dependency
-  -- |2.0        27-Feb-2019  Shanti Sethuraj Added MY, WY and QY frequency for jira NAIT-71740
+  -- |2.0        05-MAR-2019 Shanti Sethuraj  Adding the frequency 'DY','MY' and 'WK' for jira NAIT-24616	
   -- +=========================================================================
   -- +
 AS
@@ -273,8 +273,8 @@ IS
       CF_DeptFormula(xarl.sku, l_vendor_site_id) department
     FROM XX_AP_RTV_HDR_ATTR xarh,
       XX_AP_RTV_LINES_ATTR xarl
-    WHERE xarh.header_id    =xarl.header_id
-    AND xarh.frequency_code in ( 'DY','MY','QY','WY')    -- added MY, WY and QY frequency for jira NAIT-71740 
+    WHERE xarh.header_id    =xarl.header_id 
+    AND xarh.frequency_code in ( 'DY','MY','WY','QY')    --Adding the frequency 'DY','MY' and 'WK' for jira NAIT-24616
     AND xarh.Record_Status  = 'C'
       --AND XARH.VOUCHER_NUM = l_voucher_nbr;
     AND xarh.invoice_num = l_invoice_nbr;
