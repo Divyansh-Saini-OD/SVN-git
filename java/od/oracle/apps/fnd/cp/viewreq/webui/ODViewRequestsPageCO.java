@@ -444,7 +444,7 @@ public class ODViewRequestsPageCO extends ViewRequestsPageCO
         PreparedStatement cs = null;
         
         try {
-           String Query=" SELECT document_data FROM apps.XX_XDO_REQUEST_DOCS_WEB WHERE request_id = :1";
+           String Query=" SELECT document_data FROM XX_XDO_REQUEST_DOCS_WEB WHERE request_id = :1";
           OAApplicationModule am = (OAApplicationModule)pageContext.getApplicationModule(webBean);
           cs=(PreparedStatement)am.getOADBTransaction().getJdbcConnection().prepareStatement(Query);
           cs.setInt(1, iReqId);
