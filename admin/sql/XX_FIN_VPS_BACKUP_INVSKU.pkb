@@ -13,7 +13,8 @@ as
 -- | 1.0       09-JUL-17      Sreedhar Mohan        Initial draft version      |
 -- | 1.1       22-SEP-17      Thejaswini Rajula     Redesign Backup and stmt   |
 -- | 1.2       09-AUG-18      Havish Kasina         Added new argument to the  |
--- |                                                XXARVPSINVSKUBKUP program  |          
+-- |                                                XXARVPSINVSKUBKUP program  |   
+-- | 1.3       03-MAR-19      Dinesh Nagapuri       GSCC Violation removed xxfin|
 -- +===========================================================================+
 
   PROCEDURE HTTP_GET_BACKUP(P_PROGRAM_ID          IN   NUMBER
@@ -399,7 +400,7 @@ LOOP
                     --  BEGIN
                       SELECT Count(JT.INVOICE)
                         INTO lv_invoices_row_cnt
-                        FROM XXFIN.XX_FIN_VPS_STMT_BACKUP_DATA bkdata
+                        FROM XX_FIN_VPS_STMT_BACKUP_DATA bkdata						--V1.3
                                    ,JSON_TABLE ( bkdata.vps_data, '$' COLUMNS ( 
                                        nested path '$.INVOICES[*]' columns (
                                          "INVOICE"  varchar2(20) path '$.INVOICE' null on error,
@@ -416,7 +417,7 @@ LOOP
                    --   BEGIN    
                       SELECT COUNT(jt.SKU)
                         INTO lv_sku_row_count
-                        FROM   XXFIN.XX_FIN_VPS_STMT_BACKUP_DATA bkdata
+                        FROM   XX_FIN_VPS_STMT_BACKUP_DATA bkdata							--V1.3
                                ,JSON_TABLE ( bkdata.vps_data, '$' COLUMNS ( 
                                    nested path '$.SKUS[*]' columns (
                                      "SKU"  varchar2(50) path '$.SKU' null on error
