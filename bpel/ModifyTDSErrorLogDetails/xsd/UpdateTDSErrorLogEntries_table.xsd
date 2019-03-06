@@ -1,0 +1,28 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<xs:schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/UpdateTDSErrorLogEntries" xmlns="http://xmlns.oracle.com/pcbpel/adapter/db/top/UpdateTDSErrorLogEntries" elementFormDefault="qualified" attributeFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+   <xs:element name="XxcomErrorLogCollection" type="XxcomErrorLogCollection"/>
+   <xs:complexType name="XxcomErrorLogCollection">
+      <xs:sequence>
+         <xs:element name="XxcomErrorLog" type="XxcomErrorLog" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="XxcomErrorLog">
+      <xs:sequence>
+         <xs:element name="errorLogId" type="xs:decimal"/>
+         <xs:element name="systemName" minOccurs="0" nillable="true">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="255"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="notificationFlag" minOccurs="0" nillable="true">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="30"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+</xs:schema>

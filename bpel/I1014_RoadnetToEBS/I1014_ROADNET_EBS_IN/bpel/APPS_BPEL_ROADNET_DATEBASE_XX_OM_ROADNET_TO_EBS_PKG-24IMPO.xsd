@@ -1,0 +1,54 @@
+<schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/BPEL_ROADNET_DATEBASE/XX_OM_ROADNET_TO_EBS_PKG-24IMPO/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/BPEL_ROADNET_DATEBASE/XX_OM_ROADNET_TO_EBS_PKG-24IMPO/">
+   <element name="InputParameters">
+      <complexType>
+         <sequence>
+            <element name="P_DELIVERY_TBL" type="db:XX_OM_ROADNET_TO_EBS_PKG_XX_8" db:index="1" db:type="Array" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <complexType name="XX_OM_ROADNET_TO_EBS_PKG_XX_8">
+      <sequence>
+         <element name="P_DELIVERY_TBL_ITEM" type="db:XX_OM_ROADNET_TO_EBS_PKG_XX_9" db:type="Struct" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="XX_OM_ROADNET_TO_EBS_PKG_XX_9">
+      <sequence>
+         <element name="REGIONID" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="240"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="DELIVERY_NUMBER" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="30"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="DELIVERY_DATE" type="dateTime" db:type="DATE" minOccurs="0" nillable="true"/>
+         <element name="ROUTE_NUMBER" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="240"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="STOP_NUMBER" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="240"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="USER_FIELD3" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="10"/>
+               </restriction>
+            </simpleType>
+         </element>
+      </sequence>
+   </complexType>
+</schema>

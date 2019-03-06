@@ -1,0 +1,62 @@
+<definitions
+     name="BusinessEventRead"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/apps/BusinessEventRead/"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/apps/BusinessEventRead/"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+     xmlns:pc="http://xmlns.oracle.com/pcbpel/"
+     xmlns:imp1="http://xmlns.oracle.com/xdb/APPS"
+     xmlns:obj1="http://xmlns.oracle.com/xdb/APPS"
+     xmlns:hdr="http://xmlns.oracle.com/pcbpel/adapter/aq/inbound/"
+    >
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/aq/inbound/" location="aqAdapterInboundHeader.wsdl"/>
+    <types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema" >
+        <import namespace="http://xmlns.oracle.com/xdb/APPS" schemaLocation="APPS_WF_EVENT_T.xsd" />
+      </schema>
+    </types>
+    <message name="WF_EVENT_T_msg">
+        <part name="WF_EVENT_T" element="imp1:WF_EVENT_T"/>
+    </message>
+    <portType name="DEQUEUE_ptt">
+        <operation name="DEQUEUE">
+            <input message="tns:WF_EVENT_T_msg"/>
+        </operation>
+    </portType>
+    <binding name="DEQUEUE_binding" type="tns:DEQUEUE_ptt">
+    <pc:inbound_binding  />
+        <operation name="DEQUEUE">
+      <jca:operation
+          ActivationSpec="oracle.tip.adapter.apps.AppsWFBesQueueDequeueActivationSpec"
+          QueueName="WF_BPEL_Q"
+          DatabaseSchema="APPS"
+          Consumer="ORA_6coj6c1m891k8e1p7533id2571"
+          MessageSelectorRule="tab.user_data.event_name = &apos;xx.oracle.apps.om.DPSCancelLines.out&apos;" >
+      </jca:operation>
+      <input>
+        <jca:header message="hdr:Header" part="Header"/>
+      </input>
+        </operation>
+    </binding>
+    <service name="BusinessEventRead">
+        <port name="DEQUEUE_pt" binding="tns:DEQUEUE_binding">
+<!--Your runtime connection is declared in 
+J2EE_HOME/application-deployments/default/AppsAdapter/oc4j-ra.xml 
+These mcf properties here are from your design time connection and 
+save you from having to edit that file and restart the application server 
+if eis/apps/EBSApps is missing. 
+These mcf properties are safe to remove.-->
+      <jca:address location="eis/apps/EBSApps" UIConnectionName="ebs_apps_gsidev03" UIOracleAppType="WFBES" UIWfEventName="xx.oracle.apps.om.DPSCancelLines.out"
+          ManagedConnectionFactory="oracle.tip.adapter.apps.AppsManagedConnectionFactory"
+          mcf.ConnectionString="jdbc:oracle:thin:@choldbr18d.na.odcorp.net:1544:gsidev03"
+          mcf.UserName="apps"
+          mcf.Password="33249B2910CFF3FBCD9B834DF8560A56" />
+        </port>
+    </service>
+  <plt:partnerLinkType name="DEQUEUE_plt" >
+    <plt:role name="DEQUEUE_role" >
+      <plt:portType name="tns:DEQUEUE_ptt" />
+    </plt:role>
+  </plt:partnerLinkType>
+</definitions>

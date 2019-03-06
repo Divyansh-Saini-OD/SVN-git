@@ -1,0 +1,66 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+   <xs:element name="paramname" type="xs:string"/>
+   <xs:element name="JNDIName" type="xs:string"/>
+   <xs:element name="value" type="xs:string"/>
+   <xs:element name="ParamValue">
+      <xs:complexType>
+         <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="paramname"/>
+            <xs:element ref="value"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="javaclass" type="xs:string"/>
+   <xs:element name="MethodName" type="xs:string"/>
+   <xs:element name="SessionID" type="xs:string"/>
+   <xs:element name="ParamValues">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="unbounded" ref="ParamValue"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="ParamTypes">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="unbounded" ref="ParamType"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="BeanCall">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element ref="JNDIName"/>
+            <xs:element maxOccurs="unbounded" ref="MethodCall"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="ParamType">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element ref="paramname"/>
+            <xs:element ref="javaclass"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="CallType" type="xs:string"/>
+   <xs:element name="MethodCall">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element ref="MethodName"/>
+            <xs:element ref="ParamTypes"/>
+            <xs:element ref="ParamValues"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="MTSRequest">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element ref="SessionID"/>
+            <xs:element ref="CallType"/>
+            <xs:element maxOccurs="unbounded" ref="BeanCall"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+</xs:schema>

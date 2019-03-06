@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://www.officedepot.com/TDS/ConfirmOrderPaymentProvABCSImpl/OrderPaymentConfirmationEBM"        
+            targetNamespace="http://www.officedepot.com/TDS/ConfirmOrderPaymentProvABCSImpl/OrderPaymentConfirmationEBM"
+            elementFormDefault="qualified">         
+<xsd:element name="OrderPaymentConfirmationEBM" type="OrderPaymentConfirmationEBMType"/>
+
+<xsd:complexType name="OrderPaymentConfirmationEBMType">
+		<xsd:sequence>
+   
+                 <xsd:element name="OrderPaymentConfirmationEBO" type="OrderPaymentConfirmationEBOType" minOccurs="1" maxOccurs="1"/>
+		</xsd:sequence>
+</xsd:complexType>
+
+   <xsd:complexType name="OrderPaymentConfirmationEBOType">
+      <xsd:sequence>
+         <xsd:element name="ServiceRequestNumber" type="xsd:string"/>   
+      </xsd:sequence>
+   </xsd:complexType>
+</xsd:schema>

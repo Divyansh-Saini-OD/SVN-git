@@ -1,0 +1,53 @@
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                        WIPRO Technologies                         |
+-- +===================================================================+
+-- | Name  :    XX_OM_DPS_ERR_MSG_Q                                    |
+-- | Description      : This script creates Queue XX_OM_DPS_ERR_MSG_Q. |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |DRAFT 1A  13-JUN-2007 Rizwan A         Initial draft version       |
+-- |                                                                   |
+-- |                                                                   |
+-- +===================================================================+
+
+DBMS_AQADM.STOP_QUEUE(queue_name => 'BPEL_AQADM.XX_OM_DPS_ERR_MSG_Q'
+                      ,enqueue => TRUE, dequeue => TRUE)
+/
+		   
+DROP QUEUE BPEL_AQADM.XX_OM_DPS_ERR_MSG_Q
+/
+
+SET TERM ON
+PROMPT Creating and Starting Queue XX_OM_DPS_ERR_MSG_Q
+SET TERM OFF
+
+DBMS_AQADM.CREATE_QUEUE(queue_name => 'BPEL_AQADM.XX_OM_DPS_ERR_MSG_Q'
+                       ,queue_table => 'BPEL_AQADM.XX_OM_DPS_ERR_MSG_AQTBL')
+/
+
+DBMS_AQADM.START_QUEUE(queue_name => 'BPEL_AQADM.XX_OM_DPS_ERR_MSG_Q'
+                      ,enqueue => TRUE, dequeue => TRUE)
+/
+
+SET TERM ON
+PROMPT Queue created successfully
+SET TERM OFF
+
+
+SHOW ERROR
+

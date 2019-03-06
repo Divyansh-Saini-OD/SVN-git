@@ -1,0 +1,43 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_OM_GLOBAL_EXCEPTIONS.syn                                                 |
+-- | Rice Id      :                                                                             | 
+-- | Description  : OD Exceptions Handling Synonym Creation                                     |  
+-- | Purpose      : Create Synonym for Table XX_OM_GLOBAL_EXCEPTIONS.                           |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   03-May-2007   Bapuji Nanapaneni    Initial Version                               |
+-- |                                                                                            |
+-- +============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creating SYNONYM xx_om_global_exceptions
+PROMPT
+
+CREATE OR REPLACE SYNONYM xx_om_global_exceptions  FOR xxom.xx_om_global_exceptions
+/
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+

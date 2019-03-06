@@ -1,0 +1,51 @@
+<schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_CS_TDS_PARTS_JDA_PKG/MAIN_PROC/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_CS_TDS_PARTS_JDA_PKG/MAIN_PROC/" elementFormDefault="qualified">
+   <element name="InputParameters">
+      <complexType>
+         <sequence>
+            <element name="P_SR_NUMBER" type="string" db:index="1" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <element name="OutputParameters">
+      <complexType>
+         <sequence>
+            <element name="P_PARTS_TBL" type="db:APPS.XX_CS_TDS_PARTS_ORDER_TBL" db:index="2" db:type="Array" minOccurs="0" nillable="true"/>
+            <element name="X_RETURN_STATUS" type="string" db:index="3" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="X_RETURN_MESSAGE" type="string" db:index="4" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <complexType name="APPS.XX_CS_TDS_PARTS_ORDER_TBL">
+      <sequence>
+         <element name="P_PARTS_TBL_ITEM" type="db:APPS.XX_CS_TDS_ORDER_ITEMS_REC" db:type="Struct" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="APPS.XX_CS_TDS_ORDER_ITEMS_REC">
+      <sequence>
+         <element name="RMS_SKU" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="25"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="ITEM_DESCRIPTION" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="250"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="QUANTITY" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="PURCHASE_PRICE" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="SELLING_PRICE" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="UOM" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="5"/>
+               </restriction>
+            </simpleType>
+         </element>
+      </sequence>
+   </complexType>
+</schema>

@@ -1,0 +1,44 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |                      Office Depot                                     |
+-- |      Oracle NAIO/Office Depot/Consulting Organization                 |
+-- +=======================================================================+
+-- | Name        : XX_OM_LINE_ATTRIBUTES_ALL_I1                          |
+-- | Description : Non-Unique Index on XX_OM_LINE_ATTRIBUTES_ALL_I1      |
+-- |                                                                       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- | 1.0     25-OCT-2012  Deepti S        Defect 20726                     |
+-- |                                                                       |
+-- +=======================================================================+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+-- -------------------------------------------------
+-- Creating Index 
+-- -------------------------------------------------
+
+CREATE INDEX xxom.XX_OM_LINE_ATTRIBUTES_ALL_I1 
+ON           XXOM.XX_OM_LINE_ATTRIBUTES_ALL
+             ( mps_ext_flag) 
+
+
+SHOW ERRORS;
+
+EXIT;
+
+

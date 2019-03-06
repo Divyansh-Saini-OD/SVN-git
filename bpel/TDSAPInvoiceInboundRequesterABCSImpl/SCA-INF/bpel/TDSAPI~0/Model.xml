@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<process name="TDSAPInvoiceInboundRequesterABCSImpl" targetNamespace="http://xmlns.OfficeDepot.com/TDS/TDSAPInvoiceInboundRequesterABCSImpl/TDSAPInvoiceInboundRequesterABCSImpl" xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:client="http://xmlns.OfficeDepot.com/TDS/TDSAPInvoiceInboundRequesterABCSImpl/TDSAPInvoiceInboundRequesterABCSImpl" xmlns:ora="http://schemas.oracle.com/xpath/extension" xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/TDS/TDSAPInvoiceInboundRequesterABCSImpl/DB_TDS_APInvoice_Insert" xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_CS_TDS_AP_INVOICE_PKG/INSERT_PROC/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="BpPrc0">
+
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="tdsapinvoiceinboundrequesterabcsimpl_client" partnerLinkType="client:TDSAPInvoiceInboundRequesterABCSImpl" myRole="TDSAPInvoiceInboundRequesterABCSImplProvider"/>
+    <partnerLink name="DB_TDS_APInvoice_Insert" partnerLinkType="ns1:DB_TDS_APInvoice_Insert_plt" partnerRole="DB_TDS_APInvoice_Insert_role"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:TDSAPInvoiceInboundRequesterABCSImplRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:TDSAPInvoiceInboundRequesterABCSImplResponseMessage"/>
+    <variable name="DB_TDS_APInvoice_Insert_InputVariable" messageType="ns1:args_in_msg"/>
+    <variable name="DB_TDS_APInvoice_Insert_OutputVariable" messageType="ns1:args_out_msg"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main" id="BpSeq0">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in TDSAPInvoiceInboundRequesterABCSImpl.wsdl) -->
+    <receive name="receiveInput" partnerLink="tdsapinvoiceinboundrequesterabcsimpl_client" portType="client:TDSAPInvoiceInboundRequesterABCSImpl" operation="process" variable="inputVariable" createInstance="yes" id="BpRcv0"/>
+
+    <!-- Generate reply to synchronous request -->
+    <assign name="Transform_Request_To_APInvoice_SP_Input_Format" id="BpAss0">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:doXSLTransformForDoc('xsl/TransformRequestToAPInvoiceSPInputFormat.xsl', $inputVariable.payload)"/>
+        <to variable="DB_TDS_APInvoice_Insert_InputVariable" part="InputParameters"/>
+      </copy>
+    </assign>
+    <invoke name="Invoke_EBS_Stored_Procedure" inputVariable="DB_TDS_APInvoice_Insert_InputVariable" outputVariable="DB_TDS_APInvoice_Insert_OutputVariable" partnerLink="DB_TDS_APInvoice_Insert" portType="ns1:DB_TDS_APInvoice_Insert_ptt" operation="DB_TDS_APInvoice_Insert" bpelx:invokeAsDetail="no" id="BpInv0"/>
+    <assign name="AssignResponseStatusToOutput" id="BpAss1">
+      <copy>
+        <from variable="DB_TDS_APInvoice_Insert_OutputVariable" part="OutputParameters" query="/ns2:OutputParameters/ns2:X_STATUS"/>
+        <to variable="outputVariable" part="payload" query="/client:processResponse/client:result"/>
+      </copy>
+    </assign>
+    <reply name="replyOutput" partnerLink="tdsapinvoiceinboundrequesterabcsimpl_client" portType="client:TDSAPInvoiceInboundRequesterABCSImpl" operation="process" variable="outputVariable" id="BpRpl0"/>
+  </sequence>
+</process><!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Tue Jul 26 13:27:34 IST 2011
+  Author:  pkalvala
+  Type: BPEL 1.1 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->

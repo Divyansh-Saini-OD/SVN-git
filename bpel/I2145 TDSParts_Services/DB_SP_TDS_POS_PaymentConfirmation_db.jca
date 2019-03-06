@@ -1,0 +1,14 @@
+<adapter-config name="DB_SP_TDS_POS_PaymentConfirmation" adapter="Database Adapter" wsdlLocation="DB_SP_TDS_POS_PaymentConfirmation.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory location="eis/db/OraXxsoa_svcCRM" UIConnectionName="TDSDev02Database" adapterRef=""/>
+  <endpoint-interaction portType="DB_SP_TDS_POS_PaymentConfirmation_ptt" operation="DB_SP_TDS_POS_PaymentConfirmation">
+    <interaction-spec className="oracle.tip.adapter.db.DBStoredProcedureInteractionSpec">
+      <property name="SchemaName" value="APPS"/>
+      <property name="PackageName" value="XX_CS_TDS_PARTS_POS_PKG"/>
+      <property name="ProcedureName" value="MAIN"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+    <output/>
+  </endpoint-interaction>
+
+</adapter-config>

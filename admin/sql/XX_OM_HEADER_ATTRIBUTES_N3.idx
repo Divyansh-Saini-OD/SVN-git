@@ -1,0 +1,46 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_OM_HEADER_ATTRIBUTES_N3.idx                                              |
+-- | Rice Id      :                                                                             | 
+-- | Description  :                                                                             |  
+-- | Purpose      : Create nonunique index                                                      |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ===========   =================    ==============================================+
+-- |1.0        27-JUL-2011   Bapuji Nanapaneni        Initial Version                           |
+-- |                                                                                            |
+-- +============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creation of Index XXOM.XX_OM_HEADER_ATTRIBUTES_N3 on table XXOM.XX_OM_HEADER_ATTRIBUTES_ALL.....
+PROMPT
+
+CREATE INDEX XXOM.XX_OM_HEADER_ATTRIBUTES_N3 ON
+    XXOM.XX_OM_HEADER_ATTRIBUTES_ALL(sr_number) 
+    TABLESPACE APPS_TS_TX_IDX_16M
+    PARALLEL 4 NOLOGGING;
+
+ALTER INDEX  XXOM.XX_OM_HEADER_ATTRIBUTES_N3 LOGGING NOPARALLEL;
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+

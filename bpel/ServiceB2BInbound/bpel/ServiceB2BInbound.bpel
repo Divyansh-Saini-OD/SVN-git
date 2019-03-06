@@ -1,0 +1,313 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Mon Jun 28 14:22:07 EDT 2010
+  Author:  bala-edupuganti
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="ServiceB2BInbound"
+         targetNamespace="http://xmlns.oracle.com/ServiceB2BInbound"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns4="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_CS_TDS_VEN_PKG/UPDATE_REQUEST/"
+         xmlns:ns7="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns12="http://TargetNamespace.com/serviceRequestUpdate"
+         xmlns:ns5="http://xmlns.oracle.com/B2bVendorSRUpdate"
+         xmlns:client="http://xmlns.oracle.com/ServiceB2BInbound"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:ns6="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ns11="ODError"
+         xmlns:ns9="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/apps/vendorSRUpdate/"
+         xmlns:ns3="http://xmlns.oracle.com/SRexceptions"
+         xmlns:ns2="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:ns8="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:ns10="ODSRExceptions">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="client" partnerLinkType="client:ServiceB2BInbound"
+                 myRole="ServiceB2BInboundProvider"/>
+    <partnerLink name="vendorSRUpdate" partnerRole="vendorSRUpdate_role"
+                 partnerLinkType="ns1:vendorSRUpdate_plt"/>
+    <partnerLink myRole="ODErrorLoggerRequester" name="ODErrorLogger"
+                 partnerRole="ODErrorLoggerProvider"
+                 partnerLinkType="ns2:ODErrorLogger"/>
+    <partnerLink myRole="SRexceptionsRequester" name="SRexceptions"
+                 partnerRole="SRexceptionsProvider"
+                 partnerLinkType="ns3:SRexceptions"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable"
+              messageType="client:ServiceB2BInboundRequestMessage"/>
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable"
+              messageType="client:ServiceB2BInboundResponseMessage"/>
+    <variable name="InvokeCatchAll_InputVariable"
+              messageType="ns2:ODErrorLoggerResponseMessage"/>
+    <variable name="InvokeEbs_vendorSRUpdate_InputVariable"
+              messageType="ns1:args_in_msg"/>
+    <variable name="InvokeEbs_vendorSRUpdate_OutputVariable"
+              messageType="ns1:args_out_msg"/>
+    <variable name="InvokeSRexceptions_InputVariable"
+              messageType="ns3:SRexceptionsRequestMessage"/>
+    <variable name="InvokeCatchAll_initiate_InputVariable"
+              messageType="ns2:ODErrorLoggerRequestMessage"/>
+    <variable name="globalSrNumber" type="xsd:string"/>
+    <variable name="globalStatus" type="xsd:string"/>
+  </variables>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="VendorInbound">
+    <!-- Receive input from requestor. (Note: This maps to operation defined in ServiceB2BInbound.wsdl) -->
+    <scope name="ScopeGetRequest">
+      <faultHandlers>
+        <catchAll>
+          <sequence name="SequenceCatchAll">
+            <assign name="assignCatchAll">
+              <copy>
+                <from expression="concat(ora:getProcessId(),ora:getProcessVersion())"/>
+                <to variable="InvokeCatchAll_initiate_InputVariable"
+                    part="payload"
+                    query="/ns11:ErrorData/ns11:ProcessInfo/ns11:BusinessProcessName"/>
+              </copy>
+              <copy>
+                <from expression="ora:getInstanceId()"/>
+                <to variable="InvokeCatchAll_initiate_InputVariable"
+                    part="payload"
+                    query="/ns11:ErrorData/ns11:ProcessInfo/ns11:BusinessProcessId"/>
+              </copy>
+              <copy>
+                <from expression="ora:getDomainId()"/>
+                <to variable="InvokeCatchAll_initiate_InputVariable"
+                    part="payload"
+                    query="/ns11:ErrorData/ns11:ProcessInfo/ns11:BusinessProcessDomain"/>
+              </copy>
+              <copy>
+                <from expression="'VENDOR UPDATE'"/>
+                <to variable="InvokeCatchAll_initiate_InputVariable"
+                    part="payload"
+                    query="/ns11:ErrorData/ns11:ProcessInfo/ns11:SystemName"/>
+              </copy>
+              <copy>
+                <from expression="ora:getCurrentDateTime()"/>
+                <to variable="InvokeCatchAll_initiate_InputVariable"
+                    part="payload"
+                    query="/ns11:ErrorData/ns11:ErrorDetails/ns11:ErrorDateTime"/>
+              </copy>
+              <copy>
+                <from variable="inputVariable" part="payload"
+                      query="/ns12:serviceRequestUpdate"/>
+                <to variable="InvokeCatchAll_initiate_InputVariable"
+                    part="payload"
+                    query="/ns11:ErrorData/ns11:MessageDetails/ns11:MessageData"/>
+              </copy>
+              <copy>
+                <from expression='"Catch All at Dequeue vendor update message"'/>
+                <to variable="InvokeCatchAll_initiate_InputVariable"
+                    part="payload"
+                    query="/ns11:ErrorData/ns11:ProcessInfo/ns11:BusinessProcessStep"/>
+              </copy>
+              <copy>
+                <from expression='"System"'/>
+                <to variable="InvokeCatchAll_initiate_InputVariable"
+                    part="payload"
+                    query="/ns11:ErrorData/ns11:ErrorDetails/ns11:ErrorType"/>
+              </copy>
+              <copy>
+                <from expression="ora:doc('${server_url}/xmllib/otc/GlobalParameters.xml','/GlobalParameters/ServiceB2BInbound/FaultNotification/EmailTo')"/>
+                <to variable="InvokeCatchAll_initiate_InputVariable"
+                    part="payload"
+                    query="/ns11:ErrorData/ns11:Notification/ns11:RecipientList"/>
+              </copy>
+              <copy>
+                <from expression="ora:doc('${server_url}/xmllib/otc/GlobalParameters.xml','/GlobalParameters/ServiceB2BInbound/FaultNotification/SendNotification')"/>
+                <to variable="InvokeCatchAll_initiate_InputVariable"
+                    part="payload"
+                    query="/ns11:ErrorData/ns11:Notification/ns11:sendNotification"/>
+              </copy>
+            </assign>
+            <invoke name="InvokeCatchAll" partnerLink="ODErrorLogger"
+                    portType="ns2:ODErrorLogger" operation="initiate"
+                    inputVariable="InvokeCatchAll_initiate_InputVariable"/>
+            <terminate name="terminateProcess"/>
+          </sequence>
+        </catchAll>
+      </faultHandlers>
+      <sequence name="SequenceGetRequest">
+        <receive name="receiveInput" partnerLink="client"
+                 portType="client:ServiceB2BInbound" operation="process"
+                 variable="inputVariable" createInstance="yes"/>
+        <assign name="initializeTitle">
+          <copy>
+            <from variable="inputVariable" part="payload"
+                  query="/ns12:serviceRequestUpdate/ns12:serviceRequestId"/>
+            <to variable="globalSrNumber"/>
+          </copy>
+          <copy>
+            <from variable="inputVariable" part="payload"
+                  query="/ns12:serviceRequestUpdate/ns12:serviceRequestStatus"/>
+            <to variable="globalStatus"/>
+          </copy>
+        </assign>
+        <bpelx:exec name="setInstanceTitle" language="java" version="1.3">
+          <![CDATA[try {                              
+  String title1 = "ServiceB2BInbound_SR#";          
+  String title2 = (String)getVariableData("globalSrNumber");          
+  String title3 = (String)getVariableData("globalStatus");          
+  String title4 = "_Status_" ;       
+  String title = title1 + title2 +title4 +title3;          
+  setTitle(title);                              
+  addAuditTrailEntry(title) ;                              
+} catch (Exception ex) {                              
+  addAuditTrailEntry(ex.toString());                              
+  ex.printStackTrace();                              
+}]]>
+        </bpelx:exec>
+        <scope name="ScopeSrUpdate">
+          <faultHandlers>
+            <catchAll>
+              <sequence name="SequenceExceptions">
+                <assign name="assignReturnStatus">
+                  <copy>
+                    <from expression="'F'"/>
+                    <to variable="outputVariable" part="payload"
+                        query="/ns5:B2bVendorSRUpdateProcessResponse/ns5:ReturnCode"/>
+                  </copy>
+                  <copy>
+                    <from expression="'Error in communicating EBZ'"/>
+                    <to variable="outputVariable" part="payload"
+                        query="/ns5:B2bVendorSRUpdateProcessResponse/ns5:ReturnMsg"/>
+                  </copy>
+                </assign>
+                <reply name="replyErrStatus" partnerLink="client"
+                       portType="client:ServiceB2BInbound" operation="process"
+                       variable="outputVariable"/>
+                <assign name="assignEbsExceptions">
+                  <copy>
+                    <from expression="concat(ora:getProcessId(),ora:getProcessVersion())"/>
+                    <to variable="InvokeSRexceptions_InputVariable"
+                        part="payload"
+                        query="/ns10:ExceptionData/ns10:ProcessInfo/ns10:BusinessProcessName"/>
+                  </copy>
+                  <copy>
+                    <from expression="ora:getInstanceId()"/>
+                    <to variable="InvokeSRexceptions_InputVariable"
+                        part="payload"
+                        query="/ns10:ExceptionData/ns10:ProcessInfo/ns10:BusinessProcessId"/>
+                  </copy>
+                  <copy>
+                    <from expression="ora:getDomainId()"/>
+                    <to variable="InvokeSRexceptions_InputVariable"
+                        part="payload"
+                        query="/ns10:ExceptionData/ns10:ProcessInfo/ns10:BusinessProcessDomain"/>
+                  </copy>
+                  <copy>
+                    <from expression="'VENDOR UPDATE'"/>
+                    <to variable="InvokeSRexceptions_InputVariable"
+                        part="payload"
+                        query="/ns10:ExceptionData/ns10:ProcessInfo/ns10:SystemName"/>
+                  </copy>
+                  <copy>
+                    <from expression="ora:getCurrentDateTime()"/>
+                    <to variable="InvokeSRexceptions_InputVariable"
+                        part="payload"
+                        query="/ns10:ExceptionData/ns10:ExceptionDetails/ns10:ExceptionDateTime"/>
+                  </copy>
+                  <copy>
+                    <from expression="ora:doc('${server_url}/xmllib/otc/GlobalParameters.xml','/GlobalParameters/ServiceB2BInbound/FaultNotification/SendNotification')"/>
+                    <to variable="InvokeSRexceptions_InputVariable"
+                        part="payload"
+                        query="/ns10:ExceptionData/ns10:Notification/ns10:sendNotification"/>
+                  </copy>
+                  <copy>
+                    <from expression="ora:doc('${server_url}/xmllib/otc/GlobalParameters.xml','/GlobalParameters/ServiceB2BInbound/FaultNotification/EmailTo')"/>
+                    <to variable="InvokeSRexceptions_InputVariable"
+                        part="payload"
+                        query="/ns10:ExceptionData/ns10:Notification/ns10:RecipientList"/>
+                  </copy>
+                  <copy>
+                    <from variable="inputVariable" part="payload"
+                          query="/ns12:serviceRequestUpdate"/>
+                    <to variable="InvokeSRexceptions_InputVariable"
+                        part="payload"
+                        query="/ns10:ExceptionData/ns10:MessageDetails/ns10:MessageType"/>
+                  </copy>
+                </assign>
+                <invoke name="InvokeSRexceptions" partnerLink="SRexceptions"
+                        portType="ns3:SRexceptions" operation="initiate"
+                        inputVariable="InvokeSRexceptions_InputVariable"/>
+                <terminate name="terminateProcess"/>
+              </sequence>
+            </catchAll>
+          </faultHandlers>
+          <sequence name="SequenceSrUpdate">
+            <assign name="TransformSrStatus">
+              <bpelx:annotation>
+                <bpelx:pattern>transformation</bpelx:pattern>
+              </bpelx:annotation>
+              <copy>
+                <from expression="ora:processXSLT('TransformSrStatus.xsl',bpws:getVariableData('inputVariable','payload'))"/>
+                <to variable="InvokeEbs_vendorSRUpdate_InputVariable"
+                    part="InputParameters"/>
+              </copy>
+            </assign>
+            <invoke name="InvokeEbs" partnerLink="vendorSRUpdate"
+                    portType="ns1:vendorSRUpdate_ptt" operation="vendorSRUpdate"
+                    inputVariable="InvokeEbs_vendorSRUpdate_InputVariable"
+                    outputVariable="InvokeEbs_vendorSRUpdate_OutputVariable"/>
+            <assign name="assignReturnStatus">
+              <copy>
+                <from variable="InvokeEbs_vendorSRUpdate_OutputVariable"
+                      part="OutputParameters"
+                      query="/ns4:OutputParameters/ns4:X_RETURN_STATUS"/>
+                <to variable="outputVariable" part="payload"
+                    query="/ns5:B2bVendorSRUpdateProcessResponse/ns5:ReturnCode"/>
+              </copy>
+              <copy>
+                <from variable="InvokeEbs_vendorSRUpdate_OutputVariable"
+                      part="OutputParameters"
+                      query="/ns4:OutputParameters/ns4:X_MSG_DATA"/>
+                <to variable="outputVariable" part="payload"
+                    query="/ns5:B2bVendorSRUpdateProcessResponse/ns5:ReturnMsg"/>
+              </copy>
+            </assign>
+          </sequence>
+        </scope>
+      </sequence>
+    </scope>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyUpdateStatus" partnerLink="client"
+           portType="client:ServiceB2BInbound" operation="process"
+           variable="outputVariable"/>
+  </sequence>
+</process>

@@ -1,0 +1,21 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="I0030_CARTONIZATION_EBS_IN" src="I0030_CARTONIZATION_EBS_IN.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="client">
+            <property name="wsdlLocation">I0030_CARTONIZATION_EBS_IN.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="Cartonization">
+            <property name="wsdlLocation">Cartonization.wsdl</property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="ShipmentUnitDetails">
+            <property name="wsdlLocation">ShipmentUnitDetails.wsdl</property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="WMOS_DUMMY">
+            <property name="wsdlLocation">http://chilsoa02d.na.odcorp.net:7777/orabpel/otm/WMOS_DUMMY/WMOS_DUMMY?wsdl</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+   </BPELProcess>
+</BPELSuitcase>

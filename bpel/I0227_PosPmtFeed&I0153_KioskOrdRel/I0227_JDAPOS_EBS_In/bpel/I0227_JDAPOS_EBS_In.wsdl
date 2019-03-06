@@ -1,0 +1,60 @@
+<definitions
+     name="I0227_JDAPOS_EBS_In"
+     targetNamespace="http://xmlns.oracle.com/I0227_JDAPOS_EBS_In"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:ns1="http://www.thiscompany.com/ns/sales"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+     xmlns:client="http://xmlns.oracle.com/I0227_JDAPOS_EBS_In"
+    >
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://www.thiscompany.com/ns/sales"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:client="http://xmlns.oracle.com/I0227_JDAPOS_EBS_In">
+            <import namespace="http://xmlns.oracle.com/I0227_JDAPOS_EBS_In" schemaLocation="I0227_JDAPOS_EBS_In.xsd"/>
+        </schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://www.thiscompany.com/ns/sales"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:client="http://xmlns.oracle.com/I0227_JDAPOS_EBS_In">
+            <xsd:import namespace="http://www.thiscompany.com/ns/sales" schemaLocation="POS.xsd"/>
+        </xsd:schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://www.thiscompany.com/ns/sales"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:client="http://xmlns.oracle.com/I0227_JDAPOS_EBS_In">
+            <xsd:import namespace="http://www.thiscompany.com/ns/sales" schemaLocation="AcknowledgePOS.xsd"/>
+        </xsd:schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://www.thiscompany.com/ns/sales" schemaLocation="ErrorPOS.xsd"/>
+        </xsd:schema>
+    </types>
+    <message name="I0227_JDAPOS_EBS_InRequestMessage">
+        <part name="payload" element="ns1:POS"/>
+    </message>
+    <message name="ErrMsg">
+        <part name="ErrMsg" element="ns1:Error"/>
+    </message>
+    <message name="AckMsg">
+        <part name="AckMsg" element="ns1:POSACK"/>
+    </message>
+    <message name="I0227_JDAPOS_EBS_InResponseMessage">
+        <part name="payload" element="ns1:POS"/>
+    </message>
+    <portType name="I0227_JDAPOS_EBS_In">
+        <operation name="initiate">
+            <input message="client:I0227_JDAPOS_EBS_InRequestMessage"/>
+        </operation>
+    </portType>
+    <portType name="I0227_JDAPOS_EBS_InCallback">
+        <operation name="onAck">
+            <input message="client:AckMsg"/>
+        </operation>
+        <operation name="onErr">
+            <input message="client:ErrMsg"/>
+        </operation>
+    </portType>
+    <plnk:partnerLinkType name="I0227_JDAPOS_EBS_In">
+        <plnk:role name="I0227_JDAPOS_EBS_InProvider">
+            <plnk:portType name="client:I0227_JDAPOS_EBS_In"/>
+        </plnk:role>
+        <plnk:role name="I0227_JDAPOS_EBS_InRequester">
+            <plnk:portType name="client:I0227_JDAPOS_EBS_InCallback"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+</definitions>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--Native format was generated from COBOL copybook : C:\SUBVERSION\TS_UPLOAD_POLLING_PROCESS\bpel\COS_PROCESS_UPLOAD_Q.txt-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:nxsd="http://xmlns.oracle.com/pcbpel/nxsd" xmlns:extn="http://xmlns.oracle.com/pcbpel/nxsd/extensions" targetNamespace="http://TargetNamespace.com/ServiceName" xmlns:tns="http://TargetNamespace.com/ServiceName" elementFormDefault="qualified" attributeFormDefault="unqualified" nxsd:version="NXSD" nxsd:encoding="cp037" nxsd:byteOrder="bigEndian" nxsd:stream="chars">
+   <xsd:element name="Root-Element">
+      <xsd:complexType>
+         <xsd:sequence minOccurs="1" maxOccurs="unbounded">
+            <!--COBOL declaration :05 HDR-HEADER-AREA-->
+            <xsd:element name="HDR-HEADER-AREA">
+               <xsd:complexType>
+                  <xsd:sequence>
+                     <!--COBOL declaration : 10 HDR-LENGTH PIC 9(010)-->
+                     <xsd:element name="HDR-LENGTH" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="10"/>
+                     <!--COBOL declaration : 10 HDR-VERSION PIC 9(003)-->
+                     <xsd:element name="HDR-VERSION" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="3"/>
+                     <!--COBOL declaration : 10 HDR-RELEASE PIC 9(003)-->
+                     <xsd:element name="HDR-RELEASE" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="3"/>
+                     <!--COBOL declaration : 10 HDR-PROGRAM PIC X(008)-->
+                     <xsd:element name="HDR-PROGRAM" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="8"/>
+                     <!--COBOL declaration : 10 HDR-METHOD PIC X(030)-->
+                     <xsd:element name="HDR-METHOD" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="30"/>
+                     <!--COBOL declaration : 10 HDR-SYNC-ROLLB-SW PIC X(001)-->
+                     <xsd:element name="HDR-SYNC-ROLLB-SW" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 10 HDR-CONDITION-CODE PIC 9(004)-->
+                     <xsd:element name="HDR-CONDITION-CODE" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="4"/>
+                     <!--COBOL declaration : 10 HDR-REASON-CODE PIC X(004)-->
+                     <xsd:element name="HDR-REASON-CODE" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="4"/>
+                     <!--COBOL declaration : 10 HDR-CLIENT-PROGRAM PIC X(008)-->
+                     <xsd:element name="HDR-CLIENT-PROGRAM" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="8"/>
+                     <!--COBOL declaration : 10 HDR-PLATFORM PIC X(008)-->
+                     <xsd:element name="HDR-PLATFORM" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="8"/>
+                     <!--COBOL declaration : 10 HDR-USER-ID PIC X(008)-->
+                     <xsd:element name="HDR-USER-ID" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="8"/>
+                     <!--COBOL declaration : 10 HDR-MESSAGE PIC X(100)-->
+                     <xsd:element name="HDR-MESSAGE" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="100"/>
+                     <!--COBOL declaration : 10 HDR-SAVE-AREA PIC X(050)-->
+                     <xsd:element name="HDR-SAVE-AREA" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="50"/>
+                     <!--COBOL declaration : 10 HDR-USER-AREA PIC X(050)-->
+                     <xsd:element name="HDR-USER-AREA" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="50"/>
+                     <!--COBOL declaration : 10 HDR-PASSWORD PIC X(008)-->
+                     <xsd:element name="HDR-PASSWORD" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="8"/>
+                     <!--COBOL declaration : 10 HDR-MORE-SW PIC X(001)-->
+                     <xsd:element name="HDR-MORE-SW" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                     <!--COBOL declaration : 10 HDR-RESERVED PIC X(104)-->
+                     <xsd:element name="HDR-RESERVED" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="104"/>
+                  </xsd:sequence>
+               </xsd:complexType>
+            </xsd:element>
+            <!--COBOL declaration :05 UPLOAD-WMS-ORDER-->
+            <xsd:element name="UPLOAD-WMS-ORDER">
+               <xsd:complexType>
+                  <xsd:sequence>
+                     <!--COBOL declaration : 10 COSC0480-DATA-LENGTH PIC 9(10) VALUE 306: 
+ Clause could not be correctly converted to a schema type. Please modify the generated schema to cater to this type.
+ Refer to the documentation for assistance.-->
+                     <xsd:element name="COSC0480-DATA-LENGTH" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="10"/>
+                     <!--COBOL declaration : 10 COSC0480-DATA-VERSION PIC 9(03) VALUE 001: 
+ Clause could not be correctly converted to a schema type. Please modify the generated schema to cater to this type.
+ Refer to the documentation for assistance.-->
+                     <xsd:element name="COSC0480-DATA-VERSION" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="3"/>
+                     <!--COBOL declaration : 10 COSC0480-DATA-RELEASE PIC 9(03) VALUE 000: 
+ Clause could not be correctly converted to a schema type. Please modify the generated schema to cater to this type.
+ Refer to the documentation for assistance.-->
+                     <xsd:element name="COSC0480-DATA-RELEASE" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="3"/>
+                     <!--COBOL declaration : 10 COSC0480-DATA-INDICATORS PIC X(29) VALUE SPACES: 
+ Clause could not be correctly converted to a schema type. Please modify the generated schema to cater to this type.
+ Refer to the documentation for assistance.-->
+                     <xsd:element name="COSC0480-DATA-INDICATORS" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="29"/>
+                     <!--COBOL declaration : 10 FILLER PIC X(02)-->
+                     <xsd:element name="FILLER" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="2"/>
+                     <!--COBOL declaration : 10 COSC0480-DATA-REQUESTED-->
+                     <xsd:element name="COSC0480-DATA-REQUESTED">
+                        <xsd:complexType>
+                           <xsd:sequence>
+                              <!--COBOL declaration : 15 COSC0480-LOC-ID PIC X(04)-->
+                              <xsd:element name="COSC0480-LOC-ID" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="4"/>
+                              <!--COBOL declaration : 15 COSC0480-REQUEST-DATE PIC X(10)-->
+                              <xsd:element name="COSC0480-REQUEST-DATE" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="10"/>
+                              <!--COBOL declaration : 15 COSC0480-ORDER-DATA-->
+                              <xsd:element name="COSC0480-ORDER-DATA">
+                                 <xsd:complexType>
+                                    <xsd:sequence>
+                                       <!--COBOL declaration : 20 COSC0480-ORDER-NBR-01 PIC X(09)-->
+                                       <xsd:element name="COSC0480-ORDER-NBR-01" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="9"/>
+                                       <!--COBOL declaration : 20 COSC0480-ORDER-SUB-NBR-01 PIC X(03)-->
+                                       <xsd:element name="COSC0480-ORDER-SUB-NBR-01" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="3"/>
+                                       <!--COBOL declaration : 20 COSC0480-ORDER-NBR-02 PIC X(09)-->
+                                       <xsd:element name="COSC0480-ORDER-NBR-02" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="9"/>
+                                       <!--COBOL declaration : 20 COSC0480-ORDER-SUB-NBR-02 PIC X(03)-->
+                                       <xsd:element name="COSC0480-ORDER-SUB-NBR-02" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="3"/>
+                                       <!--COBOL declaration : 20 COSC0480-ORDER-NBR-03 PIC X(09)-->
+                                       <xsd:element name="COSC0480-ORDER-NBR-03" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="9"/>
+                                       <!--COBOL declaration : 20 COSC0480-ORDER-SUB-NBR-03 PIC X(03)-->
+                                       <xsd:element name="COSC0480-ORDER-SUB-NBR-03" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="3"/>
+                                       <!--COBOL declaration : 20 COSC0480-ORDER-NBR-04 PIC X(09)-->
+                                       <xsd:element name="COSC0480-ORDER-NBR-04" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="9"/>
+                                       <!--COBOL declaration : 20 COSC0480-ORDER-SUB-NBR-04 PIC X(03)-->
+                                       <xsd:element name="COSC0480-ORDER-SUB-NBR-04" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="3"/>
+                                       <!--COBOL declaration : 20 COSC0480-ORDER-NBR-05 PIC X(09)-->
+                                       <xsd:element name="COSC0480-ORDER-NBR-05" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="9"/>
+                                       <!--COBOL declaration : 20 COSC0480-ORDER-SUB-NBR-05 PIC X(03)-->
+                                       <xsd:element name="COSC0480-ORDER-SUB-NBR-05" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="3"/>
+                                       <!--COBOL declaration : 20 COSC0480-ORDER-NBR-06 PIC X(09)-->
+                                       <xsd:element name="COSC0480-ORDER-NBR-06" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="9"/>
+                                       <!--COBOL declaration : 20 COSC0480-ORDER-SUB-NBR-06 PIC X(03)-->
+                                       <xsd:element name="COSC0480-ORDER-SUB-NBR-06" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="3"/>
+                                       <!--COBOL declaration : 20 COSC0480-ORDER-NBR-07 PIC X(09)-->
+                                       <xsd:element name="COSC0480-ORDER-NBR-07" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="9"/>
+                                       <!--COBOL declaration : 20 COSC0480-ORDER-SUB-NBR-07 PIC X(03)-->
+                                       <xsd:element name="COSC0480-ORDER-SUB-NBR-07" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="3"/>
+                                       <!--COBOL declaration : 20 COSC0480-ORDER-NBR-08 PIC X(09)-->
+                                       <xsd:element name="COSC0480-ORDER-NBR-08" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="9"/>
+                                       <!--COBOL declaration : 20 COSC0480-ORDER-SUB-NBR-08 PIC X(03)-->
+                                       <xsd:element name="COSC0480-ORDER-SUB-NBR-08" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="3"/>
+                                       <!--COBOL declaration : 20 COSC0480-ORDER-NBR-09 PIC X(09)-->
+                                       <xsd:element name="COSC0480-ORDER-NBR-09" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="9"/>
+                                       <!--COBOL declaration : 20 COSC0480-ORDER-SUB-NBR-09 PIC X(03)-->
+                                       <xsd:element name="COSC0480-ORDER-SUB-NBR-09" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="3"/>
+                                       <!--COBOL declaration : 20 COSC0480-ORDER-NBR-10 PIC X(09)-->
+                                       <xsd:element name="COSC0480-ORDER-NBR-10" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="9"/>
+                                       <!--COBOL declaration : 20 COSC0480-ORDER-SUB-NBR-10 PIC X(03)-->
+                                       <xsd:element name="COSC0480-ORDER-SUB-NBR-10" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="3"/>
+                                    </xsd:sequence>
+                                 </xsd:complexType>
+                              </xsd:element>
+                              <!--COBOL declaration : 15 COSC0480-MQ-CONN-REQD-SW PIC X(01)-->
+                              <xsd:element name="COSC0480-MQ-CONN-REQD-SW" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                              <!--COBOL declaration : 15 COSC0480-MQMGR PIC X(48)-->
+                              <xsd:element name="COSC0480-MQMGR" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="48"/>
+                              <!--COBOL declaration : 15 COSC0480-HCONN PIC X(09)-->
+                              <xsd:element name="COSC0480-HCONN" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="9"/>
+                              <!--COBOL declaration : 15 COSC0480-CONTROL-NBR PIC 9(04)-->
+                              <xsd:element name="COSC0480-CONTROL-NBR" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="4"/>
+                              <!--COBOL declaration : 15 COSC0480-ROUTE-NBR PIC 9(04)-->
+                              <xsd:element name="COSC0480-ROUTE-NBR" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="4"/>
+                              <!--COBOL declaration : 15 COSC0480-WINDOW-PRIORITY PIC 9(04)-->
+                              <xsd:element name="COSC0480-WINDOW-PRIORITY" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="4"/>
+                              <!--COBOL declaration : 15 COSC0480-STOP-NBR PIC 9(04)-->
+                              <xsd:element name="COSC0480-STOP-NBR" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="4"/>
+                           </xsd:sequence>
+                        </xsd:complexType>
+                     </xsd:element>
+                  </xsd:sequence>
+               </xsd:complexType>
+            </xsd:element>
+         </xsd:sequence>
+      </xsd:complexType>
+   </xsd:element>
+</xsd:schema>

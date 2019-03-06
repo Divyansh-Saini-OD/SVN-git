@@ -1,0 +1,74 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Tue Jun 19 16:19:25 IST 2007
+  Author:  rgandhe
+  Purpose: Empty BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="I1014_ROADNET_EBS_IN"
+         targetNamespace="http://xmlns.oracle.com/I1014_ROADNET_EBS_IN"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/mq/headerRoadnetCommonMQ/"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/db/EBSDeliveryUpdate/"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:client="http://xmlns.oracle.com/I1014_ROADNET_EBS_IN"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <partnerLink myRole="Dequeue_role" name="RoadnetCommonMQ"
+                 partnerLinkType="ns1:Dequeue_plt"/>
+    <partnerLink name="EBSDeliveryUpdate" partnerRole="EBSDeliveryUpdate_role"
+                 partnerLinkType="ns2:EBSDeliveryUpdate_plt"/>
+  </partnerLinks>
+  <variables>
+    <variable name="Receive_DeliveryInfo_Dequeue_InputVariable"
+              messageType="ns1:Root-Element_msg"/>
+    <variable name="Invoke_DeliveryUpdates_EBSDeliveryUpdate_InputVariable"
+              messageType="ns2:args_in_msg"/>
+  </variables>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <receive name="Receive_DeliveryInfo" createInstance="yes"
+             partnerLink="RoadnetCommonMQ" portType="ns1:Dequeue_ptt"
+             operation="Dequeue"
+             variable="Receive_DeliveryInfo_Dequeue_InputVariable"/>
+    <assign name="Transform_1">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:processXSLT('Transformation_1.xsl',bpws:getVariableData('Receive_DeliveryInfo_Dequeue_InputVariable','Root-Element'))"/>
+        <to variable="Invoke_DeliveryUpdates_EBSDeliveryUpdate_InputVariable"
+            part="InputParameters"/>
+      </copy>
+    </assign>
+    <invoke name="Invoke_DeliveryUpdates" partnerLink="EBSDeliveryUpdate"
+            portType="ns2:EBSDeliveryUpdate_ptt" operation="EBSDeliveryUpdate"
+            inputVariable="Invoke_DeliveryUpdates_EBSDeliveryUpdate_InputVariable"/>
+  </sequence>
+</process>

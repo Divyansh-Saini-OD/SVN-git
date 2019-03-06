@@ -1,0 +1,62 @@
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                        WIPRO Technologies                         |
+-- +===================================================================+
+-- | Name  :    XXOMDPSINTERFACEOUTINST                                |
+-- | Description      : This scipt creates index on attribute 6 and 7  | 
+-- |                    of the OR_ORDER_LINES_ALL Table                |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |DRAFT 1A 05-MAR-2007  Aravind A        Initial draft version       |
+-- |                                                                   |
+-- |                                                                   |
+-- +===================================================================+
+
+
+DROP INDEX XX_OE_ORDER_LINES_N1
+/
+
+SET TERM ON
+PROMPT Creating Index on column attribute6 of OE_ORDER_LINES_ALL Table
+SET TERM OFF
+
+CREATE INDEX XX_OE_ORDER_LINES_N1
+ON OE_ORDER_LINES_ALL(attribute6)
+/
+
+SET TERM ON
+PROMPT Index created successfully
+SET TERM OFF
+
+DROP INDEX XX_OE_ORDER_LINES_N2
+/
+
+SET TERM ON
+PROMPT Creating Index on column attribute6 of OE_ORDER_LINES_ALL Table
+SET TERM OFF
+
+CREATE INDEX XX_OE_ORDER_LINES_N2
+ON OE_ORDER_LINES_ALL(attribute7)
+/
+
+SET TERM ON
+PROMPT Index created successfully
+SET TERM OFF
+
+SHOW ERROR
+
+

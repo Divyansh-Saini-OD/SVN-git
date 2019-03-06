@@ -1,0 +1,26 @@
+-- +=============================================================================================+
+-- |                       Office Depot - TDS                                                    |
+-- |                                                                                             |
+-- +=============================================================================================+
+-- | Name         : ALT_TAB_XX_CS_TDS_PARTS.sql                                                  |
+-- | Description  : This Script is used to add the additional columns to the                     |
+-- |                XX_CS_TDS_PARTS table                                                        |
+-- |                                                                                             |
+-- |Change Record:                                                                               |
+-- |===============                                                                              |
+-- |Version      Date          Author           Remarks                                          |
+-- |=======   ==========   ===============      =================================================|
+-- |DRAFT 1A  09-Aug-2011  Balakrishna Buddi    Initial draft version                            |
+-- +=============================================================================================+
+
+ALTER TABLE xxom.xx_cs_tds_parts ADD
+(
+  Excess_quantity        NUMBER
+ ,Excess_flag            VARCHAR2(1)
+ ,Received_quantity      NUMBER
+ ,Received_Shipment_flag VARCHAR2(1)
+);
+
+SHOW ERRORS;
+
+EXIT;

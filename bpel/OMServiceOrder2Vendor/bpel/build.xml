@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<project default="compile" basedir=".">
+    <target name="compile">
+
+        <echo>
+--------------------------------------------------------------
+| Compiling bpel process ${process.name}, revision ${rev}
+--------------------------------------------------------------
+        </echo>
+    <bpelc rev="${rev}" input="${process.dir}/bpel/bpel.xml" out="${process.dir}/output" home="${bpel.home}">
+       <customize> 
+          <partnerLinkBinding name="ODErrorLogger">
+     	       <property name="wsdlLocation">http://${hostname}:${http.port}/orabpel/${ODErrorLogger.domain}/ODErrorLogger/ODErrorLogger?wsdl</property>
+          </partnerLinkBinding>
+          <partnerLinkBinding name="vendorOutbound">
+	       	      <property name="wsdlLocation">ODTechServices_routeTDSRef3.wsdl</property>
+	       	      <property name="wsdlRuntimeLocation">http://${webmethods.service.url}/ws/ODTechServices:routeTDS?WSDL</property>
+	       	    <!--   <property name="wsdlLocation">http://eidev.uschecomrnd.net:5080/ws/ODTechServices:routeTDS</property>-->
+          </partnerLinkBinding>
+          <!--<activationAgent>
+	      <property name="rejectedMessageHandlers" >file://${rejectedMessage.basedirectory}/${process.name}                bpel://${default.domain.locator}|${rejectedMessage.processname}|${rejectedMessage.operation}|message</property>
+	      <property name="fatalErrorFailoverProcess">bpel://${default.domain.locator}|${fatalErrorMessage.processname}|${fatalErrorMessage.operation}|message</property>
+	      <property name="DirArchiveFile">${ebs.archive.directory}xxom/inbound</property>
+	      <property name="DirArchiveFile">${ebs.archive.directory}xxom/inbound</property>
+	      </activationAgent>-->
+        </customize>
+      </bpelc>
+    </target>
+</project>

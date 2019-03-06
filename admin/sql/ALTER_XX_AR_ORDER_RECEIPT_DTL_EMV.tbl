@@ -1,0 +1,20 @@
+-- +============================================================================+
+-- | Office Depot - Project Simplify                                            |
+-- |                                                                            |
+-- +============================================================================+
+-- | SQL Script to alter table:  XX_AR_ORDER_RECEIPT_DTL                        |
+-- |                                                                            |
+-- |Change Record:                                                              |
+-- |===============                                                             |
+-- |Version   Date          Author         Remarks                              |
+-- |=======   ===========   =============  =====================================|
+-- |          04-07-2015   Arun Gannarapu  Add new columns for Tokenization project |
+-- +============================================================================+
+
+ALTER TABLE xxfin.xx_ar_order_receipt_dtl ADD TOKEN_FLAG VARCHAR2(1);
+ALTER TABLE xxfin.xx_ar_order_receipt_dtl ADD EMV_Card   VARCHAR2(1);
+ALTER TABLE xxfin.xx_ar_order_receipt_dtl ADD EMV_Terminal VARCHAR2(2);
+ALTER TABLE xxfin.xx_ar_order_receipt_dtl ADD EMV_Transaction VARCHAR2(1);
+ALTER TABLE xxfin.xx_ar_order_receipt_dtl ADD EMV_Offline     VARCHAR2(1);
+ALTER TABLE xxfin.xx_ar_order_receipt_dtl ADD EMV_Fallback    VARCHAR2(1);
+ALTER TABLE xxfin.xx_ar_order_receipt_dtl ADD EMV_TVR  VARCHAR2(10);

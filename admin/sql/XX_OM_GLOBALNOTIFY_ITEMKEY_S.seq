@@ -1,0 +1,60 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |              Oracle NAIO/WIPRO/Office Depot/Consulting Organization                        |
+-- +============================================================================================+
+-- | Name         : XX_OM_GLOBALNOTIFY_ITEMKEY_S.seq                                            |
+-- | Rice Id      : E0270_GlobalNotification                                                    | 
+-- | Description  : Global Notification Sequence Creation                                       |  
+-- | Purpose      : Create Custom Sequence.                                                     |
+-- |                1. XX_OM_GLOBALNOTIFY_ITEMKEY_S Sequence for Itemkey of workflow            |
+-- |                   as well as event key                                                     |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author           Remarks                                           | 
+-- |=======    ==========    =============    ==================================================+
+-- |DRAFT 1A   18-Jul-2007   Pankaj Kapse     Initial Version                                   |
+-- |                                                                                            |
+-- +============================================================================================+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- Sequence creation
+
+PROMPT
+PROMPT Dropping Existing Sequences from XXOM...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping SEQUENCE XX_OM_GLOBALNOTIFY_ITEMKEY_S 
+PROMPT
+
+DROP SEQUENCE XX_OM_GLOBALNOTIFY_ITEMKEY_S;
+
+PROMPT
+PROMPT Creating Custom Sequences......
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating Sequence XX_OM_GLOBALNOTIFY_ITEMKEY_S
+PROMPT
+
+CREATE SEQUENCE XXOM.XX_OM_GLOBALNOTIFY_ITEMKEY_S INCREMENT BY 1 START WITH 1 NOCYCLE NOCACHE NOORDER;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

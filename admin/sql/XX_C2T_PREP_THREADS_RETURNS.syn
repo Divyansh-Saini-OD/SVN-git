@@ -1,0 +1,43 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+-- +===================================================================================+
+-- |                               Office Depot Inc.                                   |
+-- +===================================================================================+
+-- | Name        : XX_C2T_PREP_THREADS_RETURNS                                         |
+-- | Description : Create the Synonym for the table XX_C2T_PREP_THREADS_RETURNS        |  
+-- | Rice Id     : C0705                                                               |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Version   Date         Author               Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | 1.0      16-SEP-2015  Manikant Kasu        Initial version                        |
+-- |===================================================================================|
+
+PROMPT 'Create SYNONYM XX_C2T_PREP_THREADS_RETURNS'
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT 'Creating SYNONYM XX_C2T_PREP_THREADS_RETURNS FOR XXOM.XX_C2T_PREP_THREADS_RETURNS....'
+PROMPT 
+CREATE SYNONYM apps.XX_C2T_PREP_THREADS_RETURNS FOR XXOM.XX_C2T_PREP_THREADS_RETURNS
+/
+           
+PROMPT
+PROMPT 'Exiting....'
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

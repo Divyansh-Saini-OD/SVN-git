@@ -1,0 +1,51 @@
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+
+PROMPT
+PROMPT Creating the Table XXOM.XX_CS_IES_SKU_RELATIONS......
+PROMPT
+
+ CREATE TABLE XXOM.XX_CS_TDS_PARTS 
+   (	REQUEST_NUMBER 		VARCHAR2(25), 
+	STORE_ID 		NUMBER, 
+	LINE_NUMBER 		NUMBER, 
+	ITEM_NUMBER 		VARCHAR2(25), 
+	ITEM_DESCRIPTION 	VARCHAR2(250), 
+	RMS_SKU 		VARCHAR2(25), 
+	QUANTITY 		NUMBER, 
+	ITEM_CATEGORY 		VARCHAR2(150), 
+	PURCHASE_PRICE		NUMBER, 
+	SELLING_PRICE 		NUMBER, 
+	EXCHANGE_PRICE 		NUMBER, 
+	CORE_FLAG	 	VARCHAR2(1), 
+	UOM 			VARCHAR2(15), 
+	SCHEDULE_DATE 		DATE, 
+	CREATION_DATE 		DATE, 
+	CREATED_BY 		VARCHAR2(25), 
+	LAST_UDATE_DATE		DATE, 
+	LAST_UPDATED_BY		VARCHAR2(25), 
+	ATTRIBUTE1 		VARCHAR2(250), 
+	ATTRIBUTE2 		VARCHAR2(250), 
+	ATTRIBUTE3 		VARCHAR2(250), 
+	ATTRIBUTE4 		VARCHAR2(250), 
+	ATTRIBUTE5 		VARCHAR2(250), 
+	SALES_FLAG 		VARCHAR2(1), 
+	MANUFACTURER 		VARCHAR2(50), 
+	MODEL 			VARCHAR2(25), 
+	SERIAL_NUMBER 		VARCHAR2(50), 
+	PROBLEM_DESCR 		VARCHAR2(250), 
+	SPECIAL_INSTR 		VARCHAR2(1000),
+        inventory_item_id       NUMBER
+   ) ;
+
+
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

@@ -1,0 +1,32 @@
+<!-- License information for this file is provided in LICENSE.TXT -->
+<!-- For support, more information, or to report implementation bugs, 
+     please contact the Open Applications Group at xml@openapplications.org -->
+<!--
+    $Revision: 115.0 $
+    $Date: 2002/01/21 09:55:41 $
+    $Header: oagis_domains.dtd 115.0 2002/01/21 09:55:41 pkm ship       $
+    Open Applications Group DTD
+    Copyright 1998-2001, All Rights Reserved
+
+    $Name:  $
+
+cmk	6.0.0		06/15/98		Initial Release
+cmk	6.1.0		12/12/98		Rename file reference file	
+rjj	7.0.0		10/15/2000	Updated Header Information.
+mlr	7.1		04/16/2001	Updated Header Information.
+
+	Notes:
+
+-->
+<!-- ==================================================== -->
+<!-- Entities - Domains
+    This section defines data domains for the
+    primitive element values.  This is the only
+    area where the primitive #PCDATA should
+    appear.
+
+    This area may be enhanced in later releases
+-->
+<!-- String Data: Generic Data Domains -->
+<!ENTITY % STRDOM "(#PCDATA)">
+<!-- ==================================================== -->

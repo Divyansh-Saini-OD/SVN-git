@@ -1,0 +1,14 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="XXOMWshSendItemRefDataToOtm" src="XXOMWshSendItemRefDataToOtm.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="client">
+            <property name="wsdlLocation">XXOMWshSendItemRefDataToOtm.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="getEBSItemInfo">
+            <property name="wsdlLocation">getEBSItemInfo.wsdl</property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+   </BPELProcess>
+</BPELSuitcase>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAConfigPlan xmlns:jca="http://platform.integration.oracle/blocks/adapter/fw/metadata" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:orawsp="http://schemas.oracle.com/ws/2006/01/policy" xmlns:edl="http://schemas.oracle.com/events/edl" xmlns="http://schemas.oracle.com/soa/configplan">
+   <composite name="SendMailNotification">
+      <!--Add search and replace rules for the import section of a composite
+	Example:
+	<searchReplace>
+		<search>http://my-dev-server</search>
+		<replace>http://my-test-server</replace>
+	<searchReplace>
+	<searchReplace>
+		<search>8888</search>
+		<replace>8889</replace>
+	<searchReplace>-->
+      <import>
+         <searchReplace>
+            <search/>
+            <replace/>
+         </searchReplace>
+      </import>
+      <!--Add search and replace rules for the service properties-->
+      <service name="ReadErrorDetailsFromDBTable">
+         <property name="jca.retry.count">
+            <replace>2147483647</replace>
+         </property>
+         <property name="jca.retry.interval">
+            <replace>1</replace>
+         </property>
+         <property name="jca.retry.backoff">
+            <replace>2</replace>
+         </property>
+         <property name="jca.retry.maxInterval">
+            <replace>120</replace>
+         </property>
+         <binding type="jca"/>
+      </service>
+      <!--Add search and replace rules for the component properties
+	For components and service/reference bindings, you can add policy references.
+	Example:
+	<component name="*">
+		<wsp:PolicyReference orawsp:category="management" orawsp:status="enabled" URI="oracle/log_policy"/>
+	</component>-->
+      <component name="SendMailNotificationImpl">
+         <property name="bpel.preference.SOA_ADMIN_EMAIL_ID">
+            <replace>SOAAdmin@officedepot.com</replace>
+         </property>
+         <property name="bpel.preference.EMAIL_ID_NOT_SPECIFIED">
+            <replace>The email ID's have not been mentioned in the mail configuration file for</replace>
+         </property>
+         <property name="bpel.preference.NOT_VALID_EMAIL_ADDRESSES">
+            <replace>Not a valid To/Cc Email Address in the mail configuration file for</replace>
+         </property>
+         <property name="bpel.preference.NOT_VALID_TO_EMAIL_ADDRESS">
+            <replace>Not a valid To Email Address in the mail configuration file for</replace>
+         </property>
+         <property name="bpel.preference.NOT_VALID_CC_EMAIL_ADDRESS">
+            <replace>Not a valid Cc Email Address in the mail configuration file for</replace>
+         </property>
+         <property name="bpel.preference.UNKNOWN_ERROR">
+            <replace>Error Notification: Fatal Error</replace>
+         </property>
+         <property name="bpel.preference.CHECK_EMAIL_ADDRESS_VALIDITY">
+            <replace>true</replace>
+         </property>
+         <property name="bpel.preference.DVM_FILE_LOCATION">
+            <replace>PartitionEMailConfiguration.dvm</replace>
+         </property>
+      </component>
+      <reference name="NotificationService">
+         <binding type="wsif"/>
+      </reference>
+   </composite>
+   <!--To configure monitor.config: 
+	<property name="enabled"><replace>true</replace></property>
+	<property name="dataObjectsFolder"><searchReplace><search>mydev</search><replace>myproduction</replace></searchReplace></property>
+	
+	sample properties to configure for adapter: 
+	<jca:property name="QueueName"><replace>medmq1</replace></jca:property>
+	
+	To add search and replace rules for wsdls, xsd and jca files
+	Example:
+	<searchReplace>
+		<search>http://my-dev-server</search>
+		<replace>http://my-test-server</replace>
+	<searchReplace>
+	<searchReplace>
+		<search>8888</search>
+		<replace>8889</replace>
+	<searchReplace>
+	-->
+   <wsdlAndSchema name="NotificationService.wsdl|NotificationService.xsd|ReadErrorDetailsFromDBTable.wsdl|ReadErrorDetailsFromDBTable_db.jca|SendMailNotificationImpl.wsdl|xsd/PartitionCompositeDetails.xsd|xsd/ReadErrorDetailsFromDBTable_table.xsd">
+      <searchReplace>
+         <search/>
+         <replace/>
+      </searchReplace>
+   </wsdlAndSchema>
+</SOAConfigPlan>

@@ -1,0 +1,79 @@
+/* $Header: XXOMGLEXPOBJ.OBJ  porting ship $                                               */
+/*+=======================================================================================+*/
+/*|                                                                                       |*/
+/*|           File Name : XXOMGLEXPOBJ.OBJ                                                |*/
+/*|          Created by : Bapuji Nanapaneni                                               |*/
+/*|       Creation date : 06-MAR-07                                                       |*/
+/*|             Purpose : Object creation For Storing Exceptions                          |*/
+/*|                       xx_om_report_exception.                                         |*/
+/*|      Restartability :                                                                 |*/
+/*|                                                                                       |*/
+/*|                                                                                       |*/
+/*|     Revision History:                                                                 |*/
+/*|                                                                                       |*/ 
+/*|                                                                                       |*/
+/*+=======================================================================================+*/
+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+COLUMN XXOM_login   NEW_VALUE XXOM_LOGIN   NOPRINT
+COLUMN XXOM_user    NEW_VALUE XXOM_USER    NOPRINT
+
+SET TERM ON
+
+SELECT '&&1' XXOM_LOGIN
+      ,'&&2' XXOM_USER
+FROM  SYS.dual
+WHERE ROWNUM = 1;
+
+WHENEVER SQLERROR EXIT 1
+
+Prompt Connecting TO Custom SCHEMA &&XXOM_USER
+
+CONNECT &&XXOM_LOGIN;
+
+PROMPT
+PROMPT Dropping Existing Custom TYPE......
+PROMPT
+
+PROMPT
+PROMPT Dropping TYPE xx_om_report_exception
+PROMPT
+
+DROP TYPE xx_om_report_exception;
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the object xx_om_report_exception .....
+PROMPT
+
+
+CREATE OR REPLACE
+TYPE xx_om_report_exception AS OBJECT (
+      P_exception_header           VARCHAR2(40)
+    , P_track_code                 VARCHAR2(5)
+    , P_solution_domain            VARCHAR2(40)
+    , P_function                   VARCHAR2(40)
+    , P_error_code                 VARCHAR2(40)
+    , P_error_description          VARCHAR2(1000)
+    , P_entity_ref                 VARCHAR2(40)
+    , P_entity_ref_id              NUMBER
+    )
+/
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

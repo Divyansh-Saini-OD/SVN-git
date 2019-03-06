@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--Native format was generated from COBOL copybook : U:\My Documents\Project Simplify\MD50\INT-I0030_Cartonization-Cartonization Process\WMS MQ CopyBook\CA06_OUTBOUND.txt-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:nxsd="http://xmlns.oracle.com/pcbpel/nxsd" xmlns:extn="http://xmlns.oracle.com/pcbpel/nxsd/extensions" targetNamespace="http://TargetNamespace.com/CA06OutboundMQ" xmlns:tns="http://TargetNamespace.com/CA06OutboundMQ" elementFormDefault="qualified" attributeFormDefault="unqualified" nxsd:version="NXSD" nxsd:encoding="cp037" nxsd:byteOrder="bigEndian" nxsd:stream="chars">
+   <xsd:element name="Root-Element">
+      <xsd:complexType>
+         <xsd:sequence>
+            <!--COBOL declaration :01 OUTPUT-MESSAGE-->
+            <xsd:element name="OUTPUT-MESSAGE" minOccurs="1" maxOccurs="unbounded">
+               <xsd:complexType>
+                  <xsd:sequence>
+                     <!--Please add values for nxsd:lookAhead attributes for the elements in the choice model group.-->
+                     <xsd:choice>
+                        <!--COBOL declaration : 05 WS-OUTPUT-MQ-MSG PIC X(150) VALUE SPACES: 
+ Clause could not be correctly converted to a schema type. Please modify the generated schema to cater to this type.
+ Refer to the documentation for assistance.-->
+                        <xsd:element name="WS-OUTPUT-MQ-MSG" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="150" nxsd:lookAhead="" nxsd:lookFor=""/>
+                        <!--COBOL declaration : 05 WS-RECORD-TYP1 REDEFINES WS-OUTPUT-MQ-MSG-->
+                        <xsd:element name="WS-RECORD-TYP1" nxsd:lookAhead="" nxsd:lookFor="">
+                           <xsd:complexType>
+                              <xsd:sequence>
+                                 <!--COBOL declaration : 08 WS-TYP1-RECORD-ID PIC X(01)-->
+                                 <xsd:element name="WS-TYP1-RECORD-ID" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                                 <!--COBOL declaration : 08 WS-TYP1-DELIV-NBR PIC X(12)-->
+                                 <xsd:element name="WS-TYP1-DELIV-NBR" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="12"/>
+                                 <!--COBOL declaration : 08 WS-TYP1-TOTAL-CARTONS PIC 9(05)-->
+                                 <xsd:element name="WS-TYP1-TOTAL-CARTONS" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="5"/>
+                                 <!--COBOL declaration : 08 WS-TYP1-TOTAL-WEIGHT PIC 9(06)V999-->
+                                 <xsd:element name="WS-TYP1-TOTAL-WEIGHT" type="xsd:decimal" nxsd:style="virtualDecimal" extn:assumeDecimal="6" extn:picSize="9"/>
+                                 <!--COBOL declaration : 08 WS-TYP1-TOTAL-VOLUME PIC 9(06)V999-->
+                                 <xsd:element name="WS-TYP1-TOTAL-VOLUME" type="xsd:decimal" nxsd:style="virtualDecimal" extn:assumeDecimal="6" extn:picSize="9"/>
+                                 <!--COBOL declaration : 08 WS-TYP1-SPL-INSTR-1 PIC X(30)-->
+                                 <xsd:element name="WS-TYP1-SPL-INSTR-1" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="30"/>
+                                 <!--COBOL declaration : 08 FILLER PIC X(84)-->
+                                 <xsd:element name="FILLER" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="84"/>
+                              </xsd:sequence>
+                           </xsd:complexType>
+                        </xsd:element>
+                        <!--COBOL declaration : 05 WS-RECORD-TYP2 REDEFINES WS-OUTPUT-MQ-MSG-->
+                        <xsd:element name="WS-RECORD-TYP2" nxsd:lookAhead="" nxsd:lookFor="">
+                           <xsd:complexType>
+                              <xsd:sequence>
+                                 <!--COBOL declaration : 08 WS-TYP2-RECORD-ID PIC X(01)-->
+                                 <xsd:element name="WS-TYP2-RECORD-ID" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                                 <!--COBOL declaration : 08 WS-TYP2-DELIV-NBR PIC X(12)-->
+                                 <xsd:element name="WS-TYP2-DELIV-NBR" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="12"/>
+                                 <!--COBOL declaration : 08 WS-TYP2-CARTON-NBR PIC 9(08)-->
+                                 <xsd:element name="WS-TYP2-CARTON-NBR" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="8"/>
+                                 <!--COBOL declaration : 08 WS-TYP2-CART-TYPE PIC X(03)-->
+                                 <xsd:element name="WS-TYP2-CART-TYPE" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="3"/>
+                                 <!--COBOL declaration : 08 WS-TYP2-CART-WEIGHT PIC 9(03)V999-->
+                                 <xsd:element name="WS-TYP2-CART-WEIGHT" type="xsd:decimal" nxsd:style="virtualDecimal" extn:assumeDecimal="3" extn:picSize="6"/>
+                                 <!--COBOL declaration : 08 WS-TYP2-CART-VOLUME PIC 9(06)V999-->
+                                 <xsd:element name="WS-TYP2-CART-VOLUME" type="xsd:decimal" nxsd:style="virtualDecimal" extn:assumeDecimal="6" extn:picSize="9"/>
+                                 <!--COBOL declaration : 08 WS-TYP2-CART-LENGTH PIC 9(03)V999-->
+                                 <xsd:element name="WS-TYP2-CART-LENGTH" type="xsd:decimal" nxsd:style="virtualDecimal" extn:assumeDecimal="3" extn:picSize="6"/>
+                                 <!--COBOL declaration : 08 WS-TYP2-CART-WIDTH PIC 9(03)V999-->
+                                 <xsd:element name="WS-TYP2-CART-WIDTH" type="xsd:decimal" nxsd:style="virtualDecimal" extn:assumeDecimal="3" extn:picSize="6"/>
+                                 <!--COBOL declaration : 08 WS-TYP2-CART-HEIGHT PIC 9(03)V999-->
+                                 <xsd:element name="WS-TYP2-CART-HEIGHT" type="xsd:decimal" nxsd:style="virtualDecimal" extn:assumeDecimal="3" extn:picSize="6"/>
+                                 <!--COBOL declaration : 08 WS-TYP2-SPL-INSTR-1 PIC X(30)-->
+                                 <xsd:element name="WS-TYP2-SPL-INSTR-1" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="30"/>
+                                 <!--COBOL declaration : 08 WS-TYP2-PROC-STAT-CD PIC 9(02)-->
+                                 <xsd:element name="WS-TYP2-PROC-STAT-CD" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="2"/>
+                                 <!--COBOL declaration : 08 WS-TYP2-PROC-DT-TM PIC X(14)-->
+                                 <xsd:element name="WS-TYP2-PROC-DT-TM" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="14"/>
+                                 <!--COBOL declaration : 08 FILLER PIC X(47)-->
+                                 <xsd:element name="FILLER" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="47"/>
+                              </xsd:sequence>
+                           </xsd:complexType>
+                        </xsd:element>
+                        <!--COBOL declaration : 05 WS-RECORD-TYP3 REDEFINES WS-OUTPUT-MQ-MSG-->
+                        <xsd:element name="WS-RECORD-TYP3" nxsd:lookAhead="" nxsd:lookFor="">
+                           <xsd:complexType>
+                              <xsd:sequence>
+                                 <!--COBOL declaration : 08 WS-TYP3-RECORD-ID PIC X(01)-->
+                                 <xsd:element name="WS-TYP3-RECORD-ID" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                                 <!--COBOL declaration : 08 WS-TYP3-DELIV-NBR PIC X(12)-->
+                                 <xsd:element name="WS-TYP3-DELIV-NBR" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="12"/>
+                                 <!--COBOL declaration : 08 WS-TYP3-CARTON-NBR PIC 9(08)-->
+                                 <xsd:element name="WS-TYP3-CARTON-NBR" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="8"/>
+                                 <!--COBOL declaration : 08 WS-TYP3-DELIV-LINE-NBR PIC X(10)-->
+                                 <xsd:element name="WS-TYP3-DELIV-LINE-NBR" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="10"/>
+                                 <!--COBOL declaration : 08 WS-TYP3-SKU-ID PIC X(08)-->
+                                 <xsd:element name="WS-TYP3-SKU-ID" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="8"/>
+                                 <!--COBOL declaration : 08 WS-TYP3-SKU-QTY PIC 9(09)V99-->
+                                 <xsd:element name="WS-TYP3-SKU-QTY" type="xsd:decimal" nxsd:style="virtualDecimal" extn:assumeDecimal="9" extn:picSize="11"/>
+                                 <!--COBOL declaration : 08 WS-TYP3-SIZE-DESC PIC X(15)-->
+                                 <xsd:element name="WS-TYP3-SIZE-DESC" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="15"/>
+                                 <!--COBOL declaration : 08 WS-TYP3-SPL-INSTR-1 PIC X(30)-->
+                                 <xsd:element name="WS-TYP3-SPL-INSTR-1" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="30"/>
+                                 <!--COBOL declaration : 08 WS-TYP3-PROC-STAT-CD PIC 9(02)-->
+                                 <xsd:element name="WS-TYP3-PROC-STAT-CD" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="2"/>
+                                 <!--COBOL declaration : 08 WS-TYP3-PROC-DT-TM PIC X(14)-->
+                                 <xsd:element name="WS-TYP3-PROC-DT-TM" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="14"/>
+                                 <!--COBOL declaration : 08 FILLER PIC X(39)-->
+                                 <xsd:element name="FILLER" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="39"/>
+                              </xsd:sequence>
+                           </xsd:complexType>
+                        </xsd:element>
+                     </xsd:choice>
+                  </xsd:sequence>
+               </xsd:complexType>
+            </xsd:element>
+         </xsd:sequence>
+      </xsd:complexType>
+   </xsd:element>
+</xsd:schema>

@@ -1,0 +1,355 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Wed May 28 15:18:59 EDT 2008
+  Author:  bibiana-penski
+  Purpose: Empty BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="ProcessScmPod"
+         targetNamespace="http://xmlns.oracle.com/ProcessScmPod"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns4="http://TargetNamespace.com/DequeueAopsScmPod"
+         xmlns:ns7="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_CS_CLOSE_LOOP_PKG/RECEIVE_SHOWSHIPMENT/"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns5="http://www.openapplications.org/oagis/9"
+         xmlns:client="http://xmlns.oracle.com/ProcessScmPod"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:ns6="http://www.openapplications.org/oagis/9/officedepot/1"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ns11="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_CS_CLOSE_LOOP_BPEL_PKG/ENQUEUE_MESSAGE/"
+         xmlns:ns9="ODError"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/mq/headerDequeueAopsScmPod/"
+         xmlns:ehdr="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/EbsScmPodSrvc/"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/mq/headerEnqueueAopsScmPod/"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:ns8="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:ns10="http://TargetNamespace.com/InboundService">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <partnerLink myRole="Dequeue_role" name="DequeueAopsScmPod"
+                 partnerLinkType="ns1:Dequeue_plt"/>
+    <partnerLink name="EnqueueAopsScmPod" partnerRole="Enqueue_role"
+                 partnerLinkType="ns2:Enqueue_plt"/>
+    <partnerLink name="EbsScmPodSrvc" partnerRole="EbsScmPodSrvc_role"
+                 partnerLinkType="ns3:EbsScmPodSrvc_plt"/>
+    <partnerLink myRole="ODErrorLoggerRequester" name="ODErrorLogger"
+                 partnerRole="ODErrorLoggerProvider"
+                 partnerLinkType="ns8:ODErrorLogger"/>
+  </partnerLinks>
+  <variables>
+    <variable name="ReceiveScmPod_Dequeue_InputVariable"
+              messageType="ns1:Root-Element_msg"/>
+    <variable name="ShowShipmentVar_2" messageType="ns3:ShowShipmentMessage"/>
+    <variable name="InvokeAopsPodMq_Enqueue_InputVariable_1"
+              messageType="ns2:Root-Element_msg"/>
+    <variable name="InvokeEbsPodSrvc_EbsScmPodSrvc_InputVariable"
+              messageType="ns3:args_in_msg"/>
+    <variable name="InvokeAllFault_initiate_InputVariable"
+              messageType="ns8:ODErrorLoggerRequestMessage"/>
+    <variable name="Invoke_1_EbsScmPodSrvc_InputVariable"
+              messageType="ns3:args_in_msg"/>
+    <variable name="UPS_Ebs_EbsScmPodSrvc_InputVariable"
+              messageType="ns3:args_in_msg"/>
+    <variable name="InvokeEbsPodSvcUPS_EbsScmPodSrvc_InputVariable"
+              messageType="ns3:args_in_msg"/>
+    <variable name="InvokeFaultUPS_initiate_InputVariable"
+              messageType="ns8:ODErrorLoggerRequestMessage"/>
+    <variable name="InvokeEbs_EbsScmPodSrvc_InputVariable"
+              messageType="ns3:args_in_msg"/>
+    <variable name="InvokeEbs_EbsScmPodSrvc_OutputVariable"
+              messageType="ns3:args_out_msg"/>
+    <variable name="InvokeEbsUPS_EbsScmPodSrvc_InputVariable"
+              messageType="ns3:args_in_msg"/>
+    <variable name="InvokeEbsUPS_EbsScmPodSrvc_OutputVariable"
+              messageType="ns3:args_out_msg"/>
+    <variable name="ReturnCode" type="xsd:string"/>
+    <variable name="ReturnMessage" type="xsd:string"/>
+    <variable name="StatusCode" type="xsd:string"/>
+  </variables>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <receive name="ReceiveScmPod" partnerLink="DequeueAopsScmPod"
+             portType="ns1:Dequeue_ptt" operation="Dequeue"
+             variable="ReceiveScmPod_Dequeue_InputVariable"
+             createInstance="yes"/>
+    <switch name="Switch_2">
+      <case condition="bpws:getVariableData('ReceiveScmPod_Dequeue_InputVariable','Root-Element','/ns4:Root-Element/ns4:AOPS_AUTO_RECON_OBT/ns4:CDCReconSrc')= 'M'">
+        <scope name="ScmPodScopeMcast">
+          <faultHandlers>
+            <catchAll>
+              <sequence name="FaultMCast">
+                <assign name="AssignAllFaultMcast">
+                  <copy>
+                    <from expression="concat(ora:getProcessId(),ora:getProcessVersion())"/>
+                    <to variable="InvokeAllFault_initiate_InputVariable"
+                        part="payload"
+                        query="/ns9:ErrorData/ns9:ProcessInfo/ns9:BusinessProcessName"/>
+                  </copy>
+                  <copy>
+                    <from expression="ora:getInstanceId()"/>
+                    <to variable="InvokeAllFault_initiate_InputVariable"
+                        part="payload"
+                        query="/ns9:ErrorData/ns9:ProcessInfo/ns9:BusinessProcessId"/>
+                  </copy>
+                  <copy>
+                    <from expression="ora:getDomainId()"/>
+                    <to variable="InvokeAllFault_initiate_InputVariable"
+                        part="payload"
+                        query="/ns9:ErrorData/ns9:ProcessInfo/ns9:BusinessProcessDomain"/>
+                  </copy>
+                  <copy>
+                    <from expression="'AOPS-Mobilecast'"/>
+                    <to variable="InvokeAllFault_initiate_InputVariable"
+                        part="payload"
+                        query="/ns9:ErrorData/ns9:ProcessInfo/ns9:SystemName"/>
+                  </copy>
+                  <copy>
+                    <from expression="ora:getCurrentDateTime()"/>
+                    <to variable="InvokeAllFault_initiate_InputVariable"
+                        part="payload"
+                        query="/ns9:ErrorData/ns9:ErrorDetails/ns9:ErrorDateTime"/>
+                  </copy>
+                  <copy>
+                    <from expression="ora:getContentAsString(bpws:getVariableData('ReceiveScmPod_Dequeue_InputVariable','Root-Element','/ns4:Root-Element/ns4:AOPS_AUTO_RECON_OBT'))"/>
+                    <to variable="InvokeAllFault_initiate_InputVariable"
+                        part="payload"
+                        query="/ns9:ErrorData/ns9:MessageDetails/ns9:MessageData"/>
+                  </copy>
+                </assign>
+                <invoke name="InvokeAllFaultMcast" partnerLink="ODErrorLogger"
+                        portType="ns8:ODErrorLogger" operation="initiate"
+                        inputVariable="InvokeAllFault_initiate_InputVariable"/>
+              </sequence>
+            </catchAll>
+          </faultHandlers>
+          <flow name="Flow_1">
+            <sequence name="SequenceToEbsMCastStep_1">
+              <switch name="Switch_1">
+                <case condition="bpws:getVariableData('ReceiveScmPod_Dequeue_InputVariable','Root-Element','/ns4:Root-Element/ns4:AOPS_AUTO_RECON_OBT/ns4:CDCDelivSta') = '50'  or bpws:getVariableData('ReceiveScmPod_Dequeue_InputVariable','Root-Element','/ns4:Root-Element/ns4:AOPS_AUTO_RECON_OBT/ns4:CDCDelivSta') = '25'  or bpws:getVariableData('ReceiveScmPod_Dequeue_InputVariable','Root-Element','/ns4:Root-Element/ns4:AOPS_AUTO_RECON_OBT/ns4:CDCDelivSta') = '35'  or bpws:getVariableData('ReceiveScmPod_Dequeue_InputVariable','Root-Element','/ns4:Root-Element/ns4:AOPS_AUTO_RECON_OBT/ns4:CDCDelivSta')='07'">
+                  <sequence name="SequenceToEbsMCastStep2">
+                    <assign name="TransformToShowShipmentMcast">
+                      <bpelx:annotation>
+                        <bpelx:pattern>transformation</bpelx:pattern>
+                      </bpelx:annotation>
+                      <copy>
+                        <from expression="ora:processXSLT('TransToShowShip.xsl',bpws:getVariableData('ReceiveScmPod_Dequeue_InputVariable','Root-Element'))"/>
+                        <to variable="ShowShipmentVar_2" part="ShowShipment"/>
+                      </copy>
+                    </assign>
+                    <assign name="AssignToShowShipmentMcast">
+                      <copy>
+                        <from expression="ora:getContentAsString(bpws:getVariableData('ShowShipmentVar_2','ShowShipment','/ShowShipment'))"/>
+                        <to variable="InvokeEbs_EbsScmPodSrvc_InputVariable"
+                            part="InputParameters"
+                            query="/ns11:InputParameters/ns11:P_XML_MESSAGE"/>
+                      </copy>
+                    </assign>
+                    <invoke name="InvokeEbsMcast" partnerLink="EbsScmPodSrvc"
+                            portType="ns3:EbsScmPodSrvc_ptt"
+                            operation="EbsScmPodSrvc"
+                            inputVariable="InvokeEbs_EbsScmPodSrvc_InputVariable"
+                            outputVariable="InvokeEbs_EbsScmPodSrvc_OutputVariable"/>
+                    <assign name="AssignReturnStatusMcast">
+                      <copy>
+                        <from expression="bpws:getVariableData('ReceiveScmPod_Dequeue_InputVariable','Root-Element','/ns4:Root-Element/ns4:AOPS_AUTO_RECON_OBT/ns4:CDCDelivSta')"/>
+                        <to variable="StatusCode"/>
+                      </copy>
+                      <copy>
+                        <from variable="InvokeEbs_EbsScmPodSrvc_OutputVariable"
+                              part="OutputParameters"
+                              query="/ns11:OutputParameters/ns11:P_RETURN_CODE"/>
+                        <to variable="ReturnCode"/>
+                      </copy>
+                      <copy>
+                        <from variable="InvokeEbs_EbsScmPodSrvc_OutputVariable"
+                              part="OutputParameters"
+                              query="/ns11:OutputParameters/ns11:P_RETURN_MSG"/>
+                        <to variable="ReturnMessage"/>
+                      </copy>
+                    </assign>
+                  </sequence>
+                </case>
+                <otherwise>
+                  <sequence name="SeqToEbsMCastTerminateStep2">
+                    <assign name="AssignTerminateStatusMcast">
+                      <copy>
+                        <from expression="'Process terminated as the Status code is out of the scope'"/>
+                        <to variable="ReturnMessage"/>
+                      </copy>
+                      <copy>
+                        <from expression="bpws:getVariableData('ReceiveScmPod_Dequeue_InputVariable','Root-Element','/ns4:Root-Element/ns4:AOPS_AUTO_RECON_OBT/ns4:CDCDelivSta')  "/>
+                        <to variable="StatusCode"/>
+                      </copy>
+                    </assign>
+                    <empty name="EmptyProcessMcast"/>
+                  </sequence>
+                </otherwise>
+              </switch>
+            </sequence>
+            <sequence name="SequenceToAopsMCast">
+              <assign name="TransformToAOPSPodMcast">
+                <bpelx:annotation>
+                  <bpelx:pattern>transformation</bpelx:pattern>
+                </bpelx:annotation>
+                <copy>
+                  <from expression="ora:processXSLT('Transformation_5.xsl',bpws:getVariableData('ReceiveScmPod_Dequeue_InputVariable','Root-Element'))"/>
+                  <to variable="InvokeAopsPodMq_Enqueue_InputVariable_1"
+                      part="Root-Element"/>
+                </copy>
+              </assign>
+              <scope name="Scope_1">
+                <sequence name="SequenceToAopsMCastInvoke">
+                  <invoke name="InvokeAopsPodMqMcast"
+                          partnerLink="EnqueueAopsScmPod"
+                          portType="ns2:Enqueue_ptt" operation="Enqueue"
+                          inputVariable="InvokeAopsPodMq_Enqueue_InputVariable_1"/>
+                </sequence>
+              </scope>
+            </sequence>
+          </flow>
+        </scope>
+      </case>
+      <otherwise>
+        <sequence name="SequenceToEbsUPS">
+          <scope name="ScmPodScopeUPS">
+            <faultHandlers>
+              <catchAll>
+                <sequence name="FaultUPS">
+                  <assign name="AssignFaultUPS">
+                    <copy>
+                      <from expression="concat(ora:getProcessId(),ora:getProcessVersion())"/>
+                      <to variable="InvokeFaultUPS_initiate_InputVariable"
+                          part="payload"
+                          query="/ns9:ErrorData/ns9:ProcessInfo/ns9:BusinessProcessName"/>
+                    </copy>
+                    <copy>
+                      <from expression="ora:getInstanceId()"/>
+                      <to variable="InvokeFaultUPS_initiate_InputVariable"
+                          part="payload"
+                          query="/ns9:ErrorData/ns9:ProcessInfo/ns9:BusinessProcessId"/>
+                    </copy>
+                    <copy>
+                      <from expression="ora:getDomainId()"/>
+                      <to variable="InvokeFaultUPS_initiate_InputVariable"
+                          part="payload"
+                          query="/ns9:ErrorData/ns9:ProcessInfo/ns9:BusinessProcessDomain"/>
+                    </copy>
+                    <copy>
+                      <from expression="'AOPS-UPS'"/>
+                      <to variable="InvokeFaultUPS_initiate_InputVariable"
+                          part="payload"
+                          query="/ns9:ErrorData/ns9:ProcessInfo/ns9:SystemName"/>
+                    </copy>
+                    <copy>
+                      <from expression="ora:getCurrentDateTime()"/>
+                      <to variable="InvokeFaultUPS_initiate_InputVariable"
+                          part="payload"
+                          query="/ns9:ErrorData/ns9:ErrorDetails/ns9:ErrorDateTime"/>
+                    </copy>
+                    <copy>
+                      <from expression="ora:getContentAsString(bpws:getVariableData('ReceiveScmPod_Dequeue_InputVariable','Root-Element','/ns4:Root-Element/ns4:AOPS_AUTO_RECON_OBT'))"/>
+                      <to variable="InvokeFaultUPS_initiate_InputVariable"
+                          part="payload"
+                          query="/ns9:ErrorData/ns9:MessageDetails/ns9:MessageData"/>
+                    </copy>
+                  </assign>
+                  <invoke name="InvokeFaultUPS" partnerLink="ODErrorLogger"
+                          portType="ns8:ODErrorLogger" operation="initiate"
+                          inputVariable="InvokeFaultUPS_initiate_InputVariable"/>
+                </sequence>
+              </catchAll>
+            </faultHandlers>
+            <switch name="Switch_3">
+              <case condition="bpws:getVariableData('ReceiveScmPod_Dequeue_InputVariable','Root-Element','/ns4:Root-Element/ns4:AOPS_AUTO_RECON_OBT/ns4:CDCDelivSta')='50' or  bpws:getVariableData('ReceiveScmPod_Dequeue_InputVariable','Root-Element','/ns4:Root-Element/ns4:AOPS_AUTO_RECON_OBT/ns4:CDCDelivSta')='25' or bpws:getVariableData('ReceiveScmPod_Dequeue_InputVariable','Root-Element','/ns4:Root-Element/ns4:AOPS_AUTO_RECON_OBT/ns4:CDCDelivSta')='35' or bpws:getVariableData('ReceiveScmPod_Dequeue_InputVariable','Root-Element','/ns4:Root-Element/ns4:AOPS_AUTO_RECON_OBT/ns4:CDCDelivSta')='07'">
+                <sequence name="Sequence2EbsUPS">
+                  <assign name="TransformToShowShipmentUPS">
+                    <bpelx:annotation>
+                      <bpelx:pattern>transformation</bpelx:pattern>
+                    </bpelx:annotation>
+                    <copy>
+                      <from expression="ora:processXSLT('TransToShowShipmentUPS.xsl',bpws:getVariableData('ReceiveScmPod_Dequeue_InputVariable','Root-Element'))"/>
+                      <to variable="ShowShipmentVar_2" part="ShowShipment"/>
+                    </copy>
+                  </assign>
+                  <assign name="AssignToShowShipmentUPS">
+                    <copy>
+                      <from expression="ora:getContentAsString(bpws:getVariableData('ShowShipmentVar_2','ShowShipment','/ShowShipment'))"/>
+                      <to variable="InvokeEbsUPS_EbsScmPodSrvc_InputVariable"
+                          part="InputParameters"
+                          query="/ns11:InputParameters/ns11:P_XML_MESSAGE"/>
+                    </copy>
+                  </assign>
+                  <invoke name="InvokeEbsUPS" partnerLink="EbsScmPodSrvc"
+                          portType="ns3:EbsScmPodSrvc_ptt"
+                          operation="EbsScmPodSrvc"
+                          inputVariable="InvokeEbsUPS_EbsScmPodSrvc_InputVariable"
+                          outputVariable="InvokeEbsUPS_EbsScmPodSrvc_OutputVariable"/>
+                  <assign name="ReturnStatusUPS">
+                    <copy>
+                      <from expression="bpws:getVariableData('ReceiveScmPod_Dequeue_InputVariable','Root-Element','/ns4:Root-Element/ns4:AOPS_AUTO_RECON_OBT/ns4:CDCDelivSta')"/>
+                      <to variable="StatusCode"/>
+                    </copy>
+                    <copy>
+                      <from variable="InvokeEbsUPS_EbsScmPodSrvc_OutputVariable"
+                            part="OutputParameters"
+                            query="/ns11:OutputParameters/ns11:P_RETURN_CODE"/>
+                      <to variable="ReturnCode"/>
+                    </copy>
+                    <copy>
+                      <from variable="InvokeEbsUPS_EbsScmPodSrvc_OutputVariable"
+                            part="OutputParameters"
+                            query="/ns11:OutputParameters/ns11:P_RETURN_MSG"/>
+                      <to variable="ReturnMessage"/>
+                    </copy>
+                  </assign>
+                </sequence>
+              </case>
+              <otherwise>
+                <sequence name="Sequence_1">
+                  <assign name="AssignTerminateStatusUPS">
+                    <copy>
+                      <from expression="bpws:getVariableData('ReceiveScmPod_Dequeue_InputVariable','Root-Element','/ns4:Root-Element/ns4:AOPS_AUTO_RECON_OBT/ns4:CDCDelivSta')"/>
+                      <to variable="StatusCode"/>
+                    </copy>
+                    <copy>
+                      <from expression="'Process terminated as the Status code is out of the scope'"/>
+                      <to variable="ReturnMessage"/>
+                    </copy>
+                  </assign>
+                  <empty name="EmptyProcessUPS"/>
+                </sequence>
+              </otherwise>
+            </switch>
+          </scope>
+        </sequence>
+      </otherwise>
+    </switch>
+  </sequence>
+</process>

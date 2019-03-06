@@ -1,0 +1,40 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_CS_MPS_DEVICE_DETAILS_N1.idx                                             |
+-- | Rice Id      :                                                                             | 
+-- | Description  :                                                                             |  
+-- | Purpose      : Create nonunique index                                                      |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   27-MAR-2008   Bapuji Nanapaneni    Initial Version                               |
+-- |                                                                                            |
+-- +============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Creation of Index on OM table XX_CS_MPS_DEVICE_DETAILS.....
+PROMPT
+
+  CREATE INDEX XXOM.XX_CS_MPS_DEVICE_DETAILS_N1
+            ON XXOM.XX_CS_MPS_DEVICE_DETAILS(device_id);
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+--EXIT;

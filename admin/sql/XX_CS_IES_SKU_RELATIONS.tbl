@@ -1,0 +1,50 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Object Name    : XX_CS_IES_SKU_RELATIONS                                                    |--                                                                                          |--
+--| Program Name   : XX_CS_IES_SKU_RELATIONS.tbl                                                |--
+--|                                                                                             |--
+--| Purpose        : TDS Scripting                                                       	|--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              20-Jun-2010       Raj Jagarlamudi                  Initial Draft           |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+
+--drop table XXOM.XX_CS_IES_SKU_RELATIONS;
+
+--commit;
+
+PROMPT
+PROMPT Creating the Table XXOM.XX_CS_IES_SKU_RELATIONS......
+PROMPT
+
+create table XXOM.XX_CS_IES_SKU_RELATIONS
+(SERVICE_ID       NUMBER,
+ SKU              VARCHAR2(150),
+ SKU_CATEGORY     VARCHAR2(250),
+ PARENT_SKU       VARCHAR2(150),
+ SKU_RELATION     VARCHAR2(150),
+ CREATION_DATE    DATE,
+ CREATED_BY       VARCHAR2(50),
+ LAST_UPDATE_DATE DATE,
+ LAST_UPDATED_BY  VARCHAR2(50));
+
+
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

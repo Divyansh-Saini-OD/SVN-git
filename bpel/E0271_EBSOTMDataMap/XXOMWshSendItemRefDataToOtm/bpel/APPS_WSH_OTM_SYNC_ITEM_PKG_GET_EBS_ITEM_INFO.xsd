@@ -1,0 +1,129 @@
+<schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/WSH_OTM_SYNC_ITEM_PKG/GET_EBS_ITEM_INFO/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/WSH_OTM_SYNC_ITEM_PKG/GET_EBS_ITEM_INFO/">
+   <element name="InputParameters">
+      <complexType>
+         <sequence>
+            <element name="P_ENTITY_IN_REC" type="db:WSH_OTM_ENTITY_REC_TYPE" db:index="1" db:type="Struct" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <element name="OutputParameters">
+      <complexType>
+         <sequence>
+            <element name="GET_EBS_ITEM_INFO" type="db:WSH_OTM_GLOG_ITEM_TBL" db:index="0" db:type="Array" minOccurs="0" nillable="true"/>
+            <element name="X_TRANSMISSION_ID" type="decimal" db:index="2" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="X_RETURN_STATUS" type="string" db:index="3" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <complexType name="WSH_OTM_GID_TYPE">
+      <sequence>
+         <element name="GID" type="db:WSH_OTM_GID_T" db:type="Struct" minOccurs="0" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="WSH_OTM_ENTITY_REC_TYPE">
+      <sequence>
+         <element name="ENTITY_TYPE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="30"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="OPERATION" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="255"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="ARGUMENT" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="4000"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="TICKET" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="500"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="ENTITY_ID_TBL" type="db:WSH_OTM_RD_NUM_TBL_TYPE" db:type="Array" minOccurs="0" nillable="true"/>
+         <element name="PARENT_ENTITY_ID_TBL" type="db:WSH_OTM_RD_NUM_TBL_TYPE" db:type="Array" minOccurs="0" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="WSH_OTM_PACKAGING_TYPE">
+      <sequence>
+         <element name="PACKAGEDITEMGID" type="db:WSH_OTM_GID_TYPE" db:type="Struct" minOccurs="0" nillable="true"/>
+         <element name="DESCRIPTION" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="240"/>
+               </restriction>
+            </simpleType>
+         </element>
+      </sequence>
+   </complexType>
+   <complexType name="WSH_OTM_ITEM_TYPE">
+      <sequence>
+         <element name="TRANSACTIONCODE" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="ITEMGID" type="db:WSH_OTM_GID_TYPE" db:type="Struct" minOccurs="0" nillable="true"/>
+         <element name="ITEMNAME" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="40"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="DESCRIPTION" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="240"/>
+               </restriction>
+            </simpleType>
+         </element>
+      </sequence>
+   </complexType>
+   <complexType name="WSH_OTM_GLOG_ITEM_TBL">
+      <sequence>
+         <element name="GET_EBS_ITEM_INFO_ITEM" type="db:WSH_OTM_ITEMMASTER" db:type="Struct" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="WSH_OTM_RD_NUM_TBL_TYPE">
+      <sequence>
+         <element name="ENTITY_ID_TBL_ITEM" type="decimal" db:type="NUMBER" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="WSH_OTM_ITEMMASTER">
+      <sequence>
+         <element name="ITEM" type="db:WSH_OTM_ITEM_TYPE" db:type="Struct" minOccurs="0" nillable="true"/>
+         <element name="PACKAGING" type="db:WSH_OTM_PACKAGING_TYPE" db:type="Struct" minOccurs="0" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="WSH_OTM_GID_T">
+      <sequence>
+         <element name="DOMAINNAME" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="50"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="XID" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="50"/>
+               </restriction>
+            </simpleType>
+         </element>
+      </sequence>
+   </complexType>
+</schema>

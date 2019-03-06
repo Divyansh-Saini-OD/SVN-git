@@ -1,0 +1,14 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="ServiceRequestCreateWrapper" src="ServiceRequestCreateWrapper.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="client">
+            <property name="wsdlLocation">ServiceRequestCreateWrapper.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="EbsCreateSR">
+            <property name="wsdlLocation">EbsCreateSR.wsdl</property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+   </BPELProcess>
+</BPELSuitcase>

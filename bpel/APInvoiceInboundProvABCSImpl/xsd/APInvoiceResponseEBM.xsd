@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://xmlns.officedepot.com/TDS/APInvoiceInboundProvABCSImpl/APInvoiceResponseEBM"
+            targetNamespace="http://xmlns.officedepot.com/TDS/APInvoiceInboundProvABCSImpl/APInvoiceResponseEBM"
+            elementFormDefault="qualified">
+                      
+  <xsd:element name="APInvoiceResponseEBM" type="APInvoiceResponseEBMType"/>    
+    
+
+   
+  <xsd:complexType name="APInvoiceResponseEBMType">
+      <xsd:sequence>
+         <xsd:element name="Status" type="xsd:string"/>    
+         <xsd:element name="Message" type="xsd:string"/>          
+      </xsd:sequence>         
+   </xsd:complexType> 
+   
+
+
+</xsd:schema>

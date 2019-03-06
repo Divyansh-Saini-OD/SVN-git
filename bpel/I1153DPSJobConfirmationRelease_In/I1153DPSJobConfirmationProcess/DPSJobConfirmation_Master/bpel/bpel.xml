@@ -1,0 +1,19 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="DPSJobConfirmation_Master" src="I1153_DPSNowPrintEBS_JobConf_Master.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="plNowDocs">
+            <property name="wsdlLocation">I1153_DPSNowPrintEBS_JobConf_Master.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="svcODErrorLogger">
+            <property name="wsdlLocation">http://chilsoa02d.na.odcorp.net:7777/orabpel/default/ODErrorLogger/ODErrorLogger?wsdl</property>
+            <property name="retryInterval">60</property>
+            <property name="timeout">30</property>
+            <property name="retryMaxCount">3</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="svcConfChild">
+            <property name="wsdlLocation">http://chilsoa02d.na.odcorp.net:7777/orabpel/otc/DPSJobConfirmation_Child/DPSJobConfirmation_Child?wsdl</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+   </BPELProcess>
+</BPELSuitcase>

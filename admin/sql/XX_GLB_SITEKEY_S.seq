@@ -1,0 +1,49 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET TAB OFF;
+SET ECHO OFF;
+SET FEEDBACK OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                        Office Depot                               |
+-- +===================================================================+
+-- | Name             : XX_GLB_SITEKEY_S.seq                           |
+-- | Rice ID          : I1176 CreateServiceRequest                     |
+-- | Description      : This scipt creates the sequence to be used     |
+-- | 				on the XX_GLB_SITEKEY table                    |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |DRAFT 1   18-Dec-2007 Bibiana Penski    Initial Version            |
+-- |                                                                   |
+-- |                                                                   |
+-- +===================================================================+
+
+PROMPT
+PROMPT Dropping SEQUENCE XXOM.XX_GLB_SITEKEY_S
+PROMPT
+
+DROP SEQUENCE XXOM.XX_GLB_SITEKEY_S;
+
+PROMPT
+PROMPT Creating SEQUENCE XXOM.XX_GLB_SITEKEY_S
+PROMPT
+
+CREATE SEQUENCE XXOM.XX_GLB_SITEKEY_S INCREMENT BY 1 START WITH 1 ;                                                                                                              
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

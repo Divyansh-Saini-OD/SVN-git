@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.openapplications.org/oagis/9" 
+targetNamespace="http://www.openapplications.org/oagis/9" elementFormDefault="qualified">
+
+	<xs:complexType name="ActionIdentityType">
+		<xs:sequence>
+			<xs:element ref="GlobalBusinessActionCode"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ActivityControlType">
+		<xs:sequence>
+			<xs:element ref="BusinessActivityIdentifier"/>
+			<xs:element name="MessageControl" type="MessageControlType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="AffirmationIndicator" type="xs:string"/>
+	<xs:complexType name="AttachmentType">
+		<xs:sequence>
+			<xs:element name="description" type="descriptionType"/>
+			<xs:element ref="GlobalMimeTypeQualifierCode"/>
+			<xs:element ref="UniversalResourceIdentifier"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="BusinessActivityIdentifier" type="xs:string"/>
+	<xs:complexType name="CancelAuditType">
+		<xs:sequence>
+			<xs:element ref="CancelCode"/>
+			<xs:element ref="CodeMessage"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="LineDetailType">
+		<xs:sequence>
+			<xs:element ref="OrderSubNumber"/>
+			<xs:element ref="ItemId"/>
+ 		    <xs:element name="CancelAudit" type="CancelAuditType"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="CancelOrderType">
+		<xs:sequence>
+			<xs:element ref="OrderNumber"/>
+			<xs:element ref="OrderIdentfier"/>
+			<xs:element name="LineDetail" type="LineDetailType" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:element name="CancelCode" type="xs:string"/>
+	<xs:element name="CodeMessage" type="xs:string"/>
+	<xs:element name="OrderSubNumber" type="xs:string"/>
+	<xs:element name="ItemId" type="xs:string"/>
+	<xs:element name="CountableAmount" type="xs:string"/>
+	<xs:element name="DateTimeStamp" type="xs:string"/>
+	<xs:complexType name="DeliveryHeaderType">
+		<xs:sequence>
+			<xs:element name="isSecureTransportRequired" type="isSecureTransportRequiredType"/>
+			<xs:element name="messageDateTime" type="messageDateTimeType"/>
+			<xs:element name="messageReceiverIdentification" type="messageReceiverIdentificationType"/>
+			<xs:element name="messageSenderIdentification" type="messageSenderIdentificationType"/>
+			<xs:element name="messageTrackingID" type="messageTrackingIDType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="FreeFormText" type="xs:string"/>
+	<xs:element name="GlobalAdministeringAuthorityCode" type="xs:string"/>
+	<xs:element name="GlobalBusinessActionCode" type="xs:string"/>
+	<xs:element name="GlobalBusinessIdentifier" type="xs:string"/>
+	<xs:element name="GlobalBusinessServiceCode" type="xs:string"/>
+	<xs:element name="GlobalMimeTypeQualifierCode" type="xs:string"/>
+	<xs:element name="GlobalPartnerRoleClassificationCode" type="xs:string"/>
+	<xs:element name="GlobalProcessIndicatorCode" type="xs:string"/>
+	<xs:element name="GlobalUsageCode" type="xs:string"/>
+	<xs:element name="InstanceIdentifier" type="xs:string"/>
+	<xs:complexType name="KnownInitiatingPartnerType">
+		<xs:sequence>
+			<xs:element name="PartnerIdentification" type="PartnerIdentificationType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ManifestType">
+		<xs:sequence>
+			<xs:element name="Attachment" type="AttachmentType"/>
+			<xs:element name="numberOfAttachments" type="numberOfAttachmentsType"/>
+			<xs:element name="ServiceContentControl" type="ServiceContentControlType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="MessageControlType">
+		<xs:sequence>
+			<xs:element name="fromRole" type="fromRoleType"/>
+			<xs:element name="fromService" type="fromServiceType"/>
+			<xs:element name="Manifest" type="ManifestType"/>
+			<xs:element name="toRole" type="toRoleType"/>
+			<xs:element name="toService" type="toServiceType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="OrderIdentfier" type="xs:string"/>
+	<xs:element name="OrderNumber" type="xs:string"/>
+	<xs:complexType name="PartnerIdentificationType">
+		<xs:sequence>
+			<xs:element name="domain" type="domainType" minOccurs="0"/>
+			<xs:element ref="GlobalBusinessIdentifier"/>
+			<xs:element name="locationID" type="locationIDType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PreambleType">
+		<xs:sequence>
+			<xs:element name="standardName" type="standardNameType"/>
+			<xs:element name="standardVersion" type="standardVersionType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ProcessControlType">
+		<xs:sequence>
+			<xs:element name="ActivityControl" type="ActivityControlType"/>
+			<xs:element ref="GlobalUsageCode"/>
+			<xs:element name="pipCode" type="pipCodeType"/>
+			<xs:element name="pipInstanceId" type="pipInstanceIdType"/>
+			<xs:element name="pipVersion" type="pipVersionType"/>
+			<xs:element name="KnownInitiatingPartner" type="KnownInitiatingPartnerType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="SalesOrderCancel">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Preamble" type="PreambleType"/>
+				<xs:element name="DeliveryHeader" type="DeliveryHeaderType"/>
+				<xs:element name="ServiceHeader" type="ServiceHeaderType"/>
+				<xs:element name="CancelOrder" type="CancelOrderType" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="ServiceContentControlType">
+		<xs:sequence>
+			<xs:element name="ActionIdentity" type="ActionIdentityType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ServiceHeaderType">
+		<xs:sequence>
+			<xs:element name="ProcessControl" type="ProcessControlType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="UniversalResourceIdentifier" type="xs:string"/>
+	<xs:element name="Value" type="xs:string"/>
+	<xs:element name="VersionIdentifier" type="xs:string"/>
+	<xs:complexType name="descriptionType">
+		<xs:sequence>
+			<xs:element ref="FreeFormText"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="domainType">
+		<xs:sequence>
+			<xs:element ref="FreeFormText"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="fromRoleType">
+		<xs:sequence>
+			<xs:element ref="GlobalPartnerRoleClassificationCode"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="fromServiceType">
+		<xs:sequence>
+			<xs:element ref="GlobalBusinessServiceCode"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="isSecureTransportRequiredType">
+		<xs:sequence>
+			<xs:element ref="AffirmationIndicator"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="locationIDType">
+		<xs:sequence>
+			<xs:element ref="Value"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="messageDateTimeType">
+		<xs:sequence>
+			<xs:element ref="DateTimeStamp"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="messageReceiverIdentificationType">
+		<xs:sequence>
+			<xs:element name="PartnerIdentification" type="PartnerIdentificationType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="messageSenderIdentificationType">
+		<xs:sequence>
+			<xs:element name="PartnerIdentification" type="PartnerIdentificationType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="messageTrackingIDType">
+		<xs:sequence>
+			<xs:element ref="InstanceIdentifier"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="numberOfAttachmentsType">
+		<xs:sequence>
+			<xs:element ref="CountableAmount"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="pipCodeType">
+		<xs:sequence>
+			<xs:element ref="GlobalProcessIndicatorCode"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="pipInstanceIdType">
+		<xs:sequence>
+			<xs:element ref="InstanceIdentifier"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="pipVersionType">
+		<xs:sequence>
+			<xs:element ref="VersionIdentifier"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="standardNameType">
+		<xs:sequence>
+			<xs:element ref="GlobalAdministeringAuthorityCode"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="standardVersionType">
+		<xs:sequence>
+			<xs:element ref="VersionIdentifier"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="toRoleType">
+		<xs:sequence>
+			<xs:element ref="GlobalPartnerRoleClassificationCode"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="toServiceType">
+		<xs:sequence>
+			<xs:element ref="GlobalBusinessServiceCode"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

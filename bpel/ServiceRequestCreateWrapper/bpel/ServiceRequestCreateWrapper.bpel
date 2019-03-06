@@ -1,0 +1,124 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Fri Dec 23 06:58:35 EST 2011
+  Author:  Prashanth-Kalvala
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="ServiceRequestCreateWrapper"
+         targetNamespace="http://xmlns.oracle.com/ServiceRequestCreateWrapper"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:client="http://xmlns.oracle.com/ServiceRequestCreateWrapper"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/apps/EbsCreateSR/"
+         xmlns:ehdr="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_CS_TDS_SR_PKG/CREATE_SERVICEREQUEST/"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="client"
+                 partnerLinkType="client:ServiceRequestCreateWrapper"
+                 myRole="ServiceRequestCreateWrapperProvider"/>
+    <partnerLink name="EbsCreateSR" partnerRole="EbsCreateSR_role"
+                 partnerLinkType="ns1:EbsCreateSR_plt"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable"
+              messageType="client:ServiceRequestCreateWrapperRequestMessage"/>
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable"
+              messageType="client:ServiceRequestCreateWrapperResponseMessage"/>
+    <variable name="EbsCreateSR_InputVariable" messageType="ns1:args_in_msg"/>
+    <variable name="EbsCreateSR_OutputVariable" messageType="ns1:args_out_msg"/>
+    <variable name="FaultVar" messageType="client:FaultResponseMessage"/>
+  </variables>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <!-- Receive input from requestor. (Note: This maps to operation defined in ServiceRequestCreateWrapper.wsdl) -->
+    <receive name="receiveInput" partnerLink="client"
+             portType="client:ServiceRequestCreateWrapper"
+             operation="processServiceRequestCreate" variable="inputVariable"
+             createInstance="yes"/>
+    <!-- Generate reply to synchronous request -->
+    <assign name="AssignEbsCreateSRInput">
+      <copy>
+        <from variable="inputVariable" part="InputParameters"
+              query="/ns2:InputParameters"/>
+        <to variable="EbsCreateSR_InputVariable" part="InputParameters"
+            query="/ns2:InputParameters"/>
+      </copy>
+    </assign>
+    <invoke name="InvokeEbsCreateSR" partnerLink="EbsCreateSR"
+            portType="ns1:EbsCreateSR_ptt" operation="EbsCreateSR"
+            inputVariable="EbsCreateSR_InputVariable"
+            outputVariable="EbsCreateSR_OutputVariable"/>
+    <switch name="SwitchCheckCustomerStatus">
+      <case condition="contains(bpws:getVariableData('EbsCreateSR_OutputVariable','OutputParameters','/ns2:OutputParameters/ns2:X_MSG_DATA'),&quot;CUSTID&quot;)">
+        <sequence name="SequenceCustomerDoesNotExist">
+          <assign name="AssignFaultMessage">
+            <copy>
+              <from variable="EbsCreateSR_OutputVariable"
+                    part="OutputParameters"/>
+              <to variable="FaultVar" part="OutputParameters"
+                  query="/ns2:OutputParameters"/>
+            </copy>
+          </assign>
+          <reply name="ReplyFaultMessage" partnerLink="client"
+                 portType="client:ServiceRequestCreateWrapper"
+                 operation="processServiceRequestCreate" variable="FaultVar"
+                 faultName="client:CustomerNotFoundFault"/>
+        </sequence>
+      </case>
+      <otherwise>
+        <sequence name="SequenceCustomerExists">
+          <assign name="AssignEbsCreateSROutput">
+            <copy>
+              <from variable="EbsCreateSR_OutputVariable"
+                    part="OutputParameters" query="/ns2:OutputParameters"/>
+              <to variable="outputVariable" part="OutputParameters"
+                  query="/ns2:OutputParameters"/>
+            </copy>
+          </assign>
+          <reply name="replyOutput" partnerLink="client"
+                 portType="client:ServiceRequestCreateWrapper"
+                 operation="processServiceRequestCreate"
+                 variable="outputVariable"/>
+        </sequence>
+      </otherwise>
+    </switch>
+  </sequence>
+</process>

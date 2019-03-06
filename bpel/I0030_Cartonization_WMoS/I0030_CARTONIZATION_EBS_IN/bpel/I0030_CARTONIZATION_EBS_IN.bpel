@@ -1,0 +1,162 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Tue Jul 10 15:04:53 IST 2007
+  Author:  rgandhe
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="I0030_CARTONIZATION_EBS_IN"
+         targetNamespace="http://xmlns.oracle.com/I0030_CARTONIZATION_EBS_IN"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns4="http://xmlns.oracle.com/WMOS_DUMMY"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/Cartonization/"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/BPEL_SHIPMENTUNITDETAILS/XX_OM_CARTON_GETSHPMT_PKG-24GET/"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/db/ShipmentUnitDetails/"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:client="http://xmlns.oracle.com/I0030_CARTONIZATION_EBS_IN"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="client"
+                 partnerLinkType="client:I0030_CARTONIZATION_EBS_IN"
+                 myRole="I0030_CARTONIZATION_EBS_INProvider"/>
+    <partnerLink name="Cartonization" partnerRole="Cartonization_role"
+                 partnerLinkType="ns1:Cartonization_plt"/>
+    <partnerLink name="ShipmentUnitDetails"
+                 partnerRole="ShipmentUnitDetails_role"
+                 partnerLinkType="ns2:ShipmentUnitDetails_plt"/>
+    <partnerLink name="WMOS_DUMMY" partnerRole="WMOS_DUMMYProvider"
+                 partnerLinkType="ns4:WMOS_DUMMY"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable"
+              messageType="client:I0030_CARTONIZATION_EBS_INRequestMessage"/>
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable"
+              messageType="client:I0030_CARTONIZATION_EBS_INResponseMessage"/>
+    <variable name="GetShipmentUnitDetails_ShipmentUnitDetails_InputVariable"
+              messageType="ns2:args_in_msg"/>
+    <variable name="GetShipmentUnitDetails_ShipmentUnitDetails_OutputVariable"
+              messageType="ns2:args_out_msg"/>
+    <variable name="InvokeManhatten_process_InputVariable"
+              messageType="ns4:WMOS_DUMMYRequestMessage"/>
+    <variable name="InvokeManhatten_process_OutputVariable"
+              messageType="ns4:WMOS_DUMMYResponseMessage"/>
+    <variable name="ProcessCartonization_Cartonization_InputVariable"
+              messageType="ns1:args_in_msg"/>
+    <variable name="ProcessCartonization_Cartonization_OutputVariable"
+              messageType="ns1:args_out_msg"/>
+    <variable name="bindingFaultVar" messageType="bpelx:RuntimeFaultMessage"/>
+    <variable name="remoteFaultVar" messageType="bpelx:RuntimeFaultMessage"/>
+  </variables>
+  <faultHandlers>
+    <catch faultName="bpelx:bindingFault" faultVariable="bindingFaultVar">
+      <sequence name="Sequence_1">
+        <assign name="AssignBindingFailureStatus">
+          <copy>
+            <from expression="'Cartonization Incomplete'"/>
+            <to variable="outputVariable" part="payload"
+                query="/client:I0030_CARTONIZATION_EBS_INProcessResponse/client:result"/>
+          </copy>
+        </assign>
+        <reply name="bindingFaultReply" partnerLink="client"
+               portType="client:I0030_CARTONIZATION_EBS_IN" operation="process"
+               variable="outputVariable" faultName="client:faultMessage"/>
+      </sequence>
+    </catch>
+    <catch faultName="bpelx:remoteFault" faultVariable="remoteFaultVar">
+      <sequence name="Sequence_2">
+        <assign name="AssignRemoteFailureStatus">
+          <copy>
+            <from expression="'Cartonization Incomplete'"/>
+            <to variable="outputVariable" part="payload"
+                query="/client:I0030_CARTONIZATION_EBS_INProcessResponse/client:result"/>
+          </copy>
+        </assign>
+        <reply name="remoteFaultReply" partnerLink="client"
+               portType="client:I0030_CARTONIZATION_EBS_IN" operation="process"
+               variable="outputVariable" faultName="client:faultMessage"/>
+      </sequence>
+    </catch>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <!-- Receive input from requestor. (Note: This maps to operation defined in I0030_CARTONIZATION_EBS_IN.wsdl) -->
+    <receive name="receiveInput" partnerLink="client"
+             portType="client:I0030_CARTONIZATION_EBS_IN" operation="process"
+             variable="inputVariable" createInstance="yes"/>
+    <!-- Generate reply to synchronous request -->
+    <assign name="AssignDeliveryId">
+      <copy>
+        <from variable="inputVariable" part="payload"
+              query="/client:I0030_CARTONIZATION_EBS_INProcessRequest/client:deliveryId"/>
+        <to variable="GetShipmentUnitDetails_ShipmentUnitDetails_InputVariable"
+            part="InputParameters" query="/ns3:InputParameters/P_DELIVERY_ID"/>
+      </copy>
+    </assign>
+    <invoke name="GetShipmentUnitDetails" partnerLink="ShipmentUnitDetails"
+            portType="ns2:ShipmentUnitDetails_ptt"
+            operation="ShipmentUnitDetails"
+            inputVariable="GetShipmentUnitDetails_ShipmentUnitDetails_InputVariable"
+            outputVariable="GetShipmentUnitDetails_ShipmentUnitDetails_OutputVariable"/>
+    <invoke name="InvokeManhatten" partnerLink="WMOS_DUMMY"
+            portType="ns4:WMOS_DUMMY" operation="process"
+            inputVariable="InvokeManhatten_process_InputVariable"
+            outputVariable="InvokeManhatten_process_OutputVariable"/>
+    <assign name="TransformManhattenOutput">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:processXSLT('TransformManhattenOutput.xsl',bpws:getVariableData('InvokeManhatten_process_OutputVariable','payload'))"/>
+        <to variable="ProcessCartonization_Cartonization_InputVariable"
+            part="InputParameters"/>
+      </copy>
+    </assign>
+    <invoke name="ProcessCartonization" partnerLink="Cartonization"
+            portType="ns1:Cartonization_ptt" operation="Cartonization"
+            inputVariable="ProcessCartonization_Cartonization_InputVariable"
+            outputVariable="ProcessCartonization_Cartonization_OutputVariable"/>
+    <assign name="AssignSuccessStatus">
+      <copy>
+        <from expression="'Cartonization Completed'"/>
+        <to variable="outputVariable" part="payload"
+            query="/client:I0030_CARTONIZATION_EBS_INProcessResponse/client:result"/>
+      </copy>
+    </assign>
+    <reply name="replyOutput" partnerLink="client"
+           portType="client:I0030_CARTONIZATION_EBS_IN" operation="process"
+           variable="outputVariable"/>
+  </sequence>
+</process>

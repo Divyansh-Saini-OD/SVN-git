@@ -1,0 +1,51 @@
+<definitions
+     name="XXOMWshSendLocRefDataToOtm"
+     targetNamespace="http://xmlns.oracle.com/apps/wsh/outbound/ref/XXOMWshSendLocRefDataToOtm"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:ref="http://xmlns.oracle.com/apps/wsh/outbound/util/WshOtmGlobalOutbound"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+     xmlns:client="http://xmlns.oracle.com/apps/wsh/outbound/ref/XXOMWshSendLocRefDataToOtm"
+    >
+    <types>
+        <schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://xmlns.oracle.com/apps/wsh/outbound/ref/XXOMWshSendLocRefDataToOtm"
+             xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/apps/wsh/outbound/util/WshOtmGlobalOutbound"
+                 schemaLocation="WshOtmGlobalOutbound.xsd"/>
+            <element name="WshSendLocRefDataToOtmProcessRequest">
+                <complexType>
+                    <sequence>
+                        <element name="input" type="ref:tOutboundInput"/>
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="WshSendLocRefDataToOtmProcessResponse">
+                <complexType>
+                    <sequence>
+                        <element name="result" type="ref:tOutboundOutput"/>
+                    </sequence>
+                </complexType>
+            </element>
+        </schema>
+    </types>
+    <message name="WshSendLocRefDataToOtmRequestMessage">
+        <part name="payload" element="client:WshSendLocRefDataToOtmProcessRequest"/>
+    </message>
+    <message name="WshSendLocRefDataToOtmResponseMessage">
+        <part name="payload" element="client:WshSendLocRefDataToOtmProcessResponse"/>
+    </message>
+    <message name="WshLocRefErrorMessage">
+        <part name="payload" type="xsd:string"/>
+    </message>
+    <portType name="XXOMWshSendLocRefDataToOtm">
+        <operation name="process">
+            <input message="client:WshSendLocRefDataToOtmRequestMessage"/>
+            <output message="client:WshSendLocRefDataToOtmResponseMessage"/>
+        </operation>
+    </portType>
+    <plnk:partnerLinkType name="XXOMWshSendLocRefDataToOtm">
+        <plnk:role name="WshSendLocRefDataToOtmProvider">
+            <plnk:portType name="client:XXOMWshSendLocRefDataToOtm"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+</definitions>

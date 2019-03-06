@@ -1,0 +1,94 @@
+<definitions
+     name="WMS"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/mq/headerWMS/"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/mq/headerWMS/"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+     xmlns:pc="http://xmlns.oracle.com/pcbpel/"
+     xmlns:msg_in="http://TargetNamespace.com/CA06OutboundMQ"
+     xmlns:hdr="http://xmlns.oracle.com/pcbpel/adapter/mq/header"
+     xmlns:msg_out="http://TargetNamespace.com/CA06MQIN1"
+    >
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/mq/header" location="MQAdapterInboundHeader.wsdl"/>
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/mq/header" location="MQAdapterOutboundHeader.wsdl"/>
+    <types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema" >
+        <import namespace="http://TargetNamespace.com/CA06OutboundMQ" schemaLocation="CA06_OUTBOUND.xsd" />
+      </schema>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema" >
+        <import namespace="http://TargetNamespace.com/CA06MQIN1" schemaLocation="CA06_INBOUND.xsd" />
+      </schema>
+    </types>
+    <message name="Root-Element_msg_out">
+        <part name="Root-Element" element="msg_out:Root-Element"/>
+    </message>
+    <message name="Root-Element_msg_in">
+        <part name="Root-Element" element="msg_in:Root-Element"/>
+    </message>
+    <portType name="Enqueue_ptt">
+        <operation name="Enqueue">
+            <input message="tns:Root-Element_msg_out"/>
+        </operation>
+    </portType>
+    <portType name="Dequeue_ptt">
+        <operation name="Dequeue">
+            <input message="tns:Root-Element_msg_in"/>
+        </operation>
+    </portType>
+    <binding name="Enqueue_binding" type="tns:Enqueue_ptt">
+    <jca:binding 
+          UITransmissionPrimitive="Request-response" />
+        <operation name="Enqueue">
+      <jca:operation
+          InteractionSpec="oracle.tip.adapter.mq.outbound.InteractionSpecImpl"
+          QueueName="CA06_INBOUND"
+          MessageType="REQUEST"
+          MessageFormat="NONE"
+          Priority="AS_Q_DEF"
+          Persistence="AS_Q_DEF"
+          Expiry="NEVER"
+          MessageId="NEW_MSG_ID"
+          CorrelationId="COPY_MSG_ID"
+          ReplyToQueueName="CA06_OUTBOUND"
+          OpaqueSchema="false" >
+      </jca:operation>
+      <input>
+        <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+      </input>
+        </operation>
+    </binding>
+    <binding name="Dequeue_binding" type="tns:Dequeue_ptt">
+    <pc:inbound_binding 
+          UITransmissionPrimitive="Request-response" />
+        <operation name="Dequeue">
+      <jca:operation
+          ActivationSpec="oracle.tip.adapter.mq.inbound.ActivationSpecImpl"
+          MessageType="REPLY"
+          QueueName="CA06_OUTBOUND"
+          MessageId="NEW_MSG_ID"
+          CorrelationId="COPY_MSG_ID"
+          OpaqueSchema="false" >
+      </jca:operation>
+      <input>
+        <jca:header message="hdr:InboundHeader_msg" part="inboundHeader"/>
+      </input>
+        </operation>
+    </binding>
+    <service name="WMS">
+        <port name="Enqueue_pt" binding="tns:Enqueue_binding">
+      <jca:address location="eis/MQ/MQSeriesAdapter" />
+        </port>
+        <port name="Dequeue_pt" binding="tns:Dequeue_binding">
+      <jca:address location="eis/MQ/MQSeriesAdapter" />
+        </port>
+    </service>
+  <plt:partnerLinkType name="WMS_plt" >
+    <plt:role name="Dequeue_role" >
+      <plt:portType name="tns:Dequeue_ptt" />
+    </plt:role>
+    <plt:role name="Enqueue_role" >
+      <plt:portType name="tns:Enqueue_ptt" />
+    </plt:role>
+  </plt:partnerLinkType>
+</definitions>

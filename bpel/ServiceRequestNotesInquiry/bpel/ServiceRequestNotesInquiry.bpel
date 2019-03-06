@@ -1,0 +1,236 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Wed May 12 20:29:26 EDT 2010
+  Author:  bala-edupuganti
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="ServiceRequestNotesInquiry"
+         targetNamespace="http://xmlns.oracle.com/ServiceRequestNotesInquiry"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns4="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ns7="ODError"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns5="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:client="http://xmlns.oracle.com/ServiceRequestNotesInquiry"
+         xmlns:ns6="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/EbsSrNotesSrvc/"
+         xmlns:ns3="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ns2="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:ns8="http://notesWS/NotestWs.wsdl/types/">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="client"
+                 partnerLinkType="client:ServiceRequestNotesInquiry"
+                 myRole="ServiceRequestNotesInquiryProvider"/>
+    <partnerLink name="EbsSrNotesSrvc" partnerRole="EbsSrNotesSrvc_role"
+                 partnerLinkType="ns1:EbsSrNotesSrvc_plt"/>
+    <partnerLink myRole="ODErrorLoggerRequester" name="ODErrorLogger"
+                 partnerRole="ODErrorLoggerProvider"
+                 partnerLinkType="ns2:ODErrorLogger"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable"
+              messageType="client:ServiceRequestNotesInquiryRequestMessage"/>
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable"
+              messageType="client:ServiceRequestNotesInquiryResponseMessage"/>
+    <variable name="EbsSrNotesSrvc_InputVariable"
+              messageType="ns1:args_in_msg"/>
+    <variable name="EbsSrNotesSrvc_OutputVariable"
+              messageType="ns1:args_out_msg"/>
+    <variable name="InvokeEbsCatch_InputVariable"
+              messageType="ns2:ODErrorLoggerRequestMessage"/>
+    <variable name="InvokeCatchAll_InputVariable"
+              messageType="ns2:ODErrorLoggerRequestMessage"/>
+    <variable name="InvokeEbsSrNotes_InputVariable"
+              messageType="ns1:args_in_msg"/>
+    <variable name="InvokeEbsSrNotes_OutputVariable"
+              messageType="ns1:args_out_msg"/>
+    <variable name="ReplyErrResponse_OutputVariable"
+              messageType="client:ServiceRequestNotesInquiryResponseMessage"/>
+  </variables>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <!-- Receive input from requestor. (Note: This maps to operation defined in ServiceRequestNotesInquiry.wsdl) -->
+    <scope name="ProcessScope">
+      <faultHandlers>
+        <catchAll>
+          <sequence name="SequenceCatchAll">
+            <assign name="assignCatchAll">
+              <copy>
+                <from expression="concat(ora:getProcessId(),ora:getProcessVersion())"/>
+                <to variable="InvokeCatchAll_InputVariable" part="payload"
+                    query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessName"/>
+              </copy>
+              <copy>
+                <from expression="ora:getInstanceId()"/>
+                <to variable="InvokeCatchAll_InputVariable" part="payload"
+                    query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessId"/>
+              </copy>
+              <copy>
+                <from expression="ora:getDomainId()"/>
+                <to variable="InvokeCatchAll_InputVariable" part="payload"
+                    query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessDomain"/>
+              </copy>
+              <copy>
+                <from expression="'SR NOTES INQUIRY'"/>
+                <to variable="InvokeCatchAll_InputVariable" part="payload"
+                    query="/ns7:ErrorData/ns7:ProcessInfo/ns7:SystemName"/>
+              </copy>
+              <copy>
+                <from expression="ora:getCurrentDateTime()"/>
+                <to variable="InvokeCatchAll_InputVariable" part="payload"
+                    query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDateTime"/>
+              </copy>
+              <copy>
+                <from expression="'Catch All of SR Notes Inquiry'"/>
+                <to variable="InvokeCatchAll_InputVariable" part="payload"
+                    query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessStep"/>
+              </copy>
+              <copy>
+                <from expression="'SR Notes Inquiry-Failed'"/>
+                <to variable="InvokeCatchAll_InputVariable" part="payload"
+                    query="/ns7:ErrorData/ns7:Notification/ns7:Subject"/>
+              </copy>
+            </assign>
+            <invoke name="InvokeCatchAll" partnerLink="ODErrorLogger"
+                    portType="ns2:ODErrorLogger" operation="initiate"
+                    inputVariable="InvokeCatchAll_InputVariable"/>
+            <assign name="TransformErrResponse">
+              <bpelx:annotation>
+                <bpelx:pattern>transformation</bpelx:pattern>
+              </bpelx:annotation>
+              <copy>
+                <from expression="ora:processXSLT('TransformErrResponse.xsl',bpws:getVariableData('ReplyErrResponse_OutputVariable','payload'))"/>
+                <to variable="outputVariable" part="payload"/>
+              </copy>
+            </assign>
+            <reply name="ReplyErrResponse" partnerLink="client"
+                   portType="client:ServiceRequestNotesInquiry"
+                   operation="process"
+                   variable="ReplyErrResponse_OutputVariable"/>
+          </sequence>
+        </catchAll>
+      </faultHandlers>
+      <sequence name="SequenceProcess">
+        <receive name="receiveRequest" partnerLink="client"
+                 portType="client:ServiceRequestNotesInquiry"
+                 operation="process" variable="inputVariable"
+                 createInstance="yes"/>
+        <assign name="Transform2Ebs">
+          <bpelx:annotation>
+            <bpelx:pattern>transformation</bpelx:pattern>
+          </bpelx:annotation>
+          <copy>
+            <from expression="ora:processXSLT('TransformEbsNotes.xsl',bpws:getVariableData('inputVariable','payload'))"/>
+            <to variable="InvokeEbsSrNotes_InputVariable"
+                part="InputParameters"/>
+          </copy>
+        </assign>
+        <scope name="ScopeEbsCall">
+          <faultHandlers>
+            <catchAll>
+              <sequence name="SequenceEbsFault">
+                <assign name="assignEbsFault">
+                  <copy>
+                    <from expression="concat(ora:getProcessId(),ora:getProcessVersion())"/>
+                    <to variable="InvokeEbsCatch_InputVariable" part="payload"
+                        query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessName"/>
+                  </copy>
+                  <copy>
+                    <from expression="ora:getInstanceId()"/>
+                    <to variable="InvokeEbsCatch_InputVariable" part="payload"
+                        query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessId"/>
+                  </copy>
+                  <copy>
+                    <from expression="ora:getDomainId()"/>
+                    <to variable="InvokeEbsCatch_InputVariable" part="payload"
+                        query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessDomain"/>
+                  </copy>
+                  <copy>
+                    <from expression="'SR NOTES INQUIRY'"/>
+                    <to variable="InvokeEbsCatch_InputVariable" part="payload"
+                        query="/ns7:ErrorData/ns7:ProcessInfo/ns7:SystemName"/>
+                  </copy>
+                  <copy>
+                    <from expression="ora:getCurrentDateTime()"/>
+                    <to variable="InvokeEbsCatch_InputVariable" part="payload"
+                        query="/ns7:ErrorData/ns7:ErrorDetails/ns7:ErrorDateTime"/>
+                  </copy>
+                  <copy>
+                    <from expression="'Ebs call failure of SR Notes Inquiry'"/>
+                    <to variable="InvokeEbsCatch_InputVariable" part="payload"
+                        query="/ns7:ErrorData/ns7:ProcessInfo/ns7:BusinessProcessStep"/>
+                  </copy>
+                  <copy>
+                    <from expression="ora:doc('${server_url}/xmllib/otc/GlobalParameters.xml','/GlobalParameters/ServiceRequestNotesInquiry/FaultNotification/SendNotification')"/>
+                    <to variable="InvokeEbsCatch_InputVariable" part="payload"
+                        query="/ns7:ErrorData/ns7:Notification/ns7:sendNotification"/>
+                  </copy>
+                  <copy>
+                    <from expression="'EBZ Call Failure-Notes Inquiry'"/>
+                    <to variable="InvokeEbsCatch_InputVariable" part="payload"
+                        query="/ns7:ErrorData/ns7:Notification/ns7:Subject"/>
+                  </copy>
+                </assign>
+                <invoke name="InvokeEbsFault" partnerLink="ODErrorLogger"
+                        portType="ns2:ODErrorLogger" operation="initiate"
+                        inputVariable="InvokeEbsCatch_InputVariable"/>
+              </sequence>
+            </catchAll>
+          </faultHandlers>
+          <invoke name="InvokeEbsSrNotes" partnerLink="EbsSrNotesSrvc"
+                  portType="ns1:EbsSrNotesSrvc_ptt" operation="EbsSrNotesSrvc"
+                  inputVariable="InvokeEbsSrNotes_InputVariable"
+                  outputVariable="InvokeEbsSrNotes_OutputVariable"/>
+        </scope>
+        <assign name="Transform2WS">
+          <bpelx:annotation>
+            <bpelx:pattern>transformation</bpelx:pattern>
+          </bpelx:annotation>
+          <copy>
+            <from expression="ora:processXSLT('TransformSrNotesDetails.xsl',bpws:getVariableData('InvokeEbsSrNotes_OutputVariable','OutputParameters'))"/>
+            <to variable="outputVariable" part="payload"/>
+          </copy>
+        </assign>
+        <reply name="replyNotes" partnerLink="client"
+               portType="client:ServiceRequestNotesInquiry" operation="process"
+               variable="outputVariable"/>
+      </sequence>
+    </scope>
+    <!-- Generate reply to synchronous request -->
+  </sequence>
+</process>

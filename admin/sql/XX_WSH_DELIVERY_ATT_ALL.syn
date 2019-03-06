@@ -1,0 +1,52 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |              Oracle NAIO/WIPRO/Office Depot/Consulting Organization                        |
+-- +============================================================================================+
+-- | Name         : XX_WSH_DELIVERY_ATT_ALL.syn                                                  |
+-- | Rice Id      : E1334_OM_Attributes_Setup                                                   | 
+-- | Description  : Delivery Level DFF attributes setup                                         |  
+-- | Purpose      : Create Custom Table Synonym                                                 |
+-- |                1. XX_WSH_DELIVERY_ATT_ALL                                                   |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author           Remarks                                           | 
+-- |=======    ==========    =============    ==================================================+
+-- |DRAFT 1A   03-Jul-2007   Milind Rane    Initial Version                                     |
+-- |DRAFT 1B   16-Jul-2007   Milind Rane          Ranamed to XX_WSH                             |
+-- +============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+
+-----------------------
+-- Creation of synonym
+-----------------------
+
+PROMPT
+PROMPT Dropping SYNONYM XX_WSH_DELIVERY_ATT_ALL
+PROMPT
+
+DROP SYNONYM apps.xx_wsh_delivery_att_all;
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating SYNONYM XX_WSH_DELIVERY_ATT_ALL 
+PROMPT
+
+CREATE SYNONYM apps.xx_wsh_delivery_att_all FOR xxom.xx_wsh_delivery_att_all
+/
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON

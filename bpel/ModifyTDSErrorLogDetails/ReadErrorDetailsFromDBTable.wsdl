@@ -1,0 +1,21 @@
+<?binding.jca ReadErrorDetailsFromDBTable_db.jca?>
+<wsdl:definitions name="ReadErrorDetailsFromDBTable" targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/TDS/ModifyTDSErrorLogDetails/ReadErrorDetailsFromDBTable" xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/TDS/ModifyTDSErrorLogDetails/ReadErrorDetailsFromDBTable" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:top="http://xmlns.oracle.com/pcbpel/adapter/db/top/ReadErrorDetailsFromDBTable">
+    <plt:partnerLinkType name="ReadErrorDetailsFromDBTable_plt">
+        <plt:role name="ReadErrorDetailsFromDBTable_role">
+            <plt:portType name="tns:ReadErrorDetailsFromDBTable_ptt"/>
+        </plt:role>
+    </plt:partnerLinkType>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/ReadErrorDetailsFromDBTable" schemaLocation="xsd/ReadErrorDetailsFromDBTable_table.xsd"/>
+        </schema>
+    </wsdl:types>
+    <wsdl:message name="XxcomErrorLogCollection_msg">
+        <wsdl:part name="XxcomErrorLogCollection" element="top:XxcomErrorLogCollection"/>
+    </wsdl:message>
+    <wsdl:portType name="ReadErrorDetailsFromDBTable_ptt">
+        <wsdl:operation name="receive">
+            <wsdl:input message="tns:XxcomErrorLogCollection_msg"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

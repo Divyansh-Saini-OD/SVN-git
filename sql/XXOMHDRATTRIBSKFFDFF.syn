@@ -1,0 +1,62 @@
+
+ -- +====================================================================+
+ -- |                  Office Depot - Project Simplify                   |                 
+ -- |    Oracle NAIO/WIPRO/Office Depot/Consulting Organization          |    
+ -- +====================================================================+
+ -- | Name  :      XXOMHDRATTRIBSKFFDFF.syn                              |          
+ -- | Description: This file synonym required for KFF in DFF             |                      
+ -- |              set up for OM Headers to be executed  from apps schema|
+ -- |                                                                    |                                                        
+ -- |                                                                    |                          
+ -- |                                                                    |                        
+ -- |Change Record:                                                      |                   
+ -- |===============                                                     |             
+ -- |Version   Date          Author              Remarks                 |              
+ -- |=======   ==========  =============    =============================|
+ -- |1.0       17-APR-2007   mohan          Initial draft Version        |
+ -- +====================================================================+
+
+SET VERIFY      OFF;
+SET TERM        OFF;
+SET FEEDBACK    OFF;
+SET SHOW        OFF;
+SET ECHO        OFF;
+SET TAB         OFF;
+
+
+-----------------------
+-- Creation of synonym
+-----------------------
+
+PROMPT
+PROMPT Dropping Existing Synonyms for custom tables ...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Dropping SYNONYM XX_OM_HEADERS_ATTRIBUTES_ALL_S
+PROMPT
+
+DROP SYNONYM XX_OM_HEADERS_ATTRIBUTES_ALL_S;
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating SYNONYM XX_OM_HEADERS_ATTRIBUTES_ALL_S 
+PROMPT
+
+
+CREATE SYNONYM XX_OM_HEADERS_ATTRIBUTES_ALL_S FOR XXOM.XX_OM_HEADERS_ATTRIBUTES_ALL_S;
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+

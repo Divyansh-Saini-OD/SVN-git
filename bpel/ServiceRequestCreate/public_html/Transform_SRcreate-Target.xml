@@ -1,0 +1,39 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<db:InputParameters xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_CS_TDS_SR_PKG/CREATE_SERVICEREQUEST/">
+   <db:P_SR_REQ_REC>
+      <db:REQUEST_NUMBER>request_number4</db:REQUEST_NUMBER>
+      <db:CUSTOMER_ID>customer_ref9</db:CUSTOMER_ID>
+      <db:CONTACT_NAME>contact_name12</db:CONTACT_NAME>
+      <db:CONTACT_PHONE>contact_phone13</db:CONTACT_PHONE>
+      <db:CONTACT_EMAIL>contact_email15</db:CONTACT_EMAIL>
+      <db:CONTACT_FAX>contact_fax16</db:CONTACT_FAX>
+      <db:COMMENTS>TEST COMMENTS 1 SERVICE ORDER,TEST COMMENTS 3,,</db:COMMENTS>
+      <db:ORDER_NUMBER>order_number6</db:ORDER_NUMBER>
+      <db:SHIP_TO>Ship_to_ref10</db:SHIP_TO>
+      <db:LOCATION_ID>store_number8</db:LOCATION_ID>
+      <db:ATTRIBUTE1>20080207113642</db:ATTRIBUTE1>
+   </db:P_SR_REQ_REC>
+   <db:P_ORDER_TBL>
+      <db:P_ORDER_TBL_ITEM>
+         <db:SKU_ID>Sku20</db:SKU_ID>
+         <db:QUANTITY>Sku_quantity21</db:QUANTITY>
+         <db:ATTRIBUTE1>Sku_vendor24</db:ATTRIBUTE1>
+         <db:ATTRIBUTE2>Sku_catagory22</db:ATTRIBUTE2>
+         <db:ATTRIBUTE3>Sku_parent_cat23</db:ATTRIBUTE3>
+      </db:P_ORDER_TBL_ITEM>
+      <db:P_ORDER_TBL_ITEM>
+         <db:SKU_ID>Sku30</db:SKU_ID>
+         <db:QUANTITY>Sku_quantity31</db:QUANTITY>
+         <db:ATTRIBUTE1>Sku_vendor34</db:ATTRIBUTE1>
+         <db:ATTRIBUTE2>Sku_catagory32</db:ATTRIBUTE2>
+         <db:ATTRIBUTE3>Sku_parent_cat33</db:ATTRIBUTE3>
+      </db:P_ORDER_TBL_ITEM>
+      <db:P_ORDER_TBL_ITEM>
+         <db:SKU_ID>Sku31</db:SKU_ID>
+         <db:QUANTITY>Sku_quantity31</db:QUANTITY>
+         <db:ATTRIBUTE1>Sku_vendor34</db:ATTRIBUTE1>
+         <db:ATTRIBUTE2>Sku_catagory32</db:ATTRIBUTE2>
+         <db:ATTRIBUTE3>Sku_parent_cat33</db:ATTRIBUTE3>
+      </db:P_ORDER_TBL_ITEM>
+   </db:P_ORDER_TBL>
+</db:InputParameters>

@@ -1,0 +1,43 @@
+<definitions
+     name="SvcDequeue"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/aq/SvcDequeue/"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/aq/SvcDequeue/"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+     xmlns:pc="http://xmlns.oracle.com/pcbpel/"
+    >
+    <portType name="Dequeue_ptt">
+        <operation name="Dequeue"/>
+    </portType>
+    <binding name="Dequeue_binding" type="tns:Dequeue_ptt">
+    <pc:inbound_binding  />
+        <operation name="Dequeue">
+      <jca:operation
+          ActivationSpec="oracle.tip.adapter.aq.inbound.AQDequeueActivationSpec"
+          QueueName="XX_OM_DPS_ERR_MSG_Q"
+          DatabaseSchema="APPS" >
+      </jca:operation>
+        </operation>
+    </binding>
+    <service name="SvcDequeue">
+        <port name="Dequeue_pt" binding="tns:Dequeue_binding">
+<!--Your runtime connection is declared in 
+J2EE_HOME/application-deployments/default/AqAdapter/oc4j-ra.xml 
+These mcf properties here are from your design time connection and 
+save you from having to edit that file and restart the application server 
+if eis/AQ/ebs_apps is missing. 
+These mcf properties are safe to remove.-->
+      <jca:address location="eis/AQ/ebs_apps" UIConnectionName="ebs_apps_gsidev03"
+          ManagedConnectionFactory="oracle.tip.adapter.aq.AQManagedConnectionFactory"
+          mcf.ConnectionString="jdbc:oracle:thin:@choldbr18d.na.odcorp.net:1544:gsidev03"
+          mcf.UserName="apps"
+          mcf.Password="33249B2910CFF3FBCD9B834DF8560A56" />
+        </port>
+    </service>
+  <plt:partnerLinkType name="Dequeue_plt" >
+    <plt:role name="Dequeue_role" >
+      <plt:portType name="tns:Dequeue_ptt" />
+    </plt:role>
+  </plt:partnerLinkType>
+</definitions>

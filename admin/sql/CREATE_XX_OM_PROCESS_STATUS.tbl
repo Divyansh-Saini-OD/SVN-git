@@ -1,0 +1,60 @@
+SET VERIFY OFF
+SET SHOW OFF
+SET TAB OFF
+SET ECHO OFF
+SET FEEDBACK OFF
+SET TERM  ON
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                                                                   |
+-- +===================================================================+
+-- | Name             : CREATE_XX_OM_PROCESS_STATUS.tbl                |
+-- | Rice ID          :                                                |
+-- | Description      : This scipt creates custom table                |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |                                                                   |
+-- |Version Date        Author             Remarks                     |
+-- |======= =========== =============      ============================|
+-- |1.0     17-DEC-2008 Matthew Craig      Initial Version             |
+-- |                                                                   |
+-- +===================================================================+
+
+
+PROMPT
+PROMPT Creating table XX_OM_PROCESS_STATUS
+PROMPT
+
+CREATE TABLE XX_OM_PROCESS_STATUS (
+     process_name       VARCHAR2(30)    PRIMARY KEY
+    ,last_run_date      DATE            NOT NULL
+    ,attribute1         VARCHAR2(80) 
+    ,attribute2         VARCHAR2(80) 
+    ,attribute3         VARCHAR2(80) 
+    ,attribute4         VARCHAR2(80) 
+    ,attribute5         VARCHAR2(80) 
+    ,created_by         NUMBER(15)      NOT NULL      
+    ,creation_date      DATE            NOT NULL         
+    ,last_updated_by    NUMBER(15)      NOT NULL 
+    ,last_update_date   DATE            NOT NULL      
+    ,last_update_login  NUMBER(15)        
+    )
+/
+    
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

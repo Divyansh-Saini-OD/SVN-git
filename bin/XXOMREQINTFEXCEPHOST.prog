@@ -1,0 +1,106 @@
+###################################################################################################################################
+#                     
+#                                             XXOMREQINTFEXCEPHOST                
+##################################################################################################################################
+#Program Name : OD: OM Requisition Import Exception(Host)
+#
+#REM $Header  : OD: OM Requisition Import Exception(Host)
+#
+#Program Type : Shell Script
+#
+#File Name    : XXOMREQINTFEXCEPHOST.prog
+#
+#Description  : This Host Program is submitted to submit the requisition Import  
+#               exception report and then send the report as E-Mail to the Requestor  
+#               which is fetched from the profile
+# 
+#                
+#             
+#         
+#--------------------------------------------------------------------------------------------------------------------------------
+#                                    REVISION HISTORY
+#Revision: 
+#Ver        Date           Author                         Description
+#--------------------------------------------------------------------------------------------------------------------------------
+#1.0      25-May-2007  Sandeep Gorla              Creation of shell script
+#
+##################################################################################################################################
+
+msg=""
+errflag=0
+
+
+DT=`date +%m-%d-%Y`
+VERSION=1.0
+IN_OUT=OUT
+STATUS=STARTED
+   
+echo "===================================================================================================="
+echo "                                 PROGRAM DETAILS                                                    "                 
+echo "===================================================================================================="
+echo "                             Program Name  : OD: OM Requisition Import Exception(Host)               "                   
+echo "                             Request Id    : $4                                             "
+echo "                             Submitted By  : $2                                              "
+echo "                             Submitted Date: $DT                                                    "
+echo "===================================================================================================="
+
+
+
+   echo "====================================================================================================================="
+   echo "        Submitting the concurrent program:- OD: OM Requisition Import Exception(Host)(XXOMREQINTFEXCEPHOST)                " 
+   echo "====================================================================================================================="
+
+A=`CONCSUB $1 $6 "$5" $3 WAIT=Y CONCURRENT $6 XXOMREQINTFEXCEP '""' 'OM' '""' 'NO'`
+
+
+REQID=`echo $A | cut -f3 -d' '`
+   B=`echo $A | grep 'Normal completion'`
+   
+   echo 'Report Submitted. Request ID:'$REQID
+   
+   if [ $? -ne 0 ]
+   then
+      STATUS="COMPLETED EXCEPTION"
+      MESG=$MESG"OD: OM Requisition Import Exception Report  FAILED. Please see the log of the Request ID: $REQID. "
+      DREC=NULL
+      if [ -f $APPLCSF/log/l$REQID.req ]
+      then
+         
+         echo "\nOD: OD: OM Requisition Import Exception Report is in $APPLCSF/log/l$REQID.req. "
+         
+      fi
+   else
+     ### get the mailaddress  
+     echo "Getting Mail address ..."
+     MAIL_ADDR=`sqlplus -s $1<<EOF
+           set heading off
+           set feedback off
+           set pagesize 0
+           
+	SELECT LTRIM(RTRIM(PAP.email_address))    
+	FROM   fnd_profile_options_vl FNDPO,
+	       fnd_profile_option_values FNDPOV,
+	       per_all_people_f PAP
+	WHERE  FNDPO.profile_option_id = FNDPOV.profile_option_id
+	AND    FNDPO.profile_option_name = 'XX_OM_INTERNAL_REQUISITION_PREPARER'
+	AND    LTRIM(RTRIM(FNDPOV.profile_option_value))=LTRIM(RTRIM(PAP.employee_number));
+        quit
+        EOF`
+     ###checking for mail_id existance
+     if [ -z $MAIL_ADDR ]
+     then
+       echo "Mail_id does not exist."
+       echo "Program aborting ..."
+       exit 1;
+     fi
+     
+     echo "Mail ID : "
+     echo $MAIL_ADDR
+
+     output=$APPLCSF/$APPLOUT/o$REQID.out
+
+     mailx -s "OD OM Requisition Import Exception Report" $MAIL_ADDR < $APPLCSF/$APPLOUT/o$REQID.out
+
+   fi                
+echo "OD: OM Requisition Import Exception Report" 
+

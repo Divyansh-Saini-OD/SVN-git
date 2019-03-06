@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="TDSPOSJDABarCodeRequesterABCSImpl"
+             targetNamespace="http://xmlns.oracle.com/TDS/TDSPOSJDABarCodeRequesterABCSImpl/TDSPOSJDABarCodeRequesterABCSImpl"
+             xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:client="http://xmlns.oracle.com/TDS/TDSPOSJDABarCodeRequesterABCSImpl/TDSPOSJDABarCodeRequesterABCSImpl"
+             xmlns:ns1="http://www.OfficeDepot.com/TDS/TDSPOSJDABarCodeRequesterABCSImpl/TDSPOSJDABarCodeEBM"
+             xmlns:ns2="http://www.OfficeDepot.com/TDS/TDSPOSJDABarCodeRequesterABCSImpl/TDSPOSJDABarCodeResponseEBM"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/">
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	TYPE DEFINITION - List of services participating in this BPEL process
+	The default output of the BPEL designer uses strings as input and 
+	output to the BPEL Process. But you can define or import any XML 
+	Schema type and use them as part of the message types.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->   
+	<wsdl:types>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema">
+			<import namespace="http://www.OfficeDepot.com/TDS/TDSPOSJDABarCodeRequesterABCSImpl/TDSPOSJDABarCodeEBM" schemaLocation="xsd/POSJDABarCodeEBM.xsd" />
+		</schema>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema">
+			<import namespace="http://www.OfficeDepot.com/TDS/TDSPOSJDABarCodeRequesterABCSImpl/TDSPOSJDABarCodeResponseEBM" schemaLocation="xsd/POSJDABarCodeResponseEBM.xsd" />
+		</schema>
+	</wsdl:types>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	MESSAGE TYPE DEFINITION - Definition of the message types used as 
+	part of the port type defintions
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->      
+	<wsdl:message name="TDSPOSJDABarCodeRequesterABCSImplRequestMessage">
+		<wsdl:part name="payload" element="ns1:TDSPOSJDABarCodeEBM" />
+	</wsdl:message>
+	<wsdl:message name="TDSPOSJDABarCodeRequesterABCSImplResponseMessage">
+		<wsdl:part name="payload" element="ns2:TDSPOSJDABarCodeResponseEBM" />
+	</wsdl:message>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PORT TYPE DEFINITION - A port type groups a set of operations into
+	a logical service unit.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+	<!-- portType implemented by the TDSPOSJDABarCodeRequesterABCSImpl BPEL process -->
+	<wsdl:portType name="TDSPOSJDABarCodeRequesterABCSImpl">
+		<wsdl:operation name="process">
+			<wsdl:input  message="client:TDSPOSJDABarCodeRequesterABCSImplRequestMessage" />
+			<wsdl:output message="client:TDSPOSJDABarCodeRequesterABCSImplResponseMessage"/>
+		</wsdl:operation>
+	</wsdl:portType>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PARTNER LINK TYPE DEFINITION
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --> 
+	<plnk:partnerLinkType name="TDSPOSJDABarCodeRequesterABCSImpl">
+		<plnk:role name="TDSPOSJDABarCodeRequesterABCSImplProvider">
+			<plnk:portType name="client:TDSPOSJDABarCodeRequesterABCSImpl"/>
+		</plnk:role>
+	</plnk:partnerLinkType>
+</wsdl:definitions>

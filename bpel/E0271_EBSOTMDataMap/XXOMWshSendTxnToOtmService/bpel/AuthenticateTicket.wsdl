@@ -1,0 +1,62 @@
+<definitions
+     name="AuthenticateTicket"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/AuthenticateTicket/"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/AuthenticateTicket/"
+     xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/WSH_OTM_REF_DATA_GEN_PKG/VALIDATE_TKT/"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+    >
+    <types>
+     <schema xmlns="http://www.w3.org/2001/XMLSchema">
+       <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/WSH_OTM_REF_DATA_GEN_PKG/VALIDATE_TKT/"
+               schemaLocation="APPS_WSH_OTM_REF_DATA_GEN_PKG_VALIDATE_TKT.xsd" />
+     </schema>
+    </types>
+    <message name="args_out_msg">
+        <part name="OutputParameters" element="db:OutputParameters"/>
+    </message>
+    <message name="args_in_msg">
+        <part name="InputParameters" element="db:InputParameters"/>
+    </message>
+    <portType name="AuthenticateTicket_ptt">
+        <operation name="AuthenticateTicket">
+            <input message="tns:args_in_msg"/>
+            <output message="tns:args_out_msg"/>
+        </operation>
+    </portType>
+    <binding name="AuthenticateTicket_binding" type="tns:AuthenticateTicket_ptt">
+    <jca:binding />
+        <operation name="AuthenticateTicket">
+      <jca:operation
+          PackageName="WSH_OTM_REF_DATA_GEN_PKG"
+          ProcedureName="VALIDATE_TKT"
+          InteractionSpec="oracle.tip.adapter.db.DBStoredProcedureInteractionSpec" >
+      </jca:operation>
+            <input/>
+            <output/>
+        </operation>
+    </binding>
+    <service name="AuthenticateTicket">
+        <port name="AuthenticateTicket_pt" binding="tns:AuthenticateTicket_binding">
+<!--Your runtime connection is declared in 
+J2EE_HOME/application-deployments/default/DbAdapter/oc4j-ra.xml 
+These mcf properties here are from your design time connection and 
+save you from having to edit that file and restart the application server 
+if eis/DB/OracleConnection is missing. 
+These mcf properties are safe to remove.-->
+      <jca:address location="eis/DB/OracleConnection" UIConnectionName="GLGC2DV1"
+          ManagedConnectionFactory="oracle.tip.adapter.db.DBManagedConnectionFactory"
+          mcf.DriverClassName="oracle.jdbc.driver.OracleDriver"
+          mcf.PlatformClassName="oracle.toplink.internal.databaseaccess.Oracle9Platform"
+          mcf.ConnectionString="jdbc:oracle:thin:@ap650sdb:3935:GLGC2DV1"
+          mcf.UserName="apps"
+          mcf.Password="53CB0F044A0D3DD2C063679F18F89870" />
+        </port>
+    </service>
+  <plt:partnerLinkType name="AuthenticateTicket_plt" >
+    <plt:role name="AuthenticateTicket_role" >
+      <plt:portType name="tns:AuthenticateTicket_ptt" />
+    </plt:role>
+  </plt:partnerLinkType>
+</definitions>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://www.officedepot.com/TDS/GetPartsOrderProvABCSImpl/PartsOrderResponseEBM"                      
+            targetNamespace="http://www.officedepot.com/TDS/GetPartsOrderProvABCSImpl/PartsOrderResponseEBM"
+            elementFormDefault="qualified">
+<xsd:element name="PartsOrderResponseEBM" type="PartsOrderResponseEBMType"/>
+
+<xsd:complexType name="PartsOrderResponseEBMType">
+		<xsd:sequence>
+                 <xsd:element name="PartsOrderResponses" type="PartsOrderResponseType" minOccurs="1" maxOccurs="1"/>
+		</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="PartsOrderResponseType">
+		<xsd:sequence>
+                 <xsd:element name="ServiceRequestNumber" type="xsd:string"/>      
+                 <xsd:element name="PartsOrderResponse" type="PartsOrderResponseEBOType" minOccurs="1" maxOccurs="unbounded"/>
+		</xsd:sequence>
+</xsd:complexType>
+
+   <xsd:complexType name="PartsOrderResponseEBOType">
+      <xsd:sequence>
+      <xsd:element name="RmsSku" type="xsd:string" minOccurs="0" nillable="true"/>         
+      <xsd:element name="ItemDescription" type="xsd:string" minOccurs="0" nillable="true"/>         
+      <xsd:element name="Quantity" type="xsd:decimal" minOccurs="0" nillable="true"/>
+      <xsd:element name="PurchasePrice" type="xsd:decimal" minOccurs="0" nillable="true"/>
+      <xsd:element name="SellingPrice" type="xsd:decimal" minOccurs="0" nillable="true"/>
+      <xsd:element name="UOM" type="xsd:string" minOccurs="0" nillable="true"/>  
+      </xsd:sequence>
+   </xsd:complexType>
+</xsd:schema>

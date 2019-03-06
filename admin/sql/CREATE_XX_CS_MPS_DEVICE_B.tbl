@@ -1,0 +1,107 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : CREATE_XX_CS_MPS_DEVICE_B.tbl                                               |
+-- | Rice Id      :                                                                             | 
+-- | Description  :                                                                             |  
+-- | Purpose      : Create Custom Table XX_CS_MPS_DEVICE_B.tbl.                                 |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   15-AUG-2012   Bapuji Nanapaneni    Initial Version                               |
+-- |                                                                                            |
+-- +============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT drop the Table xx_cs_mps_device_b.....
+PROMPT
+
+  DROP TABLE  XXOM.XX_CS_MPS_DEVICE_B
+  
+  /
+PROMPT
+PROMPT table xx_cs_mps_device_b dropped.....
+PROMPT
+
+PROMPT
+PROMPT Creating the Table xx_cs_mps_device_b.....
+PROMPT
+  CREATE TABLE XXOM.XX_CS_MPS_DEVICE_B( device_id             VARCHAR2(150)   --Index
+                                      , device_name           VARCHAR2(150)
+                                      , group_id              VARCHAR2(150)          --Index
+                                      , group_name            VARCHAR2(250)
+                                      , serial_no             VARCHAR2(100)  
+                                      , ip_address            VARCHAR2(100)  
+                                      , manufacturer          VARCHAR2(150)
+                                      , model                 VARCHAR2(250)
+                                      , party_id              NUMBER
+                                      , party_name            VARCHAR2(250)
+                                      , ship_site_id          NUMBER
+                                      , site_contact          VARCHAR2(250)
+                                      , site_contact_phone    VARCHAR2(25)
+                                      , site_address_1        VARCHAR2(250)
+                                      , site_address_2        VARCHAR2(250)
+                                      , site_city             VARCHAR2(100)
+                                      , site_State            VARCHAR2(100)
+                                      , site_Zip_code         VARCHAR2(50)
+                                      , device_contact        VARCHAR2(100)
+                                      , device_phone          VARCHAR2(40)
+                                      , device_floor          VARCHAR2(150)
+                                      , device_room           VARCHAR2(150)
+                                      , device_location       VARCHAR2(150)
+                                      , device_cost_center    VARCHAR2(150)
+                                      , device_JIT            VARCHAR2(5)
+                                      , program_Type          VARCHAR2(150)
+                                      , managed_status        VARCHAR2(50)
+                                      , support_coverage      VARCHAR2(150)
+                                      , sla_coverage          VARCHAR2(150)
+                                      , mps_rep_comments      VARCHAR2(250)
+                                      , bsd_rep_comments      VARCHAR2(250)
+                                      , active_status         VARCHAR2(250)
+                                      , attribute1            VARCHAR2(250)
+                                      , attribute2            VARCHAR2(250)
+                                      , attribute3            VARCHAR2(250)
+                                      , attribute4            VARCHAR2(250)
+                                      , attribute5            VARCHAR2(250)
+                                      , avf_submit            VARCHAR2(50)
+                                      , black_cpc             NUMBER
+                                      , color_cpc             NUMBER
+                                      , allowances            NUMBER 
+                                      , overage_cost          NUMBER
+                                      , flat_rate             NUMBER
+                                      , fleet_system          VARCHAR2(150)
+                                      , notification_date     DATE
+                                      , essentials_atr_flag   VARCHAR2(1)
+                                      , sku_option_1          VARCHAR2(40)
+                                      , sku_option_2          VARCHAR2(40)
+                                      , sku_option_3          VARCHAR2(40)
+                                      , asset_number          VARCHAR2(80)
+                                      , creation_date         DATE          NOT NULL
+                                      , created_by            NUMBER        NOT NULL
+                                      , last_update_date      DATE          NOT NULL
+                                      , last_updated_by       NUMBER        NOT NULL
+                                      , aops_cust_number      VARCHAR2(40)
+                                      , level_limit           NUMBER
+                                      )
+ 
+/
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+--EXIT;							

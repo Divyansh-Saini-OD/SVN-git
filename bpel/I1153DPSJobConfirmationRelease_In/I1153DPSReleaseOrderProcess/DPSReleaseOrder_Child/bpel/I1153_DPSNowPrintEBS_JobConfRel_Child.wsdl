@@ -1,0 +1,44 @@
+<definitions
+     name="I1153_DPSNowPrintEBS_JobConfRel_Child"
+     targetNamespace="http://xmlns.oracle.com/I1153_DPSNowPrintEBS_JobConfRel_Child"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:ns1="http://xmlbeans.orderProcessing.externalVendors.officedepot.com"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:ns2="http://schemas.oracle.com/bpel/extension"
+     xmlns:client="http://xmlns.oracle.com/I1153_DPSNowPrintEBS_JobConfRel_Child"
+    >
+    <import namespace="http://schemas.oracle.com/bpel/extension" location="RuntimeFault.wsdl"/>
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/I1153_DPSNowPrintEBS_JobConfRel_Child" schemaLocation="I1153_DPSNowPrintEBS_JobConfRel_Child.xsd"/>
+        </schema>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlbeans.orderProcessing.externalVendors.officedepot.com"
+                 schemaLocation="ReleaseOrderRequest.xsd"/>
+        </schema>
+    </types>
+    <message name="I1153_DPSNowPrintEBS_JobConfRel_ChildResponseMessage">
+        <part name="payload" element="client:I1153_DPSNowPrintEBS_JobConfRel_ChildProcessResponse"/>
+    </message>
+    <message name="I1153_DPSNowPrintEBS_JobConfRel_ChildRequestMessage">
+        <part name="payload" element="ns1:ReleaseOrderRequest"/>
+    </message>
+    <portType name="I1153_DPSNowPrintEBS_JobConfRel_ChildCallback">
+        <operation name="onResult">
+            <input message="client:I1153_DPSNowPrintEBS_JobConfRel_ChildResponseMessage"/>
+        </operation>
+    </portType>
+    <portType name="I1153_DPSNowPrintEBS_JobConfRel_Child">
+        <operation name="initiate">
+            <input message="client:I1153_DPSNowPrintEBS_JobConfRel_ChildRequestMessage"/>
+        </operation>
+    </portType>
+    <plnk:partnerLinkType name="I1153_DPSNowPrintEBS_JobConfRel_Child">
+        <plnk:role name="I1153_DPSNowPrintEBS_JobConfRel_ChildProvider">
+            <plnk:portType name="client:I1153_DPSNowPrintEBS_JobConfRel_Child"/>
+        </plnk:role>
+        <plnk:role name="I1153_DPSNowPrintEBS_JobConfRel_ChildRequester">
+            <plnk:portType name="client:I1153_DPSNowPrintEBS_JobConfRel_ChildCallback"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+</definitions>

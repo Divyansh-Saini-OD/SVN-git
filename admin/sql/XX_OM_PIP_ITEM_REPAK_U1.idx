@@ -1,0 +1,123 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                Oracle NAIO Consulting Organization                |
+-- +===================================================================+
+-- | Name         :XX_OM_PIP_ITEM_REPAK_U1.idx                         |
+-- | Rice ID      :E1259_PIPCampaignDefinition                         |
+-- | Description  :OD PIP Campaign Definition Index Creation           |
+-- |               Script for PIP Item Repak                           |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |DRAFT 1A 17-MAY-2007  Hema Chikkanna   Initial draft version       |
+-- |1.0      18-MAY-2007  Hema Chikkanna   Baselined after testing     |
+-- |                                                                   |
+-- |1.1      14-JUN-2007  Hema Chikkanna   Incorporated the file name  |
+-- |                                       change as per onsite        |
+-- |                                       requirement                 |
+-- +===================================================================+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+------------------
+-- Index creation
+------------------
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Dropping of existing Index on custom table.....
+PROMPT
+
+
+DROP INDEX XX_OM_PIP_ITEM_REPAK_U1;
+
+
+WHENEVER SQLERROR EXIT 1;
+
+PROMPT
+PROMPT Enter the Table Space Name......
+PROMPT
+
+ACCEPT tablespace NOPROMPT
+
+PROMPT
+PROMPT Enter Storage Parameter - PctFree......
+PROMPT
+
+ACCEPT pctfree NOPROMPT
+
+PROMPT
+PROMPT Enter Storage Parameter - Initial......
+PROMPT
+
+ACCEPT initial NOPROMPT
+
+PROMPT
+PROMPT Enter Storage Parameter - Next......
+PROMPT
+
+ACCEPT next NOPROMPT
+
+PROMPT
+PROMPT Enter Storage Parameter - PctIncrease......
+PROMPT
+
+ACCEPT pctincrease NOPROMPT
+
+PROMPT
+PROMPT Enter Storage Parameter - MinExtents......
+PROMPT
+
+ACCEPT minextents NOPROMPT
+
+PROMPT
+PROMPT Enter Storage Parameter - MaxExtents......
+PROMPT
+
+ACCEPT maxextents NOPROMPT
+
+
+WHENEVER SQLERROR EXIT 1
+
+
+PROMPT
+PROMPT Creation of Index on custom table.....
+PROMPT
+
+
+PROMPT
+PROMPT Creating unique index on  XX_OM_PIP_ITEM_REPAK(inventory_item_id,warehouse_id) .....
+PROMPT
+
+CREATE UNIQUE INDEX XX_OM_PIP_ITEM_REPAK_U1 ON XX_OM_PIP_ITEM_REPAK(inventory_item_id,warehouse_id)
+LOGGING
+TABLESPACE &tablespace
+PCTFREE    &pctfree
+STORAGE    (
+            INITIAL          &initial
+            NEXT             &next
+            MINEXTENTS       &minextents
+            MAXEXTENTS       &maxextents
+            PCTINCREASE      &pctincrease
+           );
+
+
+
+WHENEVER SQLERROR CONTINUE;
+
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+

@@ -1,0 +1,638 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toplink:object-persistence version="Oracle TopLink - 10g Release 3 (10.1.3.1.0) (Build 061004)" xmlns:opm="http://xmlns.oracle.com/ias/xsds/opm" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:toplink="http://xmlns.oracle.com/ias/xsds/toplink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <opm:name>DBRead</opm:name>
+   <opm:class-mapping-descriptors>
+      <opm:class-mapping-descriptor xsi:type="toplink:relational-class-mapping-descriptor">
+         <opm:class>DBRead.XxOmDpslinesV</opm:class>
+         <opm:alias>XxOmDpslinesV</opm:alias>
+         <opm:primary-key>
+            <opm:field table="XX_OM_DPSLINES_V" name="LINE_ID" xsi:type="opm:column"/>
+         </opm:primary-key>
+         <opm:events xsi:type="toplink:event-policy"/>
+         <opm:querying xsi:type="toplink:query-policy">
+            <opm:queries>
+               <opm:query name="findAllXxOmDpslinesV" xsi:type="toplink:read-all-query">
+                  <toplink:timeout>0</toplink:timeout>
+                  <toplink:reference-class>DBRead.XxOmDpslinesV</toplink:reference-class>
+                  <toplink:cache-usage>primary-key</toplink:cache-usage>
+                  <toplink:lock-mode>none</toplink:lock-mode>
+                  <toplink:container xsi:type="toplink:list-container-policy">
+                     <toplink:collection-type>java.util.Vector</toplink:collection-type>
+                  </toplink:container>
+               </opm:query>
+               <opm:query name="DBReadSelect" xsi:type="toplink:read-all-query">
+                  <opm:criteria operator="equal" xsi:type="toplink:relation-expression">
+                     <toplink:left name="parentLineId" xsi:type="toplink:query-key-expression">
+                        <toplink:base xsi:type="toplink:base-expression"/>
+                     </toplink:left>
+                     <toplink:right xsi:type="toplink:parameter-expression">
+                        <toplink:parameter name="p_Parent_line_id" xsi:type="opm:column"/>
+                     </toplink:right>
+                  </opm:criteria>
+                  <opm:arguments>
+                     <opm:argument name="p_Parent_line_id">
+                        <opm:type>java.lang.String</opm:type>
+                     </opm:argument>
+                  </opm:arguments>
+                  <toplink:timeout>0</toplink:timeout>
+                  <toplink:reference-class>DBRead.XxOmDpslinesV</toplink:reference-class>
+                  <toplink:cache-usage>primary-key</toplink:cache-usage>
+                  <toplink:lock-mode>none</toplink:lock-mode>
+                  <toplink:container xsi:type="toplink:list-container-policy">
+                     <toplink:collection-type>java.util.Vector</toplink:collection-type>
+                  </toplink:container>
+               </opm:query>
+            </opm:queries>
+            <toplink:does-exist-query xsi:type="toplink:does-exist-query">
+               <toplink:existence-check>check-database</toplink:existence-check>
+            </toplink:does-exist-query>
+         </opm:querying>
+         <opm:attribute-mappings>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>lineId</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="LINE_ID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>glbadminauthoritycode</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="GLBADMINAUTHORITYCODE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>versionidentifier</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="VERSIONIDENTIFIER" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>affirmationindicator</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="AFFIRMATIONINDICATOR" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>datetimestamp</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="DATETIMESTAMP" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>glblbizidentifierRecv</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="GLBLBIZIDENTIFIER_RECV" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>freeformtextRecv</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="FREEFORMTEXT_RECV" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>valueRecv</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="VALUE_RECV" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>glblbizidentifierSend</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="GLBLBIZIDENTIFIER_SEND" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>freeformtextSend</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="FREEFORMTEXT_SEND" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>valueSend</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="VALUE_SEND" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>instanceidentifierMsg</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="INSTANCEIDENTIFIER_MSG" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>glbusagecode</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="GLBUSAGECODE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>businessactivityidentifier</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="BUSINESSACTIVITYIDENTIFIER" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>glbpartroleclasscode</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="GLBPARTROLECLASSCODE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>glbbusinessservicecode</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="GLBBUSINESSSERVICECODE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>glbmimetypequalcode</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="GLBMIMETYPEQUALCODE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>universalresourceidentifier</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="UNIVERSALRESOURCEIDENTIFIER" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>freeformtext</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="FREEFORMTEXT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>countableamount</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="COUNTABLEAMOUNT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>glbbizactioncode</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="GLBBIZACTIONCODE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>glbpartroleclasscodeto</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="GLBPARTROLECLASSCODETO" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>glbbizservcodeto</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="GLBBIZSERVCODETO" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>glbproindcodePip</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="GLBPROINDCODE_PIP" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>instanceidentifierPip</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="INSTANCEIDENTIFIER_PIP" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>versionidentifierPip</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="VERSIONIDENTIFIER_PIP" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>glblbizidentifierSh</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="GLBLBIZIDENTIFIER_SH" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>freeformtextSh</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="FREEFORMTEXT_SH" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>valueSh</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="VALUE_SH" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>orderNumber</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="ORDER_NUMBER" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>totalbundlecount</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="TOTALBUNDLECOUNT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>orderIdentifier</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="ORDER_IDENTIFIER" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>orderedDate</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="ORDERED_DATE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.sql.Timestamp</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>channel</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="CHANNEL" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>transactionalCurrCode</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="TRANSACTIONAL_CURR_CODE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>custPoNumber</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="CUST_PO_NUMBER" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>description</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="DESCRIPTION" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>paymentTypeCode</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="PAYMENT_TYPE_CODE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>gift</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="GIFT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>deliverycharge</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="DELIVERYCHARGE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>totalprice</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="TOTALPRICE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>taxes</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="TAXES" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>estimatedshipdate</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="ESTIMATEDSHIPDATE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.sql.Timestamp</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>adjusmentamount</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="ADJUSMENTAMOUNT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>adjustmentreason</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="ADJUSTMENTREASON" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>notessummaryHed</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="NOTESSUMMARY_HED" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>notesdetailsHed</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="NOTESDETAILS_HED" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>key</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="KEY" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>value</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="VALUE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>key1</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="KEY1" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>value1</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="VALUE1" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>key2</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="KEY2" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>value2</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="VALUE2" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shiptoid</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SHIPTOID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shiptorep</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SHIPTOREP" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shiptocontactname</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SHIPTOCONTACTNAME" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shipToCountry</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SHIP_TO_COUNTRY" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shipToAddress1</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SHIP_TO_ADDRESS1" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shipToAddress2</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SHIP_TO_ADDRESS2" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shipToAddress3</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SHIP_TO_ADDRESS3" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shipToAddress4</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SHIP_TO_ADDRESS4" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shipToCity</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SHIP_TO_CITY" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shipToCounty</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SHIP_TO_COUNTY" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shipToState</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SHIP_TO_STATE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shipToPostalCode</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SHIP_TO_POSTAL_CODE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shipToFax</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SHIP_TO_FAX" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shipToEmailAddress</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SHIP_TO_EMAIL_ADDRESS" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shipToPhoneNumber</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SHIP_TO_PHONE_NUMBER" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>billtoid</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="BILLTOID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>billtorep</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="BILLTOREP" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>billtocontactname</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="BILLTOCONTACTNAME" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>billToCountry</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="BILL_TO_COUNTRY" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>billToAddress1</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="BILL_TO_ADDRESS1" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>billToAddress2</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="BILL_TO_ADDRESS2" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>billToAddress3</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="BILL_TO_ADDRESS3" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>billToAddress4</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="BILL_TO_ADDRESS4" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>billToCity</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="BILL_TO_CITY" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>billToCounty</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="BILL_TO_COUNTY" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>billToState</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="BILL_TO_STATE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>billToPostalCode</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="BILL_TO_POSTAL_CODE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>billToFax</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="BILL_TO_FAX" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>billToEmailAddress</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="BILL_TO_EMAIL_ADDRESS" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>billToPhoneNumber</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="BILL_TO_PHONE_NUMBER" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>soldtoid</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SOLDTOID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>soldtorep</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SOLDTOREP" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>soldtocontactname</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SOLDTOCONTACTNAME" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>soldToCountry</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SOLD_TO_COUNTRY" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>soldToAddress1</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SOLD_TO_ADDRESS1" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>soldToAddress2</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SOLD_TO_ADDRESS2" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>soldToAddress3</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SOLD_TO_ADDRESS3" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>soldToAddress4</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SOLD_TO_ADDRESS4" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>soldToCity</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SOLD_TO_CITY" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>soldToCounty</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SOLD_TO_COUNTY" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>soldToState</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SOLD_TO_STATE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>soldToPostalCode</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SOLD_TO_POSTAL_CODE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>soldToFax</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SOLD_TO_FAX" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>soldToEmailAddress</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SOLD_TO_EMAIL_ADDRESS" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>soldToPhoneAddress</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SOLD_TO_PHONE_ADDRESS" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>lineNumber</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="LINE_NUMBER" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>parentLineId</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="PARENT_LINE_ID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>productId</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="PRODUCT_ID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>unitofmeasure</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="UNITOFMEASURE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>salesprice</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SALESPRICE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>configurationcode</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="CONFIGURATIONCODE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>orderedQuantity</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="ORDERED_QUANTITY" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>promotioncode</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="PROMOTIONCODE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>lineCurrCode</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="LINE_CURR_CODE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>notessummaryLine</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="NOTESSUMMARY_LINE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>notesdetailsLine</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="NOTESDETAILS_LINE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>sourceId</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="SOURCE_ID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>holdName</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="HOLD_NAME" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>lineStatus</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="LINE_STATUS" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>lineType</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="LINE_TYPE" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>headerId</opm:attribute-name>
+               <opm:field table="XX_OM_DPSLINES_V" name="HEADER_ID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigDecimal</opm:attribute-classification>
+            </opm:attribute-mapping>
+         </opm:attribute-mappings>
+         <toplink:descriptor-type>independent</toplink:descriptor-type>
+         <toplink:caching>
+            <toplink:cache-type>weak-reference</toplink:cache-type>
+            <toplink:always-refresh>true</toplink:always-refresh>
+         </toplink:caching>
+         <toplink:remote-caching>
+            <toplink:cache-type>weak-reference</toplink:cache-type>
+         </toplink:remote-caching>
+         <toplink:instantiation/>
+         <toplink:copying xsi:type="toplink:instantiation-copy-policy"/>
+         <toplink:change-policy xsi:type="toplink:deferred-detection-change-policy"/>
+         <toplink:tables>
+            <toplink:table name="XX_OM_DPSLINES_V"/>
+         </toplink:tables>
+      </opm:class-mapping-descriptor>
+   </opm:class-mapping-descriptors>
+</toplink:object-persistence>

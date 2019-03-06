@@ -1,0 +1,50 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_OM_HEADER_ATTRIBUTES.syn                                                 |
+-- | Rice Id      : E1334_OM_Attributes_Setup                                                   | 
+-- | Description  :    Synonym Script                                                           |  
+-- | Purpose      : Synonym creation for Custom Order Header Script                             |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   05-Jul-2007   Prajeesh             Initial Version                               |
+-- |                                                                                            |
+-- +============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+SET TERM ON
+
+-----------------------
+-- Creation of synonym
+-----------------------
+
+
+
+PROMPT
+PROMPT Creating SYNONYM XX_OM_HEADER_ATTRIBUTES_ALL 
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_OM_HEADER_ATTRIBUTES_ALL FOR XXOM.XX_OM_HEADER_ATTRIBUTES_ALL
+/
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+

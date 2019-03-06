@@ -1,0 +1,28 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project TDS                              |
+-- |                                                                          |
+-- +==========================================================================+
+-- | SQL Script to create                                                     |
+-- |                                                                          |
+-- |                      INDEXES: XX_mtl_system_items_N3                     |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     02-AUG-2011  Gaurav Agarwal       Initial version               |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX XX_mtl_system_items_N3 ON mtl_system_items_b(attribute2)
+NOLOGGING  tablespace APPS_TS_TX_IDX_16M
+PARALLEL 16
+ONLINE;
+

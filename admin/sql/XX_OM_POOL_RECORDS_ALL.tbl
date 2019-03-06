@@ -1,0 +1,69 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : xx_om_pool_records_all.tbl                                                  |
+-- | Rice Id      : E1265                                                                       | 
+-- | Description  : EXT-E1265_Data Collection Pools Table Creation                              |  
+-- | Purpose      : Create Custom Table XX_OM_POOL_RECORDS_ALL.tbl                              |
+-- |                                                                                            |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   09-SEP-2007   Visalakshi           Initial Version                               |
+-- |                         Sivasubramanian.                                                   |          -- |                                                                                            |
+-- +============================================================================================+
+
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+PROMPT
+PROMPT Dropping Existing Custom Tables......
+PROMPT
+
+PROMPT
+PROMPT Dropping Table xx_om_pool_records_all
+PROMPT
+
+DROP TABLE xx_om_pool_records_all;
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Table xx_om_pool_records_all.....
+PROMPT
+
+CREATE TABLE xx_om_pool_records_all
+    (
+         entity_name          VARCHAR2(30) NOT NULL
+        ,entity_id            NUMBER NOT NULL
+        ,pool_id              VARCHAR2(30) NOT NULL
+        ,hold_id              NUMBER 
+        ,org_id               NUMBER NOT NULL
+        ,reviewer             NUMBER
+        ,priority             VARCHAR2(15)
+        ,holdover_code        VARCHAR2(30)
+        ,creation_date        DATE NOT NULL
+        ,created_by           NUMBER NOT NULL
+        ,last_update_date     DATE NOT NULL
+        ,last_updated_by      NUMBER NOT NULL
+        ,last_update_login    NUMBER
+    )
+/
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;

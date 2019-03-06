@@ -1,0 +1,47 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+-- +============================================================================================+
+-- |                                    Office Depot                                            |
+-- +============================================================================================|
+-- | Name          : XX_C2T_CC_TOKEN_RETUNRS_s.seq                                              |
+-- | Description   : This script will populate the sequence for credit card token return records|
+-- | Rice Id       : C0705                                                                      |
+-- | Change Record :                                                                            |
+-- | ===============                                                                            |
+-- | Version   Date         Author           Remarks                                            |
+-- | =======   ===========  =============    ===================================================|
+-- | 1.0       17-SEP-2015  Manikant Kasu    Initial Version                                    |
+-- +============================================================================================+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET TERM ON
+
+PROMPT
+PROMPT 'Creating the Sequence XXOM.XX_C2T_CC_TOKEN_RETURNS_s' 
+PROMPT
+
+CREATE SEQUENCE XXOM.XX_C2T_CC_TOKEN_RETURNS_s 
+  MINVALUE 1
+  START WITH 1000
+  INCREMENT BY 1
+  NOCACHE
+/
+
+PROMPT
+PROMPT 'Exiting....'
+PROMPT
+
+SET FEEDBACK ON
+
+SHOW ERRORS;
+EXIT;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

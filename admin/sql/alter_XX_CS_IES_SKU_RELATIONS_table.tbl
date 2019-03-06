@@ -1,0 +1,17 @@
+
+PROMPT
+PROMPT MODIFYING the Table XX_CS_IES_SKU_RELATIONS.....
+PROMPT
+
+alter table XXOM.XX_CS_IES_SKU_RELATIONS add(Status VARCHAR2(100))
+/
+alter table XXOM.XX_CS_IES_SKU_RELATIONS add(Request_id number)
+/
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+

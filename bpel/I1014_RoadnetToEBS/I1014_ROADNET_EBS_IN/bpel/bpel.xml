@@ -1,0 +1,19 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="I1014_ROADNET_EBS_IN" src="I1014_ROADNET_EBS_IN.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="RoadnetCommonMQ">
+            <property name="wsdlLocation">RoadnetCommonMQ.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="EBSDeliveryUpdate">
+            <property name="wsdlLocation">EBSDeliveryUpdate.wsdl</property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+      <activationAgents>
+         <activationAgent className="oracle.tip.adapter.fw.agent.jca.JCAActivationAgent" partnerLink="RoadnetCommonMQ">
+            <property name="portType">Dequeue_ptt</property>
+         </activationAgent>
+      </activationAgents>
+   </BPELProcess>
+</BPELSuitcase>

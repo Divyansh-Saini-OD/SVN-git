@@ -1,0 +1,78 @@
+-- +============================================================================================+
+-- |                        Office Depot - Project Simplify                                     |
+-- |                                                                                            |
+-- +============================================================================================+
+-- | Name         : XX_OM_LINES_ATTRIBUTES_ALL_U1.idx                                           |
+-- | Rice Id      : I1272                                                                       | 
+-- | Description  : INT-I1272_SalesOrderFrom LegacySystems(HVOP) Index Creation                 |  
+-- | Purpose      : Create UNIQUE Index for Table XX_OM_LINES_ATTRIBUTES_ALL.tbl on columns     |
+-- |                ( combination_id)                                                           |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version    Date          Author                Remarks                                      | 
+-- |=======    ==========    =================    ==============================================+
+-- |DRAFT 1A   22-MAY-2007   Bapuji Nanapaneni    Initial Version                               |
+-- |                                                                                            |
+-- +============================================================================================+
+
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+COLUMN XXOM_login   NEW_VALUE XXOM_LOGIN   NOPRINT
+COLUMN XXOM_user    NEW_VALUE XXOM_USER    NOPRINT
+
+SET TERM ON
+
+SELECT '&&1' XXOM_LOGIN
+      ,'&&2' XXOM_USER
+FROM  SYS.dual
+WHERE ROWNUM = 1;
+
+WHENEVER SQLERROR EXIT 1
+
+Prompt Connecting TO Custom SCHEMA &&XXOM_USER
+
+CONNECT &&XXOM_LOGIN;
+
+------------------
+-- Index creation
+------------------
+PROMPT
+PROMPT Dropping Existing INDEX from &&XXOM_USER...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Dropping INDEX XX_OM_LINES_ATTRIBUTES_ALL_U1 
+PROMPT
+
+DROP INDEX XX_OM_LINES_ATTRIBUTES_ALL_U1;
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creation of Index on custom table.....
+PROMPT
+
+PROMPT
+PROMPT Creating unique index on  XX_OM_LINES_ATTRIBUTES_ALL_U1 .....
+PROMPT
+
+CREATE UNIQUE INDEX XX_OM_LINES_ATTRIBUTES_ALL_U1 ON XXOM.XX_OM_LINES_ATTRIBUTES_ALL(combination_id);
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+

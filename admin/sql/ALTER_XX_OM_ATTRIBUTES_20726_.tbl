@@ -1,0 +1,66 @@
+-- +==========================================================================+
+-- |                         Office Depot                                    |
+-- |                       Oracle Consulting                                 |
+-- +==========================================================================+
+-- |                                                                          |
+-- | SQL Script to add the columns and to create index                        |
+-- |             Table       : XXOM.XX_OM_HEADER_ATTRIBUTES_ALL                    |
+-- |                           XXOM.XX_OM_LINE_ATTRIBUTES_ALL                 |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version   Date         Author               Remarks                       |
+-- |=======   ==========   =============        ==============================|
+-- | V1.0     25-OCT-2012  Deepti S             Initial version               |
+-- |                                            Added for the Defect 20726    |
+-- |                                                                          |
+-- |                                                                          |
+-- |                                                                          |
+-- +==========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+alter table xxom.XX_OM_HEADER_ATTRIBUTES_ALL add (mps_ext_flag VARCHAR2(1), mps_ext_date DATE);
+
+
+
+alter table xxom.XX_OM_LINE_ATTRIBUTES_ALL add (mps_ext_flag VARCHAR2(1), mps_ext_date DATE);
+
+
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+-- -------------------------------------------------
+-- Creating Index 
+-- -------------------------------------------------
+
+CREATE INDEX.XX_OM_HEADER_ATTRIBUTES_ALL_I1 
+ON           XXOM.XX_OM_HEADER_ATTRIBUTES_ALL
+             ( mps_ext_flag) ;
+
+
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+-- -------------------------------------------------
+-- Creating Index 
+-- -------------------------------------------------
+
+CREATE INDEX XX_OM_LINE_ATTRIBUTES_ALL_I1 
+ON           XXOM.XX_OM_LINE_ATTRIBUTES_ALL
+             ( mps_ext_flag) ;
+
+
+
+
+
+SHOW ERRORS;
+
+EXIT;
+/

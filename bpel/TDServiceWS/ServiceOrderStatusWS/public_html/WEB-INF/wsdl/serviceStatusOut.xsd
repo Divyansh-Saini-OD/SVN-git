@@ -1,0 +1,131 @@
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:soap11-enc="http://schemas.xmlsoap.org/soap/encoding/"
+     xmlns:tns="http://gsidev01/ServiceStatusInquiryWS.wsdl/types/" targetNamespace="http://gsidev01/ServiceStatusInquiryWS.wsdl/types/"
+     elementFormDefault="qualified">
+    <complexType name="XxCsSrRecTypeUser">
+        <complexContent>
+            <extension base="tns:XxCsSrRecTypeBase">
+                <sequence>
+                    <element name="comments" type="string" nillable="true"/>
+                    <element name="salesRepContactName" type="string" nillable="true"/>
+                    <element name="callerType" type="string" nillable="true"/>
+                    <element name="contactFax" type="string" nillable="true"/>
+                    <element name="userId" type="string" nillable="true"/>
+                    <element name="ownerId" type="decimal" nillable="true"/>
+                    <element name="customerNumber" type="decimal" nillable="true"/>
+                    <element name="salesRepContactExt" type="string" nillable="true"/>
+                    <element name="contactName" type="string" nillable="true"/>
+                    <element name="typeId" type="decimal" nillable="true"/>
+                    <element name="customerSkuId" type="string" nillable="true"/>
+                    <element name="resolutionCode" type="string" nillable="true"/>
+                    <element name="channel" type="string" nillable="true"/>
+                    <element name="requestDate" type="dateTime" nillable="true"/>
+                    <element name="accountMgrEmail" type="string" nillable="true"/>
+                    <element name="problemCode" type="string" nillable="true"/>
+                    <element name="globalTicketNumber" type="decimal" nillable="true"/>
+                    <element name="salesRepContactEmail" type="string" nillable="true"/>
+                    <element name="contactPhone" type="string" nillable="true"/>
+                    <element name="preferredContact" type="string" nillable="true"/>
+                    <element name="requestId" type="decimal" nillable="true"/>
+                    <element name="expResolutionDate" type="dateTime" nillable="true"/>
+                    <element name="zzFlag" type="string" nillable="true"/>
+                    <element name="statusName" type="string" nillable="true"/>
+                    <element name="requestNumber" type="decimal" nillable="true"/>
+                    <element name="contactEmail" type="string" nillable="true"/>
+                    <element name="language" type="string" nillable="true"/>
+                    <element name="customerId" type="decimal" nillable="true"/>
+                    <element name="typeName" type="string" nillable="true"/>
+                    <element name="actResolutionDate" type="dateTime" nillable="true"/>
+                    <element name="cscLocation" type="string" nillable="true"/>
+                    <element name="description" type="string" nillable="true"/>
+                    <element name="shipTo" type="string" nillable="true"/>
+                    <element name="globalTicketFlag" type="string" nillable="true"/>
+                    <element name="salesRepContact" type="string" nillable="true"/>
+                    <element name="salesRepContactPhone" type="string" nillable="true"/>
+                    <element name="warehouseId" type="decimal" nillable="true"/>
+                    <element name="orderNumber" type="string" nillable="true"/>
+                    <element name="shipDate" type="dateTime" nillable="true"/>
+                    <element name="ownerGroupId" type="decimal" nillable="true"/>
+                </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="XxCsSrRecTypeBase">
+        <sequence/>
+    </complexType>
+    <complexType name="XxCsSrOrderRecTypeUser">
+        <complexContent>
+            <extension base="tns:XxCsSrOrderRecTypeBase">
+                <sequence>
+                    <element name="orderSub" type="string" nillable="true"/>
+                    <element name="attribute3" type="string" nillable="true"/>
+                    <element name="orderLink" type="string" nillable="true"/>
+                    <element name="manufacturerInfo" type="string" nillable="true"/>
+                    <element name="attribute1" type="string" nillable="true"/>
+                    <element name="skuId" type="string" nillable="true"/>
+                    <element name="attribute5" type="string" nillable="true"/>
+                    <element name="attribute4" type="string" nillable="true"/>
+                    <element name="attribute2" type="string" nillable="true"/>
+                    <element name="orderNumber" type="string" nillable="true"/>
+                    <element name="quantity" type="decimal" nillable="true"/>
+                    <element name="skuDescription" type="string" nillable="true"/>
+                </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="XxCsSrOrderRecTypeBase">
+        <sequence/>
+    </complexType>
+    <complexType name="XxGlbSitekeyRecTypeUser">
+        <complexContent>
+            <extension base="tns:XxGlbSitekeyRecTypeBase">
+                <sequence>
+                    <element name="siteMode" type="string" nillable="true"/>
+                    <element name="orderSource" type="string" nillable="true"/>
+                    <element name="languageCode" type="string" nillable="true"/>
+                    <element name="operatingUnit" type="decimal" nillable="true"/>
+                    <element name="countryCode" type="string" nillable="true"/>
+                    <element name="siteBrand" type="string" nillable="true"/>
+                    <element name="siteKeyId" type="decimal" nillable="true"/>
+                </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
+    <complexType name="XxGlbSitekeyRecTypeBase">
+        <sequence/>
+    </complexType>
+    <element name="searchServicerequestElement">
+        <complexType>
+            <sequence>
+                <element name="pSrReqRec_inout" type="tns:XxCsSrRecTypeUser" nillable="true"/>
+                <element name="pSrReqTbl_inout" type="tns:XxCsSrRecTypeUser" nillable="true" minOccurs="0"
+                     maxOccurs="unbounded"/>
+                <element name="pOrderTbl_inout" type="tns:XxCsSrOrderRecTypeUser" nillable="true"
+                     minOccurs="0" maxOccurs="unbounded"/>
+                <element name="pEcomSiteKey_inout" type="tns:XxGlbSitekeyRecTypeUser" nillable="true"/>
+                <element name="xReturnStatus_inout" type="string" nillable="true"/>
+                <element name="xMsgData_inout" type="string" nillable="true"/>
+            </sequence>
+        </complexType>
+    </element>
+    <element name="searchServicerequestResponseElement">
+        <complexType>
+            <sequence>
+                <element name="result" type="tns:ServiceStatusInquiryWSUser_searchServicerequest_Out"
+                     nillable="true"/>
+            </sequence>
+        </complexType>
+    </element>
+    <complexType name="ServiceStatusInquiryWSUser_searchServicerequest_Out">
+        <sequence>
+            <element name="xmsgdataInout" type="string" nillable="true"/>
+            <element name="psrreqtblInout" type="tns:XxCsSrRecTypeUser" nillable="true" minOccurs="0"
+                 maxOccurs="unbounded"/>
+            <element name="psrreqrecInout" type="tns:XxCsSrRecTypeUser" nillable="true"/>
+            <element name="pecomsitekeyInout" type="tns:XxGlbSitekeyRecTypeUser" nillable="true"/>
+            <element name="pordertblInout" type="tns:XxCsSrOrderRecTypeUser" nillable="true" minOccurs="0"
+                 maxOccurs="unbounded"/>
+            <element name="xreturnstatusInout" type="string" nillable="true"/>
+        </sequence>
+    </complexType>
+</schema>
