@@ -12,6 +12,7 @@
 -- |Version   Date         Author               Remarks                       |
 -- |=======   ===========  =============        ==============================|
 -- | V1.0     19-FEB-2018  Punit Gupta          Initial version               |
+-- | V1.1     06-MAR-2019  Dinesh Nagapuri      GSCC Violation added Schema   |
 -- +==========================================================================+
 
 SET SHOW         OFF
@@ -20,7 +21,7 @@ SET ECHO         OFF
 SET TAB          OFF
 SET FEEDBACK     ON
 
-CREATE MATERIALIZED VIEW XXOD_ODN_AGING_REP_MV
+CREATE MATERIALIZED VIEW APPS.XXOD_ODN_AGING_REP_MV     --V1.1
 BUILD IMMEDIATE
 USING INDEX
 ENABLE QUERY REWRITE
