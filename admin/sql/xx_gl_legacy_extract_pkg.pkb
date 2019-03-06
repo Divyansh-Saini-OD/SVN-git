@@ -8,7 +8,7 @@ WHENEVER SQLERROR CONTINUE;
  
 WHENEVER OSERROR EXIT FAILURE ROLLBACK;
 
-CREATE OR REPLACE
+create or replace 
 PACKAGE BODY xx_gl_legacy_extract_pkg
 AS
   -- +=================================================================================+
@@ -651,11 +651,12 @@ BEGIN
   ---|| TO_CHAR (SYSDATE, 'DD-MON-YYYYHHMMSS');
   fnd_file.put_line (fnd_file.LOG, '');
   fnd_file.put_line (fnd_file.LOG, 'Input Folder    : ' || lc_source_file_name );
-  fnd_file.put_line (fnd_file.LOG, 'The Archived File Path   : ' || lc_dest_file_name );
-  ln_req_id2 := fnd_request.submit_request ('xxfin', 'XXODDIRZIP', '', '', FALSE, lc_source_file_name, lc_dest_file_name, NULL, NULL );
+  fnd_file.put_line (fnd_file.log, 'The Archived File Path   : ' || lc_dest_file_name );
+  /*ln_req_id2 := fnd_request.submit_request ('xxfin', 'XXODDIRZIP', '', '', FALSE, lc_source_file_name, lc_dest_file_name, NULL, NULL );
   COMMIT;
   fnd_file.put_line (fnd_file.LOG, '');
-  fnd_file.put_line (fnd_file.LOG, 'The File was Archived into ' || lc_archive_file_path || '. Request id : ' || ln_req_id2 );
+  fnd_file.put_line (fnd_file.log, 'The File was Archived into ' || lc_archive_file_path || '. Request id : ' || ln_req_id2 );
+  --------------------Commented for FTP
   lb_req_status2 := fnd_concurrent.wait_for_request (request_id => ln_req_id2, INTERVAL => '2', max_wait => '', phase => lc_phase, status => lc_status, dev_phase => lc_devphase, dev_status => lc_devstatus, MESSAGE => lc_message );
   fnd_file.put_line (fnd_file.LOG, '*************************************************************' );
   --------------- Call the Common file copy Program to copy .zip file to .dat file-------------
@@ -691,7 +692,7 @@ BEGIN
     fnd_file.put_line (fnd_file.LOG,'Error : Unable to submit FTP program to send GL Balances file');
   ELSE
     fnd_file.put_line (fnd_file.LOG, 'OD: Common Put Program submitted to FTP file to SFTP server.  Request id : ' || ln_req_id1 );
-  END IF;
+  END IF;*/
   --------------- END of FTP'ing .dat file
 EXCEPTION
 WHEN OTHERS THEN
