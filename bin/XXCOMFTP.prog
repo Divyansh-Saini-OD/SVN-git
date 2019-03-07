@@ -243,14 +243,24 @@ elif [ "$lftpflag" = "Y" ]
 	 LFTPPARMS= "$user`,`$passwd `-p` $server"
 	 echo "LFTPPARMS $LFTPPARMS"
 	 echo "Before EXECFILE $EXECFILE"
-	 LFTPPARMS1="-u ODPFTP,FTP16@od77 -p 991 odsc02.na.odcorp.net"
 	 LFTPPARMS2="-u $user,$passwd -p $server"
-	 echo "Before LFTPPARMS1 $LFTPPARMS1"
-	 echo "Before LFTPPARMS2 $LFTPPARMS2"
-	 echo "-u ODPFTP,FTP16@od77 -p 991 odsc02.na.odcorp.net" > $EXECFILE
-	 echo "After EXECFILE $EXECFILE"
+	 echo "LFTPPARMS2 $LFTPPARMS2"
 	 #lftp -u $LFTPPARMS $EXECFILE > $TEMPFILE
 	 lftp $LFTPPARMS2 > $TMPFILE 
+	 echo "Before lcd pwd $source"
+	 pwd
+	 lcd $source > $TMPFILE
+	 echo "After lcd pwd"
+	 pwd
+	 echo "Before cd pwd $dest"
+	 pwd
+	 cd $dest > $TMPFILE
+	 echo "After cd pwd"
+	 pwd
+	 echo "Before put $filename"
+	 put $filename > $TMPFILE
+	 echo "After put"	 
+	 echo "After TMPFILE1111 $TMPFILE" 
 else
      echo "Executing FTP"
 	 FTPPARMS="$server"
