@@ -259,6 +259,12 @@ WHERE request_id      =:p_request_id
 ORDER BY line_seq 
 ]]>
 </sqlStatement>
+<sqlStatement name="Q_CONS_MSG_BCC">  <!--Added this sqlStatement for NAIT-80452-->
+       <![CDATA[
+          SELECT xx_ar_reprint_summbill.get_cons_msg_bcc(:p_cust_doc_id,:cust_account_id,:billing_number) CONS_MSG_BCC 
+		  FROM DUAL
+       ]]>
+</sqlStatement>
 </dataQuery>
 <dataTrigger name="beforeReportTrigger" source="xx_ar_reprint_summbill.beforereport"/>
 <dataStructure>
@@ -310,6 +316,9 @@ ORDER BY line_seq
 <element name="TOTAL" value="TOTAL" />
 <element name="PG_BREAK" value="PG_BREAK" />
 <element name = "SHOW_LINE"  value = "SHOW_LINE" />
+</group>
+<group name = "G_CONS_MSG_BCC" source = "Q_CONS_MSG_BCC">   <!--Added this group for NAIT-80452-->
+<element name = "CONS_MSG_BCC" value = "CONS_MSG_BCC"/>
 </group>
 </group>
 </group>

@@ -255,10 +255,8 @@ SELECT DISTINCT XAECTS.customer_trx_id                  trx_id
               ) sfdata7
 			  ,XAECTS.insert_seq
 	  ,DECODE(XAECTS.inv_type,'CM',DECODE((SELECT '1' 
-                                             FROM xx_om_line_attributes_v a,  -- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695 
-												  xx_oe_order_lines_v b -- Commented and Changed by Punit CG on 02-APR-2018 for Defect NAIT-31695
-											      --xx_om_line_attributes_all a,
-                                                  --oe_order_lines_all b
+                                             FROM xx_om_line_attributes_all a,
+                                                  oe_order_lines_all b
                                             WHERE a.line_id = b.line_id
                                               AND b.header_id = XAECHM.header_id
                                               AND a.return_act_cat_code IN (SELECT  source_value1
@@ -272,8 +270,7 @@ SELECT DISTINCT XAECTS.customer_trx_id                  trx_id
                                                                               AND xftd.enabled_flag = 'Y')
                                               AND ROWNUM < 2),'1',XAECHM.COMMENTS,NULL),NULL)  REBATE_INFO   -- Added for Defect 36434
 FROM   xx_ar_cbi_rprn_trx XAECTS,
-       xx_om_header_attributes_v XAECHM  -- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695 
-       --XX_OM_HEADER_ATTRIBUTES_ALL  XAECHM
+       XX_OM_HEADER_ATTRIBUTES_ALL  XAECHM
 WHERE  XAECTS.request_id  =:p_request_id 
   AND  XAECTS.cons_inv_id =:cbi_id 
   AND XAECTS.order_header_id = XAECHM.header_id(+)
@@ -669,6 +666,30 @@ WHERE a.request_id      =:p_request_id
   AND a.item_code       ='GIFT_CARD_CM'
 ]]>
 </sqlStatement>
+<sqlStatement name="Q_POD_MSG">  <!--Added this sqlStatement for POD NAIT-80452-->
+       <![CDATA[
+          SELECT xx_ar_reprint_summbill.get_pod_msg(:cust_account_id ,:trx_id,:p_cust_doc_id) PD_CUST_MSG
+		  FROM DUAL
+       ]]>
+</sqlStatement>	
+<sqlStatement name="Q_POD_IMAGE"> <!--Added this sqlStatement for POD NAIT-80452-->		
+       <![CDATA[  
+		  SELECT TO_CHAR(dtl.delivery_date,'DD-MON-YYYY HH24:MI:SS') DEL_DT_TM,
+			     dtl.carrier_name CR_NM,
+			     trim(dtl.consignee)  CNSNEE,
+			     NVL( (select xx_ar_ebl_pod_invoices_pkg.resize_image(:trx_id) from dual),POD_IMAGE)  PD_IMG				 
+		  FROM  XX_AR_EBL_POD_DTL dtl
+		  WHERE customer_trx_id = :trx_id
+				AND 'Y' =  xx_ar_reprint_summbill.get_paydoc_flag(:p_cust_doc_id,:cust_account_id)
+				
+	   ]]>
+</sqlStatement>
+<sqlStatement name="Q_CONS_MSG_BCC">  <!--Added this sqlStatement for NAIT-80452-->
+       <![CDATA[
+          SELECT xx_ar_reprint_summbill.get_cons_msg_bcc(:p_cust_doc_id,:cust_account_id,:billing_number) CONS_MSG_BCC 
+		  FROM DUAL
+       ]]>
+</sqlStatement>	
 </dataQuery>
 <dataTrigger name="beforeReportTrigger" source="xx_ar_reprint_summbill.beforereport"/>
 <dataStructure>
@@ -724,6 +745,7 @@ WHERE a.request_id      =:p_request_id
 <element name = "SFHDR7" value = "SFHDR7"/>
 <element name = "SFDATA7" value = "SFDATA7"/>
 <element name = "REBATE_INFO" value = "REBATE_INFO"/> <!--Added for Defect # 36434-->
+<element name="TRX_ID" value="TRX_ID" /> <!--Added for NAIT-65564-->
 <group name="G_SPC" source="Q_SPC">
 <element name="SPC_TEXT" value="SPC_TEXT" />
 </group>
@@ -751,6 +773,18 @@ WHERE a.request_id      =:p_request_id
 <element name="DISPLAY_SEQ" value="VIEW_SEQ" />
 <element name = "SHOW_LINE"  value = "SHOW_LINE"/>
 </group>
+<group name = "G_POD_MSG" source = "Q_POD_MSG">	<!--Added this Group for POD NAIT-80452-->
+			<element name = "PD_CUST_MSG"              value = "PD_CUST_MSG"/>
+</group>
+<group name = "G_POD_DETAILS" source = "Q_POD_IMAGE"> <!--Added this Group for POD NAIT-80452-->
+            <element name = "PD_IMG"    value = "PD_IMG"/>
+			<element name = "DEL_DT_TM" value = "DEL_DT_TM"/>  
+            <element name = "CR_NM"     value = "CR_NM"/>
+            <element name = "CNSNEE"    value = "CNSNEE"/>
+</group>
+</group>
+<group name = "G_CONS_MSG_BCC" source = "Q_CONS_MSG_BCC">   <!--Added this group for NAIT-80452-->
+<element name = "CONS_MSG_BCC" value = "CONS_MSG_BCC"/>
 </group>
 </group>
 </group>
