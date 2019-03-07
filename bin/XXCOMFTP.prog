@@ -113,6 +113,7 @@ set verify off
             || '|' || nvl(xftv.Target_value11,'N')
             || '|' || xftv.Target_value12
             || '|' || xftv.target_value13
+			|| '|' || xftv.target_value14
       from  
             xx_fin_translatedefinition xftd,
             xx_fin_translatevalues     xftv
@@ -135,6 +136,7 @@ scpflag=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[10] }'`
 rsakeyflag=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[11] }'`
 rsakeyfile=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[12] }'`
 transmitmode=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[13] }'`
+lftpflag=`echo $V_RESULT | awk '{ split($0,MODULE,"|"); print MODULE[14] }'`
 
 eval source=$source1
 eval dest=$dest1
@@ -158,6 +160,7 @@ archive_internal=`cat tmpfile4`
  echo "destination filename                   = $destfile"
  echo "SFTP flag                              = $sftpflag"
  echo "SCP flag                               = $scpflag" 
+ echo "LFTP flag                              = $lftpflag" 
  echo "Transmission Mode                      = $transmitmode"
 
 #echo "verbose" >> $EXECFILE
@@ -168,7 +171,7 @@ archive_internal=`cat tmpfile4`
 #echo "cd $dest" >> $EXECFILE
 #echo "prompt off" >> $EXECFILE
 
-if [ "$sftpflag" = "Y" ]
+if [ "$sftpflag" = "Y" -o "$lftpflag" = "Y"]
   then
    echo "lcd $source" >> $EXECFILE
    echo "progress" >> $EXECFILE
@@ -224,22 +227,35 @@ if [ "$sftpflag" = "Y" ]
      echo "Executing SFTP"
      SFTPSIGNON="$user@$server"
      echo $SFTPSIGNON
+	 echo $EXECFILE
+	 echo $TMPFILE
      sftp -b $EXECFILE $SFTPSIGNON > $TMPFILE
 	 script -qc "sftp -b $EXECFILE $SFTPSIGNON" $TMPFILE
 elif [ "$scpflag" = "Y" ]
   then
   	 echo "Executing SCP"
   	 SCPPARMS="$source/$filename $user@$server:$dest/$destfile"
+	 echo $SCPPARMS
+	 echo $TMPFILE
      scp $SCPPARMS > $TMPFILE
+elif [ "$lftpflag" = "Y" ]
+  then
+  	 echo "Executing LFTP"
+ 	 echo "user $user"
+	 echo "passwd $passwd"
+	 echo "server $server"
+	 LFTPPARMS= "$user`,`$passwd `-p` $server"
+	 echo "LFTPPARMS $LFTPPARMS"
+	 echo "EXECFILE $EXECFILE"
+	 #lftp -u $LFTPPARMS $EXECFILE > $TEMPFILE
+	 lftp -u ODPFTP,FTP16@od77 -p 991 odsc02.na.odcorp.net > $TMPFILE 
 else
      echo "Executing FTP"
-	 FTPPARMS="$server"
      echo "Execution string = $EXECFILE = $TMPFILE"
-	 echo $FTPPARMS
-     ftp -n $FTPPARMS $EXECFILE > $TMPFILE
-	 echo "Execution string for FTP = $TMPFILE"
+     ftp -n < $EXECFILE > $TMPFILE
 fi
-#to wait for the TEMPFILE to be populated with the result for the commands
+
+#to wait for the TEMPFILE to be populated with the result fo the commands
 #BIAS added this as part of OCI migration
 sleep 60s
 #ftp -n < $EXECFILE > $TMPFILE
@@ -254,6 +270,16 @@ SFTPCheck=`egrep -i '(Permission denied)|(Connection refused)|(host key verifica
 Mframesuccess=`grep 'Transfer completed successfully'  $TMPFILE`
 AS400success=`grep 'transfer completed successfully'  $TMPFILE`
 
+echo "Server check   = $Server_check"
+echo "User Password  = $User_passwd"
+echo "Local Directory Error = $Local_directory_error"
+echo "Rem Dir Access Error = $Rem_dir_access_error"
+echo "Success  = $Success"
+echo "Success1 = $Success1"
+echo "SFTP Success = $SFTPSuccess"
+echo "SFTP Check = $SFTPCheck"
+echo "MFrame Success = $Mframesuccess"
+echo "AS400 Success = $AS400success"
 if [ "$Server_check" != "" ]
 then
     echo " "
