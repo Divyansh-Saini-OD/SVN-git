@@ -171,7 +171,7 @@ archive_internal=`cat tmpfile4`
 #echo "cd $dest" >> $EXECFILE
 #echo "prompt off" >> $EXECFILE
 
-if [ "$sftpflag" = "Y" -o "$lftpflag" = "Y"]
+if [ "$sftpflag" = "Y" -o "$lftpflag" = "Y" ]
   then
    echo "lcd $source" >> $EXECFILE
    echo "progress" >> $EXECFILE
@@ -240,13 +240,10 @@ elif [ "$lftpflag" = "Y" ]
  	 echo "user $user"
 	 echo "passwd $passwd"
 	 echo "server $server"
-	 LFTPPARMS= "$user`,`$passwd `-p` $server"
-	 echo "LFTPPARMS $LFTPPARMS"
-	 echo "Before EXECFILE $EXECFILE"
 	 LFTPPARMS2="-u $user,$passwd -p $server"
 	 echo "LFTPPARMS2 $LFTPPARMS2"
 	 #lftp -u $LFTPPARMS $EXECFILE > $TEMPFILE
-	 lftp $LFTPPARMS2 > $TMPFILE 
+	 lftp $LFTPPARMS2
 	 echo "Before lcd pwd $source"
 	 pwd
 	 lcd $source > $TMPFILE
