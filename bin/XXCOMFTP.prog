@@ -113,7 +113,7 @@ set verify off
             || '|' || nvl(xftv.Target_value11,'N')
             || '|' || xftv.Target_value12
             || '|' || xftv.target_value13
-	    || '|' || xftv.target_value14
+			|| '|' || xftv.target_value14
       from  
             xx_fin_translatedefinition xftd,
             xx_fin_translatevalues     xftv
@@ -242,9 +242,15 @@ elif [ "$lftpflag" = "Y" ]
 	 echo "server $server"
 	 LFTPPARMS= "$user`,`$passwd `-p` $server"
 	 echo "LFTPPARMS $LFTPPARMS"
-	 echo "EXECFILE $EXECFILE"
+	 echo "Before EXECFILE $EXECFILE"
+	 LFTPPARMS1="-u ODPFTP,FTP16@od77 -p 991 odsc02.na.odcorp.net"
+	 LFTPPARMS2="-u $user,$passwd -p $server"
+	 echo "Before LFTPPARMS1 $LFTPPARMS1"
+	 echo "Before LFTPPARMS2 $LFTPPARMS2"
+	 echo "-u ODPFTP,FTP16@od77 -p 991 odsc02.na.odcorp.net" > $EXECFILE
+	 echo "After EXECFILE $EXECFILE"
 	 #lftp -u $LFTPPARMS $EXECFILE > $TEMPFILE
-	 lftp -u ODPFTP,FTP16@od77 -p 991 odsc02.na.odcorp.net > $TMPFILE 
+	 lftp $LFTPPARMS2 > $TMPFILE 
 else
      echo "Executing FTP"
 	 FTPPARMS="$server"
