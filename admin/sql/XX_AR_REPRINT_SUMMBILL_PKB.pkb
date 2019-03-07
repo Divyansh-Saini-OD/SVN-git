@@ -54,8 +54,9 @@ PACKAGE BODY      XX_AR_REPRINT_SUMMBILL AS
 -- |    3.1             26-JAN-2016       Havish Kasina      Changed the data type length from 40 Bytes to  |
 -- |                                                         80 Bytes as per Defect 1994 (MOD4B Release 3   |
 -- |                                                         Changes)                                       |
--- |    3.2             18-APR-2018       Punit Gupta CG     Retrofit OD AR Reprint Summary/                |
--- |                                                         Consolidated Bills- Defect NAIT-31695          |
+-- |    4.1             06-MAR-2019	      Sravan Reddy       Added functions get_cons_msg_bcc,              | 
+-- |                                                         get_paydoc_flag, get_pod_msg as part of        |  	
+-- |                                                         NAIT-80452                                     |
 ---+========================================================================================================+
 
 -- Added for defect 31838
@@ -2130,8 +2131,7 @@ BEGIN
         INTO   ln_promo_and_disc
         FROM   ar_cons_inv_trx_lines_all acit
               ,RA_CUSTOMER_TRX_LINES RACTL
-			  ,xx_oe_price_adjustments_v OEPA  -- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695
-              --,OE_PRICE_ADJUSTMENTS  OEPA
+              ,OE_PRICE_ADJUSTMENTS  OEPA
         WHERE  1 = 1
           AND acit.cons_inv_id = p_cbi_id
           AND acit.customer_trx_line_id = ractl.customer_trx_line_id
@@ -2282,8 +2282,7 @@ BEGIN
         INTO   ln_promo_and_disc
         FROM   ar_cons_inv_trx_lines_all acit
               ,RA_CUSTOMER_TRX_LINES RACTL
-			  ,xx_oe_price_adjustments_v OEPA  -- Commented and Changed by Punit CG on 18-APR-2018 for Defect NAIT-31695
-              --,OE_PRICE_ADJUSTMENTS  OEPA
+              ,OE_PRICE_ADJUSTMENTS  OEPA
         WHERE  1 = 1
           AND acit.cons_inv_id = p_cbi_id
           AND acit.customer_trx_line_id = ractl.customer_trx_line_id
@@ -2794,7 +2793,7 @@ IF (lc_address4 IS NOT NULL)
  THEN
    lc_address := lc_address||chr(10)||lc_address4;
 END IF;
-return (lc_address||chr(10)
+RETURN (lc_address||chr(10)
         ||lc_city||' '||lc_state_pr||'  '||lc_postal||chr(10) -- Defect 9165
         ||lc_description
        );
@@ -2954,7 +2953,260 @@ END XX_REMIT_TO_ADDRESS;
        RETURN NULL;
 
  END GET_BILL_TO_DATE;
+ -- Added below function GET_CONS_MSG_BCC as part of NAIT# 80452
+ --+=============================================================================================+
+  ---|    Name : GET_CONS_MSG_BCC                                                                 |
+  ---|    Description   : This function will perform the following                                |
+  ---|                                                                                            |
+  ---|                  1. If customer is "Bill complete customer" and document type is           |
+  -- |                     "Consolidated" and it is Paydoc then blurb message to be displayed in  |
+  ---|                      respective child programs of "OD: AR Reprint Summary Bills".          |                 
+  ---|                                                                                            |
+  ---|    Parameters : Cust_doc_Id, Cust_account_id, Consolidated_billing_number                  |
+  --+=============================================================================================+	 
+FUNCTION GET_CONS_MSG_BCC 
+	     ( p_custdoc_id      IN NUMBER		  
+		  ,p_cust_account_id IN NUMBER
+		  ,p_billing_number  IN VARCHAR2
+	     ) 
+ RETURN VARCHAR2 AS 
+		lc_cons_msg_bcc   VARCHAR2(2000) := TO_CHAR(NULL);
+		ln_delivery_method xx_cdh_cust_acct_ext_b.c_ext_attr3%TYPE;
+		lc_error_location VARCHAR2(2000);
+		ln_attr_group_id  NUMBER;
+		ln_custdoc_id     NUMBER;		
+		
+BEGIN
+	  SELECT attr_group_id
+		INTO ln_attr_group_id
+		FROM ego_attr_groups_v
+	   WHERE attr_group_type = 'XX_CDH_CUST_ACCOUNT'
+		 AND attr_group_name = 'BILLDOCS';
+		 
+		 fnd_file.put_line(fnd_file.log , 'p_cust_doc_id is '||p_custdoc_id||' p_cust_account_id is '||p_cust_account_id
+		 ||' p_billing_number is '||p_billing_number ); 
+	
+ IF P_CUSTDOC_ID IS NOT NULL THEN	
+	lc_error_location:='  Custdoc Id and Cust Account Id is not null ';
+	    
+	SELECT c_ext_attr3 --delivery_method,				
+	  INTO ln_delivery_method
+	  FROM xx_cdh_cust_acct_ext_b   
+	 WHERE 1 = 1 
+	   AND attr_group_id = ln_attr_group_id   
+	   AND c_ext_attr1   = 'Consolidated Bill' --Document_Type
+	   AND c_ext_attr2   = 'Y'                 --paydoc_ind
+	   AND c_ext_attr16  = 'COMPLETE'        
+	   AND n_ext_attr2   = p_cust_doc_id       
+	   --AND cust_account_id = p_cust_account_id 
+	   AND TRUNC(SYSDATE) BETWEEN d_ext_attr1 AND NVL(d_ext_attr2,TRUNC(SYSDATE))
+	   AND ROWNUM        = 1; 		   
+	
+		IF  ln_delivery_method = 'ePDF' THEN		
+			lc_error_location: = ' Custdoc_id is not null and Cust_account_id is not null and delivery_method is ePDF ';
+			lc_cons_msg_bcc: = xx_ar_ebl_common_util_pkg.get_cons_msg_bcc(P_CUSTDOC_ID,p_cust_account_id,p_billing_number);
+		ELSE
+			lc_cons_msg_bcc: = 'X';		
+		END IF;	
+	    RETURN(lc_cons_msg_bcc);	
+ ELSE
+	 lc_error_location:=' Getting Custdoc Id and delivery method ';
+    IF p_cust_account_id IS NOT NULL 
+    THEN  
+        SELECT n_ext_attr2 --p_cust_doc_id
+		      ,c_ext_attr3 --delivery_method,				
+          INTO ln_custdoc_id
+		      ,ln_delivery_method
+          FROM xx_cdh_cust_acct_ext_b   
+         WHERE attr_group_id = ln_attr_group_id 
+           AND c_ext_attr1   = 'Consolidated Bill' --Document_Type
+           AND c_ext_attr2   = 'Y' --paydoc_ind
+           AND c_ext_attr16  = 'COMPLETE'
+		   AND c_ext_attr3   = 'ePDF'
+           AND cust_account_id = p_cust_account_id            
+           AND TRUNC(SYSDATE) BETWEEN d_ext_attr1 AND NVL(d_ext_attr2,TRUNC(SYSDATE))
+		   AND ROWNUM        = 1;
+		fnd_file.put_line(fnd_file.log , 'p_cust_doc_id is '||ln_custdoc_id||' delivery_method is '||ln_delivery_method);   
+		
+		IF ln_custdoc_id IS NOT NULL AND ln_delivery_method='ePDF' THEN		
+		lc_error_location:=' Getting Bill complete message for ePDF delivery Method ';
+		lc_cons_msg_bcc:=xx_ar_ebl_common_util_pkg.get_cons_msg_bcc(ln_custdoc_id,p_cust_account_id,p_billing_number);
+		ELSE
+		lc_cons_msg_bcc:='X';		
+		END IF;
+	  RETURN(lc_cons_msg_bcc);
+	ELSE 
+      lc_cons_msg_bcc:='X';
+	  RETURN(lc_cons_msg_bcc);
+    END IF; 
+	
+ END IF;	
+ EXCEPTION		
+	WHEN OTHERS THEN
+	fnd_file.put_line(fnd_file.log , 'Error While: ' || lc_error_location||' '|| SQLERRM);
+	lc_cons_msg_bcc:='X';
+	RETURN(lc_cons_msg_bcc);     
+ END GET_CONS_MSG_BCC;
+ -- Added below function GET_PAYDOC_FLAG as part of NAIT# 80452
+ --+=============================================================================================+
+  ---|    Name : GET_PAYDOC_FLAG                                                                        |
+  ---|    Description    : The MSG function will perform the following                            |
+  ---|                                                                                            |
+  ---|                    1. This function is to check whether the  will get message for POD      |
+  ---|                       or not.                                                              |                 
+  ---|                                                                                            |
+  ---|    Parameters :                                                                            |
+  --+=============================================================================================+	  
+  
+FUNCTION get_paydoc_flag (p_cust_doc_id IN NUMBER,p_cust_account_id IN NUMBER)     
+RETURN VARCHAR2 
+IS 
+ln_pay_doc       NUMBER      	:=  0;
+lc_paydoc_flag   VARCHAR2(1) 	:= 'N';
+ln_custdoc_id    NUMBER	 		:=  0;
+ln_attr_group_id NUMBER;
+BEGIN 
+      SELECT attr_group_id
+		INTO ln_attr_group_id
+		FROM ego_attr_groups_v
+	   WHERE attr_group_type = 'XX_CDH_CUST_ACCOUNT'
+		 AND attr_group_name = 'BILLDOCS';
+		 
+	IF p_cust_doc_id IS NOT NULL THEN
+      SELECT COUNT(1)
+		INTO ln_pay_doc
+		FROM xx_cdh_cust_acct_ext_b b
+	   WHERE b.n_ext_attr2    = p_cust_doc_id
+		 AND b.attr_group_id  = ln_attr_group_id                      
+		 AND b.c_ext_attr1    = 'Consolidated Bill'
+		 AND b.c_ext_attr2    = 'Y' 
+		 AND b.c_ext_attr16   = 'COMPLETE'
+		 AND b.c_ext_attr3    = 'ePDF'
+		 AND ROWNUM           = 1
+		 AND TRUNC(SYSDATE) BETWEEN B.D_EXT_ATTR1 AND NVL(B.D_EXT_ATTR2,TRUNC(SYSDATE));
+		
+		IF ln_pay_doc = 1 THEN 
+			lc_paydoc_flag := 'Y'; 
+		ELSE 
+			lc_paydoc_flag := 'N'; 
+		END IF;
+		
+		RETURN(lc_paydoc_flag);
+	ELSE
+			SELECT COUNT(1)
+			  INTO ln_pay_doc
+			  FROM xx_cdh_cust_acct_ext_b   
+			 WHERE 1 = 1 
+			   AND attr_group_id = ln_attr_group_id 
+			   AND c_ext_attr1   = 'Consolidated Bill' --Document_Type
+			   AND c_ext_attr2   = 'Y' --paydoc_ind
+			   AND c_ext_attr16  = 'COMPLETE'
+			   AND cust_account_id = p_cust_account_id 
+			   AND c_ext_attr3   = 'ePDF'			
+			   AND TRUNC(SYSDATE) BETWEEN d_ext_attr1 AND NVL(d_ext_attr2,TRUNC(SYSDATE))
+			   AND ROWNUM        = 1;
+		   
+			IF ln_pay_doc = 1 THEN 
+				lc_paydoc_flag := 'Y'; 
+			ELSE 
+				lc_paydoc_flag := 'N'; 
+			END IF;
 
-end XX_AR_REPRINT_SUMMBILL;
+			RETURN(lc_paydoc_flag);
+	
+	END IF;	
+EXCEPTION WHEN OTHERS THEN 
+	Fnd_File.Put_Line(Fnd_File.Log,'Error while returning l_pod_blurb_msg in get_paydoc_flag : '||SQLERRM);
+	lc_paydoc_flag := 'N'; 
+	RETURN(lc_paydoc_flag);
+END get_paydoc_flag; 
+-- Added below function GET_POD_MSG as part of NAIT# 80452
+--+=============================================================================================+
+  ---|    Name : GET_POD_MSG                                                                        |
+  ---|    Description    : The MSG function will perform the following                            |
+  ---|                                                                                            |
+  ---|                    1. This function is to check whether the  will get message for POD      |
+  ---|                       or not.                                                              |                 
+  ---|                                                                                            |
+  ---|    Parameters :                                                                            |
+  --+=============================================================================================+	
+  
+  
+  FUNCTION get_pod_msg (p_cust_account_id IN NUMBER , p_customer_trx_id IN NUMBER , p_cust_doc_id IN NUMBER )   
+    RETURN VARCHAR2 
+    As	
+    lc_pod_blurb_msg VARCHAR2(1000):= NULL;
+    ln_pod_cnt       NUMBER :=0; 
+	ln_pod_tab_cnt   NUMBER :=0; 
+	ln_pay_doc       NUMBER :=0; 
+	ln_attr_group_id  NUMBER;
+	BEGIN	
+      
+	 ln_pod_cnt      := 0;	
+	 ln_pod_tab_cnt	 := 0;
+	 ln_pay_doc      := 0; 
+	    SELECT attr_group_id
+		  INTO ln_attr_group_id
+		  FROM ego_attr_groups_v
+	     WHERE attr_group_type = 'XX_CDH_CUST_ACCOUNT'
+		   AND attr_group_name = 'BILLDOCS';
+		
+		SELECT COUNT(1) 
+		  INTO ln_pod_cnt
+		  FROM hz_customer_profiles HCP
+		 WHERE HCP.cust_account_id = p_cust_account_id	
+		   AND HCP.site_use_id        IS NULL
+		   AND Hcp.Status              = 'A'
+		   AND HCP.attribute6         IN ('Y','P');
+		   
+		   
+		SELECT COUNT(1)
+		  INTO ln_pod_tab_cnt
+		  FROM Xx_Ar_Ebl_Pod_Dtl
+		 WHERE Customer_Trx_Id     = p_customer_trx_id
+		   AND( Pod_Image           IS NOT NULL
+		    OR Delivery_Date         IS NOT NULL		
+		    OR consignee             IS NOT NULL); 	   
+		
+	IF p_cust_doc_id IS NOT NULL THEN
+		SELECT COUNT(1)
+		  INTO ln_pay_doc
+		  FROM xx_cdh_cust_acct_ext_b
+		 WHERE n_ext_attr2  = p_cust_doc_id
+		   AND c_ext_attr2  = 'Y' 
+		   AND c_ext_attr16 = 'COMPLETE'
+		   AND c_ext_attr3  = 'ePDF';
+	ELSE 
+		SELECT COUNT(1)
+		  INTO ln_pay_doc
+		  FROM xx_cdh_cust_acct_ext_b   
+		 WHERE 1 = 1 
+		   AND attr_group_id = ln_attr_group_id 
+		   AND c_ext_attr1   = 'Consolidated Bill' --Document_Type
+		   AND c_ext_attr2   = 'Y' --paydoc_ind
+		   AND c_ext_attr16  = 'COMPLETE'
+		   AND c_ext_attr3   = 'ePDF'
+		   AND cust_account_id = p_cust_account_id            
+		   AND TRUNC(SYSDATE) BETWEEN d_ext_attr1 AND NVL(d_ext_attr2,TRUNC(SYSDATE))
+		   AND ROWNUM        = 1;		   
+	END IF;	
+	
+    IF ln_pod_cnt >= 1 AND ln_pod_tab_cnt = 0 AND ln_pay_doc = 1 THEN 
+	    lc_pod_blurb_msg:= 'Delivery Details Not Available.';
+    ELSE 
+		lc_pod_blurb_msg := NULL;
+    END IF;    
+
+	RETURN(lc_pod_blurb_msg);	   
+   
+	EXCEPTION	
+	WHEN OTHERS	THEN
+	Fnd_File.Put_Line(Fnd_File.Log,'Error while returning l_pod_blurb_msg in GET_POD_MSG : '||Sqlerrm);
+	lc_pod_blurb_msg := NULL;
+	RETURN(lc_pod_blurb_msg);
+  
+  END get_pod_msg;
+
+END XX_AR_REPRINT_SUMMBILL;
 
 /

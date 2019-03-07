@@ -22,6 +22,9 @@ CREATE OR REPLACE PACKAGE apps.xx_ar_reprint_summbill AS
 -- |    1.3             14-JUL-2009       Samabsiva Reddy D  Defect# 631 (CR# 662) -- Applied Credit Memos  |
 -- |    1.4             08-SEP-2009       Vinaykumar s       Defect# 1451 (CR# 626)                         |
 -- |    1.5             16-DEC-2009       Gokila Tamilselvam Modified for R1.2 Defect# 1210 CR# 466.        |
+-- |    1.6             06-MAR-2019	      Sravan Reddy		 Added functions get_cons_msg_bcc,              | 
+-- |                                                         get_paydoc_flag,get_pod_msg as part of         |  	
+-- |                                                         NAIT-80452.  
 ---+========================================================================================================+
 
 
@@ -156,7 +159,49 @@ CREATE OR REPLACE PACKAGE apps.xx_ar_reprint_summbill AS
                            ,infocopy_tag   IN VARCHAR2
                            )
  RETURN DATE;
-
-
+--Added below function GET_CONS_MSG_BCC as part of NAIT#80452
+--+=============================================================================================+
+  ---|    Name : GET_CONS_MSG_BCC                                                                 |
+  ---|    Description   : This function will perform the following                                |
+  ---|                                                                                            |
+  ---|                  1. If customer is "Bill complete customer" and document type is           |
+  -- |                     "Consolidated" and it is Paydoc then blurb message to be displayed in  |
+  ---|                      respective child programs of "OD: AR Reprint Summary Bills".          |                 
+  ---|                                                                                            |
+  ---|    Parameters : Cust_doc_Id, Cust_account_id, Consolidated_billing_number                  |
+  --+=============================================================================================+ 
+ 
+ FUNCTION GET_CONS_MSG_BCC 
+	     ( p_custdoc_id      IN NUMBER		  
+		  ,p_cust_account_id IN NUMBER
+		  ,p_billing_number  IN VARCHAR2
+	     ) 
+ RETURN VARCHAR2;
+  --Added below function GET_PAYDOC_FLAG as part of NAIT#80452
+  --+=============================================================================================+
+  ---|    Name : GET_PAYDOC_FLAG                                                                        |
+  ---|    Description    : The MSG function will perform the following                            |
+  ---|                                                                                            |
+  ---|                    1. This function is to check whether the  will get message for POD      |
+  ---|                       or not.                                                              |                 
+  ---|                                                                                            |
+  ---|    Parameters :                                                                            |
+  --+=============================================================================================+	  
+  
+FUNCTION GET_PAYDOC_FLAG (p_cust_doc_id IN NUMBER,p_cust_account_id IN NUMBER)     
+RETURN VARCHAR2;
+--Added below function GET_POD_MSG as part of NAIT#80452
+--+=============================================================================================+
+  ---|    Name : GET_POD_MSG                                                                        |
+  ---|    Description    : The MSG function will perform the following                            |
+  ---|                                                                                            |
+  ---|                    1. This function is to check whether the  will get message for POD      |
+  ---|                       or not.                                                              |                 
+  ---|                                                                                            |
+  ---|    Parameters :                                                                            |
+  --+=============================================================================================+	
+  
+FUNCTION GET_POD_MSG (p_cust_account_id IN NUMBER , p_customer_trx_id IN NUMBER , p_cust_doc_id IN NUMBER )   
+RETURN VARCHAR2;
 END xx_ar_reprint_summbill;
 /
