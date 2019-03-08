@@ -2987,26 +2987,25 @@ BEGIN
 		 ||' p_billing_number is '||p_billing_number ); 
 	
  IF P_CUSTDOC_ID IS NOT NULL THEN	
-	lc_error_location:='  Custdoc Id and Cust Account Id is not null ';
+	lc_error_location:='  Custdoc Id is not null ';
 	    
 	SELECT c_ext_attr3 --delivery_method,				
 	  INTO ln_delivery_method
 	  FROM xx_cdh_cust_acct_ext_b   
-	 WHERE 1 = 1 
-	   AND attr_group_id = ln_attr_group_id   
+	 WHERE attr_group_id = ln_attr_group_id   
 	   AND c_ext_attr1   = 'Consolidated Bill' --Document_Type
 	   AND c_ext_attr2   = 'Y'                 --paydoc_ind
-	   AND c_ext_attr16  = 'COMPLETE'        
-	   AND n_ext_attr2   = p_cust_doc_id       
-	   --AND cust_account_id = p_cust_account_id 
+	   AND c_ext_attr16  = 'COMPLETE' 
+       AND c_ext_attr3   = 'ePDF'       
+	   AND n_ext_attr2   = p_custdoc_id 	   
 	   AND TRUNC(SYSDATE) BETWEEN d_ext_attr1 AND NVL(d_ext_attr2,TRUNC(SYSDATE))
 	   AND ROWNUM        = 1; 		   
 	
-		IF  ln_delivery_method = 'ePDF' THEN		
-			lc_error_location: = ' Custdoc_id is not null and Cust_account_id is not null and delivery_method is ePDF ';
-			lc_cons_msg_bcc: = xx_ar_ebl_common_util_pkg.get_cons_msg_bcc(P_CUSTDOC_ID,p_cust_account_id,p_billing_number);
+		IF  ln_delivery_method='ePDF' THEN		
+			lc_error_location:=' Custdoc_id is not null and Cust_account_id is not null and delivery_method is ePDF ';
+			lc_cons_msg_bcc := xx_ar_ebl_common_util_pkg.get_cons_msg_bcc(p_custdoc_id,p_cust_account_id,p_billing_number);
 		ELSE
-			lc_cons_msg_bcc: = 'X';		
+			lc_cons_msg_bcc:='X';		
 		END IF;	
 	    RETURN(lc_cons_msg_bcc);	
  ELSE
@@ -3018,7 +3017,8 @@ BEGIN
           INTO ln_custdoc_id
 		      ,ln_delivery_method
           FROM xx_cdh_cust_acct_ext_b   
-         WHERE attr_group_id = ln_attr_group_id 
+         WHERE 1 = 1 
+           AND attr_group_id = ln_attr_group_id 
            AND c_ext_attr1   = 'Consolidated Bill' --Document_Type
            AND c_ext_attr2   = 'Y' --paydoc_ind
            AND c_ext_attr16  = 'COMPLETE'
@@ -3047,7 +3047,7 @@ BEGIN
 	lc_cons_msg_bcc:='X';
 	RETURN(lc_cons_msg_bcc);     
  END GET_CONS_MSG_BCC;
- -- Added below function GET_PAYDOC_FLAG as part of NAIT# 80452
+ 
  --+=============================================================================================+
   ---|    Name : GET_PAYDOC_FLAG                                                                        |
   ---|    Description    : The MSG function will perform the following                            |
@@ -3066,29 +3066,29 @@ lc_paydoc_flag   VARCHAR2(1) 	:= 'N';
 ln_custdoc_id    NUMBER	 		:=  0;
 ln_attr_group_id NUMBER;
 BEGIN 
-      SELECT attr_group_id
-		INTO ln_attr_group_id
-		FROM ego_attr_groups_v
-	   WHERE attr_group_type = 'XX_CDH_CUST_ACCOUNT'
-		 AND attr_group_name = 'BILLDOCS';
-		 
+  SELECT attr_group_id
+	INTO ln_attr_group_id
+	FROM ego_attr_groups_v
+   WHERE attr_group_type = 'XX_CDH_CUST_ACCOUNT'
+	 AND attr_group_name = 'BILLDOCS'; 
+	 
 	IF p_cust_doc_id IS NOT NULL THEN
       SELECT COUNT(1)
 		INTO ln_pay_doc
 		FROM xx_cdh_cust_acct_ext_b b
-	   WHERE b.n_ext_attr2    = p_cust_doc_id
-		 AND b.attr_group_id  = ln_attr_group_id                      
-		 AND b.c_ext_attr1    = 'Consolidated Bill'
-		 AND b.c_ext_attr2    = 'Y' 
-		 AND b.c_ext_attr16   = 'COMPLETE'
-		 AND b.c_ext_attr3    = 'ePDF'
-		 AND ROWNUM           = 1
+	   WHERE b.n_ext_attr2   = p_cust_doc_id
+		 AND b.attr_group_id = ln_attr_group_id                      
+		 AND b.c_ext_attr1   ='Consolidated Bill'
+		 AND b.c_ext_attr2   = 'Y' 
+		 AND b.c_ext_attr16  = 'COMPLETE'
+		 AND b.c_ext_attr3   = 'ePDF'
+		 AND ROWNUM          = 1
 		 AND TRUNC(SYSDATE) BETWEEN B.D_EXT_ATTR1 AND NVL(B.D_EXT_ATTR2,TRUNC(SYSDATE));
 		
 		IF ln_pay_doc = 1 THEN 
-			lc_paydoc_flag := 'Y'; 
+		lc_paydoc_flag := 'Y'; 
 		ELSE 
-			lc_paydoc_flag := 'N'; 
+        lc_paydoc_flag := 'N'; 
 		END IF;
 		
 		RETURN(lc_paydoc_flag);
@@ -3107,20 +3107,20 @@ BEGIN
 			   AND ROWNUM        = 1;
 		   
 			IF ln_pay_doc = 1 THEN 
-				lc_paydoc_flag := 'Y'; 
+			lc_paydoc_flag := 'Y'; 
 			ELSE 
-				lc_paydoc_flag := 'N'; 
+			lc_paydoc_flag := 'N'; 
 			END IF;
 
 			RETURN(lc_paydoc_flag);
 	
 	END IF;	
 EXCEPTION WHEN OTHERS THEN 
-	Fnd_File.Put_Line(Fnd_File.Log,'Error while returning l_pod_blurb_msg in get_paydoc_flag : '||SQLERRM);
+Fnd_File.Put_Line(Fnd_File.Log,'Error while returning l_pod_blurb_msg in get_paydoc_flag : '||SQLERRM);
 	lc_paydoc_flag := 'N'; 
 	RETURN(lc_paydoc_flag);
 END get_paydoc_flag; 
--- Added below function GET_POD_MSG as part of NAIT# 80452
+
 --+=============================================================================================+
   ---|    Name : GET_POD_MSG                                                                        |
   ---|    Description    : The MSG function will perform the following                            |
@@ -3140,11 +3140,12 @@ END get_paydoc_flag;
 	ln_pod_tab_cnt   NUMBER :=0; 
 	ln_pay_doc       NUMBER :=0; 
 	ln_attr_group_id  NUMBER;
-	BEGIN	
+	Begin	
       
 	 ln_pod_cnt      := 0;	
 	 ln_pod_tab_cnt	 := 0;
 	 ln_pay_doc      := 0; 
+	 
 	    SELECT attr_group_id
 		  INTO ln_attr_group_id
 		  FROM ego_attr_groups_v
@@ -3163,10 +3164,10 @@ END get_paydoc_flag;
 		SELECT COUNT(1)
 		  INTO ln_pod_tab_cnt
 		  FROM Xx_Ar_Ebl_Pod_Dtl
-		 WHERE Customer_Trx_Id     = p_customer_trx_id
-		   AND( Pod_Image           IS NOT NULL
-		    OR Delivery_Date         IS NOT NULL		
-		    OR consignee             IS NOT NULL); 	   
+		 WHERE Customer_Trx_Id = p_customer_trx_id
+		   AND( Pod_Image        IS NOT NULL
+		    OR Delivery_Date     IS NOT NULL		
+		    OR consignee         IS NOT NULL); 	   
 		
 	IF p_cust_doc_id IS NOT NULL THEN
 		SELECT COUNT(1)
@@ -3180,24 +3181,24 @@ END get_paydoc_flag;
 		SELECT COUNT(1)
 		  INTO ln_pay_doc
 		  FROM xx_cdh_cust_acct_ext_b   
-		 WHERE 1 = 1 
-		   AND attr_group_id = ln_attr_group_id 
+		 WHERE attr_group_id = ln_attr_group_id 
 		   AND c_ext_attr1   = 'Consolidated Bill' --Document_Type
 		   AND c_ext_attr2   = 'Y' --paydoc_ind
 		   AND c_ext_attr16  = 'COMPLETE'
 		   AND c_ext_attr3   = 'ePDF'
 		   AND cust_account_id = p_cust_account_id            
 		   AND TRUNC(SYSDATE) BETWEEN d_ext_attr1 AND NVL(d_ext_attr2,TRUNC(SYSDATE))
-		   AND ROWNUM        = 1;		   
+		   AND ROWNUM = 1;
+		   
 	END IF;	
 	
     IF ln_pod_cnt >= 1 AND ln_pod_tab_cnt = 0 AND ln_pay_doc = 1 THEN 
 	    lc_pod_blurb_msg:= 'Delivery Details Not Available.';
     ELSE 
-		lc_pod_blurb_msg := NULL;
+     lc_pod_blurb_msg := NULL;
     END IF;    
 
-	RETURN(lc_pod_blurb_msg);	   
+	RETURN(lc_pod_blurb_msg);		   
    
 	EXCEPTION	
 	WHEN OTHERS	THEN
