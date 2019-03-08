@@ -180,16 +180,41 @@ curl -X GET \
 
 Wal_dt=`grep '"availableApReportDates"' $TMPFILE`
 
-
-Wal_rpt_Dt1=`echo $Wal_dt | awk -F',' ' { print $NF } '`
-
-
-Wal_rpt_Dt1=`echo $Wal_rpt_Dt1 | tr -d '"}]'`
+#Below statement will get all the dates removing brakets from the string
 
 
-url="$url""$Wal_rpt_Dt1"
+Wal_dt=`echo $Wal_dt| awk '{ split($0,MODULE,":"); print MODULE[2] }'|tr -d '[]}'`
 
-          
+echo "Wal_dt=$Wal_dt"
+
+#Below sql will get the latest date from the string
+
+
+ V_RESULT2=`sqlplus -s /nolog <<EOF
+     set pagesize 0
+     set linesize 255
+     set sqlprompt " "
+     set serveroutput on 
+     set verify off
+
+
+select to_char(str,'MMDDYYYY') from ( with data as (select '$Wal_dt' str from dual ) select to_date(trim(regexp_substr(str, '[^,"]+', 1, level)), 'MMDDYYYY') str 
+from data connect by instr(str, ',', 1, level - 1) > 0 
+ORDER BY str DESC ) WHERE ROWNUM=1; 
+
+     COMMIT;
+
+     exit
+     EOF`
+
+
+echo "V_RESULT2=$V_RESULT2"
+
+
+#url="$url""$Wal_rpt_Dt1"
+
+url="$url""$V_RESULT2"
+         
 eval inbound_path=$inbound_path
 
 cd ${inbound_path}
