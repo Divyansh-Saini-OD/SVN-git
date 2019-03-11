@@ -1,0 +1,75 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+create or replace PACKAGE xx_ar_subscriptions_mt_pkg 
+AS
+-- +===============================================================================+
+-- |  Office Depot                                                                 |
+-- +===============================================================================+
+-- |  Name:  XX_AR_SUBSCRIPTIONS_MT_PKG                                            |
+-- |                                                                               |
+-- |  Description:  This package body is to process subscription billing           |
+-- |                                                                               |
+-- |  Change Record:                                                               |
+-- +===============================================================================+
+-- | Version     Date         Author              Remarks                          |
+-- | =========   ===========  =============       =================================|
+-- | 1.0         11-DEC-2017  Sreedhar Mohan      Initial version                  |
+-- | 2.0         03-JAN-2018  Jai Shankar Kumar   Changed incorporated as per MD70 |
+-- | 3.0         07-MAR-2018  Sahithi Kunnuru     Modified PACKAGE                 |
+-- | 4.0         16-JAN-2019  Punit Gupta         Changed for NAIT-78415           |
+-- +===============================================================================+                                                                         
+  
+  /******
+  * MAIN
+  ******/
+
+  PROCEDURE process_eligible_subscriptions(errbuff            OUT VARCHAR2,
+                                           retcode            OUT NUMBER,
+                                           p_debug_flag       IN  VARCHAR2 DEFAULT 'N',
+                                           p_populate_invoice IN  VARCHAR2,
+                                           p_create_receipt   IN  VARCHAR2,
+                                           p_email_flag       IN  VARCHAR2,
+                                           p_history_flag     IN  VARCHAR2);
+  /******************************
+  *  Import Contract Information
+  ******************************/
+
+  PROCEDURE import_contract_info(errbuff      OUT VARCHAR2,
+                                 retcode      OUT NUMBER,
+                                 p_debug_flag IN  VARCHAR2 DEFAULT 'N');
+                                          
+  /**************************************
+  *  Import Recurring Billing Information
+  **************************************/
+
+  PROCEDURE import_recurring_billing_info(errbuff      OUT VARCHAR2,
+                                          retcode      OUT NUMBER,
+                                          p_debug_flag IN  VARCHAR2 DEFAULT 'N');
+
+  /**************************************
+  *  Auto Invoice Wrapper Program
+  **************************************/
+  PROCEDURE process_auto_invoice(errbuff      OUT  VARCHAR2,
+                                 retcode      OUT  VARCHAR2,
+                                 p_debug_flag IN   VARCHAR2 DEFAULT 'N');
+  /**************************************
+  *  Auto Renewal Email Program
+  **************************************/
+  PROCEDURE send_email_autorenew(errbuff      OUT  VARCHAR2,
+                                 retcode      OUT  NUMBER,
+                                 p_debug_flag IN   VARCHAR2 DEFAULT 'N');
+                                 
+  /**************************************
+  * Procedure to generate billing history
+  **************************************/
+
+  PROCEDURE generate_bill_history_payload(errbuff            OUT VARCHAR2,
+                                          retcode            OUT NUMBER,
+                                          p_file_path        IN  VARCHAR2,
+                                          p_debug_flag       IN  VARCHAR2 DEFAULT 'N',
+							              p_text_value       IN  VARCHAR2);
+                                          
+END;
+/
