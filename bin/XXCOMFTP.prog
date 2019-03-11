@@ -240,24 +240,7 @@ elif [ "$lftpflag" = "Y" ]
  	 echo "user $user"
 	 echo "passwd $passwd"
 	 echo "server $server"
-	 LFTPPARMS2="-u $user,$passwd -p $server"
-	 echo "LFTPPARMS2 $LFTPPARMS2"
-	 #lftp -u $LFTPPARMS $EXECFILE > $TEMPFILE
-	 lftp $LFTPPARMS2
-	 echo "Before lcd pwd $source"
-	 pwd
-	 lcd $source > $TMPFILE
-	 echo "After lcd pwd"
-	 pwd
-	 echo "Before cd pwd $dest"
-	 pwd
-	 cd $dest > $TMPFILE
-	 echo "After cd pwd"
-	 pwd
-	 echo "Before put $filename"
-	 put $filename > $TMPFILE
-	 echo "After put"	 
-	 echo "After TMPFILE1111 $TMPFILE" 
+	 $XXFIN_TOP/bin/./XXPROCESSLFTP.sh $user $passwd $server $source $dest $filename $TMPFILE
 else
      echo "Executing FTP"
 	 FTPPARMS="$server"
@@ -280,6 +263,7 @@ SFTPSuccess=`egrep -i '(Uploading)|(100%)' $TMPFILE`
 SFTPCheck=`egrep -i '(Permission denied)|(Connection refused)|(host key verification failed)' $TMPFILE`
 Mframesuccess=`grep 'Transfer completed successfully'  $TMPFILE`
 AS400success=`grep 'transfer completed successfully'  $TMPFILE`
+LFTPSuccess=`grep 'LFTP'  $TMPFILE`
 
 if [ "$Server_check" != "" ]
 then
@@ -346,7 +330,7 @@ then
     rm $tmpfile4  # Added for Defect 12210
     exit 1    
 
-elif [ "$Success" != "" -o  "$Success1" != "" -o "$SFTPSuccess" != "" ]
+elif [ "$Success" != "" -o  "$Success1" != "" -o "$SFTPSuccess" != "" -o "$LFTPSuccess" != "" ]
 then 
     echo " "
     cat $TMPFILE
