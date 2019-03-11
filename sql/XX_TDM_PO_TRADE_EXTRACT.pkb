@@ -4,7 +4,7 @@ create or replace PACKAGE BODY xx_tdm_po_trade_extract AS
   -- |                                                                                            |
   -- +============================================================================================+
   -- |  Name  :  XX_TDM_PO_TRADE_EXTRACT                                                          |
-  -- |  RICE ID   :  I3124 Trade PO to EBS Interface                                   			  |
+  -- |  RICE ID   :  I3125 Trade PO to EBS Interface                                   			  |
   -- |  Description:  Extract Trade POs for TDM                                                   |
   -- |                                                                          				  |
   -- +============================================================================================+
