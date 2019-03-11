@@ -98,7 +98,29 @@ echo "Inbound path                           = $inbound_path"
 echo "Archival path                          = $archival_path"
 
 
+#NEWEGG MArketplace
 
+if [ "${5}" = "NEWEGG_MPL" ]
+then
+
+
+scriptPath="$XXFIN_TOP/bin"
+
+echo "scriptPath=$scriptPath"
+
+scriptName="XXCEMRKTPLCLOADNEWEGG.prog"
+
+
+echo "scriptName=$scriptName"
+
+$scriptPath/$scriptName "$@"
+
+#/$scriptName
+
+
+echo "Execution Complete"
+
+fi
 
 #Walmart MArketplace
 
