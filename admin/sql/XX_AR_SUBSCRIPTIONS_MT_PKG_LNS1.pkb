@@ -52,7 +52,8 @@ AS
 -- |                                              from req_id to con_program_id NAIT-87055   |
 -- | 19.0        07-MAR-2019  Sahithi K           adding auto accounting rule info as per    |
 -- |                                              NAIT-37790                                 |  
--- | 20.0        11-MAR-2019  Punit Gupta         Replacing DB Link with table for LNS1      |
+-- | 20.0        11-MAR-2019  Punit Gupta         For LNS1 Cloud Instance Replacing DB Link  |
+-- |                                              with table for LNS1 for item cost          |
 -- +=========================================================================================+
  
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -2020,7 +2021,7 @@ AS
                px_ar_subscription_info.authorization_code,
                px_ar_subscription_info.auth_transaction_message
         FROM   xx_ar_subscription_payloads auth_response,
-               JSON_TABLE ( auth_response.response_data, '$.paymentAuthorizationResponse.transactionHeader' COLUMNS ( "TransactionId"    VARCHAR2(60) PATH '$.consumerTransactionId' ,"TransactionDateTime" VARCHAR2(30) PATH '$.consumerTransactionDateTime' )) "JT0" ,
+               JSON_TABLE ( auth_response.response_data, '$.paymentAuthorizationResponse.transactionHeader' COLUMNS ( "TRANSACTIONID"    VARCHAR2(60) PATH '$.consumerTransactionId' ,"TRANSACTIONDATETIME" VARCHAR2(30) PATH '$.consumerTransactionDateTime' )) "JT0" ,
                JSON_TABLE ( auth_response.response_data, '$.paymentAuthorizationResponse.transactionStatus' COLUMNS ( "TRANSACTION_CODE" VARCHAR2(60) PATH '$.code' ,"TRANSACTION_MESSAGE" VARCHAR2(256) PATH '$.message' )) "JT1" 
         WHERE  auth_response.payload_id = p_payload_id;
       
