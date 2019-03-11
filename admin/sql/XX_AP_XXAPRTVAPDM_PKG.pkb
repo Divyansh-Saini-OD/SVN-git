@@ -55,7 +55,6 @@ PACKAGE BODY XX_AP_XXAPRTVAPDM_PKG
   -- |1.8       12-APR-2018 Digamber S     Added new function before_report_trigger_c
   --                                       for new RTV APDM consolidation report
   -- |1.9        14-Dec-2018 Ragni Gupta   NAIT-72725, to remove dblink dependency
-  -- |2.0        05-MAR-2019 Shanti Sethuraj  Adding the frequency 'DY','MY' and 'WK' for jira NAIT-24616	
   -- +=========================================================================
   -- +
 AS
@@ -108,7 +107,7 @@ AS
       TO_CHAR(TRUNC(sysdate),'YYYY/MM/DD HH24:MI:SS') program_date
     FROM ap_invoices_all ai
     WHERE 1                  =1
-    AND ai.last_update_date >= sysdate-7
+    AND ai.last_update_date >= sysdate-9    --- changed from sysdate-7 to sysdate-9 to test our code in PSTGB
     ---AND ai.last_update_date >= xx_ap_iby_pmnt_batch_pkg.cutoff_date_eligible
     AND ai.invoice_num LIKE 'RTV%'
     AND ai.org_id                                           =fnd_profile.value ('ORG_ID')
@@ -273,8 +272,8 @@ IS
       CF_DeptFormula(xarl.sku, l_vendor_site_id) department
     FROM XX_AP_RTV_HDR_ATTR xarh,
       XX_AP_RTV_LINES_ATTR xarl
-    WHERE xarh.header_id    =xarl.header_id 
-    AND xarh.frequency_code in ( 'DY','MY','WY','QY')    --Adding the frequency 'DY','MY' and 'WK' for jira NAIT-24616
+    WHERE xarh.header_id    =xarl.header_id
+    AND xarh.frequency_code in ( 'DY', 'MY','WY','QY')
     AND xarh.Record_Status  = 'C'
       --AND XARH.VOUCHER_NUM = l_voucher_nbr;
     AND xarh.invoice_num = l_invoice_nbr;
