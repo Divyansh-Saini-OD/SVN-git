@@ -52,8 +52,8 @@ AS
 -- |                                              from req_id to con_program_id NAIT-87055   |
 -- | 19.0        07-MAR-2019  Sahithi K           adding auto accounting rule info as per    |
 -- |                                              NAIT-37790                                 |  
--- | 20.0        11-MAR-2019  Punit Gupta         For LNS1 Cloud Instance Replacing DB Link  |
--- |                                              with table for LNS1 for item cost          |
+-- | 20.0        11-MAR-2019  Punit Gupta         Changes done for GSIPRFGB Replacing RMS DB |
+-- |                                              Link with table used in process item cost  |
 -- +=========================================================================================+
  
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -470,22 +470,6 @@ AS
                          px_translation_info => lt_translation_info);
 
     x_program_setups('enable_debug') := lt_translation_info.target_value1;
-
-    /****************
-    * Get RMS DB LINK
-    ****************/
-
-    /*lc_action :=  'Calling get_translation_info for x_rms_dba_link';
-
-    lt_translation_info := NULL;
-
-    lt_translation_info.source_value1 := 'RMS_DB_LINK';
-
-    get_translation_info(p_translation_name  => 'XX_AR_SUBSCRIPTIONS',
-                         px_translation_info => lt_translation_info);
-
-    x_program_setups('rms_dba_link') := lt_translation_info.target_value1;
-	*/
 
     /*********************
     * Get tax enabled flag
@@ -2207,9 +2191,7 @@ AS
             
               logit(p_message => lc_action);
             
-              --lc_query := 'SELECT cost FROM MV_SSB@' || p_rms_db_link || ' WHERE item = '|| lr_contract_line_info.item_name;
-			  
-			  lc_query := 'SELECT cost FROM XX_RMS_MV_SSB ' || ' WHERE item = '|| lr_contract_line_info.item_name;
+             lc_query := 'SELECT cost FROM XX_RMS_MV_SSB ' || ' WHERE item = '|| lr_contract_line_info.item_name;
             
               EXECUTE IMMEDIATE lc_query INTO px_item_cost_tab(lr_contract_line_info.item_name);
 
