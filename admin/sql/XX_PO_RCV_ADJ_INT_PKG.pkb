@@ -1,4 +1,5 @@
-create or replace PACKAGE BODY XX_PO_RCV_ADJ_INT_PKG
+create or replace 
+PACKAGE BODY XX_PO_RCV_ADJ_INT_PKG
 AS
   -- +============================================================================================+
   -- |  Office Depot - Project Simplify                                                           |
@@ -14,8 +15,7 @@ AS
   -- | Version     Date         Author           Remarks                                          |
   -- | =========   ===========  =============    ===============================================  |
   -- | 1.0         04/24/2017   Avinash Baddam   Initial version                                  |
-  -- | 2.0         01/24/2019   BIAS             INSTANCE_NAME is replaced with DB_NAME for OCI   |  
-  -- |                                           Migration Project                                |
+  -- | 1.1         12/19/2018   Venkateshwar Panduga      Receipt Adjustment Issue                | 
   -- +============================================================================================+
   -- +============================================================================================+
   -- |  Name  : Log Exception                                                              |
@@ -76,8 +76,8 @@ AS
 		l_instance_name VARCHAR2(30);
 	BEGIN
 		print_debug_msg ('Begin - Sending email',TRUE);
-		SELECT sys_context('userenv','DB_NAME')
-		INTO l_instance_name
+		SELECT sys_context('userenv','instance_name') 
+		INTO l_instance_name 
 		FROM dual;
 		BEGIN
 			SELECT target_value2
@@ -117,8 +117,8 @@ AS
 		ln_current_year NUMBER;
 	BEGIN
 		print_debug_msg ('Update record_status in staging incase of error in RCV TRANSACTION Interface',FALSE);
-		SELECT SUBSTR(EXTRACT(YEAR FROM sysdate), 4,4)
-		INTO ln_current_year
+		SELECT SUBSTR(EXTRACT(YEAR FROM sysdate), 4,4) 
+		INTO ln_current_year 
 		FROM dual;
 		UPDATE xx_po_rcv_adj_int_stg stg
 		SET stg.record_status = 'IE'
@@ -302,23 +302,23 @@ AS
 		lc_status          		   		VARCHAR2(100);
 		lc_dev_phase       		   		VARCHAR2(100);
 		lc_dev_status      		   		VARCHAR2(100);
-		lc_message         		   		VARCHAR2(100);
+		lc_message         		   		VARCHAR2(100);		
 	CURSOR get_dir_path
 	IS
-		SELECT directory_path
-		FROM all_directories
+		SELECT directory_path 
+		FROM all_directories 
 		WHERE directory_name = p_filepath;
 	BEGIN
 		gc_debug      := p_debug;
 		gn_request_id := fnd_global.conc_request_id;
 		gn_user_id    := fnd_global.user_id;
 		gn_login_id   := fnd_global.login_id;
-		SELECT SUBSTR(LOWER(SYS_CONTEXT('USERENV','DB_NAME')),1,8)
+		SELECT SUBSTR(LOWER(SYS_CONTEXT('USERENV','INSTANCE_NAME')),1,8) 
 		INTO lc_instance_name
 		FROM dual;
 		print_debug_msg ('Start load_staging from File:'||p_file_name||' Path:'||p_filepath,TRUE);
-		SELECT SUBSTR(EXTRACT(YEAR FROM sysdate), 4,4)
-		INTO gn_current_year
+		SELECT SUBSTR(EXTRACT(YEAR FROM sysdate), 4,4) 
+		INTO gn_current_year 
 		FROM dual;
 		UTL_FILE.FGETATTR(lc_filedir,lc_filename,lb_file_exist,ln_size,ln_block_size);
 		IF NOT lb_file_exist THEN
@@ -364,14 +364,14 @@ AS
 		OPEN get_dir_path;
 		FETCH get_dir_path INTO lc_dirpath;
 		CLOSE get_dir_path;
-		lc_dest_file_name := '/app/ebs/ebsfinance/'	||lc_instance_name||'/apinvoice/'
-													||SUBSTR(lc_filename,1,LENGTH(lc_filename) - 4)
+		lc_dest_file_name := '/app/ebs/ebsfinance/'	||lc_instance_name||'/apinvoice/' 
+													||SUBSTR(lc_filename,1,LENGTH(lc_filename) - 4) 
 													||TO_CHAR(SYSDATE, 'DD-MON-YYYYHHMMSS') || '.TXT';
-		ln_conc_file_copy_request_id := fnd_request.submit_request(	'XXFIN',
-																	'XXCOMFILCOPY',
-																	'',
-																	'',
-																	FALSE,
+		ln_conc_file_copy_request_id := fnd_request.submit_request(	'XXFIN', 
+																	'XXCOMFILCOPY', 
+																	'', 
+																	'', 
+																	FALSE, 
 																	lc_dirpath||'/'||lc_filename, --Source File Name
 																	lc_dest_file_name,            --Dest File Name
 																	'', '', 'N'                   --Deleting the Source File
@@ -395,7 +395,7 @@ AS
 			print_debug_msg('dev_phase :'||lc_dev_phase);
 			print_debug_msg('dev_status :'||lc_dev_status);
 			print_debug_msg('message :'||lc_message);
-		END IF;
+		END IF;					
 		print_debug_msg('Calling the Common File Copy to move the Inbound file to Archive folder',TRUE);
 		lc_dest_file_name            := '$XXFIN_ARCHIVE/inbound/' || SUBSTR(lc_filename,1,LENGTH(lc_filename) - 4) || TO_CHAR(SYSDATE, 'DD-MON-YYYYHHMMSS') || '.TXT';
 		ln_conc_file_copy_request_id := fnd_request.submit_request('XXFIN', 'XXCOMFILCOPY', '', '', FALSE, lc_dirpath||'/'||lc_filename, --Source File Name
@@ -494,14 +494,14 @@ AS
 		indx NUMBER;
 		CURSOR trans_detail_cur
 		IS
-			SELECT 	 stg.ap_po_number
-					,stg.ap_location
-					,stg.ap_keyrec
-					,stg.ap_receipt_num
-					,stg.attribute1 vendor_site_category
-					,stg.ap_po_lineno
-					,stg.ap_sku
-					,stg.error_description
+			SELECT 	 stg.ap_po_number 
+					,stg.ap_location 
+					,stg.ap_keyrec 
+					,stg.ap_receipt_num 
+					,stg.attribute1 vendor_site_category 
+					,stg.ap_po_lineno 
+					,stg.ap_sku 
+					,stg.error_description 
 					,stg.creation_date
 			FROM xx_po_rcv_adj_int_stg stg
 			WHERE EXISTS
@@ -530,8 +530,8 @@ AS
 					,rti.attribute1 sku
 					,NVL(poi.error_message_name,'NULL')
 					,NVL(poi.error_message,'NULL') error_description
-			FROM 	 po_interface_errors poi
-					,rcv_transactions_interface rti
+			FROM 	 po_interface_errors poi 
+					,rcv_transactions_interface rti 
 					,rcv_headers_interface rhi
 			WHERE poi.interface_line_id = rti.interface_transaction_id
 			AND rhi.header_interface_id = rti.header_interface_id
@@ -608,13 +608,13 @@ AS
 				ln_consg_error_cnt     := 0;
 				ln_consg_skip_cnt      := 0;
 				ln_consg_other_err_cnt := 0;
-				ln_consg_skip_int_cnt  := 0;
+				ln_consg_skip_int_cnt  := 0; 	
 				ln_tot_new_cnt         := 0;
 				ln_tot_consg_cnt       := 0;
-				ln_skip_int_cnt		   := 0;
+				ln_skip_int_cnt		   := 0;	
 				ln_tot_skip_adj_zero   := 0;
 				ln_tot_skip_int_vndr   := 0;
-				ln_skip_total_cnt	   := 0;
+				ln_skip_total_cnt	   := 0; 	
 				OPEN req_trans_count_cur(l_stage_requests(i));
 				FETCH req_trans_count_cur BULK COLLECT INTO stats_tab;
 				CLOSE req_trans_count_cur;
@@ -642,8 +642,8 @@ AS
 						IF stats_tab(indx).attribute5 		  	= 'Skip Processing - Adjustment Quantity is 0' THEN
 							ln_consg_skip_cnt          	:= ln_consg_skip_cnt +	stats_tab(indx).count;
 						ELSIF stats_tab(indx).attribute5 		= 'Internal Vendor - skip Adjustment processing' THEN
-							ln_consg_skip_int_cnt      	:= ln_consg_skip_int_cnt + stats_tab(indx).count;
-						END IF;
+							ln_consg_skip_int_cnt      	:= ln_consg_skip_int_cnt + stats_tab(indx).count;	
+						END IF;		
 						ln_tot_consg_cnt             	:= ln_tot_consg_cnt + stats_tab(indx).count;
 						IF stats_tab(indx).record_status      	= 'I' THEN
 							ln_consg_success_cnt        := ln_consg_success_cnt + stats_tab(indx).count;
@@ -775,7 +775,7 @@ AS
 		print_debug_msg ('Checking child_request_status',FALSE);
 		lc_status_code := NULL;
 		OPEN get_conc_status;
-		FETCH get_conc_status
+		FETCH get_conc_status 
 		INTO lc_status_code;
 		CLOSE get_conc_status;
 		IF lc_status_code IS NOT NULL THEN
@@ -798,34 +798,34 @@ AS
 	AS
 		CURSOR adj_cur
 		IS
-			SELECT 	 stg.record_id
-					,stg.ap_location
-					,stg.ap_keyrec
-					,stg.ap_po_number
+			SELECT 	 stg.record_id 
+					,stg.ap_location 
+					,stg.ap_keyrec 
+					,stg.ap_po_number 
 					,asp.segment1 ap_po_vendor
-					,stg.ap_po_lineno
-					,stg.ap_receipt_num
-					,stg.ap_adj_date
-					,stg.ap_adj_time
-					,stg.ap_adj_qty
-					,stg.ap_adj_cost
-					,stg.ap_sku
-					,stg.ap_vendor_prodcd
-					,stg.ap_seq_no
-					,stg.source_system_ref
-					,stg.record_status
-					,stg.error_description
-					,stg.attribute1
-					,stg.attribute5
-					,poh.po_header_id
-					,poh.org_id
+					,stg.ap_po_lineno 
+					,stg.ap_receipt_num 
+					,stg.ap_adj_date 
+					,stg.ap_adj_time 
+					,stg.ap_adj_qty 
+					,stg.ap_adj_cost 
+					,stg.ap_sku 
+					,stg.ap_vendor_prodcd 
+					,stg.ap_seq_no 
+					,stg.source_system_ref 
+					,stg.record_status 
+					,stg.error_description 
+					,stg.attribute1 
+					,stg.attribute5 
+					,poh.po_header_id 
+					,poh.org_id 
 					,DECODE(poh.org_id,404,'US_USD_P',403,'CA_CAD_P',poh.org_id) SOB_NAME
-					,poh.vendor_site_id
-					,hru.location_id
+					,poh.vendor_site_id 
+					,hru.location_id 
 					,hru.organization_id
 					,stg.attribute3
-			FROM xx_po_rcv_adj_int_stg stg
-				,po_headers_all poh
+			FROM xx_po_rcv_adj_int_stg stg 
+				,po_headers_all poh 
 				,ap_suppliers asp
 				,hr_all_organization_units hru
 			WHERE 	stg.record_status          IS NULL
@@ -844,7 +844,7 @@ AS
 			WHERE 1=1
 			AND NOT EXISTS
 					(SELECT 1
-					FROM po_headers_all poh
+					FROM po_headers_all poh 
 					WHERE 1=1
 					AND poh.segment1    = stg.ap_po_number
 					)
@@ -995,7 +995,7 @@ AS
 			AND NVL(supa.inactive_date,sysdate) >= TRUNC(sysdate);
 		CURSOR check_inv_period_cur(p_organization_id NUMBER, p_adj_date DATE) IS
 			SELECT oap.open_flag
-			FROM org_acct_periods oap
+			FROM org_acct_periods oap 
 				,org_organization_definitions ood
 			WHERE oap.organization_id 	= p_organization_id
 			AND oap.organization_id 	= ood.organization_id
@@ -1003,15 +1003,15 @@ AS
 		CURSOR check_period_cur( p_appl_id 	  NUMBER
 								,p_short_name VARCHAR2
 								,p_adj_date DATE
-								)
+								) 
 		IS
-			SELECT gps.closing_status
+			SELECT gps.closing_status 
 			FROM  gl_period_statuses gps
 				, gl_ledgers gl
 			WHERE application_id	=p_appl_id
 			AND gl.short_name		=p_short_name
-			AND gps.ledger_id		=gl.ledger_id
-			AND (p_adj_date BETWEEN TRUNC(start_date) AND TRUNC (end_date));
+			AND gps.ledger_id		=gl.ledger_id 
+			AND (p_adj_date BETWEEN TRUNC(start_date) AND TRUNC (end_date)); 
 		CURSOR tran_type_cur(p_transaction_type_name VARCHAR2)
 		IS
 			SELECT 	mtt.transaction_type_id
@@ -1075,8 +1075,8 @@ AS
 		gn_request_id := fnd_global.conc_request_id;
 		gn_user_id    := fnd_global.user_id;
 		gn_login_id   := fnd_global.login_id;
-		SELECT SUBSTR(EXTRACT(YEAR FROM sysdate), 4,4)
-		INTO gn_current_year
+		SELECT SUBSTR(EXTRACT(YEAR FROM sysdate), 4,4) 
+		INTO gn_current_year 
 		FROM dual;
 		print_debug_msg ('Start interface_child' ,TRUE);
 		--Get value of global variable. It is null initially.
@@ -1087,7 +1087,7 @@ AS
 			LOOP
 				BEGIN
 					UPDATE xx_po_rcv_adj_int_stg stg
-					SET    stg.record_status = 'E'
+					SET    stg.record_status = 'E' 
 						  ,error_description = 'PO does not exists - Invalid PO Number=['||stg.ap_po_number||']'
 						  ,attribute1		 = 'NON-CONSG'
 					WHERE 1=1
@@ -1096,7 +1096,7 @@ AS
 					XX_PO_POM_INT_PKG.valid_and_mark_missed_po_int(p_source => 'NA-RCVADJINTR' ,p_source_record_id =>TO_CHAR(p_indx.record_id) ,p_po_number => p_indx.ap_po_number ,p_po_line_num => p_indx.ap_po_lineno ,p_result => lc_result);
 					print_debug_msg ('Record_id=['||TO_CHAR(p_indx.record_id)|| '] PO Missing Result =['||lc_result||']',FALSE);
 				END;
-			END LOOP;
+			END LOOP;    
 			COMMIT;
 			OPEN adj_cur;
 			LOOP
@@ -1128,7 +1128,7 @@ AS
 						OPEN check_period_cur(101,l_adj_tab(indx).sob_name, TO_DATE(l_adj_tab(indx).ap_adj_date,'MM/DD/YY'));
 						FETCH check_period_cur INTO lc_period_stat;
 						CLOSE check_period_cur;
-						IF lc_period_stat<>'O' THEN
+						IF lc_period_stat<>'O' THEN 
 							l_adj_tab(indx).record_status := 'E';
 							l_adj_tab(indx).error_description := l_adj_tab(indx).error_description||'GL Period is not Open for '||to_char(l_adj_tab(indx).sob_name)||']';
 							l_adj_tab(indx).attribute1 := 'NON-CONSG';
@@ -1138,7 +1138,7 @@ AS
 						OPEN check_period_cur(201,l_adj_tab(indx).sob_name, TO_DATE(l_adj_tab(indx).ap_adj_date,'MM/DD/YY'));
 						FETCH check_period_cur INTO lc_period_stat;
 						CLOSE check_period_cur;
-						IF lc_period_stat<>'O' THEN
+						IF lc_period_stat<>'O' THEN 
 							l_adj_tab(indx).record_status := 'E';
 							l_adj_tab(indx).error_description := l_adj_tab(indx).error_description||'PO Period is not Open for '||to_char(l_adj_tab(indx).sob_name)||']';
 							l_adj_tab(indx).attribute1 := 'NON-CONSG';
@@ -1157,7 +1157,7 @@ AS
 						END IF;
 						-- 1. Check if the vendor site category to check whether it is a consignment or non-consignment
 						lc_vendor_site_category := NULL;
-						lc_vendor_site_code	  := NULL;
+						lc_vendor_site_code	  := NULL;	
 						OPEN check_vendor_cur(l_adj_tab(indx).vendor_site_id);
 						FETCH check_vendor_cur INTO lc_vendor_site_category, lc_vendor_site_code;
 						CLOSE check_vendor_cur;
@@ -1259,7 +1259,12 @@ AS
 									ln_trx_qty := 0;
 								END;
 								--Get the adj qty
-								ln_adj_qty := l_adj_tab(indx).ap_adj_qty-NVL(ln_trx_qty,0);
+								------------   Below code is commented for V1.1
+								/*ln_adj_qty := l_adj_tab(indx).ap_adj_qty-NVL(ln_trx_qty,0); */
+								------------------------------End comment for V1.1
+								--------------------Below code is added for V1.1
+								ln_adj_qty := l_adj_tab(indx).ap_adj_qty;																		 
+								-----------------------------End V1.1
 								-- assign transaction type and source based on qty
 								IF ln_adj_qty>0 THEN
 									OPEN tran_type_cur('Miscellaneous receipt');
@@ -1280,40 +1285,40 @@ AS
 								  INSERT
 								  INTO mtl_transactions_interface
 									(
-										transaction_header_id
-									  ,source_code
-									  ,source_header_id
-									  ,source_line_id
-									  ,process_flag
-									  ,transaction_mode
-									  ,lock_flag
-									  ,last_update_date
-									  ,last_updated_by
-									  ,creation_date
-									  ,created_by
-									  ,inventory_item_id
-									  ,organization_id
-									  ,transaction_quantity
-									  ,transaction_cost
-									  ,primary_quantity
-									  ,transaction_uom
-									  ,transaction_date
-									  ,subinventory_code
-									  ,transaction_source_type_id
-									  ,transaction_action_id
-									  ,transaction_type_id
-									  ,transaction_source_name
+										transaction_header_id 
+									  ,source_code 
+									  ,source_header_id 
+									  ,source_line_id 
+									  ,process_flag 
+									  ,transaction_mode 
+									  ,lock_flag 
+									  ,last_update_date 
+									  ,last_updated_by 
+									  ,creation_date 
+									  ,created_by 
+									  ,inventory_item_id 
+									  ,organization_id 
+									  ,transaction_quantity 
+									  ,transaction_cost 
+									  ,primary_quantity 
+									  ,transaction_uom 
+									  ,transaction_date 
+									  ,subinventory_code 
+									  ,transaction_source_type_id 
+									  ,transaction_action_id 
+									  ,transaction_type_id 
+									  ,transaction_source_name 
 									  ,material_account
 									  --,distribution_account_id
-									  ,dst_segment1
-									  ,dst_segment2
-									  ,dst_segment3
-									  ,dst_segment4
-									  ,dst_segment5
-									  ,dst_segment6
-									  ,dst_segment7
-									  ,attribute_category
-									  ,attribute1
+									  ,dst_segment1 
+									  ,dst_segment2 
+									  ,dst_segment3 
+									  ,dst_segment4 
+									  ,dst_segment5 
+									  ,dst_segment6 
+									  ,dst_segment7 
+									  ,attribute_category 
+									  ,attribute1 
 									  ,attribute8
 									  ,attribute9
 									)
@@ -1342,15 +1347,15 @@ AS
 									  ,tran_type_rec.transaction_action_id 						--transaction_action_id
 									  ,tran_type_rec.transaction_type_id 						--transaction_type_id
 									  ,ln_trx_source_name 										--'OD CONSIGNMENT RECEIPTS'
-									  ,ln_ccid
-									  ,lc_segment1
-									  ,lc_segment2
-									  ,'12102000'
-									  ,lc_segment4
-									  ,lc_segment5
-									  ,lc_segment6
-									  ,lc_segment7
-									  ,'WMS'
+									  ,ln_ccid 
+									  ,lc_segment1 
+									  ,lc_segment2 
+									  ,'12102000' 
+									  ,lc_segment4 
+									  ,lc_segment5 
+									  ,lc_segment6 
+									  ,lc_segment7 
+									  ,'WMS' 
 									  ,lc_vendor_site_code										--LPAD(l_adj_tab(indx).ap_po_vendor,10,'0'),				Check Condition
 									  ,l_adj_tab(indx).ap_receipt_num
 										  ||'|'
@@ -1382,12 +1387,20 @@ AS
 							  l_adj_tab(indx).po_header_id, ln_item_id,l_adj_tab(indx).ap_po_lineno,l_adj_tab(indx).ap_receipt_num
 							)
 						LOOP
+------------   Below code is commented for V1.1
+           /* 
 							ln_adj_qty :=(
 											l_adj_tab(indx).ap_adj_qty
 										 )
 										-NVL(
 											r.quantity_received,0
 										    );
+            */ 
+------------------------------End comment for V1.1
+--------------------Below code is added for V1.1
+ln_adj_qty := l_adj_tab(indx).ap_adj_qty;
+										 
+-----------------------------End V1.1
 						IF ln_adj_qty>0 THEN
 							OPEN receipt_details_asc_cur(l_adj_tab(indx).po_header_id
 														,l_adj_tab(indx).ap_po_lineno
@@ -1471,15 +1484,15 @@ AS
 								)
 								VALUES
 								(
-								   ln_interface_transaction_id
-								  ,p_batch_id
-								  ,sysdate
-								  ,gn_user_id
-								  ,sysdate
-								  ,gn_user_id
-								  ,gn_login_id
+								   ln_interface_transaction_id 
+								  ,p_batch_id 
+								  ,sysdate 
+								  ,gn_user_id 
+								  ,sysdate 
+								  ,gn_user_id 
+								  ,gn_login_id 
 								  ,'CORRECT' 													--transaction_type
-								  ,ld_transaction_date
+								  ,ld_transaction_date 
 								  ,'PENDING' 													--processing_status_code
 								  ,'BATCH' 														--processing_mode_code
 								  ,'PENDING' 													--transaction_status_code
@@ -1505,7 +1518,7 @@ AS
 								  ,l_receipt_tab(i).location_id 								--location_id
 								  ,l_receipt_tab(i).deliver_to_location_id 						--deliver_to_location_id
 								  ,'Y' 															--Validation_flag
-								  ,l_adj_tab(indx).org_id
+								  ,l_adj_tab(indx).org_id 
 										  ,l_adj_tab(indx).ap_receipt_num
 										  ||'|'
 										  ||l_adj_tab(indx).ap_po_number
@@ -1519,7 +1532,7 @@ AS
 								);
 								l_adj_tab(indx).record_status := 'I';
 							END LOOP;
-						END IF;
+						END IF;	
 						IF (receipt_details_asc_cur%ISOPEN) THEN
 							CLOSE receipt_details_asc_cur;
 						END IF;
@@ -1550,12 +1563,12 @@ AS
 					SAVE EXCEPTIONS
 					UPDATE xx_po_rcv_adj_int_stg
 					SET record_status = l_adj_tab(i).record_status--DECODE(l_adj_tab(i).record_status,'E','E','I')
-					  ,error_description = l_adj_tab(i).error_description
-					  ,attribute1        =l_adj_tab(i).attribute1
-					  ,attribute5        =l_adj_tab(i).attribute5
-					  ,ap_receipt_num    =l_adj_tab(i).ap_receipt_num
-					  ,last_update_date  = sysdate
-					  ,last_updated_by   = gn_user_id
+					  ,error_description = l_adj_tab(i).error_description 
+					  ,attribute1        =l_adj_tab(i).attribute1 
+					  ,attribute5        =l_adj_tab(i).attribute5 
+					  ,ap_receipt_num    =l_adj_tab(i).ap_receipt_num 
+					  ,last_update_date  = sysdate 
+					  ,last_updated_by   = gn_user_id 
 					  ,last_update_login = gn_login_id
 					WHERE record_id     = l_adj_tab(i).record_id;
 				EXCEPTION
@@ -1588,9 +1601,9 @@ AS
 				--fnd_global.apps_initialize (gn_user_id,20707,201);
 				mo_global.set_policy_context('S',l_org_tab(o_indx).org_id);
 				mo_global.init ('PO');
-				ln_job_id := fnd_request.submit_request( application => 'PO'
-														,program => 'RVCTP'
-														,sub_request => TRUE
+				ln_job_id := fnd_request.submit_request( application => 'PO' 
+														,program => 'RVCTP' 
+														,sub_request => TRUE 
 														,argument1 => 'BATCH' 		-- Node
 														,argument2 => p_batch_id    -- Group Id
 														,argument3 => l_org_tab(o_indx).org_id                                                                                     -- org_id
@@ -1634,9 +1647,9 @@ AS
 	-- |               OD PO RCV Inbound Interface(Child)                                           |
 	-- =============================================================================================|
 	PROCEDURE submit_int_child_threads(
-										p_errbuf 		OUT VARCHAR2
-									   ,p_retcode 		OUT VARCHAR2
-									   ,p_child_threads NUMBER
+										p_errbuf 		OUT VARCHAR2 
+									   ,p_retcode 		OUT VARCHAR2 
+									   ,p_child_threads NUMBER 
 									   ,p_debug         VARCHAR2
 									  )
 	AS
@@ -1679,7 +1692,7 @@ AS
 				h.last_update_date  = sysdate ,
 				h.last_updated_by   = gn_user_id ,
 				h.last_update_login = gn_login_id
-			WHERE h.ap_po_number BETWEEN l_threads_tab(indx).from_po
+			WHERE h.ap_po_number BETWEEN l_threads_tab(indx).from_po 
 			AND l_threads_tab(indx).to_po
 			AND h.record_status IS NULL;
 			ln_batch_count      := SQL%ROWCOUNT;
@@ -1706,14 +1719,14 @@ AS
 	IS
 		CURSOR rec_cur
 		IS
-			SELECT 	stg.record_id
-				  , stg.ap_location
-				  ,stg.ap_keyrec
-				  ,stg.ap_seq_no
-				  ,poh.vendor_site_id
-				  ,stg.ap_po_number
-				  ,stg.ap_po_lineno
-				  ,hru.location_id
+			SELECT 	stg.record_id 
+				  , stg.ap_location 
+				  ,stg.ap_keyrec 
+				  ,stg.ap_seq_no 
+				  ,poh.vendor_site_id 
+				  ,stg.ap_po_number 
+				  ,stg.ap_po_lineno 
+				  ,hru.location_id 
 				  ,hru.organization_id
 			FROM 	xx_po_rcv_adj_int_stg stg ,
 					po_headers_all poh ,
@@ -1743,8 +1756,8 @@ AS
 		ln_yr_cnt               NUMBER :=0;
 		gn_current_year         NUMBER;
 	BEGIN
-		SELECT SUBSTR(EXTRACT(YEAR FROM sysdate), 4,4)
-		INTO gn_current_year
+		SELECT SUBSTR(EXTRACT(YEAR FROM sysdate), 4,4) 
+		INTO gn_current_year 
 		FROM dual;
 		FOR cur IN rec_cur
 		LOOP
@@ -1758,7 +1771,7 @@ AS
 						ln_stg_receipt_num :=cur.ap_location ||cur.ap_keyrec ||cur.ap_seq_no ||(gn_current_year-ln_yr_cnt);
 						print_debug_msg ('RECORD ID :'||cur.record_id ||':'||' ln_stg_receipt_num:'||ln_stg_receipt_num,TRUE);
 						OPEN check_vendor_cur(cur.vendor_site_id);
-						FETCH check_vendor_cur
+						FETCH check_vendor_cur 
 						INTO lc_vendor_site_category;
 						CLOSE check_vendor_cur;
 						IF lc_vendor_site_category = 'TR-CON' THEN
@@ -1854,10 +1867,10 @@ AS
 	-- |               OD PO RCV Adjustments Interface(Master)                                      |
 	-- =============================================================================================|
 	PROCEDURE interface_master(
-								 p_errbuf OUT VARCHAR2
-								,p_retcode OUT VARCHAR2
-								,p_child_threads NUMBER
-								,p_retry_errors  VARCHAR2
+								 p_errbuf OUT VARCHAR2 
+								,p_retcode OUT VARCHAR2 
+								,p_child_threads NUMBER 
+								,p_retry_errors  VARCHAR2 
 								,p_debug         VARCHAR2
 								)
 	AS
@@ -1915,10 +1928,10 @@ AS
 			IF p_retry_errors = 'Y' THEN
 				print_debug_msg('Updating rcv adjustment staging records for retry',FALSE);
 				UPDATE xx_po_rcv_adj_int_stg
-				SET  record_status      = NULL
-					,error_description  = NULL
-					,last_update_date   = sysdate
-					,last_updated_by    = gn_user_id
+				SET  record_status      = NULL 
+					,error_description  = NULL 
+					,last_update_date   = sysdate 
+					,last_updated_by    = gn_user_id 
 					,last_update_login  = gn_login_id
 				WHERE record_status IN('E','IE') ;
 				ln_retry_count      := SQL%ROWCOUNT;
@@ -1928,15 +1941,15 @@ AS
 			-- Skip the PO's if they belong to Internal Vendors.
 			BEGIN
 				UPDATE xx_po_rcv_adj_int_stg hs
-				SET  record_status    = 'I'
-					,attribute5         = 'Internal Vendor - skip Adjustment processing'
-					,last_update_date   = sysdate
-					,last_updated_by    = gn_user_id
+				SET  record_status    = 'I' 
+					,attribute5         = 'Internal Vendor - skip Adjustment processing' 
+					,last_update_date   = sysdate 
+					,last_updated_by    = gn_user_id 
 					,last_update_login  = gn_login_id
 				WHERE record_status IS NULL
 				AND EXISTS
 					(SELECT '1'
-					 FROM 	xx_fin_translatedefinition xtd
+					 FROM 	xx_fin_translatedefinition xtd 
 						  , xx_fin_translatevalues xtv
 					 WHERE xtd.translation_name = 'PO_POM_INT_VENDOR_EXCL'
 					 AND xtd.translate_id       = xtv.translate_id
@@ -1988,4 +2001,3 @@ AS
 	END interface_master;
 END XX_PO_RCV_ADJ_INT_PKG;
 /
-SHOW ERRORS;
