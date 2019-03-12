@@ -600,8 +600,8 @@ BEGIN
               IF v_sup_attr8 IN ('TR-CON' , 'TR-OMXCON') THEN
                   SELECT count(1) into v_count
                     FROM  
-                        iby_external_payees_all iep,
-                        iby_pmt_instr_uses_all ipiu 
+                        apps.iby_external_payees_all iep,
+                        apps.iby_pmt_instr_uses_all ipiu 
                   WHERE iep.supplier_site_id=v_vendor_site_id
                     AND payment_flow='DISBURSEMENTS'
                     AND ipiu.ext_pmt_party_id=iep.ext_payee_id
