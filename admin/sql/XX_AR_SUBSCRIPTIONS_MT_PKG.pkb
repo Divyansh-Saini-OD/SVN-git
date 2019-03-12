@@ -42,16 +42,8 @@ AS
 -- |                                              unique instead of contract# NAIT-77723     |
 -- |                                              2.charge seq =1 for auto renewed SS        |
 -- |                                              SKU's NAIT-79218                           |
--- | 16.0        22-FEB-2019  Sahithi K           trigger payment failure for business select|
--- |                                              customer same as SS SKU's NAIT-84277       |
--- | 17.0        06-MAR-2019  Sahithi K           NAIT-85914 1.pass trans_id in payment auth |
--- |                                                           payload                       |
--- |                                              2.pass wallet_type while inserting data    |  
--- |                                                into ORDT table based on translation     |  
 -- | 18.0        07-MAR-2019  Sahithi K           modified program_id logic in UPSERT script |
--- |                                              from req_id to con_program_id NAIT-87055   |
--- | 19.0        07-MAR-2019  Sahithi K           adding auto accounting rule info as per    |
--- |                                              NAIT-37790                                 |  
+-- |                                              from req_id to con_program_id              |
 -- +=========================================================================================+
  
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -67,8 +59,6 @@ AS
   gb_debug                        BOOLEAN                        := FALSE;
   gc_order_source_spc             oe_order_sources.name%TYPE     := 'SPC';
   gc_contract_status     CONSTANT VARCHAR2(20)                   := 'TERMINATE';
-  
-  gc_invoice_type                 ra_rules.name%TYPE             := 'Advance Invoice';--NAIT#37790
   
   TYPE gt_input_parameters IS TABLE OF VARCHAR2(32000)
    INDEX BY VARCHAR2(255);
@@ -742,51 +732,6 @@ AS
 
     x_program_setups('termination_sku')  := lt_translation_info.target_value1;
 
-    /*************************
-    * Get Accounting rule name
-    *************************/
-
-    lc_action :=  'Calling get_translation_info for Accounting rule name';
-
-    lt_translation_info := NULL;
-
-    lt_translation_info.source_value1 := 'ACCT_RULE_NAME';
-
-    get_translation_info(p_translation_name  => 'XX_AR_SUBSCRIPTIONS',
-                         px_translation_info => lt_translation_info);
-
-    x_program_setups('acct_rule_name') := lt_translation_info.target_value1;
-
-    /********************************************
-    * Get wallet_type for Subscription Subsequent
-    ********************************************/
-
-    lc_action :=  'Calling get_translation_info for Subscription Subsequent';
-
-    lt_translation_info := NULL;
-
-    lt_translation_info.source_value1 := 'SUBSCRIPTION_SUBSEQUENT';
-
-    get_translation_info(p_translation_name  => 'XX_AR_SUBSCRIPTIONS',
-                         px_translation_info => lt_translation_info);
-
-    x_program_setups('subscription_subsequent')  := lt_translation_info.target_value1;
-    
-    /******************************************
-    * Get wallet_type for Subscription Resubmit
-    ******************************************/
-    
-    lc_action :=  'Calling get_translation_info for Subscription Resubmit';
-
-    lt_translation_info := NULL;
-
-    lt_translation_info.source_value1 := 'SUBSCRIPTION_RESUBMIT';
-
-    get_translation_info(p_translation_name  => 'XX_AR_SUBSCRIPTIONS',
-                         px_translation_info => lt_translation_info);
-
-    x_program_setups('subscription_resubmit')  := lt_translation_info.target_value1;
-    
     exiting_sub(p_procedure_name => lc_procedure_name);
 
     EXCEPTION
@@ -3104,41 +3049,6 @@ AS
   END send_email_AB;
   
   /****************************************************
-  * Helper procedure to get auto accounting information
-  ****************************************************/
-
-  PROCEDURE get_rule_info(p_rule_name IN         ra_rules.name%TYPE,
-                          x_rule_id   OUT NOCOPY ra_rules.rule_id%TYPE)
-  IS
-
-    lc_procedure_name  CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'get_rule_info';
-    lt_parameters      gt_input_parameters;
-
-  BEGIN
-
-    lt_parameters('p_rule_name')          := p_rule_name;
-
-    entering_sub(p_procedure_name  => lc_procedure_name,
-                 p_parameters      => lt_parameters);
-    SELECT rule_id
-    INTO   x_rule_id
-    FROM   ra_rules
-    WHERE  name = p_rule_name
-    and    status    = 'A';
-
-    logit(p_message => 'RESULT rule_id: ' || x_rule_id);
-
-    exiting_sub(p_procedure_name => lc_procedure_name);
-
-    EXCEPTION
-    WHEN OTHERS
-    THEN
-      exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
-      RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
-
-  END get_rule_info;
-  
-  /****************************************************
   * Helper procedure to populate ra_interface_lines_all
   ****************************************************/
 
@@ -3274,10 +3184,6 @@ AS
     ln_loop_counter                NUMBER                                         := 0;
     
     l_AB_flag                      VARCHAR2(2)                                    := 'N';
-    
-    lr_invoicing_rule_id           ra_rules.rule_id%TYPE;
-    
-    lr_accounting_rule_id          ra_rules.rule_id%TYPE;
 
   BEGIN
 
@@ -3714,33 +3620,6 @@ AS
             END IF;
           END IF;     
 
-          --NAIT#37790 deriving auto accounting information
-          /***********************
-          * get accounting_rule_id
-          ***********************/
-         
-          IF lr_accounting_rule_id IS NULL
-          THEN
-            lc_action := 'Calling get_rule_info';
-         
-            get_rule_info(p_rule_name => p_program_setups('acct_rule_name'),
-                          x_rule_id   => lr_accounting_rule_id); 
-          END IF;   
-
-          /***********************
-          * get invoicing_rule_id
-          ***********************/
-         
-          IF lr_invoicing_rule_id IS NULL
-          THEN
-            lc_action := 'Calling get_rule_info';
-         
-            get_rule_info(p_rule_name => gc_invoice_type,
-                          x_rule_id   => lr_invoicing_rule_id); 
-          END IF;
-
-          --end NAIT#37790
-          
           /***************************************
           * Populate ra_interface_lines_all record
           ***************************************/
@@ -3848,12 +3727,6 @@ AS
           lr_ra_intf_lines_info.translated_description        := lr_item_master_info.segment1;
           
           lr_ra_intf_lines_info.purchase_order                := lr_contract_line_info.purchase_order;
-          
-          --auto accounting information NAIT#37790
-          lr_ra_intf_lines_info.accounting_rule_id            := lr_accounting_rule_id;
-          lr_ra_intf_lines_info.invoicing_rule_id             := lr_invoicing_rule_id;
-          lr_ra_intf_lines_info.rule_start_date               := px_subscription_array(indx).service_period_start_date;
-          lr_ra_intf_lines_info.rule_end_date                 := px_subscription_array(indx).service_period_end_date;
 
           lc_action :=  'Calling insert_ra_interface_lines_all';
 
@@ -5073,6 +4946,15 @@ AS
       get_contract_line_info(p_contract_id          => px_subscription_array(indx).contract_id,
                              p_contract_line_number => px_subscription_array(indx).contract_line_number,
                              x_contract_line_info   => lr_contract_line_info);
+
+      /*************************************
+      * Validate we are read to perform auth
+      *************************************/
+      IF px_subscription_array(indx).auth_completed_flag = 'E' AND lr_contract_line_info.program = 'BS'
+      THEN
+        lc_error := 'Auth completed flag: ' || px_subscription_array(indx).auth_completed_flag ||' with servicetype: '||lr_contract_line_info.program;
+        RAISE le_skip;
+      END IF;
  
       /*************************************
       * Validate we are read to perform auth
@@ -5297,7 +5179,9 @@ AS
               SELECT    '{
                   "paymentAuthorizationRequest": {
                   "transactionHeader": {
-                  "consumerName": "EBS",
+                  "consumerName": "'
+                             || p_contract_info.card_holder_name
+                             || '",
                   "consumerTransactionId": "'
                              || p_contract_info.contract_number
                              || '-'
@@ -5385,18 +5269,7 @@ AS
                   },
                 "storeNumber": "'
                              || p_contract_info.store_number
-                             || '",
-                "contract": {
-                    "contractId": "'
-                             || p_contract_info.contract_id
-                             || '",
-                    "customerId": "'
-                             || p_contract_info.bill_to_osr
-                             || '",
-                    "creditCardTransactionId": "'
-                           --  || p_contract_info.cc_trans_id
                              || '"
-                  }
                   }
                   }
                   '
@@ -6221,6 +6094,12 @@ AS
           END IF;--ln_loop_counter end if  
           
           /* ** End of Contract Confirmation email ***/
+        ELSIF px_subscription_array(indx).billing_sequence_number  >= lr_contract_line_info.initial_billing_sequence 
+          AND lr_contract_line_info.program = 'BS' 
+          AND px_subscription_array(indx).auth_completed_flag='E'
+        THEN
+           lc_error := 'Payment Authorization Failed for SB2 contract';
+
         ELSIF px_subscription_array(indx).billing_sequence_number >= lr_contract_line_info.initial_billing_sequence
         THEN
         
@@ -7138,7 +7017,9 @@ AS
             SELECT    '{
                 "billingHistoryRequest": {
                     "transactionHeader": {
-                         "consumerName": "EBS",
+                         "consumerName": "'
+                                || p_contract_info.bill_to_customer_name
+                                || '",
                          "consumerTransactionId":"'
                                 || p_contract_info.contract_number
                                 || '-'
@@ -8579,13 +8460,7 @@ AS
             THEN
               lr_ordt_info.wallet_type := 'P';
             ELSE
-             --lr_ordt_info.wallet_type := NULL;
-              IF TRUNC(px_subscription_array(indx).initial_auth_attempt_date) = TRUNC(px_subscription_array(indx).last_auth_attempt_date)
-              THEN
-                lr_ordt_info.wallet_type := p_program_setups('subscription_subsequent');
-              ELSE
-                lr_ordt_info.wallet_type := p_program_setups('subscription_resubmit');
-              END IF;
+              lr_ordt_info.wallet_type := NULL;
             END IF;
 
             /********************
@@ -9167,7 +9042,6 @@ AS
                    contract_user_status        = eligible_contract_line_rec.contract_user_status,
                    external_source             = eligible_contract_line_rec.external_source,
                    contract_number_modifier    = eligible_contract_line_rec.contract_number_modifier,
-                   --cc_trans_id                  = eligible_contract_line_rec.cc_trans_id,
                    last_update_date            = SYSDATE,
                    last_updated_by             = FND_GLOBAL.USER_ID,
                    last_update_login           = FND_GLOBAL.USER_ID,
@@ -9217,7 +9091,6 @@ AS
               lr_contract_info.contract_user_status        := eligible_contract_line_rec.contract_user_status;
               lr_contract_info.external_source             := eligible_contract_line_rec.external_source;
               lr_contract_info.contract_number_modifier    := eligible_contract_line_rec.contract_number_modifier;
-              --lr_contract_info.cc_trans_id                := eligible_contract_line_rec.cc_trans_id;
               lr_contract_info.last_update_date            := SYSDATE;
               lr_contract_info.last_updated_by             := FND_GLOBAL.USER_ID;
               lr_contract_info.last_update_login           := FND_GLOBAL.USER_ID;
@@ -10863,7 +10736,7 @@ AS
       
               lc_action := 'Building history payload - header information';
       
-              SELECT '{"billingHistoryRequest":{"transactionHeader":{"consumerName":"EBS","consumerTransactionId":"'
+              SELECT '{"billingHistoryRequest":{"transactionHeader":{"consumerName":"'|| lr_contract_info.bill_to_customer_name||'","consumerTransactionId":"'
                          || lr_contract_info.contract_number||'-'|| lr_contract_info.initial_order_number||'-'|| lt_subscription_array(indx).billing_sequence_number||'-'
                          || TO_CHAR(SYSDATE,'DDMONYYYYHH24MISS')||'","consumerTransactionDateTime":"'|| TO_CHAR(SYSDATE,'YYYY-MM-DD')|| 'T'|| TO_CHAR(SYSDATE,'HH24:MI:SS')
                          ||'"},"customer":{"paymentDetails":{"paymentType":"'|| lr_contract_info.payment_type||'"}},"invoice":{"invoiceNumber":"'
