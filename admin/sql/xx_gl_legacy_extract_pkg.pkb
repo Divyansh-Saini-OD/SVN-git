@@ -23,7 +23,7 @@ AS
   -- |Version   Date         Authors            Remarks                                |
   -- |========  ===========  ===============    ============================           |
   -- |1.0      29-JAN-2019   Priyam P        Creation                               |
-  -- |                                                                                 |
+  -- |  1.1   13-MAR-2019     Priyam P      Removed FTP program and zip to .dat common file copy                                                                               |
   ---+=================================================================================+
   -- +=================================================================================+
   -- |                                                                                 |
@@ -122,8 +122,8 @@ AS
   lc_file_flag         VARCHAR2 (3)   := 'N';
   lc_source_file_path  VARCHAR2 (500);
   lc_dest_file_path    VARCHAR2 (500) := '$XXFIN_DATA/ftp/out/hyperion';
-  ---lc_archive_file_path VARCHAR2 (500) := '$XXFIN_ARCHIVE/outbound';
-  lc_archive_file_path VARCHAR2 (500) := '$XXFIN_DATA/ftp/out/hyperion';
+  lc_archive_file_path VARCHAR2 (500) := '$XXFIN_ARCHIVE/outbound';
+  ---lc_archive_file_path VARCHAR2 (500) := '$XXFIN_DATA/ftp/out/hyperion';
   lc_source_file_name  VARCHAR2 (1000);
   lc_dest_file_name    VARCHAR2 (1000);
   lc_dest_file_rename  VARCHAR2 (1000);
@@ -304,52 +304,6 @@ BEGIN
     WHEN OTHERS THEN
       fnd_file.put_line (fnd_file.LOG, 'Exception raised while fetching Value Set IDs for Account and Cost Center. ' || SQLERRM );
     END;
-    -- Query for fetching hierarchy_id for Report Line --
-    /*    BEGIN
-    SELECT acc.hierarchy_id
-    INTO ln_acc_rollup_grp
-    FROM fnd_flex_hierarchies_vl acc
-    WHERE acc.hierarchy_code = p_acc_rolup_grp
-    AND acc.flex_value_set_id = ln_acct_value_set_id;
-    EXCEPTION
-    WHEN NO_DATA_FOUND
-    THEN
-    fnd_file.put_line
-    (fnd_file.LOG,
-    'Hierarchy IDs not found for Report Line. '
-    || SQLERRM
-    );
-    WHEN OTHERS
-    THEN
-    fnd_file.put_line
-    (fnd_file.LOG,
-    'Exception raised while fetching Hierarchy IDs not found for Report Line. '
-    || SQLERRM
-    );
-    END;*/
-    /*    --  Query for fetching hierarchy_id for External --
-    BEGIN
-    SELECT cc.hierarchy_id
-    INTO ln_cc_rollup_grp
-    FROM fnd_flex_hierarchies_vl cc
-    WHERE cc.hierarchy_code = p_cc_rolup_grp
-    AND cc.flex_value_set_id = ln_cc_value_set_id;
-    EXCEPTION
-    WHEN NO_DATA_FOUND
-    THEN
-    fnd_file.put_line (fnd_file.LOG,
-    'Hierarchy IDs not found for External. '
-    || SQLERRM
-    );
-    WHEN OTHERS
-    THEN
-    fnd_file.put_line
-    (fnd_file.LOG,
-    'Exception raised while fetching Hierarchy IDs not found for External. '
-    || SQLERRM
-    );
-    END;*/
-    -- Initialize
     ln_com_count        := 1;
     ln_tot_revenue      := 0;
     ln_net_income       := 0;
@@ -361,93 +315,19 @@ BEGIN
     lc_previous_company := NULL;
     ln_rec_count        := 0;
     -- Loop through the gl_balances cursor
-    FOR lr_gl_balances IN lcu_gl_balances (---lr_set_of_books.set_of_books_id,
+    FOR lr_gl_balances IN lcu_gl_balances (
     lr_set_of_books.ledger_id, lr_set_of_books.currency_code, p_period_name,
-    /*  ln_acct_value_set_id,
-    ln_cc_value_set_id,
-    ln_acc_rollup_grp,
-    ln_cc_rollup_grp,*/
+
     lr_set_of_books.chart_of_accounts_id )
     LOOP
       IF (lc_previous_company <> lr_gl_balances.company) THEN
-        /*    UTL_FILE.put_line (g_lt_file, 'Control Totals:');
-        print_control_totals (p_version       => lr_gl_balances.VERSION,
-        p_scenario      => lr_gl_balances.scenario,
-        p_year          => lr_gl_balances.YEAR,
-        p_period        => lr_gl_balances.period,
-        p_company       => lc_previous_company,
-        p_value1        => 'Revenue',
-        p_value2        => 'Total Revenue',
-        p_value3        => ln_tot_revenue
-        );
-        print_control_totals (p_version       => lr_gl_balances.VERSION,
-        p_scenario      => lr_gl_balances.scenario,
-        p_year          => lr_gl_balances.YEAR,
-        p_period        => lr_gl_balances.period,
-        p_company       => lc_previous_company,
-        p_value1        => 'Expenses',
-        p_value2        => 'Total Expense',
-        p_value3        => ln_tot_expenses
-        );
-        print_control_totals (p_version       => lr_gl_balances.VERSION,
-        p_scenario      => lr_gl_balances.scenario,
-        p_year          => lr_gl_balances.YEAR,
-        p_period        => lr_gl_balances.period,
-        p_company       => lc_previous_company,
-        p_value1        => 'NETINCOME',
-        p_value2        => 'Net Income',
-        p_value3        => ln_net_income
-        );
-        print_control_totals (p_version       => lr_gl_balances.VERSION,
-        p_scenario      => lr_gl_balances.scenario,
-        p_year          => lr_gl_balances.YEAR,
-        p_period        => lr_gl_balances.period,
-        p_company       => lc_previous_company,
-        p_value1        => 'Assets',
-        p_value2        => 'Total Assets',
-        p_value3        => ln_tot_assets
-        );
-        print_control_totals (p_version       => lr_gl_balances.VERSION,
-        p_scenario      => lr_gl_balances.scenario,
-        p_year          => lr_gl_balances.YEAR,
-        p_period        => lr_gl_balances.period,
-        p_company       => lc_previous_company,
-        p_value1        => 'Liabilities',
-        p_value2        => 'Total Liabilities',
-        p_value3        => ln_tot_liability
-        );
-        print_control_totals (p_version       => lr_gl_balances.VERSION,
-        p_scenario      => lr_gl_balances.scenario,
-        p_year          => lr_gl_balances.YEAR,
-        p_period        => lr_gl_balances.period,
-        p_company       => lc_previous_company,
-        p_value1        => 'Owners Equity',
-        p_value2        => 'Total Owners Equity',
-        p_value3        => ln_tot_owner_equity
-        );
-        print_control_totals
-        (p_version       => lr_gl_balances.VERSION,
-        p_scenario      => lr_gl_balances.scenario,
-        p_year          => lr_gl_balances.YEAR,
-        p_period        => lr_gl_balances.period,
-        p_company       => lc_previous_company,
-        p_value1        => 'Shareholders Equity',
-        p_value2        => 'Total Shareholders Equity',
-        p_value3        => ln_tot_liab_equity
-        );
-        IF ln_error_flag = 0
-        THEN
-        fnd_file.put_line
-        (fnd_file.LOG,
-        'The GL Balances have been written into the file successfully.'
-        );
-        END IF;*/
         IF UTL_FILE.is_open (g_lt_file) THEN
           UTL_FILE.fclose (g_lt_file);
         END IF;
         --------------- Call the Common file copy Program to Copy the file to $XXFIN_DATA/ftp/out/hyperion-------------
         lc_source_file_name := lc_source_file_path || '/' || lc_file_name;
-        lc_dest_file_name   := lc_dest_file_path || '/' || lc_file_name;
+       --- lc_dest_file_name   := lc_dest_file_path || '/' || lc_file_name;
+        lc_dest_file_name   := lc_archive_file_path || '/' || lc_file_name;
         fnd_file.put_line (fnd_file.LOG, '');
         fnd_file.put_line (fnd_file.LOG, 'The Created File Name     : ' || lc_source_file_name );
         fnd_file.put_line (fnd_file.LOG, 'The File Copied  Path     : ' || lc_dest_file_name );
@@ -469,16 +349,6 @@ BEGIN
         ln_tot_liab_equity  := 0;
       END IF;
       IF ln_rec_count = 0 THEN
-        /*  lc_file_name :=
-        TO_CHAR (ln_gl_appl_id)
-        || '@'
-        || lr_gl_balances.company
-        || '_HFM'
-        || '@Actual@'
-        || TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'Mon')
-        || '-'
-        || TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'YYYY')
-        || '@RM.txt';*/
         lc_file_name :='LegacyODP_ODPEBS' || lr_gl_balances.company || '_' || TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'Mon') || '_' || TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'Mon')|| '_' ||TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'YY')||'.txt';
         fnd_file.put_line (fnd_file.LOG, '*************************************************************' );
         fnd_file.put_line (fnd_file.LOG, 'SOB Name     : ' || lr_set_of_books.short_name );
@@ -502,31 +372,6 @@ BEGIN
         UTL_FILE.put_line (g_lt_file, lr_gl_balances.Ledger_id || '|' || lr_gl_balances.CCID || '|' || lr_gl_balances.period_name || '|' || lr_gl_balances.period_year || '|' || lr_gl_balances.company || '|' || lr_gl_balances.ACCOUNT || '|' || lr_gl_balances.intercompany || '|' || lr_gl_balances.cost_center || '|' || lr_gl_balances.LOB || '|' || lr_gl_balances.Location || '|' || lr_gl_balances.Future || '|' || lr_gl_balances.YTD_AMOUNT || '|' || lr_gl_balances.PERIODIC_BALANCE );
         ln_rec_count        := ln_rec_count + 1;
         lc_previous_company := lr_gl_balances.company;
-        -- Calculating Totals
-        /*    IF SUBSTR (lr_gl_balances.ACCOUNT, 1, 1) = '4'
-        THEN
-        ln_tot_revenue := ln_tot_revenue + lr_gl_balances.YTD_AMOUNT;
-        ln_net_income := ln_net_income + lr_gl_balances.YTD_AMOUNT;
-        ELSIF SUBSTR (lr_gl_balances.ACCOUNT, 1, 1) IN ('5', '7', '9')
-        THEN
-        ln_tot_expenses := ln_tot_expenses + lr_gl_balances.YTD_AMOUNT;
-        ln_net_income := ln_net_income + lr_gl_balances.YTD_AMOUNT;
-        ELSIF SUBSTR (lr_gl_balances.ACCOUNT, 1, 1) = '1'
-        THEN
-        ln_tot_assets := ln_tot_assets + lr_gl_balances.YTD_AMOUNT;
-        ELSIF SUBSTR (lr_gl_balances.ACCOUNT, 1, 1) = '2'
-        THEN
-        ln_tot_liability :=
-        ln_tot_liability + lr_gl_balances.YTD_AMOUNT;
-        ln_tot_liab_equity :=
-        ln_tot_liab_equity + lr_gl_balances.YTD_AMOUNT;
-        ELSIF SUBSTR (lr_gl_balances.ACCOUNT, 1, 1) = '3'
-        THEN
-        ln_tot_owner_equity :=
-        ln_tot_owner_equity + lr_gl_balances.YTD_AMOUNT;
-        ln_tot_liab_equity :=
-        ln_tot_liab_equity + lr_gl_balances.YTD_AMOUNT;
-        END IF;*/
         lc_version  := lr_gl_balances.VERSION;
         lc_scenario := lr_gl_balances.scenario;
         lc_year     := lr_gl_balances.YEAR;
@@ -538,86 +383,16 @@ BEGIN
         fnd_file.put_line (fnd_file.LOG, 'Exception raised while writing into Text file. ' || SQLERRM );
       END;
     END LOOP;
-    --IF ln_com_count > 0
-    IF ln_com_count > 0 AND lc_file_flag = 'Y' -- Commented/Added by Veronica for fix of defect# 26743
+
+    IF ln_com_count > 0 AND lc_file_flag = 'Y' 
       THEN
-      /*   UTL_FILE.put_line (g_lt_file, 'Control Totals:');
-      print_control_totals (p_version       => lc_version,
-      p_scenario      => lc_scenario,
-      p_year          => lc_year,
-      p_period        => lc_period,
-      p_company       => lc_company,
-      p_value1        => 'Revenue',
-      p_value2        => 'Total Revenue',
-      p_value3        => ln_tot_revenue
-      );
-      print_control_totals (p_version       => lc_version,
-      p_scenario      => lc_scenario,
-      p_year          => lc_year,
-      p_period        => lc_period,
-      p_company       => lc_company,
-      p_value1        => 'Expenses',
-      p_value2        => 'Total Expense',
-      p_value3        => ln_tot_expenses
-      );
-      print_control_totals (p_version       => lc_version,
-      p_scenario      => lc_scenario,
-      p_year          => lc_year,
-      p_period        => lc_period,
-      p_company       => lc_company,
-      p_value1        => 'NETINCOME',
-      p_value2        => 'Net Income',
-      p_value3        => ln_net_income
-      );
-      print_control_totals (p_version       => lc_version,
-      p_scenario      => lc_scenario,
-      p_year          => lc_year,
-      p_period        => lc_period,
-      p_company       => lc_company,
-      p_value1        => 'Assets',
-      p_value2        => 'Total Assets',
-      p_value3        => ln_tot_assets
-      );
-      print_control_totals (p_version       => lc_version,
-      p_scenario      => lc_scenario,
-      p_year          => lc_year,
-      p_period        => lc_period,
-      p_company       => lc_company,
-      p_value1        => 'Liabilities',
-      p_value2        => 'Total Liabilities',
-      p_value3        => ln_tot_liability
-      );
-      print_control_totals (p_version       => lc_version,
-      p_scenario      => lc_scenario,
-      p_year          => lc_year,
-      p_period        => lc_period,
-      p_company       => lc_company,
-      p_value1        => 'Owners Equity',
-      p_value2        => 'Total Owners Equity',
-      p_value3        => ln_tot_owner_equity
-      );
-      print_control_totals (p_version       => lc_version,
-      p_scenario      => lc_scenario,
-      p_year          => lc_year,
-      p_period        => lc_period,
-      p_company       => lc_company,
-      p_value1        => 'Shareholders Equity',
-      p_value2        => 'Total Shareholders Equity',
-      p_value3        => ln_tot_liab_equity
-      );
-      IF ln_error_flag = 0
-      THEN
-      fnd_file.put_line
-      (fnd_file.LOG,
-      'The GL Balances have been written into the file successfully.'
-      );
-      END IF;*/
       IF UTL_FILE.is_open (g_lt_file) THEN
         UTL_FILE.fclose (g_lt_file);
       END IF;
       --------------- Call the Common file copy Program to Copy the file to $XXFIN_DATA/ftp/out/hyperion-------------
       lc_source_file_name := lc_source_file_path || '/' || lc_file_name;
-      lc_dest_file_name   := lc_dest_file_path || '/' || lc_file_name;
+      ---lc_dest_file_name   := lc_dest_file_path || '/' || lc_file_name;
+      lc_dest_file_name   := lc_archive_file_path || '/' || lc_file_name;
       fnd_file.put_line (fnd_file.LOG, '');
       fnd_file.put_line (fnd_file.LOG, 'The Created File Name     : ' || lc_source_file_name );
       fnd_file.put_line (fnd_file.LOG, 'The File Copied  Path     : ' || lc_dest_file_name );
@@ -635,29 +410,18 @@ BEGIN
   fnd_file.put_line (fnd_file.LOG, '*************************************************************' );
   fnd_file.put_line (fnd_file.LOG, 'Archiving the files into $XXFIN_ARCHIVE/outbound' );
   lc_source_file_name := lc_source_file;
-  /*   lc_file_name :=
-  TO_CHAR (ln_gl_appl_id)
-  || '@'
-  || 'COMP'
-  || '_HFM'
-  || '@Actual@'
-  || TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'Mon')
-  || '-'
-  || TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'YYYY')
-  || '@RM@';*/
-  lc_file_name :='GL_LegacyODP_' || TO_CHAR (to_date (p_period_name, 'MON-YY'), 'Mon') || '_' || TO_CHAR (to_date (p_period_name, 'MON-YY'), 'Mon')|| '_' || TO_CHAR (to_date (p_period_name, 'MON-YY'), 'YY');
-  ---: GL_ LegacyODP_Mon_Mon_YY.zip
-  lc_dest_file_name := lc_archive_file_path || '/' || lc_file_name;
-  ---|| TO_CHAR (SYSDATE, 'DD-MON-YYYYHHMMSS');
+  lc_file_name :='GL_LegacyODP_' || to_char (to_date (p_period_name, 'MON-YY'), 'Mon') || '_' || to_char (to_date (p_period_name, 'MON-YY'), 'Mon')|| '_' || to_char (to_date (p_period_name, 'MON-YY'), 'YY');
+  ---lc_dest_file_name := lc_archive_file_path || '/' || lc_file_name;
+  lc_dest_file_name := lc_dest_file_path || '/' || lc_file_name;
   fnd_file.put_line (fnd_file.LOG, '');
-  fnd_file.put_line (fnd_file.LOG, 'Input Folder    : ' || lc_source_file_name );
-  fnd_file.put_line (fnd_file.log, 'The Archived File Path   : ' || lc_dest_file_name );
-  /*ln_req_id2 := fnd_request.submit_request ('xxfin', 'XXODDIRZIP', '', '', FALSE, lc_source_file_name, lc_dest_file_name, NULL, NULL );
+  fnd_file.put_line (fnd_file.log, 'Input Folder    : ' || lc_source_file_name );
+ --- fnd_file.put_line (fnd_file.log, 'The Archived File Path   : ' || lc_dest_file_name );
+  fnd_file.put_line (fnd_file.LOG, 'The MFT File Path   : ' || lc_dest_file_name );
+  ln_req_id2 := fnd_request.submit_request ('xxfin', 'XXODDIRZIP', '', '', FALSE, lc_source_file_name, lc_dest_file_name, NULL, NULL );
   COMMIT;
-  fnd_file.put_line (fnd_file.LOG, '');
-  fnd_file.put_line (fnd_file.log, 'The File was Archived into ' || lc_archive_file_path || '. Request id : ' || ln_req_id2 );
-  --------------------Commented for FTP
-  lb_req_status2 := fnd_concurrent.wait_for_request (request_id => ln_req_id2, INTERVAL => '2', max_wait => '', phase => lc_phase, status => lc_status, dev_phase => lc_devphase, dev_status => lc_devstatus, MESSAGE => lc_message );
+  fnd_file.put_line (fnd_file.log, '');
+  ---fnd_file.put_line (fnd_file.LOG, 'The File was Archived into ' || lc_archive_file_path || '. Request id : ' || ln_req_id2 );
+  /*lb_req_status2 := fnd_concurrent.wait_for_request (request_id => ln_req_id2, INTERVAL => '2', max_wait => '', phase => lc_phase, status => lc_status, dev_phase => lc_devphase, dev_status => lc_devstatus, MESSAGE => lc_message );
   fnd_file.put_line (fnd_file.LOG, '*************************************************************' );
   --------------- Call the Common file copy Program to copy .zip file to .dat file-------------
   fnd_file.put_line (fnd_file.LOG, '');
@@ -692,8 +456,10 @@ BEGIN
     fnd_file.put_line (fnd_file.LOG,'Error : Unable to submit FTP program to send GL Balances file');
   ELSE
     fnd_file.put_line (fnd_file.LOG, 'OD: Common Put Program submitted to FTP file to SFTP server.  Request id : ' || ln_req_id1 );
-  END IF;*/
+  END IF;
   --------------- END of FTP'ing .dat file
+  
+  */
 EXCEPTION
 WHEN OTHERS THEN
   IF UTL_FILE.is_open (g_lt_file) THEN
