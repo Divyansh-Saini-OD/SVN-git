@@ -61,6 +61,8 @@ create or replace PACKAGE BODY      XX_AR_EBL_COMMON_UTIL_PKG
 -- |                                              customer and Paydoc method only  	    | 
 -- |2.8       06-DEC-2018	P Jadhav 			  NAIT-74893: updated GET_CONS_MSG_BCC  |
 -- |											  changed custom message		        |
+-- |2.9       11-MAR-2019	Aarthi                NAIT- 80452: Adding POD related blurb | 
+-- |                                              messages to individual reprint reports| 
 -- +===================================================================================+
 -- +===================================================================================+
 -- |                  Office Depot - Project Simplify                                  |
@@ -5815,6 +5817,95 @@ AS
 	WHEN OTHERS THEN 
 	RETURN('X');
  END get_cons_msg_bcc;
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- +===================================================================================+
+-- | Name        : GET_POD_MSG_IND_REPRINT                                             |
+-- | Description : To get the blurb message for Individual Reprint report              |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date          Author              Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | 1.0      23-JUN-2016  Aarthi               Initial draft version for adding Blurb |
+-- |                                            message for POD Ind Reprint report     |
+-- +===================================================================================+
+FUNCTION GET_POD_MSG_IND_REPRINT ( p_customer_trx_id      IN  NUMBER ,
+		                           p_bill_to_customer_id  IN  NUMBER 
+							     )
+RETURN VARCHAR2 								 
+AS	
+    lc_pod_blurb_msg VARCHAR2(1000):= NULL;
+    ln_pod_cnt       NUMBER :=0; 
+	ln_pod_tab_cnt   NUMBER :=0; 
+	ln_pay_doc       NUMBER :=0; 
+BEGIN	
+      
+	 ln_pod_cnt      := 0;	
+	 ln_pod_tab_cnt	 := 0;
+	 ln_pay_doc      := 0; 
+		
+	 BEGIN
+       SELECT COUNT(1) 
+		 INTO ln_pod_cnt
+		 FROM hz_customer_profiles HCP
+		WHERE HCP.cust_account_id = p_bill_to_customer_id	
+		  AND HCP.site_use_id        IS NULL
+		  AND Hcp.Status              = 'A'
+		  AND HCP.attribute6         IN ('Y','P');
+	 
+     EXCEPTION
+	   WHEN OTHERS THEN
+	     FND_FILE.PUT_LINE(FND_FILE.LOG,'XX_AR_EBL_COMMON_UTIL_PKG: Error while fetching the attribute6 value : '||Sqlerrm);
+		 ln_pod_cnt := 0;
+	 END;	 
+	
+     BEGIN
+       SELECT COUNT(1)
+		 INTO ln_pod_tab_cnt
+		 FROM xx_ar_ebl_pod_dtl
+		WHERE 1                   =1
+		  AND customer_trx_id       = p_customer_trx_id
+		  AND ( pod_image           IS NOT NULL
+		        OR delivery_date    IS NOT NULL		
+		        OR consignee        IS NOT NULL); 	   
+	 EXCEPTION
+	   WHEN OTHERS THEN
+	     FND_FILE.PUT_LINE(FND_FILE.LOG,'XX_AR_EBL_COMMON_UTIL_PKG: Error while fetching details from XX_AR_EBL_POD_DTL : '||Sqlerrm);
+		 ln_pod_tab_cnt := 0;
+	 END;	
+		
+     BEGIN	
+	   SELECT COUNT(1)
+		 INTO ln_pay_doc
+		 FROM xx_ar_ebl_ind_hdr_hist
+		WHERE document_type = 'Paydoc'
+		  AND billdocs_delivery_method = 'ePDF' 
+		  AND customer_trx_id = p_customer_trx_id;
+	 EXCEPTION
+	   WHEN OTHERS THEN
+	     FND_FILE.PUT_LINE(FND_FILE.LOG,'XX_AR_EBL_COMMON_UTIL_PKG: Error while fetching details from xx_ar_ebl_ind_hdr_hist table : '||Sqlerrm);
+		 ln_pay_doc := 0;
+	 END;	
+		  
+    IF ln_pod_cnt >= 1 AND ln_pod_tab_cnt = 0 AND ln_pay_doc >= 1 THEN 
+	    lc_pod_blurb_msg:= 'Delivery Details Not Available.';
+    ELSE 
+     lc_pod_blurb_msg := NULL;
+    END IF;
+    
+
+	RETURN(lc_pod_blurb_msg);		   
+   
+EXCEPTION	
+WHEN OTHERS	THEN
+  FND_FILE.PUT_LINE(FND_FILE.LOG,'Error while returning l_pod_blurb_msg in GET_POD_MSG : '||Sqlerrm);
+	lc_pod_blurb_msg := NULL;
+	RETURN(lc_pod_blurb_msg);
+END GET_POD_MSG_IND_REPRINT;	
+	
 END XX_AR_EBL_COMMON_UTIL_PKG;
 /
 SHOW ERRORS;

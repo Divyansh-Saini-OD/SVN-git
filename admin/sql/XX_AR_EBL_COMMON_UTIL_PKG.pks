@@ -88,6 +88,8 @@ AS
 	-- |2.7       14-NOV-2018   Pjadhav               NAIT- 65564: updated GET_CONS_MSG_BCC |
 	-- |                                              display  message for bill complete    | 
 	-- |                                              customer and Paydoc method only  	    | 
+    -- |2.8       11-MAR-2019   Aarthi                NAIT- 80452: Adding POD related blurb | 
+	-- |                                              messages to individual reprint reports|           
 	-- +===================================================================================+
 PROCEDURE PUT_LOG_LINE
   (
@@ -881,8 +883,27 @@ RETURN VARCHAR2;
 		p_cust_doc_id 		IN NUMBER,
 		p_cust_account_id 	IN NUMBER,
 		p_billing_number  	IN VARCHAR2
-		) 
-	RETURN VARCHAR2;
+		)
+    RETURN VARCHAR2; 		
+-- +===================================================================================+
+-- |                  Office Depot - Project Simplify                                  |
+-- +===================================================================================+
+-- | Name        : GET_POD_MSG_IND_REPRINT                                             |
+-- | Description : To get the blurb message for Individual Reprint report              |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |                                                                                   |
+-- |Change Record:                                                                     |
+-- |===============                                                                    |
+-- |Version   Date          Author              Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- | 1.0      23-JUN-2016  Aarthi               Initial draft version for adding Blurb |
+-- |                                            message for POD Ind Reprint report     |
+-- +===================================================================================+
+	FUNCTION get_pod_msg_ind_reprint ( p_customer_trx_id      IN  NUMBER ,
+		                               p_bill_to_customer_id  IN  NUMBER 
+							         )
+    RETURN VARCHAR2; 
  END XX_AR_EBL_COMMON_UTIL_PKG;
  /
 SHOW ERRORS;
