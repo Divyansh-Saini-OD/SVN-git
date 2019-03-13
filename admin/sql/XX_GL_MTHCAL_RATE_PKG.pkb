@@ -22,7 +22,8 @@ AS
 	  -- | Version     Date         Author               Remarks                                      |
 	  -- | =========   ===========  =============        =============================================|
 	  -- | 1.0         01/20/2019   Paddy Sanjeevi       Initial version                              |
-	  -- | 1.0         02/04/2019   M K Pramod Kumar     Code Changes to generate Files               |
+	  -- | 1.1         02/04/2019   M K Pramod Kumar     Code Changes to generate Files               |
+	  -- | 1.2         03/12/2019   Paddy Sanjeevi       Modified to add CC Averate and Month End     |
 	  -- +============================================================================================+
 	  lc_Saturday        VARCHAR2(1)   := TO_CHAR(to_date('20000101','RRRRMMDD'),'D');
 	  lc_Sunday          VARCHAR2(1)   := TO_CHAR(to_date('20000102','RRRRMMDD'),'D');
@@ -304,16 +305,18 @@ BEGIN
   lc_file_name:=lc_file_name1||lc_filename_part1||lc_filename_part2;
   l_filehandle := UTL_FILE.fopen(gc_file_path,lc_file_name ,'w',ln_buffer);
   FOR r IN
-	  (SELECT from_currency,
-			  to_currency,
-			  TO_CHAR(conversion_date,'YYYY/MM/DD') conversion_date,
-			  'Corporate' conversion_type,
-			  TO_CHAR(ROUND(conversion_rate,6)) conversion_rate
-	     FROM gl_daily_rates
-	    WHERE conversion_date=TRUNC(p_date)
-	      AND conversion_type  ='1001'
-	      AND from_currency    ='USD'
-	    ORDER BY 3
+	  (SELECT b.from_currency,
+			  b.to_currency,
+			  TO_CHAR(b.conversion_date,'YYYY/MM/DD') conversion_date,
+			  DECODE(a.user_conversion_type,'Ending Rate','Corporate',a.user_conversion_type) conversion_type,
+			  TO_CHAR(ROUND(b.conversion_rate,6)) conversion_rate
+	     FROM gl_daily_rates b,
+			  gl_daily_conversion_types a
+	    WHERE a.user_conversion_type IN ('Ending Rate','CC Period End','CC Period Average')
+		  AND b.conversion_type=a.conversion_type
+		  AND b.conversion_date=TRUNC(p_date)
+	      AND b.from_currency    ='USD'
+	    ORDER BY 4,2
 	  )
   LOOP
 	l_data:=r.from_currency||','||r.to_currency||','||r.conversion_date||','||r.conversion_date||','|| r.conversion_type||','||r.conversion_rate;
