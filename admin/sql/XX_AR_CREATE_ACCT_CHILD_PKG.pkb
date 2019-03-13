@@ -44,9 +44,6 @@ AS
    -- |5.1        11-JAN-2018  Atul Khard     Made changes for Defect 43851 				|
    -- |5.2        05-NOV-2018  Dinesh N       Made Changes for Bill Complete NAIT-67165 	|
    -- |5.3        02-JAN-2019  Havish K       Made Changes for Defect NAIT-75351            |
-   -- |5.4        03-MAR-2019  Sahithi Kunuru Made changes for adding auto accounting rule  |                
-   -- |                                       for subscription transaction type records -   | 
-   -- |                                       NAIT-37790                                    |
    -- +=====================================================================================+
 
    ------------------------
@@ -101,11 +98,6 @@ AS
    gc_tax_state                zx_rates_b.tax%TYPE;
    gc_rate_percent_state       zx_rates_b.percentage_rate%TYPE;
    gc_rate_percent_county      zx_rates_b.percentage_rate%TYPE;
-   
-   g_sub_inv_rule_name         ra_rules.name%TYPE                := 'Advance Invoice'; -- added as a part of NAIT-37790
-   
-   TYPE sub_transaction_type_tab IS TABLE OF  VARCHAR2(256); -- added as a part of NAIT-37790
-   g_sub_transaction_type_tab       sub_transaction_type_tab; -- added as a part of NAIT-37790
 
 
    -- +=====================================================================+
@@ -519,22 +511,6 @@ AS
 
 
       lc_err_location            VARCHAR2(250);
-      
-      --NAIT-37790
-      l_rule_start_date         DATE;
-      l_accounting_rule_id      ra_rules.rule_id%TYPE;
-      l_invoicing_rule_id       ra_rules.rule_id%TYPE;
-      l_rms_db_link             xx_fin_translatevalues.target_value1%TYPE;
-      l_duration                NUMBER;
-      l_frequency               VARCHAR2(10);
-      l_rule_end_date           DATE;
-      l_header_id               oe_order_headers_all.header_id%TYPE;
-      l_item_number             oe_order_lines_all.ordered_item%Type;
-      l_trx_type_id             ra_cust_trx_types_all.cust_trx_type_id%Type; 
-      l_accounting_rule_name    xx_fin_translatevalues.target_value1%TYPE;  
-      l_sub_trx_type            xx_fin_translatevalues.target_value1%TYPE;  
-      l_freq_qry            VARCHAR2(256);
-      --end of NAIT-37790
 
       ----------------------------------------------------------
       -- Cursor to delete POS summerized invoices from RA tables
@@ -1160,104 +1136,7 @@ AS
                END;
          END IF;
 
-         /***********************************************************
-         ** fetching Auto Accouting informatiom as part of NAIT-37790
-         ***********************************************************/
-         --fetching subscription transaction type
-         BEGIN
-           SELECT rctt.cust_trx_type_id
-           BULK COLLECT INTO  g_sub_transaction_type_tab
-           FROM   xx_fin_translatevalues vals
-                 ,xx_fin_translatedefinition defn
-                 ,ra_cust_trx_types_all rctt
-                 ,hr_operating_units hou
-           WHERE  1 = 1
-           AND    defn.translate_id = vals.translate_id
-           AND    defn.translation_name = 'XX_AR_SUBSCRIPTIONS'
-           AND    source_value1 = 'REV_REC_TRANSACTION_TYPE'
-           AND    SYSDATE BETWEEN vals.start_date_active AND NVL(vals.end_date_active, SYSDATE + 1)
-           AND    SYSDATE BETWEEN defn.start_date_active AND NVL(defn.end_date_active, SYSDATE + 1)
-           AND    vals.enabled_flag                        = 'Y'
-           AND    defn.enabled_flag                        = 'Y'
-           AND    rctt.NAME = vals.target_value1
-           AND    rctt.org_id = hou.organization_id
-           AND    hou.NAME = 'OU_US';
-         EXCEPTION
-           WHEN NO_DATA_FOUND THEN
-             FND_FILE.PUT_LINE(FND_FILE.LOG,'NO_DATA_FOUND: Subscription transaction type not found ');
-           WHEN OTHERS THEN
-             FND_FILE.PUT_LINE(FND_FILE.LOG,'EXCEPTION: Subscription transaction type not found ');
-         END;
-         
-         --fetching RMS DB link from transaltion
-         BEGIN
-           SELECT target_value1
-           INTO   l_rms_db_link
-           FROM   xx_fin_translatevalues vals, xx_fin_translatedefinition defn
-           WHERE  1 = 1
-           AND    defn.translate_id = vals.translate_id
-           AND    defn.translation_name = 'XX_AR_SUBSCRIPTIONS'
-           AND    source_value1 = 'RMS_DB_LINK'
-           AND    SYSDATE BETWEEN vals.start_date_active AND NVL(vals.end_date_active, SYSDATE + 1)
-           AND    SYSDATE BETWEEN defn.start_date_active AND NVL(defn.end_date_active, SYSDATE + 1)
-           AND    vals.enabled_flag                        = 'Y'
-           AND    defn.enabled_flag                        = 'Y';
-         
-         EXCEPTION
-           WHEN NO_DATA_FOUND THEN
-             FND_FILE.PUT_LINE(FND_FILE.LOG,'NO_DATA_FOUND: RMS DB link not found ');
-           WHEN OTHERS THEN
-             FND_FILE.PUT_LINE(FND_FILE.LOG,'EXCEPTION: RMS DB link not found ');
-         END;
-         
-         --fetching Accounting rule name
-         BEGIN
-           SELECT target_value1
-           INTO   l_accounting_rule_name
-           FROM   xx_fin_translatevalues vals, xx_fin_translatedefinition defn
-           WHERE  1 = 1
-           AND    defn.translate_id = vals.translate_id
-           AND    defn.translation_name = 'XX_AR_SUBSCRIPTIONS'
-           AND    source_value1 = 'ACCT_RULE_NAME'
-           AND    SYSDATE BETWEEN vals.start_date_active AND NVL(vals.end_date_active, SYSDATE + 1)
-           AND    SYSDATE BETWEEN defn.start_date_active AND NVL(defn.end_date_active, SYSDATE + 1)
-           AND    vals.enabled_flag                        = 'Y'
-           AND    defn.enabled_flag                        = 'Y';
-         
-         EXCEPTION
-           WHEN NO_DATA_FOUND THEN
-             FND_FILE.PUT_LINE(FND_FILE.LOG,'NO_DATA_FOUND: Accounting rule name not found ');
-           WHEN OTHERS THEN
-             FND_FILE.PUT_LINE(FND_FILE.LOG,'EXCEPTION: Accouting rule name not found ');
-         END;
-         
-         --fetching Auto Accounting Rule name
-         BEGIN
-           SELECT rule_id
-           INTO   l_accounting_rule_id
-           FROM   ra_rules
-           WHERE  name = l_accounting_rule_name;
-         EXCEPTION
-           WHEN NO_DATA_FOUND THEN
-             FND_FILE.PUT_LINE(FND_FILE.LOG,'NO_DATA_FOUND: Accounting Rule id not found ');
-           WHEN OTHERS THEN
-             FND_FILE.PUT_LINE(FND_FILE.LOG,'EXCEPTION: Accounting Rule id not found ');
-         END;
-         
-         --fetching Invoicing Rule name
-         BEGIN
-           SELECT rule_id
-           INTO   l_invoicing_rule_id
-           FROM   ra_rules
-           WHERE  name = g_sub_inv_rule_name;
-         EXCEPTION
-           WHEN NO_DATA_FOUND THEN
-             FND_FILE.PUT_LINE(FND_FILE.LOG,'NO_DATA_FOUND: Invoicing Rule id not found ');
-           WHEN OTHERS THEN
-             FND_FILE.PUT_LINE(FND_FILE.LOG,'EXCEPTION: Invoicing Rule id not found ');
-         END;
-         --End of NAIT-37790
-         
+
          /**************************************************
          ** Step #7 ? Begin Processing Interface Lines    **
          **************************************************/
@@ -1318,16 +1197,6 @@ AS
             lc_kit_sku               := NULL;
             lc_bill_level            := NULL;
             lc_kit_parent            := NULL;
-            
-            --NAIT-37790
-            l_rule_start_date        := NULL;
-            l_duration               := 0;
-            l_rule_end_date          := NULL;
-            l_header_id              := 0;
-            l_item_number            := NULL;
-            l_freq_qry               := NULL;
-            l_frequency              := NULL;
-            --end of NAIT-37790
 
             IF  p_invoice_source IS NULL  THEN
                BEGIN
@@ -1514,98 +1383,7 @@ AS
                   AND RIL.org_id            = FND_PROFILE.VALUE('ORG_ID');
             END IF;
 
-           --------------------------------------------------------------------------------
-            -- Update Auto Accounting rule information for subscriptions trx type NAIT-37790
-            --------------------------------------------------------------------------------             
-            IF lcu_process_interface_lines.cust_trx_type_id MEMBER OF g_sub_transaction_type_tab
-            THEN
-               
-               --fetching Order creation date which is same as rule_start_date
-               BEGIN
-                 SELECT creation_date,header_id
-                 INTO   l_rule_start_date,l_header_id
-                 FROM   oe_order_headers_all
-                 WHERE  order_number = lcu_process_interface_lines.sales_order;
-               EXCEPTION
-                 WHEN NO_DATA_FOUND THEN
-                   FND_FILE.PUT_LINE(FND_FILE.LOG,'NO_DATA_FOUND: Order date not found for Sales Order '
-                                                     || lcu_process_interface_lines.sales_order );
-                 WHEN OTHERS THEN
-                   FND_FILE.PUT_LINE(FND_FILE.LOG,'EXCEPTION: Order date not found for Sales Order '
-                                                     || lcu_process_interface_lines.sales_order );
-               END;
-               
-               --fetching Order item
-               BEGIN
-                 SELECT ordered_item
-                 INTO   l_item_number
-                 FROM   oe_order_lines_all
-                 WHERE  header_id = l_header_id;
-               EXCEPTION
-                 WHEN NO_DATA_FOUND THEN
-                   FND_FILE.PUT_LINE(FND_FILE.LOG,'NO_DATA_FOUND: Order item not found for Sales Order '
-                                                     || l_header_id );
-                 WHEN OTHERS THEN
-                   FND_FILE.PUT_LINE(FND_FILE.LOG,'EXCEPTION: Order item not found for Sales Order '
-                                                     || l_header_id );
-               END;
-               
-               --fetching contract duration from RMS link
-               BEGIN
-                 l_freq_qry :=
-                           'SELECT od_billing_frequency FROM MV_SSB@'
-                        || l_rms_db_link
-                        || ' WHERE item = '
-                        || l_item_number;
-
-                EXECUTE IMMEDIATE l_freq_qry
-                INTO              l_frequency;
-               EXCEPTION
-                 WHEN NO_DATA_FOUND THEN
-                   FND_FILE.PUT_LINE(FND_FILE.LOG,'NO_DATA_FOUND: Duration not found for item '
-                                                     || l_item_number );
-                 WHEN OTHERS THEN
-                   FND_FILE.PUT_LINE(FND_FILE.LOG,'EXCEPTION: Duration not found for item '
-                                                     || l_item_number );
-               END;
-              
-               --fetching rule_end_date from contract duration
-               IF l_frequency = 'M'
-               THEN 
-                 l_duration := 1;
-               ELSIF l_frequency = 'A'
-               THEN 
-                 l_duration := 12;
-               ELSIF l_frequency = 'Q'
-               THEN
-                 l_duration := 3;
-               END IF;
-
-               BEGIN
-                 SELECT TO_CHAR(ADD_MONTHS(l_rule_start_date,l_duration)-1,'DD-MON-YYYY') 
-                 INTO   l_rule_end_date 
-                 FROM dual; 
-               EXCEPTION
-                 WHEN NO_DATA_FOUND THEN
-                   FND_FILE.PUT_LINE(FND_FILE.LOG,'NO_DATA_FOUND: Order date not found for Sales Order ');
-                 WHEN OTHERS THEN
-                   FND_FILE.PUT_LINE(FND_FILE.LOG,'EXCEPTION: Order date not found for Sales Order');
-               END;
-               
-               UPDATE ra_interface_lines_all RIL
-                  SET accounting_rule_id    = l_accounting_rule_id
-                     ,rule_start_date       = l_rule_start_date
-                     ,rule_end_date         = l_rule_end_date
-                     ,invoicing_rule_id     = l_invoicing_rule_id
-                WHERE RIL.sales_order       = lcu_process_interface_lines.sales_order
-                  AND RIL.org_id            = FND_PROFILE.VALUE('ORG_ID');
-                  
-                COMMIT;
-                  
-            END IF;
-            --End of NAIT-37790
-            
-           -- Ensure retrieved sales order between low and high parameter values
+            -- Ensure retrieved sales order between low and high parameter values
             -- or both parameters are null
             IF (lcu_process_interface_lines.sales_order BETWEEN p_sales_order_low
                                                             AND p_sales_order_high)
