@@ -426,6 +426,7 @@ AS
    ln_tot_running_cnt           NUMBER := 0;
    ln_cyl_running_cnt           NUMBER := 0;
    lc_bill_comp_cust_count		NUMBER := 0;
+   lc_bill_comp_check_count		NUMBER := 0;
    l_bypass_trx            		BOOLEAN:= FALSE;
    
    stmt_insert1       VARCHAR2(10000);   -- Added for Defect 35571
@@ -637,10 +638,12 @@ END;
               FETCH lcu_cons_cust BULK COLLECT INTO t_cons_cust LIMIT ln_limit;
               FOR i IN 1 .. t_cons_cust.COUNT 
               LOOP
- 			  lc_bill_cust_flag		:='N';
-			  lc_bill_signal_flag	:='N';
-			  l_bypass_trx 			:= FALSE;	
-			  
+				  lc_bill_cust_flag		:='N';
+				  lc_bill_signal_flag	:='N';
+				  l_bypass_trx 			:= FALSE;	
+				  
+
+
 		  
 			  xx_get_bill_comp_cust(p_header_id 			=>  t_cons_cust(i).header_id, 
 			                        p_trx_num   			=>  t_cons_cust(i).trx_number, 
@@ -829,6 +832,7 @@ END;
 			  lc_bill_cust_flag			:='N';
 			  lc_bill_signal_flag		:='N';
 			  lc_bill_comp_cust_count	:=0;	
+			  l_bypass_trx 				:= FALSE;
 			  --/*Added for Bill Complete to check if customer is bill complete customer or not NAIT-61963
 		/*
 				BEGIN
@@ -847,19 +851,25 @@ END;
 				WHEN OTHERS THEN
 					lc_bill_comp_cust_count := 0;
 					FND_FILE.PUT_LINE(FND_FILE.LOG,'When others while getting Bill Complete Customer from Hz_Customer_Profiles');
-				END;
-		*/		
-			--	IF lc_bill_comp_cust_count > 0
-			--	THEN
-			    xx_get_bill_comp_cust(p_header_id 			=>  NULL, 
-			                        p_trx_num   			=>  NULL, 
-									p_customer_id 			=> lcu_cons_cust_tbl_type(ln_cnt).cust_account_id, 
-									x_bill_comp_cust_flag 	=> lc_bill_cust_flag, --out
-									x_bill_comp_signl_flag 	=> lc_bill_signal_flag --out
-									);
-			--		xx_get_bill_comp_cust(NULL, lcu_cons_cust_tbl_type(ln_cnt).cust_account_id, lc_bill_cust_flag, lc_bill_signal_flag);
-			--	END IF;
+				END;*/
+			
+					SELECT COUNT(1)
+					INTO lc_bill_comp_check_count
+					FROM xx_cdh_cust_acct_ext_b
+					WHERE 1              =1
+					AND cust_account_id  = lcu_cons_cust_tbl_type(ln_cnt).cust_account_id
+					AND bc_pod_flag      = 'B' 
+					AND ROWNUM <2;
 				
+					IF 	lc_bill_comp_check_count >0
+					THEN
+						xx_get_bill_comp_cust(p_header_id 			=>  NULL, 
+											p_trx_num   			=>  NULL, 
+											p_customer_id 			=> lcu_cons_cust_tbl_type(ln_cnt).cust_account_id, 
+											x_bill_comp_cust_flag 	=> lc_bill_cust_flag, --out
+											x_bill_comp_signl_flag 	=> lc_bill_signal_flag --out
+											);
+					END IF;
 				--/*If Bill Complete Customer and no SCM Bill Signal then bypass the customer NAIT-61963
 				IF lc_bill_cust_flag = 'Y' AND lc_bill_signal_flag ='N'
 				THEN 

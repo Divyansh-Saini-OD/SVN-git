@@ -1,28 +1,28 @@
 CREATE OR REPLACE PACKAGE BODY xx_arp_bf_bill AS
 /* $Header: ARPBFBIB.pls 120.51.12020000.19 2014/10/16 20:42:28 rravikir ship $ */
- ---+============================================================================================+
----|                       Retrofitted Office Depot - Project Simplify                              |
----+============================================================================================+
----|    Application     : AR                                                                    |
----|    Name            : xx_arp_bf_bill                                              |
----|    Description     : Avoid non-AOPS transactions in Cons Billing                           |
----|                                                                                            |
----|    Change Record                                                                           |
----|    ---------------------------------                                                       |
----|    Version         DATE              AUTHOR               DESCRIPTION                      |
----|    ------------    ----------------- ---------------      ---------------------            |
----|    1.0             22-OCT-2013      Arun Gannarapu       Initial Version -made changes to  |
----|                                                          to the seeded code as per OD requirements |
----|                                                          Defect# 8934                     |
----|    1.1             10-NOV-2013     Arun Gannarapu        Made changes to fix the missing transactions issue
----|                                                          Defect# 8934                     |
----|    1.2             10-SEP-2015     Shaik Ghouse          Added Hints for QC Defect # 35571 Perf Issue
----|												|
----|    1.3             20-OCT-2015     Shaik Ghouse          Removed Schema name for Custom      |
----|                           
--- |    1.4             09-AUG-2016     Arun Gannarapu        12.2.5 Retrofit 
--- |    1.5             05-NOV-2018     Dinesh Nagapuri       Made Changes for Bill Complete NAIT-61963. 
----+============================================================================================+
+---+================================================================================================================+
+---|                       Retrofitted Office Depot - Project Simplify                              				|
+---+================================================================================================================+
+---|    Application     : AR                                                                    					|
+---|    Name            : xx_arp_bf_bill                                              								|					
+---|    Description     : Avoid non-AOPS transactions in Cons Billing                           					|
+---|                                                                                            					|
+---|    Change Record                                                                           					|
+---|    ---------------------------------                                                       					|
+---|    Version         DATE              AUTHOR               DESCRIPTION                      					|
+---|    ------------    ----------------- ---------------      ---------------------            					|
+---|    1.0             22-OCT-2013      Arun Gannarapu       Initial Version -made changes to  					|
+---|                                                          to the seeded code as per OD requirements 			|
+---|                                                          Defect# 8934                     						|
+---|    1.1             10-NOV-2013     Arun Gannarapu        Made changes to fix the missing transactions issue	|
+---|                                                          Defect# 8934                     						|
+---|    1.2             10-SEP-2015     Shaik Ghouse          Added Hints for QC Defect # 35571 Perf Issue			|
+---|																												|
+---|    1.3             20-OCT-2015     Shaik Ghouse          Removed Schema name for Custom      					|
+-- |    1.4             09-AUG-2016     Arun Gannarapu        12.2.5 Retrofit 										|
+-- |    1.5             05-NOV-2018     Dinesh Nagapuri       Made Changes for Bill Complete NAIT-61963. 			|
+-- |    1.6				14-MAR-2019		Dinesh Nagapuri		  Added Bill Doc level check to reduce the performance  |	
+---+================================================================================================================+
 
 /*REM Added for ARU db drv auto generation
 REM dbdrv: sql ~PROD ~PATH ~FILE none none none package phase=plb \
@@ -720,6 +720,7 @@ l_cm_flag           NUMBER;                -- bug 9392028
 lc_cons_bill_num	VARCHAR2(30);
 ln_bill_signal_cnt		NUMBER :=0;
 ln_bill_comp_cust_cnt NUMBER :=0;
+lc_bill_comp_check_count NUMBER :=0;
 
 CURSOR val_param1 (P_cust_num_low VARCHAR2, P_cust_num_high VARCHAR2,
                    P_bill_site_low NUMBER, P_bill_site_high NUMBER) IS
@@ -1574,56 +1575,40 @@ BEGIN
 
       -- Added for Bill Complete to check if bill complete customer and exists bill Signal Transactions NAIT-61963.
 			BEGIN
-				/*
+				-- V1.6 Added Bill Doc level check to reduce the performance Impact 
 				SELECT COUNT(1)
-				INTO ln_bill_signal_cnt
-				FROM ra_customer_trx_all trx,
-				  ar_payment_schedules_all api,
-				  oe_order_headers_all ooh,
-				  xx_om_header_attributes_all xoha
-				WHERE 1                     =1
-				AND bill_to_customer_id     = l_sites.customer_id
-				AND trx.customer_trx_id     = api.customer_trx_id
-				AND trx.trx_number          = ooh.order_number
-				AND ooh.header_id           = xoha.header_id
-				AND api.status              = 'OP'
-				AND parent_order_num       IS NOT NULL
-				AND NVL(bill_comp_flag,'Y') IN ('B','Y')
-				AND EXISTS
-				  (SELECT 1
-				  FROM xx_scm_bill_signal
-				  WHERE 1                =1
-				  AND customer_id        = l_sites.customer_id
-				  AND child_order_number = trx.trx_number
-				  AND bill_forward_flag  = 'N'
-				  );
-				  */
-			   SELECT 	COUNT(1)
-			   INTO ln_bill_comp_cust_cnt
-			   FROM --Ra_Customer_Trx_All Trx,
-					ar_payment_schedules_all Api
-				WHERE 1                 =1
-				--AND Bill_To_Customer_Id = p_customer_id --33059690
-				--AND Trx.Customer_TRX_Id = Api.customer_trx_id
-				AND Api.Status          = 'OP'
-				AND api.customer_id     = L_sites.customer_id
-				AND ROWNUM < 2 
-				AND EXISTS 
-					(
-					  SELECT 1
-					  FROM oe_order_headers_all ooh,
-						   xx_om_header_attributes_all xoha
-					  WHERE ooh.Order_Number = TO_NUMBER(api.trx_number)
-					  AND Ooh.Header_Id      = Xoha.Header_Id
-					 -- AND parent_order_num	IS NOT NULL
-					  AND NVL(BILL_COMP_FLAG,'N')     IN ('B','Y'))
-				AND NOT EXISTS (SELECT 1 from xx_scm_bill_signal
-						  WHERE 1=1
-						  AND child_order_number	=	api.TRX_NUMBER				    
-						  AND bill_forward_flag		= 'C'
-						  )		
-					;						
-                      					
+				INTO lc_bill_comp_check_count
+				FROM xx_cdh_cust_acct_ext_b
+				WHERE 1              =1
+				AND cust_account_id  = lcu_cons_cust_tbl_type(ln_cnt).cust_account_id
+				AND bc_pod_flag      = 'B' 
+				AND ROWNUM <2;
+					
+				IF lc_bill_comp_check_count > 0
+				THEN
+					SELECT 	COUNT(1)
+					INTO ln_bill_comp_cust_cnt
+					FROM ar_payment_schedules_all api
+					WHERE 1                 =1
+					AND api.Status          = 'OP'
+					AND api.customer_id     = l_sites.customer_id
+					AND ROWNUM < 2 
+					AND EXISTS 
+						(
+						  SELECT 1
+						  FROM oe_order_headers_all ooh,
+							   xx_om_header_attributes_all xoha
+						  WHERE ooh.Order_Number = TO_NUMBER(api.trx_number)
+						  AND ooh.Header_Id      = Xoha.Header_Id
+						  AND NVL(BILL_COMP_FLAG,'N')     IN ('B','Y'))
+					AND NOT EXISTS (SELECT 1 from xx_scm_bill_signal
+							  WHERE 1=1
+							  AND child_order_number	=	api.trx_number				    
+							  AND bill_forward_flag		= 'C'
+							  )		
+						;						
+                END IF;  
+				
 				IF ln_bill_comp_cust_cnt >0
 				THEN
 					SELECT COUNT(1)
@@ -1634,7 +1619,7 @@ BEGIN
 					AND Bill_forward_flag    = 'N' 
 					AND ROWNUM < 2 ;
 				END IF;
-				END;
+			END;
 			
 		 --Added for Bill Complete. If Non Bill Complete Customer will have regular flow NAIT-61963.
 		  IF ln_bill_comp_cust_cnt =0	 
