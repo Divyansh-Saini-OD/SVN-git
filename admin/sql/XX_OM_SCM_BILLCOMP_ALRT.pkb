@@ -50,7 +50,7 @@ AS
      AND b.last_update_date >= SYSDATE - 15
      AND NOT EXISTS
             (SELECT 1
-             FROM APPS.XX_SCM_BILL_SIGNAl
+             FROM XX_SCM_BILL_SIGNAL
               WHERE CHILD_ORDER_NUMBER = B.ORDER_NUMBER);
      
    vl_hdr_message   varchar2(2000);
