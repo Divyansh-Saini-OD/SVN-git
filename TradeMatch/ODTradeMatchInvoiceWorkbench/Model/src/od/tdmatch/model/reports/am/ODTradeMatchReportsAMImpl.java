@@ -81,6 +81,10 @@ import od.tdmatch.model.reports.vo.XxApVendorMatchAnaVendVOImpl;
 import oracle.adf.share.logging.ADFLogger;
 
 import oracle.jbo.Row;
+import oracle.jbo.VariableValueManager;
+import oracle.jbo.ViewCriteria;
+import oracle.jbo.ViewCriteriaManager;
+import oracle.jbo.ViewObject;
 import oracle.jbo.domain.Number;
 import oracle.jbo.server.ApplicationModuleImpl;
 import oracle.jbo.server.ViewObjectImpl;
@@ -700,6 +704,9 @@ public class ODTradeMatchReportsAMImpl extends ApplicationModuleImpl implements 
         logger.info("searchConsignRTV called.");
 
         ViewObjectImpl skuValuel = this.getSKULovVO1();
+        ViewCriteriaManager vcm = skuValuel.getViewCriteriaManager();
+        ViewCriteria vc = vcm.getViewCriteria("SKULovVOCriteria");
+        VariableValueManager vvm = vc.ensureVariableManager();
 
         ViewObjectImpl ConsignmentRTVVOImpl = this.getConsignmentRTVVO();
      
@@ -709,13 +716,18 @@ public class ODTradeMatchReportsAMImpl extends ApplicationModuleImpl implements 
             skuValuel.clearViewCriterias();
             skuValuel.setWhereClause(null);
             skuValuel.setOrderByClause(null);
-            System.out.println("the value of SKU is : : " + sku);
-            skuValuel.setNamedWhereClauseParam("bindSku", sku);
-            skuValuel.executeQuery();
+            
             oracle.jbo.domain.Number skuVal = null;
+            if(sku!=null){
+            System.out.println("the value of SKU is : : " + sku);
+            vvm.setVariableValue("bindSku", sku);
+            skuValuel.applyViewCriteria(vc);
+            skuValuel.executeQuery();
+            
             if (skuValuel.hasNext()) {
                 SKULovVORowImpl row1 = (SKULovVORowImpl) getSKULovVO1().first();
-                skuVal = (oracle.jbo.domain.Number) row1.getAttribute("InventoryItemId");
+                skuVal =  (oracle.jbo.domain.Number)row1.getAttribute("InventoryItemId");
+            }
             }
 
             logger.info(">>>>>>>>>>>>>>>>inside row is not null>>>>>>>>>");
@@ -799,6 +811,13 @@ public class ODTradeMatchReportsAMImpl extends ApplicationModuleImpl implements 
         XxApReasonCodeSearchVORowImpl row = (XxApReasonCodeSearchVORowImpl) getXxApReasonCodeSearchVO().getCurrentRow();
         // ReasonCodeSumm.executeEmptyRowSet();
         ViewObjectImpl skuValuel = this.getSKULovVO1();
+        
+        
+       
+        ViewCriteriaManager vcm = skuValuel.getViewCriteriaManager();
+        ViewCriteria vc = vcm.getViewCriteria("SKULovVOCriteria");
+        VariableValueManager vvm = vc.ensureVariableManager();
+       
         if (row != null) {
             logger.info(">>>>>>>>>>>>>>>>inside row is not null>>>>>>>>>");
             logger.info(">>>>>>>>>>>>>>>>getVendor>>>>>>>>>." + row.getSupplier() + "---" + row.getSuppliername());
@@ -824,13 +843,17 @@ public class ODTradeMatchReportsAMImpl extends ApplicationModuleImpl implements 
             skuValuel.clearViewCriterias();
             skuValuel.setWhereClause(null);
             skuValuel.setOrderByClause(null);
-            System.out.println("the value of SKU is : : " + sku);
-            skuValuel.setNamedWhereClauseParam("bindSku", sku);
-            skuValuel.executeQuery();
             String skuVal = null;
+            if(sku!=null){
+            System.out.println("the value of SKU is : : " + sku);
+            vvm.setVariableValue("bindSku", sku);
+            skuValuel.applyViewCriteria(vc);
+            skuValuel.executeQuery();
+           
             if (skuValuel.hasNext()) {
                 SKULovVORowImpl row1 = (SKULovVORowImpl) getSKULovVO1().first();
-                skuVal = (String) row1.getAttribute("InventoryItemId");
+                skuVal =  row1.getAttribute("InventoryItemId").toString();
+            }
             }
             //(String) skuValuel.getCurrentRow().getAttribute("InventoryItemId");
             System.out.println("skuVal value is : : ; : : : : : " + skuVal);
@@ -887,13 +910,24 @@ public class ODTradeMatchReportsAMImpl extends ApplicationModuleImpl implements 
             skuValuel.setWhereClause(null);
             skuValuel.setOrderByClause(null);
             System.out.println("the value of SKU is : : " + sku);
-            skuValuel.setNamedWhereClauseParam("bindSku", sku);
+            ViewCriteriaManager vcm = skuValuel.getViewCriteriaManager();
+            ViewCriteria vc = vcm.getViewCriteria("SKULovVOCriteria");
+            VariableValueManager vvm = vc.ensureVariableManager();
+            
+            oracle.jbo.domain.Number skuVal =null;
+            if(sku!=null){
+            System.out.println("the value of SKU is : : " + sku);
+            vvm.setVariableValue("bindSku", sku);
+            skuValuel.applyViewCriteria(vc);
             skuValuel.executeQuery();
-            oracle.jbo.domain.Number skuVal = null;
+            
             if (skuValuel.hasNext()) {
                 SKULovVORowImpl row1 = (SKULovVORowImpl) getSKULovVO1().first();
-                skuVal = (oracle.jbo.domain.Number) row1.getAttribute("InventoryItemId");
+                skuVal = (oracle.jbo.domain.Number)row1.getAttribute("InventoryItemId");
             }
+            }
+            
+            
             //(String) skuValuel.getCurrentRow().getAttribute("InventoryItemId");
             System.out.println("skuVal value is : : ; : : : : : " + skuVal);
             ReasonCodeDtl.clearViewCriterias();

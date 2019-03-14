@@ -37,6 +37,8 @@ public class SKULovVORowImpl extends ViewRowImpl {
             return vals;
         }
     }
+
+
     public static final int SKUNUMBER = AttributesEnum.SkuNumber.index();
     public static final int INVENTORYITEMID = AttributesEnum.InventoryItemId.index();
 

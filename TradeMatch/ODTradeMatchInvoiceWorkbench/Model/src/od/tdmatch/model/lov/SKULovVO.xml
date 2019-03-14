@@ -16,11 +16,15 @@
     <Attr Name="_isExpertMode" Value="true"/>
     <Attr Name="_isCodegen" Value="true"/>
   </DesignTime>
-  <SQLQuery><![CDATA[Select /*+ INDEX(msi MTL_SYSTEM_ITEMS_B_N1) */  Msi.Segment1 SKU_Number,      
- msi.inventory_item_id       
- From  Mtl_System_Items_B Msi        
- Where Msi.Organization_Id =441      
- And  Nvl(Enabled_Flag,'Y') = 'Y'      
+  <Variable
+    Name="bindSku"
+    Kind="viewcriteria"
+    Type="java.lang.String"/>
+  <SQLQuery><![CDATA[Select /*+ INDEX(msi MTL_SYSTEM_ITEMS_B_N1) */  Msi.Segment1 SKU_Number,        
+ msi.inventory_item_id         
+ From  Mtl_System_Items_B Msi          
+ Where Msi.Organization_Id =441        
+ And  Nvl(Enabled_Flag,'Y') = 'Y'        
  And   Nvl(End_Date_Active,Sysdate +1 ) > Sysdate]]></SQLQuery>
   <ViewAttribute
     Name="SkuNumber"
@@ -64,6 +68,42 @@
       </SchemaBasedProperties>
     </Properties>
   </ViewAttribute>
+  <ViewCriteria
+    Name="SKULovVOCriteria"
+    ViewObjectName="od.tdmatch.model.lov.SKULovVO"
+    Conjunction="AND">
+    <Properties Name="_Props">
+      <CustomProperties>
+        <Property
+          Name="autoExecute"
+          Value="false"/>
+        <Property
+          Name="mode"
+          Value="Basic"/>
+        <Property
+          Name="allowConjunctionOverride"
+          Value="true"/>
+        <Property
+          Name="showInList"
+          Value="true"/>
+        <Property
+          Name="displayOperators"
+          Value="InAdvancedMode"/>
+      </CustomProperties>
+    </Properties>
+    <ViewCriteriaRow
+      Name="SKULovVOCriteria_row_0"
+      UpperColumns="1">
+      <ViewCriteriaItem
+        Name="SkuNumber"
+        ViewAttribute="SkuNumber"
+        Operator="="
+        Conjunction="AND"
+        Value=":bindSku"
+        IsBindVarValue="true"
+        Required="Optional"/>
+    </ViewCriteriaRow>
+  </ViewCriteria>
   <ResourceBundle>
     <PropertiesBundle
       PropertiesFile="od.tdmatch.model.ModelBundle"/>
