@@ -1580,7 +1580,7 @@ BEGIN
 				INTO lc_bill_comp_check_count
 				FROM xx_cdh_cust_acct_ext_b
 				WHERE 1              =1
-				AND cust_account_id  = lcu_cons_cust_tbl_type(ln_cnt).cust_account_id
+				AND cust_account_id  = l_sites.customer_id
 				AND bc_pod_flag      = 'B' 
 				AND ROWNUM <2;
 					
