@@ -22,7 +22,7 @@ IS
 -- |Version   Date         Author           Remarks                                                      |
 -- |=======   ==========   =============    ======================                                       |
 -- | 1.0      07-Jul-2017  Havish Kasina    Initial Version                                              |
--- | 1.1      12-Mar-2019  Shanti Sethuraj  Added Instance name in email subject for the jira NAIT-87654  |                                
+-- | 1.1      14-Mar-2019  Shanti Sethuraj	Added Instance name in email subject for the jira NAIT-87654 |
 -- +=====================================================================================================+
 g_proc              VARCHAR2(80) := NULL;
 g_debug             VARCHAR2(1)  := 'N';
@@ -357,7 +357,6 @@ IS
   v_file VARCHAR2(100);
   instance_name varchar2(50);   --added for jira NAIT-87654
   email_subject varchar2(100);   --added for jira NAIT-87654
-  
 BEGIN
   ap_debug_pkg.print('Y','AP_XML_INVOICE_INBOUND_PKG.send email(+)');
   fnd_profile.get('AP_NOTIFICATION_EMAIL', l_email_address);
@@ -395,11 +394,10 @@ lc_temp_email:=get_distribution_list;
 select instance_name into instance_name from v$instance;    --added for jira NAIT-87654
 email_subject:=instance_name||' '||'OD: Trade Match Merchant Contacts';   --added for jira NAIT-87654
 
-
                         conn := xx_pa_pb_mail.begin_mail(
                                         sender => 'noreply@officedepot.com',
                                         recipients => lc_temp_email,
-                                                cc_recipients=>null,
+                                                cc_recipients=>NULL,
                                         subject => email_subject, --'OD: Trade Match Merchant Contacts',  commented and added email_subject for jira NAIT-87654
                                         mime_type => xx_pa_pb_mail.MULTIPART_MIME_TYPE);
 
