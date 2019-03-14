@@ -316,6 +316,7 @@ BEGIN
 		  AND b.conversion_type=a.conversion_type
 		  AND b.conversion_date=TRUNC(p_date)
 	      AND b.from_currency    ='USD'
+		  AND b.to_currency<>'LTL'
 	    ORDER BY 4,2
 	  )
   LOOP
