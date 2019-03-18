@@ -120,18 +120,18 @@ IS
       pha.segment1                                         check_description,
       SUM (aida.amount)                                    gross_amount,
       (SELECT msb.segment1
-      FROM   mtl_system_items_b msb,
-             mtl_parameters mp
+      FROM   apps.mtl_system_items_b msb,
+             apps.mtl_parameters mp
       WHERE  msb.inventory_item_id = aila.inventory_item_id
       AND mp.master_organization_id = mp.organization_id
       AND mp.organization_id = msb.organization_id)    sku,
       gcc.segment3 gl_account
-      FROM   ap_invoices_all aia,
-             ap_invoice_lines_all aila,
-             ap_invoice_distributions_all aida,
-             gl_code_combinations gcc,
-             po_headers_all pha,
-             hr_locations_all hla
+      FROM   apps.ap_invoices_all aia,
+             apps.ap_invoice_lines_all aila,
+             apps.ap_invoice_distributions_all aida,
+             apps.gl_code_combinations gcc,
+             apps.po_headers_all pha,
+             apps.hr_locations_all hla
       WHERE  aia.invoice_id = aila.invoice_id
          AND aila.line_number = aida.invoice_line_number
          AND aia.invoice_id = aida.invoice_id
@@ -145,7 +145,7 @@ IS
          AND aida.line_type_lookup_code = 'ACCRUAL'
          AND gcc.segment3 = '22003000'
          AND NOT EXISTS (SELECT 1
-                         FROM   ap_invoice_distributions_all aida1
+                         FROM   apps.ap_invoice_distributions_all aida1
                          WHERE  aia.invoice_id = aida1.invoice_id
                             AND aia.org_id = aida1.org_id
                             AND aida1.posted_flag = 'N')
@@ -272,6 +272,67 @@ IS
       utl_file.Fclose (lt_file);
 
       fnd_file.Put_line (fnd_file.log, 'AP Dropship Distributions have been written into the file successfully.');
+      
+      fnd_file.Put_line (fnd_file.log, 'Submitting OD: Common Put Program');
+
+      -- Submit File Put Program
+      ln_request_id := FND_REQUEST.SUBMIT_REQUEST( application => 'XXFIN'
+                                                  ,program     => 'XXCOMFTP'
+                                                  ,description => 'OD: Common Put Program'
+                                                  ,sub_request => FALSE
+                                                  ,argument1   => 'OD_AP_DROPSHIP_DIST_EXT'       -- Row from OD_FTP_PROCESSES translation
+                                                  ,argument2   => lc_file_name          -- Source file name
+                                                  ,argument3   => lc_file_name          -- Dest file name
+                                                  ,argument4   => 'Y'                   -- Delete source file
+                                                 );
+
+      COMMIT;
+
+      IF ln_request_id = 0 THEN
+        fnd_file.Put_line (fnd_file.log, 'Request not submitted');
+      ELSE
+        fnd_file.Put_line (fnd_file.log, 'Request ID : ' || ln_request_id);
+        lc_phase := NULL;
+
+        lc_status := NULL;
+
+        lc_dev_phase := NULL;
+
+        lc_dev_status := NULL;
+
+        lc_message := NULL;
+
+        << wait_loop >>
+        LOOP
+            -- Wait for child programs to be completed
+            lb_result := fnd_concurrent.Wait_for_request (ln_request_id, 5, 15, lc_phase, lc_status, lc_dev_phase, lc_dev_status, lc_message);
+
+            -- Terminated status also added in check
+            -- check for the completion of the concurrent program
+            IF lc_dev_phase = 'COMPLETE' THEN
+              -- check for the status of the concurrent program
+              IF lc_dev_status IN ( 'TERMINATED', 'WARNING', 'ERROR' ) THEN
+                lb_error_flag := TRUE;
+              END IF;
+
+              EXIT wait_loop;
+            END IF;
+        END LOOP wait_loop;
+      END IF;
+
+      -- End File Put
+      
+      fnd_file.Put_line (fnd_file.log, 'Send Email notification');
+      
+      IF NOT lb_error_flag THEN
+         xx_ap_xml_bursting_pkg.Get_email_detail ('XXAPDSDISTEXT', g_smtp_server, g_email_subject, g_email_content, g_distribution_list);
+
+         lc_conn := xx_pa_pb_mail.Begin_mail (sender => 'AccountsPayable@officedepot.com', recipients => g_distribution_list, cc_recipients => NULL, subject => g_email_subject, mime_type => xx_pa_pb_mail.multipart_mime_type);
+
+         xx_pa_pb_mail.Attach_text (conn => lc_conn, data => g_email_content);
+
+         xx_pa_pb_mail.End_mail (conn => lc_conn);
+      END IF;
 
   EXCEPTION
     WHEN OTHERS THEN
