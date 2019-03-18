@@ -106,7 +106,7 @@ IS
 	
     CURSOR get_dropship_dist_c IS
       SELECT
-      /*+ LEADING(AIA AILA AIDA) FULL(AIA) PARALLEL(AIA) PARALLEL(AILA) PARALLEL(AIDA) NO_MERGE */ 
+      /*+ LEADING(AIA AILA AIDA) FULL(AIA) PARALLEL(AIA,8) PARALLEL(AILA,8) PARALLEL(AIDA,8) NO_MERGE */ 
       aia.vendor_site_id                                   vendor,
       aia.doc_sequence_value                               voucher_number,
       aia.invoice_num                                      invoice_number,
@@ -120,18 +120,18 @@ IS
       pha.segment1                                         check_description,
       SUM (aida.amount)                                    gross_amount,
       (SELECT msb.segment1
-      FROM   apps.mtl_system_items_b msb,
-             apps.mtl_parameters mp
+      FROM   mtl_system_items_b msb,
+             mtl_parameters mp
       WHERE  msb.inventory_item_id = aila.inventory_item_id
       AND mp.master_organization_id = mp.organization_id
       AND mp.organization_id = msb.organization_id)    sku,
       gcc.segment3 gl_account
-      FROM   apps.ap_invoices_all aia,
-             apps.ap_invoice_lines_all aila,
-             apps.ap_invoice_distributions_all aida,
-             apps.gl_code_combinations gcc,
-             apps.po_headers_all pha,
-             apps.hr_locations_all hla
+      FROM   ap_invoices_all aia,
+             ap_invoice_lines_all aila,
+             ap_invoice_distributions_all aida,
+             gl_code_combinations gcc,
+             po_headers_all pha,
+             hr_locations_all hla
       WHERE  aia.invoice_id = aila.invoice_id
          AND aila.line_number = aida.invoice_line_number
          AND aia.invoice_id = aida.invoice_id
@@ -145,7 +145,7 @@ IS
          AND aida.line_type_lookup_code = 'ACCRUAL'
          AND gcc.segment3 = '22003000'
          AND NOT EXISTS (SELECT 1
-                         FROM   apps.ap_invoice_distributions_all aida1
+                         FROM   ap_invoice_distributions_all aida1
                          WHERE  aia.invoice_id = aida1.invoice_id
                             AND aia.org_id = aida1.org_id
                             AND aida1.posted_flag = 'N')
