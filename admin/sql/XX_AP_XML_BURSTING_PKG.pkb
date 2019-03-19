@@ -24,6 +24,8 @@ AS
   -- | Version     Date         Author           Remarks                                          |
   -- | =========   ===========  =============    ===============================================  |
   -- | 1.0         11/10/2017   Digamber S       Initial version                                  |
+  -- | 1.1         19-Mar-2019  Shanti Sethuraj  Added oracle instance name in the email subject  |
+  -- |                                           for the jira NAIT-87655                          |
   -- +============================================================================================+
 PROCEDURE GET_EMAIL_DETAIL(
     P_CONC_NAME VARCHAR2,
@@ -35,10 +37,11 @@ IS
   L_EMAIL_SUBJECT     VARCHAR2(250);
   L_EMAIL_CONTENT     VARCHAR2(500);
   L_DISTRIBUTION_LIST VARCHAR2(500);
-  L_SMTP_SERVER       VARCHAR2(250);
+  l_smtp_server       varchar2(250);
+  l_instance_name     varchar2(250);     --added for jira NAIT-87655
 BEGIN
   BEGIN
-    SELECT XFTV.target_value2,
+    SELECT  XFTV.target_value2,
       XFTV.TARGET_VALUE3,
       XFTV.target_value4,
       FND_PROFILE.VALUE('XX_XDO_SMTP_HOST')
@@ -54,15 +57,20 @@ BEGIN
     AND SYSDATE BETWEEN XFTV.start_date_active AND NVL(XFTV.end_date_active, sysdate+1)
     AND SYSDATE BETWEEN XFTD.start_date_active AND NVL(XFTD.end_date_active, sysdate+1)
     AND XFTV.enabled_flag = 'Y'
-    AND XFTD.enabled_flag = 'Y';
+    and xftd.enabled_flag = 'Y';
+	select instance_name into l_instance_name from v$instance;   --added for jira NAIT-87655
   EXCEPTION
   WHEN OTHERS THEN
     L_EMAIL_SUBJECT     := p_conc_name||' Report';
-    L_EMAIL_CONTENT     := 'Please find report attachment for '||p_conc_name||' Report';
-    L_DISTRIBUTION_LIST := 'trade_notifications@officedepot.com';
+    l_email_content     := 'Please find report attachment for '||p_conc_name||' Report';
+    L_DISTRIBUTION_LIST := 'trade_notifications@officedepot.com,shanti.sethuraj@officedepot.com,kirubha.samuel@officedepot.com,madhan.sanjeevi@officedepot.com';
     L_SMTP_SERVER       := FND_PROFILE.VALUE('XX_XDO_SMTP_HOST');
   END;
-  P_EMAIL_SUBJECT     := L_EMAIL_SUBJECT ;
+  if p_conc_name='XXAPBYPASSINV' then          --added for jira NAIT-87655
+    select instance_name into l_instance_name from v$instance;    --added for jira NAIT-87655
+	P_EMAIL_SUBJECT     := l_instance_name ||' '|| L_EMAIL_SUBJECT  ;    --added for jira NAIT-87655
+	end if;     --added for jira NAIT-87655
+  P_EMAIL_SUBJECT     := L_EMAIL_SUBJECT  ;   
   P_EMAIL_CONTENT     := L_EMAIL_CONTENT ;
   P_DISTRIBUTION_LIST :=L_DISTRIBUTION_LIST;
   P_SMTP_SERVER       := L_SMTP_SERVER;
