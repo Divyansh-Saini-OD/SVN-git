@@ -81,6 +81,7 @@ AS
 ---|  3.2             05-OCT-2018        Dinesh Nagapuri       Made Changes for Bill Complete   |
 ---|                                                           Process NAIT-61963               |
 ---|  3.3             02-JAN-2019        Havish Kasina         Made Changes for NAIT-75351      |
+-- |  3.4	      14-MAR-2019	 Dinesh Nagapuri       Added Bill Doc level check to reduce the performance |	
 ---+============================================================================================+
 
 --**************************************************************************/
@@ -858,7 +859,7 @@ END;
 					FROM xx_cdh_cust_acct_ext_b
 					WHERE 1              =1
 					AND cust_account_id  = lcu_cons_cust_tbl_type(ln_cnt).cust_account_id
-					AND bc_pod_flag      = 'B' 
+					AND bc_pod_flag      IN ('Y','B')  
 					AND ROWNUM <2;
 				
 					IF 	lc_bill_comp_check_count >0

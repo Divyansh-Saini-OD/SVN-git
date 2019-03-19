@@ -1,10 +1,10 @@
 CREATE OR REPLACE PACKAGE BODY xx_arp_bf_bill AS
 /* $Header: ARPBFBIB.pls 120.51.12020000.19 2014/10/16 20:42:28 rravikir ship $ */
----+================================================================================================================+
----|                       Retrofitted Office Depot - Project Simplify                              				|
----+================================================================================================================+
+---+====================================================================================================================================+
+---|                       Retrofitted Office Depot - Project Simplify                              					|
+---+====================================================================================================================================+
 ---|    Application     : AR                                                                    					|
----|    Name            : xx_arp_bf_bill                                              								|					
+---|    Name            : xx_arp_bf_bill                                              							|					
 ---|    Description     : Avoid non-AOPS transactions in Cons Billing                           					|
 ---|                                                                                            					|
 ---|    Change Record                                                                           					|
@@ -12,17 +12,17 @@ CREATE OR REPLACE PACKAGE BODY xx_arp_bf_bill AS
 ---|    Version         DATE              AUTHOR               DESCRIPTION                      					|
 ---|    ------------    ----------------- ---------------      ---------------------            					|
 ---|    1.0             22-OCT-2013      Arun Gannarapu       Initial Version -made changes to  					|
----|                                                          to the seeded code as per OD requirements 			|
+---|                                                          to the seeded code as per OD requirements 				|
 ---|                                                          Defect# 8934                     						|
----|    1.1             10-NOV-2013     Arun Gannarapu        Made changes to fix the missing transactions issue	|
+---|    1.1             10-NOV-2013     Arun Gannarapu        Made changes to fix the missing transactions issue			|
 ---|                                                          Defect# 8934                     						|
----|    1.2             10-SEP-2015     Shaik Ghouse          Added Hints for QC Defect # 35571 Perf Issue			|
----|																												|
+---|    1.2             10-SEP-2015     Shaik Ghouse          Added Hints for QC Defect # 35571 Perf Issue				|
+---|																										|
 ---|    1.3             20-OCT-2015     Shaik Ghouse          Removed Schema name for Custom      					|
--- |    1.4             09-AUG-2016     Arun Gannarapu        12.2.5 Retrofit 										|
--- |    1.5             05-NOV-2018     Dinesh Nagapuri       Made Changes for Bill Complete NAIT-61963. 			|
--- |    1.6				14-MAR-2019		Dinesh Nagapuri		  Added Bill Doc level check to reduce the performance  |	
----+================================================================================================================+
+-- |    1.4             09-AUG-2016     Arun Gannarapu        12.2.5 Retrofit 								|
+-- |    1.5             05-NOV-2018     Dinesh Nagapuri       Made Changes for Bill Complete NAIT-61963. 				|
+-- |    1.6		14-MAR-2019	Dinesh Nagapuri	      Added Bill Doc level check to reduce the performance  			|	
+---+====================================================================================================================================+
 
 /*REM Added for ARU db drv auto generation
 REM dbdrv: sql ~PROD ~PATH ~FILE none none none package phase=plb \
@@ -1581,7 +1581,7 @@ BEGIN
 				FROM xx_cdh_cust_acct_ext_b
 				WHERE 1              =1
 				AND cust_account_id  = l_sites.customer_id
-				AND bc_pod_flag      = 'B' 
+				AND bc_pod_flag      IN ('Y','B') 
 				AND ROWNUM <2;
 					
 				IF lc_bill_comp_check_count > 0
