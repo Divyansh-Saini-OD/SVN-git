@@ -21,9 +21,8 @@ PACKAGE XX_AP_XXAUNMATCHRECEIPT_PKG
   -- |===============                                                    |
   -- |Version   Date        Author             Remarks                   |
   -- |========  =========== ================== ==========================|
-  -- |1.0       14-Nov-2017 Ragni Gupta     Initial version              |
-  -- |2.0       26-Feb-2019 Shanti Sethuraj Adding layout in after       |
-  -- |                                      report trigger               |
+  -- |1.0       14-Nov-2017 Ragni Gupta     Initial version           |
+  -- |                                                     |
   -- +===================================================================+
 AS
   P_DATE             VARCHAR2(20);
@@ -69,8 +68,6 @@ IS
       P_CURRENCY_CODE    VARCHAR2 )
     RETURN XX_AP_XXAUNMATCHRECEIPT_PKG.UNMATCH_DETAIL_REC_CTT PIPELINED;
   FUNCTION BEFOREREPORT
-    RETURN BOOLEAN;
-  FUNCTION AFTERREPORT                       --added for NAIT-27081 to add layout
     RETURN BOOLEAN;
   FUNCTION CALCULATE_CST_REC_AMT(
       P_PO_DISTRIBUTION_ID NUMBER,
