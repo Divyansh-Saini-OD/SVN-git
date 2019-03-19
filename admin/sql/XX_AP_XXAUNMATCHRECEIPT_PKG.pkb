@@ -23,7 +23,7 @@ PACKAGE BODY XX_AP_XXAUNMATCHRECEIPT_PKG
   -- |========  =========== ================== ==========================|
   -- |1.0       14-Nov-2017 Ragni Gupta     Initial version              |
   -- |1.1       14-FEB-2018  Priyam         Code change for Reciept Correction |
-  -- |1.2       26-Feb-2019  Shanti Sethuraj Adding layout in after report trigger for jira NAIT-27081 |
+  -- |1.2       26-Feb-2019  Shanti Sethuraj Adding layout in before report trigger for jira NAIT-27081 |
   -- +===================================================================+
 AS
 FUNCTION BEFOREREPORT
@@ -35,7 +35,23 @@ IS
   L_EXP_TYPE      VARCHAR2(10) := 'EX%';
   L_EXCLUDE_TYPE  VARCHAR2(10) := 'TR-TDS';
   L_DIRECT_IMPORT VARCHAR2(10) := 'TR-IMP';
+  v_addlayout 		boolean;  --added for jira NAIT-27081
 BEGIN
+
+--Start of change code : for jira NAIT-27081
+v_addlayout:=FND_REQUEST.ADD_LAYOUT( template_appl_name => 'XXFIN',
+	 	                template_code => 'XXAPUNMTCHNONCONS', 
+				template_language => 'en', 
+				template_territory => 'US', 
+			        output_format => 'EXCEL');
+
+  IF (v_addlayout) THEN
+     fnd_file.put_line(fnd_file.LOG, 'The layout has been submitted');
+  ELSE
+     fnd_file.put_line(fnd_file.LOG, 'The layout has not been submitted');
+  END IF;
+  
+  --end of change code : for jira NAIT-27081
   IF P_PO_TYPE         IS NOT NULL THEN
     IF P_PO_TYPE        = 'TRADE' THEN
       G_PO_TYPE_CLAUSE := ' WHERE UPPER(a.SUPPLIER_SITE_CATEGORY) IN (SELECT UPPER (XFTV.TARGET_VALUE1)                                
@@ -60,31 +76,9 @@ WHEN OTHERS THEN
   FND_FILE.PUT_LINE(FND_FILE.LOG, 'ERROR at XX_AP_XXAPUNMATCHRECEIPT.beforeReport:- ' || SQLERRM);
 END BEFOREREPORT;
 
--- Start of changes : Added for the jira NAIT-27081 to add layout in after report trigger
 
- FUNCTION AFTERREPORT
-  RETURN BOOLEAN
-IS
-v_addlayout 		boolean;
-begin
 
-v_addlayout:=FND_REQUEST.ADD_LAYOUT( template_appl_name => 'XXFIN',
-	 	                template_code => 'XXAPUNMTCHNONCONS', 
-				template_language => 'en', 
-				template_territory => 'US', 
-			        output_format => 'EXCEL');
-
-  IF (v_addlayout) THEN
-     fnd_file.put_line(fnd_file.LOG, 'The layout has been submitted');
-  ELSE
-     fnd_file.put_line(fnd_file.LOG, 'The layout has not been submitted');
-  END IF;
-return true;
-
-END AFTERREPORT;
-
---End of changes : Added for the jira NAIT-27081 to add layout in after report trigger
-
+ 
 
 FUNCTION XX_AP_UNMATCH_DETAIL(
     P_DATE             VARCHAR2,
