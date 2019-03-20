@@ -226,6 +226,8 @@ AS
     AND glcd.setup_step_code             = 'NONE'
     AND GLLookups.lookup_type            = 'GL_ASF_LEDGER_CATEGORY'
     AND GLLookups.lookup_code            = gld.ledger_category_code
+	and (gcc.segment1||gld.short_name <> 1003||'US_USD_P' 
+    and gcc.segment1||gld.short_name <> 1001||'CA_CAD_P')
     GROUP BY gld.ledger_id ,
       gcc.code_combination_id ,
       gb.period_name,
