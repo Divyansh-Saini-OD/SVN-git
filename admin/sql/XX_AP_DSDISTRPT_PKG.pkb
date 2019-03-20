@@ -34,19 +34,72 @@ IS
   BEGIN
       xx_ap_xml_bursting_pkg.Get_email_detail ('XXAPDSDISTRPT', g_smtp_server, g_email_subject, g_email_content, g_distribution_list);
 
-      p_param := ' AND 1=1';
+      p_where_clause := ' AND 1=1';
+	  p_from_clause  := ' ' ;
 
       IF p_vendor_site_id IS NOT NULL THEN
-        p_param := p_param
-                   || ' AND TO_NUMBER(regexp_replace(assa.vendor_site_code, ''[^[:digit:]]'', '''')) = '
-                   || p_vendor_site_id;
+        p_where_clause := p_where_clause
+                          || ' AND TO_NUMBER(regexp_replace(assa.vendor_site_code, ''[^[:digit:]]'', '''')) = '
+                          || p_vendor_site_id;
       END IF;
+      
+      IF p_period_from IS NULL
+        AND p_period_to IS NULL
+        AND p_gl_date_from IS NULL
+        AND p_gl_date_to IS NULL
+      THEN
+        fnd_file.Put_line (fnd_file.log,'Please provide values for either Period From/To or GL Booked Date From/To parameters');
+        RETURN FALSE;
+      END IF;
+      
+      IF (p_period_from IS NOT NULL
+        AND p_period_to IS NULL) 
+        OR (p_period_from IS NULL
+        AND p_period_to IS NOT NULL)
+      THEN
+        fnd_file.Put_line (fnd_file.log,'Please provide values for both Period From and Period To parameters');
+        RETURN FALSE;
+      ELSIF p_period_from IS NOT NULL
+        AND p_period_to IS NOT NULL
+      THEN
+        p_from_clause := ' , gl_period_statuses gps_from '
+                      || ', gl_period_statuses gps_to ';
+    
+        p_where_clause := p_where_clause
+                          || ' AND gps_from.application_id = 200'
+                          || ' AND gps_from.adjustment_period_flag <> ''Y'''
+                          || ' AND aia.set_of_books_id = gps_from.set_of_books_id'
+                          || ' AND gps_to.application_id = 200'
+                          || ' AND gps_to.adjustment_period_flag <> ''Y'''
+                          || ' AND aia.set_of_books_id = gps_to.set_of_books_id'
+                          || ' AND aida.accounting_date BETWEEN gps_from.start_date AND gps_to.end_date'
+                          || ' AND gps_from.period_name = ''' || p_period_from || ''''
+                          || ' AND gps_to.period_name = ''' || p_period_to || '''';
+      END IF;      
 
+      IF (p_gl_date_from IS NOT NULL
+        AND p_gl_date_to IS NULL) 
+        OR (p_gl_date_from IS NULL
+        AND p_gl_date_to IS NOT NULL)
+      THEN
+        fnd_file.Put_line (fnd_file.log,'Please provide values for both GL Booked Date From and GL Booked Date To parameters');
+        RETURN FALSE;
+      ELSIF p_gl_date_from IS NOT NULL
+        AND p_gl_date_to IS NOT NULL
+      THEN
+        p_where_clause := p_where_clause
+                          || ' AND aida.accounting_date BETWEEN fnd_date.canonical_to_date('''
+                          || p_gl_date_from
+                          || ''')'
+                          || ' AND fnd_date.canonical_to_date('''
+                          || p_gl_date_to
+                          || ''')';
+      END IF;
+      
       RETURN TRUE;
   EXCEPTION
     WHEN OTHERS THEN
-               fnd_file.Put_line (fnd_file.log, 'ERROR at XX_AP_DSDISTRPT_PKG.beforeReport:- '
-                                                || SQLERRM);
+      fnd_file.Put_line (fnd_file.log, 'ERROR at XX_AP_DSDISTRPT_PKG.beforeReport:- ' || SQLERRM);
   END beforereport;
   
   -- +============================================================================================+
@@ -64,9 +117,9 @@ IS
 
       l_request_id := fnd_request.Submit_request ('XDO', 'XDOBURSTREP', NULL, NULL, FALSE, 'Y', p_conc_request_id, 'Y');
 
-      fnd_file.Put_line (fnd_file.log, 'Completed ');
-
       COMMIT;
+	  
+	  fnd_file.Put_line (fnd_file.log, 'Request ID : ' || l_request_id);
 
       RETURN ( TRUE );
   EXCEPTION
@@ -103,7 +156,7 @@ IS
     ln_buffer            BINARY_INTEGER := 32767;
     lb_error_flag        BOOLEAN := FALSE;
     lc_conn              utl_smtp.connection;
-	
+    
     CURSOR get_dropship_dist_c IS
       SELECT
       /*+ LEADING(AIA AILA AIDA) FULL(AIA) PARALLEL(AIA,8) PARALLEL(AILA,8) PARALLEL(AIDA,8) NO_MERGE */ 
