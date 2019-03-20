@@ -90,10 +90,12 @@ BEGIN XDO_DS_DEFINITIONS "XXFIN" "XXAPDSDISTRPT"
   OWNER = "889598"
   DATA_SOURCE_STATUS = "E"
   START_DATE = "2019/01/25"
-  OBJECT_VERSION_NUMBER = "1"
-  LAST_UPDATE_DATE = "2019/01/25"
-  DATA_SOURCE_NAME = "OD: AP Dropship Distributions Report Data Definition"
-  DESCRIPTION = "OD: AP Dropship Distributions Report Data Definition"
+  OBJECT_VERSION_NUMBER = "5"
+  LAST_UPDATE_DATE = "2019/03/20"
+  DATA_SOURCE_NAME =
+ "OD: AP Dropship Distributions Exception Report Data Definition"
+  DESCRIPTION =
+ "OD: AP Dropship Distributions Exception Report Data Definition"
 
   BEGIN X_TEMPLATES "XXFIN" "XXAPDSDISTRPT"
     OWNER = "889598"
@@ -105,10 +107,10 @@ BEGIN XDO_DS_DEFINITIONS "XXFIN" "XXAPDSDISTRPT"
     USE_ALIAS_TABLE = "N"
     DEPENDENCY_FLAG = "P"
     START_DATE = "2019/01/25"
-    OBJECT_VERSION_NUMBER = "1"
-    LAST_UPDATE_DATE = "2019/01/25"
-    TEMPLATE_NAME = "OD: AP Dropship Distributions Report Template"
-    DESCRIPTION = "OD: AP Dropship Distributions Report Template"
+    OBJECT_VERSION_NUMBER = "3"
+    LAST_UPDATE_DATE = "2019/03/20"
+    TEMPLATE_NAME = "OD: AP Dropship Distributions Exception Report Template"
+    DESCRIPTION = "OD: AP Dropship Distributions Exception Report Template"
   
   END X_TEMPLATES
   
