@@ -16,7 +16,7 @@
 
 p_request_id=`echo $1|awk '{print(substr($2,11))}'`
 
-FILE_DIR=$XXCRM_DATA/inbound/external_users
+FILE_DIR=$XXCRM_DATA/ftp/in/external_users
 
 FILE_ARCHIVE="$XXCRM_ARCHIVE/outbound/external_users"
 
@@ -28,14 +28,14 @@ control_file="XX_CDH_AOPS_EXTERNAL_USER_CTL.ctl"
 
 echo " Control File name is  :" [$control_file]
 
-cd $XXCRM_DATA/inbound/external_users
+cd $XXCRM_DATA/ftp/in/external_users
 
 for file in FNDIRLST.TXT
 do
 
-sqlldr parfile=$HOME/parfile.apps data=$XXCRM_DATA/inbound/external_users/$file control=$XXCOMN_TOP/bin/$control_file log=$file.log bad=$file.bad errors=9999
+sqlldr parfile=$HOME/parfile.apps data=$XXCRM_DATA/ftp/in/external_users/$file control=$XXCOMN_TOP/bin/$control_file log=$file.log bad=$file.bad errors=9999
 
-mv $XXCRM_DATA/inbound/external_users/$file $XXCRM_ARCHIVE/outbound/external_users/$file$DAT
+mv $XXCRM_DATA/ftp/in/external_users/$file $XXCRM_ARCHIVE/outbound/external_users/$file$DAT
 
 echo "------------ Log File--------------"
 cat $file.log
