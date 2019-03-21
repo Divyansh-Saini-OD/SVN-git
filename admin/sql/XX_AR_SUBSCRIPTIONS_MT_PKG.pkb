@@ -43,7 +43,7 @@ AS
 -- |                                              2.charge seq =1 for auto renewed SS        |
 -- |                                              SKU's NAIT-79218                           |
 -- | 18.0        07-MAR-2019  Sahithi K           modified program_id logic in UPSERT script |
--- |                                              from req_id to con_program_id              |
+-- |                                              from req_id to con_program_id NAIT-87055   |
 -- +=========================================================================================+
  
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -10790,8 +10790,8 @@ AS
                                   || '","contractEndDate":"'||TO_CHAR(lr_contract_line_info.contract_line_end_date,'YYYY-MM-DD')||'","billingFrequency":"'
                                   || lr_contract_line_info.contract_line_billing_freq|| '","unitPrice":"'|| lt_subscription_array(indx).contract_line_amount||'","tax":"'
                                   || NVL(lt_subscription_array(indx).tax_amount, 0)||'","unitTotal":"'|| lc_item_unit_total||'","failureMessage":"'|| lc_failure_message
-                                  || '","initialAuthDate":"'|| TO_CHAR(lt_subscription_array(indx).initial_auth_attempt_date,'YYYY-MM-DD')||'","lastAuthDate":"'
-                                  || TO_CHAR(lt_subscription_array(indx).last_auth_attempt_date,'YYYY-MM-DD')||'","nextRetryDate":"'|| TO_CHAR(lc_next_retry_date,'DD-MON-YYYY')||'"}'
+                                  || '","initialAuthDate":"'|| TO_CHAR(NVL(lt_subscription_array(indx).initial_auth_attempt_date, TO_DATE(REPLACE(lt_subscription_array(indx).auth_datetime,'T', ' '),'yyyy-mm-dd hh24:mi:ss'))) ||'","lastAuthDate":"'
+                                  || TO_CHAR(NVL(lt_subscription_array(indx).last_auth_attempt_date, TO_DATE(REPLACE(lt_subscription_array(indx).auth_datetime,'T', ' '),'yyyy-mm-dd hh24:mi:ss')))||'","nextRetryDate":"'|| TO_CHAR(lc_next_retry_date,'DD-MON-YYYY')||'"}'
             INTO   lc_history_payload_lines
             FROM   DUAL;
       
