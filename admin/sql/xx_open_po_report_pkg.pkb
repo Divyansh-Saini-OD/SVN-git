@@ -146,97 +146,98 @@ dt       { font-weight     : bold; }
     AND pha.attribute_category = 'Non-Trade'
 	 and pha.type_lookup_code not in ('BLANKET')
     AND ROUND(NVL(pda.amount_ordered,(pla.unit_price*pla.quantity)),2) > plla.amount_billed
-    AND NVL(plla.amount,(SELECT SUM(ROUND((pla2.unit_price*pla2.quantity),2))FROM PO_LINES_ALL pla2 WHERE 1=1AND pla2.po_header_id = pha.po_header_id)) > 5000
+   -- AND NVL(plla.amount,(SELECT SUM(ROUND((pla2.unit_price*pla2.quantity),2))FROM PO_LINES_ALL pla2 WHERE 1=1AND pla2.po_header_id = pha.po_header_id)) > 5000  --Commented for Lisa request using JIRA#NAIT-89342
     AND pha.creation_date  >= NVL(sysdate-P_number_of_days,sysdate-30)
     ORDER BY pha.segment1,
       pla.line_num;
       
 	  /* Query for Blanket po open report*/
-      CURSOR open_Blanket_po IS
-    SELECT pra.creation_date requistion_created,
-      pha.segment1 po_number ,
-      pra.release_num ,
-      pla.line_num ,
-      pha.type_lookup_code po_type ,
-      pra.release_type ,
-      pra.agent_id buyer_id ,
-      (SELECT DISTINCT prha.preparer_id
-      FROM PO_REQUISITION_HEADERS_ALL prha ,
-        PO_REQUISITION_LINES_ALL prla
-      WHERE 1                        =1
-      AND prha.requisition_header_id = prla.requisition_header_id
-      AND prla.requisition_line_id   = prda.requisition_line_id
-      ) preparer_id ,
-      prda.requisition_line_id ,
-      aps.vendor_name supplier_name ,
-      DECODE( plla.inspection_required_flag,'N',(DECODE(plla.receipt_required_flag,'N','2-WAY','3-WAY')),'4-WAY') matching_type ,
-      plla.need_by_date ,
-      pla.unit_price PO_unit_price,
-      pla.last_update_date ,
-      plla.quantity ,
-      plla.quantity_received ,
-      ROUND(NVL(pda.amount_ordered,(pla.unit_price*plla.quantity)),2) release_line_amount ,
-      NVL(plla.amount,
-      (SELECT SUM(plla2.quantity*pla.unit_price)
-      FROM PO_LINE_LOCATIONS_ALL plla2
-      WHERE 1                 =1
-      AND plla2.po_release_id = pra.po_release_id
-      )) release_total_amount ,
-      pda.amount_ordered ,
-      pda.amount_billed ,
-      pda.quantity_ordered ,
-      pda.quantity_delivered ,
-      pda.quantity_billed ,
-      pda.quantity_cancelled ,
-      pra.authorization_status rel_auth_status ,
-      pha.authorization_status bpa_auth_status ,
-      pra.closed_code rel_closed_code ,
-      plla.closed_code rel_line_closed_code ,
-      pha.closed_code bpa_closed_code ,
-      pla.closed_code bpa_line_closed_code ,
-      pha.blanket_total_amount bpa_total_amount ,
-      pha.amount_limit bpa_amount_limit ,
-      pra.cancel_flag rel_cancel_flag ,
-      plla.cancel_flag rel_line_cancel_flag ,
-      pha.cancel_flag bpa_cancel_flag ,
-      pla.cancel_flag bpa_line_cancel_flag,
-      pha.po_header_id,
-      pla.po_line_id
-    FROM PO_RELEASES_ALL pra ,
-      PO_HEADERS_ALL pha ,
-      PO_LINES_ALL pla ,
-      PO_LINE_LOCATIONS_ALL plla ,
-      PO_DISTRIBUTIONS_ALL pda ,
-      AP_SUPPLIERS aps ,
-      PO_REQ_DISTRIBUTIONS_ALL prda
-    WHERE 1                           =1
-    AND pha.po_header_id              = pra.po_header_id
-    AND pla.po_header_id              = pha.po_header_id
-    AND pla.po_line_id                = plla.po_line_id
-    AND plla.po_header_id             = pra.po_header_id
-    AND plla.po_release_id            = pra.po_release_id
-    AND pda.po_release_id             = pra.po_release_id
-    AND pda.po_header_id              = pha.po_header_id
-    AND pda.po_line_id                = pla.po_line_id
-    AND pda.line_location_id          = plla.line_location_id
-    AND aps.vendor_id                 = pha.vendor_id
-    AND pda.req_distribution_id       = prda.distribution_id(+)
-     AND plla.receipt_required_flag   != 'N'
-    AND plla.inspection_required_flag = 'N'
-	and plla.quantity != plla.quantity_received
-     and plla.quantity_received = 0
-    AND NVL(plla.amount,
-      (SELECT SUM(plla2.quantity*pla.unit_price)
-      FROM PO_LINE_LOCATIONS_ALL plla2
-      WHERE 1                 =1
-      AND plla2.po_release_id = pra.po_release_id
-      ))                      > 5000
-	 and plla.closed_code not in ('CLOSED','CLOSED FOR RECEIVING','CLOSED FOR INVOICE')
-    AND pra.creation_date    >= NVL(sysdate-P_number_of_days,sysdate-30)
-    ORDER BY pra.creation_date,
-      pha.segment1,
-      pra.release_num,
-      pla.line_num DESC ;
+     CURSOR open_Blanket_po
+IS
+  SELECT pra.creation_date requistion_created,
+    pha.segment1 po_number ,
+    pra.release_num ,
+    pla.line_num ,
+    pha.type_lookup_code po_type ,
+    pra.release_type ,
+    pra.agent_id buyer_id ,
+    (SELECT DISTINCT prha.preparer_id
+    FROM PO_REQUISITION_HEADERS_ALL prha ,
+      PO_REQUISITION_LINES_ALL prla
+    WHERE 1                        =1
+    AND prha.requisition_header_id = prla.requisition_header_id
+    AND prla.requisition_line_id   = prda.requisition_line_id
+    ) preparer_id ,
+  prda.requisition_line_id ,
+  aps.vendor_name supplier_name ,
+  DECODE( plla.inspection_required_flag,'N',(DECODE(plla.receipt_required_flag,'N','2-WAY','3-WAY')),'4-WAY') matching_type ,
+  plla.need_by_date ,
+  pla.unit_price PO_unit_price,
+  pla.last_update_date ,
+  plla.quantity ,
+  plla.quantity_received ,
+  ROUND(NVL(pda.amount_ordered,(pla.unit_price*plla.quantity)),2) release_line_amount ,
+  NVL(plla.amount,
+  (SELECT SUM(plla2.quantity*pla.unit_price)
+  FROM PO_LINE_LOCATIONS_ALL plla2
+  WHERE 1                 =1
+  AND plla2.po_release_id = pra.po_release_id
+  )) release_total_amount ,
+  pda.amount_ordered ,
+  pda.amount_billed ,
+  pda.quantity_ordered ,
+  pda.quantity_delivered ,
+  pda.quantity_billed ,
+  pda.quantity_cancelled ,
+  pra.authorization_status rel_auth_status ,
+  pha.authorization_status bpa_auth_status ,
+  pra.closed_code rel_closed_code ,
+  plla.closed_code rel_line_closed_code ,
+  pha.closed_code bpa_closed_code ,
+  pla.closed_code bpa_line_closed_code ,
+  pha.blanket_total_amount bpa_total_amount ,
+  pha.amount_limit bpa_amount_limit ,
+  pra.cancel_flag rel_cancel_flag ,
+  plla.cancel_flag rel_line_cancel_flag ,
+  pha.cancel_flag bpa_cancel_flag ,
+  pla.cancel_flag bpa_line_cancel_flag,
+  pha.po_header_id,
+  pla.po_line_id
+FROM PO_RELEASES_ALL pra ,
+  PO_HEADERS_ALL pha ,
+  PO_LINES_ALL pla ,
+  PO_LINE_LOCATIONS_ALL plla ,
+  PO_DISTRIBUTIONS_ALL pda ,
+  AP_SUPPLIERS aps ,
+  PO_REQ_DISTRIBUTIONS_ALL prda
+WHERE 1                           =1
+AND pha.po_header_id              = pra.po_header_id
+AND pla.po_header_id              = pha.po_header_id
+AND pla.po_line_id                = plla.po_line_id
+AND plla.po_header_id             = pra.po_header_id
+AND plla.po_release_id            = pra.po_release_id
+AND pda.po_release_id             = pra.po_release_id
+AND pda.po_header_id              = pha.po_header_id
+AND pda.po_line_id                = pla.po_line_id
+AND pda.line_location_id          = plla.line_location_id
+AND aps.vendor_id                 = pha.vendor_id
+AND pda.req_distribution_id       = prda.distribution_id(+)
+AND plla.receipt_required_flag   != 'N'
+AND plla.inspection_required_flag = 'N'
+AND plla.quantity                != plla.quantity_received
+AND plla.quantity_received        = 0
+/*AND NVL(plla.amount,
+  (SELECT SUM(plla2.quantity*pla.unit_price)
+  FROM PO_LINE_LOCATIONS_ALL plla2
+  WHERE 1                 =1
+  AND plla2.po_release_id = pra.po_release_id
+  ))                      > 5000*/ -- --Commented for Lisa request using JIRA#NAIT-89342
+AND plla.closed_code NOT              IN ('CLOSED','CLOSED FOR RECEIVING','CLOSED FOR INVOICE')
+AND pra.creation_date    >= NVL(sysdate-P_number_of_days,sysdate-30)
+ORDER BY pra.creation_date,
+  pha.segment1,
+  pra.release_num,
+  pla.line_num DESC ;
   BEGIN
     SELECT NAME INTO LC_INSTANCE FROM v$database;
     V_FILENAME1 := V_FILENAME1||'_'||LC_INSTANCE||'.csv' ;
