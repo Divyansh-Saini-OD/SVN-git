@@ -1,0 +1,40 @@
+SET VERIFY OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK; 
+
+-- +============================================================================================+
+-- |                                     Office Depot                                           |
+-- +============================================================================================+
+-- | Name        : XX_RMS_MV_SSB.tbl                                              	            |
+-- | Description : Script to create XX_RMS_MV_SSB                                               |
+-- |                                                                                            |
+-- |Change Record:                                                                              |
+-- |===============                                                                             |
+-- |Version     Date           Author               Remarks                                     |
+-- |=======    ==========      ================     ============================================|
+-- |1.0        25-MAR-2019     Punit Gupta          Initial version                             |
+-- +============================================================================================+
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE XX_RMS_MV_SSB';
+EXCEPTION
+  WHEN OTHERS THEN NULL;
+END;
+/
+
+PROMPT
+PROMPT Creating the Table XX_RMS_MV_SSB......
+PROMPT
+
+CREATE TABLE XX_RMS_MV_SSB
+( ITEM VARCHAR2(30),
+, COST NUMBER
+, OD_BILLING_FREQUENCY VARCHAR2(30)
+, OD_CONTRACT_LENGTH NUMBER
+);
+
+SHOW ERRORS;
+
+GRANT ALL ON XX_RMS_MV_SSB TO APPS;
+
+EXIT;
