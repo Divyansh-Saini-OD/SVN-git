@@ -1,8 +1,8 @@
 -- +========================================================================+
 -- |                  Office Depot                                          |
 -- +========================================================================+
--- | Name        : ALTER_TB_XX_AR_CONTRACTS.tbl                             |
--- | Description : Added new field in the existing XX_AR_CONTRACTS          |
+-- | Name        : ALTER_TB_XX_AR_SUBSCRIPTIONS.tbl                         |
+-- | Description : Added new field in the existing XX_AR_SUBSCRIPTIONS      |
 -- |               table                                                    |
 -- |                                                                        |
 -- |Change Record:                                                          |
@@ -18,10 +18,8 @@ SET ECHO         OFF
 SET TAB          OFF
 SET FEEDBACK     ON
 
-alter table xx_ar_contracts
-add (cc_trans_id           VARCHAR2(256)
-    ,cc_trans_id_source    VARCHAR2(26)
-    ,cof_trans_id_scm_flag VARCHAR2(2) DEFAULT 'N');
-
-
+alter table XX_AR_SUBSCRIPTIONS
+add (cof_trans_id          VARCHAR2(256)
+    ,cof_trans_id_flag     VARCHAR2(2) DEFAULT 'N'
+    );
 /
