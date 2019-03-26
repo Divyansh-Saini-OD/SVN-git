@@ -121,6 +121,10 @@ AS
 -- |1.57     04-oct-2018   Havish Kasina  Added new identifier FND_NI_07 to udpate the OD_MAIL_GROUPS      |
 -- |                                      translation                                                      | 
 -- |1.58     23-JAN-2019   BIAS           INSTANCE_NAME is replaced with DB_NAME for OCI Migration         |
+-- |1.59     26-MAR-2019   Havish Kasina  Added new identifier AR_IS_04 to update OD_VPS_TRANSLATION       |
+-- |                                      translation                                                      |
+-- |1.60     26-MAR-2019   Havish Kasina  Added new identifier AR_NI_14 to update XX_AR_EBL_REST_SERVICE_DT|
+-- |                                      translation                                                      | 
 -- +=======================================================================================================+
 
 -- +==========================================================+
@@ -2657,7 +2661,7 @@ AS
                                ,p_exception_message  => lc_exception_message);
            END;
 		   
-		   	 --  Added by Havish Kasina as per Version 1.56
+		   --  Added by Havish Kasina as per Version 1.56
 		   BEGIN
               --------------------------------------------------
               -- AR_NI_13 - Update Translation OD_VPS_TRANSLATION
@@ -2727,7 +2731,70 @@ AS
                                ,p_end_date_time      => ld_end_date_time
                                ,p_exception_message  => lc_exception_message);
            END;
+		   
+		   --  Added by Havish Kasina as per Version 1.60
+		   BEGIN
+              -----------------------------------------------------------
+              -- AR_NI_14 - Update Translation XX_AR_EBL_REST_SERVICE_DT
+              -----------------------------------------------------------
+              lc_identifier          := 'AR_NI_14';
+              lc_object_type         := 'Translation';
+              lc_object_name         := 'XX_AR_EBL_REST_SERVICE_DT';
+              lc_action              := 'Update DTS_REST_SERVICE';
+              ld_start_date_time     := TO_CHAR(SYSDATE, 'MM/DD/YYYY HH24:MI:SS');
 
+              ld_end_date_time       := NULL;
+              lc_exception_message   := NULL;
+              lc_result              := NULL;
+              lc_status              := NULL;
+              ln_count               := 0;
+
+              xx_write_to_log (lc_filehandle,'Start of update, for AR_NI_14');
+
+              UPDATE xx_fin_translatevalues 
+                 SET target_value1 = 'https://osbuat01.na.odcorp.net/osb-infra/eai/REST/ShipmentService/getOrderShipmentStatus',
+                     target_value2 = 'development',
+					 target_value3 = 'development123'
+               WHERE source_value1 = 'DTS_REST_SERVICE'
+                 AND translate_id  = (SELECT translate_id 
+                                        FROM xx_fin_translatedefinition 
+                                       WHERE translation_name = 'XX_AR_EBL_REST_SERVICE_DT');
+									 
+              lc_status        := 'Success'; 
+              lc_result        := 'Updated XX_AR_EBL_REST_SERVICE_DT';    
+              ld_end_date_time := TO_CHAR(SYSDATE, 'MM/DD/YYYY HH24:MI:SS');           
+
+              xx_write_to_file(p_filehandle_csv     => lc_filehandle_csv
+                              ,p_identifier         => lc_identifier
+                              ,p_status             => lc_status
+                              ,p_object_type        => lc_object_type
+                              ,p_object_name        => lc_object_name
+                              ,p_action             => lc_action
+                              ,p_result             => lc_result
+                              ,p_start_date_time    => ld_start_date_time
+                              ,p_end_date_time      => ld_end_date_time
+                              ,p_exception_message  => lc_exception_message);
+
+           EXCEPTION 
+              WHEN OTHERS THEN
+              xx_write_to_log (lc_filehandle,'Error encountered during AR_NI_14: '||SQLERRM);
+              ROLLBACK;
+              lc_status              := 'ERROR'; 
+              lc_result              := 'Unable to update XX_AR_EBL_REST_SERVICE_DT Translation';   
+              ld_end_date_time       := TO_CHAR(SYSDATE, 'MM/DD/YYYY HH24:MI:SS');
+              lc_exception_message   := 'Error encountered during AR_NI_14: '||SQLERRM;
+
+              xx_write_to_file(p_filehandle_csv      => lc_filehandle_csv
+                               ,p_identifier         => lc_identifier
+                               ,p_status             => lc_status
+                               ,p_object_type        => lc_object_type
+                               ,p_object_name        => lc_object_name
+                               ,p_action             => lc_action
+                               ,p_result             => lc_result
+                               ,p_start_date_time    => ld_start_date_time
+                               ,p_end_date_time      => ld_end_date_time
+                               ,p_exception_message  => lc_exception_message);
+           END;
          
        EXCEPTION
            WHEN OTHERS THEN
@@ -10992,6 +11059,100 @@ AS
               lc_result              := 'Unable to update transalation definition';   
               ld_end_date_time       := TO_CHAR(SYSDATE, 'MM/DD/YYYY HH24:MI:SS');
               lc_exception_message   := 'Error encountered during AR_IS_03: '||SQLERRM;
+
+              xx_write_to_file(p_filehandle_csv      => lc_filehandle_csv
+                               ,p_identifier         => lc_identifier
+                               ,p_status             => lc_status
+                               ,p_object_type        => lc_object_type
+                               ,p_object_name        => lc_object_name
+                               ,p_action             => lc_action
+                               ,p_result             => lc_result
+                               ,p_start_date_time    => ld_start_date_time
+                               ,p_end_date_time      => ld_end_date_time
+                               ,p_exception_message  => lc_exception_message);
+           END;
+		   
+		   /* Added as per Version 1.59 by Havish Kasina */
+		   BEGIN
+              ----------------------------------------------
+              -- AR_IS_04 - Update for OD_VPS_TRANSLATION 
+              ----------------------------------------------
+              lc_identifier          := 'AR_IS_04';
+              lc_object_type         := 'Translation';
+              lc_object_name         := 'OD_VPS_TRANSLATION';
+              lc_action              := 'Update OD_VPS_TRANSLATION';
+              ld_start_date_time     := TO_CHAR(SYSDATE, 'MM/DD/YYYY HH24:MI:SS');
+
+              ld_end_date_time       := NULL;
+              lc_exception_message   := NULL;
+              lc_result              := NULL;
+              lc_status              := NULL;
+              ln_count               := 0;
+
+              xx_write_to_log (lc_filehandle,'Start of update for AR_IS_04');
+			  
+			  IF lc_instance_name IN ('GSIDEV02', 'GSIDEV03', 'GSISIT02', 'GSISIT03')
+			  THEN
+
+                  UPDATE xx_fin_translatevalues v
+                  SET    v.target_value1 = 'https://agerdev.na.odcorp.net/vpsservice/api/v2/PGM_DETAILS'
+                  WHERE  v.translate_id in (SELECT translate_id 
+                                            FROM   xx_fin_translatedefinition
+                                            WHERE  translation_name = 'OD_VPS_TRANSLATION')
+                  AND    v.source_value1 = 'BKUP_INT_URL';
+			  
+			      UPDATE xx_fin_translatevalues v
+                  SET    v.target_value1 = 'https://agerdev.na.odcorp.net/vpsservice/api/v2/XXFIN_INVOICE_RESPONSE/'
+                  WHERE  v.translate_id in (SELECT translate_id 
+                                            FROM   xx_fin_translatedefinition
+                                            WHERE  translation_name = 'OD_VPS_TRANSLATION')
+                  AND    v.source_value1 = 'VPS_INV_PUBLISH_URL';
+				  
+			  ELSE
+			     
+                  UPDATE xx_fin_translatevalues v
+                  SET    v.target_value1 = 'https://ageruat.na.odcorp.net/vpsservice/api/v2/PGM_DETAILS'
+                  WHERE  v.translate_id in (SELECT translate_id 
+                                            FROM   xx_fin_translatedefinition
+                                            WHERE  translation_name = 'OD_VPS_TRANSLATION')
+                  AND    v.source_value1 = 'BKUP_INT_URL';
+			  
+			      UPDATE xx_fin_translatevalues v
+                  SET    v.target_value1 = 'https://ageruat.na.odcorp.net/vpsservice/api/v2/XXFIN_INVOICE_RESPONSE/'
+                  WHERE  v.translate_id in (SELECT translate_id 
+                                            FROM   xx_fin_translatedefinition
+                                            WHERE  translation_name = 'OD_VPS_TRANSLATION')
+                  AND    v.source_value1 = 'VPS_INV_PUBLISH_URL';
+              END IF;				  
+
+              ln_count := SQL%rowcount;
+
+              xx_write_to_log (lc_filehandle,'No of rows updated for AR_IS_04 is: ' || SQL%rowcount||CHR(10));
+              COMMIT;
+
+              lc_status        := 'Success'; 
+              lc_result        := 'Updated: '||ln_count||' rows';
+              ld_end_date_time := TO_CHAR(SYSDATE, 'MM/DD/YYYY HH24:MI:SS');
+
+              xx_write_to_file(p_filehandle_csv     => lc_filehandle_csv
+                              ,p_identifier         => lc_identifier
+                              ,p_status             => lc_status
+                              ,p_object_type        => lc_object_type
+                              ,p_object_name        => lc_object_name
+                              ,p_action             => lc_action
+                              ,p_result             => lc_result
+                              ,p_start_date_time    => ld_start_date_time
+                              ,p_end_date_time      => ld_end_date_time
+                              ,p_exception_message  => lc_exception_message);
+
+           EXCEPTION 
+              WHEN OTHERS THEN
+              xx_write_to_log (lc_filehandle,'Error while updating, for AR_IS_04 '||SQLERRM||CHR(10));
+              ROLLBACK;
+              lc_status              := 'ERROR'; 
+              lc_result              := 'Unable to update transalation definition';   
+              ld_end_date_time       := TO_CHAR(SYSDATE, 'MM/DD/YYYY HH24:MI:SS');
+              lc_exception_message   := 'Error encountered during AR_IS_04: '||SQLERRM;
 
               xx_write_to_file(p_filehandle_csv      => lc_filehandle_csv
                                ,p_identifier         => lc_identifier
