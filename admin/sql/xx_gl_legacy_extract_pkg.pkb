@@ -197,7 +197,7 @@ AS
       gcc.segment7 Future,      ---Future
       SUM((NVL(gb.period_net_dr, 0) + NVL(gb.begin_balance_dr, 0))) - SUM( NVL( gb.period_net_cr, 0) + NVL(gb.begin_balance_cr, 0)) YTD_AMOUNT,
       SUM(NVL (gb.period_net_dr, 0) -NVL (gb.period_net_cr, 0)) PERIODIC_BALANCE,
-	  decode(gcc.segment1,'1000E','5000E',gcc.segment1) Company_swap
+	  decode(gcc.segment1,'1100E','5000E',gcc.segment1) Company_swap
     FROM GL_LOOKUPS GLLookups,
       gl_ledger_config_details glcd,
       gl_code_combinations gcc,
@@ -240,10 +240,10 @@ AS
       gcc.segment6,---LOB
       gcc.segment4,---Location
       gcc.segment7,
-	   decode(gcc.segment1,'1000E','5000E',gcc.segment1)
+	   decode(gcc.segment1,'1100E','5000E',gcc.segment1)
     HAVING ((SUM((NVL(gb.period_net_dr, 0) + NVL(gb.begin_balance_dr, 0))) - SUM( NVL( gb.period_net_cr, 0) + NVL(gb.begin_balance_cr, 0))) <> 0
     OR SUM(NVL (gb.period_net_dr, 0)       -NVL (gb.period_net_cr, 0))                                                                      <>0)
-     ORDER BY decode(gcc.segment1,'1000E','5000E',gcc.segment1);
+     ORDER BY decode(gcc.segment1,'1100E','5000E',gcc.segment1);
 BEGIN
   -- Get application_id
   BEGIN
@@ -328,7 +328,7 @@ BEGIN
    
     lr_set_of_books.chart_of_accounts_id )
     loop
-      IF (lc_previous_company <> lr_gl_balances.company_swap) THEN-----Changed by Priyam for 1000E to write to 5000E File
+      IF (lc_previous_company <> lr_gl_balances.company_swap) THEN-----Changed by Priyam for 1100E to write to 5000E File
        
         IF UTL_FILE.is_open (g_lt_file) THEN
           UTL_FILE.fclose (g_lt_file);
