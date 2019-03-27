@@ -6,8 +6,6 @@ SET FEEDBACK OFF;
   
 WHENEVER SQLERROR CONTINUE; 
 
-
- 
 WHENEVER OSERROR EXIT FAILURE ROLLBACK;
 
 create or replace 
@@ -37,7 +35,7 @@ AS
   gc_max_sub_err_size  CONSTANT NUMBER                       := 256;
   gc_max_log_size      CONSTANT NUMBER                       := 2000;
   gc_max_err_buf_size  CONSTANT NUMBER                       := 250;
-  gb_debug             BOOLEAN                               := FALSE;
+  gb_debug             BOOLEAN                               := false;
   gb_url1              VARCHAR2(100);
   gb_accesskeyid       VARCHAR2(100);
   gb_secretaccesskey   VARCHAR2(100);
@@ -49,7 +47,6 @@ AS
   gb_inbound_path      VARCHAR2(100);
   gb_start_date        VARCHAR2(100);
   gb_end_date          VARCHAR2(100);
-  g_num                NUMBER :=0;
 type gt_input_parameters
 IS
   TABLE OF VARCHAR2(32000) INDEX BY VARCHAR2(255);
@@ -594,12 +591,12 @@ END insert_pre_stg_excpn;
 **********************************************************************/
 PROCEDURE newegg_get_request_id
   (
-    p_api_request_id OUT VARCHAR2,
     p_file_flag       VARCHAR2,
     p_process_name    VARCHAR2,
-    p_start_date_from VARCHAR2,
-    p_start_date_to   VARCHAR2,
-    p_settlement_id   VARCHAR2
+   -- p_start_date_from VARCHAR2,
+    --p_start_date_to   VARCHAR2,
+    p_settlement_id   VARCHAR2,
+    p_api_request_id OUT VARCHAR2
   )
 AS
   l_request utl_http.req;
@@ -607,16 +604,13 @@ AS
   lc_auth_payload VARCHAR2(32000);
   value           VARCHAR2(32000);
   v_xml_value xmltype;
-  v_request_id            VARCHAR2(50);
-  v_requeststatus         VARCHAR2(50);
-  gb_settlement_date_from VARCHAR2(100);
-  gb_settlement_date_to   VARCHAR2(100);
+  v_request_id    VARCHAR2(50);
+  v_requeststatus VARCHAR2(50);
 BEGIN
   BEGIN
     get_http_details(p_process_name);
     set_debug(p_debug_flag => 'Y');
     logit(p_message=>'START--- ');
-
     IF p_file_flag    ='T' THEN
       lc_auth_payload:='<NeweggAPIRequest>
 <OperationType>SettlementTransactionReportRequest</OperationType>
@@ -627,7 +621,6 @@ BEGIN
 </SettlementTransactionReportCriteria>
 </RequestBody>
 </NeweggAPIRequest>';
-      g_num          :=g_num+1;
     ELSE
       lc_auth_payload:='<NeweggAPIRequest >
 <OperationType>SettlementSummaryReportRequest</OperationType>
@@ -645,16 +638,16 @@ BEGIN
     utl_http.set_detailed_excp_support ( enable => true );
     l_request := utl_http.begin_request(gb_url1, 'POST', 'HTTP/1.1');
     BEGIN
-    utl_http.set_header(l_request, 'accept', 'application/xml');
-    utl_http.set_header(l_request, 'authorization', gb_accesskeyid);
-    utl_http.set_header(l_request, 'secretkey', gb_secretaccesskey);
-    utl_http.set_header(l_request, 'user-agent', 'mozilla/4.0');
-    utl_http.set_header(l_request, 'content-type', 'application/xml');
-    utl_http.set_header(l_request, 'Content-Length', LENGTH(lc_auth_payload));
-    utl_http.write_text(l_request, lc_auth_payload);
-    l_response := utl_http.get_response(l_request);
-    commit;
-EXCEPTION
+      utl_http.set_header(l_request, 'accept', 'application/xml');
+      utl_http.set_header(l_request, 'authorization', gb_accesskeyid);
+      utl_http.set_header(l_request, 'secretkey', gb_secretaccesskey);
+      utl_http.set_header(l_request, 'user-agent', 'mozilla/4.0');
+      utl_http.set_header(l_request, 'content-type', 'application/xml');
+      utl_http.set_header(l_request, 'Content-Length', LENGTH(lc_auth_payload));
+      utl_http.write_text(l_request, lc_auth_payload);
+      l_response := utl_http.get_response(l_request);
+      COMMIT;
+    EXCEPTION
     WHEN OTHERS THEN
       utl_http.end_request(l_request);
       raise;
@@ -671,21 +664,17 @@ EXCEPTION
       ) a,
       TABLE(xmlsequence(extract(a.xml_tag,'NeweggAPIResponse//ResponseInfo'))) b;
     --------------------------------------------------
-
     utl_http.end_response(l_response);
-    
-   -- p_api_request_id:=v_request_id;
   EXCEPTION
   WHEN utl_http.too_many_requests THEN
     utl_http.end_response(l_response);
     v_request_id:='XXX';
     logit(p_message => 'In exception in procedure newegg_get_request_id utl_http.too_many_requests'|| SUBSTR(sqlerrm,1,150));
-
   WHEN utl_http.end_of_body THEN
     utl_http.end_response(l_response);
     v_request_id:='XXX';
-    logit(p_message => 'In exception in procedure newegg_get_request_id UTL_HTTP.end_of_body'|| SUBSTR(sqlerrm,1,150));   
-  end;
+    logit(p_message => 'In exception in procedure newegg_get_request_id UTL_HTTP.end_of_body'|| SUBSTR(sqlerrm,1,150));
+  END;
   p_api_request_id:=v_request_id;
 END newegg_get_request_id;
 /**********************************************************************
@@ -693,8 +682,8 @@ END newegg_get_request_id;
 **********************************************************************/
 PROCEDURE newegg_get_request_status(
     p_api_request_id IN VARCHAR2,
-    p_request_status OUT VARCHAR2,
-    p_process_name VARCHAR2)
+    p_process_name VARCHAR2,
+    p_request_status OUT VARCHAR2)
 AS
   l_request utl_http.req;
   l_response utl_http.resp;
@@ -706,8 +695,7 @@ AS
   v_requeststatustrxn VARCHAR2(100);
 BEGIN
   BEGIN
-    v_request_id :=p_api_request_id;
-    ----<MaxCount>10</MaxCount>
+    v_request_id        :=p_api_request_id;
     lc_auth_payload     :='<NeweggAPIRequest>
 <OperationType>GetReportStatusRequest</OperationType>
 <RequestBody>
@@ -726,20 +714,20 @@ BEGIN
       utl_http.set_detailed_excp_support ( enable => true );
       l_request := utl_http.begin_request(gb_url2, 'PUT', 'HTTP/1.1');
       BEGIN
-      utl_http.set_header(l_request, 'accept', 'application/xml');
-      utl_http.set_header(l_request, 'authorization', gb_accesskeyid);
-      utl_http.set_header(l_request, 'secretkey', gb_secretaccesskey);
-      utl_http.set_header(l_request, 'user-agent', 'mozilla/4.0');
-      utl_http.set_header(l_request, 'content-type', 'application/xml');
-      utl_http.set_header(l_request, 'Content-Length', LENGTH(lc_auth_payload));
-      utl_http.write_text(l_request, lc_auth_payload);
-      l_response := utl_http.get_response(l_request);
-      commit;
-         EXCEPTION
-    WHEN OTHERS THEN
-      utl_http.end_request(l_request);
-      raise;
-    END;
+        utl_http.set_header(l_request, 'accept', 'application/xml');
+        utl_http.set_header(l_request, 'authorization', gb_accesskeyid);
+        utl_http.set_header(l_request, 'secretkey', gb_secretaccesskey);
+        utl_http.set_header(l_request, 'user-agent', 'mozilla/4.0');
+        utl_http.set_header(l_request, 'content-type', 'application/xml');
+        utl_http.set_header(l_request, 'Content-Length', LENGTH(lc_auth_payload));
+        utl_http.write_text(l_request, lc_auth_payload);
+        l_response := utl_http.get_response(l_request);
+        COMMIT;
+      EXCEPTION
+      WHEN OTHERS THEN
+        utl_http.end_request(l_request);
+        raise;
+      END;
       utl_http.read_line(l_response, value, true);
       v_xml_value:= xmltype(value);
       --------Reading XML Values for URL2---------------------------
@@ -751,14 +739,10 @@ BEGIN
         TABLE(xmlsequence(extract(a.xml_tag,'NeweggAPIResponse//ResponseInfo'))) b;
       utl_http.end_response(l_response);
       dbms_lock.sleep(10);
-      ---   fnd_file.put_line(fnd_file.log,'Time '||TO_CHAR(sysdate,'hh24:mi:ss'));
       EXIT
     WHEN (v_requeststatustrxn ='FINISHED' OR v_requeststatustrxn='FAILED');
     END LOOP;
-    --  logit(p_message =>'Transaction request status '|| v_requeststatustrxn);
     utl_http.end_response(l_response);
-    -- logit(p_message => 'Response received from Newegg second URL '||l_response.status_code);
-    --p_request_status:=v_requeststatustrxn;
   EXCEPTION
   WHEN utl_http.too_many_requests THEN
     utl_http.end_response(l_response);
@@ -768,189 +752,14 @@ BEGIN
     utl_http.end_response(l_response);
     p_request_status:='FAILED';
     logit(p_message =>'In exception in procedure newegg_get_request_status UTL_HTTP.end_of_body'|| SUBSTR(sqlerrm,1,150));
-  end;
+  END;
   p_request_status:=v_requeststatustrxn;
 END newegg_get_request_status;
+
 /**********************************************************************
-* This procedure will created Newegg Transaction and Summary file into MPL folder
-**********************************************************************/
-PROCEDURE create_newegg_trx_file(
-    p_file_name    VARCHAR2,
-    p_process_name VARCHAR2,
-    p_request_id   NUMBER )
-AS
-  lc_xmltype xmltype;
-  lclob_buffer CLOB;
-  l_filehandle utl_file.file_type;
-  l_error_loc VARCHAR2(2000) := 'XX_CE_MRKTPLC_FILE_DOWNLOAD.create_newegg_trx_file';
-  v_error     VARCHAR2(1000);
-BEGIN
-  -- logit(p_message =>'Process started for create_newegg_trx_file for file name  '|| p_file_name);
-  SELECT file_data
-  INTO lc_xmltype
-  FROM xx_ce_mktplc_pre_stg_files
-  WHERE file_name=p_file_name;
-  l_filehandle  := utl_file.fopen('XXFIN_INBOUND_MPL', p_file_name, 'w',32767);
-  lclob_buffer  := lc_xmltype.getclobval ();
-  utl_file.put(l_filehandle , lclob_buffer);
-  utl_file.fclose(l_filehandle);
-  DBMS_LOB.freeTemporary(lclob_buffer);
-EXCEPTION
-WHEN utl_file.invalid_operation THEN
-  utl_file.fclose(l_filehandle);
-  v_error:='XX_CE_MRKTPLC_FILE_DOWNLOAD.create_newegg_trx_file: Invalid Operation '||SUBSTR(sqlerrm,1,200);
-  log_exception (p_program_name => 'create_newegg_trx_file' ,p_error_location => l_error_loc ,p_error_msg => v_error);
-  insert_pre_stg_excpn ( p_process_name , p_request_id, sysdate, v_error , p_file_name, 'F');
-  insert_file_rec( p_process_name => p_process_name, p_file_name => p_file_name,p_err_msg => v_error,p_process_flag=>'E',p_requestid=>p_request_id) ;
-WHEN utl_file.invalid_filehandle THEN
-  utl_file.fclose(l_filehandle);
-  v_error:='XX_CE_MRKTPLC_FILE_DOWNLOAD.create_newegg_trx_file: invalid_filehandle'||SUBSTR(sqlerrm,1,200);
-  log_exception (p_program_name => 'create_newegg_trx_file' ,p_error_location => l_error_loc ,p_error_msg => v_error);
-  insert_pre_stg_excpn ( p_process_name , p_request_id, sysdate, v_error , p_file_name, 'F');
-  insert_file_rec( p_process_name => p_process_name, p_file_name => p_file_name,p_err_msg => v_error,p_process_flag=>'E',p_requestid=>p_request_id) ;
-WHEN utl_file.read_error THEN
-  utl_file.fclose(l_filehandle);
-  v_error:='XX_CE_MRKTPLC_FILE_DOWNLOAD.create_newegg_trx_file: read_error '||SUBSTR(sqlerrm,1,200);
-  log_exception (p_program_name => 'create_newegg_trx_file' ,p_error_location => l_error_loc ,p_error_msg => v_error);
-  insert_pre_stg_excpn ( p_process_name , p_request_id, sysdate, v_error , p_file_name, 'F');
-  insert_file_rec( p_process_name => p_process_name, p_file_name => p_file_name,p_err_msg => v_error,p_process_flag=>'E',p_requestid=>p_request_id) ;
-WHEN utl_file.invalid_path THEN
-  utl_file.fclose(l_filehandle);
-  v_error:='XX_CE_MRKTPLC_FILE_DOWNLOAD.create_newegg_trx_file: invalid_path'||SUBSTR(sqlerrm,1,200);
-  log_exception (p_program_name => 'create_newegg_trx_file' ,p_error_location => l_error_loc ,p_error_msg => v_error);
-  insert_pre_stg_excpn ( p_process_name , p_request_id, sysdate, v_error , p_file_name, 'F');
-  insert_file_rec( p_process_name => p_process_name, p_file_name => p_file_name,p_err_msg => v_error,p_process_flag=>'E',p_requestid=>p_request_id) ;
-WHEN utl_file.invalid_mode THEN
-  utl_file.fclose(l_filehandle);
-  v_error:='XX_CE_MRKTPLC_FILE_DOWNLOAD.create_newegg_trx_file: invalid_mode '||SUBSTR(sqlerrm,1,200);
-  log_exception (p_program_name => 'create_newegg_trx_file' ,p_error_location => l_error_loc ,p_error_msg => v_error);
-  insert_pre_stg_excpn ( p_process_name , p_request_id, sysdate, v_error , p_file_name, 'F');
-  insert_file_rec( p_process_name => p_process_name, p_file_name => p_file_name,p_err_msg => v_error,p_process_flag=>'E',p_requestid=>p_request_id) ;
-WHEN utl_file.internal_error THEN
-  utl_file.fclose(l_filehandle);
-  v_error:='XX_CE_MRKTPLC_FILE_DOWNLOAD.create_newegg_trx_file: internal_error'||SUBSTR(sqlerrm,1,200);
-  log_exception (p_program_name => 'create_newegg_trx_file' ,p_error_location => l_error_loc ,p_error_msg => v_error);
-  insert_file_rec( p_process_name => p_process_name, p_file_name => p_file_name,p_err_msg => v_error,p_process_flag=>'E',p_requestid=>p_request_id) ;
-WHEN value_error THEN
-  ROLLBACK;
-  utl_file.fclose(l_filehandle);
-  v_error:='XX_CE_MRKTPLC_FILE_DOWNLOAD.create_newegg_trx_file: value_error '||SUBSTR(sqlerrm,1,200);
-  log_exception (p_program_name => 'create_newegg_trx_file' ,p_error_location => l_error_loc ,p_error_msg => v_error);
-  ----insert_file_rec( p_process_name => p_process_name, p_file_name => p_file_name,p_err_msg => 'XX_CE_MRKTPLC_FILE_DOWNLOAD.create_newegg_trx_file: Invalid Operation ',p_process_flag=>'E',p_requestid=>p_request_id) ;
-WHEN OTHERS THEN
-  ROLLBACK;
-  utl_file.fclose(l_filehandle);
-  v_error:= 'XX_CE_MRKTPLC_FILE_DOWNLOAD.create_newegg_trx_file: when others '||SUBSTR(sqlerrm,1,200);
-  log_exception (p_program_name => 'create_newegg_trx_file' ,p_error_location => l_error_loc ,p_error_msg =>v_error);
-  insert_file_rec( p_process_name => p_process_name, p_file_name => p_file_name,p_err_msg => v_error,p_process_flag=>'E',p_requestid=>p_request_id) ;
-END create_newegg_trx_file;
-/*PROCEDURE newegg_download_file_failures(
---- p_page_index       NUMBER,
-p_process_name   VARCHAR2,
-p_api_request_id VARCHAR2,
-p_request_id     NUMBER,
-p_settlement_id  VARCHAR2,
-p_file_flag      VARCHAR2)
-AS
-pragma autonomous_transaction;
-l_request utl_http.req;
-l_response utl_http.resp;
-lc_auth_payload VARCHAR2(32000);
-value           VARCHAR2(32000);
-v_xml_value xmltype;
-v_request_id        VARCHAR2(50);
-v_requeststatus     VARCHAR2(50);
-v_requeststatustrxn VARCHAR2(100);
-lclob_buffer CLOB;
-lc_buffer VARCHAR2(32767);
---- lc_buffer raw(512);
-lc_xmltype xmltype;
-l_insert_cnt     NUMBER;
-v_file_name      VARCHAR2(100);
-v_page_index_cnt NUMBER:=50;
-BEGIN
----v_page_index_cnt:=p_page_index;
-v_request_id :=trim(p_api_request_id);
-FOR i IN c_download_fail
-LOOP
-BEGIN
-lc_auth_payload:='<NeweggAPIRequest>
-<OperationType>SettlementTransactionReportRequest</OperationType>
-<RequestBody>
-<RequestID>'||v_request_id||'</RequestID>
-<PageInfo>
-<PageIndex>'||i.page_indx||'</PageIndex>
-<PageSize>'||v_page_index_cnt||'</PageSize>
-</PageInfo>
-</RequestBody>
-</NeweggAPIRequest>';
-get_http_details(p_process_name);
-utl_http.set_wallet(gb_walletpath, gb_walletpwd);
-utl_http.set_response_error_check ( enable => true );
-utl_http.set_detailed_excp_support ( enable => true );
-l_request := utl_http.begin_request(gb_url3, 'PUT', 'HTTP/1.1');
-utl_http.set_header(l_request, 'accept', 'application/xml');
-utl_http.set_header(l_request, 'authorization', gb_accesskeyid);
-utl_http.set_header(l_request, 'secretkey', gb_secretaccesskey);
-utl_http.set_header(l_request, 'user-agent', 'mozilla/4.0');
-utl_http.set_header(l_request, 'content-type', 'application/xml');
-utl_http.set_header(l_request, 'Content-Length', LENGTH(lc_auth_payload));
-utl_http.write_text(l_request, lc_auth_payload);
-l_response := utl_http.get_response(l_request);
-logit(p_message=>'Response received from Newegg Third for request id '||v_request_id||' '||l_response.status_code);
-fnd_file.put_line(fnd_file.log,'p_settlement_id '||LENGTH(lc_auth_payload));
-fnd_file.put_line(fnd_file.log,'Response received from Newegg Third for request id '||v_request_id||' '||l_response.status_code);
-fnd_file.put_line(fnd_file.log,'LENGTH(lc_auth_payload) '||LENGTH(lc_auth_payload));
-COMMIT;
----lclob_buffer := empty_clob;
---*********************************
-dbms_lob.createtemporary(lob_loc => lclob_buffer, cache => true, dur => dbms_lob.call);
--- -----------------------------------
--- OPEN TEMPORARY LOB FOR READ / WRITE
--- -----------------------------------
-dbms_lob.open(lob_loc => lclob_buffer, open_mode => dbms_lob.lob_readwrite);
-BEGIN
-LOOP
-utl_http.read_text(r => l_response, data => lc_buffer, LEN => 2000);
-dbms_lob.writeappend(lob_loc => lclob_buffer, amount => LENGTH(lc_buffer), buffer => lc_buffer);
-END LOOP;
-EXCEPTION
-WHEN utl_http.end_of_body THEN
-NULL;
-WHEN OTHERS THEN
-raise;
-END;
-lc_xmltype := xmltype(lclob_buffer);
-BEGIN
-UPDATE xx_ce_mktplc_pre_stg_files
-SET file_data  =lc_xmltype,
-status       ='N'
-WHERE file_name=i.file_name;
-COMMIT;
-EXCEPTION
-WHEN OTHERS THEN
-logit(p_message=>'In exception for update for xx_ce_mktplc_pre_stg_files for file failures'||sqlerrm);
-END;
----   xx_ce_mrktplc_file_download.create_newegg_trx_file( p_file_name=>i.file_name, p_process_name=>p_process_name, p_request_id=>p_request_id );
-dbms_lob.freetemporary(lclob_buffer);
-utl_http.end_response(l_response);
-logit(p_message=>'Settlement ID data reloaded '||p_settlement_id);
-EXCEPTION
-WHEN utl_http.too_many_requests THEN
-utl_http.end_response(l_response);
-logit(p_message=>'In exception in procedure newegg_download_file_failures utl_http.too_many_requests'|| SUBSTR(sqlerrm,1,150));
-WHEN utl_http.end_of_body THEN
-utl_http.end_response(l_response);
-logit(p_message=>'In exception in procedure newegg_download_file_failures UTL_HTTP.end_of_body'|| SUBSTR(sqlerrm,1,150));
-END;
-END LOOP;
-EXCEPTION
-WHEN OTHERS THEN
-logit(p_message =>'In exception in procedure newegg_download_file_failures '|| SUBSTR(sqlerrm,1,150));
-ROLLBACK;
-END newegg_download_file_failures;*/
+* This procedure will insert Transaction details to xx_ce_mpl_files table
+***********************************************************************/
 PROCEDURE newegg_download_file_page_indx(
-    --- p_page_index       NUMBER,
     p_process_name     VARCHAR2,
     p_api_request_id   VARCHAR2,
     p_request_id       NUMBER,
@@ -977,7 +786,6 @@ AS
   v_page_index_cnt NUMBER:=100;
 BEGIN
   set_debug('Y');
-  ---v_page_index_cnt:=p_page_index;
   v_request_id :=trim(p_api_request_id);
   BEGIN
     lc_auth_payload:='<NeweggAPIRequest>
@@ -990,8 +798,6 @@ BEGIN
 </PageInfo>
 </RequestBody>
 </NeweggAPIRequest>';
-    g_num          :=g_num+1;
-    fnd_file.put_line(fnd_file.log,TO_CHAR(systimestamp, 'MM/DD/YYYY HH24:MI:SS.FF')||'  '||p_settlement_id||' '||'g_num '||g_num);
     get_http_details(p_process_name);
     utl_http.set_wallet(gb_walletpath, gb_walletpwd);
     utl_http.set_response_error_check ( enable => true );
@@ -1024,7 +830,7 @@ BEGIN
         utl_http.read_text(r => l_response, data => lc_buffer, LEN => 2000);
         dbms_lob.writeappend(lob_loc => lclob_buffer, amount => LENGTH(lc_buffer), buffer => lc_buffer);
       END LOOP;
-   EXCEPTION
+    EXCEPTION
     WHEN utl_http.end_of_body THEN
       NULL;
     WHEN OTHERS THEN
@@ -1033,7 +839,6 @@ BEGIN
     lc_xmltype := xmltype(lclob_buffer);
     dbms_lob.freetemporary(lclob_buffer);
     utl_http.end_response(l_response);
-    -- logit(p_message=>'Response received from Newegg Third URL '||l_response.status_code);
   EXCEPTION
   WHEN utl_http.too_many_requests THEN
     utl_http.end_response(l_response);
@@ -1042,72 +847,93 @@ BEGIN
     utl_http.end_response(l_response);
     logit(p_message=>'In exception in procedure newegg_download_file_page_indx UTL_HTTP.end_of_body'|| SUBSTR(sqlerrm,1,150));
   END;
-  BEGIN
-    INSERT
-    INTO xx_ce_mktplc_pre_stg_files
-      (
-        rec_id ,
-        file_name ,
-        file_data ,
-        status ,
-        sqlldr_request_id ,
-        creation_date ,
-        created_by ,
-        last_update_date ,
-        last_update_login ,
-        last_updated_by
-      )
-      VALUES
-      (
-        xx_ce_mkt_pre_stg_rec_s.nextval,
-        DECODE(p_file_flag,'T',REPLACE(p_file_name,'.xml','_')
+  ----------------------Below update will Reprocess the failed files.
+  IF p_file_flag='R' THEN
+    BEGIN
+      UPDATE xx_ce_mktplc_pre_stg_files
+      SET file_data       =lc_xmltype,
+        status            ='N',
+        sqlldr_request_id =p_request_id,
+        last_update_date  =sysdate
+      WHERE file_name     =p_file_name
+      AND file_data      IS NULL;
+      COMMIT;
+      logit(p_message=>'File '''||p_file_name||''' loaded successfully to xx_ce_mktplc_pre_stg_files table ');
+      insert_file_rec( p_process_name => p_process_name, p_file_name => p_file_name,p_err_msg => NULL,p_process_flag=>'P',p_requestid=>p_request_id);
+    EXCEPTION
+    WHEN OTHERS THEN
+      logit(p_message=>'In exception for update into xx_ce_mktplc_pre_stg_files '||sqlerrm);
+    END;
+    -----------------------Below insert will insert new records to xx_ce_mktplc_pre_stg_files table.
+  ELSE
+    BEGIN
+      INSERT
+      INTO xx_ce_mktplc_pre_stg_files
+        (
+          rec_id ,
+          file_name ,
+          file_data ,
+          status ,
+          sqlldr_request_id ,
+          creation_date ,
+          created_by ,
+          last_update_date ,
+          last_update_login ,
+          last_updated_by
+        )
+        VALUES
+        (
+          xx_ce_mkt_pre_stg_rec_s.nextval,
+          DECODE(p_file_flag,'T',REPLACE(p_file_name,'.xml','_')
+          ||p_settlement_id
+          ||'_'
+          ||p_current_page_num
+          ||'.xml',p_file_name),
+          lc_xmltype,
+          'N',
+          p_request_id,
+          sysdate,
+          fnd_global.user_id,
+          sysdate,
+          fnd_global.user_id,
+          fnd_global.user_id
+        );
+      COMMIT;
+    EXCEPTION
+    WHEN OTHERS THEN
+      logit(p_message=>'In exception for insert into xx_ce_mktplc_pre_stg_files '||sqlerrm);
+    END;
+    BEGIN
+      SELECT COUNT(1),
+        file_name
+      INTO l_insert_cnt,
+        v_file_name
+      FROM xx_ce_mktplc_pre_stg_files
+      WHERE TRUNC(creation_date)=TRUNC(sysdate)
+      AND file_name LIKE '%'
+        ||'_'
         ||p_settlement_id
         ||'_'
         ||p_current_page_num
-        ||'.xml',p_file_name),
-        lc_xmltype,
-        'N',
-        p_request_id,
-        sysdate,
-        fnd_global.user_id,
-        sysdate,
-        fnd_global.user_id,
-        fnd_global.user_id
-      );
-    ----  l_insert_cnt:=sql%rowcount;
-    COMMIT;
-  EXCEPTION
-  WHEN OTHERS THEN
-    logit(p_message=>'In exception for insert into xx_ce_mktplc_pre_stg_files '||sqlerrm);
-  END;
-  BEGIN
-    SELECT COUNT(1),
-      file_name
-    INTO l_insert_cnt,
-      v_file_name
-    FROM xx_ce_mktplc_pre_stg_files
-    WHERE TRUNC(creation_date)=TRUNC(sysdate)
-    AND file_name LIKE '%'
-      ||'_'
-      ||p_settlement_id
-      ||'_'
-      ||p_current_page_num
-      ||'.xml'
-    AND file_name LIKE 'NEGGT%'
-    AND status='N'
-    GROUP BY file_name ;
-  EXCEPTION
-  WHEN OTHERS THEN
-    l_insert_cnt:=0;
-    logit(p_message=>'No file downloaded'||SUBSTR(sqlerrm,1,150));
-  END;
-  IF l_insert_cnt > 0 THEN
-    logit(p_message=>'File '''||v_file_name||''' loaded successfully to xx_ce_mktplc_pre_stg_files table ');
-    insert_file_rec( p_process_name => p_process_name, p_file_name => v_file_name,p_err_msg => NULL,p_process_flag=>'P',p_requestid=>p_request_id);
-    --- XX_CE_MRKTPLC_FILE_DOWNLOAD.create_newegg_trx_file( p_file_name=>v_file_name, p_process_name=>p_process_name, p_request_id=>p_request_id );
-  ELSE
-    logit(p_message=>'File '''||v_file_name||''' load failed');
-    insert_file_rec( p_process_name => p_process_name, p_file_name => p_file_name,p_err_msg => 'Error while parsing the file '||p_file_name,p_process_flag=>'E',p_requestid=>p_request_id);
+        ||'.xml'
+      AND file_name LIKE 'NEGGT%'
+      AND status     ='N'
+      AND file_data IS NOT NULL---added for reprocessing
+      GROUP BY file_name ;
+    EXCEPTION
+    WHEN OTHERS THEN
+      l_insert_cnt:=0;
+      logit(p_message=>'No file downloaded'||SUBSTR(sqlerrm,1,150));
+    END;
+    IF l_insert_cnt > 0 THEN
+      logit(p_message=>'File '''||v_file_name||''' loaded successfully to xx_ce_mktplc_pre_stg_files table ');
+      insert_file_rec( p_process_name => p_process_name, p_file_name => v_file_name,p_err_msg => NULL,p_process_flag=>'P',p_requestid=>p_request_id);
+      --- XX_CE_MRKTPLC_FILE_DOWNLOAD.create_newegg_trx_file( p_file_name=>v_file_name, p_process_name=>p_process_name, p_request_id=>p_request_id );
+      /* ELSE
+      logit(p_message=>'File '''||v_file_name||''' load failed');
+      insert_file_rec( p_process_name => p_process_name, p_file_name => p_file_name,p_err_msg => 'Error while parsing the file '||p_file_name,p_process_flag=>'E',p_requestid=>p_request_id);
+      */
+    END IF;
   END IF;
   COMMIT;
 EXCEPTION
@@ -1116,7 +942,7 @@ WHEN OTHERS THEN
   ROLLBACK;
 END newegg_download_file_page_indx;
 /**********************************************************************
-* This procedure will download the file using p_api_request_id
+* This procedure will download the transaction file using p_api_request_id
 ***********************************************************************/
 PROCEDURE newegg_download_file_trxn(
     p_process_name   VARCHAR2,
@@ -1140,18 +966,12 @@ AS
   lc_xmltype xmltype;
   l_insert_cnt     NUMBER;
   v_file_name      VARCHAR2(100);
-  v_page_index_cnt number:=0;
+  v_page_index_cnt NUMBER:=0;
   v_page_indx_num  NUMBER:=100;
   --n number :=0;
 BEGIN
   set_debug('Y');
   v_request_id :=trim(p_api_request_id);
-  /*
-  <PageInfo>
-  <PageIndex>1</PageIndex>
-  <PageSize>10</PageSize>
-  </PageInfo>
-  */
   ---------------------------This tag will bring count of records------------------------
   lc_auth_payload:='<NeweggAPIRequest>
 <OperationType>SettlementTransactionReportRequest</OperationType>
@@ -1163,28 +983,26 @@ BEGIN
 </PageInfo>
 </RequestBody>
 </NeweggAPIRequest>';
-  g_num          :=g_num+1;
-
   get_http_details(p_process_name);
   utl_http.set_wallet(gb_walletpath, gb_walletpwd);
   utl_http.set_response_error_check ( enable => true );
   utl_http.set_detailed_excp_support ( enable => true );
   l_request := utl_http.begin_request(gb_url3, 'PUT', 'HTTP/1.1');
   BEGIN
-  utl_http.set_header(l_request, 'accept', 'application/xml');
-  utl_http.set_header(l_request, 'authorization', gb_accesskeyid);
-  utl_http.set_header(l_request, 'secretkey', gb_secretaccesskey);
-  utl_http.set_header(l_request, 'user-agent', 'mozilla/4.0');
-  utl_http.set_header(l_request, 'content-type', 'application/xml');
-  utl_http.set_header(l_request, 'Content-Length', LENGTH(lc_auth_payload));
-  utl_http.write_text(l_request, lc_auth_payload);
-  l_response := utl_http.get_response(l_request);
-  commit;
-     EXCEPTION
-    WHEN OTHERS THEN
-      utl_http.end_request(l_request);
-      raise;
-    END;
+    utl_http.set_header(l_request, 'accept', 'application/xml');
+    utl_http.set_header(l_request, 'authorization', gb_accesskeyid);
+    utl_http.set_header(l_request, 'secretkey', gb_secretaccesskey);
+    utl_http.set_header(l_request, 'user-agent', 'mozilla/4.0');
+    utl_http.set_header(l_request, 'content-type', 'application/xml');
+    utl_http.set_header(l_request, 'Content-Length', LENGTH(lc_auth_payload));
+    utl_http.write_text(l_request, lc_auth_payload);
+    l_response := utl_http.get_response(l_request);
+    COMMIT;
+  EXCEPTION
+  WHEN OTHERS THEN
+    utl_http.end_request(l_request);
+    raise;
+  END;
   utl_http.read_line(l_response, value, true);
   v_xml_value:= xmltype(value);
   --------Reading XML Values---------------------------
@@ -1199,7 +1017,7 @@ BEGIN
   LOOP
     -----------------------------------Call to indx procedure--------------
     newegg_download_file_page_indx(p_process_name,v_request_id,p_request_id,p_file_name,p_settlement_id,p_file_flag,i);
-    dbms_lock.sleep(15);
+    ---dbms_lock.sleep(15);
     COMMIT;
   END LOOP;
   -----------------------------------Call to File failre procedure procedure--------------
@@ -1210,9 +1028,13 @@ BEGIN
   utl_http.end_response(l_response);
 EXCEPTION
 WHEN OTHERS THEN
-  logit(p_message =>'In exception in procedure newegg_download_file_trxn '|| substr(sqlerrm,1,150));
+  logit(p_message =>'In exception in procedure newegg_download_file_trxn '|| SUBSTR(sqlerrm,1,150));
   utl_http.end_response(l_response);
-END newegg_download_file_trxn;
+end newegg_download_file_trxn;
+/******************************************************************
+* Procedure-newegg_download_file_sum
+* Pre-stage Table : Insert summary table to xx_ce_mktplc_pre_stg_files
+******************************************************************/
 PROCEDURE newegg_download_file_sum(
     p_process_name   VARCHAR2,
     p_api_request_id VARCHAR2,
@@ -1231,7 +1053,6 @@ AS
   v_requeststatustrxn VARCHAR2(100);
   lclob_buffer CLOB;
   lc_buffer VARCHAR2(32767);
-  --- lc_buffer raw(512);
   lc_xmltype xmltype;
   l_insert_cnt NUMBER;
   v_file_name  VARCHAR2(100);
@@ -1251,15 +1072,15 @@ BEGIN
     utl_http.set_detailed_excp_support ( enable => true );
     l_request := utl_http.begin_request(gb_url3, 'PUT', 'HTTP/1.1');
     BEGIN
-    utl_http.set_header(l_request, 'accept', 'application/xml');
-    utl_http.set_header(l_request, 'authorization', gb_accesskeyid);
-    utl_http.set_header(l_request, 'secretkey', gb_secretaccesskey);
-    utl_http.set_header(l_request, 'user-agent', 'mozilla/4.0');
-    utl_http.set_header(l_request, 'content-type', 'application/xml');
-    utl_http.set_header(l_request, 'Content-Length', LENGTH(lc_auth_payload));
-    utl_http.write_text(l_request, lc_auth_payload);
-    l_response := utl_http.get_response(l_request);
-    commit;
+      utl_http.set_header(l_request, 'accept', 'application/xml');
+      utl_http.set_header(l_request, 'authorization', gb_accesskeyid);
+      utl_http.set_header(l_request, 'secretkey', gb_secretaccesskey);
+      utl_http.set_header(l_request, 'user-agent', 'mozilla/4.0');
+      utl_http.set_header(l_request, 'content-type', 'application/xml');
+      utl_http.set_header(l_request, 'Content-Length', LENGTH(lc_auth_payload));
+      utl_http.write_text(l_request, lc_auth_payload);
+      l_response := utl_http.get_response(l_request);
+      COMMIT;
     EXCEPTION
     WHEN OTHERS THEN
       utl_http.end_request(l_request);
@@ -1286,14 +1107,13 @@ BEGIN
     END;
     lc_xmltype := xmltype(lclob_buffer);
     utl_http.end_response(l_response);
-    -- logit(p_message => 'Response received from Newegg Third URL '||l_response.status_code);
   EXCEPTION
   WHEN utl_http.too_many_requests THEN
     utl_http.end_response(l_response);
-    logit(p_message =>'In exception in procedure newegg_get_request_id utl_http.too_many_requests'|| SUBSTR(sqlerrm,1,150));
+    logit(p_message =>'In exception in procedure newegg_download_file_sum utl_http.too_many_requests'|| SUBSTR(sqlerrm,1,150));
   WHEN utl_http.end_of_body THEN
     utl_http.end_response(l_response);
-    logit(p_message =>'In exception in procedure newegg_get_request_id UTL_HTTP.end_of_body'|| SUBSTR(sqlerrm,1,150));
+    logit(p_message =>'In exception in procedure newegg_download_file_sum UTL_HTTP.end_of_body'|| SUBSTR(sqlerrm,1,150));
   END;
   BEGIN
     INSERT
@@ -1323,7 +1143,6 @@ BEGIN
         fnd_global.user_id,
         fnd_global.user_id
       );
-    ----  l_insert_cnt:=sql%rowcount;
     COMMIT;
   EXCEPTION
   WHEN OTHERS THEN
@@ -1346,8 +1165,8 @@ BEGIN
   END;
   IF l_insert_cnt > 0 THEN
     logit(p_message =>'File '''||v_file_name||''' loaded successfully to xx_ce_mktplc_pre_stg_files table ');
-    insert_file_rec( p_process_name => p_process_name, p_file_name => v_file_name,p_err_msg => null,p_process_flag=>'P',p_requestid=>p_request_id);
-  --  xx_ce_mrktplc_file_download.create_newegg_trx_file( p_file_name=>v_file_name, p_process_name=>p_process_name, p_request_id=>p_request_id );
+    insert_file_rec( p_process_name => p_process_name, p_file_name => v_file_name,p_err_msg => NULL,p_process_flag=>'P',p_requestid=>p_request_id);
+    --- xx_ce_mrktplc_file_download.create_newegg_trx_file( p_file_name=>v_file_name, p_process_name=>p_process_name, p_request_id=>p_request_id );
   ELSE
     logit(p_message =>'File '''||v_file_name||''' load failed');
     insert_file_rec( p_process_name => p_process_name, p_file_name => p_file_name,p_err_msg => 'Error while parsing the file '||p_file_name,p_process_flag=>'E',p_requestid=>p_request_id);
@@ -1356,6 +1175,32 @@ EXCEPTION
 WHEN OTHERS THEN
   logit(p_message =>'In exception in procedure newegg_download_file_sum '|| SUBSTR(sqlerrm,1,150));
 END newegg_download_file_sum;
+/******************************************************************
+* Archival procedure for Pre-Stage Tabe
+* Pre-stage Table : xx_ce_mktplc_pre_stg_files
+* Archival Table : xx_ce_mktplc_pre_stg_files_ARCH
+******************************************************************/
+PROCEDURE archive_purge_process(
+    p_days NUMBER )
+AS
+BEGIN
+  logit(p_message =>'ARCHIVE_PURGE_PROCESS : Archival And Purge Process for last '||p_days||' days');
+  INSERT INTO xx_ce_mktplc_prestg_files_arch
+  SELECT *
+  FROM xx_ce_mktplc_pre_stg_files
+  WHERE creation_date <= sysdate - P_DAYS
+    -- and rec_id=7997
+  AND status = 'P';
+  logit(p_message =>'ARCHIVE_PURGE_PROCESS : Record Archived  - '||sql%rowcount);
+  DELETE
+  FROM xx_ce_mktplc_pre_stg_files
+  WHERE creation_date <= sysdate - p_days
+  AND status           = 'P';
+  COMMIT;
+EXCEPTION
+WHEN OTHERS THEN
+  logit(p_message =>'ARCHIVE_PURGE_PROCESS : Error - '||sqlerrm);
+END ;
 /**********************************************************************
 * MAin procedure to download New Egg files using API
 ***********************************************************************/
@@ -1367,24 +1212,31 @@ PROCEDURE xx_ce_newegg_utl_https(
 AS
   v_request_id        VARCHAR2 ( 50 ) ;
   v_requeststatustrxn VARCHAR2(50);
+  CURSOR c_newegg_transaction_reprocess
+  IS
+    SELECT file_name,
+      REPLACE(REPLACE(file_name,SUBSTR(file_name,1,regexp_instr( file_name, '[_]+', 1, 2 ))),SUBSTR(file_name,regexp_instr(file_name, '[_]+', 1, 3 )-1 - LENGTH(file_name))) settlement_id,
+      REPLACE(SUBSTR (file_name, instr(file_name,'_',1,3)                                                                                           +1),'.xml') page_indx
+    FROM apps.xx_ce_mktplc_pre_stg_files
+    WHERE file_name LIKE 'NEGGT%'
+    AND file_data IS NULL;
   CURSOR c_newegg_summary
   IS
     SELECT request_id,
-      TO_CHAR(to_date(settlement_date_to,'MM/DD/YYYY HH24:MI:SS'),'YYYY-MM-DD') settlement_date_to,
-      TO_CHAR(to_date(settlement_date_from,'MM/DD/YYYY HH24:MI:SS'),'YYYY-MM-DD') settlement_date_from,
+     -- TO_CHAR(to_date(settlement_date_to,'MM/DD/YYYY HH24:MI:SS'),'YYYY-MM-DD') settlement_date_to,
+    --  TO_CHAR(to_date(settlement_date_from,'MM/DD/YYYY HH24:MI:SS'),'YYYY-MM-DD') settlement_date_from,
       settlement_id_neggs settlement_id
     FROM xx_ce_newegg_sum_pre_stg_v
     WHERE report_date =TRUNC(sysdate);
-  
+  l_archive_days NUMBER;
 BEGIN
   set_debug(p_debug_flag => p_debug_flag);
-
   IF p_file_name LIKE 'NEGGS%' THEN
     ------Call to URL 1
-    newegg_get_request_id(v_request_id,'S',p_process_name,NULL,NULL,NULL);
+    newegg_get_request_id('S',p_process_name,NULL,v_request_id);
     ----Call to URL2
     IF v_request_id <>'XXX' THEN
-      newegg_get_request_status(v_request_id,v_requeststatustrxn,p_process_name);
+      newegg_get_request_status(v_request_id,p_process_name,v_requeststatustrxn);
       IF v_requeststatustrxn='FINISHED' THEN
         -----Call to URL 3---
         newegg_download_file_sum(p_process_name,v_request_id,p_request_id,'S',p_file_name,NULL);
@@ -1394,10 +1246,10 @@ BEGIN
   IF p_file_name LIKE 'NEGGT%' THEN
     FOR i IN c_newegg_summary
     LOOP
-      newegg_get_request_id(v_request_id,'T',p_process_name,i.settlement_date_from,i.settlement_date_to,i.settlement_id);
+      newegg_get_request_id('T',p_process_name,i.settlement_id,v_request_id);
       ----Call to URL2
       IF v_request_id <>'XXX' THEN
-        newegg_get_request_status(v_request_id,v_requeststatustrxn,p_process_name);
+        newegg_get_request_status(v_request_id,p_process_name,v_requeststatustrxn);
         IF v_requeststatustrxn='FINISHED' THEN
           -----Call to URL 3---
           newegg_download_file_trxn(p_process_name,v_request_id,p_request_id,'T',p_file_name,i.settlement_id);
@@ -1405,82 +1257,45 @@ BEGIN
       END IF;
     END LOOP;
   END IF;
-  logit(p_message =>'g_num '||g_num);
-EXCEPTION
-WHEN OTHERS THEN
-  logit(p_message =>'In Exception in procedure xx_ce_newegg_utl_https '|| SUBSTR(sqlerrm,1,150));
-  logit(p_message =>'g_num '|| g_num);
-END xx_ce_newegg_utl_https;
----**********************************************************************
----* MAin procedure to download New Egg files using API
---***********************************************************************/
-/*PROCEDURE xx_ce_newegg_reprocess_file(
-    P_errbuf OUT VARCHAR2,
-    P_RETCODE OUT NUMBER,
-    p_process_name VARCHAR2,
-    ---p_request_id   NUMBER,
-    p_debug_flag VARCHAR2,
-    --- p_file_name    varchar2,
-    p_settlement_id VARCHAR2)
-AS
-  CURSOR c_newegg_file_failure
-  IS
-    SELECT file_name,
-      file_data,
-      status,
-      REPLACE(SUBSTR (file_name, instr(file_name,'_',1,3)+1),'.xml') page_indx
-    FROM apps.xx_ce_mktplc_pre_stg_files
-    WHERE file_name LIKE 'NEGGT%'
-    AND file_data IS NULL
-    AND file_name LIKE '%'
-      ||p_settlement_id
-      ||'%'
-    ORDER BY file_name;
-  v_request_id           VARCHAR2 ( 200 ) ;
-  v_summary_request_id   VARCHAR2(200);
-  v_requeststatustrxn    VARCHAR2(100);
-  v_settlement_date_to   VARCHAR2(200);
-  v_settlement_date_from VARCHAR2(200);
-  v_settlement_id_neggs  VARCHAR2(200);
-  v_transation_file_name VARCHAR2(200);
-BEGIN
-  set_debug(p_debug_flag => p_debug_flag);
-  BEGIN
-    SELECT request_id,
-      TO_CHAR(to_date(settlement_date_to,'MM/DD/YYYY HH24:MI:SS'),'YYYY-MM-DD') settlement_date_to,
-      TO_CHAR(to_date(settlement_date_from,'MM/DD/YYYY HH24:MI:SS'),'YYYY-MM-DD') settlement_date_from,
-      settlement_id_neggs ,
-      'NEGGT_'
-      ||REPLACE(SUBSTR(filename,instr(filename,'_',1,1)+1),'.xml')
-      ||'.xml' transation_file_name
-    INTO v_summary_request_id,
-      v_settlement_date_to,
-      v_settlement_date_from,
-      v_settlement_id_neggs,
-      v_transation_file_name
-    FROM xx_ce_newegg_sum_pre_stg_v
-    WHERE report_date      =TRUNC(sysdate)
-    AND settlement_id_neggs=p_settlement_id;
-  END;
-
-  FOR i IN c_newegg_file_failure
-  LOOP
-    newegg_get_request_id(v_request_id,'T',p_process_name,v_settlement_date_from,v_settlement_date_to,v_settlement_id_neggs);
-    ----Call to URL2
-    IF v_request_id <>'XXX' THEN
-      newegg_get_request_status(v_request_id,v_requeststatustrxn,p_process_name);
-      IF v_requeststatustrxn='FINISHED' THEN
-        -----Call to URL 3---
-        newegg_download_file_trxn(p_process_name,v_request_id,v_summary_request_id,'T',v_transation_file_name,v_settlement_id_neggs);
+  --------------Reporcess failed NEWEGG Transation file
+  IF p_file_name LIKE 'NEGGT%' THEN
+    FOR i IN c_newegg_transaction_reprocess
+    LOOP
+      newegg_get_request_id('T',p_process_name,i.settlement_id,v_request_id);
+      ----Call to URL2
+      IF v_request_id <>'XXX' THEN
+        newegg_get_request_status(v_request_id,p_process_name,v_requeststatustrxn);
+        IF v_requeststatustrxn='FINISHED' THEN
+          -----Call to URL 3---
+          newegg_download_file_page_indx(p_process_name,v_request_id,p_request_id,i.file_name,i.settlement_id,'R',i.page_indx);
+        END IF;
       END IF;
-    END IF;
-  END LOOP;
-  --- END IF;
+    END LOOP;
+  END IF;
+  --------------------------------Call Archive and purge process
+  BEGIN
+    SELECT to_number(xftv.target_value1)
+    INTO l_archive_days
+    FROM xx_fin_translatedefinition xftd,
+      xx_fin_translatevalues xftv
+    WHERE xftd.translation_name ='OD_EXT_MARKETPLACE_SETUPS'
+    AND xftd.translate_id       =xftv.translate_id
+    AND xftd.enabled_flag       ='Y'
+    AND sysdate BETWEEN xftv.start_date_active AND NVL(xftv.end_date_active,sysdate)
+    AND rownum < 2;
+  EXCEPTION
+  WHEN OTHERS THEN
+    L_ARCHIVE_DAYS:=30;
+  END;
+  archive_purge_process( p_days => l_archive_days );
 EXCEPTION
 WHEN OTHERS THEN
   logit(p_message =>'In Exception in procedure xx_ce_newegg_utl_https '|| SUBSTR(sqlerrm,1,150));
-END xx_ce_newegg_Reprocess_file;*/
+END xx_ce_newegg_utl_https;
 END xx_ce_mrktplc_file_download;
+
+
+
 
 /
 

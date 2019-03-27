@@ -25,11 +25,11 @@ AS
   -- | =========   ===========  =============        =============================================|
   -- | 1.0         11-JAN-2019   Priyam S           Initial Version  added    Newegg API file donwnload UTL_HTTP Version                         |
   -- +============================================================================================|
-  PROCEDURE xx_ce_newegg_utl_https(
+ PROCEDURE xx_ce_newegg_utl_https(
       p_process_name VARCHAR2,
       p_request_id   NUMBER,
       p_debug_flag   VARCHAR2,
-      p_file_name    VARCHAR2);
+      p_file_name    varchar2);
 
 END XX_CE_MRKTPLC_FILE_DOWNLOAD;
 /
