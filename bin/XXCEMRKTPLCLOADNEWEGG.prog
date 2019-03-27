@@ -143,20 +143,20 @@ EXECUTE xx_ce_mrktplc_load_pkg.main_mpl_load_proc('$translationsource','$i','Y',
 
 done;
 
-eval archival_path=$archival_path
-eval inbound_path=$inbound_path
+#eval archival_path=$archival_path
+#eval inbound_path=$inbound_path
 
-cd ${inbound_path}
+#cd ${inbound_path}
 
-echo "Below files are getting archived"
+#echo "Below files are getting archived"
 
-ls NEGG*.*
+#ls NEGG*.*
 
 
-echo "The Inbound File Name "${inbound_path}
-echo "The Archival File Name "${archival_path}
-cp NEGG*.* ${archival_path}
-rm -f NEGG*
+#echo "The Inbound File Name "${inbound_path}
+#echo "The Archival File Name "${archival_path}
+#cp NEGG*.* ${archival_path}
+#rm -f NEGG*
 
 
 exit 0
