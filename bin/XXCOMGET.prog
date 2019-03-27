@@ -24,6 +24,7 @@
 # |      2  29-OCT-2008  Subbu Pillai     Defect 12210				  |
 # | 3.0      09-SEP-2016    Praveen Vanga Defect 39261       		  |
 # | 3.1      01-SEP-2017    Madhu Bolli   Result filesuccess strig is corrected  |
+# | 4.0      15-MAR-2019  BIAS            Use LFTP instead of FTP     |
 # +===================================================================+
 
 # Displaying program arguments
@@ -135,29 +136,33 @@ archive_internal=`cat tmpfile4`
  echo "source filename                        = $filename"
  echo "destination filename                   = $destfile"
 
-echo "verbose" >> $EXECFILE
-echo "open $server" >> $EXECFILE
-echo "quote USER $user" >> $EXECFILE
-echo "quote PASS $passwd" >> $EXECFILE
-echo "lcd $dest" >> $EXECFILE
-echo "prompt off" >> $EXECFILE
+#Below code is commented by BIAS 
+#echo "verbose" >> $EXECFILE
+#echo "open $server" >> $EXECFILE
+#echo "quote USER $user" >> $EXECFILE
+#echo "quote PASS $passwd" >> $EXECFILE
+#echo "lcd $dest" >> $EXECFILE
+#echo "prompt off" >> $EXECFILE
 
-if [ "$mframeflag" = "Y" ]               # For ftp to Mainframes
- then
-     echo "get '$filename' $destfile" >> $EXECFILE
-elif [ "$destfile" != "" ]               # For ftp with a different destination file name
- then
-     echo "cd $source" >> $EXECFILE
-     echo "get  $filename $destfile" >> $EXECFILE
-else                                     # For ftp with destination filename parameter blank, multiple files can be sent.
-     echo "cd $source" >> $EXECFILE
-     echo "mget $filename" >> $EXECFILE
-fi
+#if [ "$mframeflag" = "Y" ]               # For ftp to Mainframes
+# then
+#     echo "get '$filename' $destfile" >> $EXECFILE
+#elif [ "$destfile" != "" ]               # For ftp with a different destination file name
+# then
+#     echo "cd $source" >> $EXECFILE
+#     echo "get  $filename $destfile" >> $EXECFILE
+#else                                     # For ftp with destination filename parameter blank, multiple files can be sent.
+#     echo "cd $source" >> $EXECFILE
+#     echo "mget $filename" >> $EXECFILE
+#fi
 
-echo "quit" >> $EXECFILE
+#echo "quit" >> $EXECFILE
  
-
-ftp -n < $EXECFILE > $TMPFILE
+#Modified by BIAS. Use LFTP instead of FTP
+#ftp -n < $EXECFILE > $TMPFILE
+#Added by BIAS
+$XXFIN_TOP/bin/./XXLFTPGET.sh $user $passwd $server $source $dest $filename $destfile >> $TMPFILE
+sleep 60s
 
 Server_check=`grep 'Not connected' $TMPFILE`
 User_passwd=`grep 'Please login with USER and PASS'  $TMPFILE`
@@ -165,6 +170,8 @@ Local_directory_error=`grep '550 Failed to change directory' $TMPFILE`
 Success=`grep 'File send OK'  $TMPFILE`
 Filesuccess=`grep '226 Transfer complete'  $TMPFILE`
 Mframesuccess=`grep 'Transfer completed successfully'  $TMPFILE`
+LFTPSuccess=`grep 'LFTP_SUCCESSFUL'  $TMPFILE`    #Added by BIAS
+echo "LFTPSuccess=$LFTPSuccess"  #Added by BIAS
 
 if [ "$Server_check" != "" ]
 then
@@ -258,7 +265,7 @@ then
     rm $tmpfile4  # Added for Defect 12210	 
     exit 0
 
-elif [ "$Filesuccess" != "" ]
+elif [ "$Filesuccess" != "" -o "$LFTPSuccess" != "" ]
 then 
     echo " "
     echo "SUCCESS: Successful transmission of File"
