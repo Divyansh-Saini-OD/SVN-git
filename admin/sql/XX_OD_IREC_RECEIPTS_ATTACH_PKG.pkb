@@ -415,6 +415,8 @@ AS
       p_messagetext1               VARCHAR2 (2000);
       p_messagecode1               NUMBER;                ---VARCHAR2(2000) ;
 	  lv_acct_hold_name_length     NUMBER;                -- Added for Defect# 37794
+	  l_wallet_location            VARCHAR2(256)   := NULL;
+      l_password                   VARCHAR2(256)   := NULL;
    BEGIN
       p_status := fnd_api.g_ret_sts_success;                     --deep v1.13
       log_msg (' inside SOA Call');
@@ -759,6 +761,7 @@ AS
 
 </soap:Envelope> ';
       log_msg (' inside SOA Call 6');
+
       /*
       SELECT NAME INTO lv_hostname FROM v$database;
       IF (lv_hostname = 'GSIDEV01') THEN
@@ -786,6 +789,34 @@ AS
       log_msg (' inside SOA Call 7' || lv_hosturl);
 
       BEGIN
+	     /*+ Start of Adding for the Lift and Shift */
+	     BEGIN
+          SELECT 
+             TARGET_VALUE1
+            ,TARGET_VALUE2
+            into
+            l_wallet_location
+           ,l_password
+          FROM XX_FIN_TRANSLATEVALUES     VAL,
+               XX_FIN_TRANSLATEDEFINITION DEF
+          WHERE 1=1
+          and   DEF.TRANSLATE_ID = VAL.TRANSLATE_ID
+          and   DEF.TRANSLATION_NAME='XX_FIN_IREC_TOKEN_PARAMS'
+          and   VAL.SOURCE_VALUE1 = 'WALLET_LOCATION'     
+          and   VAL.ENABLED_FLAG = 'Y'
+          and   SYSDATE between VAL.START_DATE_ACTIVE and nvl(VAL.END_DATE_ACTIVE, SYSDATE+1); 
+        EXCEPTION WHEN OTHERS THEN
+		  p_status :=
+               p_status || ' - ' || 'Wallet Location Not Found'
+               || SQLERRM;
+          l_wallet_location := NULL;
+          l_password := NULL;
+        END;
+        IF l_wallet_location IS NOT NULL THEN
+          UTL_HTTP.SET_WALLET(l_wallet_location,l_password);
+        END IF;
+		/*+ End of Adding for the Lift and Shift */
+		
          http_req := UTL_HTTP.begin_request (lv_hosturl, 'POST', 'HTTP/1.1');
          /*
          http_req := UTL_HTTP.begin_request (
@@ -818,7 +849,7 @@ AS
          log_msg (   ' inside SOA Call 8.A http_resp.status_code='
                   || http_resp.status_code
                  );
-
+				 
          IF (http_resp.status_code = 200)
          THEN
             -- Create XML type from response text         l_resp_xml := XMLType.createXML(l_clob_response);
