@@ -1,4 +1,3 @@
-
 # +===================================================================+
 # |                  Office Depot - Project Simplify                  |
 # |                      WIPRO TECHNOLOGIES                           |
@@ -32,6 +31,7 @@
 # |                                       been replaced by            |
 # |                                       ICX_CAT_ATTRIBUTE_VALUES    |
 # | 1.5      09-SEP-2016    Praveen Vanga          Defect 39261     |
+# | 1.6      19-MAR-2019  BIAS            Use LFTP instead of FTP     |
 # +===================================================================+
 
 #!/usr/bin/ksh
@@ -112,16 +112,27 @@ EOF`
 
 echo "Parse output string into different variables"
 
-server=`echo $V_RESULT | awk '{print $1}'`
-user=`echo $V_RESULT | awk '{print $2 }'`
-passwd=`echo $V_RESULT | awk '{print $3}'`
-source1=`echo $V_RESULT | awk '{print $4}'`
-dest1=`echo $V_RESULT | awk '{print $5}'`
+#The following code is commented by BIAS
+#server=`echo $V_RESULT | awk '{print $1}'`
+#user=`echo $V_RESULT | awk '{print $2 }'`
+#passwd=`echo $V_RESULT | awk '{print $3}'`
+#source1=`echo $V_RESULT | awk '{print $4}'`
+#dest1=`echo $V_RESULT | awk '{print $5}'`
+
+#The following code is added by BIAS
+#991 odsc03.na.odcorp.net NA/ODPFTP FTP16@od77 /OPCO/Oracle_IP_Images $XXFIN_DATA/IPO/images/TEST
+port=`echo $V_RESULT | awk '{print $1}'`
+server=`echo $V_RESULT | awk '{print $2}'`
+user=`echo $V_RESULT | awk '{print $3}'`
+passwd=`echo $V_RESULT | awk '{print $4}'`
+source1=`echo $V_RESULT | awk '{print $5}'`
+dest1=`echo $V_RESULT | awk '{print $6}'`
 
 eval source=$source1
 eval dest=$dest1
 
 echo " "
+echo "port                  = $port"
 echo "FTP Server            = $server "
 echo "Source Directory      = $source"
 echo "Target Directory      = $dest"
@@ -139,35 +150,43 @@ echo " "
  
 #Copying the files from ftp server to the database server
 
-echo "verbose" >> $EXECFILE
-echo "open $server" >> $EXECFILE
-echo "open $server"
-echo "quote USER $user" >> $EXECFILE
-echo "quote USER $user"
-echo "quote PASS $passwd" >> $EXECFILE
-echo "quote PASS *****" 
-echo "lcd $dest" >> $EXECFILE
-echo "lcd $dest"
-echo "cd $source" >> $EXECFILE
-echo "cd $source"
-echo "bin" >> $EXECFILE
-echo "bin"
+#The following code is commented by BIAS
+#echo "verbose" >> $EXECFILE
+#echo "open $server" >> $EXECFILE
+#echo "open $server"
+#echo "quote USER $user" >> $EXECFILE
+#echo "quote USER $user"
+#echo "quote PASS $passwd" >> $EXECFILE
+#echo "quote PASS *****" 
+#echo "lcd $dest" >> $EXECFILE
+#echo "lcd $dest"
+#echo "cd $source" >> $EXECFILE
+#echo "cd $source"
+#echo "bin" >> $EXECFILE
+#echo "bin"
 
-echo "mget *.*" >> $EXECFILE
-echo "mget *.*" 
+#echo "mget *.*" >> $EXECFILE
+#echo "mget *.*" 
 
 
-echo "prompt off" >> $EXECFILE
-echo "prompt off"
-echo "quit" >> $EXECFILE
-echo "quit"
+#echo "prompt off" >> $EXECFILE
+#echo "prompt off"
+#echo "quit" >> $EXECFILE
+#echo "quit"
 
 
 #cat $EXECFILE   #Commented to hide FTP Login Credentials
 DAT_TIME_STAMP=`date '+%y%m%d%H%M%S'`
 echo "Time Stamp Before FTP(YYMMDDHHMISS): $DAT_TIME_STAMP"
 
-ftp -n < $EXECFILE > $TMPFILE
+#Commented by BIAS
+#ftp -n < $EXECFILE > $TMPFILE
+
+#Added by BIAS
+filename="*.*"
+destfile=""
+$XXFIN_TOP/bin/./XXLFTPGET.sh $user $passwd $port $server $source $dest $filename $destfile >> $TMPFILE
+sleep 60s
 
 DAT_TIME_STAMP=`date '+%y%m%d%H%M%S'`
 echo "Time Stamp After FTP(YYMMDDHHMISS) : $DAT_TIME_STAMP"
@@ -180,8 +199,10 @@ echo "The number of files in destination directory now is `ls -1 $dest | wc -l` 
 Server_check=`grep 'Not connected' $TMPFILE`
 User_passwd=`grep 'Please login with USER and PASS'  $TMPFILE`
 Local_directory_error=`grep '550 Failed to change directory' $TMPFILE`
-Success=`grep 'File receive OK'  $TMPFILE`
-Success1=`grep '226 '  $TMPFILE`
+#Success=`grep 'File receive OK'  $TMPFILE`			#Commented by BIAS
+#Success1=`grep '226 '  $TMPFILE`					#Commented by BIAS
+LFTPSuccess=`grep 'LFTP_SUCCESSFUL'  $TMPFILE`    	#Added by BIAS
+echo "LFTPSuccess=$LFTPSuccess"  					#Added by BIAS
 
 if [ "$Server_check" != "" ]
 then
@@ -212,7 +233,8 @@ then
 	 rm $TMPFILE	 
      exit 1
 
- elif [ "$Success" != "" -o  "$Success1" != "" ]
+ #elif [ "$Success" != "" -o  "$Success1" != "" ]   #Commented by BIAS
+ elif [ "$LFTPSuccess" != "" ]                      #Added by BIAS
 then 
     echo " "
     echo "SUCCESS: Successful transmission"
