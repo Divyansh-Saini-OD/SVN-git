@@ -6,7 +6,8 @@ SET FEEDBACK OFF
 SET TERM ON
 PROMPT CREATING PACKAGE BODY XX_AR_LOCKBOX_PROCESS_PKG
 PROMPT PROGRAM EXITS IF THE CREATION IS NOT SUCCESSFUL
-WHENEVER SQLERROR CONTINUEcreate or replace 
+WHENEVER SQLERROR CONTINUE
+create or replace 
 PACKAGE BODY      XX_AR_LOCKBOX_PROCESS_PKG AS
 -- +=================================================================================+
 -- |                       Office Depot - Project Simplify                           |
