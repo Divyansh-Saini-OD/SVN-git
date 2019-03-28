@@ -1,4 +1,12 @@
-create or replace 
+SET SHOW OFF
+SET VERIFY OFF
+SET ECHO OFF
+SET TAB OFF
+SET FEEDBACK OFF
+SET TERM ON
+PROMPT CREATING PACKAGE BODY XX_AR_LOCKBOX_PROCESS_PKG
+PROMPT PROGRAM EXITS IF THE CREATION IS NOT SUCCESSFUL
+WHENEVER SQLERROR CONTINUEcreate or replace 
 PACKAGE BODY      XX_AR_LOCKBOX_PROCESS_PKG AS
 -- +=================================================================================+
 -- |                       Office Depot - Project Simplify                           |
@@ -11615,3 +11623,5 @@ WHEN OTHERS THEN
 END CUSTOM_AUTO_CASH;
 
 END XX_AR_LOCKBOX_PROCESS_PKG;
+/
+SHOW ERROR
