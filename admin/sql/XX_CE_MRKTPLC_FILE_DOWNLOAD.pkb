@@ -1217,7 +1217,7 @@ AS
     SELECT file_name,
       REPLACE(REPLACE(file_name,SUBSTR(file_name,1,regexp_instr( file_name, '[_]+', 1, 2 ))),SUBSTR(file_name,regexp_instr(file_name, '[_]+', 1, 3 )-1 - LENGTH(file_name))) settlement_id,
       REPLACE(SUBSTR (file_name, instr(file_name,'_',1,3)                                                                                           +1),'.xml') page_indx
-    FROM apps.xx_ce_mktplc_pre_stg_files
+    FROM xx_ce_mktplc_pre_stg_files
     WHERE file_name LIKE 'NEGGT%'
     AND file_data IS NULL;
   CURSOR c_newegg_summary
