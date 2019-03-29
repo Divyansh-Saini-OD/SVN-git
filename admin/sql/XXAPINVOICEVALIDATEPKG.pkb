@@ -122,6 +122,7 @@ IS
 -- |2.19     15-Mar-2018     Havish Kasina          Commented the debug messages                                     |
 -- |2.20     16-Apr-2018     Havish Kasina          Added the NVL(ld_terms_date,invoices_updt.invoice_date)          |
 -- |2.21     12-DEC-2018     Vivek Kumar            Added logic to include DL for Duplicate Invoice for NAIT-51088	 | 
+-- |3.0      03-MAR-2019     Vivek Kumar            Modified for NAIT-82494
 -- +=================================================================================================================+
 
 PROCEDURE XX_AP_OTM_UPDATE(p_group_id IN VARCHAR2)
@@ -1196,14 +1197,21 @@ END XX_AP_OTM_INVOICE;
                cnt := cnt + 1;
                IF cnt = 1
                THEN
+			      ----Added For NAIT-82494 ----
+				  fnd_file.put_line(fnd_file.output,
+                                    'Source Name: '
+					              || p_source
+                  );
+				  
                   fnd_file.put_line
                   (fnd_file.output,
                     '                                              Duplicate Invoices'
                   );
+				  
                   fnd_file.put_line (fnd_file.output,
-                                     RPAD('Vendor Source',32,' ')
-                                  || ' '
-                                  || RPAD('Vendor Name',43, ' ')
+				             /*      RPAD('Vendor Source',32,' ')
+                                  || ' '*/--Commented For NAIT-82494
+                                     RPAD('Vendor Name',43, ' ')
                                   || ' '
                                   || 'Invoice Number'
                                  );
@@ -1213,9 +1221,9 @@ END XX_AP_OTM_INVOICE;
                   );
                 END IF;
                fnd_file.put_line (fnd_file.output,
-                                     RPAD(invoices_rec.meaning,32,' ')
-                                  || ' '
-                                  || RPAD(invoices_rec.vendor_name,43, ' ')
+                      /*             RPAD(invoices_rec.meaning,32,' ')
+                                  || ' '*/ --COmmented For NAIT-82494
+                                     RPAD(invoices_rec.vendor_name,43, ' ')
                                   || ' '
                                   || invoices_rec.invoice_num
                                  );
@@ -1243,6 +1251,7 @@ END XX_AP_OTM_INVOICE;
                  );
       END IF;
          COMMIT;
+		 /* Commented for NAIT-82494
  --------------------------------------------------
 -- Submit the Concurrent Request Emailer program --
 ---------------------------------------------------
@@ -1465,8 +1474,8 @@ lc_email_to :=lc_email_to||','||v_email_address ;
                              p_notify_flag                 => 'N',
                              p_object_type                 => 'Processing AP Inbound invoices'
                             );
-         END;
-      END IF;
+         END; 
+      END IF;*/
    END xx_ap_duplicate_invoices;
 --------------------------------------------------------------------
 -- +===================================================================+
@@ -4609,7 +4618,7 @@ BEGIN
    ELSIF p_source='US_OD_OTM' THEN  -- Defect 21393
       XX_AP_OTM_INVOICE(p_source,p_group_id);
    END IF;
-  ELSE	--  IF v_count > 0  THEN
+  ELSE	--  IF v_count > 0  THE
     fnd_file.put_line (fnd_file.LOG, '');
     fnd_file.put_line(fnd_file.LOG,'+---------------------------------------------------------------+');
     fnd_file.put_line(fnd_file.LOG,('---------No record is available to be imported------------------'));
