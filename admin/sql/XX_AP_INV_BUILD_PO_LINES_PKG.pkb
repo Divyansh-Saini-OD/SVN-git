@@ -64,6 +64,8 @@ AS
 -- |3.5       18-Apr-2018   Havish Kasina           Added the ROUND function for line amount field |
 -- |                                                in ap_invoice_lines_interface table            |
 -- |3.6       03-AUG-2018   Vivek Kumar             Added logic for NAIT-48588                     |
+-- |3.7       03-MAR-2019   Vivek Kumar             Added for NAIT-82494 to print the source name  |
+-- |                                                in output                                      |
 -- +===============================================================================================+
 
 
@@ -528,6 +530,7 @@ AS
       lc_error_debug := 'Group ID: ' || p_group_id;
       fnd_message.set_name ('XXFIN', 'XX_AP_0050_REJECTION_HDR');
       LC_HDR_MESSAGE := FND_MESSAGE.GET;
+	  FND_FILE.PUT_LINE(FND_FILE.OUTPUT, ' Source Name: US_OD_TDM                                                                                          ');----Added for NAIT-82494
       FND_FILE.PUT_LINE(FND_FILE.OUTPUT, '-----------------------------------------------------------------------------------------------------------------');
       FND_FILE.PUT_LINE(FND_FILE.OUTPUT, '                                      '||lc_hdr_message||'                            ');
       FND_FILE.PUT_LINE(FND_FILE.OUTPUT, '-----------------------------------------------------------------------------------------------------------------');
