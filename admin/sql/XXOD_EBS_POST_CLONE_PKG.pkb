@@ -125,6 +125,8 @@ AS
 -- |                                      translation                                                      |
 -- |1.60     26-MAR-2019   Havish Kasina  Added new identifier AR_NI_14 to update XX_AR_EBL_REST_SERVICE_DT|
 -- |                                      translation                                                      | 
+-- |1.61     01-APR-2019   Havish Kasina  Added new identifier AP_NI_19 to update XX_AP_TRADE_PAY_EMAIL    |
+-- |                                      translation                                                      |
 -- +=======================================================================================================+
 
 -- +==========================================================+
@@ -1775,10 +1777,79 @@ AS
                                ,p_end_date_time      => ld_end_date_time
                                ,p_exception_message  => lc_exception_message);
          END;
-      EXCEPTION
-           WHEN OTHERS THEN
-           xx_write_to_log (lc_filehandle,'Error encountered during Account Payables non instance specific steps: '||SQLERRM||CHR(10));
+		
+        /* Added by Havish Kasina as per Version 1.61 */		
+		BEGIN
+            -----------------------------------------------------------
+            -- AP_NI_19 - Update for XX_AP_TRADE_PAY_EMAIL Translation 
+            -----------------------------------------------------------
+            lc_identifier          := 'AP_NI_19';
+            lc_object_type         := 'Translation';
+            lc_object_name         := 'XX_AP_TRADE_PAY_EMAIL';
+            lc_action              := 'Update XX_AP_TRADE_PAY_EMAIL';
+            ld_start_date_time     := TO_CHAR(SYSDATE, 'MM/DD/YYYY HH24:MI:SS');
+
+            ld_end_date_time       := NULL;
+            lc_exception_message   := NULL;
+            lc_result              := NULL;
+            lc_status              := NULL;
+            ln_count               := 0;
+
+            xx_write_to_log (lc_filehandle,'Start of update for AP_NI_19');
+
+            UPDATE xx_fin_translatevalues 
+               SET target_value4 = gc_email_address
+             WHERE 1 = 1
+               AND translate_id  = (SELECT translate_id 
+                                      FROM   xx_fin_translatedefinition 
+                                      WHERE  translation_name = 'XX_AP_TRADE_PAY_EMAIL');
+
+            ln_count := SQL%rowcount;
+
+            xx_write_to_log (lc_filehandle,'No of rows updated for AP_NI_19 is: ' || SQL%rowcount );
+            COMMIT;
+
+            lc_status        := 'Success'; 
+            lc_result        := 'Updated: '||ln_count||' rows';   
+            ld_end_date_time := TO_CHAR(SYSDATE, 'MM/DD/YYYY HH24:MI:SS');           
+
+            xx_write_to_file(p_filehandle_csv     => lc_filehandle_csv
+                            ,p_identifier         => lc_identifier
+                            ,p_status             => lc_status
+                            ,p_object_type        => lc_object_type
+                            ,p_object_name        => lc_object_name
+                            ,p_action             => lc_action
+                            ,p_result             => lc_result
+                            ,p_start_date_time    => ld_start_date_time
+                            ,p_end_date_time      => ld_end_date_time
+                            ,p_exception_message  => lc_exception_message);
+
+        EXCEPTION 
+        WHEN OTHERS 
+		THEN
+            xx_write_to_log (lc_filehandle,'Error encountered during AP_NI_19: '||SQLERRM);
+            ROLLBACK;
+            lc_status              := 'ERROR'; 
+            lc_result              := 'Unable to update transalation values';   
+            ld_end_date_time       := TO_CHAR(SYSDATE, 'MM/DD/YYYY HH24:MI:SS');
+            lc_exception_message   := 'Error encountered during AP_NI_19: '||SQLERRM;
+
+            xx_write_to_file(p_filehandle_csv     => lc_filehandle_csv
+                            ,p_identifier         => lc_identifier
+                            ,p_status             => lc_status
+                            ,p_object_type        => lc_object_type
+                            ,p_object_name        => lc_object_name
+                            ,p_action             => lc_action
+                            ,p_result             => lc_result
+                            ,p_start_date_time    => ld_start_date_time
+                            ,p_end_date_time      => ld_end_date_time
+                            ,p_exception_message  => lc_exception_message);
         END;
+    EXCEPTION
+    WHEN OTHERS
+	THEN
+           xx_write_to_log (lc_filehandle,'Error encountered during Account Payables non instance specific steps: '||SQLERRM||CHR(10));
+    END;
 		
 	BEGIN
            xx_write_to_log (lc_filehandle,'Start of update for Inventory ...'||CHR(10));
