@@ -28,6 +28,7 @@ AS
   -- | 1.6         11/10/2017   Digamber S       Enhancement  for LLC file processing             |
   -- |                                           main_llc ,process_data_998,process_data_999      |
   -- |                                           main_wraper procedure Added                      |
+  -- | 1.7         26-MAR-2019  Pramod M K       Code Changes for Amazon Prime NAIT-85869 
   -- +============================================================================================+
 TYPE varchar2_table
 IS
@@ -112,7 +113,8 @@ IS
       p_org_id          NUMBER,
       P_Recon_Date      DATE,
       p_territory_code  VARCHAR2,
-      P_Currency        VARCHAR2);
+      P_Currency        VARCHAR2,
+	  p_discount_amt    NUMBER);
   --  LLC Change Start
   --  PROCEDURE main(
   --  p_errbuf OUT VARCHAR2 ,
