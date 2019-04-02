@@ -34,6 +34,7 @@ AS
   -- |                                           main_llc ,process_data_998,process_data_999      |
   -- |                                           main_wraper procedure Added                      |
   -- | 1.7         19-NOV-2017  Pramod M K       Defect# 43424 Code changes to default Status=NEW |
+  -- | 1.8         26-MAR-2019  Pramod M K       Code Changes for Amazon Prime NAIT-85869         |
   -- +============================================================================================+
   -- +============================================================================================+
   -- |  Name  : Log Exception                                                                     |
@@ -1018,6 +1019,13 @@ IS
     FROM xx_ce_mpl_settlement_stg
     WHERE transaction_type IN('Previous Reserve Amount Balance','Current Reserve Amount','Subscription Fee')
     AND settlement_id       = p_settlement_id;
+	
+	 CURSOR other_amount_cur_amzprime(p_settlement_id NUMBER)
+  IS
+    SELECT NVL(SUM(other_amount),0)
+    FROM xx_ce_mpl_settlement_stg
+    WHERE transaction_type IN ('Shipping label purchase for return')
+    AND settlement_id       = p_settlement_id;
   CURSOR variable_fee_cur(p_settlement_id NUMBER)
   IS
     SELECT NVL(SUM(item_related_fee_amount),0) variableclosingfee
@@ -1053,6 +1061,8 @@ IS
   l_other_amt            NUMBER;
   l_variableclosingfees  NUMBER;
   l_total_fees_for_store NUMBER;
+  l_other_amt_amzprime   NUMBER;
+  l_discount_amt_amzprime NUMBER;
 BEGIN
   write_log('Processing 999 staging records...');
   write_log('Processing Order/Refund(s) from staging with status as PROCESSED_998...');
@@ -1100,6 +1110,9 @@ BEGIN
   OPEN other_amount_cur(p_settlement_id);
   FETCH other_amount_cur INTO l_other_amt;
   CLOSE other_amount_cur;
+  OPEN other_amount_cur_amzprime(p_settlement_id);
+  FETCH other_amount_cur_amzprime INTO l_other_amt_amzprime;
+  CLOSE other_amount_cur_amzprime;
   OPEN variable_fee_cur(p_settlement_id);
   FETCH variable_fee_cur INTO l_variableclosingfees;
   CLOSE variable_fee_cur;
@@ -1119,11 +1132,13 @@ BEGIN
       --Defect#34376 absolute value. Defect#34377 round to two decimals
       --Defect#34508 Change sign based on net sales
       l_total_fees_for_store := ABS(ROUND(l_item_fees + ((l_other_amt + l_variableclosingfees)*l_net_sales/l_total_itemprice),2));
+	  l_discount_amt_amzprime:=ABS(ROUND(((l_other_amt_amzprime*l_net_sales)/l_total_itemprice),2));
       --Defect#34508 Change sign based on net sales
       IF l_net_sales            < 0 THEN
         l_total_fees_for_store := -1 * l_total_fees_for_store;
+		l_discount_amt_amzprime:=-1*l_discount_amt_amzprime;
       END IF;
-      insert_ajb999(l_record_type_999, l_store_number, l_provider_type, l_submission_date, l_country_code, l_currency_code, l_processor_id, l_bank_rec_id, l_card_type, l_net_sales, l_total_fees_for_store, l_status_1310, l_ajb_file_name, l_user_id, l_user_id, l_org_id, l_deposit_date, l_territory_code, l_currency);
+      insert_ajb999(l_record_type_999, l_store_number, l_provider_type, l_submission_date, l_country_code, l_currency_code, l_processor_id, l_bank_rec_id, l_card_type, l_net_sales, l_total_fees_for_store, l_status_1310, l_ajb_file_name, l_user_id, l_user_id, l_org_id, l_deposit_date, l_territory_code, l_currency,l_discount_amt_amzprime);
       l_rec_succ_cnt := l_rec_succ_cnt + 1;
     END LOOP;
   END LOOP;
@@ -1249,7 +1264,8 @@ PROCEDURE insert_ajb999
     p_org_id          NUMBER,
     p_recon_date      DATE,
     p_territory_code  VARCHAR2,
-    p_currency        VARCHAR2
+    p_currency        VARCHAR2,
+	p_discount_amt    NUMBER
   )
 AS
   l_sequence_id_999 NUMBER;
@@ -1280,7 +1296,8 @@ BEGIN
       recon_date,
       territory_code,
       currency,
-	  status--Added for V1.6 Defect 43424
+	  status,--Added for V1.6 Defect 43424
+	  discount_amt
     )
     VALUES
     (
@@ -1306,7 +1323,8 @@ BEGIN
       p_recon_date,
       p_territory_code,
       p_currency,
-	  'NEW'--Added for V1.6 Defect 43424
+	  'NEW',--Added for V1.6 Defect 43424
+	  p_discount_amt
     );
 END insert_ajb999;
 -- +===========================================================================
