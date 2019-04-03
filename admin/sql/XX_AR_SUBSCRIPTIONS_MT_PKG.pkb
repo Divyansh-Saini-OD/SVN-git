@@ -44,9 +44,9 @@ AS
 -- |                                              SKU's NAIT-79218                           |
 -- | 16.0        07-MAR-2019  Sahithi K           modified program_id logic in UPSERT script |
 -- |                                              from req_id to con_program_id NAIT-87055   |
--- | 17.0        22-FEB-2019  Sahithi K           trigger payment failure for business select|
+-- | 17.0        08-MAR-2019  Sahithi K           trigger payment failure for business select|
 -- |                                              customer same as SS SKU's NAIT-84277       |
--- | 18.0        06-MAR-2019  Sahithi K           NAIT-85914 1.pass trans_id in payment auth |
+-- | 18.0        08-MAR-2019  Sahithi K           NAIT-85914 1.pass trans_id in payment auth |
 -- |                                                           payload                       |
 -- |                                              2.pass wallet_type while inserting data    |  
 -- |                                                into ORDT table based on translation     |
@@ -55,6 +55,8 @@ AS
 -- |                                              existing contracts in SCM NAIT-89230       | 
 -- | 21.0        26-MAR-2019  Sahithi K           Update SCM with trans_id for existing      |
 -- |                                              contracts NAIT-89231                       |
+-- | 22.0        28-MAR-2019  Sahithi K           trigger recurring SUCCESS/FAILURE email    |
+-- |                                              for auto renewed BS2 contracts NAIT-90173  |
 -- +=========================================================================================+
  
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -772,6 +774,21 @@ AS
                          px_translation_info => lt_translation_info);
 
     x_program_setups('subscription_resubmit')  := lt_translation_info.target_value1;
+    
+    /**********************************
+    * Get AVS check flag for POS orders
+    **********************************/
+    
+    lc_action :=  'Calling get_translation_info for Subscription Resubmit';
+
+    lt_translation_info := NULL;
+
+    lt_translation_info.source_value1 := 'POS_AVS_CHECK_FLAG';
+
+    get_translation_info(p_translation_name  => 'XX_AR_SUBSCRIPTIONS',
+                         px_translation_info => lt_translation_info);
+
+    x_program_setups('pos_avs_check_flag')  := lt_translation_info.target_value1;
     
     /********************************************
     * Get update trans_id SCM service information
@@ -1873,14 +1890,15 @@ AS
       RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
 
   END update_subscription_info;
-  
+
   /*********************************************
   * Helper procedure to update subscription info
   *********************************************/
 
   PROCEDURE update_contracts_info(p_contract_id           IN xx_ar_contracts.contract_id%TYPE
                                  ,p_cc_trans_id           IN xx_ar_contracts.cc_trans_id%TYPE
-                                 ,p_cc_trans_id_source    IN xx_ar_contracts.cc_trans_id_source%TYPE)
+                                 ,p_cc_trans_id_source    IN xx_ar_contracts.cc_trans_id_source%TYPE
+                                 ,p_cof_trans_id_scm_flag IN xx_ar_contracts.cof_trans_id_scm_flag%TYPE)
   IS
     PRAGMA AUTONOMOUS_TRANSACTION;
 
@@ -1889,9 +1907,10 @@ AS
 
   BEGIN
 
-    lt_parameters('p_contract_id')         := p_contract_id;
-    lt_parameters('p_cc_trans_id')         := p_cc_trans_id;
-    lt_parameters('p_cc_trans_id_source')  := p_cc_trans_id_source;
+    lt_parameters('p_contract_id')           := p_contract_id;
+    lt_parameters('p_cc_trans_id')           := p_cc_trans_id;
+    lt_parameters('p_cc_trans_id_source')    := p_cc_trans_id_source;
+    lt_parameters('p_cof_trans_id_scm_flag') := p_cof_trans_id_scm_flag;
 
     entering_sub(p_procedure_name  => lc_procedure_name,
                  p_parameters      => lt_parameters);
@@ -1899,6 +1918,7 @@ AS
     UPDATE xx_ar_contracts
     SET    cc_trans_id           = p_cc_trans_id
           ,cc_trans_id_source    = p_cc_trans_id_source
+          ,cof_trans_id_scm_flag = p_cof_trans_id_scm_flag
           ,last_update_date      = SYSDATE
           ,last_updated_by       = NVL(FND_GLOBAL.user_id, -1)
     WHERE  contract_id           = p_contract_id;
@@ -3374,6 +3394,7 @@ AS
         IF  px_subscription_array(indx).billing_sequence_number < lr_contract_line_info.initial_billing_sequence
         AND lr_contract_line_info.program = 'SS'
         THEN
+
           /**************************************
           * Get initial order header invoice info
           **************************************/
@@ -3404,7 +3425,7 @@ AS
 
         ELSIF px_subscription_array(indx).billing_sequence_number >= lr_contract_line_info.initial_billing_sequence
         THEN
-        
+
           /******************************
           * Get initial order header info
           ******************************/
@@ -3752,7 +3773,7 @@ AS
  
             END IF;
           END IF;
-
+       
           lc_action :=  'Populating ra_interface_lines_all record';
 
           ln_interface_line_id   := ra_customer_trx_lines_s.NEXTVAL;
@@ -5322,11 +5343,11 @@ AS
           
             IF p_program_setups('wallet_location') IS NOT NULL
             THEN
-          
+            
               lc_action := 'calling UTL_HTTP.set_wallet';
-          
+            
               UTL_HTTP.SET_WALLET(p_program_setups('wallet_location'), p_program_setups('wallet_password'));
-          
+            
             END IF;
             
             lc_action := 'Calling UTL_HTTP.begin_request';
@@ -5433,22 +5454,47 @@ AS
             * If authorization passed, record authorization information
             **********************************************************/
           
-            IF (lr_subscription_info.auth_status = '0' AND lr_subscription_info.auth_avs_code = 'Y')
-            THEN            
-              lc_action := 'assigning the auth success result to subscription array';               
-              px_subscription_array(indx).cof_trans_id                := lr_subscription_info.cof_trans_id;
-              px_subscription_array(indx).cof_trans_id_flag           := 'Y';
-              
-              --call update contracts table with cc_trans_id and cc_trans_id_source
-              update_contracts_info(p_contract_id           => px_subscription_array(indx).contract_id
-                                   ,p_cc_trans_id           => lr_subscription_info.cof_trans_id
-                                   ,p_cc_trans_id_source    => 'EBS'
-                                   );
-
-            ELSE
-              lc_action := 'assigning the auth failure result to subscription array';
-              px_subscription_array(indx).subscription_error      := lr_subscription_info.auth_message;
-              RAISE le_processing;
+            IF ((p_contract_info.external_source = 'POS' AND p_program_setups('pos_avs_check_flag') = 'Y') 
+             OR (p_contract_info.external_source != 'POS'))
+            THEN
+              IF (lr_subscription_info.auth_status = '0' AND lr_subscription_info.auth_avs_code = 'Y')
+              THEN            
+                lc_action := 'assigning the auth success result to subscription array';               
+                px_subscription_array(indx).cof_trans_id                := lr_subscription_info.cof_trans_id;
+                px_subscription_array(indx).cof_trans_id_flag           := 'Y';
+                
+                --call update contracts table with cc_trans_id and cc_trans_id_source
+                update_contracts_info(p_contract_id           => px_subscription_array(indx).contract_id
+                                     ,p_cc_trans_id           => lr_subscription_info.cof_trans_id
+                                     ,p_cc_trans_id_source    => 'EBS'
+                                     ,p_cof_trans_id_scm_flag => 'N'
+                                     );
+              ELSE
+                lc_action := 'assigning the auth failure result to subscription array';
+                px_subscription_array(indx).subscription_error      := lr_subscription_info.auth_message;
+                lc_error                                            := 'Invalid Card';
+                RAISE le_processing;
+              END IF;
+            ELSIF p_contract_info.external_source = 'POS' AND p_program_setups('pos_avs_check_flag') != 'Y'
+            THEN
+              IF lr_subscription_info.auth_status = '0' 
+              THEN            
+                lc_action := 'assigning the auth success result to subscription array';               
+                px_subscription_array(indx).cof_trans_id                := lr_subscription_info.cof_trans_id;
+                px_subscription_array(indx).cof_trans_id_flag           := 'Y';
+                
+                --call update contracts table with cc_trans_id and cc_trans_id_source
+                update_contracts_info(p_contract_id           => px_subscription_array(indx).contract_id
+                                     ,p_cc_trans_id           => lr_subscription_info.cof_trans_id
+                                     ,p_cc_trans_id_source    => 'EBS'
+                                     ,p_cof_trans_id_scm_flag => 'N'
+                                     );
+              ELSE
+                lc_action := 'assigning the auth failure result to subscription array';
+                px_subscription_array(indx).subscription_error      := lr_subscription_info.auth_message;
+                lc_error                                            := 'Invalid Card';
+                RAISE le_processing;
+              END IF;
             END IF;
           
           ELSE
@@ -5468,10 +5514,47 @@ AS
             * If authorization passed, record authorization information
             **********************************************************/
           
-            IF (lr_subscription_info.auth_status = '0' AND lr_subscription_info.auth_avs_code = 'Y')
+            IF ((p_contract_info.external_source = 'POS' AND p_program_setups('pos_avs_check_flag') = 'Y') 
+             OR (p_contract_info.external_source != 'POS'))
             THEN
-              px_subscription_array(indx).cof_trans_id        := lr_subscription_info.cof_trans_id;
-              px_subscription_array(indx).cof_trans_id_flag   := 'Y';
+              IF (lr_subscription_info.auth_status = '0' AND lr_subscription_info.auth_avs_code = 'Y')
+              THEN            
+                lc_action := 'assigning the auth success result to subscription array';               
+                px_subscription_array(indx).cof_trans_id                := lr_subscription_info.cof_trans_id;
+                px_subscription_array(indx).cof_trans_id_flag           := 'Y';
+                
+                --call update contracts table with cc_trans_id and cc_trans_id_source
+                update_contracts_info(p_contract_id           => px_subscription_array(indx).contract_id
+                                     ,p_cc_trans_id           => lr_subscription_info.cof_trans_id
+                                     ,p_cc_trans_id_source    => 'EBS'
+                                     ,p_cof_trans_id_scm_flag => 'N'
+                                     );
+              ELSE
+                lc_action := 'assigning the auth failure result to subscription array';
+                px_subscription_array(indx).subscription_error      := lr_subscription_info.auth_message;
+                lc_error                                            := 'Invalid Card';
+                RAISE le_processing;
+              END IF;
+            ELSIF p_contract_info.external_source = 'POS' AND p_program_setups('pos_avs_check_flag') != 'Y'
+            THEN
+              IF lr_subscription_info.auth_status = '0' 
+              THEN            
+                lc_action := 'assigning the auth success result to subscription array';               
+                px_subscription_array(indx).cof_trans_id                := lr_subscription_info.cof_trans_id;
+                px_subscription_array(indx).cof_trans_id_flag           := 'Y';
+                
+                --call update contracts table with cc_trans_id and cc_trans_id_source
+                update_contracts_info(p_contract_id           => px_subscription_array(indx).contract_id
+                                     ,p_cc_trans_id           => lr_subscription_info.cof_trans_id
+                                     ,p_cc_trans_id_source    => 'EBS'
+                                     ,p_cof_trans_id_scm_flag => 'N'
+                                     );
+              ELSE
+                lc_action := 'assigning the auth failure result to subscription array';
+                px_subscription_array(indx).subscription_error      := lr_subscription_info.auth_message;
+                lc_error                                            := 'Invalid Card';
+                RAISE le_processing;
+              END IF;
             END IF;
           
           END IF; -- IF ln_loop_counter = 0
@@ -5721,9 +5804,9 @@ AS
       /*************************************
       * Validate we are read to perform auth
       *************************************/
-      IF p_contract_info.cc_trans_id IS NULL
+      IF (p_contract_info.cc_trans_id IS NULL AND p_contract_info.payment_type = 'CreditCard')
       THEN
-        lc_error := 'cc_trans_id is NULL';
+        lc_error := 'cc_trans_id is NULL for payment_type : '||p_contract_info.payment_type;
         RAISE le_skip;
       END IF;
  
@@ -6657,6 +6740,7 @@ AS
         ELSIF px_subscription_array(indx).billing_sequence_number  >= lr_contract_line_info.initial_billing_sequence
           AND lr_contract_line_info.program = 'BS' 
           AND px_subscription_array(indx).auth_completed_flag='Y'
+          AND p_contract_info.contract_number_modifier IS NULL
         THEN
 
           /**************************************************
@@ -8391,7 +8475,7 @@ AS
       IF px_subscription_array(indx).receipt_created_flag NOT IN ('N', 'E')
       THEN
 
-        lc_error := 'Auth completed flag: ' || px_subscription_array(indx).auth_completed_flag;
+        lc_error := 'Receipt Created flag: ' || px_subscription_array(indx).receipt_created_flag;
         RAISE le_skip;
 
       END IF;
@@ -8881,7 +8965,7 @@ AS
 
       IF px_subscription_array(indx).ordt_staged_flag NOT IN ('N', 'E')
       THEN
-        lc_error := 'Auth completed flag: ' || px_subscription_array(indx).auth_completed_flag;
+        lc_error := 'Order Payment flag: ' || px_subscription_array(indx).ordt_staged_flag;
         RAISE le_skip;
       END IF;
       
@@ -11796,8 +11880,6 @@ AS
 
     lr_subscription_payload_info   xx_ar_subscription_payloads%ROWTYPE;
 
-    le_skip                        EXCEPTION;
-
     le_processing                  EXCEPTION;
     
     lc_trans_id_scm_flag           xx_ar_contracts.cof_trans_id_scm_flag%TYPE;
@@ -11847,97 +11929,99 @@ AS
     FOR eligible_contract_rec IN c_eligible_contracts
     LOOP
       
-      /************************************************************************
-      * Keep track of the contract number and billing sequence being worked on.
-      ************************************************************************/
-
-      lc_transaction := 'Processing contract_id: ' || eligible_contract_rec.contract_id;
-
-      logit(p_message => 'Transaction: ' || lc_transaction);
+      BEGIN
       
-      /**************
-      * Decrypt Value
-      **************/
-      
-      lc_action := 'Calling decrypt_credit_card';
-      
-      decrypt_credit_card(p_context_namespace => 'XX_AR_SUBSCRIPTIONS_MT_CTX',
-                          p_context_attribute => 'TYPE',
-                          p_context_value     => 'OM',
-                          p_module            => 'HVOP',
-                          p_format            => 'EBCDIC',
-                          p_encrypted_value   => eligible_contract_rec.card_token,
-                          p_key_label         => eligible_contract_rec.card_encryption_label,
-                          x_decrypted_value   => lc_decrypted_value);
-      
-      /***********************
-      * Format expiration date
-      ***********************/
-      
-      IF eligible_contract_rec.card_expiration_date IS NOT NULL
-      THEN
-        lc_expiration_date := TO_CHAR(eligible_contract_rec.card_expiration_date, 'YYMM');
-      END IF;
-
-      /****************************
-      * Build authorization payload
-      ****************************/
-      
-      lc_action := 'Building authorization payload';
-      
-      SELECT '{
-                  "updatePaymentInfoRequest": {
-                      "transactionHeader": {
-                          "consumer": {
-                              "consumerName": "EBS",
-                              "consumerTransactionID": "'
-                                     || eligible_contract_rec.contract_number
-                                     || '-'
-                                     || TO_CHAR(SYSDATE,
-                                                'DDMONYYYYHH24MISS')
-                                     || '",
-                              "altTrackingIDs": null,
-                              "moniker": null
-                          },
-                          "transactionId": null,
-                          "timeReceived": null
-                      },
-                      "customer": {
-                          "paymentDetails": {
-                              "paymentType": "'
-                                     || eligible_contract_rec.payment_type
-                                     || '",
-                                  "paymentCard": {
-                                      "cardNumber": "",
-                                      "cardHighValueToken": "'
-                                          || lc_decrypted_value
-                                          || '",
-                                      "expirationDate": "'
-                                          || lc_expiration_date
-                                          || '",
-                                      "cardType": "'
-                                          || eligible_contract_rec.card_type
-                                          || '",
-                                      "billingAgreementId": "",
-                                      "walletId": "",
-                                      "keyLabel": "",
-                                      "encryptionHash": "",
-                                      "cofTransactionId": "'
-                                          || eligible_contract_rec.cc_trans_id
-                                          || '"
-                                  }
-                          }
-                      },
-                      "order": {
-                          "orderNumber": "'
-                                  || eligible_contract_rec.contract_name
-                                  || '",
-                          "contractId": "'
-                                  || eligible_contract_rec.contract_id
-                                  || '"
-                      }
-                  }
-                }'
+        /************************************************************************
+        * Keep track of the contract number and billing sequence being worked on.
+        ************************************************************************/
+        
+        lc_transaction := 'Processing contract_id: ' || eligible_contract_rec.contract_id;
+        
+        logit(p_message => 'Transaction: ' || lc_transaction);
+        
+        /**************
+        * Decrypt Value
+        **************/
+        
+        lc_action := 'Calling decrypt_credit_card';
+        
+        decrypt_credit_card(p_context_namespace => 'XX_AR_SUBSCRIPTIONS_MT_CTX',
+                            p_context_attribute => 'TYPE',
+                            p_context_value     => 'OM',
+                            p_module            => 'HVOP',
+                            p_format            => 'EBCDIC',
+                            p_encrypted_value   => eligible_contract_rec.card_token,
+                            p_key_label         => eligible_contract_rec.card_encryption_label,
+                            x_decrypted_value   => lc_decrypted_value);
+        
+        /***********************
+        * Format expiration date
+        ***********************/
+        
+        IF eligible_contract_rec.card_expiration_date IS NOT NULL
+        THEN
+          lc_expiration_date := TO_CHAR(eligible_contract_rec.card_expiration_date, 'YYMM');
+        END IF;
+        
+        /****************************
+        * Build authorization payload
+        ****************************/
+        
+        lc_action := 'Building authorization payload';
+        
+        SELECT '{
+                    "updatePaymentInfoRequest": {
+                        "transactionHeader": {
+                            "consumer": {
+                                "consumerName": "EBS",
+                                "consumerTransactionID": "'
+                                       || eligible_contract_rec.contract_number
+                                       || '-'
+                                       || TO_CHAR(SYSDATE,
+                                                  'DDMONYYYYHH24MISS')
+                                       || '",
+                                "altTrackingIDs": null,
+                                "moniker": null
+                            },
+                            "transactionId": null,
+                            "timeReceived": null
+                        },
+                        "customer": {
+                            "paymentDetails": {
+                                "paymentType": "'
+                                       || eligible_contract_rec.payment_type
+                                       || '",
+                                    "paymentCard": {
+                                        "cardNumber": "",
+                                        "cardHighValueToken": "'
+                                            || lc_decrypted_value
+                                            || '",
+                                        "expirationDate": "'
+                                            || lc_expiration_date
+                                            || '",
+                                        "cardType": "'
+                                            || eligible_contract_rec.card_type
+                                            || '",
+                                        "billingAgreementId": "",
+                                        "walletId": "",
+                                        "keyLabel": "",
+                                        "encryptionHash": "",
+                                        "cofTransactionId": "'
+                                            || eligible_contract_rec.cc_trans_id
+                                            || '"
+                                    }
+                            }
+                        },
+                        "order": {
+                            "orderNumber": "'
+                                    || eligible_contract_rec.contract_name
+                                    || '",
+                            "contractId": "'
+                                    || eligible_contract_rec.contract_id
+                                    || '"
+                        }
+                    }
+                  }'
         INTO lc_trans_id_payload
         FROM dual;
         
@@ -12053,6 +12137,9 @@ AS
         EXCEPTION
           WHEN OTHERS THEN
             lc_error := 'Failed transaction code: ' || lc_transaction_code;
+            logit('ERROR : '||SQLERRM);
+            logit('lc_transaction_code : '||lc_transaction_code);
+            logit('lc_transaction_message : '||lc_transaction_message);
             RAISE le_processing;
         END;
         
@@ -12071,26 +12158,46 @@ AS
           COMMIT;
         END IF;
       
+      EXCEPTION
+        WHEN le_processing 
+        THEN
+          errbuff := 'Error encountered. Please check logs';
+         
+          logit(p_message => 'ERROR Transaction: ' || lc_transaction || ' Action: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM,
+                p_force   => TRUE);
+          logit(p_message => 'ERROR: ' || lc_error,
+                p_force   => TRUE);
+          logit(p_message      => '-----------------------------------------------',
+                p_force   => TRUE);
+        WHEN OTHERS 
+        THEN
+          errbuff := 'Error encountered. Please check logs';
+         
+          logit(p_message => 'ERROR Transaction: ' || lc_transaction || ' Action: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM,
+                p_force   => TRUE);
+          logit(p_message => 'ERROR: ' || lc_error,
+                p_force   => TRUE);
+          logit(p_message      => '-----------------------------------------------',
+                p_force   => TRUE);
+      END;
     END LOOP;
   
     exiting_sub(p_procedure_name => lc_procedure_name);
      
-  EXCEPTION
-    WHEN le_skip
-    THEN
-      logit(p_message => 'Skipping: ' || lc_error);
-    
-    WHEN le_processing
-    THEN
-  
-      exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
-      RAISE_APPLICATION_ERROR(-20101, SQLERRM);
-    
+  EXCEPTION      
     WHEN OTHERS
     THEN
     
+      retcode := 2;
+
+      errbuff := 'Error encountered. Please check logs';
+      
+      logit(p_message => 'ERROR Transaction: ' || lc_transaction || ' Action: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM,
+            p_force   => TRUE);
+      logit(p_message      => '-----------------------------------------------',
+            p_force   => TRUE);
+      
       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
-      RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' Action: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
 
   END update_trans_id_scm;
   
