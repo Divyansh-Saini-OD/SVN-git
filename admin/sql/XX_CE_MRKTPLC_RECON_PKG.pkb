@@ -26,7 +26,8 @@ AS
   -- | 2.7         11/26/2018   M K Pramod Kumar     Modifed  for Defect NAIT-72064 Refund Transaction Mapping, Load into AJB998 table if ORDT information
   -- |             is missing,change deposit date
   -- | 2.8         11/26/2018   M K Pramod Kumar     Modified to derive Bank Rec ID for EBAY MPL for partial transactinos.
-  -- | 2.8.1         11/26/2018   M K Pramod Kumar     Modified to Include only Not null Order Id for RAKUTEN MPL
+  -- | 2.8.1       11/26/2018   M K Pramod Kumar     Modified to Include only Not null Order Id for RAKUTEN MPL
+  -- | 2.9         04/01/2019   M K Pramod Kumar     Modified to fix Ebay Tax Issue for Multiple SKU scenario -NAIT-87324
   -- +============================================================================================+
   gc_package_name      CONSTANT all_objects.object_name%TYPE := 'XX_CE_MRKTPLC_RECON_PKG';
   gc_ret_success       CONSTANT VARCHAR2(20)                 := 'SUCCESS';
@@ -1925,8 +1926,8 @@ IS
       NVL(ca.unit_price,0) ca_unit_price,
       '' price_type,
       DECODE(tdr.transaction_debitorcredit,'DR', -1*(NVL(ca.unit_price,0)*NVL(ca.quantity,0)),NVL(ca.unit_price,0)*NVL(ca.quantity,0)) ca_price_amount,
-      DECODE(tdr.transaction_debitorcredit,'DR', -1*(NVL(ca.total_tax_price,0)),NVL(ca.total_tax_price,0)) ca_total_tax_price,
-      DECODE(tdr.transaction_debitorcredit,'DR', -1*(NVL(ca.total_shipping_price,0)),NVL(ca.total_shipping_price,0)) ca_total_shipping_price,
+	  DECODE(tdr.transaction_debitorcredit,'DR', -1*(NVL(ca.item_tax,0)+NVL(ca.item_shipping_tax,0)),NVL(ca.item_tax,0)+NVL(ca.item_shipping_tax,0)) ca_total_tax_price,
+      DECODE(tdr.transaction_debitorcredit,'DR', -1*(NVL(ca.item_shipping_price,0)),NVL(ca.item_shipping_price,0)) ca_total_shipping_price,
       '' item_related_fee_type
     FROM xx_ce_ebay_ca_dtl_stg ca,
       xx_ce_ebay_trx_dtl_stg tdr
@@ -1965,7 +1966,8 @@ BEGIN
         lc_err_msg      :=NULL;
         lc_action       := 'Processing eBAY PreStage Header Data';
         SELECT XX_CE_MPL_HEADER_ID_SEQ.nextval INTO lc_mpl_header_id FROM dual;
-        IF dup_check_transaction(rec_hdr.marketplace_name,rec_hdr.transaction_id)='N' THEN
+       -- IF dup_check_transaction(rec_hdr.marketplace_name,rec_hdr.transaction_id)='N' THEN
+		IF dup_check_transaction_type(p_process_name,rec_hdr.transaction_id,rec_hdr.transaction_type)='N' THEN
           FOR rec_dtl IN cur_settlement_pre_stage_dtl(rec_hdr.transaction_id)
           LOOP
             lc_action       := 'Processing eBAY PreStage Detail Data';
