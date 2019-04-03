@@ -172,8 +172,8 @@ AND trunc(NVL(PAAF.EFFECTIVE_END_DATE,SYSDATE)) = NVL((SELECT MAX(trunc(paf1.EFF
 AND trunc(NVL(PAPF_SUP.EFFECTIVE_END_DATE,SYSDATE)) = NVL((SELECT MAX(trunc(paf1.EFFECTIVE_END_DATE))
                                         FROM   per_all_people_f paf1
                                         WHERE  paf1.PERSON_ID = PAPF_SUP.PERSON_ID),TRUNC(SYSDATE))
-AND length(FU.USER_NAME(+))                 <= 6 
-AND length(FU_SUP.USER_NAME(+))             <= 6 
+AND LENGTH(FU.USER_NAME(+))     	<= 19		--Replaced 6 to 19 to include Oracle Service Accounts
+AND LENGTH(FU_SUP.USER_NAME(+)) 	<= 19		--Replaced 6 to 19 to include Oracle Service Accounts
 ORDER BY FA.application_name,FRV.responsibility_name,PAPF.full_name
 ]]> 
 </sqlStatement>
