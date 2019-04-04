@@ -25,7 +25,7 @@ IS
 -- | 1.0      11-Jul-2017  Havish Kasina    Initial Version                                              |
 -- | 2.0      11-Aug-2017  Avinash Baddam   Fixed the type object/table initialization issue.	           |
 -- | 3.0      25-Jun-2018  Ragni Gupta      Modified cursor query for invoice_payment_staus to include   |
---                                          paid and accounted invoices as well# NAIT-45779              |                                          
+--                                          paid and accounted invoices as well# NAIT-45779              |
 -- | 4.0      12-Jul-2018  Prabeethsoy Nair  Added check_info_inquiry_mul_vend procedure as              |
 -- |                                        part of NAIT-49748                                           |
 -- | 5.0      13-Jul-2018  Ragni Gupta      Modified inv_payment_status and inv_payment_status for multipl
@@ -34,8 +34,6 @@ IS
 -- | 6.1      27-Jul-2018  Ragni Gupta      Modified query in chargeback details inquiry, NAIT-50752     |
 -- | 6.2      08-Aug-2018  Ragni Gupta      Modified query in invoice and payment status to pick DM, NAIT-47685
 -- | 6.3      25-Oct-2018  Madhu Bolli      Modified RTV hdr and detail to stop calling legacy db,NAIT-60687 |
--- | 7.0      20-Nov02018  Shanti Sethuraj  Modified cursor check_details_cur to include vendor_number   |
--- |                                        parameter for NAIT-73016                                     |
 -- +=====================================================================================================+
 g_proc              VARCHAR2(80)    := NULL;
 g_debug             VARCHAR2(1)     := 'N';
@@ -128,7 +126,6 @@ END log_error;
 -- |                                                                   |
 -- | Parameters      : p_po_header_id        		                   |
 -- +===================================================================+
-
 FUNCTION get_po_loc(p_po_header_id  IN  NUMBER)
   RETURN VARCHAR2
 IS
@@ -159,7 +156,6 @@ END;
 -- |                                                                   |
 -- | Parameters      : p_po_header_id        		               |
 -- +===================================================================+
-
 FUNCTION get_po_num(p_po_header_id  IN  NUMBER)
   RETURN VARCHAR2
 IS
@@ -213,17 +209,17 @@ SELECT xx_ap_inv_pymt_status_rec_type((CASE WHEN ai.org_id = 403 THEN 'CAN' ELSE
   NVL(aca.amount,0) ,
   aca.check_date,
   -- SUBSTR(ai.description,9),
-  LPAD(XX_AP_VENDOR_PORTAL_PKG.get_po_loc(NVL(ai.po_header_id,ai.quick_po_header_id)),4,0) ,  
+  LPAD(XX_AP_VENDOR_PORTAL_PKG.get_po_loc(NVL(ai.po_header_id,ai.quick_po_header_id)),4,0) ,
   -- get_po_number(NVL(ai.po_header_id,ai.quick_po_header_id)),
   ai.attribute11
   ||'-'
-  ||LPAD(XX_AP_VENDOR_PORTAL_PKG.get_po_loc(NVL(ai.po_header_id,ai.quick_po_header_id)),4,0) ,  
+  ||LPAD(XX_AP_VENDOR_PORTAL_PKG.get_po_loc(NVL(ai.po_header_id,ai.quick_po_header_id)),4,0) ,
   ai.voucher_num)
 FROM ap_invoices_all ai ,
   ap_supplier_sites_all pvsa ,
   ap_payment_schedules_all apsa ,
   ap_invoice_payments_all aipa,
-  ap_checks_all aca  
+  ap_checks_all aca
 WHERE 1=1
 AND ai.invoice_date BETWEEN NVL(to_date(p_invoice_date_from,'YYYY-MM-DD'),ai.invoice_date) AND NVL(to_date(p_invoice_date_to,'YYYY-MM-DD'),ai.invoice_date)
 AND (p_invoice_number IS NULL OR ai.invoice_num like p_invoice_number)
@@ -236,11 +232,11 @@ AND ai.vendor_site_id = pvsa.vendor_site_id
 AND ai.invoice_id     = apsa.invoice_id
 AND ai.invoice_id     = aipa.invoice_id
 AND aipa.check_id     = aca.check_id
-AND EXISTS (SELECT 1 from po_headers_All 
+AND EXISTS (SELECT 1 from po_headers_All
 where po_header_id=ai.po_header_id
 AND segment1 = p_po_number
 UNION ALL
-SELECT 1 from po_headers_All 
+SELECT 1 from po_headers_All
 where po_header_id=ai.quick_po_header_id
 AND segment1 = p_po_number
 UNION ALL
@@ -271,7 +267,7 @@ SELECT xx_ap_inv_pymt_status_rec_type((CASE WHEN ai.org_id = 403 THEN 'CAN' ELSE
 FROM ap_invoices_all ai ,
   ap_supplier_sites_all pvsa ,
   ap_payment_schedules_all apsa ,
-  xla_events xev,  
+  xla_events xev,
   xla_transaction_entities xte
 WHERE 1 =1
 AND ai.invoice_date BETWEEN NVL(to_date(p_invoice_date_from,'YYYY-MM-DD'),ai.invoice_date) AND NVL(to_date(p_invoice_date_to,'YYYY-MM-DD'),ai.invoice_date)
@@ -289,16 +285,16 @@ AND xte.application_id = 200
 AND xev.entity_id      =xte.entity_id
 AND xev.application_id =xte.application_id
 --AND xev.event_type_code = 'INVOICE VALIDATED' Commented since it was restricting only debit/credit memos -- Ragni Gupta 08-Aug-18
-AND (xev.event_type_code = 'INVOICE VALIDATED' or xev.event_type_code = 'DEBIT MEMO VALIDATED' or xev.event_type_code = 'CREDIT MEMO VALIDATED') 
+AND (xev.event_type_code = 'INVOICE VALIDATED' or xev.event_type_code = 'DEBIT MEMO VALIDATED' or xev.event_type_code = 'CREDIT MEMO VALIDATED')
 AND xev.process_status_code = 'P'
 AND xev.event_status_code   ='P'
 AND not exists(SELECT 1 from ap_invoice_payments_all aipa
 WHERE aipa.invoice_id = ai.invoice_id)
-AND EXISTS (SELECT 1 from po_headers_All 
+AND EXISTS (SELECT 1 from po_headers_All
 where po_header_id=ai.po_header_id
 AND segment1 = p_po_number
 UNION ALL
-SELECT 1 from po_headers_All 
+SELECT 1 from po_headers_All
 where po_header_id=ai.quick_po_header_id
 AND segment1 = p_po_number
 UNION ALL
@@ -345,7 +341,7 @@ AND p_po_number IS NULL
   i NUMBER;
   lc_debug_flag VARCHAR2(1);
 BEGIN
-    xla_security_pkg.set_security_context(602); 
+    xla_security_pkg.set_security_context(602);
     lc_debug_flag := 'Y';
     log_debug_msg ('Debug Flag :'||lc_debug_flag);
     IF (lc_debug_flag = 'Y')
@@ -405,8 +401,7 @@ IS
      FROM ap_supplier_sites_all pvsa
 	 ,ap_checks_all aca
     WHERE 1=1
-      --AND LPAD(NVL(pvsa.attribute9,NVL(pvsa.vendor_site_code_alt,pvsa.vendor_site_id)),10,'0') = LPAD(p_vendor_number,10,'0') --Commented for Jira -73016
-	  AND LTRIM(pvsa.vendor_site_code_alt,'0') = LTRIM(p_vendor_number,'0') --added for Jira NAIT-73016
+      AND LPAD(NVL(pvsa.attribute9,NVL(pvsa.vendor_site_code_alt,pvsa.vendor_site_id)),10,'0') = LPAD(p_vendor_number,10,'0')
       AND aca.check_number = NVL(p_check_number,aca.check_number)
       AND DECODE(aca.org_id, 403,'CAN','USA') = p_country
       AND aca.check_date BETWEEN NVL(to_date(p_check_date_from,'YYYY-MM-DD'),aca.check_date) AND NVL(to_date(p_check_date_to,'YYYY-MM-DD'),aca.check_date)
@@ -416,7 +411,7 @@ IS
                    AND aia.invoice_id = aipa.invoice_id
                              AND aipa.check_id = aca.check_id
                              AND aia.invoice_num = NVL(p_invoice_number, aia.invoice_num));
-                             
+
 
       --Commented below query for NAIT-49748 by Ragni Gupta, 12-Jul-18
     /*SELECT xx_chk_inf_inquiry_rec_type((CASE WHEN ai.org_id = 403 THEN 'CAN' ELSE 'USA' END),
@@ -477,7 +472,6 @@ END;
 -- +===================================================================+
 PROCEDURE check_details_inquiry(
 			     p_check_number           IN  VARCHAR2,
-				 p_vendor_number		  IN  VARCHAR2,   --added for Jira NAIT-73016
 			     p_check_details_obj   OUT xx_ap_check_details_obj_type)
 IS
   CURSOR check_details_cur IS
@@ -498,8 +492,7 @@ IS
       AND aipa.check_id = aca.check_id
       AND ai.invoice_id = aipa.invoice_id
       AND pvsa.vendor_site_id=ai.vendor_site_id
-      AND apsa.invoice_id=ai.invoice_id 
-	  AND LTRIM(pvsa.vendor_site_code_alt,'0') = LTRIM(p_vendor_number,'0') --added for Jira NAIT-73016
+      AND apsa.invoice_id=ai.invoice_id
       ;
 
   lc_debug_flag VARCHAR2(1);
@@ -530,13 +523,13 @@ IS
   CURSOR chargeback_details_cur IS
     SELECT  XX_AP_CHRGBK_DETAILS_REC_TYPE(CASE WHEN aildm.description like 'QTY%' THEN 'SH-SHORTAGE' WHEN aildm.description like 'Price%' THEN 'PO-PRICING' ELSE NULL END,-- chargeback_type,
         (
-        SELECT DISTINCT MC.SEGMENT3 
+        SELECT DISTINCT MC.SEGMENT3
               FROM MTL_ITEM_CATEGORIES MIC,
                 MTL_CATEGORIES_B MC,
                 MTL_SYSTEM_ITEMS_B MSIB
               WHERE MSIB.INVENTORY_ITEM_ID = MIC.INVENTORY_ITEM_ID
               AND MIC.CATEGORY_ID          = MC.CATEGORY_ID
-              AND MSIB.inventory_item_id   = aildm.inventory_item_id 
+              AND MSIB.inventory_item_id   = aildm.inventory_item_id
               AND MSIB.ORGANIZATION_ID     = pla.ship_to_organization_id
               AND MC.SEGMENT3             IS NOT NULL ),-- dept,
           msi.segment1,-- sku,
@@ -553,7 +546,7 @@ IS
           aca.check_number)
       FROM  ap_invoice_lines_all ail
 	       ,ap_invoices_all ai
-		   ,mtl_system_items_b msi 
+		   ,mtl_system_items_b msi
            ,po_line_locations_all pla
            ,po_headers_all ph
            ,po_lines_all pl
@@ -562,7 +555,7 @@ IS
            ,ap_invoice_lines_all aildm
            ,ap_invoices_all aidm
      WHERE aidm.invoice_num = p_invoice_number
-       AND aildm.invoice_id =aidm.invoice_id 
+       AND aildm.invoice_id =aidm.invoice_id
        AND aipa.invoice_id=aildm.invoice_id
        AND aca.check_id=aipa.check_id
        and ph.po_header_id=aidm.quick_po_header_id
@@ -571,7 +564,7 @@ IS
        AND msi.inventory_item_id=aildm.inventory_item_id
        AND msi.organization_id=pla.ship_to_organization_id
        AND pl.po_header_id=pla.po_header_id
-       AND pl.po_line_id=pla.po_line_id 
+       AND pl.po_line_id=pla.po_line_id
        AND ai.invoice_num = SUBSTR(aidm.invoice_num, 0, LENGTH (aidm.invoice_num)-2)
 	   AND ail.invoice_id = ai.invoice_id
 	   AND ail.line_number = TO_NUMBER(aildm.attribute5);
@@ -585,8 +578,8 @@ BEGIN
          g_debug := 'Y';
     ELSE
          g_debug := 'N';
-    END IF; 
-    
+    END IF;
+
     OPEN chargeback_details_cur;
     FETCH chargeback_details_cur BULK COLLECT INTO p_chargeback_details_obj;
     CLOSE chargeback_details_cur;
@@ -637,11 +630,11 @@ IS
 					FROM od.frtbill@legacydb2
 					WHERE out_frt_bill_nbr = p_freight_bill_number
 					  AND ship_doc_nbr = LTRIM(RTRIM(REPLACE(aph.invoice_nbr,'RTV', '')))
-					--	UNION
-					--SELECT 'EXISTS'
-					--FROM od.frtbill_hist@legacydb2
-					--WHERE out_frt_bill_nbr = p_freight_bill_number
-					--  AND ship_doc_nbr = LTRIM(RTRIM(REPLACE(aph.invoice_nbr,'RTV', '')))
+	UNION
+					SELECT 'EXISTS'
+					FROM od.frtbill_hist@legacydb2
+					WHERE out_frt_bill_nbr = p_freight_bill_number
+					  AND ship_doc_nbr = LTRIM(RTRIM(REPLACE(aph.invoice_nbr,'RTV', '')))
 					)
 	      );
 
@@ -662,21 +655,21 @@ IS
    TYPE lcu_freightbill IS TABLE OF lcu_freightbill_cur%ROWTYPE
    INDEX BY PLS_INTEGER;
 
-  
+   
 
-  -- CURSOR lcu_freightbill_hist_cur(c_invoice_num VARCHAR2,c_carrier_id NUMBER) IS
-   --   SELECT LISTAGG (
-    --        rtrim(ltrim(fb.out_frt_bill_nbr)), ' '
-     --     ) WITHIN GROUP (
-      --          ORDER BY fb.out_frt_bill_nbr ASC
-       --    ) as freight_bill_num
-     --   FROM  od.frtbill_hist@legacydb2 fb
-   --    WHERE fb.ship_doc_nbr = c_invoice_num
-  --       AND fb.carrier_id   = c_carrier_id
-	--	 AND fb.out_frt_bill_nbr = NVL(p_freight_bill_number , fb.out_frt_bill_nbr)
-      -- ORDER BY FB.out_frt_bill_nbr ASC;
+   CURSOR lcu_freightbill_hist_cur(c_invoice_num VARCHAR2,c_carrier_id NUMBER) IS
+      SELECT LISTAGG (
+            rtrim(ltrim(fb.out_frt_bill_nbr)), ' '
+          ) WITHIN GROUP (
+                ORDER BY fb.out_frt_bill_nbr ASC
+           ) as freight_bill_num
+        FROM  od.frtbill_hist@legacydb2 fb
+       WHERE fb.ship_doc_nbr = c_invoice_num
+         AND fb.carrier_id   = c_carrier_id
+		 AND fb.out_frt_bill_nbr = NVL(p_freight_bill_number , fb.out_frt_bill_nbr)
+       ORDER BY FB.out_frt_bill_nbr ASC;
 
-     
+   
 
    TYPE legacy_rtv_details IS TABLE OF legacy_rtv_details_cur%ROWTYPE
    INDEX BY PLS_INTEGER;
@@ -744,23 +737,23 @@ BEGIN
           EXCEPTION
           WHEN no_data_found
 		  THEN
-		    
-   	     --   BEGIN
-   	     --      SELECT ltrim(rtrim(carrier_name)),rtvh.carrier_id
-   	     --        INTO  lc_carrier_name,ln_carrier_id
-   	     --        FROM od.rtvdoch_hist@legacydb2 rtvh,
-   	     --             od.carrier@legacydb2 car
-   	     --       WHERE rtvh.rtv_nbr  = lc_legacy_invoice_num
-   	     --         AND car.carrier_id = rtvh.carrier_id
-		--		  AND rownum <= 1
-	--			ORDER BY SHIP_DATE;
-   	  --      EXCEPTION
-   	    ---    WHEN no_data_found THEN
-           --     DBMS_OUTPUT.PUT_LINE('Carrier not found in both legacy and its history for invoice number : '||lc_legacy_invoice_num);
-   	         --  lc_carrier_name := null;
-   	         --  ln_carrier_id := NULL;
-            -- END;
-			
+        
+   	        BEGIN
+   	           SELECT ltrim(rtrim(carrier_name)),rtvh.carrier_id
+   	             INTO  lc_carrier_name,ln_carrier_id
+   	             FROM od.rtvdoch_hist@legacydb2 rtvh,
+   	                  od.carrier@legacydb2 car
+   	            WHERE rtvh.rtv_nbr  = lc_legacy_invoice_num
+   	              AND car.carrier_id = rtvh.carrier_id
+				  AND rownum <= 1
+				ORDER BY SHIP_DATE;
+   	        EXCEPTION
+   	        WHEN no_data_found THEN
+                DBMS_OUTPUT.PUT_LINE('Carrier not found in both legacy and its history for invoice number : '||lc_legacy_invoice_num);
+   	           lc_carrier_name := null;
+   	           ln_carrier_id := NULL;
+             END;
+        
 		       DBMS_OUTPUT.PUT_LINE('Carrier not found in both legacy and its history for invoice number : '||lc_legacy_invoice_num);
    	           lc_carrier_name := null;
    	           ln_carrier_id := NULL;
@@ -776,13 +769,13 @@ BEGIN
 
           DBMS_OUTPUT.PUT_LINE('After legacy freight retrive  -  lcu_freightbill_num is '||lcu_freightbill_num);
 
-		 
-        --  IF lcu_freightbill_num IS NULL THEN
-        --     OPEN lcu_freightbill_hist_cur(lc_legacy_invoice_num,ln_carrier_id);
-        --     FETCH lcu_freightbill_hist_cur INTO lcu_freightbill_num;
-        --     CLOSE lcu_freightbill_hist_cur;
-         -- END IF;
-          
+		
+          IF lcu_freightbill_num IS NULL THEN
+             OPEN lcu_freightbill_hist_cur(lc_legacy_invoice_num,ln_carrier_id);
+             FETCH lcu_freightbill_hist_cur INTO lcu_freightbill_num;
+             CLOSE lcu_freightbill_hist_cur;
+          END IF;
+        
           DBMS_OUTPUT.PUT_LINE('After legacy history freight retrive  -  lcu_freightbill_num is '||lcu_freightbill_num);
 
 		  -- If 'freight bill' value is input and if the frieghtQuery doesnt return match value then no need to add to the output.
@@ -814,7 +807,6 @@ THEN
     DBMS_OUTPUT.PUT_LINE('Exception Message while we are getting the rtv_details inquiry....'||SQLERRM);
 END rtv_details_legacy;
 */
-
 -- +===================================================================+
 -- | Name  : RTV_DETAILS	                                       |
 -- | Description     :                                                 |
@@ -880,7 +872,7 @@ BEGIN
    OPEN rtv_details_cur;
    FETCH rtv_details_cur BULK COLLECT INTO p_rtv_dtls_obj;
    CLOSE rtv_details_cur;
-   
+
    DBMS_OUTPUT.PUT_LINE('EBS Data count - p_rtv_dtls_obj.count is '||p_rtv_dtls_obj.count);
 
 	/** Begin of 6.3
@@ -910,7 +902,7 @@ BEGIN
 	   END IF;  -- IF l_rtv_dtls_obj.count >= 0
 	END IF;   -- IF (NOT (p_document_number IS NOT NULL
 	End of 6.3 **/
-	
+
    DBMS_OUTPUT.PUT_LINE('END - rtv_details');
 
 EXCEPTION
@@ -925,34 +917,34 @@ END rtv_details;
 -- | Description     :                                                 |
 -- |                                                                   |
 -- | Parameters      :          |
--- |                   p_document_number                               | 
+-- |                   p_document_number                               |
 -- +===================================================================+
-PROCEDURE rtv_line_details( 
+PROCEDURE rtv_line_details(
     p_document_number     IN VARCHAR2,
     p_rtv_dtls_obj OUT XX_AP_RTV_DETAILS_OBJ_TYPE)
 IS
   CURSOR rtv_details_cur
   IS
-        SELECT XX_AP_RTV_DETAILS_REC_TYPE(xrh.location, xrl.sku, xrl.vendor_product_code, xrl.item_description, 
-										xrl.qty, 
+        SELECT XX_AP_RTV_DETAILS_REC_TYPE(xrh.location, xrl.sku, xrl.vendor_product_code, xrl.item_description,
+										xrl.qty,
 										xrl.cost,
 										xrl.line_amount,
 										NVL(xrl.adjusted_qty,'0'),
-									 	NVL(xrl.adjusted_cost,'0.00'),                                                                                            
-										NVL(xrl.adjusted_line_amount,'0.00'), 
+									 	NVL(xrl.adjusted_cost,'0.00'),
+										NVL(xrl.adjusted_line_amount,'0.00'),
 										xrl.worksheet_num,
-										xrl.rga_number, 
+										xrl.rga_number,
 										xrh.carrier_name,
-										xrh.freight_bill_num1, 
-										xrh.freight_bill_num2, 
-										xrh.freight_bill_num3, 
-										xrh.freight_bill_num4, 
+										xrh.freight_bill_num1,
+										xrh.freight_bill_num2,
+										xrh.freight_bill_num3,
+										xrh.freight_bill_num4,
 										xrh.freight_bill_num5)
     FROM xx_ap_rtv_hdr_attr xrh,
       xx_ap_rtv_lines_attr xrl
     WHERE xrh.invoice_num = p_document_number
     AND xrh.header_id    =xrl.header_id;
-  /*
+/*
   CURSOR rtv_legacy_details_cur
   IS
   SELECT NULL dept, --?
@@ -963,12 +955,12 @@ IS
       apdd.unit_cost cost,       --?
 	    apdd.extended_cost ext_cost,
       '0' allow_qty, --allow quantity
-      '0.00' allow_cost, --apd.gross_amt/apd.invoice_qty allow_cost,   --? 
+      '0.00' allow_cost, --apd.gross_amt/apd.invoice_qty allow_cost,   --?
       '0.00'allow_ext_cost, --apd.gross_amt/apd.invoice_qty allow_ext cost, --?
       NULL,                                     -- worksheet_nbr,
       rtvh.rga_nbr,
       car.carrier_id,
-      ltrim(rtrim(car.carrier_name)) carrier_name, 
+      ltrim(rtrim(car.carrier_name)) carrier_name,
       LTRIM(RTRIM(REPLACE(aph.invoice_nbr,'RTV', ''))) rtv_nbr
     FROM od.apayhdr@legacydb2 aph,
       od.apaydtl@legacydb2 apd,
@@ -981,28 +973,29 @@ IS
     AND apdd.rtv_nbr  =rtvh.rtv_nbr
     AND rtvh.rtv_nbr(+)  =LTRIM(RTRIM(REPLACE(aph.invoice_nbr,'RTV', '')))
     AND car.carrier_id(+)=rtvh.carrier_id;
-    
+
 TYPE l_rtv_legacy_details
 IS
   TABLE OF rtv_legacy_details_cur%ROWTYPE INDEX BY PLS_INTEGER;
   -- Get Freight Bill Number
-  /*
+  
   CURSOR lcu_freightbill_cur(c_invoice_num VARCHAR2, c_carrier_id NUMBER)
   IS
     SELECT rtrim(ltrim(fb.out_frt_bill_nbr)) freight_bill_num
     FROM od.frtbill@legacydb2 fb
     WHERE fb.ship_doc_nbr   = c_invoice_num
-    AND fb.carrier_id       = c_carrier_id 
+    AND fb.carrier_id       = c_carrier_id
     ORDER BY fb.out_frt_bill_nbr ASC;
 TYPE lcu_freightbill
 IS
-  TABLE OF lcu_freightbill_cur%ROWTYPE INDEX BY PLS_INTEGER;*/
+  TABLE OF lcu_freightbill_cur%ROWTYPE INDEX BY PLS_INTEGER;
+  */
   indx          NUMBER;
   f_indx        NUMBER;
   lc_debug_flag VARCHAR2(1);
   l_rtv_dtls_obj XX_AP_RTV_DETAILS_OBJ_TYPE;
   --l_freightbill_tab lcu_freightbill;
- -- l_rtv_legacy_tab l_rtv_legacy_details;
+  --l_rtv_legacy_tab l_rtv_legacy_details;
   lcu_freightbill_num VARCHAR2(100);
   l_freightbill_nbr1 VARCHAR2(100);
 BEGIN
@@ -1019,7 +1012,7 @@ BEGIN
   CLOSE rtv_details_cur;
   /**  Begin of 6.3
   DBMS_OUTPUT.PUT_LINE('EBS Data count - p_rtv_dtls_obj.count is '||p_rtv_dtls_obj.count);
-  IF p_rtv_dtls_obj.count = 0 THEN 
+  IF p_rtv_dtls_obj.count = 0 THEN
     OPEN rtv_legacy_details_cur;
     FETCH rtv_legacy_details_cur BULK COLLECT INTO l_rtv_legacy_tab;
     IF l_rtv_legacy_tab.COUNT > 0 THEN
@@ -1029,25 +1022,25 @@ BEGIN
           OPEN lcu_freightbill_cur(l_rtv_legacy_tab(i).rtv_nbr,l_rtv_legacy_tab(i).carrier_id);
           FETCH lcu_freightbill_cur BULK COLLECT INTO l_freightbill_tab;
            FOR i IN l_freightbill_tab.FIRST .. l_freightbill_tab.LAST
-            LOOP 
+            LOOP
              l_freightbill_nbr1 :=l_freightbill_tab(i).freight_bill_num;
             END LOOP;
           CLOSE lcu_freightbill_cur;
-          
+
         p_rtv_dtls_obj.extend;
-        p_rtv_dtls_obj(i) := xx_ap_rtv_details_rec_type( l_rtv_legacy_tab(i).dept, 
-                                                         l_rtv_legacy_tab(i).sku, 
-                                                         l_rtv_legacy_tab(i).vendor_product_code, 
-                                                         l_rtv_legacy_tab(i).descr, 
-                                                         l_rtv_legacy_tab(i).rtv_qty, 
+        p_rtv_dtls_obj(i) := xx_ap_rtv_details_rec_type( l_rtv_legacy_tab(i).dept,
+                                                         l_rtv_legacy_tab(i).sku,
+                                                         l_rtv_legacy_tab(i).vendor_product_code,
+                                                         l_rtv_legacy_tab(i).descr,
+                                                         l_rtv_legacy_tab(i).rtv_qty,
                                                          l_rtv_legacy_tab(i).cost, --?
                                                          l_rtv_legacy_tab(i).ext_cost,                                                                                                                                                                                                      --?
                                                          l_rtv_legacy_tab(i).allow_qty,                                                                                                                                                                                                     --?
-                                                         l_rtv_legacy_tab(i).allow_cost,   
+                                                         l_rtv_legacy_tab(i).allow_cost,
                                                          l_rtv_legacy_tab(i).allow_ext_cost,--?
                                                          NULL,                                                                                                                                                                                                                              -- worksheet_nbr,
-                                                         l_rtv_legacy_tab(i).rga_nbr, 
-														 l_rtv_legacy_tab(i).carrier_name, 
+                                                         l_rtv_legacy_tab(i).rga_nbr,
+														 l_rtv_legacy_tab(i).carrier_name,
 														 l_freightbill_nbr1, NULL, NULL, NULL, NULL );
       END LOOP;
     END IF;
@@ -1105,7 +1098,7 @@ FROM ap_invoices_all ai ,
   table(p_vendor_number_list) vpl,
   ap_payment_schedules_all apsa ,
   ap_invoice_payments_all aipa ,
-  ap_checks_all aca  
+  ap_checks_all aca
 WHERE 1=1
 AND ai.invoice_date BETWEEN NVL(to_date(p_invoice_date_from,'YYYY-MM-DD'),ai.invoice_date) AND NVL(to_date(p_invoice_date_to,'YYYY-MM-DD'),ai.invoice_date)
 AND (p_invoice_number IS NULL OR ai.invoice_num like p_invoice_number)
@@ -1119,11 +1112,11 @@ AND ai.vendor_site_id = pvsa.vendor_site_id
 AND ai.invoice_id     = apsa.invoice_id
 AND ai.invoice_id     = aipa.invoice_id
 AND aipa.check_id     = aca.check_id
-AND EXISTS (SELECT 1 from po_headers_All 
+AND EXISTS (SELECT 1 from po_headers_All
 where po_header_id=ai.po_header_id
 AND segment1 = p_po_number
 UNION ALL
-SELECT 1 from po_headers_All 
+SELECT 1 from po_headers_All
 where po_header_id=ai.quick_po_header_id
 AND segment1 = p_po_number
 UNION ALL
@@ -1173,16 +1166,16 @@ AND xte.application_id = 200
 AND xev.entity_id      =xte.entity_id
 AND xev.application_id =xte.application_id
 --AND xev.event_type_code = 'INVOICE VALIDATED' Commented since it was restricting only debit/credit memos -- Ragni Gupta 08-Aug-18
-AND (xev.event_type_code = 'INVOICE VALIDATED' or xev.event_type_code = 'DEBIT MEMO VALIDATED' or xev.event_type_code = 'CREDIT MEMO VALIDATED') 
+AND (xev.event_type_code = 'INVOICE VALIDATED' or xev.event_type_code = 'DEBIT MEMO VALIDATED' or xev.event_type_code = 'CREDIT MEMO VALIDATED')
 AND xev.process_status_code = 'P'
 AND xev.event_status_code   ='P'
 AND not exists(SELECT 1 from ap_invoice_payments_all aipa
 WHERE aipa.invoice_id = ai.invoice_id)
-AND EXISTS (SELECT 1 from po_headers_All 
+AND EXISTS (SELECT 1 from po_headers_All
 where po_header_id=ai.po_header_id
 AND segment1 = p_po_number
 UNION ALL
-SELECT 1 from po_headers_All 
+SELECT 1 from po_headers_All
 where po_header_id=ai.quick_po_header_id
 AND segment1 = p_po_number
 UNION ALL
@@ -1229,7 +1222,7 @@ AND p_po_number IS NULL
   i NUMBER;
   lc_debug_flag VARCHAR2(1);
 BEGIN
-    xla_security_pkg.set_security_context(602); 
+    xla_security_pkg.set_security_context(602);
     lc_debug_flag := 'Y';
     log_debug_msg ('Debug Flag :'||lc_debug_flag);
     IF (lc_debug_flag = 'Y')
@@ -1303,9 +1296,9 @@ IS
                    AND aia.invoice_id = aipa.invoice_id
                              AND aipa.check_id = aca.check_id
                              AND aia.invoice_num = NVL(p_invoice_number, aia.invoice_num));
-                             
 
-  
+
+
   lc_debug_flag VARCHAR2(1);
 BEGIN
     lc_debug_flag := 'Y';
@@ -1317,7 +1310,7 @@ BEGIN
          g_debug := 'N';
     END IF;
 
- 
+
     OPEN check_info_cur;
     FETCH check_info_cur BULK COLLECT INTO p_chk_info_inquiry_obj;
     CLOSE check_info_cur;
