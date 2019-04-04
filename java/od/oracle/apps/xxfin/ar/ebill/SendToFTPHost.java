@@ -29,7 +29,7 @@ public class SendToFTPHost implements JavaConcurrentProgram
     private ChannelSftp gSFTP = null;
     private Session gSession = null;
     private String gsSFTPUser = "Ebill584";
-    private String gsSFTPRootPath = "/" + gsSFTPUser + "-sp:/";
+    private String gsSFTPRootPath = "/" + gsSFTPUser + "-sp:/test/";
     private String gsSFTPCurrentPath = "";
     private String gsHost=null;
     private int gnPort;
