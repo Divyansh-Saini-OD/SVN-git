@@ -156,6 +156,7 @@ IS
     ln_buffer            BINARY_INTEGER := 32767;
     lb_error_flag        BOOLEAN := FALSE;
     lc_conn              utl_smtp.connection;
+	ln_count             NUMBER;
     
     CURSOR get_dropship_dist_c IS
       SELECT
@@ -254,8 +255,9 @@ IS
       fnd_file.Put_line (fnd_file.log, 'File Path         : '
                                        || lc_source_file_path);
 
-      fnd_file.Put_line (fnd_file.log, '*************************************************************');
-
+      fnd_file.Put_line (fnd_file.output, 'Extract File Name : '
+                                          || lc_file_name);
+	  
       BEGIN
           lt_file := utl_file.Fopen (lc_file_path, lc_file_name, 'w', ln_buffer);
       EXCEPTION
@@ -292,8 +294,12 @@ IS
                                   || lc_delimiter
                                   || 'GL_ACCOUNT');
 
-      FOR lcu_dropship_dist_rec IN get_dropship_dist_c LOOP
-          utl_file.Put_line (lt_file, lcu_dropship_dist_rec.vendor
+      ln_count := 0;
+	  
+	  FOR lcu_dropship_dist_rec IN get_dropship_dist_c LOOP
+          ln_count := ln_count + 1;
+		  
+		  utl_file.Put_line (lt_file, lcu_dropship_dist_rec.vendor
                                       || lc_delimiter
                                       || lcu_dropship_dist_rec.voucher_number
                                       || lc_delimiter
@@ -325,8 +331,16 @@ IS
       utl_file.Fclose (lt_file);
 
       fnd_file.Put_line (fnd_file.log, 'AP Dropship Distributions have been written into the file successfully.');
+	  
+	  fnd_file.Put_line (fnd_file.log, 'Total Records : ' || ln_count);
+	  
+	  fnd_file.Put_line (fnd_file.output, 'Total Records : ' || ln_count);
+	  
+	  fnd_file.Put_line (fnd_file.log, '*************************************************************');
+
+      fnd_file.Put_line (fnd_file.output, '*************************************************************');
       
-      fnd_file.Put_line (fnd_file.log, 'Submitting OD: Common Put Program');
+      /*fnd_file.Put_line (fnd_file.log, 'Submitting OD: Common Put Program');
 
       -- Submit File Put Program
       ln_request_id := FND_REQUEST.SUBMIT_REQUEST( application => 'XXFIN'
@@ -385,7 +399,7 @@ IS
          xx_pa_pb_mail.Attach_text (conn => lc_conn, data => g_email_content);
 
          xx_pa_pb_mail.End_mail (conn => lc_conn);
-      END IF;
+      END IF;*/
 
   EXCEPTION
     WHEN OTHERS THEN
