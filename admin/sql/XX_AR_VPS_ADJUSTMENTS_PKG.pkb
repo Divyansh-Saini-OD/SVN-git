@@ -588,7 +588,7 @@ BEGIN
     lc_success_data :=lc_success_data||'**********************************************************************************'||chr(13)||chr(10)||chr(13)||chr(10); 
     lc_success_data :=lc_success_data||'VENDOR NUMBER       '
 	                                 ||'CUSTOMER NUMBER     '
-									 ||'CUSTOMER NAME       '
+									 ||'CUSTOMER NAME                           '
 									 ||'TRANSACTION NUMBER  '
 									 ||'TRANSACTION DATE    '
 	                                 ||'ADJUSTMENT NUMBER   '
@@ -609,7 +609,7 @@ BEGIN
 		THEN
 			lc_src_data := utl_raw.cast_to_raw(lc_success_data||RPAD(r.vendor_num,20,' ')
 			                                                  ||RPAD(r.cust_acct_number,20,' ')
-															  ||RPAD(r.cust_acct_name,20,' ')
+															  ||RPAD(r.cust_acct_name,40,' ')
 															  ||RPAD(r.transaction_number,20,' ')
 															  ||RPAD(TO_CHAR(r.transaction_date,'DD-MON-YYYY'),20,' ')
 															  ||RPAD(r.adjustment_number,20,' ')
