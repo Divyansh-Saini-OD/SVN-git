@@ -1,1 +1,1 @@
-﻿create or replace type strings_array is varray(50) of VARCHAR2(100); 
+﻿CREATE Or REPLACE TYPE strings_array AS VARRAY(50) OF VARCHAR2(100); 
