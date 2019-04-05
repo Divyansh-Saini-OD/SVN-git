@@ -1,0 +1,45 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +==================================================================================+  
+-- | Office Depot - Project Simplify                                                  |
+-- |                                                              |
+-- +==================================================================================+
+-- | SQL Script to create the table:  xx_fa_status               |
+-- |                                                                                  |
+-- |
+-- |                                                                                  |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       15-MAR-2019   Priyam Parmar       Initial DRAFT version                      |
+-- |                                                                                  |
+-- +==================================================================================+
+
+--+=====================================================================+
+--+               CREATE TABLE xx_fa_status
+--+=====================================================================+
+
+
+CREATE TABLE xx_fa_status
+  (
+    asset_id       NUMBER,
+    date_effective DATE,
+    book_type_code VARCHAR2(15),
+    asset_status   VARCHAR2(10)
+  );
+ 
+
+Grant  all on xx_fa_status to APPS;
+
+   /
+Show error
