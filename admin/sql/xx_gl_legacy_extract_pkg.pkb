@@ -22,53 +22,10 @@ AS
   -- |==============                                                                   |
   -- |Version   Date         Authors            Remarks                                |
   -- |========  ===========  ===============    ============================           |
-  -- |1.0      29-JAN-2019   Priyam P        Creation -PSTGB                              |
-  -- |                                                                                 |
+  -- |1.0      29-JAN-2019   Priyam P        Creation                               |
+  -- |  1.1   13-MAR-2019     Priyam P      Removed FTP program and zip to .dat common file copy                                                                               |
   ---+=================================================================================+
-  -- +=================================================================================+
-  -- |                                                                                 |
-  -- |PROCEDURE                                                                        |
-  -- |  print_control_totals                                                           |
-  -- |                                                                                 |
-  -- |DESCRIPTION                                                                      |
-  -- |  Procedure to print the control totals                                          |
-  -- |                                                                                 |
-  -- |HISTORY                                                                          |
-  -- | 1.0          Creation                                                           |
-  -- |                                                                                 |
-  -- |PARAMETERS                                                                       |
-  -- |==========                                                                       |
-  -- |NAME                    TYPE    DESCRIPTION                                      |
-  -- |----------------------- ------- ----------------------------------------         |
-  -- |p_version                IN      Version                                         |
-  -- |p_scenario               IN      Scenario                                        |
-  -- |p_year                   IN      Year                                            |
-  -- |p_period                 IN      Period                                          |
-  -- |p_company                IN      Company                                         |
-  -- |p_value1                 IN      Value1                                          |
-  -- |p_value2                 IN      Value2                                          |
-  -- |p_value3                 IN      Value3                                          |
-  -- |                                                                                 |
-  -- |                                                                                 |
-  -- |PREREQUISITES                                                                    |
-  -- |  None.                                                                          |
-  -- |                                                                                 |
-  -- |CALLED BY                                                                        |
-  -- |  gl_ytd_bal_monthly_extract                                                                          |
-  -- +=================================================================================+
-PROCEDURE print_control_totals(
-    p_version  IN VARCHAR2,
-    p_scenario IN VARCHAR2,
-    p_year     IN VARCHAR2,
-    p_period   IN VARCHAR2,
-    p_company  IN VARCHAR2,
-    p_value1   IN VARCHAR2,
-    p_value2   IN VARCHAR2,
-    p_value3   IN NUMBER )
-IS
-BEGIN
-  UTL_FILE.put_line (g_lt_file, p_version || '|' || p_scenario || '|' || p_year || '|' || p_period || '|' || p_company || '|' || p_value1 || '|' || p_value2 || '|' || 'Top ICP' || '|' || 'Local Currency' || '|' || 'TOTCC' || '|' || 'TOTCHA' || '|' || 'TOTFLW' || '|' || 'TOTREP' || '|' || p_value3 );
-END print_control_totals;
+
 -- +=================================================================================+
 -- |                                                                                 |
 -- |PROCEDURE                                                                        |
@@ -122,8 +79,8 @@ AS
   lc_file_flag         VARCHAR2 (3)   := 'N';
   lc_source_file_path  VARCHAR2 (500);
   lc_dest_file_path    VARCHAR2 (500) := '$XXFIN_DATA/ftp/out/hyperion';
-  ---lc_archive_file_path VARCHAR2 (500) := '$XXFIN_ARCHIVE/outbound';
-  lc_archive_file_path VARCHAR2 (500) := '$XXFIN_DATA/ftp/out/hyperion';
+  lc_archive_file_path VARCHAR2 (500) := '$XXFIN_ARCHIVE/outbound';
+  ---lc_archive_file_path VARCHAR2 (500) := '$XXFIN_DATA/ftp/out/hyperion';
   lc_source_file_name  VARCHAR2 (1000);
   lc_dest_file_name    VARCHAR2 (1000);
   lc_dest_file_rename  VARCHAR2 (1000);
@@ -169,8 +126,8 @@ AS
     SELECT ---gsb.set_of_books_id,
       gsb.ledger_id,
       gsb.short_name,
-      gsb.NAME,
-	  substr(gsb.name,1,2) led_name,
+      gsb.name,
+       substr(gsb.name,1,2) led_name,
       gsb.currency_code,
       gsb.chart_of_accounts_id
     FROM --gl_sets_of_books gsb
@@ -178,7 +135,8 @@ AS
     WHERE gsb.attribute1 = 'Y'
     AND gsb.short_name   = DECODE (p_sob_name, 'ALL', gsb.short_name, p_sob_name );
   -- Cursor query to get the GL Balances
-  CURSOR lcu_gl_balances ( p_set_of_books_id IN NUMBER, p_currency_code IN VARCHAR2, p_period_name IN VARCHAR2, p_coa_id IN NUMBER )
+  cursor lcu_gl_balances ( p_set_of_books_id in number, p_currency_code in varchar2, 
+  p_period_name IN VARCHAR2, p_coa_id IN NUMBER )
   IS
     SELECT 'Final' version,
       'Actual' scenario,
@@ -196,8 +154,8 @@ AS
       gcc.segment4 Location,    ---Location
       gcc.segment7 Future,      ---Future
       SUM((NVL(gb.period_net_dr, 0) + NVL(gb.begin_balance_dr, 0))) - SUM( NVL( gb.period_net_cr, 0) + NVL(gb.begin_balance_cr, 0)) YTD_AMOUNT,
-      SUM(NVL (gb.period_net_dr, 0) -NVL (gb.period_net_cr, 0)) PERIODIC_BALANCE,
-	  decode(gcc.segment1,'1100E','5000E',gcc.segment1) Company_swap
+      sum(nvl (gb.period_net_dr, 0) -nvl (gb.period_net_cr, 0)) periodic_balance,
+          decode(gcc.segment1,'1000E','5000E',gcc.segment1) Company_swap
     FROM GL_LOOKUPS GLLookups,
       gl_ledger_config_details glcd,
       gl_code_combinations gcc,
@@ -226,8 +184,8 @@ AS
     AND glcd.object_type_code            = 'PRIMARY'
     AND glcd.setup_step_code             = 'NONE'
     AND GLLookups.lookup_type            = 'GL_ASF_LEDGER_CATEGORY'
-    AND GLLookups.lookup_code            = gld.ledger_category_code
-	and (gcc.segment1||gld.short_name <> 1003||'US_USD_P' 
+    and gllookups.lookup_code            = gld.ledger_category_code
+    and (gcc.segment1||gld.short_name <> 1003||'US_USD_P' 
     and gcc.segment1||gld.short_name <> 1001||'CA_CAD_P')
     GROUP BY gld.ledger_id ,
       gcc.code_combination_id ,
@@ -240,10 +198,10 @@ AS
       gcc.segment6,---LOB
       gcc.segment4,---Location
       gcc.segment7,
-	   decode(gcc.segment1,'1100E','5000E',gcc.segment1)
+       decode(gcc.segment1,'1000E','5000E',gcc.segment1)
     HAVING ((SUM((NVL(gb.period_net_dr, 0) + NVL(gb.begin_balance_dr, 0))) - SUM( NVL( gb.period_net_cr, 0) + NVL(gb.begin_balance_cr, 0))) <> 0
     OR SUM(NVL (gb.period_net_dr, 0)       -NVL (gb.period_net_cr, 0))                                                                      <>0)
-     ORDER BY decode(gcc.segment1,'1100E','5000E',gcc.segment1);
+    ORDER BY decode(gcc.segment1,'1000E','5000E',gcc.segment1) ;
 BEGIN
   -- Get application_id
   BEGIN
@@ -252,7 +210,7 @@ BEGIN
     FROM fnd_application
     WHERE application_short_name = 'SQLGL';
   EXCEPTION
-  WHEN NO_DATA_FOUND THEN
+  when no_data_found then
     fnd_file.put_line (fnd_file.LOG, 'Exception raised while fetching the application ID. ' || SQLERRM );
   END;
   x_ret_code := 0;
@@ -309,9 +267,6 @@ BEGIN
     WHEN OTHERS THEN
       fnd_file.put_line (fnd_file.LOG, 'Exception raised while fetching Value Set IDs for Account and Cost Center. ' || SQLERRM );
     END;
-    -- Query for fetching hierarchy_id for Report Line --
-   
-    -- Initialize
     ln_com_count        := 1;
     ln_tot_revenue      := 0;
     ln_net_income       := 0;
@@ -323,22 +278,35 @@ BEGIN
     lc_previous_company := NULL;
     ln_rec_count        := 0;
     -- Loop through the gl_balances cursor
-    FOR lr_gl_balances IN lcu_gl_balances (---lr_set_of_books.set_of_books_id,
+    FOR lr_gl_balances IN lcu_gl_balances (
     lr_set_of_books.ledger_id, lr_set_of_books.currency_code, p_period_name,
-   
+
     lr_set_of_books.chart_of_accounts_id )
     loop
-      IF (lc_previous_company <> lr_gl_balances.company_swap) THEN-----Changed by Priyam for 1100E to write to 5000E File
-       
-        IF UTL_FILE.is_open (g_lt_file) THEN
+    
+   -- fnd_file.put_line (fnd_file.LOG,'lc_previous_company out '||lc_previous_company||'lr_gl_balances.company '||lr_gl_balances.company);
+   
+      ----Commented to write 1000E to 5000E(Priyam)
+     -- IF (lc_previous_company <> lr_gl_balances.company) THEN
+     
+     
+     IF (lc_previous_company <> lr_gl_balances.company_swap) THEN
+      
+     --- fnd_file.put_line (fnd_file.LOG,'lc_previous_company inside'||lc_previous_company||'lr_gl_balances.company '||lr_gl_balances.company);
+     
+     
+        if utl_file.is_open (g_lt_file) then
+      
           UTL_FILE.fclose (g_lt_file);
+          
         END IF;
         --------------- Call the Common file copy Program to Copy the file to $XXFIN_DATA/ftp/out/hyperion-------------
         lc_source_file_name := lc_source_file_path || '/' || lc_file_name;
-        lc_dest_file_name   := lc_dest_file_path || '/' || lc_file_name;
-        fnd_file.put_line (fnd_file.LOG, '');
-        fnd_file.put_line (fnd_file.LOG, 'The Created File Name     : ' || lc_source_file_name );
-        fnd_file.put_line (fnd_file.LOG, 'The File Copied  Path     : ' || lc_dest_file_name );
+       --- lc_dest_file_name   := lc_dest_file_path || '/' || lc_file_name;
+        lc_dest_file_name   := lc_archive_file_path || '/' || lc_file_name;
+        fnd_file.put_line (fnd_file.log, '');
+        fnd_file.put_line (fnd_file.log, 'The Created File Name     : ' || lc_source_file_name );
+        fnd_file.put_line (fnd_file.LOG, 'The File Copied  Path    : ' || lc_dest_file_name );
         ln_req_id1 := fnd_request.submit_request ('xxfin', 'XXCOMFILCOPY', '', '', FALSE, lc_source_file_name, lc_dest_file_name, NULL, NULL );
         fnd_file.put_line (fnd_file.LOG, '');
         fnd_file.put_line (fnd_file.LOG, 'The File was Copied into ' || lc_dest_file_path || '. Request id : ' || ln_req_id1 );
@@ -347,6 +315,7 @@ BEGIN
         lb_req_status1 := fnd_concurrent.wait_for_request (request_id => ln_req_id1, INTERVAL => '2', max_wait => '', phase => lc_phase, status => lc_status, dev_phase => lc_devphase, dev_status => lc_devstatus, MESSAGE => lc_message );
         fnd_file.put_line (fnd_file.LOG, '*************************************************************' );
         ln_com_count        := ln_com_count + 1;
+     ----  fnd_file.put_line (fnd_file.LOG,'ln_com_count1 '||ln_com_count);
         ln_rec_count        := 0;
         ln_tot_revenue      := 0;
         ln_net_income       := 0;
@@ -355,20 +324,28 @@ BEGIN
         ln_tot_liability    := 0;
         ln_tot_owner_equity := 0;
         ln_tot_liab_equity  := 0;
-      END IF;
-      IF ln_rec_count = 0 THEN
+      end if;
+      -----------GET FILE NAME START-----------------------------------
+      if ln_rec_count = 0 then
+    ---   fnd_file.put_line (fnd_file.LOG,'ln_rec_count 1 :'||ln_rec_count);
+    
+       ----Commented to write 1000E to 5000E(Priyam)
+       --- lc_file_name :='LegacyODP_ODPEBS' || lr_gl_balances.company || '_' ||lr_set_of_books.led_name||'_'|| TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'Mon') || '_' || TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'Mon')|| '_' ||TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'YY')||'.txt';
         
-       --- lc_file_name :='LegacyODP_ODPEBS' || lr_gl_balances.company || '_' || TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'Mon') || '_' || TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'Mon')|| '_' ||TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'YY')||'.txt';
-	   lc_file_name :='LegacyODP_ODPEBS' || lr_gl_balances.company_swap || '_' ||lr_set_of_books.led_name||'_'|| to_char (to_date (p_period_name, 'MON-YY'), 'Mon') || '_' || to_char (to_date (p_period_name, 'MON-YY'), 'Mon')|| '_' ||to_char (to_date (p_period_name, 'MON-YY'), 'YY')||'.txt';
+         lc_file_name :='LegacyODP_ODPEBS' || lr_gl_balances.company_swap || '_' ||lr_set_of_books.led_name||'_'|| TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'Mon') || '_' || TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'Mon')|| '_' ||TO_CHAR (TO_DATE (p_period_name, 'MON-YY'), 'YY')||'.txt';
+       
         fnd_file.put_line (fnd_file.LOG, '*************************************************************' );
-        fnd_file.put_line (fnd_file.LOG, 'SOB Name     : ' || lr_set_of_books.short_name );
-        fnd_file.put_line (fnd_file.LOG, 'Company     : ' || lr_gl_balances.company_swap );
+        fnd_file.put_line (fnd_file.log, 'SOB Name     : ' || lr_set_of_books.short_name );
+           ----Commented to write 1000E to 5000E(Priyam)
+       ---- fnd_file.put_line (fnd_file.LOG, 'Company     : ' || lr_gl_balances.company );
+       fnd_file.put_line (fnd_file.LOG, 'Company     : ' || lr_gl_balances.company_swap );
         fnd_file.put_line (fnd_file.LOG, 'Currency     : ' || lr_set_of_books.currency_code );
         fnd_file.put_line (fnd_file.LOG, 'Period Name  : ' || p_period_name );
         fnd_file.put_line (fnd_file.LOG, '-------------------------------------------------------------' );
         fnd_file.put_line (fnd_file.LOG, 'File Name : ' || lc_file_name);
         IF NOT UTL_FILE.is_open (g_lt_file) THEN
-          BEGIN
+          begin
+        ---  fnd_file.put_line (fnd_file.LOG,'IF NOT');
             g_lt_file    := UTL_FILE.fopen (lc_file_path, lc_file_name, 'w', ln_buffer );
             lc_file_flag := 'Y';
           EXCEPTION
@@ -377,12 +354,20 @@ BEGIN
             lc_file_flag := 'N';
           END;
         END IF;
-      END IF;
+      end if;
+       -----------GET FILE NAME END-----------------------------------
+       
+        -----------GET line record details START-----------------------------------
       BEGIN
         UTL_FILE.put_line (g_lt_file, lr_gl_balances.Ledger_id || '|' || lr_gl_balances.CCID || '|' || lr_gl_balances.period_name || '|' || lr_gl_balances.period_year || '|' || lr_gl_balances.company || '|' || lr_gl_balances.ACCOUNT || '|' || lr_gl_balances.intercompany || '|' || lr_gl_balances.cost_center || '|' || lr_gl_balances.LOB || '|' || lr_gl_balances.Location || '|' || lr_gl_balances.Future || '|' || lr_gl_balances.YTD_AMOUNT || '|' || lr_gl_balances.PERIODIC_BALANCE );
         ln_rec_count        := ln_rec_count + 1;
-        lc_previous_company := lr_gl_balances.company_swap;
+       ------ fnd_file.put_line (fnd_file.LOG,'ln_rec_count-2 '||ln_rec_count);
        
+       ----Commented to write 1000E to 5000E(Priyam)
+      --  lc_previous_company := lr_gl_balances.company;
+      
+       lc_previous_company := lr_gl_balances.company_swap;
+      --  fnd_file.put_line (fnd_file.LOG,'lc_previous_company '||lc_previous_company);
         lc_version  := lr_gl_balances.VERSION;
         lc_scenario := lr_gl_balances.scenario;
         lc_year     := lr_gl_balances.YEAR;
@@ -392,21 +377,24 @@ BEGIN
       WHEN OTHERS THEN
         ln_error_flag := 1;
         fnd_file.put_line (fnd_file.LOG, 'Exception raised while writing into Text file. ' || SQLERRM );
-      END;
+      end;
+      
+      -----------GET line record details END-----------------------------------
     END LOOP;
-    --IF ln_com_count > 0
-    IF ln_com_count > 0 AND lc_file_flag = 'Y' -- Commented/Added by Veronica for fix of defect# 26743
-      THEN
-    
+
+    IF ln_com_count > 0 AND lc_file_flag = 'Y' 
+      then
+     --- fnd_file.put_line (fnd_file.LOG,'Inside IF');
       IF UTL_FILE.is_open (g_lt_file) THEN
         UTL_FILE.fclose (g_lt_file);
       END IF;
       --------------- Call the Common file copy Program to Copy the file to $XXFIN_DATA/ftp/out/hyperion-------------
       lc_source_file_name := lc_source_file_path || '/' || lc_file_name;
-      lc_dest_file_name   := lc_dest_file_path || '/' || lc_file_name;
-      fnd_file.put_line (fnd_file.LOG, '');
+      ---lc_dest_file_name   := lc_dest_file_path || '/' || lc_file_name;
+      lc_dest_file_name   := lc_archive_file_path || '/' || lc_file_name;
+      fnd_file.put_line (fnd_file.log, '');
       fnd_file.put_line (fnd_file.LOG, 'The Created File Name     : ' || lc_source_file_name );
-      fnd_file.put_line (fnd_file.LOG, 'The File Copied  Path     : ' || lc_dest_file_name );
+      fnd_file.put_line (fnd_file.LOG, 'The File Copied  Path    : ' || lc_dest_file_name );
       ln_req_id1 := fnd_request.submit_request ('xxfin', 'XXCOMFILCOPY', '', '', FALSE, lc_source_file_name, lc_dest_file_name, NULL, NULL );
       fnd_file.put_line (fnd_file.LOG, '');
       fnd_file.put_line (fnd_file.LOG, 'The File was Copied into ' || lc_dest_file_path || '. Request id : ' || ln_req_id1 );
@@ -421,15 +409,56 @@ BEGIN
   fnd_file.put_line (fnd_file.LOG, '*************************************************************' );
   fnd_file.put_line (fnd_file.LOG, 'Archiving the files into $XXFIN_ARCHIVE/outbound' );
   lc_source_file_name := lc_source_file;
-  
-  lc_file_name :='GL_LegacyODP_' || TO_CHAR (to_date (p_period_name, 'MON-YY'), 'Mon') || '_' || TO_CHAR (to_date (p_period_name, 'MON-YY'), 'Mon')|| '_' || TO_CHAR (to_date (p_period_name, 'MON-YY'), 'YY');
-  ---: GL_ LegacyODP_Mon_Mon_YY.zip
-  lc_dest_file_name := lc_archive_file_path || '/' || lc_file_name;
-  ---|| TO_CHAR (SYSDATE, 'DD-MON-YYYYHHMMSS');
+  lc_file_name :='GL_LegacyODP_' || to_char (to_date (p_period_name, 'MON-YY'), 'Mon') || '_' || to_char (to_date (p_period_name, 'MON-YY'), 'Mon')|| '_' || to_char (to_date (p_period_name, 'MON-YY'), 'YY');
+  ---lc_dest_file_name := lc_archive_file_path || '/' || lc_file_name;
+  lc_dest_file_name := lc_dest_file_path || '/' || lc_file_name;
   fnd_file.put_line (fnd_file.LOG, '');
-  fnd_file.put_line (fnd_file.LOG, 'Input Folder    : ' || lc_source_file_name );
-  fnd_file.put_line (fnd_file.log, 'The Archived File Path   : ' || lc_dest_file_name );
- 
+  fnd_file.put_line (fnd_file.log, 'Input Folder    : ' || lc_source_file_name );
+ --- fnd_file.put_line (fnd_file.log, 'The Archived File Path   : ' || lc_dest_file_name );
+  fnd_file.put_line (fnd_file.LOG, 'The MFT File Path   : ' || lc_dest_file_name );
+  ln_req_id2 := fnd_request.submit_request ('xxfin', 'XXODDIRZIP', '', '', FALSE, lc_source_file_name, lc_dest_file_name, NULL, NULL );
+  COMMIT;
+  fnd_file.put_line (fnd_file.log, '');
+  ---fnd_file.put_line (fnd_file.LOG, 'The File was Archived into ' || lc_archive_file_path || '. Request id : ' || ln_req_id2 );
+  /*lb_req_status2 := fnd_concurrent.wait_for_request (request_id => ln_req_id2, INTERVAL => '2', max_wait => '', phase => lc_phase, status => lc_status, dev_phase => lc_devphase, dev_status => lc_devstatus, MESSAGE => lc_message );
+  fnd_file.put_line (fnd_file.LOG, '*************************************************************' );
+  --------------- Call the Common file copy Program to copy .zip file to .dat file-------------
+  fnd_file.put_line (fnd_file.LOG, '');
+  fnd_file.put_line (fnd_file.LOG, '*************************************************************');
+  fnd_file.put_line (fnd_file.LOG, 'Copying .zip file to .dat file');
+  lc_source_file_name := lc_dest_file_name || '.zip';
+  lc_dest_file_name   := 'GL_NAGL_' || TO_CHAR (SYSDATE, 'YYYYMMDDHH24miss') || '.dat';
+  fnd_file.put_line (fnd_file.LOG, '');
+  fnd_file.put_line (fnd_file.LOG, 'Source Path and File Name     : ' || lc_source_file_name );
+  fnd_file.put_line (fnd_file.LOG, 'Copied Path and File Name     : ' || lc_archive_file_path || '/' || lc_dest_file_name );
+  ln_req_id1 := fnd_request.submit_request ('xxfin', 'XXCOMFILCOPY', '', '', FALSE, lc_source_file_name, lc_archive_file_path || '/' || lc_dest_file_name, NULL, NULL );
+  fnd_file.put_line (fnd_file.LOG, '');
+  fnd_file.put_line (fnd_file.LOG, 'OD: Common File Copy submitted to copy file.  Request id : ' || ln_req_id1 );
+  COMMIT;
+  ----------- Wait for the Common file copy Program to Complete -----------
+  lb_req_status1 := fnd_concurrent.wait_for_request (request_id => ln_req_id1, INTERVAL => '2', max_wait => '', phase => lc_phase, status => lc_status, dev_phase => lc_devphase, dev_status => lc_devstatus, MESSAGE => lc_message );
+  fnd_file.put_line (fnd_file.LOG, '*************************************************************' );
+  --------------- Call the OD: Common Put Program to FTP .dat file to HFM, then rename it back to .zip, then delete source .dat file
+  fnd_file.put_line (fnd_file.LOG, '');
+  fnd_file.put_line (fnd_file.LOG, '*************************************************************');
+  fnd_file.put_line (fnd_file.LOG, 'FTPing zip file to SFTP server');
+  lc_dest_file_rename := REPLACE(lc_dest_file_name,'.dat','.zip');
+  fnd_file.put_line (fnd_file.LOG, 'Dest file rename     : ' || lc_dest_file_rename );
+  ln_req_id1 := FND_REQUEST.SUBMIT_REQUEST(application => 'XXFIN' ,program => 'XXCOMFTP' ,description => 'GL Balances File FTP PUT' ,sub_request => FALSE ,argument1 => 'OD_EPM_GL_BAL' -- Row from OD_FTP_PROCESSES translation
+  ,argument2 => lc_dest_file_name                                                                                                                                                       -- Source file name
+  ,argument3 => NULL                                                                                                                                                                    -- Dest file name
+  ,argument4 => 'Y'                                                                                                                                                                     -- Delete source file
+  ,argument5 => lc_dest_file_rename                                                                                                                                                     -- New name after file is FTP'd
+  );
+  COMMIT;
+  IF ln_req_id1 = 0 THEN
+    fnd_file.put_line (fnd_file.LOG,'Error : Unable to submit FTP program to send GL Balances file');
+  ELSE
+    fnd_file.put_line (fnd_file.LOG, 'OD: Common Put Program submitted to FTP file to SFTP server.  Request id : ' || ln_req_id1 );
+  END IF;
+  --------------- END of FTP'ing .dat file
+  
+  */
 EXCEPTION
 WHEN OTHERS THEN
   IF UTL_FILE.is_open (g_lt_file) THEN
