@@ -77,7 +77,9 @@ public class SendToFTPHost implements JavaConcurrentProgram
     public void runProgram(CpContext cpcontext)
     {
       gsConfigPath = cpcontext.getEnvStore().getEnv("XXFIN_TOP") + "/billing/";
+	  System.out.println("Set gsConfigPath\n");
       gConnection = cpcontext.getJDBCConnection();
+	  System.out.println("Set gConnection\n");
       if (gConnection==null) {
         cpcontext.getReqCompletion().setCompletion(ReqCompletion.ERROR, "ERROR");
         System.out.println("Error: connection is null\n");
@@ -102,6 +104,7 @@ public class SendToFTPHost implements JavaConcurrentProgram
 
         System.out.println("OrgID: " + sOrgID);
         gsSFTPRootPath += sOrgID + "/";
+		System.out.println("gsSFTPRootPath: "+gsSFTPRootPath);
 	  }
 	  catch (Exception e) {
         cpcontext.getReqCompletion().setCompletion(ReqCompletion.ERROR, "ERROR");
@@ -170,8 +173,11 @@ public class SendToFTPHost implements JavaConcurrentProgram
             csPaths.execute();
             rsPaths = (ResultSet)csPaths.getObject(1);
             sOrg = csPaths.getString(2);
+			System.out.println("rsPaths: "+rsPaths);
+			System.out.println("sOrg: "+sOrg);
             while (rsPaths.next()) {
                 sbPaths.append(rsPaths.getString("line") + "\r\n");
+				System.out.println("In ftppaths while loop"+rsPaths.getString("line"));
             }
         }
         catch (Exception ex){
@@ -184,11 +190,16 @@ public class SendToFTPHost implements JavaConcurrentProgram
         }
 
         InputStream isPaths = new ByteArrayInputStream(sbPaths.toString().getBytes());
-
+        
+		System.out.println("Before calling loginToFTPHost");
         loginToFTPHost();
+		System.out.println("ftpPaths - 1 : "+gsSFTPRootPath);
         gSFTP.cd(gsSFTPRootPath);
+		System.out.println("ftpPaths - 2");
         gSFTP.put(isPaths,"paths.txt",ChannelSftp.OVERWRITE);
+		System.out.println("ftpPaths - 3");
         gsSFTPCurrentPath = gsSFTPRootPath;
+		System.out.println("ftpPaths - 5");
     }
 
 
@@ -296,17 +307,21 @@ public class SendToFTPHost implements JavaConcurrentProgram
       if (gSFTP==null || gSession==null || gSFTP.isClosed() || !gSFTP.isConnected() || !gSession.isConnected()) {
 
         if (gsHost==null) getFTPConfig();
+		System.out.println("Called get FTPConfig");
 
         JSch jsch=new JSch();
         jsch.addIdentity(gsSFTPUser,readFile(new File(gsConfigPath + "EBILLOpenSSH.ppk")),null,gsUser.getBytes());
         gSession = jsch.getSession(gsSFTPUser, gsHost, gnPort);
+		System.out.println("gSession");
         gSession.setConfig("StrictHostKeyChecking","no");
         gSession.connect();
 
         Channel channel=gSession.openChannel("sftp");
         channel.connect();
         gSFTP=(ChannelSftp)channel;
+		System.out.println("gSFTP");
         gsSFTPCurrentPath = "";
+		System.out.println("loginToFTPHost Successful.");
       }
    }
 
@@ -321,6 +336,9 @@ public class SendToFTPHost implements JavaConcurrentProgram
            gsHost = csConfig.getString(1);
            gnPort = csConfig.getInt(2);
            gsUser = csConfig.getString(3);
+		   System.out.println("gsHost: "+gsHost);
+		   System.out.println("gnPort: "+gnPort);
+		   System.out.println("gsUser: "+gsUser);
         }
         catch (Exception ex){
            ex.printStackTrace();
