@@ -20,6 +20,6 @@ PROMPT
 PROMPT Creating  View for xx_fa_status.....
 PROMPT
 
-exec ad_zd_table.upgrade('XXFIN','XX_FA_STATUS’);
+exec ad_zd_table.upgrade('XXFIN','XX_FA_STATUS');
 
 EXIT;
