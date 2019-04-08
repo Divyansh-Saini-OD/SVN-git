@@ -5882,7 +5882,7 @@ BEGIN
 		 INTO ln_pay_doc
 		 FROM xx_ar_ebl_ind_hdr_hist
 		WHERE document_type = 'Paydoc'
-		  AND billdocs_delivery_method = 'ePDF' 
+		  AND billdocs_delivery_method IN ('ePDF','eXLS') 
 		  AND customer_trx_id = p_customer_trx_id;
 	 EXCEPTION
 	   WHEN OTHERS THEN

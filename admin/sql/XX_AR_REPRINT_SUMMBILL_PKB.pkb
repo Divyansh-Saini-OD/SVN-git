@@ -2996,13 +2996,13 @@ BEGIN
 	   AND c_ext_attr1   = 'Consolidated Bill' --Document_Type
 	   AND c_ext_attr2   = 'Y'                 --paydoc_ind
 	   AND c_ext_attr16  = 'COMPLETE' 
-       AND c_ext_attr3   = 'ePDF'       
+       AND c_ext_attr3 in ('ePDF','eTXT','eXLS')       
 	   AND n_ext_attr2   = p_custdoc_id 	   
 	   AND TRUNC(SYSDATE) BETWEEN d_ext_attr1 AND NVL(d_ext_attr2,TRUNC(SYSDATE))
 	   AND ROWNUM        = 1; 		   
 	
-		IF  ln_delivery_method='ePDF' THEN		
-			lc_error_location:=' Custdoc_id is not null and Cust_account_id is not null and delivery_method is ePDF ';
+		IF  ln_delivery_method in('ePDF','eTXT','eXLS') THEN		
+			lc_error_location:=' Custdoc_id is not null and Cust_account_id is not null and delivery_method is '||ln_delivery_method;
 			lc_cons_msg_bcc := xx_ar_ebl_common_util_pkg.get_cons_msg_bcc(p_custdoc_id,p_cust_account_id,p_billing_number);
 		ELSE
 			lc_cons_msg_bcc:='X';		
@@ -3022,14 +3022,14 @@ BEGIN
            AND c_ext_attr1   = 'Consolidated Bill' --Document_Type
            AND c_ext_attr2   = 'Y' --paydoc_ind
            AND c_ext_attr16  = 'COMPLETE'
-		   AND c_ext_attr3   = 'ePDF'
+		   AND c_ext_attr3 in ('ePDF','eTXT','eXLS')
            AND cust_account_id = p_cust_account_id            
            AND TRUNC(SYSDATE) BETWEEN d_ext_attr1 AND NVL(d_ext_attr2,TRUNC(SYSDATE))
 		   AND ROWNUM        = 1;
 		fnd_file.put_line(fnd_file.log , 'p_cust_doc_id is '||ln_custdoc_id||' delivery_method is '||ln_delivery_method);   
 		
-		IF ln_custdoc_id IS NOT NULL AND ln_delivery_method='ePDF' THEN		
-		lc_error_location:=' Getting Bill complete message for ePDF delivery Method ';
+		IF ln_custdoc_id IS NOT NULL AND ln_delivery_method in ('ePDF','eTXT','eXLS') THEN		
+		lc_error_location:=' Getting Bill complete message for '||ln_delivery_method||' delivery Method';
 		lc_cons_msg_bcc:=xx_ar_ebl_common_util_pkg.get_cons_msg_bcc(ln_custdoc_id,p_cust_account_id,p_billing_number);
 		ELSE
 		lc_cons_msg_bcc:='X';		
@@ -3081,11 +3081,11 @@ BEGIN
 		 AND b.c_ext_attr1   ='Consolidated Bill'
 		 AND b.c_ext_attr2   = 'Y' 
 		 AND b.c_ext_attr16  = 'COMPLETE'
-		 AND b.c_ext_attr3   = 'ePDF'
+		 AND b.c_ext_attr3  IN ('ePDF','eTXT','eXLS')
 		 AND ROWNUM          = 1
 		 AND TRUNC(SYSDATE) BETWEEN B.D_EXT_ATTR1 AND NVL(B.D_EXT_ATTR2,TRUNC(SYSDATE));
 		
-		IF ln_pay_doc = 1 THEN 
+		IF ln_pay_doc >= 1 THEN 
 		lc_paydoc_flag := 'Y'; 
 		ELSE 
         lc_paydoc_flag := 'N'; 
@@ -3102,11 +3102,11 @@ BEGIN
 			   AND c_ext_attr2   = 'Y' --paydoc_ind
 			   AND c_ext_attr16  = 'COMPLETE'
 			   AND cust_account_id = p_cust_account_id 
-			   AND c_ext_attr3   = 'ePDF'			
+			   AND c_ext_attr3 IN ('ePDF','eTXT','eXLS')			
 			   AND TRUNC(SYSDATE) BETWEEN d_ext_attr1 AND NVL(d_ext_attr2,TRUNC(SYSDATE))
 			   AND ROWNUM        = 1;
 		   
-			IF ln_pay_doc = 1 THEN 
+			IF ln_pay_doc >= 1 THEN 
 			lc_paydoc_flag := 'Y'; 
 			ELSE 
 			lc_paydoc_flag := 'N'; 
@@ -3176,7 +3176,8 @@ END get_paydoc_flag;
 		 WHERE n_ext_attr2  = p_cust_doc_id
 		   AND c_ext_attr2  = 'Y' 
 		   AND c_ext_attr16 = 'COMPLETE'
-		   AND c_ext_attr3  = 'ePDF';
+		   AND c_ext_attr3  in ('ePDF','eTXT','eXLS')
+		   AND ROWNUM = 1;
 	ELSE 
 		SELECT COUNT(1)
 		  INTO ln_pay_doc
@@ -3185,14 +3186,14 @@ END get_paydoc_flag;
 		   AND c_ext_attr1   = 'Consolidated Bill' --Document_Type
 		   AND c_ext_attr2   = 'Y' --paydoc_ind
 		   AND c_ext_attr16  = 'COMPLETE'
-		   AND c_ext_attr3   = 'ePDF'
+		   AND c_ext_attr3   in ('ePDF','eTXT','eXLS')
 		   AND cust_account_id = p_cust_account_id            
 		   AND TRUNC(SYSDATE) BETWEEN d_ext_attr1 AND NVL(d_ext_attr2,TRUNC(SYSDATE))
 		   AND ROWNUM = 1;
 		   
 	END IF;	
 	
-    IF ln_pod_cnt >= 1 AND ln_pod_tab_cnt = 0 AND ln_pay_doc = 1 THEN 
+    IF ln_pod_cnt >= 1 AND ln_pod_tab_cnt = 0 AND ln_pay_doc >= 1 THEN 
 	    lc_pod_blurb_msg:= 'Delivery Details Not Available.';
     ELSE 
      lc_pod_blurb_msg := NULL;
