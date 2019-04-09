@@ -5143,11 +5143,11 @@ BEGIN
         generic_tax_parent_dist(p_book_type_code);
         generic_tax_child_dist(p_book_type_code);
       else
-      v_book_type_code:='OD US CORP';
-        oduscorp_parent_assets_hdr(v_book_type_code);
-        oduscorp_child_assets_hdr(v_book_type_code);
-        oduscorp_parent_distribution(v_book_type_code);
-        oduscorp_child_distribution(v_book_type_code);
+      ---v_book_type_code:='OD US CORP';
+        oduscorp_parent_assets_hdr(p_book_type_code);
+        oduscorp_child_assets_hdr(p_book_type_code);
+        oduscorp_parent_distribution(p_book_type_code);
+        oduscorp_child_distribution(p_book_type_code);
       END IF;
     ELSE
       fbdi_project_assets;
