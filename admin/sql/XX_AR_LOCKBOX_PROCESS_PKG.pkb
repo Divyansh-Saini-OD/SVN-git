@@ -8012,13 +8012,19 @@ xx_ar_lockbox_process_pkg.discount_calculate(p_term_id,(p_deposit_date - APS.trx
 
   lc_cust_match_profile         hz_customer_profiles.lockbox_matching_option%TYPE;
   lc_cust_match_profile1         hz_customer_profiles.lockbox_matching_option%TYPE;				-- Added Dinesh NAIT-57202
+  lc_cust_match_profile2         hz_customer_profiles.lockbox_matching_option%TYPE;				-- Added Dinesh NAIT-57202
+  lc_cust_match_profile3         hz_customer_profiles.lockbox_matching_option%TYPE;				-- Added Dinesh NAIT-57202
   ln_customer_id                hz_cust_accounts_all.cust_account_id%TYPE;
 
   lc_oracle_cust_num            VARCHAR2(40);
   ln_standard_terms             hz_customer_profiles.standard_terms%TYPE;
   ln_standard_terms1             hz_customer_profiles.standard_terms%TYPE;						-- Added Dinesh NAIT-57202
+  ln_standard_terms2             hz_customer_profiles.standard_terms%TYPE;						-- Added Dinesh NAIT-57202
+  ln_standard_terms3             hz_customer_profiles.standard_terms%TYPE;						-- Added Dinesh NAIT-57202
   lc_cons_inv_flag              hz_customer_profiles.cons_inv_flag%TYPE;
   lc_cons_inv_flag1				hz_customer_profiles.cons_inv_flag%TYPE;						-- Added Dinesh NAIT-57202
+  lc_cons_inv_flag2				hz_customer_profiles.cons_inv_flag%TYPE;						-- Added Dinesh NAIT-57202
+  lc_cons_inv_flag3				hz_customer_profiles.cons_inv_flag%TYPE;						-- Added Dinesh NAIT-57202
   ln_related_cons_cust_acc		NUMBER;
   lr_record                     xx_ar_payments_interface%ROWTYPE;
 
@@ -8158,8 +8164,12 @@ BEGIN
     ln_customer_id               := NULL;
     lc_cust_match_profile        := NULL;
 	lc_cust_match_profile1       := NULL;	-- Added Dinesh NAIT-57202
+	lc_cust_match_profile2       := NULL;	-- Added Dinesh NAIT-57202
+	lc_cust_match_profile3       := NULL;	-- Added Dinesh NAIT-57202
     ln_standard_terms            := NULL;	
 	ln_standard_terms1			 := NULL;	-- Added Dinesh NAIT-57202
+	ln_standard_terms2			 := NULL;	-- Added Dinesh NAIT-57202
+	ln_standard_terms3			 := NULL;	-- Added Dinesh NAIT-57202
     ld_trx_date                  := NULL;	
     ln_diff_amount               := NULL;
     ln_count_autocash_proc       := NULL;
@@ -8170,8 +8180,10 @@ BEGIN
     ln_get_sum_amt_due_remaining := NULL;
     ln_remittance_amount         := NULL;
     lc_cons_inv_flag             := NULL;
-	lc_cons_inv_flag1			 := NULL; -- Added Dinesh NAIT-57202	
-	ln_related_cons_cust_acc	 := NULL; -- Added Dinesh NAIT-57202	
+	lc_cons_inv_flag1			 := NULL; -- Added Dinesh NAIT-57202
+	lc_cons_inv_flag2			 := NULL; -- Added Dinesh NAIT-57202
+	lc_cons_inv_flag3			 := NULL; -- Added Dinesh NAIT-57202
+	ln_related_cons_cust_acc	 := NULL; -- Added Dinesh NAIT-57202
     lc_trx_number                := NULL;
     lc_oracle_cust_num           := NULL; -- Sai Bala on 04-MAR-2007 to address Defect 5140
     ln_discount_percent          := 0;
@@ -8948,6 +8960,7 @@ END IF;
 						    SET    invoice      		 = ln_cons_inv_id1
 						    WHERE  invoice            = get_lockbox_det_rec.invoice1
 						    AND TRIM(File_Name)		 = get_lockbox_det_rec.file_name;
+							put_log_line('Bill Complete Customer Updated from cons_inv_num -- '||get_lockbox_det_rec.invoice1||' to cons_inv_id : '||ln_cons_inv_id1);
 						    get_lockbox_det_rec.invoice1	:=	ln_cons_inv_id1;	
 						    ln_invoice1_length         :=LENGTH(get_lockbox_det_rec.invoice1);
 					   EXCEPTION
@@ -9104,7 +9117,7 @@ RRRR HH24:MI:SS') );
                  END IF;
 				 -- Added Dinesh NAIT-57202
 				 -- Check for OD_FIN_PAY_WITHIN if relation exists for consolidated bill customer, and  
-				IF lc_cons_inv_flag = 'N' and lc_invoice_exists = 'N' and ln_invoice1_length < 9 THEN
+				IF lc_invoice_exists = 'N' and ln_invoice1_length < 9 THEN
 					put_log_line('Checking for Relationship ln_party_id : '||ln_party_id||' get_bai_deposit_dt.deposit_date : '||get_bai_deposit_dt.deposit_date ||' get_lockbox_det_rec.invoice1 : '||get_lockbox_det_rec.invoice1||' lc_cons_inv_flag : '||lc_cons_inv_flag ||' lc_invoice_exists : '||lc_invoice_exists);
 					OPEN lcu_get_cons_related_cust(
                                       p_party_id     => ln_party_id
@@ -9138,13 +9151,18 @@ RRRR HH24:MI:SS') );
 					ln_custid_count:=ln_custid_count+1;
 					put_log_line('Customer and related customers Account count ' || (ln_custid_count-1));
 
-					UPDATE xx_ar_payments_interface XAPI
-					SET    	 XAPI.customer_id       = ln_related_cons_cust_acc
-							,XAPI.customer_number   = lc_oracle_cust_num
-							,XAPI.auto_cash_request = gn_request_id
-					WHERE  XAPI.rowid             = get_lockbox_rec.rowid
-					AND    XAPI.process_num       = get_lockbox_rec.process_num;
-					ln_customer_id	:=	ln_related_cons_cust_acc;
+					/*
+					IF ln_related_cons_cust_acc IS NOT NULL
+					THEN
+						UPDATE xx_ar_payments_interface XAPI
+						SET    	 XAPI.customer_id       = ln_related_cons_cust_acc
+								,XAPI.customer_number   = lc_oracle_cust_num
+								,XAPI.auto_cash_request = gn_request_id
+						WHERE  XAPI.rowid             = get_lockbox_rec.rowid
+						AND    XAPI.process_num       = get_lockbox_rec.process_num;
+					END IF;	
+					*/
+					--ln_customer_id	:=	ln_related_cons_cust_acc;
 					put_log_line(' Derived values for lc_cust_match_profile1 : '||lc_cust_match_profile1||' ln_standard_terms1 : '||ln_standard_terms1||' lc_cons_inv_flag1 : '||lc_cons_inv_flag1);
 				END IF;
 					------------------------------------------------------------------------------------
@@ -9445,6 +9463,7 @@ record type 6';
 						    SET    invoice      		 = ln_cons_inv_id2
 						    WHERE  invoice            	 = get_lockbox_det_rec.invoice2
 						    AND TRIM(File_Name)		 	 = get_lockbox_det_rec.file_name;
+							put_log_line('Bill Complete Customer Updated from cons_inv_num -- '||get_lockbox_det_rec.invoice2||' to cons_inv_id : '||ln_cons_inv_id2);
 						    get_lockbox_det_rec.invoice2	:=	ln_cons_inv_id2;
 						    ln_invoice2_length    			:= LENGTH(get_lockbox_det_rec.invoice2);
 					   EXCEPTION
@@ -9605,7 +9624,59 @@ HH24:MI:SS') );
 ------------------------------------------------------------------------------------
 -- Step  #5 -- Check Invoice1 whose length less than 9 is a Consolidated Bill Number
 ------------------------------------------------------------------------------------
-                 IF (lc_cons_inv_flag = 'Y' OR lc_cons_inv_flag1 = 'Y') and lc_invoice_exists = 'N' THEN
+				 -- Added Dinesh NAIT-57202
+				 -- Check for OD_FIN_PAY_WITHIN if relation exists for consolidated bill customer, and  
+				 ln_related_cons_cust_acc :=NULL;
+				IF  lc_invoice_exists = 'N' and ln_invoice2_length < 9 THEN
+					put_log_line('Checking for Relationship ln_party_id : '||ln_party_id||' get_bai_deposit_dt.deposit_date : '||get_bai_deposit_dt.deposit_date ||' get_lockbox_det_rec.invoice2 : '||get_lockbox_det_rec.invoice2||' lc_cons_inv_flag : '||lc_cons_inv_flag ||' lc_invoice_exists : '||lc_invoice_exists);
+					OPEN lcu_get_cons_related_cust(
+                                      p_party_id     => ln_party_id
+                                     ,p_deposit_date => get_bai_deposit_dt.deposit_date
+                                     ,p_invoice  	 => get_lockbox_det_rec.invoice2
+                                     );
+					FETCH lcu_get_cons_related_cust INTO ln_related_cons_cust_acc;
+					
+					CLOSE lcu_get_cons_related_cust;
+					put_log_line('Related Customer ln_related_cons_cust_acc : '||ln_related_cons_cust_acc||' ln_customer_id : '||ln_customer_id);			
+					IF ln_related_cons_cust_acc IS NULL
+					THEN
+						OPEN lcu_get_cons_related_cust_acct(
+                                      p_customer_id  => ln_customer_id
+                                     ,p_invoice  	 => get_lockbox_det_rec.invoice2
+                                     );
+						FETCH lcu_get_cons_related_cust_acct INTO ln_related_cons_cust_acc;
+					
+						CLOSE lcu_get_cons_related_cust_acct;
+					END IF;
+					
+					put_log_line('Account Level Related Customer ln_related_cons_cust_acc : '||ln_related_cons_cust_acc);
+					
+					OPEN  lcu_get_cust_match_profile ( p_cust_account_id  =>  ln_related_cons_cust_acc );
+					FETCH lcu_get_cust_match_profile  INTO  lc_cust_match_profile2
+														   ,ln_standard_terms2
+														   ,lc_cons_inv_flag2;
+					CLOSE lcu_get_cust_match_profile;
+					lt_related_custid_type.EXTEND;
+					lt_related_custid_type(ln_custid_count) := ln_related_cons_cust_acc;
+					ln_custid_count:=ln_custid_count+1;
+					put_log_line('Customer and related customers Account count ' || (ln_custid_count-1));
+					/*
+					IF ln_related_cons_cust_acc IS NOT NULL
+					THEN
+						UPDATE xx_ar_payments_interface XAPI
+						SET    	 XAPI.customer_id       = ln_related_cons_cust_acc
+								,XAPI.customer_number   = lc_oracle_cust_num
+								,XAPI.auto_cash_request = gn_request_id
+						WHERE  XAPI.rowid             = get_lockbox_rec.rowid
+						AND    XAPI.process_num       = get_lockbox_rec.process_num;
+					END IF;	
+					ln_customer_id	:=	ln_related_cons_cust_acc;
+					*/
+					put_log_line(' Derived values for lc_cust_match_profile2 : '||lc_cust_match_profile2||' ln_standard_terms2 : '||ln_standard_terms2||' lc_cons_inv_flag2 : '||lc_cons_inv_flag2);
+				END IF;
+
+				put_log_line('Before Calling as_is_consolidated_match_rule 2 : customer_id : '||ln_customer_id||' invoice2 : '||get_lockbox_det_rec.invoice2||' Applied AMount : '||ln_amount_applied2|| 'lc_cons_inv_flag '||lc_cons_inv_flag ||' lc_invoice_exists '||lc_invoice_exists);
+                 IF (lc_cons_inv_flag = 'Y' OR lc_cons_inv_flag2 = 'Y') and lc_invoice_exists = 'N' THEN
                        lc_error_location := 'Calling the AS IS Consolidated Match Rule';
                        put_log_line('[BEGIN] AS IS Consolidated Match Rule For Invoice 2- ' || TO_CHAR(SYSDATE,'DD-MON-RRRR HH24:MI:SS') );
                        lc_consolidated_check := 'Y';
@@ -9912,6 +9983,7 @@ record type 6';
 						   SET    invoice      		 = ln_cons_inv_id3
 						   WHERE  invoice            = get_lockbox_det_rec.invoice3
 						   AND TRIM(File_Name)		 = get_lockbox_det_rec.file_name;
+						   put_log_line('Bill Complete Customer Updated from cons_inv_num -- '||get_lockbox_det_rec.invoice3||' to cons_inv_id : '||ln_cons_inv_id3);
 						   get_lockbox_det_rec.invoice3	:=	ln_cons_inv_id3;	
 						   ln_invoice3_length    		:= LENGTH(get_lockbox_det_rec.invoice3);
 					   EXCEPTION
@@ -10073,7 +10145,60 @@ RRRR HH24:MI:SS') );
 ------------------------------------------------------------------------------------
 -- Step  #5 -- Check Invoice3 whose length less than 9 is a Consolidated Bill Number
 ------------------------------------------------------------------------------------
-                 IF (lc_cons_inv_flag = 'Y' OR lc_cons_inv_flag1 = 'Y') and lc_invoice_exists = 'N' THEN
+	 -- Added Dinesh NAIT-57202
+				 -- Check for OD_FIN_PAY_WITHIN if relation exists for consolidated bill customer, and  
+				 ln_related_cons_cust_acc :=NULL;
+				IF  lc_invoice_exists = 'N' and ln_invoice3_length < 9 THEN
+					put_log_line('Checking for Relationship ln_party_id : '||ln_party_id||' get_bai_deposit_dt.deposit_date : '||get_bai_deposit_dt.deposit_date ||' get_lockbox_det_rec.invoice3 : '||get_lockbox_det_rec.invoice3||' lc_cons_inv_flag : '||lc_cons_inv_flag ||' lc_invoice_exists : '||lc_invoice_exists);
+					OPEN lcu_get_cons_related_cust(
+                                      p_party_id     => ln_party_id
+                                     ,p_deposit_date => get_bai_deposit_dt.deposit_date
+                                     ,p_invoice  	 => get_lockbox_det_rec.invoice3
+                                     );
+					FETCH lcu_get_cons_related_cust INTO ln_related_cons_cust_acc;
+					
+					CLOSE lcu_get_cons_related_cust;
+					put_log_line('Related Customer ln_related_cons_cust_acc : '||ln_related_cons_cust_acc||' ln_customer_id : '||ln_customer_id);			
+					IF ln_related_cons_cust_acc IS NULL
+					THEN
+						OPEN lcu_get_cons_related_cust_acct(
+                                      p_customer_id  => ln_customer_id
+                                     ,p_invoice  	 => get_lockbox_det_rec.invoice3
+                                     );
+						FETCH lcu_get_cons_related_cust_acct INTO ln_related_cons_cust_acc;
+					
+						CLOSE lcu_get_cons_related_cust_acct;
+					END IF;
+					
+					put_log_line('Account Level Related Customer ln_related_cons_cust_acc : '||ln_related_cons_cust_acc);
+					
+					OPEN  lcu_get_cust_match_profile ( p_cust_account_id  =>  ln_related_cons_cust_acc );
+					FETCH lcu_get_cust_match_profile  INTO  lc_cust_match_profile3
+														   ,ln_standard_terms3
+														   ,lc_cons_inv_flag3;
+					CLOSE lcu_get_cust_match_profile;
+					lt_related_custid_type.EXTEND;
+					lt_related_custid_type(ln_custid_count) := ln_related_cons_cust_acc;
+					ln_custid_count:=ln_custid_count+1;
+					put_log_line('Customer and related customers Account count ' || (ln_custid_count-1));
+					/*
+					IF ln_related_cons_cust_acc IS NOT NULL
+					THEN
+						UPDATE xx_ar_payments_interface XAPI
+						SET    	 XAPI.customer_id       = ln_related_cons_cust_acc
+								,XAPI.customer_number   = lc_oracle_cust_num
+								,XAPI.auto_cash_request = gn_request_id
+						WHERE  XAPI.rowid             = get_lockbox_rec.rowid
+						AND    XAPI.process_num       = get_lockbox_rec.process_num;
+					END IF;	
+					ln_customer_id	:=	ln_related_cons_cust_acc;
+					*/
+					put_log_line(' Derived values for lc_cust_match_profile3 : '||lc_cust_match_profile3||' ln_standard_terms3 : '||ln_standard_terms3||' lc_cons_inv_flag3 : '||lc_cons_inv_flag3);
+				END IF;
+
+				put_log_line('Before Calling as_is_consolidated_match_rule 3 : customer_id : '||ln_customer_id||' invoice3 : '||get_lockbox_det_rec.invoice3||' Applied AMount : '||ln_amount_applied3|| 'lc_cons_inv_flag '||lc_cons_inv_flag ||' lc_invoice_exists '||lc_invoice_exists);
+
+                 IF (lc_cons_inv_flag = 'Y' OR lc_cons_inv_flag3 = 'Y') and lc_invoice_exists = 'N' THEN
                        lc_error_location := 'Calling the AS IS Consolidated Match Rule';
                        put_log_line('[BEGIN] AS IS Consolidated Match Rule For Invoice 3 - ' || TO_CHAR(SYSDATE,'DD-MON-RRRR 
 HH24:MI:SS') );
