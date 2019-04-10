@@ -45,7 +45,7 @@ AS
 -- | 16.0        07-MAR-2019  Sahithi K           modified program_id logic in UPSERT script |
 -- |                                              from req_id to con_program_id NAIT-87055   |
 -- | 17.0        09-APR-2019  Sahithi K           modified interface_line_attribute1 with    |
--- |                                              order#-inv_seq_counter                     |
+-- |                                              order#-inv_seq_counter NAIT-91124          |
 -- +=========================================================================================+
  
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -3311,6 +3311,33 @@ AS
         IF  px_subscription_array(indx).billing_sequence_number < lr_contract_line_info.initial_billing_sequence
         AND lr_contract_line_info.program = 'SS'
         THEN
+          
+          /*****************************
+          * get invoice sequence counter
+          *****************************/
+          IF px_subscription_array(indx).inv_seq_counter IS NULL
+          THEN
+            FOR indx IN 1 .. px_subscription_array.COUNT
+            LOOP
+              IF ln_loop_counter = 0
+              THEN
+                ln_loop_counter := ln_loop_counter + 1; 
+                get_inv_seq_counter(p_contract_number => px_subscription_array(indx).contract_number
+                                   ,x_inv_seq_counter => l_inv_seq_counter);
+                                   
+                px_subscription_array(indx).inv_seq_counter := l_inv_seq_counter;
+                
+                lc_action := 'Calling update_subscription_info';
+                update_subscription_info(px_subscription_info => px_subscription_array(indx));
+              ELSE
+                px_subscription_array(indx).inv_seq_counter := l_inv_seq_counter;
+                
+                lc_action := 'Calling update_subscription_info';
+                update_subscription_info(px_subscription_info => px_subscription_array(indx));
+              END IF;
+            END LOOP;
+          END IF;  
+          
           /**************************************
           * Get initial order header invoice info
           **************************************/
