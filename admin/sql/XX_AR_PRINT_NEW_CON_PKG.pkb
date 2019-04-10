@@ -337,7 +337,7 @@ AS
    CURSOR lcu_cons_cust1(p_cutoff_date DATE,
                          p_org_id      hz_cust_acct_sites_all.org_id%TYPE)
    IS
-   SELECT DISTINCT hca.cust_account_id ,hca.account_number , acbct.cycle_name , acbct.billing_cycle_id --, acbcd.*
+   /*SELECT DISTINCT hca.cust_account_id ,hca.account_number , acbct.cycle_name , acbct.billing_cycle_id --, acbcd.*
    FROM   hz_cust_accounts HCA ,
           hz_customer_profiles HCP ,
           ra_terms rt,
@@ -356,7 +356,41 @@ AS
                   FROM HZ_CUST_ACCT_SITES_ALL hcasa
                   WHERE hcasa.cust_account_id = hca.cust_account_id
                   AND org_id = p_org_id)
-  ORDER BY hca.account_number;
+  ORDER BY hca.account_number; */ --Raj commented for Jira#NAIT-84128
+  SELECT 
+          HCP.CUST_ACCOUNT_ID,
+	      (SELECT hca.account_number FROM hz_cust_accounts hca WHERE hca.cust_account_id = hcp.cust_account_id) account_number,
+	      (SELECT ACBCT.CYCLE_NAME FROM AR_CONS_BILL_CYCLES_TL ACBCT 
+		   WHERE ACBCT.BILLING_CYCLE_ID = B.BILLING_CYCLE_ID AND  ACBCT.LANGUAGE = 'US' AND ROWNUM < 2
+		   ) CYCLE_NAME,
+	       B.BILLING_CYCLE_ID
+	FROM HZ_CUSTOMER_PROFILES HCP,
+		 RA_TERMS_B B 
+	WHERE HCP.SITE_USE_ID       IS NULL
+	AND HCP.CONS_INV_FLAG      = 'Y'
+	AND B.TERM_ID              = HCP.STANDARD_TERMS
+	AND EXISTS 
+		(
+		  SELECT 1
+		  FROM AR_CONS_BILL_CYCLE_DATES ACBCD
+		  WHERE 1=1  
+		  AND ACBCD.BILLABLE_DATE    = to_date(p_cutoff_date,'DD-MON-RRRR')
+		  AND ACBCD.BILLING_CYCLE_ID = B.BILLING_CYCLE_ID 
+		) 
+	AND EXISTS
+	 ( 
+	  SELECT /*+ index(hcasa HZ_CUST_ACCT_SITES_N2 ) */
+			   1
+	  FROM HZ_CUST_ACCT_SITES_ALL HCASA
+	  WHERE HCASA.CUST_ACCOUNT_ID = HCP.CUST_ACCOUNT_ID
+	  AND ORG_ID                  = p_org_id
+	 )
+	 ORDER BY account_number;
+   /*Raj 1-April-2019 for Jira#NAIT-84128. The above SQL will do a FTS on HCP and rest of the huge tables like HCASA will scan on selected HZ_CUST_ACCT_SITES_N2 
+    HCA will finally be accessed with the _U1 index. The existing SQL 0wjcqrhg5rpb7 in production does a FTS on all the 3 tables ie HCP, HCA and HCASA.
+	The only performance fix that would be required on the above SQL would be a combination index on CONS_INV_FLAG and STANDARD_TERMS. 
+   */ 
+   
       
    TYPE cons_cust_rec_type IS RECORD( cust_account_id           hz_cust_accounts.cust_account_id%TYPE
                                      ,account_number            hz_cust_accounts.account_number%TYPE
@@ -1151,7 +1185,9 @@ END;
                 ,last_update_login  = FND_GLOBAL.USER_ID
                  -- End of changes for R1.3 defect 4761
             WHERE  concurrent_request_id  = i.request_id;
-
+			
+			/*Raj Jira#NAIT-84128 new index XXFIN.XX_AR_CONS_INV_ALL_N1 created on concurrent_request_id to speeden up the above update */
+			
             ln_cons_update := ln_cons_update + SQL%ROWCOUNT;
 
             FND_FILE.PUT_LINE(FND_FILE.LOG,'Number of Consolidated Bills generated for this request : '||ln_cons_update);
