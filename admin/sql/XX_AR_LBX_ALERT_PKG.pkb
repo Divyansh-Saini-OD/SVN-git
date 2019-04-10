@@ -1,5 +1,4 @@
-CREATE OR REPLACE 
-PACKAGE BODY xx_ar_lbx_alert_pkg AS
+CREATE OR REPLACE PACKAGE BODY "APPS"."XX_AR_LBX_ALERT_PKG" AS
 
 -- +=====================================================================================================+
 -- |                                Office Depot - Project Simplify                                      |
@@ -70,13 +69,13 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
     gn_org_id           NUMBER          :=  0;
     gn_customer_id      NUMBER          :=  0;
     gn_conc_req_id      NUMBER          :=  0;
-    gn_user_id          NUMBER          :=  0;    
+    gn_user_id          NUMBER          :=  0;
     gn_interim_count    NUMBER          :=  0;
     gn_nodes_count      NUMBER          :=  0;
     gn_query_tim_diff   NUMBER          :=  0;
     gd_exec_start_time  DATE            :=  NULL;
-    
-    
+
+
     -- +============================================================================+
     -- | Name             : PUT_LOG_LINE                                            |
     -- |                                                                            |
@@ -91,13 +90,13 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
     -- | Version  Date         Author          Remarks                              |
     -- | =======  ===========  =============   ===================================  |
     -- | 1.0      03-Dec-2012  Abdul Khan      Initial version - QC Defect # 21270  |
-    -- +============================================================================+        
+    -- +============================================================================+
     PROCEDURE put_log_line ( p_debug_flag   IN   VARCHAR2 DEFAULT 'N',
                              p_force        IN   VARCHAR2 DEFAULT 'N',
                              p_buffer       IN   VARCHAR2 DEFAULT ' '
-                           ) 
+                           )
     AS
-    
+
     BEGIN
        IF (p_debug_flag = 'Y' OR p_force = 'Y')
        THEN
@@ -112,7 +111,7 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
        END IF;
     END put_log_line;
 
-      
+
     -- +============================================================================+
     -- | Name             : GET_TRANSLATIONS                                        |
     -- |                                                                            |
@@ -127,13 +126,13 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
     -- | Version  Date         Author          Remarks                              |
     -- | =======  ===========  =============   ===================================  |
     -- | 1.0      03-Dec-2012  Abdul Khan      Initial version - QC Defect # 21270  |
-    -- +============================================================================+        
+    -- +============================================================================+
     PROCEDURE get_translations ( p_debug_flag       IN  VARCHAR2,
                                  p_translation_name IN  VARCHAR2,
-                                 p_source_field1    IN  VARCHAR2 
+                                 p_source_field1    IN  VARCHAR2
                                )
     AS
-   
+
     BEGIN
 
         SELECT def.source_field1,
@@ -199,7 +198,7 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
                gc_target_value12,
                gc_target_value13,
                gc_target_value14,
-               gc_target_value15    
+               gc_target_value15
           FROM xx_fin_translatedefinition def,
                xx_fin_translatevalues val
          WHERE def.translate_id     = val.translate_id
@@ -209,9 +208,9 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
            AND val.enabled_flag     = 'Y'
            AND SYSDATE BETWEEN def.start_date_active AND NVL (def.end_date_active, SYSDATE + 1)
            AND SYSDATE BETWEEN val.start_date_active AND NVL (val.end_date_active, SYSDATE + 1);
-      
+
     END get_translations;
-    
+
 
     -- +============================================================================+
     -- | Name             : FETCH_TRANSLATION_VALUES                                |
@@ -226,39 +225,39 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
     -- | Version  Date         Author          Remarks                              |
     -- | =======  ===========  =============   ===================================  |
     -- | 1.0      03-Dec-2012  Abdul Khan      Initial version - QC Defect # 21270  |
-    -- +============================================================================+   
+    -- +============================================================================+
     PROCEDURE fetch_translation_values ( p_debug_flag    IN  VARCHAR2,
-                                         p_return_status OUT VARCHAR2 
+                                         p_return_status OUT VARCHAR2
                                        )
     AS
-    
+
         lc_translation_name     VARCHAR2(100)   :=  NULL;
         lc_source_field1        VARCHAR2(100)   :=  NULL;
-        
+
     BEGIN
-    
+
         lc_translation_name :=  'XX_AR_LOCKBOX_ALERT';
         lc_source_field1    :=  'Alert Email Setup';
-        
+
         put_log_line (p_debug_flag, 'Y', ' ');
         put_log_line (p_debug_flag, 'N', 'PROCEDURE fetch_translation_values - Begin');
         put_log_line (p_debug_flag, 'Y', 'Translation Setup Details');
         put_log_line (p_debug_flag, 'Y', 'Translation Name     - '|| lc_translation_name);
         put_log_line (p_debug_flag, 'Y', 'Translation Values   ');
-        
+
         --This procedure will fetch and set the translation values
         get_translations ( p_debug_flag        => p_debug_flag,
-                           p_translation_name  => lc_translation_name, 
+                           p_translation_name  => lc_translation_name,
                            p_source_field1     => lc_source_field1
                          );
-        
+
         put_log_line (p_debug_flag, 'Y', RPAD(gc_source_field1, 20, ' ')  || ' - ' || gc_source_value1);
         put_log_line (p_debug_flag, 'Y', RPAD(gc_target_field1, 20, ' ')  || ' - ' || gc_target_value1);
         put_log_line (p_debug_flag, 'Y', RPAD(gc_target_field2, 20, ' ')  || ' - ' || gc_target_value2);
         put_log_line (p_debug_flag, 'Y', RPAD(gc_target_field3, 20, ' ')  || ' - ' || gc_target_value3);
         put_log_line (p_debug_flag, 'Y', RPAD(gc_target_field4, 20, ' ')  || ' - ' || gc_target_value4);
         put_log_line (p_debug_flag, 'Y', RPAD(gc_target_field5, 20, ' ')  || ' - ' || gc_target_value5);
-        put_log_line (p_debug_flag, 'Y', RPAD(gc_target_field6, 20, ' ')  || ' - ' || gc_target_value6);        
+        put_log_line (p_debug_flag, 'Y', RPAD(gc_target_field6, 20, ' ')  || ' - ' || gc_target_value6);
         put_log_line (p_debug_flag, 'N', RPAD(gc_target_field7, 20, ' ')  || ' - ' || gc_target_value7);
         put_log_line (p_debug_flag, 'N', RPAD(gc_target_field8, 20, ' ')  || ' - ' || gc_target_value8);
         put_log_line (p_debug_flag, 'N', RPAD(gc_target_field9, 20, ' ')  || ' - ' || gc_target_value9);
@@ -268,16 +267,16 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
         put_log_line (p_debug_flag, 'N', RPAD(gc_target_field13, 20, ' ') || ' - ' || gc_target_value13);
         put_log_line (p_debug_flag, 'N', RPAD(gc_target_field14, 20, ' ') || ' - ' || gc_target_value14);
         put_log_line (p_debug_flag, 'N', RPAD(gc_target_field15, 20, ' ') || ' - ' || gc_target_value15);
-        
+
         p_return_status := 'SUCCESS';
         gc_mainp_status := 'SUCCESS';
-        
+
     EXCEPTION
         WHEN OTHERS THEN
             put_log_line (p_debug_flag, 'Y', 'Exception at PROCEDURE fetch_translation_values : ' || SQLERRM);
             p_return_status := 'FAILURE';
             gc_mainp_status := 'FAILURE';
-           
+
             xx_com_error_log_pub.log_error
                         (p_program_type                => 'CONCURRENT PROGRAM',
                          p_program_name                => gc_program_name,
@@ -289,10 +288,10 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
                          p_error_message_severity      => 'Major',
                          p_notify_flag                 => 'N',
                          p_object_type                 => 'PACKAGE BODY xx_ar_lbx_alert_pkg');
-    
+
     END fetch_translation_values;
-    
-    
+
+
     -- +============================================================================+
     -- | Name             : CHECK_LBX_SYSTEM_STATS                                  |
     -- |                                                                            |
@@ -306,12 +305,12 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
     -- | Version  Date         Author          Remarks                              |
     -- | =======  ===========  =============   ===================================  |
     -- | 1.0      03-Dec-2012  Abdul Khan      Initial version - QC Defect # 21270  |
-    -- +============================================================================+   
+    -- +============================================================================+
     PROCEDURE check_lbx_system_stats   ( p_debug_flag    IN  VARCHAR2,
-                                         p_return_status OUT VARCHAR2 
+                                         p_return_status OUT VARCHAR2
                                        )
     AS
-    
+
         lc_trx_number   VARCHAR2(30)    :=  NULL;
         lc_inv_currency VARCHAR2(30)    :=  NULL;
         lc_start_time   VARCHAR2(25)    :=  NULL;
@@ -325,47 +324,50 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
         ln_amt_due_rem  NUMBER          :=  0;
         ln_request_id   NUMBER          :=  0;
         lb_req_status   BOOLEAN         :=  TRUE;
-        
+		
+		ln_payrel_end_dated_days NUMBER := fnd_profile.value('OD_PAYING_RELATIONSHIPS_END_DATED_DAYS'); --Raj Jira#NAIT-84157
+
     BEGIN
-    
+
         gn_interim_count    :=  NULL;
         gn_nodes_count      :=  NULL;
-        
+
         put_log_line (p_debug_flag, 'Y', ' ');
         put_log_line (p_debug_flag, 'N', 'PROCEDURE check_lbx_system_stats - Begin');
         put_log_line (p_debug_flag, 'Y', 'Check Lockbox System Statistics');
-        
-        --This query will give you the current count of records in interim table  
+
+        --This query will give you the current count of records in interim table
         SELECT COUNT(parent_id)
           INTO gn_interim_count
           FROM xx_hz_hierarchy_nodes_interim;
-          
-        put_log_line (p_debug_flag, 'Y', RPAD('Current Count', 20, ' ') || ' - ' || gn_interim_count);  
-    
+
+        put_log_line (p_debug_flag, 'Y', RPAD('Current Count', 20, ' ') || ' - ' || gn_interim_count);
+
         --Query to get the approx. count of records which are going to be inserted in the interim table after truncation.
         SELECT COUNT(parent_id)
           INTO gn_nodes_count
           FROM hz_hierarchy_nodes
          WHERE hierarchy_type = 'OD_FIN_PAY_WITHIN'
-           AND effective_end_date > SYSDATE - fnd_profile.value('OD_PAYING_RELATIONSHIPS_END_DATED_DAYS');
-        
+           AND effective_end_date > SYSDATE - ln_payrel_end_dated_days; --fnd_profile.value('OD_PAYING_RELATIONSHIPS_END_DATED_DAYS'); --Raj Jira#NAIT-84157 
+		   
+
         put_log_line (p_debug_flag, 'Y', RPAD('Expected Count', 20, ' ') || ' - ' || gn_nodes_count);
-        
+
         --Query to get customer details
-        SELECT account_name, 
+        SELECT account_name,
                account_number,
-               cust_account_id 
+               cust_account_id
           INTO gc_customer_name,
                gc_customer_num,
                gn_customer_id
           FROM hz_cust_accounts
          WHERE account_number = gc_target_value5
            AND status         = 'A'
-           AND rownum         = 1;   
-        
+           AND rownum         = 1;
+
         put_log_line (p_debug_flag, 'N', RPAD('Customer Number', 20, ' ') || ' - ' || gc_customer_num);
         put_log_line (p_debug_flag, 'Y', RPAD('Customer Name', 20, ' ') || ' - ' || gc_customer_name);
-        
+
         INSERT INTO xx_ar_lockbox_alert
               (alert_request_id,
                 alert_start_time,
@@ -389,12 +391,12 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
                 gn_user_id,
                 gd_exec_start_time
               );
-              
-        COMMIT;      
-        
+
+        COMMIT;
+
         lc_start_time := TO_CHAR(SYSDATE,'DD-MON-YYYY HH24:MI:SS');
-        
-        --Submit XXARLBXALERT_ETC - OD: AR Lockbox Alert - Execution Time Check 
+
+        --Submit XXARLBXALERT_ETC - OD: AR Lockbox Alert - Execution Time Check
         ln_request_id := FND_REQUEST.SUBMIT_REQUEST ( application   => 'XXFIN',
                                                       program       => 'XXARLBXALERT_ETC',
                                                       description   => '',
@@ -403,22 +405,22 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
                                                       argument1     => gc_customer_num,
                                                       argument2     => p_debug_flag
                                                     );
-                                                    
+
         COMMIT;
-        
-        put_log_line (p_debug_flag, 'Y', RPAD('Request ID Submitted', 20, ' ') || ' - ' || ln_request_id); 
-               
-        IF ln_request_id <> 0 THEN            
-            
+
+        put_log_line (p_debug_flag, 'Y', RPAD('Request ID Submitted', 20, ' ') || ' - ' || ln_request_id);
+
+        IF ln_request_id <> 0 THEN
+
             UPDATE xx_ar_lockbox_alert
                SET child_request_id    = ln_request_id,
                    child_start_time    = SYSDATE,
                    query_name1         = gc_target_field4,
                    query_threshold1    = TO_NUMBER (gc_target_value4)
              WHERE alert_request_id    = FND_GLOBAL.CONC_REQUEST_ID;
-        
+
             COMMIT;
-            
+
             lb_req_status := FND_CONCURRENT.WAIT_FOR_REQUEST ( request_id => ln_request_id,
                                                                interval   => 1,
                                                                max_wait   => TO_NUMBER (gc_target_value4),
@@ -427,16 +429,16 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
                                                                dev_phase  => lc_dev_phase,
                                                                dev_status => lc_dev_status,
                                                                message    => lc_message
-                                                             );                                            
-        
+                                                             );
+
         END IF;
-        
+
         lc_end_time         := TO_CHAR(SYSDATE,'DD-MON-YYYY HH24:MI:SS');
         gn_query_tim_diff   := ROUND((TO_DATE(lc_end_time,'DD-MON-YYYY HH24:MI:SS') - TO_DATE(lc_start_time,'DD-MON-YYYY HH24:MI:SS')) * 24 * 60 * 60);
-        
+
         put_log_line (p_debug_flag, 'Y', RPAD('Request Status', 20, ' ') || ' - ' || NVL(lc_dev_phase, lc_phase));
         put_log_line (p_debug_flag, 'N', RPAD('Query Start Time', 20, ' ') || ' - ' || lc_start_time);
-        
+
         IF (lc_dev_phase = 'COMPLETE' OR lc_phase = 'Completed') THEN
             put_log_line (p_debug_flag, 'N', RPAD('Query End Time', 20, ' ') || ' - ' || lc_end_time);
             put_log_line (p_debug_flag, 'Y', RPAD('Query Exec Time', 20, ' ') || ' - ' || gn_query_tim_diff || ' seconds');
@@ -445,16 +447,16 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
             put_log_line (p_debug_flag, 'Y', RPAD('Query Exec Time', 20, ' ') || ' - Running beyond threshold value (' || gc_target_value4 || ' seconds)');
             gn_query_tim_diff := TO_NUMBER (gc_target_value4) + 1;
         END IF;
-        
+
         p_return_status := 'SUCCESS';
         gc_mainp_status := 'SUCCESS';
-        
+
     EXCEPTION
         WHEN OTHERS THEN
             put_log_line (p_debug_flag, 'Y', 'Exception at PROCEDURE check_lbx_system_stats : ' || SQLERRM);
             p_return_status := 'FAILURE';
             gc_mainp_status := 'FAILURE';
-            
+
             xx_com_error_log_pub.log_error
                         (p_program_type                => 'CONCURRENT PROGRAM',
                          p_program_name                => gc_program_name,
@@ -466,7 +468,7 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
                          p_error_message_severity      => 'Major',
                          p_notify_flag                 => 'N',
                          p_object_type                 => 'PACKAGE BODY xx_ar_lbx_alert_pkg');
-    
+
     END check_lbx_system_stats;
 
 
@@ -490,7 +492,7 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
     -- | Version  Date         Author          Remarks                              |
     -- | =======  ===========  =============   ===================================  |
     -- | 1.0      03-Dec-2012  Abdul Khan      Initial version - QC Defect # 21270  |
-    -- +============================================================================+   
+    -- +============================================================================+
     PROCEDURE prepare_and_send_email   ( p_debug_flag    IN  VARCHAR2,
                                          p_from          IN  VARCHAR2,
                                          p_recipient     IN  VARCHAR2,
@@ -499,7 +501,7 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
                                          p_title_html    IN  VARCHAR2,
                                          p_body_hdr_html IN  VARCHAR2,
                                          p_body_dtl_html IN  VARCHAR2,
-                                         p_return_status OUT VARCHAR2 
+                                         p_return_status OUT VARCHAR2
                                        )
     AS
 
@@ -510,7 +512,7 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
         lc_title_html       VARCHAR2(100)   := NULL;
         lc_body_hdr_html    VARCHAR2(4000)  := NULL;
         lc_body_dtl_html    VARCHAR2(4000)  := NULL;
-    
+
         lc_instance         VARCHAR2(100)   := NULL;
         lc_host_name        VARCHAR2(100)   := NULL;
         crlf                VARCHAR2(2)     := chr(13) || chr(10);
@@ -525,7 +527,7 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
         lc_title_html       := p_title_html;
         lc_body_hdr_html    := p_body_hdr_html;
         lc_body_dtl_html    := p_body_dtl_html;
-    
+
         put_log_line (p_debug_flag, 'Y', ' ');
         put_log_line (p_debug_flag, 'N', 'PROCEDURE prepare_and_send_email - Begin');
         put_log_line (p_debug_flag, 'Y', 'Prepare and Send Email Notification');
@@ -537,7 +539,7 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
         SELECT instance_name, host_name
           INTO lc_instance, lc_host_name
           FROM v$instance;
-      
+
         BEGIN
 
             v_mail_conn := utl_smtp.open_connection(v_mail_host,25);
@@ -545,16 +547,16 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
             utl_smtp.mail(v_mail_conn,v_from);
             utl_smtp.rcpt(v_mail_conn,v_recipient);
 
-            utl_smtp.data(v_mail_conn,'Return-Path: ' || v_from || utl_tcp.crlf || 
-                'Sent: ' || TO_CHAR(SYSDATE,'MM/DD/YYYY HH24:MI:SS') || utl_tcp.crlf || 
-                'From: ' || v_from || utl_tcp.crlf || 
-                'Subject: ' || v_subject || ' | ' || lc_instance ||utl_tcp.crlf || 
+            utl_smtp.data(v_mail_conn,'Return-Path: ' || v_from || utl_tcp.crlf ||
+                'Sent: ' || TO_CHAR(SYSDATE,'MM/DD/YYYY HH24:MI:SS') || utl_tcp.crlf ||
+                'From: ' || v_from || utl_tcp.crlf ||
+                'Subject: ' || v_subject || ' | ' || lc_instance ||utl_tcp.crlf ||
                 'To: ' || v_recipient || utl_tcp.crlf ||
                 'Content-Type: multipart/mixed; boundary="MIME.Bound"' ||utl_tcp.crlf || utl_tcp.crlf || '--MIME.Bound' || utl_tcp.crlf ||
                 'Content-Type: multipart/alternative; boundary="MIME.Bound2"' || utl_tcp.crlf || utl_tcp.crlf || '--MIME.Bound2' || utl_tcp.crlf ||
                 'Content-Type: text/html; ' || utl_tcp.crlf ||
                 'Content-Transfer_Encoding: 7bit' || utl_tcp.crlf ||utl_tcp.crlf ||
-                
+
                 utl_tcp.crlf ||'<html><head><title>'||lc_title_html||'</title></head>
                 <body> <font face = "verdana" size = "2" color="#336699">'||lc_body_hdr_html||'<br><br>
                 '||lc_body_dtl_html||'
@@ -564,22 +566,22 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
                 RICE ID - R7017 | Instance Name - ' || lc_instance || '  |  Host Name - ' || lc_host_name || '  |  Request ID - ' || gn_conc_req_id  || '
                 </font></body></html>' ||
                 utl_tcp.crlf || '--MIME.Bound2--' || utl_tcp.crlf || utl_tcp.crlf);
-                  
+
             utl_smtp.quit(v_mail_conn);
 
             p_return_status := 'SUCCESS';
             gc_mainp_status := 'SUCCESS';
 
-        EXCEPTION 
+        EXCEPTION
             WHEN utl_smtp.transient_error OR utl_smtp.permanent_error THEN
             lc_body_hdr_html := lc_body_hdr_html ||
-                '<br> <b> ' || gc_target_value15 || ' </b> 
+                '<br> <b> ' || gc_target_value15 || ' </b>
                 <br> Error Details : ' || SQLERRM;
-        
+
             put_log_line (p_debug_flag, 'Y', 'Exception at PROCEDURE prepare_and_send_email : ' || SQLERRM);
             p_return_status := 'FAILURE';
             gc_mainp_status := 'FAILURE';
-        
+
         END;
 
     EXCEPTION
@@ -588,7 +590,7 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
             p_return_status := 'FAILURE';
             gc_mainp_status := 'FAILURE';
             --raise_application_error(-20000, 'Unable to Send Mail : ' || SQLERRM);
-            
+
             xx_com_error_log_pub.log_error
                         (p_program_type                => 'CONCURRENT PROGRAM',
                          p_program_name                => gc_program_name,
@@ -621,15 +623,15 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
     -- | Version  Date         Author          Remarks                              |
     -- | =======  ===========  =============   ===================================  |
     -- | 1.0      03-Dec-2012  Abdul Khan      Initial version - QC Defect # 21270  |
-    -- +============================================================================+   
+    -- +============================================================================+
     PROCEDURE lockbox_alert_main_proc  ( errbuf          OUT NOCOPY VARCHAR2,
-                                         retcode         OUT NOCOPY NUMBER, 
+                                         retcode         OUT NOCOPY NUMBER,
                                          p_recipient     IN         VARCHAR2,
                                          p_mail_host     IN         VARCHAR2,
                                          p_debug_flag    IN         VARCHAR2 DEFAULT 'N'
-                                       ) 
+                                       )
     AS
-    
+
         lc_recipient        VARCHAR2(80)    :=  NULL;
         lc_mail_host        VARCHAR2(30)    :=  NULL;
         lc_from             VARCHAR2(80)    :=  NULL; -- gc_target_value6
@@ -642,9 +644,9 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
         lc_email_status     VARCHAR2(15)    :=  NULL;
         lc_source_field1    VARCHAR2(30)    :=  NULL;
         lc_source_value1    VARCHAR2(80)    :=  NULL;
-        
+
     BEGIN
-    
+
         put_log_line (p_debug_flag, 'Y', ' ');
         put_log_line (p_debug_flag, 'N', 'PROCEDURE lockbox_alert_main_proc - Begin');
         put_log_line (p_debug_flag, 'N', ' ');
@@ -654,19 +656,19 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
         put_log_line (p_debug_flag, 'Y', RPAD('Email Recipient', 20, ' ') || ' - ' || p_recipient);
         put_log_line (p_debug_flag, 'Y', RPAD('Email Host', 20, ' ') || ' - ' || p_mail_host);
         put_log_line (p_debug_flag, 'Y', RPAD('Debug Flag', 20, ' ') || ' - ' || p_debug_flag);
-        
-        
+
+
         BEGIN
-        
+
             gn_org_id := FND_GLOBAL.ORG_ID;
             dbms_application_info.set_client_info(gn_org_id);
-            
+
             gd_exec_start_time := SYSDATE;
-            
+
             SELECT request_id,
-                   program_short_name, 
+                   program_short_name,
                    program,
-                   requested_by, 
+                   requested_by,
                    requestor
               INTO gn_conc_req_id,
                    gc_short_name,
@@ -675,16 +677,16 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
                    gc_user_name
               FROM fnd_conc_req_summary_v
              WHERE request_id = FND_GLOBAL.CONC_REQUEST_ID;
-                             
+
             put_log_line (p_debug_flag, 'N', ' ');
-            put_log_line (p_debug_flag, 'N', RPAD('Org ID', 20, ' ') || ' - ' || gn_org_id);   
+            put_log_line (p_debug_flag, 'N', RPAD('Org ID', 20, ' ') || ' - ' || gn_org_id);
             put_log_line (p_debug_flag, 'N', RPAD('Requestor', 20, ' ') || ' - ' || gc_user_name);
-                
+
             SELECT def.target_field1,
                    val.target_value1
               INTO lc_source_field1,
                    lc_source_value1
-              FROM xx_fin_translatedefinition def, 
+              FROM xx_fin_translatedefinition def,
                    xx_fin_translatevalues val
              WHERE def.translate_id     = val.translate_id
                AND def.translation_name = 'AR_EBL_EMAIL_CONFIG'
@@ -693,45 +695,45 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
                AND val.enabled_flag     = 'Y'
                AND SYSDATE BETWEEN def.start_date_active AND NVL (def.end_date_active, SYSDATE + 1)
                AND SYSDATE BETWEEN val.start_date_active AND NVL (val.end_date_active, SYSDATE + 1);
-               
+
             put_log_line (p_debug_flag, 'Y', ' ');
             put_log_line (p_debug_flag, 'Y', 'Translation Name     - AR_EBL_EMAIL_CONFIG');
             put_log_line (p_debug_flag, 'Y', RPAD(lc_source_field1, 20, ' ') || ' - ' || lc_source_value1);
-             
+
             lc_mail_host   :=  lc_source_value1;
-            
-            --This procedure will fetch and set the translation values 
+
+            --This procedure will fetch and set the translation values
             fetch_translation_values ( p_debug_flag    => p_debug_flag,
-                                       p_return_status => lc_trans_status 
+                                       p_return_status => lc_trans_status
                                      );
             put_log_line (p_debug_flag, 'N', 'PROCEDURE fetch_translation_values - Return Status : ' || lc_trans_status);
-        
+
             IF lc_trans_status = 'SUCCESS' THEN
-                --This procedure will check lockbox system statistics  
+                --This procedure will check lockbox system statistics
                 check_lbx_system_stats   ( p_debug_flag    => p_debug_flag,
-                                           p_return_status => lc_stats_status  
+                                           p_return_status => lc_stats_status
                                          );
-                put_log_line (p_debug_flag, 'N', 'PROCEDURE check_lbx_system_stats   - Return Status : ' || lc_stats_status);  
-                
+                put_log_line (p_debug_flag, 'N', 'PROCEDURE check_lbx_system_stats   - Return Status : ' || lc_stats_status);
+
                 IF lc_stats_status  = 'SUCCESS' THEN
-                
+
                     lc_from             :=  gc_target_value6;
                     lc_subject          :=  gc_target_value7;
                     lc_title_html       :=  gc_target_value8;
                     lc_body_hdr_html    :=  gc_target_value9;
-                
+
                     IF gc_user_name = 'SVC_ESP_FIN' THEN
-                        
+
                         lc_recipient     :=  NVL(p_recipient, gc_target_value1);
-                    
+
                     ELSE
-                    
+
                         IF p_recipient IS NOT NULL THEN
-                        
+
                             lc_recipient     :=  p_recipient;
-                        
+
                         ELSE
-                        
+
                             SELECT DISTINCT LOWER(ppf.email_address)
                               INTO lc_recipient
                               FROM fnd_user fndu,
@@ -740,20 +742,20 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
                                AND ppf.current_employee_flag = 'Y'
                                AND fndu.user_id              = gn_user_id;
 
-                            lc_recipient     :=  NVL(lc_recipient, gc_target_value1);  
-                        
+                            lc_recipient     :=  NVL(lc_recipient, gc_target_value1);
+
                         END IF;
-                         
-                    
+
+
                     END IF;
-                    
+
                     lc_mail_host     :=  NVL(p_mail_host, lc_mail_host);
-                    
+
                     --If query execution  time is greater than the threshold defined in translation
                     IF gn_query_tim_diff > TO_NUMBER(gc_target_value4) THEN
-                    
+
                         lc_subject       := lc_subject || ' (Action Required)';
-                    
+
                         lc_body_hdr_html := '<font face = "verdana" size = "3" color="#990000"> <p align = "CENTER"> <b> <u>'
                                             || lc_body_hdr_html || ' - Action Required (File Split) for Cycle Date ' || TO_CHAR(SYSDATE, 'MM/DD') || '
                                             </u></b></p></font>';
@@ -761,22 +763,22 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
                         lc_body_dtl_html := '<font color="#990000"><b>' || gc_target_value10 || ' at ' || TO_CHAR(SYSDATE, 'DD-Mon-YYYY HH:MI:SS AM') || ' - ' || gn_interim_count || ' </b> <br><br>
                                             <b>' || gc_target_value11 || ' - ' || gn_nodes_count || ' </b> <br><br>
                                             <b>' || gc_target_value12 || ' - Running beyond threshold value (' || gc_target_value4 || ' seconds) </b> <br><br><br>
-                                            <b><u>' || gc_target_value13 || '</u></b> <br><br></font>';                     
-                                                
+                                            <b><u>' || gc_target_value13 || '</u></b> <br><br></font>';
+
                     ELSE
-                    
+
                         lc_subject       := lc_subject || ' (No Action Required)';
-                        
+
                         lc_body_hdr_html := '<font face = "verdana" size = "3" color="#336899"> <p align = "CENTER"> <b> <u>'
                                             || lc_body_hdr_html || ' - No Action Required for Cycle Date ' || TO_CHAR(SYSDATE, 'MM/DD') || '
                                             </u></b></p></font>';
-                                            
+
                         lc_body_dtl_html := '<b>' || gc_target_value10 || ' at ' || TO_CHAR(SYSDATE, 'DD-Mon-YYYY HH:MI:SS AM') || ' - ' || gn_interim_count || ' </b> <br><br>
                                             <b>' || gc_target_value11 || ' - ' || gn_nodes_count || ' </b> <br><br>
-                                            <b>' || gc_target_value12 || ' - ' || gn_query_tim_diff  || ' </b> <br><br>'; 
-                    
+                                            <b>' || gc_target_value12 || ' - ' || gn_query_tim_diff  || ' </b> <br><br>';
+
                     END IF;
-                                   
+
                     --This procedure will prepare and send email notification
                     prepare_and_send_email   ( p_debug_flag    => p_debug_flag,
                                                p_from          => lc_from,
@@ -786,24 +788,24 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
                                                p_title_html    => lc_title_html,
                                                p_body_hdr_html => lc_body_hdr_html,
                                                p_body_dtl_html => lc_body_dtl_html,
-                                               p_return_status => lc_email_status 
+                                               p_return_status => lc_email_status
                                              );
                     put_log_line (p_debug_flag, 'N', 'PROCEDURE prepare_and_send_email   - Return Status : ' || lc_email_status);
-                
+
                     IF lc_email_status = 'SUCCESS' THEN
                         put_log_line (p_debug_flag, 'Y', ' ');
                         put_log_line (p_debug_flag, 'Y', 'Email Notification Successfully Sent.');
-                        gc_mainp_status := 'SUCCESS';   
+                        gc_mainp_status := 'SUCCESS';
                     ELSE
                         put_log_line (p_debug_flag, 'Y', ' ');
-                        put_log_line (p_debug_flag, 'Y', 'Email Notification Not Sent.'); 
+                        put_log_line (p_debug_flag, 'Y', 'Email Notification Not Sent.');
                         gc_mainp_status := 'FAILURE';
                     END IF;
-                
+
                 END IF;
-                
+
             END IF;
-        
+
         EXCEPTION
             WHEN OTHERS THEN
                 put_log_line (p_debug_flag, 'Y', ' ');
@@ -811,38 +813,38 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
                 put_log_line (p_debug_flag, 'N', ' ');
                 put_log_line (p_debug_flag, 'N', 'PROCEDURE lockbox_alert_main_proc  - Return Status : FAILURE');
                 gc_mainp_status := 'FAILURE';
-                
+
                 UPDATE xx_ar_lockbox_alert
                    SET alert_end_time       = SYSDATE,
                        alert_status         = gc_mainp_status,
                        last_updated_by      = gn_user_id,
                        last_update_date     = SYSDATE
                  WHERE alert_request_id     = gn_conc_req_id;
-         
-                COMMIT; 
-         
+
+                COMMIT;
+
         END;
-        
+
         put_log_line (p_debug_flag, 'Y', ' ');
         put_log_line (p_debug_flag, 'Y', 'Lockbox Alert Main Procedure - End Time   : ' || TO_CHAR(SYSDATE, 'DD-Mon-YYYY HH24:MI:SS'));
         put_log_line (p_debug_flag, 'Y', ' ');
-        put_log_line (p_debug_flag, 'N', 'PROCEDURE lockbox_alert_main_proc  - Return Status : ' || gc_mainp_status); 
+        put_log_line (p_debug_flag, 'N', 'PROCEDURE lockbox_alert_main_proc  - Return Status : ' || gc_mainp_status);
         put_log_line (p_debug_flag, 'N', ' ');
-        
+
         IF gc_mainp_status = 'FAILURE' THEN
             retcode   := 2;
             errbuf    := '**Exception at procedure lockbox_alert_main_proc. Refer log file for details.';
         END IF;
-        
+
         UPDATE xx_ar_lockbox_alert
            SET alert_end_time       = SYSDATE,
                alert_status         = gc_mainp_status,
                last_updated_by      = gn_user_id,
                last_update_date     = SYSDATE
          WHERE alert_request_id     = gn_conc_req_id;
-         
-        COMMIT; 
-        
+
+        COMMIT;
+
     EXCEPTION
         WHEN OTHERS THEN
             put_log_line (p_debug_flag, 'Y', 'Exception at PROCEDURE lockbox_alert_main_proc : ' || SQLERRM);
@@ -852,10 +854,10 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
             put_log_line (p_debug_flag, 'N', 'PROCEDURE lockbox_alert_main_proc  - Return Status : FAILURE');
             put_log_line (p_debug_flag, 'N', ' ');
             gc_mainp_status := 'FAILURE';
-            
+
             retcode   := 2;
             errbuf    := '**Exception at procedure lockbox_alert_main_proc. Refer log file for details.';
-        
+
             xx_com_error_log_pub.log_error
                         (p_program_type                => 'CONCURRENT PROGRAM',
                          p_program_name                => gc_program_name,
@@ -867,22 +869,22 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
                          p_error_message_severity      => 'Major',
                          p_notify_flag                 => 'N',
                          p_object_type                 => 'PACKAGE BODY xx_ar_lbx_alert_pkg');
-    
+
             UPDATE xx_ar_lockbox_alert
                SET alert_end_time       = SYSDATE,
                    alert_status         = gc_mainp_status,
                    last_updated_by      = gn_user_id,
                    last_update_date     = SYSDATE
              WHERE alert_request_id     = gn_conc_req_id;
-            
-            COMMIT; 
+
+            COMMIT;
 
     END lockbox_alert_main_proc;
-    
-    
------------------------------------------------------------------------------------------------       
-    
-    
+
+
+-----------------------------------------------------------------------------------------------
+
+
     -- +============================================================================+
     -- | Name             : EXECUTION_TIME_MAIN_PROC                                |
     -- |                                                                            |
@@ -899,14 +901,14 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
     -- | Version  Date         Author          Remarks                              |
     -- | =======  ===========  =============   ===================================  |
     -- | 1.0      03-Dec-2012  Abdul Khan      Initial version - QC Defect # 21270  |
-    -- +============================================================================+   
+    -- +============================================================================+
     PROCEDURE execution_time_main_proc ( errbuf          OUT NOCOPY VARCHAR2,
-                                         retcode         OUT NOCOPY NUMBER,  
+                                         retcode         OUT NOCOPY NUMBER,
                                          p_cust_num      IN         VARCHAR2,
                                          p_debug_flag    IN         VARCHAR2 DEFAULT 'N'
-                                       ) 
+                                       )
     AS
-    
+
         lc_short_name       VARCHAR2(30)    :=  NULL;
         lc_program_name     VARCHAR2(80)    :=  NULL;
         lc_customer_num     VARCHAR2(30)    :=  NULL;
@@ -919,12 +921,12 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
         lc_trx_date         DATE            :=  NULL;
         ln_customer_id      NUMBER          :=  0;
         ln_org_id           NUMBER          :=  0;
-        ln_conc_req_id      NUMBER          :=  0;    
+        ln_conc_req_id      NUMBER          :=  0;
         ln_query_tim_diff   NUMBER          :=  0;
         ln_amt_due_rem      NUMBER          :=  0;
-        
+
     BEGIN
-    
+
         put_log_line (p_debug_flag, 'Y', ' ');
         put_log_line (p_debug_flag, 'N', 'PROCEDURE execution_time_main_proc - Begin');
         put_log_line (p_debug_flag, 'N', ' ');
@@ -934,15 +936,15 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
         put_log_line (p_debug_flag, 'Y', RPAD('Customer Number', 20, ' ') || ' - ' || p_cust_num);
         put_log_line (p_debug_flag, 'Y', RPAD('Debug Flag', 20, ' ') || ' - ' || p_debug_flag);
         put_log_line (p_debug_flag, 'Y', ' ');
-        
-        
+
+
         BEGIN
-        
+
             ln_org_id := FND_GLOBAL.ORG_ID;
-            dbms_application_info.set_client_info(ln_org_id);              
-             
+            dbms_application_info.set_client_info(ln_org_id);
+
             --Query to fetch open invoice details for given customer
-            SELECT ract.trx_number, 
+            SELECT ract.trx_number,
                    ract.trx_date,
                    hzca.cust_account_id,
                    hzca.account_number,
@@ -952,7 +954,7 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
                    ln_customer_id,
                    lc_customer_num,
                    lc_customer_name
-              FROM ra_customer_trx_all ract, 
+              FROM ra_customer_trx_all ract,
                    ar_payment_schedules_all apsa,
                    hz_cust_accounts hzca
              WHERE apsa.customer_trx_id             = ract.customer_trx_id
@@ -964,28 +966,28 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
                AND hzca.account_number              = p_cust_num
                AND ract.trx_date                    > SYSDATE - 7
                AND ract.org_id                      = ln_org_id
-               AND ROWNUM                           = 1;  
-        
+               AND ROWNUM                           = 1;
+
             put_log_line (p_debug_flag, 'Y', RPAD('Customer Number', 20, ' ') || ' - ' || lc_customer_num);
             put_log_line (p_debug_flag, 'Y', RPAD('Customer Name', 20, ' ') || ' - ' || lc_customer_name);
             put_log_line (p_debug_flag, 'Y', RPAD('Trx Number', 20, ' ') || ' - ' || lc_trx_number);
             put_log_line (p_debug_flag, 'Y', RPAD('Trx Date', 20, ' ') || ' - ' || lc_trx_date);
-        
+
             lc_start_time := TO_CHAR(SYSDATE,'DD-MON-YYYY HH24:MI:SS');
-        
+
             --Query using ar_paying_relationships_v view - Performance Check
-            SELECT invoice_currency_code, 
+            SELECT invoice_currency_code,
                    amount_due_remaining
               INTO lc_inv_currency,
-                   ln_amt_due_rem     
-              FROM ar_payment_schedules ps, 
+                   ln_amt_due_rem
+              FROM ar_payment_schedules ps,
                    ra_cust_trx_types tt
              WHERE ps.trx_number = lc_trx_number
                AND ps.status = DECODE (tt.allow_overapplication_flag, 'N', 'OP', ps.status)
                AND ps.CLASS NOT IN ('PMT', 'GUAR')
                AND ps.payment_schedule_id =
                       (SELECT MIN (ps.payment_schedule_id)
-                         FROM ar_payment_schedules ps, 
+                         FROM ar_payment_schedules ps,
                               ra_cust_trx_types tt
                         WHERE ps.trx_number = lc_trx_number
                           AND ps.trx_date = lc_trx_date
@@ -1030,18 +1032,18 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
                     OR 'N' = 'Y'
                    )
                AND ps.cust_trx_type_id = tt.cust_trx_type_id;
-           
+
             lc_end_time         := TO_CHAR(SYSDATE,'DD-MON-YYYY HH24:MI:SS');
             ln_query_tim_diff   := ROUND((TO_DATE(lc_end_time,'DD-MON-YYYY HH24:MI:SS') - TO_DATE(lc_start_time,'DD-MON-YYYY HH24:MI:SS')) * 24 * 60 * 60);
-        
+
             put_log_line (p_debug_flag, 'N', RPAD('Trx Currency Code', 20, ' ') || ' - ' || lc_inv_currency);
             put_log_line (p_debug_flag, 'N', RPAD('Amt Due Remaining', 20, ' ') || ' - ' || ln_amt_due_rem);
             put_log_line (p_debug_flag, 'N', RPAD('Query Start Time', 20, ' ') || ' - ' || lc_start_time);
             put_log_line (p_debug_flag, 'N', RPAD('Query End Time', 20, ' ') || ' - ' || lc_end_time);
             put_log_line (p_debug_flag, 'Y', RPAD('Query Exec Time', 20, ' ') || ' - ' || ln_query_tim_diff || ' Seconds');
-            
+
             lc_mainp_status := 'SUCCESS';
-            
+
             UPDATE xx_ar_lockbox_alert
                SET child_end_time       = SYSDATE,
                    child_status         = lc_mainp_status,
@@ -1050,9 +1052,9 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
                    query_exec_time_sec1 = ln_query_tim_diff,
                    last_update_date     = SYSDATE
              WHERE child_request_id     = FND_GLOBAL.CONC_REQUEST_ID;
-        
+
             COMMIT;
-        
+
         EXCEPTION
             WHEN NO_DATA_FOUND THEN
                 retcode         := 1;
@@ -1060,45 +1062,45 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
                 lc_mainp_status := 'FAILURE';
                 put_log_line (p_debug_flag, 'Y', ' ');
                 put_log_line (p_debug_flag, 'Y', 'Exception at PROCEDURE execution_time_main_proc : ' || SQLERRM);
-                
+
             UPDATE xx_ar_lockbox_alert
                SET child_end_time       = SYSDATE,
                    child_status         = lc_mainp_status,
                    last_update_date     = SYSDATE
              WHERE child_request_id     = FND_GLOBAL.CONC_REQUEST_ID;
-        
+
             COMMIT;
-                 
+
         END;
-        
+
         put_log_line (p_debug_flag, 'Y', ' ');
         put_log_line (p_debug_flag, 'Y', 'Query Execution Time Check - End Time   : ' || TO_CHAR(SYSDATE, 'DD-Mon-YYYY HH24:MI:SS'));
         put_log_line (p_debug_flag, 'Y', ' ');
-        put_log_line (p_debug_flag, 'N', 'PROCEDURE execution_time_main_proc  - Return Status : ' || lc_mainp_status); 
+        put_log_line (p_debug_flag, 'N', 'PROCEDURE execution_time_main_proc  - Return Status : ' || lc_mainp_status);
         put_log_line (p_debug_flag, 'N', ' ');
-        
+
     EXCEPTION
         WHEN OTHERS THEN
-        
+
             SELECT request_id,
-                   program_short_name, 
+                   program_short_name,
                    program
               INTO ln_conc_req_id,
                    lc_short_name,
                    lc_program_name
               FROM fnd_conc_req_summary_v
              WHERE request_id = FND_GLOBAL.CONC_REQUEST_ID;
-             
+
             put_log_line (p_debug_flag, 'Y', 'Exception at PROCEDURE execution_time_main_proc : ' || SQLERRM);
             put_log_line (p_debug_flag, 'Y', ' ');
             put_log_line (p_debug_flag, 'Y', 'Query Execution Time Check - End Time   : ' || TO_CHAR(SYSDATE, 'DD-Mon-YYYY HH24:MI:SS'));
             put_log_line (p_debug_flag, 'Y', ' ');
             put_log_line (p_debug_flag, 'N', 'PROCEDURE execution_time_main_proc  - Return Status : FAILURE');
             put_log_line (p_debug_flag, 'N', ' ');
-            
+
             retcode   := 2;
             errbuf    := '**Exception at procedure execution_time_main_proc. Refer log file for details.';
-        
+
             xx_com_error_log_pub.log_error
                         (p_program_type                => 'CONCURRENT PROGRAM',
                          p_program_name                => lc_program_name,
@@ -1116,14 +1118,10 @@ PACKAGE BODY xx_ar_lbx_alert_pkg AS
                    child_status         = lc_mainp_status,
                    last_update_date     = SYSDATE
              WHERE child_request_id     = FND_GLOBAL.CONC_REQUEST_ID;
-        
+
             COMMIT;
-    
-    END execution_time_main_proc;    
-    
+
+    END execution_time_main_proc;
+
 
 END xx_ar_lbx_alert_pkg;
-
-/
-
-SHOW ERROR
