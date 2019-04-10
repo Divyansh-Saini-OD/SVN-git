@@ -40,9 +40,8 @@ create or replace PACKAGE BODY      XX_AP_TR_UI_ACTION_PKG
   -- |                                         be populated as null value.              |
   -- |2.4       18-Jul-2018 Chandra            Modified the code for                    |
   -- |                                         for defect #NAIT-41954                   |
-  -- |2.5       17-Jan-2018 Atul Khard	      NAIT-53015 Added Hold Lookup Code 'OD Max |
-  -- |                                        Price' so the line amount will be         |
-  -- |                                        calculated only once.                     |
+  -- |2.5       10-Apr-2019 Shanti Sethuraj    Modified code to add Oracle instance name| 
+  -- |                                         in the email subject for jira NAIT-91330 |
   -- +==================================================================================+
 AS
   gn_org_id              NUMBER;
@@ -1087,7 +1086,7 @@ SELECT a.hold_lookup_code,
                       FROM xx_ap_chbk_action_holds
                      WHERE invoice_id=a.invoice_id
                        AND line_number=a.line_number
-                       AND hold_lookup_code IN ('PRICE','OD Max Price'))  --Added 'OD Max Price' for NAIT-53015
+                       AND hold_lookup_code='PRICE')
 ORDER BY a.hold_lookup_code desc;
 
 CURSOR C3_price(p_invoice_id NUMBER,p_Line_Number NUMBER)
@@ -1942,15 +1941,19 @@ v_subject                    VARCHAR2(500);
 conn                         utl_smtp.connection;
 v_text                        VARCHAR2(2000);
 v_smtp_hostname                VARCHAR2 (120):=FND_PROFILE.VALUE('XX_PA_PB_MAIL_HOST');
+l_instance_name               varchar2(100);  --added for NAIT-91330
+l_email_subject                varchar2(300);  --added for NAIT-91330
 
 BEGIN
+  select instance_name into l_instance_name from v$instance;
   v_text :='Invoice : '||p_invoice_num|| ' is stuck in the Payables Open Interface, Please resolve';
   lc_temp_email:=get_distribution_list;  
+   l_email_subject:=l_instance_name||': '||'OD: AP UI Action Interface Stuck Invoice :';     --added for NAIT-91330
   conn := xx_pa_pb_mail.begin_mail(
                   sender => 'Accounts-Payable@officedepot.com',
                   recipients => lc_temp_email,
                   cc_recipients=>NULL,
-                  subject => 'OD: AP UI Action Interface Stuck Invoice :'||p_invoice_num ,
+                  subject => l_email_subject||p_invoice_num ,                     --modified for NAIT-91330
                   mime_type => xx_pa_pb_mail.MULTIPART_MIME_TYPE);
                   xx_pa_pb_mail.attach_text( conn => conn,
                                              data => v_text
