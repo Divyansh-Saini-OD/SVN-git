@@ -1,4 +1,5 @@
-<dataTemplate name="XXAPCCOPENNOTIF" description="" version="1.0">
+<?xml version="1.0" encoding="UTF-8"?>
+<dataTemplate name="XXAPCCOPENNOTIF" defaultPackage="XX_AP_OPINACCC_BURST" description="" version="1.0">
   <properties>
     <property name="include_parameters" value="true"/>
   </properties>
@@ -54,6 +55,13 @@ ppfs.ACTUAL_TERMINATION_DATE,
   SENT_DATE,
   WN.STATUS]]>
     </sqlStatement>
+	 <sqlStatement name="Q2">
+	 <![CDATA[
+select to_char(SYSDATE,'MM/DD/YYYY') CURRENT_DATE,
+FND_PROFILE.VALUE('XX_XDO_SMTP_HOST') SMTP_SERVER,
+(SELECT FD.instance_name FROM v$instance FD)INSTANCE_NAME1
+from dual]]>
+	  </sqlStatement>
   </dataQuery>
   <dataStructure>
     <group name="G_RESULTS" source="Q1">
@@ -70,7 +78,13 @@ ppfs.ACTUAL_TERMINATION_DATE,
 	   <element name="CONTEXT" value="context"/>
 	   <element name="ITEM_KEY"  value="item_key"/>
        <element name="SENT_DATE"         value="sent_date"/>
-<element name="STATUS"       value="status"/>
+       <element name="STATUS"       value="status"/>
 	    </group>
+		<group name="G_RESULTS1" source="Q2">
+	   <element name="CURRENT_DATE"   value="CURRENT_DATE"/>
+       <element name="SMTP_SERVER" value="SMTP_SERVER"/>
+       <element name="INSTANCE_NAME1"     value="INSTANCE_NAME1"/>
+	 </group>
   </dataStructure> 
+  <dataTrigger name="afterReport"  source="XX_AP_OPINACCC_BURST.afterReport()"/>
 </dataTemplate>
