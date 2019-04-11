@@ -42,9 +42,9 @@ wf_item_activity_statuses wias ,
 wf_item_attribute_values wiav ,
 per_all_people_f papf,
 per_periods_of_service ppfs,
-(SELECT  PERSON_ID ,MAX(PERIOD_OF_SERVICE_ID) Maxperiodos FROM APPS.PER_PERIODS_OF_SERVICE
+(SELECT  PERSON_ID ,MAX(PERIOD_OF_SERVICE_ID) Maxperiodos FROM PER_PERIODS_OF_SERVICE
 GROUP BY PERSON_ID) ppfs1,
-(SELECT  item_key ,MAX(notification_id) Maxnotificid FROM APPS.wf_notifications
+(SELECT  item_key ,MAX(notification_id) Maxnotificid FROM wf_notifications
 GROUP BY item_key) wn1,
 ap_credit_card_trxns_all accta,
 ap_cards_all aca
@@ -76,7 +76,7 @@ AND EXISTS
   )
   AND NOT EXISTS
   (
-select 1 from apps.wf_item_activity_statuses wis1
+select 1 from wf_item_activity_statuses wis1
 WHERE
 wis1.item_type=wias.item_type
 AND
