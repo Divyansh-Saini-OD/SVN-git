@@ -43,9 +43,11 @@ AS
 -- |                                              2.charge seq =1 for auto renewed SS        |
 -- |                                              SKU's NAIT-79218                           |
 -- | 18.0        07-MAR-2019  Sahithi K           modified program_id logic in UPSERT script |
--- |                                              from req_id to con_program_id              |
+-- |                                              from req_id to con_program_id NAIT-87055   |
 -- | 19.0        11-MAR-2019  Punit Gupta         Changes done for GSIPRFGB Replacing RMS DB |
 -- |                                              Link with table used in process item cost  |
+-- | 20.0        09-APR-2019  Sahithi K           modified interface_line_attribute1 with    |
+-- |                                              order#-inv_seq_counter NAIT-91124          |
 -- +=========================================================================================+
  
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -2799,6 +2801,42 @@ AS
       RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
 
   END get_term_info;
+  
+  /***************************************************
+  * Helper procedure to get invoice sequence counter
+  *************************************************/
+
+  PROCEDURE get_inv_seq_counter(p_contract_number   IN         xx_ar_subscriptions.contract_number%TYPE,
+                                x_inv_seq_counter   OUT NOCOPY xx_ar_subscriptions.inv_seq_counter%TYPE)
+  IS
+
+    lc_procedure_name  CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'get_inv_seq_counter';
+    lt_parameters      gt_input_parameters;
+    ln_loop_counter    NUMBER := 0;
+
+  BEGIN
+     
+    lt_parameters('p_contract_number') := p_contract_number;
+    
+    entering_sub(p_procedure_name  => lc_procedure_name,
+                 p_parameters      => lt_parameters);
+      
+    SELECT MAX(NVL(inv_seq_counter,0)) + 1
+    INTO   x_inv_seq_counter
+    FROM   xx_ar_subscriptions
+    WHERE  contract_number = p_contract_number;
+                     
+    logit(p_message => 'RESULT invoice sequence counter: '  || x_inv_seq_counter);
+    
+    exiting_sub(p_procedure_name => lc_procedure_name);
+
+  EXCEPTION
+    WHEN OTHERS
+    THEN
+      exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+      RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+
+  END get_inv_seq_counter;
    
   /*********************************************************************************
   * Helper procedure to get payment term based from customer profile for AB Customer
@@ -3185,6 +3223,8 @@ AS
     ln_loop_counter                NUMBER                                         := 0;
     
     l_AB_flag                      VARCHAR2(2)                                    := 'N';
+    
+    l_inv_seq_counter              xx_ar_subscriptions.inv_seq_counter%TYPE;
 
   BEGIN
 
@@ -3272,6 +3312,33 @@ AS
         IF  px_subscription_array(indx).billing_sequence_number < lr_contract_line_info.initial_billing_sequence
         AND lr_contract_line_info.program = 'SS'
         THEN
+          
+          /*****************************
+          * get invoice sequence counter
+          *****************************/
+          IF px_subscription_array(indx).inv_seq_counter IS NULL
+          THEN
+            FOR indx IN 1 .. px_subscription_array.COUNT
+            LOOP
+              IF ln_loop_counter = 0
+              THEN
+                ln_loop_counter := ln_loop_counter + 1; 
+                get_inv_seq_counter(p_contract_number => px_subscription_array(indx).contract_number
+                                   ,x_inv_seq_counter => l_inv_seq_counter);
+                                   
+                px_subscription_array(indx).inv_seq_counter := l_inv_seq_counter;
+                
+                lc_action := 'Calling update_subscription_info';
+                update_subscription_info(px_subscription_info => px_subscription_array(indx));
+              ELSE
+                px_subscription_array(indx).inv_seq_counter := l_inv_seq_counter;
+                
+                lc_action := 'Calling update_subscription_info';
+                update_subscription_info(px_subscription_info => px_subscription_array(indx));
+              END IF;
+            END LOOP;
+          END IF;  
+          
           /**************************************
           * Get initial order header invoice info
           **************************************/
@@ -3619,7 +3686,33 @@ AS
               get_term_info(p_cust_trx_type => lr_cust_trx_type.TYPE,
                             x_terms         => lr_terms); 
             END IF;
-          END IF;     
+          END IF;  
+
+          /*****************************
+          * get invoice sequence counter
+          *****************************/
+          IF px_subscription_array(indx).inv_seq_counter IS NULL
+          THEN
+            FOR indx IN 1 .. px_subscription_array.COUNT
+            LOOP
+              IF ln_loop_counter = 0
+              THEN
+                ln_loop_counter := ln_loop_counter + 1; 
+                get_inv_seq_counter(p_contract_number => px_subscription_array(indx).contract_number
+                                   ,x_inv_seq_counter => l_inv_seq_counter);
+                                   
+                px_subscription_array(indx).inv_seq_counter := l_inv_seq_counter;
+                
+                lc_action := 'Calling update_subscription_info';
+                update_subscription_info(px_subscription_info => px_subscription_array(indx));
+              ELSE
+                px_subscription_array(indx).inv_seq_counter := l_inv_seq_counter;
+                
+                lc_action := 'Calling update_subscription_info';
+                update_subscription_info(px_subscription_info => px_subscription_array(indx));
+              END IF;
+            END LOOP;
+          END IF;          
 
           /***************************************
           * Populate ra_interface_lines_all record
@@ -3639,14 +3732,14 @@ AS
 
               --ln_trx_number := xx_ar_trx_subscriptions_ab_s.NEXTVAL;
   
-              lc_description := px_subscription_array(indx).billing_sequence_number|| '-' || lr_item_master_info.description;
+              lc_description := px_subscription_array(indx).inv_seq_counter|| '-' || lr_item_master_info.description;
 
             ELSE
               --lc_action :=  'Getting xx_artrx_subscriptions_s.NEXTVAL';
 
               --ln_trx_number := xx_artrx_subscriptions_s.NEXTVAL;
 
-              lc_description := 'Subscription Billing For Contract - ' || px_subscription_array(indx).contract_number || '-' || px_subscription_array(indx).billing_sequence_number;
+              lc_description := 'Subscription Billing For Contract - ' || px_subscription_array(indx).contract_number || '-' || px_subscription_array(indx).inv_seq_counter;
  
             END IF;
           END IF;
@@ -3708,7 +3801,7 @@ AS
           lr_ra_intf_lines_info.unit_standard_price           := px_subscription_array(indx).item_unit_cost;
 
           lr_ra_intf_lines_info.interface_line_context        := 'RECURRING BILLING';
-          lr_ra_intf_lines_info.interface_line_attribute1     := p_contract_info.contract_id || '-' || px_subscription_array(indx).billing_sequence_number;
+          lr_ra_intf_lines_info.interface_line_attribute1     := p_contract_info.initial_order_number || '-' || px_subscription_array(indx).inv_seq_counter;
           lr_ra_intf_lines_info.interface_line_attribute2     := p_contract_info.contract_major_version;
           lr_ra_intf_lines_info.interface_line_attribute3     := px_subscription_array(indx).contract_line_number;
           lr_ra_intf_lines_info.interface_line_attribute4     := px_subscription_array(indx).billing_sequence_number;
@@ -3864,7 +3957,7 @@ AS
           lr_ra_intf_dists_info.interface_distribution_id       := NULL;
           lr_ra_intf_dists_info.interface_line_id               := ln_interface_line_id;
           lr_ra_intf_dists_info.interface_line_context          := 'RECURRING BILLING';
-          lr_ra_intf_dists_info.interface_line_attribute1       := p_contract_info.contract_id || '-' || px_subscription_array(indx).billing_sequence_number;
+          lr_ra_intf_dists_info.interface_line_attribute1       := p_contract_info.initial_order_number || '-' || px_subscription_array(indx).inv_seq_counter;
           lr_ra_intf_dists_info.interface_line_attribute2       := p_contract_info.contract_major_version;
           lr_ra_intf_dists_info.interface_line_attribute3       := px_subscription_array(indx).contract_line_number;
           lr_ra_intf_dists_info.interface_line_attribute4       := px_subscription_array(indx).billing_sequence_number;
@@ -4057,7 +4150,7 @@ AS
             lr_ra_intf_lines_info.orig_system_ship_address_id   := lr_bill_to_cust_acct_site_info.cust_acct_site_id; --??
 
             lr_ra_intf_lines_info.interface_line_context        := 'RECURRING BILLING';
-            lr_ra_intf_lines_info.interface_line_attribute1     := p_contract_info.contract_id || '-' || px_subscription_array(indx).billing_sequence_number || '-TAX';
+            lr_ra_intf_lines_info.interface_line_attribute1     := p_contract_info.initial_order_number || '-' || px_subscription_array(indx).inv_seq_counter || '-TAX';
             lr_ra_intf_lines_info.interface_line_attribute2     := p_contract_info.contract_major_version || '-TAX';
             lr_ra_intf_lines_info.interface_line_attribute3     := px_subscription_array(indx).contract_line_number || '-TAX';
             lr_ra_intf_lines_info.interface_line_attribute4     := px_subscription_array(indx).billing_sequence_number || '-TAX';
@@ -4225,7 +4318,7 @@ AS
             lr_ra_intf_dists_info.interface_distribution_id       := NULL;
             lr_ra_intf_dists_info.interface_line_id               := ln_interface_line_id;
             lr_ra_intf_dists_info.interface_line_context          := 'RECURRING BILLING';
-            lr_ra_intf_dists_info.interface_line_attribute1       := p_contract_info.contract_id || '-' || px_subscription_array(indx).billing_sequence_number || '-TAX';
+            lr_ra_intf_dists_info.interface_line_attribute1       := p_contract_info.initial_order_number || '-' || px_subscription_array(indx).inv_seq_counter || '-TAX';
             lr_ra_intf_dists_info.interface_line_attribute2       := p_contract_info.contract_major_version || '-TAX';
             lr_ra_intf_dists_info.interface_line_attribute3       := px_subscription_array(indx).contract_line_number || '-TAX';
             lr_ra_intf_dists_info.interface_line_attribute4       := px_subscription_array(indx).billing_sequence_number || '-TAX';
@@ -10790,8 +10883,8 @@ AS
                                   || '","contractEndDate":"'||TO_CHAR(lr_contract_line_info.contract_line_end_date,'YYYY-MM-DD')||'","billingFrequency":"'
                                   || lr_contract_line_info.contract_line_billing_freq|| '","unitPrice":"'|| lt_subscription_array(indx).contract_line_amount||'","tax":"'
                                   || NVL(lt_subscription_array(indx).tax_amount, 0)||'","unitTotal":"'|| lc_item_unit_total||'","failureMessage":"'|| lc_failure_message
-                                  || '","initialAuthDate":"'|| TO_CHAR(lt_subscription_array(indx).initial_auth_attempt_date,'YYYY-MM-DD')||'","lastAuthDate":"'
-                                  || TO_CHAR(lt_subscription_array(indx).last_auth_attempt_date,'YYYY-MM-DD')||'","nextRetryDate":"'|| TO_CHAR(lc_next_retry_date,'DD-MON-YYYY')||'"}'
+                                  || '","initialAuthDate":"'|| TO_CHAR(NVL(lt_subscription_array(indx).initial_auth_attempt_date, TO_DATE(REPLACE(lt_subscription_array(indx).auth_datetime,'T', ' '),'yyyy-mm-dd hh24:mi:ss'))) ||'","lastAuthDate":"'
+                                  || TO_CHAR(NVL(lt_subscription_array(indx).last_auth_attempt_date, TO_DATE(REPLACE(lt_subscription_array(indx).auth_datetime,'T', ' '),'yyyy-mm-dd hh24:mi:ss')))||'","nextRetryDate":"'|| TO_CHAR(lc_next_retry_date,'DD-MON-YYYY')||'"}'
             INTO   lc_history_payload_lines
             FROM   DUAL;
       
