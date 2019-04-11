@@ -27,6 +27,8 @@ FROM dual]]></sqlStatement>
 		WHERE pha.po_header_id = pla.po_header_id
 		) po_amount
 	, aia.invoice_num invoice_number
+    , TO_CHAR(aida.accounting_date, 'DD-MON-RR') gl_date
+    , TO_CHAR(aia.invoice_date, 'DD-MON-RR') invoice_date
 	, aia.invoice_amount invoice_total
 	, SUM(CASE WHEN gcc.segment3 = '22003000' THEN aida.amount ELSE 0 END) dropship_liability_sum
 	, SUM(CASE WHEN gcc.segment3 = '51105000' THEN aida.amount ELSE 0 END) dropship_cogs_sum
@@ -63,6 +65,8 @@ GROUP BY aps.vendor_name
 	, pha.segment1
 	, pha.po_header_id
 	, aia.invoice_num
+    , aida.accounting_date
+    , aia.invoice_date
 	, aia.invoice_amount
 HAVING ABS(aia.invoice_amount - SUM(CASE WHEN gcc.segment3 = '22003000' THEN aida.amount ELSE 0 END)) >= 100
 	AND SUM(CASE WHEN gcc.segment3 = '22003000' THEN 1 ELSE 0 END) > 0
@@ -88,6 +92,8 @@ ORDER BY ABS(variance) DESC
          <element name="PO_NUMBER" dataType="VARCHAR2" value="PO_NUMBER" />
          <element name="PO_AMOUNT" dataType="NUMBER" value="PO_AMOUNT" />
          <element name="INVOICE_NUMBER" dataType="VARCHAR2" value="INVOICE_NUMBER" />
+         <element name="GL_DATE" dataType="VARCHAR2" value="GL_DATE" />
+         <element name="INVOICE_DATE" dataType="VARCHAR2" value="INVOICE_DATE" />
          <element name="INVOICE_TOTAL" dataType="NUMBER" value="INVOICE_TOTAL" />
          <element name="DROPSHIP_LIABILITY_SUM" dataType="NUMBER" value="DROPSHIP_LIABILITY_SUM" />
          <element name="DROPSHIP_COGS_SUM" dataType="NUMBER" value="DROPSHIP_COGS_SUM" />
