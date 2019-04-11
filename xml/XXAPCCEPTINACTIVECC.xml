@@ -1,4 +1,5 @@
-<dataTemplate name="XXACCEPTINACTIVECC" description="" version="1.0">
+<?xml version="1.0" encoding="UTF-8"?>
+<dataTemplate name="XXACCEPTINACTIVECC" defaultPackage="XX_AP_ACCINACCC_BURST" description="" version="1.0">
   <properties>
     <property name="include_parameters" value="true"/>
   </properties>
@@ -68,6 +69,13 @@ ACTIVITY_STATUS='ERROR'
 GROUP BY WN.NOTIFICATION_ID ,WN.ITEM_KEY , WN.MESSAGE_TYPE , WN.MESSAGE_NAME , WN.RECIPIENT_ROLE ,WN.TO_USER,WN.STATUS, WN.MAIL_STATUS , ACCTA.CATEGORY ,PAPF.FULL_NAME ,
 papf.employee_number , wn.subject, accta.report_header_id,ppfs.actual_termination_date,ppfs.final_process_date]]>
     </sqlStatement>
+<sqlStatement name="Q2">
+<![CDATA[
+select to_char(SYSDATE,'MM/DD/YYYY') CURRENT_DATE,
+FND_PROFILE.VALUE('XX_XDO_SMTP_HOST') SMTP_SERVER,
+(SELECT FD.instance_name FROM v$instance FD)INSTANCE_NAME1
+from dual]]>
+    </sqlStatement>
   </dataQuery>
   <dataStructure>
     <group name="G_RESULTS" source="Q1">
@@ -86,5 +94,11 @@ papf.employee_number , wn.subject, accta.report_header_id,ppfs.actual_terminatio
        <element name="CATEGORY"       value="category"/>
 	   <element name="STATUS" value="status"/>
     </group>
-  </dataStructure> 
+	<group name="G_RESULTS1" source="Q2">
+	<element name="CURRENT_DATE"   value="CURRENT_DATE"/>
+       <element name="SMTP_SERVER" value="SMTP_SERVER"/>
+       <element name="INSTANCE_NAME1"     value="INSTANCE_NAME1"/>
+	 </group>
+  </dataStructure>
+<dataTrigger name="afterReport"  source="XX_AP_ACCINACCC_BURST.afterReport()"/>
 </dataTemplate>
