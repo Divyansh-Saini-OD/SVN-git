@@ -3731,14 +3731,14 @@ AS
 
               --ln_trx_number := xx_ar_trx_subscriptions_ab_s.NEXTVAL;
   
-              lc_description := px_subscription_array(indx).billing_sequence_number|| '-' || lr_item_master_info.description;
+              lc_description := px_subscription_array(indx).inv_seq_counter|| '-' || lr_item_master_info.description;
 
             ELSE
               --lc_action :=  'Getting xx_artrx_subscriptions_s.NEXTVAL';
 
               --ln_trx_number := xx_artrx_subscriptions_s.NEXTVAL;
 
-              lc_description := 'Subscription Billing For Contract - ' || px_subscription_array(indx).contract_number || '-' || px_subscription_array(indx).billing_sequence_number;
+              lc_description := 'Subscription Billing For Contract - ' || px_subscription_array(indx).contract_number || '-' || px_subscription_array(indx).inv_seq_counter;
  
             END IF;
           END IF;
