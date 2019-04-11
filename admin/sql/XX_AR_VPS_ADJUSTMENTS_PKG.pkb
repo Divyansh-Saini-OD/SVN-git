@@ -12,6 +12,7 @@ AS
 -- | Version     Date          Author              Remarks                                      |
 -- | =========   ===========   =============       =============================================|
 -- | 1.0         28-JUN-2018   Havish Kasina       Initial version                              |
+-- | 2.0         11-APR-2019   Satheesh Suthari    90178-PENNY ADJ REPORT NEEDS TO BE MODIFIED  |                           
 -- +============================================================================================+
 
 gc_debug 	                VARCHAR2(2);
@@ -608,7 +609,7 @@ BEGIN
 		IF lc_record=1 
 		THEN
 			lc_src_data := utl_raw.cast_to_raw(lc_success_data||RPAD(r.vendor_num,20,' ')
-			                                                  ||RPAD(r.cust_acct_number,20,' ')
+			                                                  ||RPAD(R.CUST_ACCT_NUMBER,20,' ')
 															  ||RPAD(r.cust_acct_name,40,' ')
 															  ||RPAD(r.transaction_number,20,' ')
 															  ||RPAD(TO_CHAR(r.transaction_date,'DD-MON-YYYY'),20,' ')
@@ -620,8 +621,8 @@ BEGIN
 															  ||chr(13)||chr(10)); 
 		ELSE
 			lc_src_data := utl_raw.cast_to_raw(  RPAD(r.vendor_num,20,' ')
-			                                   ||RPAD(r.cust_acct_number,20,' ')
-											   ||RPAD(r.cust_acct_name,20,' ')
+			                                   ||RPAD(R.CUST_ACCT_NUMBER,20,' ')
+											   ||RPAD(r.cust_acct_name,40,' ')
 											   ||RPAD(r.transaction_number,20,' ')
 											   ||RPAD(TO_CHAR(r.transaction_date,'DD-MON-YYYY'),20,' ')
 											   ||RPAD(r.adjustment_number,20,' ')
