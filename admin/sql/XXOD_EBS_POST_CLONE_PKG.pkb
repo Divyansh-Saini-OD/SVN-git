@@ -127,6 +127,7 @@ AS
 -- |                                      translation                                                      | 
 -- |1.61     01-APR-2019   Havish Kasina  Added new identifier AP_NI_19 to update XX_AP_TRADE_PAY_EMAIL    |
 -- |                                      translation                                                      |
+-- |1.62     11-APR-2019   Havish Kasina  Added new identifiers AP_NI_20 and AP_NI_21                      |
 -- +=======================================================================================================+
 
 -- +==========================================================+
@@ -1833,6 +1834,144 @@ AS
             lc_result              := 'Unable to update transalation values';   
             ld_end_date_time       := TO_CHAR(SYSDATE, 'MM/DD/YYYY HH24:MI:SS');
             lc_exception_message   := 'Error encountered during AP_NI_19: '||SQLERRM;
+
+            xx_write_to_file(p_filehandle_csv     => lc_filehandle_csv
+                            ,p_identifier         => lc_identifier
+                            ,p_status             => lc_status
+                            ,p_object_type        => lc_object_type
+                            ,p_object_name        => lc_object_name
+                            ,p_action             => lc_action
+                            ,p_result             => lc_result
+                            ,p_start_date_time    => ld_start_date_time
+                            ,p_end_date_time      => ld_end_date_time
+                            ,p_exception_message  => lc_exception_message);
+        END;
+		
+		/* Added by Havish Kasina as per Version 1.62 */		
+		BEGIN
+            -----------------------------------------------------------
+            -- AP_NI_20 - Update for XX_AP_TRADE_INV_EMAIL Translation 
+            -----------------------------------------------------------
+            lc_identifier          := 'AP_NI_20';
+            lc_object_type         := 'Translation';
+            lc_object_name         := 'XX_AP_TRADE_INV_EMAIL';
+            lc_action              := 'Update XX_AP_TRADE_INV_EMAIL';
+            ld_start_date_time     := TO_CHAR(SYSDATE, 'MM/DD/YYYY HH24:MI:SS');
+
+            ld_end_date_time       := NULL;
+            lc_exception_message   := NULL;
+            lc_result              := NULL;
+            lc_status              := NULL;
+            ln_count               := 0;
+
+            xx_write_to_log (lc_filehandle,'Start of update for AP_NI_20');
+
+            UPDATE xx_fin_translatevalues 
+               SET target_value2 = gc_email_address,
+			       target_value3 = gc_email_address
+             WHERE 1 = 1
+               AND translate_id  = (SELECT translate_id 
+                                      FROM   xx_fin_translatedefinition 
+                                      WHERE  translation_name = 'XX_AP_TRADE_INV_EMAIL');
+
+            ln_count := SQL%rowcount;
+
+            xx_write_to_log (lc_filehandle,'No of rows updated for AP_NI_20 is: ' || SQL%rowcount );
+            COMMIT;
+
+            lc_status        := 'Success'; 
+            lc_result        := 'Updated: '||ln_count||' rows';   
+            ld_end_date_time := TO_CHAR(SYSDATE, 'MM/DD/YYYY HH24:MI:SS');           
+
+            xx_write_to_file(p_filehandle_csv     => lc_filehandle_csv
+                            ,p_identifier         => lc_identifier
+                            ,p_status             => lc_status
+                            ,p_object_type        => lc_object_type
+                            ,p_object_name        => lc_object_name
+                            ,p_action             => lc_action
+                            ,p_result             => lc_result
+                            ,p_start_date_time    => ld_start_date_time
+                            ,p_end_date_time      => ld_end_date_time
+                            ,p_exception_message  => lc_exception_message);
+
+        EXCEPTION 
+        WHEN OTHERS 
+		THEN
+            xx_write_to_log (lc_filehandle,'Error encountered during AP_NI_20: '||SQLERRM);
+            ROLLBACK;
+            lc_status              := 'ERROR'; 
+            lc_result              := 'Unable to update transalation values';   
+            ld_end_date_time       := TO_CHAR(SYSDATE, 'MM/DD/YYYY HH24:MI:SS');
+            lc_exception_message   := 'Error encountered during AP_NI_20: '||SQLERRM;
+
+            xx_write_to_file(p_filehandle_csv     => lc_filehandle_csv
+                            ,p_identifier         => lc_identifier
+                            ,p_status             => lc_status
+                            ,p_object_type        => lc_object_type
+                            ,p_object_name        => lc_object_name
+                            ,p_action             => lc_action
+                            ,p_result             => lc_result
+                            ,p_start_date_time    => ld_start_date_time
+                            ,p_end_date_time      => ld_end_date_time
+                            ,p_exception_message  => lc_exception_message);
+        END;
+		
+		/* Added by Havish Kasina as per Version 1.62 */		
+		BEGIN
+            -----------------------------------------------------------
+            -- AP_NI_21 - Update for XX_AP_TRADE_MATCH_DL Translation 
+            -----------------------------------------------------------
+            lc_identifier          := 'AP_NI_21';
+            lc_object_type         := 'Translation';
+            lc_object_name         := 'XX_AP_TRADE_MATCH_DL';
+            lc_action              := 'Update XX_AP_TRADE_MATCH_DL';
+            ld_start_date_time     := TO_CHAR(SYSDATE, 'MM/DD/YYYY HH24:MI:SS');
+
+            ld_end_date_time       := NULL;
+            lc_exception_message   := NULL;
+            lc_result              := NULL;
+            lc_status              := NULL;
+            ln_count               := 0;
+
+            xx_write_to_log (lc_filehandle,'Start of update for AP_NI_21');
+
+            UPDATE xx_fin_translatevalues 
+               SET target_value1 = gc_email_address,
+			       target_value2 = gc_email_address
+             WHERE 1 = 1
+               AND translate_id  = (SELECT translate_id 
+                                      FROM   xx_fin_translatedefinition 
+                                      WHERE  translation_name = 'XX_AP_TRADE_MATCH_DL');
+
+            ln_count := SQL%rowcount;
+
+            xx_write_to_log (lc_filehandle,'No of rows updated for AP_NI_21 is: ' || SQL%rowcount );
+            COMMIT;
+
+            lc_status        := 'Success'; 
+            lc_result        := 'Updated: '||ln_count||' rows';   
+            ld_end_date_time := TO_CHAR(SYSDATE, 'MM/DD/YYYY HH24:MI:SS');           
+
+            xx_write_to_file(p_filehandle_csv     => lc_filehandle_csv
+                            ,p_identifier         => lc_identifier
+                            ,p_status             => lc_status
+                            ,p_object_type        => lc_object_type
+                            ,p_object_name        => lc_object_name
+                            ,p_action             => lc_action
+                            ,p_result             => lc_result
+                            ,p_start_date_time    => ld_start_date_time
+                            ,p_end_date_time      => ld_end_date_time
+                            ,p_exception_message  => lc_exception_message);
+
+        EXCEPTION 
+        WHEN OTHERS 
+		THEN
+            xx_write_to_log (lc_filehandle,'Error encountered during AP_NI_21: '||SQLERRM);
+            ROLLBACK;
+            lc_status              := 'ERROR'; 
+            lc_result              := 'Unable to update transalation values';   
+            ld_end_date_time       := TO_CHAR(SYSDATE, 'MM/DD/YYYY HH24:MI:SS');
+            lc_exception_message   := 'Error encountered during AP_NI_21: '||SQLERRM;
 
             xx_write_to_file(p_filehandle_csv     => lc_filehandle_csv
                             ,p_identifier         => lc_identifier
