@@ -19,8 +19,8 @@ PACKAGE BODY XX_INV_ITEM_INTF_PKG
 -- |1.6       23-Apr-2010 Paddy Sanjeevi     Added od_srvc_type_cd to item master       |
 -- |1.7       27-Jan-2014 Paddy Sanjeevi     R12 Index Sync            			|
 -- |1.8       09-Apr-2015 Sai Kiran          Repalced the Control_id variable datatype with Number(defect#34053)|
--- |1.9       19-Oct-2015 Madhu Bolli        Remove schema for 12.2 retrofit    |
--- |1.10	  27-Dec-2018 Shalu George       Commented lines 205 to 414 for Lift and Shift(JIRA NAIT-60664)|
+-- |1.9       19-Oct-2015 Madhu Bolli        Remove schema for 12.2 retrofit            |
+-- |1.10      04-APR-2019 Venkateshwar Panduga   Modified item master child request counts     |
 -- +====================================================================================+
 AS
 ----------------------------
@@ -128,8 +128,8 @@ IS
 --CH ID#34053 Start
 --v_mstctl_id		PLS_INTEGER;
 --v_locctl_id	  PLS_INTEGER;
-v_mstctl_id		NUMBER;  
-v_locctl_id	  NUMBER; 
+v_mstctl_id		NUMBER;
+v_locctl_id	  NUMBER;
 --CH ID#34053 End
 i 			NUMBER:=0;
 j			NUMBER:=0;
@@ -202,7 +202,7 @@ SELECT  item
  ORDER BY rms_timestamp DESC;
 
 BEGIN
-/*  SELECT MAX(control_id)
+  SELECT MAX(control_id)
     INTO v_mstctl_id
     FROM xx_inv_ebs_control
    WHERE process_name='ITEM_MASTER';
@@ -411,7 +411,7 @@ BEGIN
   	x_errbuf   :=SQLERRM;
       x_retcode  :=-1;
   END;
-*/
+
   -- To set the item records to success for duplicate 'A'
   j:=0;
   FOR cur IN c_master_set('A') LOOP
@@ -1182,7 +1182,7 @@ ln_req_count  	   PLS_INTEGER:=0;
 ln_current_count	   PLS_INTEGER:=0;
 ln_run_count	   PLS_INTEGER:=0;
 ln_mst_count	   PLS_INTEGER:=0;
-
+ln_master_req_count  	   PLS_INTEGER:=0;
 
 BEGIN
 
@@ -1196,8 +1196,17 @@ BEGIN
     WHEN others THEN
 	ln_master_org:=NULL;
   END;
-
-
+-----	 Added below code is for  V 1.10
+   BEGIN
+      SELECT EBS_THREADS
+        INTO ln_master_req_count
+        FROM xx_inv_ebs_control
+       WHERE process_name='ITEM_MASTER';
+    EXCEPTION
+	WHEN others THEN
+        ln_master_req_count:=6;
+    END;
+--End of V 1.10 code
   LOOP
 
     SELECT COUNT(1)
@@ -1225,7 +1234,13 @@ BEGIN
          AND phase_code IN ('P','R')
 	   AND argument1 IN ('MA','MC');
 
-         IF ln_mst_count=6 THEN
+-----	   Below code is commented for  V 1.10
+---         IF ln_mst_count=6 THEN
+---            EXIT;
+---         END IF;
+
+-----	 Added below code is for  V 1.10		 
+		 IF ln_mst_count=ln_master_req_count THEN
             EXIT;
          END IF;
 
@@ -1268,9 +1283,17 @@ BEGIN
     END IF;
 
     IF p_master='Y' THEN
-	 IF ln_req_count=6 THEN
-          EXIT;
-       END IF;
+-----	   Below code is commented for  V 1.10	
+---	 IF ln_req_count=6 THEN
+---          EXIT;
+---       END IF;
+
+-----	 Added below code is for  V 1.10		 
+
+		IF ln_req_count = ln_master_req_count THEN
+				  EXIT;
+		 END IF;
+--End of V 1.10 code		 
     ELSE
 	 IF ln_req_count=gn_threads+3 THEN
           EXIT;
@@ -4870,4 +4893,3 @@ EXCEPTION
 END child_main;
 END XX_INV_ITEM_INTF_PKG;
 /
-exit;
