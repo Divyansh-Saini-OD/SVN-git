@@ -3,13 +3,9 @@ SET SHOW OFF;
 SET ECHO OFF;
 SET TAB OFF;
 SET FEEDBACK OFF;
- 
 WHENEVER SQLERROR CONTINUE;
- 
 WHENEVER OSERROR EXIT FAILURE ROLLBACK;
-
-
-create or replace 
+CREATE OR REPLACE
 PACKAGE Body XX_AP_XML_BURSTING_PKG
 AS
   -- +============================================================================================+
@@ -17,7 +13,7 @@ AS
   -- |                                                                                            |
   -- +============================================================================================+
   -- |  Name  :  XX_AP_XML_BURSTING_PKG                                                           |
-  -- |  RICE ID   :  
+  -- |  RICE ID   :
   -- |  Description:  Common Report package for XML bursting                                      |
   -- |  Change Record:                                                                            |
   -- +============================================================================================+
@@ -26,6 +22,7 @@ AS
   -- | 1.0         11/10/2017   Digamber S       Initial version                                  |
   -- | 1.1         19-Mar-2019  Shanti Sethuraj  Added oracle instance name in the email subject  |
   -- |                                           for the jira NAIT-87655                          |
+  -- | 1.2         15-Apr-2019 Shanti Sethuraj  Modifed for Jira NAIT-91067                      |
   -- +============================================================================================+
 PROCEDURE GET_EMAIL_DETAIL(
     P_CONC_NAME VARCHAR2,
@@ -38,7 +35,7 @@ IS
   L_EMAIL_CONTENT     VARCHAR2(500);
   L_DISTRIBUTION_LIST VARCHAR2(500);
   L_SMTP_SERVER       VARCHAR2(250);
-  l_instance_name     varchar2(250);
+  l_instance_name     VARCHAR2(250); --added for jira NAIT-87655
 BEGIN
   BEGIN
     SELECT XFTV.target_value2,
@@ -65,10 +62,13 @@ BEGIN
     L_DISTRIBUTION_LIST := 'trade_notifications@officedepot.com';
     L_SMTP_SERVER       := FND_PROFILE.VALUE('XX_XDO_SMTP_HOST');
   END;
-  if p_conc_name='XXAPBYPASSINV' then          --added for jira NAIT-87655
-    select instance_name into l_instance_name from v$instance;    --added for jira NAIT-87655
-	L_EMAIL_SUBJECT     := l_instance_name ||' '|| L_EMAIL_SUBJECT  ;    --added for jira NAIT-87655
-	end if;     --added for jira NAIT-87655
+  SELECT instance_name INTO l_instance_name FROM v$instance; --added for jira NAIT-87655
+  IF p_conc_name     ='XXAPBYPASSINV' THEN                        --added for jira NAIT-87655
+    L_EMAIL_SUBJECT := l_instance_name ||' '|| L_EMAIL_SUBJECT ;  --added for jira NAIT-87655
+  END IF;                                                         --added for jira NAIT-87655
+  IF p_conc_name     ='XXAPPVARXML' THEN                               --added for jira NAIT-91067
+    L_EMAIL_SUBJECT := l_instance_name ||' '|| L_EMAIL_SUBJECT ;       --added for jira NAIT-91067
+  END IF;                                                              --added for jira NAIT-91067
   P_EMAIL_SUBJECT     := L_EMAIL_SUBJECT ;
   P_EMAIL_CONTENT     := L_EMAIL_CONTENT ;
   P_DISTRIBUTION_LIST :=L_DISTRIBUTION_LIST;
@@ -76,5 +76,4 @@ BEGIN
 END Get_email_detail;
 END XX_AP_XML_BURSTING_PKG;
 /
-
 SHOW ERRORS;
