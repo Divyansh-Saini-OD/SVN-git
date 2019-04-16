@@ -1,6 +1,6 @@
 create or replace 
-PACKAGE BODY XX_AP_BEFOREUPDATE_BURST
-AS
+package body XX_AP_BEFOREUPDATE_BURST
+as
   -- +============================================================================================+
   -- |  Office Depot - Project Simplify                                                           |
   -- |                                                                                            |
@@ -26,53 +26,53 @@ AS
   -- +============================================================================================+
 
 
-FUNCTION afterReport
-  RETURN BOOLEAN
-IS
-  ln_request_id NUMBER;
-  P_CONC_REQUEST_ID NUMBER;
-  L_COUNT      NUMBER :=0;
-  L_START_DATE DATE;
-L_END_DATE DATE;
+function AFTERREPORT
+  return BOOLEAN
+is
+  LN_REQUEST_ID number;
+  P_CONC_REQUEST_ID number;
+  L_COUNT      number :=0;
+  l_start_date date;
+l_end_date date;
  
-BEGIN
+begin
 
-  l_start_date := fnd_date.canonical_to_date(p_start_date);
-   l_end_date   := fnd_date.canonical_to_date(p_end_date);
+  l_start_date := FND_DATE.CANONICAL_TO_DATE(p_start_date);
+   l_end_date   := FND_DATE.CANONICAL_TO_DATE(p_end_date);
 
-select sum(acnt)
+select SUM(ACNT)
 into L_COUNT from (
-SELECT count(1) acnt
-FROM AP_CREDIT_CARD_TRXNS_ALL
-WHERE TRANSACTION_TYPE = '0402'
-AND DEBIT_FLAG         in ('D','C')
-AND PAYMENT_FLAG       ='Y'
-AND DESCRIPTION        ='LATE PAYMENT CHARGE'
-AND TRUNC(CREATION_DATE) BETWEEN (L_START_DATE) AND (L_END_DATE));
+select COUNT(1) ACNT
+from AP_CREDIT_CARD_TRXNS_ALL
+where TRANSACTION_TYPE = '0402'
+and DEBIT_FLAG         in ('D','C')
+and PAYMENT_FLAG       ='Y'
+and DESCRIPTION        ='LATE PAYMENT CHARGE'
+and TRUNC(CREATION_DATE) between (l_start_date) and (l_end_date));
 
-IF L_COUNT > 0 THEN
+if L_COUNT > 0 then
 
 P_CONC_REQUEST_ID := FND_GLOBAL.CONC_REQUEST_ID;
-  fnd_file.put_line(fnd_file.log, 'OD: AP iExp Late Payment Credit Card Before Update Report Program Report Request ID: '||P_CONC_REQUEST_ID);
+  FND_FILE.PUT_LINE(FND_FILE.log, 'OD: AP iExp Late Payment Credit Card Before Update Report Program Report Request ID: '||P_CONC_REQUEST_ID);
   
-If P_CONC_REQUEST_ID > 0 THEN
+if P_CONC_REQUEST_ID > 0 then
 
-fnd_file.put_line(fnd_file.log, 'Submitting : XML Publisher Report Bursting Program');
-      ln_request_id := FND_REQUEST.SUBMIT_REQUEST('XDO',  -- Application short name
+FND_FILE.PUT_LINE(FND_FILE.log, 'Submitting : XML Publisher Report Bursting Program');
+      LN_REQUEST_ID := FND_REQUEST.SUBMIT_REQUEST('XDO',  -- Application short name
 	                                              'XDOBURSTREP', --- conc program short name
-												  NULL, 
-												  NULL, 
-												  FALSE, 
+												  null, 
+												  null, 
+												  false, 
 												  'N', 
 												  P_CONC_REQUEST_ID, 
 												  'Y');
-END IF;
-END IF;
-  RETURN(TRUE);
+end if;
+end if;
+  return(true);
 EXCEPTION
-WHEN OTHERS THEN
-  fnd_file.put_line(fnd_file.log, 'Exception in after_report function '||SQLERRM );
+when OTHERS then
+  FND_FILE.PUT_LINE(FND_FILE.log, 'Exception in after_report function '||SQLERRM );
 
-END afterReport;
-END XX_AP_BEFOREUPDATE_BURST;
+end AFTERREPORT;
+end XX_AP_BEFOREUPDATE_BURST;
 /
