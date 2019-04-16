@@ -6183,7 +6183,7 @@ BEGIN
 						
 						IF ln_cons_count >0
 						THEN
-							SELECT MAX(overflow_sequence)
+							SELECT NVL(MAX(overflow_sequence),0)
 							INTO ln_overflow_seq
 							FROM xx_ar_payments_interface XAPI1
 							WHERE 1=1
