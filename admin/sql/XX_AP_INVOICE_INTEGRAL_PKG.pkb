@@ -96,7 +96,8 @@ AS
 -- |                                              Vendor Site Number to the Alert for           |
 -- |                                              Consignment Supplier Coming in EDI file       |
 -- | 4.6         01/24/2019   BIAS                INSTANCE_NAME is replaced with DB_NAME for OCI|
--- |                                              Migration 
+-- |                                              Migration                                     |
+-- | 4.7         04/10/2019  Shanti Sethuraj      Modified for NAIT-87653                       |
 -- +============================================================================================+
 
 -- +============================================================================================+
@@ -3015,11 +3016,12 @@ AS
 	lc_email_body        VARCHAR2(100);
 	conn                 utl_smtp.connection;
 	lc_ret_status        VARCHAR2(100);
+	l_instance_name_1    VARCHAR2(100);          ---added by Shanti for NAIT-87653	
 
 BEGIN
     l_table.delete;
 	ln_invoice_id := NULL;
-
+    SELECT INSTANCE_NAME INTO l_instance_name_1 FROM V$INSTANCE;           ---added by Shanti for NAIT-87653
 	-- Checking the Dropship PO Exists or NOT
 	FOR drp_po IN drp_po_cur
 	LOOP
@@ -3214,7 +3216,8 @@ BEGIN
             conn := xx_pa_pb_mail.begin_mail(sender => lc_email_from,
                                              recipients => lc_email_to,
                                              cc_recipients=>lc_email_cc,
-                                             subject => lc_email_subject ,
+                                             --subject => lc_email_subject ,   --commented by Shanti for Jira NAIT-87653
+											 subject =>l_instance_name_1 ||': '|| lc_email_subject,    ---Added by Shanti for NAIT-87653 to include instance name in email subject
                                              mime_type => xx_pa_pb_mail.MULTIPART_MIME_TYPE);
 
             xx_pa_pb_mail.attach_text( conn => conn,
