@@ -1573,7 +1573,7 @@ BEGIN
     AND sysdate BETWEEN xftv.start_date_active AND NVL(xftv.end_date_active,sysdate);
     -----------Pre-stage max report_date as per process name
     IF p_process_name='NEWEGG_MPL' THEN
-      SELECT MAX(to_date(settlement_date,'MM/DD/YYYY HH24:MI:SS'))
+      SELECT MAX(to_date(settlement_date,'MM/DD/YYYY HH24:MI:SS'))+1
       INTO l_max_recd_date
       FROM xx_ce_newegg_sum_pre_stg_v
       WHERE report_date >=l_start_date_durtn;
