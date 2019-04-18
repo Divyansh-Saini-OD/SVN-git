@@ -5841,6 +5841,7 @@ AS
     ln_pod_cnt       NUMBER :=0; 
 	ln_pod_tab_cnt   NUMBER :=0; 
 	ln_pay_doc       NUMBER :=0; 
+	ln_pay_doc_cons  NUMBER :=0; 
 BEGIN	
       
 	 ln_pod_cnt      := 0;	
@@ -5888,12 +5889,25 @@ BEGIN
 	   WHEN OTHERS THEN
 	     FND_FILE.PUT_LINE(FND_FILE.LOG,'XX_AR_EBL_COMMON_UTIL_PKG: Error while fetching details from xx_ar_ebl_ind_hdr_hist table : '||Sqlerrm);
 		 ln_pay_doc := 0;
-	 END;	
+	 END;
+     
+     BEGIN	
+	   SELECT COUNT(1)
+		 INTO ln_pay_doc_cons
+		 FROM xx_ar_ebl_cons_hdr_hist
+		WHERE document_type = 'Paydoc'
+		  AND billdocs_delivery_method IN ('ePDF','eTXT','eXLS')  
+		  AND customer_trx_id = p_customer_trx_id;
+	 EXCEPTION
+	   WHEN OTHERS THEN
+	     FND_FILE.PUT_LINE(FND_FILE.LOG,'XX_AR_EBL_COMMON_UTIL_PKG: Error while fetching details from xx_ar_ebl_cons_hdr_hist table : '||Sqlerrm);
+		 ln_pay_doc_cons := 0;
+	 END;		 
 		  
-    IF ln_pod_cnt >= 1 AND ln_pod_tab_cnt = 0 AND ln_pay_doc >= 1 THEN 
+    IF ln_pod_cnt >= 1 AND ln_pod_tab_cnt = 0 AND (ln_pay_doc >= 1 OR ln_pay_doc_cons >= 1)  THEN 
 	    lc_pod_blurb_msg:= 'Delivery Details Not Available.';
     ELSE 
-     lc_pod_blurb_msg := NULL;
+        lc_pod_blurb_msg := NULL;
     END IF;
     
 
