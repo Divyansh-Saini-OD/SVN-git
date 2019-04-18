@@ -24,6 +24,7 @@ AS
 	  -- | 1.0         01/20/2019   Paddy Sanjeevi       Initial version                              |
 	  -- | 1.1         02/04/2019   M K Pramod Kumar     Code Changes to generate Files               |
 	  -- | 1.2         03/12/2019   Paddy Sanjeevi       Modified to add CC Averate and Month End     |
+	  -- | 1.3         04/18/2019   Paddy Sanjeevi       Modified to add GSO Requirements BEAC 12167  |
 	  -- +============================================================================================+
 	  lc_Saturday        VARCHAR2(1)   := TO_CHAR(to_date('20000101','RRRRMMDD'),'D');
 	  lc_Sunday          VARCHAR2(1)   := TO_CHAR(to_date('20000102','RRRRMMDD'),'D');
@@ -312,7 +313,7 @@ BEGIN
 			  TO_CHAR(ROUND(b.conversion_rate,6)) conversion_rate
 	     FROM gl_daily_rates b,
 			  gl_daily_conversion_types a
-	    WHERE a.user_conversion_type IN ('Ending Rate','CC Period End','CC Period Average')
+	    WHERE a.user_conversion_type IN ('Average Rate','Ending Rate','CC Period End','CC Period Average')
 		  AND b.conversion_type=a.conversion_type
 		  AND b.conversion_date=TRUNC(p_date)
 	      AND b.from_currency    ='USD'
