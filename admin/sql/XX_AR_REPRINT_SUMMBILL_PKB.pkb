@@ -3039,7 +3039,7 @@ BEGIN
 		IF ln_custdoc_id IS NOT NULL AND ln_delivery_method in ('ePDF','eTXT','eXLS') THEN		
 		lc_error_location:=' Getting Bill complete message for '||ln_delivery_method||' delivery Method';
 		--lc_cons_msg_bcc:=xx_ar_ebl_common_util_pkg.get_cons_msg_bcc(ln_custdoc_id,p_cust_account_id,p_billing_number);
-		lc_cons_msg_bcc := xx_ar_reprint_summbill.get_cons_msg_bcc_rp(p_cbi_id,p_custdoc_id,p_cust_account_id,p_billing_number);
+		lc_cons_msg_bcc := xx_ar_reprint_summbill.get_cons_msg_bcc_rp(p_cbi_id,ln_custdoc_id,p_cust_account_id,p_billing_number);
 		ELSE
 		lc_cons_msg_bcc:='X';		
 		END IF;
