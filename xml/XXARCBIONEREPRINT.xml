@@ -261,7 +261,7 @@ ORDER BY line_seq
 </sqlStatement>
 <sqlStatement name="Q_CONS_MSG_BCC">  <!--Added this sqlStatement for NAIT-80452-->
        <![CDATA[
-          SELECT xx_ar_reprint_summbill.get_cons_msg_bcc(:p_cust_doc_id,:cust_account_id,:billing_number) CONS_MSG_BCC 
+          SELECT xx_ar_reprint_summbill.get_cons_msg_bcc(:cbi_id,:p_cust_doc_id,:cust_account_id,:billing_number) CONS_MSG_BCC 		  
 		  FROM DUAL
        ]]>
 </sqlStatement>
