@@ -57,6 +57,12 @@ PACKAGE BODY      XX_AR_REPRINT_SUMMBILL AS
 -- |    4.1             06-MAR-2019	      Sravan Reddy       Added functions get_cons_msg_bcc,              | 
 -- |                                                         get_paydoc_flag, get_pod_msg as part of        |  	
 -- |                                                         NAIT-80452                                     |
+-- |    1.7             19-APR-2019	      Visu P         	 Added function get_cons_msg_bcc_rp             |
+-- |                                                         Added new parameter p_cbi_id to                |
+-- |                                                         GET_CONS_MSG_BCC, made a call to               |
+-- |                                                         get_cons_msg_bcc_rp instead of                 |
+-- |                                                         xx_ar_ebl_common_util_pkg.get_cons_msg_bcc     |
+-- |                                                         as part of  NAIT-92137                         |
 ---+========================================================================================================+
 
 -- Added for defect 31838
@@ -2962,10 +2968,11 @@ END XX_REMIT_TO_ADDRESS;
   -- |                     "Consolidated" and it is Paydoc then blurb message to be displayed in  |
   ---|                      respective child programs of "OD: AR Reprint Summary Bills".          |                 
   ---|                                                                                            |
-  ---|    Parameters : Cust_doc_Id, Cust_account_id, Consolidated_billing_number                  |
+  ---|    Parameters : Cons_Inv_Id, Cust_doc_Id, Cust_account_id, Consolidated_billing_number                  |
   --+=============================================================================================+	 
 FUNCTION GET_CONS_MSG_BCC 
-	     ( p_custdoc_id      IN NUMBER		  
+	     ( p_cbi_id       IN NUMBER
+		 , p_custdoc_id      IN NUMBER		  
 		  ,p_cust_account_id IN NUMBER
 		  ,p_billing_number  IN VARCHAR2
 	     ) 
@@ -3003,8 +3010,9 @@ BEGIN
 	
 		IF  ln_delivery_method in('ePDF','eTXT','eXLS') THEN		
 			lc_error_location:=' Custdoc_id is not null and Cust_account_id is not null and delivery_method is '||ln_delivery_method;
-			lc_cons_msg_bcc := xx_ar_ebl_common_util_pkg.get_cons_msg_bcc(p_custdoc_id,p_cust_account_id,p_billing_number);
-		ELSE
+			--lc_cons_msg_bcc := xx_ar_ebl_common_util_pkg.get_cons_msg_bcc(p_custdoc_id,p_cust_account_id,p_billing_number);
+			lc_cons_msg_bcc := xx_ar_reprint_summbill.get_cons_msg_bcc_rp(p_cbi_id,p_custdoc_id,p_cust_account_id,p_billing_number);
+			ELSE
 			lc_cons_msg_bcc:='X';		
 		END IF;	
 	    RETURN(lc_cons_msg_bcc);	
@@ -3030,7 +3038,8 @@ BEGIN
 		
 		IF ln_custdoc_id IS NOT NULL AND ln_delivery_method in ('ePDF','eTXT','eXLS') THEN		
 		lc_error_location:=' Getting Bill complete message for '||ln_delivery_method||' delivery Method';
-		lc_cons_msg_bcc:=xx_ar_ebl_common_util_pkg.get_cons_msg_bcc(ln_custdoc_id,p_cust_account_id,p_billing_number);
+		--lc_cons_msg_bcc:=xx_ar_ebl_common_util_pkg.get_cons_msg_bcc(ln_custdoc_id,p_cust_account_id,p_billing_number);
+		lc_cons_msg_bcc := xx_ar_reprint_summbill.get_cons_msg_bcc_rp(p_cbi_id,p_custdoc_id,p_cust_account_id,p_billing_number);
 		ELSE
 		lc_cons_msg_bcc:='X';		
 		END IF;
@@ -3208,6 +3217,205 @@ END get_paydoc_flag;
 	RETURN(lc_pod_blurb_msg);
   
   END get_pod_msg;
+-- +===================================================================================+
+-- |                                                                                   |
+-- +===================================================================================+
+-- | Name        : GET_CONS_MSG_BCC_RP                                                 |
+-- | Description : Added new function as part of  NAIT-92137                           |
+-- | 			      										   |
+-- |===============                                                                    |
+-- |Version   Date          Author              Remarks                                |
+-- |=======   ==========   =============        =======================================|
+-- |1.0       19-Apr-2019  Visu P               Added new function as part of          |
+--                                              NAIT-92137                             |
+-- +===================================================================================+
+FUNCTION get_cons_msg_bcc_rp 
+	     ( p_cbi_id             IN NUMBER        
+		  ,p_cust_doc_id 		IN NUMBER
+		  ,p_cust_account_id 	IN NUMBER
+		  ,p_billing_number  	IN VARCHAR2
+	     ) 
+ RETURN VARCHAR2 
+AS 
+  lc_bill_flag 				VARCHAR2(5)    := 'N';
+  lc_cons_msg_bcc   		VARCHAR2(2000) := TO_CHAR(NULL);
+  lc_child_order_number 	VARCHAR2(300)  := NULL;
+  lc_parent_order_number 	VARCHAR2(300)  := NULL;
+  lb_debug               	BOOLEAN;
+  ln_bill_cnt 				NUMBER:=0;
+  ln_pay_doc_cnt  			NUMBER:=0;
+ BEGIN   	
+	BEGIN	
+          ln_pay_doc_cnt:= 0;
+	
+        SELECT COUNT(1) 
+			INTO ln_pay_doc_cnt
+			FROM xx_cdh_cust_acct_ext_b
+          WHERE n_ext_attr2=p_cust_doc_id
+            AND c_ext_attr2 IN('Y','B') -- condition to pick Paydoc/bill complete customer
+		    AND attr_group_id=(SELECT attr_group_id
+								FROM   ego_attr_groups_v
+								WHERE  attr_group_type = 'XX_CDH_CUST_ACCOUNT'
+								AND    attr_group_name = 'BILLDOCS'); 
+	EXCEPTION
+		WHEN OTHERS	THEN
+			ln_pay_doc_cnt:= 0;
+	END;    
+	IF ln_pay_doc_cnt = 1	THEN
+		
+		--Condition to check Bill complete customer flag
+		BEGIN	
+			ln_bill_cnt := 0;
+			
+			SELECT COUNT(1) 
+			INTO ln_bill_cnt
+			FROM hz_customer_profiles
+				WHERE cust_account_id = p_cust_account_id	
+				AND cons_inv_flag     = 'Y' 
+				AND attribute6 IN ('Y','B')				   
+				AND site_use_id IS NULL;
+		EXCEPTION
+			WHEN OTHERS	THEN
+			ln_bill_cnt := 0;
+		END; 
+		IF ln_bill_cnt = 1	THEN			
+		
+			BEGIN 
+			lc_child_order_number 	:= NULL;
+			lc_parent_order_number 	:= NULL;	
+			
+			IF LENGTH(p_billing_number) = 9 THEN						
+					BEGIN
+						lc_cons_msg_bcc := NULL;
+						SELECT LISTAGG(child_order_number, ', ') within GROUP (ORDER BY child_order_number) AS child_order_number 
+						  INTO lc_child_order_number
+						  FROM xx_scm_bill_signal 
+						 WHERE parent_order_number = p_billing_number
+						   AND NOT EXISTS (SELECT 1
+									  FROM   xx_ar_ebl_cons_hdr_hist
+									  WHERE  cust_account_id        = p_cust_account_id
+									  AND    cons_inv_id            = p_cbi_id
+									  AND    invoice_number         = child_order_number
+								  );
+										  
+							   fnd_file.put_line(fnd_file.log, 'lc_child_order_number : ' || lc_child_order_number);
+					EXCEPTION
+						WHEN OTHERS	THEN
+							lc_child_order_number:= NULL;
+					END;
+					
+						IF lc_child_order_number IS NOT NULL THEN
+						    lc_cons_msg_bcc := 'Order '||lc_child_order_number ||' are pending shipment and will be billed separately, as an exception.';  	
+						ELSE
+						   lc_cons_msg_bcc:='X';
+						END IF;
+						
+					RETURN(lc_cons_msg_bcc);
+					
+			ELSIF LENGTH(p_billing_number) = 12 THEN
+			
+				BEGIN
+					lc_cons_msg_bcc := NULL;
+					SELECT parent_order_number
+					  INTO lc_parent_order_number
+					  FROM xx_scm_bill_signal 
+					 WHERE child_order_number = p_billing_number;
+									
+					fnd_file.put_line(fnd_file.log,'lc_parent_order_number : ' || lc_parent_order_number);
+				EXCEPTION
+					WHEN OTHERS THEN
+					lc_parent_order_number:= NULL;
+				END;
+				
+				IF lc_parent_order_number IS NOT NULL THEN
+				    lc_cons_msg_bcc := 'Order # '||p_billing_number ||' is part of Parent Order # '||lc_parent_order_number||'.';
+				ELSE
+				   lc_cons_msg_bcc:='X';
+				END IF;			
+					
+				RETURN(lc_cons_msg_bcc);
+			ELSE     
+				RETURN('X');
+			END IF;	
+				
+			EXCEPTION
+				WHEN OTHERS THEN 
+				RETURN('X');
+			END;
+			
+		ELSE
+		
+			BEGIN 
+			lc_child_order_number := NULL;
+			lc_parent_order_number:= NULL;	
+			
+			IF LENGTH(p_billing_number) = 9 THEN						
+					BEGIN
+						lc_cons_msg_bcc := NULL;
+						SELECT LISTAGG(child_order_number, ', ') within GROUP (ORDER BY child_order_number) AS child_order_number 
+						  INTO lc_child_order_number
+						  FROM xx_scm_bill_signal 
+						 WHERE parent_order_number = p_billing_number
+						   AND NOT EXISTS (SELECT 1
+									  FROM   xx_ar_ebl_cons_hdr_hist
+									  WHERE  cust_account_id        = p_cust_account_id
+									  AND    cons_inv_id            = p_cbi_id
+									  AND    invoice_number         = child_order_number
+								  );
+								  
+							   fnd_file.put_line(fnd_file.log,'lc_child_order_number : ' || lc_child_order_number);
+					EXCEPTION
+						WHEN OTHERS	THEN
+							lc_child_order_number:= NULL;
+					END;
+					
+						IF lc_child_order_number IS NOT NULL THEN
+						    lc_cons_msg_bcc := 'Order '||lc_child_order_number ||' are pending shipment and will be billed separately, as an exception.';
+						ELSE
+						   lc_cons_msg_bcc:='X';
+						END IF;
+						
+					RETURN(lc_cons_msg_bcc);
+					
+			ELSIF LENGTH(p_billing_number) = 12 THEN
+	
+				BEGIN
+					lc_cons_msg_bcc := NULL;
+					SELECT parent_order_number
+					  INTO lc_parent_order_number
+					  FROM xx_scm_bill_signal 
+					 WHERE child_order_number = p_billing_number;	
+											
+					 fnd_file.put_line(fnd_file.log,'lc_parent_order_number : ' || lc_parent_order_number);
+				EXCEPTION
+					WHEN OTHERS THEN
+					lc_parent_order_number:= NULL;
+				END;
+				
+					IF lc_parent_order_number IS NOT NULL THEN
+					    lc_cons_msg_bcc:='Order # '||p_billing_number ||' is part of Parent Order # '||lc_parent_order_number||'.';
+					ELSE
+					   lc_cons_msg_bcc:='X';
+					END IF;			
+					
+				RETURN(lc_cons_msg_bcc);
+			ELSE     
+				RETURN('X');
+			END IF;	
+		
+			EXCEPTION
+				WHEN OTHERS THEN 
+				RETURN('X');
+		END;
+		END IF;
+	ELSE     
+	RETURN('X');
+	END IF; --End of Main IF
+		  
+ EXCEPTION
+	WHEN OTHERS THEN 
+	RETURN('X');
+ END get_cons_msg_bcc_rp;
 
 END XX_AR_REPRINT_SUMMBILL;
 

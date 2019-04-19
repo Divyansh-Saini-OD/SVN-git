@@ -22,9 +22,15 @@ CREATE OR REPLACE PACKAGE apps.xx_ar_reprint_summbill AS
 -- |    1.3             14-JUL-2009       Samabsiva Reddy D  Defect# 631 (CR# 662) -- Applied Credit Memos  |
 -- |    1.4             08-SEP-2009       Vinaykumar s       Defect# 1451 (CR# 626)                         |
 -- |    1.5             16-DEC-2009       Gokila Tamilselvam Modified for R1.2 Defect# 1210 CR# 466.        |
--- |    1.6             06-MAR-2019	      Sravan Reddy		 Added functions get_cons_msg_bcc,              | 
+-- |    1.6             06-MAR-2019	      Sravan Reddy	     Added functions get_cons_msg_bcc,              | 
 -- |                                                         get_paydoc_flag,get_pod_msg as part of         |  	
--- |                                                         NAIT-80452.  
+-- |                                                         NAIT-80452.                                    |
+-- |    1.7             19-APR-2019	      Visu P         Added function get_cons_msg_bcc_rp                 |
+-- |                                                         Added new parameter p_cbi_id to                |
+-- |                                                         GET_CONS_MSG_BCC, made a call to               |
+-- |                                                         get_cons_msg_bcc_rp instead of                 |
+-- |                                                         xx_ar_ebl_common_util_pkg.get_cons_msg_bcc     |
+-- |                                                         as part of  NAIT-92137                         |
 ---+========================================================================================================+
 
 
@@ -168,11 +174,12 @@ CREATE OR REPLACE PACKAGE apps.xx_ar_reprint_summbill AS
   -- |                     "Consolidated" and it is Paydoc then blurb message to be displayed in  |
   ---|                      respective child programs of "OD: AR Reprint Summary Bills".          |                 
   ---|                                                                                            |
-  ---|    Parameters : Cust_doc_Id, Cust_account_id, Consolidated_billing_number                  |
+  ---|    Parameters : Cons_Inv_Id, Cust_doc_Id, Cust_account_id, Consolidated_billing_number                  |
   --+=============================================================================================+ 
  
  FUNCTION GET_CONS_MSG_BCC 
-	     ( p_custdoc_id      IN NUMBER		  
+	     ( p_cbi_id          IN NUMBER
+       	  ,p_custdoc_id      IN NUMBER		  
 		  ,p_cust_account_id IN NUMBER
 		  ,p_billing_number  IN VARCHAR2
 	     ) 
@@ -202,6 +209,13 @@ RETURN VARCHAR2;
   --+=============================================================================================+	
   
 FUNCTION GET_POD_MSG (p_cust_account_id IN NUMBER , p_customer_trx_id IN NUMBER , p_cust_doc_id IN NUMBER )   
+RETURN VARCHAR2;
+FUNCTION get_cons_msg_bcc_rp 
+	     (     p_cbi_id             IN NUMBER        
+		  ,p_cust_doc_id 	IN NUMBER
+		  ,p_cust_account_id 	IN NUMBER
+		  ,p_billing_number  	IN VARCHAR2
+	     ) 
 RETURN VARCHAR2;
 END xx_ar_reprint_summbill;
 /
