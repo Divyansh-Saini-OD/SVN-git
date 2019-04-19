@@ -21,6 +21,7 @@ PACKAGE BODY XX_OM_PAT_SR_PUSH_PKG AS
 -- |                                       "PAT" Interface file                |
 -- |1.5      12-JuN-2014  shishir sahay    replaced table as per defect 30901  |
 -- |1.6      09-11-2015   Shubashree R     R12.2  Compliance changes Defect# 36354|
+-- |1.7      04-19-2019   Arun G           Removee FTP call for LNS project     |
 -- +===========================================================================+
 
     v_cp_enabled            BOOLEAN := TRUE;
@@ -755,9 +756,11 @@ BEGIN
         WHEN OTHERS THEN
             RAISE INVALID_SOURCE_DIR;
     END;
-
+	
+	-- commenting the below piece of code as part of LNS and created new MFT process to push the file to target.
+	
     -- if the file is to be FTP kick a child process to do this
-    IF FTP_FILE_ON THEN
+    /* IF FTP_FILE_ON THEN
         -- Submit the Concurrent Program, OD: PAT Reporting Interface FTP, to
         lc_short_name := 'OD: PAT Reporting Interface FTP';
         log_message('Submitting Child FTP process '|| lc_short_name);
@@ -787,7 +790,7 @@ BEGIN
             x_retcode := 0;
         END IF;
     END IF;
-
+    */
 EXCEPTION
     WHEN INSERT_PROCESS_FAIL THEN
         x_errbuff := 'ERROR: Unable to insert into XX_OM_PROCESS_STATUS for XX_OM_PAT_SR_PUSH'
