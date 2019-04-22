@@ -332,6 +332,7 @@ BEGIN
 					) temp_tbl
 					 WHERE temp_tbl.inventory_item_id = ICAV.inventory_item_id
 					)
+		,LAST_UPDATE_DATE = SYSDATE
 	WHERE EXISTS (SELECT null FROM 
 					xx_ipo_image_transfer_ext XPIT
 				  , mtl_system_items msl
