@@ -46,6 +46,10 @@ AS
 -- |                                              from req_id to con_program_id NAIT-87055   |
 -- | 17.0        09-APR-2019  Sahithi K           modified interface_line_attribute1 with    |
 -- |                                              order#-inv_seq_counter NAIT-91124          |
+-- | 18.0        15-APR-2019  Sahithi K           trigger payment failure for business select|
+-- |                                              customer same as SS SKU's NAIT-84277       |
+-- | 19.0        15-APR-2019  Sahithi K           trigger recurring SUCCESS/FAILURE email    |
+-- |                                              for auto renewed BS2 contracts NAIT-90173  |
 -- +=========================================================================================+
  
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -3309,7 +3313,7 @@ AS
                                x_contract_line_info   => lr_contract_line_info); 
 
         IF  px_subscription_array(indx).billing_sequence_number < lr_contract_line_info.initial_billing_sequence
-        AND lr_contract_line_info.program = 'SS'
+        --AND lr_contract_line_info.program = 'SS'
         THEN
           
           /*****************************
@@ -3368,6 +3372,32 @@ AS
 
         ELSIF px_subscription_array(indx).billing_sequence_number >= lr_contract_line_info.initial_billing_sequence
         THEN
+
+          /*****************************
+          * get invoice sequence counter
+          *****************************/
+          IF px_subscription_array(indx).inv_seq_counter IS NULL
+          THEN
+            FOR indx IN 1 .. px_subscription_array.COUNT
+            LOOP
+              IF ln_loop_counter = 0
+              THEN
+                ln_loop_counter := ln_loop_counter + 1; 
+                get_inv_seq_counter(p_contract_number => px_subscription_array(indx).contract_number
+                                   ,x_inv_seq_counter => l_inv_seq_counter);
+                                   
+                px_subscription_array(indx).inv_seq_counter := l_inv_seq_counter;
+                
+                lc_action := 'Calling update_subscription_info';
+                update_subscription_info(px_subscription_info => px_subscription_array(indx));
+              ELSE
+                px_subscription_array(indx).inv_seq_counter := l_inv_seq_counter;
+                
+                lc_action := 'Calling update_subscription_info';
+                update_subscription_info(px_subscription_info => px_subscription_array(indx));
+              END IF;
+            END LOOP;
+          END IF; 
 
           /******************************
           * Get initial order header info
@@ -3686,32 +3716,6 @@ AS
                             x_terms         => lr_terms); 
             END IF;
           END IF;  
-
-          /*****************************
-          * get invoice sequence counter
-          *****************************/
-          IF px_subscription_array(indx).inv_seq_counter IS NULL
-          THEN
-            FOR indx IN 1 .. px_subscription_array.COUNT
-            LOOP
-              IF ln_loop_counter = 0
-              THEN
-                ln_loop_counter := ln_loop_counter + 1; 
-                get_inv_seq_counter(p_contract_number => px_subscription_array(indx).contract_number
-                                   ,x_inv_seq_counter => l_inv_seq_counter);
-                                   
-                px_subscription_array(indx).inv_seq_counter := l_inv_seq_counter;
-                
-                lc_action := 'Calling update_subscription_info';
-                update_subscription_info(px_subscription_info => px_subscription_array(indx));
-              ELSE
-                px_subscription_array(indx).inv_seq_counter := l_inv_seq_counter;
-                
-                lc_action := 'Calling update_subscription_info';
-                update_subscription_info(px_subscription_info => px_subscription_array(indx));
-              END IF;
-            END LOOP;
-          END IF;          
 
           /***************************************
           * Populate ra_interface_lines_all record
@@ -5029,25 +5033,6 @@ AS
         lc_error := 'Auth completed flag: ' || px_subscription_array(indx).auth_completed_flag;
         RAISE le_skip;
       END IF;
-  
-      /******************************
-      * Get contract line information
-      ******************************/
-
-      lc_action := 'Calling get_contract_line_info';
-
-      get_contract_line_info(p_contract_id          => px_subscription_array(indx).contract_id,
-                             p_contract_line_number => px_subscription_array(indx).contract_line_number,
-                             x_contract_line_info   => lr_contract_line_info);
-
-      /*************************************
-      * Validate we are read to perform auth
-      *************************************/
-      IF px_subscription_array(indx).auth_completed_flag = 'E' AND lr_contract_line_info.program = 'BS'
-      THEN
-        lc_error := 'Auth completed flag: ' || px_subscription_array(indx).auth_completed_flag ||' with servicetype: '||lr_contract_line_info.program;
-        RAISE le_skip;
-      END IF;
  
       /*************************************
       * Validate we are read to perform auth
@@ -5085,7 +5070,7 @@ AS
                                x_contract_line_info   => lr_contract_line_info);
 
         IF  px_subscription_array(indx).billing_sequence_number < lr_contract_line_info.initial_billing_sequence 
-        AND lr_contract_line_info.program = 'SS'
+        --AND lr_contract_line_info.program = 'SS'
         THEN
 
           px_subscription_array(indx).auth_completed_flag := 'Y';
@@ -5978,6 +5963,7 @@ AS
         ELSIF px_subscription_array(indx).billing_sequence_number  >= lr_contract_line_info.initial_billing_sequence
           AND lr_contract_line_info.program = 'BS' 
           AND px_subscription_array(indx).auth_completed_flag='Y'
+          AND p_contract_info.contract_number_modifier IS NULL
         THEN
 
           /**************************************************
@@ -6187,12 +6173,6 @@ AS
           END IF;--ln_loop_counter end if  
           
           /* ** End of Contract Confirmation email ***/
-        ELSIF px_subscription_array(indx).billing_sequence_number  >= lr_contract_line_info.initial_billing_sequence 
-          AND lr_contract_line_info.program = 'BS' 
-          AND px_subscription_array(indx).auth_completed_flag='E'
-        THEN
-           lc_error := 'Payment Authorization Failed for SB2 contract';
-
         ELSIF px_subscription_array(indx).billing_sequence_number >= lr_contract_line_info.initial_billing_sequence
         THEN
         
@@ -7751,7 +7731,7 @@ AS
                                x_contract_line_info   => lr_contract_line_info);
 
         IF  px_subscription_array(indx).billing_sequence_number < lr_contract_line_info.initial_billing_sequence
-        AND lr_contract_line_info.program = 'SS'
+        --AND lr_contract_line_info.program = 'SS'
         THEN
 
           /************************
@@ -8249,7 +8229,7 @@ AS
                                x_contract_line_info   => lr_contract_line_info);
 
         IF  px_subscription_array(indx).billing_sequence_number < lr_contract_line_info.initial_billing_sequence
-        AND lr_contract_line_info.program = 'SS'
+        --AND lr_contract_line_info.program = 'SS'
         THEN
 
           /************************
