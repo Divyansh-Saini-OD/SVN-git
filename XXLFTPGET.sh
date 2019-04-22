@@ -14,8 +14,8 @@ LFTPPARMS2="-u $1,$2 -p $3 $4"
 echo "LFTPPARMS2 $LFTPPARMS2"
 echo "Before lftp"
 /usr/bin/lftp -u $1,$2 -p $3 $4 <<EOF
-cd $5
 lcd  $6
+cd $5
 mget $7
 quit
 EOF
