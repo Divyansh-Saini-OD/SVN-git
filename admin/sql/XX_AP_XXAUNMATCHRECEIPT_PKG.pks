@@ -1,14 +1,4 @@
-SET VERIFY OFF;
-SET SHOW OFF;
-SET ECHO OFF;
-SET TAB OFF;
-SET FEEDBACK OFF;
- 
-WHENEVER SQLERROR CONTINUE;
- 
-WHENEVER OSERROR EXIT FAILURE ROLLBACK;
-
-CREATE OR REPLACE
+create or replace 
 PACKAGE XX_AP_XXAUNMATCHRECEIPT_PKG
   -- +===================================================================+
   -- |                  Office Depot - Project Simplify                  |
@@ -22,6 +12,8 @@ PACKAGE XX_AP_XXAUNMATCHRECEIPT_PKG
   -- |Version   Date        Author             Remarks                   |
   -- |========  =========== ================== ==========================|
   -- |1.0       14-Nov-2017 Ragni Gupta     Initial version           |
+  -- |1.1       23-Apr-2019 Shanti Sethuraj Added new procedure for wrapper program
+  -- |                                       to add layout in report    |
   -- |                                                     |
   -- +===================================================================+
 AS
@@ -73,8 +65,17 @@ IS
       P_PO_DISTRIBUTION_ID NUMBER,
       P_PO_ACCRUAL_ID      NUMBER,
       P_RCV_TRANS_ID       NUMBER)
-    RETURN NUMBER;
-END;
-/
-
-SHOW ERROR
+    return number;
+	PROCEDURE XX_AP_UNMATCH_WRAP_PROC(           -- Added by Shanti
+    x_errbuf out varchar2,
+    x_retcode out number,
+    p_date               in        VARCHAR2,
+    p_currency_code       in       varchar2,
+    p_gl_accounting_segment_from in varchar2,
+    p_gl_accounting_segment_to  in  varchar2,
+    p_supplier_site_code_from  in  varchar2,
+    p_supplier_site_code_to    in  varchar2,
+	p_as_of_date in VARCHAR2,
+    p_po_type           in         VARCHAR2
+    );
+end;
