@@ -6,7 +6,7 @@
 	SET FEEDBACK OFF		
 	SET TERM ON		
 			
-	prompt creating package body xx_ar_refunds_pkg	
+	PROMPT Creating Package Body XX_AR_REFUNDS_PKG	
 	
 	PROMPT Program exits if the creation is not successful		
 	REM Added for ARU db drv auto generation		
@@ -96,7 +96,6 @@ AS
 --   6.3       27/10/2015  Vasu Raparla	      Removed Schema References for R12.2 
 --	 6.4	   01/09/2016  Rakesh Polepalli   Modified for the Defect# 36803
 --	 6.5	   03/10/2016  Rakesh Polepalli   Modified for the Defect# 37226
---   6.6       01/08/2019  Shanti Sethuraj    Changing supplier site category code from EX to EX-REF for the jira # NAIT-65243 
 -- =========================================================================================================================
 -------------------------------------------------
    --Start of changes for Defect #3340
@@ -3785,7 +3784,7 @@ SELECT   SOURCE
         ,
                      'US_OD_EXP_NON_DISC',
                      'CHECK',
-                     'EX-REF'  --changed for the jira NAIT-65243             --'EXPENSE'
+                     'EX'                                                                                    --'EXPENSE'
                          ,
                      SYSDATE,
                      fnd_global.user_id,
@@ -5762,6 +5761,7 @@ SELECT   SOURCE
             AND           status = 'D'
             AND           last_update_date <   SYSDATE
                                              - 14
+			AND           org_id = fnd_global.org_id
             AND           refund_header_id =
                               (SELECT MAX(refund_header_id)
                                FROM   xx_ar_refund_trx_tmp xart2
@@ -5805,6 +5805,7 @@ SELECT   SOURCE
             WHERE         escheat_flag = 'N'
             AND           inv_created_flag = 'N'
             AND           status IN('X', 'S')
+			AND           org_id = fnd_global.org_id
             AND           xart.last_update_date =
                               (SELECT MAX(last_update_date)
                                FROM   xx_ar_refund_trx_tmp xart2
@@ -5828,6 +5829,7 @@ SELECT   SOURCE
             WHERE         escheat_flag = 'N'
             AND           inv_created_flag = 'Y'
             AND           status = 'V'
+			AND           org_id = fnd_global.org_id
             AND           xart.last_update_date =
                               (SELECT MAX(last_update_date)
                                FROM   xx_ar_refund_trx_tmp xart2
