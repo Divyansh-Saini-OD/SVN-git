@@ -13,7 +13,7 @@ PACKAGE XX_AP_XXAUNMATCHRECEIPT_PKG
   -- |========  =========== ================== ==========================|
   -- |1.0       14-Nov-2017 Ragni Gupta     Initial version           |
   -- |1.1       23-Apr-2019 Shanti Sethuraj Added new procedure for wrapper program
-  -- |                                       to add layout in report    |
+  -- |                                       to add layout in report for jira NAIT-27081   |
   -- |                                                     |
   -- +===================================================================+
 AS
@@ -66,7 +66,10 @@ IS
       P_PO_ACCRUAL_ID      NUMBER,
       P_RCV_TRANS_ID       NUMBER)
     return number;
-	PROCEDURE XX_AP_UNMATCH_WRAP_PROC(           -- Added by Shanti
+	
+	--Added new procedure for NAIT-27081
+	
+	PROCEDURE XX_AP_UNMATCH_WRAP_PROC(           
     x_errbuf out varchar2,
     x_retcode out number,
     p_date               in        VARCHAR2,
@@ -79,3 +82,5 @@ IS
     p_po_type           in         VARCHAR2
     );
 end;
+/
+show errors;
