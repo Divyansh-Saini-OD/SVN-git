@@ -13,7 +13,7 @@ PACKAGE BODY XX_AP_XXAUNMATCHRECEIPT_PKG
   -- |========  =========== ================== ==========================|
   -- |1.0       14-Nov-2017 Ragni Gupta     Initial version              |
   -- |1.1       14-FEB-2018  Priyam         Code change for Reciept Correction  |
-  -- |1.2       23-Apr-2019  Shanti Sethuraj Added new procedure for wrapper program |
+  -- |1.2       23-Apr-2019  Shanti Sethuraj  Adding new procedure XX_AP_UNMATCH_WRAP_PROC for NAIT-27081 |
   -- +===================================================================+
 AS
 FUNCTION BEFOREREPORT
@@ -430,8 +430,9 @@ BEGIN
   END;
   RETURN L_FINAL_REC_QTY+L_REC_CORR_AMT;
 END CALCULATE_CST_REC_AMT;
---Start of new procedure
-PROCEDURE XX_AP_UNMATCH_WRAP_PROC(                    -- added by shanti                    
+
+--Start of new procedure (NAIT-27081)
+PROCEDURE XX_AP_UNMATCH_WRAP_PROC(                                   
     x_errbuf OUT VARCHAR2,
     X_RETCODE OUT NUMBER,
     p_date                       IN VARCHAR2,
@@ -550,7 +551,8 @@ WHEN OTHERS THEN
   x_retcode := 2;
   fnd_file.put_line(fnd_file.log,x_errbuf);
 END xx_ap_unmatch_wrap_proc;
---End of new procedure
+
+--end of new procedure(NAIT-27081)
 END xx_ap_xxaunmatchreceipt_pkg;
 /
 show errors;
