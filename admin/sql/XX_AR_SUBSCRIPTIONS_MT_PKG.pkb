@@ -10055,6 +10055,8 @@ AS
               lr_contract_info.program_id                  := NVL(FND_GLOBAL.CONC_PROGRAM_ID,-1);--NVL(FND_GLOBAL.CONC_REQUEST_ID, -1);
               lr_contract_info.creation_date               := SYSDATE;
               lr_contract_info.created_by                  := FND_GLOBAL.USER_ID;
+              
+              lr_contract_info.cof_trans_id_scm_flag       := 'N';
 
               lc_action := 'Insert into xx_ar_contracts';
 
