@@ -21,6 +21,7 @@ PACKAGE BODY XX_AOPS_DROPSHIP_RECON_PKG
 -- |                                               to AOPS by the program OD |
 -- |                                               AOPS DropShip Recon is not|
 -- |                                                 closing Orders in AOPS  |
+-- |    1.4    04/24/2019    Havish Kasina      Added Wallet Location details|
 -- +=========================================================================+                                                                                                                          
 AS                                                                                                                                                                                                      
                                                                                                                                                                                                         
@@ -198,7 +199,13 @@ IS
    ln_request_id        NUMBER := fnd_global.conc_request_id;                                                                                                                                           
    lv_resp_statuscode   VARCHAR2(2000) := null;                                                                                                                                                         
    lv_lines_msg		VARCHAR2(32500);                                                                                                                                                                       
-   data_exception       EXCEPTION;                                                                                                                                                                      
+   data_exception       EXCEPTION;     
+   lc_wallet_location       VARCHAR2(256)   := NULL;
+   lc_password_auth         VARCHAR2(256)   := NULL;
+   le_dts_srvc_url_error    EXCEPTION;
+   le_insert_error          EXCEPTION;
+   le_wallet_location_error EXCEPTION;
+   le_dts_srvc_cred_error   EXCEPTION;   
                                                                                                                                                                                                         
 CURSOR headers_cur IS                                                                                                                                                                                   
    SELECT stg.po_header_id                                                                                                                                                                              
@@ -265,7 +272,68 @@ BEGIN
       ln_retry_count := SQL%ROWCOUNT;                                                                                                                                                                   
       print_debug_msg(to_char(ln_retry_count)||' record(s) updated for retry',TRUE);                                                                                                                    
       COMMIT;                                                                                                                                                                                           
-   END IF;                                                                                                                                                                                              
+   END IF;         
+
+    BEGIN
+      SELECT target_value1 ,
+             target_value2
+        INTO lc_wallet_location ,
+             lc_password_auth
+        FROM xx_fin_translatevalues XFT,
+             xx_fin_translatedefinition XFTD
+       WHERE 1=1
+         AND XFTD.translate_id    = XFT.translate_id
+         AND XFTD.translation_name='XX_FIN_IREC_TOKEN_PARAMS'
+         AND XFT.source_value1    = 'WALLET_LOCATION'
+         AND XFT.enabled_flag     = 'Y'
+         AND SYSDATE BETWEEN XFT.start_date_active AND NVL(XFT.end_date_active, SYSDATE+1);
+    EXCEPTION
+    WHEN OTHERS 
+    THEN
+      RAISE le_wallet_location_error;
+      FND_FILE.PUT_LINE(FND_FILE.LOG,'Exception while fetching the wallet location from translation XX_FIN_IREC_TOKEN_PARAMS: '||SQLERRM);
+      lc_wallet_location := NULL;
+      lc_password_auth   := NULL;
+    END; 
+
+    FND_FILE.PUT_LINE(FND_FILE.LOG,'lc_wallet_location: '||lc_wallet_location);
+    FND_FILE.PUT_LINE(FND_FILE.LOG,'lc_password: '||lc_password_auth);   
+	
+	BEGIN
+    UTL_HTTP.SET_WALLET(lc_wallet_location,lc_password_auth);
+    /* request that exceptions are raised for error Status Codes */
+    UTL_HTTP.SET_RESPONSE_ERROR_CHECK ( enable => true );
+    /* allow testing for exceptions like UTL_HTTP.Http_Server_Error */
+    UTL_HTTP.SET_DETAILED_EXCP_SUPPORT ( enable => true );
+    EXCEPTION
+    WHEN UTL_HTTP.BAD_URL THEN
+      FND_FILE.PUT_LINE(FND_FILE.LOG, ' Error while setting the wallet location : Bad URL : ' || UTL_HTTP.GET_DETAILED_SQLCODE || UTL_HTTP.GET_DETAILED_SQLERRM);
+    RAISE le_wallet_location_error;
+    WHEN UTL_HTTP.BAD_ARGUMENT THEN
+      FND_FILE.PUT_LINE(FND_FILE.LOG, ' Error while setting the wallet location : Bad Argument : ' || UTL_HTTP.GET_DETAILED_SQLCODE || UTL_HTTP.GET_DETAILED_SQLERRM);
+      RAISE le_wallet_location_error;
+    WHEN UTL_HTTP.HTTP_CLIENT_ERROR THEN
+      FND_FILE.PUT_LINE(FND_FILE.LOG, ' Error while setting the wallet location : HTTP Client Error : ' || UTL_HTTP.GET_DETAILED_SQLCODE || UTL_HTTP.GET_DETAILED_SQLERRM);
+      RAISE le_wallet_location_error;
+    WHEN UTL_HTTP.HTTP_SERVER_ERROR THEN
+      FND_FILE.PUT_LINE(FND_FILE.LOG, ' Error while setting the wallet location : HTTP Server Error : ' || UTL_HTTP.GET_DETAILED_SQLCODE || UTL_HTTP.GET_DETAILED_SQLERRM);
+      RAISE le_wallet_location_error;
+    WHEN UTL_HTTP.ILLEGAL_CALL THEN
+      FND_FILE.PUT_LINE(FND_FILE.LOG, ' Error while setting the wallet location : Illegal Call : ' || UTL_HTTP.GET_DETAILED_SQLCODE || UTL_HTTP.GET_DETAILED_SQLERRM);
+      RAISE le_wallet_location_error;
+    WHEN UTL_HTTP.INIT_FAILED THEN
+      FND_FILE.PUT_LINE(FND_FILE.LOG, ' Error while setting the wallet location : Init Failed : ' || UTL_HTTP.GET_DETAILED_SQLCODE || UTL_HTTP.GET_DETAILED_SQLERRM);
+      RAISE le_wallet_location_error;
+    WHEN UTL_HTTP.PROTOCOL_ERROR THEN
+      FND_FILE.PUT_LINE(FND_FILE.LOG, ' Error while setting the wallet location : Protocol Error : ' || UTL_HTTP.GET_DETAILED_SQLCODE || UTL_HTTP.GET_DETAILED_SQLERRM);
+      RAISE le_wallet_location_error;
+    WHEN UTL_HTTP.REQUEST_FAILED THEN
+      FND_FILE.PUT_LINE(FND_FILE.LOG, ' Error while setting the wallet location : Request Failed : ' || UTL_HTTP.GET_DETAILED_SQLCODE || UTL_HTTP.GET_DETAILED_SQLERRM);
+      RAISE le_wallet_location_error;
+    WHEN OTHERS THEN
+      FND_FILE.PUT_LINE(FND_FILE.LOG, ' Error while setting the wallet location   : ' || UTL_HTTP.GET_DETAILED_SQLCODE || UTL_HTTP.GET_DETAILED_SQLERRM);
+      RAISE le_wallet_location_error;
+    END;   
                                                                                                                                                                                                         
    print_debug_msg(p_message=> 'Getting Service Details', p_force=>FALSE);                                                                                                                              
    FOR get_service_params_rec IN get_service_params_cur                                                                                                                                                 
@@ -277,7 +345,9 @@ BEGIN
      ELSIF get_service_params_rec.source_value1 = 'PASSWORD' THEN                                                                                                                                       
         lv_password := xx_encrypt_decryption_toolkit.decrypt(get_service_params_rec.target_value1);                                                                                                     
      END IF;                                                                                                                                                                                            
-   END LOOP;                                                                                                                                                                                            
+   END LOOP;   
+
+    
                                                                                                                                                                                                         
    OPEN headers_cur;                                                                                                                                                                                    
    LOOP                                                                                                                                                                                                 
