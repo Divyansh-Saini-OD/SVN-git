@@ -13,6 +13,7 @@ AS
   -- | =========   ===========  =============    ===============================================  |
   -- | 1.0         07-AUG-2017  Thejaswini Rajula    Initial version                              |
   -- | 1.1         25-FEB-2019  Satheesh Suthari     Defect#84541 Receipts did not apply to invoices |
+  -- | 1.2         25-Apr-2019  Shanti Sethuraj      Modified for jira NAIT-93105                 |
   -- +============================================================================================+
   
 g_conc_request_id                       NUMBER:= fnd_global.conc_request_id;
@@ -185,6 +186,7 @@ CURSOR cur_inv_details (p_org_id number) is
   lv_row_cnt          NUMBER := 0;
   lc_rcpt_sum_cnt     VARCHAR2(32320);
   lv_invoice_sum      NUMBER;
+  l_instance_name   varchar2(50);  --added for NAIT-93105
    BEGIN  
     --Org Id
       BEGIN
@@ -337,11 +339,12 @@ CURSOR cur_inv_details (p_org_id number) is
         END IF;
         dbms_lob.append(lc_file_data,lc_blob_data); 
         BEGIN
+		select instance_name into l_instance_name from v$instance;   --added for NAIT-93105
         lv_email_flag:='N'; -- Email not sent
         lc_conn := xx_pa_pb_mail.begin_mail (sender          =>  lc_mail_from,
                                             recipients      =>  lc_mail_to,
                                             cc_recipients   => NULL,
-                                            subject         => 'Manual Upload AP_AR Daily Netting Status Report',
+                                            subject         => l_instance_name||':'||'Manual Upload AP_AR Daily Netting Status Report',   --modified for NAIT-93105
                                             mime_type          => xx_pa_pb_mail.multipart_mime_type
                                             );        
                     xx_pa_pb_mail.begin_attachment(conn       => lc_conn,
