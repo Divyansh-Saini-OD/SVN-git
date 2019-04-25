@@ -60,6 +60,8 @@ AS
 -- |                                              contracts NAIT-89231                       |
 -- | 23.0        24-APR-2019  Sahithi K           add close_date field which is received     |
 -- |                                              from SCM extract NAIT-90255                |
+-- | 24.0        25-APR-2019  Punit Gupta         Made changes in the send_email_autorenew   |
+-- |                                              Procedure for NAIT-90171                   |
 -- +=========================================================================================+
  
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -10668,23 +10670,47 @@ AS
 
    CURSOR c_autorenew_contract_lines 
    IS
-     
-     SELECT XACL.contract_id,XACL.contract_line_number,XAC.contract_number,XAS.billing_sequence_number
-     FROM   xx_ar_contract_lines XACL,
-            xx_ar_contracts XAC,
-            xx_ar_subscriptions XAS
-     WHERE  TRUNC(sysdate+45) = TRUNC(XACL.contract_line_end_date)
-     AND    XACL.contract_id = XAC.contract_id
-     AND    XAC.contract_status = 'ACTIVE'
-     AND    XAC.contract_id = XAS.contract_id
-     AND    XACL.contract_line_number = XAS.contract_line_number
-     AND    NVL(XAS.email_autorenew_sent_flag,'N') != 'Y'
-     AND    XAS.billing_sequence_number IN (SELECT MAX(XAS1.billing_sequence_number) 
-            FROM  xx_ar_subscriptions XAS1
-            WHERE XAS1.contract_id = XAS.contract_id --XAS1.contract_number = XAS.contract_number
-            AND   XAS1.contract_line_number = XAS.contract_line_number
-            )
-     ORDER BY XACL.contract_id;
+     SELECT contract_id,contract_line_number,contract_number,billing_sequence_number,notification_days
+     FROM
+     (
+         SELECT XACL.contract_id,XACL.contract_line_number,XAC.contract_number,XAS.billing_sequence_number,45 notification_days
+         FROM   xx_ar_contract_lines XACL,
+                xx_ar_contracts XAC,
+                xx_ar_subscriptions XAS
+         WHERE  TRUNC(sysdate+45) = TRUNC(XACL.contract_line_end_date)
+         AND    XACL.contract_id = XAC.contract_id
+         AND    XAC.contract_status = 'ACTIVE'
+         AND    XAC.contract_id = XAS.contract_id
+         AND    XACL.contract_line_number = XAS.contract_line_number
+         AND    XACL.close_date is NULL
+         AND    XACL.program in ('SS','BS')
+         AND    NVL(XAS.email_autorenew_sent_flag,'N') != 'Y'
+         AND    XAS.billing_sequence_number IN (SELECT MAX(XAS1.billing_sequence_number) 
+                                                FROM  xx_ar_subscriptions XAS1
+                                                WHERE XAS1.contract_id = XAS.contract_id
+                                                AND   XAS1.contract_line_number = XAS.contract_line_number
+                                                )
+         UNION
+    
+         SELECT XACL.contract_id,XACL.contract_line_number,XAC.contract_number,XAS.billing_sequence_number,7 notification_days
+         FROM   xx_ar_contract_lines XACL,
+                xx_ar_contracts XAC,
+                xx_ar_subscriptions XAS
+         WHERE  TRUNC(sysdate+7) = TRUNC(XACL.contract_line_end_date)
+         AND    XACL.contract_id = XAC.contract_id
+         AND    XAC.contract_status = 'ACTIVE'
+         AND    XAC.contract_id = XAS.contract_id
+         AND    XACL.contract_line_number = XAS.contract_line_number
+         AND    XACL.close_date is NULL
+         AND    XACL.program = 'BS'
+         AND    NVL(XAS.email_autorenew_sent_flag,'N') != 'Y'
+         AND    XAS.billing_sequence_number IN (SELECT MAX(XAS1.billing_sequence_number) 
+                                                FROM   xx_ar_subscriptions XAS1
+                                                WHERE  XAS1.contract_id = XAS.contract_id
+                                                AND    XAS1.contract_line_number = XAS.contract_line_number
+                                               )
+     )
+     ORDER BY contract_id;
 
     lc_procedure_name    CONSTANT  VARCHAR2(61) := gc_package_name || '.' || 'send_email_autorenew';
 
@@ -10737,8 +10763,8 @@ AS
     lc_email_failed_counter        NUMBER := 0;
 
     lc_invoice_status              VARCHAR2(30)  := NULL;
-	
-	lc_autorenew_status            VARCHAR2(30)  := NULL; 
+
+    lc_autorenew_status            VARCHAR2(30)  := NULL; 
     
     lc_failure_message             VARCHAR2(256) := NULL;
 
@@ -10871,7 +10897,7 @@ AS
               lc_next_retry_date := NVL(lt_subscription_array(indx).initial_auth_attempt_date,SYSDATE) + lt_subscription_array(indx).next_retry_day;
 
             END IF;
-			
+
            /***************************************
             * Masking card details except for PAYPAL
             ***************************************/
@@ -10973,7 +10999,7 @@ AS
                     "orderNumber": "'
                                 || SUBSTR(lt_subscription_array(indx).contract_name,1,9)||SUBSTR(lt_subscription_array(indx).contract_name,11,13)
                                 || '",
-				    "contractId": "'
+                    "contractId": "'
                                 || lt_subscription_array(indx).contract_id
                                 || '",
                     "serviceContractNumber": "'
@@ -10994,11 +11020,14 @@ AS
                     "billingTime": "",
                     "invoiceDate": "",
                     "invoiceTime": "",
-					"autoRenewal" :"Y",
-					"autoRenewalStatus": "SUCCESS",
+                    "autoRenewal" :"Y",
+                    "autoRenewalStatus": "SUCCESS",
                     "invoiceStatus": "",
                     "serviceType": "'
                                 || lr_contract_line_info.program
+                                || '", 
+                    "notificationDays":"'
+                                || autorenew_contract_lines_rec.notification_days
                                 || '",
                     "contractStatus": "", 
                     "action": "", 
