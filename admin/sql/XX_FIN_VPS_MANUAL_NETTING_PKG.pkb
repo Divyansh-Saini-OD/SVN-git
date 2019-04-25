@@ -344,7 +344,7 @@ CURSOR cur_inv_details (p_org_id number) is
         lc_conn := xx_pa_pb_mail.begin_mail (sender          =>  lc_mail_from,
                                             recipients      =>  lc_mail_to,
                                             cc_recipients   => NULL,
-                                            subject         => l_instance_name||':'||'Manual Upload AP_AR Daily Netting Status Report',   --modified for NAIT-93105
+                                            subject         => l_instance_name||': '||'Manual Upload AP_AR Daily Netting Status Report',   --modified for NAIT-93105
                                             mime_type          => xx_pa_pb_mail.multipart_mime_type
                                             );        
                     xx_pa_pb_mail.begin_attachment(conn       => lc_conn,
