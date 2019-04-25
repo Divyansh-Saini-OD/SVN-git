@@ -62,6 +62,9 @@ AS
 -- |                                              from SCM extract NAIT-90255                |
 -- | 24.0        25-APR-2019  Punit Gupta         Made changes in the send_email_autorenew   |
 -- |                                              Procedure for NAIT-90171                   |
+-- | 25.0        22-APR-2019  Dattatray B         Added new Procedure for NAIT-83868         |
+-- |											  1. To purge Subscriptions Payload & Error  |
+-- |											  Table more than 30 days older data	     |
 -- +=========================================================================================+
  
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -12008,6 +12011,10 @@ AS
     lt_program_setups              gt_translation_values;
     
     lc_transaction                 VARCHAR2(256);
+    
+    l_name                         VARCHAR2(256);
+                                   
+    l_value                        VARCHAR2(1024);
 
   BEGIN
     lt_parameters('p_debug_flag')       := p_debug_flag;
@@ -12178,6 +12185,13 @@ AS
         COMMIT;
         
         logit(p_message => 'Response status_code' || l_response.status_code);
+        logit(p_message => 'Response phrase ' || l_response.reason_phrase);
+        
+        FOR i IN 1..UTL_HTTP.GET_HEADER_COUNT(l_response)
+        LOOP
+          UTL_HTTP.GET_HEADER(l_response, i, l_name, l_value);
+          fnd_file.put_line(fnd_file.LOG,l_name || ': ' || l_value);
+        END LOOP;
         
         BEGIN
           lclob_buffer := EMPTY_CLOB;
@@ -12315,6 +12329,175 @@ AS
       exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
 
   END update_trans_id_scm;
+  
+   
+/* ******************************************************
+  * Helper Cursor to get payload 30 day's older data
+  ****************************************************** */
+    PROCEDURE xx_ar_subs_payload_purge_prc (
+        errbuff   OUT       VARCHAR2,
+        retcode   OUT       NUMBER
+    ) AS
+
+    lc_tot_rec_cnt    NUMBER;
+    lc_rem_rec_cnt    NUMBER;
+    lc_count          NUMBER := 0;
+    CURSOR xx_ar_payload_data_cur IS
+    SELECT
+        *
+    FROM
+        xx_ar_subscription_payloads
+    WHERE
+        1 = 1
+        AND creation_date < SYSDATE - 30;
+
+    lc_tot_rec_cnt1   NUMBER;
+    lc_rem_rec_cnt1   NUMBER;
+    lc_count1         NUMBER := 0;
+    CURSOR xx_ar_suberrtb_data_cur IS
+    SELECT
+        contract_number,
+        contract_id,
+        contract_line_number,
+        error_message,
+        billing_sequence_number,
+        error_module,
+        creation_date,
+        ROWID
+    FROM
+        xx_ar_subscriptions_error
+    WHERE
+        1 = 1
+        AND creation_date < SYSDATE - 30;
+
+BEGIN
+    BEGIN
+        SELECT
+            COUNT(*)
+        INTO lc_tot_rec_cnt
+        FROM
+            xx_ar_subscription_payloads
+        WHERE
+            1 = 1;
+
+		logit(p_message =>' +---------------------------------------------------------------------------+ ', p_force   => TRUE);
+        logit(p_message =>' *** Subscrption Payload Record Details *** ');
+        logit(p_message =>' +---------------------------------------------------------------------------+ ', p_force   => TRUE);
+        logit(p_message =>' +---------------------------------------------------------------------------+ ', p_force   => TRUE);
+        logit(p_message =>' *** Subscrption Payload Record Details *** ');
+        logit(p_message =>' +---------------------------------------------------------------------------+ ', p_force   => TRUE);
+        logit(p_message =>' Before Purge: Total Subscription Payload Records : ' || lc_tot_rec_cnt, p_force   => TRUE);
+        logit(p_message =>' Before Purge: Total Subscription Payload Records : ' || lc_tot_rec_cnt, p_force   => TRUE);
+		
+	
+    EXCEPTION
+        WHEN no_data_found THEN
+            NULL;
+    END;
+
+    BEGIN
+        SELECT
+            COUNT(*)
+        INTO lc_rem_rec_cnt
+        FROM
+            xx_ar_subscription_payloads
+        WHERE
+            1 = 1
+            AND creation_date > SYSDATE - 30;
+
+		logit(p_message =>' Before Purge: Less than 30 days Payload Records : ' || lc_rem_rec_cnt, p_force   => TRUE);
+		logit(p_message =>' Before Purge: Less than 30 days Payload Records : ' || lc_rem_rec_cnt, p_force   => TRUE);
+    EXCEPTION
+        WHEN no_data_found THEN
+            NULL;
+    END;
+
+    BEGIN
+        FOR payload_data_rec IN xx_ar_payload_data_cur LOOP
+          DELETE xx_ar_subscription_payloads
+            WHERE
+              payload_id = payload_data_rec.payload_id; 
+              lc_count := lc_count + 1;
+        END LOOP; -- FOR payload_data_rec
+
+        COMMIT;
+		logit(p_message =>' Total Subscription Payload - Purged Records : ' || lc_count, p_force   => TRUE);
+		logit(p_message =>' Total Subscription Payload - Purged Records : ' || lc_count, p_force   => TRUE);
+    EXCEPTION
+        WHEN no_data_found THEN
+            NULL;
+        WHEN OTHERS THEN
+            ROLLBACK;
+            retcode := 1;
+            errbuff := 'Error encountered. Please check logs';
+        logit(p_message =>' Exception while writing data into file '|| SQLERRM || SQLCODE, p_force   => TRUE);
+    END;
+
+  /********************************************************************
+  * Helper Cursor to get Subscriptions Error Table 30 day's older data
+  ********************************************************************/
+
+    BEGIN
+        SELECT
+            COUNT(*)
+        INTO lc_tot_rec_cnt1
+        FROM
+            xx_ar_subscriptions_error
+        WHERE
+            1 = 1;
+
+		logit(p_message => ' +---------------------------------------------------------------------------+ ' , p_force   => TRUE);
+        logit(p_message => ' *** Subscrption Error Table Record Details *** ');
+        logit(p_message => ' +---------------------------------------------------------------------------+ ' , p_force   => TRUE);
+        logit(p_message => ' +---------------------------------------------------------------------------+ ' , p_force   => TRUE);
+        logit(p_message => ' *** Subscrption Error Table Record Details *** ');
+        logit(p_message => ' +---------------------------------------------------------------------------+ ' , p_force   => TRUE);
+        logit(p_message => ' Before Purge: Total Subscription Errored Records : ' || lc_tot_rec_cnt1, p_force   => TRUE);
+        logit(p_message => ' Before Purge: Total Subscription Errored Records : ' || lc_tot_rec_cnt1, p_force   => TRUE);
+    EXCEPTION
+        WHEN no_data_found THEN
+            NULL;
+    END;
+
+    BEGIN
+        SELECT
+            COUNT(*)
+        INTO lc_rem_rec_cnt1
+        FROM
+            xx_ar_subscriptions_error
+        WHERE
+            1 = 1
+            AND creation_date > SYSDATE - 30;
+
+		logit(p_message => ' Before Purge: Less than 30 days Subscription Errored Records: ' || lc_rem_rec_cnt1, p_force   => TRUE);
+		logit(p_message => ' Before Purge: Less than 30 days Subscription Errored Records : ' || lc_rem_rec_cnt1, p_force   => TRUE);
+    EXCEPTION
+        WHEN no_data_found THEN
+            NULL;
+    END;
+
+    BEGIN
+        FOR suberrtb_data_rec IN xx_ar_suberrtb_data_cur LOOP
+         DELETE XX_AR_SUBSCRIPTIONS_ERROR
+            WHERE
+              rowid = suberrtb_data_rec.rowid; 
+              lc_count1 := lc_count1 + 1;
+        END LOOP; -- FOR suberrtb_data_rec
+
+        COMMIT;
+		logit(p_message => ' Total Subscription Error Table - Purged Records : ' || lc_count1, p_force   => TRUE);
+		logit(p_message => ' Total Subscription Error Table - Purged Records : ' || lc_count1, p_force   => TRUE);
+    EXCEPTION
+        WHEN no_data_found THEN
+            NULL;
+        WHEN OTHERS THEN
+            ROLLBACK;
+            retcode := 1;
+            errbuff := 'Error encountered. Please check logs';
+			logit(p_message =>' Exception while writing data into file '|| SQLERRM || SQLCODE, p_force   => TRUE);			
+    END;
+
+	END xx_ar_subs_payload_purge_prc;
   
 END xx_ar_subscriptions_mt_pkg;
 /
