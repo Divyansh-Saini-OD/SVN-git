@@ -161,15 +161,15 @@ IS
     CURSOR get_dropship_dist_c IS
       SELECT
       /*+ LEADING(AIA AILA AIDA) FULL(AIA) PARALLEL(AIA,8) PARALLEL(AILA,8) PARALLEL(AIDA,8) NO_MERGE */ 
-      aia.vendor_site_id                                   vendor,
+      assa.vendor_site_code_alt                            vendor_site,
       aia.doc_sequence_value                               voucher_number,
       aia.invoice_num                                      invoice_number,
-      To_char (aia.invoice_date, 'MM/DD/YYYY HH24:MI')     invoice_date,
+      To_char (aia.invoice_date, 'YYYY-MM-DD')             invoice_date,
       NULL                                                 cpu_date,
-      To_char (aida.accounting_date, 'MM/DD/YYYY HH24:MI') accounting_date,
+      To_char (aida.accounting_date, 'YYYY-MM-DD')         accounting_date,
       aila.attribute11                                     reason_code,
-      hla.attribute1                                       location_id,
-      NULL                                                 user_id_approved,
+      SUBSTR (hla.attribute1, 2)                           location_id,
+      aps.segment1                                         vendor,
       aia.attribute11                                      po_number,
       pha.segment1                                         check_description,
       SUM (aida.amount)                                    gross_amount,
@@ -185,11 +185,17 @@ IS
              ap_invoice_distributions_all aida,
              gl_code_combinations gcc,
              po_headers_all pha,
+             ap_suppliers aps,
+             ap_supplier_sites_all assa,
              hr_locations_all hla
       WHERE  aia.invoice_id = aila.invoice_id
          AND aila.line_number = aida.invoice_line_number
          AND aia.invoice_id = aida.invoice_id
          AND aia.org_id = aida.org_id
+         AND aia.vendor_id = aps.vendor_id
+         AND aia.vendor_id = assa.vendor_id
+         AND aia.vendor_site_id = assa.vendor_site_id
+         AND aps.vendor_id = assa.vendor_id
          AND aila.po_header_id = pha.po_header_id
          AND pha.ship_to_location_id = hla.location_id
          AND aida.dist_code_combination_id = gcc.code_combination_id
@@ -203,7 +209,7 @@ IS
                          WHERE  aia.invoice_id = aida1.invoice_id
                             AND aia.org_id = aida1.org_id
                             AND aida1.posted_flag = 'N')
-      GROUP  BY aia.vendor_site_id,
+      GROUP  BY assa.vendor_site_code_alt,
                 aia.doc_sequence_value,
                 aia.invoice_num,
                 aia.invoice_date,
@@ -211,6 +217,7 @@ IS
                 aila.attribute11,
                 hla.attribute1,
                 aia.attribute11,
+                aps.segment1,
                 pha.segment1,
                 aila.inventory_item_id,
                 gcc.segment3
@@ -266,7 +273,7 @@ IS
                                              || SQLERRM);
       END;
 
-      utl_file.Put_line (lt_file, 'VENDOR'
+      utl_file.Put_line (lt_file, 'VENDOR_SITE'
                                   || lc_delimiter
                                   || 'VOUCHER_NUMBER'
                                   || lc_delimiter
@@ -282,7 +289,7 @@ IS
                                   || lc_delimiter
                                   || 'LOCATION_ID'
                                   || lc_delimiter
-                                  || 'USER_ID_APPROVED'
+                                  || 'VENDOR'
                                   || lc_delimiter
                                   || 'PO_NUMBER'
                                   || lc_delimiter
@@ -299,7 +306,7 @@ IS
 	  FOR lcu_dropship_dist_rec IN get_dropship_dist_c LOOP
           ln_count := ln_count + 1;
 		  
-		  utl_file.Put_line (lt_file, lcu_dropship_dist_rec.vendor
+		  utl_file.Put_line (lt_file, lcu_dropship_dist_rec.vendor_site
                                       || lc_delimiter
                                       || lcu_dropship_dist_rec.voucher_number
                                       || lc_delimiter
@@ -315,7 +322,7 @@ IS
                                       || lc_delimiter
                                       || lcu_dropship_dist_rec.location_id
                                       || lc_delimiter
-                                      || lcu_dropship_dist_rec.user_id_approved
+                                      || lcu_dropship_dist_rec.vendor
                                       || lc_delimiter
                                       || lcu_dropship_dist_rec.po_number
                                       || lc_delimiter
