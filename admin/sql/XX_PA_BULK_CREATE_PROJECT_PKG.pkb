@@ -19,8 +19,9 @@ AS
   -- |                                             description.                                   |
   -- | 1.3         17-Nov-2015   Harvinder Rakhra  Retrofit R12.2                                 |
   -- | 1.4         16-Oct-2018   Jitendra A.       Added FETCH_DATA procedure for NAIT-65619/72698|
-  -- | 1.5         19-OCT-2018   Priyam P          Added remove_spcl_char for NAIT 65621          |
-  -- +============================================================================================+
+  -- | 1.5         19-OCT-2018   Priyam P          Added remove_spcl_char for NAIT 65621  
+ -- |  1.6         29-APR-2019    Faiyaz Ahmad      comented hr_employees for performance issue
+   +============================================================================================+
   --global declarations
   g_api_version_number NUMBER                                                   := 1.0;
   g_pm_product_code FND_LOOKUP_VALUES_VL.lookup_code%TYPE                       :=NULL;
@@ -745,10 +746,17 @@ BEGIN
     --loading key member details
     BEGIN--inner block3
       k :=1;
-      SELECT employee_id
+	  --NAIT-92099 --- COMMENTED FOR PERFORMANCE ISSUE
+      /*SELECT employee_id
       INTO l_key_members(k).person_id
       FROM hr_employees
-      WHERE employee_num                 =l_rec_stg_data.project_manager;
+      WHERE employee_num                 =l_rec_stg_data.project_manager;*/
+	  SELECT person_id
+      INTO l_key_members(k).person_id
+      FROM per_all_people_f
+	  where  TRUNC(SYSDATE) 
+     BETWEEN EFFECTIVE_START_DATE AND EFFECTIVE_END_DATE and 
+       nvl(employee_number,npw_number)     =l_rec_stg_data.project_manager;
       l_key_members(k).project_role_type:='PROJECT MANAGER';
     EXCEPTION
     WHEN NO_DATA_FOUND THEN
