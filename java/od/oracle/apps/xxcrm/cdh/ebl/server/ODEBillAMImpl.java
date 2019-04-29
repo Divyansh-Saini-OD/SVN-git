@@ -85,6 +85,7 @@ import oracle.jdbc.OracleTypes;
   -- |4.4     04-Dec-2017  Rafi Mohammed     Code Added for Defect#NAIT-21725    |
   -- |4.5     20-Mar-2018  Rafi Mohammed     Code Added for Defect#NAIT-33309    | 
   -- |4.6     08-Jun-2018  Rafi Mohammed     Code Added for Defect#NAIT-40588    |
+ --  |4.7     15-Apr-2019 Rafi Mohammed      NAIT-91481 Rectify Billing Delivery Efficiency|
   -- |===========================================================================|
   -- | Subversion Info:                                                          |
   -- | $HeadURL: http://svn.na.odcorp.net/svn/od/common/branches/fix/xxcomn/java/od/oracle/apps/xxcrm/cdh/ebl/server/ODEBillAMImpl.java $                                                               |
@@ -5973,6 +5974,51 @@ getOADBTransaction().getJdbcConnection().prepareCall("{call XX_CRM_EBL_CONT_DOWN
                                        }
      }
     //Added By Reddy Sekhar K on 22 June 2018 for the Defect# NAIT-27146-----End
+    
+     //Code added by Rafi for NAIT-91481 Rectify Billing Delivery Efficiency - START
+     public String getBCFlag(String CustAccountId)
+     {
+        ODUtil utl = new ODUtil(this);
+        utl.log("execQuery :Begin execQuery");
+        String atribute6QryPF1 = "SELECT Attribute6 FROM hz_customer_profiles "
+        + " WHERE CUST_ACCOUNT_ID = " +CustAccountId 
+         +" AND site_use_id is null";
+        OracleCallableStatement ocs=null;
+        ResultSet rs=null;
+        OADBTransaction db=this.getOADBTransaction();
+        String stmt = atribute6QryPF1;
+        String rattr6PF=null;
+        //utl.log("execQuery:"+ stmt);
+        ocs = (OracleCallableStatement)db.createCallableStatement(stmt,1);
+
+        try
+        {
+          rs = ocs.executeQuery();
+          if (rs.next())
+          {
+            rattr6PF = rs.getString(1);
+          }
+          rs.close();
+          ocs.close();
+        }
+        catch(SQLException e)
+        {
+          utl.log("execQuery:Error:"+ e.toString());
+        }
+            finally
+          {
+             try{
+                  if(rs != null)
+                     rs.close();
+                  if(ocs != null)
+                     ocs.close();
+                }
+                     catch(Exception e){}
+          }
+        utl.log("execQuery :End execQuery");
+        return rattr6PF;
+     }
+    //Code added by Rafi for NAIT-91481 Rectify Billing Delivery Efficiency - END
     /**Container's getter for ODEBillParentCustDocId
      */
     public OAViewObjectImpl getODEBillParentCustDocId() {
