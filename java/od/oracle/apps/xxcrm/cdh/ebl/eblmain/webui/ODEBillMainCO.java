@@ -107,6 +107,7 @@ import oracle.jbo.domain.Number;
   -- |4.9      23-May-2018 Reddy Sekhar K     Code Added for Defect# NAIT-27146  |
  --  |4.10     08-Jun-2018 Rafi Mohammed      Code Added for Defect# NAIT-40588  | 
  --  |4.11     14-Sep-2018 Reddy Sekhar K     Code Added for Defect# NAIT-60756  | 
+ --  |4.12     15-Apr-2019 Rafi Mohammed      NAIT-91481 Rectify Billing Delivery Efficiency|
   -- |===========================================================================|
   -- | Subversion Info:                                                          |
   -- | $HeadURL$                                                               |
@@ -864,6 +865,10 @@ ODEBillMainCO extends OAControllerImpl {
             (OAViewObject)mainAM.findViewObject("ODEBillCustHeaderVO");
         String deliveryMethod = 
             custDocVO.first().getAttribute("DeliveryMethod").toString();
+            
+        String payDoc = 
+            custDocVO.first().getAttribute("PayDocIndDisp").toString();
+
 
         OAMessageCheckBoxBean cb = 
             (OAMessageCheckBoxBean)webBean.findChildRecursive("EnableXLSubTotal");
@@ -1312,10 +1317,19 @@ ODEBillMainCO extends OAControllerImpl {
         /* Handle for save button to save customer doc details */
         if ("Save".equals(pageContext.getParameter(OAWebBeanConstants.EVENT_PARAM))) {
             pageContext.writeDiagnostics(this, "Save clicked", 
-                                         OAFwkConstants.STATEMENT);
-
-                
-            
+                                         OAFwkConstants.STATEMENT);                                                  
+        //Code added by Rafi for NAIT-91481 Rectify Billing Delivery Efficiency - START
+           String docuType = null;
+           docuType = custDocVO.first().getAttribute("DocType").toString();
+           OAMessageChoiceBean transmissionType = 
+              (OAMessageChoiceBean)webBean.findIndexedChildRecursive("EbillTransmission");      
+           if(("Email".equalsIgnoreCase(transmissionType.getValue(pageContext).toString())) && "ePDF".equalsIgnoreCase(deliveryMethod) 
+                && ("Consolidated Bill".equalsIgnoreCase(docuType))  && ("Yes".equalsIgnoreCase(payDoc))){
+                String custAccountId = custDocVO.first().getAttribute("CustAccountId").toString();
+                validateFieProcMethod(pageContext,webBean,custAccountId);                   
+            }            
+         //Code added by Rafi for NAIT-91481 Rectify Billing Delivery Efficiency - END
+          
                 if (deliveryMethod.equals("eXLS")) {
                     pageContext.writeDiagnostics(this, 
                                              "Delivery method is eXLS ...", 
@@ -1359,7 +1373,7 @@ ODEBillMainCO extends OAControllerImpl {
 
                 validateDupeSortOrder(deliveryMethod, pageContext, webBean);
                 validateSubTotalsAndSplitTabs(deliveryMethod, pageContext, 
-                                              webBean);
+                                              webBean);		
           
                 //Added by Rafi on 20-Mar-2018 for wave3 defect NAIT-33309 - START
                  String sRepeatTotalLabelDtl="";
@@ -2183,6 +2197,16 @@ ODEBillMainCO extends OAControllerImpl {
             String custAccountId = 
                 custDocVO.first().getAttribute("CustAccountId").toString();
 
+            //Code added by Rafi for NAIT-91481 Rectify Billing Delivery Efficiency - START
+            String docuType = null;
+            docuType = custDocVO.first().getAttribute("DocType").toString();
+            OAMessageChoiceBean transmissionType = 
+              (OAMessageChoiceBean)webBean.findIndexedChildRecursive("EbillTransmission");      
+            if(("Email".equalsIgnoreCase(transmissionType.getValue(pageContext).toString())) && "ePDF".equalsIgnoreCase(deliveryMethod) 
+                && ("Consolidated Bill".equalsIgnoreCase(docuType))  && ("Yes".equalsIgnoreCase(payDoc))){
+                validateFieProcMethod(pageContext,webBean,custAccountId);                   
+            }          
+            //Code added by Rafi for NAIT-91481 Rectify Billing Delivery Efficiency - END
 
             /*Start - MOD 4B R3*/
                if (deliveryMethod.equals("eXLS")) {
@@ -4141,6 +4165,31 @@ pageContext.getApplicationModule(webBean).getOADBTransaction().getJdbcConnection
             }
         
     }
-    
+    //Code added by Rafi for NAIT-91481 Rectify Billing Delivery Efficiency - START
+    private void validateFieProcMethod(OAPageContext pageContext, 
+                                       OAWebBean webBean, String custAccountId) {
+      Serializable inputParams1[] = {custAccountId };
+      OAApplicationModule mainAM = pageContext.getApplicationModule(webBean);
+      String bcFlag = (String)mainAM.invokeMethod("getBCFlag",inputParams1);
+     
+      if("B".equalsIgnoreCase(bcFlag) || ("Y".equalsIgnoreCase(bcFlag))){
+        //System.out.println("do nothing");
+      }
+       else{
+          OAMessageChoiceBean fileProcessMtd = 
+            (OAMessageChoiceBean)webBean.findIndexedChildRecursive("FileProcessingMethod");
+            if(fileProcessMtd.getValue(pageContext)!=null){                               
+                /*02 means - One Order per File. Multiple Files in a Transmission
+                  03 means - Multiple Orders per File. Single File per Transmission */
+                  if("02".equalsIgnoreCase(fileProcessMtd.getValue(pageContext).toString())
+                     || ("03".equalsIgnoreCase(fileProcessMtd.getValue(pageContext).toString())))
+                  {
+                     throw new OAException("XXCRM", "XXOD_EBL_BC_FILE_PROC_VALID", null, 
+                                           OAException.ERROR, null);                   
+                  }
+            }
+      }                                
+   }                                                              
+    //Code added by Rafi for NAIT-91481 Rectify Billing Delivery Efficiency - END
 }
 
