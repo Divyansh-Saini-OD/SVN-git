@@ -21,7 +21,7 @@ AS
   -- | 1.4         16-Oct-2018   Jitendra A.       Added FETCH_DATA procedure for NAIT-65619/72698|
   -- | 1.5         19-OCT-2018   Priyam P          Added remove_spcl_char for NAIT 65621  
  -- |  1.6         29-APR-2019    Faiyaz Ahmad      comented hr_employees for performance issue
-   +============================================================================================+
+  -- +============================================================================================+
   --global declarations
   g_api_version_number NUMBER                                                   := 1.0;
   g_pm_product_code FND_LOOKUP_VALUES_VL.lookup_code%TYPE                       :=NULL;
