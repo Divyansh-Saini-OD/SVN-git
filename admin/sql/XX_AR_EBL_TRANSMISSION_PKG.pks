@@ -13,8 +13,9 @@ PACKAGE XX_AR_EBL_TRANSMISSION_PKG AS
 -- |===============                                                                                     |
 -- |Version   Date        Author             Remarks                                                    |
 -- |========  =========== ================== ===========================================================|
--- |1.0       05-Feb-2010 Bushrod Thomas     Initial draft version.      			 	                        |
--- |                                                                                                    |
+-- |1.0       05-Feb-2010 Bushrod Thomas     Initial draft version.      			 	                |
+-- |2.0       22-Apr-2019 Aarthi             Modified for NAIT-91483. Merging the PDF outputs for       |
+-- |                                         BC Customers with Paydoc as Consolidated PDF Billing Docs  |
 -- +====================================================================================================+
 */
 
@@ -137,7 +138,25 @@ PACKAGE XX_AR_EBL_TRANSMISSION_PKG AS
   PROCEDURE GET_ORG_ID (
     x_org_id         OUT VARCHAR2
   );
-
+  
+  PROCEDURE TRANSMIT_BC_MERGE_PDF (
+    p_smtp_server     IN VARCHAR2
+   ,p_smtp_port       IN PLS_INTEGER
+   ,p_from_name       IN VARCHAR2
+  );
+  
+  PROCEDURE TRANSMIT_MERGE_PDF_EMAIL (
+    p_merge_file_id   IN NUMBER
+   ,p_smtp_server     IN VARCHAR2
+   ,p_smtp_port       IN PLS_INTEGER
+   ,p_from_name       IN VARCHAR2
+   ,p_send_to         IN VARCHAR2
+   ,p_subject         IN VARCHAR2
+   ,p_message_html    IN VARCHAR2
+   ,p_message_text    IN VARCHAR2
+   ,p_send_zips       IN VARCHAR2
+   ,x_status_detail   IN OUT VARCHAR2
+  );
 
 END XX_AR_EBL_TRANSMISSION_PKG;
 

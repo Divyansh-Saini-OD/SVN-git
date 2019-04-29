@@ -1,0 +1,33 @@
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+-- +===========================================================================================+
+-- |                                    Office Depot                                           |
+-- +===========================================================================================|
+-- | Name        : GRANT_XX_AR_EBL_MERGE_PDF_BC_FILE_S                                         |
+-- | Description: Grant for sequence XXFIN.XX_AR_EBL_MERGE_PDF_BC_FILE_S                       |
+-- | Rice Id    :                                                                              | 
+-- |Change Record:                                                                             |
+-- |===============                                                                            |
+-- |Version   Date         Author           Remarks                                            |
+-- |=======   ===========  =============    ===================================================|
+-- |1.0       22-APR-2019  Aarthi           Initial Version- NAIT-91483                        |
+-- +===========================================================================================+
+
+WHENEVER SQLERROR CONTINUE;
+
+SET TERM ON
+PROMPT
+PROMPT Grant ALL on the Sequence XXFIN.XX_AR_EBL_MERGE_PDF_BC_FILE
+PROMPT
+
+GRANT ALL ON XXFIN.XX_AR_EBL_MERGE_PDF_BC_FILE TO apps;
+
+SHOW ERROR;
+
+REM============================================================================================
+REM                                   End Of Script                                            
+REM============================================================================================

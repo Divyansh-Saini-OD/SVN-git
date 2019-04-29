@@ -1,0 +1,25 @@
+-- +===========================================================================+
+-- |                  Office Depot - Project Simplify                          |
+-- +===========================================================================+
+-- | Name :XXFIN.XX_AR_EBL_MERGE_PDF_BC_FILE_N1                                |
+-- | Description :   Script to create XX_AR_EBL_MERGE_PDF_BC_FILE_N1 index     |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version    Date            Author                  Remarks                 |
+-- |=======    ===========     =============           ======================= |
+-- | 1.0       25-OCT-2018     Capgemini               Initial draft version   |
+-- +===========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+CREATE INDEX  XX_AR_EBL_MERGE_PDF_BC_FILE_N1
+ON            xxfin.XX_AR_EBL_MERGE_PDF_BC_FILE(
+                                       CUST_DOC_ID
+                                      );
+SHOW ERRORS;
