@@ -65,8 +65,6 @@ AS
 -- | 25.0        22-APR-2019  Dattatray B         Added Procedure-xx_ar_subs_payload_purge_prc   |
 -- |											  for NAIT-83868-> To purge Subscriptions Payload| 
 -- |											  and Error table more than 30 days older data	 |
--- | 26.0        29-APR-2019  Sahithi K           Trigger AVS failure process same as            |
--- |                                              recurring payment failure NAIT-92855           |
 -- +=============================================================================================+
  
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -5171,7 +5169,7 @@ AS
       /*************************************
       * Validate we are read to perform auth
       *************************************/
-      IF px_subscription_array(indx).cof_trans_id_flag NOT IN ('E','N','U') 
+      IF px_subscription_array(indx).cof_trans_id_flag NOT IN ('E','N') 
       THEN
         lc_error := 'Trans ID flag: ' || px_subscription_array(indx).cof_trans_id_flag;
         RAISE le_skip;
@@ -5540,14 +5538,6 @@ AS
                 lc_error := 'Failed response status_code: ' || l_response.status_code;
                 RAISE le_processing;
               END IF;
-              
-              -- updating initial_auth_attempt_date with SYSDATE when auth is done on DAY 1
-              IF px_subscription_array(indx).initial_auth_attempt_date IS NULL
-              THEN
-              
-                px_subscription_array(indx).initial_auth_attempt_date := TO_DATE(TO_CHAR(SYSDATE,'DD-MON-YYYY')||'00:00:00','DD-MON-YYYY HH24:MI:SS');
-              
-              END IF;
             
               /**********************************
               * Get the authorization information
@@ -5573,11 +5563,6 @@ AS
                   lc_action := 'assigning the auth success result to subscription array';               
                   px_subscription_array(indx).cof_trans_id                := lr_subscription_info.cof_trans_id;
                   px_subscription_array(indx).cof_trans_id_flag           := 'Y';
-                  px_subscription_array(indx).last_auth_attempt_date      := SYSDATE;
-                  px_subscription_array(indx).email_sent_flag             := 'N';
-                  px_subscription_array(indx).payment_status              := 'SUCCESS';
-                  px_subscription_array(indx).contract_status             := NULL;
-                  px_subscription_array(indx).next_retry_day              := NULL;
                   
                   --call update contracts table with cc_trans_id and cc_trans_id_source
                   update_contracts_info(p_contract_id           => px_subscription_array(indx).contract_id
@@ -5588,22 +5573,9 @@ AS
                 ELSE
                   lc_action := 'assigning the auth failure result to subscription array';
                   px_subscription_array(indx).subscription_error      := lr_subscription_info.auth_message;
-                  lc_avs_code := SUBSTR(lr_subscription_info.auth_message,1,1);
-                  IF lc_avs_code IN ('R','S')
-                  THEN
-                    lc_error := 'Connectivity Isuue';
-                    lc_cof_trans_id_flag := 'U';
-                    RAISE le_processing;
-                  ELSE
-                    lc_error                   := 'Invalid Card';
-                    lc_cof_trans_id_flag       := 'E';
-                    lc_last_auth_attempt_date  := SYSDATE;
-                    lc_email_sent_flag         := 'N';
-                    lc_payment_status          := 'FAILURE';
-                    lc_contract_status         := NULL;
-                    lc_next_retry_day          := NULL;
-                    RAISE le_invalid_card;
-                  END IF;
+                  lc_error                                            := 'Invalid Card';
+                  lc_cof_trans_id_flag                                := 'E';
+                  RAISE le_processing;
                 END IF;
               ELSIF p_contract_info.external_source = 'POS' AND p_program_setups('pos_avs_check_flag') != 'Y'
               THEN
@@ -5612,11 +5584,6 @@ AS
                   lc_action := 'assigning the auth success result to subscription array';               
                   px_subscription_array(indx).cof_trans_id                := lr_subscription_info.cof_trans_id;
                   px_subscription_array(indx).cof_trans_id_flag           := 'Y';
-                  px_subscription_array(indx).last_auth_attempt_date      := SYSDATE;
-                  px_subscription_array(indx).email_sent_flag             := 'N';
-                  px_subscription_array(indx).payment_status              := 'SUCCESS';
-                  px_subscription_array(indx).contract_status             := NULL;
-                  px_subscription_array(indx).next_retry_day              := NULL;
                   
                   --call update contracts table with cc_trans_id and cc_trans_id_source
                   update_contracts_info(p_contract_id           => px_subscription_array(indx).contract_id
@@ -5627,34 +5594,13 @@ AS
                 ELSE
                   lc_action := 'assigning the auth failure result to subscription array';
                   px_subscription_array(indx).subscription_error      := lr_subscription_info.auth_message;
-                  lc_avs_code := SUBSTR(lr_subscription_info.auth_message,1,1);
-                  IF lc_avs_code IN ('R','S')
-                  THEN
-                    lc_error := 'Connectivity Isuue';
-                    lc_cof_trans_id_flag := 'U';
-                    RAISE le_processing;
-                  ELSE
-                    lc_error                   := 'Invalid Card';
-                    lc_cof_trans_id_flag       := 'E';
-                    lc_last_auth_attempt_date  := SYSDATE;
-                    lc_email_sent_flag         := 'N';
-                    lc_payment_status          := 'FAILURE';
-                    lc_contract_status         := NULL;
-                    lc_next_retry_day          := NULL;
-                    RAISE le_invalid_card;
-                  END IF;
+                  lc_error                                            := 'Invalid Card';
+                  lc_cof_trans_id_flag                                := 'E';
+                  RAISE le_processing;
                 END IF;
               END IF;
             
             ELSE
-            
-              -- updating initial_auth_attempt_date with SYSDATE when auth is done on DAY 1
-              IF px_subscription_array(indx).initial_auth_attempt_date IS NULL
-              THEN
-              
-                px_subscription_array(indx).initial_auth_attempt_date := TO_DATE(TO_CHAR(SYSDATE,'DD-MON-YYYY')||'00:00:00','DD-MON-YYYY HH24:MI:SS');
-              
-              END IF;
               
               /**********************************
               * Get the authorization information
@@ -5679,11 +5625,6 @@ AS
                   lc_action := 'assigning the auth success result to subscription array';               
                   px_subscription_array(indx).cof_trans_id                := lr_subscription_info.cof_trans_id;
                   px_subscription_array(indx).cof_trans_id_flag           := 'Y';
-                  px_subscription_array(indx).last_auth_attempt_date      := SYSDATE;
-                  px_subscription_array(indx).email_sent_flag             := 'N';
-                  px_subscription_array(indx).payment_status              := 'SUCCESS';
-                  px_subscription_array(indx).contract_status             := NULL;
-                  px_subscription_array(indx).next_retry_day              := NULL;
                   
                   --call update contracts table with cc_trans_id and cc_trans_id_source
                   update_contracts_info(p_contract_id           => px_subscription_array(indx).contract_id
@@ -5694,22 +5635,9 @@ AS
                 ELSE
                   lc_action := 'assigning the auth failure result to subscription array';
                   px_subscription_array(indx).subscription_error      := lr_subscription_info.auth_message;
-                  lc_avs_code := SUBSTR(lr_subscription_info.auth_message,1,1);
-                  IF lc_avs_code IN ('R','S')
-                  THEN
-                    lc_error := 'Connectivity Isuue';
-                    lc_cof_trans_id_flag := 'U';
-                    RAISE le_processing;
-                  ELSE
-                    lc_error                   := 'Invalid Card';
-                    lc_cof_trans_id_flag       := 'E';
-                    lc_last_auth_attempt_date  := SYSDATE;
-                    lc_email_sent_flag         := 'N';
-                    lc_payment_status          := 'FAILURE';
-                    lc_contract_status         := NULL;
-                    lc_next_retry_day          := NULL;
-                    RAISE le_invalid_card;
-                  END IF;
+                  lc_error                                            := 'Invalid Card';
+                  lc_cof_trans_id_flag                                := 'E';
+                  RAISE le_processing;
                 END IF;
               ELSIF p_contract_info.external_source = 'POS' AND p_program_setups('pos_avs_check_flag') != 'Y'
               THEN
@@ -5718,12 +5646,7 @@ AS
                   lc_action := 'assigning the auth success result to subscription array';               
                   px_subscription_array(indx).cof_trans_id                := lr_subscription_info.cof_trans_id;
                   px_subscription_array(indx).cof_trans_id_flag           := 'Y';
-                  px_subscription_array(indx).last_auth_attempt_date      := SYSDATE;
-                  px_subscription_array(indx).email_sent_flag             := 'N';
-                  px_subscription_array(indx).payment_status              := 'SUCCESS';
-                  px_subscription_array(indx).contract_status             := NULL;
-                  px_subscription_array(indx).next_retry_day              := NULL;
-                  
+                 
                   --call update contracts table with cc_trans_id and cc_trans_id_source
                   update_contracts_info(p_contract_id           => px_subscription_array(indx).contract_id
                                        ,p_cc_trans_id           => lr_subscription_info.cof_trans_id
@@ -5733,22 +5656,9 @@ AS
                 ELSE
                   lc_action := 'assigning the auth failure result to subscription array';
                   px_subscription_array(indx).subscription_error      := lr_subscription_info.auth_message;
-                  lc_avs_code := SUBSTR(lr_subscription_info.auth_message,1,1);
-                  IF lc_avs_code IN ('R','S')
-                  THEN
-                    lc_error := 'Connectivity Isuue';
-                    lc_cof_trans_id_flag := 'U';
-                    RAISE le_processing;
-                  ELSE
-                    lc_error                   := 'Invalid Card';
-                    lc_cof_trans_id_flag       := 'E';
-                    lc_last_auth_attempt_date  := SYSDATE;
-                    lc_email_sent_flag         := 'N';
-                    lc_payment_status          := 'FAILURE';
-                    lc_contract_status         := NULL;
-                    lc_next_retry_day          := NULL;
-                    RAISE le_invalid_card;
-                  END IF;
+                  lc_error                                            := 'Invalid Card';
+                  lc_cof_trans_id_flag                                := 'E';
+                  RAISE le_processing;
                 END IF;
               END IF;
             
@@ -5779,37 +5689,11 @@ AS
 
         insert_subscription_error_info(p_subscription_error_info => lr_subscription_error_info);
        
-        lc_cof_trans_id_flag := 'U';
+        lc_cof_trans_id_flag := 'E';
         lc_subscription_error := SUBSTR(lr_subscription_error_info.error_message, 1, gc_max_sub_err_size);
 
         RAISE le_processing;
-        
-      WHEN le_invalid_card
-      THEN
-
-        lr_subscription_error_info                         := NULL;
-        lr_subscription_error_info.contract_id             := px_subscription_array(indx).contract_id;
-        lr_subscription_error_info.contract_number         := px_subscription_array(indx).contract_number;
-        lr_subscription_error_info.contract_line_number    := NULL;
-        lr_subscription_error_info.billing_sequence_number := px_subscription_array(indx).billing_sequence_number;
-        lr_subscription_error_info.error_module            := lc_procedure_name;
-        lr_subscription_error_info.error_message           := SUBSTR('Action: ' || lc_action || ' Error: ' || lc_error, 1, gc_max_err_size);
-        lr_subscription_error_info.creation_date           := SYSDATE;
-
-        lc_action := 'Calling insert_subscription_error_info';
-
-        insert_subscription_error_info(p_subscription_error_info => lr_subscription_error_info);
-       
-        lc_cof_trans_id_flag       := 'E';
-        lc_last_auth_attempt_date  := SYSDATE;
-        lc_email_sent_flag         := 'N';
-        lc_payment_status          := 'FAILURE';
-        lc_contract_status         := NULL;
-        lc_next_retry_day          := NULL;
-        lc_subscription_error := SUBSTR(lr_subscription_error_info.error_message, 1, gc_max_sub_err_size);
-
-        RAISE le_invalid_card;
-
+      
       WHEN OTHERS
       THEN
 
@@ -5826,7 +5710,7 @@ AS
 
         insert_subscription_error_info(p_subscription_error_info => lr_subscription_error_info);
 
-        lc_cof_trans_id_flag := 'U';
+        lc_cof_trans_id_flag := 'E';
         lc_subscription_error := SUBSTR(lr_subscription_error_info.error_message, 1, gc_max_sub_err_size);
 
         RAISE le_processing;
@@ -5858,30 +5742,7 @@ AS
     END LOOP;
 
     exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
-    RAISE_APPLICATION_ERROR(-20101, lc_subscription_error);
-
-  WHEN le_invalid_card
-  THEN
-
-    FOR indx IN 1 .. px_subscription_array.COUNT
-    LOOP
-
-      px_subscription_array(indx).cof_trans_id_flag       := lc_cof_trans_id_flag;
-      px_subscription_array(indx).subscription_error      := lc_subscription_error;
-      px_subscription_array(indx).last_auth_attempt_date  := lc_last_auth_attempt_date;
-      px_subscription_array(indx).email_sent_flag         := lc_email_sent_flag;
-      px_subscription_array(indx).payment_status          := lc_payment_status;
-      px_subscription_array(indx).contract_status         := lc_contract_status;
-      px_subscription_array(indx).next_retry_day          := lc_next_retry_day;
-
-      lc_action := 'Calling update_subscription_info to update with error info';
-
-      update_subscription_info(px_subscription_info => px_subscription_array(indx));
-
-    END LOOP;
-
-    exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
-    RAISE_APPLICATION_ERROR(-20101, lc_subscription_error);
+    --RAISE_APPLICATION_ERROR(-20101, lc_subscription_error);
 
   WHEN OTHERS
   THEN
@@ -5889,7 +5750,7 @@ AS
     FOR indx IN 1 .. px_subscription_array.COUNT
     LOOP
 
-      px_subscription_array(indx).cof_trans_id_flag  := 'U';
+      px_subscription_array(indx).cof_trans_id_flag  := 'E';
       px_subscription_array(indx).subscription_error := SUBSTR('Action: ' || lc_action || 'SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM, 1, gc_max_sub_err_size);
 
       lc_action := 'Calling update_subscription_info to update with error info';
@@ -5898,7 +5759,7 @@ AS
     END LOOP;
 
     exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
-    RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' Action: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+    --RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' Action: ' || lc_action || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
 
   END get_cc_trans_id_information;
 
@@ -6034,15 +5895,6 @@ AS
       IF p_contract_info.payment_type = 'AB'
       THEN
         lc_error := 'Payment Type is: ' || p_contract_info.payment_type;
-        RAISE le_skip;
-      END IF;
-      
-      /*************************************
-      * Validate we are read to perform auth
-      *************************************/
-      IF (p_contract_info.cc_trans_id IS NULL AND p_contract_info.payment_type = 'CreditCard')
-      THEN
-        lc_error := 'cc_trans_id is NULL for payment_type : '||p_contract_info.payment_type;
         RAISE le_skip;
       END IF;
  
@@ -6913,23 +6765,12 @@ AS
       /***************************
       * Validate for authorization
       ***************************/
-      IF   ((p_contract_info.payment_type != 'CreditCard')
-         OR (p_contract_info.CC_TRANS_ID IS NOT NULL AND p_contract_info.payment_type = 'CreditCard'))
+      IF px_subscription_array(indx).auth_completed_flag NOT IN ('Y', 'E')
       THEN
-        IF px_subscription_array(indx).auth_completed_flag NOT IN ('Y', 'E')
-        THEN
-          lc_error := 'Authorization is not completed';
-          RAISE le_skip;
-        END IF;
-      ELSIF (p_contract_info.CC_TRANS_ID IS NULL AND p_contract_info.payment_type = 'CreditCard')
-      THEN
-        IF px_subscription_array(indx).cof_trans_id_flag != 'E'
-        THEN
-          lc_error := 'cof_trans_id_flag : '||px_subscription_array(indx).cof_trans_id_flag;
-          RAISE le_skip;
-       END IF;
-     END IF;
-
+        lc_error := 'Authorization is not completed';
+        RAISE le_skip;
+      END IF;
+     
       /***********************************
       * Validate we are read to send email
       ***********************************/
@@ -7357,23 +7198,6 @@ AS
             ELSE
               lc_contract_number_modifier := NULL;
             END IF;
-            
-            /***************************
-            * Validate for authorization
-            ***************************/
-            IF   ((p_contract_info.payment_type != 'CreditCard')
-               OR (p_contract_info.CC_TRANS_ID IS NOT NULL AND p_contract_info.payment_type = 'CreditCard'))
-            THEN
-              lc_avs_check       := 'FALSE';
-              lc_avs_reason_code := NULL;
-            ELSIF (p_contract_info.CC_TRANS_ID IS NULL AND p_contract_info.payment_type = 'CreditCard' AND px_subscription_array(indx).cof_trans_id_flag = 'E')
-            THEN
-              lc_avs_check       := 'TRUE';
-              lc_avs_reason_code := px_subscription_array(indx).auth_message;
-            END IF;
-
-            fnd_file.put_line(fnd_file.LOG, 'lc_avs_check: ' || lc_avs_check);
-            fnd_file.put_line(fnd_file.LOG, 'lc_avs_reason_code: ' || lc_avs_reason_code);
            
            /********************
             * Build email payload
