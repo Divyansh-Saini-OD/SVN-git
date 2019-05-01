@@ -59,11 +59,14 @@ BEGIN
 
     FOR lockbox_rec IN late_lockbox
         LOOP
-            lc_late_lockboxes := lc_late_lockboxes || lockbox_rec.LBOX || CHR(13);
-        END LOOP;
-
-    IF lc_late_lockboxes = '' THEN
+		IF lockbox_rec.LBOX <> 'BOA70025.txt' THEN --NAIT-90830
+      lc_late_lockboxes := lc_late_lockboxes || lockbox_rec.LBOX || CHR(13);
+    END IF;
+  END LOOP;
+        
+    IF lc_late_lockboxes is NULL THEN-----NAIT-90830
        FND_FILE.PUT_LINE(FND_FILE.LOG, 'No late lockboxes found ');
+	   --lc_email_msg := 'No late lockboxes found ';
     ELSE
        IF LENGTH(lc_late_lockboxes) < 230 THEN
           lc_email_msg := lc_late_lockboxes;
