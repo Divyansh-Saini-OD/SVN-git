@@ -55,6 +55,7 @@ PACKAGE BODY XX_AP_XXAPRTVAPDM_PKG
   -- |1.8       12-APR-2018 Digamber S     Added new function before_report_trigger_c
   --                                       for new RTV APDM consolidation report
   -- |1.9        14-Dec-2018 Ragni Gupta   NAIT-72725, to remove dblink dependency
+  -- |2.0        01-May-2019 Shanti Sethuraj  Modified code for Jira NAIT-24616
   -- +=========================================================================
   -- +
 AS
@@ -273,7 +274,8 @@ IS
     FROM XX_AP_RTV_HDR_ATTR xarh,
       XX_AP_RTV_LINES_ATTR xarl
     WHERE xarh.header_id    =xarl.header_id
-    AND xarh.frequency_code = 'DY'
+	and xarh.rtv_number = xarl.rtv_number               --added for the Jira NAIT-24616
+    AND xarh.frequency_code in ( 'DY', 'MY','WY','QY')   --modified for the Jira NAIT-24616
     AND xarh.Record_Status  = 'C'
       --AND XARH.VOUCHER_NUM = l_voucher_nbr;
     AND xarh.invoice_num = l_invoice_nbr;
@@ -504,7 +506,7 @@ IS
     FROM XX_AP_RTV_HDR_ATTR xarh,
       XX_AP_RTV_LINES_ATTR xarl
     WHERE xarh.header_id    =xarl.header_id
-    AND xarh.frequency_code = 'DY'
+    AND xarh.frequency_code in ( 'DY', 'MY','WY','QY')   --modified for the Jira NAIT-24616
     AND xarh.Record_Status  = 'C'
       --AND XARH.VOUCHER_NUM = l_voucher_nbr;
     AND xarh.invoice_num = l_invoice_nbr;
@@ -703,7 +705,7 @@ BEGIN
       FROM XX_AP_RTV_HDR_ATTR xarh,
         XX_AP_RTV_LINES_ATTR xarl
       WHERE xarh.header_id    =xarl.header_id
-      AND xarh.frequency_code ='DY'
+      AND xarh.frequency_code in ( 'DY', 'MY','WY','QY')   --modified for the Jira NAIT-24616
       AND ( xarh.Invoice_Num  = P_Invoice_Nbr
     OR xarh.Rtv_Number      = Ltrim(P_Invoice_Nbr,'RTV'))
     AND xarh.Record_Status  = 'C'
@@ -800,7 +802,7 @@ BEGIN
     FROM XX_AP_RTV_HDR_ATTR xarh,
       XX_AP_RTV_LINES_ATTR xarl
     WHERE xarh.header_id    =xarl.header_id
-    AND xarh.frequency_code ='DY'
+    AND xarh.frequency_code in ( 'DY', 'MY','WY','QY')   --modified for the Jira NAIT-24616
     AND ( xarh.Invoice_Num  = P_Invoice_Nbr
     OR xarh.Rtv_Number      = Ltrim(P_Invoice_Nbr,'RTV'))
     AND xarh.Record_Status  = 'C'
@@ -841,7 +843,7 @@ BEGIN
     AND ( xarh.Invoice_Num  = P_Invoice_Nbr
     OR xarh.Rtv_Number      = Ltrim(P_Invoice_Nbr,'RTV'))
     AND xarh.Record_Status  = 'C'
-    AND xarh.Frequency_Code = 'DY'
+    AND xarh.Frequency_Code in ( 'DY', 'MY','WY','QY')   --modified for the Jira NAIT-24616
     AND Rownum           =1
     AND EXISTS
       (SELECT 1
@@ -883,7 +885,7 @@ BEGIN
     AND ( xarh.Invoice_Num  = P_Invoice_Nbr
     OR xarh.Rtv_Number      = Ltrim(P_Invoice_Nbr,'RTV'))
     AND xarh.Record_Status  = 'C'
-    AND xarh.Frequency_Code = 'DY'
+    AND xarh.Frequency_Code in ( 'DY', 'MY','WY','QY')   --modified for the Jira NAIT-24616
     AND Rownum           =1
     AND EXISTS
       (SELECT 1
@@ -926,7 +928,7 @@ BEGIN
     AND ( xarh.Invoice_Num  = P_Invoice_Nbr
     OR xarh.Rtv_Number      = Ltrim(P_Invoice_Nbr,'RTV'))
     AND xarh.Record_Status  = 'C'
-    AND xarh.Frequency_Code = 'DY'
+    AND xarh.Frequency_Code in ( 'DY', 'MY','WY','QY')   --modified for the Jira NAIT-24616
     AND Rownum           =1
     AND EXISTS
       (SELECT 1
@@ -997,7 +999,7 @@ BEGIN
     AND ( xarh.Invoice_Num  = P_Invoice_Nbr
     OR xarh.Rtv_Number      = Ltrim(P_Invoice_Nbr,'RTV'))
     AND xarh.Record_Status  = 'C'
-    AND xarh.Frequency_Code = 'DY'
+    AND xarh.Frequency_Code in ( 'DY', 'MY','WY','QY')   --modified for the Jira NAIT-24616
     AND Rownum              =1
     AND EXISTS
       (SELECT 1
@@ -1077,7 +1079,7 @@ BEGIN
     AND ( xarh.Invoice_Num  = P_Invoice_Nbr
     OR xarh.Rtv_Number      = Ltrim(P_Invoice_Nbr,'RTV'))
     AND xarh.Record_Status  = 'C'
-    AND xarh.Frequency_Code = 'DY'
+    AND xarh.Frequency_Code in ( 'DY', 'MY','WY','QY')   --modified for the Jira NAIT-24616
     AND Rownum              =1
     AND EXISTS
       (SELECT 1
@@ -1211,7 +1213,7 @@ BEGIN
     FROM XX_AP_RTV_HDR_ATTR xarh,
       XX_AP_RTV_LINES_ATTR xarl
     WHERE xarh.header_id    =xarl.header_id
-    AND xarh.frequency_code ='DY'
+    AND xarh.frequency_code in ( 'DY', 'MY','WY','QY')   --modified for the Jira NAIT-24616
     AND ( xarh.Invoice_Num  = P_Invoice_Nbr
     OR xarh.Rtv_Number      = Ltrim(P_Invoice_Nbr,'RTV'))
     AND xarh.Record_Status  = 'C'
