@@ -21,7 +21,9 @@ AS
 -- | 4.0         16-JAN-2019  Punit Gupta         Changed for NAIT-78415           |
 -- | 5.0         26-MAR-2019  Sahithi K           Update SCM with trans_id for     |
 -- |                                              existing contracts NAIT-89231    |
--- | 6.0         22-APR-2019  Dattatray Bachate   Added New Procedure - NAIT-83868 |
+-- | 6.0         22-APR-2019  Dattatray Bachate   Added New Procedure -            |
+-- |                                              xx_ar_subs_payload_purge_prc for |
+-- |                                              NAIT-83868                       |
 -- +===============================================================================+                                                                         
   
   /******
@@ -82,14 +84,14 @@ AS
                                 retcode            OUT NUMBER,
                                 p_debug_flag       IN  VARCHAR2 DEFAULT 'N');
 								
-/*********************************************
+  /*********************************************
   * Procedure to Purge Subscription Payload and
   * Error Table's more than 30 day's older data
   **********************************************/
-    PROCEDURE xx_ar_subs_payload_purge_prc (
-        errbuff   OUT       VARCHAR2,
-        retcode   OUT       NUMBER
-    );								
+  PROCEDURE xx_ar_subs_payload_purge_prc (
+										  errbuff   OUT       VARCHAR2,
+										  retcode   OUT       NUMBER
+										  );								
                                           
 END;
 /
