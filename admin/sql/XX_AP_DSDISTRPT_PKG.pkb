@@ -252,9 +252,7 @@ IS
                                              || SQLERRM);
       END;
 
-      lc_file_name := 'AP_DropShip_Distribution_Extract_'
-                      || p_period
-                      || '.txt';
+      lc_file_name := 'AP_DropShip_Distribution_Extract.txt';
 
       fnd_file.Put_line (fnd_file.log, 'Extract File Name : '
                                        || lc_file_name);
