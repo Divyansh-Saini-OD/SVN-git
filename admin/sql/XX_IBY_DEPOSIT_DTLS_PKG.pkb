@@ -116,8 +116,9 @@ IS
       XIDAO.program_update_date ,
       XIDAO.process_flag
     FROM xx_iby_deposit_aops_orders XIDAO
-    WHERE process_flag = 'New';
+    WHERE process_flag = 'New'
 	--and aops_order_number in ('271348608001','408434160001')
+	;
 	 -- Added by Anitha for Defect 11555
   --Commented for Defect 2447
   /*      CURSOR c_order_details(p_ord_num IN VARCHAR2)
@@ -177,11 +178,11 @@ IS
     lc_price      NUMBER;
     lc_qtyOrdered NUMBER;
     lc_qtyBackOrd NUMBER;
-    lc_vendorCode VARCHAR2(60);
+    lc_vendorCode VARCHAR2(100);
     lc_shipZip    VARCHAR2(60);
     lc_shipState  VARCHAR2(60);
     lc_discount   NUMBER;
-    lc_message    VARCHAR2(60);
+    lc_message    VARCHAR2(200);
     lc_code       VARCHAR2(30);
     lc_tranStatus VARCHAR2(30);
   BEGIN
@@ -219,6 +220,10 @@ IS
         lc_auth_service_pwd                     := get_service_params_rec.target_value1;
       END IF;
     END LOOP;
+	if lc_auth_service_url is null then 	
+	FND_FILE.PUT_LINE(fnd_file.log,'Unable to derive Webservice URL from Translation OD_AOPS_LINE_DEPOSITS_WS.');
+	
+	end if;
     /*************************
     * Getting the Concurrent Program Name
     **************************/
@@ -288,10 +293,10 @@ IS
         INTO lc_message,
           lc_code,
           lc_tranStatus
-        FROM JSON_TABLE ( lclob_buffer, '$.transactionStatus' COLUMNS ( "Message" VARCHAR2(60) PATH '$.message' ,"Code" VARCHAR2(30) PATH '$.code' ,"TranStatus" VARCHAR2(30) PATH '$.successfull')) "JT0" ;
+        FROM JSON_TABLE ( lclob_buffer, '$.transactionStatus' COLUMNS ( "Message" VARCHAR2(200) PATH '$.message' ,"Code" VARCHAR2(30) PATH '$.code' ,"TranStatus" VARCHAR2(30) PATH '$.successfull')) "JT0" ;
         IF lc_code IN ('404' ,'01') THEN
           x_ret_code := 1;
-          FND_FILE.PUT_LINE(fnd_file.log,'Webservice returned Error for AOPS Order Number '||lcu_pick_order_numbers_rec.aops_order_number||'. Webservice Error Code:'||lc_code||'.Error Message:'||NVL(lc_message,'NULL'));
+          FND_FILE.PUT_LINE(fnd_file.log,'Webservice returned Error for AOPS Order Number '||lcu_pick_order_numbers_rec.aops_order_number||'. Webservice Error Code:'||lc_code||'.Error Message:'||NVL(trim(lc_message),'NULL'));
           --CONTINUE;
         END IF;
       EXCEPTION
@@ -305,7 +310,7 @@ IS
       IF lc_code='00' THEN
         FOR rec IN
         (SELECT  *
-        FROM JSON_TABLE ( lclob_buffer, '$' COLUMNS (NESTED PATH '$.skuListInfo[*]' COLUMNS ("lineNumber" VARCHAR2(60) PATH '$.lineNumber', "department" VARCHAR2(60) PATH '$.department', "skuNumber" VARCHAR2(60) PATH '$.skuNumber', "price" VARCHAR2(60) PATH '$.price', "qtyOrdered" VARCHAR2(60) PATH '$.qtyOrdered', "qtyBackOrd" VARCHAR2(60) PATH '$.qtyBackOrd', "vendorCode" VARCHAR2(60) PATH '$.vendorCode', "shipZip" VARCHAR2(60) PATH '$.shipZip', "shipState" VARCHAR2(60) PATH '$.shipState', "discount" VARCHAR2(60) PATH '$.discount')))
+        FROM JSON_TABLE ( lclob_buffer, '$' COLUMNS (NESTED PATH '$.skuListInfo[*]' COLUMNS ("lineNumber" VARCHAR2(60) PATH '$.lineNumber', "department" VARCHAR2(60) PATH '$.department', "skuNumber" VARCHAR2(60) PATH '$.skuNumber', "price" VARCHAR2(60) PATH '$.price', "qtyOrdered" VARCHAR2(60) PATH '$.qtyOrdered', "qtyBackOrd" VARCHAR2(60) PATH '$.qtyBackOrd', "vendorCode" VARCHAR2(100) PATH '$.vendorCode', "shipZip" VARCHAR2(60) PATH '$.shipZip', "shipState" VARCHAR2(60) PATH '$.shipState', "discount" VARCHAR2(60) PATH '$.discount')))
         )
         LOOP
           BEGIN
@@ -320,13 +325,13 @@ IS
               lc_lineNumber        :=to_number(rec.lineNumber);
               lc_department        :=rec.department;
               lc_skuNumber         :=rec.skuNumber;
-              lc_price             :=to_number(NVL(rec.price,0));
+              lc_price             :=Round((to_number(NVL(rec.price,0)))/100,2);
               lc_qtyOrdered        :=to_number(NVL(rec.qtyOrdered,0));
               lc_qtyBackOrd        :=to_number(NVL(rec.qtyBackOrd ,0));
               lc_vendorCode        :=rec.vendorCode;
               lc_shipZip           :=rec.shipZip;
               lc_shipState         :=rec.shipState;
-              lc_discount          :=NVL(rec.discount,0);
+              lc_discount          :=Round((to_number(NVL(rec.discount,0)))/100,2);
               IF (lc_qtyOrdered     =0) AND (lc_qtyBackOrd=0) THEN
                 ln_discount_amount :=0;
               ELSE
@@ -479,7 +484,7 @@ IS
         -- Addressed Defect 2347 for proper logging messages if record not found in AS400 system
         FND_FILE.PUT_LINE(fnd_file.log,'Order Number not Found in the AS400 System' );
         FND_FILE.PUT_LINE(fnd_file.output,'');
-        FND_FILE.PUT_LINE(fnd_file.output,RPAD(lcu_pick_order_numbers_rec.aops_order_number,35,' ') || RPAD(' ',25,' ') || 'Order Number not Found in the AS400 System. Webservice Error Code:'||lc_code||'.Error Message:'||NVL(lc_message,'NULL') );
+        FND_FILE.PUT_LINE(fnd_file.output,RPAD(lcu_pick_order_numbers_rec.aops_order_number,35,' ') || RPAD(' ',25,' ') || 'Order Number not Found in the AS400 System. Webservice Error Code:'||lc_code||'.Error Message:'||NVL(trim(lc_message),'NULL') );
         x_ret_code := 1;
         -- Addition for defect 2347 ends here
       END IF;
