@@ -289,11 +289,11 @@ IS
       BEGIN
         SELECT JT0.MESSAGE,
           JT0.code,
-          JT0.TranStatus
+          JT0.successfull TranStatus
         INTO lc_message,
           lc_code,
           lc_tranStatus
-        FROM JSON_TABLE ( lclob_buffer, '$.transactionStatus' COLUMNS ( "Message" VARCHAR2(200) PATH '$.message' ,"Code" VARCHAR2(30) PATH '$.code' ,"TranStatus" VARCHAR2(30) PATH '$.successfull')) "JT0" ;
+        FROM JSON_TABLE ( lclob_buffer, '$.transactionStatus' COLUMNS ( "Message" VARCHAR2(200) PATH '$.message' ,"Code" VARCHAR2(30) PATH '$.code' ,"successfull" VARCHAR2(30) PATH '$.successfull')) "JT0" ;
         IF lc_code IN ('404' ,'01') THEN
           x_ret_code := 1;
           FND_FILE.PUT_LINE(fnd_file.log,'Webservice returned Error for AOPS Order Number '||lcu_pick_order_numbers_rec.aops_order_number||'. Webservice Error Code:'||lc_code||'.Error Message:'||NVL(trim(lc_message),'NULL'));
