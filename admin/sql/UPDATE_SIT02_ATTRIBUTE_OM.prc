@@ -100,7 +100,7 @@ where order_number in ('406290260004',
 '406300633004',
 '406300752004',
 '406300753004')
-and bill_to_customer_id<>34912541);
+and sold_to_org_id<>34912541);
 
 COMMIT;
 /
