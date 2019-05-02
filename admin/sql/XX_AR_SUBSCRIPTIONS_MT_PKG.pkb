@@ -10678,10 +10678,11 @@ AS
 
    CURSOR c_autorenew_contract_lines 
    IS
-     SELECT contract_id,contract_line_number,contract_number,billing_sequence_number,notification_days
+
+     SELECT contract_id,contract_number,billing_sequence_number,notification_days
      FROM
      (
-         SELECT XACL.contract_id,XACL.contract_line_number,XAC.contract_number,XAS.billing_sequence_number,45 notification_days
+         SELECT XACL.contract_id,XAC.contract_number,XAS.billing_sequence_number,45 notification_days
          FROM   xx_ar_contract_lines XACL,
                 xx_ar_contracts XAC,
                 xx_ar_subscriptions XAS
@@ -10691,7 +10692,7 @@ AS
          AND    XAC.contract_id = XAS.contract_id
          AND    XACL.contract_line_number = XAS.contract_line_number
          AND    XACL.close_date is NULL
-         AND    XACL.program in ('SS','BS')
+         AND    XACL.program = 'SS'
          AND    NVL(XAS.email_autorenew_sent_flag,'N') != 'Y'
          AND    XAS.billing_sequence_number IN (SELECT MAX(XAS1.billing_sequence_number) 
                                                 FROM  xx_ar_subscriptions XAS1
@@ -10699,8 +10700,25 @@ AS
                                                 AND   XAS1.contract_line_number = XAS.contract_line_number
                                                 )
          UNION
-    
-         SELECT XACL.contract_id,XACL.contract_line_number,XAC.contract_number,XAS.billing_sequence_number,7 notification_days
+         SELECT XACL.contract_id,XAC.contract_number,XAS.billing_sequence_number,45 notification_days
+         FROM   xx_ar_contract_lines XACL,
+                xx_ar_contracts XAC,
+                xx_ar_subscriptions XAS
+         WHERE  TRUNC(sysdate+45) = TRUNC(XACL.contract_line_end_date)
+         AND    XACL.contract_id = XAC.contract_id
+         AND    XAC.contract_status = 'ACTIVE'
+         AND    XAC.contract_id = XAS.contract_id
+         AND    XACL.contract_line_number = XAS.contract_line_number
+         AND    XACL.close_date is NULL
+         AND    XACL.program ='BS'
+         AND    NVL(XAS.email_autorenew_sent_flag,'N') != 'Y'
+         AND    XAS.billing_sequence_number IN (SELECT MAX(XAS1.billing_sequence_number)
+                                                FROM  xx_ar_subscriptions XAS1
+                                                WHERE XAS1.contract_id = XAS.contract_id
+                                                AND   XAS1.contract_line_number = XAS.contract_line_number
+                                                )
+         UNION   
+         SELECT XACL.contract_id,XAC.contract_number,XAS.billing_sequence_number,7 notification_days
          FROM   xx_ar_contract_lines XACL,
                 xx_ar_contracts XAC,
                 xx_ar_subscriptions XAS
@@ -10718,6 +10736,7 @@ AS
                                                 AND    XAS1.contract_line_number = XAS.contract_line_number
                                                )
      )
+     GROUP BY contract_id,contract_number,billing_sequence_number,notification_days
      ORDER BY contract_id;
 
     lc_procedure_name    CONSTANT  VARCHAR2(61) := gc_package_name || '.' || 'send_email_autorenew';
@@ -10794,7 +10813,7 @@ AS
 
     lc_reason_code                 VARCHAR2(256) := NULL;
 
-    
+
   BEGIN
     
     lt_parameters('p_debug_flag') := p_debug_flag;
@@ -10842,16 +10861,6 @@ AS
         get_contract_info(p_contract_id     => autorenew_contract_lines_rec.contract_id,
                           x_contract_info   => lr_contract_info);
 
-     /******************************
-      * Get contract line information
-      ******************************/
-
-      lc_action := 'Calling get_contract_line_info';
-
-      get_contract_line_info(p_contract_id          => autorenew_contract_lines_rec.contract_id,
-                             p_contract_line_number => autorenew_contract_lines_rec.contract_line_number,
-                             x_contract_line_info   => lr_contract_line_info);
-
       /********************************************
         * Get all the associated subscription records
         ********************************************/
@@ -10864,13 +10873,37 @@ AS
                                p_billing_sequence_number => autorenew_contract_lines_rec.billing_sequence_number,
                                x_subscription_array      => lt_subscription_array);
 
+        ln_loop_counter := 0;
+
         FOR indx IN 1 .. lt_subscription_array.COUNT
         LOOP
          BEGIN
 
+     /******************************
+      * Get contract line information
+      ******************************/
+
+      lc_action := 'Calling get_contract_line_info';
+
+      get_contract_line_info(p_contract_id          => lt_subscription_array(indx).contract_id,
+                             p_contract_line_number => lt_subscription_array(indx).contract_line_number,
+                             x_contract_line_info   => lr_contract_line_info);
+          IF ln_loop_counter = 0
+              THEN
+              ln_loop_counter := ln_loop_counter + 1;  
+
+             /************************
+            * Get invoice information
+            ************************/
+
+            lc_action := 'Calling get_invoice_header_info';
+             
+            get_invoice_header_info(p_invoice_number      => lt_subscription_array(indx).invoice_number,
+                                    x_invoice_header_info => lr_invoice_header_info);			  
             /******************************
             * Get invoice total information
             ******************************/
+
 
             lc_action := 'Calling get_invoice_total_amount_info';
 
@@ -10959,11 +10992,14 @@ AS
 
             END IF;
  
-            /********************
-            * Build email payload
-            ********************/
+            
+ 
+            /***********************************
+            * Build auto renew email payload
+            ************************************/
 
-            lc_action := 'Building email payload';
+
+            lc_action := 'Building auto renew email payload';
 
             SELECT  '{
                 "billingStatusEmailRequest": {
@@ -11222,9 +11258,13 @@ AS
               RAISE le_processing;
 
             END IF;
-        lc_action := 'Calling update_subscription_info';
+
+         END IF;--ln_loop_counter end if
+
+         lc_action := 'Calling update_subscription_info';
 
         update_subscription_info(px_subscription_info => lt_subscription_array(indx));
+
 
       EXCEPTION
         WHEN le_processing
@@ -11268,9 +11308,8 @@ AS
           lc_error := SUBSTR(lr_subscription_error_info.error_message, 1, gc_max_sub_err_size);
 
           RAISE le_processing;
-
       END;
-
+        
        END LOOP; -- indx IN 1 .. lt_subscription_array.COUNT
 
    END LOOP; --  autorenew_contract_lines_rec IN c_autorenew_contract_lines
@@ -11332,7 +11371,7 @@ AS
                                           retcode            OUT NUMBER,
                                           p_file_path        IN  VARCHAR2,
                                           p_debug_flag       IN  VARCHAR2 DEFAULT 'N',
-							              p_text_value       IN  VARCHAR2)
+                                          p_text_value       IN  VARCHAR2)
   IS
   
     CURSOR c_eligible_contracts
