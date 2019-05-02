@@ -287,13 +287,13 @@ IS
 	 -- FND_FILE.PUT_LINE(fnd_file.log,'Response XML:' 
      --             || cast(lclob_buffer as varchar2));
       BEGIN
-        SELECT MESSAGE,
+        SELECT message,
           code,
-          TranStatus
+          transtatus
         INTO lc_message,
           lc_code,
           lc_tranStatus
-        FROM JSON_TABLE ( lclob_buffer, '$.transactionStatus' COLUMNS ( "Message" VARCHAR2(200) PATH '$.message' ,"Code" VARCHAR2(30) PATH '$.code' ,"TranStatus" VARCHAR2(30) PATH '$.successfull')) "JT0" ;
+        FROM JSON_TABLE ( lclob_buffer, '$.transactionStatus' COLUMNS ( "MESSAGE" VARCHAR2(200) PATH '$.message' ,"CODE" VARCHAR2(30) PATH '$.code' ,"TRANSTATUS" VARCHAR2(30) PATH '$.successfull')) "JT0" ;
         IF lc_code IN ('404' ,'01') THEN
           x_ret_code := 1;
           FND_FILE.PUT_LINE(fnd_file.log,'Webservice returned Error for AOPS Order Number '||lcu_pick_order_numbers_rec.aops_order_number||'. Webservice Error Code:'||lc_code||'.Error Message:'||NVL(trim(lc_message),'NULL'));
@@ -310,7 +310,7 @@ IS
       IF lc_code='00' THEN
         FOR rec IN
         (SELECT  *
-        FROM JSON_TABLE ( lclob_buffer, '$' COLUMNS (NESTED PATH '$.skuListInfo[*]' COLUMNS ("lineNumber" VARCHAR2(60) PATH '$.lineNumber', "department" VARCHAR2(60) PATH '$.department', "skuNumber" VARCHAR2(60) PATH '$.skuNumber', "price" VARCHAR2(60) PATH '$.price', "qtyOrdered" VARCHAR2(60) PATH '$.qtyOrdered', "qtyBackOrd" VARCHAR2(60) PATH '$.qtyBackOrd', "vendorCode" VARCHAR2(100) PATH '$.vendorCode', "shipZip" VARCHAR2(60) PATH '$.shipZip', "shipState" VARCHAR2(60) PATH '$.shipState', "discount" VARCHAR2(60) PATH '$.discount')))
+        FROM JSON_TABLE ( lclob_buffer, '$' COLUMNS (NESTED PATH '$.skuListInfo[*]' COLUMNS ("LINENUMBER" VARCHAR2(60) PATH '$.lineNumber', "DEPARTMENT" VARCHAR2(60) PATH '$.department', "SKUNUMBER" VARCHAR2(60) PATH '$.skuNumber', "PRICE" VARCHAR2(60) PATH '$.price', "QTYORDERED" VARCHAR2(60) PATH '$.qtyOrdered', "QTYBACKORD" VARCHAR2(60) PATH '$.qtyBackOrd', "VENDORCODE" VARCHAR2(100) PATH '$.vendorCode', "SHIPZIP" VARCHAR2(60) PATH '$.shipZip', "SHIPSTATE" VARCHAR2(60) PATH '$.shipState', "DISCOUNT" VARCHAR2(60) PATH '$.discount')))
         )
         LOOP
           BEGIN
