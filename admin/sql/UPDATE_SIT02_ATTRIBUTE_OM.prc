@@ -16,8 +16,8 @@ SET VERIFY       OFF
 
 update xx_om_header_attributes_all
 set bill_comp_flag = 'Y'
-where header_id in (select attribute14 from ra_customer_trx_all
-where trx_number in ('406290260004',
+where header_id in (select header_id from oe_order_headers_all
+where order_number in ('406290260004',
 '406290261004',
 '406290262004',
 '406290280004',
