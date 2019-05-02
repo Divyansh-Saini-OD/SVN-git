@@ -287,9 +287,9 @@ IS
 	 -- FND_FILE.PUT_LINE(fnd_file.log,'Response XML:' 
      --             || cast(lclob_buffer as varchar2));
       BEGIN
-        SELECT MESSAGE,
-          code,
-          TranStatus
+        SELECT JT0.MESSAGE,
+          JT0.code,
+          JT0.TranStatus
         INTO lc_message,
           lc_code,
           lc_tranStatus
@@ -309,8 +309,8 @@ IS
       END;
       IF lc_code='00' THEN
         FOR rec IN
-        (SELECT  *
-        FROM JSON_TABLE ( lclob_buffer, '$' COLUMNS (NESTED PATH '$.skuListInfo[*]' COLUMNS ("lineNumber" VARCHAR2(60) PATH '$.lineNumber', "department" VARCHAR2(60) PATH '$.department', "skuNumber" VARCHAR2(60) PATH '$.skuNumber', "price" VARCHAR2(60) PATH '$.price', "qtyOrdered" VARCHAR2(60) PATH '$.qtyOrdered', "qtyBackOrd" VARCHAR2(60) PATH '$.qtyBackOrd', "vendorCode" VARCHAR2(100) PATH '$.vendorCode', "shipZip" VARCHAR2(60) PATH '$.shipZip', "shipState" VARCHAR2(60) PATH '$.shipState', "discount" VARCHAR2(60) PATH '$.discount')))
+        (SELECT  JT1.*
+        FROM JSON_TABLE ( lclob_buffer, '$' COLUMNS (NESTED PATH '$.skuListInfo[*]' COLUMNS ("lineNumber" VARCHAR2(60) PATH '$.lineNumber', "department" VARCHAR2(60) PATH '$.department', "skuNumber" VARCHAR2(60) PATH '$.skuNumber', "price" VARCHAR2(60) PATH '$.price', "qtyOrdered" VARCHAR2(60) PATH '$.qtyOrdered', "qtyBackOrd" VARCHAR2(60) PATH '$.qtyBackOrd', "vendorCode" VARCHAR2(100) PATH '$.vendorCode', "shipZip" VARCHAR2(60) PATH '$.shipZip', "shipState" VARCHAR2(60) PATH '$.shipState', "discount" VARCHAR2(60) PATH '$.discount'))) JT1
         )
         LOOP
           BEGIN
