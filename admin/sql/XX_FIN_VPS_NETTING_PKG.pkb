@@ -13,6 +13,7 @@ create or replace PACKAGE BODY XX_FIN_VPS_NETTING_PKG AS
 --   1.3        06/05/2018  Havish Kasina       Changes added as per Defect 44886 (VPS Phase 2) 
 --   1.4        09/19/2018  Havish Kasina       Production Defect 61712: AP Invoices are not created. Fixed the issue to  
 --                                              pass the invoice amount
+--	1.5			30/04/2019	Harika Nukala		Adding oracle instance for this JIRA-NAIT-93555
 -- =========================================================================================================================
 g_conc_request_id NUMBER :=fnd_global.conc_request_id;
 PROCEDURE update_trans( 
@@ -188,6 +189,7 @@ IS
              lc_excp_msg_cnt 			      NUMBER :=1;
              lv_invoice_sum             NUMBER;
              lv_row_cnt                 NUMBER := 0;
+			 lv_Insatnce_name    		VARCHAR2(100); --Added for this JIRA NAIT-93555 to add the instance name to the subject
    BEGIN  
           
         BEGIN
@@ -267,11 +269,12 @@ IS
           dbms_lob.append(lc_file_data,lc_src_data); 
           lc_record:= lc_record+1;
         END IF;
+		Select instance_name 		into LV_Insatnce_name		from v$instance; --Added for this JIRA NAIT-93555 to add the instance name to the subject
         lc_conn := xx_pa_pb_mail.begin_mail
                                (sender             => lc_mail_from,
                                 recipients         => lc_mail_to,
                                 cc_recipients      => NULL,
-                                subject            => 'AP_AR Daily Netting Status Report '||to_char(sysdate,'MM/DD/YYYY hh24:mi:ss'),
+                                subject            => lv_Insatnce_name ||': '||'AP_AR Daily Netting Status Report '||to_char(sysdate,'MM/DD/YYYY hh24:mi:ss'),    --Added for this JIRA NAIT-93555 to add the instance name to the subject   
                                 mime_type          => xx_pa_pb_mail.multipart_mime_type
                                );
 
