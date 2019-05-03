@@ -15,7 +15,7 @@ SET VERIFY       OFF
   -- +============================================================================================+
 
 update xx_ar_ebl_cons_hdr_main
-set email_address = 'thilak.ethiraj@officedepot.com',bill_due_date = '25-FEB-19'
+set email_address = 'thilak.ethiraj@officedepot.com',bill_due_date = '25-FEB-19',status = 'MARKED_FOR_RENDER' 
 where transmission_id in (3473775,
 3473776,
 3473774);
