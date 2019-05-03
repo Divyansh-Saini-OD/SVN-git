@@ -1364,14 +1364,14 @@ BEGIN
     END LOOP;
 
      BEGIN
-		 SELECT SUM(dbms_lob.getlength(file_data))
+		 SELECT TO_NUMBER(SUM(dbms_lob.getlength(file_data)))
 		   INTO ln_total_file_length
 		   FROM XX_AR_EBL_FILE
 		  WHERE transmission_id IN (ls_trans_ids);
   	 EXCEPTION
 	 WHEN OTHERS THEN
 	      ls_error_message := SQLERRM;
-          put_log_line('  --total file length sum errored: ' || ls_error_message);
+          put_log_line('  --Total file length sum errored: ' || ls_error_message);
 	 END;
 
      ls_trans_ids := SUBSTR(ls_trans_ids,1,LENGTH(ls_trans_ids)-1);
