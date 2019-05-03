@@ -1362,23 +1362,22 @@ BEGIN
 	  ls_billing_dt_from := TO_CHAR(lcmr.billing_dt_from, 'MM/DD/RRRR');
 
     END LOOP;
-
-     BEGIN
-		 SELECT TO_NUMBER(SUM(dbms_lob.getlength(file_data)))
-		   INTO ln_total_file_length
-		   FROM XX_AR_EBL_FILE
-		  WHERE transmission_id IN (ls_trans_ids);
-  	 EXCEPTION
-	 WHEN OTHERS THEN
-	      ls_error_message := SQLERRM;
-          put_log_line('  --Total file length sum errored: ' || ls_error_message);
-	 END;
-
+	
      ls_trans_ids := SUBSTR(ls_trans_ids,1,LENGTH(ls_trans_ids)-1);
 	 FND_FILE.put_line(FND_FILE.LOG,'Bill complete batch email Transmission IDs:'||ls_trans_ids);
      ls_dest_email_addr := SUBSTR(ls_dest_email_addr,1,LENGTH(ls_dest_email_addr)-1);
-	 FND_FILE.put_line(FND_FILE.LOG,'Bill complete batch email Transmission Email IDs:'||ls_dest_email_addr);	 
+	 FND_FILE.put_line(FND_FILE.LOG,'Bill complete batch email Transmission Email IDs:'||ls_dest_email_addr);		
 	 ls_update_trans_ids := '('||ls_trans_ids||')';
+
+		OPEN get_file_length FOR 'SELECT TO_NUMBER(SUM(dbms_lob.getlength(file_data)))
+								  FROM XX_AR_EBL_FILE
+								 WHERE transmission_id IN '|| ls_update_trans_ids;				 
+		LOOP
+		FETCH get_file_length INTO ln_total_file_length;
+		EXIT WHEN get_file_length%NOTFOUND;
+		END LOOP;
+		put_log_line('  --Total file length sum : ' || ln_total_file_length);
+
 	 -- End Loop through transmission ids of given customer
      IF (((ln_total_file_length IS NOT NULL) AND (ln_total_file_length <= ln_max_size_file))
 	 AND ((ln_total_file_length IS NOT NULL) AND (ln_total_file_length <= ln_max_size_transmission)))
