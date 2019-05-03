@@ -1,4 +1,14 @@
-CREATE OR REPLACE
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+create or replace 
 PACKAGE BODY XX_AP_XXAUNMATCHRECEIPT_PKG
   -- +===================================================================+
   -- |                  Office Depot - Project Simplify                  |
@@ -12,8 +22,7 @@ PACKAGE BODY XX_AP_XXAUNMATCHRECEIPT_PKG
   -- |Version   Date        Author             Remarks                   |
   -- |========  =========== ================== ==========================|
   -- |1.0       14-Nov-2017 Ragni Gupta     Initial version              |
-  -- |1.1       14-FEB-2018  Priyam         Code change for Reciept Correction  |
-  -- |1.2       23-Apr-2019  Shanti Sethuraj  Adding new procedure XX_AP_UNMATCH_WRAP_PROC for NAIT-27081 |
+  -- |1.1       14-FEB-2018  Priyam         Code change for Reciept Correction                                                                 |
   -- +===================================================================+
 AS
 FUNCTION BEFOREREPORT
@@ -60,7 +69,7 @@ FUNCTION XX_AP_UNMATCH_DETAIL(
 IS
   CURSOR C_UNMATCH_REC( P_DATE DATE, P_SEGMENT_FROM VARCHAR2 , P_SEGMENT_TO VARCHAR2, P_SUP_SITE_CD_FROM VARCHAR2, P_SUP_SITE_CD_TO VARCHAR2, P_CURRENCY_CODE VARCHAR2)
   IS
-    SELECT POH.SEGMENT1 PO_NUMBER,
+    SELECT /*+ index(APS AP_SUPPLIER_SITES_U1 ) */ POH.SEGMENT1 PO_NUMBER,
       POH.CURRENCY_CODE PO_CURRENCY,
       HR.NAME C_LOCATION ,
       RSH.RECEIPT_NUM ,
@@ -180,7 +189,7 @@ IS
       APS.ATTRIBUTE8,
       APS.ATTRIBUTE6
     UNION ALL
-    SELECT POH.SEGMENT1 PO_NUMBER,
+    SELECT /*+ index(APS AP_SUPPLIER_SITES_U1) */ POH.SEGMENT1 PO_NUMBER,
       POH.CURRENCY_CODE PO_CURRENCY,
       HR.NAME C_LOCATION ,
       MAX(RSH.RECEIPT_NUM) RECEIPT_NUM,
@@ -346,7 +355,7 @@ IS
   L_INV_AMT          NUMBER :=0;
   L_RETURN_AMT       NUMBER := 0;
   L_MAX_RCV_TRANS_ID NUMBER;
-  L_REC_CORR_AMT     NUMBER :=0;
+  L_REC_CORR_AMT NUMBER :=0;
 BEGIN
   SELECT NVL(SUM(AMOUNT),0)
   INTO L_INV_AMT
@@ -361,9 +370,11 @@ BEGIN
   AND ACCRUAL_ACCOUNT_ID    = P_PO_ACCRUAL_ID
   AND RCV_TRANSACTION_ID    = P_RCV_TRANS_ID
   AND TRANSACTION_TYPE_CODE = 'RECEIVE';
+    
   -----Added for defect NAIT-27043
-  SELECT NVL(SUM((CAPR.AMOUNT*-1)),0)
-  INTO L_REC_CORR_AMT
+
+   SELECT NVL(SUM((CAPR.AMOUNT*-1)),0)
+       INTO L_REC_CORR_AMT
   FROM CST_AP_PO_RECONCILIATION CAPR,
     RCV_TRANSACTIONS RT,
     RCV_SHIPMENT_HEADERS RSH
@@ -375,10 +386,13 @@ BEGIN
   AND RSH.RECEIPT_NUM            =
     (SELECT RSHS.RECEIPT_NUM
     FROM RCV_TRANSACTIONS RTS,
-      RCV_SHIPMENT_HEADERS RSHS
+     RCV_SHIPMENT_HEADERS RSHS
     WHERE RTS.TRANSACTION_ID    = P_RCV_TRANS_ID
     AND RSHS.SHIPMENT_HEADER_ID = RTS.SHIPMENT_HEADER_ID
     );
+  
+  
+  
   SELECT NVL(SUM((CAPR.AMOUNT)),0)
   INTO L_RETURN_AMT
   FROM CST_AP_PO_RECONCILIATION CAPR,
@@ -396,6 +410,7 @@ BEGIN
     WHERE RTS.TRANSACTION_ID    = P_RCV_TRANS_ID
     AND RSHS.SHIPMENT_HEADER_ID = RTS.SHIPMENT_HEADER_ID
     );
+    
   L_REC_AMT := L_REC_AMT - L_RETURN_AMT;
   BEGIN
     SELECT (AMOUNT*-1)
@@ -430,129 +445,8 @@ BEGIN
   END;
   RETURN L_FINAL_REC_QTY+L_REC_CORR_AMT;
 END CALCULATE_CST_REC_AMT;
+END XX_AP_XXAUNMATCHRECEIPT_PKG;
 
---Start of new procedure (NAIT-27081)
-PROCEDURE XX_AP_UNMATCH_WRAP_PROC(                                   
-    x_errbuf OUT VARCHAR2,
-    X_RETCODE OUT NUMBER,
-    p_date                       IN VARCHAR2,
-    p_Currency_Code              IN VARCHAR2,
-    p_GL_Accounting_Segment_From IN VARCHAR2,
-    p_GL_Accounting_Segment_To   IN VARCHAR2,
-    p_Supplier_Site_Code_From    IN VARCHAR2,
-    p_Supplier_Site_Code_To      IN VARCHAR2,
-    p_as_of_date                 IN VARCHAR2,
-    p_po_type                    IN VARCHAR2 )
-  /* P_DATE             VARCHAR2,
-  P_SEGMENT_FROM     VARCHAR2,
-  P_SEGMENT_TO       VARCHAR2,
-  P_SUP_SITE_CD_FROM VARCHAR2,
-  P_SUP_SITE_CD_TO   VARCHAR2,
-  P_CURRENCY_CODE    VARCHAR2 */
-AS
-  l_layout            NUMBER;
-  l_request_id        NUMBER;
-  l_date              DATE;
-  lc_phase1           VARCHAR2(100);
-  LC_MESSAGE1         VARCHAR2(300);
-  lc_status1          VARCHAR2(300);
-  lc_dev_phase1       VARCHAR2(300);
-  lc_dev_status1      VARCHAR2(300);
-  lb_bool             BOOLEAN;
-  ln_pub_request_id   NUMBER;
-  ln_application_id   NUMBER;
-  ln_request_id       NUMBER;
-  l_add_layout        BOOLEAN;
-  l_req_return_status BOOLEAN;
-BEGIN
-  fnd_file.put_line(fnd_file.log,'Printing parameters');
-  fnd_file.put_line(fnd_file.log,'---------------------');
-  fnd_file.put_line(fnd_file.log, 'p_date: '||p_date);
-  fnd_file.put_line(fnd_file.log, 'p_Currency_Code: '||p_Currency_Code);
-  fnd_file.put_line(fnd_file.log, 'p_gl_accounting_segment_from:  '||p_gl_accounting_segment_from);
-  fnd_file.put_line(fnd_file.log, 'p_gl_accounting_segment_to: '||p_gl_accounting_segment_to);
-  fnd_file.put_line(fnd_file.log, 'p_supplier_site_code_from: '||p_supplier_site_code_from);
-  fnd_file.put_line(fnd_file.log, 'p_supplier_site_code_to: '||p_supplier_site_code_to);
-  fnd_file.put_line(fnd_file.log, 'p_as_of_date: '||p_as_of_date);
-  fnd_file.put_line(fnd_file.log, 'p_po_type: '||p_po_type);
-  ln_request_id := fnd_global.conc_request_id;
-  SELECT APP.application_id
-  INTO ln_application_id
-  FROM fnd_application_vl APP ,
-    fnd_concurrent_programs FCP ,
-    fnd_concurrent_requests R
-  WHERE FCP.concurrent_program_id = R.concurrent_program_id
-  AND R.request_id                = ln_request_id
-  AND APP.application_id          = FCP.application_id;
-  fnd_file.put_line(fnd_file.log,'Adding layout');
-  l_add_layout :=fnd_request.add_layout('XXFIN', 'XXAPUNMTCHNONCONS', 'en', 'US', 'EXCEL');
-  IF l_add_layout THEN
-    fnd_file.put_line(fnd_file.log,'Layput added successfully');
-  ELSE
-    fnd_file.put_line(fnd_file.log,'Unable to add layout');
-  END IF;
-  --
-  --Submitting Concurrent Request
-  --
-  fnd_file.put_line(fnd_file.log,'Submitting OD: Unmatched Receipts Summary Report request');
-  l_request_id := fnd_request.submit_request ( application => 'XXFIN', program => 'XXAPUNMTCHNONCONS', description => 'OD: Unmatched Receipts Summary Report', start_time => sysdate, sub_request => false, argument1 => p_date, argument2 => p_Currency_Code, argument3 => p_gl_accounting_segment_from, argument4 => p_gl_accounting_segment_to, argument5 => p_supplier_site_code_from, argument6 => p_supplier_site_code_to, argument7 => p_as_of_date, argument8 => p_po_type );
-  --
-  COMMIT;
-  --
-  IF l_request_id = 0 THEN
-    fnd_file.put_line(fnd_file.log,'Concurrent request failed to submit');
-  ELSE
-    fnd_file.put_line(fnd_file.log, 'Program submitted successfully. Request_ID is : '||l_request_id);
-    LOOP
-      --
-      --To make process execution to wait for 1st program to complete
-      --
-      l_req_return_status := fnd_concurrent.wait_for_request (request_id => l_request_id ,interval => 5 --interval Number of seconds to wait between checks
-      ,max_wait => 50000                                                                                --Maximum number of seconds to wait for the request completion
-      -- out arguments
-      ,phase => lc_phase1 ,status => lc_status1 ,dev_phase => lc_dev_phase1 ,dev_status => lc_dev_status1 ,MESSAGE => lc_message1 );
-      EXIT
-    WHEN UPPER (lc_phase1) = 'COMPLETED' OR UPPER (lc_status1) IN ('CANCELLED', 'ERROR', 'TERMINATED');
-    END LOOP;
-    --
-    --
-    IF upper (lc_phase1) = 'COMPLETED' AND upper (lc_status1) = 'ERROR' THEN
-      fnd_file.put_line(fnd_file.log,'The OD: Unmatched Receipts Summary Report completed in error. Oracle request id: '||l_request_id );
-    END IF;
-    --
-    IF ((lc_dev_phase1 = 'COMPLETE') AND (lc_dev_status1 = 'NORMAL')) THEN
-      fnd_file.put_line(fnd_file.log,'Submitting XML Report Publisher');
-      ln_pub_request_id := fnd_request.submit_request ('XDO' --- application sort name
-      ,'XDOREPPB'                                            --- program short name
-      ,NULL                                                  --- description
-      ,NULL                                                  --- start_time
-      ,TRUE                                                  --- sub_request
-      ,'N'                                                   --- Dummy for Data Security
-      ,l_request_id                                          ---  Request_Id of Previous Program
-      --,200
-      ,ln_application_id   ---  Template Application_id=20043
-      ,'XXAPUNMTCHNONCONS' --- Template Code
-      ,'en-US'             ---  Template Locale
-      , 'N'                ---  Debug Flag
-      ,'RTF'                --template_type,      --- Template Type
-      ,'EXCEL'              --output type         --- Output Type
-      ,chr(0) ,'','','','','','','','','','' ,'','','','','','','','','','' ,'','','','','','','','','','' ,'','','','','','','','','','' ,'','','','','','','','','','' ,'','','','','','','','','','' ,'','','','','','','','','','' ,'','','','','','','','','','' ,'','','','','','','','','','' ,'' );
-	  commit;
-    END IF;
-    IF ln_pub_request_id = 0 THEN
-      fnd_file.put_line(fnd_file.log,'Concurrent request failed to submit');
-    ELSE
-      fnd_file.put_line(fnd_file.log,'Successfully Submitted the XML Report Publiser: '||ln_pub_request_id);
-    END IF;
-  END IF;
-EXCEPTION
-WHEN OTHERS THEN
-  x_errbuf  := 'Error';-- While Submitting Concurrent Request';
-  x_retcode := 2;
-  fnd_file.put_line(fnd_file.log,x_errbuf);
-END xx_ap_unmatch_wrap_proc;
-
---end of new procedure(NAIT-27081)
-END xx_ap_xxaunmatchreceipt_pkg;
 /
-show errors;
+
+SHOW ERROR
