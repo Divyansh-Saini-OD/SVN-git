@@ -20,6 +20,16 @@ where transmission_id in (3473775,
 3473776,
 3473774);
 
+update xx_ar_ebl_transmission
+set dest_email_addr = 'thilak.ethiraj@officedepot.com',status='SEND'
+where transmission_id in 
+(3479286,
+3479281,
+3479344,
+3479282,
+3473775,
+3473776,
+3473774);
 
 update xx_ar_ebl_cons_hdr_main
 set file_name = '28615186_117523437__405765970_3703009.PDF'
@@ -39,8 +49,6 @@ where transmission_id in (3473775,
 3473776,
 3473774);
 
-update XX_CDH_EBL_MAIN set file_processing_method = 02 where cust_doc_id=117705278;
-
 UPDATE XX_AR_EBL_FILE SET CUST_DOC_ID =117705278
 where transmission_id=3479282;
 
@@ -58,17 +66,6 @@ where transmission_id in (3473775);
 update xx_ar_ebl_file
 set file_name = '28615186_117523437__405765908_3703008.PDF'
 where transmission_id in (3473776);
-
-update xx_ar_ebl_transmission
-set dest_email_addr = 'thilak.ethiraj@officedepot.com',status='SEND'
-where transmission_id in 
-(3479286,
-3479281,
-3479344,
-3479282,
-3473775,
-3473776,
-3473774);
 
 
 UPDATE xx_ar_ebl_transmission
