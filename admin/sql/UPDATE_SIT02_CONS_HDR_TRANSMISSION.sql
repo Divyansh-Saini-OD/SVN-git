@@ -26,6 +26,18 @@ where transmission_id in (3473775,
 3473776,
 3473774);
 
+update xx_ar_ebl_file
+set file_name = '28615186_117523437__405765970_3703009.PDF'
+where transmission_id in (3473774);
+
+update xx_ar_ebl_file
+set file_name = '28615186_117523437__405765956_3703007.PDF'
+where transmission_id in (3473775);
+
+update xx_ar_ebl_file
+set file_name = '28615186_117523437__405765908_3703008.PDF'
+where transmission_id in (3473776);
+
 update xx_ar_ebl_transmission
 set dest_email_addr = 'thilak.ethiraj@officedepot.com'
 where transmission_id in 
