@@ -21,7 +21,7 @@ where transmission_id in (3473775,
 3473774);
 
 update xx_ar_ebl_file
-set billing_dt = '07-FEB-19'
+set billing_dt = '07-FEB-19',bill_due_dt = '25-FEB-19'
 where transmission_id in (3473775,
 3473776,
 3473774);
