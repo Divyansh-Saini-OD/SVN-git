@@ -1,13 +1,3 @@
-SET VERIFY OFF;
-SET SHOW OFF;
-SET ECHO OFF;
-SET TAB OFF;
-SET FEEDBACK OFF;
- 
-WHENEVER SQLERROR CONTINUE;
- 
-WHENEVER OSERROR EXIT FAILURE ROLLBACK;
-
 create or replace 
 PACKAGE BODY xx_om_item_wsh_assign_pkg
 -- +===========================================================================+
@@ -57,10 +47,34 @@ IS
   l_amount                 pls_integer := 2000;
  
   l_offset NUMBER :=1;
+   buff VARCHAR2(10000);
+   clob_buff CLOB;
 
 BEGIN
- 
+
   BEGIN
+    SELECT TARGET_VALUE1 ,
+      TARGET_VALUE2
+    INTO l_wallet_location ,
+      l_password
+    FROM XX_FIN_TRANSLATEVALUES VAL,
+      XX_FIN_TRANSLATEDEFINITION DEF
+    WHERE 1                 =1
+    AND DEF.TRANSLATE_ID    = VAL.TRANSLATE_ID
+    AND DEF.TRANSLATION_NAME='XX_INV_RMS_WEBSERVICE'
+    AND VAL.SOURCE_VALUE1   = 'WALLET_LOCATION'
+    AND VAL.ENABLED_FLAG    = 'Y'
+    AND SYSDATE BETWEEN VAL.START_DATE_ACTIVE AND NVL(VAL.END_DATE_ACTIVE, SYSDATE+1);
+  EXCEPTION
+  WHEN OTHERS THEN
+    fnd_file.put_line (fnd_file.LOG, 'Wallet Location Not Found' );
+    l_wallet_location := NULL;
+    l_password        := NULL;
+  END;
+  IF l_wallet_location IS NOT NULL THEN
+    UTL_HTTP.SET_WALLET(l_wallet_location,l_password);
+  END IF;
+ BEGIN
     SELECT target_value1,
       XX_ENCRYPT_DECRYPTION_TOOLKIT.DECRYPT(target_value2),
       XX_ENCRYPT_DECRYPTION_TOOLKIT.DECRYPT(target_value3)
@@ -76,7 +90,7 @@ BEGIN
     AND tv.source_value1 = 'RMS_SERVICE';
   EXCEPTION
   WHEN OTHERS THEN
-    fnd_file.put_line (fnd_file.LOG,'XX_ITEM_OUTBOUND Translation Not Found' );
+    fnd_file.put_line (fnd_file.LOG,'XX_INV_RMS_WEBSERVICE Translation Not Found' );
     url                      :=NULL;
     lv_username              :=NULL;
     lv_subscription_password := NULL;
@@ -106,7 +120,22 @@ BEGIN
   fnd_file.put_line (fnd_file.LOG,'Response Reason: '||res.reason_phrase);
   fnd_file.put_line (fnd_file.LOG,'Response Version: '||res.http_version);
   -- process the response from the HTTP call
-  BEGIN
+   BEGIN
+         clob_buff := EMPTY_CLOB;
+         LOOP
+            UTL_HTTP.READ_TEXT(res, buff, LENGTH(buff));
+            fnd_file.put_line (fnd_file.LOG,buff);
+  		    clob_buff := clob_buff || buff;
+         END LOOP;
+  	     UTL_HTTP.END_RESPONSE(res);
+      EXCEPTION
+  	     WHEN UTL_HTTP.END_OF_BODY THEN
+            UTL_HTTP.END_RESPONSE(res);
+  	     WHEN OTHERS THEN
+			  fnd_file.put_line (fnd_file.LOG,'Exception raised while reading text: '||SQLERRM);
+              UTL_HTTP.END_RESPONSE(res);
+      END;
+ /* BEGIN
     LOOP
       utl_http.read_line(res, buffer);
       fnd_file.put_line (fnd_file.LOG,buffer);
@@ -115,7 +144,7 @@ BEGIN
   EXCEPTION
   WHEN utl_http.end_of_body THEN
     utl_http.end_response(res);
-  END;
+  END;*/
   End if;
 END invoke_rms_items_webserv;
 
@@ -356,4 +385,3 @@ END invoke_rms_items_webserv;
       END Exec_item_rms_wsh_assign;
     END xx_om_item_wsh_Assign_pkg;
 /
-SHOW ERRORS;
