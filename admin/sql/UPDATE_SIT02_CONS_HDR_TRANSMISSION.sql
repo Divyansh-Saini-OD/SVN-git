@@ -39,6 +39,12 @@ where transmission_id in (3473775,
 3473776,
 3473774);
 
+UPDATE XX_AR_EBL_FILE SET CUST_DOC_ID =117705278
+where transmission_id=3479282;
+
+UPDATE XX_AR_EBL_TRANSMISSION SET CUSTOMER_DOC_ID = 117705278
+where transmission_id=3479282;
+
 update xx_ar_ebl_file
 set file_name = '28615186_117523437__405765970_3703009.PDF'
 where transmission_id in (3473774);
