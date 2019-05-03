@@ -1364,7 +1364,7 @@ BEGIN
     END LOOP;
 
      BEGIN
-		 SELECT SUM(file_length)
+		 SELECT SUM(dbms_lob.getlength(file_data))
 		   INTO ln_total_file_length
 		   FROM XX_AR_EBL_FILE
 		  WHERE transmission_id IN (ls_trans_ids);
