@@ -1,0 +1,51 @@
+SET VERIFY       OFF
+
+  -- +============================================================================================+
+  -- |  Office Depot                                                                              |
+  -- +============================================================================================+
+  -- |  Name:  UPDATE_XX_OM_HEADER_ATTRIBUTES_ALL table                                           |
+  -- |                                                                                            |
+  -- |  Description:                                                                              |
+  -- |                                                                                            |
+  -- |  Change Record:                                                                            |
+  -- +============================================================================================+
+  -- | Version     Date         Author           Remarks                                          |
+  -- | =========   ===========  =============    ===============================================  |
+  -- | 1.0         20-NOV-2018  Aarthi           Initial version                                  |
+  -- +============================================================================================+
+
+update xx_ar_ebl_cons_hdr_main
+set email_address = 'aarthi.puthran@officedepot.com'
+where transmission_id in (3473775,
+3473776,
+3473774);
+
+update xx_ar_ebl_transmission
+set dest_email_addr = 'aarthi.puthran@officedepot.com'
+where transmission_id in 
+(3479286,
+3479281,
+3479344,
+3479282,
+3473775,
+3473776,
+3473774);
+
+
+UPDATE xx_ar_ebl_transmission
+set status='TEST_CG' 
+where status='SEND'
+and transmission_id NOT in 
+(3479286,
+3479281,
+3479344,
+3479282,
+3473775,
+3473776,
+3473774);
+
+COMMIT;
+/
+
+SHOW ERRORS;
+EXIT;
