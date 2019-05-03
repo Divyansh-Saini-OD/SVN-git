@@ -1212,7 +1212,9 @@ IS
   TYPE lcu_parent_docs  IS REF CURSOR;
   get_parent_docs       lcu_parent_docs;
   TYPE lcu_parent_ind   IS REF CURSOR;
-  get_parent_ind        lcu_parent_ind;  
+  get_parent_ind        lcu_parent_ind;
+  TYPE lcu_file_length  IS REF CURSOR;
+  get_file_length       lcu_file_length;  
   
 BEGIN
   put_log_line(p_thread_id || ' of ' || p_thread_count || ' smtp_server=' || p_smtp_server || ' port=' || p_smtp_port || ' from_name=' || p_from_name);
@@ -1376,6 +1378,7 @@ BEGIN
 		FETCH get_file_length INTO ln_total_file_length;
 		EXIT WHEN get_file_length%NOTFOUND;
 		END LOOP;
+		CLOSE get_file_length;
 		put_log_line('  --Total file length sum : ' || ln_total_file_length);
 
 	 -- End Loop through transmission ids of given customer
