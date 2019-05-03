@@ -15,11 +15,23 @@ SET VERIFY       OFF
   -- +============================================================================================+
 
 update xx_ar_ebl_cons_hdr_main
-set email_address = 'thilak.ethiraj@officedepot.com',bill_due_date = '25-FEB-19',status = 'MARKED_FOR_RENDER',batch_id=8976543249,
-file_name = file_name||'_'||file_id||'.PDF'
+set email_address = 'thilak.ethiraj@officedepot.com',bill_due_date = '25-FEB-19',status = 'MARKED_FOR_RENDER',batch_id=8976543249
 where transmission_id in (3473775,
 3473776,
 3473774);
+
+
+update xx_ar_ebl_cons_hdr_main
+set file_name = '28615186_117523437__405765970_3703009.PDF'
+where transmission_id in (3473774);
+
+update xx_ar_ebl_cons_hdr_main
+set file_name = '28615186_117523437__405765956_3703007.PDF'
+where transmission_id in (3473775);
+
+update xx_ar_ebl_cons_hdr_main
+set file_name = '28615186_117523437__405765908_3703008.PDF'
+where transmission_id in (3473776);
 
 update xx_ar_ebl_file
 set billing_dt = '07-FEB-19',bill_due_dt = '25-FEB-19'
