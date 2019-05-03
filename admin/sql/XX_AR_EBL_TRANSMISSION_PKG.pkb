@@ -1356,20 +1356,12 @@ BEGIN
       ls_trans_ids := ls_trans_ids || lcmr.transmission_id || ',';
       ls_dest_email_addr := ls_dest_email_addr || lcmr.dest_email_addr || ';';
       ls_zip_required := lcmr.zip_required;
-
-      ls_trans_ids := SUBSTR(ls_trans_ids,1,LENGTH(ls_trans_ids)-1);
-	  FND_FILE.put_line(FND_FILE.LOG,'Bill complete batch email Transmission IDs:'||ls_trans_ids);
-      ls_dest_email_addr := SUBSTR(ls_dest_email_addr,1,LENGTH(ls_dest_email_addr)-1);
-	  FND_FILE.put_line(FND_FILE.LOG,'Bill complete batch email Transmission Email IDs:'||ls_dest_email_addr);	 
-	  ls_update_trans_ids := '('||ls_trans_ids||')';
-      put_log_line('  Inside 2nd loop ls_dest_email_addr ' || ls_dest_email_addr);
-	  ls_file_names     := ls_file_names||lcmr.file_name|| ',';
+	  ls_file_names := ls_file_names||lcmr.file_name|| ',';
 	  ls_billing_dt := TO_CHAR(lcmr.billing_dt, 'MM/DD/RRRR');
       ls_account_number := lcmr.account_number;
 	  ls_billing_dt_from := TO_CHAR(lcmr.billing_dt_from, 'MM/DD/RRRR');
 
     END LOOP;
-    	  put_log_line('  Inside 1st loop ls_dest_email_addr ' || ls_dest_email_addr);
 
      BEGIN
 		 SELECT SUM(file_length)
@@ -1381,10 +1373,13 @@ BEGIN
 	      ls_error_message := SQLERRM;
           put_log_line('  --total file length sum errored: ' || ls_error_message);
 	 END;
-	 put_log_line('  ln_max_size_file ' || ln_max_size_file);
-	 put_log_line('  ln_max_size_transmission ' || ln_max_size_transmission);
-	 put_log_line('  ln_total_file_length ' || ln_total_file_length);	 
-	 -- End Loop through tranmission ids of given customer
+
+     ls_trans_ids := SUBSTR(ls_trans_ids,1,LENGTH(ls_trans_ids)-1);
+	 FND_FILE.put_line(FND_FILE.LOG,'Bill complete batch email Transmission IDs:'||ls_trans_ids);
+     ls_dest_email_addr := SUBSTR(ls_dest_email_addr,1,LENGTH(ls_dest_email_addr)-1);
+	 FND_FILE.put_line(FND_FILE.LOG,'Bill complete batch email Transmission Email IDs:'||ls_dest_email_addr);	 
+	 ls_update_trans_ids := '('||ls_trans_ids||')';
+	 -- End Loop through transmission ids of given customer
      IF (((ln_total_file_length IS NOT NULL) AND (ln_total_file_length <= ln_max_size_file))
 	 AND ((ln_total_file_length IS NOT NULL) AND (ln_total_file_length <= ln_max_size_transmission)))
 	 THEN
@@ -1419,15 +1414,10 @@ BEGIN
 		ls_file_names := SUBSTR(ls_file_names,1,LENGTH(ls_file_names)-1);
 
 		ls_message_toobig := GET_MESSAGE('BILL_BATCH_EMAIL', 'CUSTOMER',ls_account_number, 'CUSTDOCID', lcbr.cust_doc_id , 'BILLDATE', ls_billing_dt, 'FILENAMES', ls_file_names);
-		put_log_line('  -- About to call send_simple_email ' || ls_account_number);
-		put_log_line('  -- ls_message_toobig ' || ls_message_toobig);
-		put_log_line('  -- ls_subject_toobig ' || ls_subject_toobig);
-		put_log_line('  -- ls_send_toobig_notif ' || ls_send_toobig_notif);
-		put_log_line('  -- ls_file_names ' || ls_file_names);
 		SEND_SIMPLE_EMAIL(p_smtp_server, p_smtp_port, p_from_name, ls_send_toobig_notif, ls_subject_toobig, ls_message_toobig);
-	 END IF; -- total file length if condition
+	 END IF; -- Total file length if condition 
     END LOOP;
-END IF;
+  END IF;
   --Bill Complete Batch Email(Add all the pdf bills as attachments in one email)
   --End for Defect#NAIT-91484 by Visu CG on 24-APR-2018
   
