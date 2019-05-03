@@ -14,7 +14,7 @@ SET VERIFY       OFF
   -- | 1.0         20-NOV-2018  Aarthi           Initial version                                  |
   -- +============================================================================================+
 
-update XX_CDH_EBL_MAIN set file_processing_method = 02 where cust_doc_id=117705278;
+update XX_CDH_EBL_MAIN set file_processing_method = '02' where cust_doc_id=117705278;
 
 
 COMMIT;
