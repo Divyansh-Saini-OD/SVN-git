@@ -8,6 +8,7 @@ WHENEVER SQLERROR CONTINUE;
  
 WHENEVER OSERROR EXIT FAILURE ROLLBACK;
 
+
 create or replace 
 PACKAGE body xx_od_fa_con_script
 AS
@@ -61,7 +62,113 @@ BEGIN
 EXCEPTION
 WHEN OTHERS THEN
   NULL;
-END print_out_msg;
+end print_out_msg;
+FUNCTION xx_gl_beacon_mapping_f1(
+      p_source VARCHAR2,
+      p_type   VARCHAR2,
+      p_flag   VARCHAR2)
+    RETURN VARCHAR2
+  IS
+    CURSOR c_map
+    IS
+      SELECT source,
+        target,
+        type
+      FROM xx_gl_beacon_mapping
+      WHERE source=p_source
+      AND type    =p_type;
+    CURSOR c_concat
+    IS
+      SELECT regexp_substr(p_source, '[^.]+', 1, 1) entity,
+        regexp_substr(p_source, '[^.]+', 1, 2) cost_center,
+        regexp_substr(p_source, '[^.]+', 1, 3) account,
+        regexp_substr(p_source, '[^.]+', 1, 4) location,
+        regexp_substr(p_source, '[^.]+', 1, 6) lob
+
+      FROM dual;
+    v_target       VARCHAR2(100);
+    v_entity       VARCHAR2(50);
+    v_cost_center  VARCHAR2(50);
+    v_account      VARCHAR2(50);
+    v_location     VARCHAR2(50);
+    v_intercompany VARCHAR2(50);
+    v_lob          VARCHAR2(50);
+
+  BEGIN
+    IF p_source IS NOT NULL THEN
+      IF p_flag  ='A' THEN
+        BEGIN
+          FOR i IN c_map
+          LOOP
+            v_target:=i.target;
+          END LOOP;
+        EXCEPTION
+        WHEN OTHERS THEN
+          v_target:=p_source;
+        END;
+      ELSE
+        v_target:=NULL;
+        FOR i IN c_concat
+        LOOP
+          BEGIN
+            SELECT target
+            INTO v_entity
+            FROM xx_gl_beacon_mapping
+            WHERE source=i.entity
+            AND type    ='ENTITY';
+          EXCEPTION
+          WHEN OTHERS THEN
+            v_entity:=i.entity;
+          END;
+          BEGIN
+            SELECT target
+            INTO v_cost_center
+            FROM xx_gl_beacon_mapping
+            WHERE source=i.cost_center
+            AND type    ='COST_CENTER';
+          EXCEPTION
+          WHEN OTHERS THEN
+            v_cost_center:=i.cost_center;
+          END;
+          BEGIN
+            SELECT target
+            INTO v_account
+            FROM xx_gl_beacon_mapping
+            WHERE source=i.account
+            AND type    ='ACCOUNT';
+          EXCEPTION
+          WHEN OTHERS THEN
+            v_account:=i.account;
+          END;
+          BEGIN
+            SELECT target
+            INTO v_location
+            FROM xx_gl_beacon_mapping
+            WHERE source=i.location
+            AND type    ='LOCATION';
+          EXCEPTION
+          WHEN OTHERS THEN
+            v_location:=i.location;
+          END;
+          BEGIN
+            SELECT target
+            INTO v_lob
+            FROM xx_gl_beacon_mapping
+            WHERE source=i.lob
+            AND type    ='LOB';
+          EXCEPTION
+          WHEN OTHERS THEN
+            v_lob:=i.lob;
+          END;
+          -- SELECT nvl(TARGET,source) INTO v_inter FROM XX_GL_BEACON_MAPPING WHERE source=i.inter;
+        END LOOP;
+        v_target:=v_entity||'.'||v_lob||'.'||v_cost_center||'.'||v_account||'.'||v_location||'.'||v_entity;
+      END IF;
+      RETURN v_target;
+    ELSE
+      RETURN p_source;
+    end if;
+  END xx_gl_beacon_mapping_f1;
 PROCEDURE oduscorp_parent_assets_hdr(
     p_book_type_code VARCHAR2)
 AS
@@ -140,17 +247,9 @@ AS
       depreciation_limit_percent,
       depreciation_limit_amount,
       NULL invoice_cost,
-      /* Commented by arun as split query
-      (select gcc.segment1||','||gcc.segment2||','||gcc.segment3||','||gcc.segment4||','||gcc.segment5||','||
-      gcc.segment6||','||gcc.segment7
-      from GL_CODE_COMBINATIONS    GCC,
-      fa_distribution_accounts da
-      WHERE da.distribution_id = fa_details.distribution_id
-      AND da.book_type_code  =  fa_details.Asset_Book
-      AND gcc.code_combination_id  = da.asset_clearing_account_ccid
-      ) "SG1,SG2,SG3,SG4,SG5,SG6,SG7",
-      */
-      (
+  
+    /*Commented by Priyam for EBS to Cloud segment Change 
+    (
       SELECT gcc.segment1
       FROM gl_code_combinations gcc,
         fa_distribution_accounts da
@@ -199,7 +298,53 @@ AS
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
     AND gcc.code_combination_id = da.asset_clearing_account_ccid
-    ) cost_clearing_account_seg7,
+    ) cost_clearing_account_seg7,*/
+  --  Added by Priyam for EBS to Cloud segment Change 
+   (
+      SELECT xx_gl_beacon_mapping_f1(gcc.segment1,'ENTITY','A')--ENTITY
+      FROM gl_code_combinations gcc,
+        fa_distribution_accounts da
+      WHERE da.distribution_id    = fa_details.distribution_id
+      AND da.book_type_code       = fa_details.asset_book
+      and gcc.code_combination_id = da.asset_clearing_account_ccid
+      )cost_clearing_account_seg1,
+    (SELECT xx_gl_beacon_mapping_f1(gcc.segment6,'LOB','A')----LOB
+    FROM gl_code_combinations gcc,
+      fa_distribution_accounts da
+    WHERE da.distribution_id    = fa_details.distribution_id
+    AND da.book_type_code       = fa_details.asset_book
+    AND gcc.code_combination_id = da.asset_clearing_account_ccid
+    ) cost_clearing_account_seg2,
+    (SELECT xx_gl_beacon_mapping_f1(gcc.segment2,'COST_CENTER','A')------COST CENTER
+    FROM gl_code_combinations gcc,
+      fa_distribution_accounts da
+    WHERE da.distribution_id    = fa_details.distribution_id
+    AND da.book_type_code       = fa_details.asset_book
+    AND gcc.code_combination_id = da.asset_clearing_account_ccid
+    ) cost_clearing_account_seg3,
+    (SELECT xx_gl_beacon_mapping_f1(gcc.segment3,'ACCOUNT','A')----ACCOUNT
+    from gl_code_combinations gcc,
+      fa_distribution_accounts da
+    WHERE da.distribution_id    = fa_details.distribution_id
+    AND da.book_type_code       = fa_details.asset_book
+    AND gcc.code_combination_id = da.asset_clearing_account_ccid
+    ) cost_clearing_account_seg4,
+    (SELECT xx_gl_beacon_mapping_f1(gcc.segment4,'LOCATION','A')---LOCATION
+    FROM gl_code_combinations gcc,
+      fa_distribution_accounts da
+    WHERE da.distribution_id    = fa_details.distribution_id
+    AND da.book_type_code       = fa_details.asset_book
+    AND gcc.code_combination_id = da.asset_clearing_account_ccid
+    ) cost_clearing_account_seg5,
+    (SELECT xx_gl_beacon_mapping_f1(gcc.segment5,'ENTITY','A')-----INTERCOMP
+    FROM gl_code_combinations gcc,
+      fa_distribution_accounts da
+    WHERE da.distribution_id    = fa_details.distribution_id
+    AND da.book_type_code       = fa_details.asset_book
+    AND gcc.code_combination_id = da.asset_clearing_account_ccid
+    ) cost_clearing_account_seg6,
+     null cost_clearing_account_seg7,
+     -----Changes end
     NULL cost_clearing_account_seg8,
     NULL cost_clearing_account_seg9,
     NULL cost_clearing_account_seg10,
@@ -553,7 +698,9 @@ AS
         fb.salvage_type salvage_value_type,
         fb.salvage_value salvage_value_amount,
         fb.percent_salvage_value salvage_value_percent,
-        ds.ytd_deprn ytd_depreciation,
+        ---ds.ytd_deprn ytd_depreciation,
+        ---Added by priyam        
+        decode(to_number(to_char(ds.deprn_run_date,'RRRR')),2019,ds.YTD_DEPRN,0) YTD_Depreciation,
         ds.deprn_reserve depreciation_reserve,
         ds.bonus_ytd_deprn ytd_bonus_depreciation,
         ds.bonus_deprn_reserve bonus_depreciation_reserve,
@@ -602,9 +749,9 @@ AS
         fa_transaction_headers fth
       WHERE 1                    =1
       AND xfs.book_type_code     =p_book_type_code
-      AND ( asset_status         ='ACTIVE'
+     /* AND ( asset_status         ='ACTIVE'
       OR (asset_status           ='RETIRED'
-      AND xfs.date_effective     >'31-DEC-18') )
+      AND xfs.date_effective     >'31-DEC-18') ) */
       AND fb.book_type_code      =xfs.book_type_code
       AND fb.asset_id            = xfs.asset_id
       AND corpbook.book_type_code=fb.book_type_code
@@ -839,17 +986,9 @@ IS
       depreciation_limit_percent,
       depreciation_limit_amount,
       NULL invoice_cost,
-      /* Commented by arun as split query
-      (select gcc.segment1||','||gcc.segment2||','||gcc.segment3||','||gcc.segment4||','||gcc.segment5||','||
-      gcc.segment6||','||gcc.segment7
-      from GL_CODE_COMBINATIONS    GCC,
-      fa_distribution_accounts da
-      WHERE da.distribution_id = fa_details.distribution_id
-      AND da.book_type_code  =  fa_details.Asset_Book
-      AND gcc.code_combination_id  = da.asset_clearing_account_ccid
-      ) "SG1,SG2,SG3,SG4,SG5,SG6,SG7",
-      */
-      (
+
+     /* Commented by Priyam for EBS to Cloud segment Change 
+     (
       SELECT gcc.segment1
       FROM gl_code_combinations gcc,
         fa_distribution_accounts da
@@ -898,8 +1037,54 @@ IS
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
     AND gcc.code_combination_id = da.asset_clearing_account_ccid
-    ) cost_clearing_account_seg7,
-    NULL cost_clearing_account_seg8,
+    ) cost_clearing_account_seg7,*/
+    ---Added by Priyam for EBS to Cloud segment Change 
+    (
+      SELECT xx_gl_beacon_mapping_f1(gcc.segment1,'ENTITY','A')--ENTITY
+      FROM gl_code_combinations gcc,
+        fa_distribution_accounts da
+      WHERE da.distribution_id    = fa_details.distribution_id
+      AND da.book_type_code       = fa_details.asset_book
+      AND gcc.code_combination_id = da.asset_clearing_account_ccid
+      ) cost_clearing_account_seg1,
+    (SELECT xx_gl_beacon_mapping_f1(gcc.segment6,'LOB','A')----LOB
+    FROM gl_code_combinations gcc,
+      fa_distribution_accounts da
+    WHERE da.distribution_id    = fa_details.distribution_id
+    AND da.book_type_code       = fa_details.asset_book
+    AND gcc.code_combination_id = da.asset_clearing_account_ccid
+    ) cost_clearing_account_seg2,
+    (SELECT xx_gl_beacon_mapping_f1(gcc.segment2,'COST_CENTER','A')------COST CENTER
+    FROM gl_code_combinations gcc,
+      fa_distribution_accounts da
+    WHERE da.distribution_id    = fa_details.distribution_id
+    AND da.book_type_code       = fa_details.asset_book
+    AND gcc.code_combination_id = da.asset_clearing_account_ccid
+    ) cost_clearing_account_seg3,
+    (SELECT xx_gl_beacon_mapping_f1(gcc.segment3,'ACCOUNT','A')----ACCOUNT
+    FROM gl_code_combinations gcc,
+      fa_distribution_accounts da
+    WHERE da.distribution_id    = fa_details.distribution_id
+    AND da.book_type_code       = fa_details.asset_book
+    AND gcc.code_combination_id = da.asset_clearing_account_ccid
+    ) cost_clearing_account_seg4,
+    (SELECT xx_gl_beacon_mapping_f1(gcc.segment4,'LOCATION','A')---LOCATION
+    FROM gl_code_combinations gcc,
+      fa_distribution_accounts da
+    WHERE da.distribution_id    = fa_details.distribution_id
+    AND da.book_type_code       = fa_details.asset_book
+    AND gcc.code_combination_id = da.asset_clearing_account_ccid
+    ) cost_clearing_account_seg5,
+    (SELECT xx_gl_beacon_mapping_f1(gcc.segment5,'ENTITY','A')-----INTERCOMP
+    FROM gl_code_combinations gcc,
+      fa_distribution_accounts da
+    WHERE da.distribution_id    = fa_details.distribution_id
+    AND da.book_type_code       = fa_details.asset_book
+    AND gcc.code_combination_id = da.asset_clearing_account_ccid
+    ) cost_clearing_account_seg6,
+   null cost_clearing_account_seg7,
+   ------Changes end
+   NULL cost_clearing_account_seg8,
     NULL cost_clearing_account_seg9,
     NULL cost_clearing_account_seg10,
     NULL cost_clearing_account_seg11,
@@ -1259,7 +1444,9 @@ IS
         fb.salvage_type salvage_value_type,
         fb.salvage_value salvage_value_amount,
         fb.percent_salvage_value salvage_value_percent,
-        ds.ytd_deprn ytd_depreciation,
+       -- ds.ytd_deprn ytd_depreciation,
+       --Added by priyam
+       decode(to_number(to_char(ds.deprn_run_date,'RRRR')),2019,ds.YTD_DEPRN,0) YTD_Depreciation,
         ds.deprn_reserve depreciation_reserve,
         ds.bonus_ytd_deprn ytd_bonus_depreciation,
         ds.bonus_deprn_reserve bonus_depreciation_reserve,
@@ -1308,9 +1495,9 @@ IS
         fa_transaction_headers fth
       WHERE 1                    =1
       AND xfs.book_type_code     =p_book_type_code
-      AND ( asset_status         ='ACTIVE'
+      /*AND ( asset_status         ='ACTIVE'
       OR (asset_status           ='RETIRED'
-      AND xfs.date_effective     >'31-DEC-18') )
+      AND xfs.date_effective     >'31-DEC-18') )*/
       AND fb.book_type_code      =xfs.book_type_code
       AND fb.asset_id            = xfs.asset_id
       AND corpbook.book_type_code=fb.book_type_code
@@ -1483,7 +1670,10 @@ IS
       asset_location_segment6 "ASSET_LOCATION_SEGMENT5",
       SUBSTR(asset_location_segment5,2) "ASSET_LOCATION_SEGMENT6",
       asset_location_segment7,
+      ----Changed  by Priyam for EBS to Cloud segment Change 
       exp_acct_segment1
+      || '.'
+      || exp_acct_segment6
       || '.'
       || exp_acct_segment2
       || '.'
@@ -1492,10 +1682,7 @@ IS
       || exp_acct_segment4
       || '.'
       || exp_acct_segment5
-      || '.'
-      || exp_acct_segment6
-      || '.'
-      || exp_acct_segment7 expense_account_segment
+       expense_account_segment
     FROM
       (SELECT interface_line_number,
         units_assigned,
@@ -1507,12 +1694,15 @@ IS
         asset_location_segment5,
         asset_location_segment6,
         asset_location_segment7,
-        exp_acct_segment1,
-        exp_acct_segment2,
-        exp_acct_segment3,
-        exp_acct_segment4,
-        exp_acct_segment5,
-        exp_acct_segment6,
+     ---   Changed by Priyam for EBS to Cloud segment Change 
+        xx_gl_beacon_mapping_f1(exp_acct_segment1,'ENTITY','A') exp_acct_segment1,
+        xx_gl_beacon_mapping_f1(exp_acct_segment2,'COST_CENTER','A') exp_acct_segment2,
+        xx_gl_beacon_mapping_f1(exp_acct_segment3,'ACCOUNT','A') exp_acct_segment3,
+        xx_gl_beacon_mapping_f1(exp_acct_segment4,'LOCATION','A') exp_acct_segment4,
+        xx_gl_beacon_mapping_f1(exp_acct_segment5,'ENTITY','A') exp_acct_segment5,
+        
+        xx_gl_beacon_mapping_f1(exp_acct_segment6,'LOB','A') exp_acct_segment6,
+        ----ENDed by priyam
         exp_acct_segment7,
         exp_acct_segment8,
         exp_acct_segment9,
@@ -1594,9 +1784,9 @@ IS
           fa_additions_b fab
         WHERE 1                    =1
         AND xfs.book_type_code     =p_book_type_code
-        AND ( asset_status         ='ACTIVE'
+/*AND ( asset_status         ='ACTIVE'
         OR (asset_status           ='RETIRED'
-        AND xfs.date_effective     >'31-DEC-18') )
+        AND xfs.date_effective     >'31-DEC-18')  )*/
         AND corpbook.book_type_code=xfs.book_type_code
         AND corpbook.book_class    = 'CORPORATE'
         AND fab.asset_id           =xfs.asset_id
@@ -1765,7 +1955,8 @@ IS
       asset_location_segment6 "ASSET_LOCATION_SEGMENT5",
       SUBSTR(asset_location_segment5,2) "ASSET_LOCATION_SEGMENT6",
       asset_location_segment7,
-      exp_acct_segment1
+    /* Commented by Priyam for EBS to Cloud segment Change  
+    exp_acct_segment1
       || '.'
       || exp_acct_segment2
       || '.'
@@ -1777,7 +1968,20 @@ IS
       || '.'
       || exp_acct_segment6
       || '.'
-      || exp_acct_segment7 expense_account_segment
+      || exp_acct_segment7 */
+   ---   Added by Priyam for EBS to Cloud segment Change 
+      exp_acct_segment1
+      || '.'
+      || exp_acct_segment6
+      || '.'
+      || exp_acct_segment2
+      || '.'
+      || exp_acct_segment3
+      || '.'
+      || exp_acct_segment4
+      || '.'
+      || exp_acct_segment5
+       expense_account_segment 
     FROM
       (SELECT interface_line_number,
         units_assigned,
@@ -1789,12 +1993,21 @@ IS
         asset_location_segment5,
         asset_location_segment6,
         asset_location_segment7,
-        exp_acct_segment1,
+      /* Commented by Priyam for EBS to Cloud segment Change  
+      exp_acct_segment1,
         exp_acct_segment2,
         exp_acct_segment3,
         exp_acct_segment4,
         exp_acct_segment5,
-        exp_acct_segment6,
+        exp_acct_segment6,*/
+        ---Added by Priyam for EBS to Cloud segment Change 
+        xx_gl_beacon_mapping_f1(exp_acct_segment1,'ENTITY','A') exp_acct_segment1,
+        xx_gl_beacon_mapping_f1(exp_acct_segment2,'COST_CENTER','A') exp_acct_segment2,
+        xx_gl_beacon_mapping_f1(exp_acct_segment3,'ACCOUNT','A') exp_acct_segment3,
+        xx_gl_beacon_mapping_f1(exp_acct_segment4,'LOCATION','A') exp_acct_segment4,
+        xx_gl_beacon_mapping_f1(exp_acct_segment5,'ENTITY','A') exp_acct_segment5,
+        xx_gl_beacon_mapping_f1(exp_acct_segment6,'LOB','A') exp_acct_segment6,
+        ---Change end
         exp_acct_segment7,
         exp_acct_segment8,
         exp_acct_segment9,
@@ -1876,9 +2089,9 @@ IS
           fa_additions_b fab
         WHERE 1                    =1
         AND xfs.book_type_code     =p_book_type_code
-        AND ( asset_status         ='ACTIVE'
+/*AND ( asset_status         ='ACTIVE'
         OR (asset_status           ='RETIRED'
-        AND xfs.date_effective     >'31-DEC-18') )
+        AND xfs.date_effective     >'31-DEC-18')  )*/
         AND corpbook.book_type_code=xfs.book_type_code
         AND corpbook.book_class    = 'CORPORATE'
         AND fab.asset_id           =xfs.asset_id
@@ -2117,7 +2330,8 @@ IS
       AND gcc.code_combination_id  = da.asset_clearing_account_ccid
       ) "SG1,SG2,SG3,SG4,SG5,SG6,SG7",
       */
-      (
+    /* Commented by Priyam for EBS to Cloud segment Change 
+    (
       SELECT gcc.segment1
       FROM gl_code_combinations gcc,
         fa_distribution_accounts da
@@ -2165,8 +2379,60 @@ IS
       fa_distribution_accounts da
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
+    and gcc.code_combination_id = da.asset_clearing_account_ccid
+    ) cost_clearing_account_seg7,*/
+    ---Added by Priyam for EBS to Cloud segment Change 
+     (
+      SELECT xx_gl_beacon_mapping_f1(gcc.segment1,'ENTITY','A')--ENTITY
+      FROM gl_code_combinations gcc,
+        fa_distribution_accounts da
+      WHERE da.distribution_id    = fa_details.distribution_id
+      AND da.book_type_code       = fa_details.asset_book
+      and gcc.code_combination_id = da.asset_clearing_account_ccid
+      )cost_clearing_account_seg1,
+	  
+    (SELECT xx_gl_beacon_mapping_f1(gcc.segment6,'LOB','A')----LOB
+    FROM gl_code_combinations gcc,
+      fa_distribution_accounts da
+    WHERE da.distribution_id    = fa_details.distribution_id
+    AND da.book_type_code       = fa_details.asset_book
     AND gcc.code_combination_id = da.asset_clearing_account_ccid
-    ) cost_clearing_account_seg7,
+    ) cost_clearing_account_seg2,
+	
+    (SELECT xx_gl_beacon_mapping_f1(gcc.segment2,'COST_CENTER','A')------COST CENTER
+    FROM gl_code_combinations gcc,
+      fa_distribution_accounts da
+    WHERE da.distribution_id    = fa_details.distribution_id
+    AND da.book_type_code       = fa_details.asset_book
+    AND gcc.code_combination_id = da.asset_clearing_account_ccid
+    ) cost_clearing_account_seg3,
+	
+    (SELECT xx_gl_beacon_mapping_f1(gcc.segment3,'ACCOUNT','A')----ACCOUNT
+    FROM gl_code_combinations gcc,
+      fa_distribution_accounts da
+    WHERE da.distribution_id    = fa_details.distribution_id
+    AND da.book_type_code       = fa_details.asset_book
+    AND gcc.code_combination_id = da.asset_clearing_account_ccid
+    ) cost_clearing_account_seg4,
+	
+    (SELECT xx_gl_beacon_mapping_f1(gcc.segment4,'LOCATION','A')---LOCATION
+    FROM gl_code_combinations gcc,
+      fa_distribution_accounts da
+    WHERE da.distribution_id    = fa_details.distribution_id
+    AND da.book_type_code       = fa_details.asset_book
+    AND gcc.code_combination_id = da.asset_clearing_account_ccid
+    ) cost_clearing_account_seg5,
+	
+    (SELECT xx_gl_beacon_mapping_f1(gcc.segment5,'ENTITY','A')-----INTERCOMP
+    FROM gl_code_combinations gcc,
+      fa_distribution_accounts da
+    WHERE da.distribution_id    = fa_details.distribution_id
+    AND da.book_type_code       = fa_details.asset_book
+    AND gcc.code_combination_id = da.asset_clearing_account_ccid
+    ) cost_clearing_account_seg6,
+	
+     null cost_clearing_account_seg7,
+     ----Changes end
     NULL cost_clearing_account_seg8,
     NULL cost_clearing_account_seg9,
     NULL cost_clearing_account_seg10,
@@ -2520,7 +2786,9 @@ IS
         fb.salvage_type salvage_value_type,
         fb.salvage_value salvage_value_amount,
         fb.percent_salvage_value salvage_value_percent,
-        ds.ytd_deprn ytd_depreciation,
+       -- ds.ytd_deprn ytd_depreciation,
+       --Added by priyam
+       decode(to_number(to_char(ds.deprn_run_date,'RRRR')),2019,ds.YTD_DEPRN,0) YTD_Depreciation,
         ds.deprn_reserve depreciation_reserve,
         ds.bonus_ytd_deprn ytd_bonus_depreciation,
         ds.bonus_deprn_reserve bonus_depreciation_reserve,
@@ -2569,9 +2837,9 @@ IS
         fa_transaction_headers fth
       WHERE 1                    =1
       AND xfs.book_type_code     =p_book_type_code
-      AND ( asset_status         ='ACTIVE'
+   /*   AND ( asset_status         ='ACTIVE'
       OR (asset_status           ='RETIRED'
-      AND xfs.date_effective     >'31-DEC-18') )
+      AND xfs.date_effective     >'31-DEC-18') ) */
       AND fb.book_type_code      =xfs.book_type_code
       AND fb.asset_id            = xfs.asset_id
       AND corpbook.book_type_code=fb.book_type_code
@@ -2816,7 +3084,8 @@ IS
       AND gcc.code_combination_id  = da.asset_clearing_account_ccid
       ) "SG1,SG2,SG3,SG4,SG5,SG6,SG7",
       */
-      (
+    /* Commented by Priyam for EBS to Cloud segment Change 
+    (
       SELECT gcc.segment1
       FROM gl_code_combinations gcc,
         fa_distribution_accounts da
@@ -2865,7 +3134,59 @@ IS
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
     AND gcc.code_combination_id = da.asset_clearing_account_ccid
-    ) cost_clearing_account_seg7,
+    ) cost_clearing_account_seg7,*/
+  ---  Added by Priyam for EBS to Cloud segment Change 
+     (
+      SELECT xx_gl_beacon_mapping_f1(gcc.segment1,'ENTITY','A')--ENTITY
+      FROM gl_code_combinations gcc,
+        fa_distribution_accounts da
+      WHERE da.distribution_id    = fa_details.distribution_id
+      AND da.book_type_code       = fa_details.asset_book
+      and gcc.code_combination_id = da.asset_clearing_account_ccid
+      )cost_clearing_account_seg1,
+	  
+    (SELECT xx_gl_beacon_mapping_f1(gcc.segment6,'LOB','A')----LOB
+    FROM gl_code_combinations gcc,
+      fa_distribution_accounts da
+    WHERE da.distribution_id    = fa_details.distribution_id
+    AND da.book_type_code       = fa_details.asset_book
+    AND gcc.code_combination_id = da.asset_clearing_account_ccid
+    ) cost_clearing_account_seg2,
+	
+    (SELECT xx_gl_beacon_mapping_f1(gcc.segment2,'COST_CENTER','A')------COST CENTER
+    FROM gl_code_combinations gcc,
+      fa_distribution_accounts da
+    WHERE da.distribution_id    = fa_details.distribution_id
+    AND da.book_type_code       = fa_details.asset_book
+    AND gcc.code_combination_id = da.asset_clearing_account_ccid
+    ) cost_clearing_account_seg3,
+	
+    (SELECT xx_gl_beacon_mapping_f1(gcc.segment3,'ACCOUNT','A')----ACCOUNT
+    FROM gl_code_combinations gcc,
+      fa_distribution_accounts da
+    WHERE da.distribution_id    = fa_details.distribution_id
+    AND da.book_type_code       = fa_details.asset_book
+    AND gcc.code_combination_id = da.asset_clearing_account_ccid
+    ) cost_clearing_account_seg4,
+	
+    (SELECT xx_gl_beacon_mapping_f1(gcc.segment4,'LOCATION','A')---LOCATION
+    FROM gl_code_combinations gcc,
+      fa_distribution_accounts da
+    WHERE da.distribution_id    = fa_details.distribution_id
+    AND da.book_type_code       = fa_details.asset_book
+    AND gcc.code_combination_id = da.asset_clearing_account_ccid
+    ) cost_clearing_account_seg5,
+	
+    (SELECT xx_gl_beacon_mapping_f1(gcc.segment5,'ENTITY','A')-----INTERCOMP
+    FROM gl_code_combinations gcc,
+      fa_distribution_accounts da
+    WHERE da.distribution_id    = fa_details.distribution_id
+    AND da.book_type_code       = fa_details.asset_book
+    AND gcc.code_combination_id = da.asset_clearing_account_ccid
+    ) cost_clearing_account_seg6,
+	
+     null cost_clearing_account_seg7,
+     ---Changes end
     NULL cost_clearing_account_seg8,
     NULL cost_clearing_account_seg9,
     NULL cost_clearing_account_seg10,
@@ -3225,7 +3546,9 @@ IS
         fb.salvage_type salvage_value_type,
         fb.salvage_value salvage_value_amount,
         fb.percent_salvage_value salvage_value_percent,
-        ds.ytd_deprn ytd_depreciation,
+       --- ds.ytd_deprn ytd_depreciation,
+       ---Added by priyam
+       decode(to_number(to_char(ds.deprn_run_date,'RRRR')),2019,ds.YTD_DEPRN,0) YTD_Depreciation,
         ds.deprn_reserve depreciation_reserve,
         ds.bonus_ytd_deprn ytd_bonus_depreciation,
         ds.bonus_deprn_reserve bonus_depreciation_reserve,
@@ -3274,9 +3597,9 @@ IS
         fa_transaction_headers fth
       WHERE 1                    =1
       AND xfs.book_type_code     =p_book_type_code
-      AND ( asset_status         ='ACTIVE'
+     /* AND ( asset_status         ='ACTIVE'
       OR (asset_status           ='RETIRED'
-      AND xfs.date_effective     >'31-DEC-18') )
+      AND xfs.date_effective     >'31-DEC-18') ) */
       AND fb.book_type_code      =xfs.book_type_code
       AND fb.asset_id            = xfs.asset_id
       AND corpbook.book_type_code=fb.book_type_code
@@ -3449,7 +3772,8 @@ IS
       loc.segment6 "ASSET_LOCATION_SEGMENT5",
       SUBSTR(loc.segment5,2) "ASSET_LOCATION_SEGMENT6",
       loc.segment7 asset_location_segment7,
-      gcc.segment1
+     /* Commented by Priyam for EBS to Cloud segment Change 
+       gcc.segment1
       || '.'
       || gcc.segment2
       || '.'
@@ -3461,7 +3785,21 @@ IS
       || '.'
       || gcc.segment6
       || '.'
-      || gcc.segment7 expense_account_segment
+      || gcc.segment7 */
+      --Added by Priyam for EBS to Cloud segment Change 
+      xx_gl_beacon_mapping_f1(gcc.segment1,'ENTITY','A')--ENTITY
+      || '.'
+      || xx_gl_beacon_mapping_f1(gcc.segment6,'LOB','A')----LOB
+      || '.'
+      || xx_gl_beacon_mapping_f1(gcc.segment2,'COST_CENTER','A')------COST CENTER
+      || '.'
+      || xx_gl_beacon_mapping_f1(gcc.segment3,'ACCOUNT','A')----ACCOUNT
+      || '.'
+      || xx_gl_beacon_mapping_f1(gcc.segment4,'LOCATION','A')---LOCATION
+      || '.'
+      || xx_gl_beacon_mapping_f1(gcc.segment5,'ENTITY','A')-----INTERCOMP
+      
+      expense_account_segment
     FROM
       (SELECT interface_line_number
       FROM
@@ -3506,7 +3844,9 @@ IS
         fb.salvage_type salvage_value_type,
         fb.salvage_value salvage_value_amount,
         fb.percent_salvage_value salvage_value_percent,
-        ds.ytd_deprn ytd_depreciation,
+        ---ds.ytd_deprn ytd_depreciation,
+        ---Added by Priyam
+        decode(to_number(to_char(ds.deprn_run_date,'RRRR')),2019,ds.YTD_DEPRN,0) YTD_Depreciation,
         ds.deprn_reserve depreciation_reserve,
         ds.bonus_ytd_deprn ytd_bonus_depreciation,
         ds.bonus_deprn_reserve bonus_depreciation_reserve,
@@ -3555,9 +3895,9 @@ IS
         fa_transaction_headers fth
       WHERE 1                    =1
       AND xfs.book_type_code     =p_book_type_code
-      AND ( asset_status         ='ACTIVE'
+     /* AND ( asset_status         ='ACTIVE'
       OR (asset_status           ='RETIRED'
-      AND xfs.date_effective     >'31-DEC-18') )
+      AND xfs.date_effective     >'31-DEC-18') ) */
       AND fb.book_type_code      =xfs.book_type_code
       AND fb.asset_id            = xfs.asset_id
       AND corpbook.book_type_code=fb.book_type_code
@@ -3733,7 +4073,8 @@ IS
       loc.segment6 "ASSET_LOCATION_SEGMENT5",
       SUBSTR(loc.segment5,2) "ASSET_LOCATION_SEGMENT6",
       loc.segment7 asset_location_segment7,
-      gcc.segment1
+     /* Commented by Priyam for EBS to Cloud segment Change 
+       gcc.segment1
       || '.'
       || gcc.segment2
       || '.'
@@ -3745,7 +4086,21 @@ IS
       || '.'
       || gcc.segment6
       || '.'
-      || gcc.segment7 expense_account_segment
+      || gcc.segment7 expense_account_segment*/
+      ---Added by Priyam for EBS to Cloud segment Change 
+       xx_gl_beacon_mapping_f1(gcc.segment1,'ENTITY','A')--ENTITY
+      || '.'
+      || xx_gl_beacon_mapping_f1(gcc.segment6,'LOB','A')----LOB
+      || '.'
+      || xx_gl_beacon_mapping_f1(gcc.segment2,'COST_CENTER','A')------COST CENTER
+      || '.'
+      || xx_gl_beacon_mapping_f1(gcc.segment3,'ACCOUNT','A')----ACCOUNT
+      || '.'
+      || xx_gl_beacon_mapping_f1(gcc.segment4,'LOCATION','A')---LOCATION
+      || '.'
+      || xx_gl_beacon_mapping_f1(gcc.segment5,'ENTITY','A')-----INTERCOMP
+      
+      expense_account_segment
     FROM
       (SELECT interface_line_number
       FROM
@@ -3790,7 +4145,9 @@ IS
         fb.salvage_type salvage_value_type,
         fb.salvage_value salvage_value_amount,
         fb.percent_salvage_value salvage_value_percent,
-        ds.ytd_deprn ytd_depreciation,
+        ---ds.ytd_deprn ytd_depreciation,
+        --Added by priyam
+        decode(to_number(to_char(ds.deprn_run_date,'RRRR')),2019,ds.YTD_DEPRN,0) YTD_Depreciation,
         ds.deprn_reserve depreciation_reserve,
         ds.bonus_ytd_deprn ytd_bonus_depreciation,
         ds.bonus_deprn_reserve bonus_depreciation_reserve,
@@ -3839,9 +4196,9 @@ IS
         fa_transaction_headers fth
       WHERE 1                    =1
       AND xfs.book_type_code     =p_book_type_code
-      AND ( asset_status         ='ACTIVE'
+     /* AND ( asset_status         ='ACTIVE'
       OR (asset_status           ='RETIRED'
-      AND xfs.date_effective     >'31-DEC-18') )
+      AND xfs.date_effective     >'31-DEC-18') ) */
       AND fb.book_type_code      =xfs.book_type_code
       AND fb.asset_id            = xfs.asset_id
       AND corpbook.book_type_code=fb.book_type_code
@@ -4065,8 +4422,9 @@ IS
     AND TRUNC(sysdate) BETWEEN paf.effective_start_date AND paf.effective_end_date
     ) assigned_to_person_number,
     ppa.depreciate_flag,
-    NULL depreciation_expense_ccid,
-    (
+    null depreciation_expense_ccid,
+   /*Commented by Priyam for EBS to Cloud segment Change 
+   (
     CASE
       WHEN (ppa.depreciate_flag          = 'Y'
       AND ppa.depreciation_expense_ccid IS NULL
@@ -4077,7 +4435,21 @@ IS
         FROM gl_code_combinations_kfv
         WHERE code_combination_id = ppa.depreciation_expense_ccid
         )
-    END ) depreciation_expense_account,
+    END ) depreciation_expense_account,*/
+    ---Added by Priyam for EBS to Cloud segment Change 
+    (
+    CASE
+      WHEN (ppa.depreciate_flag          = 'Y'
+      AND ppa.depreciation_expense_ccid IS NULL
+      and project_status_code           in ('1000','CLOSED'))
+      THEN (xx_gl_beacon_mapping_f1('1001.43002.73802000.010000.0000.10.000000',NULL,'P'))
+      else
+        (SELECT xx_gl_beacon_mapping_f1(concatenated_segments,NULL,'P')
+        FROM gl_code_combinations_kfv
+        WHERE code_combination_id = ppa.depreciation_expense_ccid
+        )
+    end ) depreciation_expense_account,
+    ---Changes end
     ppa.amortize_flag,
     NULL overridecategoryanddesc,
     NULL business_unit_id,
@@ -4129,7 +4501,7 @@ BEGIN
   END;*/
   print_debug_msg ('Package FBDI_PROJECT_ASSETS START', true);
   ---  print_debug_msg ('P_BOOK_TYPE_CODE '||P_BOOK_TYPE_CODE, TRUE);
-  l_file_name    := 'fbdi_project_assets_v13' || '.csv';--GENERIC_TAX_CHILD_ASSET_HDR
+  l_file_name    := 'fbdi_project_assets' || '.csv';--GENERIC_TAX_CHILD_ASSET_HDR
   lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
   lv_col_title   :='DEMO_CREATE'|| ','|| 'CREATE_MODE'|| ','|| 'PROJECT_ID'|| ','|| 'PROJECT_NAME'|| ','|| 'PROJECT_NUMBER'|| ','|| 'PROJECT_ASSET_TYPE'|| ','|| 'PROJECT_ASSET_ID'|| ','|| 'ASSET_NAME'|| ','|| 'ASSET_NUMBER'|| ','|| 'ASSET_DESCRIPTION'|| ','|| 'ESTIMATED_IN_SERVICE_DATE'|| ','|| 'DATE_PLACED_IN_SERVICE'|| ','|| 'REVERSE_FLAG'|| ','|| 'CAPITAL_HOLD_FLAG'|| ','|| 'BOOK_TYPE_CODE'|| ','|| 'ASSET_CATEGORY_ID'|| ','|| 'ASSET_CATEGORY'|| ','|| 'ASSET_KEY_CCID'|| ','|| 'ASSET_KEY'|| ','|| 'ASSET_UNITS'|| ','|| 'ESTIMATED_COST'|| ','|| 'ESTIMATED_ASSET_UNITS'|| ','|| 'LOCATION_ID'|| ','|| 'LOCATION'|| ','|| 'ASSIGNED_TO_PERSON_ID'|| ','|| 'ASSIGNED_TO_PERSON_NAME'|| ','|| 'ASSIGNED_TO_PERSON_NUMBER'|| ','|| 'DEPRECIATE_FLAG'|| ','|| 'DEPRECIATION_EXPENSE_CCID'|| ','|| 'DEPRECIATION_EXPENSE_ACCOUNT'|| ','|| 'AMORTIZE_FLAG'|| ','|| 'OVERRIDECATEGORYANDDESC'|| ','|| 'BUSINESS_UNIT_ID'|| ','|| 'PARENT_ASSET_ID'|| ','|| 'PARENT_ASSET_NUMBER'|| ','|| 'MANUFACTURER_NAME'|| ','||
   'MODEL_NUMBER'|| ','|| 'TAG_NUMBER'|| ','|| 'SERIAL_NUMBER'|| ','|| 'RET_TARGET_ASSET_ID'|| ','|| 'RET_TARGET_ASSET_NUMBER'|| ','|| 'PM_PRODUCT_CODE';
@@ -4292,15 +4664,27 @@ IS
     NULL transactioncurrency,
     raw_cost rawcostintrxcurrency,
     burden_cost_rate burdenedcostintrxcurrency,
-    NULL rawcostcreditccid,
+    null rawcostcreditccid,
+    /*Commented by Priyam for EBS to Cloud segment Change
     (SELECT gl_code_combinations.concatenated_segments
     FROM gl_code_combinations_kfv gl_code_combinations
     WHERE code_combination_id = cr_code_combination_id
+    ) rawcostcreditaccount,*/
+  ---  ADDED by Priyam for EBS to Cloud segment Change 
+    (SELECT xx_gl_beacon_mapping_f1(gl_code_combinations.concatenated_segments,null,'P')
+    FROM gl_code_combinations_kfv gl_code_combinations
+    where code_combination_id = cr_code_combination_id
     ) rawcostcreditaccount,
-    NULL rawcostdebitccid,
-    (SELECT gl_code_combinations.concatenated_segments
+    null rawcostdebitccid,
+   /* Commented by Priyam for EBS to Cloud segment Change
+   (SELECT gl_code_combinations.concatenated_segments
     FROM gl_code_combinations_kfv gl_code_combinations
     WHERE code_combination_id = dr_code_combination_id
+    ) rawcostdebitaccount,*/
+    ----Added by Priyam for EBS to Cloud segment Change 
+    (SELECT xx_gl_beacon_mapping_f1(gl_code_combinations.concatenated_segments,null,'P')
+    FROM gl_code_combinations_kfv gl_code_combinations
+    where code_combination_id = dr_code_combination_id
     ) rawcostdebitaccount,
     NULL burdenedcostcreditccid,
     NULL burdenedcostcreditaccount,
@@ -4423,7 +4807,7 @@ BEGIN
   END;*/
   print_debug_msg ('Package fbdi_Proj_Exp_Cap_YN START', true);
   --- print_debug_msg ('P_BOOK_TYPE_CODE '||P_BOOK_TYPE_CODE, TRUE);
-  l_file_name    := 'fbdi_ProjectExpenditure_Capitalizable_YN_v16' || '.csv';--GENERIC_TAX_CHILD_ASSET_HDR
+  l_file_name    := 'fbdi_ProjectExpenditure_Capitalizable_YN' || '.csv';--GENERIC_TAX_CHILD_ASSET_HDR
   lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
   lv_col_title   :='TRANSACTIONTYPE'|| ','|| 'BUSINESSUNITNAME'|| ','|| 'BUSINESSUNITID'|| ','|| 'TRANSACTIONSOURCE'|| ','|| 'TRANSACTIONSOURCEID'|| ','|| 'DOCUMENT'|| ','|| 'DOCUMENTID'|| ','|| 'DOCUMENTENTRY'|| ','|| 'DOCUMENTENTRYID'|| ','|| 'EXPENDITUREBATCH'|| ','|| 'BATCHENDINGDATE'|| ','|| 'BATCHDESCRIPTION'|| ','|| 'EXPENDITUREITEMDATE'|| ','|| 'PERSONNUMBER'|| ','|| 'PERSONNAME'|| ','|| 'PERSONID'|| ','|| 'HUMANRESOURCESASSIGNMENT'|| ','|| 'HUMANRESOURCESASSIGNMENTID'|| ','|| 'PROJECTNUMBER'|| ','|| 'PROJECT_NAME'|| ','|| 'PROJECTID'|| ','|| 'TASKNUMBER'|| ','|| 'TASK_NAME'|| ','|| 'TASKID'|| ','|| 'EXPENDITURETYPE'|| ','|| 'EXPENDITURETYPEID'|| ','|| 'EXPENDITURE_ORGANIZATION'|| ','|| 'EXPENDITUREORGANIZATIONID'|| ','|| 'CONTRACT_NUMBER'|| ','|| 'CONTRACT_NAME'|| ','|| 'CONTRACT_ID'|| ','|| 'FUNDING_SOURCE_NUMBER'|| ','|| 'FUNDING_SOURCE_NAME'|| ','|| 'QUANTITY'|| ','|| 'UNIT_OF_MEASURE_NAME'|| ','|| 'UNIT_OF_MEASURE_CODE'|| ','|| 'WORKTYPE'|| ','|| 'WORKTYPEID'|| ','||
   'BILLABLE'|| ','|| 'CAPITALIZABLE'|| ','|| 'ACCRUAL_ITEM'|| ','|| 'ORIG_TRANSACTION_REFERENCE'|| ','|| 'UNMATCHEDNEGATIVETRANSACTION'|| ','|| 'REVERSEDORIGINALTRANSACTION'|| ','|| 'EXPENDITUREITEMCOMMENT'|| ','|| 'ACCOUNTINGDATE'|| ','|| 'TRANSACTIONCURRENCYCODE'|| ','|| 'TRANSACTIONCURRENCY'|| ','|| 'RAWCOSTINTRXCURRENCY'|| ','|| 'BURDENEDCOSTINTRXCURRENCY'|| ','|| 'RAWCOSTCREDITCCID'|| ','|| 'RAWCOSTCREDITACCOUNT'|| ','|| 'RAWCOSTDEBITCCID'|| ','|| 'RAWCOSTDEBITACCOUNT'|| ','|| 'BURDENEDCOSTCREDITCCID'|| ','|| 'BURDENEDCOSTCREDITACCOUNT'|| ','|| 'BURDENEDCOSTDEBITCCID'|| ','|| 'BURDENEDCOSTDEBITACCOUNT'|| ','|| 'BURDENCOSTDEBITCCID'|| ','|| 'BURDENCOSTDEBITACCOUNT'|| ','|| 'BURDENCOSTCREDITCCID'|| ','|| 'BURDENCOSTCREDITACCOUNT'|| ','|| 'PROVIDERLEDGERCURRENCYCODE'|| ','|| 'PROVIDERLEDGERCURRENCY'|| ','|| 'RAWCOSTLEDGERCURRENCY'|| ','|| 'BURDENEDCOSTLEDGERCURRENCY'|| ','|| 'PROVIDERLEDGERRATETYPE'|| ','|| 'PROVIDERLEDGERRATEDATE'|| ','|| 'PROVIDERLEDGERDATETYPE'|| ','||
@@ -4589,16 +4973,31 @@ IS
     NULL transactioncurrency,
     raw_cost rawcostintrxcurrency,
     burden_cost_rate burdenedcostintrxcurrency,
-    NULL rawcostcreditccid,
-    (SELECT gl_code_combinations.concatenated_segments
+    null rawcostcreditccid,
+/*Commented by Priyam for EBS to Cloud segment Change 
+(SELECT gl_code_combinations.concatenated_segments
     FROM gl_code_combinations_kfv gl_code_combinations
     WHERE code_combination_id = cd.cr_code_combination_id
+    ) rawcostcreditaccount,*/
+  --  Added by Priyam for EBS to Cloud segment Change 
+    (SELECT xx_gl_beacon_mapping_f1(gl_code_combinations.concatenated_segments,null,'P')
+    FROM gl_code_combinations_kfv gl_code_combinations
+    where code_combination_id = cd.cr_code_combination_id
     ) rawcostcreditaccount,
-    NULL rawcostdebitccid,
+    ----
+    
+    null rawcostdebitccid,
+    /*Commented by Priyam for EBS to Cloud segment Change 
     (SELECT gl_code_combinations.concatenated_segments
     FROM gl_code_combinations_kfv gl_code_combinations
     WHERE code_combination_id = cd.dr_code_combination_id
+    ) rawcostdebitaccount,*/
+   --- Added by Priyam for EBS to Cloud segment Change 
+    (SELECT xx_gl_beacon_mapping_f1(gl_code_combinations.concatenated_segments,null,'P')
+    FROM gl_code_combinations_kfv gl_code_combinations
+    where code_combination_id = cd.dr_code_combination_id
     ) rawcostdebitaccount,
+    --Changes end
     NULL burdenedcostcreditccid,
     NULL burdenedcostcreditaccount,
     NULL burdenedcostdebitccid,
@@ -4720,7 +5119,7 @@ BEGIN
   END;*/
   print_debug_msg ('Package GENERIC_TAX_CHILD_ASSET_HDR START', true);
   -- print_debug_msg ('P_BOOK_TYPE_CODE '||P_BOOK_TYPE_CODE, TRUE);
-  l_file_name    := 'fbdi_ProjectExpenditure_capitalized_YY_v16' || '.csv';--GENERIC_TAX_CHILD_ASSET_HDR
+  l_file_name    := 'fbdi_ProjectExpenditure_capitalized_YY' || '.csv';--GENERIC_TAX_CHILD_ASSET_HDR
   lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
   lv_col_title   :='TRANSACTIONTYPE'|| ','|| 'BUSINESSUNITNAME'|| ','|| 'BUSINESSUNITID'|| ','|| 'TRANSACTIONSOURCE'|| ','|| 'TRANSACTIONSOURCEID'|| ','|| 'DOCUMENT'|| ','|| 'DOCUMENTID'|| ','|| 'DOCUMENTENTRY'|| ','|| 'DOCUMENTENTRYID'|| ','|| 'EXPENDITUREBATCH'|| ','|| 'BATCHENDINGDATE'|| ','|| 'BATCHDESCRIPTION'|| ','|| 'EXPENDITUREITEMDATE'|| ','|| 'PERSONNUMBER'|| ','|| 'PERSONNAME'|| ','|| 'PERSONID'|| ','|| 'HUMANRESOURCESASSIGNMENT'|| ','|| 'HUMANRESOURCESASSIGNMENTID'|| ','|| 'PROJECTNUMBER'|| ','|| 'PROJECT_NAME'|| ','|| 'PROJECTID'|| ','|| 'TASKNUMBER'|| ','|| 'TASK_NAME'|| ','|| 'TASKID'|| ','|| 'EXPENDITURETYPE'|| ','|| 'EXPENDITURETYPEID'|| ','|| 'EXPENDITURE_ORGANIZATION'|| ','|| 'EXPENDITUREORGANIZATIONID'|| ','|| 'CONTRACT_NUMBER'|| ','|| 'CONTRACT_NAME'|| ','|| 'CONTRACT_ID'|| ','|| 'FUNDING_SOURCE_NUMBER'|| ','|| 'FUNDING_SOURCE_NAME'|| ','|| 'QUANTITY'|| ','|| 'UNIT_OF_MEASURE_NAME'|| ','|| 'UNIT_OF_MEASURE_CODE'|| ','|| 'WORKTYPE'|| ','|| 'WORKTYPEID'|| ','||
   'BILLABLE'|| ','|| 'CAPITALIZABLE'|| ','|| 'ACCRUAL_ITEM'|| ','|| 'ORIG_TRANSACTION_REFERENCE'|| ','|| 'UNMATCHEDNEGATIVETRANSACTION'|| ','|| 'REVERSEDORIGINALTRANSACTION'|| ','|| 'EXPENDITUREITEMCOMMENT'|| ','|| 'ACCOUNTINGDATE'|| ','|| 'TRANSACTIONCURRENCYCODE'|| ','|| 'TRANSACTIONCURRENCY'|| ','|| 'RAWCOSTINTRXCURRENCY'|| ','|| 'BURDENEDCOSTINTRXCURRENCY'|| ','|| 'RAWCOSTCREDITCCID'|| ','|| 'RAWCOSTCREDITACCOUNT'|| ','|| 'RAWCOSTDEBITCCID'|| ','|| 'RAWCOSTDEBITACCOUNT'|| ','|| 'BURDENEDCOSTCREDITCCID'|| ','|| 'BURDENEDCOSTCREDITACCOUNT'|| ','|| 'BURDENEDCOSTDEBITCCID'|| ','|| 'BURDENEDCOSTDEBITACCOUNT'|| ','|| 'BURDENCOSTDEBITCCID'|| ','|| 'BURDENCOSTDEBITACCOUNT'|| ','|| 'BURDENCOSTCREDITCCID'|| ','|| 'BURDENCOSTCREDITACCOUNT'|| ','|| 'PROVIDERLEDGERCURRENCYCODE'|| ','|| 'PROVIDERLEDGERCURRENCY'|| ','|| 'RAWCOSTLEDGERCURRENCY'|| ','|| 'BURDENEDCOSTLEDGERCURRENCY'|| ','|| 'PROVIDERLEDGERRATETYPE'|| ','|| 'PROVIDERLEDGERRATEDATE'|| ','|| 'PROVIDERLEDGERDATETYPE'|| ','||
@@ -4886,16 +5285,31 @@ IS
     NULL transactioncurrency,
     raw_cost rawcostintrxcurrency,
     burden_cost_rate burdenedcostintrxcurrency,
-    NULL rawcostcreditccid,
+    null rawcostcreditccid,
+    /*Commented by Priyam for EBS to Cloud segment Change 
     (SELECT gl_code_combinations.concatenated_segments
     FROM gl_code_combinations_kfv gl_code_combinations
     WHERE code_combination_id = cr_code_combination_id
+    ) rawcostcreditaccount,*/
+   --- Added by Priyam for EBS to Cloud segment Change 
+    (SELECT  xx_gl_beacon_mapping_f1(gl_code_combinations.concatenated_segments,null,'P')
+    FROM gl_code_combinations_kfv gl_code_combinations
+    where code_combination_id = cr_code_combination_id
     ) rawcostcreditaccount,
-    NULL rawcostdebitccid,
-    (SELECT gl_code_combinations.concatenated_segments
+-------
+    null rawcostdebitccid,
+   /*Commented by Priyam for EBS to Cloud segment Change 
+   (SELECT gl_code_combinations.concatenated_segments
     FROM gl_code_combinations_kfv gl_code_combinations
     WHERE code_combination_id = dr_code_combination_id
+    ) rawcostdebitaccount,*/
+ --   Added by Priyam for EBS to Cloud segment Change 
+  
+    (SELECT xx_gl_beacon_mapping_f1(gl_code_combinations.concatenated_segments,null,'P')
+    FROM gl_code_combinations_kfv gl_code_combinations
+    where code_combination_id = dr_code_combination_id
     ) rawcostdebitaccount,
+------end
     NULL burdenedcostcreditccid,
     NULL burdenedcostcreditaccount,
     NULL burdenedcostdebitccid,
@@ -5017,7 +5431,7 @@ BEGIN
   END;*/
   print_debug_msg ('Package GENERIC_TAX_CHILD_ASSET_HDR START', true);
   ---  print_debug_msg ('P_BOOK_TYPE_CODE '||P_BOOK_TYPE_CODE, TRUE);
-  l_file_name    := 'fbdi_ProjectExpenditure_Neither_NN_v16' || '.csv';--GENERIC_TAX_CHILD_ASSET_HDR
+  l_file_name    := 'fbdi_ProjectExpenditure_Neither_NN' || '.csv';--GENERIC_TAX_CHILD_ASSET_HDR
   lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
   lv_col_title   :='TRANSACTIONTYPE'|| ','|| 'BUSINESSUNITNAME'|| ','|| 'BUSINESSUNITID'|| ','|| 'TRANSACTIONSOURCE'|| ','|| 'TRANSACTIONSOURCEID'|| ','|| 'DOCUMENT'|| ','|| 'DOCUMENTID'|| ','|| 'DOCUMENTENTRY'|| ','|| 'DOCUMENTENTRYID'|| ','|| 'EXPENDITUREBATCH'|| ','|| 'BATCHENDINGDATE'|| ','|| 'BATCHDESCRIPTION'|| ','|| 'EXPENDITUREITEMDATE'|| ','|| 'PERSONNUMBER'|| ','|| 'PERSONNAME'|| ','|| 'PERSONID'|| ','|| 'HUMANRESOURCESASSIGNMENT'|| ','|| 'HUMANRESOURCESASSIGNMENTID'|| ','|| 'PROJECTNUMBER'|| ','|| 'PROJECT_NAME'|| ','|| 'PROJECTID'|| ','|| 'TASKNUMBER'|| ','|| 'TASK_NAME'|| ','|| 'TASKID'|| ','|| 'EXPENDITURETYPE'|| ','|| 'EXPENDITURETYPEID'|| ','|| 'EXPENDITURE_ORGANIZATION'|| ','|| 'EXPENDITUREORGANIZATIONID'|| ','|| 'CONTRACT_NUMBER'|| ','|| 'CONTRACT_NAME'|| ','|| 'CONTRACT_ID'|| ','|| 'FUNDING_SOURCE_NUMBER'|| ','|| 'FUNDING_SOURCE_NAME'|| ','|| 'QUANTITY'|| ','|| 'UNIT_OF_MEASURE_NAME'|| ','|| 'UNIT_OF_MEASURE_CODE'|| ','|| 'WORKTYPE'|| ','|| 'WORKTYPEID'|| ','||
   'BILLABLE'|| ','|| 'CAPITALIZABLE'|| ','|| 'ACCRUAL_ITEM'|| ','|| 'ORIG_TRANSACTION_REFERENCE'|| ','|| 'UNMATCHEDNEGATIVETRANSACTION'|| ','|| 'REVERSEDORIGINALTRANSACTION'|| ','|| 'EXPENDITUREITEMCOMMENT'|| ','|| 'ACCOUNTINGDATE'|| ','|| 'TRANSACTIONCURRENCYCODE'|| ','|| 'TRANSACTIONCURRENCY'|| ','|| 'RAWCOSTINTRXCURRENCY'|| ','|| 'BURDENEDCOSTINTRXCURRENCY'|| ','|| 'RAWCOSTCREDITCCID'|| ','|| 'RAWCOSTCREDITACCOUNT'|| ','|| 'RAWCOSTDEBITCCID'|| ','|| 'RAWCOSTDEBITACCOUNT'|| ','|| 'BURDENEDCOSTCREDITCCID'|| ','|| 'BURDENEDCOSTCREDITACCOUNT'|| ','|| 'BURDENEDCOSTDEBITCCID'|| ','|| 'BURDENEDCOSTDEBITACCOUNT'|| ','|| 'BURDENCOSTDEBITCCID'|| ','|| 'BURDENCOSTDEBITACCOUNT'|| ','|| 'BURDENCOSTCREDITCCID'|| ','|| 'BURDENCOSTCREDITACCOUNT'|| ','|| 'PROVIDERLEDGERCURRENCYCODE'|| ','|| 'PROVIDERLEDGERCURRENCY'|| ','|| 'RAWCOSTLEDGERCURRENCY'|| ','|| 'BURDENEDCOSTLEDGERCURRENCY'|| ','|| 'PROVIDERLEDGERRATETYPE'|| ','|| 'PROVIDERLEDGERRATEDATE'|| ','|| 'PROVIDERLEDGERDATETYPE'|| ','||
@@ -5139,7 +5553,7 @@ BEGIN
     IF p_module       ='FA' THEN
       IF p_book_class = 'TAX' THEN
         generic_tax_parent_asset_hdr(p_book_type_code);
-        generic_tax_child_asset_hdr(p_book_type_code);
+       generic_tax_child_asset_hdr(p_book_type_code);
         generic_tax_parent_dist(p_book_type_code);
         generic_tax_child_dist(p_book_type_code);
       else
@@ -5162,6 +5576,7 @@ WHEN OTHERS THEN
   print_debug_msg ('Error in XX_OD_FA_CON_SCRIPT_WRAPPER procedure :- ' || ' OTHERS :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE, true);
 END xx_od_fa_con_script_wrapper;
 END xx_od_fa_con_script;
+
 /
 
 SHOW ERRORS;

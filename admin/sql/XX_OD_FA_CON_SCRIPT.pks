@@ -30,7 +30,11 @@ AS
       p_retcode        number,
       P_module varchar2,
       P_BOOK_TYPE_CODE VARCHAR2,
-      P_BOOK_CLASS     VARCHAR2);
+      P_BOOK_CLASS     varchar2);
+  FUNCTION xx_gl_beacon_mapping_f1(
+      p_source VARCHAR2,
+      p_type   varchar2,
+      p_flag   VARCHAR2) return varchar2;
 END XX_OD_FA_CON_SCRIPT;
 /
 
