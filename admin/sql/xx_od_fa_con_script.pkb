@@ -8,9 +8,8 @@ WHENEVER SQLERROR CONTINUE;
  
 WHENEVER OSERROR EXIT FAILURE ROLLBACK;
 
-
 create or replace 
-PACKAGE body xx_od_fa_con_script
+PACKAGE BODY xx_od_fa_con_script
 AS
   -- +============================================================================================|
   -- |  Office Depot                                                                              |
@@ -25,17 +24,19 @@ AS
   -- | Version     Date         Author               Remarks                                      |
   -- | =========   ===========  =============        =============================================|
   -- | 1.0         01-APR-2019   Priyam S           Initial Version  added                           |
+  -- | 1.1       05-MAY-2019   Priyam S           Only for PSTGB                          |
+  -- | 1.1       05-MAY-2019   Priyam S           Only for PSTGB                          |
   -- +============================================================================================|
   gc_debug VARCHAR2(2) := 'N';
 PROCEDURE print_debug_msg(
     p_message IN VARCHAR2,
-    p_force   IN BOOLEAN DEFAULT false)
+    p_force   IN BOOLEAN DEFAULT FALSE)
 IS
   lc_message VARCHAR2 (4000) := NULL;
 BEGIN
   IF (gc_debug  = 'Y' OR p_force) THEN
     lc_message := p_message;
-    fnd_file.put_line (fnd_file.log, lc_message);
+    fnd_file.put_line (fnd_file.LOG, lc_message);
     IF ( fnd_global.conc_request_id = 0 OR fnd_global.conc_request_id = -1) THEN
       dbms_output.put_line (lc_message);
     END IF;
@@ -62,115 +63,168 @@ BEGIN
 EXCEPTION
 WHEN OTHERS THEN
   NULL;
-end print_out_msg;
+END print_out_msg;
 FUNCTION xx_gl_beacon_mapping_f1(
-      p_source VARCHAR2,
-      p_type   VARCHAR2,
-      p_flag   VARCHAR2)
-    RETURN VARCHAR2
+    p_source VARCHAR2,
+    p_type   VARCHAR2,
+    p_flag   VARCHAR2)
+  RETURN VARCHAR2
+IS
+  CURSOR c_map
   IS
-    CURSOR c_map
-    IS
-      SELECT source,
-        target,
-        type
-      FROM xx_gl_beacon_mapping
-      WHERE source=p_source
-      AND type    =p_type;
-    CURSOR c_concat
-    IS
-      SELECT regexp_substr(p_source, '[^.]+', 1, 1) entity,
-        regexp_substr(p_source, '[^.]+', 1, 2) cost_center,
-        regexp_substr(p_source, '[^.]+', 1, 3) account,
-        regexp_substr(p_source, '[^.]+', 1, 4) location,
-        regexp_substr(p_source, '[^.]+', 1, 6) lob
-
-      FROM dual;
-    v_target       VARCHAR2(100);
-    v_entity       VARCHAR2(50);
-    v_cost_center  VARCHAR2(50);
-    v_account      VARCHAR2(50);
-    v_location     VARCHAR2(50);
-    v_intercompany VARCHAR2(50);
-    v_lob          VARCHAR2(50);
-
-  BEGIN
-    IF p_source IS NOT NULL THEN
-      IF p_flag  ='A' THEN
+    SELECT SOURCE,
+      target,
+      TYPE
+    FROM xx_gl_beacon_mapping
+    WHERE SOURCE=p_source
+    AND TYPE    =p_type;
+  CURSOR c_concat
+  IS
+    SELECT regexp_substr(p_source, '[^.]+', 1, 1) entity,
+      regexp_substr(p_source, '[^.]+', 1, 2) cost_center,
+      regexp_substr(p_source, '[^.]+', 1, 3) ACCOUNT,
+      regexp_substr(p_source, '[^.]+', 1, 4) LOCATION,
+      regexp_substr(p_source, '[^.]+', 1, 5) Intercompany,
+      regexp_substr(p_source, '[^.]+', 1, 6) LOB
+    FROM dual;
+  v_target       VARCHAR2(100);
+  v_entity       VARCHAR2(50);
+  v_cost_center  VARCHAR2(50);
+  v_account      VARCHAR2(50);
+  v_location     VARCHAR2(50);
+  v_intercompany VARCHAR2(50);
+  v_lob          VARCHAR2(50);
+BEGIN
+  IF p_source IS NOT NULL THEN
+    IF p_flag  ='A' THEN
+      BEGIN
+        FOR i IN c_map
+        LOOP
+          v_target:=i.target;
+        END LOOP;
+      EXCEPTION
+      WHEN OTHERS THEN
+        --  v_target:=p_source;
+        v_target:=-1;
+      END;
+    ELSE
+      v_target:=NULL;
+      FOR i IN c_concat
+      LOOP
         BEGIN
-          FOR i IN c_map
-          LOOP
-            v_target:=i.target;
-          END LOOP;
+          SELECT target
+          INTO v_entity
+          FROM xx_gl_beacon_mapping
+          WHERE SOURCE=i.entity
+          AND TYPE    ='ENTITY';
         EXCEPTION
         WHEN OTHERS THEN
-          v_target:=p_source;
+          -- v_entity:=i.entity;
+          v_entity:=-1;
         END;
-      ELSE
-        v_target:=NULL;
-        FOR i IN c_concat
-        LOOP
-          BEGIN
-            SELECT target
-            INTO v_entity
-            FROM xx_gl_beacon_mapping
-            WHERE source=i.entity
-            AND type    ='ENTITY';
-          EXCEPTION
-          WHEN OTHERS THEN
-            v_entity:=i.entity;
-          END;
-          BEGIN
-            SELECT target
-            INTO v_cost_center
-            FROM xx_gl_beacon_mapping
-            WHERE source=i.cost_center
-            AND type    ='COST_CENTER';
-          EXCEPTION
-          WHEN OTHERS THEN
-            v_cost_center:=i.cost_center;
-          END;
-          BEGIN
-            SELECT target
-            INTO v_account
-            FROM xx_gl_beacon_mapping
-            WHERE source=i.account
-            AND type    ='ACCOUNT';
-          EXCEPTION
-          WHEN OTHERS THEN
-            v_account:=i.account;
-          END;
-          BEGIN
-            SELECT target
-            INTO v_location
-            FROM xx_gl_beacon_mapping
-            WHERE source=i.location
-            AND type    ='LOCATION';
-          EXCEPTION
-          WHEN OTHERS THEN
-            v_location:=i.location;
-          END;
-          BEGIN
-            SELECT target
-            INTO v_lob
-            FROM xx_gl_beacon_mapping
-            WHERE source=i.lob
-            AND type    ='LOB';
-          EXCEPTION
-          WHEN OTHERS THEN
-            v_lob:=i.lob;
-          END;
-          -- SELECT nvl(TARGET,source) INTO v_inter FROM XX_GL_BEACON_MAPPING WHERE source=i.inter;
-        END LOOP;
-        v_target:=v_entity||'.'||v_lob||'.'||v_cost_center||'.'||v_account||'.'||v_location||'.'||v_entity;
-      END IF;
-      RETURN v_target;
-    ELSE
-      RETURN p_source;
-    end if;
-  END xx_gl_beacon_mapping_f1;
-PROCEDURE oduscorp_parent_assets_hdr(
-    p_book_type_code VARCHAR2)
+        BEGIN
+          SELECT target
+          INTO v_cost_center
+          FROM xx_gl_beacon_mapping
+          WHERE SOURCE=i.cost_center
+          AND TYPE    ='COST_CENTER';
+        EXCEPTION
+        WHEN OTHERS THEN
+          -- v_cost_center:=i.cost_center;
+          v_cost_center:=-1;
+        END;
+        BEGIN
+          SELECT target
+          INTO v_account
+          FROM xx_gl_beacon_mapping
+          WHERE SOURCE=i.ACCOUNT
+          AND TYPE    ='ACCOUNT';
+        EXCEPTION
+        WHEN OTHERS THEN
+          -- v_account:=i.account;
+          v_account:=-1;
+        END;
+        BEGIN
+          SELECT target
+          INTO v_location
+          FROM xx_gl_beacon_mapping
+          WHERE SOURCE=i.LOCATION
+          AND TYPE    ='LOCATION';
+        EXCEPTION
+        WHEN OTHERS THEN
+          -- v_location:=i.location;
+          v_location:=-1;
+        END;
+        BEGIN
+          SELECT target
+          INTO v_lob
+          FROM xx_gl_beacon_mapping
+          WHERE SOURCE=i.LOB
+          AND TYPE    ='LOB';
+        EXCEPTION
+        WHEN OTHERS THEN
+          --v_lob:=i.lob;
+          v_lob:=-1;
+        END;
+        BEGIN
+          SELECT target
+          INTO v_intercompany
+          FROM xx_gl_beacon_mapping
+          WHERE SOURCE=i.intercompany
+          AND TYPE    ='ENTITY';
+        EXCEPTION
+        WHEN OTHERS THEN
+          --v_lob:=i.lob;
+          v_intercompany:=-1;
+        END;
+        -- SELECT nvl(TARGET,source) INTO v_inter FROM XX_GL_BEACON_MAPPING WHERE source=i.inter;
+      END LOOP;
+      v_target:=v_entity||'.'||v_lob||'.'||v_cost_center||'.'||v_account||'.'||v_location||'.'||v_intercompany;
+    END IF;
+    RETURN v_target;
+  ELSE
+    RETURN p_source;
+  END IF;
+END xx_gl_beacon_mapping_f1;
+PROCEDURE insert_miss_segments(
+    p_source           VARCHAR2,
+    p_target           VARCHAR2,
+    p_type             VARCHAR2,
+    p_asset_number     VARCHAR2,
+    p_identifier_query VARCHAR2,
+    P_BOOK_NAME        VARCHAR2)
+IS
+  PRAGMA AUTONOMOUS_TRANSACTION;
+BEGIN
+  INSERT
+  INTO xx_gl_beacon_miss_mapping
+    (
+      SOURCE,
+      target,
+      TYPE,
+      creation_date,
+      created_by,
+      asset_number,
+      identifier_query,
+      Book_name
+    )
+    VALUES
+    (
+      p_source,
+      p_target,
+      p_type,
+      SYSDATE,
+      -1,
+      p_asset_number,
+      p_identifier_query,
+      P_BOOK_NAME
+    );
+  COMMIT;
+END INSERT_MISS_SEGMENTS;
+PROCEDURE oduscorp_parent_assets_hdr
+  (
+    p_book_type_code VARCHAR2
+  )
 AS
   CURSOR c_pas_asset_hdr
   IS
@@ -184,9 +238,9 @@ AS
       tag_number,
       manufacturer,
       serial_number,
-      model ,
+      MODEL ,
       asset_type,
-      cost,
+      COST,
       date_placed_in_service,
       prorate_convention,
       asset_units,
@@ -247,9 +301,8 @@ AS
       depreciation_limit_percent,
       depreciation_limit_amount,
       NULL invoice_cost,
-  
-    /*Commented by Priyam for EBS to Cloud segment Change 
-    (
+      --  Commented by Priyam for EBS to Cloud segment Change
+      (
       SELECT gcc.segment1
       FROM gl_code_combinations gcc,
         fa_distribution_accounts da
@@ -298,53 +351,54 @@ AS
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
     AND gcc.code_combination_id = da.asset_clearing_account_ccid
-    ) cost_clearing_account_seg7,*/
-  --  Added by Priyam for EBS to Cloud segment Change 
-   (
-      SELECT xx_gl_beacon_mapping_f1(gcc.segment1,'ENTITY','A')--ENTITY
-      FROM gl_code_combinations gcc,
-        fa_distribution_accounts da
-      WHERE da.distribution_id    = fa_details.distribution_id
-      AND da.book_type_code       = fa_details.asset_book
-      and gcc.code_combination_id = da.asset_clearing_account_ccid
-      )cost_clearing_account_seg1,
+    ) cost_clearing_account_seg7,
+    --  Added by Priyam for EBS to Cloud segment Change
+    /*(
+    SELECT xx_gl_beacon_mapping_f1(gcc.segment1,'ENTITY','A')--ENTITY
+    FROM gl_code_combinations gcc,
+    fa_distribution_accounts da
+    WHERE da.distribution_id    = fa_details.distribution_id
+    AND da.book_type_code       = fa_details.asset_book
+    and gcc.code_combination_id = da.asset_clearing_account_ccid
+    )cost_clearing_account_seg1,
     (SELECT xx_gl_beacon_mapping_f1(gcc.segment6,'LOB','A')----LOB
     FROM gl_code_combinations gcc,
-      fa_distribution_accounts da
+    fa_distribution_accounts da
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
     AND gcc.code_combination_id = da.asset_clearing_account_ccid
     ) cost_clearing_account_seg2,
     (SELECT xx_gl_beacon_mapping_f1(gcc.segment2,'COST_CENTER','A')------COST CENTER
     FROM gl_code_combinations gcc,
-      fa_distribution_accounts da
+    fa_distribution_accounts da
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
     AND gcc.code_combination_id = da.asset_clearing_account_ccid
     ) cost_clearing_account_seg3,
     (SELECT xx_gl_beacon_mapping_f1(gcc.segment3,'ACCOUNT','A')----ACCOUNT
     from gl_code_combinations gcc,
-      fa_distribution_accounts da
+    fa_distribution_accounts da
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
     AND gcc.code_combination_id = da.asset_clearing_account_ccid
     ) cost_clearing_account_seg4,
     (SELECT xx_gl_beacon_mapping_f1(gcc.segment4,'LOCATION','A')---LOCATION
     FROM gl_code_combinations gcc,
-      fa_distribution_accounts da
+    fa_distribution_accounts da
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
     AND gcc.code_combination_id = da.asset_clearing_account_ccid
     ) cost_clearing_account_seg5,
     (SELECT xx_gl_beacon_mapping_f1(gcc.segment5,'ENTITY','A')-----INTERCOMP
     FROM gl_code_combinations gcc,
-      fa_distribution_accounts da
+    fa_distribution_accounts da
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
     AND gcc.code_combination_id = da.asset_clearing_account_ccid
     ) cost_clearing_account_seg6,
-     null cost_clearing_account_seg7,
-     -----Changes end
+    null cost_clearing_account_seg7,
+    -----Changes end
+    */
     NULL cost_clearing_account_seg8,
     NULL cost_clearing_account_seg9,
     NULL cost_clearing_account_seg10,
@@ -412,7 +466,7 @@ AS
     NULL                            ATTRIBUTE_DATE5,
     */
     attribute_category_code,
-    NULL context,
+    NULL CONTEXT,
     /*
     NULL                            TH_ATTRIBUTE1,
     NULL                            TH_ATTRIBUTE2,
@@ -592,9 +646,9 @@ AS
       tag_number,
       manufacturer,
       serial_number,
-      model ,
+      MODEL ,
       asset_type,
-      cost,
+      COST,
       date_placed_in_service,
       prorate_convention,
       asset_units,
@@ -667,9 +721,9 @@ AS
         fab.tag_number tag_number,
         fab.manufacturer_name manufacturer,
         fab.serial_number serial_number,
-        fab.model_number model ,
+        fab.model_number MODEL ,
         fab.asset_type asset_type,
-        fb.cost cost,
+        fb.COST COST,
         TO_CHAR(fb.date_placed_in_service,'YYYY/MM/DD') date_placed_in_service,
         fb.prorate_convention_code prorate_convention,
         fab.current_units asset_units,
@@ -699,8 +753,8 @@ AS
         fb.salvage_value salvage_value_amount,
         fb.percent_salvage_value salvage_value_percent,
         ---ds.ytd_deprn ytd_depreciation,
-        ---Added by priyam        
-        decode(to_number(to_char(ds.deprn_run_date,'RRRR')),2019,ds.YTD_DEPRN,0) YTD_Depreciation,
+        ---Added by priyam
+        DECODE(to_number(TO_CHAR(ds.deprn_run_date,'RRRR')),2019,ds.YTD_DEPRN,0) YTD_Depreciation,
         ds.deprn_reserve depreciation_reserve,
         ds.bonus_ytd_deprn ytd_bonus_depreciation,
         ds.bonus_deprn_reserve bonus_depreciation_reserve,
@@ -737,8 +791,8 @@ AS
         fb.prior_adjusted_rate earlier_adjusted_rate,
         ds.distribution_id,
         --fb.book_type_code,
-        rank() over (partition BY ds.book_type_code, ds.asset_id order by ds.distribution_id DESC ) distidrank,
-        rank() over (partition BY ds.book_type_code, ds.asset_id order by ds.period_counter DESC) periodcounterrank
+        rank() OVER (PARTITION BY ds.book_type_code, ds.asset_id ORDER BY ds.distribution_id DESC ) distidrank,
+        rank() OVER (PARTITION BY ds.book_type_code, ds.asset_id ORDER BY ds.period_counter DESC) periodcounterrank
       FROM fa_books fb,
         xx_fa_status xfs,
         fa_book_controls corpbook,
@@ -749,14 +803,14 @@ AS
         fa_transaction_headers fth
       WHERE 1                    =1
       AND xfs.book_type_code     =p_book_type_code
-     /* AND ( asset_status         ='ACTIVE'
+    /*  AND ( asset_status         ='ACTIVE'
       OR (asset_status           ='RETIRED'
-      AND xfs.date_effective     >'31-DEC-18') ) */
+      AND xfs.date_effective     >'31-DEC-18') )*/
       AND fb.book_type_code      =xfs.book_type_code
       AND fb.asset_id            = xfs.asset_id
       AND corpbook.book_type_code=fb.book_type_code
       AND corpbook.book_class    = 'CORPORATE'
-      AND TRUNC (sysdate) BETWEEN TRUNC (NVL (fb.date_effective, sysdate)) AND TRUNC (NVL (fb.date_ineffective, sysdate))
+      AND TRUNC (SYSDATE) BETWEEN TRUNC (NVL (fb.date_effective, SYSDATE)) AND TRUNC (NVL (fb.date_ineffective, SYSDATE))
       AND fab.asset_id         =fb.asset_id
       AND fab.parent_asset_id IS NULL
       AND EXISTS
@@ -779,11 +833,19 @@ AS
   lc_file_handle utl_file.file_type;
   lv_line_count NUMBER;
   -- l_file_path   VARCHAR(200);
-  l_file_name  VARCHAR2(500);
-  lv_col_title VARCHAR2(5000);
-  l_file_path  VARCHAR2(500):='XXFIN_OUTBOUND';---/app/ebs/ctgsidev02/xxfin/outbound
-  lc_errormsg  varchar2(1000);                ----            VARCHAR2(1000) := NULL;
-  v_book_type_code varchar2(100);
+  l_file_name      VARCHAR2(500);
+  lv_col_title     VARCHAR2(5000);
+  l_file_path      VARCHAR2(500):='XXFIN_OUTBOUND';---/app/ebs/ctgsidev02/xxfin/outbound
+  lc_errormsg      VARCHAR2(1000);                ----            VARCHAR2(1000) := NULL;
+  v_book_type_code VARCHAR2(100);
+  ---------------------------
+  v_segment1 VARCHAR2(50);
+  v_segment2 VARCHAR2(50);
+  v_segment3 VARCHAR2(50);
+  v_segment4 VARCHAR2(50);
+  v_segment5 VARCHAR2(50);
+  v_segment6 VARCHAR2(50);
+  v_segment7 VARCHAR2(50);
 BEGIN
   /* BEGIN
   SELECT directory_path
@@ -794,116 +856,153 @@ BEGIN
   WHEN OTHERS THEN
   l_file_path := NULL;
   END;*/
-  print_debug_msg ('Package ODUSCORP_PARENT_ASSETS_HDR START ', true);
-  print_debug_msg ('P_BOOK_TYPE_CODE '||p_book_type_code, true);
-  v_book_type_code :=replace(replace (replace(p_book_type_code,'OD US ','US_'),'OD CA ','CA_'),' ','_');
+  print_debug_msg ('Package ODUSCORP_PARENT_ASSETS_HDR START ', TRUE);
+  print_debug_msg ('P_BOOK_TYPE_CODE '||p_book_type_code, TRUE);
+  v_book_type_code :=REPLACE(REPLACE (REPLACE(p_book_type_code,'OD US ','US_'),'OD CA ','CA_'),' ','_');
   --l_file_name    := 'ODUSCORP_Parent_assets_Hdr_v14' || '.csv';
-  l_file_name    := 'Parent_assets_Hdr_' ||v_book_type_code|| '.csv';
-  lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
-  lv_col_title   :='INTERFACE_LINE_NUMBER'|| ','|| 'ASSET_BOOK'|| ','|| 'TRANSACTION_NAME'|| ','|| 'ASSET_NUMBER'|| ','|| 'ASSET_DESCRIPTION'|| ','|| 'TAG_NUMBER'|| ','|| 'MANUFACTURER'|| ','|| 'SERIAL_NUMBER'|| ','|| 'MODEL'|| ','|| 'ASSET_TYPE'|| ','|| 'COST'|| ','|| 'DATE_PLACED_IN_SERVICE'|| ','|| 'PRORATE_CONVENTION'|| ','|| 'ASSET_UNITS'|| ','|| 'ASSET_CATEGORY_SEGMENT1'|| ','|| 'ASSET_CATEGORY_SEGMENT2'|| ','|| 'ASSET_CATEGORY_SEGMENT3'|| ','|| 'ASSET_CATEGORY_SEGMENT4'|| ','|| 'ASSET_CATEGORY_SEGMENT5'|| ','|| 'ASSET_CATEGORY_SEGMENT6'|| ','|| 'ASSET_CATEGORY_SEGMENT7'|| ','|| 'POSTING_STATUS'|| ','|| 'QUEUE_NAME'|| ','|| 'FEEDER_SYSTEM'|| ','|| 'PARENT_ASSET'|| ','|| 'ADD_TO_ASSET'|| ','|| 'ASSET_KEY_SEGMENT1'|| ','|| 'ASSET_KEY_SEGMENT2'|| ','|| 'ASSET_KEY_SEGMENT3'|| ','|| 'ASSET_KEY_SEGMENT4'|| ','|| 'ASSET_KEY_SEGMENT5'|| ','|| 'ASSET_KEY_SEGMENT6'|| ','|| 'ASSET_KEY_SEGMENT7'|| ','|| 'ASSET_KEY_SEGMENT8'|| ','|| 'ASSET_KEY_SEGMENT9'|| ','|| 'ASSET_KEY_SEGMENT10'|| ','||
+  l_file_name := 'Parent_assets_Hdr_' ||v_book_type_code|| '.csv';
+  --lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
+  lv_col_title :='INTERFACE_LINE_NUMBER'|| ','|| 'ASSET_BOOK'|| ','|| 'TRANSACTION_NAME'|| ','|| 'ASSET_NUMBER'|| ','|| 'ASSET_DESCRIPTION'|| ','|| 'TAG_NUMBER'|| ','|| 'MANUFACTURER'|| ','|| 'SERIAL_NUMBER'|| ','|| 'MODEL'|| ','|| 'ASSET_TYPE'|| ','|| 'COST'|| ','|| 'DATE_PLACED_IN_SERVICE'|| ','|| 'PRORATE_CONVENTION'|| ','|| 'ASSET_UNITS'|| ','|| 'ASSET_CATEGORY_SEGMENT1'|| ','|| 'ASSET_CATEGORY_SEGMENT2'|| ','|| 'ASSET_CATEGORY_SEGMENT3'|| ','|| 'ASSET_CATEGORY_SEGMENT4'|| ','|| 'ASSET_CATEGORY_SEGMENT5'|| ','|| 'ASSET_CATEGORY_SEGMENT6'|| ','|| 'ASSET_CATEGORY_SEGMENT7'|| ','|| 'POSTING_STATUS'|| ','|| 'QUEUE_NAME'|| ','|| 'FEEDER_SYSTEM'|| ','|| 'PARENT_ASSET'|| ','|| 'ADD_TO_ASSET'|| ','|| 'ASSET_KEY_SEGMENT1'|| ','|| 'ASSET_KEY_SEGMENT2'|| ','|| 'ASSET_KEY_SEGMENT3'|| ','|| 'ASSET_KEY_SEGMENT4'|| ','|| 'ASSET_KEY_SEGMENT5'|| ','|| 'ASSET_KEY_SEGMENT6'|| ','|| 'ASSET_KEY_SEGMENT7'|| ','|| 'ASSET_KEY_SEGMENT8'|| ','|| 'ASSET_KEY_SEGMENT9'|| ','|| 'ASSET_KEY_SEGMENT10'|| ','||
   'IN_PHYSICAL_INVENTORY'|| ','|| 'PROPERTY_TYPE'|| ','|| 'PROPERTY_CLASS'|| ','|| 'IN_USE'|| ','|| 'OWNERSHIP'|| ','|| 'BOUGHT'|| ','|| 'MATERIAL_INDICATOR'|| ','|| 'COMMITMENT'|| ','|| 'INVESTMENT_LAW'|| ','|| 'AMORTIZE'|| ','|| 'AMORTIZATION_START_DATE'|| ','|| 'DEPRECIATE'|| ','|| 'SALVAGE_VALUE_TYPE'|| ','|| 'SALVAGE_VALUE_AMOUNT'|| ','|| 'SALVAGE_VALUE_PERCENT'|| ','|| 'YTD_DEPRECIATION'|| ','|| 'DEPRECIATION_RESERVE'|| ','|| 'YTD_BONUS_DEPRECIATION'|| ','|| 'BONUS_DEPRECIATION_RESERVE'|| ','|| 'YTD_IMPAIRMENT'|| ','|| 'IMPAIRMENT_RESERVE'|| ','|| 'DEPRECIATION_METHOD'|| ','|| 'LIFE_IN_MONTHS'|| ','|| 'BASIC_RATE'|| ','|| 'ADJUSTED_RATE'|| ','|| 'UNIT_OF_MEASURE'|| ','|| 'PRODUCTION_CAPACITY'|| ','|| 'CEILING_TYPE'|| ','|| 'BONUS_RULE'|| ','|| 'CASH_GENERATING_UNIT'|| ','|| 'DEPRECIATION_LIMIT_TYPE'|| ','|| 'DEPRECIATION_LIMIT_PERCENT'|| ','|| 'DEPRECIATION_LIMIT_AMOUNT'|| ','|| 'INVOICE_COST'|| ','|| 'COST_CLEARING_ACCOUNT_SEG1'|| ','|| 'COST_CLEARING_ACCOUNT_SEG2'|| ','||
   'COST_CLEARING_ACCOUNT_SEG3'|| ','|| 'COST_CLEARING_ACCOUNT_SEG4'|| ','|| 'COST_CLEARING_ACCOUNT_SEG5'|| ','|| 'COST_CLEARING_ACCOUNT_SEG6'|| ','|| 'COST_CLEARING_ACCOUNT_SEG7'|| ','|| 'COST_CLEARING_ACCOUNT_SEG8'|| ','|| 'COST_CLEARING_ACCOUNT_SEG9'|| ','|| 'COST_CLEARING_ACCOUNT_SEG10'|| ','|| 'COST_CLEARING_ACCOUNT_SEG11'|| ','|| 'COST_CLEARING_ACCOUNT_SEG12'|| ','|| 'COST_CLEARING_ACCOUNT_SEG13'|| ','|| 'COST_CLEARING_ACCOUNT_SEG14'|| ','|| 'COST_CLEARING_ACCOUNT_SEG15'|| ','|| 'ATTRIBUTE1'|| ','|| 'ATTRIBUTE2'|| ','|| 'ATTRIBUTE3'|| ','|| 'ATTRIBUTE4'|| ','|| 'ATTRIBUTE5'|| ','|| 'ATTRIBUTE6'|| ','|| 'ATTRIBUTE7'|| ','|| 'ATTRIBUTE8'|| ','|| 'ATTRIBUTE9'|| ','|| 'ATTRIBUTE10'|| ','|| 'ATTRIBUTE11'|| ','|| 'ATTRIBUTE12'|| ','|| 'ATTRIBUTE13'|| ','|| 'ATTRIBUTE14'|| ','|| 'ATTRIBUTE15'|| ','|| 'ATTRIBUTE_CATEGORY_CODE'|| ','|| 'CONTEXT'|| ','|| 'MASS_PROPERTY_ELIGIBLE'|| ','|| 'GROUP_ASSET'|| ','|| 'REDUCTION_RATE'|| ','|| 'APPLY_REDUCTION_RATE_TO_ADDI'|| ','||
   'APPLY_REDUCTION_RATE_TO_ADJ'|| ','|| 'APPLY_REDUCTION_RATE_TO_RETI'|| ','|| 'RECOGNIZE_GAIN_OR_LOSS'|| ','|| 'RECAPTURE_EXCESS_RESERVE'|| ','|| 'LIMIT_NET_PROCEEDS_TO_COST'|| ','|| 'TERMINAL_GAIN_OR_LOSS'|| ','|| 'TRACKING_METHOD'|| ','|| 'ALLOCATE_EXCESS_DEPRECIATION'|| ','|| 'DEPRECIATE_BY'|| ','|| 'MEMBER_ROLLUP'|| ','|| 'ALLO_TO_FULL_RETI_AND_RES_ASST'|| ','|| 'OVER_DEPRECIATE'|| ','|| 'PREPARER'|| ','|| 'SUM_MERGED_UNITS'|| ','|| 'NEW_MASTER'|| ','|| 'UNITS_TO_ADJUST'|| ','|| 'SHORT_YEAR'|| ','|| 'CONVERSION_DATE'|| ','|| 'ORIGINAL_DEP_START_DATE'|| ','|| 'NBV_AT_THE_TIME_OF_SWITCH'|| ','|| 'PERIOD_FULLY_RESERVED'|| ','|| 'START_PERIOD_OF_EXTENDED_DEP'|| ','|| 'EARLIER_DEP_LIMIT_TYPE'|| ','|| 'EARLIER_DEP_LIMIT_PERCENT'|| ','|| 'EARLIER_DEP_LIMIT_AMOUNT'|| ','|| 'EARLIER_DEPRECIATION_METHOD'|| ','|| 'EARLIER_LIFE_IN_MONTHS'|| ','|| 'EARLIER_BASIC_RATE'|| ','|| 'EARLIER_ADJUSTED_RATE'|| ','|| 'LEASE_NUMBER'|| ','|| 'REVALUATION_RESERVE'|| ','|| 'REVALUATION_LOSS'|| ','||
   'REVAL_RESER_AMORTIZATION_BASIS'|| ','|| 'IMPAIRMENT_LOSS_EXPENSE'|| ','|| 'REVALUATION_COST_CEILING'|| ','|| 'FAIR_VALUE'|| ','|| 'LAST_USED_PRICE_INDEX_VALUE'|| ','|| 'SUPPLIER_NAME'|| ','|| 'SUPPLIER_NUMBER'|| ','|| 'PURCHASE_ORDER_NUMBER'|| ','|| 'INVOICE_NUMBER'|| ','|| 'INVOICE_VOUCHER_NUMBER'|| ','|| 'INVOICE_DATE'|| ','|| 'PAYABLES_UNITS'|| ','|| 'INVOICE_LINE_NUMBER'|| ','|| 'INVOICE_LINE_TYPE'|| ','|| 'INVOICE_LINE_DESCRIPTION'|| ','|| 'INVOICE_PAYMENT_NUMBER'|| ','|| 'PROJECT_NUMBER'|| ','|| 'TASK_NUMBER'|| ','|| 'FULLY_DEPRECIATE';
-  utl_file.put_line(lc_file_handle,lv_col_title);
+  -- utl_file.put_line(lc_file_handle,lv_col_title);
   FOR i IN c_pas_asset_hdr
   LOOP
     ---UTL_FILE.put_line(lc_file_handle,'HI');
-    utl_file.put_line(lc_file_handle,i.interface_line_number|| ','|| i.asset_book|| ','|| i.transaction_name|| ','|| i.asset_number|| ','|| i.asset_description|| ','|| i.tag_number|| ','|| i.manufacturer|| ','|| i.serial_number|| ','|| i.model|| ','|| i.asset_type|| ','|| i.cost|| ','|| i.date_placed_in_service|| ','|| i.prorate_convention|| ','|| i.asset_units|| ','|| i.asset_category_segment1|| ','|| i.asset_category_segment2|| ','|| i.asset_category_segment3|| ','|| i.asset_category_segment4|| ','|| i.asset_category_segment5|| ','|| i.asset_category_segment6|| ','|| i.asset_category_segment7|| ','|| i.posting_status|| ','|| i.queue_name|| ','|| i.feeder_system|| ','|| i.parent_asset|| ','|| i.add_to_asset|| ','|| i.asset_key_segment1|| ','|| i.asset_key_segment2|| ','|| i.asset_key_segment3|| ','|| i.asset_key_segment4|| ','|| i.asset_key_segment5|| ','|| i.asset_key_segment6|| ','|| i.asset_key_segment7|| ','|| i.asset_key_segment8|| ','|| i.asset_key_segment9|| ','||
+    /*  utl_file.put_line(lc_file_handle,i.interface_line_number|| ','|| i.asset_book|| ','|| i.transaction_name|| ','|| i.asset_number|| ','|| i.asset_description|| ','|| i.tag_number|| ','|| i.manufacturer|| ','|| i.serial_number|| ','|| i.model|| ','|| i.asset_type|| ','|| i.cost|| ','|| i.date_placed_in_service|| ','|| i.prorate_convention|| ','|| i.asset_units|| ','|| i.asset_category_segment1|| ','|| i.asset_category_segment2|| ','|| i.asset_category_segment3|| ','|| i.asset_category_segment4|| ','|| i.asset_category_segment5|| ','|| i.asset_category_segment6|| ','|| i.asset_category_segment7|| ','|| i.posting_status|| ','|| i.queue_name|| ','|| i.feeder_system|| ','|| i.parent_asset|| ','|| i.add_to_asset|| ','|| i.asset_key_segment1|| ','|| i.asset_key_segment2|| ','|| i.asset_key_segment3|| ','|| i.asset_key_segment4|| ','|| i.asset_key_segment5|| ','|| i.asset_key_segment6|| ','|| i.asset_key_segment7|| ','|| i.asset_key_segment8|| ','|| i.asset_key_segment9|| ','||
     i.asset_key_segment10|| ','|| i.in_physical_inventory|| ','|| i.property_type|| ','|| i.property_class|| ','|| i.in_use|| ','|| i.ownership|| ','|| i.bought|| ','|| i.material_indicator|| ','|| i.commitment|| ','|| i.investment_law|| ','|| i.amortize|| ','|| i.amortization_start_date|| ','|| i.depreciate|| ','|| i.salvage_value_type|| ','|| i.salvage_value_amount|| ','|| i.salvage_value_percent|| ','|| i.ytd_depreciation|| ','|| i.depreciation_reserve|| ','|| i.ytd_bonus_depreciation|| ','|| i.bonus_depreciation_reserve|| ','|| i.ytd_impairment|| ','|| i.impairment_reserve|| ','|| i.depreciation_method|| ','|| i.life_in_months|| ','|| i.basic_rate|| ','|| i.adjusted_rate|| ','|| i.unit_of_measure|| ','|| i.production_capacity|| ','|| i.ceiling_type|| ','|| i.bonus_rule|| ','|| i.cash_generating_unit|| ','|| i.depreciation_limit_type|| ','|| i.depreciation_limit_percent|| ','|| i.depreciation_limit_amount|| ','|| i.invoice_cost|| ','|| i.cost_clearing_account_seg1|| ','||
     i.cost_clearing_account_seg2|| ','|| i.cost_clearing_account_seg3|| ','|| i.cost_clearing_account_seg4|| ','|| i.cost_clearing_account_seg5|| ','|| i.cost_clearing_account_seg6|| ','|| i.cost_clearing_account_seg7|| ','|| i.cost_clearing_account_seg8|| ','|| i.cost_clearing_account_seg9|| ','|| i.cost_clearing_account_seg10|| ','|| i.cost_clearing_account_seg11|| ','|| i.cost_clearing_account_seg12|| ','|| i.cost_clearing_account_seg13|| ','|| i.cost_clearing_account_seg14|| ','|| i.cost_clearing_account_seg15|| ','|| i.attribute1|| ','|| i.attribute2|| ','|| i.attribute3|| ','|| i.attribute4|| ','|| i.attribute5|| ','|| i.attribute6|| ','|| i.attribute7|| ','|| i.attribute8|| ','|| i.attribute9|| ','|| i.attribute10|| ','|| i.attribute11|| ','|| i.attribute12|| ','|| i.attribute13|| ','|| i.attribute14|| ','|| i.attribute15|| ','|| i.attribute_category_code|| ','|| i.context|| ','|| i.mass_property_eligible|| ','|| i.group_asset|| ','|| i.reduction_rate|| ','||
     i.apply_reduction_rate_to_addi|| ','|| i.apply_reduction_rate_to_adj|| ','|| i.apply_reduction_rate_to_reti|| ','|| i.recognize_gain_or_loss|| ','|| i.recapture_excess_reserve|| ','|| i.limit_net_proceeds_to_cost|| ','|| i.terminal_gain_or_loss|| ','|| i.tracking_method|| ','|| i.allocate_excess_depreciation|| ','|| i.depreciate_by|| ','|| i.member_rollup|| ','|| i.allo_to_full_reti_and_res_asst|| ','|| i.over_depreciate|| ','|| i.preparer|| ','|| i.sum_merged_units|| ','|| i.new_master|| ','|| i.units_to_adjust|| ','|| i.short_year|| ','|| i.conversion_date|| ','|| i.original_dep_start_date|| ','|| i.nbv_at_the_time_of_switch|| ','|| i.period_fully_reserved|| ','|| i.start_period_of_extended_dep|| ','|| i.earlier_dep_limit_type|| ','|| i.earlier_dep_limit_percent|| ','|| i.earlier_dep_limit_amount|| ','|| i.earlier_depreciation_method|| ','|| i.earlier_life_in_months|| ','|| i.earlier_basic_rate|| ','|| i.earlier_adjusted_rate|| ','|| i.lease_number|| ','|| i.revaluation_reserve
     || ','|| i.revaluation_loss|| ','|| i.reval_reser_amortization_basis|| ','|| i.impairment_loss_expense|| ','|| i.revaluation_cost_ceiling|| ','|| i.fair_value|| ','|| i.last_used_price_index_value|| ','|| i.supplier_name|| ','|| i.supplier_number|| ','|| i.purchase_order_number|| ','|| i.invoice_number|| ','|| i.invoice_voucher_number|| ','|| i.invoice_date|| ','|| i.payables_units|| ','|| i.invoice_line_number|| ','|| i.invoice_line_type|| ','|| i.invoice_line_description|| ','|| i.invoice_payment_number|| ','|| i.project_number|| ','|| i.task_number|| ','|| i.fully_depreciate);
+    */
+    IF i.cost_clearing_account_seg1 IS NOT NULL THEN
+      v_segment1                    :=NVL(xx_gl_beacon_mapping_f1(i.cost_clearing_account_seg1,'ENTITY','A'),-1);
+      IF v_segment1                  =                                                                       -1 OR v_segment1 IS NULL THEN
+        insert_miss_segments ( i.cost_clearing_account_seg1,                                                 -1, 'ENTITY', i.asset_number, 'ODUSCORP_PARENT_ASSETS_HDR',p_book_type_code);
+      END IF;
+    END IF;
+    IF i.cost_clearing_account_seg6 IS NOT NULL THEN
+      v_segment2                    :=NVL(xx_gl_beacon_mapping_f1(i.cost_clearing_account_seg6,'LOB','A'), -1);
+      IF v_segment2                  =                                                                     -1 OR v_segment2 IS NULL THEN
+        insert_miss_segments ( i.cost_clearing_account_seg6,                                               -1, 'LOB', i.asset_number, 'ODUSCORP_PARENT_ASSETS_HDR',p_book_type_code);
+      END IF;
+    END IF;
+    IF i.cost_clearing_account_seg2 IS NOT NULL THEN
+      v_segment3                    :=NVL(xx_gl_beacon_mapping_f1(i.cost_clearing_account_seg2,'COST_CENTER','A'),-1);
+      IF v_segment3                  =                                                                            -1 OR v_segment3 IS NULL THEN
+        insert_miss_segments ( i.cost_clearing_account_seg2,                                                      -1, 'COST_CENTER', i.asset_number, 'ODUSCORP_PARENT_ASSETS_HDR',p_book_type_code);
+      END IF;
+    END IF;
+    IF i.cost_clearing_account_seg3 IS NOT NULL THEN
+      v_segment4                    :=NVL(xx_gl_beacon_mapping_f1(i.cost_clearing_account_seg3,'ACCOUNT','A'), -1);
+      IF v_segment4                  =                                                                         -1 OR v_segment4 IS NULL THEN
+        insert_miss_segments ( i.cost_clearing_account_seg3,                                                   -1, 'ACCOUNT', i.asset_number, 'ODUSCORP_PARENT_ASSETS_HDR',p_book_type_code);
+      END IF;
+    END IF;
+    IF i.cost_clearing_account_seg4 IS NOT NULL THEN
+      v_segment5                    :=NVL(xx_gl_beacon_mapping_f1(i.cost_clearing_account_seg4,'LOCATION','A'), -1);
+      IF v_segment5                  =                                                                          -1 OR v_segment5 IS NULL THEN
+        insert_miss_segments ( i.cost_clearing_account_seg4,                                                    -1, 'LOCATION', i.asset_number, 'ODUSCORP_PARENT_ASSETS_HDR',p_book_type_code);
+      END IF;
+    END IF;
+    IF i.cost_clearing_account_seg5 IS NOT NULL THEN
+      v_segment6                    :=NVL(xx_gl_beacon_mapping_f1(i.cost_clearing_account_seg5,'ENTITY','A'), -1);
+      IF v_segment6                  =                                                                        -1 OR v_segment6 IS NULL THEN
+        insert_miss_segments ( i.cost_clearing_account_seg5,                                                  -1, 'ENTITY', i.asset_number, 'ODUSCORP_PARENT_ASSETS_HDR',p_book_type_code);
+      END IF;
+    END IF;
   END LOOP;
-  utl_file.fclose(lc_file_handle);
+  -- utl_file.fclose(lc_file_handle);
 EXCEPTION
 WHEN utl_file.access_denied THEN
   lc_errormsg := ( 'Error in ODUSCORP_PARENT_ASSETS_HDR procedure :- ' || ' access_denied :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.delete_failed THEN
   lc_errormsg := ( 'Error in ODUSCORP_PARENT_ASSETS_HDR procedure :- ' || ' delete_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.file_open THEN
   lc_errormsg := ( 'Error in ODUSCORP_PARENT_ASSETS_HDR procedure :- ' || ' file_open :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.internal_error THEN
   lc_errormsg := ( 'Error in ODUSCORP_PARENT_ASSETS_HDR procedure :- ' || ' internal_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_filehandle THEN
   lc_errormsg := ( 'Error in ODUSCORP_PARENT_ASSETS_HDR procedure:- ' || ' invalid_filehandle :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_filename THEN
   lc_errormsg := ( 'Error in ODUSCORP_PARENT_ASSETS_HDR procedure :- ' || ' invalid_filename :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_maxlinesize THEN
   lc_errormsg := ( 'Error in ODUSCORP_PARENT_ASSETS_HDR procedure :- ' || ' invalid_maxlinesize :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_mode THEN
   lc_errormsg := ( 'Error in ODUSCORP_PARENT_ASSETS_HDR procedure :- ' || ' invalid_mode :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_offset THEN
   lc_errormsg := ( 'Error in ODUSCORP_PARENT_ASSETS_HDR procedure :- ' || ' invalid_offset :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_operation THEN
   lc_errormsg := ( 'Error in ODUSCORP_PARENT_ASSETS_HDR procedure :- ' || ' invalid_operation :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_path THEN
   lc_errormsg := ( 'Error in ODUSCORP_PARENT_ASSETS_HDR procedure :- ' || ' invalid_path :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.read_error THEN
   lc_errormsg := ( 'Error in ODUSCORP_PARENT_ASSETS_HDR procedure :- ' || ' read_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.rename_failed THEN
   lc_errormsg := ( 'Error in ODUSCORP_PARENT_ASSETS_HDR procedure :- ' || ' rename_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.write_error THEN
   lc_errormsg := ( 'Error in ODUSCORP_PARENT_ASSETS_HDR procedure :- ' || ' write_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN OTHERS THEN
   lc_errormsg := ( 'Error in ODUSCORP_PARENT_ASSETS_HDR procedure :- ' || ' OTHERS :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
@@ -923,9 +1022,9 @@ IS
       tag_number,
       manufacturer,
       serial_number,
-      model ,
+      MODEL ,
       asset_type,
-      cost,
+      COST,
       date_placed_in_service,
       prorate_convention,
       asset_units,
@@ -986,9 +1085,8 @@ IS
       depreciation_limit_percent,
       depreciation_limit_amount,
       NULL invoice_cost,
-
-     /* Commented by Priyam for EBS to Cloud segment Change 
-     (
+      -- Commented by Priyam for EBS to Cloud segment Change
+      (
       SELECT gcc.segment1
       FROM gl_code_combinations gcc,
         fa_distribution_accounts da
@@ -1037,54 +1135,54 @@ IS
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
     AND gcc.code_combination_id = da.asset_clearing_account_ccid
-    ) cost_clearing_account_seg7,*/
-    ---Added by Priyam for EBS to Cloud segment Change 
-    (
-      SELECT xx_gl_beacon_mapping_f1(gcc.segment1,'ENTITY','A')--ENTITY
-      FROM gl_code_combinations gcc,
-        fa_distribution_accounts da
-      WHERE da.distribution_id    = fa_details.distribution_id
-      AND da.book_type_code       = fa_details.asset_book
-      AND gcc.code_combination_id = da.asset_clearing_account_ccid
-      ) cost_clearing_account_seg1,
+    ) cost_clearing_account_seg7,
+    ---Added by Priyam for EBS to Cloud segment Change
+    /* (
+    SELECT xx_gl_beacon_mapping_f1(gcc.segment1,'ENTITY','A')--ENTITY
+    FROM gl_code_combinations gcc,
+    fa_distribution_accounts da
+    WHERE da.distribution_id    = fa_details.distribution_id
+    AND da.book_type_code       = fa_details.asset_book
+    AND gcc.code_combination_id = da.asset_clearing_account_ccid
+    ) cost_clearing_account_seg1,
     (SELECT xx_gl_beacon_mapping_f1(gcc.segment6,'LOB','A')----LOB
     FROM gl_code_combinations gcc,
-      fa_distribution_accounts da
+    fa_distribution_accounts da
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
     AND gcc.code_combination_id = da.asset_clearing_account_ccid
     ) cost_clearing_account_seg2,
     (SELECT xx_gl_beacon_mapping_f1(gcc.segment2,'COST_CENTER','A')------COST CENTER
     FROM gl_code_combinations gcc,
-      fa_distribution_accounts da
+    fa_distribution_accounts da
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
     AND gcc.code_combination_id = da.asset_clearing_account_ccid
     ) cost_clearing_account_seg3,
     (SELECT xx_gl_beacon_mapping_f1(gcc.segment3,'ACCOUNT','A')----ACCOUNT
     FROM gl_code_combinations gcc,
-      fa_distribution_accounts da
+    fa_distribution_accounts da
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
     AND gcc.code_combination_id = da.asset_clearing_account_ccid
     ) cost_clearing_account_seg4,
     (SELECT xx_gl_beacon_mapping_f1(gcc.segment4,'LOCATION','A')---LOCATION
     FROM gl_code_combinations gcc,
-      fa_distribution_accounts da
+    fa_distribution_accounts da
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
     AND gcc.code_combination_id = da.asset_clearing_account_ccid
     ) cost_clearing_account_seg5,
     (SELECT xx_gl_beacon_mapping_f1(gcc.segment5,'ENTITY','A')-----INTERCOMP
     FROM gl_code_combinations gcc,
-      fa_distribution_accounts da
+    fa_distribution_accounts da
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
     AND gcc.code_combination_id = da.asset_clearing_account_ccid
     ) cost_clearing_account_seg6,
-   null cost_clearing_account_seg7,
-   ------Changes end
-   NULL cost_clearing_account_seg8,
+    NULL cost_clearing_account_seg7,*/
+    ------Changes end
+    NULL cost_clearing_account_seg8,
     NULL cost_clearing_account_seg9,
     NULL cost_clearing_account_seg10,
     NULL cost_clearing_account_seg11,
@@ -1151,7 +1249,7 @@ IS
     NULL                            ATTRIBUTE_DATE5,
     */
     attribute_category_code,
-    NULL context,
+    NULL CONTEXT,
     /*
     NULL                            TH_ATTRIBUTE1,
     NULL                            TH_ATTRIBUTE2,
@@ -1331,9 +1429,9 @@ IS
       tag_number,
       manufacturer,
       serial_number,
-      model ,
+      MODEL ,
       asset_type,
-      cost,
+      COST,
       date_placed_in_service,
       prorate_convention,
       asset_units,
@@ -1407,9 +1505,9 @@ IS
         fab.tag_number tag_number,
         fab.manufacturer_name manufacturer,
         fab.serial_number serial_number,
-        fab.model_number model ,
+        fab.model_number MODEL ,
         fab.asset_type asset_type,
-        fb.cost cost,
+        fb.COST COST,
         TO_CHAR(fb.date_placed_in_service,'YYYY/MM/DD') date_placed_in_service,
         fb.prorate_convention_code prorate_convention,
         fab.current_units asset_units,
@@ -1444,9 +1542,9 @@ IS
         fb.salvage_type salvage_value_type,
         fb.salvage_value salvage_value_amount,
         fb.percent_salvage_value salvage_value_percent,
-       -- ds.ytd_deprn ytd_depreciation,
-       --Added by priyam
-       decode(to_number(to_char(ds.deprn_run_date,'RRRR')),2019,ds.YTD_DEPRN,0) YTD_Depreciation,
+        -- ds.ytd_deprn ytd_depreciation,
+        --Added by priyam
+        DECODE(to_number(TO_CHAR(ds.deprn_run_date,'RRRR')),2019,ds.YTD_DEPRN,0) YTD_Depreciation,
         ds.deprn_reserve depreciation_reserve,
         ds.bonus_ytd_deprn ytd_bonus_depreciation,
         ds.bonus_deprn_reserve bonus_depreciation_reserve,
@@ -1483,8 +1581,8 @@ IS
         fb.prior_adjusted_rate earlier_adjusted_rate,
         ds.distribution_id,
         --fb.book_type_code,
-        rank() over (partition BY ds.book_type_code, ds.asset_id order by ds.distribution_id DESC ) distidrank,
-        rank() over (partition BY ds.book_type_code, ds.asset_id order by ds.period_counter DESC) periodcounterrank
+        rank() OVER (PARTITION BY ds.book_type_code, ds.asset_id ORDER BY ds.distribution_id DESC ) distidrank,
+        rank() OVER (PARTITION BY ds.book_type_code, ds.asset_id ORDER BY ds.period_counter DESC) periodcounterrank
       FROM fa_books fb,
         xx_fa_status xfs,
         fa_book_controls corpbook,
@@ -1495,14 +1593,14 @@ IS
         fa_transaction_headers fth
       WHERE 1                    =1
       AND xfs.book_type_code     =p_book_type_code
-      /*AND ( asset_status         ='ACTIVE'
+     /* AND ( asset_status         ='ACTIVE'
       OR (asset_status           ='RETIRED'
       AND xfs.date_effective     >'31-DEC-18') )*/
       AND fb.book_type_code      =xfs.book_type_code
       AND fb.asset_id            = xfs.asset_id
       AND corpbook.book_type_code=fb.book_type_code
       AND corpbook.book_class    = 'CORPORATE'
-      AND TRUNC (sysdate) BETWEEN TRUNC (NVL (fb.date_effective, sysdate)) AND TRUNC (NVL (fb.date_ineffective, sysdate))
+      AND TRUNC (SYSDATE) BETWEEN TRUNC (NVL (fb.date_effective, SYSDATE)) AND TRUNC (NVL (fb.date_ineffective, SYSDATE))
       AND fab.asset_id=fb.asset_id
       AND NOT EXISTS
         (SELECT 'x' FROM fa_additions_b WHERE parent_asset_id = fab.asset_id
@@ -1524,11 +1622,18 @@ IS
   lc_file_handle utl_file.file_type;
   lv_line_count NUMBER;
   -- l_file_path   VARCHAR(200);
-  l_file_name  VARCHAR2(500);
-  lv_col_title VARCHAR2(5000);
-  l_file_path  VARCHAR2(500):='XXFIN_OUTBOUND';
-  lc_errormsg  varchar2(1000);----            VARCHAR2(1000) := NULL;
-  v_book_type_code varchar2(100);
+  l_file_name      VARCHAR2(500);
+  lv_col_title     VARCHAR2(5000);
+  l_file_path      VARCHAR2(500):='XXFIN_OUTBOUND';
+  lc_errormsg      VARCHAR2(1000);----            VARCHAR2(1000) := NULL;
+  v_book_type_code VARCHAR2(100);
+  v_segment1       VARCHAR2(50);
+  v_segment2       VARCHAR2(50);
+  v_segment3       VARCHAR2(50);
+  v_segment4       VARCHAR2(50);
+  v_segment5       VARCHAR2(50);
+  v_segment6       VARCHAR2(50);
+  v_segment7       VARCHAR2(50);
 BEGIN
   /* BEGIN
   SELECT directory_path
@@ -1539,116 +1644,152 @@ BEGIN
   WHEN OTHERS THEN
   l_file_path := NULL;
   END;*/
-  print_debug_msg ('Package ODUSCORP_CHILD_ASSETS_HDR', true);
-  print_debug_msg ('P_BOOK_TYPE_CODE '||p_book_type_code, true);
-
-  v_book_type_code :=replace(replace (replace(p_book_type_code,'OD US ','US_'),'OD CA ','CA_'),' ','_');
-  l_file_name    := 'Child_assets_Hdr_'||v_book_type_code|| '.csv';
-  lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
-  lv_col_title   :='INTERFACE_LINE_NUMBER'|| ','|| 'ASSET_BOOK'|| ','|| 'TRANSACTION_NAME'|| ','|| 'ASSET_NUMBER'|| ','|| 'ASSET_DESCRIPTION'|| ','|| 'TAG_NUMBER'|| ','|| 'MANUFACTURER'|| ','|| 'SERIAL_NUMBER'|| ','|| 'MODEL'|| ','|| 'ASSET_TYPE'|| ','|| 'COST'|| ','|| 'DATE_PLACED_IN_SERVICE'|| ','|| 'PRORATE_CONVENTION'|| ','|| 'ASSET_UNITS'|| ','|| 'ASSET_CATEGORY_SEGMENT1'|| ','|| 'ASSET_CATEGORY_SEGMENT2'|| ','|| 'ASSET_CATEGORY_SEGMENT3'|| ','|| 'ASSET_CATEGORY_SEGMENT4'|| ','|| 'ASSET_CATEGORY_SEGMENT5'|| ','|| 'ASSET_CATEGORY_SEGMENT6'|| ','|| 'ASSET_CATEGORY_SEGMENT7'|| ','|| 'POSTING_STATUS'|| ','|| 'QUEUE_NAME'|| ','|| 'FEEDER_SYSTEM'|| ','|| 'PARENT_ASSET'|| ','|| 'ADD_TO_ASSET'|| ','|| 'ASSET_KEY_SEGMENT1'|| ','|| 'ASSET_KEY_SEGMENT2'|| ','|| 'ASSET_KEY_SEGMENT3'|| ','|| 'ASSET_KEY_SEGMENT4'|| ','|| 'ASSET_KEY_SEGMENT5'|| ','|| 'ASSET_KEY_SEGMENT6'|| ','|| 'ASSET_KEY_SEGMENT7'|| ','|| 'ASSET_KEY_SEGMENT8'|| ','|| 'ASSET_KEY_SEGMENT9'|| ','|| 'ASSET_KEY_SEGMENT10'|| ','
-  || 'IN_PHYSICAL_INVENTORY'|| ','|| 'PROPERTY_TYPE'|| ','|| 'PROPERTY_CLASS'|| ','|| 'IN_USE'|| ','|| 'OWNERSHIP'|| ','|| 'BOUGHT'|| ','|| 'MATERIAL_INDICATOR'|| ','|| 'COMMITMENT'|| ','|| 'INVESTMENT_LAW'|| ','|| 'AMORTIZE'|| ','|| 'AMORTIZATION_START_DATE'|| ','|| 'DEPRECIATE'|| ','|| 'SALVAGE_VALUE_TYPE'|| ','|| 'SALVAGE_VALUE_AMOUNT'|| ','|| 'SALVAGE_VALUE_PERCENT'|| ','|| 'YTD_DEPRECIATION'|| ','|| 'DEPRECIATION_RESERVE'|| ','|| 'YTD_BONUS_DEPRECIATION'|| ','|| 'BONUS_DEPRECIATION_RESERVE'|| ','|| 'YTD_IMPAIRMENT'|| ','|| 'IMPAIRMENT_RESERVE'|| ','|| 'DEPRECIATION_METHOD'|| ','|| 'LIFE_IN_MONTHS'|| ','|| 'BASIC_RATE'|| ','|| 'ADJUSTED_RATE'|| ','|| 'UNIT_OF_MEASURE'|| ','|| 'PRODUCTION_CAPACITY'|| ','|| 'CEILING_TYPE'|| ','|| 'BONUS_RULE'|| ','|| 'CASH_GENERATING_UNIT'|| ','|| 'DEPRECIATION_LIMIT_TYPE'|| ','|| 'DEPRECIATION_LIMIT_PERCENT'|| ','|| 'DEPRECIATION_LIMIT_AMOUNT'|| ','|| 'INVOICE_COST'|| ','|| 'COST_CLEARING_ACCOUNT_SEG1'|| ','|| 'COST_CLEARING_ACCOUNT_SEG2'|| ',' ||
+  print_debug_msg ('Package ODUSCORP_CHILD_ASSETS_HDR', TRUE);
+  print_debug_msg ('P_BOOK_TYPE_CODE '||p_book_type_code, TRUE);
+  v_book_type_code :=REPLACE(REPLACE (REPLACE(p_book_type_code,'OD US ','US_'),'OD CA ','CA_'),' ','_');
+  l_file_name      := 'Child_assets_Hdr_'||v_book_type_code|| '.csv';
+  -- lc_file_handle   := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
+  lv_col_title :='INTERFACE_LINE_NUMBER'|| ','|| 'ASSET_BOOK'|| ','|| 'TRANSACTION_NAME'|| ','|| 'ASSET_NUMBER'|| ','|| 'ASSET_DESCRIPTION'|| ','|| 'TAG_NUMBER'|| ','|| 'MANUFACTURER'|| ','|| 'SERIAL_NUMBER'|| ','|| 'MODEL'|| ','|| 'ASSET_TYPE'|| ','|| 'COST'|| ','|| 'DATE_PLACED_IN_SERVICE'|| ','|| 'PRORATE_CONVENTION'|| ','|| 'ASSET_UNITS'|| ','|| 'ASSET_CATEGORY_SEGMENT1'|| ','|| 'ASSET_CATEGORY_SEGMENT2'|| ','|| 'ASSET_CATEGORY_SEGMENT3'|| ','|| 'ASSET_CATEGORY_SEGMENT4'|| ','|| 'ASSET_CATEGORY_SEGMENT5'|| ','|| 'ASSET_CATEGORY_SEGMENT6'|| ','|| 'ASSET_CATEGORY_SEGMENT7'|| ','|| 'POSTING_STATUS'|| ','|| 'QUEUE_NAME'|| ','|| 'FEEDER_SYSTEM'|| ','|| 'PARENT_ASSET'|| ','|| 'ADD_TO_ASSET'|| ','|| 'ASSET_KEY_SEGMENT1'|| ','|| 'ASSET_KEY_SEGMENT2'|| ','|| 'ASSET_KEY_SEGMENT3'|| ','|| 'ASSET_KEY_SEGMENT4'|| ','|| 'ASSET_KEY_SEGMENT5'|| ','|| 'ASSET_KEY_SEGMENT6'|| ','|| 'ASSET_KEY_SEGMENT7'|| ','|| 'ASSET_KEY_SEGMENT8'|| ','|| 'ASSET_KEY_SEGMENT9'|| ','|| 'ASSET_KEY_SEGMENT10'|| ',' ||
+  'IN_PHYSICAL_INVENTORY'|| ','|| 'PROPERTY_TYPE'|| ','|| 'PROPERTY_CLASS'|| ','|| 'IN_USE'|| ','|| 'OWNERSHIP'|| ','|| 'BOUGHT'|| ','|| 'MATERIAL_INDICATOR'|| ','|| 'COMMITMENT'|| ','|| 'INVESTMENT_LAW'|| ','|| 'AMORTIZE'|| ','|| 'AMORTIZATION_START_DATE'|| ','|| 'DEPRECIATE'|| ','|| 'SALVAGE_VALUE_TYPE'|| ','|| 'SALVAGE_VALUE_AMOUNT'|| ','|| 'SALVAGE_VALUE_PERCENT'|| ','|| 'YTD_DEPRECIATION'|| ','|| 'DEPRECIATION_RESERVE'|| ','|| 'YTD_BONUS_DEPRECIATION'|| ','|| 'BONUS_DEPRECIATION_RESERVE'|| ','|| 'YTD_IMPAIRMENT'|| ','|| 'IMPAIRMENT_RESERVE'|| ','|| 'DEPRECIATION_METHOD'|| ','|| 'LIFE_IN_MONTHS'|| ','|| 'BASIC_RATE'|| ','|| 'ADJUSTED_RATE'|| ','|| 'UNIT_OF_MEASURE'|| ','|| 'PRODUCTION_CAPACITY'|| ','|| 'CEILING_TYPE'|| ','|| 'BONUS_RULE'|| ','|| 'CASH_GENERATING_UNIT'|| ','|| 'DEPRECIATION_LIMIT_TYPE'|| ','|| 'DEPRECIATION_LIMIT_PERCENT'|| ','|| 'DEPRECIATION_LIMIT_AMOUNT'|| ','|| 'INVOICE_COST'|| ','|| 'COST_CLEARING_ACCOUNT_SEG1'|| ','|| 'COST_CLEARING_ACCOUNT_SEG2'|| ',' ||
   'COST_CLEARING_ACCOUNT_SEG3'|| ','|| 'COST_CLEARING_ACCOUNT_SEG4'|| ','|| 'COST_CLEARING_ACCOUNT_SEG5'|| ','|| 'COST_CLEARING_ACCOUNT_SEG6'|| ','|| 'COST_CLEARING_ACCOUNT_SEG7'|| ','|| 'COST_CLEARING_ACCOUNT_SEG8'|| ','|| 'COST_CLEARING_ACCOUNT_SEG9'|| ','|| 'COST_CLEARING_ACCOUNT_SEG10'|| ','|| 'COST_CLEARING_ACCOUNT_SEG11'|| ','|| 'COST_CLEARING_ACCOUNT_SEG12'|| ','|| 'COST_CLEARING_ACCOUNT_SEG13'|| ','|| 'COST_CLEARING_ACCOUNT_SEG14'|| ','|| 'COST_CLEARING_ACCOUNT_SEG15'|| ','|| 'ATTRIBUTE1'|| ','|| 'ATTRIBUTE2'|| ','|| 'ATTRIBUTE3'|| ','|| 'ATTRIBUTE4'|| ','|| 'ATTRIBUTE5'|| ','|| 'ATTRIBUTE6'|| ','|| 'ATTRIBUTE7'|| ','|| 'ATTRIBUTE8'|| ','|| 'ATTRIBUTE9'|| ','|| 'ATTRIBUTE10'|| ','|| 'ATTRIBUTE11'|| ','|| 'ATTRIBUTE12'|| ','|| 'ATTRIBUTE13'|| ','|| 'ATTRIBUTE14'|| ','|| 'ATTRIBUTE15'|| ','|| 'ATTRIBUTE_CATEGORY_CODE'|| ','|| 'CONTEXT'|| ','|| 'MASS_PROPERTY_ELIGIBLE'|| ','|| 'GROUP_ASSET'|| ','|| 'REDUCTION_RATE'|| ','|| 'APPLY_REDUCTION_RATE_TO_ADDI'|| ','||
   'APPLY_REDUCTION_RATE_TO_ADJ'|| ','|| 'APPLY_REDUCTION_RATE_TO_RETI'|| ','|| 'RECOGNIZE_GAIN_OR_LOSS'|| ','|| 'RECAPTURE_EXCESS_RESERVE'|| ','|| 'LIMIT_NET_PROCEEDS_TO_COST'|| ','|| 'TERMINAL_GAIN_OR_LOSS'|| ','|| 'TRACKING_METHOD'|| ','|| 'ALLOCATE_EXCESS_DEPRECIATION'|| ','|| 'DEPRECIATE_BY'|| ','|| 'MEMBER_ROLLUP'|| ','|| 'ALLO_TO_FULL_RETI_AND_RES_ASST'|| ','|| 'OVER_DEPRECIATE'|| ','|| 'PREPARER'|| ','|| 'SUM_MERGED_UNITS'|| ','|| 'NEW_MASTER'|| ','|| 'UNITS_TO_ADJUST'|| ','|| 'SHORT_YEAR'|| ','|| 'CONVERSION_DATE'|| ','|| 'ORIGINAL_DEP_START_DATE'|| ','|| 'NBV_AT_THE_TIME_OF_SWITCH'|| ','|| 'PERIOD_FULLY_RESERVED'|| ','|| 'START_PERIOD_OF_EXTENDED_DEP'|| ','|| 'EARLIER_DEP_LIMIT_TYPE'|| ','|| 'EARLIER_DEP_LIMIT_PERCENT'|| ','|| 'EARLIER_DEP_LIMIT_AMOUNT'|| ','|| 'EARLIER_DEPRECIATION_METHOD'|| ','|| 'EARLIER_LIFE_IN_MONTHS'|| ','|| 'EARLIER_BASIC_RATE'|| ','|| 'EARLIER_ADJUSTED_RATE'|| ','|| 'LEASE_NUMBER'|| ','|| 'REVALUATION_RESERVE'|| ','|| 'REVALUATION_LOSS'|| ','||
   'REVAL_RESER_AMORTIZATION_BASIS'|| ','|| 'IMPAIRMENT_LOSS_EXPENSE'|| ','|| 'REVALUATION_COST_CEILING'|| ','|| 'FAIR_VALUE'|| ','|| 'LAST_USED_PRICE_INDEX_VALUE'|| ','|| 'SUPPLIER_NAME'|| ','|| 'SUPPLIER_NUMBER'|| ','|| 'PURCHASE_ORDER_NUMBER'|| ','|| 'INVOICE_NUMBER'|| ','|| 'INVOICE_VOUCHER_NUMBER'|| ','|| 'INVOICE_DATE'|| ','|| 'PAYABLES_UNITS'|| ','|| 'INVOICE_LINE_NUMBER'|| ','|| 'INVOICE_LINE_TYPE'|| ','|| 'INVOICE_LINE_DESCRIPTION'|| ','|| 'INVOICE_PAYMENT_NUMBER'|| ','|| 'PROJECT_NUMBER'|| ','|| 'TASK_NUMBER'|| ','|| 'FULLY_DEPRECIATE';
-  utl_file.put_line(lc_file_handle,lv_col_title);
+  --utl_file.put_line(lc_file_handle,lv_col_title);
   FOR i IN c_child_asset_hdr
   LOOP
     ---UTL_FILE.put_line(lc_file_handle,'HI');
-    utl_file.put_line(lc_file_handle,i.interface_line_number|| ','|| i.asset_book|| ','|| i.transaction_name|| ','|| i.asset_number|| ','|| i.asset_description|| ','|| i.tag_number|| ','|| i.manufacturer|| ','|| i.serial_number|| ','|| i.model|| ','|| i.asset_type|| ','|| i.cost|| ','|| i.date_placed_in_service|| ','|| i.prorate_convention|| ','|| i.asset_units|| ','|| i.asset_category_segment1|| ','|| i.asset_category_segment2|| ','|| i.asset_category_segment3|| ','|| i.asset_category_segment4|| ','|| i.asset_category_segment5|| ','|| i.asset_category_segment6|| ','|| i.asset_category_segment7|| ','|| i.posting_status|| ','|| i.queue_name|| ','|| i.feeder_system|| ','|| i.parent_asset|| ','|| i.add_to_asset|| ','|| i.asset_key_segment1|| ','|| i.asset_key_segment2|| ','|| i.asset_key_segment3|| ','|| i.asset_key_segment4|| ','|| i.asset_key_segment5|| ','|| i.asset_key_segment6|| ','|| i.asset_key_segment7|| ','|| i.asset_key_segment8|| ','|| i.asset_key_segment9|| ','||
+    /*  utl_file.put_line(lc_file_handle,i.interface_line_number|| ','|| i.asset_book|| ','|| i.transaction_name|| ','|| i.asset_number|| ','|| i.asset_description|| ','|| i.tag_number|| ','|| i.manufacturer|| ','|| i.serial_number|| ','|| i.model|| ','|| i.asset_type|| ','|| i.cost|| ','|| i.date_placed_in_service|| ','|| i.prorate_convention|| ','|| i.asset_units|| ','|| i.asset_category_segment1|| ','|| i.asset_category_segment2|| ','|| i.asset_category_segment3|| ','|| i.asset_category_segment4|| ','|| i.asset_category_segment5|| ','|| i.asset_category_segment6|| ','|| i.asset_category_segment7|| ','|| i.posting_status|| ','|| i.queue_name|| ','|| i.feeder_system|| ','|| i.parent_asset|| ','|| i.add_to_asset|| ','|| i.asset_key_segment1|| ','|| i.asset_key_segment2|| ','|| i.asset_key_segment3|| ','|| i.asset_key_segment4|| ','|| i.asset_key_segment5|| ','|| i.asset_key_segment6|| ','|| i.asset_key_segment7|| ','|| i.asset_key_segment8|| ','|| i.asset_key_segment9|| ','||
     i.asset_key_segment10|| ','|| i.in_physical_inventory|| ','|| i.property_type|| ','|| i.property_class|| ','|| i.in_use|| ','|| i.ownership|| ','|| i.bought|| ','|| i.material_indicator|| ','|| i.commitment|| ','|| i.investment_law|| ','|| i.amortize|| ','|| i.amortization_start_date|| ','|| i.depreciate|| ','|| i.salvage_value_type|| ','|| i.salvage_value_amount|| ','|| i.salvage_value_percent|| ','|| i.ytd_depreciation|| ','|| i.depreciation_reserve|| ','|| i.ytd_bonus_depreciation|| ','|| i.bonus_depreciation_reserve|| ','|| i.ytd_impairment|| ','|| i.impairment_reserve|| ','|| i.depreciation_method|| ','|| i.life_in_months|| ','|| i.basic_rate|| ','|| i.adjusted_rate|| ','|| i.unit_of_measure|| ','|| i.production_capacity|| ','|| i.ceiling_type|| ','|| i.bonus_rule|| ','|| i.cash_generating_unit|| ','|| i.depreciation_limit_type|| ','|| i.depreciation_limit_percent|| ','|| i.depreciation_limit_amount|| ','|| i.invoice_cost|| ','|| i.cost_clearing_account_seg1|| ','||
     i.cost_clearing_account_seg2|| ','|| i.cost_clearing_account_seg3|| ','|| i.cost_clearing_account_seg4|| ','|| i.cost_clearing_account_seg5|| ','|| i.cost_clearing_account_seg6|| ','|| i.cost_clearing_account_seg7|| ','|| i.cost_clearing_account_seg8|| ','|| i.cost_clearing_account_seg9|| ','|| i.cost_clearing_account_seg10|| ','|| i.cost_clearing_account_seg11|| ','|| i.cost_clearing_account_seg12|| ','|| i.cost_clearing_account_seg13|| ','|| i.cost_clearing_account_seg14|| ','|| i.cost_clearing_account_seg15|| ','|| i.attribute1|| ','|| i.attribute2|| ','|| i.attribute3|| ','|| i.attribute4|| ','|| i.attribute5|| ','|| i.attribute6|| ','|| i.attribute7|| ','|| i.attribute8|| ','|| i.attribute9|| ','|| i.attribute10|| ','|| i.attribute11|| ','|| i.attribute12|| ','|| i.attribute13|| ','|| i.attribute14|| ','|| i.attribute15|| ','|| i.attribute_category_code|| ','|| i.context|| ','|| i.mass_property_eligible|| ','|| i.group_asset|| ','|| i.reduction_rate|| ','||
     i.apply_reduction_rate_to_addi|| ','|| i.apply_reduction_rate_to_adj|| ','|| i.apply_reduction_rate_to_reti|| ','|| i.recognize_gain_or_loss|| ','|| i.recapture_excess_reserve|| ','|| i.limit_net_proceeds_to_cost|| ','|| i.terminal_gain_or_loss|| ','|| i.tracking_method|| ','|| i.allocate_excess_depreciation|| ','|| i.depreciate_by|| ','|| i.member_rollup|| ','|| i.allo_to_full_reti_and_res_asst|| ','|| i.over_depreciate|| ','|| i.preparer|| ','|| i.sum_merged_units|| ','|| i.new_master|| ','|| i.units_to_adjust|| ','|| i.short_year|| ','|| i.conversion_date|| ','|| i.original_dep_start_date|| ','|| i.nbv_at_the_time_of_switch|| ','|| i.period_fully_reserved|| ','|| i.start_period_of_extended_dep|| ','|| i.earlier_dep_limit_type|| ','|| i.earlier_dep_limit_percent|| ','|| i.earlier_dep_limit_amount|| ','|| i.earlier_depreciation_method|| ','|| i.earlier_life_in_months|| ','|| i.earlier_basic_rate|| ','|| i.earlier_adjusted_rate|| ','|| i.lease_number|| ','|| i.revaluation_reserve
     || ','|| i.revaluation_loss|| ','|| i.reval_reser_amortization_basis|| ','|| i.impairment_loss_expense|| ','|| i.revaluation_cost_ceiling|| ','|| i.fair_value|| ','|| i.last_used_price_index_value|| ','|| i.supplier_name|| ','|| i.supplier_number|| ','|| i.purchase_order_number|| ','|| i.invoice_number|| ','|| i.invoice_voucher_number|| ','|| i.invoice_date|| ','|| i.payables_units|| ','|| i.invoice_line_number|| ','|| i.invoice_line_type|| ','|| i.invoice_line_description|| ','|| i.invoice_payment_number|| ','|| i.project_number|| ','|| i.task_number|| ','|| i.fully_depreciate);
+    */
+    IF i.cost_clearing_account_seg1 IS NOT NULL THEN
+      v_segment1                    :=NVL(xx_gl_beacon_mapping_f1(i.cost_clearing_account_seg1,'ENTITY','A'),-1);
+      IF v_segment1                  =                                                                       -1 OR v_segment1 IS NULL THEN
+        insert_miss_segments ( i.cost_clearing_account_seg1,                                                 -1, 'ENTITY', i.asset_number, 'ODUSCORP_CHILD_ASSETS_HDR',p_book_type_code);
+      END IF;
+    END IF;
+    IF i.cost_clearing_account_seg6 IS NOT NULL THEN
+      v_segment2                    :=NVL(xx_gl_beacon_mapping_f1(i.cost_clearing_account_seg6,'LOB','A'), -1);
+      IF v_segment2                  =                                                                     -1 OR v_segment2 IS NULL THEN
+        insert_miss_segments ( i.cost_clearing_account_seg6,                                               -1, 'LOB', i.asset_number, 'ODUSCORP_CHILD_ASSETS_HDR',p_book_type_code);
+      END IF;
+    END IF;
+    IF i.cost_clearing_account_seg2 IS NOT NULL THEN
+      v_segment3                    :=NVL(xx_gl_beacon_mapping_f1(i.cost_clearing_account_seg2,'COST_CENTER','A'),-1);
+      IF v_segment3                  =                                                                            -1 OR v_segment3 IS NULL THEN
+        insert_miss_segments ( i.cost_clearing_account_seg2,                                                      -1, 'COST_CENTER', i.asset_number, 'ODUSCORP_CHILD_ASSETS_HDR',p_book_type_code);
+      END IF;
+    END IF;
+    IF i.cost_clearing_account_seg3 IS NOT NULL THEN
+      v_segment4                    :=NVL(xx_gl_beacon_mapping_f1(i.cost_clearing_account_seg3,'ACCOUNT','A'), -1);
+      IF v_segment4                  =                                                                         -1 OR v_segment4 IS NULL THEN
+        insert_miss_segments ( i.cost_clearing_account_seg3,                                                   -1, 'ACCOUNT', i.asset_number, 'ODUSCORP_CHILD_ASSETS_HDR',p_book_type_code);
+      END IF;
+    END IF;
+    IF i.cost_clearing_account_seg4 IS NOT NULL THEN
+      v_segment5                    :=NVL(xx_gl_beacon_mapping_f1(i.cost_clearing_account_seg4,'LOCATION','A'), -1);
+      IF v_segment5                  =                                                                          -1 OR v_segment5 IS NULL THEN
+        insert_miss_segments ( i.cost_clearing_account_seg4,                                                    -1, 'LOCATION', i.asset_number, 'ODUSCORP_CHILD_ASSETS_HDR',p_book_type_code);
+      END IF;
+    END IF;
+    IF i.cost_clearing_account_seg5 IS NOT NULL THEN
+      v_segment6                    :=NVL(xx_gl_beacon_mapping_f1(i.cost_clearing_account_seg5,'ENTITY','A'), -1);
+      IF v_segment6                  =                                                                        -1 OR v_segment6 IS NULL THEN
+        insert_miss_segments ( i.cost_clearing_account_seg5,                                                  -1, 'ENTITY', i.asset_number, 'ODUSCORP_CHILD_ASSETS_HDR',p_book_type_code);
+      END IF;
+    END IF;
   END LOOP;
-  utl_file.fclose(lc_file_handle);
+  --utl_file.fclose(lc_file_handle);
 EXCEPTION
 WHEN utl_file.access_denied THEN
   lc_errormsg := ( 'Error in ODUSCORP_CHILD_assets_Hdr procedure :- ' || ' access_denied :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.delete_failed THEN
   lc_errormsg := ( 'Error in ODUSCORP_CHILD_assets_Hdr procedure :- ' || ' delete_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.file_open THEN
   lc_errormsg := ( 'Error in ODUSCORP_CHILD_assets_Hdr procedure :- ' || ' file_open :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.internal_error THEN
   lc_errormsg := ( 'Error in ODUSCORP_CHILD_assets_Hdr procedure :- ' || ' internal_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_filehandle THEN
   lc_errormsg := ( 'Error in ODUSCORP_CHILD_assets_Hdr procedure:- ' || ' invalid_filehandle :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_filename THEN
   lc_errormsg := ( 'Error in ODUSCORP_CHILD_assets_Hdr procedure :- ' || ' invalid_filename :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_maxlinesize THEN
   lc_errormsg := ( 'Error in ODUSCORP_CHILD_assets_Hdr procedure :- ' || ' invalid_maxlinesize :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_mode THEN
   lc_errormsg := ( 'Error in ODUSCORP_CHILD_assets_Hdr procedure :- ' || ' invalid_mode :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_offset THEN
   lc_errormsg := ( 'Error in ODUSCORP_CHILD_assets_Hdr procedure :- ' || ' invalid_offset :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_operation THEN
   lc_errormsg := ( 'Error in ODUSCORP_CHILD_assets_Hdr procedure :- ' || ' invalid_operation :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_path THEN
   lc_errormsg := ( 'Error in ODUSCORP_CHILD_assets_Hdr procedure :- ' || ' invalid_path :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.read_error THEN
   lc_errormsg := ( 'Error in ODUSCORP_CHILD_assets_Hdr procedure :- ' || ' read_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.rename_failed THEN
   lc_errormsg := ( 'Error in ODUSCORP_CHILD_assets_Hdr procedure :- ' || ' rename_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.write_error THEN
   lc_errormsg := ( 'Error in ODUSCORP_CHILD_assets_Hdr procedure :- ' || ' write_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN OTHERS THEN
   lc_errormsg := ( 'Error in ODUSCORP_CHILD_assets_Hdr procedure :- ' || ' OTHERS :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
@@ -1670,8 +1811,21 @@ IS
       asset_location_segment6 "ASSET_LOCATION_SEGMENT5",
       SUBSTR(asset_location_segment5,2) "ASSET_LOCATION_SEGMENT6",
       asset_location_segment7,
-      ----Changed  by Priyam for EBS to Cloud segment Change 
-      exp_acct_segment1
+      /* exp_acct_segment1
+      || '.'
+      || exp_acct_segment2
+      || '.'
+      || exp_acct_segment3
+      || '.'
+      || exp_acct_segment4
+      || '.'
+      || exp_acct_segment5
+      || '.'
+      || exp_acct_segment6
+      || '.'
+      || exp_acct_segment7*/
+      ----Changed  by Priyam for EBS to Cloud segment Change
+      /*  exp_acct_segment1
       || '.'
       || exp_acct_segment6
       || '.'
@@ -1681,8 +1835,13 @@ IS
       || '.'
       || exp_acct_segment4
       || '.'
-      || exp_acct_segment5
-       expense_account_segment
+      || exp_acct_segment5 */
+      exp_acct_segment1,
+      exp_acct_segment2,
+      exp_acct_segment3,
+      exp_acct_segment4,
+      exp_acct_segment5,
+      exp_acct_segment6 ---expense_account_segment
     FROM
       (SELECT interface_line_number,
         units_assigned,
@@ -1694,16 +1853,23 @@ IS
         asset_location_segment5,
         asset_location_segment6,
         asset_location_segment7,
-     ---   Changed by Priyam for EBS to Cloud segment Change 
-        xx_gl_beacon_mapping_f1(exp_acct_segment1,'ENTITY','A') exp_acct_segment1,
+        ---   Changed by Priyam for EBS to Cloud segment Change
+        /* xx_gl_beacon_mapping_f1(exp_acct_segment1,'ENTITY','A') exp_acct_segment1,
         xx_gl_beacon_mapping_f1(exp_acct_segment2,'COST_CENTER','A') exp_acct_segment2,
         xx_gl_beacon_mapping_f1(exp_acct_segment3,'ACCOUNT','A') exp_acct_segment3,
         xx_gl_beacon_mapping_f1(exp_acct_segment4,'LOCATION','A') exp_acct_segment4,
         xx_gl_beacon_mapping_f1(exp_acct_segment5,'ENTITY','A') exp_acct_segment5,
-        
         xx_gl_beacon_mapping_f1(exp_acct_segment6,'LOB','A') exp_acct_segment6,
+        */
         ----ENDed by priyam
+        exp_acct_segment1,
+        exp_acct_segment2,
+        exp_acct_segment3,
+        exp_acct_segment4,
+        exp_acct_segment5,
+        exp_acct_segment6,
         exp_acct_segment7,
+        --------
         exp_acct_segment8,
         exp_acct_segment9,
         exp_acct_segment10,
@@ -1770,8 +1936,8 @@ IS
           gcc.segment28 exp_acct_segment28,
           gcc.segment29 exp_acct_segment29,
           gcc.segment30 exp_acct_segment30,
-          rank() over (partition BY ds.book_type_code, ds.asset_id order by ds.distribution_id DESC ) distidrank,
-          rank() over (partition BY ds.book_type_code, ds.asset_id order by ds.period_counter DESC) periodcounterrank
+          rank() OVER (PARTITION BY ds.book_type_code, ds.asset_id ORDER BY ds.distribution_id DESC ) distidrank,
+          rank() OVER (PARTITION BY ds.book_type_code, ds.asset_id ORDER BY ds.period_counter DESC) periodcounterrank
         FROM fa_deprn_detail ds,
           fa_transaction_headers fth,
           fa_categories_b fcb,
@@ -1782,11 +1948,11 @@ IS
           xx_fa_status xfs,
           fa_book_controls corpbook,
           fa_additions_b fab
-        WHERE 1                    =1
-        AND xfs.book_type_code     =p_book_type_code
-/*AND ( asset_status         ='ACTIVE'
-        OR (asset_status           ='RETIRED'
-        AND xfs.date_effective     >'31-DEC-18')  )*/
+        WHERE 1                =1
+        AND xfs.book_type_code =p_book_type_code
+          /* AND ( asset_status         ='ACTIVE'
+          OR (asset_status           ='RETIRED'
+          AND xfs.date_effective     >'31-DEC-18') )*/
         AND corpbook.book_type_code=xfs.book_type_code
         AND corpbook.book_class    = 'CORPORATE'
         AND fab.asset_id           =xfs.asset_id
@@ -1797,7 +1963,7 @@ IS
           )
       AND fb.book_type_code=xfs.book_type_code
       AND fb.asset_id      = xfs.asset_id
-      AND TRUNC (sysdate) BETWEEN TRUNC (NVL (fb.date_effective, sysdate)) AND TRUNC (NVL (fb.date_ineffective, sysdate))
+      AND TRUNC (SYSDATE) BETWEEN TRUNC (NVL (fb.date_effective, SYSDATE)) AND TRUNC (NVL (fb.date_ineffective, SYSDATE))
       AND fd.asset_id               =fb.asset_id
       AND fd.date_ineffective      IS NULL
       AND fd.book_type_code         =fb.book_type_code
@@ -1817,11 +1983,18 @@ IS
     lc_file_handle utl_file.file_type;
     lv_line_count NUMBER;
     -- l_file_path   VARCHAR(200);
-    l_file_name  VARCHAR2(500);
-    lv_col_title VARCHAR2(5000);
-    l_file_path  VARCHAR2(500):='XXFIN_OUTBOUND';
-    lc_errormsg  VARCHAR2(1000);----            VARCHAR2(1000) := NULL;
-    v_book_type_code varchar2(100);
+    l_file_name      VARCHAR2(500);
+    lv_col_title     VARCHAR2(5000);
+    l_file_path      VARCHAR2(500):='XXFIN_OUTBOUND';
+    lc_errormsg      VARCHAR2(1000);----            VARCHAR2(1000) := NULL;
+    v_book_type_code VARCHAR2(100);
+    v_segment1       VARCHAR2(50);
+    v_segment2       VARCHAR2(50);
+    v_segment3       VARCHAR2(50);
+    v_segment4       VARCHAR2(50);
+    v_segment5       VARCHAR2(50);
+    v_segment6       VARCHAR2(50);
+    v_segment7       VARCHAR2(50);
   BEGIN
     /* BEGIN
     SELECT directory_path
@@ -1832,108 +2005,144 @@ IS
     WHEN OTHERS THEN
     l_file_path := NULL;
     END;*/
-    print_debug_msg ('Package ODUSCORP_PARENT_DISTRIBUTION START', true);
-    print_debug_msg ('P_BOOK_TYPE_CODE '||p_book_type_code, true);
-    v_book_type_code :=replace(replace (replace(p_book_type_code,'OD US ','US_'),'OD CA ','CA_'),' ','_');
-   --- l_file_name    := 'ODUSCORP_Parent_Distribution_v15' || '.csv';
-    l_file_name    := 'Parent_Distribution_'||v_book_type_code|| '.csv';
-    lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
-    lv_col_title   :='INTERFACE_LINE_NUMBER'|| ','|| 'UNITS_ASSIGNED'|| ','|| 'EMPLOYEE_EMAIL_ADDRESS'|| ','|| 'ASSET_LOCATION_SEGMENT1'|| ','|| 'ASSET_LOCATION_SEGMENT2'|| ','|| 'ASSET_LOCATION_SEGMENT3'|| ','|| 'ASSET_LOCATION_SEGMENT4'|| ','|| 'ASSET_LOCATION_SEGMENT5'|| ','|| 'ASSET_LOCATION_SEGMENT6'|| ','|| 'ASSET_LOCATION_SEGMENT7'|| ','|| 'EXPENSE_ACCOUNT_SEGMENT';
-    utl_file.put_line(lc_file_handle,lv_col_title);
+    print_debug_msg ('Package ODUSCORP_PARENT_DISTRIBUTION START', TRUE);
+    print_debug_msg ('P_BOOK_TYPE_CODE '||p_book_type_code, TRUE);
+    v_book_type_code :=REPLACE(REPLACE (REPLACE(p_book_type_code,'OD US ','US_'),'OD CA ','CA_'),' ','_');
+    --- l_file_name    := 'ODUSCORP_Parent_Distribution_v15' || '.csv';
+    -- l_file_name    := 'Parent_Distribution_'||v_book_type_code|| '.csv';
+    --lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
+    lv_col_title :='INTERFACE_LINE_NUMBER'|| ','|| 'UNITS_ASSIGNED'|| ','|| 'EMPLOYEE_EMAIL_ADDRESS'|| ','|| 'ASSET_LOCATION_SEGMENT1'|| ','|| 'ASSET_LOCATION_SEGMENT2'|| ','|| 'ASSET_LOCATION_SEGMENT3'|| ','|| 'ASSET_LOCATION_SEGMENT4'|| ','|| 'ASSET_LOCATION_SEGMENT5'|| ','|| 'ASSET_LOCATION_SEGMENT6'|| ','|| 'ASSET_LOCATION_SEGMENT7'|| ','|| 'EXPENSE_ACCOUNT_SEGMENT';
+    -- utl_file.put_line(lc_file_handle,lv_col_title);
     FOR i IN c_parent_dist
     LOOP
       ---UTL_FILE.put_line(lc_file_handle,'HI');
-      utl_file.put_line(lc_file_handle,i.interface_line_number|| ','|| i.units_assigned|| ','|| i.employee_email_address|| ','|| i.asset_location_segment1|| ','|| i.asset_location_segment2|| ','|| i.asset_location_segment3|| ','|| i.asset_location_segment4|| ','|| i.asset_location_segment5|| ','|| i.asset_location_segment6|| ','|| i.asset_location_segment7|| ','|| i.expense_account_segment);
+      --  utl_file.put_line(lc_file_handle,i.interface_line_number|| ','|| i.units_assigned|| ','|| i.employee_email_address|| ','|| i.asset_location_segment1|| ','|| i.asset_location_segment2|| ','|| i.asset_location_segment3|| ','|| i.asset_location_segment4|| ','|| i.asset_location_segment5|| ','|| i.asset_location_segment6|| ','|| i.asset_location_segment7|| ','|| i.expense_account_segment);
+      IF i.exp_acct_segment1 IS NOT NULL THEN
+        v_segment1           :=NVL(xx_gl_beacon_mapping_f1(i.exp_acct_segment1,'ENTITY','A'),-1);
+        IF v_segment1         =                                                              -1 OR v_segment1 IS NULL THEN
+          insert_miss_segments ( i.exp_acct_segment1,                                        -1, 'ENTITY', i.interface_line_number, 'ODUSCORP_Parent_Distribution',p_book_type_code);
+        END IF;
+      END IF;
+      IF i.exp_acct_segment6 IS NOT NULL THEN
+        v_segment2           :=NVL(xx_gl_beacon_mapping_f1(i.exp_acct_segment6,'LOB','A'), -1);
+        IF v_segment2         =                                                            -1 OR v_segment2 IS NULL THEN
+          insert_miss_segments ( i.exp_acct_segment6,                                      -1, 'LOB', i.Interface_Line_Number , 'ODUSCORP_Parent_Distribution',p_book_type_code);
+        END IF;
+      END IF;
+      IF i.exp_acct_segment2 IS NOT NULL THEN
+        v_segment3           :=NVL(xx_gl_beacon_mapping_f1(i.exp_acct_segment2,'COST_CENTER','A'),-1);
+        IF v_segment3         =                                                                   -1 OR v_segment3 IS NULL THEN
+          insert_miss_segments ( i.exp_acct_segment2,                                             -1, 'COST_CENTER', i.Interface_Line_Number , 'ODUSCORP_Parent_Distribution',p_book_type_code);
+        END IF;
+      END IF;
+      IF i.exp_acct_segment3 IS NOT NULL THEN
+        v_segment4           :=NVL(xx_gl_beacon_mapping_f1(i.exp_acct_segment3,'ACCOUNT','A'), -1);
+        IF v_segment4         =                                                                -1 OR v_segment4 IS NULL THEN
+          insert_miss_segments ( i.exp_acct_segment3,                                          -1, 'ACCOUNT', i.Interface_Line_Number , 'ODUSCORP_Parent_Distribution',p_book_type_code);
+        END IF;
+      END IF;
+      IF i.exp_acct_segment4 IS NOT NULL THEN
+        v_segment5           :=NVL(xx_gl_beacon_mapping_f1(i.exp_acct_segment4,'LOCATION','A'), -1);
+        IF v_segment5         =                                                                 -1 OR v_segment5 IS NULL THEN
+          insert_miss_segments ( i.exp_acct_segment4,                                           -1, 'LOCATION', i.Interface_Line_Number , 'ODUSCORP_Parent_Distribution',p_book_type_code);
+        END IF;
+      END IF;
+      IF i.exp_acct_segment5 IS NOT NULL THEN
+        v_segment6           :=NVL(xx_gl_beacon_mapping_f1(i.exp_acct_segment5,'ENTITY','A'), -1);
+        IF v_segment6         =                                                               -1 OR v_segment6 IS NULL THEN
+          insert_miss_segments ( i.exp_acct_segment5,                                         -1, 'ENTITY', i.Interface_Line_Number , 'ODUSCORP_Parent_Distribution',p_book_type_code);
+        END IF;
+      END IF;
     END LOOP;
-    utl_file.fclose(lc_file_handle);
+    -- utl_file.fclose(lc_file_handle);
   EXCEPTION
   WHEN utl_file.access_denied THEN
     lc_errormsg := ( 'Error in ODUSCORP_Parent_Distribution procedure :- ' || ' access_denied :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.delete_failed THEN
     lc_errormsg := ( 'Error in ODUSCORP_Parent_Distribution procedure :- ' || ' delete_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.file_open THEN
     lc_errormsg := ( 'Error in ODUSCORP_Parent_Distribution procedure :- ' || ' file_open :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.internal_error THEN
     lc_errormsg := ( 'Error in ODUSCORP_Parent_Distribution procedure :- ' || ' internal_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_filehandle THEN
     lc_errormsg := ( 'Error in ODUSCORP_Parent_Distribution procedure:- ' || ' invalid_filehandle :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_filename THEN
     lc_errormsg := ( 'Error in ODUSCORP_Parent_Distribution procedure :- ' || ' invalid_filename :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_maxlinesize THEN
     lc_errormsg := ( 'Error in ODUSCORP_Parent_Distribution procedure :- ' || ' invalid_maxlinesize :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_mode THEN
     lc_errormsg := ( 'Error in ODUSCORP_Parent_Distribution procedure :- ' || ' invalid_mode :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_offset THEN
     lc_errormsg := ( 'Error in ODUSCORP_Parent_Distribution procedure :- ' || ' invalid_offset :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_operation THEN
     lc_errormsg := ( 'Error in ODUSCORP_Parent_Distribution procedure :- ' || ' invalid_operation :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_path THEN
     lc_errormsg := ( 'Error in ODUSCORP_Parent_Distribution procedure :- ' || ' invalid_path :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.read_error THEN
     lc_errormsg := ( 'Error in ODUSCORP_Parent_Distribution procedure :- ' || ' read_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.rename_failed THEN
     lc_errormsg := ( 'Error in ODUSCORP_Parent_Distribution procedure :- ' || ' rename_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.write_error THEN
     lc_errormsg := ( 'Error in ODUSCORP_Parent_Distribution procedure :- ' || ' write_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN OTHERS THEN
     lc_errormsg := ( 'Error in ODUSCORP_Parent_Distribution procedure :- ' || ' OTHERS :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
@@ -1955,8 +2164,8 @@ IS
       asset_location_segment6 "ASSET_LOCATION_SEGMENT5",
       SUBSTR(asset_location_segment5,2) "ASSET_LOCATION_SEGMENT6",
       asset_location_segment7,
-    /* Commented by Priyam for EBS to Cloud segment Change  
-    exp_acct_segment1
+      /* Commented by Priyam for EBS to Cloud segment Change
+      exp_acct_segment1
       || '.'
       || exp_acct_segment2
       || '.'
@@ -1969,8 +2178,8 @@ IS
       || exp_acct_segment6
       || '.'
       || exp_acct_segment7 */
-   ---   Added by Priyam for EBS to Cloud segment Change 
-      exp_acct_segment1
+      ---   Added by Priyam for EBS to Cloud segment Change
+      /*  exp_acct_segment1
       || '.'
       || exp_acct_segment6
       || '.'
@@ -1980,8 +2189,13 @@ IS
       || '.'
       || exp_acct_segment4
       || '.'
-      || exp_acct_segment5
-       expense_account_segment 
+      || exp_acct_segment5 expense_account_segment*/
+      exp_acct_segment1,
+      exp_acct_segment2,
+      exp_acct_segment3,
+      exp_acct_segment4,
+      exp_acct_segment5,
+      exp_acct_segment6
     FROM
       (SELECT interface_line_number,
         units_assigned,
@@ -1993,20 +2207,20 @@ IS
         asset_location_segment5,
         asset_location_segment6,
         asset_location_segment7,
-      /* Commented by Priyam for EBS to Cloud segment Change  
-      exp_acct_segment1,
+        -- Commented by Priyam for EBS to Cloud segment Change
+        exp_acct_segment1,
         exp_acct_segment2,
         exp_acct_segment3,
         exp_acct_segment4,
         exp_acct_segment5,
-        exp_acct_segment6,*/
-        ---Added by Priyam for EBS to Cloud segment Change 
-        xx_gl_beacon_mapping_f1(exp_acct_segment1,'ENTITY','A') exp_acct_segment1,
+        exp_acct_segment6,
+        ---Added by Priyam for EBS to Cloud segment Change
+        /* xx_gl_beacon_mapping_f1(exp_acct_segment1,'ENTITY','A') exp_acct_segment1,
         xx_gl_beacon_mapping_f1(exp_acct_segment2,'COST_CENTER','A') exp_acct_segment2,
         xx_gl_beacon_mapping_f1(exp_acct_segment3,'ACCOUNT','A') exp_acct_segment3,
         xx_gl_beacon_mapping_f1(exp_acct_segment4,'LOCATION','A') exp_acct_segment4,
         xx_gl_beacon_mapping_f1(exp_acct_segment5,'ENTITY','A') exp_acct_segment5,
-        xx_gl_beacon_mapping_f1(exp_acct_segment6,'LOB','A') exp_acct_segment6,
+        xx_gl_beacon_mapping_f1(exp_acct_segment6,'LOB','A') exp_acct_segment6,*/
         ---Change end
         exp_acct_segment7,
         exp_acct_segment8,
@@ -2075,8 +2289,8 @@ IS
           gcc.segment28 exp_acct_segment28,
           gcc.segment29 exp_acct_segment29,
           gcc.segment30 exp_acct_segment30,
-          rank() over (partition BY ds.book_type_code, ds.asset_id order by ds.distribution_id DESC ) distidrank,
-          rank() over (partition BY ds.book_type_code, ds.asset_id order by ds.period_counter DESC) periodcounterrank
+          rank() OVER (PARTITION BY ds.book_type_code, ds.asset_id ORDER BY ds.distribution_id DESC ) distidrank,
+          rank() OVER (PARTITION BY ds.book_type_code, ds.asset_id ORDER BY ds.period_counter DESC) periodcounterrank
         FROM fa_deprn_detail ds,
           fa_transaction_headers fth,
           fa_categories_b fcb,
@@ -2087,11 +2301,11 @@ IS
           xx_fa_status xfs,
           fa_book_controls corpbook,
           fa_additions_b fab
-        WHERE 1                    =1
-        AND xfs.book_type_code     =p_book_type_code
-/*AND ( asset_status         ='ACTIVE'
-        OR (asset_status           ='RETIRED'
-        AND xfs.date_effective     >'31-DEC-18')  )*/
+        WHERE 1                =1
+        AND xfs.book_type_code =p_book_type_code
+          /* AND ( asset_status         ='ACTIVE'
+          OR (asset_status           ='RETIRED'
+          AND xfs.date_effective     >'31-DEC-18') )*/
         AND corpbook.book_type_code=xfs.book_type_code
         AND corpbook.book_class    = 'CORPORATE'
         AND fab.asset_id           =xfs.asset_id
@@ -2101,7 +2315,7 @@ IS
           )
       AND fb.book_type_code=xfs.book_type_code
       AND fb.asset_id      = xfs.asset_id
-      AND TRUNC (sysdate) BETWEEN TRUNC (NVL (fb.date_effective, sysdate)) AND TRUNC (NVL (fb.date_ineffective, sysdate))
+      AND TRUNC (SYSDATE) BETWEEN TRUNC (NVL (fb.date_effective, SYSDATE)) AND TRUNC (NVL (fb.date_ineffective, SYSDATE))
       AND fd.asset_id               =fb.asset_id
       AND fd.date_ineffective      IS NULL
       AND fd.book_type_code         =fb.book_type_code
@@ -2121,11 +2335,18 @@ IS
     lc_file_handle utl_file.file_type;
     lv_line_count NUMBER;
     -- l_file_path   VARCHAR(200);
-    l_file_name  VARCHAR2(500);
-    lv_col_title VARCHAR2(5000);
-    l_file_path  VARCHAR2(500):='XXFIN_OUTBOUND';
-    lc_errormsg  varchar2(1000);----            VARCHAR2(1000) := NULL;
-    v_book_type_code varchar2(100);
+    l_file_name      VARCHAR2(500);
+    lv_col_title     VARCHAR2(5000);
+    l_file_path      VARCHAR2(500):='XXFIN_OUTBOUND';
+    lc_errormsg      VARCHAR2(1000);----            VARCHAR2(1000) := NULL;
+    v_book_type_code VARCHAR2(100);
+    v_segment1       VARCHAR2(50);
+    v_segment2       VARCHAR2(50);
+    v_segment3       VARCHAR2(50);
+    v_segment4       VARCHAR2(50);
+    v_segment5       VARCHAR2(50);
+    v_segment6       VARCHAR2(50);
+    v_segment7       VARCHAR2(50);
   BEGIN
     /* BEGIN
     SELECT directory_path
@@ -2136,108 +2357,144 @@ IS
     WHEN OTHERS THEN
     l_file_path := NULL;
     END;*/
-    print_debug_msg ('Package ODUSCORP_CHILD_DISTRIBUTION START', true);
-    print_debug_msg ('P_BOOK_TYPE_CODE '||p_book_type_code, true);
-    v_book_type_code :=replace(replace (replace(p_book_type_code,'OD US ','US_'),'OD CA ','CA_'),' ','_');
-   -- l_file_name    := 'ODUSCORP_Child_Distribution_v15' || '.csv';
-    l_file_name    := 'Child_Distribution_'||v_book_type_code|| '.csv';
-    lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
-    lv_col_title   :='INTERFACE_LINE_NUMBER'|| ','|| 'UNITS_ASSIGNED'|| ','|| 'EMPLOYEE_EMAIL_ADDRESS'|| ','|| 'ASSET_LOCATION_SEGMENT1'|| ','|| 'ASSET_LOCATION_SEGMENT2'|| ','|| 'ASSET_LOCATION_SEGMENT3'|| ','|| 'ASSET_LOCATION_SEGMENT4'|| ','|| 'ASSET_LOCATION_SEGMENT5'|| ','|| 'ASSET_LOCATION_SEGMENT6'|| ','|| 'ASSET_LOCATION_SEGMENT7'|| ','|| 'EXPENSE_ACCOUNT_SEGMENT';
-    utl_file.put_line(lc_file_handle,lv_col_title);
+    print_debug_msg ('Package ODUSCORP_CHILD_DISTRIBUTION START', TRUE);
+    print_debug_msg ('P_BOOK_TYPE_CODE '||p_book_type_code, TRUE);
+    v_book_type_code :=REPLACE(REPLACE (REPLACE(p_book_type_code,'OD US ','US_'),'OD CA ','CA_'),' ','_');
+    -- l_file_name    := 'ODUSCORP_Child_Distribution_v15' || '.csv';
+    -- l_file_name    := 'Child_Distribution_'||v_book_type_code|| '.csv';
+    -- lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
+    lv_col_title :='INTERFACE_LINE_NUMBER'|| ','|| 'UNITS_ASSIGNED'|| ','|| 'EMPLOYEE_EMAIL_ADDRESS'|| ','|| 'ASSET_LOCATION_SEGMENT1'|| ','|| 'ASSET_LOCATION_SEGMENT2'|| ','|| 'ASSET_LOCATION_SEGMENT3'|| ','|| 'ASSET_LOCATION_SEGMENT4'|| ','|| 'ASSET_LOCATION_SEGMENT5'|| ','|| 'ASSET_LOCATION_SEGMENT6'|| ','|| 'ASSET_LOCATION_SEGMENT7'|| ','|| 'EXPENSE_ACCOUNT_SEGMENT';
+    -- utl_file.put_line(lc_file_handle,lv_col_title);
     FOR i IN c_child_dist
     LOOP
       ---UTL_FILE.put_line(lc_file_handle,'HI');
-      utl_file.put_line(lc_file_handle,i.interface_line_number|| ','|| i.units_assigned|| ','|| i.employee_email_address|| ','|| i.asset_location_segment1|| ','|| i.asset_location_segment2|| ','|| i.asset_location_segment3|| ','|| i.asset_location_segment4|| ','|| i.asset_location_segment5|| ','|| i.asset_location_segment6|| ','|| i.asset_location_segment7|| ','|| i.expense_account_segment);
+      -- utl_file.put_line(lc_file_handle,i.interface_line_number|| ','|| i.units_assigned|| ','|| i.employee_email_address|| ','|| i.asset_location_segment1|| ','|| i.asset_location_segment2|| ','|| i.asset_location_segment3|| ','|| i.asset_location_segment4|| ','|| i.asset_location_segment5|| ','|| i.asset_location_segment6|| ','|| i.asset_location_segment7|| ','|| i.expense_account_segment);
+      IF i.exp_acct_segment1 IS NOT NULL THEN
+        v_segment1           :=NVL(xx_gl_beacon_mapping_f1(i.exp_acct_segment1,'ENTITY','A'),-1);
+        IF v_segment1         =                                                              -1 OR v_segment1 IS NULL THEN
+          insert_miss_segments ( i.exp_acct_segment1,                                        -1, 'ENTITY', i.Interface_line_number, 'ODUSCORP_Child_Distribution',p_book_type_code);
+        END IF;
+      END IF;
+      IF i.exp_acct_segment6 IS NOT NULL THEN
+        v_segment2           :=NVL(xx_gl_beacon_mapping_f1(i.exp_acct_segment6,'LOB','A'), -1);
+        IF v_segment2         =                                                            -1 OR v_segment2 IS NULL THEN
+          insert_miss_segments ( i.exp_acct_segment6,                                      -1, 'LOB', i.Interface_Line_Number , 'ODUSCORP_Child_Distribution',p_book_type_code);
+        END IF;
+      END IF;
+      IF i.exp_acct_segment2 IS NOT NULL THEN
+        v_segment3           :=NVL(xx_gl_beacon_mapping_f1(i.exp_acct_segment2,'COST_CENTER','A'),-1);
+        IF v_segment3         =                                                                   -1 OR v_segment3 IS NULL THEN
+          insert_miss_segments ( i.exp_acct_segment2,                                             -1, 'COST_CENTER', i.Interface_Line_Number , 'ODUSCORP_Child_Distribution',p_book_type_code);
+        END IF;
+      END IF;
+      IF i.exp_acct_segment3 IS NOT NULL THEN
+        v_segment4           :=NVL(xx_gl_beacon_mapping_f1(i.exp_acct_segment3,'ACCOUNT','A'), -1);
+        IF v_segment4         =                                                                -1 OR v_segment4 IS NULL THEN
+          insert_miss_segments ( i.exp_acct_segment3,                                          -1, 'ACCOUNT', i.Interface_Line_Number , 'ODUSCORP_Child_Distribution',p_book_type_code);
+        END IF;
+      END IF;
+      IF i.exp_acct_segment4 IS NOT NULL THEN
+        v_segment5           :=NVL(xx_gl_beacon_mapping_f1(i.exp_acct_segment4,'LOCATION','A'), -1);
+        IF v_segment5         =                                                                 -1 OR v_segment5 IS NULL THEN
+          insert_miss_segments ( i.exp_acct_segment4,                                           -1, 'LOCATION', i.Interface_Line_Number , 'ODUSCORP_Child_Distribution',p_book_type_code);
+        END IF;
+      END IF;
+      IF i.exp_acct_segment5 IS NOT NULL THEN
+        v_segment6           :=NVL(xx_gl_beacon_mapping_f1(i.exp_acct_segment5,'ENTITY','A'), -1);
+        IF v_segment6         =                                                               -1 OR v_segment6 IS NULL THEN
+          insert_miss_segments ( i.exp_acct_segment5,                                         -1, 'ENTITY', i.interface_line_number , 'ODUSCORP_Child_Distribution',p_book_type_code);
+        END IF;
+      END IF;
     END LOOP;
-    utl_file.fclose(lc_file_handle);
+    -- utl_file.fclose(lc_file_handle);
   EXCEPTION
   WHEN utl_file.access_denied THEN
     lc_errormsg := ( 'Error in ODUSCORP_CHILD_Distribution procedure :- ' || ' access_denied :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.delete_failed THEN
     lc_errormsg := ( 'Error in ODUSCORP_CHILD_Distribution procedure :- ' || ' delete_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.file_open THEN
     lc_errormsg := ( 'Error in ODUSCORP_CHILD_Distribution procedure :- ' || ' file_open :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.internal_error THEN
     lc_errormsg := ( 'Error in ODUSCORP_CHILD_Distribution procedure :- ' || ' internal_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_filehandle THEN
     lc_errormsg := ( 'Error in ODUSCORP_CHILD_Distribution procedure:- ' || ' invalid_filehandle :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_filename THEN
     lc_errormsg := ( 'Error in ODUSCORP_CHILD_Distribution procedure :- ' || ' invalid_filename :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_maxlinesize THEN
     lc_errormsg := ( 'Error in ODUSCORP_CHILD_Distribution procedure :- ' || ' invalid_maxlinesize :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_mode THEN
     lc_errormsg := ( 'Error in ODUSCORP_CHILD_Distribution procedure :- ' || ' invalid_mode :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_offset THEN
     lc_errormsg := ( 'Error in ODUSCORP_CHILD_Distribution procedure :- ' || ' invalid_offset :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_operation THEN
     lc_errormsg := ( 'Error in ODUSCORP_CHILD_Distribution procedure :- ' || ' invalid_operation :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_path THEN
     lc_errormsg := ( 'Error in ODUSCORP_CHILD_Distribution procedure :- ' || ' invalid_path :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.read_error THEN
     lc_errormsg := ( 'Error in ODUSCORP_CHILD_Distribution procedure :- ' || ' read_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.rename_failed THEN
     lc_errormsg := ( 'Error in ODUSCORP_CHILD_Distribution procedure :- ' || ' rename_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.write_error THEN
     lc_errormsg := ( 'Error in ODUSCORP_CHILD_Distribution procedure :- ' || ' write_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN OTHERS THEN
     lc_errormsg := ( 'Error in ODUSCORP_CHILD_Distribution procedure :- ' || ' OTHERS :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
@@ -2257,9 +2514,9 @@ IS
       tag_number,
       manufacturer,
       serial_number,
-      model ,
+      MODEL ,
       asset_type,
-      cost,
+      COST,
       date_placed_in_service,
       prorate_convention,
       asset_units,
@@ -2330,8 +2587,8 @@ IS
       AND gcc.code_combination_id  = da.asset_clearing_account_ccid
       ) "SG1,SG2,SG3,SG4,SG5,SG6,SG7",
       */
-    /* Commented by Priyam for EBS to Cloud segment Change 
-    (
+      -- Commented by Priyam for EBS to Cloud segment Change
+      (
       SELECT gcc.segment1
       FROM gl_code_combinations gcc,
         fa_distribution_accounts da
@@ -2379,60 +2636,54 @@ IS
       fa_distribution_accounts da
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
-    and gcc.code_combination_id = da.asset_clearing_account_ccid
-    ) cost_clearing_account_seg7,*/
-    ---Added by Priyam for EBS to Cloud segment Change 
-     (
-      SELECT xx_gl_beacon_mapping_f1(gcc.segment1,'ENTITY','A')--ENTITY
-      FROM gl_code_combinations gcc,
-        fa_distribution_accounts da
-      WHERE da.distribution_id    = fa_details.distribution_id
-      AND da.book_type_code       = fa_details.asset_book
-      and gcc.code_combination_id = da.asset_clearing_account_ccid
-      )cost_clearing_account_seg1,
-	  
+    AND gcc.code_combination_id = da.asset_clearing_account_ccid
+    ) cost_clearing_account_seg7,
+    ---Added by Priyam for EBS to Cloud segment Change
+    /*  (
+    SELECT xx_gl_beacon_mapping_f1(gcc.segment1,'ENTITY','A')--ENTITY
+    FROM gl_code_combinations gcc,
+    fa_distribution_accounts da
+    WHERE da.distribution_id    = fa_details.distribution_id
+    AND da.book_type_code       = fa_details.asset_book
+    AND gcc.code_combination_id = da.asset_clearing_account_ccid
+    )cost_clearing_account_seg1,
     (SELECT xx_gl_beacon_mapping_f1(gcc.segment6,'LOB','A')----LOB
     FROM gl_code_combinations gcc,
-      fa_distribution_accounts da
+    fa_distribution_accounts da
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
     AND gcc.code_combination_id = da.asset_clearing_account_ccid
     ) cost_clearing_account_seg2,
-	
     (SELECT xx_gl_beacon_mapping_f1(gcc.segment2,'COST_CENTER','A')------COST CENTER
     FROM gl_code_combinations gcc,
-      fa_distribution_accounts da
+    fa_distribution_accounts da
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
     AND gcc.code_combination_id = da.asset_clearing_account_ccid
     ) cost_clearing_account_seg3,
-	
     (SELECT xx_gl_beacon_mapping_f1(gcc.segment3,'ACCOUNT','A')----ACCOUNT
     FROM gl_code_combinations gcc,
-      fa_distribution_accounts da
+    fa_distribution_accounts da
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
     AND gcc.code_combination_id = da.asset_clearing_account_ccid
     ) cost_clearing_account_seg4,
-	
     (SELECT xx_gl_beacon_mapping_f1(gcc.segment4,'LOCATION','A')---LOCATION
     FROM gl_code_combinations gcc,
-      fa_distribution_accounts da
+    fa_distribution_accounts da
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
     AND gcc.code_combination_id = da.asset_clearing_account_ccid
     ) cost_clearing_account_seg5,
-	
     (SELECT xx_gl_beacon_mapping_f1(gcc.segment5,'ENTITY','A')-----INTERCOMP
     FROM gl_code_combinations gcc,
-      fa_distribution_accounts da
+    fa_distribution_accounts da
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
     AND gcc.code_combination_id = da.asset_clearing_account_ccid
     ) cost_clearing_account_seg6,
-	
-     null cost_clearing_account_seg7,
-     ----Changes end
+    NULL cost_clearing_account_seg7,*/
+    ----Changes end
     NULL cost_clearing_account_seg8,
     NULL cost_clearing_account_seg9,
     NULL cost_clearing_account_seg10,
@@ -2500,7 +2751,7 @@ IS
     NULL                            ATTRIBUTE_DATE5,
     */
     attribute_category_code,
-    NULL context,
+    NULL CONTEXT,
     /*
     NULL                            TH_ATTRIBUTE1,
     NULL                            TH_ATTRIBUTE2,
@@ -2680,9 +2931,9 @@ IS
       tag_number,
       manufacturer,
       serial_number,
-      model ,
+      MODEL ,
       asset_type,
-      cost,
+      COST,
       date_placed_in_service,
       prorate_convention,
       asset_units,
@@ -2755,9 +3006,9 @@ IS
         fab.tag_number tag_number,
         fab.manufacturer_name manufacturer,
         fab.serial_number serial_number,
-        fab.model_number model ,
+        fab.model_number MODEL ,
         fab.asset_type asset_type,
-        fb.cost cost,
+        fb.COST COST,
         TO_CHAR(fb.date_placed_in_service,'YYYY/MM/DD') date_placed_in_service,
         fb.prorate_convention_code prorate_convention,
         fab.current_units asset_units,
@@ -2786,9 +3037,9 @@ IS
         fb.salvage_type salvage_value_type,
         fb.salvage_value salvage_value_amount,
         fb.percent_salvage_value salvage_value_percent,
-       -- ds.ytd_deprn ytd_depreciation,
-       --Added by priyam
-       decode(to_number(to_char(ds.deprn_run_date,'RRRR')),2019,ds.YTD_DEPRN,0) YTD_Depreciation,
+        -- ds.ytd_deprn ytd_depreciation,
+        --Added by priyam
+        DECODE(to_number(TO_CHAR(ds.deprn_run_date,'RRRR')),2019,ds.YTD_DEPRN,0) YTD_Depreciation,
         ds.deprn_reserve depreciation_reserve,
         ds.bonus_ytd_deprn ytd_bonus_depreciation,
         ds.bonus_deprn_reserve bonus_depreciation_reserve,
@@ -2825,8 +3076,8 @@ IS
         fb.prior_adjusted_rate earlier_adjusted_rate,
         ds.distribution_id,
         --fb.book_type_code,
-        rank() over (partition BY ds.book_type_code, ds.asset_id order by ds.distribution_id DESC ) distidrank,
-        rank() over (partition BY ds.book_type_code, ds.asset_id order by ds.period_counter DESC) periodcounterrank
+        rank() OVER (PARTITION BY ds.book_type_code, ds.asset_id ORDER BY ds.distribution_id DESC ) distidrank,
+        rank() OVER (PARTITION BY ds.book_type_code, ds.asset_id ORDER BY ds.period_counter DESC) periodcounterrank
       FROM fa_books fb,
         xx_fa_status xfs,
         fa_book_controls corpbook,
@@ -2835,16 +3086,16 @@ IS
         fa_additions_tl fat,
         fa_deprn_detail ds,
         fa_transaction_headers fth
-      WHERE 1                    =1
-      AND xfs.book_type_code     =p_book_type_code
-   /*   AND ( asset_status         ='ACTIVE'
-      OR (asset_status           ='RETIRED'
-      AND xfs.date_effective     >'31-DEC-18') ) */
+      WHERE 1                =1
+      AND xfs.book_type_code =p_book_type_code
+        /* AND ( asset_status         ='ACTIVE'
+        OR (asset_status           ='RETIRED'
+        AND xfs.date_effective     >'31-DEC-18') )*/
       AND fb.book_type_code      =xfs.book_type_code
       AND fb.asset_id            = xfs.asset_id
       AND corpbook.book_type_code=fb.book_type_code
       AND corpbook.book_class    = 'TAX'
-      AND TRUNC (sysdate) BETWEEN TRUNC (NVL (fb.date_effective, sysdate)) AND TRUNC (NVL (fb.date_ineffective, sysdate))
+      AND TRUNC (SYSDATE) BETWEEN TRUNC (NVL (fb.date_effective, SYSDATE)) AND TRUNC (NVL (fb.date_ineffective, SYSDATE))
       AND fab.asset_id         =fb.asset_id
       AND fab.asset_id NOT    IN (21417857,21418275,11896729)
       AND fab.parent_asset_id IS NULL
@@ -2867,11 +3118,18 @@ IS
   lc_file_handle utl_file.file_type;
   lv_line_count NUMBER;
   -- l_file_path   VARCHAR(200);
-  l_file_name  VARCHAR2(500);
-  lv_col_title VARCHAR2(5000);
-  l_file_path  VARCHAR2(500):='XXFIN_OUTBOUND';
-  lc_errormsg  varchar2(1000);----            VARCHAR2(1000) := NULL;
-  v_book_type_code varchar2(100);
+  l_file_name      VARCHAR2(500);
+  lv_col_title     VARCHAR2(5000);
+  l_file_path      VARCHAR2(500):='XXFIN_OUTBOUND';
+  lc_errormsg      VARCHAR2(1000);----            VARCHAR2(1000) := NULL;
+  v_book_type_code VARCHAR2(100);
+  v_segment1       VARCHAR2(50);
+  v_segment2       VARCHAR2(50);
+  v_segment3       VARCHAR2(50);
+  v_segment4       VARCHAR2(50);
+  v_segment5       VARCHAR2(50);
+  v_segment6       VARCHAR2(50);
+  v_segment7       VARCHAR2(50);
 BEGIN
   /* BEGIN
   SELECT directory_path
@@ -2882,116 +3140,153 @@ BEGIN
   WHEN OTHERS THEN
   l_file_path := NULL;
   END;*/
-  print_debug_msg ('Package GENERIC_TAX_PARENT_ASSET_HDR START', true);
-  print_debug_msg ('P_BOOK_TYPE_CODE '||p_book_type_code, true);
-  v_book_type_code :=replace(replace (replace(p_book_type_code,'OD US ','US_'),'OD CA ','CA_'),' ','_');
+  print_debug_msg ('Package GENERIC_TAX_PARENT_ASSET_HDR START', TRUE);
+  print_debug_msg ('P_BOOK_TYPE_CODE '||p_book_type_code, TRUE);
+  v_book_type_code :=REPLACE(REPLACE (REPLACE(p_book_type_code,'OD US ','US_'),'OD CA ','CA_'),' ','_');
   --l_file_name    := 'Generic_TAX_Parent_Asset_Hdr_v14' || '.csv';
-  l_file_name    := 'Generic_TAX_Parent_Asset_Hdr_'||v_book_type_code|| '.csv';
-  lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
-  lv_col_title   :='INTERFACE_LINE_NUMBER'|| ','|| 'ASSET_BOOK'|| ','|| 'TRANSACTION_NAME'|| ','|| 'ASSET_NUMBER'|| ','|| 'ASSET_DESCRIPTION'|| ','|| 'TAG_NUMBER'|| ','|| 'MANUFACTURER'|| ','|| 'SERIAL_NUMBER'|| ','|| 'MODEL'|| ','|| 'ASSET_TYPE'|| ','|| 'COST'|| ','|| 'DATE_PLACED_IN_SERVICE'|| ','|| 'PRORATE_CONVENTION'|| ','|| 'ASSET_UNITS'|| ','|| 'ASSET_CATEGORY_SEGMENT1'|| ','|| 'ASSET_CATEGORY_SEGMENT2'|| ','|| 'ASSET_CATEGORY_SEGMENT3'|| ','|| 'ASSET_CATEGORY_SEGMENT4'|| ','|| 'ASSET_CATEGORY_SEGMENT5'|| ','|| 'ASSET_CATEGORY_SEGMENT6'|| ','|| 'ASSET_CATEGORY_SEGMENT7'|| ','|| 'POSTING_STATUS'|| ','|| 'QUEUE_NAME'|| ','|| 'FEEDER_SYSTEM'|| ','|| 'PARENT_ASSET'|| ','|| 'ADD_TO_ASSET'|| ','|| 'ASSET_KEY_SEGMENT1'|| ','|| 'ASSET_KEY_SEGMENT2'|| ','|| 'ASSET_KEY_SEGMENT3'|| ','|| 'ASSET_KEY_SEGMENT4'|| ','|| 'ASSET_KEY_SEGMENT5'|| ','|| 'ASSET_KEY_SEGMENT6'|| ','|| 'ASSET_KEY_SEGMENT7'|| ','|| 'ASSET_KEY_SEGMENT8'|| ','|| 'ASSET_KEY_SEGMENT9'|| ','|| 'ASSET_KEY_SEGMENT10'|| ','||
+  l_file_name := 'Generic_TAX_Parent_Asset_Hdr_'||v_book_type_code|| '.csv';
+  --lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
+  lv_col_title :='INTERFACE_LINE_NUMBER'|| ','|| 'ASSET_BOOK'|| ','|| 'TRANSACTION_NAME'|| ','|| 'ASSET_NUMBER'|| ','|| 'ASSET_DESCRIPTION'|| ','|| 'TAG_NUMBER'|| ','|| 'MANUFACTURER'|| ','|| 'SERIAL_NUMBER'|| ','|| 'MODEL'|| ','|| 'ASSET_TYPE'|| ','|| 'COST'|| ','|| 'DATE_PLACED_IN_SERVICE'|| ','|| 'PRORATE_CONVENTION'|| ','|| 'ASSET_UNITS'|| ','|| 'ASSET_CATEGORY_SEGMENT1'|| ','|| 'ASSET_CATEGORY_SEGMENT2'|| ','|| 'ASSET_CATEGORY_SEGMENT3'|| ','|| 'ASSET_CATEGORY_SEGMENT4'|| ','|| 'ASSET_CATEGORY_SEGMENT5'|| ','|| 'ASSET_CATEGORY_SEGMENT6'|| ','|| 'ASSET_CATEGORY_SEGMENT7'|| ','|| 'POSTING_STATUS'|| ','|| 'QUEUE_NAME'|| ','|| 'FEEDER_SYSTEM'|| ','|| 'PARENT_ASSET'|| ','|| 'ADD_TO_ASSET'|| ','|| 'ASSET_KEY_SEGMENT1'|| ','|| 'ASSET_KEY_SEGMENT2'|| ','|| 'ASSET_KEY_SEGMENT3'|| ','|| 'ASSET_KEY_SEGMENT4'|| ','|| 'ASSET_KEY_SEGMENT5'|| ','|| 'ASSET_KEY_SEGMENT6'|| ','|| 'ASSET_KEY_SEGMENT7'|| ','|| 'ASSET_KEY_SEGMENT8'|| ','|| 'ASSET_KEY_SEGMENT9'|| ','|| 'ASSET_KEY_SEGMENT10'|| ','||
   'IN_PHYSICAL_INVENTORY'|| ','|| 'PROPERTY_TYPE'|| ','|| 'PROPERTY_CLASS'|| ','|| 'IN_USE'|| ','|| 'OWNERSHIP'|| ','|| 'BOUGHT'|| ','|| 'MATERIAL_INDICATOR'|| ','|| 'COMMITMENT'|| ','|| 'INVESTMENT_LAW'|| ','|| 'AMORTIZE'|| ','|| 'AMORTIZATION_START_DATE'|| ','|| 'DEPRECIATE'|| ','|| 'SALVAGE_VALUE_TYPE'|| ','|| 'SALVAGE_VALUE_AMOUNT'|| ','|| 'SALVAGE_VALUE_PERCENT'|| ','|| 'YTD_DEPRECIATION'|| ','|| 'DEPRECIATION_RESERVE'|| ','|| 'YTD_BONUS_DEPRECIATION'|| ','|| 'BONUS_DEPRECIATION_RESERVE'|| ','|| 'YTD_IMPAIRMENT'|| ','|| 'IMPAIRMENT_RESERVE'|| ','|| 'DEPRECIATION_METHOD'|| ','|| 'LIFE_IN_MONTHS'|| ','|| 'BASIC_RATE'|| ','|| 'ADJUSTED_RATE'|| ','|| 'UNIT_OF_MEASURE'|| ','|| 'PRODUCTION_CAPACITY'|| ','|| 'CEILING_TYPE'|| ','|| 'BONUS_RULE'|| ','|| 'CASH_GENERATING_UNIT'|| ','|| 'DEPRECIATION_LIMIT_TYPE'|| ','|| 'DEPRECIATION_LIMIT_PERCENT'|| ','|| 'DEPRECIATION_LIMIT_AMOUNT'|| ','|| 'INVOICE_COST'|| ','|| 'COST_CLEARING_ACCOUNT_SEG1'|| ','|| 'COST_CLEARING_ACCOUNT_SEG2'|| ','||
   'COST_CLEARING_ACCOUNT_SEG3'|| ','|| 'COST_CLEARING_ACCOUNT_SEG4'|| ','|| 'COST_CLEARING_ACCOUNT_SEG5'|| ','|| 'COST_CLEARING_ACCOUNT_SEG6'|| ','|| 'COST_CLEARING_ACCOUNT_SEG7'|| ','|| 'COST_CLEARING_ACCOUNT_SEG8'|| ','|| 'COST_CLEARING_ACCOUNT_SEG9'|| ','|| 'COST_CLEARING_ACCOUNT_SEG10'|| ','|| 'COST_CLEARING_ACCOUNT_SEG11'|| ','|| 'COST_CLEARING_ACCOUNT_SEG12'|| ','|| 'COST_CLEARING_ACCOUNT_SEG13'|| ','|| 'COST_CLEARING_ACCOUNT_SEG14'|| ','|| 'COST_CLEARING_ACCOUNT_SEG15'|| ','|| 'ATTRIBUTE1'|| ','|| 'ATTRIBUTE2'|| ','|| 'ATTRIBUTE3'|| ','|| 'ATTRIBUTE4'|| ','|| 'ATTRIBUTE5'|| ','|| 'ATTRIBUTE6'|| ','|| 'ATTRIBUTE7'|| ','|| 'ATTRIBUTE8'|| ','|| 'ATTRIBUTE9'|| ','|| 'ATTRIBUTE10'|| ','|| 'ATTRIBUTE11'|| ','|| 'ATTRIBUTE12'|| ','|| 'ATTRIBUTE13'|| ','|| 'ATTRIBUTE14'|| ','|| 'ATTRIBUTE15'|| ','|| 'ATTRIBUTE_CATEGORY_CODE'|| ','|| 'CONTEXT'|| ','|| 'MASS_PROPERTY_ELIGIBLE'|| ','|| 'GROUP_ASSET'|| ','|| 'REDUCTION_RATE'|| ','|| 'APPLY_REDUCTION_RATE_TO_ADDI'|| ','||
   'APPLY_REDUCTION_RATE_TO_ADJ'|| ','|| 'APPLY_REDUCTION_RATE_TO_RETI'|| ','|| 'RECOGNIZE_GAIN_OR_LOSS'|| ','|| 'RECAPTURE_EXCESS_RESERVE'|| ','|| 'LIMIT_NET_PROCEEDS_TO_COST'|| ','|| 'TERMINAL_GAIN_OR_LOSS'|| ','|| 'TRACKING_METHOD'|| ','|| 'ALLOCATE_EXCESS_DEPRECIATION'|| ','|| 'DEPRECIATE_BY'|| ','|| 'MEMBER_ROLLUP'|| ','|| 'ALLO_TO_FULL_RETI_AND_RES_ASST'|| ','|| 'OVER_DEPRECIATE'|| ','|| 'PREPARER'|| ','|| 'SUM_MERGED_UNITS'|| ','|| 'NEW_MASTER'|| ','|| 'UNITS_TO_ADJUST'|| ','|| 'SHORT_YEAR'|| ','|| 'CONVERSION_DATE'|| ','|| 'ORIGINAL_DEP_START_DATE'|| ','|| 'NBV_AT_THE_TIME_OF_SWITCH'|| ','|| 'PERIOD_FULLY_RESERVED'|| ','|| 'START_PERIOD_OF_EXTENDED_DEP'|| ','|| 'EARLIER_DEP_LIMIT_TYPE'|| ','|| 'EARLIER_DEP_LIMIT_PERCENT'|| ','|| 'EARLIER_DEP_LIMIT_AMOUNT'|| ','|| 'EARLIER_DEPRECIATION_METHOD'|| ','|| 'EARLIER_LIFE_IN_MONTHS'|| ','|| 'EARLIER_BASIC_RATE'|| ','|| 'EARLIER_ADJUSTED_RATE'|| ','|| 'LEASE_NUMBER'|| ','|| 'REVALUATION_RESERVE'|| ','|| 'REVALUATION_LOSS'|| ','||
   'REVAL_RESER_AMORTIZATION_BASIS'|| ','|| 'IMPAIRMENT_LOSS_EXPENSE'|| ','|| 'REVALUATION_COST_CEILING'|| ','|| 'FAIR_VALUE'|| ','|| 'LAST_USED_PRICE_INDEX_VALUE'|| ','|| 'SUPPLIER_NAME'|| ','|| 'SUPPLIER_NUMBER'|| ','|| 'PURCHASE_ORDER_NUMBER'|| ','|| 'INVOICE_NUMBER'|| ','|| 'INVOICE_VOUCHER_NUMBER'|| ','|| 'INVOICE_DATE'|| ','|| 'PAYABLES_UNITS'|| ','|| 'INVOICE_LINE_NUMBER'|| ','|| 'INVOICE_LINE_TYPE'|| ','|| 'INVOICE_LINE_DESCRIPTION'|| ','|| 'INVOICE_PAYMENT_NUMBER'|| ','|| 'PROJECT_NUMBER'|| ','|| 'TASK_NUMBER'|| ','|| 'FULLY_DEPRECIATE';
-  utl_file.put_line(lc_file_handle,lv_col_title);
+  --- utl_file.put_line(lc_file_handle,lv_col_title);
   FOR i IN c_tax_par_asset_hdr
   LOOP
     ---UTL_FILE.put_line(lc_file_handle,'HI');
-    utl_file.put_line(lc_file_handle,i.interface_line_number|| ','|| i.asset_book|| ','|| i.transaction_name|| ','|| i.asset_number|| ','|| i.asset_description|| ','|| i.tag_number|| ','|| i.manufacturer|| ','|| i.serial_number|| ','|| i.model|| ','|| i.asset_type|| ','|| i.cost|| ','|| i.date_placed_in_service|| ','|| i.prorate_convention|| ','|| i.asset_units|| ','|| i.asset_category_segment1|| ','|| i.asset_category_segment2|| ','|| i.asset_category_segment3|| ','|| i.asset_category_segment4|| ','|| i.asset_category_segment5|| ','|| i.asset_category_segment6|| ','|| i.asset_category_segment7|| ','|| i.posting_status|| ','|| i.queue_name|| ','|| i.feeder_system|| ','|| i.parent_asset|| ','|| i.add_to_asset|| ','|| i.asset_key_segment1|| ','|| i.asset_key_segment2|| ','|| i.asset_key_segment3|| ','|| i.asset_key_segment4|| ','|| i.asset_key_segment5|| ','|| i.asset_key_segment6|| ','|| i.asset_key_segment7|| ','|| i.asset_key_segment8|| ','|| i.asset_key_segment9|| ','||
+    /*  utl_file.put_line(lc_file_handle,i.interface_line_number|| ','|| i.asset_book|| ','|| i.transaction_name|| ','|| i.asset_number|| ','|| i.asset_description|| ','|| i.tag_number|| ','|| i.manufacturer|| ','|| i.serial_number|| ','|| i.model|| ','|| i.asset_type|| ','|| i.cost|| ','|| i.date_placed_in_service|| ','|| i.prorate_convention|| ','|| i.asset_units|| ','|| i.asset_category_segment1|| ','|| i.asset_category_segment2|| ','|| i.asset_category_segment3|| ','|| i.asset_category_segment4|| ','|| i.asset_category_segment5|| ','|| i.asset_category_segment6|| ','|| i.asset_category_segment7|| ','|| i.posting_status|| ','|| i.queue_name|| ','|| i.feeder_system|| ','|| i.parent_asset|| ','|| i.add_to_asset|| ','|| i.asset_key_segment1|| ','|| i.asset_key_segment2|| ','|| i.asset_key_segment3|| ','|| i.asset_key_segment4|| ','|| i.asset_key_segment5|| ','|| i.asset_key_segment6|| ','|| i.asset_key_segment7|| ','|| i.asset_key_segment8|| ','|| i.asset_key_segment9|| ','||
     i.asset_key_segment10|| ','|| i.in_physical_inventory|| ','|| i.property_type|| ','|| i.property_class|| ','|| i.in_use|| ','|| i.ownership|| ','|| i.bought|| ','|| i.material_indicator|| ','|| i.commitment|| ','|| i.investment_law|| ','|| i.amortize|| ','|| i.amortization_start_date|| ','|| i.depreciate|| ','|| i.salvage_value_type|| ','|| i.salvage_value_amount|| ','|| i.salvage_value_percent|| ','|| i.ytd_depreciation|| ','|| i.depreciation_reserve|| ','|| i.ytd_bonus_depreciation|| ','|| i.bonus_depreciation_reserve|| ','|| i.ytd_impairment|| ','|| i.impairment_reserve|| ','|| i.depreciation_method|| ','|| i.life_in_months|| ','|| i.basic_rate|| ','|| i.adjusted_rate|| ','|| i.unit_of_measure|| ','|| i.production_capacity|| ','|| i.ceiling_type|| ','|| i.bonus_rule|| ','|| i.cash_generating_unit|| ','|| i.depreciation_limit_type|| ','|| i.depreciation_limit_percent|| ','|| i.depreciation_limit_amount|| ','|| i.invoice_cost|| ','|| i.cost_clearing_account_seg1|| ','||
     i.cost_clearing_account_seg2|| ','|| i.cost_clearing_account_seg3|| ','|| i.cost_clearing_account_seg4|| ','|| i.cost_clearing_account_seg5|| ','|| i.cost_clearing_account_seg6|| ','|| i.cost_clearing_account_seg7|| ','|| i.cost_clearing_account_seg8|| ','|| i.cost_clearing_account_seg9|| ','|| i.cost_clearing_account_seg10|| ','|| i.cost_clearing_account_seg11|| ','|| i.cost_clearing_account_seg12|| ','|| i.cost_clearing_account_seg13|| ','|| i.cost_clearing_account_seg14|| ','|| i.cost_clearing_account_seg15|| ','|| i.attribute1|| ','|| i.attribute2|| ','|| i.attribute3|| ','|| i.attribute4|| ','|| i.attribute5|| ','|| i.attribute6|| ','|| i.attribute7|| ','|| i.attribute8|| ','|| i.attribute9|| ','|| i.attribute10|| ','|| i.attribute11|| ','|| i.attribute12|| ','|| i.attribute13|| ','|| i.attribute14|| ','|| i.attribute15|| ','|| i.attribute_category_code|| ','|| i.context|| ','|| i.mass_property_eligible|| ','|| i.group_asset|| ','|| i.reduction_rate|| ','||
     i.apply_reduction_rate_to_addi|| ','|| i.apply_reduction_rate_to_adj|| ','|| i.apply_reduction_rate_to_reti|| ','|| i.recognize_gain_or_loss|| ','|| i.recapture_excess_reserve|| ','|| i.limit_net_proceeds_to_cost|| ','|| i.terminal_gain_or_loss|| ','|| i.tracking_method|| ','|| i.allocate_excess_depreciation|| ','|| i.depreciate_by|| ','|| i.member_rollup|| ','|| i.allo_to_full_reti_and_res_asst|| ','|| i.over_depreciate|| ','|| i.preparer|| ','|| i.sum_merged_units|| ','|| i.new_master|| ','|| i.units_to_adjust|| ','|| i.short_year|| ','|| i.conversion_date|| ','|| i.original_dep_start_date|| ','|| i.nbv_at_the_time_of_switch|| ','|| i.period_fully_reserved|| ','|| i.start_period_of_extended_dep|| ','|| i.earlier_dep_limit_type|| ','|| i.earlier_dep_limit_percent|| ','|| i.earlier_dep_limit_amount|| ','|| i.earlier_depreciation_method|| ','|| i.earlier_life_in_months|| ','|| i.earlier_basic_rate|| ','|| i.earlier_adjusted_rate|| ','|| i.lease_number|| ','|| i.revaluation_reserve
     || ','|| i.revaluation_loss|| ','|| i.reval_reser_amortization_basis|| ','|| i.impairment_loss_expense|| ','|| i.revaluation_cost_ceiling|| ','|| i.fair_value|| ','|| i.last_used_price_index_value|| ','|| i.supplier_name|| ','|| i.supplier_number|| ','|| i.purchase_order_number|| ','|| i.invoice_number|| ','|| i.invoice_voucher_number|| ','|| i.invoice_date|| ','|| i.payables_units|| ','|| i.invoice_line_number|| ','|| i.invoice_line_type|| ','|| i.invoice_line_description|| ','|| i.invoice_payment_number|| ','|| i.project_number|| ','|| i.task_number|| ','|| i.fully_depreciate);
+    */
+    IF i.cost_clearing_account_seg1 IS NOT NULL THEN
+      v_segment1                    :=NVL(xx_gl_beacon_mapping_f1(i.cost_clearing_account_seg1,'ENTITY','A'),-1);
+      IF v_segment1                  =                                                                       -1 OR v_segment1 IS NULL THEN
+        insert_miss_segments ( i.cost_clearing_account_seg1,                                                 -1, 'ENTITY', i.asset_number, 'GENERIC_TAX_PARENT_ASSET_HD',p_book_type_code);
+      END IF;
+    END IF;
+    IF i.cost_clearing_account_seg6 IS NOT NULL THEN
+      v_segment2                    :=NVL(xx_gl_beacon_mapping_f1(i.cost_clearing_account_seg6,'LOB','A'), -1);
+      IF v_segment2                  =                                                                     -1 OR v_segment2 IS NULL THEN
+        insert_miss_segments ( i.cost_clearing_account_seg6,                                               -1, 'LOB', i.asset_number, 'GENERIC_TAX_PARENT_ASSET_HD',p_book_type_code);
+      END IF;
+    END IF;
+    IF i.cost_clearing_account_seg2 IS NOT NULL THEN
+      v_segment3                    :=NVL(xx_gl_beacon_mapping_f1(i.cost_clearing_account_seg2,'COST_CENTER','A'),-1);
+      IF v_segment3                  =                                                                            -1 OR v_segment3 IS NULL THEN
+        insert_miss_segments ( i.cost_clearing_account_seg2,                                                      -1, 'COST_CENTER', i.asset_number, 'GENERIC_TAX_PARENT_ASSET_HD',p_book_type_code);
+      END IF;
+    END IF;
+    IF i.cost_clearing_account_seg3 IS NOT NULL THEN
+      v_segment4                    :=NVL(xx_gl_beacon_mapping_f1(i.cost_clearing_account_seg3,'ACCOUNT','A'), -1);
+      IF v_segment4                  =                                                                         -1 OR v_segment4 IS NULL THEN
+        insert_miss_segments ( i.cost_clearing_account_seg3,                                                   -1, 'ACCOUNT', i.asset_number, 'GENERIC_TAX_PARENT_ASSET_HD',p_book_type_code);
+      END IF;
+    END IF;
+    IF i.cost_clearing_account_seg4 IS NOT NULL THEN
+      v_segment5                    :=NVL(xx_gl_beacon_mapping_f1(i.cost_clearing_account_seg4,'LOCATION','A'), -1);
+      IF v_segment5                  =                                                                          -1 OR v_segment5 IS NULL THEN
+        insert_miss_segments ( i.cost_clearing_account_seg4,                                                    -1, 'LOCATION', i.asset_number, 'GENERIC_TAX_PARENT_ASSET_HD',p_book_type_code);
+      END IF;
+    END IF;
+    IF i.cost_clearing_account_seg5 IS NOT NULL THEN
+      v_segment6                    :=NVL(xx_gl_beacon_mapping_f1(i.cost_clearing_account_seg5,'ENTITY','A'), -1);
+      IF v_segment6                  =                                                                        -1 OR v_segment6 IS NULL THEN
+        insert_miss_segments ( i.cost_clearing_account_seg5,                                                  -1, 'ENTITY', i.asset_number, 'GENERIC_TAX_PARENT_ASSET_HD',p_book_type_code);
+      END IF;
+    END IF;
   END LOOP;
-  utl_file.fclose(lc_file_handle);
+  ---utl_file.fclose(lc_file_handle);
 EXCEPTION
 WHEN utl_file.access_denied THEN
-  lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_ASSET_HDR procedure :- ' || ' access_denied :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  -- lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_ASSET_HDR procedure :- ' || ' access_denied :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.delete_failed THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_ASSET_HDR procedure :- ' || ' delete_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.file_open THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_ASSET_HDR procedure :- ' || ' file_open :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.internal_error THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_ASSET_HDR procedure :- ' || ' internal_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_filehandle THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_ASSET_HDR procedure:- ' || ' invalid_filehandle :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_filename THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_ASSET_HDR procedure :- ' || ' invalid_filename :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_maxlinesize THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_ASSET_HDR procedure :- ' || ' invalid_maxlinesize :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_mode THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_ASSET_HDR procedure :- ' || ' invalid_mode :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_offset THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_ASSET_HDR procedure :- ' || ' invalid_offset :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_operation THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_ASSET_HDR procedure :- ' || ' invalid_operation :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_path THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_ASSET_HDR procedure :- ' || ' invalid_path :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.read_error THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_ASSET_HDR procedure :- ' || ' read_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.rename_failed THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_ASSET_HDR procedure :- ' || ' rename_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.write_error THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_ASSET_HDR procedure :- ' || ' write_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN OTHERS THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_ASSET_HDR procedure :- ' || ' OTHERS :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
@@ -3011,9 +3306,9 @@ IS
       tag_number,
       manufacturer,
       serial_number,
-      model ,
+      MODEL ,
       asset_type,
-      cost,
+      COST,
       date_placed_in_service,
       prorate_convention,
       asset_units,
@@ -3084,8 +3379,8 @@ IS
       AND gcc.code_combination_id  = da.asset_clearing_account_ccid
       ) "SG1,SG2,SG3,SG4,SG5,SG6,SG7",
       */
-    /* Commented by Priyam for EBS to Cloud segment Change 
-    (
+      -- Commented by Priyam for EBS to Cloud segment Change
+      (
       SELECT gcc.segment1
       FROM gl_code_combinations gcc,
         fa_distribution_accounts da
@@ -3134,59 +3429,53 @@ IS
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
     AND gcc.code_combination_id = da.asset_clearing_account_ccid
-    ) cost_clearing_account_seg7,*/
-  ---  Added by Priyam for EBS to Cloud segment Change 
-     (
-      SELECT xx_gl_beacon_mapping_f1(gcc.segment1,'ENTITY','A')--ENTITY
-      FROM gl_code_combinations gcc,
-        fa_distribution_accounts da
-      WHERE da.distribution_id    = fa_details.distribution_id
-      AND da.book_type_code       = fa_details.asset_book
-      and gcc.code_combination_id = da.asset_clearing_account_ccid
-      )cost_clearing_account_seg1,
-	  
+    ) cost_clearing_account_seg7,
+    ---  Added by Priyam for EBS to Cloud segment Change
+    /*   (
+    SELECT xx_gl_beacon_mapping_f1(gcc.segment1,'ENTITY','A')--ENTITY
+    FROM gl_code_combinations gcc,
+    fa_distribution_accounts da
+    WHERE da.distribution_id    = fa_details.distribution_id
+    AND da.book_type_code       = fa_details.asset_book
+    AND gcc.code_combination_id = da.asset_clearing_account_ccid
+    )cost_clearing_account_seg1,
     (SELECT xx_gl_beacon_mapping_f1(gcc.segment6,'LOB','A')----LOB
     FROM gl_code_combinations gcc,
-      fa_distribution_accounts da
+    fa_distribution_accounts da
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
     AND gcc.code_combination_id = da.asset_clearing_account_ccid
     ) cost_clearing_account_seg2,
-	
     (SELECT xx_gl_beacon_mapping_f1(gcc.segment2,'COST_CENTER','A')------COST CENTER
     FROM gl_code_combinations gcc,
-      fa_distribution_accounts da
+    fa_distribution_accounts da
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
     AND gcc.code_combination_id = da.asset_clearing_account_ccid
     ) cost_clearing_account_seg3,
-	
     (SELECT xx_gl_beacon_mapping_f1(gcc.segment3,'ACCOUNT','A')----ACCOUNT
     FROM gl_code_combinations gcc,
-      fa_distribution_accounts da
+    fa_distribution_accounts da
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
     AND gcc.code_combination_id = da.asset_clearing_account_ccid
     ) cost_clearing_account_seg4,
-	
     (SELECT xx_gl_beacon_mapping_f1(gcc.segment4,'LOCATION','A')---LOCATION
     FROM gl_code_combinations gcc,
-      fa_distribution_accounts da
+    fa_distribution_accounts da
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
     AND gcc.code_combination_id = da.asset_clearing_account_ccid
     ) cost_clearing_account_seg5,
-	
     (SELECT xx_gl_beacon_mapping_f1(gcc.segment5,'ENTITY','A')-----INTERCOMP
     FROM gl_code_combinations gcc,
-      fa_distribution_accounts da
+    fa_distribution_accounts da
     WHERE da.distribution_id    = fa_details.distribution_id
     AND da.book_type_code       = fa_details.asset_book
     AND gcc.code_combination_id = da.asset_clearing_account_ccid
     ) cost_clearing_account_seg6,
-	
-     null cost_clearing_account_seg7,
-     ---Changes end
+    NULL cost_clearing_account_seg7,*/
+    ---Changes end
     NULL cost_clearing_account_seg8,
     NULL cost_clearing_account_seg9,
     NULL cost_clearing_account_seg10,
@@ -3254,7 +3543,7 @@ IS
     NULL                            ATTRIBUTE_DATE5,
     */
     attribute_category_code,
-    NULL context,
+    NULL CONTEXT,
     /*
     NULL                            TH_ATTRIBUTE1,
     NULL                            TH_ATTRIBUTE2,
@@ -3434,9 +3723,9 @@ IS
       tag_number,
       manufacturer,
       serial_number,
-      model ,
+      MODEL ,
       asset_type,
-      cost,
+      COST,
       date_placed_in_service,
       prorate_convention,
       asset_units,
@@ -3509,9 +3798,9 @@ IS
         fab.tag_number tag_number,
         fab.manufacturer_name manufacturer,
         fab.serial_number serial_number,
-        fab.model_number model ,
+        fab.model_number MODEL ,
         fab.asset_type asset_type,
-        fb.cost cost,
+        fb.COST COST,
         TO_CHAR(fb.date_placed_in_service,'YYYY/MM/DD') date_placed_in_service,
         fb.prorate_convention_code prorate_convention,
         fab.current_units asset_units,
@@ -3546,9 +3835,9 @@ IS
         fb.salvage_type salvage_value_type,
         fb.salvage_value salvage_value_amount,
         fb.percent_salvage_value salvage_value_percent,
-       --- ds.ytd_deprn ytd_depreciation,
-       ---Added by priyam
-       decode(to_number(to_char(ds.deprn_run_date,'RRRR')),2019,ds.YTD_DEPRN,0) YTD_Depreciation,
+        --- ds.ytd_deprn ytd_depreciation,
+        ---Added by priyam
+        DECODE(to_number(TO_CHAR(ds.deprn_run_date,'RRRR')),2019,ds.YTD_DEPRN,0) YTD_Depreciation,
         ds.deprn_reserve depreciation_reserve,
         ds.bonus_ytd_deprn ytd_bonus_depreciation,
         ds.bonus_deprn_reserve bonus_depreciation_reserve,
@@ -3585,8 +3874,8 @@ IS
         fb.prior_adjusted_rate earlier_adjusted_rate,
         ds.distribution_id,
         --fb.book_type_code,
-        rank() over (partition BY ds.book_type_code, ds.asset_id order by ds.distribution_id DESC ) distidrank,
-        rank() over (partition BY ds.book_type_code, ds.asset_id order by ds.period_counter DESC) periodcounterrank
+        rank() OVER (PARTITION BY ds.book_type_code, ds.asset_id ORDER BY ds.distribution_id DESC ) distidrank,
+        rank() OVER (PARTITION BY ds.book_type_code, ds.asset_id ORDER BY ds.period_counter DESC) periodcounterrank
       FROM fa_books fb,
         xx_fa_status xfs,
         fa_book_controls corpbook,
@@ -3595,16 +3884,16 @@ IS
         fa_additions_tl fat,
         fa_deprn_detail ds,
         fa_transaction_headers fth
-      WHERE 1                    =1
-      AND xfs.book_type_code     =p_book_type_code
-     /* AND ( asset_status         ='ACTIVE'
-      OR (asset_status           ='RETIRED'
-      AND xfs.date_effective     >'31-DEC-18') ) */
+      WHERE 1                =1
+      AND xfs.book_type_code =p_book_type_code
+        /* AND ( asset_status         ='ACTIVE'
+        OR (asset_status           ='RETIRED'
+        AND xfs.date_effective     >'31-DEC-18') )*/
       AND fb.book_type_code      =xfs.book_type_code
       AND fb.asset_id            = xfs.asset_id
       AND corpbook.book_type_code=fb.book_type_code
       AND corpbook.book_class    = 'TAX'
-      AND TRUNC (sysdate) BETWEEN TRUNC (NVL (fb.date_effective, sysdate)) AND TRUNC (NVL (fb.date_ineffective, sysdate))
+      AND TRUNC (SYSDATE) BETWEEN TRUNC (NVL (fb.date_effective, SYSDATE)) AND TRUNC (NVL (fb.date_ineffective, SYSDATE))
       AND fab.asset_id      =fb.asset_id
       AND fab.asset_id NOT IN (21417857,21418275,11896729)
       AND NOT EXISTS
@@ -3626,11 +3915,18 @@ IS
   lc_file_handle utl_file.file_type;
   lv_line_count NUMBER;
   -- l_file_path   VARCHAR(200);
-  l_file_name  VARCHAR2(500);
-  lv_col_title VARCHAR2(5000);
-  l_file_path  VARCHAR2(500):='XXFIN_OUTBOUND';
-  lc_errormsg  varchar2(1000);----            VARCHAR2(1000) := NULL;
-  v_book_type_code varchar2(100);
+  l_file_name      VARCHAR2(500);
+  lv_col_title     VARCHAR2(5000);
+  l_file_path      VARCHAR2(500):='XXFIN_OUTBOUND';
+  lc_errormsg      VARCHAR2(1000);----            VARCHAR2(1000) := NULL;
+  v_book_type_code VARCHAR2(100);
+  v_segment1       VARCHAR2(50);
+  v_segment2       VARCHAR2(50);
+  v_segment3       VARCHAR2(50);
+  v_segment4       VARCHAR2(50);
+  v_segment5       VARCHAR2(50);
+  v_segment6       VARCHAR2(50);
+  v_segment7       VARCHAR2(50);
 BEGIN
   /* BEGIN
   SELECT directory_path
@@ -3641,116 +3937,153 @@ BEGIN
   WHEN OTHERS THEN
   l_file_path := NULL;
   END;*/
-  print_debug_msg ('Package GENERIC_TAX_CHILD_ASSET_HDR START', true);
-  print_debug_msg ('P_BOOK_TYPE_CODE '||p_book_type_code, true);
- -- l_file_name    := 'Generic_TAX_Child_Asset_Hdr_v14' || '.csv';
- v_book_type_code :=replace(replace (replace(p_book_type_code,'OD US ','US_'),'OD CA ','CA_'),' ','_');
- l_file_name    := 'Generic_TAX_Child_Asset_Hdr_'||v_book_type_code|| '.csv';
-  lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
-  lv_col_title   :='INTERFACE_LINE_NUMBER'|| ','|| 'ASSET_BOOK'|| ','|| 'TRANSACTION_NAME'|| ','|| 'ASSET_NUMBER'|| ','|| 'ASSET_DESCRIPTION'|| ','|| 'TAG_NUMBER'|| ','|| 'MANUFACTURER'|| ','|| 'SERIAL_NUMBER'|| ','|| 'MODEL'|| ','|| 'ASSET_TYPE'|| ','|| 'COST'|| ','|| 'DATE_PLACED_IN_SERVICE'|| ','|| 'PRORATE_CONVENTION'|| ','|| 'ASSET_UNITS'|| ','|| 'ASSET_CATEGORY_SEGMENT1'|| ','|| 'ASSET_CATEGORY_SEGMENT2'|| ','|| 'ASSET_CATEGORY_SEGMENT3'|| ','|| 'ASSET_CATEGORY_SEGMENT4'|| ','|| 'ASSET_CATEGORY_SEGMENT5'|| ','|| 'ASSET_CATEGORY_SEGMENT6'|| ','|| 'ASSET_CATEGORY_SEGMENT7'|| ','|| 'POSTING_STATUS'|| ','|| 'QUEUE_NAME'|| ','|| 'FEEDER_SYSTEM'|| ','|| 'PARENT_ASSET'|| ','|| 'ADD_TO_ASSET'|| ','|| 'ASSET_KEY_SEGMENT1'|| ','|| 'ASSET_KEY_SEGMENT2'|| ','|| 'ASSET_KEY_SEGMENT3'|| ','|| 'ASSET_KEY_SEGMENT4'|| ','|| 'ASSET_KEY_SEGMENT5'|| ','|| 'ASSET_KEY_SEGMENT6'|| ','|| 'ASSET_KEY_SEGMENT7'|| ','|| 'ASSET_KEY_SEGMENT8'|| ','|| 'ASSET_KEY_SEGMENT9'|| ','|| 'ASSET_KEY_SEGMENT10'|| ','||
+  print_debug_msg ('Package GENERIC_TAX_CHILD_ASSET_HDR START', TRUE);
+  print_debug_msg ('P_BOOK_TYPE_CODE '||p_book_type_code, TRUE);
+  -- l_file_name    := 'Generic_TAX_Child_Asset_Hdr_v14' || '.csv';
+  v_book_type_code :=REPLACE(REPLACE (REPLACE(p_book_type_code,'OD US ','US_'),'OD CA ','CA_'),' ','_');
+  l_file_name      := 'Generic_TAX_Child_Asset_Hdr_'||v_book_type_code|| '.csv';
+  -- lc_file_handle   := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
+  lv_col_title :='INTERFACE_LINE_NUMBER'|| ','|| 'ASSET_BOOK'|| ','|| 'TRANSACTION_NAME'|| ','|| 'ASSET_NUMBER'|| ','|| 'ASSET_DESCRIPTION'|| ','|| 'TAG_NUMBER'|| ','|| 'MANUFACTURER'|| ','|| 'SERIAL_NUMBER'|| ','|| 'MODEL'|| ','|| 'ASSET_TYPE'|| ','|| 'COST'|| ','|| 'DATE_PLACED_IN_SERVICE'|| ','|| 'PRORATE_CONVENTION'|| ','|| 'ASSET_UNITS'|| ','|| 'ASSET_CATEGORY_SEGMENT1'|| ','|| 'ASSET_CATEGORY_SEGMENT2'|| ','|| 'ASSET_CATEGORY_SEGMENT3'|| ','|| 'ASSET_CATEGORY_SEGMENT4'|| ','|| 'ASSET_CATEGORY_SEGMENT5'|| ','|| 'ASSET_CATEGORY_SEGMENT6'|| ','|| 'ASSET_CATEGORY_SEGMENT7'|| ','|| 'POSTING_STATUS'|| ','|| 'QUEUE_NAME'|| ','|| 'FEEDER_SYSTEM'|| ','|| 'PARENT_ASSET'|| ','|| 'ADD_TO_ASSET'|| ','|| 'ASSET_KEY_SEGMENT1'|| ','|| 'ASSET_KEY_SEGMENT2'|| ','|| 'ASSET_KEY_SEGMENT3'|| ','|| 'ASSET_KEY_SEGMENT4'|| ','|| 'ASSET_KEY_SEGMENT5'|| ','|| 'ASSET_KEY_SEGMENT6'|| ','|| 'ASSET_KEY_SEGMENT7'|| ','|| 'ASSET_KEY_SEGMENT8'|| ','|| 'ASSET_KEY_SEGMENT9'|| ','|| 'ASSET_KEY_SEGMENT10'|| ',' ||
   'IN_PHYSICAL_INVENTORY'|| ','|| 'PROPERTY_TYPE'|| ','|| 'PROPERTY_CLASS'|| ','|| 'IN_USE'|| ','|| 'OWNERSHIP'|| ','|| 'BOUGHT'|| ','|| 'MATERIAL_INDICATOR'|| ','|| 'COMMITMENT'|| ','|| 'INVESTMENT_LAW'|| ','|| 'AMORTIZE'|| ','|| 'AMORTIZATION_START_DATE'|| ','|| 'DEPRECIATE'|| ','|| 'SALVAGE_VALUE_TYPE'|| ','|| 'SALVAGE_VALUE_AMOUNT'|| ','|| 'SALVAGE_VALUE_PERCENT'|| ','|| 'YTD_DEPRECIATION'|| ','|| 'DEPRECIATION_RESERVE'|| ','|| 'YTD_BONUS_DEPRECIATION'|| ','|| 'BONUS_DEPRECIATION_RESERVE'|| ','|| 'YTD_IMPAIRMENT'|| ','|| 'IMPAIRMENT_RESERVE'|| ','|| 'DEPRECIATION_METHOD'|| ','|| 'LIFE_IN_MONTHS'|| ','|| 'BASIC_RATE'|| ','|| 'ADJUSTED_RATE'|| ','|| 'UNIT_OF_MEASURE'|| ','|| 'PRODUCTION_CAPACITY'|| ','|| 'CEILING_TYPE'|| ','|| 'BONUS_RULE'|| ','|| 'CASH_GENERATING_UNIT'|| ','|| 'DEPRECIATION_LIMIT_TYPE'|| ','|| 'DEPRECIATION_LIMIT_PERCENT'|| ','|| 'DEPRECIATION_LIMIT_AMOUNT'|| ','|| 'INVOICE_COST'|| ','|| 'COST_CLEARING_ACCOUNT_SEG1'|| ','|| 'COST_CLEARING_ACCOUNT_SEG2'|| ','||
   'COST_CLEARING_ACCOUNT_SEG3'|| ','|| 'COST_CLEARING_ACCOUNT_SEG4'|| ','|| 'COST_CLEARING_ACCOUNT_SEG5'|| ','|| 'COST_CLEARING_ACCOUNT_SEG6'|| ','|| 'COST_CLEARING_ACCOUNT_SEG7'|| ','|| 'COST_CLEARING_ACCOUNT_SEG8'|| ','|| 'COST_CLEARING_ACCOUNT_SEG9'|| ','|| 'COST_CLEARING_ACCOUNT_SEG10'|| ','|| 'COST_CLEARING_ACCOUNT_SEG11'|| ','|| 'COST_CLEARING_ACCOUNT_SEG12'|| ','|| 'COST_CLEARING_ACCOUNT_SEG13'|| ','|| 'COST_CLEARING_ACCOUNT_SEG14'|| ','|| 'COST_CLEARING_ACCOUNT_SEG15'|| ','|| 'ATTRIBUTE1'|| ','|| 'ATTRIBUTE2'|| ','|| 'ATTRIBUTE3'|| ','|| 'ATTRIBUTE4'|| ','|| 'ATTRIBUTE5'|| ','|| 'ATTRIBUTE6'|| ','|| 'ATTRIBUTE7'|| ','|| 'ATTRIBUTE8'|| ','|| 'ATTRIBUTE9'|| ','|| 'ATTRIBUTE10'|| ','|| 'ATTRIBUTE11'|| ','|| 'ATTRIBUTE12'|| ','|| 'ATTRIBUTE13'|| ','|| 'ATTRIBUTE14'|| ','|| 'ATTRIBUTE15'|| ','|| 'ATTRIBUTE_CATEGORY_CODE'|| ','|| 'CONTEXT'|| ','|| 'MASS_PROPERTY_ELIGIBLE'|| ','|| 'GROUP_ASSET'|| ','|| 'REDUCTION_RATE'|| ','|| 'APPLY_REDUCTION_RATE_TO_ADDI'|| ','||
   'APPLY_REDUCTION_RATE_TO_ADJ'|| ','|| 'APPLY_REDUCTION_RATE_TO_RETI'|| ','|| 'RECOGNIZE_GAIN_OR_LOSS'|| ','|| 'RECAPTURE_EXCESS_RESERVE'|| ','|| 'LIMIT_NET_PROCEEDS_TO_COST'|| ','|| 'TERMINAL_GAIN_OR_LOSS'|| ','|| 'TRACKING_METHOD'|| ','|| 'ALLOCATE_EXCESS_DEPRECIATION'|| ','|| 'DEPRECIATE_BY'|| ','|| 'MEMBER_ROLLUP'|| ','|| 'ALLO_TO_FULL_RETI_AND_RES_ASST'|| ','|| 'OVER_DEPRECIATE'|| ','|| 'PREPARER'|| ','|| 'SUM_MERGED_UNITS'|| ','|| 'NEW_MASTER'|| ','|| 'UNITS_TO_ADJUST'|| ','|| 'SHORT_YEAR'|| ','|| 'CONVERSION_DATE'|| ','|| 'ORIGINAL_DEP_START_DATE'|| ','|| 'NBV_AT_THE_TIME_OF_SWITCH'|| ','|| 'PERIOD_FULLY_RESERVED'|| ','|| 'START_PERIOD_OF_EXTENDED_DEP'|| ','|| 'EARLIER_DEP_LIMIT_TYPE'|| ','|| 'EARLIER_DEP_LIMIT_PERCENT'|| ','|| 'EARLIER_DEP_LIMIT_AMOUNT'|| ','|| 'EARLIER_DEPRECIATION_METHOD'|| ','|| 'EARLIER_LIFE_IN_MONTHS'|| ','|| 'EARLIER_BASIC_RATE'|| ','|| 'EARLIER_ADJUSTED_RATE'|| ','|| 'LEASE_NUMBER'|| ','|| 'REVALUATION_RESERVE'|| ','|| 'REVALUATION_LOSS'|| ','||
   'REVAL_RESER_AMORTIZATION_BASIS'|| ','|| 'IMPAIRMENT_LOSS_EXPENSE'|| ','|| 'REVALUATION_COST_CEILING'|| ','|| 'FAIR_VALUE'|| ','|| 'LAST_USED_PRICE_INDEX_VALUE'|| ','|| 'SUPPLIER_NAME'|| ','|| 'SUPPLIER_NUMBER'|| ','|| 'PURCHASE_ORDER_NUMBER'|| ','|| 'INVOICE_NUMBER'|| ','|| 'INVOICE_VOUCHER_NUMBER'|| ','|| 'INVOICE_DATE'|| ','|| 'PAYABLES_UNITS'|| ','|| 'INVOICE_LINE_NUMBER'|| ','|| 'INVOICE_LINE_TYPE'|| ','|| 'INVOICE_LINE_DESCRIPTION'|| ','|| 'INVOICE_PAYMENT_NUMBER'|| ','|| 'PROJECT_NUMBER'|| ','|| 'TASK_NUMBER'|| ','|| 'FULLY_DEPRECIATE';
-  utl_file.put_line(lc_file_handle,lv_col_title);
+  --utl_file.put_line(lc_file_handle,lv_col_title);
   FOR i IN c_tax_child_asset_hdr
   LOOP
     ---UTL_FILE.put_line(lc_file_handle,'HI');
-    utl_file.put_line(lc_file_handle,i.interface_line_number|| ','|| i.asset_book|| ','|| i.transaction_name|| ','|| i.asset_number|| ','|| i.asset_description|| ','|| i.tag_number|| ','|| i.manufacturer|| ','|| i.serial_number|| ','|| i.model|| ','|| i.asset_type|| ','|| i.cost|| ','|| i.date_placed_in_service|| ','|| i.prorate_convention|| ','|| i.asset_units|| ','|| i.asset_category_segment1|| ','|| i.asset_category_segment2|| ','|| i.asset_category_segment3|| ','|| i.asset_category_segment4|| ','|| i.asset_category_segment5|| ','|| i.asset_category_segment6|| ','|| i.asset_category_segment7|| ','|| i.posting_status|| ','|| i.queue_name|| ','|| i.feeder_system|| ','|| i.parent_asset|| ','|| i.add_to_asset|| ','|| i.asset_key_segment1|| ','|| i.asset_key_segment2|| ','|| i.asset_key_segment3|| ','|| i.asset_key_segment4|| ','|| i.asset_key_segment5|| ','|| i.asset_key_segment6|| ','|| i.asset_key_segment7|| ','|| i.asset_key_segment8|| ','|| i.asset_key_segment9|| ','||
+    /*utl_file.put_line(lc_file_handle,i.interface_line_number|| ','|| i.asset_book|| ','|| i.transaction_name|| ','|| i.asset_number|| ','|| i.asset_description|| ','|| i.tag_number|| ','|| i.manufacturer|| ','|| i.serial_number|| ','|| i.model|| ','|| i.asset_type|| ','|| i.cost|| ','|| i.date_placed_in_service|| ','|| i.prorate_convention|| ','|| i.asset_units|| ','|| i.asset_category_segment1|| ','|| i.asset_category_segment2|| ','|| i.asset_category_segment3|| ','|| i.asset_category_segment4|| ','|| i.asset_category_segment5|| ','|| i.asset_category_segment6|| ','|| i.asset_category_segment7|| ','|| i.posting_status|| ','|| i.queue_name|| ','|| i.feeder_system|| ','|| i.parent_asset|| ','|| i.add_to_asset|| ','|| i.asset_key_segment1|| ','|| i.asset_key_segment2|| ','|| i.asset_key_segment3|| ','|| i.asset_key_segment4|| ','|| i.asset_key_segment5|| ','|| i.asset_key_segment6|| ','|| i.asset_key_segment7|| ','|| i.asset_key_segment8|| ','|| i.asset_key_segment9|| ','||
     i.asset_key_segment10|| ','|| i.in_physical_inventory|| ','|| i.property_type|| ','|| i.property_class|| ','|| i.in_use|| ','|| i.ownership|| ','|| i.bought|| ','|| i.material_indicator|| ','|| i.commitment|| ','|| i.investment_law|| ','|| i.amortize|| ','|| i.amortization_start_date|| ','|| i.depreciate|| ','|| i.salvage_value_type|| ','|| i.salvage_value_amount|| ','|| i.salvage_value_percent|| ','|| i.ytd_depreciation|| ','|| i.depreciation_reserve|| ','|| i.ytd_bonus_depreciation|| ','|| i.bonus_depreciation_reserve|| ','|| i.ytd_impairment|| ','|| i.impairment_reserve|| ','|| i.depreciation_method|| ','|| i.life_in_months|| ','|| i.basic_rate|| ','|| i.adjusted_rate|| ','|| i.unit_of_measure|| ','|| i.production_capacity|| ','|| i.ceiling_type|| ','|| i.bonus_rule|| ','|| i.cash_generating_unit|| ','|| i.depreciation_limit_type|| ','|| i.depreciation_limit_percent|| ','|| i.depreciation_limit_amount|| ','|| i.invoice_cost|| ','|| i.cost_clearing_account_seg1|| ','||
     i.cost_clearing_account_seg2|| ','|| i.cost_clearing_account_seg3|| ','|| i.cost_clearing_account_seg4|| ','|| i.cost_clearing_account_seg5|| ','|| i.cost_clearing_account_seg6|| ','|| i.cost_clearing_account_seg7|| ','|| i.cost_clearing_account_seg8|| ','|| i.cost_clearing_account_seg9|| ','|| i.cost_clearing_account_seg10|| ','|| i.cost_clearing_account_seg11|| ','|| i.cost_clearing_account_seg12|| ','|| i.cost_clearing_account_seg13|| ','|| i.cost_clearing_account_seg14|| ','|| i.cost_clearing_account_seg15|| ','|| i.attribute1|| ','|| i.attribute2|| ','|| i.attribute3|| ','|| i.attribute4|| ','|| i.attribute5|| ','|| i.attribute6|| ','|| i.attribute7|| ','|| i.attribute8|| ','|| i.attribute9|| ','|| i.attribute10|| ','|| i.attribute11|| ','|| i.attribute12|| ','|| i.attribute13|| ','|| i.attribute14|| ','|| i.attribute15|| ','|| i.attribute_category_code|| ','|| i.context|| ','|| i.mass_property_eligible|| ','|| i.group_asset|| ','|| i.reduction_rate|| ','||
     i.apply_reduction_rate_to_addi|| ','|| i.apply_reduction_rate_to_adj|| ','|| i.apply_reduction_rate_to_reti|| ','|| i.recognize_gain_or_loss|| ','|| i.recapture_excess_reserve|| ','|| i.limit_net_proceeds_to_cost|| ','|| i.terminal_gain_or_loss|| ','|| i.tracking_method|| ','|| i.allocate_excess_depreciation|| ','|| i.depreciate_by|| ','|| i.member_rollup|| ','|| i.allo_to_full_reti_and_res_asst|| ','|| i.over_depreciate|| ','|| i.preparer|| ','|| i.sum_merged_units|| ','|| i.new_master|| ','|| i.units_to_adjust|| ','|| i.short_year|| ','|| i.conversion_date|| ','|| i.original_dep_start_date|| ','|| i.nbv_at_the_time_of_switch|| ','|| i.period_fully_reserved|| ','|| i.start_period_of_extended_dep|| ','|| i.earlier_dep_limit_type|| ','|| i.earlier_dep_limit_percent|| ','|| i.earlier_dep_limit_amount|| ','|| i.earlier_depreciation_method|| ','|| i.earlier_life_in_months|| ','|| i.earlier_basic_rate|| ','|| i.earlier_adjusted_rate|| ','|| i.lease_number|| ','|| i.revaluation_reserve
     || ','|| i.revaluation_loss|| ','|| i.reval_reser_amortization_basis|| ','|| i.impairment_loss_expense|| ','|| i.revaluation_cost_ceiling|| ','|| i.fair_value|| ','|| i.last_used_price_index_value|| ','|| i.supplier_name|| ','|| i.supplier_number|| ','|| i.purchase_order_number|| ','|| i.invoice_number|| ','|| i.invoice_voucher_number|| ','|| i.invoice_date|| ','|| i.payables_units|| ','|| i.invoice_line_number|| ','|| i.invoice_line_type|| ','|| i.invoice_line_description|| ','|| i.invoice_payment_number|| ','|| i.project_number|| ','|| i.task_number|| ','|| i.fully_depreciate);
+    */
+    IF i.cost_clearing_account_seg1 IS NOT NULL THEN
+      v_segment1                    :=NVL(xx_gl_beacon_mapping_f1(i.cost_clearing_account_seg1,'ENTITY','A'),-1);
+      IF v_segment1                  =                                                                       -1 OR v_segment1 IS NULL THEN
+        insert_miss_segments ( i.cost_clearing_account_seg1,                                                 -1, 'ENTITY', i.asset_number, 'GENERIC_TAX_CHILD_ASSET_HDR',p_book_type_code);
+      END IF;
+    END IF;
+    IF i.cost_clearing_account_seg6 IS NOT NULL THEN
+      v_segment2                    :=NVL(xx_gl_beacon_mapping_f1(i.cost_clearing_account_seg6,'LOB','A'), -1);
+      IF v_segment2                  =                                                                     -1 OR v_segment2 IS NULL THEN
+        insert_miss_segments ( i.cost_clearing_account_seg6,                                               -1, 'LOB', i.asset_number, 'GENERIC_TAX_CHILD_ASSET_HDR',p_book_type_code);
+      END IF;
+    END IF;
+    IF i.cost_clearing_account_seg2 IS NOT NULL THEN
+      v_segment3                    :=NVL(xx_gl_beacon_mapping_f1(i.cost_clearing_account_seg2,'COST_CENTER','A'),-1);
+      IF v_segment3                  =                                                                            -1 OR v_segment3 IS NULL THEN
+        insert_miss_segments ( i.cost_clearing_account_seg2,                                                      -1, 'COST_CENTER', i.asset_number, 'GENERIC_TAX_CHILD_ASSET_HDR',p_book_type_code);
+      END IF;
+    END IF;
+    IF i.cost_clearing_account_seg3 IS NOT NULL THEN
+      v_segment4                    :=NVL(xx_gl_beacon_mapping_f1(i.cost_clearing_account_seg3,'ACCOUNT','A'), -1);
+      IF v_segment4                  =                                                                         -1 OR v_segment4 IS NULL THEN
+        insert_miss_segments ( i.cost_clearing_account_seg3,                                                   -1, 'ACCOUNT', i.asset_number, 'GENERIC_TAX_CHILD_ASSET_HDR',p_book_type_code);
+      END IF;
+    END IF;
+    IF i.cost_clearing_account_seg4 IS NOT NULL THEN
+      v_segment5                    :=NVL(xx_gl_beacon_mapping_f1(i.cost_clearing_account_seg4,'LOCATION','A'), -1);
+      IF v_segment5                  =                                                                          -1 OR v_segment5 IS NULL THEN
+        insert_miss_segments ( i.cost_clearing_account_seg4,                                                    -1, 'LOCATION', i.asset_number, 'GENERIC_TAX_CHILD_ASSET_HDR',p_book_type_code);
+      END IF;
+    END IF;
+    IF i.cost_clearing_account_seg5 IS NOT NULL THEN
+      v_segment6                    :=NVL(xx_gl_beacon_mapping_f1(i.cost_clearing_account_seg5,'ENTITY','A'), -1);
+      IF v_segment6                  =                                                                        -1 OR v_segment6 IS NULL THEN
+        insert_miss_segments ( i.cost_clearing_account_seg5,                                                  -1, 'ENTITY', i.asset_number, 'GENERIC_TAX_CHILD_ASSET_HDR',p_book_type_code);
+      END IF;
+    END IF;
   END LOOP;
-  utl_file.fclose(lc_file_handle);
+  -- utl_file.fclose(lc_file_handle);
 EXCEPTION
 WHEN utl_file.access_denied THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_ASSET_HDR procedure :- ' || ' access_denied :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.delete_failed THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_ASSET_HDR procedure :- ' || ' delete_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.file_open THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_ASSET_HDR procedure :- ' || ' file_open :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.internal_error THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_ASSET_HDR procedure :- ' || ' internal_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_filehandle THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_ASSET_HDR procedure:- ' || ' invalid_filehandle :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_filename THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_ASSET_HDR procedure :- ' || ' invalid_filename :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_maxlinesize THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_ASSET_HDR procedure :- ' || ' invalid_maxlinesize :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_mode THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_ASSET_HDR procedure :- ' || ' invalid_mode :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_offset THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_ASSET_HDR procedure :- ' || ' invalid_offset :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_operation THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_ASSET_HDR procedure :- ' || ' invalid_operation :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_path THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_ASSET_HDR procedure :- ' || ' invalid_path :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.read_error THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_ASSET_HDR procedure :- ' || ' read_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.rename_failed THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_ASSET_HDR procedure :- ' || ' rename_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.write_error THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_ASSET_HDR procedure :- ' || ' write_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN OTHERS THEN
   lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_ASSET_HDR procedure :- ' || ' OTHERS :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
@@ -3772,8 +4105,8 @@ IS
       loc.segment6 "ASSET_LOCATION_SEGMENT5",
       SUBSTR(loc.segment5,2) "ASSET_LOCATION_SEGMENT6",
       loc.segment7 asset_location_segment7,
-     /* Commented by Priyam for EBS to Cloud segment Change 
-       gcc.segment1
+      /* Commented by Priyam for EBS to Cloud segment Change
+      gcc.segment1
       || '.'
       || gcc.segment2
       || '.'
@@ -3786,8 +4119,8 @@ IS
       || gcc.segment6
       || '.'
       || gcc.segment7 */
-      --Added by Priyam for EBS to Cloud segment Change 
-      xx_gl_beacon_mapping_f1(gcc.segment1,'ENTITY','A')--ENTITY
+      --Added by Priyam for EBS to Cloud segment Change
+      /*   xx_gl_beacon_mapping_f1(gcc.segment1,'ENTITY','A')--ENTITY
       || '.'
       || xx_gl_beacon_mapping_f1(gcc.segment6,'LOB','A')----LOB
       || '.'
@@ -3798,8 +4131,14 @@ IS
       || xx_gl_beacon_mapping_f1(gcc.segment4,'LOCATION','A')---LOCATION
       || '.'
       || xx_gl_beacon_mapping_f1(gcc.segment5,'ENTITY','A')-----INTERCOMP
-      
-      expense_account_segment
+      expense_account_segment*/
+      gcc.segment1 ,
+      gcc.segment2 ,
+      gcc.segment3 ,
+      gcc.segment4 ,
+      gcc.segment5 ,
+      gcc.segment6 ,
+      gcc.segment7
     FROM
       (SELECT interface_line_number
       FROM
@@ -3813,9 +4152,9 @@ IS
           fab.tag_number tag_number,
           fab.manufacturer_name manufacturer,
           fab.serial_number serial_number,
-          fab.model_number model ,
+          fab.model_number MODEL ,
           fab.asset_type asset_type,
-          fb.cost cost,
+          fb.COST COST,
           TO_CHAR(fb.date_placed_in_service,'YYYY/MM/DD') date_placed_in_service,
           fb.prorate_convention_code prorate_convention,
           fab.current_units asset_units,
@@ -3846,7 +4185,7 @@ IS
         fb.percent_salvage_value salvage_value_percent,
         ---ds.ytd_deprn ytd_depreciation,
         ---Added by Priyam
-        decode(to_number(to_char(ds.deprn_run_date,'RRRR')),2019,ds.YTD_DEPRN,0) YTD_Depreciation,
+        DECODE(to_number(TO_CHAR(ds.deprn_run_date,'RRRR')),2019,ds.YTD_DEPRN,0) YTD_Depreciation,
         ds.deprn_reserve depreciation_reserve,
         ds.bonus_ytd_deprn ytd_bonus_depreciation,
         ds.bonus_deprn_reserve bonus_depreciation_reserve,
@@ -3883,8 +4222,8 @@ IS
         fb.prior_adjusted_rate earlier_adjusted_rate,
         ds.distribution_id,
         --fb.book_type_code,
-        rank() over (partition BY ds.book_type_code, ds.asset_id order by ds.distribution_id DESC ) distidrank,
-        rank() over (partition BY ds.book_type_code, ds.asset_id order by ds.period_counter DESC) periodcounterrank
+        rank() OVER (PARTITION BY ds.book_type_code, ds.asset_id ORDER BY ds.distribution_id DESC ) distidrank,
+        rank() OVER (PARTITION BY ds.book_type_code, ds.asset_id ORDER BY ds.period_counter DESC) periodcounterrank
       FROM fa_books fb,
         xx_fa_status xfs,
         fa_book_controls corpbook,
@@ -3893,16 +4232,16 @@ IS
         fa_additions_tl fat,
         fa_deprn_detail ds,
         fa_transaction_headers fth
-      WHERE 1                    =1
-      AND xfs.book_type_code     =p_book_type_code
-     /* AND ( asset_status         ='ACTIVE'
-      OR (asset_status           ='RETIRED'
-      AND xfs.date_effective     >'31-DEC-18') ) */
+      WHERE 1                =1
+      AND xfs.book_type_code =p_book_type_code
+        /* AND ( asset_status         ='ACTIVE'
+        OR (asset_status           ='RETIRED'
+        AND xfs.date_effective     >'31-DEC-18') )*/
       AND fb.book_type_code      =xfs.book_type_code
       AND fb.asset_id            = xfs.asset_id
       AND corpbook.book_type_code=fb.book_type_code
       AND corpbook.book_class    = 'TAX'
-      AND TRUNC (sysdate) BETWEEN TRUNC (NVL (fb.date_effective, sysdate)) AND TRUNC (NVL (fb.date_ineffective, sysdate))
+      AND TRUNC (SYSDATE) BETWEEN TRUNC (NVL (fb.date_effective, SYSDATE)) AND TRUNC (NVL (fb.date_ineffective, SYSDATE))
       AND fab.asset_id         =fb.asset_id
       AND fab.asset_id NOT    IN (21417857,21418275,11896729)
       AND fab.parent_asset_id IS NULL
@@ -3930,16 +4269,23 @@ IS
     AND fd.book_type_code      ='OD US CORP'
     AND loc.location_id        =fd.location_id
     AND gcc.code_combination_id=fd.code_combination_id
-    AND TRUNC (sysdate) BETWEEN TRUNC (NVL (fd.date_effective, sysdate)) AND TRUNC (NVL (fd.date_ineffective, sysdate))
+    AND TRUNC (SYSDATE) BETWEEN TRUNC (NVL (fd.date_effective, SYSDATE)) AND TRUNC (NVL (fd.date_ineffective, SYSDATE))
     ORDER BY interface_line_number;
     lc_file_handle utl_file.file_type;
     lv_line_count NUMBER;
     -- l_file_path   VARCHAR(200);
-    l_file_name  VARCHAR2(500);
-    lv_col_title VARCHAR2(5000);
-    l_file_path  VARCHAR2(500):='XXFIN_OUTBOUND';
-    lc_errormsg  varchar2(1000);----            VARCHAR2(1000) := NULL;
-    v_book_type_code varchar2(100);
+    l_file_name      VARCHAR2(500);
+    lv_col_title     VARCHAR2(5000);
+    l_file_path      VARCHAR2(500):='XXFIN_OUTBOUND';
+    lc_errormsg      VARCHAR2(1000);----            VARCHAR2(1000) := NULL;
+    v_book_type_code VARCHAR2(100);
+    v_segment1       VARCHAR2(50);
+    v_segment2       VARCHAR2(50);
+    v_segment3       VARCHAR2(50);
+    v_segment4       VARCHAR2(50);
+    v_segment5       VARCHAR2(50);
+    v_segment6       VARCHAR2(50);
+    v_segment7       VARCHAR2(50);
   BEGIN
     /* BEGIN
     SELECT directory_path
@@ -3950,108 +4296,144 @@ IS
     WHEN OTHERS THEN
     l_file_path := NULL;
     END;*/
-    print_debug_msg ('Package GENERIC_TAX_PARENT_DIST START', true);
-    print_debug_msg ('P_BOOK_TYPE_CODE '||p_book_type_code, true);
-    v_book_type_code :=replace(replace (replace(p_book_type_code,'OD US ','US_'),'OD CA ','CA_'),' ','_');
-   -- l_file_name    := 'Generic_TAX_Parent_Distribution_v15' || '.csv';
-   l_file_name    := 'Generic_TAX_Parent_Distribution_'||v_book_type_code|| '.csv';
-    lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
-    lv_col_title   :='INTERFACE_LINE_NUMBER'|| ','|| 'UNITS_ASSIGNED'|| ','|| 'EMPLOYEE_EMAIL_ADDRESS'|| ','|| 'ASSET_LOCATION_SEGMENT1'|| ','|| 'ASSET_LOCATION_SEGMENT2'|| ','|| 'ASSET_LOCATION_SEGMENT3'|| ','|| 'ASSET_LOCATION_SEGMENT4'|| ','|| 'ASSET_LOCATION_SEGMENT5'|| ','|| 'ASSET_LOCATION_SEGMENT6'|| ','|| 'ASSET_LOCATION_SEGMENT7'|| ','|| 'EXPENSE_ACCOUNT_SEGMENT';
-    utl_file.put_line(lc_file_handle,lv_col_title);
+    print_debug_msg ('Package GENERIC_TAX_PARENT_DIST START', TRUE);
+    print_debug_msg ('P_BOOK_TYPE_CODE '||p_book_type_code, TRUE);
+    v_book_type_code :=REPLACE(REPLACE (REPLACE(p_book_type_code,'OD US ','US_'),'OD CA ','CA_'),' ','_');
+    -- l_file_name    := 'Generic_TAX_Parent_Distribution_v15' || '.csv';
+    --  l_file_name    := 'Generic_TAX_Parent_Distribution_'||v_book_type_code|| '.csv';
+    -- lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
+    lv_col_title :='INTERFACE_LINE_NUMBER'|| ','|| 'UNITS_ASSIGNED'|| ','|| 'EMPLOYEE_EMAIL_ADDRESS'|| ','|| 'ASSET_LOCATION_SEGMENT1'|| ','|| 'ASSET_LOCATION_SEGMENT2'|| ','|| 'ASSET_LOCATION_SEGMENT3'|| ','|| 'ASSET_LOCATION_SEGMENT4'|| ','|| 'ASSET_LOCATION_SEGMENT5'|| ','|| 'ASSET_LOCATION_SEGMENT6'|| ','|| 'ASSET_LOCATION_SEGMENT7'|| ','|| 'EXPENSE_ACCOUNT_SEGMENT';
+    --  utl_file.put_line(lc_file_handle,lv_col_title);
     FOR i IN c_tax_par_dist
     LOOP
       ---UTL_FILE.put_line(lc_file_handle,'HI');
-      utl_file.put_line(lc_file_handle,i.interface_line_number|| ','|| i.units_assigned|| ','|| i.employee_email_address|| ','|| i.asset_location_segment1|| ','|| i.asset_location_segment2|| ','|| i.asset_location_segment3|| ','|| i.asset_location_segment4|| ','|| i.asset_location_segment5|| ','|| i.asset_location_segment6|| ','|| i.asset_location_segment7|| ','|| i.expense_account_segment);
+      --utl_file.put_line(lc_file_handle,i.interface_line_number|| ','|| i.units_assigned|| ','|| i.employee_email_address|| ','|| i.asset_location_segment1|| ','|| i.asset_location_segment2|| ','|| i.asset_location_segment3|| ','|| i.asset_location_segment4|| ','|| i.asset_location_segment5|| ','|| i.asset_location_segment6|| ','|| i.asset_location_segment7|| ','|| i.expense_account_segment);
+      IF i.segment1  IS NOT NULL THEN
+        v_segment1   :=NVL(xx_gl_beacon_mapping_f1(i.segment1,'ENTITY','A'),-1);
+        IF v_segment1 =                                                     -1 OR v_segment1 IS NULL THEN
+          insert_miss_segments ( i.segment1,                                -1, 'ENTITY', i.Interface_line_number, 'GENERIC_TAX_PARENT_DISTRIBUTION',p_book_type_code);
+        END IF;
+      END IF;
+      IF i.segment6 IS NOT NULL THEN
+        v_segment2  :=NVL(xx_gl_beacon_mapping_f1(i.segment6,'LOB','A'), -1);
+        IF v_segment2=                                                   -1 OR v_segment2 IS NULL THEN
+          insert_miss_segments ( i.segment6,                             -1, 'LOB', i.Interface_Line_Number , 'GENERIC_TAX_PARENT_DISTRIBUTION',p_book_type_code);
+        END IF;
+      END IF;
+      IF i.segment2 IS NOT NULL THEN
+        v_segment3  :=NVL(xx_gl_beacon_mapping_f1(i.segment2,'COST_CENTER','A'),-1);
+        IF v_segment3=                                                          -1 OR v_segment3 IS NULL THEN
+          insert_miss_segments ( i.segment2,                                    -1, 'COST_CENTER', i.Interface_Line_Number , 'GENERIC_TAX_PARENT_DISTRIBUTION',p_book_type_code);
+        END IF;
+      END IF;
+      IF i.segment3  IS NOT NULL THEN
+        v_segment4   :=NVL(xx_gl_beacon_mapping_f1(i.segment3,'ACCOUNT','A'), -1);
+        IF v_segment4 =                                                       -1 OR v_segment4 IS NULL THEN
+          insert_miss_segments ( i.segment3,                                  -1, 'ACCOUNT', i.Interface_Line_Number , 'GENERIC_TAX_PARENT_DISTRIBUTION',p_book_type_code);
+        END IF;
+      END IF;
+      IF i.segment4  IS NOT NULL THEN
+        v_segment5   :=NVL(xx_gl_beacon_mapping_f1(i.segment4,'LOCATION','A'), -1);
+        IF v_segment5 =                                                        -1 OR v_segment5 IS NULL THEN
+          insert_miss_segments ( i.segment4,                                   -1, 'LOCATION', i.Interface_Line_Number , 'GENERIC_TAX_PARENT_DISTRIBUTION',p_book_type_code);
+        END IF;
+      END IF;
+      IF i.segment5  IS NOT NULL THEN
+        v_segment6   :=NVL(xx_gl_beacon_mapping_f1(i.segment5,'ENTITY','A'), -1);
+        IF v_segment6 =                                                      -1 OR v_segment6 IS NULL THEN
+          insert_miss_segments ( i.segment5,                                 -1, 'ENTITY', i.interface_line_number , 'GENERIC_TAX_PARENT_DISTRIBUTION',p_book_type_code);
+        END IF;
+      END IF;
     END LOOP;
-    utl_file.fclose(lc_file_handle);
+    --- utl_file.fclose(lc_file_handle);
   EXCEPTION
   WHEN utl_file.access_denied THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_DISTRIBUTION procedure :- ' || ' access_denied :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.delete_failed THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_DISTRIBUTION procedure :- ' || ' delete_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.file_open THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_DISTRIBUTION procedure :- ' || ' file_open :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.internal_error THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_DISTRIBUTION procedure :- ' || ' internal_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_filehandle THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_DISTRIBUTION procedure:- ' || ' invalid_filehandle :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_filename THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_DISTRIBUTION procedure :- ' || ' invalid_filename :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_maxlinesize THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_DISTRIBUTION procedure :- ' || ' invalid_maxlinesize :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_mode THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_DISTRIBUTION procedure :- ' || ' invalid_mode :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_offset THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_DISTRIBUTION procedure :- ' || ' invalid_offset :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_operation THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_DISTRIBUTION procedure :- ' || ' invalid_operation :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_path THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_DISTRIBUTION procedure :- ' || ' invalid_path :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.read_error THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_DISTRIBUTION procedure :- ' || ' read_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.rename_failed THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_DISTRIBUTION procedure :- ' || ' rename_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.write_error THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_DISTRIBUTION procedure :- ' || ' write_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN OTHERS THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_PARENT_DISTRIBUTION procedure :- ' || ' OTHERS :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
@@ -4073,8 +4455,8 @@ IS
       loc.segment6 "ASSET_LOCATION_SEGMENT5",
       SUBSTR(loc.segment5,2) "ASSET_LOCATION_SEGMENT6",
       loc.segment7 asset_location_segment7,
-     /* Commented by Priyam for EBS to Cloud segment Change 
-       gcc.segment1
+      /* Commented by Priyam for EBS to Cloud segment Change
+      gcc.segment1
       || '.'
       || gcc.segment2
       || '.'
@@ -4087,8 +4469,8 @@ IS
       || gcc.segment6
       || '.'
       || gcc.segment7 expense_account_segment*/
-      ---Added by Priyam for EBS to Cloud segment Change 
-       xx_gl_beacon_mapping_f1(gcc.segment1,'ENTITY','A')--ENTITY
+      ---Added by Priyam for EBS to Cloud segment Change
+      /*  xx_gl_beacon_mapping_f1(gcc.segment1,'ENTITY','A')--ENTITY
       || '.'
       || xx_gl_beacon_mapping_f1(gcc.segment6,'LOB','A')----LOB
       || '.'
@@ -4099,8 +4481,14 @@ IS
       || xx_gl_beacon_mapping_f1(gcc.segment4,'LOCATION','A')---LOCATION
       || '.'
       || xx_gl_beacon_mapping_f1(gcc.segment5,'ENTITY','A')-----INTERCOMP
-      
-      expense_account_segment
+      expense_account_segment*/
+      gcc.segment1 ,
+      gcc.segment2 ,
+      gcc.segment3 ,
+      gcc.segment4 ,
+      gcc.segment5 ,
+      gcc.segment6 ,
+      gcc.segment7
     FROM
       (SELECT interface_line_number
       FROM
@@ -4114,9 +4502,9 @@ IS
           fab.tag_number tag_number,
           fab.manufacturer_name manufacturer,
           fab.serial_number serial_number,
-          fab.model_number model ,
+          fab.model_number MODEL ,
           fab.asset_type asset_type,
-          fb.cost cost,
+          fb.COST COST,
           TO_CHAR(fb.date_placed_in_service,'YYYY/MM/DD') date_placed_in_service,
           fb.prorate_convention_code prorate_convention,
           fab.current_units asset_units,
@@ -4147,7 +4535,7 @@ IS
         fb.percent_salvage_value salvage_value_percent,
         ---ds.ytd_deprn ytd_depreciation,
         --Added by priyam
-        decode(to_number(to_char(ds.deprn_run_date,'RRRR')),2019,ds.YTD_DEPRN,0) YTD_Depreciation,
+        DECODE(to_number(TO_CHAR(ds.deprn_run_date,'RRRR')),2019,ds.YTD_DEPRN,0) YTD_Depreciation,
         ds.deprn_reserve depreciation_reserve,
         ds.bonus_ytd_deprn ytd_bonus_depreciation,
         ds.bonus_deprn_reserve bonus_depreciation_reserve,
@@ -4184,8 +4572,8 @@ IS
         fb.prior_adjusted_rate earlier_adjusted_rate,
         ds.distribution_id,
         --fb.book_type_code,
-        rank() over (partition BY ds.book_type_code, ds.asset_id order by ds.distribution_id DESC ) distidrank,
-        rank() over (partition BY ds.book_type_code, ds.asset_id order by ds.period_counter DESC) periodcounterrank
+        rank() OVER (PARTITION BY ds.book_type_code, ds.asset_id ORDER BY ds.distribution_id DESC ) distidrank,
+        rank() OVER (PARTITION BY ds.book_type_code, ds.asset_id ORDER BY ds.period_counter DESC) periodcounterrank
       FROM fa_books fb,
         xx_fa_status xfs,
         fa_book_controls corpbook,
@@ -4194,16 +4582,16 @@ IS
         fa_additions_tl fat,
         fa_deprn_detail ds,
         fa_transaction_headers fth
-      WHERE 1                    =1
-      AND xfs.book_type_code     =p_book_type_code
-     /* AND ( asset_status         ='ACTIVE'
-      OR (asset_status           ='RETIRED'
-      AND xfs.date_effective     >'31-DEC-18') ) */
+      WHERE 1                =1
+      AND xfs.book_type_code =p_book_type_code
+        /*  AND ( asset_status         ='ACTIVE'
+        OR (asset_status           ='RETIRED'
+        AND xfs.date_effective     >'31-DEC-18') )*/
       AND fb.book_type_code      =xfs.book_type_code
       AND fb.asset_id            = xfs.asset_id
       AND corpbook.book_type_code=fb.book_type_code
       AND corpbook.book_class    = 'TAX'
-      AND TRUNC (sysdate) BETWEEN TRUNC (NVL (fb.date_effective, sysdate)) AND TRUNC (NVL (fb.date_ineffective, sysdate))
+      AND TRUNC (SYSDATE) BETWEEN TRUNC (NVL (fb.date_effective, SYSDATE)) AND TRUNC (NVL (fb.date_ineffective, SYSDATE))
       AND fab.asset_id      =fb.asset_id
       AND fab.asset_id NOT IN (21417857,21418275,11896729)
       AND NOT EXISTS
@@ -4230,16 +4618,23 @@ IS
     AND fd.book_type_code      ='OD US CORP'
     AND loc.location_id        =fd.location_id
     AND gcc.code_combination_id=fd.code_combination_id
-    AND TRUNC (sysdate) BETWEEN TRUNC (NVL (fd.date_effective, sysdate)) AND TRUNC (NVL (fd.date_ineffective, sysdate))
+    AND TRUNC (SYSDATE) BETWEEN TRUNC (NVL (fd.date_effective, SYSDATE)) AND TRUNC (NVL (fd.date_ineffective, SYSDATE))
     ORDER BY interface_line_number;
     lc_file_handle utl_file.file_type;
     lv_line_count NUMBER;
     -- l_file_path   VARCHAR(200);
-    l_file_name  VARCHAR2(500);
-    lv_col_title VARCHAR2(5000);
-    l_file_path  VARCHAR2(500):='XXFIN_OUTBOUND';
-    lc_errormsg  varchar2(1000);----            VARCHAR2(1000) := NULL;
-    v_book_type_code varchar2(100);
+    l_file_name      VARCHAR2(500);
+    lv_col_title     VARCHAR2(5000);
+    l_file_path      VARCHAR2(500):='XXFIN_OUTBOUND';
+    lc_errormsg      VARCHAR2(1000);----            VARCHAR2(1000) := NULL;
+    v_book_type_code VARCHAR2(100);
+    v_segment1       VARCHAR2(50);
+    v_segment2       VARCHAR2(50);
+    v_segment3       VARCHAR2(50);
+    v_segment4       VARCHAR2(50);
+    v_segment5       VARCHAR2(50);
+    v_segment6       VARCHAR2(50);
+    v_segment7       VARCHAR2(50);
   BEGIN
     /* BEGIN
     SELECT directory_path
@@ -4250,108 +4645,144 @@ IS
     WHEN OTHERS THEN
     l_file_path := NULL;
     END;*/
-    print_debug_msg ('Package GENERIC_TAX_CHILD_DIST START', true);
-    print_debug_msg ('P_BOOK_TYPE_CODE '||p_book_type_code, true);
-    v_book_type_code :=replace(replace (replace(p_book_type_code,'OD US ','US_'),'OD CA ','CA_'),' ','_');
-  --  l_file_name    := 'Generic_TAX_Child_Distribution_v15' || '.csv';
-   l_file_name    := 'Generic_TAX_Child_Distribution_'||v_book_type_code|| '.csv';
-    lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
-    lv_col_title   :='INTERFACE_LINE_NUMBER'|| ','|| 'UNITS_ASSIGNED'|| ','|| 'EMPLOYEE_EMAIL_ADDRESS'|| ','|| 'ASSET_LOCATION_SEGMENT1'|| ','|| 'ASSET_LOCATION_SEGMENT2'|| ','|| 'ASSET_LOCATION_SEGMENT3'|| ','|| 'ASSET_LOCATION_SEGMENT4'|| ','|| 'ASSET_LOCATION_SEGMENT5'|| ','|| 'ASSET_LOCATION_SEGMENT6'|| ','|| 'ASSET_LOCATION_SEGMENT7'|| ','|| 'EXPENSE_ACCOUNT_SEGMENT';
-    utl_file.put_line(lc_file_handle,lv_col_title);
+    print_debug_msg ('Package GENERIC_TAX_CHILD_DIST START', TRUE);
+    print_debug_msg ('P_BOOK_TYPE_CODE '||p_book_type_code, TRUE);
+    v_book_type_code :=REPLACE(REPLACE (REPLACE(p_book_type_code,'OD US ','US_'),'OD CA ','CA_'),' ','_');
+    --  l_file_name    := 'Generic_TAX_Child_Distribution_v15' || '.csv';
+    --  l_file_name    := 'Generic_TAX_Child_Distribution_'||v_book_type_code|| '.csv';
+    --lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
+    lv_col_title :='INTERFACE_LINE_NUMBER'|| ','|| 'UNITS_ASSIGNED'|| ','|| 'EMPLOYEE_EMAIL_ADDRESS'|| ','|| 'ASSET_LOCATION_SEGMENT1'|| ','|| 'ASSET_LOCATION_SEGMENT2'|| ','|| 'ASSET_LOCATION_SEGMENT3'|| ','|| 'ASSET_LOCATION_SEGMENT4'|| ','|| 'ASSET_LOCATION_SEGMENT5'|| ','|| 'ASSET_LOCATION_SEGMENT6'|| ','|| 'ASSET_LOCATION_SEGMENT7'|| ','|| 'EXPENSE_ACCOUNT_SEGMENT';
+    -- utl_file.put_line(lc_file_handle,lv_col_title);
     FOR i IN c_tax_child_dist
     LOOP
       ---UTL_FILE.put_line(lc_file_handle,'HI');
-      utl_file.put_line(lc_file_handle,i.interface_line_number|| ','|| i.units_assigned|| ','|| i.employee_email_address|| ','|| i.asset_location_segment1|| ','|| i.asset_location_segment2|| ','|| i.asset_location_segment3|| ','|| i.asset_location_segment4|| ','|| i.asset_location_segment5|| ','|| i.asset_location_segment6|| ','|| i.asset_location_segment7|| ','|| i.expense_account_segment);
+      --  utl_file.put_line(lc_file_handle,i.interface_line_number|| ','|| i.units_assigned|| ','|| i.employee_email_address|| ','|| i.asset_location_segment1|| ','|| i.asset_location_segment2|| ','|| i.asset_location_segment3|| ','|| i.asset_location_segment4|| ','|| i.asset_location_segment5|| ','|| i.asset_location_segment6|| ','|| i.asset_location_segment7|| ','|| i.expense_account_segment);
+      IF i.segment1  IS NOT NULL THEN
+        v_segment1   :=NVL(xx_gl_beacon_mapping_f1(i.segment1,'ENTITY','A'),-1);
+        IF v_segment1 =                                                     -1 OR v_segment1 IS NULL THEN
+          insert_miss_segments ( i.segment1,                                -1, 'ENTITY', i.Interface_line_number, 'GENERIC_TAX_CHILD_DIST',p_book_type_code);
+        END IF;
+      END IF;
+      IF i.segment6 IS NOT NULL THEN
+        v_segment2  :=NVL(xx_gl_beacon_mapping_f1(i.segment6,'LOB','A'), -1);
+        IF v_segment2=                                                   -1 OR v_segment2 IS NULL THEN
+          insert_miss_segments ( i.segment6,                             -1, 'LOB', i.Interface_Line_Number , 'GENERIC_TAX_CHILD_DIST',p_book_type_code);
+        END IF;
+      END IF;
+      IF i.segment2 IS NOT NULL THEN
+        v_segment3  :=NVL(xx_gl_beacon_mapping_f1(i.segment2,'COST_CENTER','A'),-1);
+        IF v_segment3=                                                          -1 OR v_segment3 IS NULL THEN
+          insert_miss_segments ( i.segment2,                                    -1, 'COST_CENTER', i.Interface_Line_Number , 'GENERIC_TAX_CHILD_DIST',p_book_type_code);
+        END IF;
+      END IF;
+      IF i.segment3  IS NOT NULL THEN
+        v_segment4   :=NVL(xx_gl_beacon_mapping_f1(i.segment3,'ACCOUNT','A'), -1);
+        IF v_segment4 =                                                       -1 OR v_segment4 IS NULL THEN
+          insert_miss_segments ( i.segment3,                                  -1, 'ACCOUNT', i.Interface_Line_Number , 'GENERIC_TAX_CHILD_DIST',p_book_type_code);
+        END IF;
+      END IF;
+      IF i.segment4  IS NOT NULL THEN
+        v_segment5   :=NVL(xx_gl_beacon_mapping_f1(i.segment4,'LOCATION','A'), -1);
+        IF v_segment5 =                                                        -1 OR v_segment5 IS NULL THEN
+          insert_miss_segments ( i.segment4,                                   -1, 'LOCATION', i.Interface_Line_Number , 'GENERIC_TAX_CHILD_DIST',p_book_type_code);
+        END IF;
+      END IF;
+      IF i.segment5  IS NOT NULL THEN
+        v_segment6   :=NVL(xx_gl_beacon_mapping_f1(i.segment5,'ENTITY','A'), -1);
+        IF v_segment6 =                                                      -1 OR v_segment6 IS NULL THEN
+          insert_miss_segments ( i.segment5,                                 -1, 'ENTITY', i.interface_line_number , 'GENERIC_TAX_CHILD_DIST',p_book_type_code);
+        END IF;
+      END IF;
     END LOOP;
-    utl_file.fclose(lc_file_handle);
+    -- utl_file.fclose(lc_file_handle);
   EXCEPTION
   WHEN utl_file.access_denied THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_DIST procedure :- ' || ' access_denied :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.delete_failed THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_DIST procedure :- ' || ' delete_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.file_open THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_DIST procedure :- ' || ' file_open :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.internal_error THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_DIST procedure :- ' || ' internal_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_filehandle THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_DIST procedure:- ' || ' invalid_filehandle :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_filename THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_DIST procedure :- ' || ' invalid_filename :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_maxlinesize THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_DIST procedure :- ' || ' invalid_maxlinesize :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_mode THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_DIST procedure :- ' || ' invalid_mode :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_offset THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_DIST procedure :- ' || ' invalid_offset :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_operation THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_DIST procedure :- ' || ' invalid_operation :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.invalid_path THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_DIST procedure :- ' || ' invalid_path :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.read_error THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_DIST procedure :- ' || ' read_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.rename_failed THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_DIST procedure :- ' || ' rename_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN utl_file.write_error THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_DIST procedure :- ' || ' write_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
   WHEN OTHERS THEN
     lc_errormsg := ( 'Error in GENERIC_TAX_CHILD_DIST procedure :- ' || ' OTHERS :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-    print_debug_msg (lc_errormsg, true);
+    print_debug_msg (lc_errormsg, TRUE);
     utl_file.fclose_all;
     lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
     utl_file.fclose(lc_file_handle);
@@ -4363,7 +4794,7 @@ IS
     SELECT 'Demo_create' demo_create,
       'Create' create_mode,
       NULL project_id,
-      REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(proj.name,chr(13), ''), chr(10), ''),chr(39),''),chr(63),''),chr(44),' ') project_name,
+      REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(proj.NAME,chr(13), ''), chr(10), ''),chr(39),''),chr(63),''),chr(44),' ') project_name,
       proj.segment1 project_number,
       ppa.project_asset_type,
       NULL project_asset_id,
@@ -4408,23 +4839,23 @@ IS
       || segment6
     FROM fa_locations
     WHERE location_id = ppa.location_id
-    ) location,
+    ) LOCATION,
     -- per.full_name,        --(Add Fetch)
     ppa.assigned_to_person_id,
     (SELECT paf.full_name
     FROM per_all_people_f paf
     WHERE paf.person_id = ppa.assigned_to_person_id
-    AND TRUNC(sysdate) BETWEEN paf.effective_start_date AND paf.effective_end_date
+    AND TRUNC(SYSDATE) BETWEEN paf.effective_start_date AND paf.effective_end_date
     ) assigned_to_person_name,
     (SELECT paf.employee_number
     FROM per_all_people_f paf
     WHERE paf.person_id = ppa.assigned_to_person_id
-    AND TRUNC(sysdate) BETWEEN paf.effective_start_date AND paf.effective_end_date
+    AND TRUNC(SYSDATE) BETWEEN paf.effective_start_date AND paf.effective_end_date
     ) assigned_to_person_number,
     ppa.depreciate_flag,
-    null depreciation_expense_ccid,
-   /*Commented by Priyam for EBS to Cloud segment Change 
-   (
+    NULL depreciation_expense_ccid,
+    ---  Commented by Priyam for EBS to Cloud segment Change
+    (
     CASE
       WHEN (ppa.depreciate_flag          = 'Y'
       AND ppa.depreciation_expense_ccid IS NULL
@@ -4435,20 +4866,20 @@ IS
         FROM gl_code_combinations_kfv
         WHERE code_combination_id = ppa.depreciation_expense_ccid
         )
-    END ) depreciation_expense_account,*/
-    ---Added by Priyam for EBS to Cloud segment Change 
-    (
+    END ) depreciation_expense_account,
+    ---Added by Priyam for EBS to Cloud segment Change
+    /*  (
     CASE
-      WHEN (ppa.depreciate_flag          = 'Y'
-      AND ppa.depreciation_expense_ccid IS NULL
-      and project_status_code           in ('1000','CLOSED'))
-      THEN (xx_gl_beacon_mapping_f1('1001.43002.73802000.010000.0000.10.000000',NULL,'P'))
-      else
-        (SELECT xx_gl_beacon_mapping_f1(concatenated_segments,NULL,'P')
-        FROM gl_code_combinations_kfv
-        WHERE code_combination_id = ppa.depreciation_expense_ccid
-        )
-    end ) depreciation_expense_account,
+    WHEN (ppa.depreciate_flag          = 'Y'
+    AND ppa.depreciation_expense_ccid IS NULL
+    AND project_status_code           IN ('1000','CLOSED'))
+    THEN (xx_gl_beacon_mapping_f1('1001.43002.73802000.010000.0000.10.000000',NULL,'P'))
+    ELSE
+    (SELECT xx_gl_beacon_mapping_f1(concatenated_segments,NULL,'P')
+    FROM gl_code_combinations_kfv
+    WHERE code_combination_id = ppa.depreciation_expense_ccid
+    )
+    END ) depreciation_expense_account,*/
     ---Changes end
     ppa.amortize_flag,
     NULL overridecategoryanddesc,
@@ -4472,7 +4903,7 @@ IS
     pa_projects_all proj
   WHERE 1                           =1
   AND proj.template_flag            = 'N'
-  AND NVL(proj.closed_date,sysdate) > to_date('30-JUN-2018','dd-mon-yyyy')
+  AND NVL(proj.closed_date,SYSDATE) > to_date('30-JUN-2018','dd-mon-yyyy')
   AND (proj.segment1 NOT LIKE 'PB%'
   AND proj.segment1 NOT LIKE 'NB%'
   AND proj.segment1 NOT LIKE 'TEM%')
@@ -4485,10 +4916,23 @@ IS
   lc_file_handle utl_file.file_type;
   lv_line_count NUMBER;
   -- l_file_path   VARCHAR(200);
-  l_file_name  VARCHAR2(100);
-  lv_col_title VARCHAR2(5000);
-  l_file_path  VARCHAR2(500):='XXFIN_OUTBOUND';
-  lc_errormsg  VARCHAR2(1000);----            VARCHAR2(1000) := NULL;
+  l_file_name      VARCHAR2(100);
+  lv_col_title     VARCHAR2(5000);
+  l_file_path      VARCHAR2(500):='XXFIN_OUTBOUND';
+  lc_errormsg      VARCHAR2(1000);----            VARCHAR2(1000) := NULL;
+  v_segment1       VARCHAR2(50);
+  v_segment2       VARCHAR2(50);
+  v_segment3       VARCHAR2(50);
+  v_segment4       VARCHAR2(50);
+  v_segment5       VARCHAR2(50);
+  v_segment6       VARCHAR2(50);
+  v_segment7       VARCHAR2(50);
+  v_segment1_split VARCHAR2(50);
+  v_segment2_Split VARCHAR2(50);
+  v_segment3_Split VARCHAR2(50);
+  v_segment4_split VARCHAR2(50);
+  v_segment5_split VARCHAR2(50);
+  v_segment6_Split VARCHAR2(50);
 BEGIN
   /* BEGIN
   SELECT directory_path
@@ -4499,108 +4943,152 @@ BEGIN
   WHEN OTHERS THEN
   l_file_path := NULL;
   END;*/
-  print_debug_msg ('Package FBDI_PROJECT_ASSETS START', true);
+  print_debug_msg ('Package FBDI_PROJECT_ASSETS START', TRUE);
   ---  print_debug_msg ('P_BOOK_TYPE_CODE '||P_BOOK_TYPE_CODE, TRUE);
-  l_file_name    := 'fbdi_project_assets' || '.csv';--GENERIC_TAX_CHILD_ASSET_HDR
-  lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
-  lv_col_title   :='DEMO_CREATE'|| ','|| 'CREATE_MODE'|| ','|| 'PROJECT_ID'|| ','|| 'PROJECT_NAME'|| ','|| 'PROJECT_NUMBER'|| ','|| 'PROJECT_ASSET_TYPE'|| ','|| 'PROJECT_ASSET_ID'|| ','|| 'ASSET_NAME'|| ','|| 'ASSET_NUMBER'|| ','|| 'ASSET_DESCRIPTION'|| ','|| 'ESTIMATED_IN_SERVICE_DATE'|| ','|| 'DATE_PLACED_IN_SERVICE'|| ','|| 'REVERSE_FLAG'|| ','|| 'CAPITAL_HOLD_FLAG'|| ','|| 'BOOK_TYPE_CODE'|| ','|| 'ASSET_CATEGORY_ID'|| ','|| 'ASSET_CATEGORY'|| ','|| 'ASSET_KEY_CCID'|| ','|| 'ASSET_KEY'|| ','|| 'ASSET_UNITS'|| ','|| 'ESTIMATED_COST'|| ','|| 'ESTIMATED_ASSET_UNITS'|| ','|| 'LOCATION_ID'|| ','|| 'LOCATION'|| ','|| 'ASSIGNED_TO_PERSON_ID'|| ','|| 'ASSIGNED_TO_PERSON_NAME'|| ','|| 'ASSIGNED_TO_PERSON_NUMBER'|| ','|| 'DEPRECIATE_FLAG'|| ','|| 'DEPRECIATION_EXPENSE_CCID'|| ','|| 'DEPRECIATION_EXPENSE_ACCOUNT'|| ','|| 'AMORTIZE_FLAG'|| ','|| 'OVERRIDECATEGORYANDDESC'|| ','|| 'BUSINESS_UNIT_ID'|| ','|| 'PARENT_ASSET_ID'|| ','|| 'PARENT_ASSET_NUMBER'|| ','|| 'MANUFACTURER_NAME'|| ','||
+  l_file_name := 'fbdi_project_assets' || '.csv';--GENERIC_TAX_CHILD_ASSET_HDR
+  --lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
+  lv_col_title :='DEMO_CREATE'|| ','|| 'CREATE_MODE'|| ','|| 'PROJECT_ID'|| ','|| 'PROJECT_NAME'|| ','|| 'PROJECT_NUMBER'|| ','|| 'PROJECT_ASSET_TYPE'|| ','|| 'PROJECT_ASSET_ID'|| ','|| 'ASSET_NAME'|| ','|| 'ASSET_NUMBER'|| ','|| 'ASSET_DESCRIPTION'|| ','|| 'ESTIMATED_IN_SERVICE_DATE'|| ','|| 'DATE_PLACED_IN_SERVICE'|| ','|| 'REVERSE_FLAG'|| ','|| 'CAPITAL_HOLD_FLAG'|| ','|| 'BOOK_TYPE_CODE'|| ','|| 'ASSET_CATEGORY_ID'|| ','|| 'ASSET_CATEGORY'|| ','|| 'ASSET_KEY_CCID'|| ','|| 'ASSET_KEY'|| ','|| 'ASSET_UNITS'|| ','|| 'ESTIMATED_COST'|| ','|| 'ESTIMATED_ASSET_UNITS'|| ','|| 'LOCATION_ID'|| ','|| 'LOCATION'|| ','|| 'ASSIGNED_TO_PERSON_ID'|| ','|| 'ASSIGNED_TO_PERSON_NAME'|| ','|| 'ASSIGNED_TO_PERSON_NUMBER'|| ','|| 'DEPRECIATE_FLAG'|| ','|| 'DEPRECIATION_EXPENSE_CCID'|| ','|| 'DEPRECIATION_EXPENSE_ACCOUNT'|| ','|| 'AMORTIZE_FLAG'|| ','|| 'OVERRIDECATEGORYANDDESC'|| ','|| 'BUSINESS_UNIT_ID'|| ','|| 'PARENT_ASSET_ID'|| ','|| 'PARENT_ASSET_NUMBER'|| ','|| 'MANUFACTURER_NAME'|| ','||
   'MODEL_NUMBER'|| ','|| 'TAG_NUMBER'|| ','|| 'SERIAL_NUMBER'|| ','|| 'RET_TARGET_ASSET_ID'|| ','|| 'RET_TARGET_ASSET_NUMBER'|| ','|| 'PM_PRODUCT_CODE';
-  utl_file.put_line(lc_file_handle,lv_col_title);
+  --utl_file.put_line(lc_file_handle,lv_col_title);
   FOR i IN c_fbdi_project_assets
   LOOP
     ---UTL_FILE.put_line(lc_file_handle,'HI');
-    utl_file.put_line(lc_file_handle,i.demo_create|| ','|| i.create_mode|| ','|| i.project_id|| ','|| i.project_name|| ','|| i.project_number|| ','|| i.project_asset_type|| ','|| i.project_asset_id|| ','|| i.asset_name|| ','|| i.asset_number|| ','|| i.asset_description|| ','|| i.estimated_in_service_date|| ','|| i.date_placed_in_service|| ','|| i.reverse_flag|| ','|| i.capital_hold_flag|| ','|| i.book_type_code|| ','|| i.asset_category_id|| ','|| i.asset_category|| ','|| i.asset_key_ccid|| ','|| i.asset_key|| ','|| i.asset_units|| ','|| i.estimated_cost|| ','|| i.estimated_asset_units|| ','|| i.location_id|| ','|| i.location|| ','|| i.assigned_to_person_id|| ','|| i.assigned_to_person_name|| ','|| i.assigned_to_person_number|| ','|| i.depreciate_flag|| ','|| i.depreciation_expense_ccid|| ','|| i.depreciation_expense_account|| ','|| i.amortize_flag|| ','|| i.overridecategoryanddesc|| ','|| i.business_unit_id|| ','|| i.parent_asset_id|| ','|| i.parent_asset_number|| ','||
-    i.manufacturer_name|| ','|| i.model_number|| ','|| i.tag_number|| ','|| i.serial_number|| ','|| i.ret_target_asset_id|| ','|| i.ret_target_asset_number|| ','|| i.pm_product_code);
+    /*  utl_file.put_line(lc_file_handle,i.demo_create|| ','|| i.create_mode|| ','|| i.project_id|| ','|| i.project_name|| ','|| i.project_number|| ','|| i.project_asset_type|| ','|| i.project_asset_id|| ','|| i.asset_name|| ','|| i.asset_number|| ','|| i.asset_description|| ','|| i.estimated_in_service_date|| ','|| i.date_placed_in_service|| ','|| i.reverse_flag|| ','|| i.capital_hold_flag|| ','|| i.book_type_code|| ','|| i.asset_category_id|| ','|| i.asset_category|| ','|| i.asset_key_ccid|| ','|| i.asset_key|| ','|| i.asset_units|| ','|| i.estimated_cost|| ','|| i.estimated_asset_units|| ','|| i.location_id|| ','|| i.location|| ','|| i.assigned_to_person_id|| ','|| i.assigned_to_person_name|| ','|| i.assigned_to_person_number|| ','|| i.depreciate_flag|| ','|| i.depreciation_expense_ccid|| ','|| i.depreciation_expense_account|| ','|| i.amortize_flag|| ','|| i.overridecategoryanddesc|| ','|| i.business_unit_id|| ','|| i.parent_asset_id|| ','|| i.parent_asset_number|| ','||
+    i.manufacturer_name|| ','|| i.model_number|| ','|| i.tag_number|| ','|| i.serial_number|| ','|| i.ret_target_asset_id|| ','|| i.ret_target_asset_number|| ','|| i.pm_product_code);*/
+    IF i.depreciation_expense_account IS NOT NULL THEN
+      v_segment1_split                := regexp_substr(i.depreciation_expense_account, '[^.]+', 1, 1);-- entity,
+      v_segment2_Split                := regexp_substr(i.depreciation_expense_account, '[^.]+', 1, 2);-- cost_center,
+      v_segment3_split                := regexp_substr(i.depreciation_expense_account, '[^.]+', 1, 3);-- account,
+      v_segment4_split                := regexp_substr(i.depreciation_expense_account, '[^.]+', 1, 4);-- location,
+      v_segment5_split                := regexp_substr(i.depreciation_expense_account, '[^.]+', 1, 5);-- intercompany
+      v_segment6_Split                := regexp_substr(i.depreciation_expense_account, '[^.]+', 1, 6);-- lob
+      IF v_segment1_split             IS NOT NULL THEN
+        v_segment1                    :=NVL(xx_gl_beacon_mapping_f1(v_segment1_split,'ENTITY','A'),-1);
+        IF v_segment1                  =                                                           -1 OR v_segment1 IS NULL THEN
+          insert_miss_segments ( v_segment1_split,                                                 -1, 'ENTITY', i.asset_number, 'FBDI_PROJECT_ASSETS',NULL);
+        END IF;
+      END IF;
+      IF v_segment6_Split IS NOT NULL THEN
+        v_segment6        :=NVL(xx_gl_beacon_mapping_f1( v_segment6_Split,'LOB','A'), -1);
+        IF v_segment6      =                                                          -1 OR v_segment6 IS NULL THEN
+          insert_miss_segments ( v_segment6_Split,                                    -1, 'LOB', i.asset_number, 'FBDI_PROJECT_ASSETS',NULL);
+        END IF;
+      END IF;
+      IF v_segment2_split IS NOT NULL THEN
+        v_segment2        :=NVL(xx_gl_beacon_mapping_f1(v_segment2_split,'COST_CENTER','A'),-1);
+        IF v_segment2      =                                                                -1 OR v_segment2 IS NULL THEN
+          insert_miss_segments ( v_segment2_split,                                          -1, 'COST_CENTER', i.asset_number, 'FBDI_PROJECT_ASSETS',NULL);
+        END IF;
+      END IF;
+      IF v_segment3_split IS NOT NULL THEN
+        v_segment3        :=NVL(xx_gl_beacon_mapping_f1(v_segment3_split,'ACCOUNT','A'), -1);
+        IF v_segment3      =                                                             -1 OR v_segment3 IS NULL THEN
+          insert_miss_segments ( v_segment3_split,                                       -1, 'ACCOUNT', i.asset_number, 'FBDI_PROJECT_ASSETS',NULL);
+        END IF;
+      END IF;
+      IF v_segment4_split IS NOT NULL THEN
+        v_segment4        :=NVL(xx_gl_beacon_mapping_f1(v_segment4_split,'LOCATION','A'), -1);
+        IF v_segment4      =                                                              -1 OR v_segment4 IS NULL THEN
+          insert_miss_segments ( v_segment4_split,                                        -1, 'LOCATION', i.asset_number, 'FBDI_PROJECT_ASSETS',NULL);
+        END IF;
+      END IF;
+      IF v_segment5_split IS NOT NULL THEN
+        v_segment5        :=NVL(xx_gl_beacon_mapping_f1(v_segment5_split,'ENTITY','A'), -1);
+        IF v_segment5      =                                                            -1 OR v_segment5 IS NULL THEN
+          insert_miss_segments ( v_segment5_split,                                      -1, 'ENTITY', i.asset_number, 'FBDI_PROJECT_ASSETS',NULL);
+        END IF;
+      END IF;
+    END IF;---END IF for Depreciation Expense account
   END LOOP;
-  utl_file.fclose(lc_file_handle);
+  -- utl_file.fclose(lc_file_handle);
 EXCEPTION
 WHEN utl_file.access_denied THEN
   lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' || ' access_denied :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.delete_failed THEN
   lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' || ' delete_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.file_open THEN
   lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' || ' file_open :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.internal_error THEN
   lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' || ' internal_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_filehandle THEN
   lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure:- ' || ' invalid_filehandle :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_filename THEN
   lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' || ' invalid_filename :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_maxlinesize THEN
   lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' || ' invalid_maxlinesize :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_mode THEN
   lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' || ' invalid_mode :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_offset THEN
   lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' || ' invalid_offset :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_operation THEN
   lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' || ' invalid_operation :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_path THEN
   lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' || ' invalid_path :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.read_error THEN
   lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' || ' read_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.rename_failed THEN
   lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' || ' rename_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.write_error THEN
   lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' || ' write_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN OTHERS THEN
   lc_errormsg := ( 'Error in FBDI_PROJECT_ASSETS procedure :- ' || ' OTHERS :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
@@ -4612,11 +5100,11 @@ IS
     SELECT
       /*+ PARALLEL(prj,4) */
       DISTINCT 'MISCELLANEOUS' transactiontype,
-      ou.name businessunitname,
+      ou.NAME businessunitname,
       NULL businessunitid,
       user_transaction_source transactionsource,
       NULL transactionsourceid,
-      'Conversion' document,
+      'Conversion' DOCUMENT,
       NULL documentid,
       'Conversion' documententry,
       NULL documententryid,
@@ -4630,14 +5118,14 @@ IS
       NULL humanresourcesassignment,
       NULL humanresourcesassignmentid,
       prj.segment1 projectnumber,
-      REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(prj.name,chr(13), ''), chr(10), ''),chr(39),''),chr(63),''),chr(44),' ') project_name,
+      REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(prj.NAME,chr(13), ''), chr(10), ''),chr(39),''),chr(63),''),chr(44),' ') project_name,
       NULL projectid,
       task.task_number tasknumber,
       REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(task.task_name,chr(13), ''), chr(10), ''),chr(39),''),chr(63),''),chr(44),' ') task_name,
       NULL taskid,
       exptyp.expenditure_type expendituretype,
       NULL expendituretypeid,
-      (SELECT name
+      (SELECT NAME
       FROM hr_all_organization_units
       WHERE organization_id=expd.cc_prvdr_organization_id
       ) expenditure_organization,
@@ -4664,28 +5152,30 @@ IS
     NULL transactioncurrency,
     raw_cost rawcostintrxcurrency,
     burden_cost_rate burdenedcostintrxcurrency,
-    null rawcostcreditccid,
-    /*Commented by Priyam for EBS to Cloud segment Change
+    NULL rawcostcreditccid,
+    --Commented by Priyam for EBS to Cloud segment Change
     (SELECT gl_code_combinations.concatenated_segments
     FROM gl_code_combinations_kfv gl_code_combinations
     WHERE code_combination_id = cr_code_combination_id
-    ) rawcostcreditaccount,*/
-  ---  ADDED by Priyam for EBS to Cloud segment Change 
-    (SELECT xx_gl_beacon_mapping_f1(gl_code_combinations.concatenated_segments,null,'P')
-    FROM gl_code_combinations_kfv gl_code_combinations
-    where code_combination_id = cr_code_combination_id
     ) rawcostcreditaccount,
-    null rawcostdebitccid,
-   /* Commented by Priyam for EBS to Cloud segment Change
-   (SELECT gl_code_combinations.concatenated_segments
+    ---  ADDED by Priyam for EBS to Cloud segment Change
+   /* (
+    SELECT xx_gl_beacon_mapping_f1(gl_code_combinations.concatenated_segments,NULL,'P')
+    FROM gl_code_combinations_kfv gl_code_combinations
+    WHERE code_combination_id = cr_code_combination_id
+    ) rawcostcreditaccount,*/
+    NULL rawcostdebitccid,
+    ---Commented by Priyam for EBS to Cloud segment Change
+    (SELECT gl_code_combinations.concatenated_segments
+    FROM gl_code_combinations_kfv gl_code_combinations
+    WHERE code_combination_id = dr_code_combination_id
+    ) rawcostdebitaccount,
+    ----Added by Priyam for EBS to Cloud segment Change
+   /* (
+    SELECT xx_gl_beacon_mapping_f1(gl_code_combinations.concatenated_segments,NULL,'P')
     FROM gl_code_combinations_kfv gl_code_combinations
     WHERE code_combination_id = dr_code_combination_id
     ) rawcostdebitaccount,*/
-    ----Added by Priyam for EBS to Cloud segment Change 
-    (SELECT xx_gl_beacon_mapping_f1(gl_code_combinations.concatenated_segments,null,'P')
-    FROM gl_code_combinations_kfv gl_code_combinations
-    where code_combination_id = dr_code_combination_id
-    ) rawcostdebitaccount,
     NULL burdenedcostcreditccid,
     NULL burdenedcostcreditaccount,
     NULL burdenedcostdebitccid,
@@ -4756,7 +5246,7 @@ IS
     pa_projects_all prj
   WHERE 1                          =1
   AND prj.template_flag            = 'N'
-  AND NVL(prj.closed_date,sysdate) > to_date('30-JUN-2018','dd-mon-yyyy')
+  AND NVL(prj.closed_date,SYSDATE) > to_date('30-JUN-2018','dd-mon-yyyy')
   AND (prj.segment1 NOT LIKE 'PB%'
   AND prj.segment1 NOT LIKE 'NB%'
   AND prj.segment1 NOT LIKE 'TEM%')
@@ -4794,7 +5284,21 @@ IS
   l_file_name  VARCHAR2(100);
   lv_col_title VARCHAR2(5000);
   l_file_path  VARCHAR2(500):='XXFIN_OUTBOUND';
-  lc_errormsg  VARCHAR2(1000);----            VARCHAR2(1000) := NULL;
+  lc_errormsg  VARCHAR2(1000);----            VARCHAR2(1000) := NULL
+  v_segment1 VARCHAR2(50);
+  v_segment2 VARCHAR2(50);
+  v_segment3 VARCHAR2(50);
+  v_segment4 VARCHAR2(50);
+  v_segment5 VARCHAR2(50);
+  v_segment6 VARCHAR2(50);
+  v_segment7 VARCHAR2(50);
+  
+  v_segment1_split VARCHAR2(50);
+  v_segment2_Split VARCHAR2(50);
+  v_segment3_Split VARCHAR2(50);
+  v_segment4_split VARCHAR2(50);
+  v_segment5_split VARCHAR2(50);
+  v_segment6_Split VARCHAR2(50);
 BEGIN
   /* BEGIN
   SELECT directory_path
@@ -4805,110 +5309,200 @@ BEGIN
   WHEN OTHERS THEN
   l_file_path := NULL;
   END;*/
-  print_debug_msg ('Package fbdi_Proj_Exp_Cap_YN START', true);
+  print_debug_msg ('Package fbdi_Proj_Exp_Cap_YN START', TRUE);
   --- print_debug_msg ('P_BOOK_TYPE_CODE '||P_BOOK_TYPE_CODE, TRUE);
   l_file_name    := 'fbdi_ProjectExpenditure_Capitalizable_YN' || '.csv';--GENERIC_TAX_CHILD_ASSET_HDR
-  lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
+  --lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
   lv_col_title   :='TRANSACTIONTYPE'|| ','|| 'BUSINESSUNITNAME'|| ','|| 'BUSINESSUNITID'|| ','|| 'TRANSACTIONSOURCE'|| ','|| 'TRANSACTIONSOURCEID'|| ','|| 'DOCUMENT'|| ','|| 'DOCUMENTID'|| ','|| 'DOCUMENTENTRY'|| ','|| 'DOCUMENTENTRYID'|| ','|| 'EXPENDITUREBATCH'|| ','|| 'BATCHENDINGDATE'|| ','|| 'BATCHDESCRIPTION'|| ','|| 'EXPENDITUREITEMDATE'|| ','|| 'PERSONNUMBER'|| ','|| 'PERSONNAME'|| ','|| 'PERSONID'|| ','|| 'HUMANRESOURCESASSIGNMENT'|| ','|| 'HUMANRESOURCESASSIGNMENTID'|| ','|| 'PROJECTNUMBER'|| ','|| 'PROJECT_NAME'|| ','|| 'PROJECTID'|| ','|| 'TASKNUMBER'|| ','|| 'TASK_NAME'|| ','|| 'TASKID'|| ','|| 'EXPENDITURETYPE'|| ','|| 'EXPENDITURETYPEID'|| ','|| 'EXPENDITURE_ORGANIZATION'|| ','|| 'EXPENDITUREORGANIZATIONID'|| ','|| 'CONTRACT_NUMBER'|| ','|| 'CONTRACT_NAME'|| ','|| 'CONTRACT_ID'|| ','|| 'FUNDING_SOURCE_NUMBER'|| ','|| 'FUNDING_SOURCE_NAME'|| ','|| 'QUANTITY'|| ','|| 'UNIT_OF_MEASURE_NAME'|| ','|| 'UNIT_OF_MEASURE_CODE'|| ','|| 'WORKTYPE'|| ','|| 'WORKTYPEID'|| ','||
   'BILLABLE'|| ','|| 'CAPITALIZABLE'|| ','|| 'ACCRUAL_ITEM'|| ','|| 'ORIG_TRANSACTION_REFERENCE'|| ','|| 'UNMATCHEDNEGATIVETRANSACTION'|| ','|| 'REVERSEDORIGINALTRANSACTION'|| ','|| 'EXPENDITUREITEMCOMMENT'|| ','|| 'ACCOUNTINGDATE'|| ','|| 'TRANSACTIONCURRENCYCODE'|| ','|| 'TRANSACTIONCURRENCY'|| ','|| 'RAWCOSTINTRXCURRENCY'|| ','|| 'BURDENEDCOSTINTRXCURRENCY'|| ','|| 'RAWCOSTCREDITCCID'|| ','|| 'RAWCOSTCREDITACCOUNT'|| ','|| 'RAWCOSTDEBITCCID'|| ','|| 'RAWCOSTDEBITACCOUNT'|| ','|| 'BURDENEDCOSTCREDITCCID'|| ','|| 'BURDENEDCOSTCREDITACCOUNT'|| ','|| 'BURDENEDCOSTDEBITCCID'|| ','|| 'BURDENEDCOSTDEBITACCOUNT'|| ','|| 'BURDENCOSTDEBITCCID'|| ','|| 'BURDENCOSTDEBITACCOUNT'|| ','|| 'BURDENCOSTCREDITCCID'|| ','|| 'BURDENCOSTCREDITACCOUNT'|| ','|| 'PROVIDERLEDGERCURRENCYCODE'|| ','|| 'PROVIDERLEDGERCURRENCY'|| ','|| 'RAWCOSTLEDGERCURRENCY'|| ','|| 'BURDENEDCOSTLEDGERCURRENCY'|| ','|| 'PROVIDERLEDGERRATETYPE'|| ','|| 'PROVIDERLEDGERRATEDATE'|| ','|| 'PROVIDERLEDGERDATETYPE'|| ','||
   'PROVIDERLEDGERRATE'|| ','|| 'PROVIDERLEDGERROUNDINGLIMIT'|| ','|| 'CONVERTED'|| ','|| 'CONTEXTCATEGORY'|| ','|| 'USERDEFINEDATTRIBUTE1'|| ','|| 'USERDEFINEDATTRIBUTE2'|| ','|| 'USERDEFINEDATTRIBUTE3'|| ','|| 'USERDEFINEDATTRIBUTE4'|| ','|| 'USERDEFINEDATTRIBUTE5'|| ','|| 'USERDEFINEDATTRIBUTE6'|| ','|| 'USERDEFINEDATTRIBUTE7'|| ','|| 'USERDEFINEDATTRIBUTE8'|| ','|| 'USERDEFINEDATTRIBUTE9'|| ','|| 'USERDEFINEDATTRIBUTE10'|| ','|| 'FUNDINGSOURCEID'|| ','|| 'RESERVEDATTRIBUTE2'|| ','|| 'RESERVEDATTRIBUTE3'|| ','|| 'RESERVEDATTRIBUTE4'|| ','|| 'RESERVEDATTRIBUTE5'|| ','|| 'RESERVEDATTRIBUTE6'|| ','|| 'RESERVEDATTRIBUTE7'|| ','|| 'RESERVEDATTRIBUTE8'|| ','|| 'RESERVEDATTRIBUTE9'|| ','|| 'RESERVEDATTRIBUTE10'|| ','|| 'ATTRIBUTECATEGORY'|| ','|| 'ATTRIBUTE1'|| ','|| 'ATTRIBUTE2'|| ','|| 'ATTRIBUTE3'|| ','|| 'ATTRIBUTE4'|| ','|| 'ATTRIBUTE5'|| ','|| 'ATTRIBUTE6'|| ','|| 'ATTRIBUTE7'|| ','|| 'ATTRIBUTE8'|| ','|| 'ATTRIBUTE9'|| ','|| 'ATTRIBUTE10';
-  utl_file.put_line(lc_file_handle,lv_col_title);
+ -- utl_file.put_line(lc_file_handle,lv_col_title);
   FOR i IN c_fbdi_yn
   LOOP
     ---UTL_FILE.put_line(lc_file_handle,'HI');
-    utl_file.put_line(lc_file_handle,i.transactiontype|| ','|| i.businessunitname|| ','|| i.businessunitid|| ','|| i.transactionsource|| ','|| i.transactionsourceid|| ','|| i.document|| ','|| i.documentid|| ','|| i.documententry|| ','|| i.documententryid|| ','|| i.expenditurebatch|| ','|| i.batchendingdate|| ','|| i.batchdescription|| ','|| i.expenditureitemdate|| ','|| i.personnumber|| ','|| i.personname|| ','|| i.personid|| ','|| i.humanresourcesassignment|| ','|| i.humanresourcesassignmentid|| ','|| i.projectnumber|| ','|| i.project_name|| ','|| i.projectid|| ','|| i.tasknumber|| ','|| i.task_name|| ','|| i.taskid|| ','|| i.expendituretype|| ','|| i.expendituretypeid|| ','|| i.expenditure_organization|| ','|| i.expenditureorganizationid|| ','|| i.contract_number|| ','|| i.contract_name|| ','|| i.contract_id|| ','|| i.funding_source_number|| ','|| i.funding_source_name|| ','|| i.quantity|| ','|| i.unit_of_measure_name|| ','|| i.unit_of_measure_code|| ','|| i.worktype|| ','||
+  /*  utl_file.put_line(lc_file_handle,i.transactiontype|| ','|| i.businessunitname|| ','|| i.businessunitid|| ','|| i.transactionsource|| ','|| i.transactionsourceid|| ','|| i.DOCUMENT|| ','|| i.documentid|| ','|| i.documententry|| ','|| i.documententryid|| ','|| i.expenditurebatch|| ','|| i.batchendingdate|| ','|| i.batchdescription|| ','|| i.expenditureitemdate|| ','|| i.personnumber|| ','|| i.personname|| ','|| i.personid|| ','|| i.humanresourcesassignment|| ','|| i.humanresourcesassignmentid|| ','|| i.projectnumber|| ','|| i.project_name|| ','|| i.projectid|| ','|| i.tasknumber|| ','|| i.task_name|| ','|| i.taskid|| ','|| i.expendituretype|| ','|| i.expendituretypeid|| ','|| i.expenditure_organization|| ','|| i.expenditureorganizationid|| ','|| i.contract_number|| ','|| i.contract_name|| ','|| i.contract_id|| ','|| i.funding_source_number|| ','|| i.funding_source_name|| ','|| i.quantity|| ','|| i.unit_of_measure_name|| ','|| i.unit_of_measure_code|| ','|| i.worktype|| ','||
     i.worktypeid|| ','|| i.billable|| ','|| i.capitalizable|| ','|| i.accrual_item|| ','|| i.orig_transaction_reference|| ','|| i.unmatchednegativetransaction|| ','|| i.reversedoriginaltransaction|| ','|| i.expenditureitemcomment|| ','|| i.accountingdate|| ','|| i.transactioncurrencycode|| ','|| i.transactioncurrency|| ','|| i.rawcostintrxcurrency|| ','|| i.burdenedcostintrxcurrency|| ','|| i.rawcostcreditccid|| ','|| i.rawcostcreditaccount|| ','|| i.rawcostdebitccid|| ','|| i.rawcostdebitaccount|| ','|| i.burdenedcostcreditccid|| ','|| i.burdenedcostcreditaccount|| ','|| i.burdenedcostdebitccid|| ','|| i.burdenedcostdebitaccount|| ','|| i.burdencostdebitccid|| ','|| i.burdencostdebitaccount|| ','|| i.burdencostcreditccid|| ','|| i.burdencostcreditaccount|| ','|| i.providerledgercurrencycode|| ','|| i.providerledgercurrency|| ','|| i.rawcostledgercurrency|| ','|| i.burdenedcostledgercurrency|| ','|| i.providerledgerratetype|| ','|| i.providerledgerratedate|| ','||
-    i.providerledgerdatetype|| ','|| i.providerledgerrate|| ','|| i.providerledgerroundinglimit|| ','|| i.converted|| ','|| i.contextcategory|| ','|| i.userdefinedattribute1|| ','|| i.userdefinedattribute2|| ','|| i.userdefinedattribute3|| ','|| i.userdefinedattribute4|| ','|| i.userdefinedattribute5|| ','|| i.userdefinedattribute6|| ','|| i.userdefinedattribute7|| ','|| i.userdefinedattribute8|| ','|| i.userdefinedattribute9|| ','|| i.userdefinedattribute10|| ','|| i.fundingsourceid|| ','|| i.reservedattribute2|| ','|| i.reservedattribute3|| ','|| i.reservedattribute4|| ','|| i.reservedattribute5|| ','|| i.reservedattribute6|| ','|| i.reservedattribute7|| ','|| i.reservedattribute8|| ','|| i.reservedattribute9|| ','|| i.reservedattribute10|| ','|| i.attributecategory|| ','|| i.attribute1|| ','|| i.attribute2|| ','|| i.attribute3|| ','|| i.attribute4|| ','|| i.attribute5|| ','|| i.attribute6|| ','|| i.attribute7|| ','|| i.attribute8|| ','|| i.attribute9|| ','|| i.attribute10);
+    i.providerledgerdatetype|| ','|| i.providerledgerrate|| ','|| i.providerledgerroundinglimit|| ','|| i.converted|| ','|| i.contextcategory|| ','|| i.userdefinedattribute1|| ','|| i.userdefinedattribute2|| ','|| i.userdefinedattribute3|| ','|| i.userdefinedattribute4|| ','|| i.userdefinedattribute5|| ','|| i.userdefinedattribute6|| ','|| i.userdefinedattribute7|| ','|| i.userdefinedattribute8|| ','|| i.userdefinedattribute9|| ','|| i.userdefinedattribute10|| ','|| i.fundingsourceid|| ','|| i.reservedattribute2|| ','|| i.reservedattribute3|| ','|| i.reservedattribute4|| ','|| i.reservedattribute5|| ','|| i.reservedattribute6|| ','|| i.reservedattribute7|| ','|| i.reservedattribute8|| ','|| i.reservedattribute9|| ','|| i.reservedattribute10|| ','|| i.attributecategory|| ','|| i.attribute1|| ','|| i.attribute2|| ','|| i.attribute3|| ','|| i.attribute4|| ','|| i.attribute5|| ','|| i.attribute6|| ','|| i.attribute7|| ','|| i.attribute8|| ','|| i.attribute9|| ','|| i.attribute10);*/
+    IF i.RawCostCreditAccount IS NOT NULL THEN
+      v_segment1_split                := regexp_substr(i.RawCostCreditAccount, '[^.]+', 1, 1);-- entity,
+      v_segment2_Split                := regexp_substr(i.RawCostCreditAccount, '[^.]+', 1, 2);-- cost_center,
+      v_segment3_split                := regexp_substr(i.RawCostCreditAccount, '[^.]+', 1, 3);-- account,
+      v_segment4_split                := regexp_substr(i.RawCostCreditAccount, '[^.]+', 1, 4);-- location,
+      v_segment5_split                := regexp_substr(i.RawCostCreditAccount, '[^.]+', 1, 5);-- intercompany
+      v_segment6_Split                := regexp_substr(i.RawCostCreditAccount, '[^.]+', 1, 6);-- lob
+      IF v_segment1_split             IS NOT NULL THEN
+        v_segment1                    :=NVL(xx_gl_beacon_mapping_f1(v_segment1_split,'ENTITY','A'),-1);
+        IF v_segment1                  =                                                           -1 OR v_segment1 IS NULL THEN
+          insert_miss_segments ( v_segment1_split,                                                 -1, 'ENTITY', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_YN',NULL);
+        END IF;
+      END IF;
+      IF v_segment6_Split IS NOT NULL THEN
+        v_segment6        :=NVL(xx_gl_beacon_mapping_f1( v_segment6_Split,'LOB','A'), -1);
+        IF v_segment6      =                                                          -1 OR v_segment6 IS NULL THEN
+          insert_miss_segments ( v_segment6_Split,                                    -1, 'LOB', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_YN',NULL);
+        END IF;
+      END IF;
+      IF v_segment2_split IS NOT NULL THEN
+        v_segment2        :=NVL(xx_gl_beacon_mapping_f1(v_segment2_split,'COST_CENTER','A'),-1);
+        IF v_segment2      =                                                                -1 OR v_segment2 IS NULL THEN
+          insert_miss_segments ( v_segment2_split,                                          -1, 'COST_CENTER', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_YN',NULL);
+        END IF;
+      END IF;
+      IF v_segment3_split IS NOT NULL THEN
+        v_segment3        :=NVL(xx_gl_beacon_mapping_f1(v_segment3_split,'ACCOUNT','A'), -1);
+        IF v_segment3      =                                                             -1 OR v_segment3 IS NULL THEN
+          insert_miss_segments ( v_segment3_split,                                       -1, 'ACCOUNT', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_YN',NULL);
+        END IF;
+      END IF;
+      IF v_segment4_split IS NOT NULL THEN
+        v_segment4        :=NVL(xx_gl_beacon_mapping_f1(v_segment4_split,'LOCATION','A'), -1);
+        IF v_segment4      =                                                              -1 OR v_segment4 IS NULL THEN
+          insert_miss_segments ( v_segment4_split,                                        -1, 'LOCATION', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_YN',NULL);
+        END IF;
+      END IF;
+      IF v_segment5_split IS NOT NULL THEN
+        v_segment5        :=NVL(xx_gl_beacon_mapping_f1(v_segment5_split,'ENTITY','A'), -1);
+        IF v_segment5      =                                                            -1 OR v_segment5 IS NULL THEN
+          insert_miss_segments ( v_segment5_split,                                      -1, 'ENTITY', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_YN',NULL);
+        END IF;
+      END IF;
+    END IF;---END IF for Raw cost Credit
+    
+      IF i.RawCostDebitAccount IS NOT NULL THEN
+      v_segment1_split                := regexp_substr(i.RawCostDebitAccount, '[^.]+', 1, 1);-- entity,
+      v_segment2_Split                := regexp_substr(i.RawCostDebitAccount, '[^.]+', 1, 2);-- cost_center,
+      v_segment3_split                := regexp_substr(i.RawCostDebitAccount, '[^.]+', 1, 3);-- account,
+      v_segment4_split                := regexp_substr(i.RawCostDebitAccount, '[^.]+', 1, 4);-- location,
+      v_segment5_split                := regexp_substr(i.RawCostDebitAccount, '[^.]+', 1, 5);-- intercompany
+      v_segment6_Split                := regexp_substr(i.RawCostDebitAccount, '[^.]+', 1, 6);-- lob
+      IF v_segment1_split             IS NOT NULL THEN
+        v_segment1                    :=NVL(xx_gl_beacon_mapping_f1(v_segment1_split,'ENTITY','A'),-1);
+        IF v_segment1                  =                                                           -1 OR v_segment1 IS NULL THEN
+          insert_miss_segments ( v_segment1_split,                                                 -1, 'ENTITY', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_YN',NULL);
+        END IF;
+      END IF;
+      IF v_segment6_Split IS NOT NULL THEN
+        v_segment6        :=NVL(xx_gl_beacon_mapping_f1( v_segment6_Split,'LOB','A'), -1);
+        IF v_segment6      =                                                          -1 OR v_segment6 IS NULL THEN
+          insert_miss_segments ( v_segment6_Split,                                    -1, 'LOB', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_YN',NULL);
+        END IF;
+      END IF;
+      IF v_segment2_split IS NOT NULL THEN
+        v_segment2        :=NVL(xx_gl_beacon_mapping_f1(v_segment2_split,'COST_CENTER','A'),-1);
+        IF v_segment2      =                                                                -1 OR v_segment2 IS NULL THEN
+          insert_miss_segments ( v_segment2_split,                                          -1, 'COST_CENTER', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_YN',NULL);
+        END IF;
+      END IF;
+      IF v_segment3_split IS NOT NULL THEN
+        v_segment3        :=NVL(xx_gl_beacon_mapping_f1(v_segment3_split,'ACCOUNT','A'), -1);
+        IF v_segment3      =                                                             -1 OR v_segment3 IS NULL THEN
+          insert_miss_segments ( v_segment3_split,                                       -1, 'ACCOUNT', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_YN',NULL);
+        END IF;
+      END IF;
+      IF v_segment4_split IS NOT NULL THEN
+        v_segment4        :=NVL(xx_gl_beacon_mapping_f1(v_segment4_split,'LOCATION','A'), -1);
+        IF v_segment4      =                                                              -1 OR v_segment4 IS NULL THEN
+          insert_miss_segments ( v_segment4_split,                                        -1, 'LOCATION', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_YN',NULL);
+        END IF;
+      END IF;
+      IF v_segment5_split IS NOT NULL THEN
+        v_segment5        :=NVL(xx_gl_beacon_mapping_f1(v_segment5_split,'ENTITY','A'), -1);
+        IF v_segment5      =                                                            -1 OR v_segment5 IS NULL THEN
+          insert_miss_segments ( v_segment5_split,                                      -1, 'ENTITY', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_YN',NULL);
+        END IF;
+      END IF;
+    END IF;---END IF for Raw cost debit account
+    
   END LOOP;
-  utl_file.fclose(lc_file_handle);
+ -- utl_file.fclose(lc_file_handle);
 EXCEPTION
 WHEN utl_file.access_denied THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YN procedure :- ' || ' access_denied :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.delete_failed THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YN procedure :- ' || ' delete_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.file_open THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YN procedure :- ' || ' file_open :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.internal_error THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YN procedure :- ' || ' internal_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_filehandle THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YN procedure:- ' || ' invalid_filehandle :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_filename THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YN procedure :- ' || ' invalid_filename :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_maxlinesize THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YN procedure :- ' || ' invalid_maxlinesize :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_mode THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YN procedure :- ' || ' invalid_mode :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_offset THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YN procedure :- ' || ' invalid_offset :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_operation THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YN procedure :- ' || ' invalid_operation :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_path THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YN procedure :- ' || ' invalid_path :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.read_error THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YN procedure :- ' || ' read_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.rename_failed THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YN procedure :- ' || ' rename_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.write_error THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YN procedure :- ' || ' write_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN OTHERS THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YN procedure :- ' || ' OTHERS :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
@@ -4921,11 +5515,11 @@ IS
     SELECT
       /*+ PARALLEL(4) */
       DISTINCT 'MISCELLANEOUS' transactiontype,
-      ou.name businessunitname,
+      ou.NAME businessunitname,
       NULL businessunitid,
       user_transaction_source transactionsource,
       NULL transactionsourceid,
-      'Conversion' document,
+      'Conversion' DOCUMENT,
       NULL documentid,
       'Conversion' documententry,
       NULL documententryid,
@@ -4939,14 +5533,14 @@ IS
       NULL humanresourcesassignment,
       NULL humanresourcesassignmentid,
       prj.segment1 projectnumber,
-      REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(prj.name,chr(13), ''), chr(10), ''),chr(39),''),chr(63),''),chr(44),' ') project_name,
+      REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(prj.NAME,chr(13), ''), chr(10), ''),chr(39),''),chr(63),''),chr(44),' ') project_name,
       NULL projectid,
       task.task_number tasknumber,
       REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(task.task_name,chr(13), ''), chr(10), ''),chr(39),''),chr(63),''),chr(44),' ') task_name,
       NULL taskid,
       exptyp.expenditure_type expendituretype,
       NULL expendituretypeid,
-      (SELECT name
+      (SELECT NAME
       FROM hr_all_organization_units
       WHERE organization_id=expd.cc_prvdr_organization_id
       ) expenditure_organization,
@@ -4973,30 +5567,31 @@ IS
     NULL transactioncurrency,
     raw_cost rawcostintrxcurrency,
     burden_cost_rate burdenedcostintrxcurrency,
-    null rawcostcreditccid,
-/*Commented by Priyam for EBS to Cloud segment Change 
-(SELECT gl_code_combinations.concatenated_segments
+    NULL rawcostcreditccid,
+  ---Commented by Priyam for EBS to Cloud segment Change
+    (SELECT gl_code_combinations.concatenated_segments
+    FROM gl_code_combinations_kfv gl_code_combinations
+    WHERE code_combination_id = cd.cr_code_combination_id
+    ) rawcostcreditaccount,
+    --  Added by Priyam for EBS to Cloud segment Change
+  /*  (
+    SELECT xx_gl_beacon_mapping_f1(gl_code_combinations.concatenated_segments,NULL,'P')
     FROM gl_code_combinations_kfv gl_code_combinations
     WHERE code_combination_id = cd.cr_code_combination_id
     ) rawcostcreditaccount,*/
-  --  Added by Priyam for EBS to Cloud segment Change 
-    (SELECT xx_gl_beacon_mapping_f1(gl_code_combinations.concatenated_segments,null,'P')
-    FROM gl_code_combinations_kfv gl_code_combinations
-    where code_combination_id = cd.cr_code_combination_id
-    ) rawcostcreditaccount,
     ----
-    
-    null rawcostdebitccid,
-    /*Commented by Priyam for EBS to Cloud segment Change 
+    NULL rawcostdebitccid,
+    --Commented by Priyam for EBS to Cloud segment Change
     (SELECT gl_code_combinations.concatenated_segments
     FROM gl_code_combinations_kfv gl_code_combinations
     WHERE code_combination_id = cd.dr_code_combination_id
-    ) rawcostdebitaccount,*/
-   --- Added by Priyam for EBS to Cloud segment Change 
-    (SELECT xx_gl_beacon_mapping_f1(gl_code_combinations.concatenated_segments,null,'P')
-    FROM gl_code_combinations_kfv gl_code_combinations
-    where code_combination_id = cd.dr_code_combination_id
     ) rawcostdebitaccount,
+    --- Added by Priyam for EBS to Cloud segment Change
+  /*  (
+    SELECT xx_gl_beacon_mapping_f1(gl_code_combinations.concatenated_segments,NULL,'P')
+    FROM gl_code_combinations_kfv gl_code_combinations
+    WHERE code_combination_id = cd.dr_code_combination_id
+    ) rawcostdebitaccount,*/
     --Changes end
     NULL burdenedcostcreditccid,
     NULL burdenedcostcreditaccount,
@@ -5068,7 +5663,7 @@ IS
     pa_projects_all prj
   WHERE 1                          =1
   AND prj.template_flag            = 'N'
-  AND NVL(prj.closed_date,sysdate) > to_date('30-JUN-2018','dd-mon-yyyy')
+  AND NVL(prj.closed_date,SYSDATE) > to_date('30-JUN-2018','dd-mon-yyyy')
   AND (prj.segment1 NOT LIKE 'PB%'
   AND prj.segment1 NOT LIKE 'NB%'
   AND prj.segment1 NOT LIKE 'TEM%')
@@ -5107,6 +5702,20 @@ IS
   lv_col_title VARCHAR2(5000);
   l_file_path  VARCHAR2(500):='XXFIN_OUTBOUND';
   lc_errormsg  VARCHAR2(1000);----            VARCHAR2(1000) := NULL;
+  v_segment1 VARCHAR2(50);
+  v_segment2 VARCHAR2(50);
+  v_segment3 VARCHAR2(50);
+  v_segment4 VARCHAR2(50);
+  v_segment5 VARCHAR2(50);
+  v_segment6 VARCHAR2(50);
+  v_segment7 VARCHAR2(50);
+  
+  v_segment1_split VARCHAR2(50);
+  v_segment2_Split VARCHAR2(50);
+  v_segment3_Split VARCHAR2(50);
+  v_segment4_split VARCHAR2(50);
+  v_segment5_split VARCHAR2(50);
+  v_segment6_Split VARCHAR2(50);
 BEGIN
   /* BEGIN
   SELECT directory_path
@@ -5117,110 +5726,200 @@ BEGIN
   WHEN OTHERS THEN
   l_file_path := NULL;
   END;*/
-  print_debug_msg ('Package GENERIC_TAX_CHILD_ASSET_HDR START', true);
+  print_debug_msg ('Package GENERIC_TAX_CHILD_ASSET_HDR START', TRUE);
   -- print_debug_msg ('P_BOOK_TYPE_CODE '||P_BOOK_TYPE_CODE, TRUE);
   l_file_name    := 'fbdi_ProjectExpenditure_capitalized_YY' || '.csv';--GENERIC_TAX_CHILD_ASSET_HDR
-  lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
+  ---lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
   lv_col_title   :='TRANSACTIONTYPE'|| ','|| 'BUSINESSUNITNAME'|| ','|| 'BUSINESSUNITID'|| ','|| 'TRANSACTIONSOURCE'|| ','|| 'TRANSACTIONSOURCEID'|| ','|| 'DOCUMENT'|| ','|| 'DOCUMENTID'|| ','|| 'DOCUMENTENTRY'|| ','|| 'DOCUMENTENTRYID'|| ','|| 'EXPENDITUREBATCH'|| ','|| 'BATCHENDINGDATE'|| ','|| 'BATCHDESCRIPTION'|| ','|| 'EXPENDITUREITEMDATE'|| ','|| 'PERSONNUMBER'|| ','|| 'PERSONNAME'|| ','|| 'PERSONID'|| ','|| 'HUMANRESOURCESASSIGNMENT'|| ','|| 'HUMANRESOURCESASSIGNMENTID'|| ','|| 'PROJECTNUMBER'|| ','|| 'PROJECT_NAME'|| ','|| 'PROJECTID'|| ','|| 'TASKNUMBER'|| ','|| 'TASK_NAME'|| ','|| 'TASKID'|| ','|| 'EXPENDITURETYPE'|| ','|| 'EXPENDITURETYPEID'|| ','|| 'EXPENDITURE_ORGANIZATION'|| ','|| 'EXPENDITUREORGANIZATIONID'|| ','|| 'CONTRACT_NUMBER'|| ','|| 'CONTRACT_NAME'|| ','|| 'CONTRACT_ID'|| ','|| 'FUNDING_SOURCE_NUMBER'|| ','|| 'FUNDING_SOURCE_NAME'|| ','|| 'QUANTITY'|| ','|| 'UNIT_OF_MEASURE_NAME'|| ','|| 'UNIT_OF_MEASURE_CODE'|| ','|| 'WORKTYPE'|| ','|| 'WORKTYPEID'|| ','||
   'BILLABLE'|| ','|| 'CAPITALIZABLE'|| ','|| 'ACCRUAL_ITEM'|| ','|| 'ORIG_TRANSACTION_REFERENCE'|| ','|| 'UNMATCHEDNEGATIVETRANSACTION'|| ','|| 'REVERSEDORIGINALTRANSACTION'|| ','|| 'EXPENDITUREITEMCOMMENT'|| ','|| 'ACCOUNTINGDATE'|| ','|| 'TRANSACTIONCURRENCYCODE'|| ','|| 'TRANSACTIONCURRENCY'|| ','|| 'RAWCOSTINTRXCURRENCY'|| ','|| 'BURDENEDCOSTINTRXCURRENCY'|| ','|| 'RAWCOSTCREDITCCID'|| ','|| 'RAWCOSTCREDITACCOUNT'|| ','|| 'RAWCOSTDEBITCCID'|| ','|| 'RAWCOSTDEBITACCOUNT'|| ','|| 'BURDENEDCOSTCREDITCCID'|| ','|| 'BURDENEDCOSTCREDITACCOUNT'|| ','|| 'BURDENEDCOSTDEBITCCID'|| ','|| 'BURDENEDCOSTDEBITACCOUNT'|| ','|| 'BURDENCOSTDEBITCCID'|| ','|| 'BURDENCOSTDEBITACCOUNT'|| ','|| 'BURDENCOSTCREDITCCID'|| ','|| 'BURDENCOSTCREDITACCOUNT'|| ','|| 'PROVIDERLEDGERCURRENCYCODE'|| ','|| 'PROVIDERLEDGERCURRENCY'|| ','|| 'RAWCOSTLEDGERCURRENCY'|| ','|| 'BURDENEDCOSTLEDGERCURRENCY'|| ','|| 'PROVIDERLEDGERRATETYPE'|| ','|| 'PROVIDERLEDGERRATEDATE'|| ','|| 'PROVIDERLEDGERDATETYPE'|| ','||
   'PROVIDERLEDGERRATE'|| ','|| 'PROVIDERLEDGERROUNDINGLIMIT'|| ','|| 'CONVERTED'|| ','|| 'CONTEXTCATEGORY'|| ','|| 'USERDEFINEDATTRIBUTE1'|| ','|| 'USERDEFINEDATTRIBUTE2'|| ','|| 'USERDEFINEDATTRIBUTE3'|| ','|| 'USERDEFINEDATTRIBUTE4'|| ','|| 'USERDEFINEDATTRIBUTE5'|| ','|| 'USERDEFINEDATTRIBUTE6'|| ','|| 'USERDEFINEDATTRIBUTE7'|| ','|| 'USERDEFINEDATTRIBUTE8'|| ','|| 'USERDEFINEDATTRIBUTE9'|| ','|| 'USERDEFINEDATTRIBUTE10'|| ','|| 'FUNDINGSOURCEID'|| ','|| 'RESERVEDATTRIBUTE2'|| ','|| 'RESERVEDATTRIBUTE3'|| ','|| 'RESERVEDATTRIBUTE4'|| ','|| 'RESERVEDATTRIBUTE5'|| ','|| 'RESERVEDATTRIBUTE6'|| ','|| 'RESERVEDATTRIBUTE7'|| ','|| 'RESERVEDATTRIBUTE8'|| ','|| 'RESERVEDATTRIBUTE9'|| ','|| 'RESERVEDATTRIBUTE10'|| ','|| 'ATTRIBUTECATEGORY'|| ','|| 'ATTRIBUTE1'|| ','|| 'ATTRIBUTE2'|| ','|| 'ATTRIBUTE3'|| ','|| 'ATTRIBUTE4'|| ','|| 'ATTRIBUTE5'|| ','|| 'ATTRIBUTE6'|| ','|| 'ATTRIBUTE7'|| ','|| 'ATTRIBUTE8'|| ','|| 'ATTRIBUTE9'|| ','|| 'ATTRIBUTE10';
-  utl_file.put_line(lc_file_handle,lv_col_title);
+ --- utl_file.put_line(lc_file_handle,lv_col_title);
   FOR i IN c_proj_yy
   LOOP
     ---UTL_FILE.put_line(lc_file_handle,'HI');
-    utl_file.put_line(lc_file_handle,i.transactiontype|| ','|| i.businessunitname|| ','|| i.businessunitid|| ','|| i.transactionsource|| ','|| i.transactionsourceid|| ','|| i.document|| ','|| i.documentid|| ','|| i.documententry|| ','|| i.documententryid|| ','|| i.expenditurebatch|| ','|| i.batchendingdate|| ','|| i.batchdescription|| ','|| i.expenditureitemdate|| ','|| i.personnumber|| ','|| i.personname|| ','|| i.personid|| ','|| i.humanresourcesassignment|| ','|| i.humanresourcesassignmentid|| ','|| i.projectnumber|| ','|| i.project_name|| ','|| i.projectid|| ','|| i.tasknumber|| ','|| i.task_name|| ','|| i.taskid|| ','|| i.expendituretype|| ','|| i.expendituretypeid|| ','|| i.expenditure_organization|| ','|| i.expenditureorganizationid|| ','|| i.contract_number|| ','|| i.contract_name|| ','|| i.contract_id|| ','|| i.funding_source_number|| ','|| i.funding_source_name|| ','|| i.quantity|| ','|| i.unit_of_measure_name|| ','|| i.unit_of_measure_code|| ','|| i.worktype|| ','||
+   /* utl_file.put_line(lc_file_handle,i.transactiontype|| ','|| i.businessunitname|| ','|| i.businessunitid|| ','|| i.transactionsource|| ','|| i.transactionsourceid|| ','|| i.DOCUMENT|| ','|| i.documentid|| ','|| i.documententry|| ','|| i.documententryid|| ','|| i.expenditurebatch|| ','|| i.batchendingdate|| ','|| i.batchdescription|| ','|| i.expenditureitemdate|| ','|| i.personnumber|| ','|| i.personname|| ','|| i.personid|| ','|| i.humanresourcesassignment|| ','|| i.humanresourcesassignmentid|| ','|| i.projectnumber|| ','|| i.project_name|| ','|| i.projectid|| ','|| i.tasknumber|| ','|| i.task_name|| ','|| i.taskid|| ','|| i.expendituretype|| ','|| i.expendituretypeid|| ','|| i.expenditure_organization|| ','|| i.expenditureorganizationid|| ','|| i.contract_number|| ','|| i.contract_name|| ','|| i.contract_id|| ','|| i.funding_source_number|| ','|| i.funding_source_name|| ','|| i.quantity|| ','|| i.unit_of_measure_name|| ','|| i.unit_of_measure_code|| ','|| i.worktype|| ','||
     i.worktypeid|| ','|| i.billable|| ','|| i.capitalizable|| ','|| i.accrual_item|| ','|| i.orig_transaction_reference|| ','|| i.unmatchednegativetransaction|| ','|| i.reversedoriginaltransaction|| ','|| i.expenditureitemcomment|| ','|| i.accountingdate|| ','|| i.transactioncurrencycode|| ','|| i.transactioncurrency|| ','|| i.rawcostintrxcurrency|| ','|| i.burdenedcostintrxcurrency|| ','|| i.rawcostcreditccid|| ','|| i.rawcostcreditaccount|| ','|| i.rawcostdebitccid|| ','|| i.rawcostdebitaccount|| ','|| i.burdenedcostcreditccid|| ','|| i.burdenedcostcreditaccount|| ','|| i.burdenedcostdebitccid|| ','|| i.burdenedcostdebitaccount|| ','|| i.burdencostdebitccid|| ','|| i.burdencostdebitaccount|| ','|| i.burdencostcreditccid|| ','|| i.burdencostcreditaccount|| ','|| i.providerledgercurrencycode|| ','|| i.providerledgercurrency|| ','|| i.rawcostledgercurrency|| ','|| i.burdenedcostledgercurrency|| ','|| i.providerledgerratetype|| ','|| i.providerledgerratedate|| ','||
-    i.providerledgerdatetype|| ','|| i.providerledgerrate|| ','|| i.providerledgerroundinglimit|| ','|| i.converted|| ','|| i.contextcategory|| ','|| i.userdefinedattribute1|| ','|| i.userdefinedattribute2|| ','|| i.userdefinedattribute3|| ','|| i.userdefinedattribute4|| ','|| i.userdefinedattribute5|| ','|| i.userdefinedattribute6|| ','|| i.userdefinedattribute7|| ','|| i.userdefinedattribute8|| ','|| i.userdefinedattribute9|| ','|| i.userdefinedattribute10|| ','|| i.fundingsourceid|| ','|| i.reservedattribute2|| ','|| i.reservedattribute3|| ','|| i.reservedattribute4|| ','|| i.reservedattribute5|| ','|| i.reservedattribute6|| ','|| i.reservedattribute7|| ','|| i.reservedattribute8|| ','|| i.reservedattribute9|| ','|| i.reservedattribute10|| ','|| i.attributecategory|| ','|| i.attribute1|| ','|| i.attribute2|| ','|| i.attribute3|| ','|| i.attribute4|| ','|| i.attribute5|| ','|| i.attribute6|| ','|| i.attribute7|| ','|| i.attribute8|| ','|| i.attribute9|| ','|| i.attribute10);
+    i.providerledgerdatetype|| ','|| i.providerledgerrate|| ','|| i.providerledgerroundinglimit|| ','|| i.converted|| ','|| i.contextcategory|| ','|| i.userdefinedattribute1|| ','|| i.userdefinedattribute2|| ','|| i.userdefinedattribute3|| ','|| i.userdefinedattribute4|| ','|| i.userdefinedattribute5|| ','|| i.userdefinedattribute6|| ','|| i.userdefinedattribute7|| ','|| i.userdefinedattribute8|| ','|| i.userdefinedattribute9|| ','|| i.userdefinedattribute10|| ','|| i.fundingsourceid|| ','|| i.reservedattribute2|| ','|| i.reservedattribute3|| ','|| i.reservedattribute4|| ','|| i.reservedattribute5|| ','|| i.reservedattribute6|| ','|| i.reservedattribute7|| ','|| i.reservedattribute8|| ','|| i.reservedattribute9|| ','|| i.reservedattribute10|| ','|| i.attributecategory|| ','|| i.attribute1|| ','|| i.attribute2|| ','|| i.attribute3|| ','|| i.attribute4|| ','|| i.attribute5|| ','|| i.attribute6|| ','|| i.attribute7|| ','|| i.attribute8|| ','|| i.attribute9|| ','|| i.attribute10);*/
+     IF i.RawCostCreditAccount IS NOT NULL THEN
+      v_segment1_split                := regexp_substr(i.RawCostCreditAccount, '[^.]+', 1, 1);-- entity,
+      v_segment2_Split                := regexp_substr(i.RawCostCreditAccount, '[^.]+', 1, 2);-- cost_center,
+      v_segment3_split                := regexp_substr(i.RawCostCreditAccount, '[^.]+', 1, 3);-- account,
+      v_segment4_split                := regexp_substr(i.RawCostCreditAccount, '[^.]+', 1, 4);-- location,
+      v_segment5_split                := regexp_substr(i.RawCostCreditAccount, '[^.]+', 1, 5);-- intercompany
+      v_segment6_Split                := regexp_substr(i.RawCostCreditAccount, '[^.]+', 1, 6);-- lob
+      IF v_segment1_split             IS NOT NULL THEN
+        v_segment1                    :=NVL(xx_gl_beacon_mapping_f1(v_segment1_split,'ENTITY','A'),-1);
+        IF v_segment1                  =                                                           -1 OR v_segment1 IS NULL THEN
+          insert_miss_segments ( v_segment1_split,                                                 -1, 'ENTITY', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_YY',NULL);
+        END IF;
+      END IF;
+      IF v_segment6_Split IS NOT NULL THEN
+        v_segment6        :=NVL(xx_gl_beacon_mapping_f1( v_segment6_Split,'LOB','A'), -1);
+        IF v_segment6      =                                                          -1 OR v_segment6 IS NULL THEN
+          insert_miss_segments ( v_segment6_Split,                                    -1, 'LOB', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_YY',NULL);
+        END IF;
+      END IF;
+      IF v_segment2_split IS NOT NULL THEN
+        v_segment2        :=NVL(xx_gl_beacon_mapping_f1(v_segment2_split,'COST_CENTER','A'),-1);
+        IF v_segment2      =                                                                -1 OR v_segment2 IS NULL THEN
+          insert_miss_segments ( v_segment2_split,                                          -1, 'COST_CENTER', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_YY',NULL);
+        END IF;
+      END IF;
+      IF v_segment3_split IS NOT NULL THEN
+        v_segment3        :=NVL(xx_gl_beacon_mapping_f1(v_segment3_split,'ACCOUNT','A'), -1);
+        IF v_segment3      =                                                             -1 OR v_segment3 IS NULL THEN
+          insert_miss_segments ( v_segment3_split,                                       -1, 'ACCOUNT', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_YY',NULL);
+        END IF;
+      END IF;
+      IF v_segment4_split IS NOT NULL THEN
+        v_segment4        :=NVL(xx_gl_beacon_mapping_f1(v_segment4_split,'LOCATION','A'), -1);
+        IF v_segment4      =                                                              -1 OR v_segment4 IS NULL THEN
+          insert_miss_segments ( v_segment4_split,                                        -1, 'LOCATION', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_YY',NULL);
+        END IF;
+      END IF;
+      IF v_segment5_split IS NOT NULL THEN
+        v_segment5        :=NVL(xx_gl_beacon_mapping_f1(v_segment5_split,'ENTITY','A'), -1);
+        IF v_segment5      =                                                            -1 OR v_segment5 IS NULL THEN
+          insert_miss_segments ( v_segment5_split,                                      -1, 'ENTITY', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_YY',NULL);
+        END IF;
+      END IF;
+    END IF;---END IF for Raw cost Credit
+    
+      IF i.RawCostDebitAccount IS NOT NULL THEN
+      v_segment1_split                := regexp_substr(i.RawCostDebitAccount, '[^.]+', 1, 1);-- entity,
+      v_segment2_Split                := regexp_substr(i.RawCostDebitAccount, '[^.]+', 1, 2);-- cost_center,
+      v_segment3_split                := regexp_substr(i.RawCostDebitAccount, '[^.]+', 1, 3);-- account,
+      v_segment4_split                := regexp_substr(i.RawCostDebitAccount, '[^.]+', 1, 4);-- location,
+      v_segment5_split                := regexp_substr(i.RawCostDebitAccount, '[^.]+', 1, 5);-- intercompany
+      v_segment6_Split                := regexp_substr(i.RawCostDebitAccount, '[^.]+', 1, 6);-- lob
+      IF v_segment1_split             IS NOT NULL THEN
+        v_segment1                    :=NVL(xx_gl_beacon_mapping_f1(v_segment1_split,'ENTITY','A'),-1);
+        IF v_segment1                  =                                                           -1 OR v_segment1 IS NULL THEN
+          insert_miss_segments ( v_segment1_split,                                                 -1, 'ENTITY', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_YY',NULL);
+        END IF;
+      END IF;
+      IF v_segment6_Split IS NOT NULL THEN
+        v_segment6        :=NVL(xx_gl_beacon_mapping_f1( v_segment6_Split,'LOB','A'), -1);
+        IF v_segment6      =                                                          -1 OR v_segment6 IS NULL THEN
+          insert_miss_segments ( v_segment6_Split,                                    -1, 'LOB', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_YY',NULL);
+        END IF;
+      END IF;
+      IF v_segment2_split IS NOT NULL THEN
+        v_segment2        :=NVL(xx_gl_beacon_mapping_f1(v_segment2_split,'COST_CENTER','A'),-1);
+        IF v_segment2      =                                                                -1 OR v_segment2 IS NULL THEN
+          insert_miss_segments ( v_segment2_split,                                          -1, 'COST_CENTER', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_YY',NULL);
+        END IF;
+      END IF;
+      IF v_segment3_split IS NOT NULL THEN
+        v_segment3        :=NVL(xx_gl_beacon_mapping_f1(v_segment3_split,'ACCOUNT','A'), -1);
+        IF v_segment3      =                                                             -1 OR v_segment3 IS NULL THEN
+          insert_miss_segments ( v_segment3_split,                                       -1, 'ACCOUNT', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_YY',NULL);
+        END IF;
+      END IF;
+      IF v_segment4_split IS NOT NULL THEN
+        v_segment4        :=NVL(xx_gl_beacon_mapping_f1(v_segment4_split,'LOCATION','A'), -1);
+        IF v_segment4      =                                                              -1 OR v_segment4 IS NULL THEN
+          insert_miss_segments ( v_segment4_split,                                        -1, 'LOCATION', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_YY',NULL);
+        END IF;
+      END IF;
+      IF v_segment5_split IS NOT NULL THEN
+        v_segment5        :=NVL(xx_gl_beacon_mapping_f1(v_segment5_split,'ENTITY','A'), -1);
+        IF v_segment5      =                                                            -1 OR v_segment5 IS NULL THEN
+          insert_miss_segments ( v_segment5_split,                                      -1, 'ENTITY', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_YY',NULL);
+        END IF;
+      END IF;
+    END IF;---END IF for Raw cost debit account
+    
   END LOOP;
-  utl_file.fclose(lc_file_handle);
+ --- utl_file.fclose(lc_file_handle);
 EXCEPTION
 WHEN utl_file.access_denied THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YY procedure :- ' || ' access_denied :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.delete_failed THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YY procedure :- ' || ' delete_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.file_open THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YY procedure :- ' || ' file_open :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.internal_error THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YY procedure :- ' || ' internal_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_filehandle THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YY procedure:- ' || ' invalid_filehandle :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_filename THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YY procedure :- ' || ' invalid_filename :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_maxlinesize THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YY procedure :- ' || ' invalid_maxlinesize :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_mode THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YY procedure :- ' || ' invalid_mode :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_offset THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YY procedure :- ' || ' invalid_offset :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_operation THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YY procedure :- ' || ' invalid_operation :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_path THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YY procedure :- ' || ' invalid_path :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.read_error THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YY procedure :- ' || ' read_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.rename_failed THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YY procedure :- ' || ' rename_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.write_error THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YY procedure :- ' || ' write_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN OTHERS THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Cap_YY procedure :- ' || ' OTHERS :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
@@ -5233,11 +5932,11 @@ IS
     SELECT
       /*+ PARALLEL(4) */
       DISTINCT 'MISCELLANEOUS' transactiontype,
-      ou.name businessunitname,
+      ou.NAME businessunitname,
       NULL businessunitid,
       user_transaction_source transactionsource,
       NULL transactionsourceid,
-      'Conversion' document,
+      'Conversion' DOCUMENT,
       NULL documentid,
       'Conversion' documententry,
       NULL documententryid,
@@ -5251,14 +5950,14 @@ IS
       NULL humanresourcesassignment,
       NULL humanresourcesassignmentid,
       prj.segment1 projectnumber,
-      REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(prj.name,chr(13), ''), chr(10), ''),chr(39),''),chr(63),''),chr(44),' ') project_name,
+      REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(prj.NAME,chr(13), ''), chr(10), ''),chr(39),''),chr(63),''),chr(44),' ') project_name,
       NULL projectid,
       task.task_number tasknumber,
       REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(task.task_name,chr(13), ''), chr(10), ''),chr(39),''),chr(63),''),chr(44),' ') task_name,
       NULL taskid,
       exptyp.expenditure_type expendituretype,
       NULL expendituretypeid,
-      (SELECT name
+      (SELECT NAME
       FROM hr_all_organization_units
       WHERE organization_id=expd.cc_prvdr_organization_id
       ) expenditure_organization,
@@ -5285,31 +5984,32 @@ IS
     NULL transactioncurrency,
     raw_cost rawcostintrxcurrency,
     burden_cost_rate burdenedcostintrxcurrency,
-    null rawcostcreditccid,
-    /*Commented by Priyam for EBS to Cloud segment Change 
+    NULL rawcostcreditccid,
+ --   Commented by Priyam for EBS to Cloud segment Change
     (SELECT gl_code_combinations.concatenated_segments
     FROM gl_code_combinations_kfv gl_code_combinations
     WHERE code_combination_id = cr_code_combination_id
-    ) rawcostcreditaccount,*/
-   --- Added by Priyam for EBS to Cloud segment Change 
-    (SELECT  xx_gl_beacon_mapping_f1(gl_code_combinations.concatenated_segments,null,'P')
-    FROM gl_code_combinations_kfv gl_code_combinations
-    where code_combination_id = cr_code_combination_id
     ) rawcostcreditaccount,
--------
-    null rawcostdebitccid,
-   /*Commented by Priyam for EBS to Cloud segment Change 
-   (SELECT gl_code_combinations.concatenated_segments
+    --- Added by Priyam for EBS to Cloud segment Change
+   /* (
+    SELECT xx_gl_beacon_mapping_f1(gl_code_combinations.concatenated_segments,NULL,'P')
+    FROM gl_code_combinations_kfv gl_code_combinations
+    WHERE code_combination_id = cr_code_combination_id
+    ) rawcostcreditaccount,*/
+    -------
+    NULL rawcostdebitccid,
+ ---   Commented by Priyam for EBS to Cloud segment Change
+    (SELECT gl_code_combinations.concatenated_segments
+    FROM gl_code_combinations_kfv gl_code_combinations
+    WHERE code_combination_id = dr_code_combination_id
+    ) rawcostdebitaccount,
+    --   Added by Priyam for EBS to Cloud segment Change
+/*(
+    SELECT xx_gl_beacon_mapping_f1(gl_code_combinations.concatenated_segments,NULL,'P')
     FROM gl_code_combinations_kfv gl_code_combinations
     WHERE code_combination_id = dr_code_combination_id
     ) rawcostdebitaccount,*/
- --   Added by Priyam for EBS to Cloud segment Change 
-  
-    (SELECT xx_gl_beacon_mapping_f1(gl_code_combinations.concatenated_segments,null,'P')
-    FROM gl_code_combinations_kfv gl_code_combinations
-    where code_combination_id = dr_code_combination_id
-    ) rawcostdebitaccount,
-------end
+    ------end
     NULL burdenedcostcreditccid,
     NULL burdenedcostcreditaccount,
     NULL burdenedcostdebitccid,
@@ -5380,7 +6080,7 @@ IS
     pa_projects_all prj
   WHERE 1                          =1
   AND prj.template_flag            = 'N'
-  AND NVL(prj.closed_date,sysdate) > to_date('30-JUN-2018','dd-mon-yyyy')
+  AND NVL(prj.closed_date,SYSDATE) > to_date('30-JUN-2018','dd-mon-yyyy')
   AND (prj.segment1 NOT LIKE 'PB%'
   AND prj.segment1 NOT LIKE 'NB%'
   AND prj.segment1 NOT LIKE 'TEM%')
@@ -5419,6 +6119,20 @@ IS
   lv_col_title VARCHAR2(5000);
   l_file_path  VARCHAR2(500):='XXFIN_OUTBOUND';
   lc_errormsg  VARCHAR2(1000);----            VARCHAR2(1000) := NULL;
+  v_segment1 VARCHAR2(50);
+  v_segment2 VARCHAR2(50);
+  v_segment3 VARCHAR2(50);
+  v_segment4 VARCHAR2(50);
+  v_segment5 VARCHAR2(50);
+  v_segment6 VARCHAR2(50);
+  v_segment7 VARCHAR2(50);
+  
+  v_segment1_split VARCHAR2(50);
+  v_segment2_Split VARCHAR2(50);
+  v_segment3_Split VARCHAR2(50);
+  v_segment4_split VARCHAR2(50);
+  v_segment5_split VARCHAR2(50);
+  v_segment6_Split VARCHAR2(50);
 BEGIN
   /* BEGIN
   SELECT directory_path
@@ -5429,110 +6143,200 @@ BEGIN
   WHEN OTHERS THEN
   l_file_path := NULL;
   END;*/
-  print_debug_msg ('Package GENERIC_TAX_CHILD_ASSET_HDR START', true);
+  print_debug_msg ('Package GENERIC_TAX_CHILD_ASSET_HDR START', TRUE);
   ---  print_debug_msg ('P_BOOK_TYPE_CODE '||P_BOOK_TYPE_CODE, TRUE);
   l_file_name    := 'fbdi_ProjectExpenditure_Neither_NN' || '.csv';--GENERIC_TAX_CHILD_ASSET_HDR
-  lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
+ -- lc_file_handle := utl_file.fopen('XXFIN_OUTBOUND', l_file_name, 'W', 32767);
   lv_col_title   :='TRANSACTIONTYPE'|| ','|| 'BUSINESSUNITNAME'|| ','|| 'BUSINESSUNITID'|| ','|| 'TRANSACTIONSOURCE'|| ','|| 'TRANSACTIONSOURCEID'|| ','|| 'DOCUMENT'|| ','|| 'DOCUMENTID'|| ','|| 'DOCUMENTENTRY'|| ','|| 'DOCUMENTENTRYID'|| ','|| 'EXPENDITUREBATCH'|| ','|| 'BATCHENDINGDATE'|| ','|| 'BATCHDESCRIPTION'|| ','|| 'EXPENDITUREITEMDATE'|| ','|| 'PERSONNUMBER'|| ','|| 'PERSONNAME'|| ','|| 'PERSONID'|| ','|| 'HUMANRESOURCESASSIGNMENT'|| ','|| 'HUMANRESOURCESASSIGNMENTID'|| ','|| 'PROJECTNUMBER'|| ','|| 'PROJECT_NAME'|| ','|| 'PROJECTID'|| ','|| 'TASKNUMBER'|| ','|| 'TASK_NAME'|| ','|| 'TASKID'|| ','|| 'EXPENDITURETYPE'|| ','|| 'EXPENDITURETYPEID'|| ','|| 'EXPENDITURE_ORGANIZATION'|| ','|| 'EXPENDITUREORGANIZATIONID'|| ','|| 'CONTRACT_NUMBER'|| ','|| 'CONTRACT_NAME'|| ','|| 'CONTRACT_ID'|| ','|| 'FUNDING_SOURCE_NUMBER'|| ','|| 'FUNDING_SOURCE_NAME'|| ','|| 'QUANTITY'|| ','|| 'UNIT_OF_MEASURE_NAME'|| ','|| 'UNIT_OF_MEASURE_CODE'|| ','|| 'WORKTYPE'|| ','|| 'WORKTYPEID'|| ','||
   'BILLABLE'|| ','|| 'CAPITALIZABLE'|| ','|| 'ACCRUAL_ITEM'|| ','|| 'ORIG_TRANSACTION_REFERENCE'|| ','|| 'UNMATCHEDNEGATIVETRANSACTION'|| ','|| 'REVERSEDORIGINALTRANSACTION'|| ','|| 'EXPENDITUREITEMCOMMENT'|| ','|| 'ACCOUNTINGDATE'|| ','|| 'TRANSACTIONCURRENCYCODE'|| ','|| 'TRANSACTIONCURRENCY'|| ','|| 'RAWCOSTINTRXCURRENCY'|| ','|| 'BURDENEDCOSTINTRXCURRENCY'|| ','|| 'RAWCOSTCREDITCCID'|| ','|| 'RAWCOSTCREDITACCOUNT'|| ','|| 'RAWCOSTDEBITCCID'|| ','|| 'RAWCOSTDEBITACCOUNT'|| ','|| 'BURDENEDCOSTCREDITCCID'|| ','|| 'BURDENEDCOSTCREDITACCOUNT'|| ','|| 'BURDENEDCOSTDEBITCCID'|| ','|| 'BURDENEDCOSTDEBITACCOUNT'|| ','|| 'BURDENCOSTDEBITCCID'|| ','|| 'BURDENCOSTDEBITACCOUNT'|| ','|| 'BURDENCOSTCREDITCCID'|| ','|| 'BURDENCOSTCREDITACCOUNT'|| ','|| 'PROVIDERLEDGERCURRENCYCODE'|| ','|| 'PROVIDERLEDGERCURRENCY'|| ','|| 'RAWCOSTLEDGERCURRENCY'|| ','|| 'BURDENEDCOSTLEDGERCURRENCY'|| ','|| 'PROVIDERLEDGERRATETYPE'|| ','|| 'PROVIDERLEDGERRATEDATE'|| ','|| 'PROVIDERLEDGERDATETYPE'|| ','||
   'PROVIDERLEDGERRATE'|| ','|| 'PROVIDERLEDGERROUNDINGLIMIT'|| ','|| 'CONVERTED'|| ','|| 'CONTEXTCATEGORY'|| ','|| 'USERDEFINEDATTRIBUTE1'|| ','|| 'USERDEFINEDATTRIBUTE2'|| ','|| 'USERDEFINEDATTRIBUTE3'|| ','|| 'USERDEFINEDATTRIBUTE4'|| ','|| 'USERDEFINEDATTRIBUTE5'|| ','|| 'USERDEFINEDATTRIBUTE6'|| ','|| 'USERDEFINEDATTRIBUTE7'|| ','|| 'USERDEFINEDATTRIBUTE8'|| ','|| 'USERDEFINEDATTRIBUTE9'|| ','|| 'USERDEFINEDATTRIBUTE10'|| ','|| 'FUNDINGSOURCEID'|| ','|| 'RESERVEDATTRIBUTE2'|| ','|| 'RESERVEDATTRIBUTE3'|| ','|| 'RESERVEDATTRIBUTE4'|| ','|| 'RESERVEDATTRIBUTE5'|| ','|| 'RESERVEDATTRIBUTE6'|| ','|| 'RESERVEDATTRIBUTE7'|| ','|| 'RESERVEDATTRIBUTE8'|| ','|| 'RESERVEDATTRIBUTE9'|| ','|| 'RESERVEDATTRIBUTE10'|| ','|| 'ATTRIBUTECATEGORY'|| ','|| 'ATTRIBUTE1'|| ','|| 'ATTRIBUTE2'|| ','|| 'ATTRIBUTE3'|| ','|| 'ATTRIBUTE4'|| ','|| 'ATTRIBUTE5'|| ','|| 'ATTRIBUTE6'|| ','|| 'ATTRIBUTE7'|| ','|| 'ATTRIBUTE8'|| ','|| 'ATTRIBUTE9'|| ','|| 'ATTRIBUTE10';
-  utl_file.put_line(lc_file_handle,lv_col_title);
+  --utl_file.put_line(lc_file_handle,lv_col_title);
   FOR i IN c_proj_nn
   LOOP
     ---UTL_FILE.put_line(lc_file_handle,'HI');
-    utl_file.put_line(lc_file_handle,i.transactiontype|| ','|| i.businessunitname|| ','|| i.businessunitid|| ','|| i.transactionsource|| ','|| i.transactionsourceid|| ','|| i.document|| ','|| i.documentid|| ','|| i.documententry|| ','|| i.documententryid|| ','|| i.expenditurebatch|| ','|| i.batchendingdate|| ','|| i.batchdescription|| ','|| i.expenditureitemdate|| ','|| i.personnumber|| ','|| i.personname|| ','|| i.personid|| ','|| i.humanresourcesassignment|| ','|| i.humanresourcesassignmentid|| ','|| i.projectnumber|| ','|| i.project_name|| ','|| i.projectid|| ','|| i.tasknumber|| ','|| i.task_name|| ','|| i.taskid|| ','|| i.expendituretype|| ','|| i.expendituretypeid|| ','|| i.expenditure_organization|| ','|| i.expenditureorganizationid|| ','|| i.contract_number|| ','|| i.contract_name|| ','|| i.contract_id|| ','|| i.funding_source_number|| ','|| i.funding_source_name|| ','|| i.quantity|| ','|| i.unit_of_measure_name|| ','|| i.unit_of_measure_code|| ','|| i.worktype|| ','||
+   /* utl_file.put_line(lc_file_handle,i.transactiontype|| ','|| i.businessunitname|| ','|| i.businessunitid|| ','|| i.transactionsource|| ','|| i.transactionsourceid|| ','|| i.DOCUMENT|| ','|| i.documentid|| ','|| i.documententry|| ','|| i.documententryid|| ','|| i.expenditurebatch|| ','|| i.batchendingdate|| ','|| i.batchdescription|| ','|| i.expenditureitemdate|| ','|| i.personnumber|| ','|| i.personname|| ','|| i.personid|| ','|| i.humanresourcesassignment|| ','|| i.humanresourcesassignmentid|| ','|| i.projectnumber|| ','|| i.project_name|| ','|| i.projectid|| ','|| i.tasknumber|| ','|| i.task_name|| ','|| i.taskid|| ','|| i.expendituretype|| ','|| i.expendituretypeid|| ','|| i.expenditure_organization|| ','|| i.expenditureorganizationid|| ','|| i.contract_number|| ','|| i.contract_name|| ','|| i.contract_id|| ','|| i.funding_source_number|| ','|| i.funding_source_name|| ','|| i.quantity|| ','|| i.unit_of_measure_name|| ','|| i.unit_of_measure_code|| ','|| i.worktype|| ','||
     i.worktypeid|| ','|| i.billable|| ','|| i.capitalizable|| ','|| i.accrual_item|| ','|| i.orig_transaction_reference|| ','|| i.unmatchednegativetransaction|| ','|| i.reversedoriginaltransaction|| ','|| i.expenditureitemcomment|| ','|| i.accountingdate|| ','|| i.transactioncurrencycode|| ','|| i.transactioncurrency|| ','|| i.rawcostintrxcurrency|| ','|| i.burdenedcostintrxcurrency|| ','|| i.rawcostcreditccid|| ','|| i.rawcostcreditaccount|| ','|| i.rawcostdebitccid|| ','|| i.rawcostdebitaccount|| ','|| i.burdenedcostcreditccid|| ','|| i.burdenedcostcreditaccount|| ','|| i.burdenedcostdebitccid|| ','|| i.burdenedcostdebitaccount|| ','|| i.burdencostdebitccid|| ','|| i.burdencostdebitaccount|| ','|| i.burdencostcreditccid|| ','|| i.burdencostcreditaccount|| ','|| i.providerledgercurrencycode|| ','|| i.providerledgercurrency|| ','|| i.rawcostledgercurrency|| ','|| i.burdenedcostledgercurrency|| ','|| i.providerledgerratetype|| ','|| i.providerledgerratedate|| ','||
-    i.providerledgerdatetype|| ','|| i.providerledgerrate|| ','|| i.providerledgerroundinglimit|| ','|| i.converted|| ','|| i.contextcategory|| ','|| i.userdefinedattribute1|| ','|| i.userdefinedattribute2|| ','|| i.userdefinedattribute3|| ','|| i.userdefinedattribute4|| ','|| i.userdefinedattribute5|| ','|| i.userdefinedattribute6|| ','|| i.userdefinedattribute7|| ','|| i.userdefinedattribute8|| ','|| i.userdefinedattribute9|| ','|| i.userdefinedattribute10|| ','|| i.fundingsourceid|| ','|| i.reservedattribute2|| ','|| i.reservedattribute3|| ','|| i.reservedattribute4|| ','|| i.reservedattribute5|| ','|| i.reservedattribute6|| ','|| i.reservedattribute7|| ','|| i.reservedattribute8|| ','|| i.reservedattribute9|| ','|| i.reservedattribute10|| ','|| i.attributecategory|| ','|| i.attribute1|| ','|| i.attribute2|| ','|| i.attribute3|| ','|| i.attribute4|| ','|| i.attribute5|| ','|| i.attribute6|| ','|| i.attribute7|| ','|| i.attribute8|| ','|| i.attribute9|| ','|| i.attribute10);
+    i.providerledgerdatetype|| ','|| i.providerledgerrate|| ','|| i.providerledgerroundinglimit|| ','|| i.converted|| ','|| i.contextcategory|| ','|| i.userdefinedattribute1|| ','|| i.userdefinedattribute2|| ','|| i.userdefinedattribute3|| ','|| i.userdefinedattribute4|| ','|| i.userdefinedattribute5|| ','|| i.userdefinedattribute6|| ','|| i.userdefinedattribute7|| ','|| i.userdefinedattribute8|| ','|| i.userdefinedattribute9|| ','|| i.userdefinedattribute10|| ','|| i.fundingsourceid|| ','|| i.reservedattribute2|| ','|| i.reservedattribute3|| ','|| i.reservedattribute4|| ','|| i.reservedattribute5|| ','|| i.reservedattribute6|| ','|| i.reservedattribute7|| ','|| i.reservedattribute8|| ','|| i.reservedattribute9|| ','|| i.reservedattribute10|| ','|| i.attributecategory|| ','|| i.attribute1|| ','|| i.attribute2|| ','|| i.attribute3|| ','|| i.attribute4|| ','|| i.attribute5|| ','|| i.attribute6|| ','|| i.attribute7|| ','|| i.attribute8|| ','|| i.attribute9|| ','|| i.attribute10);*/
+    IF i.RawCostCreditAccount IS NOT NULL THEN
+      v_segment1_split                := regexp_substr(i.RawCostCreditAccount, '[^.]+', 1, 1);-- entity,
+      v_segment2_Split                := regexp_substr(i.RawCostCreditAccount, '[^.]+', 1, 2);-- cost_center,
+      v_segment3_split                := regexp_substr(i.RawCostCreditAccount, '[^.]+', 1, 3);-- account,
+      v_segment4_split                := regexp_substr(i.RawCostCreditAccount, '[^.]+', 1, 4);-- location,
+      v_segment5_split                := regexp_substr(i.RawCostCreditAccount, '[^.]+', 1, 5);-- intercompany
+      v_segment6_Split                := regexp_substr(i.RawCostCreditAccount, '[^.]+', 1, 6);-- lob
+      IF v_segment1_split             IS NOT NULL THEN
+        v_segment1                    :=NVL(xx_gl_beacon_mapping_f1(v_segment1_split,'ENTITY','A'),-1);
+        IF v_segment1                  =                                                           -1 OR v_segment1 IS NULL THEN
+          insert_miss_segments ( v_segment1_split,                                                 -1, 'ENTITY', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_NN',NULL);
+        END IF;
+      END IF;
+      IF v_segment6_Split IS NOT NULL THEN
+        v_segment6        :=NVL(xx_gl_beacon_mapping_f1( v_segment6_Split,'LOB','A'), -1);
+        IF v_segment6      =                                                          -1 OR v_segment6 IS NULL THEN
+          insert_miss_segments ( v_segment6_Split,                                    -1, 'LOB', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_NN',NULL);
+        END IF;
+      END IF;
+      IF v_segment2_split IS NOT NULL THEN
+        v_segment2        :=NVL(xx_gl_beacon_mapping_f1(v_segment2_split,'COST_CENTER','A'),-1);
+        IF v_segment2      =                                                                -1 OR v_segment2 IS NULL THEN
+          insert_miss_segments ( v_segment2_split,                                          -1, 'COST_CENTER', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_NN',NULL);
+        END IF;
+      END IF;
+      IF v_segment3_split IS NOT NULL THEN
+        v_segment3        :=NVL(xx_gl_beacon_mapping_f1(v_segment3_split,'ACCOUNT','A'), -1);
+        IF v_segment3      =                                                             -1 OR v_segment3 IS NULL THEN
+          insert_miss_segments ( v_segment3_split,                                       -1, 'ACCOUNT', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_NN',NULL);
+        END IF;
+      END IF;
+      IF v_segment4_split IS NOT NULL THEN
+        v_segment4        :=NVL(xx_gl_beacon_mapping_f1(v_segment4_split,'LOCATION','A'), -1);
+        IF v_segment4      =                                                              -1 OR v_segment4 IS NULL THEN
+          insert_miss_segments ( v_segment4_split,                                        -1, 'LOCATION', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_NN',NULL);
+        END IF;
+      END IF;
+      IF v_segment5_split IS NOT NULL THEN
+        v_segment5        :=NVL(xx_gl_beacon_mapping_f1(v_segment5_split,'ENTITY','A'), -1);
+        IF v_segment5      =                                                            -1 OR v_segment5 IS NULL THEN
+          insert_miss_segments ( v_segment5_split,                                      -1, 'ENTITY', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_NN',NULL);
+        END IF;
+      END IF;
+    END IF;---END IF for Raw cost Credit
+    
+      IF i.RawCostDebitAccount IS NOT NULL THEN
+      v_segment1_split                := regexp_substr(i.RawCostDebitAccount, '[^.]+', 1, 1);-- entity,
+      v_segment2_Split                := regexp_substr(i.RawCostDebitAccount, '[^.]+', 1, 2);-- cost_center,
+      v_segment3_split                := regexp_substr(i.RawCostDebitAccount, '[^.]+', 1, 3);-- account,
+      v_segment4_split                := regexp_substr(i.RawCostDebitAccount, '[^.]+', 1, 4);-- location,
+      v_segment5_split                := regexp_substr(i.RawCostDebitAccount, '[^.]+', 1, 5);-- intercompany
+      v_segment6_Split                := regexp_substr(i.RawCostDebitAccount, '[^.]+', 1, 6);-- lob
+      IF v_segment1_split             IS NOT NULL THEN
+        v_segment1                    :=NVL(xx_gl_beacon_mapping_f1(v_segment1_split,'ENTITY','A'),-1);
+        IF v_segment1                  =                                                           -1 OR v_segment1 IS NULL THEN
+          insert_miss_segments ( v_segment1_split,                                                 -1, 'ENTITY', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_NN',NULL);
+        END IF;
+      END IF;
+      IF v_segment6_Split IS NOT NULL THEN
+        v_segment6        :=NVL(xx_gl_beacon_mapping_f1( v_segment6_Split,'LOB','A'), -1);
+        IF v_segment6      =                                                          -1 OR v_segment6 IS NULL THEN
+          insert_miss_segments ( v_segment6_Split,                                    -1, 'LOB', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_NN',NULL);
+        END IF;
+      END IF;
+      IF v_segment2_split IS NOT NULL THEN
+        v_segment2        :=NVL(xx_gl_beacon_mapping_f1(v_segment2_split,'COST_CENTER','A'),-1);
+        IF v_segment2      =                                                                -1 OR v_segment2 IS NULL THEN
+          insert_miss_segments ( v_segment2_split,                                          -1, 'COST_CENTER', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_NN',NULL);
+        END IF;
+      END IF;
+      IF v_segment3_split IS NOT NULL THEN
+        v_segment3        :=NVL(xx_gl_beacon_mapping_f1(v_segment3_split,'ACCOUNT','A'), -1);
+        IF v_segment3      =                                                             -1 OR v_segment3 IS NULL THEN
+          insert_miss_segments ( v_segment3_split,                                       -1, 'ACCOUNT', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_NN',NULL);
+        END IF;
+      END IF;
+      IF v_segment4_split IS NOT NULL THEN
+        v_segment4        :=NVL(xx_gl_beacon_mapping_f1(v_segment4_split,'LOCATION','A'), -1);
+        IF v_segment4      =                                                              -1 OR v_segment4 IS NULL THEN
+          insert_miss_segments ( v_segment4_split,                                        -1, 'LOCATION', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_NN',NULL);
+        END IF;
+      END IF;
+      IF v_segment5_split IS NOT NULL THEN
+        v_segment5        :=NVL(xx_gl_beacon_mapping_f1(v_segment5_split,'ENTITY','A'), -1);
+        IF v_segment5      =                                                            -1 OR v_segment5 IS NULL THEN
+          insert_miss_segments ( v_segment5_split,                                      -1, 'ENTITY', i.projectnumber||'-'||i.expendituretype, 'FBDI_PROJ_NN',NULL);
+        END IF;
+      END IF;
+    END IF;---END IF for Raw cost debit account 
+    
   END LOOP;
-  utl_file.fclose(lc_file_handle);
+--  utl_file.fclose(lc_file_handle);
 EXCEPTION
 WHEN utl_file.access_denied THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Nei_NN procedure :- ' || ' access_denied :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.delete_failed THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Nei_NN procedure :- ' || ' delete_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.file_open THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Nei_NN procedure :- ' || ' file_open :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.internal_error THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Nei_NN procedure :- ' || ' internal_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_filehandle THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Nei_NN procedure:- ' || ' invalid_filehandle :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_filename THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Nei_NN procedure :- ' || ' invalid_filename :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_maxlinesize THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Nei_NN procedure :- ' || ' invalid_maxlinesize :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_mode THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Nei_NN procedure :- ' || ' invalid_mode :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_offset THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Nei_NN procedure :- ' || ' invalid_offset :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_operation THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Nei_NN procedure :- ' || ' invalid_operation :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.invalid_path THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Nei_NN procedure :- ' || ' invalid_path :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.read_error THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Nei_NN procedure :- ' || ' read_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.rename_failed THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Nei_NN procedure :- ' || ' rename_failed :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN utl_file.write_error THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Nei_NN procedure :- ' || ' write_error :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
 WHEN OTHERS THEN
   lc_errormsg := ( 'Error in fbdi_Proj_Exp_Nei_NN procedure :- ' || ' OTHERS :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE );
-  print_debug_msg (lc_errormsg, true);
+  print_debug_msg (lc_errormsg, TRUE);
   utl_file.fclose_all;
   lc_file_handle := utl_file.fopen (l_file_path, l_file_name, 'W', 32767);
   utl_file.fclose(lc_file_handle);
@@ -5542,22 +6346,19 @@ PROCEDURE xx_od_fa_con_script_wrapper(
     p_retcode        NUMBER,
     P_module         VARCHAR2,
     p_book_type_code VARCHAR2,
-    p_book_class     varchar2)
-    
-  
+    p_book_class     VARCHAR2)
 AS
-
-v_book_type_code varchar2(50);
+  v_book_type_code VARCHAR2(50);
 BEGIN
   BEGIN
     IF p_module       ='FA' THEN
       IF p_book_class = 'TAX' THEN
         generic_tax_parent_asset_hdr(p_book_type_code);
-       generic_tax_child_asset_hdr(p_book_type_code);
+        generic_tax_child_asset_hdr(p_book_type_code);
         generic_tax_parent_dist(p_book_type_code);
         generic_tax_child_dist(p_book_type_code);
-      else
-      ---v_book_type_code:='OD US CORP';
+      ELSE
+        ---v_book_type_code:='OD US CORP';
         oduscorp_parent_assets_hdr(p_book_type_code);
         oduscorp_child_assets_hdr(p_book_type_code);
         oduscorp_parent_distribution(p_book_type_code);
@@ -5573,10 +6374,9 @@ BEGIN
 EXCEPTION
 WHEN OTHERS THEN
   --  LC_ERRORMSG := ( 'Error in XX_OD_FA_CON_SCRIPT_WRAPPER procedure :- ' || ' OTHERS :: ' || SUBSTR (SQLERRM, 1, 3800) || SQLCODE );
-  print_debug_msg ('Error in XX_OD_FA_CON_SCRIPT_WRAPPER procedure :- ' || ' OTHERS :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE, true);
+  print_debug_msg ('Error in XX_OD_FA_CON_SCRIPT_WRAPPER procedure :- ' || ' OTHERS :: ' || SUBSTR (sqlerrm, 1, 3800) || SQLCODE, TRUE);
 END xx_od_fa_con_script_wrapper;
-END xx_od_fa_con_script;
-
+END xx_od_fa_con_script; 
 /
 
 SHOW ERRORS;
