@@ -1,16 +1,4 @@
-SET VERIFY OFF
-SET ECHO OFF
-SET TAB OFF
-SET FEEDBACK OFF
-SET TERM ON
-
-PROMPT Creating PACKAGE  BODY XX_PO_WMS_SUPERTRANS_OB_PKG
-
-PROMPT Program exits IF the creation IS NOT SUCCESSFUL
-
-WHENEVER SQLERROR CONTINUE
-create or replace 
-PACKAGE BODY XX_PO_WMS_SUPERTRANS_OB_PKG
+CREATE OR REPLACE PACKAGE BODY "APPS"."XX_PO_WMS_SUPERTRANS_OB_PKG" 
 AS
 -- +============================================================================================+
 -- |  Office Depot - Project Simplify                                                           |
@@ -29,6 +17,7 @@ AS
 -- | 1.2         27-AUG-18    Jitendra A        NAIT-49192 added INSERT STATEMEMT to create new  |
 -- |                                           record for cancelled invoices to negate quantity |
 -- |                                           feed for WMS   									|
+-- | 1.3         7-Mar-2019   Raj Jose         NAIT-87118 Performance Supertrans Outbound Program |
 -- +============================================================================================+
 
 gc_debug 	VARCHAR2(2) := 'N';
@@ -92,14 +81,14 @@ END print_out_msg;
  -- +============================================================================================+
  -- |  Name	  : populate_supertrans_file                                                         |
  -- |  Description: This procedure retrieves data from table an d writes data to the outbound file|
- -- =============================================================================================|	
+ -- =============================================================================================|
 PROCEDURE populate_supertrans_file(p_errbuf     OUT  VARCHAR2
                          ,p_retcode      OUT  NUMBER
                          ,p_batch_id     IN   NUMBER
                       	 ,p_debug        IN   VARCHAR2)
-IS						 
+IS
 
-	CURSOR c_get_st_data(c_batch_id NUMBER) 
+	CURSOR c_get_st_data(c_batch_id NUMBER)
 	IS
 	SELECT lpad(substr(RECEIPT_NUM,5,length(RECEIPT_NUM)-2),8,'0') RECEIPT_NUM   -- KEYREC is extracting
 		  ,ITEM_NAME
@@ -117,17 +106,17 @@ IS
 		  ,SEQ_NO
 	FROM XX_PO_WMS_SUPERTRANS_OB
 	WHERE batch_id = c_batch_id;
-	
+
     TYPE LC_ST_DATA_TAB IS TABLE OF c_get_st_data%ROWTYPE
-						INDEX BY PLS_INTEGER; 
+						INDEX BY PLS_INTEGER;
     LC_ST_DATA   LC_ST_DATA_TAB;
-	
+
 	lc_file_handle      UTL_FILE.file_type;
 	lv_line_count	    NUMBER;
 	l_file_path			VARCHAR(200);
 	l_file_name			VARCHAR2(100);
     lv_col_title        VARCHAR2(1000);
-    lc_errormsg         VARCHAR2(1000);   
+    lc_errormsg         VARCHAR2(1000);
 	ln_conc_file_copy_request_id	NUMBER;
 	lc_dest_file_name   VARCHAR2(200);
 	lc_source_file_name	VARCHAR2(200);
@@ -137,8 +126,8 @@ IS
 		gc_debug	  := p_debug;
 		gn_request_id := fnd_global.conc_request_id;
 		gn_user_id    := fnd_global.user_id;
-		gn_login_id   := fnd_global.login_id;	
-		
+		gn_login_id   := fnd_global.login_id;
+
 		lv_line_count := 0;
 
         BEGIN
@@ -150,32 +139,32 @@ IS
          WHEN OTHERS
          THEN
             l_file_path := NULL;
-        END;		
+        END;
 
-		
+
 		l_file_name :=
                'XX_PO_WMS_SUPERTRANS_'
             || TO_CHAR(SYSDATE, 'DDMONYYYYHH24MISS')
-            ||'_'                
-            || gn_request_id    
+            ||'_'
+            || gn_request_id
             || '.txt';
 
-			
-    lc_file_handle := UTL_FILE.fopen('XXFIN_PO_OUTBOUND', l_file_name, 'W', 32767);    
 
-    print_out_msg('Filename is :' || l_file_name);	
+    lc_file_handle := UTL_FILE.fopen('XXFIN_PO_OUTBOUND', l_file_name, 'W', 32767);
+
+    print_out_msg('Filename is :' || l_file_name);
 	print_out_msg('Unix File Path is :' || l_file_path);
-	
+
 	print_debug_msg ('File Name : '||l_file_name, TRUE);
 	print_debug_msg ('File Path : '||l_file_path, TRUE);
 
-	
+
     lv_col_title :=
             'ST-KEYREC'
          || ','||
          'ST-SKU'
-         || ','||         
-         'ST-ORIG-QTY'         
+         || ','||
+         'ST-ORIG-QTY'
          || ','||
          'ST-NEW-QTY'
          || ','||
@@ -197,21 +186,21 @@ IS
          || ','||
          'ST-PO-LINE'
          || ','||
-         'ST-SEQ-NBR';    
-      
-	  -- UTL_FILE.put_line(lc_file_handle,lv_col_title);
-	  
-	  print_debug_msg (lv_col_title, TRUE);	 
+         'ST-SEQ-NBR';
 
-		
-			
+	  -- UTL_FILE.put_line(lc_file_handle,lv_col_title);
+
+	  print_debug_msg (lv_col_title, TRUE);
+
+
+
       OPEN c_get_st_data(p_batch_id);
       FETCH c_get_st_data BULK COLLECT INTO LC_ST_DATA;
       CLOSE c_get_st_data;
-      
+
 	  IF LC_ST_DATA.COUNT > 0 THEN
 		  FOR l_rec IN LC_ST_DATA.FIRST..LC_ST_DATA.LAST
-		  LOOP 
+		  LOOP
 			 lv_line_count := lv_line_count + 1;
 			  UTL_FILE.put_line(lc_file_handle,
 												lpad(LC_ST_DATA(l_rec).RECEIPT_NUM,8,'0')||
@@ -244,25 +233,25 @@ IS
 												LC_ST_DATA(l_rec).COMPANY|| ','||
 												LC_ST_DATA(l_rec).PO_LINE_NUM|| ','||
 												LC_ST_DATA(l_rec).SEQ_NO
-											, TRUE);	  
-											
-		  END LOOP;        
-    END IF;	
-   
+											, TRUE);
+
+		  END LOOP;
+    END IF;
+
     UTL_FILE.fclose(lc_file_handle);
-	
+
 	-- Archive the file
-	
+
 	print_debug_msg('Calling the Common File Copy to archive this OutBound file to Archive folder',TRUE);
-	
+
 	lc_dest_file_name            := '$XXFIN_ARCHIVE/outbound/' ||l_file_name;
 	lc_source_file_name			 := l_file_path||'/' ||l_file_name;
 
-	ln_conc_file_copy_request_id := fnd_request.submit_request('XXFIN', 
-															 'XXCOMFILCOPY', 
-															 '', 
-															 '', 
-															 FALSE, 
+	ln_conc_file_copy_request_id := fnd_request.submit_request('XXFIN',
+															 'XXCOMFILCOPY',
+															 '',
+															 '',
+															 FALSE,
 															 lc_source_file_name, 		   --Source File Name
 															 lc_dest_file_name,            --Dest File Name
 															 '', '', 'N'                   --Deleting the Source File
@@ -270,8 +259,8 @@ IS
 
 
 	print_debug_msg('Request Id of Common Copy , to archive, is '||ln_conc_file_copy_request_id,TRUE);
-	COMMIT;													
-		
+	COMMIT;
+
     print_debug_msg('End - populate_supertrans_file', TRUE);
     EXCEPTION
       WHEN UTL_FILE.access_denied
@@ -286,10 +275,10 @@ IS
          UTL_FILE.fclose_all;
          lc_file_handle := UTL_FILE.fopen (l_file_path, l_file_name, 'W', 32767);
          UTL_FILE.fclose(lc_file_handle);
-		 
+
          p_errbuf := SUBSTR (SQLERRM, 1, 150);
-         p_retcode := 2;		 
-		 
+         p_retcode := 2;
+
       WHEN UTL_FILE.delete_failed
       THEN
          lc_errormsg :=
@@ -302,10 +291,10 @@ IS
          UTL_FILE.fclose_all;
          lc_file_handle := UTL_FILE.fopen (l_file_path, l_file_name, 'W', 32767);
          UTL_FILE.fclose(lc_file_handle);
-		 
+
          p_errbuf := SUBSTR (SQLERRM, 1, 150);
          p_retcode := 2;
-		 
+
       WHEN UTL_FILE.file_open
       THEN
          lc_errormsg :=
@@ -318,10 +307,10 @@ IS
          UTL_FILE.fclose_all;
          lc_file_handle := UTL_FILE.fopen (l_file_path, l_file_name, 'W', 32767);
          UTL_FILE.fclose(lc_file_handle);
-		 
+
          p_errbuf := SUBSTR (SQLERRM, 1, 150);
          p_retcode := 2;
-		 
+
       WHEN UTL_FILE.internal_error
       THEN
          lc_errormsg :=
@@ -334,10 +323,10 @@ IS
          UTL_FILE.fclose_all;
          lc_file_handle := UTL_FILE.fopen (l_file_path, l_file_name, 'W', 32767);
          UTL_FILE.fclose(lc_file_handle);
-		 
+
          p_errbuf := SUBSTR (SQLERRM, 1, 150);
          p_retcode := 2;
-		 
+
       WHEN UTL_FILE.invalid_filehandle
       THEN
          lc_errormsg :=
@@ -350,10 +339,10 @@ IS
          UTL_FILE.fclose_all;
          lc_file_handle := UTL_FILE.fopen (l_file_path, l_file_name, 'W', 32767);
          UTL_FILE.fclose(lc_file_handle);
-		 
+
          p_errbuf := SUBSTR (SQLERRM, 1, 150);
          p_retcode := 2;
-		 
+
       WHEN UTL_FILE.invalid_filename
       THEN
          lc_errormsg :=
@@ -366,9 +355,9 @@ IS
          UTL_FILE.fclose_all;
          lc_file_handle := UTL_FILE.fopen (l_file_path, l_file_name, 'W', 32767);
          UTL_FILE.fclose(lc_file_handle);
-		 
+
          p_errbuf := SUBSTR (SQLERRM, 1, 150);
-         p_retcode := 2;		 
+         p_retcode := 2;
 
       WHEN UTL_FILE.invalid_maxlinesize
       THEN
@@ -382,10 +371,10 @@ IS
          UTL_FILE.fclose_all;
          lc_file_handle := UTL_FILE.fopen (l_file_path, l_file_name, 'W', 32767);
          UTL_FILE.fclose(lc_file_handle);
-		 
+
          p_errbuf := SUBSTR (SQLERRM, 1, 150);
          p_retcode := 2;
-		 
+
       WHEN UTL_FILE.invalid_mode
       THEN
          lc_errormsg :=
@@ -398,10 +387,10 @@ IS
          UTL_FILE.fclose_all;
          lc_file_handle := UTL_FILE.fopen (l_file_path, l_file_name, 'W', 32767);
          UTL_FILE.fclose(lc_file_handle);
-		 
+
          p_errbuf := SUBSTR (SQLERRM, 1, 150);
          p_retcode := 2;
-		 
+
       WHEN UTL_FILE.invalid_offset
       THEN
          lc_errormsg :=
@@ -414,9 +403,9 @@ IS
          UTL_FILE.fclose_all;
          lc_file_handle := UTL_FILE.fopen (l_file_path, l_file_name, 'W', 32767);
          UTL_FILE.fclose(lc_file_handle);
-		 
+
          p_errbuf := SUBSTR (SQLERRM, 1, 150);
-         p_retcode := 2;		
+         p_retcode := 2;
 
       WHEN UTL_FILE.invalid_operation
       THEN
@@ -430,9 +419,9 @@ IS
          UTL_FILE.fclose_all;
          lc_file_handle := UTL_FILE.fopen (l_file_path, l_file_name, 'W', 32767);
          UTL_FILE.fclose(lc_file_handle);
-		 
+
          p_errbuf := SUBSTR (SQLERRM, 1, 150);
-         p_retcode := 2;		 
+         p_retcode := 2;
 
       WHEN UTL_FILE.invalid_path
       THEN
@@ -446,10 +435,10 @@ IS
          UTL_FILE.fclose_all;
          lc_file_handle := UTL_FILE.fopen (l_file_path, l_file_name, 'W', 32767);
          UTL_FILE.fclose(lc_file_handle);
-		 
+
          p_errbuf := SUBSTR (SQLERRM, 1, 150);
          p_retcode := 2;
-		 
+
       WHEN UTL_FILE.read_error
       THEN
          lc_errormsg :=
@@ -462,9 +451,9 @@ IS
          UTL_FILE.fclose_all;
          lc_file_handle := UTL_FILE.fopen (l_file_path, l_file_name, 'W', 32767);
          UTL_FILE.fclose(lc_file_handle);
-		 
+
          p_errbuf := SUBSTR (SQLERRM, 1, 150);
-         p_retcode := 2;		 
+         p_retcode := 2;
 
       WHEN UTL_FILE.rename_failed
       THEN
@@ -478,9 +467,9 @@ IS
          UTL_FILE.fclose_all;
          lc_file_handle := UTL_FILE.fopen (l_file_path, l_file_name, 'W', 32767);
          UTL_FILE.fclose(lc_file_handle);
-		 
+
          p_errbuf := SUBSTR (SQLERRM, 1, 150);
-         p_retcode := 2;		 
+         p_retcode := 2;
 
       WHEN UTL_FILE.write_error
       THEN
@@ -494,9 +483,9 @@ IS
          UTL_FILE.fclose_all;
          lc_file_handle := UTL_FILE.fopen (l_file_path, l_file_name, 'W', 32767);
          UTL_FILE.fclose(lc_file_handle);
-		 
+
          p_errbuf := SUBSTR (SQLERRM, 1, 150);
-         p_retcode := 2;		          
+         p_retcode := 2;
       WHEN OTHERS
       THEN
          lc_errormsg :=
@@ -509,11 +498,11 @@ IS
          UTL_FILE.fclose_all;
          lc_file_handle := UTL_FILE.fopen (l_file_path, l_file_name, 'W', 32767);
          UTL_FILE.fclose(lc_file_handle);
-		 
+
          p_errbuf := SUBSTR (SQLERRM, 1, 150);
-         p_retcode := 2;		 
+         p_retcode := 2;
 END populate_supertrans_file;
- 
+
  -- +============================================================================================+
  -- |  Name	  : adj_cost_generate                                                         		 |
  -- |  Description: This procedure generates data for Adjust Cost and writes to a staging table  |
@@ -525,116 +514,129 @@ PROCEDURE adj_cost_generate(p_errbuf      OUT  VARCHAR2
                       	 ,p_debug         IN   VARCHAR2)
  IS
 	CURSOR c_list_po_adj_price_var(c_account_date DATE)
-	IS 
+	IS
 		WITH accounted_invoices_a AS
 		(
-			SELECT 
-				  aia1.invoice_id
-				, aia1.invoice_num
-				, aia1.invoice_currency_code
-				, aia1.vendor_id
-				, aia1.vendor_site_id
-			FROM ap_invoices_all aia1
-				,xla_transaction_entities xte
-				,xla_events xev
-				,xla_ae_headers xah
-			WHERE aia1.invoice_id = xte.source_id_int_1
-			  and aia1.cancelled_date IS NULL
-			  and xte.application_id = 200			
-			  and xte.entity_code = 'AP_INVOICES'
-			  and xev.application_id = 200			  
-			  and xev.entity_id= xte.entity_id
-			  and xev.event_type_code = 'INVOICE VALIDATED'
-			  and xev.process_status_code = 'P'
-			  and xah.ledger_id = xte.ledger_id
-			  and xah.event_id = xev.event_id			  
-			  and xah.application_id = 200
-			  and trunc(xah.gl_transfer_date) = trunc(c_account_date)			  
-			  and EXISTS (SELECT 'x'
-						 FROM  xx_fin_translatevalues tv
-							  ,xx_fin_translatedefinition td
-						WHERE td.TRANSLATION_NAME = 'XX_AP_TR_MATCH_INVOICES'
-						  AND tv.TRANSLATE_ID  = td.TRANSLATE_ID
-						  AND tv.enabled_flag='Y'
-						  AND SYSDATE BETWEEN tv.start_date_active and NVL(tv.end_date_active,sysdate)
-						  AND tv.target_value1=aia1.source
-					  )
-			 and NOT EXISTS (
-						SELECT 'x'
-						FROM XX_PO_WMS_SUPERTRANS_OB xpws
-						WHERE xpws.invoice_id = aia1.invoice_id
-						  AND xpws.record_type = 'A'
+			SELECT /*+ index(XAH XX_XLA_AE_HEADERS_N11 */ 
+				   AIA1.INVOICE_ID ,
+				   AIA1.INVOICE_NUM ,
+				   AIA1.INVOICE_CURRENCY_CODE ,
+				   AIA1.VENDOR_ID ,
+				   AIA1.VENDOR_SITE_ID
+			FROM xla_ae_headers XAH, 
+				 --xla_Events xev,  /*raj NAIT-87118 commented redundant */
+				  xla_transaction_entities XTE
+				 ,AP_INVOICES_ALL AIA1
+			WHERE   xah.application_id = 200
+				--and trunc(xah.gl_transfer_date) = trunc(c_account_date)
+				AND xah.gl_transfer_date >= trunc(c_account_date) AND xah.gl_transfer_date < ( trunc(c_account_date) + 1 ) /*Raj NAIT-87118 to utilize the new XX_XLA_AE_HEADERS_N11 index */ 
+				AND XAH.EVENT_TYPE_CODE         = 'INVOICE VALIDATED' /*raj added */ 
+				 --AND XEV.APPLICATION_ID          = 200
+				 --AND XEV.EVENT_TYPE_CODE         = 'INVOICE VALIDATED'
+				  --AND XEV.PROCESS_STATUS_CODE     = 'P'
+				AND XAH.LEDGER_ID               = XTE.LEDGER_ID
+				AND XAH.entity_id               = xte.entity_id 
+				--AND XAH.EVENT_ID              = XEV.EVENT_ID
+				AND XTE.ENTITY_CODE             = 'AP_INVOICES'
+				--AND XEV.ENTITY_ID             = XTE.ENTITY_ID
+				AND XTE.APPLICATION_ID          = 200
+				AND XTE.ENTITY_CODE             = 'AP_INVOICES'
+				AND AIA1.INVOICE_ID             = XTE.SOURCE_ID_INT_1
+				AND AIA1.CANCELLED_DATE        IS NULL
+				AND EXISTS
+				(
+					SELECT 'x'
+					FROM XX_FIN_TRANSLATEVALUES TV ,
+					  XX_FIN_TRANSLATEDEFINITION TD
+					WHERE TD.TRANSLATION_NAME = 'XX_AP_TR_MATCH_INVOICES'
+					AND TV.TRANSLATE_ID       = TD.TRANSLATE_ID
+					AND TV.ENABLED_FLAG       ='Y'
+					AND SYSDATE BETWEEN TV.START_DATE_ACTIVE AND NVL(TV.END_DATE_ACTIVE,SYSDATE)
+					AND TV.TARGET_VALUE1=AIA1.SOURCE
+				)
+				AND NOT EXISTS
+				(
+					SELECT 'x'
+					FROM XX_PO_WMS_SUPERTRANS_OB XPWS
+					WHERE XPWS.INVOICE_ID = AIA1.INVOICE_ID
+					AND XPWS.RECORD_TYPE  = 'A'
 				)
 		)
-		SELECT
-			pha.po_header_id 
-		  , pha.segment1 po_number
-		  , pla.po_line_id	
-		  , msi.segment1 item_sku
-		  , pla.unit_price po_unit_price
-		  , lpad(ltrim(assa.vendor_site_code_alt, '0'), 9, '0') supplier_site_code
-		  , lpad(ltrim(hrl.attribute1,'0'), 4, '0') ship_to_location_code 		  
-		  , pla.line_num
-		  , SUM(1) OVER (PARTITION BY aila.invoice_id, aila.line_number, rsl.po_line_id) receipt_lines_for_po
-		--  , SUM(rsl.quantity_received) OVER (PARTITION BY aila.invoice_id, aila.line_number, rsl.po_line_id) receipt_line_quantity --orig_sum_rcv_quant_of_po_line
-		  , SUM(1) OVER (PARTITION BY pla.po_line_id, rsl.shipment_header_id, rsl.shipment_line_id) inv_lines_for_po
-		-- , SUM(aila.quantity_invoiced)  OVER  (PARTITION BY pla.po_line_id, rsl.shipment_header_id, rsl.shipment_line_id) invoice_line_quantity --new_sum_inv_quant_of_po_line  
-		  , aila.quantity_invoiced
-		  , aila.unit_price invoice_unit_price
-		  , aila.line_number as inv_line_num
-		  , aia.invoice_id
-		  , aia.invoice_currency_code
-		  , aia.invoice_num
-		  , NULL orig_quantity
-		  , NULL new_quantity
-		  , NULL receipt_num
-		  , NULL shipment_line_id
-		  , 'N' matched_Line
-		FROM ap_invoice_lines_all aila 
-			,accounted_invoices_a aia
-			,po_lines_all pla
-			,po_headers_all pha
-			,rcv_transactions rt
-			,rcv_shipment_lines rsl
-			,rcv_shipment_headers rsh 
-			,ap_supplier_sites_all assa
-			,hr_locations_all hrl 	
-			,mtl_system_items_b msi  
-		WHERE 1=1
-		  AND aila.invoice_id = aia.invoice_id
-		  AND aila.line_type_lookup_code = 'ITEM'
-		  AND aila.discarded_flag = 'N'
-		  AND (aila.CANCELLED_FLAG IS NULL OR aila.CANCELLED_FLAG = 'N')
-		  AND pla.po_line_id = aila.po_line_id
-		  AND pla.po_header_id = pha.po_header_id 
-		  AND rt.po_line_id = pla.po_line_id
-		  AND rt.shipment_line_id = rsl.shipment_line_id 
-		  AND rsl.shipment_header_id = rsh.shipment_header_id
-		  AND rt.transaction_type = 'RECEIVE'  
-		  AND assa.vendor_site_id = pha.vendor_site_id
-		  AND assa.attribute8 like 'TR%'
-		  AND hrl.location_id = pha.ship_to_location_id
-		  AND msi.inventory_item_id = aila.inventory_item_id
-		  AND msi.organization_id+0=441 
-		  AND (pla.unit_price-aila.unit_price)<>0   
-		 AND NOT EXISTS (
-		  select '1'
-		  from ap_invoices_all aia2, ap_invoice_lines_all aila2
-		  where aila2.invoice_id = aia2.invoice_id
-			and aia2.invoice_num = aia.invoice_num||'DM'
-			AND aia2.invoice_type_lookup_code='DEBIT'
-			and aia2.vendor_id   = aia.vendor_id+0
-			and aia2.vendor_site_id = aia.vendor_site_id+0
-			and aila2.attribute5 = aila.line_number
-			and ((pla.unit_price-aila.unit_price)*aila.quantity_invoiced) = aila2.amount
-		  )
-		  AND 1=1
-		  ORDER BY pla.po_line_id, aia.invoice_num, aila.line_number;
+	SELECT 
+		   PHA.PO_HEADER_ID ,
+		   PHA.SEGMENT1 PO_NUMBER ,
+		   PLA.PO_LINE_ID ,
+		  (SELECT MSI.SEGMENT1 
+		   FROM  MTL_SYSTEM_ITEMS_B MSI
+		   WHERE MSI.INVENTORY_ITEM_ID      = AILA.INVENTORY_ITEM_ID
+		   AND   MSI.ORGANIZATION_ID         =441 )   ITEM_SKU,
+		   PLA.UNIT_PRICE PO_UNIT_PRICE ,
+		   LPAD(LTRIM(ASSA.VENDOR_SITE_CODE_ALT, '0'), 9, '0') SUPPLIER_SITE_CODE ,
+		   LPAD(LTRIM(HRL.ATTRIBUTE1,'0'), 4, '0') SHIP_TO_LOCATION_CODE ,
+		   PLA.LINE_NUM ,
+		   SUM(1) OVER (PARTITION BY AILA.INVOICE_ID, AILA.LINE_NUMBER, RSL.PO_LINE_ID) RECEIPT_LINES_FOR_PO ,
+		   SUM(1) OVER (PARTITION BY PLA.PO_LINE_ID, RSL.SHIPMENT_HEADER_ID, RSL.SHIPMENT_LINE_ID) INV_LINES_FOR_PO ,
+		   AILA.QUANTITY_INVOICED ,
+		   AILA.UNIT_PRICE INVOICE_UNIT_PRICE ,
+		   AILA.LINE_NUMBER AS INV_LINE_NUM ,
+		   AIA.INVOICE_ID ,
+		   AIA.INVOICE_CURRENCY_CODE ,
+		   AIA.INVOICE_NUM ,
+		   NULL ORIG_QUANTITY ,
+		   NULL NEW_QUANTITY ,
+		   NULL RECEIPT_NUM ,
+		   NULL SHIPMENT_LINE_ID ,
+		   'N' MATCHED_LINE
+	FROM AP_INVOICE_LINES_ALL AILA ,
+		 ACCOUNTED_INVOICES_A AIA,
+		 PO_LINES_ALL PLA,
+		 PO_HEADERS_ALL PHA,
+		 AP_SUPPLIER_SITES_ALL ASSA,
+		 RCV_TRANSACTIONS RT ,
+		 RCV_SHIPMENT_LINES RSL,
+		 HR_LOCATIONS_ALL HRL
+		 --MTL_SYSTEM_ITEMS_B MSI  /*Raj NAIT-87118 moved to select as its impacting the execution plan */
+		 --RCV_SHIPMENT_HEADERS RSH /*Raj NAIT-87118  table not required redundant */
+	WHERE 1                        =1
+	AND AILA.INVOICE_ID            = AIA.INVOICE_ID
+	AND AILA.LINE_TYPE_LOOKUP_CODE = 'ITEM'
+	AND AILA.DISCARDED_FLAG        = 'N'
+	AND (AILA.CANCELLED_FLAG      IS NULL
+	OR AILA.CANCELLED_FLAG         = 'N')
+	AND PLA.PO_LINE_ID             = AILA.PO_LINE_ID
+	AND (PLA.UNIT_PRICE    -AILA.UNIT_PRICE)<>0
+	AND PLA.PO_HEADER_ID           = PHA.PO_HEADER_ID
+	AND ASSA.VENDOR_SITE_ID        = PHA.VENDOR_SITE_ID
+	AND ASSA.ATTRIBUTE8 LIKE 'TR%'
+	AND RT.PO_LINE_ID              = PLA.PO_LINE_ID
+	AND RT.SHIPMENT_LINE_ID        = RSL.SHIPMENT_LINE_ID
+	AND RT.TRANSACTION_TYPE        = 'RECEIVE'
+	--AND RSL.SHIPMENT_HEADER_ID     = RSH.SHIPMENT_HEADER_ID
+	AND HRL.LOCATION_ID            = PHA.SHIP_TO_LOCATION_ID
+	--AND MSI.INVENTORY_ITEM_ID      = AILA.INVENTORY_ITEM_ID /*moved to select as its impacting the execution plan */
+	--AND MSI.ORGANIZATION_ID         =441 /*moved to select as its impacting the execution plan */
+	AND NOT EXISTS
+	  (
+	   SELECT /*+ index(AIA2 AP_INVOICES_N6) */  '1'
+	   FROM AP_INVOICES_ALL AIA2,
+			AP_INVOICE_LINES_ALL AILA2
+	   WHERE AILA2.INVOICE_ID = AIA2.INVOICE_ID
+	   AND AIA2.INVOICE_NUM   = AIA.INVOICE_NUM||'DM'
+	   AND AIA2.INVOICE_TYPE_LOOKUP_CODE                             ='DEBIT'
+	   AND AIA2.VENDOR_ID                                            = AIA.VENDOR_ID     
+	   AND AIA2.VENDOR_SITE_ID                                       = AIA.VENDOR_SITE_ID
+	   AND AILA2.ATTRIBUTE5                                          = AILA.LINE_NUMBER
+	   AND ((PLA.UNIT_PRICE-AILA.UNIT_PRICE)*AILA.QUANTITY_INVOICED) = AILA2.AMOUNT
+	  )
+	AND 1=1
+	ORDER BY PLA.PO_LINE_ID,
+	  AIA.INVOICE_NUM,
+	  AILA.LINE_NUMBER;
 
-	/** RE-VERIFY this query to add more criteria 
+	/** RE-VERIFY this query to add more criteria
 		Like cancel lines etc..,
 	**/
-	CURSOR c_po_recpt_det(c_po_line_id NUMBER) 
+	CURSOR c_po_recpt_det(c_po_line_id NUMBER)
 	IS
 	(SELECT
 		 'U' line_status
@@ -648,12 +650,12 @@ PROCEDURE adj_cost_generate(p_errbuf      OUT  VARCHAR2
 	FROM XX_PO_SUPERTRANS_USED_RCPTS xpst
 	WHERE supertrans_type = 'A'
 	  AND po_line_id = c_po_line_id
-	  AND unmatched_qty > 0  
+	  AND unmatched_qty > 0
 	)
-  
-  
+
+
 	UNION ALL
-	
+
 	(SELECT
 		'I' line_status
 		,rsl.po_line_id
@@ -677,38 +679,38 @@ PROCEDURE adj_cost_generate(p_errbuf      OUT  VARCHAR2
 					 rsh.receipt_num
 					,rsl.shipment_line_id
 					,rsl.quantity_received
-					,rsl.quantity_received as unmatch_qty_rcv		
+					,rsl.quantity_received as unmatch_qty_rcv
 				FROM XX_PO_SUPERTRANS_USED_RCPTS xpst
 				WHERE xpst.po_line_id = c_po_line_id
 				  AND xpst.shipment_header_id = rsl.shipment_header_id
 				  AND xpst.shipment_line_id = rsl.shipment_line_id
 				  AND xpst.supertrans_type = 'A'
 	  )
-	 
+
    )
    ORDER BY line_status desc, transaction_date, shipment_header_id, shipment_line_id asc
    ;
-	
+
 	-- Above if same transaction_date then secondary order by shipment_line_id
 
     TYPE l_po_inv_list_tab IS TABLE OF c_list_po_adj_price_var%ROWTYPE
-						INDEX BY PLS_INTEGER; 
+						INDEX BY PLS_INTEGER;
 	l_po_inv_list   	l_po_inv_list_tab;
 	l_po_inv_list_new 	l_po_inv_list_tab;
 
 	TYPE l_po_line_rcpt_list_tab IS TABLE OF c_po_recpt_det%ROWTYPE
-						INDEX BY PLS_INTEGER; 
-	l_po_rcpt_list   l_po_line_rcpt_list_tab;		
+						INDEX BY PLS_INTEGER;
+	l_po_rcpt_list   l_po_line_rcpt_list_tab;
 	l_ins_po_rcpt_list   l_po_line_rcpt_list_tab;
 	l_upd_po_rcpt_list   l_po_line_rcpt_list_tab;
- 
+
 	l_prev_po_line_id	NUMBER;
 	l_unmatch_inv_qty	NUMBER;
 	ln_rec				    NUMBER := 0;
 	l_orig_quant      NUMBER :=0;
 	l_new_quant       NUMBER :=0;
 	ln_rec_cnt        NUMBER := 0;
-  
+
 	ln_err_count      NUMBER := 0;
 	ln_error_idx      NUMBER := 0;
 	lc_error_msg      VARCHAR2(4000);
@@ -717,8 +719,8 @@ PROCEDURE adj_cost_generate(p_errbuf      OUT  VARCHAR2
 	l_prev_inv_line_no	NUMBER;
 	l_prev_inv_no		VARCHAR2(50);
 	ln_po_inv_cnt	  NUMBER;
-	l_invoice_line_count NUMBER;	
-	
+	l_invoice_line_count NUMBER;
+
 	l_po_line_cnt		NUMBER;
 	l_po_line_total_cnt	NUMBER;
 	l_is_last_line_of_po	VARCHAR2(1);
@@ -726,131 +728,131 @@ PROCEDURE adj_cost_generate(p_errbuf      OUT  VARCHAR2
 
 	ln_ins_rcpt_cnt 	NUMBER;
 	ln_upd_rcpt_cnt 	NUMBER;
-  
+
   l_is_match_for_inv_line VARCHAR2(1);
-		
+
  BEGIN
- 
+
    xla_security_pkg.set_security_context(602);----Added for defect NAIT #49192
 	print_debug_msg('Begin - adj_cost_generate', TRUE);
-	
+
 	gc_debug	  := p_debug;
 	gn_request_id := fnd_global.conc_request_id;
 	gn_user_id    := fnd_global.user_id;
-	gn_login_id   := fnd_global.login_id;	
-		
-	
+	gn_login_id   := fnd_global.login_id;
+
+
 	OPEN c_list_po_adj_price_var(p_acct_run_date);
 	FETCH c_list_po_adj_price_var BULK COLLECT INTO l_po_inv_list;
-	
+
 	BEGIN
-	
+
 		ln_po_inv_cnt := l_po_inv_list.count;
 		print_debug_msg('Count of Adjust Price records, before matching, is '||ln_po_inv_cnt, TRUE);
-		
+
 		ln_ins_rcpt_cnt := 0;
 		ln_upd_rcpt_cnt := 0;
-			
+
 		FOR i in 1..ln_po_inv_cnt
 		LOOP
-		
+
 			BEGIN
-				
-				-- If the Sum of Inv Quantity is greater than Sum of Received Quantity for a PO 
+
+				-- If the Sum of Inv Quantity is greater than Sum of Received Quantity for a PO
 				-- then don't extract it
 				/**  No need of this validation
 				IF l_po_inv_list(i).invoice_line_quantity > l_po_inv_list(i).receipt_line_quantity THEN
 					CONTINUE;  -- Skip this line
 				END IF;
 				**/
-				
-			
+
+
 				-- If different Invoice for the same PO (Cursor is - order by po, invoice and Multiple invoices exist for one PO).
-				-- So, if the same Invoice then we should use the same Receipt data so that we can use the updated "unmatch_qty_rcv" 
+				-- So, if the same Invoice then we should use the same Receipt data so that we can use the updated "unmatch_qty_rcv"
 				-- value, by the previous invoice, to skip those already matched invoices.
-				
-				IF l_prev_po_line_id = l_po_inv_list(i).po_line_id THEN 
-					-- Use the old Rcpt List so that we can match unMatchedRcptQuant					
+
+				IF l_prev_po_line_id = l_po_inv_list(i).po_line_id THEN
+					-- Use the old Rcpt List so that we can match unMatchedRcptQuant
 					IF ((l_prev_inv_no <> l_po_inv_list(i).invoice_num)
 					   or (l_prev_inv_line_no <> l_po_inv_list(i).inv_line_num)) THEN
-					   
+
 						l_prev_inv_no := l_po_inv_list(i).invoice_num;
 						l_unmatch_inv_qty := l_po_inv_list(i).quantity_invoiced;
-						l_prev_inv_line_no := l_po_inv_list(i).inv_line_num;	
+						l_prev_inv_line_no := l_po_inv_list(i).inv_line_num;
 						l_invoice_line_count := l_invoice_line_count + 1;
 						l_is_match_for_inv_line := 'N';
-					END IF;				
-					
+					END IF;
+
 					l_is_last_line_of_po := 'N';
 					l_po_line_cnt := l_po_line_cnt + 1;
 					IF l_po_line_cnt = l_po_line_total_cnt THEN
 						l_is_last_line_of_po := 'Y';
 					END IF;
-							
+
 				ELSE
-					-- If new po Line, 
+					-- If new po Line,
 					print_debug_msg('Generate receipts for new po_Line_id : '||l_po_inv_list(i).po_line_id, FALSE);
 					l_prev_po_line_id  :=  l_po_inv_list(i).po_line_id;
-					l_prev_inv_no := l_po_inv_list(i).invoice_num;					
+					l_prev_inv_no := l_po_inv_list(i).invoice_num;
 					l_prev_inv_line_no := l_po_inv_list(i).inv_line_num;
 					l_unmatch_inv_qty  := l_po_inv_list(i).quantity_invoiced;
-					
-					
+
+
 					l_invoice_line_count := 1;
 					l_po_line_cnt := 1;
 					l_po_line_total_cnt := l_po_inv_list(i).inv_lines_for_po * l_po_inv_list(i).receipt_lines_for_po;
-					
+
 					l_is_match_for_inv_line := 'N';
-					
+
 					l_is_last_line_of_po := 'N';
 					IF l_po_line_cnt = l_po_line_total_cnt THEN
 						l_is_last_line_of_po := 'Y';
 					END IF;
-										
+
 					OPEN c_po_recpt_det(l_po_inv_list(i).po_line_id);
 					FETCH c_po_recpt_det BULK COLLECT INTO l_po_rcpt_list;
 					CLOSE c_po_recpt_det;
-					
+
 				END IF;
-				
+
 
 				ln_cur_rcpt_cnt := l_po_rcpt_list.count;
 				print_debug_msg('Count of Recipts for the po_line_id '||l_po_inv_list(i).po_line_id||' is '||ln_cur_rcpt_cnt, FALSE);
-				
+
 				IF ln_cur_rcpt_cnt <= 0 THEN
 					lc_error_msg := 'adj_cost_generate() - No Receipts exist or already matched for po_line_id '||l_po_inv_list(i).po_line_id||' and invoice num '||l_po_inv_list(i).invoice_num||' and '||l_po_inv_list(i).inv_line_num;
 					raise data_exception;
 				END IF;
-				
+
 				FOR r in 1..ln_cur_rcpt_cnt
 				LOOP
 
 					BEGIN
-						-- This receipt is matched already, so skip this receipt.		
+						-- This receipt is matched already, so skip this receipt.
 						IF l_po_rcpt_list(r).unmatch_qty_rcv <= 0 THEN
-							CONTINUE; 
+							CONTINUE;
 						END IF;
-				
+
 						-- if the receipts apply then unmatch_qty_rcvv become zero
 						IF l_unmatch_inv_qty <=0 THEN
 							EXIT;   -- Exit from this Receipt Loop
-						END IF;	
-						
+						END IF;
+
 						l_orig_quant := l_po_rcpt_list(r).quantity_received;
-						
-						IF l_po_rcpt_list(r).unmatch_qty_rcv <= l_unmatch_inv_qty THEN							
+
+						IF l_po_rcpt_list(r).unmatch_qty_rcv <= l_unmatch_inv_qty THEN
 							l_new_quant  := l_po_rcpt_list(r).unmatch_qty_rcv;
 							l_unmatch_inv_qty := l_unmatch_inv_qty - l_new_quant;
-								
+
 							l_po_rcpt_list(r).unmatch_qty_rcv := 0;
-							l_po_inv_list(i).matched_Line := 'Y';														
+							l_po_inv_list(i).matched_Line := 'Y';
 						ELSE
 							l_new_quant  := l_unmatch_inv_qty;
 							l_unmatch_inv_qty := 0;
 							l_po_rcpt_list(r).unmatch_qty_rcv := l_po_rcpt_list(r).unmatch_qty_rcv - l_new_quant;
 							l_po_inv_list(i).matched_Line := 'Y';
-						END IF;			
-						
+						END IF;
+
 						ln_rec := ln_rec + 1;
 						l_po_inv_list_new(ln_rec) := l_po_inv_list(i);
 						l_po_inv_list_new(ln_rec).receipt_num   := l_po_rcpt_list(r).receipt_num;
@@ -858,29 +860,29 @@ PROCEDURE adj_cost_generate(p_errbuf      OUT  VARCHAR2
 						l_po_inv_list_new(ln_rec).orig_quantity := l_orig_quant;
 						l_po_inv_list_new(ln_rec).new_quantity  := l_new_quant;
 						l_is_match_for_inv_line := 'Y';
-					
+
 					EXCEPTION
 					WHEN OTHERS THEN
 						lc_error_msg := 'adj_cost_generate() - Error when matching with receipt for po line:'||l_po_inv_list(i).po_line_id||' with invoice quantity as '||l_po_inv_list(i).quantity_invoiced||' and receipt quantity as '||l_po_rcpt_list(r).quantity_received||' with error as: '||substr(SQLERRM,1,500);
 						raise data_exception;
 					END;
-					
+
 				END LOOP; -- End of PO Receipt List Loop
-				
+
 				/**
 				IF l_is_match_for_inv_line = 'N' THEN
 					lc_error_msg := 'adj_cost_generate() - Invoice line '||l_po_inv_list(i).inv_line_num||' doesnt match with receipt for po line:'||l_po_inv_list(i).po_line_id||' with invoice quantity as '||l_po_inv_list(i).quantity_invoiced;
-					raise data_exception;								
+					raise data_exception;
 				END IF;
 				**/
-				
-				IF l_is_last_line_of_po = 'Y'  THEN	
+
+				IF l_is_last_line_of_po = 'Y'  THEN
 
 
 					IF l_unmatch_inv_qty > 0 THEN
-						l_po_inv_list_new(ln_rec).new_quantity  := l_po_inv_list_new(ln_rec).new_quantity +   l_unmatch_inv_qty;  
+						l_po_inv_list_new(ln_rec).new_quantity  := l_po_inv_list_new(ln_rec).new_quantity +   l_unmatch_inv_qty;
 					END IF;
-				
+
 					ln_cur_rcpt_cnt := l_po_rcpt_list.count;
 					FOR k in 1..ln_cur_rcpt_cnt
 					LOOP
@@ -888,73 +890,73 @@ PROCEDURE adj_cost_generate(p_errbuf      OUT  VARCHAR2
 							-- if the origianl quantity doesn't matched then no need to insert
 							IF (l_po_rcpt_list(k).quantity_received <> l_po_rcpt_list(k).unmatch_qty_rcv and l_po_rcpt_list(k).unmatch_qty_rcv > 0) THEN
 								ln_ins_rcpt_cnt := ln_ins_rcpt_cnt + 1;
-								l_ins_po_rcpt_list(ln_ins_rcpt_cnt) := l_po_rcpt_list(k);						
+								l_ins_po_rcpt_list(ln_ins_rcpt_cnt) := l_po_rcpt_list(k);
 							END IF;
 						ELSE
 							ln_upd_rcpt_cnt := ln_upd_rcpt_cnt + 1;
 							l_upd_po_rcpt_list(ln_upd_rcpt_cnt) := l_po_rcpt_list(k);
 						END IF;
-					END LOOP;			
+					END LOOP;
 					print_debug_msg('New inserted receipts cumulative count for the po_line_id - '||l_po_inv_list_new(ln_rec).po_line_id||' is '||ln_ins_rcpt_cnt, FALSE);
 					print_debug_msg('Updated matched receipts cumulative count for the po_line_id - '||l_po_inv_list_new(ln_rec).po_line_id||' is '||ln_upd_rcpt_cnt, FALSE);
 
-				END IF;							
+				END IF;
 			EXCEPTION
 				WHEN data_exception THEN
 					raise data_exception;
 				WHEN OTHERS THEN
 					print_debug_msg('adj_cost_generate() - Error when doing matching for PO lineId '||l_po_inv_list(i).po_line_id||' is '||substr(SQLERRM,1,500),TRUE);
 					lc_error_msg  := 'adj_cost_generate() - Exception when doing matching as '||substr(SQLERRM,1,500);
-					raise data_exception;	
-			END;			
-		
+					raise data_exception;
+			END;
+
 		END LOOP;  -- End of PO Invoice List Loop
-	
+
 	EXCEPTION
 		WHEN data_exception THEN
 			raise data_exception;
 		WHEN OTHERS THEN
 			print_debug_msg('adj_cost_generate() - Error when doing matching - '||substr(SQLERRM,1,500),TRUE);
 			lc_error_msg  := 'adj_cost_generate() - Exception when doing matching as '||substr(SQLERRM,1,500);
-			raise data_exception;	
+			raise data_exception;
 	END;
-	
+
 	CLOSE c_list_po_adj_price_var;
 	ln_rec_cnt := l_po_inv_list_new.count;
 
 	print_debug_msg('Count of Adjust Price records, after matching, is '||ln_rec_cnt, TRUE);
-			
-	BEGIN	
+
+	BEGIN
 		FORALL n in 1..ln_rec_cnt
 			SAVE EXCEPTIONS
 			INSERT INTO XX_PO_WMS_SUPERTRANS_OB(BATCH_id
-											  ,RECEIPT_NUM		
-											  ,ITEM_NAME		
-											  ,RECEIPT_LINE_QTY 
-											  ,INV_LINE_QTY		
-											  ,PO_LINE_COST		
-											  ,INV_LINE_COST	
-											  ,VENDOR_NUMBER	
-											  ,RECORD_TYPE		
-											  ,SHIP_LOCATION  
-											  ,PO_NUMBER		
-											  ,CURRENCY			
-											  ,COMPANY			
-											  ,PO_LINE_NUM		
+											  ,RECEIPT_NUM
+											  ,ITEM_NAME
+											  ,RECEIPT_LINE_QTY
+											  ,INV_LINE_QTY
+											  ,PO_LINE_COST
+											  ,INV_LINE_COST
+											  ,VENDOR_NUMBER
+											  ,RECORD_TYPE
+											  ,SHIP_LOCATION
+											  ,PO_NUMBER
+											  ,CURRENCY
+											  ,COMPANY
+											  ,PO_LINE_NUM
 											  ,SEQ_NO
 											  ,PO_LINE_ID
 											  ,INVOICE_ID
 											  ,INV_LINE_NUM
-											  ,SHIPMENT_LINE_ID											  
-											  ,RECORD_STATUS	
-											  ,COMMENTS			
-											  ,REQUEST_ID		
-											  ,CREATED_BY       
-											  ,CREATION_DATE    
-											  ,LAST_UPDATED_BY  
-											  ,LAST_UPDATE_DATE 
+											  ,SHIPMENT_LINE_ID
+											  ,RECORD_STATUS
+											  ,COMMENTS
+											  ,REQUEST_ID
+											  ,CREATED_BY
+											  ,CREATION_DATE
+											  ,LAST_UPDATED_BY
+											  ,LAST_UPDATE_DATE
 											  ,LAST_UPDATE_LOGIN
-											 ) 
+											 )
 								VALUES (p_batch_id
 									,l_po_inv_list_new(n).receipt_num
 									,l_po_inv_list_new(n).item_sku
@@ -991,24 +993,24 @@ PROCEDURE adj_cost_generate(p_errbuf      OUT  VARCHAR2
 		   FOR i IN 1..ln_err_count
 		   LOOP
 			  ln_error_idx := SQL%BULK_EXCEPTIONS(i).ERROR_INDEX;
-			  lc_error_msg := SUBSTR('Bulk Exception - Failed to Insert value' || ' - ' || SQLERRM (SQL%BULK_EXCEPTIONS (i).ERROR_CODE * -1), 1, 500);      
+			  lc_error_msg := SUBSTR('Bulk Exception - Failed to Insert value' || ' - ' || SQLERRM (SQL%BULK_EXCEPTIONS (i).ERROR_CODE * -1), 1, 500);
 			  print_debug_msg('Record_Line_id=['||to_char(l_po_inv_list_new(ln_error_idx).po_number)||'-'||to_char(l_po_inv_list_new(ln_error_idx).line_num)||'-'||to_char(l_po_inv_list_new(ln_error_idx).receipt_num)||'], Error msg=['||lc_error_msg||']'
 			   ,TRUE);
 		   END LOOP; -- bulk_err_loop FOR Insert
-			
-			ROLLBACK;			
+
+			ROLLBACK;
 			lc_error_msg  := 'adj_cost_generate() - Bulk Exception raised while inserting. Pls. check the debug log.';
 			raise data_exception;
 	END;
 
 
-	BEGIN	
+	BEGIN
 		FORALL i in 1..ln_upd_rcpt_cnt SAVE EXCEPTIONS
 		UPDATE XX_PO_SUPERTRANS_USED_RCPTS xpst
 		SET xpst.unmatched_qty = l_upd_po_rcpt_list(i).unmatch_qty_rcv
 		    ,last_updated_by = gn_user_id
 			,last_update_date = sysdate
-			,last_update_login = gn_login_id		
+			,last_update_login = gn_login_id
 		WHERE xpst.supertrans_type = 'A'
 		  AND l_upd_po_rcpt_list(i).line_status = 'U'
 		  AND xpst.shipment_header_id = l_upd_po_rcpt_list(i).shipment_header_id
@@ -1016,7 +1018,7 @@ PROCEDURE adj_cost_generate(p_errbuf      OUT  VARCHAR2
 		  AND l_upd_po_rcpt_list(i).unmatch_qty_rcv > 0;
 
 		print_debug_msg('adj_cost_generate() - updated existed matched receipts', TRUE);
-		
+
 	EXCEPTION
 	WHEN OTHERS THEN
 			print_debug_msg('adj_cost_generate() - Bulk Exception raised when update to table XX_PO_SUPERTRANS_USED_RCPTS',TRUE);
@@ -1025,28 +1027,28 @@ PROCEDURE adj_cost_generate(p_errbuf      OUT  VARCHAR2
 		    FOR i IN 1..ln_err_count
 		    LOOP
 			    ln_error_idx := SQL%BULK_EXCEPTIONS(i).ERROR_INDEX;
-			    lc_error_msg := SUBSTR('Bulk Exception - Failed to update value' || ' - ' || SQLERRM (SQL%BULK_EXCEPTIONS (i).ERROR_CODE * -1), 1, 500);      
+			    lc_error_msg := SUBSTR('Bulk Exception - Failed to update value' || ' - ' || SQLERRM (SQL%BULK_EXCEPTIONS (i).ERROR_CODE * -1), 1, 500);
 			    print_debug_msg('po_line_id-receipt_num-shipment_line_id=['||to_char(l_upd_po_rcpt_list(ln_error_idx).po_line_id)||'-'||to_char(l_upd_po_rcpt_list(ln_error_idx).receipt_num)||'-'||to_char(l_upd_po_rcpt_list(ln_error_idx).shipment_line_id)||'], Error msg=['||lc_error_msg||']'
 			     ,TRUE);
 		    END LOOP; -- bulk_err_loop FOR Insert
-			
-			ROLLBACK;			
-			lc_error_msg  := 'adj_cost_generate() - Bulk Exception raised while updating into table XX_PO_SUPERTRANS_USED_RCPTS. Pls. check the debug log.';
-			raise data_exception;	
-	END;
-	
 
-	BEGIN	
+			ROLLBACK;
+			lc_error_msg  := 'adj_cost_generate() - Bulk Exception raised while updating into table XX_PO_SUPERTRANS_USED_RCPTS. Pls. check the debug log.';
+			raise data_exception;
+	END;
+
+
+	BEGIN
 		FORALL i in 1..ln_upd_rcpt_cnt SAVE EXCEPTIONS
 		DELETE FROM XX_PO_SUPERTRANS_USED_RCPTS xpst
 		WHERE xpst.supertrans_type = 'A'
 		  AND l_upd_po_rcpt_list(i).line_status = 'U'
 		  AND xpst.shipment_header_id = l_upd_po_rcpt_list(i).shipment_header_id
 		  AND xpst.shipment_line_id = l_upd_po_rcpt_list(i).shipment_line_id
-		  AND l_upd_po_rcpt_list(i).unmatch_qty_rcv = 0;		
+		  AND l_upd_po_rcpt_list(i).unmatch_qty_rcv = 0;
 
 		print_debug_msg('adj_cost_generate() - Delete existed matched receipts, if value is 0.', TRUE);
-		
+
 	EXCEPTION
 	WHEN OTHERS THEN
 			print_debug_msg('adj_cost_generate() - Bulk Exception raised when delete from table XX_PO_SUPERTRANS_USED_RCPTS',TRUE);
@@ -1055,16 +1057,16 @@ PROCEDURE adj_cost_generate(p_errbuf      OUT  VARCHAR2
 		    FOR i IN 1..ln_err_count
 		    LOOP
 			    ln_error_idx := SQL%BULK_EXCEPTIONS(i).ERROR_INDEX;
-			    lc_error_msg := SUBSTR('Bulk Exception - Failed to update value' || ' - ' || SQLERRM (SQL%BULK_EXCEPTIONS (i).ERROR_CODE * -1), 1, 500);      
+			    lc_error_msg := SUBSTR('Bulk Exception - Failed to update value' || ' - ' || SQLERRM (SQL%BULK_EXCEPTIONS (i).ERROR_CODE * -1), 1, 500);
 			    print_debug_msg('po_line_id-receipt_num-shipment_line_id=['||to_char(l_upd_po_rcpt_list(ln_error_idx).po_line_id)||'-'||to_char(l_upd_po_rcpt_list(ln_error_idx).receipt_num)||'-'||to_char(l_upd_po_rcpt_list(ln_error_idx).shipment_line_id)||'], Error msg=['||lc_error_msg||']'
 			     ,TRUE);
 		    END LOOP; -- bulk_err_loop FOR Insert
-			
-			ROLLBACK;			
+
+			ROLLBACK;
 			lc_error_msg  := 'adj_cost_generate() - Bulk Exception raised while deleting from table XX_PO_SUPERTRANS_USED_RCPTS. Pls. check the debug log.';
-			raise data_exception;	
-	END;	
-	
+			raise data_exception;
+	END;
+
 	BEGIN
 		FORALL i in 1..ln_ins_rcpt_cnt SAVE EXCEPTIONS
 		INSERT INTO XX_PO_SUPERTRANS_USED_RCPTS
@@ -1080,11 +1082,11 @@ PROCEDURE adj_cost_generate(p_errbuf      OUT  VARCHAR2
 						,creation_date
 						,last_updated_by
 						,last_update_date
-						,last_update_login						
+						,last_update_login
 						)
 					VALUES(
 						 l_ins_po_rcpt_list(i).po_line_id
-						,l_ins_po_rcpt_list(i).receipt_num						
+						,l_ins_po_rcpt_list(i).receipt_num
 						,l_ins_po_rcpt_list(i).shipment_header_id
 						,l_ins_po_rcpt_list(i).shipment_line_id
 						,l_ins_po_rcpt_list(i).quantity_received
@@ -1094,8 +1096,8 @@ PROCEDURE adj_cost_generate(p_errbuf      OUT  VARCHAR2
 						,sysdate
 						,gn_user_id
 						,sysdate
-						,gn_login_id						
-					);		
+						,gn_login_id
+					);
 		print_debug_msg('adj_cost_generate() - inserted new matched receipts count is '||ln_ins_rcpt_cnt, TRUE);
 	EXCEPTION
 		WHEN OTHERS THEN
@@ -1105,14 +1107,14 @@ PROCEDURE adj_cost_generate(p_errbuf      OUT  VARCHAR2
 		    FOR i IN 1..ln_err_count
 		    LOOP
 			    ln_error_idx := SQL%BULK_EXCEPTIONS(i).ERROR_INDEX;
-			    lc_error_msg := SUBSTR('Bulk Exception - Failed to insert to table XX_PO_SUPERTRANS_USED_RCPTS and error value' || ' - ' || SQLERRM (SQL%BULK_EXCEPTIONS (i).ERROR_CODE * -1), 1, 500);      
+			    lc_error_msg := SUBSTR('Bulk Exception - Failed to insert to table XX_PO_SUPERTRANS_USED_RCPTS and error value' || ' - ' || SQLERRM (SQL%BULK_EXCEPTIONS (i).ERROR_CODE * -1), 1, 500);
 			    print_debug_msg('po_line_id-receipt_num-shipment_line_id=['||to_char(l_ins_po_rcpt_list(ln_error_idx).po_line_id)||'-'||to_char(l_ins_po_rcpt_list(ln_error_idx).receipt_num)||'-'||to_char(l_ins_po_rcpt_list(ln_error_idx).shipment_line_id)||'], Error msg=['||lc_error_msg||']'
 			     ,TRUE);
 		    END LOOP; -- bulk_err_loop FOR Insert
-			
-			ROLLBACK;			
+
+			ROLLBACK;
 			lc_error_msg  := 'adj_cost_generate() - Bulk Exception raised while inserting into table XX_PO_SUPERTRANS_USED_RCPTS. Pls. check the debug log.';
-			raise data_exception;	
+			raise data_exception;
 	END;
 	  -- NAIT-49192 added INSERT STATEMEMT to create new record for cancelled invoices to negate quantity feed for WMS
   BEGIN
@@ -1167,7 +1169,7 @@ PROCEDURE adj_cost_generate(p_errbuf      OUT  VARCHAR2
       INV_LINE_NUM ,
       SHIPMENT_LINE_ID ,
       NULL ,
-      'CANCEL_INVOICE_TRX', ---COMMENTS ,  
+      'CANCEL_INVOICE_TRX', ---COMMENTS ,
       gn_request_id ,
       gn_user_id ,
       SYSDATE ,
@@ -1221,20 +1223,20 @@ PROCEDURE adj_cost_generate(p_errbuf      OUT  VARCHAR2
 
 	p_retcode := 0;
 	p_errbuf  := NULL;
-	
+
 	print_debug_msg('End - adj_cost_generate', TRUE);
-	
+
 	EXCEPTION
 	WHEN data_exception THEN
 		p_retcode := 2;
-		p_errbuf  := lc_error_msg;		
+		p_errbuf  := lc_error_msg;
 	WHEN OTHERS THEN
 		lc_error_msg := 'adj_cost_generate() - '||substr(sqlerrm,1,250);
 		print_debug_msg ('ERROR process_supertrans_ob - '||lc_error_msg, TRUE);
 		p_retcode := 2;
 		p_errbuf  := lc_error_msg;
  END  adj_cost_generate;
-						 
+
  -- +============================================================================================+
  -- |  Name	  : match_recpt_generate                                                         	 |
  -- |  Description: This procedure generates data for Matching receipts and writes to a staging table  |
@@ -1247,29 +1249,33 @@ PROCEDURE match_recpt_generate(p_errbuf      OUT  VARCHAR2
                       	 ,p_debug         IN   VARCHAR2)
  IS
 	CURSOR c_list_po_recpt_inv_match(c_account_date DATE)
-	IS 
+	IS
 		WITH accounted_invoices_m AS
 		(
-			SELECT 
+			SELECT   /*+ index(XAH XX_XLA_AE_HEADERS_N11) */ 
 				  aia1.invoice_id
 				, aia1.invoice_num
 				, aia1.invoice_currency_code
 			FROM ap_invoices_all aia1
 				,xla_transaction_entities xte
-				,xla_events xev
+				--,xla_events xev
 				,xla_ae_headers xah
-			WHERE aia1.invoice_id = xte.source_id_int_1
-			  and aia1.cancelled_date IS NULL
-			  and xte.application_id = 200			
-			  and xte.entity_code = 'AP_INVOICES'
-			  and xev.application_id = 200			  
-			  and xev.entity_id= xte.entity_id
-			  and xev.event_type_code = 'INVOICE VALIDATED'
-			  and xev.process_status_code = 'P'
-			  and xah.ledger_id = xte.ledger_id
-			  and xah.event_id = xev.event_id			  
+			WHERE 1=1
 			  and xah.application_id = 200
-			  and trunc(xah.gl_transfer_date) = trunc(c_account_date)			  
+			  --and trunc(xah.gl_transfer_date) = trunc(c_account_date)
+			  AND xah.gl_transfer_date >= trunc(c_account_date) AND xah.gl_transfer_date < ( trunc(c_account_date) + 1 ) /*Raj NAIT-87118 to utilize the new XX_XLA_AE_HEADERS_N11 index */ 
+			  AND XAH.EVENT_TYPE_CODE         = 'INVOICE VALIDATED' /*raj NAIT-87118 added */ 
+			  AND XAH.entity_id               = xte.entity_id  /*raj NAIT-87118 added */
+			  and xah.ledger_id = xte.ledger_id
+			  and xte.application_id = 200
+			  and xte.entity_code = 'AP_INVOICES'
+			  and aia1.invoice_id = xte.source_id_int_1
+			  and aia1.cancelled_date IS NULL
+			  --and xev.application_id = 200
+			  --and xev.entity_id= xte.entity_id
+			  --and xev.event_type_code = 'INVOICE VALIDATED'
+			  --and xev.process_status_code = 'P'
+			  --and xah.event_id = xev.event_id
 			  and EXISTS (SELECT 'x'
 						 FROM  xx_fin_translatevalues tv
 							  ,xx_fin_translatedefinition td
@@ -1283,20 +1289,20 @@ PROCEDURE match_recpt_generate(p_errbuf      OUT  VARCHAR2
 						SELECT 'x'
 						FROM XX_PO_WMS_SUPERTRANS_OB xpws
 						WHERE xpws.invoice_id = aia1.invoice_id
-						  AND xpws.record_type = 'M'		
+						  AND xpws.record_type = 'M'
 			 )
 		)
 		SELECT
-			pha.po_header_id 
+			pha.po_header_id
 		  , pha.segment1 po_number
-		  , pla.po_line_id	
+		  , pla.po_line_id
 		  , lpad(ltrim(assa.vendor_site_code_alt, '0'), 9, '0') supplier_site_code
-		  , lpad(ltrim(hrl.attribute1,'0'), 4, '0') ship_to_location_code 
+		  , lpad(ltrim(hrl.attribute1,'0'), 4, '0') ship_to_location_code
 		  , pla.line_num as po_line_num
 		  , SUM(1) OVER (PARTITION BY aila.invoice_id, aila.line_number, rsl.po_line_id) receipt_lines_for_po
 		--  , SUM(rsl.quantity_received) OVER (PARTITION BY aila.invoice_id, aila.line_number, rsl.po_line_id) receipt_line_quantity --orig_sum_rcv_quant_of_po_line
 		  , SUM(1) OVER (PARTITION BY pla.po_line_id, rsl.shipment_header_id, rsl.shipment_line_id) inv_lines_for_po
-		--  , SUM(aila.quantity_invoiced)  OVER  (PARTITION BY pla.po_line_id, rsl.shipment_header_id, rsl.shipment_line_id) invoice_line_quantity --new_sum_inv_quant_of_po_line  
+		--  , SUM(aila.quantity_invoiced)  OVER  (PARTITION BY pla.po_line_id, rsl.shipment_header_id, rsl.shipment_line_id) invoice_line_quantity --new_sum_inv_quant_of_po_line
 		  , aila.quantity_invoiced
 		  , aila.line_number as inv_line_num
 		  , aia.invoice_id
@@ -1304,21 +1310,21 @@ PROCEDURE match_recpt_generate(p_errbuf      OUT  VARCHAR2
 		  , aia.invoice_num
 		  , NULL receipt_num
 		  , NULL shipment_header_id
-		FROM ap_invoice_lines_all aila 
+		FROM ap_invoice_lines_all aila
 			,accounted_invoices_m aia
 			,po_lines_all pla
 			,po_headers_all pha
 			,rcv_shipment_lines rsl
 			,ap_supplier_sites_all assa
-			,hr_locations_all hrl 	 
+			,hr_locations_all hrl
 		WHERE 1=1
 		  AND aila.invoice_id = aia.invoice_id
 		  AND aila.line_type_lookup_code = 'ITEM'
 		  AND aila.discarded_flag = 'N'
 		  AND (aila.CANCELLED_FLAG IS NULL OR aila.CANCELLED_FLAG = 'N') --??
 		  AND pla.po_line_id = aila.po_line_id
-		  AND pla.po_header_id = pha.po_header_id 
-		  AND rsl.po_line_id = pla.po_line_id   
+		  AND pla.po_header_id = pha.po_header_id
+		  AND rsl.po_line_id = pla.po_line_id
 		  AND assa.vendor_site_id = pha.vendor_site_id
 		  AND assa.attribute8 like 'TR%'
 		  AND hrl.location_id = pha.ship_to_location_id
@@ -1326,7 +1332,7 @@ PROCEDURE match_recpt_generate(p_errbuf      OUT  VARCHAR2
 
 
 	--- Sum up the receipt line amount for each receipt
-	CURSOR c_po_recpt_det(c_po_line_id NUMBER) 
+	CURSOR c_po_recpt_det(c_po_line_id NUMBER)
 	IS
 	(SELECT
 		 'U' line_status
@@ -1340,12 +1346,12 @@ PROCEDURE match_recpt_generate(p_errbuf      OUT  VARCHAR2
 	FROM XX_PO_SUPERTRANS_USED_RCPTS xpst
 	WHERE supertrans_type = 'M'
 	  AND po_line_id = c_po_line_id
-	  AND unmatched_qty > 0  
+	  AND unmatched_qty > 0
 	)
-  
-  
+
+
 	UNION ALL
-	
+
 	(SELECT
 		'I' line_status
 		,rsl.po_line_id
@@ -1369,42 +1375,42 @@ PROCEDURE match_recpt_generate(p_errbuf      OUT  VARCHAR2
 					 rsh.receipt_num
 					,rsl.shipment_line_id
 					,rsl.quantity_received
-					,rsl.quantity_received as unmatch_qty_rcv		
+					,rsl.quantity_received as unmatch_qty_rcv
 				FROM XX_PO_SUPERTRANS_USED_RCPTS xpst
 				WHERE xpst.po_line_id = c_po_line_id
 				  AND xpst.shipment_header_id = rsl.shipment_header_id
 				  AND xpst.shipment_line_id = rsl.shipment_line_id
 				  AND xpst.supertrans_type = 'M'
 	  )
-	 
+
    )
    ORDER BY line_status desc, transaction_date, shipment_header_id, shipment_line_id asc
    ;
 	-- Above if same transaction_date then secondary order by shipment_line_id
 
     TYPE l_po_inv_list_tab IS TABLE OF c_list_po_recpt_inv_match%ROWTYPE
-						INDEX BY PLS_INTEGER; 
+						INDEX BY PLS_INTEGER;
 	l_po_inv_list   	l_po_inv_list_tab;
 	l_po_inv_list_new 	l_po_inv_list_tab;
 
 	TYPE l_po_line_rcpt_list_tab IS TABLE OF c_po_recpt_det%ROWTYPE
-						INDEX BY PLS_INTEGER; 
-	l_po_rcpt_list   l_po_line_rcpt_list_tab;		
-  
-  l_ins_po_rcpt_list  l_po_line_rcpt_list_tab;	
-  l_upd_po_rcpt_list   l_po_line_rcpt_list_tab;	
-	
-	TYPE l_rcpt_match_tab IS TABLE OF VARCHAR2(1) INDEX BY PLS_INTEGER; 
-	l_rcpt_match_list   l_rcpt_match_tab;	
-	
- 
+						INDEX BY PLS_INTEGER;
+	l_po_rcpt_list   l_po_line_rcpt_list_tab;
+
+  l_ins_po_rcpt_list  l_po_line_rcpt_list_tab;
+  l_upd_po_rcpt_list   l_po_line_rcpt_list_tab;
+
+	TYPE l_rcpt_match_tab IS TABLE OF VARCHAR2(1) INDEX BY PLS_INTEGER;
+	l_rcpt_match_list   l_rcpt_match_tab;
+
+
 	l_prev_po_line_id	NUMBER;
 	l_unmatch_inv_qty	NUMBER;
 	ln_rec				    NUMBER := 0;
 	l_orig_quant      NUMBER :=0;
 	l_new_quant       NUMBER :=0;
 	ln_rec_cnt        NUMBER := 0;
-  
+
 	ln_err_count      NUMBER := 0;
 	ln_error_idx      NUMBER := 0;
 	lc_error_msg      VARCHAR2(4000);
@@ -1416,7 +1422,7 @@ PROCEDURE match_recpt_generate(p_errbuf      OUT  VARCHAR2
 	l_rcpt_cnt		  NUMBER;
 	lc_new_receipt_num	VARCHAR2(1);
 	ln_po_inv_cnt	  NUMBER;
-	
+
 	l_invoice_line_count NUMBER;
 
 	l_po_line_cnt		NUMBER;
@@ -1425,92 +1431,92 @@ PROCEDURE match_recpt_generate(p_errbuf      OUT  VARCHAR2
 	ln_cur_rcpt_cnt     NUMBER;
 
 	ln_ins_rcpt_cnt 	NUMBER;
-	ln_upd_rcpt_cnt 	NUMBER;	
-	
+	ln_upd_rcpt_cnt 	NUMBER;
+
  BEGIN
 	print_debug_msg('Begin - match_recpt_generate', TRUE);
-	
+
 	gc_debug	  := p_debug;
 	gn_request_id := fnd_global.conc_request_id;
 	gn_user_id    := fnd_global.user_id;
-	gn_login_id   := fnd_global.login_id;	
-	
-	
-		
+	gn_login_id   := fnd_global.login_id;
+
+
+
 	OPEN c_list_po_recpt_inv_match(p_acct_run_date);
 	FETCH c_list_po_recpt_inv_match BULK COLLECT INTO l_po_inv_list;
-	
-	BEGIN	
+
+	BEGIN
 		ln_po_inv_cnt := l_po_inv_list.count;
 		print_debug_msg('Count of Supertrans Matched records, before matching, is '||ln_po_inv_cnt, TRUE);
 
 		ln_ins_rcpt_cnt := 0;
 		ln_upd_rcpt_cnt := 0;
-		
+
 		FOR i in 1..ln_po_inv_cnt
 		LOOP
-		
+
 			BEGIN
-				-- If the Sum of Inv Quantity is greater than Sum of Received Quantity for a PO 
+				-- If the Sum of Inv Quantity is greater than Sum of Received Quantity for a PO
 				-- then don't extract it
 				/** No need of this vaildation now
 				IF l_po_inv_list(i).invoice_line_quantity > l_po_inv_list(i).receipt_line_quantity THEN
 					CONTINUE;  -- Skip this line
 				END IF;
 				**/
-				
+
 				IF l_prev_po_hdr_id <> l_po_inv_list(i).po_header_id  THEN
 					l_prev_po_hdr_id := l_po_inv_list(i).po_header_id;
 					-- For new PO, get corresonding receipts eliminating old receipts which doesn't require.
 					l_rcpt_match_list.DELETE;
 				END IF;
-							
+
 				-- If different Invoice for the same PO (Cursor is - order by po, invoice and Multiple invoices exist for one PO).
-				-- So, if the same Invoice then we should use the same Receipt data so that we can use the updated "unmatch_qty_rcv" 
+				-- So, if the same Invoice then we should use the same Receipt data so that we can use the updated "unmatch_qty_rcv"
 				-- value, by the previous invoice, to skip those already matched invoices.
-				
-				IF l_prev_po_line_id = l_po_inv_list(i).po_line_id THEN 
-					-- Use the old Rcpt List so that we can match unMatchedRcptQuant			
-					
+
+				IF l_prev_po_line_id = l_po_inv_list(i).po_line_id THEN
+					-- Use the old Rcpt List so that we can match unMatchedRcptQuant
+
 					-- If same inv line then the value of l_unmatch_inv_qty is carried over.
 					-- If different inv line then new value for l_unmatch_inv_qty
 					IF ((l_prev_inv_no <> l_po_inv_list(i).invoice_num)
 					   or (l_prev_inv_line_no <> l_po_inv_list(i).inv_line_num)) THEN
-					   
+
 						l_prev_inv_no := l_po_inv_list(i).invoice_num;
 						l_unmatch_inv_qty := l_po_inv_list(i).quantity_invoiced;
 						l_prev_inv_line_no := l_po_inv_list(i).inv_line_num;
-						l_invoice_line_count := l_invoice_line_count + 1;						
-					END IF;		
-					
+						l_invoice_line_count := l_invoice_line_count + 1;
+					END IF;
+
 					l_is_last_line_of_po := 'N';
 					l_po_line_cnt := l_po_line_cnt + 1;
 					IF l_po_line_cnt = l_po_line_total_cnt THEN
 						l_is_last_line_of_po := 'Y';
 					END IF;
-					
+
 				ELSE
-					-- If new po Line, 
+					-- If new po Line,
 					l_prev_po_line_id  :=  l_po_inv_list(i).po_line_id;
-					l_prev_inv_no := l_po_inv_list(i).invoice_num;					
+					l_prev_inv_no := l_po_inv_list(i).invoice_num;
 					l_prev_inv_line_no := l_po_inv_list(i).inv_line_num;
 					l_unmatch_inv_qty  := l_po_inv_list(i).quantity_invoiced;
-					
+
 					l_invoice_line_count := 1;
 					l_po_line_cnt := 1;
 					l_po_line_total_cnt := l_po_inv_list(i).inv_lines_for_po * l_po_inv_list(i).receipt_lines_for_po;
-					
+
 					l_is_last_line_of_po := 'N';
 					IF l_po_line_cnt = l_po_line_total_cnt THEN
 						l_is_last_line_of_po := 'Y';
 					END IF;
-					
-										
+
+
 					OPEN c_po_recpt_det(l_po_inv_list(i).po_line_id);
 					FETCH c_po_recpt_det BULK COLLECT INTO l_po_rcpt_list;
 					CLOSE c_po_recpt_det;
 				END IF;
-				
+
 
 				l_rcpt_cnt := l_po_rcpt_list.count;
 
@@ -1518,23 +1524,23 @@ PROCEDURE match_recpt_generate(p_errbuf      OUT  VARCHAR2
 					lc_error_msg := 'match_recpt_generate() - No Receipts exists or already matched for po_line_id '||l_po_inv_list(i).po_line_id;
 					raise data_exception;
 				END IF;
-				
+
 				FOR r in 1..l_rcpt_cnt
 				LOOP
 					BEGIN
-						-- This receipt is matched already, so skip this receipt.		
+						-- This receipt is matched already, so skip this receipt.
 						IF l_po_rcpt_list(r).unmatch_qty_rcv <= 0 Then
-							CONTINUE; 
+							CONTINUE;
 						END IF;
-				
+
 						-- if the receipts apply to the previous invoices fully then l_unmatch_inv_qty become zero
-						-- and we can exit this receipt loop(ignoring other receipts in this loop) 
+						-- and we can exit this receipt loop(ignoring other receipts in this loop)
 						-- and come with other invoice of same/new po_line
 						IF l_unmatch_inv_qty <=0 THEN
 							EXIT;   -- Exit from this Receipt Loop
-						END IF;	
-													
-						IF l_po_rcpt_list(r).unmatch_qty_rcv <= l_unmatch_inv_qty THEN							
+						END IF;
+
+						IF l_po_rcpt_list(r).unmatch_qty_rcv <= l_unmatch_inv_qty THEN
 							-- For last Invoice Line, if unmatch invoice quantity is more then use
 							-- the remaining amount as new quantity.
 									--IF l_invoice_line_count = l_po_inv_list(i).inv_lines_for_po THEN
@@ -1544,21 +1550,21 @@ PROCEDURE match_recpt_generate(p_errbuf      OUT  VARCHAR2
 								l_unmatch_inv_qty := 0;
 							ELSE
 								l_new_quant  := l_po_rcpt_list(r).unmatch_qty_rcv;
-								l_unmatch_inv_qty := l_unmatch_inv_qty - l_new_quant; 															
+								l_unmatch_inv_qty := l_unmatch_inv_qty - l_new_quant;
 							END IF;
 							**/
 
 							l_new_quant  := l_po_rcpt_list(r).unmatch_qty_rcv;
-							l_unmatch_inv_qty := l_unmatch_inv_qty - l_new_quant; 
-								
-							l_po_rcpt_list(r).unmatch_qty_rcv := 0;							
-							
+							l_unmatch_inv_qty := l_unmatch_inv_qty - l_new_quant;
+
+							l_po_rcpt_list(r).unmatch_qty_rcv := 0;
+
 						ELSE
 							l_new_quant  := l_unmatch_inv_qty;
 							l_unmatch_inv_qty := 0;
 							l_po_rcpt_list(r).unmatch_qty_rcv := l_po_rcpt_list(r).unmatch_qty_rcv - l_new_quant;
-						END IF;			
-						
+						END IF;
+
 						-- To prevent duplicate Receipt Number lines to extract, use l_rcpt_match_list.EXISTS
 						-- And if the line_status = 'U' means it is already matched for old invoice date of supertrans and receipt sent already and no need to send the same
 						-- receipt again.
@@ -1569,18 +1575,18 @@ PROCEDURE match_recpt_generate(p_errbuf      OUT  VARCHAR2
 							l_po_inv_list_new(ln_rec).receipt_num   := l_po_rcpt_list(r).receipt_num;
 							l_po_inv_list_new(ln_rec).shipment_header_id := l_po_rcpt_list(r).shipment_header_id;
 						END IF;
-					
+
 					EXCEPTION
 					WHEN OTHERS THEN
 						lc_error_msg := 'match_recpt_generate() - Error when matching with receipt for po line:'||l_po_inv_list(i).po_line_id||' with invoice quantity as '||l_po_inv_list(i).quantity_invoiced||' and receipt quantity as '||l_po_rcpt_list(r).quantity_received||' with error as: '||substr(SQLERRM,1,500);
 						raise data_exception;
 					END;
-					
+
 				END LOOP; -- End of PO Receipt List Loop
 
 				-- If it is last line of the po_line then update the receipts to another total receipts plsql table so that
 				-- we can update all receipts at a time.
-				IF l_is_last_line_of_po = 'Y' THEN	
+				IF l_is_last_line_of_po = 'Y' THEN
 
 					ln_cur_rcpt_cnt := l_po_rcpt_list.count;
 					FOR k in 1..ln_cur_rcpt_cnt
@@ -1589,70 +1595,70 @@ PROCEDURE match_recpt_generate(p_errbuf      OUT  VARCHAR2
 							-- if the origianl quantity doesn't matched then no need to insert
 							IF (l_po_rcpt_list(k).quantity_received <> l_po_rcpt_list(k).unmatch_qty_rcv and l_po_rcpt_list(k).unmatch_qty_rcv > 0) THEN
 								ln_ins_rcpt_cnt := ln_ins_rcpt_cnt + 1;
-								l_ins_po_rcpt_list(ln_ins_rcpt_cnt) := l_po_rcpt_list(k);						
+								l_ins_po_rcpt_list(ln_ins_rcpt_cnt) := l_po_rcpt_list(k);
 							END IF;
 						ELSE
 							ln_upd_rcpt_cnt := ln_upd_rcpt_cnt + 1;
 							l_upd_po_rcpt_list(ln_upd_rcpt_cnt) := l_po_rcpt_list(k);
 				END IF;
-					END LOOP;				
+					END LOOP;
 					print_debug_msg('New inserted receipts cumulative count for the po_line_id - '||l_po_inv_list(i).po_line_id||' is '||ln_ins_rcpt_cnt, FALSE);
 					print_debug_msg('Updated matched receipts cumulative count for the po_line_id - '||l_po_inv_list(i).po_line_id||' is '||ln_upd_rcpt_cnt, FALSE);
-				END IF;	
-				
+				END IF;
+
 			EXCEPTION
 				WHEN data_exception THEN
 					raise data_exception;
 				WHEN OTHERS THEN
 					print_debug_msg('match_recpt_generate() - Error when doing matching for PO lineId '||l_po_inv_list(i).po_line_id||' is '||substr(SQLERRM,1,500),TRUE);
 					lc_error_msg  := 'match_recpt_generate() - Exception when doing matching as '||substr(SQLERRM,1,500);
-					raise data_exception;	
-			END;					
-		END LOOP;  -- End of PO Invoice List Loop		
+					raise data_exception;
+			END;
+		END LOOP;  -- End of PO Invoice List Loop
 	EXCEPTION
 		WHEN data_exception THEN
 			raise data_exception;
 		WHEN OTHERS THEN
 			print_debug_msg('match_recpt_generate() - Error when doing matching - '||substr(SQLERRM,1,500),TRUE);
 			lc_error_msg  := 'match_recpt_generate() - Exception when doing matching as '||substr(SQLERRM,1,500);
-			raise data_exception;	
+			raise data_exception;
 	END;
-	
+
 	CLOSE c_list_po_recpt_inv_match;
 	ln_rec_cnt := l_po_inv_list_new.count;
-	
+
 	print_debug_msg('Count of Supertrans Matched records, after matching, is '||ln_rec_cnt, TRUE);
-		
-	BEGIN	
+
+	BEGIN
 		FORALL n in 1..ln_rec_cnt
 			SAVE EXCEPTIONS
 			INSERT INTO XX_PO_WMS_SUPERTRANS_OB(BATCH_id
-											  ,RECEIPT_NUM		
-											  ,ITEM_NAME		
-											  ,RECEIPT_LINE_QTY 
-											  ,INV_LINE_QTY		
-											  ,PO_LINE_COST		
-											  ,INV_LINE_COST	
-											  ,VENDOR_NUMBER	
-											  ,RECORD_TYPE		
-											  ,SHIP_LOCATION  
-											  ,PO_NUMBER		
-											  ,CURRENCY			
-											  ,COMPANY			
-											  ,PO_LINE_NUM		
+											  ,RECEIPT_NUM
+											  ,ITEM_NAME
+											  ,RECEIPT_LINE_QTY
+											  ,INV_LINE_QTY
+											  ,PO_LINE_COST
+											  ,INV_LINE_COST
+											  ,VENDOR_NUMBER
+											  ,RECORD_TYPE
+											  ,SHIP_LOCATION
+											  ,PO_NUMBER
+											  ,CURRENCY
+											  ,COMPANY
+											  ,PO_LINE_NUM
 											  ,SEQ_NO
 											  ,PO_LINE_ID
 											  ,INVOICE_ID
 											  ,INV_LINE_NUM
-											  ,RECORD_STATUS	
-											  ,COMMENTS			
-											  ,REQUEST_ID		
-											  ,CREATED_BY       
-											  ,CREATION_DATE    
-											  ,LAST_UPDATED_BY  
-											  ,LAST_UPDATE_DATE 
+											  ,RECORD_STATUS
+											  ,COMMENTS
+											  ,REQUEST_ID
+											  ,CREATED_BY
+											  ,CREATION_DATE
+											  ,LAST_UPDATED_BY
+											  ,LAST_UPDATE_DATE
 											  ,LAST_UPDATE_LOGIN
-											 ) 
+											 )
 								VALUES (p_batch_id
 									,l_po_inv_list_new(n).receipt_num
 									,'0'
@@ -1688,51 +1694,51 @@ PROCEDURE match_recpt_generate(p_errbuf      OUT  VARCHAR2
 		   FOR i IN 1..ln_err_count
 		   LOOP
 			  ln_error_idx := SQL%BULK_EXCEPTIONS(i).ERROR_INDEX;
-			  lc_error_msg := SUBSTR('Bulk Exception - Failed to Insert value' || ' - ' || SQLERRM (SQL%BULK_EXCEPTIONS (i).ERROR_CODE * -1), 1, 500);      
+			  lc_error_msg := SUBSTR('Bulk Exception - Failed to Insert value' || ' - ' || SQLERRM (SQL%BULK_EXCEPTIONS (i).ERROR_CODE * -1), 1, 500);
 			  print_debug_msg('Record_Line_id=['||to_char(l_po_inv_list_new(ln_error_idx).po_number)||'-'||to_char(l_po_inv_list_new(ln_error_idx).po_line_num)||'-'||to_char(l_po_inv_list_new(ln_error_idx).receipt_num)||'], Error msg=['||lc_error_msg||']'
 			   ,TRUE);
 		   END LOOP; -- bulk_err_loop FOR Insert
-			
-			ROLLBACK;			
+
+			ROLLBACK;
 			lc_error_msg  := 'match_recpt_generate() - Bulk Exception raised while inserting. Pls. check the debug log.';
 			raise data_exception;
 	END;
 
-	
-	/**	
+
+	/**
 	BEGIN
 		FORALL i in 1..ln_rec_cnt
 			SAVE EXCEPTIONS
 			UPDATE rcv_shipment_headers rsh
 			SET attribute5 = 'Y'
 			WHERE rsh.shipment_header_id = l_po_inv_list_new(i).shipment_header_id;
-		
-	
+
+
 	EXCEPTION
 		WHEN data_exception THEN
 			raise data_exception;
 		WHEN OTHERS THEN
 			print_debug_msg('match_recpt_generate() - Error when marking receipts as matched - '||substr(SQLERRM,1,500),TRUE);
 			lc_error_msg  := 'match_recpt_generate() - Exception when marking receipts as matched - '||substr(SQLERRM,1,500);
-			raise data_exception;	
+			raise data_exception;
 
 		   ln_err_count := SQL%BULK_EXCEPTIONS.COUNT;
 		   FOR i IN 1..ln_err_count
 		   LOOP
 			  ln_error_idx := SQL%BULK_EXCEPTIONS(i).ERROR_INDEX;
-			  lc_error_msg := SUBSTR('Bulk Exception - Failed to Update Receipt Mark - ' || SQLERRM (SQL%BULK_EXCEPTIONS (i).ERROR_CODE * -1), 1, 500);      
+			  lc_error_msg := SUBSTR('Bulk Exception - Failed to Update Receipt Mark - ' || SQLERRM (SQL%BULK_EXCEPTIONS (i).ERROR_CODE * -1), 1, 500);
 			  print_debug_msg('Record_Line_id=['||to_char(l_po_inv_list_new(ln_error_idx).po_number)||'-'||to_char(l_po_inv_list_new(ln_error_idx).po_line_num)||'-'||to_char(l_po_inv_list_new(ln_error_idx).receipt_num)||'], Error msg=['||lc_error_msg||']'
 			   ,TRUE);
 		   END LOOP; -- bulk_err_loop FOR Insert
-			
-			ROLLBACK;			
-			lc_error_msg  := 'match_recpt_generate() - Bulk Exception raised while updating receipt mark. Pls. check the debug log.';			
-	
-	END;	
-	
+
+			ROLLBACK;
+			lc_error_msg  := 'match_recpt_generate() - Bulk Exception raised while updating receipt mark. Pls. check the debug log.';
+
+	END;
+
 	**/
 
-	BEGIN	
+	BEGIN
 		FORALL i in 1..ln_upd_rcpt_cnt SAVE EXCEPTIONS
 		UPDATE XX_PO_SUPERTRANS_USED_RCPTS xpst
 		SET xpst.unmatched_qty = l_upd_po_rcpt_list(i).unmatch_qty_rcv
@@ -1746,7 +1752,7 @@ PROCEDURE match_recpt_generate(p_errbuf      OUT  VARCHAR2
 		  AND l_upd_po_rcpt_list(i).unmatch_qty_rcv > 0;
 
 		print_debug_msg('match_recpt_generate() - updated existed matched receipts', TRUE);
-		
+
 	EXCEPTION
 	WHEN OTHERS THEN
 			print_debug_msg('match_recpt_generate() - Bulk Exception raised when update to table XX_PO_SUPERTRANS_USED_RCPTS',TRUE);
@@ -1755,27 +1761,27 @@ PROCEDURE match_recpt_generate(p_errbuf      OUT  VARCHAR2
 		    FOR i IN 1..ln_err_count
 		    LOOP
 			    ln_error_idx := SQL%BULK_EXCEPTIONS(i).ERROR_INDEX;
-			    lc_error_msg := SUBSTR('Bulk Exception - Failed to update value' || ' - ' || SQLERRM (SQL%BULK_EXCEPTIONS (i).ERROR_CODE * -1), 1, 500);      
+			    lc_error_msg := SUBSTR('Bulk Exception - Failed to update value' || ' - ' || SQLERRM (SQL%BULK_EXCEPTIONS (i).ERROR_CODE * -1), 1, 500);
 			    print_debug_msg('po_line_id-receipt_num-shipment_line_id=['||to_char(l_upd_po_rcpt_list(ln_error_idx).po_line_id)||'-'||to_char(l_upd_po_rcpt_list(ln_error_idx).receipt_num)||'-'||to_char(l_upd_po_rcpt_list(ln_error_idx).shipment_line_id)||'], Error msg=['||lc_error_msg||']'
 			     ,TRUE);
 		    END LOOP; -- bulk_err_loop FOR Insert
-			
-			ROLLBACK;			
+
+			ROLLBACK;
 			lc_error_msg  := 'match_recpt_generate() - Bulk Exception raised while updating into table XX_PO_SUPERTRANS_USED_RCPTS. Pls. check the debug log.';
-			raise data_exception;	
+			raise data_exception;
 	END;
-	
-	BEGIN	
+
+	BEGIN
 		FORALL i in 1..ln_upd_rcpt_cnt SAVE EXCEPTIONS
 		DELETE FROM XX_PO_SUPERTRANS_USED_RCPTS xpst
 		WHERE xpst.supertrans_type = 'M'
 		  AND l_upd_po_rcpt_list(i).line_status = 'U'
 		  AND xpst.shipment_header_id = l_upd_po_rcpt_list(i).shipment_header_id
 		  AND xpst.shipment_line_id = l_upd_po_rcpt_list(i).shipment_line_id
-		  AND l_upd_po_rcpt_list(i).unmatch_qty_rcv = 0;		
+		  AND l_upd_po_rcpt_list(i).unmatch_qty_rcv = 0;
 
 		print_debug_msg('match_recpt_generate() - Delete existed matched receipts, if value is 0', TRUE);
-		
+
 	EXCEPTION
 	WHEN OTHERS THEN
 			print_debug_msg('match_recpt_generate() - Bulk Exception raised when delete from table XX_PO_SUPERTRANS_USED_RCPTS',TRUE);
@@ -1784,16 +1790,16 @@ PROCEDURE match_recpt_generate(p_errbuf      OUT  VARCHAR2
 		    FOR i IN 1..ln_err_count
 		    LOOP
 			    ln_error_idx := SQL%BULK_EXCEPTIONS(i).ERROR_INDEX;
-			    lc_error_msg := SUBSTR('Bulk Exception - Failed to update value' || ' - ' || SQLERRM (SQL%BULK_EXCEPTIONS (i).ERROR_CODE * -1), 1, 500);      
+			    lc_error_msg := SUBSTR('Bulk Exception - Failed to update value' || ' - ' || SQLERRM (SQL%BULK_EXCEPTIONS (i).ERROR_CODE * -1), 1, 500);
 			    print_debug_msg('po_line_id-receipt_num-shipment_line_id=['||to_char(l_upd_po_rcpt_list(ln_error_idx).po_line_id)||'-'||to_char(l_upd_po_rcpt_list(ln_error_idx).receipt_num)||'-'||to_char(l_upd_po_rcpt_list(ln_error_idx).shipment_line_id)||'], Error msg=['||lc_error_msg||']'
 			     ,TRUE);
 		    END LOOP; -- bulk_err_loop FOR Insert
-			
-			ROLLBACK;			
+
+			ROLLBACK;
 			lc_error_msg  := 'match_recpt_generate() - Bulk Exception raised while deleting from table XX_PO_SUPERTRANS_USED_RCPTS. Pls. check the debug log.';
-			raise data_exception;	
-	END;	
-	
+			raise data_exception;
+	END;
+
 	BEGIN
 		FORALL i in 1..ln_ins_rcpt_cnt SAVE EXCEPTIONS
 		INSERT INTO XX_PO_SUPERTRANS_USED_RCPTS
@@ -1813,18 +1819,18 @@ PROCEDURE match_recpt_generate(p_errbuf      OUT  VARCHAR2
 						)
 					VALUES(
 						 l_ins_po_rcpt_list(i).po_line_id
-						,l_ins_po_rcpt_list(i).receipt_num						
+						,l_ins_po_rcpt_list(i).receipt_num
 						,l_ins_po_rcpt_list(i).shipment_header_id
 						,l_ins_po_rcpt_list(i).shipment_line_id
 						,l_ins_po_rcpt_list(i).quantity_received
-						,l_ins_po_rcpt_list(i).unmatch_qty_rcv					
+						,l_ins_po_rcpt_list(i).unmatch_qty_rcv
 						,'M'
 						,gn_user_id
 						,sysdate
 						,gn_user_id
 						,sysdate
-						,gn_login_id						
-					);		
+						,gn_login_id
+					);
 		print_debug_msg('adj_cost_generate() - inserted new matched receipts count is '||ln_ins_rcpt_cnt, TRUE);
 	EXCEPTION
 		WHEN OTHERS THEN
@@ -1834,39 +1840,39 @@ PROCEDURE match_recpt_generate(p_errbuf      OUT  VARCHAR2
 		    FOR i IN 1..ln_err_count
 		    LOOP
 			    ln_error_idx := SQL%BULK_EXCEPTIONS(i).ERROR_INDEX;
-			    lc_error_msg := SUBSTR('Bulk Exception - Failed to update to table XX_PO_SUPERTRANS_USED_RCPTS and error value' || ' - ' || SQLERRM (SQL%BULK_EXCEPTIONS (i).ERROR_CODE * -1), 1, 500);      
+			    lc_error_msg := SUBSTR('Bulk Exception - Failed to update to table XX_PO_SUPERTRANS_USED_RCPTS and error value' || ' - ' || SQLERRM (SQL%BULK_EXCEPTIONS (i).ERROR_CODE * -1), 1, 500);
 			    print_debug_msg('po_line_id-receipt_num-shipment_line_id=['||to_char(l_ins_po_rcpt_list(ln_error_idx).po_line_id)||'-'||to_char(l_ins_po_rcpt_list(ln_error_idx).receipt_num)||'-'||to_char(l_ins_po_rcpt_list(ln_error_idx).shipment_line_id)||'], Error msg=['||lc_error_msg||']'
 			     ,TRUE);
 		    END LOOP; -- bulk_err_loop FOR Insert
-			
-			ROLLBACK;			
+
+			ROLLBACK;
 			lc_error_msg  := 'adj_cost_generate() - Bulk Exception raised while inserting into table XX_PO_SUPERTRANS_USED_RCPTS. Pls. check the debug log.';
-			raise data_exception;	
-	END;	
-	
+			raise data_exception;
+	END;
+
 	--COMMIT;
 	p_retcode := 0;
 	p_errbuf  := NULL;
-	
+
 	print_debug_msg('End - match_recpt_generate', TRUE);
-	
+
 	EXCEPTION
 	WHEN data_exception THEN
 		p_retcode := 2;
-		p_errbuf  := lc_error_msg;		
+		p_errbuf  := lc_error_msg;
 	WHEN OTHERS THEN
 		lc_error_msg := 'match_recpt_generate() - '||substr(sqlerrm,1,250);
 		print_debug_msg ('ERROR process_supertrans_ob - '||lc_error_msg, TRUE);
 		p_retcode := 2;
 		p_errbuf  := lc_error_msg;
- END  match_recpt_generate;					  
-						  
+ END  match_recpt_generate;
+
  -- +============================================================================================+
  -- |  Name	  : process_supertrans_ob                                                             	 |
  -- |  Description: This procedure reads data from the PO, INV and Receipts table and prepares   |
  -- |               outbound file for supertrans.												 |
  -- |               Inovkes from "OD: PO Super Trans Outbound"			                         |
- -- =============================================================================================|	
+ -- =============================================================================================|
 PROCEDURE process_supertrans_ob(p_errbuf  OUT  VARCHAR2
                          ,p_retcode       OUT  NUMBER
                          ,p_acct_run_date IN   VARCHAR2
@@ -1880,8 +1886,8 @@ PROCEDURE process_supertrans_ob(p_errbuf  OUT  VARCHAR2
     ln_iretcode	       		NUMBER;
     lc_uretcode	       		VARCHAR2(3)    := NULL;
     lc_req_data        		VARCHAR2(30);
-    ln_child_request_status     VARCHAR2(1) := NULL;    
-	
+    ln_child_request_status     VARCHAR2(1) := NULL;
+
     lc_continue				VARCHAR2(1)    := 'Y';
     ld_acct_run_date  DATE;
 	  ln_batch_id				NUMBER;
@@ -1892,23 +1898,23 @@ PROCEDURE process_supertrans_ob(p_errbuf  OUT  VARCHAR2
     gn_request_id := fnd_global.conc_request_id;
     gn_user_id    := fnd_global.user_id;
     gn_login_id   := fnd_global.login_id;
-    
+
     print_debug_msg('Check Retry Errors', TRUE);
 	print_out_msg('p_acct_run_date is '||p_acct_run_date);
 	print_out_msg('Concurrent Request is '||gn_request_id);
-	
+
 	IF p_acct_run_date IS NULL THEN
 		  print_debug_msg('Accounting Date is Mandatory', TRUE);
 			lc_error_msg  := 'Accounting Date is Mandatory';
 			raise data_exception;
 	END IF;
-	
+
 
 	/** -- Planning to do archive the data instead of delete
 	-- 0. Delete the records age older than an year
-	-- 
+	--
 	BEGIN
-		DELETE FROM xx_po_wms_supertrans_ob WHERE creation_date <= sysdate-365;		
+		DELETE FROM xx_po_wms_supertrans_ob WHERE creation_date <= sysdate-365;
 		print_debug_msg('Deleted age old records of sysdate-365', TRUE);
 		commit;
 	EXCEPTION
@@ -1917,83 +1923,82 @@ PROCEDURE process_supertrans_ob(p_errbuf  OUT  VARCHAR2
 			lc_error_msg  := 'Exception when deleting age old records as: '||SUBSTR(SQLERRM, 1, 500);
 			raise data_exception;
 	END;
-	
+
 	**/
-	
+
 	ld_acct_run_date := fnd_date.canonical_to_date(p_acct_run_date);
 
 	SELECT xx_po_wms_supertrans_ob_s.NEXTVAL
 		INTO ln_batch_id
 	FROM dual;
-		
+
     print_debug_msg('batch_id is '||ln_batch_id, TRUE);
-	
+
 		lc_continue := 'Y';
 	-- 1. Invoke adj_cost_generate
-    
+
 			adj_cost_generate(p_errbuf     => lc_error_msg
                          ,p_retcode        => ln_iretcode
                          ,p_batch_id       => ln_batch_id
                          ,p_acct_run_date  => ld_acct_run_date
                       	 ,p_debug          => p_debug);
-						 
+
 	   IF ln_iretcode <> 0 THEN
 			lc_continue := 'N';
 	   END IF;
-	
+
 	-- 2. Invoke match_receipt_generate
-	
+
 		IF lc_continue = 'Y' THEN
-		
+
 			match_recpt_generate(p_errbuf  => lc_error_msg
                          ,p_retcode        => ln_iretcode
                          ,p_batch_id       => ln_batch_id
                          ,p_acct_run_date  => ld_acct_run_date
-                      	 ,p_debug          => p_debug);		
-		
+                      	 ,p_debug          => p_debug);
+
 		   IF ln_iretcode <> 0 THEN
 				lc_continue := 'N';
-		   END IF;		
+		   END IF;
 		END IF;
 
 	-- 3. populate_supertrans_file
 
 		IF lc_continue = 'Y' THEN
-		
+
 			populate_supertrans_file(p_errbuf   => lc_error_msg
                          ,p_retcode        => ln_iretcode
                          ,p_batch_id       => ln_batch_id
-                      	 ,p_debug          => p_debug);		
-		
+                      	 ,p_debug          => p_debug);
+
 		   IF ln_iretcode <> 0 THEN
 				lc_continue := 'N';
-		   END IF;		
-		END IF;	
-        		
+		   END IF;
+		END IF;
+
         IF ln_iretcode = 0 THEN
 		   COMMIT;  -- Only if both Adjust Cost and Match completes successfully then commit else fail all.
-           print_debug_msg('Completed PO Supertrans Outbound Interface......:: '||TO_CHAR(SYSDATE,'MM-DD-YYYY HH:Mi:SS'), TRUE); 
+           print_debug_msg('Completed PO Supertrans Outbound Interface......:: '||TO_CHAR(SYSDATE,'MM-DD-YYYY HH:Mi:SS'), TRUE);
         ELSIF ln_iretcode = 1 THEN
            p_retcode := 1;
            p_errbuf  := lc_error_msg;
            print_debug_msg('In Warning, PO Supertrans Outbound Interface......:: '||lc_error_msg, TRUE);
         ELSIF ln_iretcode = 2 THEN
            p_retcode := 2;
-           p_errbuf  := lc_error_msg;           
+           p_errbuf  := lc_error_msg;
            print_debug_msg('In Error, PO Supertrans Outbound Interface......:: '||lc_error_msg, TRUE);
-        END IF;           
-         
+        END IF;
+
  EXCEPTION
  WHEN data_exception THEN
     p_retcode := 2;
-    p_errbuf  := lc_error_msg; 
+    p_errbuf  := lc_error_msg;
  WHEN others THEN
     lc_error_msg := substr(sqlerrm,1,250);
     print_debug_msg ('ERROR process_supertrans_ob - '||lc_error_msg, TRUE);
     p_retcode := 2;
     p_errbuf  := lc_error_msg;
  END process_supertrans_ob;
- 
+
 END XX_PO_WMS_SUPERTRANS_OB_PKG;
 /
-SHOW ERRORS;
