@@ -19,6 +19,11 @@ AS
 -- | 2.0         03-JAN-2018  Jai Shankar Kumar   Changed incorporated as per MD70 |
 -- | 3.0         07-MAR-2018  Sahithi Kunnuru     Modified PACKAGE                 |
 -- | 4.0         16-JAN-2019  Punit Gupta         Changed for NAIT-78415           |
+-- | 5.0         26-MAR-2019  Sahithi K           Update SCM with trans_id for     |
+-- |                                              existing contracts NAIT-89231    |
+-- | 6.0         22-APR-2019  Dattatray Bachate   Added New Procedure -            |
+-- |                                              xx_ar_subs_payload_purge_prc for |
+-- |                                              NAIT-83868                       |
 -- +===============================================================================+                                                                         
   
   /******
@@ -70,6 +75,23 @@ AS
                                           p_file_path        IN  VARCHAR2,
                                           p_debug_flag       IN  VARCHAR2 DEFAULT 'N',
 							              p_text_value       IN  VARCHAR2);
+                                          
+  /*********************************************************
+  * Procedure to get trans id by performing $0 authorization
+  *********************************************************/
+
+  PROCEDURE update_trans_id_scm(errbuff            OUT VARCHAR2,
+                                retcode            OUT NUMBER,
+                                p_debug_flag       IN  VARCHAR2 DEFAULT 'N');
+								
+  /*********************************************
+  * Procedure to Purge Subscription Payload and
+  * Error Table's more than 30 day's older data
+  **********************************************/
+  PROCEDURE xx_ar_subs_payload_purge_prc (
+										  errbuff   OUT       VARCHAR2,
+										  retcode   OUT       NUMBER
+										  );								
                                           
 END;
 /
