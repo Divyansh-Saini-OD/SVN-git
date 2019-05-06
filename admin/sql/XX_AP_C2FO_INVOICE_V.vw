@@ -32,17 +32,16 @@
    1.3        09/19/2018    Madhu Bolli            		OD          Modified to allow invoices if it contains item,misc, freight
    1.4        09/24/2018    Madhu Bolli            		OD          Modified to restrict invoices if the supplier site is inactive
    1.5        01/31/2019    Vivek Kumar                 OD          Modified for NAIT-81968 to include Organization Type = null  
+   1.6        05/06/2019    Arun Dsouza                 OD          Modifed of FP testing to fetch data for a single day  
+
 *************************************************************************************************************************/
 
 
-  CREATE OR REPLACE FORCE EDITIONABLE VIEW XX_AP_C2FO_INVOICE_V
-  ("COMPANY_ID", "DIVISION_ID", "INVOICE_ID", "AMOUNT", "CURRENCY", "PAYMENT_DUE_DATE", "TRANSACTION_TYPE", "TRANSACTION_DATE",
-   "VOUCHER_ID", "PAYMENT_TERM", "PAYMENT_METHOD", "ADJ_INVOICE_ID", "ADJUSTMENT_REASON_CODE", "DESCRIPTION", "VAT_AMOUNT", "AMOUNT_GROSSVAT",
-   "AMOUNT_NETVAT", "VAT_TO_BE_DISCOUNTED", "BUYER_NAME", "BUYER_ADDRESS", "BUYER_TAX_ID", "LOCAL_CURRENCY_KEY", "LOCAL_CURRENCY_RATE",
-   "LOCAL_CURRENCY_ORG_INV_AMT", "LOCAL_CURRENCY_ORIGINAL_VAT", "MARKET_TYPE", "PO_ID", "EBS_ORG_ID", "EBS_VENDOR_ID", "EBS_SUPPLIER_NUMBER",
-   "EBS_VENDOR_SITE_ID", "EBS_VENDOR_SITE_CODE", "EBS_INVOICE_ID", "EBS_INVOICE_NUM", "EBS_PAY_GROUP", "EBS_PAY_PRIORITY", "EBS_SUP_PAY_PRIORITY",
-   "EBS_SITE_PAY_PRIORITY", "EBS_VOUCHER_NUM", "EBS_CASH_DISCOUNT_AMOUNT", "EBS_INV_AMT_BEFORE_CASH_DISC") AS 
-  SELECT "COMPANY_ID", "DIVISION_ID", "INVOICE_ID", "AMOUNT", "CURRENCY", "PAYMENT_DUE_DATE", "TRANSACTION_TYPE", "TRANSACTION_DATE", "VOUCHER_ID",
+
+
+
+-- Unable to render VIEW DDL for object APPS.XX_AP_C2FO_INVOICE_V with DBMS_METADATA attempting internal generator.
+CREATE or replace VIEW APPS.XX_AP_C2FO_INVOICE_V AS SELECT "COMPANY_ID", "DIVISION_ID", "INVOICE_ID", "AMOUNT", "CURRENCY", "PAYMENT_DUE_DATE", "TRANSACTION_TYPE", "TRANSACTION_DATE", "VOUCHER_ID",
          "PAYMENT_TERM", "PAYMENT_METHOD", "ADJ_INVOICE_ID", "ADJUSTMENT_REASON_CODE", "DESCRIPTION", "VAT_AMOUNT", "AMOUNT_GROSSVAT", "AMOUNT_NETVAT",
          "VAT_TO_BE_DISCOUNTED", "BUYER_NAME", "BUYER_ADDRESS", "BUYER_TAX_ID", "LOCAL_CURRENCY_KEY", "LOCAL_CURRENCY_RATE", "LOCAL_CURRENCY_ORG_INV_AMT",
          "LOCAL_CURRENCY_ORIGINAL_VAT", "MARKET_TYPE", "PO_ID", "EBS_ORG_ID", "EBS_VENDOR_ID", "EBS_SUPPLIER_NUMBER", "EBS_VENDOR_SITE_ID", "EBS_VENDOR_SITE_CODE",
@@ -60,7 +59,7 @@
 		,(aia.invoice_amount-NVL(aia.total_tax_amount,0)-NVL(apsa.discount_amount_available,0)) AS amount
         , aia.invoice_currency_code AS currency
         --, (xx_ap_c2fo_int_ebs_ap_pay_pkg.pay_term_early_due_date (aia.org_id, aia.invoice_id)) AS payment_due_date
-		,TO_CHAR(NVL(apsa.discount_date, apsa.due_date),'YYYY-MM-DD')  AS payment_due_date 		
+		,TO_CHAR(NVL(apsa.discount_date, apsa.due_date),'YYYY-MM-DD')  AS payment_due_date
         , CASE
              WHEN aia.invoice_type_lookup_code = 'STANDARD' THEN '1'
              ELSE '2'
@@ -180,9 +179,9 @@
         , NVL (NVL (aia.invoice_amount, 0) - NVL (aia.total_tax_amount, 0), 0) AS ebs_inv_amt_before_cash_disc
         , (SELECT /*+ index(ail,AP_INVOICE_LINES_U1) */
                   SUM (ail.amount)
-             FROM ap_invoice_lines_all ail 
+             FROM ap_invoice_lines_all ail
             WHERE ail.invoice_id = aia.invoice_id
-              AND line_type_lookup_code <> 'TAX' 
+              AND line_type_lookup_code <> 'TAX'
           )  AS line_amount
         , max(xev.event_id) OVER (PARTITION BY xte.source_id_int_1) max_event_id
         , xev.event_id
@@ -197,7 +196,10 @@
         , xla_transaction_entities xte
    WHERE  apsa.payment_status_flag = 'N'
    AND    apsa.payment_num = 1
-   AND    aia.invoice_id = apsa.invoice_id
+   and    aia.invoice_id = apsa.invoice_id
+-- inv date range added by arun for uat test data gen for one day
+   and    aia.invoice_date > to_date('10-dec-2018','dd-mon-yyyy')
+   and    aia.invoice_date < TO_DATE('12-dec-2018','dd-mon-yyyy')  
    AND    aia.org_id = apsa.org_id
    AND    aia.approval_ready_flag = 'Y'
    AND    NVL (aia.prepay_flag, 'N') = 'N'
@@ -214,7 +216,7 @@
    AND    assa.hold_all_payments_flag = 'N'
    AND    (assa.inactive_date IS NULL OR assa.inactive_date > SYSDATE)
    AND    SYSDATE BETWEEN nvl(sup.start_date_active,SYSDATE - 1) AND nvl(sup.end_date_active,SYSDATE + 1)
-   AND    sup.enabled_flag = 'Y'   
+   AND    sup.enabled_flag = 'Y'
    AND    sup.vendor_id = aia.vendor_id
    AND    sup.hold_all_payments_flag = 'N'
    AND    NVL (sup.hold_flag, 'N') = 'N'
@@ -232,10 +234,15 @@
    AND    xev.entity_id        = xte.entity_id
    AND    xev.application_id   = 200
    AND    xev.event_type_code  LIKE '%VALIDATED%'
-   AND    aia.payment_method_code <> 'CLEARING'  -- new Madhu
-
-   )
+   and    aia.payment_method_code <> 'CLEARING'  -- new Madhu
+   -- staging vendor sub query added by arun for UAT test data generation
+--   and (ASSA.VENDOR_ID,ASSA.VENDOR_SITE_ID)  in
+--       (select   distinct     EBS_VENDOR_ID		
+--                             ,EBS_VENDOR_SITE_ID
+--from XX_AP_C2FO_AWARD_DATA_STAGING S)
+  )
    WHERE line_amount != 0
-     AND event_id = max_event_id;
+     AND event_id = max_event_id
+;
 
 show error
