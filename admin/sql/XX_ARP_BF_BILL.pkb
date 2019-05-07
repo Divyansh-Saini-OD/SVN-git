@@ -721,6 +721,8 @@ lc_cons_bill_num	VARCHAR2(30);
 ln_bill_signal_cnt		NUMBER :=0;
 ln_bill_comp_cust_cnt NUMBER :=0;
 lc_bill_comp_check_count NUMBER :=0;
+l_beginning_max_balance NUMBER;
+l_tota_trx_max_balance NUMBER;
 
 CURSOR val_param1 (P_cust_num_low VARCHAR2, P_cust_num_high VARCHAR2,
                    P_bill_site_low NUMBER, P_bill_site_high NUMBER) IS
@@ -1590,8 +1592,10 @@ BEGIN
 					INTO ln_bill_comp_cust_cnt
 					FROM ar_payment_schedules_all api
 					WHERE 1                 =1
-					AND api.Status          = 'OP'
-					AND api.customer_id     = l_sites.customer_id
+					AND api.Status          		= 'OP'
+					AND api.cons_inv_id         	IS NULL
+					AND api.customer_site_use_id	= l_sites.site_id
+					AND api.customer_id     		= l_sites.customer_id
 					AND ROWNUM < 2 
 					AND EXISTS 
 						(
@@ -1600,12 +1604,7 @@ BEGIN
 							   xx_om_header_attributes_all xoha
 						  WHERE ooh.Order_Number = TO_NUMBER(api.trx_number)
 						  AND ooh.Header_Id      = Xoha.Header_Id
-						  AND NVL(BILL_COMP_FLAG,'N')     IN ('B','Y'))
-					AND NOT EXISTS (SELECT 1 from xx_scm_bill_signal
-							  WHERE 1=1
-							  AND child_order_number	=	api.trx_number				    
-							  AND bill_forward_flag		= 'C'
-							  )		
+						  AND NVL(BILL_COMP_FLAG,'N')     IN ('B','Y'))	
 						;						
                 END IF;  
 				
@@ -1615,7 +1614,8 @@ BEGIN
 					INTO ln_bill_signal_cnt
 					FROM Xx_Scm_Bill_Signal
 					WHERE 1=1
-					AND (customer_id =l_sites.customer_id)
+					AND customer_id = l_sites.customer_id
+					AND site_use_id = l_sites.site_id 	 
 					AND Bill_forward_flag    = 'N' 
 					AND ROWNUM < 2 ;
 				END IF;
@@ -2996,9 +2996,31 @@ BEGIN
 			  WHERE cons_inv_id = l_consinv_id;
 		
 		--Added for Bill Complete. If Bill Complete Customer has Consolidating bills to parent bill NAIT-61963.
-		ELSIF	ln_bill_comp_cust_cnt >0 AND ln_bill_signal_cnt > 0 THEN --Recommend Jira 72552				
-		  
-			  FOR L_inv_parent IN C_inv_parent(L_sites.site_id, L_sites.customer_id) LOOP	
+		ELSIF	ln_bill_comp_cust_cnt >0 AND ln_bill_signal_cnt > 0 THEN --Recommend Jira 72552	
+
+				BEGIN
+					SELECT  sum(total_trx_amt), max(beginning_balance)
+					INTO    l_tota_trx_max_balance, l_beginning_max_balance
+					FROM    ar_cons_inv CI1
+					WHERE   CI1.site_use_id   = L_sites.site_id
+					AND     CI1.currency_code = P_currency
+					AND    (CI1.status       IN ('ACCEPTED', 'FINAL')
+					AND     nvl(CI1.billing_date,CI1.cut_off_date)  =
+						(SELECT max(nvl(CI2.billing_date,CI2.cut_off_date))
+						FROM   ar_cons_inv CI2
+						WHERE  CI2.site_use_id   = L_sites.site_id
+						AND    CI2.currency_code = P_currency
+						AND    CI2.status       IN ('ACCEPTED', 'FINAL'))
+						OR (CI1.status = 'MERGE_PENDING'
+						AND nvl(CI1.billing_date,CI1.cut_off_date) <= l_billing_date));
+				EXCEPTION
+				WHEN NO_DATA_FOUND THEN
+				l_beginning_balance := 0;
+				END;
+				
+				l_beginning_balance	:=	l_beginning_max_balance+l_tota_trx_max_balance;
+
+				FOR L_inv_parent IN C_inv_parent(L_sites.site_id, L_sites.customer_id) LOOP	
 								
 				l_consinv_lineno := 1;
 				

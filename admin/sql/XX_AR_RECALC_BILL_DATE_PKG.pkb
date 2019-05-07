@@ -13,6 +13,7 @@ AS
 -- | =========   ===========  =============   ==================================================|
 -- | 1.0         18-OCT-2018  Havish Kasina   Initial version                                   |  
 -- | 1.1         21-JAN-2019  Havish Kasina   Added new parameter p_billing_date                |
+-- | 1.2         17-APR-2019  Dinesh Nagapuri Term Id is not null condition to exclude CM       |
 -- +============================================================================================+
 
 gc_debug 	                VARCHAR2(2);
@@ -145,6 +146,7 @@ AS
        AND hcp.cons_inv_flag = 'Y' 
        AND hcp.status = 'A'
        AND hca.status = 'A'
+	   AND rct.term_id IS NOT NULL							-- Added Dinesh V1.2
        AND hcp.attribute6 IN ('B','Y')
        AND hcp.cust_account_id = hca.cust_account_id
        AND hca.cust_account_id = rct.bill_to_customer_id

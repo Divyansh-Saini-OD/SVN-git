@@ -923,6 +923,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
       lc_reason_code          ar_lookups.meaning%TYPE;
       lc_sales_person         VARCHAR2(1000) := NULL;
       lc_sold_to_customer     hz_cust_accounts_all.account_number%TYPE := NULL;
+	  lc_bill_comp_flag		  VARCHAR2(1) := NULL;										-- Added By Dinesh For Separate Bill Test for Bill Complete and Non-BillComplete
       ln_attr_group_id        ego_attr_groups_v.attr_group_id%TYPE;
       p_debug                 BOOLEAN;
       lc_epdf_doc_detail      VARCHAR2(50) := NULL;
@@ -1219,6 +1220,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                   lc_reason_code      := NULL;
                   lc_sales_person     := NULL;
                   lc_sold_to_customer := NULL;
+				  lc_bill_comp_flag	  := NULL;			-- Added By Dinesh For Separate Bill Test for Bill Complete and Non-BillComplete
 
                   gc_debug_msg := to_char(SYSDATE
                                          ,'DD-MON-YYYY HH24:MI:SS') || 'deriving XX_AR_EBL_COMMON_UTIL_PKG.GET_AMOUNT - PAYDOC - CONS ID:' || cons_paydoc(cons_rec).cons_inv_id || 'TRX ID : ' || paydoc_tab(pay_rec).customer_trx_id;
@@ -1327,9 +1329,11 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                   BEGIN
                                  
                 SELECT CUST_DEPT_DESCRIPTION,
-                       COST_CENTER_DEPT --Added for Defect 36437 (MOD4B Release 3)				
+                       COST_CENTER_DEPT, --Added for Defect 36437 (MOD4B Release 3)				
+					   BILL_COMP_FLAG	
                 INTO  paydoc_tab(pay_rec).cost_center_desc_hdr,
-				      paydoc_tab(pay_rec).cost_center_dept --Added for Defect 36437 (MOD4B Release 3) 
+				      paydoc_tab(pay_rec).cost_center_dept, --Added for Defect 36437 (MOD4B Release 3) 
+					  lc_bill_comp_flag							-- Added By Dinesh For Separate Bill Test for Bill Complete and Non-BillComplete
                 FROM XX_OM_HEADER_ATTRIBUTES_ALL XOHA,
                      RA_CUSTOMER_TRX_ALL RCT 
                 WHERE RCT.CUSTOMER_TRX_ID =paydoc_tab(pay_rec).customer_trx_id
@@ -1524,7 +1528,8 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                      ,account_contact
                      ,order_contact
                      ,infocopy_tag
-                     ,batch_source_id)
+                     ,batch_source_id
+					 ,c_ext_attr1)
                   VALUES
                      (cons_paydoc(cons_rec).cons_inv_id
                      ,paydoc_tab(pay_rec).customer_trx_id
@@ -1689,7 +1694,8 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                      ,lc_ph_no_cusrv
                      ,lc_ph_no_bill
                      ,cons_paydoc(cons_rec).infocopy_tag
-                     ,paydoc_tab(pay_rec).batch_source_id);
+                     ,paydoc_tab(pay_rec).batch_source_id
+					 ,lc_bill_comp_flag);					-- Added By Dinesh For Separate Bill Test for Bill Complete and Non-BillComplete
                   gc_debug_msg := to_char(SYSDATE
                                          ,'DD-MON-YYYY HH24:MI:SS') || 'Insert Lines - PAYDOC - CONS ID:' || cons_paydoc(cons_rec).cons_inv_id || 'TRX ID : ' || paydoc_tab(pay_rec).customer_trx_id;
                   xx_ar_ebl_common_util_pkg.put_log_line(p_debug
@@ -1940,6 +1946,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                   lc_sales_person      := NULL;
                   lc_mail_to_attention := NULL;
                   lc_sold_to_customer  := NULL;
+				  lc_bill_comp_flag	   := NULL;							-- Added By Dinesh For Separate Bill Test for Bill Complete and Non-BillComplete
 
                   gc_debug_msg := to_char(SYSDATE
                                          ,'DD-MON-YYYY HH24:MI:SS') || 'deriving XX_AR_EBL_COMMON_UTIL_PKG.GET_AMOUNT - PAYDOCIC - CONS ID:' || cons_paydoc_ic(info_rec).cons_inv_id || 'TRX ID : ' || paydoc_ic_tab(i).customer_trx_id;
@@ -2099,9 +2106,11 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
             --defect 15118
             BEGIN
                 SELECT CUST_DEPT_DESCRIPTION,
-				       COST_CENTER_DEPT --Added for Defect 36437 (MOD4B Release 3)
+				       COST_CENTER_DEPT, --Added for Defect 36437 (MOD4B Release 3)
+					   BILL_COMP_FLAG
                 INTO  paydoc_ic_tab(i).cost_center_desc_hdr,
-				      paydoc_ic_tab(i).cost_center_dept --Added for Defect 36437 (MOD4B Release 3)
+				      paydoc_ic_tab(i).cost_center_dept, --Added for Defect 36437 (MOD4B Release 3)
+					  lc_bill_comp_flag							-- Added By Dinesh For Separate Bill Test for Bill Complete and Non-BillComplete
                 FROM XX_OM_HEADER_ATTRIBUTES_ALL XOHA,
                      RA_CUSTOMER_TRX_ALL RCT 
                 WHERE RCT.CUSTOMER_TRX_ID =paydoc_ic_tab(i).customer_trx_id
@@ -2288,7 +2297,8 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                      ,account_contact
                      ,order_contact
                      ,infocopy_tag
-                     ,batch_source_id)
+                     ,batch_source_id
+					 ,c_ext_attr1)
                   VALUES
                      (cons_paydoc_ic(info_rec).cons_inv_id
                      ,paydoc_ic_tab(i).customer_trx_id
@@ -2453,7 +2463,8 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                      ,lc_ph_no_cusrv
                      ,lc_ph_no_bill
                      ,cons_paydoc_ic(info_rec).infocopy_tag
-                     ,paydoc_ic_tab(i).batch_source_id);
+                     ,paydoc_ic_tab(i).batch_source_id
+					 ,lc_bill_comp_flag);						-- Added By Dinesh For Separate Bill Test for Bill Complete and Non-BillComplete
                   gc_debug_msg := to_char(SYSDATE
                                          ,'DD-MON-YYYY HH24:MI:SS') || 'Insert Lines - PAYDOCIC - CONS ID:' || cons_paydoc_ic(info_rec).cons_inv_id || 'TRX ID : ' || paydoc_ic_tab(i).customer_trx_id;
                   xx_ar_ebl_common_util_pkg.put_log_line(p_debug
@@ -2594,6 +2605,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
          lc_sales_person      := NULL;
          lc_mail_to_attention := NULL;
          lc_sold_to_customer  := NULL;
+		 lc_bill_comp_flag	  := NULL;					-- Added By Dinesh For Separate Bill Test for Bill Complete and Non-BillComplete
          -- Deriving the various invoice amounts
 
          IF ((ln_prev_document_id = 0 AND ln_prev_site_use_id = 0) --First record
@@ -2773,9 +2785,11 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                    --defect 15118
             BEGIN
                 SELECT CUST_DEPT_DESCRIPTION,
-                       COST_CENTER_DEPT --Added for Defect 36437 (MOD4B Release 3)				
-                INTO  inv_ic_tab(i).cost_center_desc_hdr,
-				       inv_ic_tab(i).cost_center_dept  --Added for Defect 36437 (MOD4B Release 3)
+                       COST_CENTER_DEPT, --Added for Defect 36437 (MOD4B Release 3)				
+					   BILL_COMP_FLAG
+                INTO   inv_ic_tab(i).cost_center_desc_hdr,
+				       inv_ic_tab(i).cost_center_dept,  --Added for Defect 36437 (MOD4B Release 3)
+					   lc_bill_comp_flag					-- Added By Dinesh For Separate Bill Test for Bill Complete and Non-BillComplete
                 FROM XX_OM_HEADER_ATTRIBUTES_ALL XOHA,
                      RA_CUSTOMER_TRX_ALL RCT 
                 WHERE RCT.CUSTOMER_TRX_ID =inv_ic_tab(i).customer_trx_id
@@ -3023,7 +3037,8 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                   ,account_contact
                   ,order_contact
                   ,infocopy_tag
-                  ,batch_source_id)
+                  ,batch_source_id
+				  ,c_ext_attr1)
                VALUES
                   (ln_prev_cons_bill_id
                   ,inv_ic_tab(i).customer_trx_id
@@ -3188,7 +3203,8 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                   ,lc_ph_no_cusrv
                   ,lc_ph_no_bill
                   ,inv_ic_tab(i).infocopy_tag
-                  ,inv_ic_tab(i).batch_source_id);
+                  ,inv_ic_tab(i).batch_source_id
+				  ,lc_bill_comp_flag);					-- Added By Dinesh For Separate Bill Test for Bill Complete and Non-BillComplete
                -- Calling Insert_lines
                gc_debug_msg := to_char(SYSDATE
                                       ,'DD-MON-YYYY HH24:MI:SS') || 'Insert Lines - INVIC - CONS ID:' || inv_ic_tab(i).cons_inv_id || 'TRX ID : ' || inv_ic_tab(i).customer_trx_id;
@@ -3798,6 +3814,8 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                        AND    parent_cust_doc_id = cust_doc_id_rec.parent_cust_doc_id;
                     END LOOP;
                  END IF;
+				 
+				 -- Added For Bill Complete Loop By Dinesh For Separate Bill Test for Bill Complete and Non-BillComplete
                  FOR file_ids_rec IN (SELECT --- DISTINCT DISTINCT file_id
                                       DISTINCT email_address
                                               ,decode(cust_doc_id_rec.direct_flag
@@ -3807,6 +3825,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
 													 ,cons_inv_id		--NAIT-61963 Added cons_inv_id to print separate bills for consolidated bill.
                                       FROM   xx_ar_ebl_cons_hdr_main
                                       WHERE  parent_cust_doc_id = cust_doc_id_rec.parent_cust_doc_id
+									  AND 	 c_ext_attr1 IN('B','Y')
                                       AND    extract_batch_id = p_batch_id)
                  LOOP
                     --      IF (cust_doc_id_rec.ebill_transmission_type = 'EMAIL') THEN
@@ -3826,6 +3845,31 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
     				AND    cons_inv_id		= file_ids_rec.cons_inv_id				--NAIT-61963 Added cons_inv_id to print separate bills for consolidated bill.
                     AND    extract_batch_id = p_batch_id;
                  END LOOP;
+				    FOR file_ids_rec IN (SELECT --- DISTINCT DISTINCT file_id
+                                      DISTINCT email_address
+                                              ,decode(cust_doc_id_rec.direct_flag
+                                                     ,'I'
+                                                     ,cust_acct_site_id
+                                                     ,NULL) cust_acct_site_id
+		                              FROM   xx_ar_ebl_cons_hdr_main
+                                      WHERE  parent_cust_doc_id = cust_doc_id_rec.parent_cust_doc_id
+									  AND 	 c_ext_attr1 IS NULL			-- Added By Dinesh For Separate Bill Test for Bill Complete and Non-BillComplete
+                                      AND    extract_batch_id = p_batch_id)
+                 LOOP
+                    --      IF (cust_doc_id_rec.ebill_transmission_type = 'EMAIL') THEN
+                    SELECT xx_ebl_file_seq.NEXTVAL
+                    INTO   ln_file_id
+                    FROM   dual;
+                    --      END IF;
+
+                    UPDATE xx_ar_ebl_cons_hdr_main
+                    SET    file_id = ln_file_id -- added
+                    WHERE  parent_cust_doc_id = cust_doc_id_rec.parent_cust_doc_id
+                    AND    nvl(email_address,'X') = nvl(file_ids_rec.email_address,'X')
+                    AND    cust_acct_site_id = nvl(file_ids_rec.cust_acct_site_id,cust_acct_site_id)
+    	            AND    extract_batch_id = p_batch_id;
+                 END LOOP;
+				 
                  FOR trans_ids_rec IN (SELECT DISTINCT file_id
                                        FROM   xx_ar_ebl_cons_hdr_main
                                        WHERE  parent_cust_doc_id = cust_doc_id_rec.parent_cust_doc_id
@@ -3906,15 +3950,46 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                     AND    extract_batch_id = p_batch_id;
                  END LOOP;
               END IF;
+			-- Added for BillCoplete Loop,by Dinesh For Separate Bill Test for Bill Complete and Non-BillComplete
+			FOR file_ids IN (SELECT DISTINCT split_identifier
+										  ,email_address
+										  ,decode(cust_doc_id_rec.direct_flag
+												 ,'I'
+												 ,cust_acct_site_id
+												 ,NULL) cust_acct_site_id
+												 , cons_inv_id  -- Added for Bill complete to get consolidated bills NAIT-61963
+						   FROM   xx_ar_ebl_cons_hdr_main
+						   WHERE  parent_cust_doc_id = cust_doc_id_rec.parent_cust_doc_id
+						   AND    c_ext_attr1 IN('B','Y')
+						   AND    extract_batch_id = p_batch_id)
+		  LOOP
+			 SELECT xx_ebl_file_seq.NEXTVAL
+			 INTO   ln_file_id
+			 FROM   dual;
+
+			 UPDATE xx_ar_ebl_cons_hdr_main
+			 SET    file_id = ln_file_id
+			 WHERE  nvl(split_identifier
+					   ,'XX') = nvl(file_ids.split_identifier
+								   ,'XX')
+			 AND    nvl(email_address
+					   ,'XX') = nvl(file_ids.email_address
+									,'XX')
+			 AND    cust_acct_site_id = nvl(file_ids.cust_acct_site_id
+										   ,cust_acct_site_id)
+			 AND    parent_cust_doc_id = cust_doc_id_rec.parent_cust_doc_id
+			 AND    cons_inv_id = file_ids.cons_inv_id  -- Added for Bill complete to get consolidated bills NAIT-61963
+			 AND    extract_batch_id = p_batch_id;
+			 END LOOP;
               FOR file_ids IN (SELECT DISTINCT split_identifier
                                               ,email_address
                                               ,decode(cust_doc_id_rec.direct_flag
                                                      ,'I'
                                                      ,cust_acct_site_id
                                                      ,NULL) cust_acct_site_id
-													 , cons_inv_id  -- Added for Bill complete to get consolidated bills NAIT-61963
-                               FROM   xx_ar_ebl_cons_hdr_main
+		                       FROM   xx_ar_ebl_cons_hdr_main
                                WHERE  parent_cust_doc_id = cust_doc_id_rec.parent_cust_doc_id
+							   AND    c_ext_attr1 IS NULL				-- Added By Dinesh For Separate Bill Test for Bill Complete and Non-BillComplete
                                AND    extract_batch_id = p_batch_id)
               LOOP
                  SELECT xx_ebl_file_seq.NEXTVAL
@@ -3932,14 +4007,15 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                  AND    cust_acct_site_id = nvl(file_ids.cust_acct_site_id
                                                ,cust_acct_site_id)
                  AND    parent_cust_doc_id = cust_doc_id_rec.parent_cust_doc_id
-				 AND    cons_inv_id = file_ids.cons_inv_id  -- Added for Bill complete to get consolidated bills NAIT-61963
-                 AND    extract_batch_id = p_batch_id;
+	             AND    extract_batch_id = p_batch_id;
                  END LOOP;
-                 FOR trans_ids_rec IN (SELECT --- DISTINCT DISTINCT file_id
+				 --Added for BillCoplete Loop,By Dinesh For Separate Bill Test for Bill Complete and Non-BillComplete
+				 FOR trans_ids_rec IN (SELECT --- DISTINCT DISTINCT file_id
                                        DISTINCT email_address
 									   		   ,cons_inv_id  -- Added for Bill complete to get consolidated bills NAIT-61963
                                        FROM   xx_ar_ebl_cons_hdr_main
                                        WHERE  parent_cust_doc_id = cust_doc_id_rec.parent_cust_doc_id
+									   AND    c_ext_attr1 IN('B','Y')
                                        AND    extract_batch_id = p_batch_id)
                  LOOP
                     --      IF (cust_doc_id_rec.ebill_transmission_type = 'EMAIL') THEN
@@ -3954,6 +4030,29 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                     WHERE  parent_cust_doc_id = cust_doc_id_rec.parent_cust_doc_id
 					AND    cons_inv_id = trans_ids_rec.cons_inv_id  -- Added for Bill complete to get consolidated bills NAIT-61963
                     AND    nvl(email_address
+                              ,'X') = nvl(trans_ids_rec.email_address
+                                          ,'X')
+                    AND    extract_batch_id = p_batch_id;
+                 END LOOP;
+				 
+                 FOR trans_ids_rec IN (SELECT --- DISTINCT DISTINCT file_id
+                                       DISTINCT email_address
+								       FROM   xx_ar_ebl_cons_hdr_main
+                                       WHERE  parent_cust_doc_id = cust_doc_id_rec.parent_cust_doc_id
+									   AND    c_ext_attr1 IS NULL								 --Added by Dinesh For Separate Bill Test for Bill Complete and Non-BillComplete		
+                                       AND    extract_batch_id = p_batch_id)
+                 LOOP
+                    --      IF (cust_doc_id_rec.ebill_transmission_type = 'EMAIL') THEN
+                    SELECT xx_ebl_trans_seq.NEXTVAL
+                    INTO   ln_transmission_id
+                    FROM   dual;
+                    --      END IF;
+
+                    UPDATE xx_ar_ebl_cons_hdr_main
+                    SET    transmission_id = ln_transmission_id
+                    --      , file_id = ln_file_id -- added
+                    WHERE  parent_cust_doc_id = cust_doc_id_rec.parent_cust_doc_id
+			        AND    nvl(email_address
                               ,'X') = nvl(trans_ids_rec.email_address
                                           ,'X')
                     AND    extract_batch_id = p_batch_id;

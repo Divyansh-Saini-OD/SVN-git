@@ -44,6 +44,7 @@ AS
    -- |5.1        11-JAN-2018  Atul Khard     Made changes for Defect 43851 				|
    -- |5.2        05-NOV-2018  Dinesh N       Made Changes for Bill Complete NAIT-67165 	|
    -- |5.3        02-JAN-2019  Havish K       Made Changes for Defect NAIT-75351            |
+   -- |5.4		  04-APR-2019  Dinesh N		  Made Changes for Defect NAIT-86554			|
    -- +=====================================================================================+
 
    ------------------------
@@ -69,6 +70,7 @@ AS
    gc_order_source_spc         oe_order_sources.name%TYPE := 'SPC';
    gc_ln_orgid                 VARCHAR2(30) := FND_PROFILE.VALUE('ORG_ID');  --Added for Defect # 43851
    gn_ln_loginid               NUMBER	    := fnd_profile.VALUE('LOGIN_ID'); --Added for Bill Complete NAIT-67165
+   gn_bill_date				   NUMBER;
 
    --------------------------------------
    --Added for R12 Retrofit for tax lines
@@ -508,6 +510,10 @@ AS
       lc_kit_sku               ra_interface_lines_all.attribute6%TYPE := NULL;
       lc_bill_level            ra_interface_lines_all.attribute6%TYPE := NULL;
       lc_kit_parent            ra_interface_lines_all.attribute6%TYPE := NULL;
+	  ln_orig_sysref_len		 	NUMBER := 0;
+	  ln_trx_num_len			 	NUMBER := 0;
+	  ln_bill_comp_check_count 		NUMBER := 0;
+	  lc_bc_spc_flag			 	VARCHAR2(1);
 
 
       lc_err_location            VARCHAR2(250);
@@ -794,8 +800,23 @@ AS
            INTO gn_coa_id
            FROM gl_ledgers	GLL														-- Changed for R12 Retrofit gl_sets_of_books GSB
           WHERE GLL.ledger_id = FND_PROFILE.VALUE('GL_SET_OF_BKS_ID');  -- Changed for R12 Retrofit GSB.set_of_books_id = FND_PROFILE.VALUE('GL_SET_OF_BKS_ID');
-
-
+		 
+		 -- Added for Bill Complete Dinesh NAIT-86554
+			BEGIN
+				SELECT target_value1
+				INTO gn_bill_date
+				FROM xx_fin_translatedefinition xftd ,
+					 xx_fin_translatevalues xftv
+				WHERE xftv.translate_id          = xftd.translate_id
+				AND xftd.translation_name        ='OD_BC_BILLING_DATE'
+				AND source_value1                ='Bill Complete'
+				AND NVL (xftv.enabled_flag, 'N') = 'Y';
+			EXCEPTION
+			WHEN NO_DATA_FOUND THEN
+				gn_bill_date	:=NULL;
+			WHEN OTHERS THEN
+				gn_bill_date	:=NULL;
+			END;
 
          ------------------------------------------------
          -- Added for R12 Retrofit to derive tax columns
@@ -1197,6 +1218,10 @@ AS
             lc_kit_sku               := NULL;
             lc_bill_level            := NULL;
             lc_kit_parent            := NULL;
+			ln_orig_sysref_len		 :=-1;
+			ln_trx_num_len			 :=0;
+			ln_bill_comp_check_count :=0;
+			lc_bc_spc_flag			 := 'N';
 
             IF  p_invoice_source IS NULL  THEN
                BEGIN
@@ -1241,134 +1266,196 @@ AS
 				-- Getting Bill Comp Flag for Bill Complete Customers NAIT-67165
 				---------------------------------------------------------------
 				---/* Start for Bill Comp Change NAIT-67165 /
-				BEGIN						
-					SELECT xoha.bill_comp_flag
-						,ooh.invoice_to_org_id
-						,NVL(xoha.parent_order_num,ooh.order_number)
-					INTO lc_Bill_Comp_Flag,
-						 ln_site_use_id,
-						 lc_parent_order_num
-					FROM oe_order_headers_all ooh,
-						 xx_om_header_attributes_all xoha
-					Where ooh.order_number = lcu_process_interface_lines.sales_order
-					-- AND parent_order_num     IS NOT NULL -- Commented for Defect NAIT-75351
-					AND xoha.bill_comp_flag IN ('B','Y') -- Added for Defect NAIT-75351
-					AND ooh.header_id      = xoha.header_id
-					AND ROWNUM        <2; 						
-				EXCEPTION
-				WHEN NO_DATA_FOUND THEN
-					 lc_Bill_Comp_Flag	:='N';
-				WHEN OTHERS THEN
-					lc_Bill_Comp_Flag	:='N';
-				END;
 				
-				-----------------------------------------------------------------------------------------
-				-- If Bill Complete and no SCM Signal push billing date of invoice to future + 90 days.
-				-----------------------------------------------------------------------------------------
-				IF NVL(lc_Bill_Comp_Flag,'N') IN ('B','Y')  THEN
+				IF lc_prev_order <>	lcu_process_interface_lines.sales_order
+				THEN
 					IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
-						FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill Complete Customer : '||lcu_process_interface_lines.sales_order ||' with Amount : '||lcu_process_interface_lines.amount||' lc_prev_order : '||lc_prev_order);
+						FND_FILE.PUT_LINE(FND_FILE.LOG,'Processing for Customer'||lcu_process_interface_lines.orig_system_bill_customer_id);
 					END IF;
-					IF  lc_prev_order <>	lcu_process_interface_lines.sales_order
+					BEGIN
+						SELECT COUNT(1)
+						INTO ln_bill_comp_check_count
+						FROM Hz_Customer_Profiles HCP
+						WHERE 1                  =1
+						AND Hcp.Site_Use_Id     IS NULL
+						AND Hcp.Cons_Inv_Flag     = 'Y'
+						AND Hcp.Cust_Account_Id   = lcu_process_interface_lines.orig_system_bill_customer_id	--33059690
+						AND Hcp.attribute6        in ('Y','B');
+					EXCEPTION
+					WHEN NO_DATA_FOUND THEN
+						ln_bill_comp_check_count := 0;
+						FND_FILE.PUT_LINE(FND_FILE.LOG,'No data found while getting Bill Complete Customer from Hz_Customer_Profiles');
+					WHEN OTHERS THEN
+						ln_bill_comp_check_count := 0;
+						FND_FILE.PUT_LINE(FND_FILE.LOG,'When others while getting Bill Complete Customer from Hz_Customer_Profiles');
+					END;
+					
+					ln_trx_num_len:= LENGTH(lcu_process_interface_lines.sales_order);					
+
+					BEGIN						
+						SELECT 	xoha.bill_comp_flag
+							,	ooh.invoice_to_org_id
+							,	NVL(xoha.parent_order_num,ooh.order_number)
+							,	LENGTH(orig_sys_document_ref)	
+						INTO lc_Bill_Comp_Flag,
+							 ln_site_use_id,
+							 lc_parent_order_num,
+							 ln_orig_sysref_len
+						FROM oe_order_headers_all ooh,
+							 xx_om_header_attributes_all xoha
+						Where ooh.order_number = lcu_process_interface_lines.sales_order
+						-- AND parent_order_num     IS NOT NULL -- Commented for Defect NAIT-75351
+						AND (xoha.bill_comp_flag IN ('B','Y') OR (ln_trx_num_len =10 AND ln_bill_comp_check_count >0)) -- Added for Defect NAIT-75351
+						AND ooh.header_id      = xoha.header_id
+						AND ROWNUM        <2; 						
+					EXCEPTION
+					WHEN NO_DATA_FOUND THEN
+						 lc_Bill_Comp_Flag	:='N';
+					WHEN OTHERS THEN
+						lc_Bill_Comp_Flag	:='N';
+					END;
+					IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
+						FND_FILE.PUT_LINE(FND_FILE.LOG,'SPC Order : ln_orig_sysref_len : '||ln_orig_sysref_len ||' ln_trx_num_len : '||ln_trx_num_len||' ln_bill_comp_check_count : '||ln_bill_comp_check_count);
+					END IF;
+					IF ln_orig_sysref_len=20 AND ln_trx_num_len =10 AND ln_bill_comp_check_count > 0
 					THEN
-						lc_bill_comp_upd_flag	:='N';
-						-- Inserting Credit Memos into Bill Signal table
+						lc_bc_spc_flag	:=	'Y';
 						IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
-							FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill Complete Customer : before xx_scm_bill_signal order : '||lcu_process_interface_lines.sales_order ||' attribute2 : '||NVL(UPPER(lcu_process_interface_lines.interface_line_attribute2),'XX'));
+							FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill Complete Customer with SPC Order : '||lcu_process_interface_lines.sales_order ||' with Amount : '||lcu_process_interface_lines.amount||' lc_prev_order : '||lc_prev_order);
 						END IF;
-						IF lcu_process_interface_lines.amount < 0 AND NVL(UPPER(lcu_process_interface_lines.interface_line_attribute2),'XX') like '%RETURN%'
+					END IF;
+					-----------------------------------------------------------------------------------------
+					-- If Bill Complete and no SCM Signal push billing date of invoice to future + 90 days.
+					-----------------------------------------------------------------------------------------
+					IF NVL(lc_Bill_Comp_Flag,'N') IN ('B','Y')  OR lc_bc_spc_flag = 'Y' THEN
+						IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
+							FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill Complete Customer : '||lcu_process_interface_lines.sales_order ||' with Amount : '||lcu_process_interface_lines.amount||' lc_prev_order : '||lc_prev_order);
+						END IF;
+							lc_bill_comp_upd_flag	:='N';
+							-- Inserting Credit Memos into Bill Signal table
+							IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
+								FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill Complete Customer : before xx_scm_bill_signal order : '||lcu_process_interface_lines.sales_order ||' attribute2 : '||NVL(UPPER(lcu_process_interface_lines.interface_line_attribute2),'XX'));
+							END IF;
+							IF NVL(UPPER(lcu_process_interface_lines.interface_line_attribute2),'XX') like '%RETURN%' OR (lc_bc_spc_flag = 'Y')
+							THEN
+								IF lc_bc_spc_flag ='Y'
+								THEN
+									lc_parent_order_num	:=lcu_process_interface_lines.sales_order;
+									IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
+										FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill Complete Customer SPC Order : '||lc_parent_order_num);
+									END IF;
+								END IF;
+								BEGIN							
+									IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
+										FND_FILE.PUT_LINE(FND_FILE.LOG,'Updating BC Flag in Header_Attributes for order : '||lcu_process_interface_lines.sales_order||' to parent_order_num : '||lc_parent_order_num);
+									END IF;
+							
+									UPDATE xx_om_header_attributes_all
+									SET parent_order_num =lc_parent_order_num,
+										bill_comp_flag   = 'B'
+									WHERE header_id      =
+									  (SELECT max(header_id)
+									  FROM oe_order_headers_all
+									  WHERE order_number = lcu_process_interface_lines.sales_order	--'2282501742'
+									  --AND LENGTH(orig_sys_document_ref)	=20	
+									  )
+									AND parent_order_num IS NULL 
+									AND NVL(bill_comp_flag,'X')  NOT IN ('B','Y')										
+									 ;			  
+									IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
+										FND_FILE.PUT_LINE(FND_FILE.LOG,' After Update Count : '||SQL%ROWCOUNT);
+									END IF;
+									
+									INSERT
+									INTO xx_scm_bill_signal
+									  (
+										Parent_Order_Number,
+										Child_Order_Number,
+										billing_date_flag,
+										Creation_Date,
+										Created_By,
+										Last_Update_Date,
+										Last_Updated_By,
+										Last_Update_Login
+									  )
+									  VALUES
+									  (
+										lc_parent_order_num,
+										lcu_process_interface_lines.sales_order,
+										'N',
+										SYSDATE,
+										FND_PROFILE.VALUE('USER_ID'),
+										SYSDATE,
+										FND_PROFILE.VALUE('USER_ID'),
+										gn_ln_loginid
+									  );
+									IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
+										FND_FILE.PUT_LINE(FND_FILE.LOG,'Inserted Return Order into Bill Signal Table for Order : '||lcu_process_interface_lines.sales_order );
+									END IF;
+								EXCEPTION
+								WHEN OTHERS THEN
+									FND_FILE.PUT_LINE(FND_FILE.LOG,'Insertion Failed for Bill Complete customer into xx_scm_bill_signal '||SUBSTR(SQLERRM,1,255));
+								END;	  
+							END IF;
+						IF lc_bill_comp_upd_flag = 'N' 
+						THEN								
+							BEGIN
+								SELECT COUNT(1)
+								INTO ln_bill_comp_cnt
+								FROM xx_scm_bill_signal
+								WHERE child_order_number =	lcu_process_interface_lines.sales_order
+								AND billing_date_flag    = 'N' ;
+								IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
+									FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill_Comp_Flag Exists Count : '|| ln_bill_comp_cnt ||' for Order : '||lcu_process_interface_lines.sales_order);
+								END IF;
+							END;	
+						END IF;
+						IF ln_bill_comp_cnt =0
 						THEN
 							BEGIN
-								INSERT
-								INTO xx_scm_bill_signal
-								  (
-									Parent_Order_Number,
-									Child_Order_Number,
-									billing_date_flag,
-									Creation_Date,
-									Created_By,
-									Last_Update_Date,
-									Last_Updated_By,
-									Last_Update_Login
-								  )
-								  VALUES
-								  (
-									lc_parent_order_num,
-									lcu_process_interface_lines.sales_order,
-									'N',
-									SYSDATE,
-									FND_PROFILE.VALUE('USER_ID'),
-									SYSDATE,
-									FND_PROFILE.VALUE('USER_ID'),
-									gn_ln_loginid
-								  );
+								UPDATE ra_interface_lines_all RIL
+								SET billing_date			= trunc(sysdate)+NVL(TO_NUMBER(gn_bill_date),90)
+								WHERE ril.sales_order       = lcu_process_interface_lines.sales_order
+								AND ril.batch_source_name 	= NVL(p_invoice_source,batch_source_name)
+								AND ril.org_id            	= gc_ln_orgid;
 								IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
-									FND_FILE.PUT_LINE(FND_FILE.LOG,'Inserted Return Order into Bill Signal Table for Order : '||lcu_process_interface_lines.sales_order );
+									FND_FILE.PUT_LINE(FND_FILE.LOG,'Billing Date updated to future since no signal from SCM for order : '|| lcu_process_interface_lines.sales_order ||' TO : '||gn_bill_date||' Days. '||' for Count '||SQL%ROWCOUNT);
 								END IF;
 							EXCEPTION
-							WHEN OTHERS THEN
-								FND_FILE.PUT_LINE(FND_FILE.LOG,'Insertion Failed for Bill Complete customer into xx_scm_bill_signal '||SUBSTR(SQLERRM,1,255));
-							END;	  
-						END IF;
-					END IF;
-					IF lc_bill_comp_upd_flag = 'N' 
-					THEN								
-						BEGIN
-							SELECT COUNT(1)
-							INTO ln_bill_comp_cnt
-							FROM xx_scm_bill_signal
-							WHERE child_order_number =	lcu_process_interface_lines.sales_order
-							AND billing_date_flag    = 'N' ;
-							IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
-								FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill_Comp_Flag Exists Count : '|| ln_bill_comp_cnt ||' for Order : '||lcu_process_interface_lines.sales_order);
-							END IF;
-						END;	
-					END IF;
-					IF ln_bill_comp_cnt =0
-					THEN
-						BEGIN
-							UPDATE ra_interface_lines_all RIL
-							SET billing_date			= trunc(sysdate)+90
-							WHERE ril.sales_order       = lcu_process_interface_lines.sales_order
-							AND ril.batch_source_name 	= NVL(p_invoice_source,batch_source_name)
-							AND ril.org_id            	= gc_ln_orgid;
-							IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
-								FND_FILE.PUT_LINE(FND_FILE.LOG,'Billing Date updated to future since no signal from SCM for order : '|| lcu_process_interface_lines.sales_order ||' for Count '||SQL%ROWCOUNT);
-							END IF;
-						EXCEPTION
-						WHEN NO_DATA_FOUND THEN
-							 FND_FILE.PUT_LINE(FND_FILE.LOG,'NO_DATA_FOUND: TO Update to future for Bill Complete order : '||lcu_process_interface_lines.sales_order);
-						WHEN OTHERS THEN
-							FND_FILE.PUT_LINE(FND_FILE.LOG,'Other EXCEPTION: TO Update to future for Bill Complete Order: '||lcu_process_interface_lines.sales_order||' '||SUBSTR(SQLERRM,1,255) );
-						END;
-					ELSE 
-						IF lc_bill_comp_upd_flag ='N'
-						THEN
-							BEGIN
-								UPDATE  xx_scm_bill_signal
-								SET 	billing_date_flag    = 'C'
-									,	customer_id			 = lcu_process_interface_lines.orig_system_bill_customer_id
-									,	site_use_id			 = ln_site_use_id
-									,   shipped_flag		 = 'Y'
-									, 	last_update_date	 = sysdate
-									,	last_updated_by		 = gn_ln_loginid
-								WHERE child_order_number 	 = lcu_process_interface_lines.sales_order
-								AND billing_date_flag    	 = 'N';	
-								lc_bill_comp_upd_flag		 :='C';
-							IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
-								FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill Complete Customer Updated Customer id and Site Use Id for Order : '||lcu_process_interface_lines.sales_order);
-							END IF;
-							EXCEPTION
 							WHEN NO_DATA_FOUND THEN
-								 FND_FILE.PUT_LINE(FND_FILE.LOG,'NO_DATA_FOUND: TO Update in xx_scm_bill_signal for order : '||lcu_process_interface_lines.sales_order);
+								 FND_FILE.PUT_LINE(FND_FILE.LOG,'NO_DATA_FOUND: TO Update to future for Bill Complete order : '||lcu_process_interface_lines.sales_order);
 							WHEN OTHERS THEN
-								FND_FILE.PUT_LINE(FND_FILE.LOG,'Other EXCEPTION: TO Update in xx_scm_bill_signal for order : '||lcu_process_interface_lines.sales_order||SUBSTR(SQLERRM,1,255));
+								FND_FILE.PUT_LINE(FND_FILE.LOG,'Other EXCEPTION: TO Update to future for Bill Complete Order: '||lcu_process_interface_lines.sales_order||' '||SUBSTR(SQLERRM,1,255) );
 							END;
+						ELSE 
+							IF lc_bill_comp_upd_flag ='N'
+							THEN
+								BEGIN
+									UPDATE  xx_scm_bill_signal
+									SET 	billing_date_flag    = 'C'
+										,	customer_id			 = lcu_process_interface_lines.orig_system_bill_customer_id
+										,	site_use_id			 = ln_site_use_id
+										,   shipped_flag		 = 'Y'
+										, 	last_update_date	 = sysdate
+										,	last_updated_by		 = gn_ln_loginid
+									WHERE child_order_number 	 = lcu_process_interface_lines.sales_order
+									AND billing_date_flag    	 = 'N';	
+									lc_bill_comp_upd_flag		 :='C';
+								IF (p_display_log ='Y') THEN  -- Added IF Condition for Defect# 35156
+									FND_FILE.PUT_LINE(FND_FILE.LOG,'Bill Complete Customer Updated Customer id and Site Use Id for Order : '||lcu_process_interface_lines.sales_order);
+								END IF;
+								EXCEPTION
+								WHEN NO_DATA_FOUND THEN
+									 FND_FILE.PUT_LINE(FND_FILE.LOG,'NO_DATA_FOUND: TO Update in xx_scm_bill_signal for order : '||lcu_process_interface_lines.sales_order);
+								WHEN OTHERS THEN
+									FND_FILE.PUT_LINE(FND_FILE.LOG,'Other EXCEPTION: TO Update in xx_scm_bill_signal for order : '||lcu_process_interface_lines.sales_order||SUBSTR(SQLERRM,1,255));
+								END;
+							END IF;
 						END IF;
 					END IF;
-					lc_prev_order	:=	lcu_process_interface_lines.sales_order;
 				END IF;
 				---/* End for Bill Comp Change NAIT-67165 /
+				lc_prev_order	:=	lcu_process_interface_lines.sales_order;	
 			
             ---------------------------------------------------------------
             -- Update TRX_NUMBER for Services Invoices (Defect 20687 V4.0)
