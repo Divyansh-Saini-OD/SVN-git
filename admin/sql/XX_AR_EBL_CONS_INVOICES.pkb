@@ -194,9 +194,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                 AND    d_ext_attr1 <= ld_as_of_date -- Effective From Date
                 AND    nvl(d_ext_attr2
                           ,ld_as_of_date) >= ld_as_of_date
-                AND    c_ext_attr16 = 'COMPLETE'
-
-                ); -- Effective To Date
+                AND    c_ext_attr16 = 'COMPLETE'); -- Effective To Date
          EXCEPTION
             WHEN OTHERS THEN
                xx_ar_ebl_common_util_pkg.put_log_line(FALSE
@@ -1330,7 +1328,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                                  
                 SELECT CUST_DEPT_DESCRIPTION,
                        COST_CENTER_DEPT, --Added for Defect 36437 (MOD4B Release 3)				
-					   BILL_COMP_FLAG	
+					   DECODE(BILL_COMP_FLAG,'B','Y','Y','Y',NULL)	
                 INTO  paydoc_tab(pay_rec).cost_center_desc_hdr,
 				      paydoc_tab(pay_rec).cost_center_dept, --Added for Defect 36437 (MOD4B Release 3) 
 					  lc_bill_comp_flag							-- Added By Dinesh For Separate Bill Test for Bill Complete and Non-BillComplete
@@ -2107,7 +2105,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
             BEGIN
                 SELECT CUST_DEPT_DESCRIPTION,
 				       COST_CENTER_DEPT, --Added for Defect 36437 (MOD4B Release 3)
-					   BILL_COMP_FLAG
+					   DECODE(BILL_COMP_FLAG,'B','Y','Y','Y',NULL)
                 INTO  paydoc_ic_tab(i).cost_center_desc_hdr,
 				      paydoc_ic_tab(i).cost_center_dept, --Added for Defect 36437 (MOD4B Release 3)
 					  lc_bill_comp_flag							-- Added By Dinesh For Separate Bill Test for Bill Complete and Non-BillComplete
@@ -2786,7 +2784,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
             BEGIN
                 SELECT CUST_DEPT_DESCRIPTION,
                        COST_CENTER_DEPT, --Added for Defect 36437 (MOD4B Release 3)				
-					   BILL_COMP_FLAG
+					   DECODE(BILL_COMP_FLAG,'B','Y','Y','Y',NULL)
                 INTO   inv_ic_tab(i).cost_center_desc_hdr,
 				       inv_ic_tab(i).cost_center_dept,  --Added for Defect 36437 (MOD4B Release 3)
 					   lc_bill_comp_flag					-- Added By Dinesh For Separate Bill Test for Bill Complete and Non-BillComplete
@@ -3825,7 +3823,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
 													 ,cons_inv_id		--NAIT-61963 Added cons_inv_id to print separate bills for consolidated bill.
                                       FROM   xx_ar_ebl_cons_hdr_main
                                       WHERE  parent_cust_doc_id = cust_doc_id_rec.parent_cust_doc_id
-									  AND 	 c_ext_attr1 IN('B','Y')
+									  AND 	 c_ext_attr1 ='Y'
                                       AND    extract_batch_id = p_batch_id)
                  LOOP
                     --      IF (cust_doc_id_rec.ebill_transmission_type = 'EMAIL') THEN
@@ -3960,7 +3958,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
 												 , cons_inv_id  -- Added for Bill complete to get consolidated bills NAIT-61963
 						   FROM   xx_ar_ebl_cons_hdr_main
 						   WHERE  parent_cust_doc_id = cust_doc_id_rec.parent_cust_doc_id
-						   AND    c_ext_attr1 IN('B','Y')
+						   AND    c_ext_attr1 ='Y'
 						   AND    extract_batch_id = p_batch_id)
 		  LOOP
 			 SELECT xx_ebl_file_seq.NEXTVAL
@@ -4015,7 +4013,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
 									   		   ,cons_inv_id  -- Added for Bill complete to get consolidated bills NAIT-61963
                                        FROM   xx_ar_ebl_cons_hdr_main
                                        WHERE  parent_cust_doc_id = cust_doc_id_rec.parent_cust_doc_id
-									   AND    c_ext_attr1 IN('B','Y')
+									   AND    c_ext_attr1 ='Y'
                                        AND    extract_batch_id = p_batch_id)
                  LOOP
                     --      IF (cust_doc_id_rec.ebill_transmission_type = 'EMAIL') THEN
