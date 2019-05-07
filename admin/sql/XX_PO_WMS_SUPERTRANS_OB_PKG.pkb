@@ -517,7 +517,7 @@ PROCEDURE adj_cost_generate(p_errbuf      OUT  VARCHAR2
 	IS
 		WITH accounted_invoices_a AS
 		(
-			SELECT /*+ index(XAH XX_XLA_AE_HEADERS_N11 */ 
+			SELECT /*+ index(XAH XX_XLA_AE_HEADERS_N11) use_nl(XAH XTE) */ 
 				   AIA1.INVOICE_ID ,
 				   AIA1.INVOICE_NUM ,
 				   AIA1.INVOICE_CURRENCY_CODE ,
@@ -531,6 +531,7 @@ PROCEDURE adj_cost_generate(p_errbuf      OUT  VARCHAR2
 				--and trunc(xah.gl_transfer_date) = trunc(c_account_date)
 				AND xah.gl_transfer_date >= trunc(c_account_date) AND xah.gl_transfer_date < ( trunc(c_account_date) + 1 ) /*Raj NAIT-87118 to utilize the new XX_XLA_AE_HEADERS_N11 index */ 
 				AND XAH.EVENT_TYPE_CODE         = 'INVOICE VALIDATED' /*raj added */ 
+				AND XAH.gl_transfer_Status_code = 'Y' -- Raj NAIT-87118 to consider only gl_transferred records
 				 --AND XEV.APPLICATION_ID          = 200
 				 --AND XEV.EVENT_TYPE_CODE         = 'INVOICE VALIDATED'
 				  --AND XEV.PROCESS_STATUS_CODE     = 'P'
@@ -1179,24 +1180,31 @@ PROCEDURE adj_cost_generate(p_errbuf      OUT  VARCHAR2
     FROM XX_PO_WMS_SUPERTRANS_OB ST
     WHERE ST.RECORD_TYPE ='A'
    AND EXISTS
-      (SELECT 1
+      (SELECT /*+ index(xah XX_XLA_AE_HEADERS_N11) */ 
+	         1  --NAIT-87118 drive the SQL only via the records for that gl transfer run date from index XX_XLA_AE_HEADERS_N11
       FROM XLA_TRANSACTION_ENTITIES XTE ,
-        XLA_EVENTS XEV ,
-        xla_ae_headers xah
+           --XLA_EVENTS XEV , --NAIT-87118 commented redundant
+           xla_ae_headers xah
       WHERE 1                =1
       AND xah.application_id = 200
-      AND xev.event_id       = xah.event_id
-      AND xev.entity_id      =xah.entity_id
-      AND XEV.APPLICATION_ID = XAH.APPLICATION_ID
-      AND XEV.EVENT_TYPE_CODE='INVOICE CANCELLED'
-      AND XEV.PROCESS_STATUS_CODE = 'P'
-      AND xev.event_status_code   ='P'
-      AND XTE.ENTITY_ID           = XEV.ENTITY_ID
+      --AND xev.event_id       = xah.event_id
+      --AND xev.entity_id      =xah.entity_id
+      --AND XEV.APPLICATION_ID = XAH.APPLICATION_ID
+      --AND XEV.EVENT_TYPE_CODE='INVOICE CANCELLED'
+      --AND XEV.PROCESS_STATUS_CODE = 'P'
+      --AND xev.event_status_code   ='P'
+      --AND XTE.ENTITY_ID           = XEV.ENTITY_ID
+	  AND xah.EVENT_TYPE_CODE     = 'INVOICE CANCELLED' --NAIT-87118
+	  AND XTE.application_id      = 200            --NAIT-87118
+	  AND XTE.ENTITY_ID           = XAH.ENTITY_ID  --NAIT-87118
       AND xte.entity_code         = 'AP_INVOICES'
-      AND xte.application_id      = xev.application_id
-      AND XTE.LEDGER_ID+0         = XAH.LEDGER_ID
+      --AND xte.application_id      = xev.application_id --NAIT-87118
+	  AND xte.application_id      = xah.application_id --NAIT-87118
+      AND XTE.LEDGER_ID           = XAH.LEDGER_ID
       AND ST.INVOICE_ID           = XTE.SOURCE_ID_INT_1
-      AND TRUNC(XAH.GL_TRANSFER_DATE)     =TRUNC(p_acct_run_date)
+	  AND XAH.GL_TRANSFER_DATE >= TRUNC(p_acct_run_date) AND xah.gl_transfer_date < ( trunc(p_acct_run_date) + 1 ) --NAIT-87118
+	  AND XAH.GL_TRANSFER_STATUS_CODE = 'Y' --NAIT-87118 consider only gl transferred records as the filter is on gl_transfer_date
+      --AND TRUNC(XAH.GL_TRANSFER_DATE)     =TRUNC(p_acct_run_date)
       )
  AND NOT  EXISTS
     (SELECT 'x'
@@ -1252,7 +1260,7 @@ PROCEDURE match_recpt_generate(p_errbuf      OUT  VARCHAR2
 	IS
 		WITH accounted_invoices_m AS
 		(
-			SELECT   /*+ index(XAH XX_XLA_AE_HEADERS_N11) */ 
+			SELECT   /*+ index(xah XX_XLA_AE_HEADERS_N11) use_nl(xah xte ) */ 
 				  aia1.invoice_id
 				, aia1.invoice_num
 				, aia1.invoice_currency_code
@@ -1263,7 +1271,8 @@ PROCEDURE match_recpt_generate(p_errbuf      OUT  VARCHAR2
 			WHERE 1=1
 			  and xah.application_id = 200
 			  --and trunc(xah.gl_transfer_date) = trunc(c_account_date)
-			  AND xah.gl_transfer_date >= trunc(c_account_date) AND xah.gl_transfer_date < ( trunc(c_account_date) + 1 ) /*Raj NAIT-87118 to utilize the new XX_XLA_AE_HEADERS_N11 index */ 
+			  AND xah.gl_transfer_date >= trunc(c_account_date) AND xah.gl_transfer_date < ( trunc(c_account_date) + 1 ) /*Raj NAIT-87118 to utilize the new XX_XLA_AE_HEADERS_N11 index */
+              AND xah.gl_transfer_status_code = 'Y' 			  
 			  AND XAH.EVENT_TYPE_CODE         = 'INVOICE VALIDATED' /*raj NAIT-87118 added */ 
 			  AND XAH.entity_id               = xte.entity_id  /*raj NAIT-87118 added */
 			  and xah.ledger_id = xte.ledger_id
