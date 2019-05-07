@@ -2073,7 +2073,7 @@ AS
            px_ar_subscription_info.auth_code,
            px_ar_subscription_info.cof_trans_id
     FROM   xx_ar_subscription_payloads auth_response,
-           JSON_TABLE ( auth_response.response_data, '$.paymentAuthorizationResponse.transactionHeader' COLUMNS ( "TransactionId"    VARCHAR2(60) PATH '$.consumerTransactionId' ,"TransactionDateTime" VARCHAR2(30) PATH '$.consumerTransactionDateTime' )) "JT0" ,
+           JSON_TABLE ( auth_response.response_data, '$.paymentAuthorizationResponse.transactionHeader' COLUMNS ( "TRANSACTIONID"    VARCHAR2(60) PATH '$.consumerTransactionId' ,"TRANSACTIONDATETIME" VARCHAR2(30) PATH '$.consumerTransactionDateTime' )) "JT0" ,
            JSON_TABLE ( auth_response.response_data, '$.paymentAuthorizationResponse.transactionStatus' COLUMNS ( "TRANSACTION_CODE" VARCHAR2(60) PATH '$.code' ,"TRANSACTION_MESSAGE" VARCHAR2(256) PATH '$.message' )) "JT1" ,
            JSON_TABLE ( auth_response.response_data, '$.paymentAuthorizationResponse.authorizationResult' COLUMNS ( "AUTH_STATUS"    VARCHAR2(60) PATH '$.code' ,"AUTH_MESSAGE" VARCHAR2(256) PATH '$.message' ,"AVS_CODE" VARCHAR2(60) PATH '$.avsCode' ,"AUTH_CODE" VARCHAR2(60) PATH '$.authCode',"COF_TRANS_ID" VARCHAR2(256) PATH '$.cofTransactionId'  )) "JT2"
     WHERE  auth_response.payload_id = p_payload_id;
@@ -2096,7 +2096,7 @@ AS
                px_ar_subscription_info.authorization_code,
                px_ar_subscription_info.auth_transaction_message
         FROM   xx_ar_subscription_payloads auth_response,
-               JSON_TABLE ( auth_response.response_data, '$.paymentAuthorizationResponse.transactionHeader' COLUMNS ( "TransactionId"    VARCHAR2(60) PATH '$.consumerTransactionId' ,"TransactionDateTime" VARCHAR2(30) PATH '$.consumerTransactionDateTime' )) "JT0" ,
+               JSON_TABLE ( auth_response.response_data, '$.paymentAuthorizationResponse.transactionHeader' COLUMNS ( "TRANSACTIONID"    VARCHAR2(60) PATH '$.consumerTransactionId' ,"TRANSACTIONDATETIME" VARCHAR2(30) PATH '$.consumerTransactionDateTime' )) "JT0" ,
                JSON_TABLE ( auth_response.response_data, '$.paymentAuthorizationResponse.transactionStatus' COLUMNS ( "TRANSACTION_CODE" VARCHAR2(60) PATH '$.code' ,"TRANSACTION_MESSAGE" VARCHAR2(256) PATH '$.message' )) "JT1" 
         WHERE  auth_response.payload_id = p_payload_id;
       
