@@ -814,6 +814,21 @@ AS
     x_program_setups('update_trans_id_scm_url')  := lt_translation_info.target_value1;
     x_program_setups('update_trans_id_scm_user') := lt_translation_info.target_value2;
     x_program_setups('update_trans_id_scm_pwd')  := lt_translation_info.target_value3;
+    
+    /*******************
+    * Get COF check flag
+    *******************/
+
+    lc_action :=  'Calling get_translation_info for COF check flag';
+
+    lt_translation_info := NULL;
+
+    lt_translation_info.source_value1 := 'COF_CHECK_FLAG';
+
+    get_translation_info(p_translation_name  => 'XX_AR_SUBSCRIPTIONS',
+                         px_translation_info => lt_translation_info);
+
+    x_program_setups('cof_check_flag')  := lt_translation_info.target_value1;
 
     exiting_sub(p_procedure_name => lc_procedure_name);
 
@@ -6730,10 +6745,7 @@ AS
     lc_reason_code                 VARCHAR2(256) := NULL;
     
     lc_contract_number_modifier    xx_ar_contracts.contract_number_modifier%TYPE;
-    
-    lc_avs_check                  VARCHAR2(26);--BOOLEAN := FALSE;
-    
-    lc_avs_reason_code            VARCHAR2(120);
+
 
   BEGIN
 
@@ -9401,12 +9413,16 @@ AS
             THEN
               lr_ordt_info.wallet_type := 'P';
             ELSE
-              --lr_ordt_info.wallet_type := NULL;
-              IF TRUNC(px_subscription_array(indx).initial_auth_attempt_date) = TRUNC(px_subscription_array(indx).last_auth_attempt_date)
+              IF p_program_setups('cof_check_flag') = 'Y'
               THEN
-                lr_ordt_info.wallet_type := p_program_setups('subscription_subsequent');
+                IF TRUNC(px_subscription_array(indx).initial_auth_attempt_date) = TRUNC(px_subscription_array(indx).last_auth_attempt_date)
+                THEN
+                  lr_ordt_info.wallet_type := p_program_setups('subscription_subsequent');
+                ELSE
+                  lr_ordt_info.wallet_type := p_program_setups('subscription_resubmit');
+                END IF;
               ELSE
-                lr_ordt_info.wallet_type := p_program_setups('subscription_resubmit');
+                lr_ordt_info.wallet_type := NULL;
               END IF;
             END IF;
 
@@ -9720,11 +9736,14 @@ AS
           * Get trans id information
           *************************/
 
-          lc_action := 'Calling get_cc_trans_id_information';
-     
-          get_cc_trans_id_information(p_program_setups      => lt_program_setups,
-                                      p_contract_info       => lr_contract_info,
-                                      px_subscription_array => lt_subscription_array);
+          IF lt_program_setups('cof_check_flag') = 'Y'
+          THEN
+            lc_action := 'Calling get_cc_trans_id_information';
+            
+            get_cc_trans_id_information(p_program_setups      => lt_program_setups,
+                                        p_contract_info       => lr_contract_info,
+                                        px_subscription_array => lt_subscription_array);
+          END IF;
                                   
           /**************************************
           * Get contract header level information
