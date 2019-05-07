@@ -11,22 +11,25 @@ PROMPT Program exits IF the creation IS NOT SUCCESSFUL
 
 WHENEVER SQLERROR CONTINUE
 
-CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
+create or replace 
+PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
 /****************************************************************************************************************
 *   Name:        XXC2FO_EXTRACT_PKG
 *   PURPOSE:     This package was created for the C2O Extract Process
 *   @author      Joshua Wilson - C2FO
-*   @version     12.1.3.1.0
-*   @comments    
+*   @version     12.1.3.1.0XX_AP_C2FO_EXTRACT_PKG Body
+
+*   @comments
 *
 *   REVISIONS:
 *   Ver          Date         Author                    Company           Description
 *   ---------    ----------   ---------------           ----------        ---------------------------------------------------
 *   12.1.3.1.0   5/01/15      Joshua Wilson             C2FO              1. Created this package.
 *   12.1.3.1.0   8/29/2018    Nageswara Rao Chennupati  C2FO              2. Modified the package as per the new requirements.
-*   1.0          9/2/2018     Antonio Morales           OD                OD Initial Customized Version     
+*   1.0          9/2/2018     Antonio Morales           OD                OD Initial Customized Version
 *                                                                         Use a temp table to improve performance
 *                                                                         of reports
+*   1.1          07-May-2019  Arun DSouza               OD                Added ebs_invoice_due_date column to invoice extract
 *****************************************************************************************************************************/
 
   /***************************************************************/
@@ -34,7 +37,7 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
  /* Procedure to extract all files                               */
  /****************************************************************/
     PROCEDURE GENERATE_EXTRACT(
-                          errbuf                OUT  VARCHAR2, 
+                          errbuf                OUT  VARCHAR2,
                           retcode               OUT  NUMBER,
                           p_procdate             IN  VARCHAR2,
                           p_file_prefix          IN  VARCHAR2,
@@ -52,7 +55,7 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
                           p_po_date_to           IN  VARCHAR2  )  IS
 
         v_filename                         VARCHAR2(50);
-        v_output                           utl_file.file_type;    
+        v_output                           utl_file.file_type;
 
         lc_date_format            CONSTANT VARCHAR2(20) := 'RRRR/MM/DD';
         ld_procdate                        DATE := to_date(p_procdate,'yyyy-mm-dd hh24:mi:ss');
@@ -71,9 +74,9 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
          WHERE EBS_ORG_ID = p_operating_unit;
 --            AND EBS_SUPPLIER_NUMBER BETWEEN NVL(p_supp_num_from, EBS_SUPPLIER_NUMBER)   AND NVL(p_supp_num_to, EBS_SUPPLIER_NUMBER)
 --            AND EBS_INVOICE_NUM     BETWEEN NVL(p_invoice_num_from, EBS_INVOICE_NUM)    AND NVL(p_invoice_num_to, EBS_INVOICE_NUM)
---            AND TO_DATE(TRANSACTION_DATE, 'YYYY-MM-DD')    BETWEEN NVL(to_date(p_invoice_date_from, 'RRRR/MM/DD HH24:MI:SS'), TO_DATE(TRANSACTION_DATE,'YYYY-MM-DD'))  
+--            AND TO_DATE(TRANSACTION_DATE, 'YYYY-MM-DD')    BETWEEN NVL(to_date(p_invoice_date_from, 'RRRR/MM/DD HH24:MI:SS'), TO_DATE(TRANSACTION_DATE,'YYYY-MM-DD'))
 --            AND NVL(to_date(p_invoice_date_to, 'RRRR/MM/DD HH24:MI:SS'), TO_DATE(TRANSACTION_DATE,'YYYY-MM-DD'))
---            AND TO_DATE(PAYMENT_DUE_DATE, 'YYYY-MM-DD')    BETWEEN NVL(to_date(p_pay_due_date_from, 'RRRR/MM/DD HH24:MI:SS'), TO_DATE(PAYMENT_DUE_DATE,'YYYY-MM-DD'))  
+--            AND TO_DATE(PAYMENT_DUE_DATE, 'YYYY-MM-DD')    BETWEEN NVL(to_date(p_pay_due_date_from, 'RRRR/MM/DD HH24:MI:SS'), TO_DATE(PAYMENT_DUE_DATE,'YYYY-MM-DD'))
 --            AND NVL(to_date(p_pay_due_date_to, 'RRRR/MM/DD HH24:MI:SS'), TO_DATE(PAYMENT_DUE_DATE,'YYYY-MM-DD'))
 --            AND substr(invoice_id,instr(invoice_id,'|')+1) BETWEEN NVL(p_invoice_num_from, substr(invoice_id,instr(invoice_id,'|')+1)) AND NVL(p_invoice_num_to, substr(invoice_id,instr(invoice_id,'|')+1))
 
@@ -92,25 +95,25 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
         CURSOR C_ORG_DATA IS
         SELECT *
           FROM XX_AP_C2FO_ORGANIZATION_V
-         WHERE company_id IN (SELECT company_id 
+         WHERE company_id IN (SELECT company_id
                                 FROM xx_ap_c2fo_gt_invoice_view);
 
         CURSOR C_USER_DATA IS
         SELECT *
           FROM XX_AP_C2FO_USER_V
-         WHERE company_id IN (SELECT company_id 
+         WHERE company_id IN (SELECT company_id
                                 FROM xx_ap_c2fo_gt_invoice_view);
 
------PO PART5-------------------------                           
+-----PO PART5-------------------------
 
         CURSOR C_PO_DATA IS
           SELECT *
           FROM XX_AP_C2FO_OP_PO_DETAILS_ND_V
           WHERE EBS_ORG_ID = NVL(p_operating_unit, EBS_ORG_ID)
             --AND TO_DATE(CREATE_DATE, 'YYYY-MM-DD') BETWEEN l_validated_po_date_from AND l_validated_po_date_to;
-            AND TO_DATE(CREATE_DATE, 'YYYY-MM-DD')    BETWEEN NVL(to_date(p_po_date_from, 'RRRR/MM/DD HH24:MI:SS'), TO_DATE(l_validated_po_date_from,'YYYY-MM-DD'))  
+            AND TO_DATE(CREATE_DATE, 'YYYY-MM-DD')    BETWEEN NVL(to_date(p_po_date_from, 'RRRR/MM/DD HH24:MI:SS'), TO_DATE(l_validated_po_date_from,'YYYY-MM-DD'))
                                                           AND NVL(to_date(p_po_date_to, 'RRRR/MM/DD HH24:MI:SS'), TO_DATE(l_validated_po_date_to,'YYYY-MM-DD'));
------PO PART5-------------------------                  
+-----PO PART5-------------------------
 
 
     BEGIN
@@ -171,7 +174,8 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
                   ebs_site_pay_priority,
                   ebs_voucher_num,
                   ebs_cash_discount_amount,
-                  ebs_inv_amt_before_cash_disc
+                  ebs_inv_amt_before_cash_disc,
+                  ebs_invoice_due_date
                   )
             VALUES
                  (c_inv_data_rec(ind).company_id,
@@ -214,7 +218,8 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
                   c_inv_data_rec(ind).ebs_site_pay_priority,
                   c_inv_data_rec(ind).ebs_voucher_num,
                   c_inv_data_rec(ind).ebs_cash_discount_amount,
-                  c_inv_data_rec(ind).ebs_inv_amt_before_cash_disc
+                  c_inv_data_rec(ind).ebs_inv_amt_before_cash_disc,
+                  c_inv_data_rec(ind).ebs_invoice_due_date
                  );
 
             COMMIT;
@@ -257,7 +262,7 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
 
         v_output := UTL_FILE.FOPEN(C_DIRECTORY, v_filename, 'W');
 
-            UTL_FILE.PUT_LINE(v_output, 
+            UTL_FILE.PUT_LINE(v_output,
               LOWER('"COMPANY_ID'||'",'||
               '"DIVISION_ID'||'",'||
               '"INVOICE_ID'||'",'||
@@ -300,7 +305,9 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
               '"EBS_SITE_PAY_PRIORITY'||'",'||
               '"EBS_VOUCHER_NUM'||'",'||
               '"EBS_CASH_DISCOUNT_AMOUNT'||'",'||
-              '"EBS_INV_AMT_BEFORE_CASH_DISC'||'"'));
+              '"EBS_INV_AMT_BEFORE_CASH_DISC'||'",'||
+              '"EBS_INVOICE_DUE_DATE'||'"'              
+              ));
 
 
         --Loop through data and write to file
@@ -315,11 +322,11 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
         EXIT WHEN C_INV_DATA_REC_T.COUNT = 0;
 
         FOR ind IN C_INV_DATA_REC_T.FIRST .. C_INV_DATA_REC_T.LAST
-        LOOP 
+        LOOP
 
             v_inv_count := v_inv_count + 1;
 
-            UTL_FILE.PUT_LINE(v_output, 
+            UTL_FILE.PUT_LINE(v_output,
               '"'||C_INV_DATA_REC_T(ind).COMPANY_ID||'",'||
               '"'||C_INV_DATA_REC_T(ind).DIVISION_ID||'",'||
               '"'||C_INV_DATA_REC_T(ind).INVOICE_ID||'",'||
@@ -333,7 +340,7 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
               '"'||C_INV_DATA_REC_T(ind).PAYMENT_METHOD||'",'||
               '"'||C_INV_DATA_REC_T(ind).ADJ_INVOICE_ID||'",'||
               '"'||C_INV_DATA_REC_T(ind).ADJUSTMENT_REASON_CODE||'",'||
-              '"'||C_INV_DATA_REC_T(ind).DESCRIPTION||'",'||              
+              '"'||C_INV_DATA_REC_T(ind).DESCRIPTION||'",'||
               '"'||C_INV_DATA_REC_T(ind).VAT_AMOUNT||'",'||
               '"'||C_INV_DATA_REC_T(ind).AMOUNT_GROSSVAT||'",'||
               '"'||C_INV_DATA_REC_T(ind).AMOUNT_NETVAT||'",'||
@@ -361,16 +368,18 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
               '"'||C_INV_DATA_REC_T(ind).EBS_SUP_PAY_PRIORITY||'",'||
               '"'||C_INV_DATA_REC_T(ind).EBS_SITE_PAY_PRIORITY||'",'||
               '"'||C_INV_DATA_REC_T(ind).EBS_VOUCHER_NUM||'",'||
-              '"'||C_INV_DATA_REC_T(ind).EBS_CASH_DISCOUNT_AMOUNT||'",'||
-              '"'||C_INV_DATA_REC_T(ind).EBS_INV_AMT_BEFORE_CASH_DISC||'"');
+              '"'||c_inv_data_rec_t(ind).ebs_cash_discount_amount||'",'||
+              '"'||c_inv_data_rec_t(ind).ebs_inv_amt_before_cash_disc||'",' ||             
+              '"'||c_inv_data_rec_t(ind).ebs_invoice_due_date ||'"'               
+              );
 
          END LOOP;
 
         END LOOP;
-  
+
         FND_FILE.PUT_LINE(FND_FILE.LOG, 'Record Count:   '||v_inv_count);
 
-        UTL_FILE.FCLOSE(v_output); 
+        UTL_FILE.FCLOSE(v_output);
 
         CLOSE C_INV_DATA_T;
 
@@ -388,7 +397,7 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
 
         v_output := UTL_FILE.FOPEN(C_DIRECTORY, v_filename, 'W');
 
-            UTL_FILE.PUT_LINE(v_output, 
+            UTL_FILE.PUT_LINE(v_output,
               LOWER('"COMPANY_ID'||'",'||
               '"COMPANY_NAME'||'",'||
               '"ADDRESS_1'||'",'||
@@ -409,7 +418,7 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
 
             v_org_count := v_org_count + 1;
 
-            UTL_FILE.PUT_LINE(v_output, 
+            UTL_FILE.PUT_LINE(v_output,
               '"'||C_ORG_DATA_REC.COMPANY_ID||'",'||
               '"'||C_ORG_DATA_REC.COMPANY_NAME||'",'||
               '"'||C_ORG_DATA_REC.ADDRESS_1||'",'||
@@ -428,11 +437,11 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
 
         FND_FILE.PUT_LINE(FND_FILE.LOG, 'Record Count:   '||v_org_count);
 
-        UTL_FILE.FCLOSE(v_output); 
+        UTL_FILE.FCLOSE(v_output);
 
      EXCEPTION
        WHEN utl_file.invalid_path THEN
-          raise_application_error(-20000, 'ERROR: Invalid PATH FOR file.');      
+          raise_application_error(-20000, 'ERROR: Invalid PATH FOR file.');
       END;
 
       --BEGIN USER EXTRACT
@@ -444,7 +453,7 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
 
         v_output := UTL_FILE.FOPEN(C_DIRECTORY, v_filename, 'W');
 
-            UTL_FILE.PUT_LINE(v_output, 
+            UTL_FILE.PUT_LINE(v_output,
               LOWER('"COMPANY_ID'||'",'||
               '"DIVISION_ID'||'",'||
               '"EMAIL_ADDRESS'||'",'||
@@ -464,7 +473,7 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
 
             v_user_count := v_user_count + 1;
 
-            UTL_FILE.PUT_LINE(v_output, 
+            UTL_FILE.PUT_LINE(v_output,
               '"'||C_USER_DATA_REC.COMPANY_ID||'",'||
               '"'||C_USER_DATA_REC.DIVISION_ID||'",'||
               '"'||C_USER_DATA_REC.EMAIL_ADDRESS||'",'||
@@ -482,17 +491,17 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
 
          FND_FILE.PUT_LINE(FND_FILE.LOG, 'Record Count:   '||v_user_count);
 
-        UTL_FILE.FCLOSE(v_output); 
+        UTL_FILE.FCLOSE(v_output);
 
      EXCEPTION
        WHEN utl_file.invalid_path THEN
-          raise_application_error(-20000, 'ERROR: Invalid PATH FOR file.');      
+          raise_application_error(-20000, 'ERROR: Invalid PATH FOR file.');
       END;
 
------PO -------------------------      
------PO -------------------------      
+-----PO -------------------------
+-----PO -------------------------
 
------PO PART1-------------------------    
+-----PO PART1-------------------------
 
 --BEGIN PO EXTRACT
 
@@ -506,7 +515,7 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
 
         v_output := UTL_FILE.FOPEN(C_DIRECTORY, v_filename, 'W');
 
-            UTL_FILE.PUT_LINE(v_output, 
+            UTL_FILE.PUT_LINE(v_output,
               LOWER('"COMPANY_ID'||'",'||
               '"DIVISION_ID'||'",'||
               '"PO_ID'||'",'||
@@ -536,7 +545,7 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
               '"EBS_BUYER'||'",'||
               '"EBS_AUTHORIZATION_STATUS'||'",'||
               '"EBS_TERMS'||'",'||
-              '"EBS_CLOSED_CODE'||'",'||          
+              '"EBS_CLOSED_CODE'||'",'||
               '"EBS_SHIP_TO_LOCATION_ID'||'"'));
 
         --Loop through data and write to file
@@ -544,7 +553,7 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
 
             v_po_count := v_po_count + 1;
 
-            UTL_FILE.PUT_LINE(v_output, 
+            UTL_FILE.PUT_LINE(v_output,
               '"'||C_PO_DATA_REC.COMPANY_ID||'",'||
               '"'||C_PO_DATA_REC.DIVISION_ID||'",'||
               '"'||C_PO_DATA_REC.PO_ID||'",'||
@@ -568,11 +577,11 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
               '"'||C_PO_DATA_REC.EBS_VENDOR_ID||'",'||
               '"'||C_PO_DATA_REC.EBS_SUPPLIERSITE||'",'||
               '"'||C_PO_DATA_REC.EBS_VENDOR_SITE_ID||'",'||
-              '"'||C_PO_DATA_REC.EBS_POTYPE||'",'||    
+              '"'||C_PO_DATA_REC.EBS_POTYPE||'",'||
               '"'||C_PO_DATA_REC.EBS_PODATE||'",'||
               '"'||C_PO_DATA_REC.EBS_BILLTO_LOC||'",'||
               '"'||C_PO_DATA_REC.EBS_BUYER||'",'||
-              '"'||C_PO_DATA_REC.EBS_AUTHORIZATION_STATUS||'",'||    
+              '"'||C_PO_DATA_REC.EBS_AUTHORIZATION_STATUS||'",'||
               '"'||C_PO_DATA_REC.EBS_TERMS||'",'||
               '"'||C_PO_DATA_REC.EBS_CLOSED_CODE||'",'||
               '"'||C_PO_DATA_REC.EBS_SHIP_TO_LOCATION_ID||'"');
@@ -582,7 +591,7 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
 
         FND_FILE.PUT_LINE(FND_FILE.LOG, 'Record Count:   '||v_po_count);
 
-        UTL_FILE.FCLOSE(v_output); 
+        UTL_FILE.FCLOSE(v_output);
 
        EXCEPTION
          WHEN utl_file.invalid_path THEN
@@ -590,7 +599,7 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
         END;
         END IF;
 
------PO PART1-------------------------          
+-----PO PART1-------------------------
 
       --BEGIN CONTROL FILE
       BEGIN
@@ -601,45 +610,45 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
 
         v_output := UTL_FILE.FOPEN(C_DIRECTORY, v_filename, 'W');
 
-            UTL_FILE.PUT_LINE(v_output, 
+            UTL_FILE.PUT_LINE(v_output,
               LOWER('"FILE_NAME'||'",'||
-              '"ROW_COUNT'||'"'));  
+              '"ROW_COUNT'||'"'));
 
-            UTL_FILE.PUT_LINE(v_output, 
+            UTL_FILE.PUT_LINE(v_output,
               LOWER('"'||p_file_prefix||'_invoice_'||TO_CHAR(TRUNC(ld_procdate),'YYYYMMDD')||'.csv')||'",'||
               '"'||v_inv_count||'"');
 
-            UTL_FILE.PUT_LINE(v_output, 
+            UTL_FILE.PUT_LINE(v_output,
               LOWER('"'||p_file_prefix||'_organization_'||TO_CHAR(TRUNC(ld_procdate),'YYYYMMDD')||'.csv')||'",'||
               '"'||v_org_count||'"');
 
-            UTL_FILE.PUT_LINE(v_output,  
+            UTL_FILE.PUT_LINE(v_output,
               LOWER('"'||p_file_prefix||'_user_'||TO_CHAR(TRUNC(ld_procdate),'YYYYMMDD')||'.csv')||'",'||
               '"'||v_user_count||'"');
 
-                -----PO PART2-------------------------    
-            IF     p_po_data_extract = 'YES' THEN                
-            UTL_FILE.PUT_LINE(v_output,  
+                -----PO PART2-------------------------
+            IF     p_po_data_extract = 'YES' THEN
+            UTL_FILE.PUT_LINE(v_output,
               LOWER('"'||p_file_prefix||'_po_'||TO_CHAR(TRUNC(ld_procdate),'YYYYMMDD')||'.csv')||'",'||
               '"'||v_po_count||'"');
-            END IF;              
+            END IF;
                 -----PO PART2-------------------------
 
-            IF     p_po_data_extract = 'YES' THEN                
+            IF     p_po_data_extract = 'YES' THEN
 
             FND_FILE.PUT_LINE(FND_FILE.LOG, 'Record Count:   4');
             ELSE
             FND_FILE.PUT_LINE(FND_FILE.LOG, 'Record Count:   3');
             END IF;
 
-        UTL_FILE.FCLOSE(v_output); 
+        UTL_FILE.FCLOSE(v_output);
 
      FND_FILE.PUT_LINE(FND_FILE.LOG, ' ');
      FND_FILE.PUT_LINE(FND_FILE.LOG, 'File Extract Process Completed');
 
      EXCEPTION
        WHEN utl_file.invalid_path THEN
-          raise_application_error(-20000, 'ERROR: Invalid PATH FOR file.');      
+          raise_application_error(-20000, 'ERROR: Invalid PATH FOR file.');
       END;
 
     END GENERATE_EXTRACT;
@@ -650,7 +659,7 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
  /* OBSOLETE DO NOT USE (Kept for backwards compatibility)      */
  /***************************************************************/
     PROCEDURE INVOICE_EXTRACT(
-                          errbuf            OUT   VARCHAR2, 
+                          errbuf            OUT   VARCHAR2,
                           retcode           OUT   NUMBER
                                     )
      IS
@@ -676,13 +685,13 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
 
       --Loop through columns and write to file
 --      FOR C_VIEW_META_REC IN C_VIEW_META LOOP
---      
+--
 --        UTL_FILE.PUTF(v_output, '"'||LOWER(C_VIEW_META_REC.COLUMN_NAME)||'",');
---      
+--
 --      END LOOP;
 
 
-          UTL_FILE.PUT_LINE(v_output, 
+          UTL_FILE.PUT_LINE(v_output,
             '"COMPANY_ID'||'",'||
             '"DIVISION_ID'||'",'||
             '"INVOICE_ID'||'",'||
@@ -712,7 +721,7 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
             '"PO_ID'||'",'||
             --'"TRANSACTION_STATUS'||'",'||
             '"EBS_ORG_ID'||'",'||
-            --'"EBS_OU_NAME'||'",'||        
+            --'"EBS_OU_NAME'||'",'||
             '"EBS_VENDOR_ID'||'",'||
             '"EBS_SUPPLIER_NUMBER'||'",'||
             '"EBS_VENDOR_SITE_ID'||'",'||
@@ -731,7 +740,7 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
       --Loop through data and write to file
       --TODO:  Make columns dynamic for data stream
       FOR C_VIEW_DATA_REC IN C_VIEW_DATA LOOP
-          UTL_FILE.PUT_LINE(v_output, 
+          UTL_FILE.PUT_LINE(v_output,
             '"'||C_VIEW_DATA_REC.COMPANY_ID||'",'||
             '"'||C_VIEW_DATA_REC.DIVISION_ID||'",'||
             '"'||C_VIEW_DATA_REC.INVOICE_ID||'",'||
@@ -742,7 +751,7 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
             '"'||C_VIEW_DATA_REC.TRANSACTION_DATE||'",'||
             '"'||C_VIEW_DATA_REC.VOUCHER_ID||'",'||
             '"'||C_VIEW_DATA_REC.PAYMENT_TERM||'",'||
-            '"'||C_VIEW_DATA_REC.PAYMENT_METHOD||'",'||            
+            '"'||C_VIEW_DATA_REC.PAYMENT_METHOD||'",'||
             '"'||C_VIEW_DATA_REC.ADJ_INVOICE_ID||'",'||
             '"'||C_VIEW_DATA_REC.ADJUSTMENT_REASON_CODE||'",'||
             '"'||C_VIEW_DATA_REC.DESCRIPTION||'",'||
@@ -777,13 +786,13 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
             '"'||C_VIEW_DATA_REC.EBS_INV_AMT_BEFORE_CASH_DISC||'"');
        END LOOP;
 
-      UTL_FILE.FCLOSE(v_output); 
+      UTL_FILE.FCLOSE(v_output);
 
      EXCEPTION
        WHEN utl_file.invalid_path THEN
           raise_application_error(-20000, 'ERROR: Invalid PATH FOR file.');
 
-     END INVOICE_EXTRACT;   
+     END INVOICE_EXTRACT;
 
  /***********************************************/
  /* PROCEDURE ORGANIZATION_EXTRACT              */
@@ -791,7 +800,7 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
  /* OBSOLETE DO NOT USE (Kept for backwards compatibility)      */
  /***********************************************/
     PROCEDURE ORGANIZATION_EXTRACT(
-                          errbuf            OUT   VARCHAR2, 
+                          errbuf            OUT   VARCHAR2,
                           retcode           OUT   NUMBER
                                     )
      IS
@@ -817,13 +826,13 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
 
       --Loop through columns and write to file
 --      FOR C_VIEW_META_REC IN C_VIEW_META LOOP
---      
+--
 --        UTL_FILE.PUTF(v_output, '"'||LOWER(C_VIEW_META_REC.COLUMN_NAME)||'",');
---      
+--
 --      END LOOP;
 --      UTL_FILE.PUT_LINE(v_output,'');
 
-          UTL_FILE.PUT_LINE(v_output, 
+          UTL_FILE.PUT_LINE(v_output,
             '"COMPANY_ID'||'",'||
             '"COMPANY_NAME'||'",'||
             '"ADDRESS_1'||'",'||
@@ -841,7 +850,7 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
       --Loop through data and write to file
       --TODO:  Make columns dynamic for data stream
       FOR C_VIEW_DATA_REC IN C_VIEW_DATA LOOP
-          UTL_FILE.PUT_LINE(v_output, 
+          UTL_FILE.PUT_LINE(v_output,
             '"'||C_VIEW_DATA_REC.COMPANY_ID||'",'||
             '"'||C_VIEW_DATA_REC.COMPANY_NAME||'",'||
             '"'||C_VIEW_DATA_REC.ADDRESS_1||'",'||
@@ -857,13 +866,13 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
             '"'||C_VIEW_DATA_REC.TAX_ID||'"');
        END LOOP;
 
-      UTL_FILE.FCLOSE(v_output); 
+      UTL_FILE.FCLOSE(v_output);
 
      EXCEPTION
        WHEN utl_file.invalid_path THEN
           raise_application_error(-20000, 'ERROR: Invalid PATH FOR file.');
 
-     END ORGANIZATION_EXTRACT; 
+     END ORGANIZATION_EXTRACT;
 
  /***********************************************/
  /* PROCEDURE USER_EXTRACT                      */
@@ -871,7 +880,7 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
  /* OBSOLETE DO NOT USE (Kept for backwards compatibility)      */
  /***********************************************/
     PROCEDURE USER_EXTRACT(
-                          errbuf            OUT   VARCHAR2, 
+                          errbuf            OUT   VARCHAR2,
                           retcode           OUT   NUMBER
                                     )
      IS
@@ -897,13 +906,13 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
 
       --Loop through columns and write to file
 --      FOR C_VIEW_META_REC IN C_VIEW_META LOOP
---      
+--
 --        UTL_FILE.PUTF(v_output, '"'||LOWER(C_VIEW_META_REC.COLUMN_NAME)||'",');
---      
+--
 --      END LOOP;
 --      UTL_FILE.PUT_LINE(v_output,'');
 
-          UTL_FILE.PUT_LINE(v_output, 
+          UTL_FILE.PUT_LINE(v_output,
             '"COMPANY_ID'||'",'||
             '"DIVISION_ID'||'",'||
             '"EMAIL_ADDRESS'||'",'||
@@ -921,7 +930,7 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
       --Loop through data and write to file
       --TODO:  Make columns dynamic for data stream
       FOR C_VIEW_DATA_REC IN C_VIEW_DATA LOOP
-          UTL_FILE.PUT_LINE(v_output, 
+          UTL_FILE.PUT_LINE(v_output,
             '"'||C_VIEW_DATA_REC.COMPANY_ID||'",'||
             '"'||C_VIEW_DATA_REC.DIVISION_ID||'",'||
             '"'||C_VIEW_DATA_REC.EMAIL_ADDRESS||'",'||
@@ -937,14 +946,14 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
             '"'||C_VIEW_DATA_REC.COUNTRY||'"');
        END LOOP;
 
-      UTL_FILE.FCLOSE(v_output); 
+      UTL_FILE.FCLOSE(v_output);
 
      EXCEPTION
        WHEN utl_file.invalid_path THEN
           raise_application_error(-20000, 'ERROR: Invalid PATH FOR file.');
 
-     END USER_EXTRACT; 
------PO PART3-------------------------    
+     END USER_EXTRACT;
+-----PO PART3-------------------------
 
  /***************************************************************/
  /* PROCEDURE PO_EXTRACT                                   */
@@ -952,7 +961,7 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
  /* OBSOLETE DO NOT USE (Kept for backwards compatibility)      */
  /***************************************************************/
     PROCEDURE PO_EXTRACT(
-                          errbuf            OUT   VARCHAR2, 
+                          errbuf            OUT   VARCHAR2,
                           retcode           OUT   NUMBER
                                     )
      IS
@@ -978,13 +987,13 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
 
       --Loop through columns and write to file
 --      FOR C_VIEW_META_REC IN C_VIEW_META LOOP
---      
+--
 --        UTL_FILE.PUTF(v_output, '"'||LOWER(C_VIEW_META_REC.COLUMN_NAME)||'",');
---      
+--
 --      END LOOP;
 
 
-          UTL_FILE.PUT_LINE(v_output, 
+          UTL_FILE.PUT_LINE(v_output,
             '"COMPANY_ID'||'",'||
             '"DIVISION_ID'||'",'||
             '"PO_ID'||'",'||
@@ -1014,15 +1023,15 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
             '"EBS_BUYER'||'",'||
             '"EBS_AUTHORIZATION_STATUS'||'",'||
             '"EBS_TERMS'||'",'||
-            '"EBS_CLOSED_CODE'||'",'||        
-            '"EBS_SHIP_TO_LOCATION_ID'||'"');            
+            '"EBS_CLOSED_CODE'||'",'||
+            '"EBS_SHIP_TO_LOCATION_ID'||'"');
 
 --      UTL_FILE.PUT_LINE(v_output,'');
 
       --Loop through data and write to file
       --TODO:  Make columns dynamic for data stream
       FOR C_VIEW_DATA_REC IN C_VIEW_DATA LOOP
-          UTL_FILE.PUT_LINE(v_output, 
+          UTL_FILE.PUT_LINE(v_output,
             '"'||C_VIEW_DATA_REC.COMPANY_ID||'",'||
             '"'||C_VIEW_DATA_REC.DIVISION_ID||'",'||
             '"'||C_VIEW_DATA_REC.PO_ID||'",'||
@@ -1044,31 +1053,31 @@ CREATE OR REPLACE PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
             '"'||C_VIEW_DATA_REC.EBS_SUPPLIER||'",'||
             '"'||C_VIEW_DATA_REC.EBS_SUPPLIER_NUMBER||'",'||
             '"'||C_VIEW_DATA_REC.EBS_VENDOR_ID||'",'||
-            '"'||C_VIEW_DATA_REC.EBS_SUPPLIERSITE||'",'||    
+            '"'||C_VIEW_DATA_REC.EBS_SUPPLIERSITE||'",'||
             '"'||C_VIEW_DATA_REC.EBS_VENDOR_SITE_ID||'",'||
-            '"'||C_VIEW_DATA_REC.EBS_POTYPE||'",'||    
+            '"'||C_VIEW_DATA_REC.EBS_POTYPE||'",'||
             '"'||C_VIEW_DATA_REC.EBS_PODATE||'",'||
-            '"'||C_VIEW_DATA_REC.EBS_BILLTO_LOC||'",'||    
+            '"'||C_VIEW_DATA_REC.EBS_BILLTO_LOC||'",'||
             '"'||C_VIEW_DATA_REC.EBS_BUYER||'",'||
-            '"'||C_VIEW_DATA_REC.EBS_AUTHORIZATION_STATUS||'",'||    
+            '"'||C_VIEW_DATA_REC.EBS_AUTHORIZATION_STATUS||'",'||
             '"'||C_VIEW_DATA_REC.EBS_TERMS||'",'||
-            '"'||C_VIEW_DATA_REC.EBS_CLOSED_CODE||'",'||           
+            '"'||C_VIEW_DATA_REC.EBS_CLOSED_CODE||'",'||
             '"'||C_VIEW_DATA_REC.EBS_SHIP_TO_LOCATION_ID||'"');
        END LOOP;
 
-      UTL_FILE.FCLOSE(v_output); 
+      UTL_FILE.FCLOSE(v_output);
 
      EXCEPTION
        WHEN utl_file.invalid_path THEN
           raise_application_error(-20000, 'ERROR: Invalid PATH FOR file.');
 
-     END PO_EXTRACT;   
+     END PO_EXTRACT;
 
  /***********************************************/
 
------PO PART3-------------------------         
+-----PO PART3-------------------------
 
 END  XX_AP_C2FO_EXTRACT_PKG;
-/
 
---SHOW ERRORS
+/
+SHOW ERRORS

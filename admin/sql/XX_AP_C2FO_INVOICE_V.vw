@@ -31,23 +31,18 @@
    1.2        09/12/2018    Antonio Morales             OD          Modified this for performance
    1.3        09/19/2018    Madhu Bolli            		OD          Modified to allow invoices if it contains item,misc, freight
    1.4        09/24/2018    Madhu Bolli            		OD          Modified to restrict invoices if the supplier site is inactive
-   1.5        01/31/2019    Vivek Kumar                 OD          Modified for NAIT-81968 to include Organization Type = null  
-   1.6        05/06/2019    Arun Dsouza                 OD          Modifed of FP testing to fetch data for a single day  
-
+   1.5        01/31/2019    Vivek Kumar                 OD          Modified for NAIT-81968 to include Organization Type = null 
+   1.6        05/07/2019    Arun DSouza                 OD          Added column ebs_invoice_due_date for C2FO
 *************************************************************************************************************************/
 
 
-
-
-
--- Unable to render VIEW DDL for object APPS.XX_AP_C2FO_INVOICE_V with DBMS_METADATA attempting internal generator.
 CREATE or replace VIEW APPS.XX_AP_C2FO_INVOICE_V AS SELECT "COMPANY_ID", "DIVISION_ID", "INVOICE_ID", "AMOUNT", "CURRENCY", "PAYMENT_DUE_DATE", "TRANSACTION_TYPE", "TRANSACTION_DATE", "VOUCHER_ID",
          "PAYMENT_TERM", "PAYMENT_METHOD", "ADJ_INVOICE_ID", "ADJUSTMENT_REASON_CODE", "DESCRIPTION", "VAT_AMOUNT", "AMOUNT_GROSSVAT", "AMOUNT_NETVAT",
          "VAT_TO_BE_DISCOUNTED", "BUYER_NAME", "BUYER_ADDRESS", "BUYER_TAX_ID", "LOCAL_CURRENCY_KEY", "LOCAL_CURRENCY_RATE", "LOCAL_CURRENCY_ORG_INV_AMT",
          "LOCAL_CURRENCY_ORIGINAL_VAT", "MARKET_TYPE", "PO_ID", "EBS_ORG_ID", "EBS_VENDOR_ID", "EBS_SUPPLIER_NUMBER", "EBS_VENDOR_SITE_ID", "EBS_VENDOR_SITE_CODE",
          "EBS_INVOICE_ID", "EBS_INVOICE_NUM", "EBS_PAY_GROUP", "EBS_PAY_PRIORITY", "EBS_SUP_PAY_PRIORITY", "EBS_SITE_PAY_PRIORITY", "EBS_VOUCHER_NUM",
-         "EBS_CASH_DISCOUNT_AMOUNT", "EBS_INV_AMT_BEFORE_CASH_DISC"
-  FROM  (
+         "EBS_CASH_DISCOUNT_AMOUNT", "EBS_INV_AMT_BEFORE_CASH_DISC","EBS_INVOICE_DUE_DATE"
+   FROM  (
    SELECT /*+ leading(apsa)  index(apsa,AP_PAYMENT_SCHEDULES_N2) index(aia,AP_INVOICES_U1) */
           REPLACE (REPLACE (assa.org_id || '|' || sup.vendor_id || '|' || assa.vendor_site_id, ',', '')
                  , '"'
@@ -176,7 +171,8 @@ CREATE or replace VIEW APPS.XX_AP_C2FO_INVOICE_V AS SELECT "COMPANY_ID", "DIVISI
         , aia.voucher_num AS ebs_voucher_num
         --, (xx_ap_c2fo_int_ebs_ap_pay_pkg.ebs_cash_discount_amt (aia.org_id, aia.invoice_id)) AS ebs_cash_discount_amount
 		, NVL(apsa.discount_amount_available,0) AS ebs_cash_discount_amount
-        , NVL (NVL (aia.invoice_amount, 0) - NVL (aia.total_tax_amount, 0), 0) AS ebs_inv_amt_before_cash_disc
+        , nvl (nvl (aia.invoice_amount, 0) - nvl (aia.total_tax_amount, 0), 0) as ebs_inv_amt_before_cash_disc
+        ,to_char(apsa.due_date,'YYYY-MM-DD')  as ebs_invoice_due_date -- Added by Arun 07-May-2019
         , (SELECT /*+ index(ail,AP_INVOICE_LINES_U1) */
                   SUM (ail.amount)
              FROM ap_invoice_lines_all ail
@@ -245,4 +241,4 @@ CREATE or replace VIEW APPS.XX_AP_C2FO_INVOICE_V AS SELECT "COMPANY_ID", "DIVISI
      AND event_id = max_event_id
 ;
 
-show error
+show errors
