@@ -1,4 +1,15 @@
-CREATE OR REPLACE PACKAGE BODY "APPS"."XX_AP_XXAPRTVAPDM_PKG" 
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+create or replace 
+PACKAGE BODY XX_AP_XXAPRTVAPDM_PKG
   -- +=========================================================================
   -- +
   -- |                  Office Depot - Project Simplify
@@ -38,13 +49,13 @@ CREATE OR REPLACE PACKAGE BODY "APPS"."XX_AP_XXAPRTVAPDM_PKG"
   -- CF_FreightBillFormula|
   -- |1.6       19-AUG-2017 Digamber S     Added p_source   column in all
   -- procedures and functions to resolve the data source Legacy or EBiz
-
+  
   -- |1.7       02-FEB-2017 Ragni Gupta		Moved freight bill assignment condition out of ELSE block
   --       and commented call of invoice approval pkg to enahnce performance
   -- |1.8       12-APR-2018 Digamber S     Added new function before_report_trigger_c
   --                                       for new RTV APDM consolidation report
   -- |1.9        14-Dec-2018 Ragni Gupta   NAIT-72725, to remove dblink dependency
-  -- |1.10		28-FEB-2019  Raj Jose      NAIT-86183 Performance improvements
+  -- |2.0        08-May-2019 Shanti Seturaj Modified for jira NAIT-24616
   -- +=========================================================================
   -- +
 AS
@@ -78,8 +89,6 @@ BEGIN
     AND xte.entity_code      = 'AP_INVOICES'
     AND xev.entity_id        = xte.entity_id
     AND xev.event_type_code LIKE '%VALIDATED%'
-	AND xte.application_id = xev.application_id --/*Raj 28-Feb-2019 NAIT-86183 added to access application_id partition */
-	AND xev.application_id = 200 --NAIT-86183
     );
   RETURN(v_status);
 EXCEPTION
@@ -103,31 +112,7 @@ AS
     ---AND ai.last_update_date >= xx_ap_iby_pmnt_batch_pkg.cutoff_date_eligible
     AND ai.invoice_num LIKE 'RTV%'
     AND ai.org_id                                           =fnd_profile.value ('ORG_ID')
-    -- AND XX_AP_XXAPRTVAPDM_PKG.get_inv_status(ai.invoice_id) = 'Y' -- Validated Invoice /* Raj 28-Feb-2019 Jira#NAIT-86183 SQL consuming 375 seconds mainly due to PL/SQL context switching */
-	-- Raj 28-Feb-2019 Jira#NAIT-86183 added the logic of get_inv_status in below and conditions
-    AND NOT EXISTS 
-    (
-	  SELECT 1
-	  FROM   AP_HOLDS_ALL
-	  WHERE invoice_id         = AI.INVOICE_ID
-      AND   release_lookup_code IS NULL
-	) 
-    AND EXISTS 
-    (
-	 SELECT 1
-	 FROM xla_events xev,
-          xla_transaction_entities xte
-     WHERE 1=1 
-	 AND xte.application_id   = 200 
-     AND xte.ledger_id        = AI.SET_OF_BOOKS_ID	 
-	 AND xte.entity_code      = 'AP_INVOICES'
-	 AND NVL(xte.source_id_int_1,-99) = AI.INVOICE_ID
-	 AND xev.entity_id        =  xte.entity_id
-	 AND xev.application_id   =  xte.application_id
-	 AND xev.application_id   =  200 
-     AND xev.event_type_code LIKE '%VALIDATED%'
-	) 
-	--Raj End 28-Feb-2019 Jira#NAIT-86183
+    AND XX_AP_XXAPRTVAPDM_PKG.get_inv_status(ai.invoice_id) = 'Y' -- Validated Invoice
     AND ai.source                                          IN
       (SELECT val.target_value1
       FROM xx_fin_translatedefinition def ,
@@ -234,8 +219,6 @@ PROCEDURE BEFORE_REPORT_TRIGGER_C
     P_batch_name VARCHAR2
   )
 IS
-  
-  /* Raj 28-Feb-2019 commented as part of Jira#NAIT-86183 the below SQL is inefficient taking avg 5400 seconds per execution 
   CURSOR c1
   IS
     SELECT AI.invoice_num ,
@@ -254,7 +237,7 @@ IS
       xx_fin_translatedefinition DEF ,
       xx_fin_translatevalues VAL
     WHERE 1               =1
-    --AND ai.vendor_site_id = NVL(p_vendor_id, ai.vendor_site_id)
+    --AND ai.vendor_site_id = NVL(p_vendor_id, ai.vendor_site_id)    
     AND ai.invoice_id = NVL(P_RTV_NUMBER, ai.invoice_id)
     AND AI.INVOICE_NUM LIKE 'RTV%'
       -- AND AI.voucher_num             IS NOT NULL
@@ -271,92 +254,13 @@ IS
       FROM xx_ap_confirmed_payment_batch bt
       WHERE bt.payment_batch = ai.invoice_num
       AND checkrun_id        = ai.vendor_site_id
-      AND Attribute1         = P_batch_name
+      AND Attribute1         = P_batch_name 
       )
     --AND DECODE(APPS.AP_INVOICES_PKG.GET_APPROVAL_STATUS(ai.invoice_id, ai.invoice_amount,ai.payment_status_flag,ai.invoice_type_lookup_code), 'NEVER APPROVED', 'Never Validated', 'NEEDS REAPPROVAL', 'Needs Revalidation' , 'CANCELLED', 'Cancelled', 'Validated') = 'Validated'
   AND XX_AP_XXAPRTVAPDM_PKG.get_inv_status(ai.invoice_id) = 'Y'
     ORDER BY PV.SEGMENT1 ,
     AI.INVOICE_NUM ;
-  */ 	
-
-  /* Raj 28-Feb-2019 added as part of Jira#NAIT-86183 the below SQL completes less than 4 seconds per execution 
-     As part of this SQL created index XX_AP_CNF_PAYMNT_BATCH_N2 ON XX_AP_CONFIRMED_PAYMENT_BATCH ATTRIBUTE1 column.
-	 If invoice id is given as input SQL will drive from AP_INVOICES_ALL else will drive from XX_AP_CONFIRMED_PAYMENT_BATCH on the new _N2 index
-  */ 
-  CURSOR c1
-  IS
-  SELECT AI.invoice_num ,
-         AI.invoice_id ,
-         AI.INVOICE_DATE ,
-         AI.VOUCHER_NUM ,
-         AI.vendor_site_id ,
-         (NVL( TO_NUMBER( PVSA.ATTRIBUTE9),PVSA.VENDOR_SITE_ID)) LEGACY_VENDOR,
-         DECODE ( NVL(P_COUNTRY,'US') , 'US','USTR','CA','CNTR',NVL(P_COUNTRY, 'US')) AP_COMPANY
-	FROM 
-	(   
-		SELECT AI.INVOICE_NUM ,
-			   AI.INVOICE_ID ,
-			   AI.INVOICE_DATE ,
-			   NVL(AI.VOUCHER_NUM, AI.DOC_SEQUENCE_VALUE) VOUCHER_NUM ,
-			   AI.VENDOR_SITE_ID,
-			   AI.SET_OF_BOOKS_ID
-		FROM   AP_INVOICES_ALL AI,
-			   XX_AP_CONFIRMED_PAYMENT_BATCH BT,
-			   XX_FIN_TRANSLATEDEFINITION DEF,
-			   XX_FIN_TRANSLATEVALUES VAL
-		WHERE 1           =1
-		AND  AI.INVOICE_ID = NVL(P_RTV_NUMBER, ai.invoice_id)
-		AND  AI.INVOICE_NUM LIKE 'RTV%'
-		AND NVL(AI.VOUCHER_NUM, AI.DOC_SEQUENCE_VALUE) IS NOT NULL
-		AND BT.PAYMENT_BATCH = AI.INVOICE_NUM
-		AND BT.CHECKRUN_ID        = AI.VENDOR_SITE_ID
-		AND BT.ATTRIBUTE1         = P_batch_name
-		AND AI.SOURCE = VAL.TARGET_VALUE1
-		AND VAL.TARGET_VALUE1 LIKE '%RTV%' 
-		AND DEF.TRANSLATE_ID     = VAL.TRANSLATE_ID
-		AND DEF.TRANSLATION_NAME = 'AP_INVOICE_SOURCE'
-		GROUP BY /*Raj did group by as XX_AP_CONFIRMED_PAYMENT_BATCH can have duplicate entries for invoice_num and vendor_site_id combination */
-			   AI.SET_OF_BOOKS_ID, 
-			   AI.INVOICE_NUM ,
-			   AI.INVOICE_ID ,
-			   AI.INVOICE_DATE ,
-			   NVL(AI.VOUCHER_NUM, AI.DOC_SEQUENCE_VALUE),
-			   AI.VENDOR_SITE_ID
-	) AI,
-	  AP_SUPPLIERS PV ,
-	  AP_SUPPLIER_SITES_ALL PVSA
-	WHERE 1 = 1
-	AND AI.VENDOR_SITE_ID    = PVSA.VENDOR_SITE_ID
-	AND PV.VENDOR_ID         = PVSA.VENDOR_ID
-	--AND XX_AP_XXAPRTVAPDM_PKG.get_inv_status(ai.invoice_id) = 'Y' PLSQL context switching consuming lot of CPU time moved the logic of get_inv_status to below AND conditions
-	AND NOT EXISTS 
-		(
-		  SELECT 1
-		  FROM   AP_HOLDS_ALL
-		  WHERE invoice_id         = AI.INVOICE_ID
-		  AND   release_lookup_code IS NULL
-		) 
-	AND EXISTS 
-		(
-		 SELECT 1
-		 FROM xla_events xev,
-			  xla_transaction_entities xte
-		 WHERE 1=1 
-		 AND xte.application_id   = 200 
-		 AND xte.ledger_id        = AI.SET_OF_BOOKS_ID	 
-		 AND xte.entity_code      = 'AP_INVOICES'
-		 AND NVL(xte.source_id_int_1,-99) = AI.INVOICE_ID
-		 AND xev.application_id   = xte.application_id /*Added the application_id join to access the partition in xev*/
-		 AND xev.application_id   = 200
-		 AND xev.entity_id        = xte.entity_id
-		 AND xev.event_type_code LIKE '%VALIDATED%'
-		) 
-	ORDER BY PV.SEGMENT1 ,
-			 AI.INVOICE_NUM	
-	;	   
-   
-
-CURSOR c2 (l_invoice_nbr VARCHAR2, l_vendor_site_id NUMBER)
+  CURSOR c2 (l_invoice_nbr VARCHAR2, l_vendor_site_id NUMBER)
   IS
     SELECT XARH.INVOICE_NUM,
       --  xarh.VOUCHER_NUM voucher_nbr ,
@@ -370,7 +274,8 @@ CURSOR c2 (l_invoice_nbr VARCHAR2, l_vendor_site_id NUMBER)
     FROM XX_AP_RTV_HDR_ATTR xarh,
       XX_AP_RTV_LINES_ATTR xarl
     WHERE xarh.header_id    =xarl.header_id
-    AND xarh.frequency_code = 'DY'
+	and xarh.rtv_number = xarl.rtv_number  --added for jira NAIT-24616
+    AND xarh.frequency_code in ('DY','MY','WY','QY')   -- Modified for jira NAIT-24616
     AND xarh.Record_Status  = 'C'
       --AND XARH.VOUCHER_NUM = l_voucher_nbr;
     AND xarh.invoice_num = l_invoice_nbr;
@@ -570,10 +475,10 @@ IS
       AND Attribute1         = P_batch_name
       )
   --AND DECODE(APPS.AP_INVOICES_PKG.GET_APPROVAL_STATUS(ai.invoice_id, ai.invoice_amount,ai.payment_status_flag,ai.invoice_type_lookup_code), 'NEVER APPROVED', 'Never Validated', 'NEEDS REAPPROVAL', 'Needs Revalidation' , 'CANCELLED', 'Cancelled', 'Validated') = 'Validated'
-   AND NOT EXISTS (SELECT 'x'
-                 FROM AP_HOLDS_ALL
-             WHERE INVOICE_ID=AI.INVOICE_ID
-              AND RELEASE_LOOKUP_CODE IS NULL
+   AND NOT EXISTS (SELECT 'x'        
+                 FROM AP_HOLDS_ALL 
+             WHERE INVOICE_ID=AI.INVOICE_ID 
+              AND RELEASE_LOOKUP_CODE IS NULL 
                )
       AND EXISTS
         (SELECT 'x'
@@ -581,11 +486,9 @@ IS
           XLA_TRANSACTION_ENTITIES XTE
         WHERE XTE.SOURCE_ID_INT_1=AI.INVOICE_ID
         AND XTE.APPLICATION_ID   = 200
-        AND XTE.ENTITY_CODE      = 'AP_INVOICES'
+        AND XTE.ENTITY_CODE      = 'AP_INVOICES'        
         AND XEV.ENTITY_ID        = XTE.ENTITY_ID
         AND XEV.EVENT_TYPE_CODE LIKE '%VALIDATED%'
-		AND XTE.APPLICATION_ID   = XEV.APPLICATION_ID /*Raj NAIT-86183 added the application_id filter to access the partition in xev */ 
-        AND XEV.APPLICATION_ID = 200  	/*Raj NAIT-86183 added the application_id filter to access the partition in xev */ 	
         )
   ORDER BY PV.SEGMENT1 ,
     AI.INVOICE_NUM ;
@@ -632,8 +535,8 @@ BEGIN
     dbms_output.put_line('First Loop '||i.voucher_num ||'  '||i.invoice_num);
     fnd_file.put_line(fnd_file.log, 'First Loop '||i.voucher_num ||'  '||i.invoice_num);
     BEGIN
-
-
+    
+   
       --FOR j IN c2(i.voucher_num )
       FOR j IN c2(i.invoice_num )
       LOOP
@@ -802,7 +705,7 @@ BEGIN
       FROM XX_AP_RTV_HDR_ATTR xarh,
         XX_AP_RTV_LINES_ATTR xarl
       WHERE xarh.header_id    =xarl.header_id
-      AND xarh.frequency_code ='DY'
+      AND xarh.frequency_code in ('DY','MY','WY','QY')  -- Modified for jira NAIT-24616
       AND ( xarh.Invoice_Num  = P_Invoice_Nbr
     OR xarh.Rtv_Number      = Ltrim(P_Invoice_Nbr,'RTV'))
     AND xarh.Record_Status  = 'C'
@@ -899,7 +802,7 @@ BEGIN
     FROM XX_AP_RTV_HDR_ATTR xarh,
       XX_AP_RTV_LINES_ATTR xarl
     WHERE xarh.header_id    =xarl.header_id
-    AND xarh.frequency_code ='DY'
+    AND xarh.frequency_code in ('DY','MY','WY','QY')  -- Modified for jira NAIT-24616
     AND ( xarh.Invoice_Num  = P_Invoice_Nbr
     OR xarh.Rtv_Number      = Ltrim(P_Invoice_Nbr,'RTV'))
     AND xarh.Record_Status  = 'C'
@@ -940,7 +843,7 @@ BEGIN
     AND ( xarh.Invoice_Num  = P_Invoice_Nbr
     OR xarh.Rtv_Number      = Ltrim(P_Invoice_Nbr,'RTV'))
     AND xarh.Record_Status  = 'C'
-    AND xarh.Frequency_Code = 'DY'
+    AND xarh.Frequency_Code in ('DY','MY','WY','QY')  -- Modified for jira NAIT-24616
     AND Rownum           =1
     AND EXISTS
       (SELECT 1
@@ -982,7 +885,7 @@ BEGIN
     AND ( xarh.Invoice_Num  = P_Invoice_Nbr
     OR xarh.Rtv_Number      = Ltrim(P_Invoice_Nbr,'RTV'))
     AND xarh.Record_Status  = 'C'
-    AND xarh.Frequency_Code = 'DY'
+    AND xarh.Frequency_Code in ('DY','MY','WY','QY')  -- Modified for jira NAIT-24616
     AND Rownum           =1
     AND EXISTS
       (SELECT 1
@@ -1025,7 +928,7 @@ BEGIN
     AND ( xarh.Invoice_Num  = P_Invoice_Nbr
     OR xarh.Rtv_Number      = Ltrim(P_Invoice_Nbr,'RTV'))
     AND xarh.Record_Status  = 'C'
-    AND xarh.Frequency_Code = 'DY'
+    AND xarh.Frequency_Code in ('DY','MY','WY','QY')  -- Modified for jira NAIT-24616
     AND Rownum           =1
     AND EXISTS
       (SELECT 1
@@ -1096,7 +999,7 @@ BEGIN
     AND ( xarh.Invoice_Num  = P_Invoice_Nbr
     OR xarh.Rtv_Number      = Ltrim(P_Invoice_Nbr,'RTV'))
     AND xarh.Record_Status  = 'C'
-    AND xarh.Frequency_Code = 'DY'
+    AND xarh.Frequency_Code in ('DY','MY','WY','QY')  -- Modified for jira NAIT-24616
     AND Rownum              =1
     AND EXISTS
       (SELECT 1
@@ -1144,7 +1047,7 @@ IS
     AND FB.loc_id         = p_legacy_loc_id
     AND FB.carrier_id     = p_carrier_id
     ORDER BY FB.out_frt_bill_nbr ASC;
-
+    
   frightbill_rec lcu_frightbill%ROWTYPE; */
   --Version 1.9 changes ends
   lc_freight_bill VARCHAR2(2000);
@@ -1176,7 +1079,7 @@ BEGIN
     AND ( xarh.Invoice_Num  = P_Invoice_Nbr
     OR xarh.Rtv_Number      = Ltrim(P_Invoice_Nbr,'RTV'))
     AND xarh.Record_Status  = 'C'
-    AND xarh.Frequency_Code = 'DY'
+    AND xarh.Frequency_Code in ('DY','MY','WY','QY')  -- Modified for jira NAIT-24616
     AND Rownum              =1
     AND EXISTS
       (SELECT 1
@@ -1310,7 +1213,7 @@ BEGIN
     FROM XX_AP_RTV_HDR_ATTR xarh,
       XX_AP_RTV_LINES_ATTR xarl
     WHERE xarh.header_id    =xarl.header_id
-    AND xarh.frequency_code ='DY'
+    AND xarh.frequency_code in ('DY','MY','WY','QY')  -- Modified for jira NAIT-24616
     AND ( xarh.Invoice_Num  = P_Invoice_Nbr
     OR xarh.Rtv_Number      = Ltrim(P_Invoice_Nbr,'RTV'))
     AND xarh.Record_Status  = 'C'
@@ -1500,13 +1403,13 @@ BEGIN
     L_RECORD_LEGACYDB2(N).DEPARTMENT    :=NULL;
     L_RECORD_LEGACYDB2(N).AP_COMPANY    :=NULL;
   END IF;
-
+  
   FOR i IN L_RECORD_LEGACYDB2.First .. L_RECORD_LEGACYDB2.last
   LOOP
     --dbms_output.put_line('Test '||l_chargeback_db(i).vendor_id);
     pipe row ( L_RECORD_LEGACYDB2(i) ) ;
   END LOOP;
-
+  
   RETURN;
 EXCEPTION
 WHEN ex_dml_errors THEN
@@ -1516,7 +1419,10 @@ WHEN ex_dml_errors THEN
   LOOP
     DBMS_OUTPUT.put_line ( 'Error: ' || i || ' Array Index: ' || SQL%BULK_EXCEPTIONS(i).error_index || ' Message: ' || SQLERRM(-SQL%BULK_EXCEPTIONS(i).ERROR_CODE) ) ;
   END LOOP;
-
+  
 end xx_ap_legacydb2;
 
 END XX_AP_XXAPRTVAPDM_PKG;
+/
+
+SHOW ERRORS;
