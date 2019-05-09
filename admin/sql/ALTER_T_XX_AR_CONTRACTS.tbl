@@ -1,0 +1,25 @@
+-- +========================================================================+
+-- |                  Office Depot                                          |
+-- +========================================================================+
+-- | Name        : ALTER_t_XX_AR_CONTRACTS.tbl                              |
+-- | Description : Added new field in the existing XX_AR_CONTRACTS          |
+-- |               table                                                    |
+-- |                                                                        |
+-- |Change Record:                                                          |
+-- |===============                                                         |
+-- |Version   Date        Author           Remarks                          |
+-- |=======  ===========  =============    =================================|
+-- |1.0      09-MAY-2019  Sahithi Kunuru    Initial Version                 |
+-- +========================================================================+
+
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+
+alter table xx_ar_contracts
+add (store_close_flag VARCHAR2(2) DEFAULT 'N');
+
+
+/
