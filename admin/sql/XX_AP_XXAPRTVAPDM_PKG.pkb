@@ -506,7 +506,8 @@ IS
     FROM XX_AP_RTV_HDR_ATTR xarh,
       XX_AP_RTV_LINES_ATTR xarl
     WHERE xarh.header_id    =xarl.header_id
-    AND xarh.frequency_code = 'DY'
+	AND XARH.RTV_NUMBER = XARL.RTV_NUMBER               -- Added for jira NAIT-24616
+    AND xarh.frequency_code in ( 'DY','MY','WY','QY')    -- Modified for jira NAIT-24616
     AND xarh.Record_Status  = 'C'
       --AND XARH.VOUCHER_NUM = l_voucher_nbr;
     AND xarh.invoice_num = l_invoice_nbr;
