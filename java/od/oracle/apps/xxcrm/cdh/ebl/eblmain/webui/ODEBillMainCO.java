@@ -1322,11 +1322,11 @@ ODEBillMainCO extends OAControllerImpl {
            String docuType = null;
            docuType = custDocVO.first().getAttribute("DocType").toString();
            OAMessageChoiceBean transmissionType = 
-              (OAMessageChoiceBean)webBean.findIndexedChildRecursive("EbillTransmission");      
-           if(("Email".equalsIgnoreCase(transmissionType.getValue(pageContext).toString())) && "ePDF".equalsIgnoreCase(deliveryMethod) 
-                && ("Consolidated Bill".equalsIgnoreCase(docuType))  && ("Yes".equalsIgnoreCase(payDoc))){
-                String custAccountId = custDocVO.first().getAttribute("CustAccountId").toString();
-                validateFieProcMethod(pageContext,webBean,custAccountId);                   
+              (OAMessageChoiceBean)webBean.findIndexedChildRecursive("EbillTransmission");            
+           if(("Email".equalsIgnoreCase(transmissionType.getValue(pageContext).toString())) && "ePDF".equalsIgnoreCase(deliveryMethod))
+           {
+              String custAccountId = custDocVO.first().getAttribute("CustAccountId").toString();
+              validateFieProcMethod(pageContext,webBean,custAccountId,docuType,payDoc);                   
             }            
          //Code added by Rafi for NAIT-91481 Rectify Billing Delivery Efficiency - END
           
@@ -2202,10 +2202,10 @@ ODEBillMainCO extends OAControllerImpl {
             docuType = custDocVO.first().getAttribute("DocType").toString();
             OAMessageChoiceBean transmissionType = 
               (OAMessageChoiceBean)webBean.findIndexedChildRecursive("EbillTransmission");      
-            if(("Email".equalsIgnoreCase(transmissionType.getValue(pageContext).toString())) && "ePDF".equalsIgnoreCase(deliveryMethod) 
-                && ("Consolidated Bill".equalsIgnoreCase(docuType))  && ("Yes".equalsIgnoreCase(payDoc))){
-                validateFieProcMethod(pageContext,webBean,custAccountId);                   
-            }          
+                if(("Email".equalsIgnoreCase(transmissionType.getValue(pageContext).toString())) && "ePDF".equalsIgnoreCase(deliveryMethod))
+                {
+                     validateFieProcMethod(pageContext,webBean,custAccountId,docuType,payDoc);                   
+                 }          
             //Code added by Rafi for NAIT-91481 Rectify Billing Delivery Efficiency - END
 
             /*Start - MOD 4B R3*/
@@ -4167,15 +4167,13 @@ pageContext.getApplicationModule(webBean).getOADBTransaction().getJdbcConnection
     }
     //Code added by Rafi for NAIT-91481 Rectify Billing Delivery Efficiency - START
     private void validateFieProcMethod(OAPageContext pageContext, 
-                                       OAWebBean webBean, String custAccountId) {
+                                       OAWebBean webBean, String custAccountId,String docuType, String payDoc) {
       Serializable inputParams1[] = {custAccountId };
       OAApplicationModule mainAM = pageContext.getApplicationModule(webBean);
       String bcFlag = (String)mainAM.invokeMethod("getBCFlag",inputParams1);
-     
-      if("B".equalsIgnoreCase(bcFlag) || ("Y".equalsIgnoreCase(bcFlag))){
-        //System.out.println("do nothing");
-      }
-       else{
+       if(("B".equalsIgnoreCase(bcFlag) && "No".equalsIgnoreCase(payDoc)) || ("Y".equalsIgnoreCase(bcFlag) && "No".equalsIgnoreCase(payDoc)) 
+          || ("N".equalsIgnoreCase(bcFlag) && "Yes".equalsIgnoreCase(payDoc)) || ("P".equalsIgnoreCase(bcFlag) && "Yes".equalsIgnoreCase(payDoc)))
+       {
           OAMessageChoiceBean fileProcessMtd = 
             (OAMessageChoiceBean)webBean.findIndexedChildRecursive("FileProcessingMethod");
             if(fileProcessMtd.getValue(pageContext)!=null){                               
