@@ -65,6 +65,8 @@ AS
 -- | 25.0        22-APR-2019  Dattatray B         Added Procedure-xx_ar_subs_payload_purge_prc   |
 -- |											  for NAIT-83868-> To purge Subscriptions Payload| 
 -- |											  and Error table more than 30 days older data	 |
+-- | 26.0        03-MAY-2019  Kayeed Ahmed        Added Procedure-get_store_close_info NAIT-93356|
+-- |											  TO Closed Stores Accounting Remapping          |
 -- +=============================================================================================+
  
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -80,6 +82,7 @@ AS
   gb_debug                        BOOLEAN                        := FALSE;
   gc_order_source_spc             oe_order_sources.name%TYPE     := 'SPC';
   gc_contract_status     CONSTANT VARCHAR2(20)                   := 'TERMINATE';
+  gc_store_number        VARCHAR2(50);
   
   TYPE gt_input_parameters IS TABLE OF VARCHAR2(32000)
    INDEX BY VARCHAR2(255);
@@ -1524,6 +1527,56 @@ AS
       RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
 
   END get_location_info;
+  
+  /******************************************************
+  * Helper procedure to get location info for accounting
+  *****************************************************/
+
+  PROCEDURE get_new_location_info(p_store_number   IN         hr_locations_all.location_code%TYPE,
+                                  x_loc_code       OUT NOCOPY hr_locations_all.location_code%TYPE,
+                                  x_region         OUT NOCOPY hr_locations_all.region_1%TYPE,
+                                  x_loc_type       OUT NOCOPY hr_lookups.meaning%TYPE)
+  IS
+
+    lc_procedure_name  CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'get_new_location_info';
+    lt_parameters      gt_input_parameters;
+
+  BEGIN
+
+    lt_parameters('p_store_number') := p_store_number;
+
+    entering_sub(p_procedure_name => lc_procedure_name,
+                 p_parameters     => lt_parameters);
+ 
+    SELECT SUBSTR(hla.location_code, 1, 6),
+           DECODE(hla.country, 'US', hla.region_2, hla.region_1),
+           hl.meaning
+    INTO   x_loc_code,
+           x_region,
+           x_loc_type
+    FROM   hr_lookups hl,
+           hr_locations_all hla,
+           hr_all_organization_units haou
+    WHERE  haou.TYPE            = hl.lookup_code
+    AND    haou.location_id     = hla.location_id
+    --AND    haou.organization_id = p_org_id
+    AND    SUBSTR(hla.location_code, 1, 6) = p_store_number
+    AND    hl.lookup_type       = 'ORG_TYPE'
+    AND    hl.enabled_flag      = 'Y';
+
+    logit(p_message => 'RESULT location_code: ' || x_loc_code);
+    logit(p_message => 'RESULT region: '        || x_region);
+    logit(p_message => 'RESULT location_type: ' || x_loc_type);
+
+    exiting_sub(p_procedure_name => lc_procedure_name);
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+      exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+      RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+
+  END get_new_location_info;
  
   /**********************************
   * Helper procedure to customer info
@@ -3368,6 +3421,10 @@ AS
     l_AB_flag                      VARCHAR2(2)                                    := 'N';
     
     l_inv_seq_counter              xx_ar_subscriptions.inv_seq_counter%TYPE;
+    
+    lr_contract_info               xx_ar_contracts%ROWTYPE;
+    
+    lc_store_loc                   VARCHAR2(30) := 'STORE%';
 
   BEGIN
 
@@ -4043,6 +4100,63 @@ AS
                               x_loc_code  => lc_oloc,
                               x_region    => lc_region,
                               x_loc_type  => lc_oloc_type);
+
+          END IF;
+
+          /******************************
+          * checking store closure status
+          ******************************/
+          lc_action := 'Calling get_store_close_info';
+          
+          get_store_close_info(p_store_number     => p_contract_info.store_number,
+                               x_store_info       => gc_store_number);
+          
+          IF p_contract_info.store_number != gc_store_number
+          THEN
+            UPDATE xx_ar_contracts
+            set    store_number       = gc_store_number
+                  ,store_close_flag   = 'Y'
+                  ,last_update_date   = SYSDATE
+                  ,last_updated_by    = NVL(FND_GLOBAL.USER_ID, -1)
+                  ,last_update_login  = NVL(FND_GLOBAL.USER_ID, -1)
+            WHERE  contract_id        = p_contract_info.contract_id;
+            COMMIT;
+            
+          END IF;
+            
+          /**************************************
+          * Get contract header level information
+          **************************************/
+          
+          lc_action := 'Calling get_contract_info';
+          
+          get_contract_info(p_contract_id     => p_contract_info.contract_id,
+                            x_contract_info   => lr_contract_info);
+                            
+          IF lr_contract_info.store_close_flag = 'Y'
+          THEN
+            get_new_location_info(p_store_number    => lr_contract_info.store_number,
+                                  x_loc_code        => lc_oloc,
+                                  x_region          => lc_region,
+                                  x_loc_type        => lc_oloc_type);
+            
+            IF NVL(lc_oloc_type,1) LIKE lc_store_loc AND lc_sloc_type LIKE lc_store_loc 
+            THEN
+              lc_oloc      := lc_oloc;
+              lc_oloc_type := lc_oloc_type;
+            ELSIF NVL(lc_oloc_type,1) LIKE lc_store_loc AND lc_sloc_type NOT LIKE lc_store_loc 
+            THEN
+              lc_oloc      := lc_oloc;
+              lc_oloc_type := lc_oloc_type;
+            ELSIF NVL(lc_oloc_type,1) NOT LIKE lc_store_loc AND lc_sloc_type LIKE lc_store_loc 
+            THEN
+              lc_sloc      := lc_oloc;
+              lc_sloc_type := lc_oloc_type;
+            ELSIF NVL(lc_oloc_type,1) NOT LIKE lc_store_loc AND lc_sloc_type NOT LIKE lc_store_loc 
+            THEN
+              lc_sloc      := lc_oloc;
+              lc_sloc_type := lc_oloc_type;
+            END IF;
 
           END IF;
           
@@ -10086,6 +10200,7 @@ AS
               lr_contract_info.created_by                  := FND_GLOBAL.USER_ID;
               
               lr_contract_info.cof_trans_id_scm_flag       := 'N';
+              lr_contract_info.store_close_flag            := 'N';
 
               lc_action := 'Insert into xx_ar_contracts';
 
@@ -10094,6 +10209,27 @@ AS
 
               logit(p_message => lc_action || ' row counts ' || SQL%ROWCOUNT);
 
+            END IF;
+
+            /******************************
+            * checking store closure status
+            ******************************/
+            lc_action := 'Calling get_store_close_info';
+            
+            get_store_close_info(p_store_number     => eligible_contract_line_rec.store_number,
+                                 x_store_info       => gc_store_number);
+            
+            IF LPAD(NVL(eligible_contract_line_rec.store_number, lt_program_setups('default_store_name')),6,'0') != gc_store_number
+            THEN
+              UPDATE xx_ar_contracts
+              set    store_number       = gc_store_number
+                    ,store_close_flag   = 'Y'
+                    ,last_update_date   = SYSDATE
+                    ,last_updated_by    = NVL(FND_GLOBAL.USER_ID, -1)
+                    ,last_update_login  = NVL(FND_GLOBAL.USER_ID, -1)
+              WHERE  contract_id        = eligible_contract_line_rec.contract_id;
+              COMMIT;
+              
             END IF;
 
           END IF;
@@ -12570,6 +12706,129 @@ AS
     END;
 
 	END xx_ar_subs_payload_purge_prc;
+
+ /**************************************************
+ * Helper procedure to get store close informatin
+ **************************************************/
+
+  PROCEDURE get_store_close_info(p_store_number  IN        VARCHAR2,
+                                 x_store_info   OUT NOCOPY VARCHAR2)
+  IS
+
+    lc_procedure_name  CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'get_store_close_info';
+    lt_parameters      gt_input_parameters;
+	lt_cnt NUMBER;
+
+  BEGIN
+
+    lt_parameters('p_store_number')          := p_store_number;
+
+    entering_sub(p_procedure_name  => lc_procedure_name,
+                 p_parameters      => lt_parameters);
+   
+     
+	 /*************************************************************
+      * Checking if Store is available in Store Close translation
+      *************************************************************/
+ 
+   SELECT   COUNT(1)
+     INTO   lt_cnt
+     FROM   xx_fin_translatevalues                     vals,
+            xx_fin_translatedefinition                 defn
+    WHERE   defn.translate_id                        = vals.translate_id
+      AND   defn.translation_name                    = 'SUBSCRIPTION_STORE_CLOSE'
+      AND   lpad(vals.source_value3,6,'0')             = p_store_number
+      AND   SYSDATE BETWEEN vals.start_date_active AND NVL(vals.end_date_active, SYSDATE + 1)	  
+      AND   SYSDATE BETWEEN defn.start_date_active AND NVL(defn.end_date_active, SYSDATE + 1)
+      AND   SYSDATE                                  >= to_date(vals.target_value4,'MM-DD-YYYY')
+      AND   vals.enabled_flag                        = 'Y'
+      AND   defn.enabled_flag                        = 'Y';
+    
+    IF lt_cnt>0 THEN
+	 
+	 BEGIN	  
+	 /* ************************************************************
+      * If Store is available in Store Close translation picking 
+	  * next available relocating store
+      *************************************************************/
+	  
+	  SELECT  LPAD(vals.target_value2,6,'0')
+	    INTO  x_store_info
+        FROM  xx_fin_translatevalues vals,
+              xx_fin_translatedefinition defn
+      WHERE   defn.translate_id                        = vals.translate_id
+        AND   defn.translation_name                    = 'SUBSCRIPTION_STORE_CLOSE'
+		AND   lpad(vals.source_value3,6,'0')             = p_store_number
+        AND   SYSDATE BETWEEN vals.start_date_active AND NVL(vals.end_date_active, SYSDATE + 1)
+        AND   SYSDATE BETWEEN defn.start_date_active AND NVL(defn.end_date_active, SYSDATE + 1)
+        AND   SYSDATE                                  >= to_date(vals.target_value4,'MM-DD-YYYY')
+        AND   vals.enabled_flag                        = 'Y'
+        AND   defn.enabled_flag                        = 'Y';
+		
+		IF x_store_info IS NULL THEN
+						  
+	   /* ************************************************************
+          * Getting Default store in case of missing relocating store
+          *************************************************************/	  	            
+	        SELECT  LPAD(vals.target_value1,6,'0')
+              INTO  x_store_info
+              FROM  xx_fin_translatevalues vals,
+                    xx_fin_translatedefinition defn
+             WHERE   defn.translate_id                        = vals.translate_id
+               AND   defn.translation_name                    = 'XX_AR_SUBSCRIPTIONS'
+               AND   vals.source_value1                       ='DEFAULT_STORE_CLOSE'
+               AND   SYSDATE BETWEEN vals.start_date_active AND NVL(vals.end_date_active, SYSDATE + 1)
+               AND   SYSDATE BETWEEN defn.start_date_active AND NVL(defn.end_date_active, SYSDATE + 1)
+               AND   vals.enabled_flag                        = 'Y'
+               AND   defn.enabled_flag                        = 'Y';
+		END IF;
+	 
+	 EXCEPTION
+	  
+	  WHEN NO_DATA_FOUND THEN
+	  
+	    /*************************************************************
+         * Getting Default store in case of missing relocating store
+         *************************************************************/
+		 
+	    SELECT  LPAD(vals.target_value1,6,'0')
+          INTO  x_store_info
+          FROM  xx_fin_translatevalues vals,
+                xx_fin_translatedefinition defn
+        WHERE   defn.translate_id                        = vals.translate_id
+          AND   defn.translation_name                    = 'XX_AR_SUBSCRIPTIONS'
+          AND   vals.source_value1                       ='DEFAULT_STORE_CLOSE'
+          AND   SYSDATE BETWEEN vals.start_date_active AND NVL(vals.end_date_active, SYSDATE + 1)
+          AND   SYSDATE BETWEEN defn.start_date_active AND NVL(defn.end_date_active, SYSDATE + 1)		  
+          AND   SYSDATE                                  >= to_date(vals.target_value4,'MM-DD-YYYY')
+          AND   vals.enabled_flag                        = 'Y'
+          AND   defn.enabled_flag                        = 'Y';
+      WHEN OTHERS
+      THEN
+        exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+        RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+      END;
+	  
+	ELSE
+	
+	 /* ****************************************************************
+      * If Store is not available in Store close, return existing store
+      *****************************************************************/
+	  
+	  x_store_info  := p_store_number;
+	  
+	END IF;
+    
+	logit(p_message => 'Return Store number: ' || x_store_info);
+    exiting_sub(p_procedure_name => lc_procedure_name);
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+      exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+      RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+
+  END get_store_close_info;
   
 END xx_ar_subscriptions_mt_pkg;
 /
