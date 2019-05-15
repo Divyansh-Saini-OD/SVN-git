@@ -40,7 +40,8 @@ AS
   -- |1.8       18-Jun-2010   Sundaram S         Fix for defect 6232     |
   -- |1.9       30-Oct-2015   Rakesh Polepalli   Fix for defect 36094    |
   -- |2.0       30-Apr-2019   M K Pramod Kumar   Code changes to replace DB
-  --              link with Web service for NAIT-92905|
+  --              								 link with Web service for NAIT-92905|
+  -- |2.1       30-Apr-2019   M K Pramod Kumar   Modified to process all AOPS orders even if Webservice fails for one order
   -- +===================================================================+
   lc_error_loc   VARCHAR2(2000);
   lc_error_debug VARCHAR2(250);
@@ -221,8 +222,7 @@ IS
       END IF;
     END LOOP;
 	if lc_auth_service_url is null then 	
-	FND_FILE.PUT_LINE(fnd_file.log,'Unable to derive Webservice URL from Translation OD_AOPS_LINE_DEPOSITS_WS.');
-	
+	FND_FILE.PUT_LINE(fnd_file.log,'Unable to derive Webservice URL from Translation OD_AOPS_LINE_DEPOSITS_WS.');	
 	end if;
     /*************************
     * Getting the Concurrent Program Name
@@ -266,13 +266,34 @@ IS
       IF lc_wallet_location IS NOT NULL THEN
         UTL_HTTP.SET_WALLET(lc_wallet_location, lc_wallet_password);
       END IF;
+	  utl_http.set_response_error_check ( enable => true );
+      utl_http.set_detailed_excp_support ( enable => true );
+	  Begin
       l_request := UTL_HTTP.begin_request(lc_auth_service_url_main, 'GET', ' HTTP/1.1');
+	  UTL_HTTP.SET_PERSISTENT_CONN_SUPPORT(TRUE);
       UTL_HTTP.set_header(l_request, 'user-agent', 'mozilla/4.0');
       UTL_HTTP.set_header(l_request, 'content-type', 'application/json');
       UTL_HTTP.set_header(l_request, 'Content-Length', LENGTH(lc_auth_payload));
       UTL_HTTP.set_header(l_request, 'Authorization', 'Basic ' || UTL_RAW.cast_to_varchar2(UTL_ENCODE.base64_encode(UTL_RAW.cast_to_raw(lc_auth_service_user || ':' || lc_auth_service_pwd ))));
       UTL_HTTP.write_text(l_request, lc_auth_payload);
+	  Exception 
+	  when others then 
+	  x_ret_code := 1;
+	  FND_FILE.PUT_LINE(fnd_file.log,'Error occured during UTL_HTTP.BEGIN_REQUEST Webservice call. SQLERRM-'||utl_http.get_detailed_sqlerrm);
+	  FND_FILE.PUT_LINE(fnd_file.output,RPAD(lcu_pick_order_numbers_rec.aops_order_number,35,' ') || RPAD(' ',25,' ') || 'Error occured during UTL_HTTP.BEGIN_REQUEST Webservice call. SQLERRM-'||utl_http.get_detailed_sqlerrm);
+	  continue;
+	  end;
+	  
+	  Begin
       l_response := UTL_HTTP.get_response(l_request);
+	  Exception 
+	  when others then 
+	  x_ret_code := 1;
+	  FND_FILE.PUT_LINE(fnd_file.log,'Error occured during UTL_HTTP.GET_RESPONSE Webservice call. SQLERRM-'||utl_http.get_detailed_sqlerrm);
+	  FND_FILE.PUT_LINE(fnd_file.output,RPAD(lcu_pick_order_numbers_rec.aops_order_number,35,' ') || RPAD(' ',25,' ') || 'Error occured during UTL_HTTP.GET_RESPONSE Webservice call. SQLERRM-'||utl_http.get_detailed_sqlerrm);
+	  continue;
+	  end;
+	  
       BEGIN
         lclob_buffer := EMPTY_CLOB;
         LOOP
@@ -294,18 +315,15 @@ IS
           lc_code,
           lc_tranStatus
         FROM JSON_TABLE ( lclob_buffer, '$.transactionStatus' COLUMNS ( "MESSAGE" VARCHAR2(200) PATH '$.message' ,"CODE" VARCHAR2(30) PATH '$.code' ,"TRANSTATUS" VARCHAR2(30) PATH '$.successfull')) "JT0" ;
-        IF lc_code IN ('404' ,'01') THEN
+        IF lc_code Not  IN ('00') THEN
           x_ret_code := 1;
           FND_FILE.PUT_LINE(fnd_file.log,'Webservice returned Error for AOPS Order Number '||lcu_pick_order_numbers_rec.aops_order_number||'. Webservice Error Code:'||lc_code||'.Error Message:'||NVL(trim(lc_message),'NULL'));
-          --CONTINUE;
         END IF;
       EXCEPTION
       WHEN No_data_found THEN
         FND_FILE.PUT_LINE(fnd_file.log,'No data Fetched from Webservice call for AOPS order Number '||lcu_pick_order_numbers_rec.aops_order_number);
-       -- CONTINUE;
       WHEN OTHERS THEN
         FND_FILE.PUT_LINE(fnd_file.log,'Exception occured to pull Webservice Transaction Status for AOPS Order Number '||lcu_pick_order_numbers_rec.aops_order_number||'.SQLERRM-'||sqlerrm);
-       -- CONTINUE;
       END;
       IF lc_code='00' THEN
         FOR rec IN
@@ -465,6 +483,16 @@ IS
           END IF;
         END LOOP;
       END IF;
+	  IF l_request.private_hndl IS NOT NULL
+	  THEN
+        UTL_HTTP.end_request (l_request);
+      END IF;
+
+	  IF l_response.private_hndl IS NOT NULL
+	  THEN
+	  	UTL_HTTP.end_response (l_response);
+	  END IF; 
+	  
       ---Code modified for V2.0 ends here.
       -- Deleting the original record from the table for those which were succesfully inserted
       IF ( lc_exists    = 'Y' AND lc_err_flag = 'N' ) THEN
