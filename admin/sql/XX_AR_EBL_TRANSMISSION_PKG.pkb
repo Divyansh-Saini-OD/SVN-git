@@ -2578,10 +2578,9 @@ BEGIN
 		END;
 		
 		BEGIN
-
 			SELECT billing_dt,aops_customer_number,account_number 
 		      INTO ld_billing_dt, lc_aops_cust_number, lc_account_number
-			 FROM (SELECT billing_dt,aops_customer_number,account_number
+			  FROM (SELECT billing_dt,aops_customer_number,account_number
 			         FROM xx_ar_ebl_file XAEF
 			WHERE cust_account_id = lcr.customer_id
 			  AND cust_doc_id = lcr.cust_doc_id
@@ -2595,8 +2594,7 @@ BEGIN
 				 AND customer_doc_id = XAEF.cust_doc_id
 				 AND XAET.transmission_id = XAEF.transmission_id)
 				ORDER BY billing_dt)
-			 WHERE rownum = 1;
-	  
+			 WHERE ROWNUM = 1;
 		EXCEPTION
 			WHEN OTHERS THEN
 			  FND_FILE.PUT_LINE(FND_FILE.LOG,'Error during fetching billing date and aops number for cust doc id  : '||lcr.cust_doc_id||' Error: '||SQLERRM);
@@ -2606,7 +2604,6 @@ BEGIN
 	  ls_merge_file_name := lc_aops_cust_number||'_'||lcr.cust_doc_id||'_'||ld_billing_dt||'_'||ln_merge_file_id||'.PDF';
 	  
 	  FND_FILE.put_line(FND_FILE.LOG,'Merge file name to be created is '||ls_merge_file_name||' for cust doc id '||lcr.cust_doc_id);
-
 
 	  --
 	  --Submitting Concurrent Request
@@ -2696,13 +2693,11 @@ BEGIN
 	     FND_FILE.PUT_LINE(FND_FILE.LOG,'Error while inserting record for cust doc id:'||lcr.cust_doc_id||' into XX_AR_EBL_MERGE_PDF_BC_FILE table  : '||Sqlerrm);
 	   END;
 	  
-	   BEGIN
-	   
+	   BEGIN	   
 		   UPDATE xx_ar_ebl_merge_pdf_bc_file
 			  SET merge_file_data  = EMPTY_BLOB()
 			WHERE merge_file_id = ln_merge_file_id
-			   RETURNING merge_file_data INTO dst_file;
-			   
+			   RETURNING merge_file_data INTO dst_file;			   
 	   EXCEPTION
 	   WHEN OTHERS THEN
 	     FND_FILE.PUT_LINE(FND_FILE.LOG,'Error while updating merge file data for cust doc id:'||lcr.cust_doc_id||' in XX_AR_EBL_MERGE_PDF_BC_FILE table  : '||Sqlerrm);
@@ -2736,8 +2731,7 @@ BEGIN
 	   
        -- max sizes are specified in bytes at translation level for fine control, but in MB at cust doc level for ease.
        -- 1 MB is 1048576 bytes, but we're going to multiply by 1000000 instead to give some wiggle room for the email body.
-       BEGIN
-	  
+       BEGIN	  
 		  UPDATE xx_ar_ebl_merge_pdf_bc_file
 			 SET status='TOOBIG', 
 			     error_message = 'TOOBIG',
@@ -2886,7 +2880,16 @@ BEGIN
 					 ,dest_email_addr    =  ls_dest_email_addr
 					 ,billing_dt         =  ld_billing_dt
 			   WHERE  merge_file_id = ln_merge_file_id;
-		   
+			   
+				UPDATE XX_AR_EBL_TRANSMISSION 
+				   SET status            = 'ERROR', 
+					   transmission_dt   = SYSDATE, 
+					   last_updated_by   = fnd_global.user_id, 
+					   last_update_date  = SYSDATE, 
+					   last_update_login = fnd_global.login_id, 
+					   status_detail     = ls_status_detail
+				 WHERE customer_id     = lcr.customer_id
+				   AND customer_doc_id = lcr.cust_doc_id;		   
 			  EXCEPTION
 			  WHEN OTHERS THEN
 				 FND_FILE.PUT_LINE(FND_FILE.LOG,'Error during updating details in merge pdf table for merge_file_id '||ln_merge_file_id||'error:'||SQLERRM);
@@ -2900,7 +2903,17 @@ BEGIN
 					 ,dest_email_addr    =  ls_dest_email_addr
 					 ,billing_dt         =  ld_billing_dt
 			   WHERE  merge_file_id = ln_merge_file_id;
-		   
+
+				UPDATE XX_AR_EBL_TRANSMISSION 
+				   SET status            = 'SENT', 
+					   transmission_dt   = SYSDATE, 
+					   last_updated_by   = fnd_global.user_id, 
+					   last_update_date  = SYSDATE, 
+					   last_update_login = fnd_global.login_id, 
+					   status_detail     = ls_status_detail
+				 WHERE customer_id     = lcr.customer_id
+				   AND customer_doc_id = lcr.cust_doc_id;		   
+			   
 			  EXCEPTION
 			  WHEN OTHERS THEN
 				 FND_FILE.PUT_LINE(FND_FILE.LOG,'Error during updating details in merge pdf table for merge_file_id '||ln_merge_file_id||'error:'||SQLERRM);
@@ -2916,6 +2929,7 @@ BEGIN
 		  dbms_output.put_line('  -- Direct Errored: ' || ls_error_message);
 		 END;
 	 END IF;
+	 
 COMMIT;	 
 END LOOP;
 EXCEPTION
