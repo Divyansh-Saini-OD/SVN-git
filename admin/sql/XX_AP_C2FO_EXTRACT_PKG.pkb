@@ -29,7 +29,7 @@ PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
 *   1.0          9/2/2018     Antonio Morales           OD                OD Initial Customized Version
 *                                                                         Use a temp table to improve performance
 *                                                                         of reports
-*   1.1          07-May-2019  Arun DSouza               OD                Added ebs_invoice_due_date column to invoice extract
+*   1.1          5/13/2019    Arun DSouza               OD                Funding Partner Bank Extract Code
 *****************************************************************************************************************************/
 
   /***************************************************************/
@@ -60,13 +60,12 @@ PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
         lc_date_format            CONSTANT VARCHAR2(20) := 'RRRR/MM/DD';
         ld_procdate                        DATE := to_date(p_procdate,'yyyy-mm-dd hh24:mi:ss');
         v_inv_count                        NUMBER := 0;
-        v_org_count                        NUMBER := 0;
+        V_ORG_COUNT                        NUMBER := 0;
         v_user_count                       NUMBER := 0;
         v_count                            NUMBER := 0;
         v_po_count                         NUMBER := 0;
         l_validated_po_date_from           VARCHAR2(11) := TO_CHAR(add_months(SYSDATE,-120),lc_date_format);
-        l_validated_po_date_to             VARCHAR2(11) := TO_CHAR(SYSDATE,lc_date_format);
-
+        L_VALIDATED_PO_DATE_TO             varchar2(11) := TO_CHAR(sysdate,LC_DATE_FORMAT);
 
         CURSOR C_INV_DATA IS
         SELECT *
@@ -113,7 +112,7 @@ PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
             --AND TO_DATE(CREATE_DATE, 'YYYY-MM-DD') BETWEEN l_validated_po_date_from AND l_validated_po_date_to;
             AND TO_DATE(CREATE_DATE, 'YYYY-MM-DD')    BETWEEN NVL(to_date(p_po_date_from, 'RRRR/MM/DD HH24:MI:SS'), TO_DATE(l_validated_po_date_from,'YYYY-MM-DD'))
                                                           AND NVL(to_date(p_po_date_to, 'RRRR/MM/DD HH24:MI:SS'), TO_DATE(l_validated_po_date_to,'YYYY-MM-DD'));
------PO PART5-------------------------
+-----------------------------
 
 
     BEGIN
@@ -651,6 +650,8 @@ PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
           raise_application_error(-20000, 'ERROR: Invalid PATH FOR file.');
       END;
 
+
+
     END GENERATE_EXTRACT;
 
  /***************************************************************/
@@ -1076,6 +1077,386 @@ PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
  /***********************************************/
 
 -----PO PART3-------------------------
+
+/***********************************************/
+ /* PROCEDURE REMIT BANK EXTRACT              */
+ /* Procedure to extract C2FO Remit to Supplier and Original Supplier Bank Account Info for Funding Partner Award Invoices  */
+ /***********************************************/
+    PROCEDURE REMIT_BANK_EXTRACT(
+                          errbuf            OUT   VARCHAR2,
+                          retcode           OUT   NUMBER
+                                    )     IS
+        v_filename      varchar2(50);
+        v_output        utl_file.file_type;
+
+ -------------- P2-Funding-Partner Awd Remit Bank ---------------------------------------------
+
+    v_awd_count                        number := 0;
+
+ CURSOR C_AWD_FP
+IS
+  SELECT awd.COMPANY_ID ,
+    awd.COMPANY_NAME ,
+    awd.DIVISION_ID ,
+    awd.FUND_TYPE ,
+    awd.INVOICE_ID ,
+    awd.ORIGINAL_AMOUNT ,
+    awd.CURRENCY ,
+    awd.ORIGINAL_DUE_DATE ,
+    awd.PAY_DATE ,
+    awd.TRANSACTION_TYPE ,
+    awd.AWARD_NUM ,
+    awd.PAYMENT_METHOD_CODE ,
+    awd.EBS_SUPPLIER_NUMBER ,
+    awd.EBS_VENDOR_SITE_CODE ,
+    awd.EBS_INVOICE_NUM ,
+    awd.EBS_ORG_ID ,
+    awd.EBS_VENDOR_ID ,
+    awd.EBS_VENDOR_SITE_ID ,
+    awd.EBS_INVOICE_ID ,
+    awd.EBS_CM_INVOICE_ID ,
+    awd.AWARD_FILE_BATCH_NAME ,
+    awd.AWARD_RECORD_ACTIVITIES ,
+    awd.PROCESS_FLAG ,
+    awd.PROCESS_STATUS ,
+    awd.PROCESSED_DATE ,
+    AWD.ERROR_MSG ,
+    AIA.REMIT_TO_SUPPLIER_NAME ,
+    AIA.REMIT_TO_SUPPLIER_ID ,
+    AIA.REMIT_TO_SUPPLIER_SITE ,
+    AIA.REMIT_TO_SUPPLIER_SITE_ID ,
+    AIA.RELATIONSHIP_ID ,
+    AIA.EXTERNAL_BANK_ACCOUNT_ID,
+    AWD.SUPPLIER_BANK_ACCOUNT_ID
+  FROM APPS.XX_AP_C2FO_AWARD_DATA_STAGING awd,
+    APPS.AP_INVOICES_ALL AIA
+  where
+  --AWD.AWARD_FILE_BATCH_NAME = 'XX_AP_C2FO-20190502092236'
+  AWD.PROCESS_FLAG          = 'Y'
+  AND AWD.FUND_TYPE            IS NOT NULL
+  AND AIA.INVOICE_ID            = AWD.EBS_INVOICE_ID
+  AND award_file_batch_name     =
+    (SELECT AWARD_FILE_BATCH_NAME
+    FROM APPS.XX_AP_C2FO_AWARD_DATA_STAGING AWD
+    where FUND_TYPE  is not null
+    AND CREATION_DATE > sysdate - 20
+    AND rownum        < 2
+    )
+ORDER BY awd.CREATION_DATE DESC; 
+
+ CURSOR C_SUPP_BANK_ACCT (cp_vendor_id IN NUMBER, cp_vendor_site_id IN NUMBER)
+  is
+select
+--ieb.branch_id
+       ieb.bank_account_name
+,      party_bank.party_name bank_name
+,      ieb.bank_account_num  bank_account_number
+,      party_branch.party_name bank_branch_name
+,      branch_prof.bank_or_branch_number bank_routing_number
+,      party_branch.address1 address_1
+,      party_branch.address2 address_2
+,      party_branch.address3 address_3
+,      party_branch.address4 address_4
+,      party_branch.city city
+,      party_branch.state state
+,      party_branch.postal_code 
+,      party_branch.country country
+--
+,     party_supp.party_name supplier_name
+,      aps.segment1          supplier_number
+,      ass.vendor_site_code  supplier_site
+,      ieb.ext_bank_account_id
+from 
+      hz_organization_profiles bank_prof
+,      hz_organization_profiles branch_prof
+,      hz_parties party_bank
+,      hz_parties party_branch
+,      iby_ext_bank_accounts ieb
+,      iby_pmt_instr_uses_all ipi
+,      iby_external_payees_all iep
+,      hz_party_sites site_supp
+,      hz_parties party_supp
+,      ap_supplier_sites_all ass
+,      ap_suppliers aps
+WHERE   aps.vendor_id =  cp_vendor_id --3M
+and ass.vendor_site_id = cp_vendor_site_id  -- 669118 -- 669122 
+AND party_supp.party_id = aps.party_id
+AND    party_supp.party_id = site_supp.party_id
+and    site_supp.party_site_id = ass.party_site_id
+AND    ass.vendor_id = aps.vendor_id
+AND    iep.payee_party_id = party_supp.party_id
+AND    iep.party_site_id = site_supp.party_site_id
+AND    iep.supplier_site_id = ass.vendor_site_id
+AND    iep.ext_payee_id = ipi.ext_pmt_party_id
+AND    ipi.instrument_id = ieb.ext_bank_account_id
+AND    IPI.payment_flow = 'DISBURSEMENTS'
+AND    IEB.BANK_ID = PARTY_BANK.PARTY_ID
+and    sysdate between  nvl(ieb.start_date,sysdate-1) and  nvl(ieb.end_date,sysdate + 1)
+AND    ieb.branch_id = party_branch.party_id
+AND    party_branch.party_id = branch_prof.party_id
+and    PARTY_BANK.PARTY_ID = BANK_PROF.PARTY_ID
+and    sysdate between  nvl(ipi.start_date,sysdate-1) and  nvl(ipi.end_date,sysdate + 1)
+and   party_bank.status = 'A'
+and   party_branch.status = 'A'
+and rownum < 2;
+
+  l_bank_acct_null_rec   C_SUPP_BANK_ACCT%ROWTYPE;
+  l_supp_bank_acct_rec   c_supp_bank_acct%rowtype;
+
+
+cursor c_invoice_bank_account(cp_bank_account_id Number)
+is
+select
+--ieb.branch_id
+       ieb.bank_account_name
+,      party_bank.party_name bank_name
+,      ieb.bank_account_num  bank_account_number
+,      party_branch.party_name bank_branch_name
+,      branch_prof.bank_or_branch_number bank_routing_number
+,      party_branch.address1 address_1
+,      party_branch.address2 address_2
+,      party_branch.address3 address_3
+,      party_branch.address4 address_4
+,      party_branch.city city
+,      party_branch.state state
+,      party_branch.postal_code 
+,      party_branch.country country
+from 
+       hz_organization_profiles bank_prof
+,      hz_organization_profiles branch_prof
+,      hz_parties party_bank
+,      hz_parties party_branch
+,      iby_ext_bank_accounts ieb
+WHERE 
+ieb.ext_bank_account_id =  cp_bank_account_id --440440 --726085
+and    ieb.bank_id = party_bank.party_id
+AND    ieb.branch_id = party_branch.party_id
+AND    party_branch.party_id = branch_prof.party_id
+and    party_bank.party_id = bank_prof.party_id
+and   party_bank.status = 'A'
+and   party_branch.status = 'A';
+
+
+  l_invoice_acct_null_rec   c_invoice_bank_account%rowtype;
+  l_invoice_bank_acct_rec   c_invoice_bank_account%ROWTYPE;
+ 
+--------------End P2-Funding-Partner Awd Remit Bank---------------------------------------------
+
+     BEGIN
+
+-------------- P2-Funding-Partner Awd Remit Bank Loop ---------------------------------------------
+
+      --BEGIN AWARD REMIT TO SUPPLIER  BANK  EXTRACT
+ 
+      fnd_file.put_line(fnd_file.LOG,'--------------------AWARD REMIT TO SUPPLIER  BANK  EXTRACT---------------------------');
+      FND_FILE.PUT_LINE(FND_FILE.LOG,'-------------------------------------------------------------------------------------');
+ 
+      BEGIN
+        --filename officedepot_remit_bank_yyyymmdd.csv
+
+        v_filename := 'officedepot_remit_bank_'||TO_CHAR(TRUNC(sysdate),'YYYYMMDD')||'.csv';
+
+        FND_FILE.PUT_LINE(FND_FILE.LOG, ' ');
+        FND_FILE.PUT_LINE(FND_FILE.LOG, 'Creating File:   '||v_filename);
+
+        v_output := UTL_FILE.FOPEN(C_DIRECTORY, v_filename, 'W');
+
+            UTL_FILE.PUT_LINE(v_output,
+              LOWER(             
+              '"COMPANY_ID'             ||'",'||
+              '"COMPANY_NAME'           ||'",'||
+              '"invoice_id'             ||'",'||
+              '"bank_account_name'      ||'",'||
+              '"bank_name'              ||'",'||
+              '"bank_account_number'    ||'",'||
+              '"bank_branch_name'       ||'",'||
+              '"bank_routing_number'    ||'",'||
+              '"address_1'              ||'",'||
+              '"address_2'              ||'",'||
+              '"address_3'              ||'",'||
+              '"address_4'              ||'",'||
+              '"city'                   ||'",'||
+              '"state'                  ||'",'||
+              '"postal_code'            ||'",'||
+              '"country'                ||'",'||
+              '"remit_to_supplier_name' ||'",'||              
+              '"FUND_TYPE'||'"'
+              )            
+             );
+             
+        v_awd_count := 0;
+          
+        --Loop through data and write to file
+        FOR C_AWD_FP_REC IN C_AWD_FP LOOP
+
+             fnd_file.put_line(fnd_file.log, 'Processing Awd Company Id : '|| c_awd_fp_rec.company_id );
+             fnd_file.put_line(fnd_file.log, 'Processing Awd Invoice Id : '|| c_awd_fp_rec.invoice_id );
+
+            v_awd_count := v_awd_count + 1;
+            
+            l_supp_bank_acct_rec := l_bank_acct_null_rec;
+ 
+             fnd_file.put_line(fnd_file.log, 'Step 1' );
+
+            
+            OPEN c_supp_bank_acct(c_awd_fp_rec.ebs_vendor_id, c_awd_fp_rec.ebs_vendor_site_id);
+               FETCH c_supp_bank_acct into l_supp_bank_acct_rec;
+            CLOSE c_supp_bank_acct;
+
+           IF l_supp_bank_acct_rec.bank_account_number  is null then
+             fnd_file.put_line(fnd_file.log,'----------------------------------------------------------------------');
+             fnd_file.put_line(fnd_file.log, 'Bank Account Not Fetched for Supplier Site : '|| c_awd_fp_rec.ebs_vendor_site_code );
+             fnd_file.put_line(fnd_file.log, 'Supplier Number : '|| c_awd_fp_rec.ebs_supplier_number );
+             fnd_file.put_line(fnd_file.log, 'Invoice Id : '|| c_awd_fp_rec.ebs_invoice_id );
+             fnd_file.put_line(fnd_file.log, 'Invoice Num : '|| c_awd_fp_rec.ebs_invoice_num );
+             fnd_file.put_line(fnd_file.log, 'Vendor Id : '|| c_awd_fp_rec.ebs_vendor_id );
+             fnd_file.put_line(fnd_file.LOG, 'Vendor Site Id : '|| c_awd_fp_rec.ebs_vendor_site_id );
+             fnd_file.put_line(fnd_file.log, 'Awd Company Id : '|| c_awd_fp_rec.company_id );
+           END IF;
+
+
+             fnd_file.put_line(fnd_file.log, 'Step 2' );
+ 
+          l_invoice_bank_acct_rec   := l_invoice_acct_null_rec;
+
+         IF c_awd_fp_rec.supplier_bank_account_id is NULL THEN
+ 
+             fnd_file.put_line(fnd_file.log,'----------------------------------------------------------------------');
+             fnd_file.put_line(fnd_file.log, 'Orig Supplier Bank Account Id is NULL for Invoice Num : '|| c_awd_fp_rec.ebs_invoice_num );
+             fnd_file.put_line(fnd_file.log, 'AWD Invoice Id : '|| c_awd_fp_rec.ebs_invoice_id );
+             fnd_file.put_line(fnd_file.log, 'Supplier Number : '|| c_awd_fp_rec.ebs_supplier_number );
+             fnd_file.put_line(fnd_file.log, 'EBS Invoice Id : '|| c_awd_fp_rec.ebs_invoice_id );
+             fnd_file.put_line(fnd_file.log, 'EBS Invoice Num : '|| c_awd_fp_rec.ebs_invoice_num );
+             fnd_file.put_line(fnd_file.log, 'Vendor Id : '|| c_awd_fp_rec.ebs_vendor_id );
+             fnd_file.put_line(fnd_file.log, 'Vendor Site Id : '|| c_awd_fp_rec.ebs_vendor_site_id );
+             fnd_file.put_line(fnd_file.log, 'Vendor Site Code : '|| c_awd_fp_rec.ebs_vendor_site_code );
+         ELSE       
+
+             fnd_file.put_line(fnd_file.log, 'Step 3' );
+
+            OPEN c_invoice_bank_account(c_awd_fp_rec.supplier_bank_account_id);
+               FETCH c_invoice_bank_account into l_invoice_bank_acct_rec;
+            CLOSE c_invoice_bank_account;
+
+         END IF;
+
+             fnd_file.put_line(fnd_file.log, 'Step 4' );
+            
+ 
+            IF c_awd_fp_rec.supplier_bank_account_id IS NOT NULL AND
+                l_invoice_bank_acct_rec.bank_account_number  is null then
+             fnd_file.put_line(fnd_file.LOG,'----------------------------------------------------------------------');
+             fnd_file.put_line(fnd_file.log, 'Orig Invoice Ext Bank Account Not found in IEBA : '|| c_awd_fp_rec.supplier_bank_account_id );
+             fnd_file.put_line(fnd_file.log, 'Supplier Number : '|| c_awd_fp_rec.ebs_supplier_number );
+             fnd_file.put_line(fnd_file.log, 'EBS Invoice Id : '|| c_awd_fp_rec.ebs_invoice_id );
+             fnd_file.put_line(fnd_file.LOG, 'Invoice Num : '|| c_awd_fp_rec.ebs_invoice_num );
+             fnd_file.put_line(fnd_file.log, 'Awd Company Id : '|| c_awd_fp_rec.company_id );
+
+            end if;
+
+             fnd_file.put_line(fnd_file.log, 'Step 5' );
+            
+            IF l_supp_bank_acct_rec.ext_bank_account_id != c_awd_fp_rec.supplier_bank_account_id then              
+                fnd_file.put_line(fnd_file.log,'----------------------------------------------------------------------');
+                fnd_file.put_line(fnd_file.log, 'Bank Accounts Not Matching  : ');
+                fnd_file.put_line(fnd_file.log, 'Invoice Bank Account Id : '|| c_awd_fp_rec.supplier_bank_account_id  );
+                fnd_file.put_line(fnd_file.log, 'Fetched Supplier Bank Account Id : '|| l_supp_bank_acct_rec.ext_bank_account_id  );
+                fnd_file.put_line(fnd_file.LOG, 'EBS Invoice Id : '|| c_awd_fp_rec.ebs_invoice_id );
+                fnd_file.put_line(fnd_file.LOG, 'Invoice Num : '|| c_awd_fp_rec.ebs_invoice_num );
+                fnd_file.put_line(fnd_file.LOG, 'Awd Company Id : '|| c_awd_fp_rec.company_id );
+            END IF;
+
+             fnd_file.put_line(fnd_file.log, 'Step 6' );
+            
+           
+           IF (l_invoice_bank_acct_rec.bank_account_number is NULL
+              AND l_supp_bank_acct_rec.bank_account_name IS NULL )
+            THEN
+                fnd_file.put_line(fnd_file.LOG,'----------------------------------------------------------------------');
+                fnd_file.put_line(fnd_file.log, 'Both Bank Accounts are BLANK  : ');
+                fnd_file.put_line(fnd_file.log, 'Invoice Bank Account Id : '|| c_awd_fp_rec.supplier_bank_account_id  );
+                fnd_file.put_line(fnd_file.log, 'Fetched Supplier Bank Account Id : '|| l_supp_bank_acct_rec.ext_bank_account_id  );
+                fnd_file.put_line(fnd_file.LOG, 'EBS Invoice Id : '|| c_awd_fp_rec.ebs_invoice_id );
+                fnd_file.put_line(fnd_file.LOG, 'Invoice Num : '|| c_awd_fp_rec.ebs_invoice_num );
+                fnd_file.put_line(fnd_file.LOG, 'Awd Company Id : '|| c_awd_fp_rec.company_id );             
+            END IF;
+        
+          
+            IF l_invoice_bank_acct_rec.bank_account_number IS NOT NULL THEN        
+
+             fnd_file.put_line(fnd_file.log, 'Step 6.1' );
+
+ 
+            UTL_FILE.PUT_LINE(V_OUTPUT,
+              '"'||  c_awd_fp_rec.company_id                     ||'",'||
+              '"'||  c_awd_fp_rec.company_name                   ||'",'||
+              '"'||  c_awd_fp_rec.invoice_id                     ||'",'||
+              '"'||  l_invoice_bank_acct_rec.bank_account_name   ||'",'||
+              '"'||  l_invoice_bank_acct_rec.bank_name           ||'",'||
+              '"'||  l_invoice_bank_acct_rec.bank_account_number ||'",'||
+              '"'||  l_invoice_bank_acct_rec.bank_branch_name    ||'",'||
+              '"'||  l_invoice_bank_acct_rec.bank_routing_number ||'",'||
+              '"'||  l_invoice_bank_acct_rec.address_1           ||'",'||
+              '"'||  l_invoice_bank_acct_rec.address_2           ||'",'||
+              '"'||  l_invoice_bank_acct_rec.address_3           ||'",'||
+              '"'||  l_invoice_bank_acct_rec.address_4           ||'",'||
+              '"'||  l_invoice_bank_acct_rec.city                ||'",'||
+              '"'||  l_invoice_bank_acct_rec.state               ||'",'||
+              '"'||  l_invoice_bank_acct_rec.postal_code         ||'",'||
+              '"'||  l_invoice_bank_acct_rec.country             ||'",'||
+              '"'||  c_awd_fp_rec.remit_to_supplier_name         ||'",'||              
+              '"'||  c_awd_fp_rec.fund_type ||'"');
+
+            ELSE   
+
+             FND_FILE.PUT_LINE(FND_FILE.LOG, 'Step 6.2' );
+
+ 
+             UTL_FILE.PUT_LINE(V_OUTPUT,
+              '"'||  c_awd_fp_rec.company_id                  ||'",'||
+              '"'||  c_awd_fp_rec.company_name                ||'",'||
+              '"'||  c_awd_fp_rec.invoice_id                     ||'",'||
+              '"'||  l_supp_bank_acct_rec.bank_account_name   ||'",'||
+              '"'||  l_supp_bank_acct_rec.bank_name           ||'",'||
+              '"'||  l_supp_bank_acct_rec.bank_account_number ||'",'||
+              '"'||  l_supp_bank_acct_rec.bank_branch_name    ||'",'||
+              '"'||  l_supp_bank_acct_rec.bank_routing_number ||'",'||
+              '"'||  l_supp_bank_acct_rec.address_1           ||'",'||
+              '"'||  l_supp_bank_acct_rec.address_2           ||'",'||
+              '"'||  l_supp_bank_acct_rec.address_3           ||'",'||
+              '"'||  l_supp_bank_acct_rec.address_4           ||'",'||
+              '"'||  l_supp_bank_acct_rec.city                ||'",'||
+              '"'||  l_supp_bank_acct_rec.state               ||'",'||
+              '"'||  l_supp_bank_acct_rec.postal_code         ||'",'||
+              '"'||  l_supp_bank_acct_rec.country             ||'",'||
+              '"'||  c_awd_fp_rec.remit_to_supplier_name      ||'",'||              
+              '"'||  c_awd_fp_rec.fund_type ||'"');
+   
+            END IF;
+                    
+             fnd_file.put_line(fnd_file.log, 'Step 7' );
+  
+         END LOOP;
+
+            fnd_file.put_line(fnd_file.log, 'Step 8' );
+
+
+        FND_FILE.PUT_LINE(FND_FILE.log, 'Award Invoice Remit Bank Record Count:   '|| V_AWD_COUNT);
+
+        UTL_FILE.FCLOSE(v_output);
+
+     EXCEPTION
+       WHEN UTL_FILE.INVALID_PATH then
+          raise_application_error(-20000, 'ERROR: Invalid PATH FOR Invoice Remit Bank file.');
+      END;
+
+
+------------- End P2-Funding-Partner---------------------------------------------
+
+
+
+     END REMIT_BANK_EXTRACT;
+
 
 END  XX_AP_C2FO_EXTRACT_PKG;
 

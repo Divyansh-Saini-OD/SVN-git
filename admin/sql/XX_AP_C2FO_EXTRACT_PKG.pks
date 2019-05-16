@@ -18,20 +18,22 @@ WHENEVER SQLERROR CONTINUE
  /* DATE: 29-AUG-2018                                           */
  /***************************************************************/
  
-CREATE OR REPLACE PACKAGE XX_AP_C2FO_EXTRACT_PKG AS
+
+create or replace PACKAGE XX_AP_C2FO_EXTRACT_PKG AS
 /****************************************************************************************************************
 *   Name:        XXC2FO_EXTRACT_PKG
 *   PURPOSE:     This package was created for the C2O Extract Process
 *   @author      Joshua Wilson - C2FO
 *   @version     12.1.3.1.0
-*   @comments    
+*   @comments
 *
 *   REVISIONS:
 *   Ver          Date         Author                    Company           Description
 *   ---------    ----------   ---------------           ----------        -----------------------------------
 *   12.1.3.1.0   5/01/15      Joshua Wilson             C2FO              1. Created this package.
 *   12.1.3.1.0   8/29/2018    Nageswara Rao Chennupati  C2FO              2. Modified the package as per the new requirements.
-*   1.0          9/2/2018     Antonio Morales           OD                OD Initial Customized Version     |
+*   1.0          9/2/2018     Antonio Morales           OD                OD Initial Customized Version          |
+*   1.1          5/13/2018    Arun DSouza               OD                Funding Partner Remit Bank Extract     |
 *****************************************************************************************************************/
 
  /***********************************************/
@@ -44,7 +46,7 @@ CREATE OR REPLACE PACKAGE XX_AP_C2FO_EXTRACT_PKG AS
  /* Procedure to extract all files                               */
  /***************************************************************/
     PROCEDURE GENERATE_EXTRACT(
-                          errbuf             OUT  VARCHAR2, 
+                          errbuf             OUT  VARCHAR2,
                           retcode            OUT  NUMBER,
                           p_procdate          IN  VARCHAR2,
                           p_file_prefix       IN  VARCHAR2,
@@ -67,7 +69,7 @@ CREATE OR REPLACE PACKAGE XX_AP_C2FO_EXTRACT_PKG AS
  /* Procedure to extract invoice data                           */
  /***************************************************************/
     PROCEDURE INVOICE_EXTRACT(
-                          errbuf            OUT   VARCHAR2, 
+                          errbuf            OUT   VARCHAR2,
                           retcode           OUT   NUMBER
                                     );
 
@@ -76,7 +78,7 @@ CREATE OR REPLACE PACKAGE XX_AP_C2FO_EXTRACT_PKG AS
  /* Procedure to extract organization data      */
  /***********************************************/
     PROCEDURE ORGANIZATION_EXTRACT(
-                          errbuf            OUT   VARCHAR2, 
+                          errbuf            OUT   VARCHAR2,
                           retcode           OUT   NUMBER
                                     );
 
@@ -85,7 +87,7 @@ CREATE OR REPLACE PACKAGE XX_AP_C2FO_EXTRACT_PKG AS
  /* Procedure to extract user data              */
  /***********************************************/
     PROCEDURE USER_EXTRACT(
-                          errbuf            OUT   VARCHAR2, 
+                          errbuf            OUT   VARCHAR2,
                           retcode           OUT   NUMBER
                                     );
 
@@ -94,10 +96,21 @@ CREATE OR REPLACE PACKAGE XX_AP_C2FO_EXTRACT_PKG AS
  /* Procedure to extract user data              */
  /***********************************************/
     PROCEDURE PO_EXTRACT(
-                          errbuf            OUT   VARCHAR2, 
+                          errbuf            OUT   VARCHAR2,
                           retcode           OUT   NUMBER
-                                    ); 
+                                    );
 
-END  XX_AP_C2FO_EXTRACT_PKG; 
+/***********************************************/
+ /* PROCEDURE REMIT BANK EXTRACT              */
+ /* Procedure to extract C2FO Remit to Supplier and Original Supplier Bank Account Info for Funding Partner Award Invoices  */
+ /***********************************************/
+    PROCEDURE REMIT_BANK_EXTRACT(
+                          errbuf            OUT   VARCHAR2,
+                          retcode           OUT   NUMBER
+                                    );
+
+
+
+END  XX_AP_C2FO_EXTRACT_PKG;
 /
 SHOW ERRORS
