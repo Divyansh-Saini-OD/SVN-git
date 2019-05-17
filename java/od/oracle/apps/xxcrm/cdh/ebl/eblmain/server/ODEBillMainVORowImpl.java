@@ -84,6 +84,7 @@ public class ODEBillMainVORowImpl extends OAViewRowImpl {
     public static final int SUMMARYBILL = 43;
     public static final int NONDTQUANTITY = 44;
     public static final int PARENTDOCID = 45;
+    public static final int INTERSECTIONFLAG = 46;
 
     /**Gets the attribute value for the calculated attribute ParentDocId
      */
@@ -95,6 +96,18 @@ public class ODEBillMainVORowImpl extends OAViewRowImpl {
      */
     public void setParentDocId(Number value) {
         setAttributeInternal(PARENTDOCID, value);
+    }
+
+    /**Gets the attribute value for the calculated attribute IntersectionFlag
+     */
+    public String getIntersectionFlag() {
+        return (String) getAttributeInternal(INTERSECTIONFLAG);
+    }
+
+    /**Sets <code>value</code> as the attribute value for the calculated attribute IntersectionFlag
+     */
+    public void setIntersectionFlag(String value) {
+        setAttributeInternal(INTERSECTIONFLAG, value);
     }
 
 
@@ -1430,6 +1443,8 @@ public class ODEBillMainVORowImpl extends OAViewRowImpl {
             return getNondtQuantity();
         case PARENTDOCID:
             return getParentDocId();
+        case INTERSECTIONFLAG:
+            return getIntersectionFlag();
         default:
             return super.getAttrInvokeAccessor(index, attrDef);
         }
@@ -1576,6 +1591,9 @@ public class ODEBillMainVORowImpl extends OAViewRowImpl {
             return;
         case PARENTDOCID:
             setParentDocId((Number)value);
+            return;
+        case INTERSECTIONFLAG:
+            setIntersectionFlag((String)value);
             return;
         default:
             super.setAttrInvokeAccessor(index, value, attrDef);

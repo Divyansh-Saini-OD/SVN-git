@@ -56,7 +56,8 @@ SELECT ODEBillMainEO.CUST_DOC_ID,
        ODEBillMainEO.FILE_CREATION_TYPE, 
        ODEBillMainEO.SUMMARY_BILL, 
        ODEBillMainEO.NONDT_QUANTITY,
-       ODEBillMainEO.PARENT_DOC_ID
+       ODEBillMainEO.PARENT_DOC_ID,
+       ODEBillMainEO.INTERSECTION_FLAG
 FROM XX_CDH_EBL_MAIN ODEBillMainEO
    ]]></SQLQuery>
    <DesignTime>
@@ -347,5 +348,11 @@ FROM XX_CDH_EBL_MAIN ODEBillMainEO
       EntityAttrName="ParentDocId"
       EntityUsage="ODEBillMainEO"
       AliasName="PARENT_DOC_ID" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="IntersectionFlag"
+      EntityAttrName="IntersectionFlag"
+      EntityUsage="ODEBillMainEO"
+      AliasName="INTERSECTION_FLAG" >
    </ViewAttribute>
 </ViewObject>

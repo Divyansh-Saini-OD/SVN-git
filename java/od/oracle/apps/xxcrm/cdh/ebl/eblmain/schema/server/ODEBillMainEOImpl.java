@@ -135,6 +135,7 @@ public class ODEBillMainEOImpl extends OAEntityImpl {
     public static final int SUMMARYBILL = 53;
     public static final int NONDTQUANTITY = 54;
     public static final int PARENTDOCID = 55;
+    public static final int INTERSECTIONFLAG = 56;
     private static oracle.apps.fnd.framework.server.OAEntityDefImpl mDefinitionObject;
 
     /**Gets the attribute value for ParentDocId, using the alias name ParentDocId
@@ -147,6 +148,18 @@ public class ODEBillMainEOImpl extends OAEntityImpl {
      */
     public void setParentDocId(Number value) {
         setAttributeInternal(PARENTDOCID, value);
+    }
+
+    /**Gets the attribute value for IntersectionFlag, using the alias name IntersectionFlag
+     */
+    public String getIntersectionFlag() {
+        return (String)getAttributeInternal(INTERSECTIONFLAG);
+    }
+
+    /**Sets <code>value</code> as the attribute value for IntersectionFlag
+     */
+    public void setIntersectionFlag(String value) {
+        setAttributeInternal(INTERSECTIONFLAG, value);
     }
 
     /**Creates a Key object based on given key constituents
@@ -1970,6 +1983,8 @@ public class ODEBillMainEOImpl extends OAEntityImpl {
             return getNondtQuantity();
         case PARENTDOCID:
             return getParentDocId();
+        case INTERSECTIONFLAG:
+            return getIntersectionFlag();
         default:
             return super.getAttrInvokeAccessor(index, attrDef);
         }
@@ -2146,6 +2161,9 @@ public class ODEBillMainEOImpl extends OAEntityImpl {
             return;
         case PARENTDOCID:
             setParentDocId((Number)value);
+            return;
+        case INTERSECTIONFLAG:
+            setIntersectionFlag((String)value);
             return;
         default:
             super.setAttrInvokeAccessor(index, value, attrDef);
