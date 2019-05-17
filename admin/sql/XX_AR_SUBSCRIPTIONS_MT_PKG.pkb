@@ -12927,7 +12927,7 @@ AS
       THEN
         logit(p_message =>' Location Store is not defined in HR LOCATION ' || target_location_rec.relocated_store, p_force   => TRUE);
       ELSE
-        fnd_file.put_line(fnd_file.OUTPUT, 'Location Store is defined in HR LOCATION : '          ||target_location_rec.relocated_store)
+        fnd_file.put_line(fnd_file.OUTPUT, 'Location Store is defined in HR LOCATION : '          ||target_location_rec.relocated_store);
       END IF;
 
     END LOOP;
