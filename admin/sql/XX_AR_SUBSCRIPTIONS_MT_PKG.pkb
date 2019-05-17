@@ -3415,7 +3415,7 @@ AS
           AND   defn.translation_name                    = 'XX_AR_SUBSCRIPTIONS'
           AND   vals.source_value1                       ='DEFAULT_STORE_CLOSE'
           AND   SYSDATE BETWEEN vals.start_date_active AND NVL(vals.end_date_active, SYSDATE + 1)
-          AND   SYSDATE BETWEEN defn.start_date_active AND NVL(defn.end_date_active, SYSDATE + 1)		  
+          AND   SYSDATE BETWEEN defn.start_date_active AND NVL(defn.end_date_active, SYSDATE + 1)  
           AND   SYSDATE                                  >= to_date(vals.target_value4,'MM-DD-YYYY')
           AND   vals.enabled_flag                        = 'Y'
           AND   defn.enabled_flag                        = 'Y';
@@ -12876,8 +12876,7 @@ AS
   **********************************************/
   
   PROCEDURE xx_relocation_store_vald_prc(errbuff         OUT       VARCHAR2,
-                                         retcode         OUT       NUMBER,
-                                         p_start_date    IN        DATE
+                                         retcode         OUT       NUMBER
                                           )
   AS
     lc_procedure_name  CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'xx_relocation_store_vald_prc';
@@ -12897,13 +12896,11 @@ AS
        AND   SYSDATE BETWEEN vals.start_date_active AND NVL(vals.end_date_active, SYSDATE + 1)	  
        AND   SYSDATE BETWEEN defn.start_date_active AND NVL(defn.end_date_active, SYSDATE + 1)
        AND   SYSDATE                                 >= to_date(vals.target_value4,'MM-DD-YYYY')
-       AND vals.creation_date                        >= NVL(p_start_date, vals.creation_date)
+
        AND   vals.enabled_flag                        = 'Y'
        AND   defn.enabled_flag                        = 'Y';
  
   BEGIN
-
-    lt_parameters('p_start_date')  := p_start_date;
 
     entering_sub(p_procedure_name  => lc_procedure_name,
                  p_parameters      => lt_parameters);
@@ -12929,6 +12926,8 @@ AS
       IF lc_count = 0 
       THEN
         logit(p_message =>' Location Store is not defined in HR LOCATION ' || target_location_rec.relocated_store, p_force   => TRUE);
+      ELSE
+        fnd_file.put_line(fnd_file.OUTPUT, 'Location Store is defined in HR LOCATION : '          ||target_location_rec.relocated_store)
       END IF;
 
     END LOOP;

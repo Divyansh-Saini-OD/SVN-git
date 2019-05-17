@@ -105,8 +105,7 @@ AS
   ***********************************/
 
   PROCEDURE xx_relocation_store_vald_prc(errbuff        OUT       VARCHAR2,
-                                         retcode        OUT       NUMBER,
-                                         p_start_date   IN        DATE
+                                         retcode        OUT       NUMBER
                                         );
 
 END;
