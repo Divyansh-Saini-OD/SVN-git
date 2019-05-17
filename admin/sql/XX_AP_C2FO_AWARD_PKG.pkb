@@ -11,7 +11,9 @@ PROMPT Program exits IF the creation IS NOT SUCCESSFUL
 
 WHENEVER SQLERROR CONTINUE
 
-create or replace PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
+
+create or replace 
+PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
 /********************************************************************************************************************
 *   Name:        XX_AP_C2FO_AWARD_PKG
 *   PURPOSE:     This package was created for the C2O Extract Process
@@ -322,7 +324,7 @@ create or replace PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
 										XADS.EBS_OLDEST_OPEN_INV_DATE,
 --                    xads.original_due_date,
 										XADS.EBS_EXT_BANK_ACCOUNT_ID
-							  FROM xxfin.xx_ap_c2fo_award_data_staging xads
+							  FROM xx_ap_c2fo_award_data_staging xads
 								  WHERE 1 = 1
 --									AND xads.processing_batch_name = gc_current_process_batch_name
 									AND xads.award_file_batch_name = c_award_file_batch_name              
@@ -373,8 +375,8 @@ create or replace PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
 												xads.ebs_remit_to_supplier_site,
 												xads.ebs_remit_to_vendor_site_id,
 												xads.ebs_relationship_id
-								           FROM ap_invoices_all aia,
-												xxfin.xx_ap_c2fo_award_data_staging xads
+								           FROM AP_INVOICES_ALL AIA,
+												        xx_ap_c2fo_award_data_staging xads
 								          WHERE 1 = 1
 											AND xads.award_record_activities = 'UPDATE_RD_AND_PG_TYPE'
 											AND xads.process_stage = 'FUND_TYPE_RS_CREATED_OR_ONE_ACTIVE_RS_EXISTS'
@@ -403,8 +405,8 @@ create or replace PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
 													xads.ebs_remit_to_vendor_site_id,
 													xads.ebs_relationship_id,
 													xads.ebs_ext_bank_account_id
-											   FROM ap_payment_schedules_all apsa,
-													xxfin.xx_ap_c2fo_award_data_staging xads
+											   FROM AP_PAYMENT_SCHEDULES_ALL APSA,
+													    xx_ap_c2fo_award_data_staging xads
 											  WHERE 1 = 1
 												AND xads.award_record_activities = 'UPDATE_RD_AND_PG_TYPE'
 												AND xads.process_stage = 'FP_INVOICE_RD_PG_UPDATED'
@@ -470,7 +472,7 @@ create or replace PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
             BEGIN
                 SELECT COUNT(1)
                   INTO v_record_count
-                  FROM xxfin.xx_ap_c2fo_award_data_external;
+                  FROM xx_ap_c2fo_award_data_external;
 
                  fnd_file.put_line(fnd_file.log,'     Record count FROM xx_ap_c2fo_MEMO_DATA_EXTERNAL is '|| v_record_count|| '.');
 
@@ -538,7 +540,7 @@ create or replace PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
 -- arun
    begin
    
-		UPDATE xxfin.XX_AP_C2FO_FP_FUNDING_SOURCE xcfst
+		UPDATE XX_AP_C2FO_FP_FUNDING_SOURCE xcfst
 			   SET (xcfst.fund_bank_account_num
 					,xcfst.fund_currency_code
 					,xcfst.fund_ext_bank_account_id
@@ -594,18 +596,18 @@ create or replace PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
 					,ipiua.end_date
 					,l_user_id
 					,SYSDATE
-			   FROM  apps.hz_parties party_supp
-					,apps.ap_suppliers sup
-					,apps.hz_party_sites site_supp
-					,apps.ap_supplier_sites_all assa
-					,apps.iby_external_payees_all iepa
-					,apps.iby_pmt_instr_uses_all ipiua
-					,iby.iby_ext_bank_accounts ieba
-					,apps.hz_parties party_bank
-					,apps.hz_parties party_branch
-					,apps.hz_organization_profiles bank_prof
-					,apps.hz_organization_profiles branch_prof
-					,apps.hr_all_organization_units haou
+			   FROM  hz_parties party_supp
+					,ap_suppliers sup
+					,hz_party_sites site_supp
+					,ap_supplier_sites_all assa
+					,iby_external_payees_all iepa
+					,iby_pmt_instr_uses_all ipiua
+					,iby_ext_bank_accounts ieba
+					,hz_parties party_bank
+					,hz_parties party_branch
+					,hz_organization_profiles bank_prof
+					,hz_organization_profiles branch_prof
+					,hr_all_organization_units haou
     WHERE 1=1
 				AND party_supp.party_id = sup.party_id
 				AND party_supp.party_id = site_supp.party_id
@@ -793,7 +795,7 @@ create or replace PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
                        END, --process_status                    
  /*    fpdiff                                      
 					CASE (SELECT COUNT(*) 
-             FROM xxfin.xx_ap_c2fo_award_data_staging xads 
+             FROM xx_ap_c2fo_award_data_staging xads 
                WHERE xads.process_stage= 'SUCCESSFULLY_PROCESSED' 
                AND process_flag = 'Y' 
                AND xads.company_id = xade.company_id 
@@ -812,17 +814,17 @@ create or replace PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
 						(select aia.party_site_id from ap_invoices_all aia where aia.org_id=xmde.ebs_org_id and aia.invoice_id=xmde.ebs_invoice_id),
             --EBS_PARTY_SITE_ID
 --            null,  
-						(select XCFST.FUND_SUPPLIER_NAME from XXFIN.XX_AP_C2FO_FP_FUNDING_SOURCE XCFST), -- where 1=1 and XCFST.FUND_TYPE = XMDE.FUND_TYPE and sysdate between XCFST.FUND_SUP_SITE_BANK_START_DATE and NVL(XCFST.FUND_SUP_SITE_BANK_END_DATE,sysdate+1)),
+						(select XCFST.FUND_SUPPLIER_NAME from XX_AP_C2FO_FP_FUNDING_SOURCE XCFST), -- where 1=1 and XCFST.FUND_TYPE = XMDE.FUND_TYPE and sysdate between XCFST.FUND_SUP_SITE_BANK_START_DATE and NVL(XCFST.FUND_SUP_SITE_BANK_END_DATE,sysdate+1)),
             --EBS_REMIT_TO_SUPPLIER_NAME
-						(select xcfst.fund_supplier_site from xxfin.xx_ap_c2fo_fp_funding_source xcfst), -- where 1=1 and xcfst.fund_type = xmde.fund_type and sysdate between xcfst.fund_sup_site_bank_start_date and nvl(xcfst.fund_sup_site_bank_end_date,sysdate+1)),
+						(select xcfst.fund_supplier_site from xx_ap_c2fo_fp_funding_source xcfst), -- where 1=1 and xcfst.fund_type = xmde.fund_type and sysdate between xcfst.fund_sup_site_bank_start_date and nvl(xcfst.fund_sup_site_bank_end_date,sysdate+1)),
             --EBS_REMIT_TO_SUPPLIER_SITE
-						(select xcfst.fund_vendor_id from xxfin.xx_ap_c2fo_fp_funding_source xcfst), -- where 1=1 and xcfst.fund_type = xmde.fund_type and sysdate between xcfst.fund_sup_site_bank_start_date and nvl(xcfst.fund_sup_site_bank_end_date,sysdate+1)),						
+						(select xcfst.fund_vendor_id from xx_ap_c2fo_fp_funding_source xcfst), -- where 1=1 and xcfst.fund_type = xmde.fund_type and sysdate between xcfst.fund_sup_site_bank_start_date and nvl(xcfst.fund_sup_site_bank_end_date,sysdate+1)),						
             --EBS_REMIT_TO_VENDOR_ID
-						(select xcfst.fund_vendor_site_id from xxfin.xx_ap_c2fo_fp_funding_source xcfst), --  where 1=1 and xcfst.fund_type = xmde.fund_type and sysdate between xcfst.fund_sup_site_bank_start_date and nvl(xcfst.fund_sup_site_bank_end_date,sysdate+1)),												
+						(select xcfst.fund_vendor_site_id from xx_ap_c2fo_fp_funding_source xcfst), --  where 1=1 and xcfst.fund_type = xmde.fund_type and sysdate between xcfst.fund_sup_site_bank_start_date and nvl(xcfst.fund_sup_site_bank_end_date,sysdate+1)),												
             --EBS_REMIT_TO_VENDOR_SITE_ID
-						(select xcfst.fund_party_id from xxfin.xx_ap_c2fo_fp_funding_source xcfst), -- where 1=1 and xcfst.fund_type = xmde.fund_type and sysdate between xcfst.fund_sup_site_bank_start_date and nvl(xcfst.fund_sup_site_bank_end_date,sysdate+1)),
+						(select xcfst.fund_party_id from xx_ap_c2fo_fp_funding_source xcfst), -- where 1=1 and xcfst.fund_type = xmde.fund_type and sysdate between xcfst.fund_sup_site_bank_start_date and nvl(xcfst.fund_sup_site_bank_end_date,sysdate+1)),
              --EBS_REMIT_TO_PARTY_ID
-						(select xcfst.fund_party_site_id from xxfin.xx_ap_c2fo_fp_funding_source xcfst), -- where 1=1 and xcfst.fund_type = xmde.fund_type and sysdate between xcfst.fund_sup_site_bank_start_date and nvl(xcfst.fund_sup_site_bank_end_date,sysdate+1)),
+						(select xcfst.fund_party_site_id from xx_ap_c2fo_fp_funding_source xcfst), -- where 1=1 and xcfst.fund_type = xmde.fund_type and sysdate between xcfst.fund_sup_site_bank_start_date and nvl(xcfst.fund_sup_site_bank_end_date,sysdate+1)),
             --EBS_REMIT_TO_PARTY_SITE_ID
 						null,
             --EBS_RELATIONSHIP_ID
@@ -838,7 +840,7 @@ create or replace PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
 							  AND aia.invoice_type_lookup_code NOT IN ('EXPENSE REPORT','PREPAYMENT')
 							  and nvl(aia.amount_paid,0) = 0),
             -- EBS_OLDEST_OPEN_INV_DATE
-						(select xcfst.fund_ext_bank_account_id from xxfin.xx_ap_c2fo_fp_funding_source xcfst), -- where 1=1 and xcfst.fund_type = xmde.fund_type and sysdate between xcfst.fund_sup_site_bank_start_date and nvl(xcfst.fund_sup_site_bank_end_date,sysdate)),
+						(select xcfst.fund_ext_bank_account_id from xx_ap_c2fo_fp_funding_source xcfst), -- where 1=1 and xcfst.fund_type = xmde.fund_type and sysdate between xcfst.fund_sup_site_bank_start_date and nvl(xcfst.fund_sup_site_bank_end_date,sysdate)),
            -- EBS_EXT_BANK_ACCOUNT_ID
             (SELECT AIA.EXTERNAL_BANK_ACCOUNT_ID FROM AP_INVOICES_ALL AIA WHERE AIA.ORG_ID=XMDE.EBS_ORG_ID AND AIA.INVOICE_ID=XMDE.EBS_INVOICE_ID), 			
             -- SUPPLIER_BANK_ACCOUNT_ID
@@ -846,7 +848,7 @@ create or replace PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
 						l_user_id,   --created_by
 						sysdate,     --last_update_date
 						l_user_id    --last_updated_by
-        FROM XXFIN.xx_ap_c2fo_award_data_external XMDE
+        FROM xx_ap_c2fo_award_data_external XMDE
          WHERE 1=1;
             
 
@@ -864,7 +866,7 @@ create or replace PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
 		--  Purpose -- Update the staging table "xx_ap_c2fo_award_data_staging" for Reprocessing - STARTS.			
 		--+============================================================================================================+
 
-				 UPDATE xxfin.xx_ap_c2fo_award_data_staging xads
+				 UPDATE xx_ap_c2fo_award_data_staging xads
 					SET xads.process_stage = 'UPDATE_RD_AND_PG',
 						xads.award_record_activities = 'UPDATE_RD_AND_PG_TYPE',
 						xads.last_update_date = SYSDATE,
@@ -903,7 +905,7 @@ create or replace PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
                 WHEN OTHERS THEN
                     ROLLBACK;
                     v_status := 'E';
-                    fnd_file.put_line(fnd_file.log,'Error inserting records into xxfin.xx_ap_c2fo_award_data_external table.  ' || sqlerrm);
+                    fnd_file.put_line(fnd_file.log,'Error inserting records into xx_ap_c2fo_award_data_external table.  ' || sqlerrm);
                     retcode := 1;
             END;
 
@@ -923,7 +925,7 @@ create or replace PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
 
               SELECT COUNT(*)
                   INTO lv_fp_staging_r_cnt
-                  FROM xxfin.xx_ap_c2fo_award_data_staging xads
+                  FROM xx_ap_c2fo_award_data_staging xads
                  WHERE 1 = 1
 				   AND xads.fund_type IS NOT NULL
 				   AND xads.award_record_activities = 'UPDATE_RD_AND_PG_TYPE'
@@ -937,7 +939,7 @@ create or replace PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
 					-- UPDATE - TO REPROCESS THE REJECTED RECORDS.
 		--+============================================================================================================+
 
-       UPDATE  xxfin.xx_ap_c2fo_award_data_staging xads
+       UPDATE  xx_ap_c2fo_award_data_staging xads
           SET 
             --xads.processing_batch_name = gc_current_process_batch_name,
             xads.award_file_batch_name = c_award_file_batch_name,
@@ -960,14 +962,14 @@ create or replace PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
  
                 SELECT COUNT(*)
                   INTO lv_fp_award_file_r_cnt
-                  FROM xxfin.xx_ap_c2fo_award_data_external;
+                  FROM xx_ap_c2fo_award_data_external;
 
                 fnd_file.put_line(fnd_file.log,'FP Award File Record count FROM xxc2fo_fp_award_data_external is -  '|| lv_fp_award_file_r_cnt|| '.');
 
   
                 SELECT COUNT(*)
                   INTO lv_fp_current_processing_r_cnt
-                  FROM xxfin.xx_ap_c2fo_award_data_staging xads
+                  FROM xx_ap_c2fo_award_data_staging xads
                  WHERE 1 = 1 
 				   AND xads.fund_type IS NOT NULL
 				   AND xads.award_record_activities = 'UPDATE_RD_AND_PG_TYPE'
@@ -1462,7 +1464,7 @@ create or replace PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
 
           IF lv_process_flag = 'E' THEN
 
-           UPDATE xxfin.xx_ap_c2fo_award_data_staging xads
+           UPDATE xx_ap_c2fo_award_data_staging xads
 						SET xads.process_stage = 'VALIDATION_ERROR',
 						    xads.process_flag = lv_process_flag,
 							xads.error_msg = lv_err_msg,							
@@ -1480,7 +1482,7 @@ create or replace PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
 
                     lv_process_flag := 'N';
 
-           UPDATE xxfin.xx_ap_c2fo_award_data_staging xads
+           UPDATE xx_ap_c2fo_award_data_staging xads
 						SET xads.process_stage = 'SUCCESSFULLY_VALIDATED',
 							xads.process_flag = lv_process_flag,
 							xads.last_update_date = SYSDATE,
@@ -1547,7 +1549,7 @@ create or replace PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
                      
           IF lv_process_flag = 'E' THEN
 
-           UPDATE xxfin.xx_ap_c2fo_award_data_staging xads
+           UPDATE xx_ap_c2fo_award_data_staging xads
 						SET xads.process_stage = 'VALIDATION_ERROR',
 						    xads.process_flag = lv_process_flag,
 							xads.error_msg = lv_err_msg,							
@@ -1565,7 +1567,7 @@ create or replace PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
 
               lv_process_flag := 'N';
 
-           UPDATE xxfin.xx_ap_c2fo_award_data_staging xads
+           UPDATE xx_ap_c2fo_award_data_staging xads
 						SET xads.process_stage = 'SUCCESSFULLY_VALIDATED',
 							xads.process_flag = lv_process_flag,
 							xads.last_update_date = SYSDATE,
@@ -2214,7 +2216,7 @@ END IF;
             BEGIN
                 SELECT COUNT(*)
                   INTO l_award_file_record_count
-                  FROM xxfin.xx_ap_c2fo_award_data_external;
+                  FROM xx_ap_c2fo_award_data_external;
 
                 fnd_file.put_line(fnd_file.log,'Award File Record count FROM XX_AP_C2FO_MEMO_DATA_EXTERNAL is -  '|| l_award_file_record_count|| '.');
             END;
@@ -2331,7 +2333,7 @@ END IF;
 		--+============================================================================================================+
 
 /*
-			UPDATE xxfin.XX_AP_C2FO_FP_FUNDING_SOURCE xcfst
+			UPDATE XX_AP_C2FO_FP_FUNDING_SOURCE xcfst
 			   SET (xcfst.fund_bank_account_num
 					,xcfst.fund_currency_code
 					,xcfst.fund_ext_bank_account_id
@@ -2596,7 +2598,7 @@ END IF;
 
                 IF lv_process_flag = 'E' THEN
 
-                     UPDATE xxfin.xx_ap_c2fo_award_data_staging xads
+                     UPDATE xx_ap_c2fo_award_data_staging xads
 						SET xads.ebs_relationship_id = lv_fp_relationship_id,
 							xads.process_stage = lv_process_stage,
 							xads.error_msg = lv_err_msg,
@@ -2616,7 +2618,7 @@ END IF;
 
                     lv_process_flag := 'N';
 
-                     UPDATE xxfin.xx_ap_c2fo_award_data_staging xads
+                     UPDATE xx_ap_c2fo_award_data_staging xads
 						SET xads.ebs_relationship_id = lv_fp_relationship_id,
 							xads.process_stage = lv_process_stage,
 							xads.process_flag = lv_process_flag,
@@ -2718,7 +2720,7 @@ END IF;
 							lv_process_stage 		:= 'FP_INVOICE_RD_PG_UPDATE_ERROR';
 							lv_err_msg 				:= lv_err_msg||'-'||'Funding invoice update exception error for invoice num'||'-'||c_upd_fp_inv_rd_pg_dtls_rec.invoice_num;
 
-                     UPDATE xxfin.xx_ap_c2fo_award_data_staging xads
+                     UPDATE xx_ap_c2fo_award_data_staging xads
 						SET xads.process_flag = lv_process_flag,
 							xads.process_stage = lv_process_stage,							
 							xads.error_msg = lv_err_msg,
@@ -2738,7 +2740,7 @@ END IF;
 							lv_process_flag 	:= 'N';
 							lv_process_stage	:= 'FP_INVOICE_RD_PG_UPDATED';
 
-                     UPDATE xxfin.xx_ap_c2fo_award_data_staging xads
+                     UPDATE xx_ap_c2fo_award_data_staging xads
 						SET xads.process_flag = lv_process_flag,
 							xads.process_stage = lv_process_stage,
 							xads.last_update_date = SYSDATE,
@@ -2843,7 +2845,7 @@ END IF;
 							lv_process_stage 		:= 'FP_INVOICE_PS_RD_UPDATE_ERROR';
 							lv_err_msg 				:= lv_err_msg||'-'||'Funding invoice payment schedule update exception error for invoice num'||'-'||c_upd_fp_inv_ps_rd_pg_dtls_rec.ebs_invoice_num;
 
-                     UPDATE xxfin.xx_ap_c2fo_award_data_staging xads
+                     UPDATE xx_ap_c2fo_award_data_staging xads
 						SET xads.process_flag = lv_process_flag,
 							xads.process_stage = lv_process_stage,							
 							xads.error_msg = lv_err_msg,
@@ -2863,7 +2865,7 @@ END IF;
 							lv_process_flag 	:= 'N';
 							lv_process_stage	:= 'FP_INVOICE_PS_RD_UPDATED';
 
-                     UPDATE xxfin.xx_ap_c2fo_award_data_staging xads
+                     UPDATE xx_ap_c2fo_award_data_staging xads
 						SET xads.process_flag = lv_process_flag,
 							xads.process_stage = lv_process_stage,
 							xads.last_update_date = SYSDATE,
@@ -2907,7 +2909,7 @@ END IF;
 
         BEGIN
 
-             UPDATE xxfin.xx_ap_c2fo_award_data_staging xads
+             UPDATE xx_ap_c2fo_award_data_staging xads
                 SET xads.process_stage = 'SUCCESSFULLY_PROCESSED',
 					xads.process_flag = 'Y',
 					xads.last_update_date = SYSDATE,
@@ -2935,7 +2937,7 @@ END IF;
             
                  SELECT COUNT(*)
                    INTO lv_fp_stg_success_r_cnt
-                   FROM xxfin.xx_ap_c2fo_award_data_staging xads
+                   FROM xx_ap_c2fo_award_data_staging xads
 				  WHERE 1 = 1
 					AND xads.fund_type IS NOT NULL
 					AND xads.award_record_activities = 'UPDATE_RD_AND_PG_TYPE'
@@ -2950,7 +2952,7 @@ END IF;
             BEGIN
                  SELECT COUNT(*)
                    INTO lv_fp_stg_err_r_cnt
-                   FROM xxfin.xx_ap_c2fo_award_data_staging xads
+                   FROM xx_ap_c2fo_award_data_staging xads
 				  WHERE 1 = 1
 					AND xads.fund_type IS NOT NULL
 					AND xads.award_record_activities = 'UPDATE_RD_AND_PG_TYPE' 
@@ -2967,7 +2969,7 @@ END IF;
             BEGIN
                  SELECT COUNT(*)
                    INTO lv_fp_duplicate_r_cnt
-                   FROM xxfin.xx_ap_c2fo_award_data_staging xads
+                   FROM xx_ap_c2fo_award_data_staging xads
 				  WHERE 1 = 1
 					AND xads.fund_type IS NOT NULL
 					AND xads.award_record_activities = 'UPDATE_RD_AND_PG_TYPE' 
