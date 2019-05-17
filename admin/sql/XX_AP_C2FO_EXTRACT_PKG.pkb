@@ -70,11 +70,12 @@ PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
         CURSOR C_INV_DATA IS
         SELECT *
           FROM XX_AP_C2FO_INVOICE_V
-         WHERE EBS_ORG_ID = p_operating_unit;
+         WHERE EBS_ORG_ID = p_operating_unit
+           AND TO_DATE(TRANSACTION_DATE, 'YYYY-MM-DD')    BETWEEN NVL(to_date(p_invoice_date_from, 'RRRR/MM/DD HH24:MI:SS'), TO_DATE(TRANSACTION_DATE,'YYYY-MM-DD'))
+           AND NVL(TO_DATE(P_INVOICE_DATE_TO, 'RRRR/MM/DD HH24:MI:SS'), TO_DATE(TRANSACTION_DATE,'YYYY-MM-DD'));
+           
 --            AND EBS_SUPPLIER_NUMBER BETWEEN NVL(p_supp_num_from, EBS_SUPPLIER_NUMBER)   AND NVL(p_supp_num_to, EBS_SUPPLIER_NUMBER)
 --            AND EBS_INVOICE_NUM     BETWEEN NVL(p_invoice_num_from, EBS_INVOICE_NUM)    AND NVL(p_invoice_num_to, EBS_INVOICE_NUM)
---            AND TO_DATE(TRANSACTION_DATE, 'YYYY-MM-DD')    BETWEEN NVL(to_date(p_invoice_date_from, 'RRRR/MM/DD HH24:MI:SS'), TO_DATE(TRANSACTION_DATE,'YYYY-MM-DD'))
---            AND NVL(to_date(p_invoice_date_to, 'RRRR/MM/DD HH24:MI:SS'), TO_DATE(TRANSACTION_DATE,'YYYY-MM-DD'))
 --            AND TO_DATE(PAYMENT_DUE_DATE, 'YYYY-MM-DD')    BETWEEN NVL(to_date(p_pay_due_date_from, 'RRRR/MM/DD HH24:MI:SS'), TO_DATE(PAYMENT_DUE_DATE,'YYYY-MM-DD'))
 --            AND NVL(to_date(p_pay_due_date_to, 'RRRR/MM/DD HH24:MI:SS'), TO_DATE(PAYMENT_DUE_DATE,'YYYY-MM-DD'))
 --            AND substr(invoice_id,instr(invoice_id,'|')+1) BETWEEN NVL(p_invoice_num_from, substr(invoice_id,instr(invoice_id,'|')+1)) AND NVL(p_invoice_num_to, substr(invoice_id,instr(invoice_id,'|')+1))
@@ -647,7 +648,9 @@ PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
 
      EXCEPTION
        WHEN utl_file.invalid_path THEN
-          raise_application_error(-20000, 'ERROR: Invalid PATH FOR file.');
+          RAISE_APPLICATION_ERROR(-20000, 'ERROR: Invalid PATH FOR file.');
+        WHEN OTHERS THEN
+          FND_FILE.PUT_LINE(FND_FILE.LOG, 'Others : Generate_Extract Error : ' || SUBSTR(SQLERRM,1,100));          
       END;
 
 
@@ -1128,8 +1131,8 @@ IS
     AIA.RELATIONSHIP_ID ,
     AIA.EXTERNAL_BANK_ACCOUNT_ID,
     AWD.SUPPLIER_BANK_ACCOUNT_ID
-  FROM APPS.XX_AP_C2FO_AWARD_DATA_STAGING awd,
-    APPS.AP_INVOICES_ALL AIA
+  FROM XX_AP_C2FO_AWARD_DATA_STAGING AWD,
+       AP_INVOICES_ALL AIA
   where
   --AWD.AWARD_FILE_BATCH_NAME = 'XX_AP_C2FO-20190502092236'
   AWD.PROCESS_FLAG          = 'Y'
@@ -1137,7 +1140,7 @@ IS
   AND AIA.INVOICE_ID            = AWD.EBS_INVOICE_ID
   AND award_file_batch_name     =
     (SELECT AWARD_FILE_BATCH_NAME
-    FROM APPS.XX_AP_C2FO_AWARD_DATA_STAGING AWD
+    FROM XX_AP_C2FO_AWARD_DATA_STAGING AWD
     where FUND_TYPE  is not null
     AND CREATION_DATE > sysdate - 20
     AND rownum        < 2
@@ -1448,6 +1451,8 @@ and   party_branch.status = 'A';
      EXCEPTION
        WHEN UTL_FILE.INVALID_PATH then
           raise_application_error(-20000, 'ERROR: Invalid PATH FOR Invoice Remit Bank file.');
+       WHEN OTHERS THEN
+        FND_FILE.PUT_LINE(FND_FILE.LOG, 'Others : Remit_Bank_Extract Error : ' || substr(sqlerrm,1,100));       
       END;
 
 
