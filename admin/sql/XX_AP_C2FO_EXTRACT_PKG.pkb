@@ -1139,13 +1139,21 @@ IS
   AND AWD.FUND_TYPE            IS NOT NULL
   AND AIA.INVOICE_ID            = AWD.EBS_INVOICE_ID
   AND award_file_batch_name     =
-    (SELECT AWARD_FILE_BATCH_NAME
+   ( SELECT AWARD_FILE_BATCH_NAME
     FROM XX_AP_C2FO_AWARD_DATA_STAGING AWD
-    where FUND_TYPE  is not null
-    AND CREATION_DATE > sysdate - 20
-    AND rownum        < 2
-    )
-ORDER BY awd.CREATION_DATE DESC; 
+    WHERE FUND_TYPE  IS NOT NULL
+      AND PROCESS_FLAG          = 'Y'
+      AND CREATION_DATE =
+       (
+         SELECT max(CREATION_DATE)
+          FROM XX_AP_C2FO_AWARD_DATA_STAGING AWD
+         WHERE FUND_TYPE  IS NOT NULL
+           AND CREATION_DATE > SYSDATE - 1      
+           AND PROCESS_FLAG          = 'Y'
+       )
+     AND ROWNUM        < 2
+   )
+ORDER BY awd.CREATION_DATE; 
 
  CURSOR C_SUPP_BANK_ACCT (cp_vendor_id IN NUMBER, cp_vendor_site_id IN NUMBER)
   is
@@ -1255,9 +1263,8 @@ and   party_branch.status = 'A';
       FND_FILE.PUT_LINE(FND_FILE.LOG,'-------------------------------------------------------------------------------------');
  
       BEGIN
-        --filename officedepot_remit_bank_yyyymmdd.csv
 
-        v_filename := 'officedepot_remit_bank_'||TO_CHAR(TRUNC(sysdate),'YYYYMMDD')||'.csv';
+        v_filename := 'officedepot_supp_remit_'||TO_CHAR(TRUNC(sysdate),'YYYYMMDD')||'.csv';
 
         FND_FILE.PUT_LINE(FND_FILE.LOG, ' ');
         FND_FILE.PUT_LINE(FND_FILE.LOG, 'Creating File:   '||v_filename);
