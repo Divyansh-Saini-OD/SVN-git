@@ -24,7 +24,11 @@ PROCEDURE update_new_bill_date(p_errbuf         OUT  VARCHAR2
                               ,p_retcode        OUT  VARCHAR2
                               ,p_debug          IN   VARCHAR2
 							  ,p_billing_date   IN   VARCHAR2);
-                         	  
+
+PROCEDURE insert_new_bill_signal(p_debug          IN   VARCHAR2
+							  ,p_billing_date   IN   DATE
+							  ,p_customer_id	IN   NUMBER
+							  );                         	  
 END XX_AR_RECALC_BILL_DATE_PKG;
 /
 SHOW ERRORS;

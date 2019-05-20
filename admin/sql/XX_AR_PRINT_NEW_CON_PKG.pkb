@@ -167,6 +167,7 @@ AS
 					WHERE 1                 =1
 					AND Api.Status          = 'OP'
 					AND api.customer_id     = p_Customer_id 
+					AND cons_inv_id	IS NULL
 					AND ROWNUM < 2 
 					AND EXISTS 
 						(
@@ -369,6 +370,7 @@ AS
 	WHERE HCP.SITE_USE_ID       IS NULL
 	AND HCP.CONS_INV_FLAG      = 'Y'
 	AND B.TERM_ID              = HCP.STANDARD_TERMS
+	--AND HCP.Cust_Account_Id = 57857
 	AND EXISTS 
 		(
 		  SELECT 1
@@ -676,9 +678,6 @@ END;
 				  lc_bill_cust_flag		:='N';
 				  lc_bill_signal_flag	:='N';
 				  l_bypass_trx 			:= FALSE;	
-				  
-
-
 		  
 			  xx_get_bill_comp_cust(p_header_id 			=>  t_cons_cust(i).header_id, 
 			                        p_trx_num   			=>  t_cons_cust(i).trx_number, 
@@ -898,6 +897,11 @@ END;
 				
 					IF 	lc_bill_comp_check_count >0
 					THEN
+					
+						xx_ar_recalc_bill_date_pkg.insert_new_bill_signal( 'Y',
+																		ld_cutoff_date,
+																		lcu_cons_cust_tbl_type(ln_cnt).cust_account_id
+																		);
 						xx_get_bill_comp_cust(p_header_id 			=>  NULL, 
 											p_trx_num   			=>  NULL, 
 											p_customer_id 			=> lcu_cons_cust_tbl_type(ln_cnt).cust_account_id, 
