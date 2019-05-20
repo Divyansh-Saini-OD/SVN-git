@@ -128,15 +128,15 @@ AS
 				/* this cursor will pick up all transactions for given site/customer group by parent order number for Bill Complete */
 		CURSOR C_bill_comp_trx IS
 				  SELECT /*+  index(CT RA_CUSTOMER_TRX_U1)*/   -- Added for Defect # 35571
-					   CT.customer_trx_id              trx_id,
-					   CT.trx_date                     trx_date,
-					   CT.trx_number                   trx_number,
-					   CT.billing_date                 billing_date,
+					   ct.customer_trx_id              trx_id,
+					   ct.trx_date                     trx_date,
+					   ct.trx_number                   trx_number,
+					   ct.billing_date                 billing_date,
 					   xoha.bill_comp_flag			   bill_comp_flag,
 					   xoha.parent_order_num		   parent_order_num 		
-				FROM   APPS.ra_customer_trx   CT,
-					   APPS.ar_payment_schedules PS,
-					   apps.xx_om_header_attributes_all xoha
+				FROM   ra_customer_trx   ct,
+					   ar_payment_schedules ps,
+					   xx_om_header_attributes_all xoha
 				WHERE  1=1
 				AND    PS.customer_id     = p_customer_id
 				--AND    CT.BILL_TO_CUSTOMER_ID     = :p_customer_id
