@@ -261,6 +261,7 @@ IS
       lc_error_loc            := 'Querying for the order details from AOPS';
       lc_error_debug          := 'aops_order_number: '||lcu_pick_order_numbers_rec.aops_order_number;
       FND_FILE.PUT_LINE(fnd_file.log,'');
+	  FND_FILE.PUT_LINE(fnd_file.log,'Start Time :'||TO_CHAR(SYSTIMESTAMP,'DD-MON-YYYY HH24:MI:SS.FF2 TZH:TZM'));
       FND_FILE.PUT_LINE(fnd_file.log,'Querying the order details for '||lcu_pick_order_numbers_rec.aops_order_number);
       --Code modified for V2.0 starts here..
       IF lc_wallet_location IS NOT NULL THEN
@@ -290,6 +291,7 @@ IS
 	  when others then 
 	  x_ret_code := 1;
 	  FND_FILE.PUT_LINE(fnd_file.log,'Error occured during UTL_HTTP.GET_RESPONSE Webservice call. SQLERRM-'||utl_http.get_detailed_sqlerrm);
+	  FND_FILE.PUT_LINE(fnd_file.log,'Exception End Time :'||TO_CHAR(SYSTIMESTAMP,'DD-MON-YYYY HH24:MI:SS.FF2 TZH:TZM'));
 	  FND_FILE.PUT_LINE(fnd_file.output,RPAD(lcu_pick_order_numbers_rec.aops_order_number,35,' ') || RPAD(' ',25,' ') || 'Error occured during UTL_HTTP.GET_RESPONSE Webservice call. SQLERRM-'||utl_http.get_detailed_sqlerrm);
 	  continue;
 	  end;
@@ -511,6 +513,7 @@ IS
       IF ( lc_exists = 'N') THEN
         -- Addressed Defect 2347 for proper logging messages if record not found in AS400 system
         FND_FILE.PUT_LINE(fnd_file.log,'Order Number not Found in the AS400 System' );
+		FND_FILE.PUT_LINE(fnd_file.log,'End Time :'||TO_CHAR(SYSTIMESTAMP,'DD-MON-YYYY HH24:MI:SS.FF2 TZH:TZM'));
         FND_FILE.PUT_LINE(fnd_file.output,'');
         FND_FILE.PUT_LINE(fnd_file.output,RPAD(lcu_pick_order_numbers_rec.aops_order_number,35,' ') || RPAD(' ',25,' ') || 'Order Number not Found in the AS400 System. Webservice Error Code:'||lc_code||'.Error Message:'||NVL(trim(lc_message),'NULL') );
         x_ret_code := 1;
@@ -535,4 +538,4 @@ IS
   END DETAIL;
 END XX_IBY_DEPOSIT_DTLS_PKG;
 /
-SHOW ERROR
+SHOW ERRORS;
