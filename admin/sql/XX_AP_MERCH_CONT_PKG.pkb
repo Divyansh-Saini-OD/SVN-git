@@ -392,29 +392,39 @@ BEGIN
 lc_temp_email:=get_distribution_list;
 
 select instance_name into instance_name from v$instance;    --added for jira NAIT-87654
-email_subject:=instance_name||' '||'OD: Trade Match Merchant Contacts';   --added for jira NAIT-87654
+    FND_FILE.PUT_LINE(FND_FILE.LOG,'Instance Name :'||instance_name);
 
+email_subject:=instance_name||' '||'OD: Trade Match Merchant Contacts';   --added for jira NAIT-87654
+    FND_FILE.PUT_LINE(FND_FILE.LOG,'Email Subject :'||email_subject);
+    FND_FILE.PUT_LINE(FND_FILE.LOG,'Before begin_mail');
                         conn := xx_pa_pb_mail.begin_mail(
                                         sender => 'noreply@officedepot.com',
                                         recipients => lc_temp_email,
                                                 cc_recipients=>NULL,
                                         subject => email_subject, --'OD: Trade Match Merchant Contacts',  commented and added email_subject for jira NAIT-87654
                                         mime_type => xx_pa_pb_mail.MULTIPART_MIME_TYPE);
-
+										
+	FND_FILE.PUT_LINE(FND_FILE.LOG,'After begin_mail');
+    FND_FILE.PUT_LINE(FND_FILE.LOG,'Before end_attachment');
              --xx_attch_rpt(conn,v_sfile_name);
            --  xx_pa_pb_mail.xx_attach_excel(conn,'Merchant%20Contact%20List.xlsx');
              xx_pa_pb_mail.end_attachment(conn => conn);
+	FND_FILE.PUT_LINE(FND_FILE.LOG,'After end_attachment');
+	FND_FILE.PUT_LINE(FND_FILE.LOG,'Before attach_text');
              xx_pa_pb_mail.attach_text( conn => conn,
                                         data => 'Please click on the http://sp.na.odcorp.net/sites/Merch/Home/TO%20BE%20PUBLISHED/Links/Merchant%20Contact%20List.xlsx for the merchant contact details ' 
                                        );
-
+    FND_FILE.PUT_LINE(FND_FILE.LOG,'After attach_text');
+	FND_FILE.PUT_LINE(FND_FILE.LOG,'Before end_mail');
              xx_pa_pb_mail.end_mail( conn => conn );
+    FND_FILE.PUT_LINE(FND_FILE.LOG,'After end_mail');
 
                      COMMIT;
 EXCEPTION
   WHEN OTHERS THEN
     ap_debug_pkg.print('Y',
                  'ap_xml_invoice_inbound_pkg.notify_recipient EXCEPTION(-)');
+	FND_FILE.PUT_LINE(FND_FILE.LOG,'Error Message :'||SUBSTR(SQLERRM,1,255));
     p_return_code := '2';
 END;
 END IF;
