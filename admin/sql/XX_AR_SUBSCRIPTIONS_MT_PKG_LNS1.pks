@@ -21,11 +21,11 @@ AS
 -- | 4.0         16-JAN-2019  Punit Gupta         Changed for NAIT-78415           |
 -- | 5.0         26-MAR-2019  Sahithi K           Update SCM with trans_id for     |
 -- |                                              existing contracts NAIT-89231    |
--- | 6.0         22-APR-2019  Dattatray Bachate   Added New Procedure -            |
--- |                                              xx_ar_subs_payload_purge_prc for |
--- |                                              NAIT-83868                       |
--- +===============================================================================+                                                                         
-  
+-- | 6.0         22-APR-2019  Dattatray Bachate   Added New Procedure - NAIT-83868 |
+-- | 7.0         03-MAY-2019  Kayeed / Arvind     Added New Procedure - NAIT-93356 |
+-- | 8.0         03-MAY-2019  Dattatray Bachate   Added New Procedure - NAIT-93356 |
+-- +===============================================================================+
+
   /******
   * MAIN
   ******/
@@ -74,7 +74,7 @@ AS
                                           retcode            OUT NUMBER,
                                           p_file_path        IN  VARCHAR2,
                                           p_debug_flag       IN  VARCHAR2 DEFAULT 'N',
-							              p_text_value       IN  VARCHAR2);
+                                          p_text_value       IN  VARCHAR2);
                                           
   /*********************************************************
   * Procedure to get trans id by performing $0 authorization
@@ -83,15 +83,30 @@ AS
   PROCEDURE update_trans_id_scm(errbuff            OUT VARCHAR2,
                                 retcode            OUT NUMBER,
                                 p_debug_flag       IN  VARCHAR2 DEFAULT 'N');
-								
-  /*********************************************
+
+  /********************************************
   * Procedure to Purge Subscription Payload and
   * Error Table's more than 30 day's older data
-  **********************************************/
-  PROCEDURE xx_ar_subs_payload_purge_prc (
-										  errbuff   OUT       VARCHAR2,
-										  retcode   OUT       NUMBER
-										  );								
+  ********************************************/
+  PROCEDURE xx_ar_subs_payload_purge_prc (errbuff   OUT       VARCHAR2,
+                                          retcode   OUT       NUMBER
+                                          );
                                           
+  /*************************************************
+  * Procedure for Closed Stores Accounting Remapping
+  *************************************************/
+
+  PROCEDURE get_store_close_info(p_store_number IN         VARCHAR2,
+                                 x_store_info   OUT NOCOPY VARCHAR2
+                                 );
+
+  /***********************************
+  * Procedure to validate the location
+  ***********************************/
+
+  PROCEDURE xx_relocation_store_vald_prc(errbuff        OUT       VARCHAR2,
+                                         retcode        OUT       NUMBER
+                                        );
+
 END;
 /
