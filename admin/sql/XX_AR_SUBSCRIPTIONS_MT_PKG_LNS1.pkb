@@ -52,10 +52,10 @@ AS
 -- |                                              for auto renewed BS2 contracts NAIT-90173      |
 -- | 20.0        24-APR-2019  Sahithi K           NAIT-85914 1.pass trans_id in payment auth     |
 -- |                                                           payload                           |
--- |                                              2.pass wallet_type while inserting data        |  
+-- |                                              2.pass wallet_type while inserting data        |
 -- |                                                into ORDT table based on translation         |
 -- | 21.0        24-APR-2019  Sahithi K           Perform AVS check to get trans_id for          |
--- |                                              existing contracts in SCM NAIT-89230           | 
+-- |                                              existing contracts in SCM NAIT-89230           |
 -- | 22.0        24-APR-2019  Sahithi K           Update SCM with trans_id for existing          |
 -- |                                              contracts NAIT-89231                           |
 -- | 23.0        24-APR-2019  Sahithi K           add close_date field which is received         |
@@ -63,10 +63,12 @@ AS
 -- | 24.0        25-APR-2019  Punit Gupta         Made changes in the send_email_autorenew       |
 -- |                                              Procedure for NAIT-90171                       |
 -- | 25.0        22-APR-2019  Dattatray B         Added Procedure-xx_ar_subs_payload_purge_prc   |
--- |											  for NAIT-83868-> To purge Subscriptions Payload| 
--- |											  and Error table more than 30 days older data	 |
--- | 26.0        06-MAY-2019  Punit Gupta         Changes done for Cloud Instance Replacin RMS DB|
--- |                                              Link with table used in process item cost      |
+-- |                                              for NAIT-83868-> To purge Subscriptions Payload|
+-- |                                              and Error table more than 30 days older data   |
+-- | 26.0        03-MAY-2019  Kayeed Ahmed        Added Procedure-get_store_close_info NAIT-93356|
+-- |                                              TO Closed Stores Accounting Remapping          |
+-- | 27.0        13-MAY-2019  Dattatray Bachate   Added Procedure-xx_relocation_store_vald_prc   |
+-- |                                              Procedure to validate the location in HR       |
 -- +=============================================================================================+
  
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'xx_ar_subscriptions_mt_pkg';
@@ -82,6 +84,7 @@ AS
   gb_debug                        BOOLEAN                        := FALSE;
   gc_order_source_spc             oe_order_sources.name%TYPE     := 'SPC';
   gc_contract_status     CONSTANT VARCHAR2(20)                   := 'TERMINATE';
+  gc_store_number        VARCHAR2(50);
   
   TYPE gt_input_parameters IS TABLE OF VARCHAR2(32000)
    INDEX BY VARCHAR2(255);
@@ -483,7 +486,7 @@ AS
     x_program_setups('enable_debug') := lt_translation_info.target_value1;
 
     /****************
-    * Get RMS DATA
+    * Get RMS DB LINK
     ****************/
 
     lc_action :=  'Calling get_translation_info for x_rms_dba_link';
@@ -816,6 +819,21 @@ AS
     x_program_setups('update_trans_id_scm_url')  := lt_translation_info.target_value1;
     x_program_setups('update_trans_id_scm_user') := lt_translation_info.target_value2;
     x_program_setups('update_trans_id_scm_pwd')  := lt_translation_info.target_value3;
+    
+    /*******************
+    * Get COF check flag
+    *******************/
+
+    lc_action :=  'Calling get_translation_info for COF check flag';
+
+    lt_translation_info := NULL;
+
+    lt_translation_info.source_value1 := 'COF_CHECK_FLAG';
+
+    get_translation_info(p_translation_name  => 'XX_AR_SUBSCRIPTIONS',
+                         px_translation_info => lt_translation_info);
+
+    x_program_setups('cof_check_flag')  := lt_translation_info.target_value1;
 
     exiting_sub(p_procedure_name => lc_procedure_name);
 
@@ -1511,7 +1529,92 @@ AS
       RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
 
   END get_location_info;
+  
+  /******************************************************
+  * Helper procedure to get location info for accounting
+  *****************************************************/
+
+  PROCEDURE get_new_location_info(p_store_number   IN         hr_locations_all.location_code%TYPE,
+                                  x_loc_code       OUT NOCOPY hr_locations_all.location_code%TYPE,
+                                  x_region         OUT NOCOPY hr_locations_all.region_1%TYPE,
+                                  x_loc_type       OUT NOCOPY hr_lookups.meaning%TYPE)
+  IS
+
+    lc_procedure_name  CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'get_new_location_info';
+    lt_parameters      gt_input_parameters;
+
+  BEGIN
+
+    lt_parameters('p_store_number') := p_store_number;
+
+    entering_sub(p_procedure_name => lc_procedure_name,
+                 p_parameters     => lt_parameters);
  
+    SELECT SUBSTR(hla.location_code, 1, 6),
+           DECODE(hla.country, 'US', hla.region_2, hla.region_1),
+           hl.meaning
+    INTO   x_loc_code,
+           x_region,
+           x_loc_type
+    FROM   hr_lookups hl,
+           hr_locations_all hla,
+           hr_all_organization_units haou
+    WHERE  haou.TYPE            = hl.lookup_code
+    AND    haou.location_id     = hla.location_id
+    --AND    haou.organization_id = p_org_id
+    AND    SUBSTR(hla.location_code, 1, 6) = p_store_number
+    AND    hl.lookup_type       = 'ORG_TYPE'
+    AND    hl.enabled_flag      = 'Y';
+
+    logit(p_message => 'RESULT location_code: ' || x_loc_code);
+    logit(p_message => 'RESULT region: '        || x_region);
+    logit(p_message => 'RESULT location_type: ' || x_loc_type);
+
+    exiting_sub(p_procedure_name => lc_procedure_name);
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+      exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+      RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+
+  END get_new_location_info;
+  
+  /***********************************************
+  * Helper procedure to get segment info from CCID
+  ***********************************************/
+
+  PROCEDURE get_acct_segment_info(p_ccid_id    IN         gl_code_combinations.code_combination_id%TYPE,
+                                  x_segment    OUT NOCOPY gl_code_combinations.segment4%TYPE)
+  IS
+
+    lc_procedure_name  CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'get_acct_segment_info';
+    lt_parameters      gt_input_parameters;
+
+  BEGIN
+
+    lt_parameters('p_ccid_id') := p_ccid_id;
+
+    entering_sub(p_procedure_name => lc_procedure_name,
+                 p_parameters     => lt_parameters);
+
+    SELECT segment4
+    INTO   x_segment
+    FROM   gl_code_combinations
+    WHERE  code_combination_id = p_ccid_id;
+    
+    logit(p_message => 'RESULT location - segment4: ' || x_segment);
+
+    exiting_sub(p_procedure_name => lc_procedure_name);
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+      exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+      RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+
+  END get_acct_segment_info;
+
   /**********************************
   * Helper procedure to customer info
   **********************************/
@@ -2285,6 +2388,7 @@ AS
             
               lc_query := 'SELECT cost FROM XX_RMS_MV_SSB ' || ' WHERE item = '|| lr_contract_line_info.item_name;
             
+           
               EXECUTE IMMEDIATE lc_query INTO px_item_cost_tab(lr_contract_line_info.item_name);
 
               px_subscription_array(indx).item_unit_cost := px_item_cost_tab(lr_contract_line_info.item_name);
@@ -3217,6 +3321,131 @@ AS
 
   END send_email_AB;
   
+  /************************************************
+  * Helper procedure to get store close information
+  ************************************************/
+
+  PROCEDURE get_store_close_info(p_store_number  IN        VARCHAR2,
+                                 x_store_info   OUT NOCOPY VARCHAR2)
+  IS
+
+    lc_procedure_name  CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'get_store_close_info';
+    lt_parameters      gt_input_parameters;
+    lt_cnt             NUMBER;
+
+  BEGIN
+
+    lt_parameters('p_store_number')          := p_store_number;
+
+    entering_sub(p_procedure_name  => lc_procedure_name,
+                 p_parameters      => lt_parameters);
+   
+     
+    /**********************************************************
+    * Checking if Store is available in Store Close translation
+    **********************************************************/
+ 
+    SELECT   COUNT(1)
+    INTO   lt_cnt
+    FROM   xx_fin_translatevalues                     vals,
+           xx_fin_translatedefinition                 defn
+    WHERE   defn.translate_id                        = vals.translate_id
+    AND   defn.translation_name                    = 'SUBSCRIPTION_STORE_CLOSE'
+    AND   lpad(vals.source_value3,6,'0')             = p_store_number
+    AND   SYSDATE BETWEEN vals.start_date_active AND NVL(vals.end_date_active, SYSDATE + 1)	  
+    AND   SYSDATE BETWEEN defn.start_date_active AND NVL(defn.end_date_active, SYSDATE + 1)
+    AND   SYSDATE                                  >= to_date(vals.target_value4,'MM-DD-YYYY')
+    AND   vals.enabled_flag                        = 'Y'
+    AND   defn.enabled_flag                        = 'Y';
+    
+    IF lt_cnt>0 
+    THEN
+
+      BEGIN
+
+        /*********************************************************
+        * If Store is available in Store Close translation picking 
+        * next available relocating store
+        *********************************************************/
+      
+        SELECT  LPAD(vals.target_value2,6,'0')
+        INTO  x_store_info
+        FROM  xx_fin_translatevalues vals,
+              xx_fin_translatedefinition defn
+        WHERE   defn.translate_id                        = vals.translate_id
+        AND   defn.translation_name                    = 'SUBSCRIPTION_STORE_CLOSE'
+        AND   lpad(vals.source_value3,6,'0')             = p_store_number
+        AND   SYSDATE BETWEEN vals.start_date_active AND NVL(vals.end_date_active, SYSDATE + 1)
+        AND   SYSDATE BETWEEN defn.start_date_active AND NVL(defn.end_date_active, SYSDATE + 1)
+        AND   SYSDATE                                  >= to_date(vals.target_value4,'MM-DD-YYYY')
+        AND   vals.enabled_flag                        = 'Y'
+        AND   defn.enabled_flag                        = 'Y';
+
+        IF x_store_info IS NULL 
+        THEN
+
+          /**********************************************************
+          * Getting Default store in case of missing relocating store
+          **********************************************************/
+          SELECT  LPAD(vals.target_value1,6,'0')
+          INTO  x_store_info
+          FROM  xx_fin_translatevalues vals,
+                xx_fin_translatedefinition defn
+          WHERE   defn.translate_id                        = vals.translate_id
+          AND   defn.translation_name                    = 'XX_AR_SUBSCRIPTIONS'
+          AND   vals.source_value1                       ='DEFAULT_STORE_CLOSE'
+          AND   SYSDATE BETWEEN vals.start_date_active AND NVL(vals.end_date_active, SYSDATE + 1)
+          AND   SYSDATE BETWEEN defn.start_date_active AND NVL(defn.end_date_active, SYSDATE + 1)
+          AND   vals.enabled_flag                        = 'Y'
+          AND   defn.enabled_flag                        = 'Y';
+        END IF;
+        
+      EXCEPTION
+        WHEN NO_DATA_FOUND 
+        THEN
+
+          /**********************************************************
+          * Getting Default store in case of missing relocating store
+          **********************************************************/
+
+          SELECT  LPAD(vals.target_value1,6,'0')
+          INTO  x_store_info
+          FROM  xx_fin_translatevalues vals,
+                xx_fin_translatedefinition defn
+          WHERE   defn.translate_id                        = vals.translate_id
+          AND   defn.translation_name                    = 'XX_AR_SUBSCRIPTIONS'
+          AND   vals.source_value1                       ='DEFAULT_STORE_CLOSE'
+          AND   SYSDATE BETWEEN vals.start_date_active AND NVL(vals.end_date_active, SYSDATE + 1)
+          AND   SYSDATE BETWEEN defn.start_date_active AND NVL(defn.end_date_active, SYSDATE + 1)  
+          AND   SYSDATE                                  >= to_date(vals.target_value4,'MM-DD-YYYY')
+          AND   vals.enabled_flag                        = 'Y'
+          AND   defn.enabled_flag                        = 'Y';
+        
+      WHEN OTHERS
+      THEN
+        exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+        RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+      END;
+
+    ELSE
+
+      /*****************************************************************
+      * If Store is not available in Store close, return existing store
+      *****************************************************************/
+      x_store_info  := p_store_number;
+    END IF;
+
+    logit(p_message => 'Return Store number: ' || x_store_info);
+    exiting_sub(p_procedure_name => lc_procedure_name);
+
+  EXCEPTION
+    WHEN OTHERS
+    THEN
+      exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+      RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+
+  END get_store_close_info;
+  
   /****************************************************
   * Helper procedure to populate ra_interface_lines_all
   ****************************************************/
@@ -3355,6 +3584,18 @@ AS
     l_AB_flag                      VARCHAR2(2)                                    := 'N';
     
     l_inv_seq_counter              xx_ar_subscriptions.inv_seq_counter%TYPE;
+    
+    lr_contract_info               xx_ar_contracts%ROWTYPE;
+    
+    lc_store_loc                   VARCHAR2(30) := 'STORE%';
+
+    lc_new_loc                     hr_locations_all.location_code%TYPE;
+
+    lc_new_region                  hr_locations_all.region_1%TYPE;
+
+    lc_new_loc_type                hr_lookups.meaning%TYPE;
+
+    lc_segment                     gl_code_combinations.segment4%TYPE;
 
   BEGIN
 
@@ -4030,6 +4271,71 @@ AS
                               x_loc_code  => lc_oloc,
                               x_region    => lc_region,
                               x_loc_type  => lc_oloc_type);
+
+          END IF;
+
+          /***********************************************
+          * Get location info for accounting based on CCID
+          ***********************************************/
+          lc_action := 'Calling get_acct_segment_info';
+          
+          get_acct_segment_info(p_ccid_id  => lr_invoice_dist_info.code_combination_id,
+                                x_segment  => lc_segment);
+
+          /******************************
+          * checking store closure status
+          ******************************/
+          lc_action := 'Calling get_store_close_info';
+          
+          get_store_close_info(p_store_number     => lc_segment,
+                               x_store_info       => gc_store_number);
+          
+          IF lc_segment != gc_store_number
+          THEN
+            UPDATE xx_ar_contracts
+            set    store_number       = gc_store_number
+                  ,store_close_flag   = 'Y'
+                  ,last_update_date   = SYSDATE
+                  ,last_updated_by    = NVL(FND_GLOBAL.USER_ID, -1)
+                  ,last_update_login  = NVL(FND_GLOBAL.USER_ID, -1)
+            WHERE  contract_id        = p_contract_info.contract_id;
+            COMMIT;
+            
+          END IF;
+            
+          /**************************************
+          * Get contract header level information
+          **************************************/
+          
+          lc_action := 'Calling get_contract_info';
+          
+          get_contract_info(p_contract_id     => p_contract_info.contract_id,
+                            x_contract_info   => lr_contract_info);
+                            
+          IF lr_contract_info.store_close_flag = 'Y'
+          THEN
+            get_new_location_info(p_store_number    => lr_contract_info.store_number,
+                                  x_loc_code        => lc_new_loc,
+                                  x_region          => lc_new_region,
+                                  x_loc_type        => lc_new_loc_type);
+            
+            IF NVL(lc_oloc_type,1) LIKE lc_store_loc AND lc_sloc_type LIKE lc_store_loc 
+            THEN
+              lc_oloc      := lc_new_loc;
+              lc_oloc_type := lc_new_loc_type;
+            ELSIF NVL(lc_oloc_type,1) LIKE lc_store_loc AND lc_sloc_type NOT LIKE lc_store_loc 
+            THEN
+              lc_oloc      := lc_new_loc;
+              lc_oloc_type := lc_new_loc_type;
+            ELSIF NVL(lc_oloc_type,1) NOT LIKE lc_store_loc AND lc_sloc_type LIKE lc_store_loc 
+            THEN
+              lc_sloc      := lc_new_loc;
+              lc_sloc_type := lc_new_loc_type;
+            ELSIF NVL(lc_oloc_type,1) NOT LIKE lc_store_loc AND lc_sloc_type NOT LIKE lc_store_loc 
+            THEN
+              lc_sloc      := lc_new_loc;
+              lc_sloc_type := lc_new_loc_type;
+            END IF;
 
           END IF;
           
@@ -6732,10 +7038,7 @@ AS
     lc_reason_code                 VARCHAR2(256) := NULL;
     
     lc_contract_number_modifier    xx_ar_contracts.contract_number_modifier%TYPE;
-    
-    lc_avs_check                  VARCHAR2(26);--BOOLEAN := FALSE;
-    
-    lc_avs_reason_code            VARCHAR2(120);
+
 
   BEGIN
 
@@ -9403,12 +9706,16 @@ AS
             THEN
               lr_ordt_info.wallet_type := 'P';
             ELSE
-              --lr_ordt_info.wallet_type := NULL;
-              IF TRUNC(px_subscription_array(indx).initial_auth_attempt_date) = TRUNC(px_subscription_array(indx).last_auth_attempt_date)
+              IF p_program_setups('cof_check_flag') = 'Y'
               THEN
-                lr_ordt_info.wallet_type := p_program_setups('subscription_subsequent');
+                IF TRUNC(px_subscription_array(indx).initial_auth_attempt_date) = TRUNC(px_subscription_array(indx).last_auth_attempt_date)
+                THEN
+                  lr_ordt_info.wallet_type := p_program_setups('subscription_subsequent');
+                ELSE
+                  lr_ordt_info.wallet_type := p_program_setups('subscription_resubmit');
+                END IF;
               ELSE
-                lr_ordt_info.wallet_type := p_program_setups('subscription_resubmit');
+                lr_ordt_info.wallet_type := NULL;
               END IF;
             END IF;
 
@@ -9722,11 +10029,14 @@ AS
           * Get trans id information
           *************************/
 
-          lc_action := 'Calling get_cc_trans_id_information';
-     
-          get_cc_trans_id_information(p_program_setups      => lt_program_setups,
-                                      p_contract_info       => lr_contract_info,
-                                      px_subscription_array => lt_subscription_array);
+          IF lt_program_setups('cof_check_flag') = 'Y'
+          THEN
+            lc_action := 'Calling get_cc_trans_id_information';
+            
+            get_cc_trans_id_information(p_program_setups      => lt_program_setups,
+                                        p_contract_info       => lr_contract_info,
+                                        px_subscription_array => lt_subscription_array);
+          END IF;
                                   
           /**************************************
           * Get contract header level information
@@ -10069,6 +10379,7 @@ AS
               lr_contract_info.created_by                  := FND_GLOBAL.USER_ID;
               
               lr_contract_info.cof_trans_id_scm_flag       := 'N';
+              lr_contract_info.store_close_flag            := 'N';
 
               lc_action := 'Insert into xx_ar_contracts';
 
@@ -12378,29 +12689,22 @@ AS
 
   /********************************************************************
   * Helper procedure to purge subscription payload and Error table data
-  ********************************************************************/   
+  ********************************************************************/
  
- PROCEDURE xx_ar_subs_payload_purge_prc (
-                                          errbuff   OUT       VARCHAR2,
+  PROCEDURE xx_ar_subs_payload_purge_prc (errbuff   OUT       VARCHAR2,
                                           retcode   OUT       NUMBER
                                          ) 
- AS
+  AS
 
-    lc_tot_rec_cnt    NUMBER;
-    lc_rem_rec_cnt    NUMBER;
-    lc_count          NUMBER := 0;
-   
-    CURSOR xx_ar_payload_data_cur IS
+    CURSOR xx_ar_payload_data_cur 
+    IS
       SELECT  *
-        FROM  xx_ar_subscription_payloads
-       WHERE  1              = 1
-         AND  creation_date <= SYSDATE - 30;
+      FROM  xx_ar_subscription_payloads
+      WHERE  1              = 1
+      AND  creation_date <= SYSDATE - 30;
 
-    lc_tot_rec_cnt1   NUMBER;
-    lc_rem_rec_cnt1   NUMBER;
-    lc_count1         NUMBER := 0;
-    
-	CURSOR xx_ar_suberrtb_data_cur IS
+    CURSOR xx_ar_suberrtb_data_cur 
+    IS
       SELECT contract_number,
              contract_line_number,
              contract_id,
@@ -12409,92 +12713,102 @@ AS
              error_module,
              creation_date,
              ROWID
-        FROM xx_ar_subscriptions_error
-       WHERE 1             = 1
-         AND creation_date <= SYSDATE - 30;
+      FROM xx_ar_subscriptions_error
+      WHERE 1             = 1
+      AND creation_date <= SYSDATE - 30;
 
- BEGIN
+    lc_tot_rec_cnt1   NUMBER;
+    lc_rem_rec_cnt1   NUMBER;
+    lc_count1         NUMBER         := 0;
+    lc_tot_rec_cnt    NUMBER;
+    lc_rem_rec_cnt    NUMBER;
+    lc_count          NUMBER         := 0;
+
+  BEGIN
     BEGIN
-	
-	    /******************************
-         * Getetting total data count
-         ******************************/
-		 
-        SELECT COUNT(*)
-          INTO lc_tot_rec_cnt
-          FROM xx_ar_subscription_payloads
-         WHERE 1    = 1;
 
-		logit(p_message =>' +---------------------------------------------------------------------------+ ', p_force   => TRUE);
-        logit(p_message =>' *** Subscrption Payload Record Details *** ');
-        logit(p_message =>' +---------------------------------------------------------------------------+ ', p_force   => TRUE);
-        logit(p_message =>' +---------------------------------------------------------------------------+ ', p_force   => TRUE);
-        logit(p_message =>' *** Subscrption Payload Record Details *** ');
-        logit(p_message =>' +---------------------------------------------------------------------------+ ', p_force   => TRUE);
-        logit(p_message =>' Before Purge: Total Subscription Payload Records : ' || lc_tot_rec_cnt, p_force   => TRUE         );
-	
+      /*************************
+      * Getting total data count
+      *************************/
+
+      SELECT COUNT(*)
+      INTO lc_tot_rec_cnt
+      FROM xx_ar_subscription_payloads
+      WHERE 1    = 1;
+
+      logit(p_message =>' +---------------------------------------------------------------------------+ ', p_force   => TRUE);
+      logit(p_message =>' *** Subscrption Payload Record Details *** ');
+      logit(p_message =>' +---------------------------------------------------------------------------+ ', p_force   => TRUE);
+      logit(p_message =>' +---------------------------------------------------------------------------+ ', p_force   => TRUE);
+      logit(p_message =>' *** Subscrption Payload Record Details *** ');
+      logit(p_message =>' +---------------------------------------------------------------------------+ ', p_force   => TRUE);
+      logit(p_message =>' Before Purge: Total Subscription Payload Records : ' || lc_tot_rec_cnt, p_force   => TRUE         );
+
     EXCEPTION
-        WHEN no_data_found 
-		THEN NULL;
+      WHEN no_data_found 
+      THEN 
+        NULL;
     END;
 
     BEGIN
-	
-	    /*********************************
-         * Getetting remaining data count
-         *********************************/
-		 
-        SELECT COUNT(*)
-          INTO lc_rem_rec_cnt
-          FROM xx_ar_subscription_payloads
-         WHERE 1             = 1
-           AND creation_date >= SYSDATE - 30;
 
-		logit(p_message =>' Before Purge: Less than 30 days Payload Records : ' || lc_rem_rec_cnt, p_force   => TRUE);
-		
+      /*****************************
+      * Getting remaining data count
+      *****************************/
+
+      SELECT COUNT(*)
+      INTO lc_rem_rec_cnt
+      FROM xx_ar_subscription_payloads
+      WHERE 1             = 1
+      AND creation_date >= SYSDATE - 30;
+
+      logit(p_message =>' Before Purge: Less than 30 days Payload Records : ' || lc_rem_rec_cnt, p_force   => TRUE);
+
     EXCEPTION
-        WHEN no_data_found 
-		THEN NULL;
+      WHEN no_data_found 
+      THEN 
+        NULL;
     END;
 
     BEGIN
-        FOR payload_data_rec IN xx_ar_payload_data_cur 
-		LOOP
-            DELETE xx_ar_subscription_payloads
-             WHERE payload_id = payload_data_rec.payload_id; 
-			 
-            lc_count := lc_count + 1;
-			
-        END LOOP; 
+      FOR payload_data_rec IN xx_ar_payload_data_cur 
+      LOOP
+        DELETE xx_ar_subscription_payloads
+        WHERE payload_id = payload_data_rec.payload_id; 
 
-        COMMIT;
-		
-		logit(p_message =>' Total Subscription Payload - Purged Records : ' || lc_count, p_force   => TRUE);
-		
+        lc_count := lc_count + 1;
+
+      END LOOP; 
+
+      COMMIT;
+      
+      logit(p_message =>' Total Subscription Payload - Purged Records : ' || lc_count, p_force   => TRUE);
+      
     EXCEPTION
-        WHEN no_data_found 
-		THEN NULL;
-        WHEN OTHERS 
-		THEN ROLLBACK;
-			
+      WHEN no_data_found 
+      THEN
+        NULL;
+      WHEN OTHERS 
+      THEN
+        ROLLBACK;
+
         retcode := 1;
         errbuff := 'Error encountered. Please check logs';
         logit(p_message =>' Exception while writing data into file '|| SQLERRM || SQLCODE, p_force   => TRUE);
-			
+
     END;
 
     BEGIN
-	
-	    /*********************************
-         * Getetting total data count
-         *********************************/
-        
-		SELECT COUNT(*)
-          INTO lc_tot_rec_cnt1
-          FROM xx_ar_subscriptions_error
-         WHERE 1     = 1;
 
-		logit(p_message => ' +---------------------------------------------------------------------------+ ' , p_force   => TRUE);
+      /*************************
+      * Getting total data count
+      *************************/
+      SELECT COUNT(*)
+      INTO lc_tot_rec_cnt1
+      FROM xx_ar_subscriptions_error
+      WHERE 1     = 1;
+
+        logit(p_message => ' +---------------------------------------------------------------------------+ ' , p_force   => TRUE);
         logit(p_message => ' *** Subscrption Error Table Record Details *** ');
         logit(p_message => ' +---------------------------------------------------------------------------+ ' , p_force   => TRUE);
         logit(p_message => ' +---------------------------------------------------------------------------+ ' , p_force   => TRUE);
@@ -12502,57 +12816,132 @@ AS
         logit(p_message => ' +---------------------------------------------------------------------------+ ' , p_force   => TRUE);
         logit(p_message => ' Before Purge: Total Subscription Errored Records : ' || lc_tot_rec_cnt1, p_force   => TRUE);
     
-	EXCEPTION
-        WHEN no_data_found THEN
-            NULL;
+    EXCEPTION
+      WHEN no_data_found
+      THEN
+        NULL;
     END;
 
     BEGIN
-	
-        /*********************************
-         * Getetting remaining data count
-         *********************************/
-	
-        SELECT COUNT(*)
-          INTO lc_rem_rec_cnt1
-          FROM xx_ar_subscriptions_error
-         WHERE 1             = 1
-           AND creation_date >= SYSDATE - 30;
 
-		logit(p_message => ' Before Purge: Less than 30 days Subscription Errored Records: ' || lc_rem_rec_cnt1, p_force   => TRUE);
+      /*****************************
+      * Getting remaining data count
+      *****************************/
+
+      SELECT COUNT(*)
+      INTO lc_rem_rec_cnt1
+      FROM xx_ar_subscriptions_error
+      WHERE 1             = 1
+      AND creation_date >= SYSDATE - 30;
+
+      logit(p_message => ' Before Purge: Less than 30 days Subscription Errored Records: ' || lc_rem_rec_cnt1, p_force   => TRUE);
    
     EXCEPTION
-        WHEN no_data_found 
-		THEN NULL;
+      WHEN no_data_found 
+      THEN
+        NULL;
     END;
 
     BEGIN
-        FOR suberrtb_data_rec IN xx_ar_suberrtb_data_cur 
-		LOOP
-         DELETE XX_AR_SUBSCRIPTIONS_ERROR
-          WHERE ROWID = suberrtb_data_rec.ROWID; 
-		  
-        lc_count1 := lc_count1 + 1;
-		
-        END LOOP; 
+      FOR suberrtb_data_rec IN xx_ar_suberrtb_data_cur 
+      LOOP
+        DELETE XX_AR_SUBSCRIPTIONS_ERROR
+        WHERE ROWID = suberrtb_data_rec.ROWID; 
 
-        COMMIT;
-		
-		logit(p_message => ' Total Subscription Error Table - Purged Records : ' || lc_count1, p_force   => TRUE);
-    
-	EXCEPTION
-        WHEN no_data_found 
-		THEN NULL;
-        WHEN OTHERS 
-		THEN ROLLBACK;
-		  
-         retcode := 1;
-         errbuff := 'Error encountered. Please check logs';
-	     logit(p_message =>' Exception while writing data into file '|| SQLERRM || SQLCODE, p_force   => TRUE);
-		 
+        lc_count1 := lc_count1 + 1;
+
+      END LOOP; 
+
+      COMMIT;
+
+      logit(p_message => ' Total Subscription Error Table - Purged Records : ' || lc_count1, p_force   => TRUE);
+
+    EXCEPTION
+      WHEN no_data_found 
+      THEN
+        NULL;
+      WHEN OTHERS 
+      THEN 
+        ROLLBACK;
+
+       retcode := 1;
+       errbuff := 'Error encountered. Please check logs';
+       logit(p_message =>' Exception while writing data into file '|| SQLERRM || SQLCODE, p_force   => TRUE);
+ 
     END;
 
-	END xx_ar_subs_payload_purge_prc;
+  END xx_ar_subs_payload_purge_prc;
+    
+  /**********************************************
+  * Helper procedure to validate relocation store
+  **********************************************/
+  
+  PROCEDURE xx_relocation_store_vald_prc(errbuff         OUT       VARCHAR2,
+                                         retcode         OUT       NUMBER
+                                          )
+  AS
+    lc_procedure_name  CONSTANT VARCHAR2(61) := gc_package_name || '.' || 'xx_relocation_store_vald_prc';
+    lt_parameters      gt_input_parameters;
+    lc_count NUMBER := 0;
+
+     /**************************************************
+     * Taking target_value2 from Store Close translation
+     **************************************************/
+     CURSOR xx_target_val_cur 
+     IS
+       SELECT   LPAD(vals.target_value2,6,'0') relocated_store
+       FROM   xx_fin_translatevalues                     vals,
+              xx_fin_translatedefinition                 defn
+       WHERE   defn.translate_id                        = vals.translate_id
+       AND   defn.translation_name                    = 'SUBSCRIPTION_STORE_CLOSE'
+       AND   SYSDATE BETWEEN vals.start_date_active AND NVL(vals.end_date_active, SYSDATE + 1)	  
+       AND   SYSDATE BETWEEN defn.start_date_active AND NVL(defn.end_date_active, SYSDATE + 1)
+       AND   SYSDATE                                 >= to_date(vals.target_value4,'MM-DD-YYYY')
+
+       AND   vals.enabled_flag                        = 'Y'
+       AND   defn.enabled_flag                        = 'Y';
+ 
+  BEGIN
+
+    entering_sub(p_procedure_name  => lc_procedure_name,
+                 p_parameters      => lt_parameters);
+   
+     
+    logit(p_message =>' BEGIN : Relocation Store Validation : ');
+
+    FOR target_location_rec IN xx_target_val_cur 
+    LOOP
+
+      select count(1)
+      into  lc_count
+      FROM hr_locations_all              hla
+          ,hr_all_organization_units haou
+          ,hr_lookups                    hl
+      where 1=1
+      and hla.location_id  =haou.location_id
+      and haou.type        =hl.lookup_code
+      and hl.lookup_type  ='ORG_TYPE'
+      and hl.enabled_flag ='Y'
+      and SUBSTR(hla.LOCATION_CODE,1,6)=target_location_rec.relocated_store;
+
+      IF lc_count = 0 
+      THEN
+        logit(p_message =>' Location Store is not defined in HR LOCATION ' || target_location_rec.relocated_store, p_force   => TRUE);
+      ELSE
+        fnd_file.put_line(fnd_file.OUTPUT, 'Location Store is defined in HR LOCATION : '          ||target_location_rec.relocated_store);
+      END IF;
+
+    END LOOP;
+
+    logit(p_message =>' END : Relocation Store Validation : ');	
+
+  EXCEPTION
+    WHEN OTHERS
+    THEN
+      null;
+      exiting_sub(p_procedure_name => lc_procedure_name, p_exception_flag => TRUE);
+      RAISE_APPLICATION_ERROR(-20101, 'PROCEDURE: ' || lc_procedure_name || ' SQLCODE: ' || SQLCODE || ' SQLERRM: ' || SQLERRM);
+  END xx_relocation_store_vald_prc;
   
 END xx_ar_subscriptions_mt_pkg;
 /
