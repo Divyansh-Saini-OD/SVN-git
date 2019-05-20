@@ -107,6 +107,7 @@ AS
 -- |                                              Consignment Supplier Coming in EDI file       |
 -- | 4.6         05/07/2019   Shanti Sethuraj     Adding the instance name in the alert email   |
 -- |                                              for jira NAIT-87653                           |
+-- | 4.7         05/20/2019   Dinesh Nagapuri     Replaced Instance_name with DB_Name for LNS   |
 -- +============================================================================================+
 
 -- +============================================================================================+
@@ -3030,7 +3031,12 @@ AS
 BEGIN
     l_table.delete;
 	ln_invoice_id := NULL;
-	SELECT INSTANCE_NAME INTO l_instance_name_1 FROM V$INSTANCE;           ---added by Shanti for NAIT-87653
+	--SELECT INSTANCE_NAME INTO l_instance_name_1 FROM V$INSTANCE;           ---added by Shanti for NAIT-87653
+	
+	SELECT SUBSTR(LOWER(SYS_CONTEXT('USERENV','DB_NAME')),1,8) 		-- Changed from INSTANCE_NAME to DB_NAME
+    INTO l_instance_name_1
+    FROM dual;
+	
 	-- Checking the Dropship PO Exists or NOT
 	FOR drp_po IN drp_po_cur
 	LOOP
@@ -8025,7 +8031,7 @@ BEGIN
     gn_login_id   := fnd_global.login_id;
 	
 	-- To get the instance Name
-	SELECT SUBSTR(LOWER(SYS_CONTEXT('USERENV','INSTANCE_NAME')),1,8) 
+	SELECT SUBSTR(LOWER(SYS_CONTEXT('USERENV','DB_NAME')),1,8) 		-- Changed from INSTANCE_NAME to DB_NAME
       INTO lc_instance_name
       FROM dual;
 		
@@ -8778,7 +8784,7 @@ EXCEPTION
 	-- changes as per version 3.9 ends here --	
 	--Changes as per version 4.0 Starts here - NAIT-48272(Defect#45304)
 	BEGIN
-         SELECT SYS_CONTEXT ('USERENV', 'INSTANCE_NAME')
+         SELECT SYS_CONTEXT ('USERENV', 'DB_NAME')
            INTO lc_instance_name
            FROM DUAL;
       EXCEPTION
