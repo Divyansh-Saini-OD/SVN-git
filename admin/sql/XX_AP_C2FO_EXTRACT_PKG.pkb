@@ -11,8 +11,7 @@ PROMPT Program exits IF the creation IS NOT SUCCESSFUL
 
 WHENEVER SQLERROR CONTINUE
 
-create or replace 
-PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
+create or replace PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
 /****************************************************************************************************************
 *   Name:        XXC2FO_EXTRACT_PKG
 *   PURPOSE:     This package was created for the C2O Extract Process
@@ -175,7 +174,8 @@ PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
                   ebs_voucher_num,
                   ebs_cash_discount_amount,
                   ebs_inv_amt_before_cash_disc,
-                  ebs_invoice_due_date
+                  ebs_invoice_due_date,
+                  ebs_remit_to_supplier_name
                   )
             VALUES
                  (c_inv_data_rec(ind).company_id,
@@ -219,7 +219,8 @@ PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
                   c_inv_data_rec(ind).ebs_voucher_num,
                   c_inv_data_rec(ind).ebs_cash_discount_amount,
                   c_inv_data_rec(ind).ebs_inv_amt_before_cash_disc,
-                  c_inv_data_rec(ind).ebs_invoice_due_date
+                  c_inv_data_rec(ind).ebs_invoice_due_date,
+                  c_inv_data_rec(ind).ebs_remit_to_supplier_name
                  );
 
             COMMIT;
@@ -306,8 +307,10 @@ PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
               '"EBS_VOUCHER_NUM'||'",'||
               '"EBS_CASH_DISCOUNT_AMOUNT'||'",'||
               '"EBS_INV_AMT_BEFORE_CASH_DISC'||'",'||
-              '"EBS_INVOICE_DUE_DATE'||'"'              
+              '"EBS_INVOICE_DUE_DATE'||'",'||
+              '"EBS_REMIT_TO_SUPPLIER_NAME'||'"'              
               ));
+
 
 
         --Loop through data and write to file
@@ -370,7 +373,8 @@ PACKAGE BODY  XX_AP_C2FO_EXTRACT_PKG AS
               '"'||C_INV_DATA_REC_T(ind).EBS_VOUCHER_NUM||'",'||
               '"'||c_inv_data_rec_t(ind).ebs_cash_discount_amount||'",'||
               '"'||c_inv_data_rec_t(ind).ebs_inv_amt_before_cash_disc||'",' ||             
-              '"'||c_inv_data_rec_t(ind).ebs_invoice_due_date ||'"'               
+              '"'||c_inv_data_rec_t(ind).ebs_invoice_due_date||'",' ||             
+              '"'||c_inv_data_rec_t(ind).ebs_remit_to_supplier_name ||'"'               
               );
 
          END LOOP;
