@@ -6,7 +6,7 @@
 	SET FEEDBACK OFF		
 	SET TERM ON		
 			
-	PROMPT Creating Package Body XX_AR_REFUNDS_PKG	
+	prompt creating package body xx_ar_refunds_pkg	
 	
 	PROMPT Program exits if the creation is not successful		
 	REM Added for ARU db drv auto generation		
@@ -96,6 +96,8 @@ AS
 --   6.3       27/10/2015  Vasu Raparla	      Removed Schema References for R12.2 
 --	 6.4	   01/09/2016  Rakesh Polepalli   Modified for the Defect# 36803
 --	 6.5	   03/10/2016  Rakesh Polepalli   Modified for the Defect# 37226
+--   6.6       01/08/2019  Shanti Sethuraj    Changing supplier site category code from EX to EX-REF for the jira # NAIT-65243 
+--   6.7       20/05/2019  Satheesh Suthari   Adding org_id condition at attribute10 & attribute9 for ra_customer_trx_all table, defect# 89061
 -- =========================================================================================================================
 -------------------------------------------------
    --Start of changes for Defect #3340
@@ -3784,7 +3786,7 @@ SELECT   SOURCE
         ,
                      'US_OD_EXP_NON_DISC',
                      'CHECK',
-                     'EX'                                                                                    --'EXPENSE'
+                     'EX-REF'  --changed for the jira NAIT-65243             --'EXPENSE'
                          ,
                      SYSDATE,
                      fnd_global.user_id,
@@ -5114,7 +5116,8 @@ SELECT   SOURCE
                                                     ap_suppliers_int asi
                                              WHERE  xart.status = 'X'
                                              AND    xart.customer_number = asi.customer_num
-                                             AND    asi.import_request_id = ln_req_id)
+                                             AND    asi.import_request_id = ln_req_id
+											 AND    xart.org_id = fnd_global.org_id)--defect#89061
                         LOOP
                             IF vend_err_rec.status = 'PROCESSED'
                             THEN
@@ -5263,7 +5266,8 @@ SELECT   SOURCE
                                                           ap_supplier_sites_int assi
                                                    WHERE  xart.status = 'X'
                                                    AND    xart.ap_vendor_site_code = assi.vendor_site_code
-                                                   AND    assi.import_request_id = ln_req_id)
+                                                   AND    assi.import_request_id = ln_req_id
+												   AND    xart.org_id = fnd_global.org_id)--defect#89061
                         LOOP
                             IF vend_sites_err_rec.status = 'PROCESSED'
                             THEN
@@ -5508,7 +5512,8 @@ SELECT   SOURCE
                             FROM   xx_ar_refund_trx_tmp
                             WHERE  ap_invoice_number = inv_recs.invoice_num
                             AND    ap_vendor_site_code = inv_recs.vendor_site_code
-                            AND    inv_created_flag = 'Y';
+                            AND    inv_created_flag = 'Y'
+							AND    org_id = fnd_global.org_id;--defect#89061
 
                             -- Update Invoice Created Status on Transaction
                             IF lc_trx_type = 'R'
@@ -5564,7 +5569,8 @@ SELECT   SOURCE
                             WHERE  ap_invoice_number = inv_recs.invoice_num
                             AND    ap_vendor_site_code = inv_recs.vendor_site_code
                             AND    inv_created_flag = 'N'
-                            AND    error_flag = 'Y';
+                            AND    error_flag = 'Y'
+							AND    org_id = fnd_global.org_id;--defect#89061
 
                             -- Update Invoice Created Status on Transaction
                             IF lc_trx_type = 'R'
@@ -5761,7 +5767,7 @@ SELECT   SOURCE
             AND           status = 'D'
             AND           last_update_date <   SYSDATE
                                              - 14
-			AND           org_id = fnd_global.org_id
+			AND           org_id = fnd_global.org_id--defect#89061
             AND           refund_header_id =
                               (SELECT MAX(refund_header_id)
                                FROM   xx_ar_refund_trx_tmp xart2
@@ -5805,7 +5811,7 @@ SELECT   SOURCE
             WHERE         escheat_flag = 'N'
             AND           inv_created_flag = 'N'
             AND           status IN('X', 'S')
-			AND           org_id = fnd_global.org_id
+			AND           org_id = fnd_global.org_id--defect#89061
             AND           xart.last_update_date =
                               (SELECT MAX(last_update_date)
                                FROM   xx_ar_refund_trx_tmp xart2
@@ -5829,7 +5835,7 @@ SELECT   SOURCE
             WHERE         escheat_flag = 'N'
             AND           inv_created_flag = 'Y'
             AND           status = 'V'
-			AND           org_id = fnd_global.org_id
+			AND           org_id = fnd_global.org_id--defect#89061
             AND           xart.last_update_date =
                               (SELECT MAX(last_update_date)
                                FROM   xx_ar_refund_trx_tmp xart2
