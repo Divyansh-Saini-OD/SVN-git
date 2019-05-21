@@ -13,6 +13,8 @@
 -- |2.0        04/28/15       Havish Kasina          Changes done as per Defect 1191            |
 -- |3.0        11/12/15       Havish Kasina          Removed the Schema References as per R12.2 |
 -- |                                                 Retrofit Changes                           |
+-- |3.0        05/21/19       Dinesh Nagapuri        Replaced from v$instance to USER_ENV DB_NAME|
+-- |                                                 for LNS		                            |
 -- +============================================================================================+
 create or replace
 PACKAGE BODY xxcrm_table_scrambler_pkg
@@ -329,10 +331,13 @@ AS
       lc_date_time := TO_CHAR (SYSDATE, 'yyyymmdd_hh24miss');
       l_file_number := l_file_number + 1;
       
-      -- Get the Instance Name                         -- Added by Havish Kasina as per defect#1191
-        SELECT lower(instance_name)
-          INTO lc_instance_name
-          FROM v$instance;
+		-- Get the Instance Name                         -- Added by Havish Kasina as per defect#1191
+        --SELECT lower(instance_name) INTO lc_instance_name FROM v$instance;
+		
+		--Replaced from v$instance to USERENV DB_NAME --Added for LNS
+		SELECT SUBSTR(sys_context('USERENV', 'DB_NAME'),1,8)
+		INTO lc_instance_name
+		FROM dual;
           
        fnd_file.put_line(fnd_file.log,'Instance Name :'||lc_instance_name);
 
