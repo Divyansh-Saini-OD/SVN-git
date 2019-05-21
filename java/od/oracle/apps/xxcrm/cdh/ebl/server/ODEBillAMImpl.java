@@ -119,6 +119,7 @@ public class ODEBillAMImpl extends OAApplicationModuleImpl {
                                  String ftpEmailCont, String ftpNotiFileTxt, 
                                  String ftpNotiEmailTxt, String logoFile, 
                                  String associateName, String CustDocType) {
+                                
         AppsLog myAppsLog = new AppsLog();
         myAppsLog.write("fnd.common.WebAppsContext", "XXOD: initializeMain", 
                         1);
@@ -205,7 +206,14 @@ public class ODEBillAMImpl extends OAApplicationModuleImpl {
             //Added by Bhagwan Rao for Defect#38962 26March2017
             mainRow.setAttribute("SummaryBill", "N");
             if (deliveryMethod.equals("ePDF")) {
-                mainRow.setAttribute("FileProcessingMethod", "03");
+                //Code added by Rafi for NAIT-91481 Rectify Billing Delivery Efficiency - START
+             if("Consolidated Bill".equalsIgnoreCase(CustDocType))
+             {
+                mainRow.setAttribute("FileProcessingMethod", "01");}
+               else
+               { ////Code added by Rafi for NAIT-91481 Rectify Billing Delivery Efficiency - END
+                  mainRow.setAttribute("FileProcessingMethod", "03");
+               }
                 mainRow.setAttribute("FileNameExt", "PDF");
             }
             if (deliveryMethod.equals("eXLS"))
