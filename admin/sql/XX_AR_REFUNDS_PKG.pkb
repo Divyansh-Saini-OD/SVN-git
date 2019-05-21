@@ -97,7 +97,7 @@ AS
 --	 6.4	   01/09/2016  Rakesh Polepalli   Modified for the Defect# 36803
 --	 6.5	   03/10/2016  Rakesh Polepalli   Modified for the Defect# 37226
 --   6.6       01/08/2019  Shanti Sethuraj    Changing supplier site category code from EX to EX-REF for the jira # NAIT-65243 
---   6.7       20/05/2019  Satheesh Suthari   Adding org_id condition at attribute10 & attribute9 for ra_customer_trx_all table, defect# 89061
+--   6.7       20/05/2019  Satheesh Suthari   Adding org_id condition at attribute10 and attribute9 for ra_customer_trx_all table, defect# 89061
 -- =========================================================================================================================
 -------------------------------------------------
    --Start of changes for Defect #3340
