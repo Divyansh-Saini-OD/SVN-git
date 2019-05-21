@@ -41,7 +41,7 @@ CREATE or replace VIEW APPS.XX_AP_C2FO_INVOICE_V AS SELECT "COMPANY_ID", "DIVISI
          "VAT_TO_BE_DISCOUNTED", "BUYER_NAME", "BUYER_ADDRESS", "BUYER_TAX_ID", "LOCAL_CURRENCY_KEY", "LOCAL_CURRENCY_RATE", "LOCAL_CURRENCY_ORG_INV_AMT",
          "LOCAL_CURRENCY_ORIGINAL_VAT", "MARKET_TYPE", "PO_ID", "EBS_ORG_ID", "EBS_VENDOR_ID", "EBS_SUPPLIER_NUMBER", "EBS_VENDOR_SITE_ID", "EBS_VENDOR_SITE_CODE",
          "EBS_INVOICE_ID", "EBS_INVOICE_NUM", "EBS_PAY_GROUP", "EBS_PAY_PRIORITY", "EBS_SUP_PAY_PRIORITY", "EBS_SITE_PAY_PRIORITY", "EBS_VOUCHER_NUM",
-         "EBS_CASH_DISCOUNT_AMOUNT", "EBS_INV_AMT_BEFORE_CASH_DISC","EBS_INVOICE_DUE_DATE"
+         "EBS_CASH_DISCOUNT_AMOUNT", "EBS_INV_AMT_BEFORE_CASH_DISC","EBS_INVOICE_DUE_DATE","EBS_REMIT_TO_SUPPLIER_NAME"
    FROM  (
    SELECT /*+ leading(apsa)  index(apsa,AP_PAYMENT_SCHEDULES_N2) index(aia,AP_INVOICES_U1) */
           REPLACE (REPLACE (assa.org_id || '|' || sup.vendor_id || '|' || assa.vendor_site_id, ',', '')
@@ -172,7 +172,8 @@ CREATE or replace VIEW APPS.XX_AP_C2FO_INVOICE_V AS SELECT "COMPANY_ID", "DIVISI
         --, (xx_ap_c2fo_int_ebs_ap_pay_pkg.ebs_cash_discount_amt (aia.org_id, aia.invoice_id)) AS ebs_cash_discount_amount
 		, NVL(apsa.discount_amount_available,0) AS ebs_cash_discount_amount
         , nvl (nvl (aia.invoice_amount, 0) - nvl (aia.total_tax_amount, 0), 0) as ebs_inv_amt_before_cash_disc
-        ,to_char(apsa.due_date,'YYYY-MM-DD')  as ebs_invoice_due_date -- Added by Arun 07-May-2019
+        ,to_char(apsa.due_date,'YYYY-MM-DD')  as ebs_invoice_due_date -- Added by Arun 07-May-2019 P2 Buyer Toggle
+        , AIA.REMIT_TO_SUPPLIER_NAME  EBS_REMIT_TO_SUPPLIER_NAME  -- Added by Arun 21-May-2019 P2 Buyer Toggle
         , (SELECT /*+ index(ail,AP_INVOICE_LINES_U1) */
                   SUM (ail.amount)
              FROM ap_invoice_lines_all ail
