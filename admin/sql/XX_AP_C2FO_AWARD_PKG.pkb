@@ -11,7 +11,6 @@ PROMPT Program exits IF the creation IS NOT SUCCESSFUL
 
 WHENEVER SQLERROR CONTINUE
 
-
 create or replace 
 PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
 /********************************************************************************************************************
@@ -727,10 +726,10 @@ PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
                        invoice_id,
                        original_amount,
                        currency,
-                       TO_DATE(original_due_date,'mm/dd/yyyy'),
+                       TO_DATE(original_due_date,'yyyy-mm-dd'),
                        discount_percentage,
                        discounted_invoice_amount,
-                       TO_DATE(pay_date,'mm/dd/yyyy'),
+                       TO_DATE(pay_date,'yyyy-mm-dd'),
                        offer_apr_amount,
                        transaction_type,
                        covers_adjustment,
