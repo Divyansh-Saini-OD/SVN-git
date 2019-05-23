@@ -335,7 +335,7 @@ AS
         --SELECT lower(instance_name) INTO lc_instance_name FROM v$instance;
 		
 		--Replaced from v$instance to USERENV DB_NAME --Added for LNS
-		SELECT SUBSTR(sys_context('USERENV', 'DB_NAME'),1,8)
+		SELECT LOWER(SUBSTR(sys_context('USERENV', 'DB_NAME'),1,8))
 		INTO lc_instance_name
 		FROM dual;
           
