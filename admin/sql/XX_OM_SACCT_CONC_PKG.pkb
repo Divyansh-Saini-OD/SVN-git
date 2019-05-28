@@ -544,6 +544,7 @@ AS
         g_line_rec.kit_dept.DELETE(p_idx);
         g_line_rec.kit_seqnum.DELETE(p_idx);
         g_line_rec.service_end_date.DELETE(p_idx);
+        g_line_rec.service_start_date.DELETE(p_idx);
 
     EXCEPTION
         WHEN OTHERS
@@ -4777,7 +4778,8 @@ AS
          g_line_rec.kit_vpc(i)         := NULL;
          g_line_rec.kit_dept(i)        := NULL;
          g_line_rec.kit_seqnum(i)      := NULL;
-         g_line_rec.kit_seqnum(i)      := NULL;
+         g_line_rec.service_end_date(i) := NULL;
+         g_line_rec.service_start_date(i) := NULL;
 
 
      /*     Commented   as per defect 36885 ver 25.0
@@ -5200,10 +5202,13 @@ AS
             FROM xx_rms_mv_ssb
             WHERE item =  g_line_rec.inventory_item(i);
 
+            g_line_rec.service_start_date(i) := g_line_rec.ordered_date(i);
+
             EXCEPTION
               WHEN OTHERS 
               THEN 
                 g_line_rec.service_end_date(i) := null;
+                g_line_rec.service_start_date(i) := NULL;
             END;
         END IF;
 
@@ -5221,6 +5226,8 @@ AS
                              || g_line_rec.customer_item_id(i));
             oe_debug_pub.ADD(   'Error Flag is '
                              || g_header_rec.error_flag(ln_hdr_ind));
+            oe_debug_pub.ADD(   'Service start date '
+                             || g_line_rec.service_start_date(i));
             oe_debug_pub.ADD(   'Service End date '
                              || g_line_rec.service_end_date(i));
         END IF;
@@ -6260,6 +6267,7 @@ AS
         g_line_rec.kit_dept(p_line_idx) := NULL;
         g_line_rec.kit_seqnum(p_line_idx) := NULL;
         g_line_rec.service_end_date(p_line_idx) := NULL;
+        g_line_rec.service_start_date(p_line_idx) := NULL;
 
         IF g_header_rec.order_category(p_hdr_idx) = 'ORDER'
         THEN
@@ -9198,6 +9206,7 @@ EXCEPTION
         g_line_rec.kit_dept.DELETE;
         g_line_rec.kit_seqnum.DELETE;
         g_line_rec.service_end_date.DELETE;
+        g_line_rec.service_start_date.DELETE;
 
 /* Discount Record */
         g_line_adj_rec.orig_sys_document_ref.DELETE;
@@ -9701,7 +9710,7 @@ EXCEPTION
                              g_line_rec.tax_exempt_reason(i_lin),
                              g_line_rec.customer_line_number(i_lin),
                              g_line_rec.core_type_indicator(i_lin),
-                             g_line_rec.ordered_date(i_lin),
+                             g_line_rec.service_start_date(i_lin),
                              g_line_rec.service_end_date(i_lin)
                              );
         EXCEPTION

@@ -506,7 +506,8 @@ AS
         kit_dept                 t_v50,
         kit_seqnum               t_num,
         kit_parent               t_v1,
-        service_end_date         t_date
+        service_end_date         t_date,
+        service_start_date       t_date
     );
 
 /* Global Record Declaration for  Line */
