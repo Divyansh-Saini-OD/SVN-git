@@ -125,7 +125,8 @@ AS
 -- |     29.0     13-JUNE-2017 Arun G     Made Changes for Validation failed for Shipping Method Defect# 41999              |
 -- |     30.0     28-JUL-2017  Venkata B  Made Changes for Biz Ops Project and HVOP Kit Orders Issue Fix                    |
 -- |     40.0     18-JAN-2018  Arun G     Made changes for TECHZONE project to derive the Order type Defect#44139           | 
--- |     41.0     14-NOV-2018  Arun G     Made changes for Bill Complete Project
+-- |     41.0     14-NOV-2018  Arun G     Made changes for Bill Complete Project                                            |
+-- |     42.0     19-MAY-2019  Arun G     Made changes for Service contract project  JIRA 90510                             |  
 -- +========================================================================================================================+
     PROCEDURE process_current_order(
         p_order_tbl   IN  order_tbl_type,
@@ -343,6 +344,7 @@ AS
         g_header_rec.comments.DELETE(p_idx);
         g_header_rec.start_line_index.DELETE(p_idx);
         g_header_rec.accounting_rule_id.DELETE(p_idx);
+        g_header_rec.invoicing_rule_id.DELETE(p_idx);
         g_header_rec.sold_to_contact.DELETE(p_idx);
         g_header_rec.header_id.DELETE(p_idx);
         g_header_rec.org_order_creation_date.DELETE(p_idx);
@@ -541,6 +543,7 @@ AS
         g_line_rec.kit_vpc.DELETE(p_idx);
         g_line_rec.kit_dept.DELETE(p_idx);
         g_line_rec.kit_seqnum.DELETE(p_idx);
+        g_line_rec.service_end_date.DELETE(p_idx);
 
     EXCEPTION
         WHEN OTHERS
@@ -3962,13 +3965,16 @@ AS
         IF NOT g_accounting_rule_id.EXISTS(g_header_rec.order_type_id(i))
         THEN
             BEGIN
-                SELECT accounting_rule_id
-                INTO   g_accounting_rule_id(g_header_rec.order_type_id(i))
+                SELECT accounting_rule_id, 
+                       invoicing_rule_id
+                INTO   g_accounting_rule_id(g_header_rec.order_type_id(i)),
+                       g_header_rec.invoicing_rule_id(i)
                 FROM   oe_order_types_v
                 WHERE  order_type_id = g_header_rec.order_type_id(i);
 
                 g_header_rec.accounting_rule_id(i) := g_accounting_rule_id(g_header_rec.order_type_id(i));
-            EXCEPTION
+
+             EXCEPTION
                 WHEN OTHERS
                 THEN
                     g_header_rec.accounting_rule_id(i) := NULL;
@@ -4771,6 +4777,7 @@ AS
          g_line_rec.kit_vpc(i)         := NULL;
          g_line_rec.kit_dept(i)        := NULL;
          g_line_rec.kit_seqnum(i)      := NULL;
+         g_line_rec.kit_seqnum(i)      := NULL;
 
 
      /*     Commented   as per defect 36885 ver 25.0
@@ -5185,6 +5192,22 @@ AS
             */
         END IF;
 
+        IF g_header_rec.invoicing_rule_id(ln_hdr_ind) IS NOT NULL
+        THEN
+          BEGIN
+            SELECT add_months(sysdate,od_contract_length)
+            INTO g_line_rec.service_end_date(i)
+            FROM xx_rms_mv_ssb
+            WHERE item =  g_line_rec.inventory_item(i);
+
+            EXCEPTION
+              WHEN OTHERS 
+              THEN 
+                g_line_rec.service_end_date(i) := null;
+            END;
+        END IF;
+
+
         -- Print all derived attributes
         IF ln_debug_level > 0
         THEN
@@ -5198,6 +5221,8 @@ AS
                              || g_line_rec.customer_item_id(i));
             oe_debug_pub.ADD(   'Error Flag is '
                              || g_header_rec.error_flag(ln_hdr_ind));
+            oe_debug_pub.ADD(   'Service End date '
+                             || g_line_rec.service_end_date(i));
         END IF;
 
         -- Increment the global Line counter used in determining batch size
@@ -6234,6 +6259,7 @@ AS
         g_line_rec.kit_vpc(p_line_idx) := NULL;
         g_line_rec.kit_dept(p_line_idx) := NULL;
         g_line_rec.kit_seqnum(p_line_idx) := NULL;
+        g_line_rec.service_end_date(p_line_idx) := NULL;
 
         IF g_header_rec.order_category(p_hdr_idx) = 'ORDER'
         THEN
@@ -8998,6 +9024,7 @@ EXCEPTION
         g_header_rec.comments.DELETE;
         g_header_rec.start_line_index.DELETE;
         g_header_rec.accounting_rule_id.DELETE;
+        g_header_rec.invoicing_rule_id.DELETE;
         g_header_rec.sold_to_contact.DELETE;
         g_header_rec.header_id.DELETE;
         g_header_rec.org_order_creation_date.DELETE;
@@ -9170,6 +9197,7 @@ EXCEPTION
         g_line_rec.kit_vpc.DELETE;
         g_line_rec.kit_dept.DELETE;
         g_line_rec.kit_seqnum.DELETE;
+        g_line_rec.service_end_date.DELETE;
 
 /* Discount Record */
         g_line_adj_rec.orig_sys_document_ref.DELETE;
@@ -9611,7 +9639,9 @@ EXCEPTION
                              tax_exempt_number,
                              tax_exempt_reason_code,
                              customer_line_number,
-                             attribute3)
+                             attribute3,
+                             service_start_date,
+                             service_end_date)
                      VALUES (g_line_rec.orig_sys_document_ref(i_lin),
                              g_line_rec.order_source_id(i_lin),
                              g_line_rec.change_sequence(i_lin),
@@ -9670,7 +9700,10 @@ EXCEPTION
                              g_line_rec.tax_exempt_number(i_lin),
                              g_line_rec.tax_exempt_reason(i_lin),
                              g_line_rec.customer_line_number(i_lin),
-                             g_line_rec.core_type_indicator(i_lin));
+                             g_line_rec.core_type_indicator(i_lin),
+                             g_line_rec.ordered_date(i_lin),
+                             g_line_rec.service_end_date(i_lin)
+                             );
         EXCEPTION
             WHEN OTHERS
             THEN

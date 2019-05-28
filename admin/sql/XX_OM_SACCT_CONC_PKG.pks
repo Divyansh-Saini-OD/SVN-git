@@ -42,17 +42,18 @@ AS
 -- |   5.0  07-JUL-2014 Arun G            added rcc_Transaction_type flag      |
 -- |   6.0  02-JAN-2015 Avinash Baddam    Added external_transaction_number    |
 -- |                                      to header record. mpl_order_id in    |
--- |					  ORDT	                                               |
+-- |					  ORDT	                               |
 -- |   7.0  15-Apr-2015 Arun Gannarapu    Tokenization/EMV changes             |
 -- |   8.0  22-SEP-2015 Arun Gannarapu    Made changes to Line level tax       |
 -- |                                      Defect 35944                         |
 -- |   9.0  08-JAN-2016 Anoop Salim       Added procedure to capture line      |
--- |				 	 level tax Defect 36885                                |
+-- |				 	 level tax Defect 36885                |
 -- |  10.0  18-FEb-2016 Arun Gannarapu    Made changes to masterpass 37172     |
 -- |  11.0  06-Jun-2016 Arun Gannarapu    Made changes for kitting   37676     |
 -- |  12.0  28-Jul-2017 Venkata Battu     Made changes for Biz Project         |  
 -- |  13.0  18-Jan-2018 Arun G            Made changes for TECZONE Defect#44139|  
--- |  14.0  14-Nov-2018 Arun G            Made changes for Bill complete   
+-- |  14.0  14-Nov-2018 Arun G            Made changes for Bill complete       |
+-- |  15.0  28-NOV-2019 Arun G            Made changes for Service contracts   |
 -- +===========================================================================+
 -- +===========================================================================+
 
@@ -380,7 +381,8 @@ AS
         appid_base_ordertype       t_v1,
         bill_complete_flag         t_v1,
         parent_order_number        t_v30,
-        cost_center_split          t_v1
+        cost_center_split          t_v1,
+        invoicing_rule_id          t_num
     );
 
 /* Global Record  Declaration for Header */
@@ -503,7 +505,8 @@ AS
         kit_vpc                  t_v50,
         kit_dept                 t_v50,
         kit_seqnum               t_num,
-        kit_parent               t_v1
+        kit_parent               t_v1,
+        service_end_date         t_date
     );
 
 /* Global Record Declaration for  Line */
