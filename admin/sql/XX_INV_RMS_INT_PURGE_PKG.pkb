@@ -13,14 +13,15 @@ CREATE OR REPLACE PACKAGE BODY XX_INV_RMS_INT_PURGE_PKG
 -- |===============                                                                     |
 -- |Version   Date        Author             Remarks                                    |
 -- |========  =========== ================== ===================================        |
--- |1.0       10-Jun-2008 Paddy Sanjeevi	   Initital Version                           |
--- |1.1       02-Oct-2008 Paddy Sanjeevi	   Added procedures for Reconciliation        |
--- |1.2       02-Oct-2008 Paddy Sanjeevi	   Modfied item/loc Reconciliation procedure  |
--- |1.3       20-Oct-2008 Paddy Sanjeevi	   Modfied PURGE_PROCESSED_RECS procedure     |
--- |1.4       10-Nov-2008 Paddy Sanjeevi	   Modfied PURGE_PROCESSED_RECS procedure to  |
+-- |1.0       10-Jun-2008 Paddy Sanjeevi       Initital Version                           |
+-- |1.1       02-Oct-2008 Paddy Sanjeevi       Added procedures for Reconciliation        |
+-- |1.2       02-Oct-2008 Paddy Sanjeevi       Modfied item/loc Reconciliation procedure  |
+-- |1.3       20-Oct-2008 Paddy Sanjeevi       Modfied PURGE_PROCESSED_RECS procedure     |
+-- |1.4       10-Nov-2008 Paddy Sanjeevi       Modfied PURGE_PROCESSED_RECS procedure to  |
 -- |                                         add p_days parameter                       |
--- |1.5       04-Jan-2010 Paddy Sanjeevi	   Added item_reprocess procedure             |
+-- |1.5       04-Jan-2010 Paddy Sanjeevi       Added item_reprocess procedure             |
 -- |1.6       19-Oct-2015 Madhu Bolli        Remove schema for 12.2 retrofit            |
+-- |1.7       29-MAY-2019 Arun gannarapu     Remove DB link for LNS                     |
 -- +====================================================================================+
 AS
 -- +====================================================================================+
@@ -31,8 +32,8 @@ AS
 -- +====================================================================================+
 
 PROCEDURE SEND_NOTIFICATION( p_subject IN VARCHAR2
-			    ,p_email_list IN VARCHAR2
-			    ,p_text IN VARCHAR2 )
+                ,p_email_list IN VARCHAR2
+                ,p_text IN VARCHAR2 )
 IS
   lc_mailhost    VARCHAR2(64) := FND_PROFILE.VALUE('XX_INV_MAIL_HOST');
   lc_from        VARCHAR2(64) := 'rms-ebs-interface@officedepot.com';
@@ -98,7 +99,7 @@ END SEND_NOTIFICATION;
 
 PROCEDURE item_reprocess( x_errbuf             OUT NOCOPY VARCHAR2
                          ,x_retcode            OUT NOCOPY VARCHAR2
-			 ,Cat_reproc	       IN  VARCHAR2)
+             ,Cat_reproc           IN  VARCHAR2)
 IS
 
 CURSOR C1 IS
@@ -123,10 +124,10 @@ SELECT argument1,
  ORDER BY 1;
 
 
-ln_cnt 		NUMBER:=0;
+ln_cnt         NUMBER:=0;
 v_email_list    VARCHAR2(3000):='ebs.merch@officedepot.com';
-v_text		VARCHAR2(3000);
-v_subject	VARCHAR2(3000);
+v_text        VARCHAR2(3000);
+v_subject    VARCHAR2(3000);
 
 BEGIN
 
@@ -166,7 +167,7 @@ BEGIN
 
        UPDATE xx_inv_item_master_int
           SET process_flag=1,load_batch_id=null,inventory_item_id=-1,
-	      validation_orgs_status_flag='F'
+          validation_orgs_status_flag='F'
         WHERE rowid=cur.drowid;
 
     END IF;
@@ -200,7 +201,7 @@ BEGIN
      UPDATE xx_inv_item_master_int
         SET process_flag=1,load_batch_id=null,inventory_item_id=-1
       WHERE creation_date>sysdate-5
-	AND process_flag=7
+    AND process_flag=7
         AND odpb_category_process_flag<>7;
 
 
@@ -214,7 +215,7 @@ BEGIN
   COMMIT;
 END item_reprocess;
 
-
+/* -- commented for LNS
 PROCEDURE rms_ebs_merch_recon
 IS
   CURSOR C1 IS
@@ -245,10 +246,10 @@ IS
       subclassAttr.subclass = subclass.subclass)
    MINUS
   SELECT  LTRIM(RTRIM(segment1)) division_id
- 	   ,LTRIM(RTRIM(segment2)) group_id
-	   ,LTRIM(RTRIM(segment3)) dept_id
-	   ,LTRIM(RTRIM(segment4)) class_id
-	   ,LTRIM(RTRIM(segment5)) subclass_id
+        ,LTRIM(RTRIM(segment2)) group_id
+       ,LTRIM(RTRIM(segment3)) dept_id
+       ,LTRIM(RTRIM(segment4)) class_id
+       ,LTRIM(RTRIM(segment5)) subclass_id
    FROM mtl_categories_b
   WHERE structure_id=101
     AND enabled_flag='Y';
@@ -258,20 +259,23 @@ BEGIN
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'                                                 Missing Merchierchy in EBS                                   ');
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'                                                 --------------------------                                   ');
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'');
-  FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'DIVISION'||'   '||'GROUP  '||'   '||'DEPT  '||'   '||'CLASS '||'   '||'SUBCLASS');	
-  FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'--------'||'   '||'-------'||'   '||'------'||'   '||'------'||'   '||'--------');	
+  FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'DIVISION'||'   '||'GROUP  '||'   '||'DEPT  '||'   '||'CLASS '||'   '||'SUBCLASS');    
+  FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'--------'||'   '||'-------'||'   '||'------'||'   '||'------'||'   '||'--------');    
   FOR cur IN C1 LOOP
      FND_FILE.PUT_LINE(FND_FILE.OUTPUT,RPAD(cur.division_id,11,' ')||RPAD(cur.group_id,10,' ')||
-     			 	       RPAD(cur.dept_id,9,' ')||RPAD(cur.class_id,9,' ')||cur.subclass_id);
+                             RPAD(cur.dept_id,9,' ')||RPAD(cur.class_id,9,' ')||cur.subclass_id);
   END LOOP;
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'');
 END rms_ebs_merch_recon;
+*/ -- per lns
+
 -- +====================================================================================+
 -- | Name        :  RMS_EBS_LOCATION_RECON                                              |
 -- | Description :  This procedure is invoked from the procedure RMS_EBS_RECON for the  |
 -- |                reconcliation of Location between RMS and EBS                       |
 -- | Parameters  :                                                                      |
 -- +====================================================================================+
+/* -- commented for LNS
 PROCEDURE rms_ebs_location_recon
 IS
 CURSOR C1 IS
@@ -294,19 +298,25 @@ BEGIN
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'                                                 Missing Locations in EBS                                   ');
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'                                                 ------------------------                                   ');
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'');
-  FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'Store/Warehouse');	
-  FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'----------------');	
+  FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'Store/Warehouse');    
+  FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'----------------');    
   FOR cur IN C1 LOOP
      FND_FILE.PUT_LINE(FND_FILE.OUTPUT,cur.location);
   END LOOP;
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'');
 END rms_ebs_location_recon;
+
+*/ -- per LNS
+
 -- +====================================================================================+
 -- | Name        :  RMS_EBS_ORGHIER_RECON                                               |
 -- | Description :  This procedure is invoked from the procedure RMS_EBS_RECON for the  |
 -- |                reconcliation of Org Hierarchy between RMS and EBS                  |
 -- | Parameters  :                                                                      |
 -- +====================================================================================+
+
+/* -- commented for LNS
+
 PROCEDURE rms_ebs_orghier_recon
 IS
 CURSOR c1 IS
@@ -350,7 +360,7 @@ WHERE b.flex_value_set_name='XX_GI_DISTRICT_VS'
   AND a.flex_value_set_id=b.flex_value_set_id
   AND a.end_date_active IS NULL
 ORDER BY 2;
-v_type	VARCHAR2(40) := ' ';
+v_type    VARCHAR2(40) := ' ';
 BEGIN
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'');
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'');
@@ -360,7 +370,7 @@ BEGIN
   FOR cur IN C1 LOOP
      IF v_type <> cur.orghier THEN
       v_type := cur.orghier; 
-      FND_FILE.PUT_LINE(FND_FILE.OUTPUT,' ');	 			
+      FND_FILE.PUT_LINE(FND_FILE.OUTPUT,' ');                 
       FND_FILE.PUT_LINE(FND_FILE.OUTPUT,RPAD(v_type,12,' '));
       FND_FILE.PUT_LINE(FND_FILE.OUTPUT,RPAD('-',12,'-'));
      END IF;
@@ -368,40 +378,46 @@ BEGIN
   END LOOP;
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'');
 END rms_ebs_orghier_recon; 
+
+*/ -- per LNS
+
 -- +====================================================================================+
 -- | Name        :  RMS_EBS_ITEM_RECON                                                  |
 -- | Description :  This procedure is invoked from the procedure RMS_EBS_RECON for the  |
 -- |                reconcliation of Item Master between RMS and EBS                    |
 -- | Parameters  :                                                                      |
 -- +====================================================================================+
+
+/* -- commented for LNS
+
 PROCEDURE rms_ebs_item_recon
 IS
-v_total_item 	NUMBER:=0;
-v_total_sclass 	NUMBER:=0;
-j 			NUMBER:=0;
+v_total_item     NUMBER:=0;
+v_total_sclass     NUMBER:=0;
+j             NUMBER:=0;
 CURSOR c1 IS
- SELECT /*+ PARALLEL(M,4) */
-	  TO_CHAR(m.item) item
+ SELECT   --+ PARALLEL(M,4) 
+      TO_CHAR(m.item) item
    FROM (item_master@rms.na.odcorp.net m LEFT
   OUTER JOIN item_attributes@rms.na.odcorp.net a ON m.item = a.item) LEFT
   OUTER JOIN od_item_subsell@rms.na.odcorp.net s ON m.item = s.item
  WHERE m.status = 'A'
 MINUS
-SELECT  /*+ PARALLEL(A,4) */
-	A.SEGMENT1 item
+SELECT  --+ PARALLEL(A,4) 
+    A.SEGMENT1 item
   FROM mtl_system_items_b A
 WHERE A.organization_id=441;
 
 CURSOR c2 IS
-SELECT /*+ PARALLEL(M,4) */
-	 to_char(m.item) item,to_char(m.subclass) subclass
+SELECT --+ PARALLEL(M,4) 
+     to_char(m.item) item,to_char(m.subclass) subclass
 FROM(item_master@rms.na.odcorp.net m LEFT
   OUTER JOIN item_attributes@rms.na.odcorp.net a ON m.item = a.item) LEFT
   OUTER JOIN od_item_subsell@rms.na.odcorp.net s ON m.item = s.item
 WHERE m.status = 'A' 
 minus
-SELECT /*+ PARALLEL(c,4) */ 
-	 c.segment1 item,d.segment5 subclass
+SELECT --+ PARALLEL(c,4)  
+     c.segment1 item,d.segment5 subclass
   FROM  mtl_categories d,
              mtl_item_categories b,
              mtl_system_items_b c
@@ -422,13 +438,13 @@ BEGIN
     END IF;
     BEGIN
       INSERT
-	  INTO xx_inv_error_log
+      INTO xx_inv_error_log
       VALUES
-	  (XX_INV_ERROR_LOG_S.NEXTVAL,-1,'ITEMMASTERRECON',cur.item,NULL,NULL,NULL,NULL,'Missing Item in EBS from Reconciliation',
-	   'N',SYSDATE,FND_GLOBAL.user_id,SYSDATE,FND_GLOBAL.user_id);
+      (XX_INV_ERROR_LOG_S.NEXTVAL,-1,'ITEMMASTERRECON',cur.item,NULL,NULL,NULL,NULL,'Missing Item in EBS from Reconciliation',
+       'N',SYSDATE,FND_GLOBAL.user_id,SYSDATE,FND_GLOBAL.user_id);
     EXCEPTION
-	WHEN others THEN
-	  NULL;
+    WHEN others THEN
+      NULL;
     END;
   END LOOP;
   COMMIT;
@@ -450,13 +466,13 @@ BEGIN
     END IF;
     BEGIN
       INSERT
-	  INTO xx_inv_error_log
+      INTO xx_inv_error_log
       VALUES
-	  (XX_INV_ERROR_LOG_S.NEXTVAL,-1,'ITEMMASTERRECON',cur.item,cur.subclass,NULL,NULL,NULL,'Missing Item/Subclass in EBS from Reconciliation',
-	   'N',SYSDATE,FND_GLOBAL.user_id,SYSDATE,FND_GLOBAL.user_id);
+      (XX_INV_ERROR_LOG_S.NEXTVAL,-1,'ITEMMASTERRECON',cur.item,cur.subclass,NULL,NULL,NULL,'Missing Item/Subclass in EBS from Reconciliation',
+       'N',SYSDATE,FND_GLOBAL.user_id,SYSDATE,FND_GLOBAL.user_id);
     EXCEPTION
-	WHEN others THEN
-	  NULL;
+    WHEN others THEN
+      NULL;
     END;
   END LOOP;
   COMMIT;
@@ -468,18 +484,24 @@ BEGIN
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'Total No of Items : '||TO_CHAR(v_total_sclass));
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'');
 END rms_ebs_item_recon;
+
+*/ -- per LNS
+
 -- +====================================================================================+
 -- | Name        :  RMS_EBS_ITEMLOC_RECON                                               |
 -- | Description :  This procedure is invoked from the procedure RMS_EBS_RECON for the  |
 -- |                reconcliation of item loc between RMS and EBS                       |
 -- | Parameters  :                                                                      |
 -- +====================================================================================+
+
+/* -- commented for LNS
+
 PROCEDURE rms_ebs_itemloc_recon
 IS
 v_total_loc NUMBER:=0;
-j 		NUMBER:=0;
+j         NUMBER:=0;
 CURSOR C1 IS
-SELECT /*+ PARALLEL(m,4) */
+SELECT -- *+ PARALLEL(m,4) 
        l.item,to_char(l.loc) loc
   FROM (item_master@rms.na.odcorp.net m
   INNER JOIN item_loc@rms.na.odcorp.net l on m.item=l.item)
@@ -490,10 +512,10 @@ SELECT /*+ PARALLEL(m,4) */
    AND l.status<>'D'
    AND l.loc NOT IN (799,4110,2070)
 MINUS
-SELECT /*+ PARALLEL(b,4) */
-	b.segment1,c.attribute1 loc
+SELECT --+ PARALLEL(b,4) 
+    b.segment1,c.attribute1 loc
    FROM mtl_system_items_b b,
-	  hr_all_organization_units c
+      hr_all_organization_units c
   WHERE c.attribute1 IS NOT NULL
     AND b.organization_id=c.organization_id;
 
@@ -507,13 +529,13 @@ BEGIN
     END IF;
     BEGIN
       INSERT
-	  INTO xx_inv_error_log
+      INTO xx_inv_error_log
       VALUES
-	  (XX_INV_ERROR_LOG_S.NEXTVAL,-1,'ITEMLOCRECON',cur.item,cur.loc,NULL,NULL,NULL,'Missing Item LOC in EBS from Reconciliation',
-	   'N',SYSDATE,FND_GLOBAL.user_id,SYSDATE,FND_GLOBAL.user_id);
+      (XX_INV_ERROR_LOG_S.NEXTVAL,-1,'ITEMLOCRECON',cur.item,cur.loc,NULL,NULL,NULL,'Missing Item LOC in EBS from Reconciliation',
+       'N',SYSDATE,FND_GLOBAL.user_id,SYSDATE,FND_GLOBAL.user_id);
     EXCEPTION
-	WHEN others THEN
-	  NULL;
+    WHEN others THEN
+      NULL;
     END;
   END LOOP;
   COMMIT;
@@ -525,12 +547,18 @@ BEGIN
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'Total No of Itemlocs : '||TO_CHAR(v_total_loc));
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'');
 END rms_ebs_itemloc_recon;
+
+*/ --per lNS
+
 -- +====================================================================================+
 -- | Name        :  RMS_EBS_ITEMXREF_RECON                                              |
 -- | Description :  This procedure is invoked from the procedure RMS_EBS_RECON for the  |
 -- |                reconcliation of Merch Hierarchy between RMS and EBS                |
 -- | Parameters  :                                                                      |
 -- +====================================================================================+
+
+/* -- commented for LNS
+
 PROCEDURE rms_ebs_itemxref_recon
 IS
 v_item_xref NUMBER:=0;
@@ -543,17 +571,17 @@ BEGIN
      AND EXISTS (SELECT 'x' FROM rms10.item_master@rms.na.odcorp.net WHERE item=a.item AND status='A')
      AND EXISTS (SELECT 'x' FROM rms10.item_master@rms.na.odcorp.net WHERE item=a.xref_item AND status='A')
      AND NOT EXISTS (SELECT 'X'
-			     FROM mtl_cross_reference_types b, 
-				    fnd_lookup_values e, 
-				    mtl_cross_references d, 	
-				    mtl_system_items_b c
-			    WHERE c.organization_id=441 
-			      AND c.segment1=a.item
-			      AND d.inventory_item_id=c.inventory_item_id
-			      AND e.meaning=a.XREF_TYPE_CD    
-			      AND e.lookup_type = 'RMS_EBS_CROSS_REFERENCE_TYPES'
-			      AND b.cross_reference_type = e.lookup_code
-			      AND d.cross_reference_type=b.cross_reference_type);
+                 FROM mtl_cross_reference_types b, 
+                    fnd_lookup_values e, 
+                    mtl_cross_references d,     
+                    mtl_system_items_b c
+                WHERE c.organization_id=441 
+                  AND c.segment1=a.item
+                  AND d.inventory_item_id=c.inventory_item_id
+                  AND e.meaning=a.XREF_TYPE_CD    
+                  AND e.lookup_type = 'RMS_EBS_CROSS_REFERENCE_TYPES'
+                  AND b.cross_reference_type = e.lookup_code
+                  AND d.cross_reference_type=b.cross_reference_type);
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'');
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'');
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'                                                 Missing Item xref in EBS                                      ');
@@ -567,15 +595,15 @@ BEGIN
     FROM OD_PRODXRF@rms.na.odcorp.net a
    WHERE EXISTS (SELECT  'x' FROM rms10.item_master@rms.na.odcorp.net WHERE item=a.item AND status='A')
      AND NOT EXISTS (SELECT 'X'
-   			    FROM mtl_cross_reference_types b, fnd_lookup_values e, 
-			         mtl_cross_references d, mtl_system_items_b c
-			   WHERE c.organization_id=441 
-			     AND c.segment1=a.item
-			     AND d.inventory_item_id=c.inventory_item_id
-			     AND e.meaning=a.product_source   
-			     AND e.lookup_type = 'RMS_EBS_CROSS_REFERENCE_TYPES'
-			     AND b.cross_reference_type = e.lookup_code
-			     AND d.cross_reference_type=b.cross_reference_type);
+                   FROM mtl_cross_reference_types b, fnd_lookup_values e, 
+                     mtl_cross_references d, mtl_system_items_b c
+               WHERE c.organization_id=441 
+                 AND c.segment1=a.item
+                 AND d.inventory_item_id=c.inventory_item_id
+                 AND e.meaning=a.product_source   
+                 AND e.lookup_type = 'RMS_EBS_CROSS_REFERENCE_TYPES'
+                 AND b.cross_reference_type = e.lookup_code
+                 AND d.cross_reference_type=b.cross_reference_type);
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'');
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'');
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'                                                 Missing PRDS xref in EBS                                      ');
@@ -589,15 +617,15 @@ BEGIN
     FROM OD_WHSLR_PRODXRF@rms.na.odcorp.net a
    WHERE EXISTS (SELECT 'x' FROM rms10.item_master@rms.na.odcorp.net WHERE item=a.sku AND status='A')
      AND NOT EXISTS (SELECT 'X'
-   			    FROM mtl_cross_reference_types b, fnd_lookup_values e, 
-			         mtl_cross_references d, mtl_system_items_b c
-			   WHERE c.organization_id=441 
-			     AND c.segment1=a.sku
-			     AND d.inventory_item_id=c.inventory_item_id
-			     AND e.meaning=a.whslr_supplier_cd
-			     AND e.lookup_type = 'RMS_EBS_CROSS_REFERENCE_TYPES'
-			     AND b.cross_reference_type = e.lookup_code
-			     AND d.cross_reference_type=b.cross_reference_type);
+                   FROM mtl_cross_reference_types b, fnd_lookup_values e, 
+                     mtl_cross_references d, mtl_system_items_b c
+               WHERE c.organization_id=441 
+                 AND c.segment1=a.sku
+                 AND d.inventory_item_id=c.inventory_item_id
+                 AND e.meaning=a.whslr_supplier_cd
+                 AND e.lookup_type = 'RMS_EBS_CROSS_REFERENCE_TYPES'
+                 AND b.cross_reference_type = e.lookup_code
+                 AND d.cross_reference_type=b.cross_reference_type);
    FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'');
    FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'');
    FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'                                                 Missing WHLS xref in EBS                                      ');
@@ -606,14 +634,18 @@ BEGIN
    FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'Total WHLS xref : '||TO_CHAR(v_item_xref));
    FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'');
 END rms_ebs_itemxref_recon;
+*/ -- per lns
+
 -- +====================================================================================+
 -- | Name        :  RMS_EBS_MERCH_RECON                                                 |
 -- | Description :  This procedure is invoked from ESP for the reconciliation between   |
 -- |                RMS and EBS                                                         |
 -- | Parameters  :                                                                      |
 -- +====================================================================================+
+
+
 PROCEDURE RMS_EBS_RECON(
-  	                    x_errbuf             OUT NOCOPY VARCHAR2
+                          x_errbuf             OUT NOCOPY VARCHAR2
                          ,x_retcode            OUT NOCOPY VARCHAR2
                          )
 IS
@@ -623,17 +655,20 @@ BEGIN
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'                                                 ----------------------                                    ');
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'');
   FND_FILE.PUT_LINE(FND_FILE.OUTPUT,'');
+/* -- commented for LNS
   rms_ebs_location_recon;
   rms_ebs_orghier_recon;
   rms_ebs_merch_recon;
   rms_ebs_item_recon;
   rms_ebs_itemloc_recon;
   rms_ebs_itemxref_recon;
+  */ 
 EXCEPTION
   WHEN others THEN
     x_errbuf:=SQLERRM;
     x_retcode:=SQLCODE;
 END RMS_EBS_RECON;
+
 -- +====================================================================================+
 -- | Name        :  PURGE_PROCESSED_RECS                                                |
 -- | Description :  This procedure is invoked from ESP to purge processed records in EBS|
@@ -641,15 +676,15 @@ END RMS_EBS_RECON;
 -- | Parameters  :                                                                      |
 -- +====================================================================================+
 PROCEDURE PURGE_PROCESSED_RECS(
-  	                    x_errbuf             OUT NOCOPY VARCHAR2
+                          x_errbuf             OUT NOCOPY VARCHAR2
                          ,x_retcode            OUT NOCOPY VARCHAR2
-				 ,p_days		     IN  NUMBER
+                 ,p_days             IN  NUMBER
                          )
 IS
 v_min_control_id NUMBER;
 v_max_control_id NUMBER;
-v_total	     NUMBER;
-v_loop	     NUMBER;
+v_total         NUMBER;
+v_loop         NUMBER;
 v_rms_control_id NUMBER;
 BEGIN
 --  Purging Item Interface Processed records
@@ -665,7 +700,7 @@ BEGIN
   END IF;
   FOR i IN 1..v_loop LOOP
     DELETE 
-	FROM xx_inv_item_master_int
+    FROM xx_inv_item_master_int
      WHERE control_id between v_min_control_id and v_min_control_id+10000
        AND process_flag=7
        AND creation_date<SYSDATE-p_days;
@@ -686,7 +721,7 @@ BEGIN
   END IF;
   FOR i IN 1..v_loop LOOP
     DELETE 
-	FROM xx_inv_item_loc_int
+    FROM xx_inv_item_loc_int
      WHERE control_id between v_min_control_id and v_min_control_id+10000
        AND process_flag=7
        AND creation_date<SYSDATE-p_days;
@@ -695,7 +730,8 @@ BEGIN
   END LOOP;
   COMMIT;
 --  Purging Processed Errored Records
-  SELECT MAX(control_id)
+
+/*   SELECT MAX(control_id)
     INTO v_rms_control_id
     FROM OD_EBS_INT_CONTROL
    WHERE process_name='EBS_ERRORS';
@@ -711,13 +747,14 @@ BEGIN
   END IF;
   FOR i IN 1..v_loop LOOP
     DELETE 
-	FROM XX_INV_ERROR_LOG
+    FROM XX_INV_ERROR_LOG
      WHERE control_id between v_min_control_id and v_min_control_id+10000
        AND creation_date<SYSDATE-p_days;
     COMMIT;
     v_min_control_id:=v_min_control_id+10000;
   END LOOP;
-  COMMIT;
+   COMMIT; */
+   
 --  Purging Org Hierarchy Interface Processed records
   SELECT MIN(control_id),MAX(control_id)
     INTO v_min_control_id,v_max_control_id
@@ -731,7 +768,7 @@ BEGIN
   END IF;
   FOR i IN 1..v_loop LOOP
     DELETE 
-	FROM xx_inv_orghier_int
+    FROM xx_inv_orghier_int
      WHERE control_id between v_min_control_id and v_min_control_id+10000
        AND process_flag in(7,6)
        AND creation_date<SYSDATE-p_days;
@@ -752,7 +789,7 @@ v_total:=NVL(v_max_control_id,0) - NVL(v_min_control_id,0);
   END IF;
   FOR i IN 1..v_loop LOOP
     DELETE 
-	FROM xx_inv_merchier_int
+    FROM xx_inv_merchier_int
      WHERE control_id between v_min_control_id and v_min_control_id+10000
        AND process_flag in (7,6)
        AND creation_date<SYSDATE-p_days;
@@ -773,7 +810,7 @@ v_total:=NVL(v_max_control_id,0) - NVL(v_min_control_id,0);
   END IF;
   FOR i IN 1..v_loop LOOP
     DELETE 
-	FROM xx_inv_itemxref_int
+    FROM xx_inv_itemxref_int
      WHERE control_id between v_min_control_id and v_min_control_id+10000
        AND process_flag in(7,6)
        AND creation_date<SYSDATE-p_days;
@@ -807,4 +844,4 @@ END PURGE_PROCESSED_RECS;
 END XX_INV_RMS_INT_PURGE_PKG;
 /
 SHOW ERRORS
-EXIT;
+--EXIT;
