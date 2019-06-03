@@ -17,6 +17,7 @@ IS
 -- |========      ======         ==========             =======                 |
 -- | Draft        28-JUL_2009    Peter Marco            Initial Version         |
 -- | 1.1          05-NOV-2015    Harvinder Rakhra       Retrofit R12.2          |
+-- | 1.2          03-JUN-2019 	 Dinesh N        	    Replaced V$database with DB_Name for LNS|
 -- +============================================================================+
 -- +============================================================================+
 -- | Parameters:  x_err_buf, x_ret_code,p_printer_name                          | 
@@ -32,11 +33,15 @@ IS
 
 BEGIN
 
-
-   SELECT name 
+/*
+	 SELECT name 
      INTO lc_db_name
      FROM V$database;
-
+*/
+	SELECT SUBSTR(SYS_CONTEXT('USERENV','DB_NAME'),1,8) 		-- Changed from V$instance to DB_NAME
+	INTO lc_db_name
+	FROM dual;
+	 
      FND_FILE.PUT_LINE(FND_FILE.LOG, 'XX_AP_PRINTER_UTL_PROC submitted in ' || lc_db_name);
 
 
