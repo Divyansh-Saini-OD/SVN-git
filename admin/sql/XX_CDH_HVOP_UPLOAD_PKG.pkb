@@ -19,6 +19,7 @@ CREATE OR REPLACE PACKAGE BODY xx_cdh_hvop_upload_pkg
 -- |1.1       05-Jan-2016 Manikant Kasu      Removed schema alias as   | 
 -- |                                         part of GSCC R12.2.2      |
 -- |                                         Retrofit                  |
+-- | 1.2      03-JUN-2018  Dinesh Nagapuri   Replaced V$INSTANCE with DB_Name for LNS   			 |
 -- +===================================================================+
 AS
 -- +===================================================================+
@@ -119,11 +120,17 @@ AS
       END;
 
       BEGIN
+	  /*
          SELECT instance_name
            INTO l_instance
            FROM v$instance;
+	*/
+	  	SELECT SUBSTR(SYS_CONTEXT('USERENV','DB_NAME'),1,8) 		-- Changed from V$instance to DB_NAME
+		INTO l_instance
+		FROM dual;
       END;
-
+	  
+	
       IF l_instance IN ('GSIPSTGB', 'GSIUATGB')
       THEN
          l_db_link_name := 'AS400.NA.ODCORP.NET';
