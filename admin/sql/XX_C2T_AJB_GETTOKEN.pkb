@@ -13,6 +13,7 @@ CREATE OR REPLACE PACKAGE BODY XX_C2T_AJB_GetToken AS
 -- |    1.0      01-Mar-2016  Avinash Baddam       Initial Version                                       |
 -- |    1.1      07-Apr-2016  Avinash Baddam       Fixed the store number                                |
 -- |    1.2      08-Dec-2016  Avinash Baddam       Changes during Amex Conv TLS                          |
+-- | 	1.3      03-JUN-2018  Dinesh Nagapuri      Replaced V$INSTANCE with DB_Name for LNS   			 |
 -- +=====================================================================================================+
   
     FUNCTION getToken(Timeout NUMBER, AJBServerIP VARCHAR2, Port NUMBER, request_message VARCHAR2) return VARCHAR2 
@@ -49,10 +50,15 @@ CREATE OR REPLACE PACKAGE BODY XX_C2T_AJB_GetToken AS
       ajb_exception        EXCEPTION;
     BEGIN  
        --Set Connection Values
-       
-       SELECT name
+       /*
+		 SELECT name
          INTO lc_database
          FROM V$database;
+		*/
+		
+		SELECT SUBSTR(SYS_CONTEXT('USERENV','DB_NAME'),1,8) 		-- Changed from V$database to DB_NAME
+		INTO lc_database
+		FROM dual;
        
        IF lc_database =  'GSIPRDGB' THEN
           lc_AJBServerIP 	:= 'AJBPRD2.na.odcorp.net';
