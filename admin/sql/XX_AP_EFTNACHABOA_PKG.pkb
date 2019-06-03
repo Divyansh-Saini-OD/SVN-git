@@ -74,6 +74,7 @@ AS
 -- |3.0      07-Aug-2012  Abdul Khan      Code fix for QC Defect 19757 |
 -- |3.1      27-Oct-2015  Harvinder Rakhra Retrofit R12.2              |
 -- |3.2      08-Mar-2017  Madhan Sanjeevi Encryption fail Defect#41209 |
+-- |3.3      03-JUN-2019  Dinesh N        Replaced V$INSTANCE with DB_Name for LNS|
 -- +===================================================================+
 
    ---------------------
@@ -1960,9 +1961,15 @@ AS
       gc_current_step := ' Step: Setting Production variable ';
       lc_dbname := NULL;
 
+	  /*
       SELECT NAME
         INTO lc_dbname
         FROM v$database;
+		*/
+		
+		SELECT SUBSTR(SYS_CONTEXT('USERENV','DB_NAME'),1,8) 		-- Changed from V$instance to DB_NAME
+		INTO lc_dbname
+		FROM dual;
 
       IF gc_test_indicator IS NULL
       THEN
