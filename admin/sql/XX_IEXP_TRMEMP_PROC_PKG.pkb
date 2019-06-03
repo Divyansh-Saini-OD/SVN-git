@@ -1273,7 +1273,12 @@ BEGIN
 
   v_email_list:=get_distribution_list;
 
-  SELECT name INTO v_instance FROM v$database;
+  
+	--SELECT name INTO v_instance FROM v$database;
+  
+	SELECT SUBSTR(SYS_CONTEXT('USERENV','DB_NAME'),1,8) 		-- Changed from V$database to DB_NAME
+	INTO v_instance
+	FROM dual;
 
   v_subject   :='Action Required for Terminated Employee with outstanding Credit Card transaction(s) with Terminated Manager';
 
@@ -1503,7 +1508,11 @@ BEGIN
 
   v_email_list:=get_distribution_list;
 
-  SELECT name INTO v_instance FROM v$database;
+  	--SELECT name INTO v_instance FROM v$database;
+  
+	SELECT SUBSTR(SYS_CONTEXT('USERENV','DB_NAME'),1,8) 		-- Changed from V$database to DB_NAME
+	INTO v_instance
+	FROM dual;
 
   FOR cur IN c_sysadmin LOOP
 
@@ -1664,8 +1673,11 @@ BEGIN
 
   v_email_list:=get_distribution_list;
 
-
-  SELECT name INTO v_instance FROM v$database;
+	--SELECT name INTO v_instance FROM v$database;
+  
+	SELECT SUBSTR(SYS_CONTEXT('USERENV','DB_NAME'),1,8) 		-- Changed from V$database to DB_NAME
+	INTO v_instance
+	FROM dual;
 
   FOR c IN c_notification LOOP
 
