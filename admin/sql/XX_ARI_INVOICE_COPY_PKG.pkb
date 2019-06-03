@@ -34,6 +34,7 @@ create or replace PACKAGE BODY      XX_ARI_INVOICE_COPY_PKG AS
 -- | 2.5         21-Apr-2017  Madhu Bolli      Added new proc save_pdf_invoice_copy to store PDF Copy| 
 -- | 2.6         25-Apr-2017  Havish Kasina    Replacing the existing program XXCOMFILCOPY with new program XXCOMIRECFILCOPY| 
 -- | 2.7 		 29-JAN-2019  Havish Kasina    Made changes as per Bill Complete NAIT-81131		|
+-- | 2.8         23-JUN-2019  Dinesh Nagapuri  Replaced DB_Name with V$instance for LNS   		|
 -- +============================================================================================+
 
 GC_XDO_TEMPLATE_FORMAT      CONSTANT VARCHAR2(30)     := 'PDF';
@@ -1162,10 +1163,16 @@ BEGIN
         FROM   GV$INSTANCE 
         ;
         */
-        
+		
+		/*
         select name 
         INTO   l_instance_name
         from v$database; 
+		*/
+		
+		SELECT SUBSTR(SYS_CONTEXT('USERENV','DB_NAME'),1,8) 		-- Changed from INSTANCE_NAME to DB_NAME
+		INTO l_instance_name
+		FROM dual;
         
         OPEN c_non_prod_fax_check (p_fax_number);
         FETCH c_non_prod_fax_check INTO l_is_valid_non_prod_fax;
