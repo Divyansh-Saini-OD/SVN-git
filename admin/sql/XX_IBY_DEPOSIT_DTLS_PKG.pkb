@@ -41,7 +41,8 @@ AS
   -- |1.9       30-Oct-2015   Rakesh Polepalli   Fix for defect 36094    |
   -- |2.0       30-Apr-2019   M K Pramod Kumar   Code changes to replace DB
   --              								 link with Web service for NAIT-92905|
-  -- |2.1       30-Apr-2019   M K Pramod Kumar   Modified to process all AOPS orders even if Webservice fails for one order
+  -- |2.1       30-Apr-2019   M K Pramod Kumar   Modified to process all AOPS orders even if Webservice fails 
+  --											 for one order and comment HTTP persistent connection call.
   -- +===================================================================+
   lc_error_loc   VARCHAR2(2000);
   lc_error_debug VARCHAR2(250);
@@ -271,7 +272,7 @@ IS
       utl_http.set_detailed_excp_support ( enable => true );
 	  Begin
       l_request := UTL_HTTP.begin_request(lc_auth_service_url_main, 'GET', ' HTTP/1.1');
-	  UTL_HTTP.SET_PERSISTENT_CONN_SUPPORT(TRUE);
+	  --UTL_HTTP.SET_PERSISTENT_CONN_SUPPORT(TRUE);
       UTL_HTTP.set_header(l_request, 'user-agent', 'mozilla/4.0');
       UTL_HTTP.set_header(l_request, 'content-type', 'application/json');
       UTL_HTTP.set_header(l_request, 'Content-Length', LENGTH(lc_auth_payload));
