@@ -18,6 +18,7 @@ CREATE OR REPLACE PACKAGE BODY APPS.XX_IEXP_UNSUB_CCNOTIFY_PKG
 -- |1.0       05-May-2015 Paddy Sanjeevi     Initial version                    |
 -- |1.1       20-May-2015 Paddy Sanjeevi     Modified to send mail in HTML      |
 -- |1.2       30-Dec-2015 Harvinder Rakhra   Retrofit R12.2                     |
+-- |1.3       03-JUN-2018 Dinesh Nagapuri    Replaced V$INSTANCE with DB_Name for LNS|
 -- +============================================================================+
 AS
 
@@ -298,7 +299,11 @@ BEGIN
       v_debug:='N';
   END;
 
-  SELECT name INTO v_instance from v$database;
+	--SELECT name INTO v_instance from v$database;
+  
+	SELECT SUBSTR(SYS_CONTEXT('USERENV','DB_NAME'),1,8) 		-- Changed from V$database to DB_NAME
+	INTO v_instance
+	FROM dual;
 
   FOR cur IN C1(v_emp_reminder) LOOP
 
@@ -481,7 +486,11 @@ BEGIN
       v_debug:='N';
   END;
 
-  SELECT name INTO v_instance from v$database;
+ 	--SELECT name INTO v_instance from v$database;
+  
+	SELECT SUBSTR(SYS_CONTEXT('USERENV','DB_NAME'),1,8) 		-- Changed from V$database to DB_NAME
+	INTO v_instance
+	FROM dual;
 
   FOR cur IN C1(v_manager_esc) LOOP
 
@@ -678,7 +687,11 @@ BEGIN
       v_mgr_esc:=3;
   END;
 
-  SELECT name INTO v_instance from v$database;
+  	--SELECT name INTO v_instance from v$database;
+  
+	SELECT SUBSTR(SYS_CONTEXT('USERENV','DB_NAME'),1,8) 		-- Changed from V$database to DB_NAME
+	INTO v_instance
+	FROM dual;
 
   lc_body_hdr_html := '<p>Your employee(s) shown below has submitted expense reports in iExpense that have not been approved or rejected by you. 
  	                    Please review the list below and either approve or reject the expense report(s) this week to clear these transactions.
