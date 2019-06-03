@@ -1,0 +1,42 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+--+=============================================================================================+--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Program Name   : XX_QA_QMR_SEQ_S.seq                                                          |--
+--|                                                                                             |--
+--| Purpose        : To Create Custom sequence XX_QA_QMR_SEQ_S	    	 		            |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By       Description                             |--
+--+=============================================================================================+--
+--| 1.0              09-May-2011       Paddy Sanjeevi   Initial Version                         |--
+--+=============================================================================================+--
+SET VERIFY      OFF
+SET TERM        OFF
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+SET TERM ON
+
+
+PROMPT
+PROMPT Creating Sequence XX_QA_QMR_SEQ_S
+PROMPT
+
+CREATE SEQUENCE XX_QA_QMR_SEQ_S INCREMENT BY 1 START WITH 1 NOCACHE NOORDER;
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

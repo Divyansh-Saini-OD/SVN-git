@@ -1,0 +1,81 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_PA_PB_PRD_QATST.tbl                                              |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_PA_PB_PRD_QATST (OD PLM Enhancements table)                            |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              28-Jul-2010       Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_PA_PB_PRD_QATST......
+PROMPT
+
+Create table XX_PA_PB_PRD_QATST
+( prod_dtl_id		number,
+  prd_test_id		number,
+  task_seq		number,
+  task_description	varchar2(60),
+  status		varchar2(30),
+  due_date		date,
+  document_no		varchar2(50),
+  comments		varchar2(2000),
+  attribute1		varchar2(150),
+  attribute2		varchar2(150),
+  attribute3		varchar2(150),
+  attribute4		varchar2(150),
+  attribute5		varchar2(150),
+  attribute6		varchar2(150),
+  attribute7		varchar2(150),
+  attribute8		varchar2(150),
+  attribute9		varchar2(150),
+  attribute10		varchar2(150),
+  attribute11		varchar2(150),
+  attribute12		varchar2(150),
+  attribute13		varchar2(150),
+  attribute14		varchar2(150),
+  attribute15		varchar2(150),
+  creation_date		date not null,
+  created_by		number not null,
+  last_update_date	date not null,
+  last_updated_by	number not null,
+  last_update_login	number);
+
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

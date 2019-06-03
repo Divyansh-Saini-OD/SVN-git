@@ -1,0 +1,38 @@
+<definitions
+     name="ODErrorHandler"
+     targetNamespace="http://xmlns.oracle.com/ODErrorHandler"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:client="http://xmlns.oracle.com/ODErrorHandler"
+    >
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+             xmlns:client="http://xmlns.oracle.com/ODErrorHandler">
+            <import namespace="http://xmlns.oracle.com/ODErrorHandler" schemaLocation="ODErrorHandler.xsd"/>
+        </schema>
+    </types>
+    <message name="ODErrorHandlerResponseMessage">
+        <part name="payload" element="client:ODErrorHandlerProcessResponse"/>
+    </message>
+    <message name="ODErrorHandlerRequestMessage">
+        <part name="payload" element="client:ODErrorHandlerProcessRequest"/>
+    </message>
+    <portType name="ODErrorHandlerCallback">
+        <operation name="onResult">
+            <input message="client:ODErrorHandlerResponseMessage"/>
+        </operation>
+    </portType>
+    <portType name="ODErrorHandler">
+        <operation name="initiate">
+            <input message="client:ODErrorHandlerRequestMessage"/>
+        </operation>
+    </portType>
+    <plnk:partnerLinkType name="ODErrorHandler">
+        <plnk:role name="ODErrorHandlerProvider">
+            <plnk:portType name="client:ODErrorHandler"/>
+        </plnk:role>
+        <plnk:role name="ODErrorHandlerRequester">
+            <plnk:portType name="client:ODErrorHandlerCallback"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+</definitions>

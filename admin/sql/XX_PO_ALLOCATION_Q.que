@@ -1,0 +1,36 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                             Office Depot                          |
+-- +===================================================================+
+-- | Name  : APPS.XX_PO_ALLOCATION_Q                                   |
+-- | Description: CUSTOM AQ FOR QUEUE TABLE XX_PO_ALLOCATION_AQTBL     |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |1.0      06-21-2007   K.CRAWFORD       INITAL CODE                 |
+-- +===================================================================+
+
+BEGIN
+  SYS.DBMS_AQADM.CREATE_QUEUE
+  (
+    QUEUE_NAME          =>   'XX_PO_ALLOCATION_Q'
+   ,QUEUE_TABLE         =>   'XX_PO_ALLOCATION_AQTBL'
+   ,QUEUE_TYPE          =>   SYS.DBMS_AQADM.NORMAL_QUEUE
+   ,MAX_RETRIES         =>   5
+   ,RETRY_DELAY         =>   0
+   ,RETENTION_TIME      =>   0
+   );
+END;
+
+BEGIN
+  SYS.DBMS_AQADM.START_QUEUE
+  (
+    QUEUE_NAME => 'XX_PO_ALLOCATION_Q'
+   ,ENQUEUE => TRUE 
+   ,DEQUEUE => TRUE 
+   );
+END;

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXQAVNR" description="OD QA Variation Notice Report" Version="1.0">
+<parameters>
+ <parameter name="P_VNID" datatype="character" />
+ <parameter name="P_REGION" datatype="character" />
+ <parameter name="P_CAPID" datatype="character" />
+ <parameter name="P_QA_ACT" datatype="character" />
+ <parameter name="P_SKU" datatype="character" />
+ <parameter name="P_DEPT" datatype="character" />
+ <parameter name="P_VENDOR_NAME" datatype="character" />
+ <parameter name="P_VEND_STATUS" datatype="character" />
+ <parameter name="P_FAC_NAME" datatype="character" />
+ <parameter name="P_SOUR_AGENT" datatype="character" />
+ <parameter name="P_SUBMITTER" datatype="character" />
+ <parameter name="P_APPROVER" datatype="character" />
+ <parameter name="P_APP_STATUS" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_XXQAVNR">
+<![CDATA[
+SELECT 
+      OD_OB_VNID	
+     ,OD_OB_VN_DATE	
+     ,OD_SC_REGION	
+     ,OD_OB_VN_CAP_ID
+     ,OD_OB_ACTIVITY_ID	
+     ,OD_OB_ACTIVITY	
+     ,OD_OB_VPN	
+     ,OD_OB_SKU	
+     ,OD_PB_ITEM_DESC
+     ,OD_PB_SC_DEPT_NAME
+     ,OD_OB_VENDOR_NAME	
+     ,OD_SC_VENDOR_STATUS	
+     ,OD_OB_FACTORY_NAME	
+     ,OD_PB_SOURCING_AGENT	
+     ,OD_PB_REPORT_NUMBER	
+     ,OD_PB_PO_NUM	
+     ,OD_OB_VN_DS_ID
+     ,OD_PB_DEFECT_SUM	
+     ,OD_PB_AUDITOR_NAME	
+     ,OD_PB_QA_ENGR_EMAIL	
+     ,OD_OB_REASON	
+     ,OD_PB_APPROVAL_STATUS	
+     ,OD_PB_DATE_APPROVED
+     ,OD_PB_VERIFICATION_REQUIRED	
+     ,OD_PB_DATE_VERIFIED	
+     ,OD_PB_COMMENTS
+     ,OD_PB_ATTACHMENT
+     ,CREATED_BY
+     ,COLLECTION_ID	
+     ,CREATION_DATE
+ FROM q_od_ob_vn_v
+WHERE OD_OB_VNID	 = nvl(:P_VNID,OD_OB_VNID)
+  AND NVL(OD_SC_REGION,'X') = NVL(:P_REGION,NVL(OD_SC_REGION,'X'))
+  AND NVL(OD_OB_VN_CAP_ID,'X') = NVL(:P_CAPID,	NVL(OD_OB_VN_CAP_ID,'X'))
+  AND NVL(OD_OB_ACTIVITY,'X')  = NVL(:P_QA_ACT,NVL(OD_OB_ACTIVITY,'X'))
+  AND NVL(OD_OB_SKU,'1')  = NVL(:P_SKU,NVL(OD_OB_SKU,'1'))
+  AND NVL(OD_PB_SC_DEPT_NAME,'X') = NVL(:P_DEPT,NVL(OD_PB_SC_DEPT_NAME,'X'))
+  AND NVL(OD_OB_VENDOR_NAME,'X') = NVL(:P_VENDOR_NAME,NVL(OD_OB_VENDOR_NAME,'X'))
+  AND NVL(OD_SC_VENDOR_STATUS,'X') = NVL(:P_VEND_STATUS,NVL(OD_SC_VENDOR_STATUS,'X'))
+  AND NVL(OD_OB_FACTORY_NAME,'X') = NVL(:P_FAC_NAME,NVL(OD_OB_FACTORY_NAME,'X'))
+  AND NVL(OD_PB_SOURCING_AGENT,'X') = NVL(:P_SOUR_AGENT,NVL(OD_PB_SOURCING_AGENT,'X'))
+  AND NVL(OD_PB_AUDITOR_NAME,'X')	= NVL(:P_SUBMITTER,NVL(OD_PB_AUDITOR_NAME,'X'))
+  AND NVL(OD_PB_QA_ENGR_EMAIL,'X') = NVL(:P_APPROVER,NVL(OD_PB_QA_ENGR_EMAIL,'X'))
+  AND NVL(OD_PB_APPROVAL_STATUS,'X') = NVL(:P_APP_STATUS,NVL(OD_PB_APPROVAL_STATUS,'X'))
+ORDER BY 1
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_XXQAVNR" source="Q_XXQAVNR">
+<element name="OD_OB_VNID" value="OD_OB_VNID" />
+<element name="OD_OB_VN_DATE" value="OD_OB_VN_DATE" />
+<element name="OD_SC_REGION" value="OD_SC_REGION" />
+<element name="OD_OB_VN_CAP_ID" value="OD_OB_VN_CAP_ID" />
+<element name="OD_OB_ACTIVITY_ID" value="OD_OB_ACTIVITY_ID" />
+<element name="OD_OB_ACTIVITY" value="OD_OB_ACTIVITY" />
+<element name="OD_OB_VPN" value="OD_OB_VPN" />
+<element name="OD_OB_SKU" value="OD_OB_SKU" />
+<element name="OD_PB_ITEM_DESC" value="OD_PB_ITEM_DESC" />
+<element name="OD_PB_SC_DEPT_NAME" value="OD_PB_SC_DEPT_NAME" />
+<element name="OD_OB_VENDOR_NAME" value="OD_OB_VENDOR_NAME" />
+<element name="OD_OB_FACTORY_NAME" value="OD_OB_FACTORY_NAME" />
+<element name="OD_SC_VENDOR_STATUS" value="OD_SC_VENDOR_STATUS" />
+<element name="OD_PB_SOURCING_AGENT" value="OD_PB_SOURCING_AGENT" />
+<element name="OD_PB_REPORT_NUMBER" value="OD_PB_REPORT_NUMBER" />
+<element name="OD_PB_PO_NUM" value="OD_PB_PO_NUM" />
+<element name="OD_OB_VN_DS_ID" value="OD_OB_VN_DS_ID" />
+<element name="OD_PB_DEFECT_SUM" value="OD_PB_DEFECT_SUM" />
+<element name="OD_PB_AUDITOR_NAME" value="OD_PB_AUDITOR_NAME" />
+<element name="OD_PB_QA_ENGR_EMAIL" value="OD_PB_QA_ENGR_EMAIL" />
+<element name="OD_OB_REASON" value="OD_OB_REASON" />
+<element name="OD_PB_APPROVAL_STATUS" value="OD_PB_APPROVAL_STATUS" />
+<element name="OD_PB_DATE_APPROVED" value="OD_PB_DATE_APPROVED" />
+<element name="OD_PB_VERIFICATION_REQUIRED" value="OD_PB_VERIFICATION_REQUIRED" />
+<element name="OD_PB_DATE_VERIFIED" value="OD_PB_DATE_VERIFIED" />
+<element name="OD_PB_COMMENTS" value="OD_PB_COMMENTS" />
+<element name="OD_PB_ATTACHMENT" value="OD_PB_ATTACHMENT" />
+<element name="CREATED_BY" value="CREATED_BY" />
+<element name="COLLECTION_ID" value="COLLECTION_ID" />
+<element name="CREATION_DATE" value="CREATION_DATE" />
+</group>
+</dataStructure>
+</dataTemplate>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXQAENVPI" description="OD: Environmental Product Information Report" Version="1.0">
+<parameters>
+ <parameter name="P_EDID" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_XXQAENVPR">
+<![CDATA[
+SELECT a.OD_OB_EDID ,
+  B.OD_OB_SKU ,
+  B.OD_PB_ITEM_DESC ,
+  b.OD_OB_DEPT_ID ,
+  b.OD_PB_SC_DEPT_NAME ,
+  B.OD_OB_VPN ,
+  a.OD_OB_VENDOR_NAME
+FROM Q_OD_OB_ED_V a ,
+  Q_OD_OB_ED_SKU_V B
+WHERE a.OD_OB_EDID = B.OD_OB_REF_EDID
+AND a.OD_OB_EDID   = NVL(:P_EDID,a.OD_OB_EDID)
+ORDER BY 2
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_XXQAENVPR" source="Q_XXQAENVPR">
+<element name="OD_OB_EDID" value="OD_OB_EDID" />
+<element name="OD_OB_SKU" value="OD_OB_SKU" />
+<element name="OD_PB_ITEM_DESC" value="OD_PB_ITEM_DESC" />
+<element name="OD_OB_DEPT_ID" value="OD_OB_DEPT_ID" />
+<element name="OD_PB_SC_DEPT_NAME" value="OD_PB_SC_DEPT_NAME" />
+<element name="OD_OB_VPN" value="OD_OB_VPN" />
+<element name="OD_OB_VENDOR_NAME" value="OD_OB_VENDOR_NAME" />
+</group>
+</dataStructure>
+</dataTemplate>

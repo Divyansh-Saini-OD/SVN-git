@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXPAUPLR" description="OD General Report Product Information Download" Version="1.0">
+<parameters>
+ <parameter name="p_proj" datatype="character" />
+ <parameter name="p_div" datatype="character" />
+ <parameter name="p_dept" datatype="character" />
+ <parameter name="p_cls" datatype="character" />
+ <parameter name="p_agent" datatype="character" />
+ <parameter name="p_ttype" datatype="character" />
+ <parameter name="p_tyear" datatype="number" />
+ <parameter name="p_vend" datatype="character" />
+ <parameter name="p_idesn" datatype="character" />
+ <parameter name="p_fdesn" datatype="character" />
+ <parameter name="p_dimer" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_UPL">
+<![CDATA[
+select  a.project_no,
+    a.line_no,
+    COALESCE(EEB1.C_EXT_ATTR6,'') AS DI_MERCHANT,
+    COALESCE(EEB2.C_EXT_ATTR1,'') AS Tracker_type,
+    EEB2.N_EXT_ATTR1  AS Tracker_year,
+    a.INIT_ITEM_DECISION,
+    a.final_iteM_decision,
+    a.VENDOR_ID||' '||a.VENDOR_NAME VENDOR_ID,
+    a.FACTORY_ID||' '||a.FACTORY_NAME FACTORY_ID,
+    a.division||' '||a.division_name division,
+    a.dept||' '||a.dept_name dept,
+    a.class||' '||a.class_name class,
+    a.subclass||' '||a.subclass_name subclass,
+    a.sku,
+    a.product_desc,
+    apps.xx_pa_pb_prdupld_pkg.get_image_path||replace(a.product_image,'/XXMER_HTML/') IMG,
+    a.existing_sku,
+    a.vpc,
+    a.sourcing_agent,
+    a.sell_unit,
+    a.packaging_type,    
+    a.brand,
+    a.fob_amnt,
+    a.ddp_amnt,
+    a.projected_gm_pct,
+    a.projects_asp,
+    a.projected_gm,
+    a.quote_date,
+    a.cost_val_period,
+    a.cost_val_date,
+    a.no_of_stores,
+    a.pog_no||' '||to_char(a.pog_date) pog_no,
+    a.item_dimen,
+    a.item_purpose,
+    a.prod_specs,
+    a.prod_construc,
+    a.addl_source_comments,
+    a.addl_di_comments,
+    b.country_of_origin||'/'||b.port_of_shipping ORGNSHIP,
+    TO_CHAR(b.moq)||'/'||TO_CHAR(b.mov) moq,
+    b.sl_qty,
+    TO_CHAR(round(b.sl_length,2))||'/'||TO_CHAR(round(b.sl_width,2))||'/'||TO_CHAR(round(b.sl_height,2))||'/'||TO_CHAR(round(b.sl_weight,2)) SLWHW,
+    TO_CHAR(b.sl_cmb)||'/'||TO_CHAR(b.sl_cuft) SLCMBCUFT,
+    b.sl_vend_upc_no,
+    b.sl_od_upc_no,
+     b.ic_qty,
+    TO_CHAR(round(b.ic_length,2))||'/'||TO_CHAR(round(b.ic_width,2))||'/'||TO_CHAR(round(b.ic_height,2))||'/'||TO_CHAR(round(b.ic_weight,2)) ILWHW,
+    TO_CHAR(b.ic_cmb)||'/'||TO_CHAR(b.ic_cuft) ICCMBCUFT,
+    b.mc_qty,
+    TO_CHAR(round(b.mc_length,2))||'/'||TO_CHAR(round(b.mc_width,2))||'/'||TO_CHAR(round(b.mc_height,2))||'/'||TO_CHAR(round(b.mc_weight,2)) MLWHW,
+    TO_CHAR(b.mc_cmb)||'/'||TO_CHAR(b.mc_cuft) MCCMBCUFT,
+    TO_CHAR(b.qty_20ft)||'/'||TO_CHAR(b.qty_40ft)||'/'||TO_CHAR(b.qty_40ft_htc)||'/'||TO_CHAR(b.qty_45ft) QTY20FT,
+    b.tariff_no,
+    b.duty_rate_pct,
+    pt.result PTRESULT,
+    tt.result TTRESULT,
+    at.result ATRESULT,
+    fai.result FAIRESULT,
+    fsa.result FSARESULT
+ from 
+    apps.XX_PA_PB_PRD_QATSTR fsa,
+    apps.XX_PA_PB_PRD_QATSTR fai,
+    apps.XX_PA_PB_PRD_QATSTR at,
+    apps.XX_PA_PB_PRD_QATSTR tt,
+    apps.XX_PA_PB_PRD_QATSTR pt,
+    apps.XX_PA_PB_PRD_LOGISTICS b,
+    apps.xx_pa_pb_genprd_dtl a LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB1 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND1 ON 
+                 EEB1.ATTR_GROUP_ID = FND1.ATTR_GROUP_ID AND
+		     NVL(EEB1.C_EXT_ATTR6,'X')=NVL(:p_dimer,NVL(EEB1.C_EXT_ATTR6,'X')) AND
+                 FND1.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_GEN_INFO') ON
+                 a.PROJECT_ID = EEB1.PROJECT_ID,
+        APPS.PA_PROJECTS_ALL PPA2 LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB2 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND2 ON 
+                 EEB2.ATTR_GROUP_ID = FND2.ATTR_GROUP_ID AND
+		     NVL(EEB2.c_ext_attr1,'X')=NVL(:p_ttype,NVL(eeb2.c_ext_attr1,'X')) AND
+		     NVL(EEB2.N_ext_attr1,-1)=NVL(:p_tyear,NVL(eeb2.n_ext_attr1,-1)) AND
+                 FND2.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'RPB_TRACKER') ON
+                 PPA2.PROJECT_ID = EEB2.PROJECT_ID
+ where ppa2.project_id=a.project_id
+   and b.prod_dtl_id=a.prod_dtl_id
+   and pt.prod_dtl_id=b.prod_dtl_id
+   and pt.TASK_DESCRIPTION='Product Testing'
+   and tt.prod_dtl_id=b.prod_dtl_id
+   and tt.TASK_DESCRIPTION='Transit Testing'
+   and at.prod_dtl_id=b.prod_dtl_id
+   and at.TASK_DESCRIPTION='Artwork Testing'
+   and fai.prod_dtl_id=b.prod_dtl_id
+   and fai.TASK_DESCRIPTION='FAI'
+   and fsa.prod_dtl_id=b.prod_dtl_id
+   and fsa.TASK_DESCRIPTION='Final Samples Sent / Approval'
+   AND a.project_no=NVL(:p_proj,a.project_no)
+   AND NVL(a.division,-1)=NVL(:p_div,NVL(a.division,-1))
+   AND NVL(a.VENDOR_NAME,'X')=NVL(:p_vend,NVL(a.vendor_name,'X'))
+   AND NVL(a.dept,-1)=NVL(:p_dept,NVL(a.dept,-1))
+   AND NVL(a.class,-1)=NVL(:p_cls,NVL(a.class,-1))
+   AND NVL(a.sourcing_agent,'X')=NVL(:p_agent,NVL(a.sourcing_agent,'X'))
+   AND NVL(a.init_item_decision,'X')=NVL(:p_idesn,NVL(a.init_item_decision,'X'))
+   AND NVL(a.final_item_decision,'X')=NVL(:p_fdesn,NVL(a.final_item_decision,'X'))
+ORDER BY 1,2
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_UPL" source="Q_UPL">
+<element name="PROJECT_NO" value="PROJECT_NO" />
+<element name="LINE_NO" value="LINE_NO" />
+<element name="SOURCING_AGENT" value="SOURCING_AGENT" />
+<element name="DI_MERCHANT" value="DI_MERCHANT" />
+<element name="TRACKER_TYPE" value="TRACKER_TYPE" />
+<element name="TRACKER_YEAR" value="TRACKER_YEAR" />
+<element name="INIT_ITEM_DECISION" value="INIT_ITEM_DECISION" />
+<element name="FINAL_ITEM_DECISION" value="FINAL_ITEM_DECISION" />
+<element name="VENDOR_ID" value="VENDOR_ID" />
+<element name="FACTORY_ID" value="FACTORY_ID" />
+<element name="DIVISION" value="DIVISION" />
+<element name="DEPT" value="DEPT" />
+<element name="CLASS" value="CLASS" />
+<element name="SUBCLASS" value="SUBCLASS" />
+<element name="SKU" value="SKU" />
+<element name="PRODUCT_DESC" value="PRODUCT_DESC" />
+<element name="IMG" value="IMG" />
+<element name="EXISTING_SKU" value="EXISTING_SKU" />
+<element name="VPC" value="VPC" />
+<element name="SELL_UNIT" value="SELL_UNIT" />
+<element name="PACKAGING_TYPE" value="PACKAGING_TYPE" />
+<element name="BRAND" value="BRAND" />
+<element name="FOB_AMNT" value="FOB_AMNT" />
+<element name="DDP_AMNT" value="DDP_AMNT" />
+<element name="PROJECTED_GM_PCT" value="PROJECTED_GM_PCT" />
+<element name="PROJECTS_ASP" value="PROJECTS_ASP" />
+<element name="PROJECTED_GM" value="PROJECTED_GM" />
+<element name="QUOTE_DATE" value="QUOTE_DATE" />
+<element name="COST_VAL_PERIOD" value="COST_VAL_PERIOD" />
+<element name="COST_VAL_DATE" value="COST_VAL_DATE" />
+<element name="NO_OF_STORES" value="NO_OF_STORES" />
+<element name="POG_NO" value="POG_NO" />
+<element name="ITEM_DIMEN" value="ITEM_DIMEN" />
+<element name="ITEM_PURPOSE" value="ITEM_PURPOSE" />
+<element name="PROD_SPECS" value="PROD_SPECS" />
+<element name="PROD_CONSTRUC" value="PROD_CONSTRUC" />
+<element name="ADDL_SOURCE_COMMENTS" value="ADDL_SOURCE_COMMENTS" />
+<element name="ADDL_DI_COMMENTS" value="ADDL_DI_COMMENTS" />
+<element name="ORGNSHIP" value="ORGNSHIP" />
+<element name="MOQ" value="MOQ" />
+<element name="SL_QTY" value="SL_QTY" />
+<element name="SLWHW" value="SLWHW" />
+<element name="SLCMBCUFT" value="SLCMBCUFT" />
+<element name="SL_VEND_UPC_NO" value="SL_VEND_UPC_NO" />
+<element name="SL_OD_UPC_NO" value="SL_OD_UPC_NO" />
+<element name="IC_QTY" value="IC_QTY" />
+<element name="ILWHW" value="ILWHW" />
+<element name="ICCMBCUFT" value="ICCMBCUFT" />
+<element name="MC_QTY" value="MC_QTY" />
+<element name="MLWHW" value="MLWHW" />
+<element name="MCCMBCUFT" value="MCCMBCUFT" />
+<element name="QTY20FT" value="QTY20FT" />
+<element name="TARIFF_NO" value="TARIFF_NO" />
+<element name="DUTY_RATE_PCT" value="DUTY_RATE_PCT" />
+<element name="PTRESULT" value="PTRESULT" />
+<element name="TTRESULT" value="TTRESULT" />
+<element name="ATRESULT" value="ATRESULT" />
+<element name="FAIRESULT" value="FAIRESULT" />
+<element name="FSARESULT" value="FSARESULT" />
+</group>
+</dataStructure>
+</dataTemplate>

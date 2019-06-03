@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXSCTRANEDIT" description="OD STR Transmission Edit Report" Version="1.0">
+<parameters>
+ <parameter name="P_TRAN_STATUS" datatype="character" />
+ <parameter name="P_NO_OF_DAYS" datatype="number" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_SCTRANEDIT">
+<![CDATA[
+select distinct OD_SC_TRANSMISSION_STATUS
+      ,od_sc_inspection_no 
+      ,od_sc_agent         
+      ,od_sc_od_vendor_id  
+      ,od_sc_vendor        
+      ,od_sc_vendor_address 
+      ,od_sc_factory_id     
+      ,od_sc_factory        
+      ,od_sc_factory_addr||','||od_sc_fact_city||','||od_sc_factory_state||','||od_sc_origin_country as od_sc_factory_addr
+      ,od_sc_region 
+      ,to_char(od_sc_ven_invoice_payment_date,'YYYY/MM/DD') AS od_sc_ven_invoice_payment_date
+      ,to_char(od_sc_scheduled_date,'YYYY/MM/DD') AS od_sc_scheduled_date
+      ,od_sc_grade         
+ from q_od_sc_vendor_audit_v
+where plan_name = 'OD_SC_VENDOR_AUDIT'
+  and organization_name = 'ODPB Project'
+  and od_sc_transmission_status = :P_TRAN_STATUS  
+  and trunc(creation_date) >= trunc(sysdate) - :P_NO_OF_DAYS 
+ORDER BY 1,2,4,8
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_SCTRANEDIT" source="Q_SCTRANEDIT">
+<element name="OD_SC_TRANSMISSION_STATUS"  value="OD_SC_TRANSMISSION_STATUS" />
+<element name="OD_SC_INSPECTION_NO" value="OD_SC_INSPECTION_NO" />
+<element name="OD_SC_AGENT" value="OD_SC_AGENT" />
+<element name="OD_SC_OD_VENDOR_ID" value="OD_SC_OD_VENDOR_ID" />
+<element name="OD_SC_VENDOR" value="OD_SC_VENDOR" />
+<element name="OD_SC_VENDOR_ADDRESS" value="OD_SC_VENDOR_ADDRESS" />
+<element name="OD_SC_FACTORY_ID" value="OD_SC_FACTORY_ID" />
+<element name="OD_SC_FACTORY" value="OD_SC_FACTORY" />
+<element name="OD_SC_FACTORY_ADDR" value="OD_SC_FACTORY_ADDR" />
+<element name="OD_SC_FACT_CITY" value="OD_SC_FACT_CITY" />
+<element name="OD_SC_FACTORY_STATE" value="OD_SC_FACTORY_STATE" />
+<element name="OD_SC_ORIGIN_COUNTRY" value="OD_SC_ORIGIN_COUNTRY" />
+<element name="OD_SC_REGION" value="OD_SC_REGION" />
+<element name="OD_SC_VEN_INVOICE_PAYMENT_DATE" value="OD_SC_VEN_INVOICE_PAYMENT_DATE" />
+<element name="OD_SC_SCHEDULED_DATE" value="OD_SC_SCHEDULED_DATE" />
+<element name="OD_SC_GRADE" value="OD_SC_GRADE" />
+</group>
+</dataStructure>
+</dataTemplate>

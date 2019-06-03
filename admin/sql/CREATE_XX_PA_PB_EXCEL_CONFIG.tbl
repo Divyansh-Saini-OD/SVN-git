@@ -1,0 +1,67 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_PA_PB_EXCEL_CONFIG.tbl                                           |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_PA_PB_EXCEL_CONFIG (OD PLM Enhancements table)                         |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              28-Sep-2010       Rama Dwibhashyam        Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_PA_PB_GENPRD_DTL......
+PROMPT
+
+
+CREATE TABLE XX_PA_PB_EXCEL_CONFIG
+(
+  STAGING_TABLE_NAME   VARCHAR2(30 BYTE),
+  STAGING_COLUMN_NAME  VARCHAR2(30 BYTE),
+  DATA_TYPE            VARCHAR2(30 BYTE),
+  STG_COLUMN_HEADING   VARCHAR2(60 BYTE),
+  SHEET_NO             NUMBER,
+  EXCEL_COLUMN         VARCHAR2(3 BYTE),
+  TEMPLATE_ID          NUMBER,
+  VALIDATION_SQL       VARCHAR2(2000 BYTE),
+  CREATION_DATE        DATE,
+  CREATED_BY           NUMBER,
+  LAST_UPDATED_BY      NUMBER,
+  LAST_UPDATE_DATE     DATE,
+  USE_IN_IMG_TAG       CHAR(1 BYTE)
+);
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

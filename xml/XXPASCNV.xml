@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXPASCNV" description="OD PB SC New Vendor Tracking Log Report" Version="1.0">
+<parameters>
+ <parameter name="p_agent" datatype="character" />
+ <parameter name="p_merchant" datatype="character" />
+ <parameter name="p_prod_type" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_VTL">
+<![CDATA[
+select od_sc_vendor_number,
+       od_sc_vendor_name,
+       od_sc_vend_type,
+       od_sc_vendor_status,
+       od_sc_activation_date,
+	 OD_SC_INACTIVE_DATE,
+       OD_SC_REACTIVATE_DATE,
+       od_sc_doc_val_date,
+	 od_sc_fqa_aprvl_d,
+	 od_sc_audit_agent,
+       od_sc_factory_number,
+       od_sc_factory_name,
+       od_sc_europe_rgn,
+       od_sc_mexico_region,
+       od_sc_asia_region,
+       od_sc_department,
+       od_sc_merchant,
+       od_sc_audit_required,
+	 od_sc_audit_waiver audit_not_reqd,
+       od_sc_audtwaiv_apr_d audit_not_apr_date,
+       OD_SC_VEND_REGION,
+       od_sc_vend_comments,
+	 od_sc_potrm_apr_d,
+       od_sc_preaudt_result  PreAudit_result,
+       od_sc_zt_status	PreAudit_CAP,
+       od_sc_fzt_aprvl_d  PreAudit_FApr_date,
+       OD_SC_STRAUDT_REQ_D,
+       OD_SC_PAYMENT_RETAINER,
+       OD_SC_VENDPAY_RCVD_D,
+       OD_SC_STRAUDT_SCHD_D,
+       OD_SC_STR_AUDIT_RESULT,
+       od_sc_cap_recd_d cap_received,
+       od_sc_straudt_cap_status cap_status,
+       od_sc_cap_final_approver cap_fapprover,
+       od_sc_srtaudt_us_apr_d cap_fapr_date,
+	 od_sc_vend_initiate req_vend_no,
+       od_sc_initstr_notify audit_initiate,
+	 od_sc_document_comments doc_comments,
+	 od_sc_pending_status_change pending_status_change
+  from Q_OD_PB_SC_VENDOR_MASTER_V
+ where od_sc_vendor_status IS NULL
+   AND NVL(od_sc_audit_agent,'X')=NVL(:p_agent,NVL(od_sc_audit_agent,'X'))
+   AND NVL(od_sc_merchant,'X')=NVL(:p_merchant,NVL(od_sc_merchant,'X'))
+   AND NVL(od_sc_product,'X')=NVL(:p_prod_type,NVL(od_sc_product,'X'))
+ORDER BY 1,2
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_VTL" source="Q_VTL">
+<element name="VENDOR_NO" value="OD_SC_VENDOR_NUMBER" />
+<element name="VENDOR_NAME" value="OD_SC_VENDOR_NAME" />
+<element name="VENDOR_TYPE" value="OD_SC_VEND_TYPE" />
+<element name="VENDOR_STATUS" value="OD_SC_VENDOR_STATUS" />
+<element name="ACTIVATION_DATE" value="OD_SC_ACTIVATION_DATE" />
+<element name="INACTIVE_DATE" value="OD_SC_INACTIVE_DATE" />
+<element name="REACTIVATE_DATE" value="OD_SC_REACTIVATE_DATE" />
+<element name="DOC_VAL_DATE" value="OD_SC_DOC_VAL_DATE" />
+<element name="FQA_DATE" value="OD_SC_FQA_APRVL_D" />
+<element name="AGENT" value="OD_SC_AUDIT_AGENT" />
+<element name="FACTORY_NO" value="OD_SC_FACTORY_NUMBER" />
+<element name="FACTORY_NAME" value="OD_SC_FACTORY_NAME" />
+<element name="EU_REGION" value="OD_SC_EUROPE_RGN" />
+<element name="MX_REGION" value="OD_SC_MEXICO_REGION" />
+<element name="AS_REGION" value="OD_SC_ASIA_REGION" />
+<element name="DEPT" value="OD_SC_DEPARTMENT" />
+<element name="MERCHANT" value="OD_SC_MERCHANT" />
+<element name="AUDIT_REQD" value="OD_SC_AUDIT_REQUIRED" />
+<element name="AUDIT_NOT_REQD" value="AUDIT_NOT_REQD" />
+<element name="AUDIT_NOT_APR_DATE" value="AUDIT_NOT_APR_DATE" />
+<element name="US_REGION" value="OD_SC_VEND_REGION" />
+<element name="COMMENTS" value="OD_SC_VEND_COMMENTS" />
+<element name="PO_TERMS_APR_DATE" value="OD_SC_POTRM_APR_D" />
+<element name="PREAUDIT_RESULT" value="PREAUDIT_RESULT" />
+<element name="PREAUDIT_CAP" value="PREAUDIT_CAP" />
+<element name="PREAUDIT_FAPR_DATE" value="PREAUDIT_FAPR_DATE" />
+<element name="AUDIT_REQ_DATE" value="OD_SC_STRAUDT_REQ_D" />
+<element name="PAYMENT_RETAINER" value="OD_SC_PAYMENT_RETAINER" />
+<element name="VENDPAY_RCVD" value="OD_SC_VENDPAY_RCVD_D" />
+<element name="AUDIT_SCHED_D" value="OD_SC_STRAUDT_SCHD_D" />
+<element name="AUDIT_RESULT" value="OD_SC_STR_AUDIT_RESULT" />
+<element name="CAP_RECEIVED" value="CAP_RECEIVED" />
+<element name="CAP_STATUS" value="CAP_STATUS" />
+<element name="CAP_FAPPROVER" value="CAP_FAPPROVER" />
+<element name="CAP_FAPR_DATE" value="CAP_FAPR_DATE" />
+<element name="REQ_VEND_NO" value="REQ_VEND_NO" />
+<element name="AUDIT_INITIATE" value="AUDIT_INITIATE" />
+<element name="DOC_COMMENTS" value="DOC_COMMENTS" />
+<element name="PENDING_STATUS_CHANGE" value="PENDING_STATUS_CHANGE" />
+</group>
+</dataStructure>
+</dataTemplate>

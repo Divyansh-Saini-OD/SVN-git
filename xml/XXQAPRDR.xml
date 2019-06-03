@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXQAPRDR" description="OD : Protocol Review and Development Report" Version="1.0">
+<parameters>
+ <parameter name="P_PRID" datatype="character" />
+ <parameter name="P_PRID_REF" datatype="character" />
+ <parameter name="P_REGION" datatype="character" />
+ <parameter name="P_APPROVAL_STATUS" datatype="character" />
+ <parameter name="P_PRTCL_ID" datatype="character" />
+ <parameter name="P_PRTCL_NAME" datatype="character" />
+ <parameter name="P_PRTCL_TYPE" datatype="character" />
+ <parameter name="P_PRODUCT_CATEGORY" datatype="character" />
+ <parameter name="P_SP_NAME" datatype="character" />
+ <parameter name="P_SUBMITTER" datatype="character" />
+ <parameter name="P_APPROVER" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_MAIN">
+<![CDATA[
+SELECT
+ OD_OB_PRID
+,OD_OB_REF_PRID
+,OD_SC_REGION
+,OD_PB_DATE_VERIFIED
+,OD_PB_APPROVAL_STATUS
+,OD_PB_DATE_APPROVED
+,OD_OB_PR_NO
+,OD_PB_PROTOCOL_NAME
+,OD_PB_PROTOCOL_ACTIVITY_TYPE
+,OD_PB_CATEGORY
+,OD_PB_COMPANY
+,OD_PB_AUDITOR_NAME
+,OD_PB_QA_ENGR_EMAIL
+,OD_PB_ATTACHMENT
+,OD_PB_COMMENTS
+,OD_PB_DATE_RENEW
+,USER
+,COLLECTION_ID
+,CREATION_DATE
+FROM q_od_ob_protocol_review_v
+WHERE 1=1
+AND     NVL(OD_OB_PRID,'X')                            = NVL(:P_PRID,NVL(OD_OB_PRID,'X'))
+AND     NVL(OD_OB_REF_PRID,'X')                        = NVL(:P_PRID_REF,NVL(OD_OB_REF_PRID,'X'))
+AND     NVL(OD_SC_REGION,'X')                          = NVL(:P_REGION,NVL(OD_SC_REGION,'X'))
+AND     NVL(OD_PB_APPROVAL_STATUS,'X')                 = NVL(:P_APPROVAL_STATUS,NVL(OD_PB_APPROVAL_STATUS,'X'))
+AND     NVL(OD_OB_PR_NO,1)                             = NVL(:P_PRTCL_ID,NVL(OD_OB_PR_NO,'X'))
+AND     NVL(OD_PB_PROTOCOL_NAME,'X')                   = NVL(:P_PRTCL_NAME,NVL(OD_PB_PROTOCOL_NAME,'X'))
+AND     NVL(OD_PB_PROTOCOL_ACTIVITY_TYPE,'X')          = NVL(:P_PRTCL_TYPE,NVL(OD_PB_PROTOCOL_ACTIVITY_TYPE,'X'))
+AND     NVL(OD_PB_CATEGORY,'X')                        = NVL(:P_PRODUCT_CATEGORY,NVL(OD_PB_CATEGORY,'X'))
+AND     NVL(OD_PB_COMPANY,'X')                         = NVL(:P_SP_NAME,NVL(OD_PB_COMPANY,'X'))
+AND     NVL(OD_PB_AUDITOR_NAME,'X')                    = NVL(:P_SUBMITTER,NVL(OD_PB_AUDITOR_NAME,'X'))
+AND     NVL(OD_PB_QA_ENGR_EMAIL,'X')                   = NVL(:P_APPROVER,NVL(OD_PB_QA_ENGR_EMAIL,'X'))
+ORDER BY OD_OB_PRID
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_MAIN" source="Q_MAIN">
+<element name="OD_OB_PRID" value="OD_OB_PRID" />
+<element name="OD_OB_REF_PRID" value="OD_OB_REF_PRID" />
+<element name="OD_SC_REGION" value="OD_SC_REGION" />
+<element name="OD_PB_DATE_VERIFIED" value="OD_PB_DATE_VERIFIED" />
+<element name="OD_PB_APPROVAL_STATUS" value="OD_PB_APPROVAL_STATUS" />
+<element name="OD_PB_DATE_APPROVED" value="OD_PB_DATE_APPROVED" />
+<element name="OD_OB_PR_NO" value="OD_OB_PR_NO" />
+<element name="OD_PB_PROTOCOL_NAME" value="OD_PB_PROTOCOL_NAME" />
+<element name="OD_PB_PROTOCOL_ACTIVITY_TYPE" value="OD_PB_PROTOCOL_ACTIVITY_TYPE" />
+<element name="OD_PB_CATEGORY" value="OD_PB_CATEGORY" />
+<element name="OD_PB_COMPANY" value="OD_PB_COMPANY" />
+<element name="OD_PB_AUDITOR_NAME" value="OD_PB_AUDITOR_NAME" />
+<element name="OD_PB_QA_ENGR_EMAIL" value="OD_PB_QA_ENGR_EMAIL" />
+<element name="OD_PB_ATTACHMENT" value="OD_PB_ATTACHMENT" />
+<element name="OD_PB_COMMENTS" value="OD_PB_COMMENTS" />
+<element name="OD_PB_DATE_RENEW" value="OD_PB_DATE_RENEW" />
+<element name="USER" value="USER_NAME" />
+<element name="COLLECTION_ID" value="COLLECTION_ID" />
+<element name="CREATION_DATE" value="CREATION_DATE" />
+</group>
+</dataStructure>
+</dataTemplate>

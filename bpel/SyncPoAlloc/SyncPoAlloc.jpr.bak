@@ -1,0 +1,192 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<jpr:project xmlns:jpr="http://xmlns.oracle.com/ide/project">
+   <hash n="component-versions">
+      <value n="oracle.adf.dt.migration.ProjectMigrator" v="10.1.3.1.0"/>
+      <value n="oracle.adfdt.controller.jsf.addin.JSFProjectMigrator" v="10.1.3.1.0"/>
+      <value n="oracle.adfdt.controller.struts.addin.db.ADFStrutsProjectMigrator" v="10.1.3.1.0"/>
+      <value n="oracle.adfdt.controller.struts.addin.StrutsProjectMigrator" v="10.1.3.1.0"/>
+      <value n="oracle.adfdtinternal.view.faces.addin.ADFFacesLibraryMigrator" v="10.1.3.1.0"/>
+      <value n="oracle.bm.commonIde.ProjectUpgrader" v="10.1.3.1.0"/>
+      <value n="oracle.ide.model.Project" v="10.1.3.1.0"/>
+      <value n="oracle.ide.model.ResourcePathsMigrator" v="10.1.3.1.0"/>
+      <value n="oracle.jbo.dt.jclient.migrator.JCProjectMigrator" v="10.1.3.1.0"/>
+      <value n="oracle.jbo.dt.jdevx.ui.appnav.APProjectMigrator" v="10.1.3.1.0"/>
+      <value n="oracle.jdeveloper.dbmodeler.migration.ProjectMigratorHelper" v="10.1.3.1.0"/>
+      <value n="oracle.jdeveloper.ejb.EjbMigrator" v="10.1.3.1.0"/>
+      <value n="oracle.jdeveloper.offlinedb.migration.OfflineDBProjectMigrator" v="10.1.3.1.0"/>
+      <value n="oracle.jdevimpl.jsp.JspMigrator" v="10.1.3.1.0"/>
+      <value n="oracle.jdevimpl.runner.RunConfigurationsMigrator" v="10.1.3.1.0"/>
+      <value n="oracle.jdevimpl.webservices.WebServicesMigratorHelper" v="10.1.3.1.0"/>
+      <value n="oracle.tip.tools.ide.pm.addin.PMProjectMigrator" v="10.1.3.1.0"/>
+      <value n="oracle.toplink.addin.migration.TopLinkProjectMigrator" v="10.1.3.1.0"/>
+   </hash>
+   <list n="contentSets">
+      <string v="oracle.jdeveloper.model.PathsConfiguration/javaContentSet"/>
+      <string v="oracle.ide.model.ResourcePaths/resourcesContentSet"/>
+      <string v="oracle.jdeveloper.offlinedb.model.OfflineDBProjectSettings/offlineDBContentSet"/>
+      <string v="oracle.jdeveloper.model.J2eeSettings/webContentSet"/>
+      <string v="oracle.toplink.addin.TopLinkProjectSettings/toplinkContentSet"/>
+      <string v="oracle.bm.commonIde.data.project.ModelerProjectSettings/modelersContentSet"/>
+      <string v="oracle.tip.tools.ide.pm.addin.PMProjectSettings/Integration_Content"/>
+   </list>
+   <hash n="CustomFolderMapping">
+      <value n="POALLOC" v="POALLOC"/>
+      <value n="XX_PO_ALLOCATION_Q" v="XX_PO_ALLOCATION_Q"/>
+   </hash>
+   <hash n="CustomFolderMgr">
+      <value n="POALLOC" v="oracle.tip.tools.ide.pm.customfolder.ServiceCustomFolder"/>
+      <value n="XX_PO_ALLOCATION_Q" v="oracle.tip.tools.ide.pm.customfolder.ServiceCustomFolder"/>
+   </hash>
+   <value n="defaultPackage" v="BusinessProcess"/>
+   <value n="Namespace" v="http://xmlns.oracle.com/SyncPoAlloc"/>
+   <hash n="oracle.bm.commonIde.data.project.ModelerProjectSettings">
+      <hash n="modelersContentSet">
+         <list n="url-path">
+            <url path="model/"/>
+         </list>
+      </hash>
+   </hash>
+   <hash n="oracle.ide.model.ResourcePaths">
+      <hash n="resourcesContentSet">
+         <list n="pattern-filters">
+            <string v="+*"/>
+         </list>
+         <list n="url-path">
+            <url path="."/>
+         </list>
+      </hash>
+   </hash>
+   <hash n="oracle.ide.model.TechnologyScopeConfiguration">
+      <list n="technologyScope">
+         <string v="WebServices"/>
+         <string v="XML"/>
+         <string v="Java"/>
+         <string v="Integration"/>
+      </list>
+   </hash>
+   <hash n="oracle.jdeveloper.compiler.OjcConfiguration">
+      <list n="copyRes">
+         <string v=".gif"/>
+         <string v=".jpg"/>
+         <string v=".jpeg"/>
+         <string v=".png"/>
+         <string v=".properties"/>
+         <string v="-apf.xml"/>
+         <string v=".ejx"/>
+         <string v=".xcfg"/>
+         <string v=".cpx"/>
+         <string v=".dcx"/>
+         <string v=".wsdl"/>
+         <string v=".ini"/>
+         <string v=".tld"/>
+         <string v=".tag"/>
+      </list>
+      <value n="internalEncoding" v="Cp1252"/>
+   </hash>
+   <hash n="oracle.jdeveloper.model.J2eeSettings">
+      <value n="j2eeWebAppName" v="wsken-SyncPoAlloc-webapp"/>
+      <value n="j2eeWebContextRoot" v="wsken-SyncPoAlloc-context-root"/>
+      <hash n="webContentSet">
+         <list n="url-path">
+            <url path="public_html/"/>
+         </list>
+      </hash>
+   </hash>
+   <hash n="oracle.jdeveloper.model.PathsConfiguration">
+      <hash n="javaContentSet">
+         <list n="pattern-filters">
+            <string v="+**"/>
+         </list>
+         <list n="url-path">
+            <url path="src/"/>
+         </list>
+      </hash>
+   </hash>
+   <hash n="oracle.jdeveloper.offlinedb.model.OfflineDBProjectSettings">
+      <hash n="offlineDBContentSet">
+         <list n="pattern-filters">
+            <string v="+**"/>
+         </list>
+         <list n="url-path">
+            <url path="database/"/>
+         </list>
+      </hash>
+      <hash n="offlineDBDataTypesSet">
+         <value n="sourceKey" v="oracle.javatools.db.db2.DB2UniversalDatabaseImpl"/>
+      </hash>
+      <value n="offlineDBSchema" v="OD"/>
+   </hash>
+   <hash n="oracle.jdeveloper.runner.RunConfigurations">
+      <hash n="runConfigurationDefinitions">
+         <hash n="Default">
+            <value n="custom" v="false"/>
+            <value n="name" v="Default"/>
+         </hash>
+      </hash>
+      <list n="runConfigurationList">
+         <string v="Default"/>
+      </list>
+   </hash>
+   <hash n="oracle.jdevimpl.config.JProjectLibraries">
+      <list n="libraryReferences">
+         <hash>
+            <value n="id" v="TopLink"/>
+            <value n="isJDK" v="false"/>
+         </hash>
+         <hash>
+            <value n="id" v="Oracle XML Parser v2"/>
+            <value n="isJDK" v="false"/>
+         </hash>
+      </list>
+   </hash>
+   <hash n="oracle.jdevimpl.config.JProjectPaths">
+      <url n="outputDirectory" path="output"/>
+   </hash>
+   <hash n="oracle.tip.tools.ide.pm.addin.PMProjectSettings">
+      <hash n="Integration_Content">
+         <list n="pattern-filters">
+            <string v="+**"/>
+         </list>
+         <list n="url-path">
+            <url path="bpel/"/>
+         </list>
+      </hash>
+   </hash>
+   <hash n="oracle.toplink.addin.TopLinkProjectSettings">
+      <hash n="toplinkContentSet">
+         <list n="pattern-filters">
+            <string v="+**"/>
+         </list>
+         <list n="url-path">
+            <url path="toplink/"/>
+         </list>
+      </hash>
+      <hash n="topLinkGenerateStatusReport">
+         <value n="POALLOC" v="true"/>
+      </hash>
+      <hash n="topLinkMapsLocations">
+         <value n="POALLOC" v="POALLOC/POALLOC.mwp"/>
+      </hash>
+      <hash n="topLinkQualifyTableNames">
+         <value n="POALLOC" v="false"/>
+      </hash>
+   </hash>
+   <hash n="POALLOC">
+      <value n="ServiceFile0" v="POALLOC.wsdl"/>
+      <value n="ServiceFile1" v="POALLOC_table.xsd"/>
+      <value n="ServiceFile2" v="POALLOC_toplink_mappings.xml"/>
+      <value n="ServiceIcon" v="palette/adapterservice/db_adapter_palette.png"/>
+      <value n="ServiceName" v="POALLOC"/>
+   </hash>
+   <value n="ProcessName" v="SyncPoAlloc"/>
+   <value n="Template" v="BPEL_EMPTY_PROCESS"/>
+   <value n="Version"/>
+   <hash n="XX_PO_ALLOCATION_Q">
+      <value n="ServiceFile0" v="APPS_XX_PO_ALLOCATION_T.xsd"/>
+      <value n="ServiceFile1" v="XX_PO_ALLOCATION_Q.wsdl"/>
+      <value n="ServiceFile2" v="aqAdapterInboundHeader.wsdl"/>
+      <value n="ServiceFile3" v="aqAdapterInboundHeader.xsd"/>
+      <value n="ServiceIcon" v="palette/adapterservice/aq_adapter_palette.png"/>
+      <value n="ServiceName" v="XX_PO_ALLOCATION_Q"/>
+   </hash>
+</jpr:project>

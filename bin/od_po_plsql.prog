@@ -1,0 +1,96 @@
+# Name:      od_po_plsql.prog
+# Author:    Antonio Morales
+# Objective: Script to execute Pl/Sql from Concurrent Manager
+#
+# History
+#
+#---------------------------------------------------------------------
+export CONNECTSTRING=$1
+export userid=$2   # -- EBS user id (number)
+export username=$3 # -- EBS user name (varchar)
+export reqid=$4    # -- EBS process id (number)
+export process=$5  # -- EBS process to be executed
+typeset -u root    # -- Define variable to store data as uppercase
+export root=$6     # -- EBS root directory ex.: XXMER, XXPTP, etc.
+
+# Validate root dir
+export root_data=`set|grep ${root}_DATA=|awk -F= '{print ($2)}'`
+export root_top=`set|grep ${root}_TOP=|awk -F= '{print ($2)}'`
+if [ ! -d "$root_data" ]
+ then
+   echo "Error root data directory not found ==> "$1_DATA
+   exit 1
+fi
+if [ ! -d "$root_top" ]
+ then
+   echo "Error root top directory not found ==> "$1_TOP
+   exit 1
+fi
+
+export PROGRAM_NAME="`basename $0`"
+export data_dir=$root_data/inbound
+export error_dir=$root_data/outbound
+export log_dir=$root_data/outbound
+export log_file=${log_dir}/${PROGRAM_NAME}_${process}_`date +%Y%m%d_%H%M%S`.log
+export src_dir=$root_top/bin
+
+. ${src_dir}/od_po_common_functions.ksh
+
+#---------------------------------------------------------------------
+appsMessage "Started" 1
+if [ ${#userid} -eq 0 ]
+ then
+   appsMessage "Error in userid"
+   exit 1
+fi
+appsMessage "top data directory="$root_data
+appsMessage "top application directory="$root_top
+appsMessage "Excuting ${process}"
+sqlplus >> ${log_file} <<EOSQL
+       ${CONNECTSTRING}
+        WHENEVER SQLERROR EXIT 1
+        WHENEVER OSERROR  EXIT 2
+        set timi on
+        set time on
+        set serverout on size 1000000
+        VARIABLE rcode NUMBER
+DECLARE
+ v_module_name  VARCHAR2(100) := '${process}';
+ v_event        VARCHAR2(100);
+ x_error_buff   VARCHAR2(300);
+ x_ret_code     PLS_INTEGER := 0;
+BEGIN
+
+ v_event := 'Executing ${process}';
+ ${process}(${userid}
+           ,x_error_buff
+           ,x_ret_code);
+ :rcode := x_ret_code;
+EXCEPTION
+ WHEN OTHERS THEN
+    xx_po_log_errors_pkg.po_log_errors ( trunc(sysdate)
+                                        ,v_module_name
+                                        ,v_event
+                                        ,'E'
+                                        ,'1'
+                                        ,sqlerrm
+                                        ,$userid
+                                        ,fnd_global.login_id
+                                       );
+    x_error_buff := sqlerrm;
+    :rcode := sqlcode;
+    dbms_output.put_line(sqlerrm);
+END;
+/
+exit :rcode
+EOSQL
+
+retcode=$?
+if [ ${retcode} -eq 0 ] || [ ${retcode} -eq 2 ]
+ then
+   appsMessage "Successfully finished with code=${retcode}"
+   retcode=0
+ else
+   appsMessage "Finished with errors, code=${retcode}"
+fi
+exit ${retcode}

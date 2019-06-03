@@ -1,0 +1,61 @@
+<definitions
+     name="DBJITADiscrepancy"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/DBJITADiscrepancy/"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/DBJITADiscrepancy/"
+     xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_MER_JITA_PKG/JITA_DISCREPANCY/"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+     xmlns:hdr="http://xmlns.oracle.com/pcbpel/adapter/db/"
+    >
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/" location="DBAdapterOutboundHeader.wsdl"/>
+    <types>
+     <schema xmlns="http://www.w3.org/2001/XMLSchema">
+       <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_MER_JITA_PKG/JITA_DISCREPANCY/"
+               schemaLocation="APPS_XX_MER_JITA_PKG_JITA_DISCREPANCY.xsd" />
+     </schema>
+    </types>
+    <message name="args_in_msg">
+        <part name="InputParameters" element="db:InputParameters"/>
+    </message>
+    <portType name="DBJITADiscrepancy_ptt">
+        <operation name="DBJITADiscrepancy">
+            <input message="tns:args_in_msg"/>
+        </operation>
+    </portType>
+    <binding name="DBJITADiscrepancy_binding" type="tns:DBJITADiscrepancy_ptt">
+    <jca:binding  />
+        <operation name="DBJITADiscrepancy">
+      <jca:operation
+          PackageName="XX_MER_JITA_PKG"
+          ProcedureName="JITA_DISCREPANCY"
+          InteractionSpec="oracle.tip.adapter.db.DBStoredProcedureInteractionSpec" >
+      </jca:operation>
+      <input>
+        <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+      </input>
+        </operation>
+    </binding>
+    <service name="DBJITADiscrepancy">
+        <port name="DBJITADiscrepancy_pt" binding="tns:DBJITADiscrepancy_binding">
+<!--Your runtime connection is declared in 
+J2EE_HOME/application-deployments/default/DbAdapter/oc4j-ra.xml 
+These mcf properties here are from your design time connection and 
+save you from having to edit that file and restart the application server 
+if eis/DB/GSIDEV03 is missing. 
+These mcf properties are safe to remove.-->
+      <jca:address location="eis/DB/GSIDEV03" UIConnectionName="GSIDEV03"
+          ManagedConnectionFactory="oracle.tip.adapter.db.DBManagedConnectionFactory"
+          mcf.DriverClassName="oracle.jdbc.OracleDriver"
+          mcf.PlatformClassName="oracle.toplink.internal.databaseaccess.Oracle9Platform"
+          mcf.ConnectionString="jdbc:oracle:thin:@choldbr18d.na.odcorp.net:1544:GSIDEV03"
+          mcf.UserName="apps"
+          mcf.Password="33249B2910CFF3FBCD9B834DF8560A56" />
+        </port>
+    </service>
+  <plt:partnerLinkType name="DBJITADiscrepancy_plt" >
+    <plt:role name="DBJITADiscrepancy_role" >
+      <plt:portType name="tns:DBJITADiscrepancy_ptt" />
+    </plt:role>
+  </plt:partnerLinkType>
+</definitions>

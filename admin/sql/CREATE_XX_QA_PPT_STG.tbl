@@ -1,0 +1,81 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_QA_PPT_STG.tbl                                                   |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_QA_PPT_STG   (OD QA PPT Staging table)                                 |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              03-Oct-2011       Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_QA_PPT_STG......
+PROMPT
+
+Create table xxmer.XX_QA_PPT_STG
+(ppt_id			varchar2(25),
+ sku_id			varchar2(25),
+ test_id		varchar2(50),
+ sp_contacted_vendor	date,
+ sample_est_lab		date,
+ sample_recd_sp		date,
+ protocol		varchar2(100),
+ report_no		varchar2(150),
+ expect_compl		date,
+ test_status		varchar2(50),
+ test_status_comment	varchar2(2000),
+ status_timestamp	date,
+ results		varchar2(50),
+ compl_date		date,
+ defect_code		varchar2(50),
+ defect_comments	varchar2(2000),
+ prev_report_no		varchar2(150),
+ report_doc		varchar2(240),
+ paid_by		varchar2(50),
+ inv_amount		number,
+ load_batch_id		NUMBER,
+ process_flag		number,
+ creation_date		date,
+ created_by		number,
+ last_update_date	date,
+ last_updated_by	number,
+ defects_cr_flag	varchar2(1),
+ tests_upd_flag		varchar2(1)
+);
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

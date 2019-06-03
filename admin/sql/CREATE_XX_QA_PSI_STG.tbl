@@ -1,0 +1,106 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_QA_PSI_STG.tbl                                                   |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_QA_PSI_STG   (OD QA PSI Staging table)                                 |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              12-Apr-2012       Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_QA_PSI_STG......
+PROMPT
+
+Create table xxmer.XX_QA_PSI_STG
+(
+ psi_id			varchar2(25),
+ region			varchar2(25),
+ service_provider	varchar2(50),
+ agent			varchar2(25),
+ vendor_name		varchar2(100),
+ vendor_id		varchar2(50),
+ vendor_email		varchar2(150),
+ factory_name		varchar2(150),
+ factory_id		varchar2(50),
+ odgso_engineer		varchar2(150),
+ regional_engineer	varchar2(150),
+ po_num			varchar2(150),
+ re_inspection		varchar2(25),
+ total_units		number,
+ booking_date		date,
+ req_insp_date		date,
+ act_insp_date		date,
+ mandays		number, 
+ inspector_name		varchar2(150),
+ total_sample_size	number,
+ ship_date		date,
+ insp_fail_notice	varchar2(150),
+ fail_notice_file	varchar2(150),
+ report_no		varchar2(150),
+ report_no_file		varchar2(150),
+ inspection_result	varchar2(50),
+ failure_reason		varchar2(2000),
+ paid_by		varchar2(50),
+ amount			number,
+ vpn			varchar2(50),
+ sku			varchar2(50),
+ sku_description	varchar2(240),
+ division_name		varchar2(150),
+ dept_no		varchar2(25),
+ units_ordered		number,
+ sample_size		number,
+ total_crt_defects	number,
+ total_maj_defects	number,
+ total_mnr_defects	number,
+ failure_type		varchar2(50),
+ defects_count		number,
+ defect_code		varchar2(50),
+ defect_details		varchar2(240),  
+ load_batch_id		NUMBER,
+ process_flag		number,
+ creation_date		date,
+ created_by		number,
+ last_update_date	date,
+ last_updated_by	number,
+ psi_cr_flag		varchar2(1),
+ defects_cr_flag	varchar2(1),
+ sku_cr_flag		varchar2(1)
+);
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

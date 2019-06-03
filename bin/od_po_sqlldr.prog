@@ -1,0 +1,53 @@
+# Name:      od_po_sqlldr.prog
+# Author:    Antonio Morales
+# Objective: Script to execute sql loader from Concurrent Manager
+#
+# History
+#
+#---------------------------------------------------------------------
+export CONNECTSTRING=$1
+export userid=$2   # -- EBS user id (number)
+export username=$3 # -- EBS user name (varchar)
+export reqid=$4    # -- EBS process id (number)
+export sqlfiles=$5 # -- File name to be used by sqlldr
+export root=$6     # -- EBS root directory ex.: XXMER, XXPTP, etc.
+
+# Validate root dir
+export root_data=`set|grep ${root}_DATA=|awk -F= '{print ($2)}'`
+export root_top=`set|grep ${root}_TOP=|awk -F= '{print ($2)}'`
+if [ ! -d "$root_data" ]
+ then
+   echo "Error root data directory not found ==> "$1/DATA
+   exit 1
+fi
+if [ ! -d "$root_top" ]
+ then
+   echo "Error root top directory not found ==> "$1/TOP
+   exit 1
+fi
+
+export PROGRAM_NAME="`basename $0`"
+export data_dir=$root_data/inbound
+export error_dir=$root_data/outbound
+export log_dir=$root_data/outbound
+export log_file=${log_dir}/${PROGRAM_NAME}_${sqlfiles}_`date +%Y%m%d_%H%M%S`.log
+export src_dir=$root_top/bin
+
+. ${src_dir}/od_po_common_functions.ksh
+
+#---------------------------------------------------------------------
+# MAIN -- Execute sqlldr with parameters flat_file_name and control_file_name
+#---------------------------------------------------------------------
+appsMessage "Started" 1 
+if [ ${#userid} -eq 0 ]
+ then
+   appsMessage "Error in userid"
+   exit 1
+fi
+appsMessage "top data directory="$root_data
+appsMessage "top application directory="$root_top
+appsMessage "Loading ${sqlfiles}"
+sql_ldr ${sqlfiles}
+FindOraErrorAB
+appsMessage "Successfully finished"
+exit 0

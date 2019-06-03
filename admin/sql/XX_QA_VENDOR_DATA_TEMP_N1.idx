@@ -1,0 +1,32 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                             Office Depot                          |
+-- +===================================================================+
+-- | Name  :APPS.XX_QA_VENDOR_DATA_TEMP_N1                             |
+-- | Description: INDEX for XX_QA_VENDOR_DATA_TEMP                     |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |1.0      04-15-2008   Young MI Kwon    INITAL CODE                 |
+-- +===================================================================+
+CREATE INDEX XX_QA_VENDOR_DATA_TEMP_N1 ON XX_QA_VENDOR_DATA_TEMP
+(PROJ_NUMBER, ACTION_CODE)
+LOGGING
+TABLESPACE XXOD
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            MINEXTENTS       1
+            MAXEXTENTS       2147483645
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+EXIT;

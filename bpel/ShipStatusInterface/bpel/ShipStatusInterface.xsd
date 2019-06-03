@@ -1,0 +1,19 @@
+<schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified"
+	targetNamespace="http://xmlns.oracle.com/ShipStatusInterface"
+	xmlns="http://www.w3.org/2001/XMLSchema">
+	<element name="ShipStatusInterfaceProcessRequest">
+		<complexType>
+			<sequence>
+				<element name="input" type="string"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="ShipStatusInterfaceProcessResponse">
+		<complexType>
+			<sequence>
+				<element name="result" type="string"/>
+			</sequence>
+		</complexType>
+	</element>
+</schema>

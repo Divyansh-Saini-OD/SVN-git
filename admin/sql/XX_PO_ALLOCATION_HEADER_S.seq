@@ -1,0 +1,23 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                             Office Depot                          |
+-- +===================================================================+
+-- | Name  : XXMER.XX_PO_ALLOCATION_HEADER_S                           |
+-- | Description: SEQUENCE FOR ALLOCATION HEADER TABLE                 |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |1.0      06-21-2007   K.CRAWFORD       INITAL CODE                 |
+-- +===================================================================+
+
+CREATE OR REPLACE SEQUENCE XXMER.XX_PO_ALLOCATION_HEADER_S
+  START WITH 1
+  MAXVALUE 999999999999999999999999999
+  MINVALUE 1
+  NOCYCLE
+  NOCACHE
+  NOORDER;

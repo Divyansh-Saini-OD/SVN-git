@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXPASLFC" description="OD Projects Sales Forecast by Month Report" Version="1.0">
+<parameters>
+ <parameter name="p_year" datatype="number" />
+ <parameter name="p_channel" datatype="character" />
+ <parameter name="p_division" datatype="character" />
+ <parameter name="p_dept" datatype="character" />
+ <parameter name="p_di_merchant" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="QSFC">
+<![CDATA[
+SELECT  ppa1.project_ID
+       ,COALESCE(EEB1.C_EXT_ATTR5,'') AS DIVISION
+       ,COALESCE(EEB1.C_EXT_ATTR1,'') AS DEPARTMENT
+       ,COALESCE(EEB1.C_EXT_ATTR6,'') AS DI_MERCHANT
+       ,COALESCE(EEB1.C_EXT_ATTR7,'') AS DOMESTIC_MERCHANT
+       ,PPA1.SEGMENT1 AS PROJECT_NUMBER 
+	 ,PPS1.PROJECT_STATUS_NAME
+       ,PPA1.NAME  AS PROJECT_NAME
+       ,SLS.CHANNEL
+       ,SLS.BUDGET_YEAR
+       ,SLS.MON1 JAN
+       ,SLS.MON2 FEB
+       ,SLS.MON3 MAR
+       ,SLS.MON4 APR
+       ,SLS.MON5 MAY
+       ,SLS.MON6 JUN
+       ,SLS.MON7 JUL
+       ,SLS.MON8 AUG
+       ,SLS.MON9 SEP
+       ,SLS.MON10 OCT
+       ,SLS.MON11 NOV
+       ,SLS.MON12 DEC
+       ,SLS.SALES_TOTAL
+  FROM APPS.PA_PROJECTS_ERP_EXT_B EEB1, 
+       APPS.EGO_FND_DSC_FLX_CTX_EXT FND1,
+	 apps.PA_PROJECT_STATUSES PPS1,
+       apps.XX_PA_PROJECTS_RPT_MONTHSLS_V SLS, 
+       apps.PA_PROJECTS_ALL PPA1
+ WHERE PPA1.PROJECT_ID > 0
+   AND EEB1.ATTR_GROUP_ID = FND1.ATTR_GROUP_ID 
+   AND FND1.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_GEN_INFO'
+   AND PPA1.project_id(+)=EEB1.project_id
+   AND PPA1.PROJECT_STATUS_CODE = PPS1.PROJECT_STATUS_CODE
+   AND SLS.PROJECT_ID=PPA1.PROJECT_ID
+   AND SLS.BUDGET_YEAR=:p_year
+   AND SLS.CHANNEL=NVL(:p_channel,SLS.CHANNEL)
+   AND NVL(EEB1.C_EXT_ATTR5,'X')=NVL(:p_division,NVL(EEB1.C_EXT_ATTR5,'X'))
+   AND NVL(EEB1.C_EXT_ATTR1,'X')=NVL(:p_dept,NVL(EEB1.C_EXT_ATTR1,'X'))
+   AND NVL(EEB1.C_EXT_ATTR6,'X')=NVL(:p_di_merchant,NVL(EEB1.C_EXT_ATTR6,'X'))
+UNION
+SELECT  project_ID
+       ,NULL
+       ,NULL
+       ,NULL
+       ,NULL
+       ,NULL
+       ,NULL
+       ,NULL
+       ,'Total'
+       ,NULL
+       ,JAN
+       ,FEB
+       ,MAR
+       ,APR
+       ,MAY
+       ,JUN
+       ,JUL
+       ,AUG
+       ,SEP
+       ,OCT
+       ,NOV
+       ,DEC
+       ,SALES_TOTAL
+ FROM (
+SELECT ppa1.project_ID
+       ,COALESCE(EEB1.C_EXT_ATTR5,'') AS DIVISION
+       ,COALESCE(EEB1.C_EXT_ATTR1,'') AS DEPARTMENT
+       ,COALESCE(EEB1.C_EXT_ATTR6,'') AS DI_MERCHANT
+       ,COALESCE(EEB1.C_EXT_ATTR7,'') AS DOMESTIC_MERCHANT
+       ,PPA1.SEGMENT1 AS PROJECT_NUMBER 
+       ,PPA1.NAME  AS PROJECT_NAME
+       ,'Total'
+       ,SLS.BUDGET_YEAR
+       ,SUM(sls.mon1) jan
+       ,SUM(sls.mon2) feb
+       ,SUM(sls.mon3) mar
+       ,SUM(sls.mon4) apr
+       ,SUM(sls.mon5) may
+       ,SUM(sls.mon6) jun
+       ,SUM(sls.mon7) jul
+       ,SUM(sls.mon8) aug
+       ,SUM(sls.mon9) sep
+       ,SUM(sls.mon10) oct
+       ,SUM(sls.mon11) nov
+       ,SUM(sls.mon12) dec
+       ,SUM(sls.sales_total) sales_total
+  FROM APPS.PA_PROJECTS_ERP_EXT_B EEB1, 
+       APPS.EGO_FND_DSC_FLX_CTX_EXT FND1,
+       apps.XX_PA_PROJECTS_RPT_MONTHSLS_V SLS, 
+       apps.PA_PROJECTS_ALL PPA1
+ WHERE PPA1.PROJECT_ID > 0
+   AND EEB1.ATTR_GROUP_ID = FND1.ATTR_GROUP_ID 
+   AND FND1.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_GEN_INFO'
+   AND PPA1.project_id(+)=EEB1.project_id
+   AND SLS.PROJECT_ID=PPA1.PROJECT_ID
+   AND SLS.BUDGET_YEAR=:p_year
+   AND SLS.CHANNEL=NVL(:p_channel,SLS.CHANNEL)
+   AND NVL(EEB1.C_EXT_ATTR5,'X')=NVL(:p_division,NVL(EEB1.C_EXT_ATTR5,'X'))
+   AND NVL(EEB1.C_EXT_ATTR1,'X')=NVL(:p_dept,NVL(EEB1.C_EXT_ATTR1,'X'))
+   AND NVL(EEB1.C_EXT_ATTR6,'X')=NVL(:p_di_merchant,NVL(EEB1.C_EXT_ATTR6,'X'))
+ GROUP BY
+        ppa1.project_ID
+       ,COALESCE(EEB1.C_EXT_ATTR5,'')
+       ,COALESCE(EEB1.C_EXT_ATTR1,'')
+       ,COALESCE(EEB1.C_EXT_ATTR6,'')
+       ,COALESCE(EEB1.C_EXT_ATTR7,'')
+       ,PPA1.SEGMENT1
+       ,'Total'
+       ,PPA1.NAME
+       ,SLS.BUDGET_YEAR)
+ORDER BY 1,9,8
+]]>
+</sqlStatement>
+<sqlStatement name="QTOT">
+<![CDATA[
+SELECT  SUM(SLS.MON1) TJAN
+       ,SUM(SLS.MON2) TFEB
+       ,SUM(SLS.MON3) TMAR
+       ,SUM(SLS.MON4) TAPR
+       ,SUM(SLS.MON5) TMAY
+       ,SUM(SLS.MON6) TJUN
+       ,SUM(SLS.MON7) TJUL
+       ,SUM(SLS.MON8) TAUG
+       ,SUM(SLS.MON9) TSEP
+       ,SUM(SLS.MON10) TOCT
+       ,SUM(SLS.MON11) TNOV
+       ,SUM(SLS.MON12) TDEC
+       ,SUM(SLS.SALES_TOTAL) TTOTAL
+  FROM APPS.PA_PROJECTS_ERP_EXT_B EEB1, 
+       APPS.EGO_FND_DSC_FLX_CTX_EXT FND1,
+       apps.XX_PA_PROJECTS_RPT_MONTHSLS_V SLS, 
+       apps.PA_PROJECTS_ALL PPA1
+ WHERE PPA1.PROJECT_ID > 0
+   AND EEB1.ATTR_GROUP_ID = FND1.ATTR_GROUP_ID 
+   AND FND1.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_GEN_INFO'
+   AND PPA1.project_id(+)=EEB1.project_id
+   AND SLS.PROJECT_ID=PPA1.PROJECT_ID
+   AND SLS.BUDGET_YEAR=:p_year
+   AND SLS.CHANNEL=NVL(:p_channel,SLS.CHANNEL)
+   AND NVL(EEB1.C_EXT_ATTR5,'X')=NVL(:p_division,NVL(EEB1.C_EXT_ATTR5,'X'))
+   AND NVL(EEB1.C_EXT_ATTR1,'X')=NVL(:p_dept,NVL(EEB1.C_EXT_ATTR1,'X'))
+   AND NVL(EEB1.C_EXT_ATTR6,'X')=NVL(:p_di_merchant,NVL(EEB1.C_EXT_ATTR6,'X'))
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_SFC" source="QSFC">
+<element name="DIVISION" value="DIVISION" />
+<element name="DEPARTMENT" value="DEPARTMENT" />
+<element name="DI_MERCHANT_NAME" value="DI_MERCHANT" />
+<element name="DOMESTIC_MERCHANT_NAME" value="DOMESTIC_MERCHANT" />
+<element name="PROJECT_NO" value="PROJECT_NUMBER" />
+<element name="PROJ_STATUS" value="PROJECT_STATUS_NAME" />
+<element name="PROJECT_NAME" value="PROJECT_NAME" />
+<element name="CHANNEL" value="CHANNEL" />
+<element name="BUDGET_YEAR" value="BUDGET_YEAR" />
+<element name="JAN" value="JAN" />
+<element name="FEB" value="FEB" />
+<element name="MAR" value="MAR" />
+<element name="APR" value="APR" />
+<element name="MAY" value="MAY" />
+<element name="JUN" value="JUN" />
+<element name="JUL" value="JUL" />
+<element name="AUG" value="AUG" />
+<element name="SEP" value="SEP" />
+<element name="OCT" value="OCT" />
+<element name="NOV" value="NOV" />
+<element name="DEC" value="DEC" />
+<element name="TOTAL" value="SALES_TOTAL" />
+</group>
+<group name="G_TOT" source="QTOT">
+<element name="TJAN" value="TJAN" />
+<element name="TFEB" value="TFEB" />
+<element name="TMAR" value="TMAR" />
+<element name="TAPR" value="TAPR" />
+<element name="TMAY" value="TMAY" />
+<element name="TJUN" value="TJUN" />
+<element name="TJUL" value="TJUL" />
+<element name="TAUG" value="TAUG" />
+<element name="TSEP" value="TSEP" />
+<element name="TOCT" value="TOCT" />
+<element name="TNOV" value="TNOV" />
+<element name="TDEC" value="TDEC" />
+<element name="TTOTAL" value="TTOTAL" />
+</group>
+</dataStructure>
+</dataTemplate>

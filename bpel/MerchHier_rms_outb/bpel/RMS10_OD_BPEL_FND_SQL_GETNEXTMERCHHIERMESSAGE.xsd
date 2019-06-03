@@ -1,0 +1,41 @@
+<schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/RMS10/OD_BPEL_FND_SQL/GETNEXTMERCHHIERMESSAGE/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/RMS10/OD_BPEL_FND_SQL/GETNEXTMERCHHIERMESSAGE/">
+   <element name="InputParameters">
+      <complexType>
+         <sequence>
+            <element name="I_PROCESS_NAME" type="string" db:index="1" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <element name="OutputParameters">
+      <complexType>
+         <sequence>
+            <element name="O_RET_CODE" type="decimal" db:index="2" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_RET_MESSAGE" type="string" db:index="3" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_STOP_RUNNING_FLAG" type="string" db:index="4" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_CHANGE_CD" type="string" db:index="5" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_HIERARCHY_TYPE" type="string" db:index="6" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_HIERARCHY_ID" type="decimal" db:index="7" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_HIERARCHY_NAME" type="string" db:index="8" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_HIERARCHY_TIME_STAMP" type="string" db:index="9" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_GROUP_DIVISION_NO" type="decimal" db:index="10" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_DEPT_GROUP_NO" type="decimal" db:index="11" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_DEPT_FORECASTING_IND" type="string" db:index="12" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_DEPT_PLANNING_IND" type="string" db:index="13" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_DEPT_NON_CODE_IND" type="string" db:index="14" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_DEPT_PROD_PROT_IND" type="string" db:index="15" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_CLASS_DEPT_NO" type="decimal" db:index="16" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_CLASS_NBR_DAYS_AMD" type="decimal" db:index="17" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_CLASS_FIFTH_MRKDWN_CD" type="string" db:index="18" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_CLASS_PRCZ_COST_FLG" type="string" db:index="19" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_CLASS_PRCZ_PRICE_FLG" type="string" db:index="20" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_CLASS_PRCZ_LIST_FLG" type="string" db:index="21" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_CLASS_OD_FURNITURE_FLG" type="string" db:index="22" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_SCLASS_DEPT_NO" type="decimal" db:index="23" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_SCLASS_CLASS_NO" type="decimal" db:index="24" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_SCLASS_DEFAULT_TAX_CAT" type="string" db:index="25" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_SCLASS_GLOBAL_CONT_IND" type="string" db:index="26" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_SCLASS_PP_PLAN_IND" type="string" db:index="27" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+</schema>

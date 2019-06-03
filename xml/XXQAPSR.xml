@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXQAPSR" description="Quality Module Purchasing Specifications Report" Version="1.0">
+<parameters>
+ <parameter name="P_PS_ID" datatype="character" />
+ <parameter name="P_PROJECT" datatype="character" />
+ <parameter name="P_SOURCING_AGENT" datatype="character" />
+ <parameter name="P_DEPT_NAME" datatype="character" />
+ <parameter name="P_SKU" datatype="character" />
+ <parameter name="P_VENDOR_NAME" datatype="character" />
+ <parameter name="P_FACTORY_NAME" datatype="character" />
+ <parameter name="P_SUBMITTER" datatype="character" />
+ <parameter name="P_APPROVER" datatype="character" />
+ <parameter name="P_APPROVAL_STATUS" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_MAIN">
+<![CDATA[
+SELECT  QOV.OD_OB_PS_ID          OD_OB_PS_ID      
+       ,QOV.OD_PB_PROJ_NUM       OD_PB_PROJ_NUM
+       ,QOV.OD_SC_AUDIT_AGENT    OD_SC_AUDIT_AGENT
+       ,QOSV.OD_PB_PROJ_NUM      SKU_OD_PB_PROJ_NUM
+       ,QOSV.OD_PB_SC_DEPT_NAME  OD_PB_SC_DEPT_NAME
+       ,QOSV.OD_PB_VENDOR_VPC    OD_PB_VENDOR_VPC
+       ,QOSV.OD_OB_SKU           OD_OB_SKU
+       ,QOSV.OD_PB_ITEM_DESC     OD_PB_ITEM_DESC
+       ,Qov.Od_Ob_Vendor_Name    Od_Ob_Vendor_Name
+       ,QOV.OD_ob_FACTORY_NAME   OD_OB_FACTORY_NAME
+       ,QOV.OD_SC_FACTORY_ADDRESS OD_SC_FACTORY_ADDRESS
+       ,QOV.OD_PB_FACTORY_CONTACT  OD_PB_FACTORY_CONTACT
+       ,QOV.OD_SC_FACTORY_EMAIL    OD_SC_FACTORY_EMAIL
+       ,QOV.OD_SC_REGION           OD_SC_REGION
+       ,QOV.OD_PB_DATE_REQUESTED   OD_PB_DATE_REQUESTED
+       ,QOV.OD_PB_ATTACHMENT       OD_PB_ATTACHMENT
+       ,QOV.OD_PB_AUDITOR_NAME     OD_PB_AUDITOR_NAME
+       ,QOV.OD_PB_QA_ENGR_EMAIL    OD_PB_QA_ENGR_EMAIL
+       ,QOV.OD_PB_APPROVAL_STATUS  OD_PB_APPROVAL_STATUS
+       ,QOV.OD_PB_DATE_REPORTED   OD_PB_DATE_REPORTED
+       ,QOV.OD_PB_COMMENTS	       OD_PB_COMMENTS
+FROM    Q_OD_OB_PS_V QOV
+       ,Q_OD_OB_PS_SKU_V QOSV
+WHERE  QOV.OD_OB_PS_ID = QOSV.OD_OB_REF_PS_ID(+)
+AND     NVL(QOV.OD_OB_PS_ID,'X')  = NVL(:P_PS_ID,NVL(QOV.OD_OB_PS_ID,'X'))
+AND     NVL(QOV.OD_PB_PROJ_NUM,'X') = NVL(:P_PROJECT,NVL(QOV.OD_PB_PROJ_NUM,'X'))
+AND     NVL(QOV.OD_SC_AUDIT_AGENT,'X')
+                            =NVL(:P_SOURCING_AGENT,NVL(QOV.OD_SC_AUDIT_AGENT,'X'))                          
+AND     NVL(QOSV.OD_PB_SC_DEPT_NAME,'X') 
+                            =  NVL(:P_DEPT_NAME,NVL(QOSV.OD_PB_SC_DEPT_NAME,'X'))
+AND     NVL(QOSV.OD_OB_SKU,1) = NVL(:P_SKU,NVL(QOSV.OD_OB_SKU,1))
+AND     NVL(QOV.OD_OB_VENDOR_NAME,'X')  
+                              =  Nvl(:P_Vendor_Name,Nvl(Qov.Od_Ob_Vendor_Name,'X'))
+And     Nvl(Qov.Od_ob_Factory_Name,'X') 
+                             = NVL(:P_FACTORY_NAME,NVL(QOV.OD_OB_FACTORY_NAME,'X'))
+AND     NVL(QOV.OD_PB_AUDITOR_NAME,'X') 
+                             = NVL(:P_SUBMITTER,NVL(QOV.OD_PB_AUDITOR_NAME,'X'))
+AND     NVL(QOV.OD_PB_QA_ENGR_EMAIL,'X') 
+                             = NVL(:P_APPROVER,NVL(QOV.OD_PB_QA_ENGR_EMAIL,'X'))
+AND     NVL(QOV.OD_PB_APPROVAL_STATUS,'X') 
+                      = Nvl(:P_Approval_Status,Nvl(Qov.Od_Pb_Approval_Status,'X'))
+ORDER BY QOV.OD_OB_PS_ID,QOV.OD_PB_PROJ_NUM,QOSV.OD_OB_SKU DESC
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_MAIN" source="Q_MAIN">
+<element name="OD_OB_PS_ID" value="OD_OB_PS_ID" />
+<element name="OD_PB_PROJ_NUM" value="OD_PB_PROJ_NUM" /> 
+<element name="OD_SC_AUDIT_AGENT" value="OD_SC_AUDIT_AGENT" />
+<element name="OD_OB_VENDOR_NAME" value="OD_OB_VENDOR_NAME" />
+<element name="OD_OB_FACTORY_NAME" value="OD_OB_FACTORY_NAME" />
+<element name="OD_SC_FACTORY_ADDRESS" value="OD_SC_FACTORY_ADDRESS" />
+<element name="OD_PB_FACTORY_CONTACT" value="OD_PB_FACTORY_CONTACT" />
+<element name="OD_SC_FACTORY_EMAIL" value="OD_SC_FACTORY_EMAIL" />
+<element name="OD_SC_REGION" value="OD_SC_REGION" />
+<element name="OD_PB_DATE_REQUESTED" value="OD_PB_DATE_REQUESTED" />
+<element name="OD_PB_ATTACHMENT" value="OD_PB_ATTACHMENT" />
+<element name="OD_PB_AUDITOR_NAME" value="OD_PB_AUDITOR_NAME" />
+<element name="OD_PB_QA_ENGR_EMAIL" value="OD_PB_QA_ENGR_EMAIL" />
+<element name="OD_PB_APPROVAL_STATUS" value="OD_PB_APPROVAL_STATUS" />
+<element name="OD_PB_DATE_REPORTED" value="OD_PB_DATE_REPORTED" />
+<element name="OD_PB_COMMENTS" value="OD_PB_COMMENTS" />
+<element name="SKU_OD_PB_PROJ_NUM" value="SKU_OD_PB_PROJ_NUM" />
+<element name="OD_PB_SC_DEPT_NAME" value="OD_PB_SC_DEPT_NAME" />
+<element name="OD_PB_VENDOR_VPC" value="OD_PB_VENDOR_VPC" />
+<element name="OD_OB_SKU" value="OD_OB_SKU" />
+<element name="OD_PB_ITEM_DESC" value="OD_PB_ITEM_DESC" />
+</group>
+</dataStructure>
+</dataTemplate>

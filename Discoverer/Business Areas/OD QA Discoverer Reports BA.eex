@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EndUserLayerExport SourceEULId="20061121114954" SourceEULVersion="10.1.2.48.18" MinimumCodeVersion="10.0.0" ExportFileVersion="10.0.0" EULSecurityModel="OracleApplications">
+<BusinessArea Description="" DeveloperKey="ODQADISCORPTS" DeveloperKeyFrozen="False" ExternalName="" Id="253898" Name="OD QA Discoverer Reports" UserProperty1="" UserProperty2="">
+<GrantedBusinessArea DeveloperKeyFrozen="False" Id="253920" PrivilegeType="ReadOnly">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODQADISCORPTS"/>
+<UniqueIdent ConstraintName="BA2" Name="OD QA Discoverer Reports"/>
+</ElementRef>
+<ElementRef Name="EulUser" Type="EulUser">
+<UniqueIdent ConstraintName="EU2" ResponsibilityKey="OD_US_QA_SUPERUSER" RoleFlag="True" Username="OD (US) QA Superuser"/>
+</ElementRef>
+</GrantedBusinessArea>
+<GrantedBusinessArea DeveloperKeyFrozen="False" Id="253921" PrivilegeType="ReadOnly">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODQADISCORPTS"/>
+<UniqueIdent ConstraintName="BA2" Name="OD QA Discoverer Reports"/>
+</ElementRef>
+<ElementRef Name="EulUser" Type="EulUser">
+<UniqueIdent ConstraintName="EU2" ResponsibilityKey="XX_OD_APPLICATION_DEV" RoleFlag="True" Username="OD Application Developer"/>
+</ElementRef>
+</GrantedBusinessArea>
+<GrantedBusinessArea DeveloperKeyFrozen="False" Id="253923" PrivilegeType="ReadOnly">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODQADISCORPTS"/>
+<UniqueIdent ConstraintName="BA2" Name="OD QA Discoverer Reports"/>
+</ElementRef>
+<ElementRef Name="EulUser" Type="EulUser">
+<UniqueIdent ConstraintName="EU2" ResponsibilityKey="OD_QUALITY" RoleFlag="True" Username="OD Quality"/>
+</ElementRef>
+</GrantedBusinessArea>
+<GrantedBusinessArea DeveloperKeyFrozen="False" Id="253924" PrivilegeType="ReadOnly">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODQADISCORPTS"/>
+<UniqueIdent ConstraintName="BA2" Name="OD QA Discoverer Reports"/>
+</ElementRef>
+<ElementRef Name="EulUser" Type="EulUser">
+<UniqueIdent ConstraintName="EU2" ResponsibilityKey="" RoleFlag="False" Username="OD_DISCO"/>
+</ElementRef>
+</GrantedBusinessArea>
+<BAOBJLink DeveloperKeyFrozen="False" Id="253918" Sequence="1">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODQADISCORPTS"/>
+<UniqueIdent ConstraintName="BA2" Name="OD QA Discoverer Reports"/>
+</ElementRef>
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXODQAQUALITYSKUTRANS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality SKU Trans Rpt"/>
+</ElementRef>
+</BAOBJLink>
+<BAOBJLink DeveloperKeyFrozen="False" Id="254235" Sequence="1">
+<ElementRef Name="BusinessArea" Type="BusinessArea">
+<UniqueIdent ConstraintName="BA1" DeveloperKey="ODQADISCORPTS"/>
+<UniqueIdent ConstraintName="BA2" Name="OD QA Discoverer Reports"/>
+</ElementRef>
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXQAFACTORYRPT"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality Factory Report"/>
+</ElementRef>
+</BAOBJLink>
+</BusinessArea>
+<EulUser BatchCommitSize="" BatchExpiry="" BatchJobsLimit="" BatchQueryTimeLimit="" BatchRepositoryUser="" BatchWindowEnd="" BatchWindowStart="" DeveloperKeyFrozen="False" Id="253919" LastBatchAccess="" QueryEstimateLimit="" QueryTimeLimit="" ResponsibilityKey="OD_US_QA_SUPERUSER" RoleFlag="True" RowFetchLimit="" SecurityModel="OracleApplications" UsePublicPrivileges="False" Username="OD (US) QA Superuser">
+</EulUser>
+<EulUser BatchCommitSize="" BatchExpiry="" BatchJobsLimit="" BatchQueryTimeLimit="" BatchRepositoryUser="" BatchWindowEnd="" BatchWindowStart="" DeveloperKeyFrozen="False" Id="252569" LastBatchAccess="" QueryEstimateLimit="" QueryTimeLimit="" ResponsibilityKey="XX_OD_APPLICATION_DEV" RoleFlag="True" RowFetchLimit="" SecurityModel="OracleApplications" UsePublicPrivileges="True" Username="OD Application Developer">
+</EulUser>
+<EulUser BatchCommitSize="" BatchExpiry="" BatchJobsLimit="" BatchQueryTimeLimit="" BatchRepositoryUser="" BatchWindowEnd="" BatchWindowStart="" DeveloperKeyFrozen="False" Id="253922" LastBatchAccess="" QueryEstimateLimit="" QueryTimeLimit="" ResponsibilityKey="OD_QUALITY" RoleFlag="True" RowFetchLimit="" SecurityModel="OracleApplications" UsePublicPrivileges="False" Username="OD Quality">
+</EulUser>
+<EulUser BatchCommitSize="" BatchExpiry="" BatchJobsLimit="" BatchQueryTimeLimit="" BatchRepositoryUser="" BatchWindowEnd="" BatchWindowStart="" DeveloperKeyFrozen="False" Id="251004" LastBatchAccess="22/05/2008 14:57:31" QueryEstimateLimit="" QueryTimeLimit="" ResponsibilityKey="" RoleFlag="False" RowFetchLimit="" SecurityModel="OracleApplications" UsePublicPrivileges="False" Username="OD_DISCO">
+</EulUser>
+<SimpleObject CBOHint="" Description="" DeveloperKey="XXODQAQUALITYSKUTRANS" DeveloperKeyFrozen="False" DistinctFlag="False" ExternalDatabaseLink="" ExternalObjectName="" ExternalObjectOwner="APPS" ExternalTableName="XX_QA_QUALITY_SKU_TRANS_RPT_V" Hidden="False" Id="253900" Name="OD QA Quality SKU Trans Rpt" NonDeterministic="False" SQL="( SELECT TRANSACTION_DESCR AS i253901, ROWSEQ AS i253902, OD_PB_SKU AS i253903, VENDOR_DESCR AS i253904, VENDOR_ID AS i253905, FACTORY AS i253906, LOC AS i253907, COST AS i253908, ENGINEERING_CR AS i253909, PASSES AS i253910, FAILS AS i253911, AUTHORIZED_TOSHIP AS i253912, CRITICAL AS i253913, MAJOR AS i253914, MINOR AS i253915, EFFECTIVE_DATE1 AS i253916, EFFECTIVE_DATE2 AS i253917 FROM APPS.XX_QA_QUALITY_SKU_TRANS_RPT_V )" UserProperty1="" UserProperty2="">
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="TRANSACTION_DESCR" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="TRANSACTION_DESCR" FormatMask="" Heading="Transaction Descr" Hidden="False" Id="253901" MaxDataWidth="33" MaxDisplayWidth="" Name="Transaction Descr" Nullable="True" Placement="XAxis" Sequence="15" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXODQAQUALITYSKUTRANS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality SKU Trans Rpt"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="ROWSEQ" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="ROWSEQ" FormatMask="9999999999" Heading="Rowseq" Hidden="False" Id="253902" MaxDataWidth="10" MaxDisplayWidth="" Name="Rowseq" Nullable="True" Placement="Measure" Sequence="14" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXODQAQUALITYSKUTRANS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality SKU Trans Rpt"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_115"/>
+<UniqueIdent ConstraintName="FUN2" Name="NULL"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="OD_PB_SKU" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="OD_PB_SKU" FormatMask="" Heading="Od Pb Sku" Hidden="False" Id="253903" MaxDataWidth="150" MaxDisplayWidth="" Name="Od Pb Sku" Nullable="True" Placement="XAxis" Sequence="12" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXODQAQUALITYSKUTRANS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality SKU Trans Rpt"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="VENDOR_DESCR" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="VENDOR_DESCR" FormatMask="" Heading="Vendor Descr" Hidden="False" Id="253904" MaxDataWidth="2000" MaxDisplayWidth="" Name="Vendor Descr" Nullable="True" Placement="XAxis" Sequence="16" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXODQAQUALITYSKUTRANS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality SKU Trans Rpt"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="VENDOR_ID" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="VENDOR_ID" FormatMask="" Heading="Vendor Id" Hidden="False" Id="253905" MaxDataWidth="150" MaxDisplayWidth="" Name="Vendor Id" Nullable="True" Placement="XAxis" Sequence="17" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXODQAQUALITYSKUTRANS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality SKU Trans Rpt"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="FACTORY" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="FACTORY" FormatMask="" Heading="Factory" Hidden="False" Id="253906" MaxDataWidth="150" MaxDisplayWidth="" Name="Factory" Nullable="True" Placement="XAxis" Sequence="7" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXODQAQUALITYSKUTRANS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality SKU Trans Rpt"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="LOC" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="LOC" FormatMask="" Heading="Loc" Hidden="False" Id="253907" MaxDataWidth="150" MaxDisplayWidth="" Name="Loc" Nullable="True" Placement="XAxis" Sequence="9" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXODQAQUALITYSKUTRANS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality SKU Trans Rpt"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="COST" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="COST" FormatMask="9999999999" Heading="Cost" Hidden="False" Id="253908" MaxDataWidth="10" MaxDisplayWidth="" Name="Cost" Nullable="True" Placement="Measure" Sequence="2" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXODQAQUALITYSKUTRANS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality SKU Trans Rpt"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_115"/>
+<UniqueIdent ConstraintName="FUN2" Name="NULL"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="ENGINEERING_CR" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="ENGINEERING_CR" FormatMask="9999999999" Heading="Engineering Cr" Hidden="False" Id="253909" MaxDataWidth="10" MaxDisplayWidth="" Name="Engineering Cr" Nullable="True" Placement="Measure" Sequence="6" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXODQAQUALITYSKUTRANS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality SKU Trans Rpt"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_115"/>
+<UniqueIdent ConstraintName="FUN2" Name="NULL"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="PASSES" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="PASSES" FormatMask="9999999999" Heading="Passes" Hidden="False" Id="253910" MaxDataWidth="10" MaxDisplayWidth="" Name="Passes" Nullable="True" Placement="Measure" Sequence="13" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXODQAQUALITYSKUTRANS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality SKU Trans Rpt"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_115"/>
+<UniqueIdent ConstraintName="FUN2" Name="NULL"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="FAILS" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="FAILS" FormatMask="9999999999" Heading="Fails" Hidden="False" Id="253911" MaxDataWidth="10" MaxDisplayWidth="" Name="Fails" Nullable="True" Placement="Measure" Sequence="8" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXODQAQUALITYSKUTRANS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality SKU Trans Rpt"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_115"/>
+<UniqueIdent ConstraintName="FUN2" Name="NULL"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="AUTHORIZED_TOSHIP" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="AUTHORIZED_TOSHIP" FormatMask="9999999999" Heading="Authorized Toship" Hidden="False" Id="253912" MaxDataWidth="10" MaxDisplayWidth="" Name="Authorized Toship" Nullable="True" Placement="Measure" Sequence="1" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXODQAQUALITYSKUTRANS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality SKU Trans Rpt"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_115"/>
+<UniqueIdent ConstraintName="FUN2" Name="NULL"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="CRITICAL" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="CRITICAL" FormatMask="9999999999" Heading="Critical" Hidden="False" Id="253913" MaxDataWidth="10" MaxDisplayWidth="" Name="Critical" Nullable="True" Placement="Measure" Sequence="3" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXODQAQUALITYSKUTRANS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality SKU Trans Rpt"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_115"/>
+<UniqueIdent ConstraintName="FUN2" Name="NULL"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="MAJOR" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="MAJOR" FormatMask="9999999999" Heading="Major" Hidden="False" Id="253914" MaxDataWidth="10" MaxDisplayWidth="" Name="Major" Nullable="True" Placement="Measure" Sequence="10" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXODQAQUALITYSKUTRANS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality SKU Trans Rpt"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_115"/>
+<UniqueIdent ConstraintName="FUN2" Name="NULL"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="MINOR" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="MINOR" FormatMask="9999999999" Heading="Minor" Hidden="False" Id="253915" MaxDataWidth="10" MaxDisplayWidth="" Name="Minor" Nullable="True" Placement="Measure" Sequence="11" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXODQAQUALITYSKUTRANS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality SKU Trans Rpt"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_115"/>
+<UniqueIdent ConstraintName="FUN2" Name="NULL"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Date" Description="" DeveloperKey="EFFECTIVE_DATE1" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="EFFECTIVE_DATE1" FormatMask="DD-MON-RRRR" Heading="Effective Date1" Hidden="False" Id="253916" MaxDataWidth="11" MaxDisplayWidth="" Name="Effective Date1" Nullable="True" Placement="XAxis" Sequence="4" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXODQAQUALITYSKUTRANS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality SKU Trans Rpt"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Date" Description="" DeveloperKey="EFFECTIVE_DATE2" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="EFFECTIVE_DATE2" FormatMask="DD-MON-RRRR" Heading="Effective Date2" Hidden="False" Id="253917" MaxDataWidth="11" MaxDisplayWidth="" Name="Effective Date2" Nullable="True" Placement="XAxis" Sequence="5" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXODQAQUALITYSKUTRANS"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality SKU Trans Rpt"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+</SimpleObject>
+<SimpleObject CBOHint="" Description="" DeveloperKey="XXQAFACTORYRPT" DeveloperKeyFrozen="False" DistinctFlag="False" ExternalDatabaseLink="" ExternalObjectName="" ExternalObjectOwner="APPS" ExternalTableName="XX_QA_QUALITY_FACTORY_RPT_V" Hidden="False" Id="254215" Name="OD QA Quality Factory Report" NonDeterministic="False" SQL="( SELECT TRANSACTION_DESCR AS i254216, ROWSEQ AS i254217, SKU AS i254218, FACTORY_ID AS i254219, FACTORY_NAME AS i254220, FACTORY_LOCATION AS i254221, VENDOR_DESCR AS i254222, VENDOR_ID AS i254223, SKUS_ASSIGNED AS i254224, COST AS i254225, ENGINEERING_CR AS i254226, PASSES AS i254227, FAILS AS i254228, AUTHORIZED_TOSHIP AS i254229, CRITICAL AS i254230, MAJOR AS i254231, MINOR AS i254232, EFFECTIVE_DATE1 AS i254233, EFFECTIVE_DATE2 AS i254234 FROM APPS.XX_QA_QUALITY_FACTORY_RPT_V )" UserProperty1="" UserProperty2="">
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="TRANSACTION_DESCR" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="TRANSACTION_DESCR" FormatMask="" Heading="Transaction Descr" Hidden="False" Id="254216" MaxDataWidth="33" MaxDisplayWidth="" Name="Transaction Descr" Nullable="True" Placement="XAxis" Sequence="17" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXQAFACTORYRPT"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality Factory Report"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="ROWSEQ" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="ROWSEQ" FormatMask="9999999999" Heading="Rowseq" Hidden="False" Id="254217" MaxDataWidth="10" MaxDisplayWidth="" Name="Rowseq" Nullable="True" Placement="Measure" Sequence="14" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXQAFACTORYRPT"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality Factory Report"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_115"/>
+<UniqueIdent ConstraintName="FUN2" Name="NULL"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="SKU" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="SKU" FormatMask="" Heading="Sku" Hidden="False" Id="254218" MaxDataWidth="150" MaxDisplayWidth="" Name="Sku" Nullable="True" Placement="XAxis" Sequence="15" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXQAFACTORYRPT"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality Factory Report"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="FACTORY_ID" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="FACTORY_ID" FormatMask="" Heading="Factory Id" Hidden="False" Id="254219" MaxDataWidth="150" MaxDisplayWidth="" Name="Factory Id" Nullable="True" Placement="XAxis" Sequence="7" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXQAFACTORYRPT"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality Factory Report"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="FACTORY_NAME" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="FACTORY_NAME" FormatMask="" Heading="Factory Name" Hidden="False" Id="254220" MaxDataWidth="150" MaxDisplayWidth="" Name="Factory Name" Nullable="True" Placement="XAxis" Sequence="9" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXQAFACTORYRPT"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality Factory Report"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="FACTORY_LOCATION" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="FACTORY_LOCATION" FormatMask="" Heading="Factory Location" Hidden="False" Id="254221" MaxDataWidth="150" MaxDisplayWidth="" Name="Factory Location" Nullable="True" Placement="XAxis" Sequence="8" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXQAFACTORYRPT"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality Factory Report"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="VENDOR_DESCR" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="VENDOR_DESCR" FormatMask="" Heading="Vendor Descr" Hidden="False" Id="254222" MaxDataWidth="2000" MaxDisplayWidth="" Name="Vendor Descr" Nullable="True" Placement="XAxis" Sequence="18" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXQAFACTORYRPT"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality Factory Report"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Mixed" DataType="Varchar" Description="" DeveloperKey="VENDOR_ID" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="VENDOR_ID" FormatMask="" Heading="Vendor Id" Hidden="False" Id="254223" MaxDataWidth="150" MaxDisplayWidth="" Name="Vendor Id" Nullable="True" Placement="XAxis" Sequence="19" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXQAFACTORYRPT"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality Factory Report"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="SKUS_ASSIGNED" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="SKUS_ASSIGNED" FormatMask="9999999999" Heading="Skus Assigned" Hidden="False" Id="254224" MaxDataWidth="10" MaxDisplayWidth="" Name="Skus Assigned" Nullable="True" Placement="Measure" Sequence="16" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXQAFACTORYRPT"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality Factory Report"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_115"/>
+<UniqueIdent ConstraintName="FUN2" Name="NULL"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="COST" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="COST" FormatMask="9999999999" Heading="Cost" Hidden="False" Id="254225" MaxDataWidth="10" MaxDisplayWidth="" Name="Cost" Nullable="True" Placement="Measure" Sequence="2" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXQAFACTORYRPT"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality Factory Report"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_115"/>
+<UniqueIdent ConstraintName="FUN2" Name="NULL"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="ENGINEERING_CR" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="ENGINEERING_CR" FormatMask="9999999999" Heading="Engineering Cr" Hidden="False" Id="254226" MaxDataWidth="10" MaxDisplayWidth="" Name="Engineering Cr" Nullable="True" Placement="Measure" Sequence="6" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXQAFACTORYRPT"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality Factory Report"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_115"/>
+<UniqueIdent ConstraintName="FUN2" Name="NULL"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="PASSES" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="PASSES" FormatMask="9999999999" Heading="Passes" Hidden="False" Id="254227" MaxDataWidth="10" MaxDisplayWidth="" Name="Passes" Nullable="True" Placement="Measure" Sequence="13" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXQAFACTORYRPT"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality Factory Report"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_115"/>
+<UniqueIdent ConstraintName="FUN2" Name="NULL"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="FAILS" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="FAILS" FormatMask="9999999999" Heading="Fails" Hidden="False" Id="254228" MaxDataWidth="10" MaxDisplayWidth="" Name="Fails" Nullable="True" Placement="Measure" Sequence="10" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXQAFACTORYRPT"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality Factory Report"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_115"/>
+<UniqueIdent ConstraintName="FUN2" Name="NULL"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="AUTHORIZED_TOSHIP" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="AUTHORIZED_TOSHIP" FormatMask="9999999999" Heading="Authorized Toship" Hidden="False" Id="254229" MaxDataWidth="10" MaxDisplayWidth="" Name="Authorized Toship" Nullable="True" Placement="Measure" Sequence="1" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXQAFACTORYRPT"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality Factory Report"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_115"/>
+<UniqueIdent ConstraintName="FUN2" Name="NULL"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="CRITICAL" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="CRITICAL" FormatMask="9999999999" Heading="Critical" Hidden="False" Id="254230" MaxDataWidth="10" MaxDisplayWidth="" Name="Critical" Nullable="True" Placement="Measure" Sequence="3" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXQAFACTORYRPT"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality Factory Report"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_115"/>
+<UniqueIdent ConstraintName="FUN2" Name="NULL"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="MAJOR" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="MAJOR" FormatMask="9999999999" Heading="Major" Hidden="False" Id="254231" MaxDataWidth="10" MaxDisplayWidth="" Name="Major" Nullable="True" Placement="Measure" Sequence="11" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXQAFACTORYRPT"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality Factory Report"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_115"/>
+<UniqueIdent ConstraintName="FUN2" Name="NULL"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Right" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Number" Description="" DeveloperKey="MINOR" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="MINOR" FormatMask="9999999999" Heading="Minor" Hidden="False" Id="254232" MaxDataWidth="10" MaxDisplayWidth="" Name="Minor" Nullable="True" Placement="Measure" Sequence="12" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXQAFACTORYRPT"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality Factory Report"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_115"/>
+<UniqueIdent ConstraintName="FUN2" Name="NULL"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Date" Description="" DeveloperKey="EFFECTIVE_DATE1" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="EFFECTIVE_DATE1" FormatMask="DD-MON-RRRR" Heading="Effective Date1" Hidden="False" Id="254233" MaxDataWidth="11" MaxDisplayWidth="" Name="Effective Date1" Nullable="True" Placement="XAxis" Sequence="4" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXQAFACTORYRPT"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality Factory Report"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+<ColumnItem Alignment="Left" CaseDisplay="Unchanged" CaseStorage="Unknown" DataType="Date" Description="" DeveloperKey="EFFECTIVE_DATE2" DeveloperKeyFrozen="False" DisplayNullValue="" ExternalColumnName="EFFECTIVE_DATE2" FormatMask="DD-MON-RRRR" Heading="Effective Date2" Hidden="False" Id="254234" MaxDataWidth="11" MaxDisplayWidth="" Name="Effective Date2" Nullable="True" Placement="XAxis" Sequence="5" UserDefinedFormat="" UserProperty1="" UserProperty2="" WordWrap="False">
+<ElementRef Name="Object" Type="SimpleObject">
+<UniqueIdent ConstraintName="OBJ1" DeveloperKey="XXQAFACTORYRPT"/>
+<UniqueIdent ConstraintName="OBJ2" Name="OD QA Quality Factory Report"/>
+</ElementRef>
+<ElementRef Name="RollUpFunction" Type="Function">
+<UniqueIdent ConstraintName="FUN1" DeveloperKey="EUL_110"/>
+<UniqueIdent ConstraintName="FUN2" Name="Detail"/>
+</ElementRef>
+</ColumnItem>
+</SimpleObject>
+</EndUserLayerExport>

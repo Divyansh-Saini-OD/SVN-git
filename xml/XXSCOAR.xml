@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXSCOAR" description="OD:SC Audit Overdue Report" Version="1.0">
+<parameters>
+ <parameter name="P_PROFILE_VALUE" datatype="character" />
+ <parameter name="P_OPTIONS" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_XXSCOAR">
+<![CDATA[
+SELECT OD_SC_VENDOR_NUMBER
+      ,OD_SC_VENDOR_NAME
+      ,OD_SC_VEND_TYPE
+      ,OD_SC_VENDOR_STATUS
+      ,OD_SC_AUDIT_AGENT
+      ,OD_SC_VEND_CONT_NAME
+      ,OD_SC_VEND_PHONE
+      ,OD_SC_VEND_FAX
+      ,OD_SC_VEND_EMAIL
+      ,OD_SC_VEND_ADDRESS
+      ,OD_SC_FACTORY_NUMBER
+      ,OD_SC_FACTORY_NAME
+      ,OD_SC_FACT_CONT_NAME
+      ,OD_SC_FACTORY_EMAIL
+      ,OD_SC_FACTORY_ADDRESS
+      ,OD_SC_FACTORY_PHONE
+      ,OD_SC_FACTORY_FAX
+      ,OD_SC_EUROPE_RGN
+      ,OD_SC_EU_VEND_NO
+      ,OD_SC_EU_VEND_STATUS
+      ,OD_SC_MEXICO_REGION
+      ,OD_SC_MX_VEND_NO
+      ,OD_SC_MX_VEND_STATUS
+      ,OD_SC_ASIA_REGION
+      ,OD_SC_AS_VEND_NO
+      ,OD_SC_AS_VEND_STATUS
+      ,OD_SC_DEPARTMENT
+      ,OD_SC_MERCHANT
+      ,OD_SC_AUDIT_WAIVER
+      ,OD_SC_AUDIT_WAIVER_STATUS
+      ,OD_SC_AUDTWAIV_APR_D
+      ,OD_SC_VEND_REGION
+      ,OD_SC_CIP
+      ,OD_SC_PREAUDT_RESULT
+      ,OD_SC_FZT_APRVL_D
+      ,OD_SC_STRAUDT_REQ_D
+      ,OD_SC_PAYMENT_RETAINER
+      ,OD_PB_PAYRTN_APRVL_DATE
+      ,OD_SC_VENDPAY_RCVD_D
+      ,OD_SC_STRAUDT_SCHD_D
+      ,/*CASE 
+          WHEN (SYSDATE - OD_SC_REQ_AUDIT_DATE) < 0 THEN 'LATE'
+          WHEN (SYSDATE - OD_SC_REQ_AUDIT_DATE) > 0 AND (SYSDATE - OD_SC_REQ_AUDIT_DATE) <= 30 THEN 'Within 30'
+          WHEN (SYSDATE - OD_SC_REQ_AUDIT_DATE) > 30 AND (SYSDATE - OD_SC_REQ_AUDIT_DATE) <= 60 THEN 'Within 60'
+          WHEN (SYSDATE - OD_SC_REQ_AUDIT_DATE) > 60 AND (SYSDATE - OD_SC_REQ_AUDIT_DATE) <= 90 THEN 'Within 90'
+          WHEN (SYSDATE - OD_SC_REQ_AUDIT_DATE) > 90 THEN 'Above 90'
+          END */
+          OD_SC_REQ_AUDIT_DATE
+      ,OD_SC_STR_AUDIT_RESULT
+      ,OD_SC_INSPECTION_TYPE
+      ,OD_SC_SHARED_FACTORY
+      ,OD_SC_PENDING_STATUS_CHANGE
+      ,OD_SC_AUDIT_STATUS_NOTIFY
+      ,OD_SC_EU_VEND_NO GSO_SUPPLIER_ID
+      ,OD_SC_EU_FACTORY_NO GSO_FACTORY_ID
+      ,OD_SC_EU_VEND_STATUS GSO_SUPPLIER_STATUS
+FROM
+  (SELECT *
+  FROM q_od_pb_sc_vendor_master_v
+  WHERE (:P_PROFILE_VALUE  in ('ODGLB','ODUS'))
+  UNION
+  SELECT *
+  FROM Q_od_sc_eu_vendor_master_v
+  WHERE (:P_PROFILE_VALUE  in ('ODGLB','ODEU'))
+  UNION
+  SELECT *
+  FROM Q_od_sc_mx_vendor_master_v
+  WHERE (:P_PROFILE_VALUE  in ('ODGLB','ODMX'))
+  UNION
+  SELECT *
+  FROM Q_od_sc_asia_vendor_master_v
+  WHERE (:P_PROFILE_VALUE  in ('ODGLB','ODASIA'))
+  ) 
+WHERE OD_SC_VENDOR_STATUS = 'Active'
+AND   OD_SC_AUDTWAIV_APR_D IS NULL
+AND   (OD_SC_CIP IS NULL OR OD_SC_CIP = 'No')
+AND   ((OD_SC_REQ_AUDIT_DATE-SYSDATE) BETWEEN 0 AND DECODE(:P_OPTIONS,'Within 30', 30 ,'Within 60', 60 ,'Within 90', 90,'LATE',0)
+      OR (OD_SC_REQ_AUDIT_DATE-SYSDATE) <= DECODE(:P_OPTIONS,'LATE',0))
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_XXSCOAR" source="Q_XXSCOAR">
+<element name="OD_SC_VENDOR_NUMBER" value="OD_SC_VENDOR_NUMBER" />
+<element name="OD_SC_VENDOR_NAME" value="OD_SC_VENDOR_NAME" />
+<element name="OD_SC_VEND_TYPE" value="OD_SC_VEND_TYPE" />
+<element name="OD_SC_VENDOR_STATUS" value="OD_SC_VENDOR_STATUS" />
+<element name="OD_SC_AUDIT_AGENT" value="OD_SC_AUDIT_AGENT" />
+<element name="OD_SC_VEND_CONT_NAME" value="OD_SC_VEND_CONT_NAME" />
+<element name="OD_SC_VEND_PHONE" value="OD_SC_VEND_PHONE" />
+<element name="OD_SC_VEND_FAX" value="OD_SC_VEND_FAX" />
+<element name="OD_SC_VEND_EMAIL" value="OD_SC_VEND_EMAIL" />
+<element name="OD_SC_VEND_ADDRESS" value="OD_SC_VEND_ADDRESS" />
+<element name="OD_SC_FACTORY_NUMBER" value="OD_SC_FACTORY_NUMBER" />
+<element name="OD_SC_FACTORY_NAME" value="OD_SC_FACTORY_NAME" />
+<element name="OD_SC_FACT_CONT_NAME" value="OD_SC_FACT_CONT_NAME" />
+<element name="OD_SC_FACTORY_EMAIL" value="OD_SC_FACTORY_EMAIL" />
+<element name="OD_SC_FACTORY_ADDRESS" value="OD_SC_FACTORY_ADDRESS" />
+<element name="OD_SC_FACTORY_PHONE" value="OD_SC_FACTORY_PHONE" />
+<element name="OD_SC_FACTORY_FAX" value="OD_SC_FACTORY_FAX" />
+<element name="OD_SC_EUROPE_RGN" value="OD_SC_EUROPE_RGN" />
+<element name="OD_SC_EU_VEND_NO" value="OD_SC_EU_VEND_NO" />
+<element name="OD_SC_EU_VEND_STATUS" value="OD_SC_EU_VEND_STATUS" />
+<element name="OD_SC_MEXICO_REGION" value="OD_SC_MEXICO_REGION" />
+<element name="OD_SC_MX_VEND_NO" value="OD_SC_MX_VEND_NO" />
+<element name="OD_SC_MX_VEND_STATUS" value="OD_SC_MX_VEND_STATUS" />
+<element name="OD_SC_ASIA_REGION" value="OD_SC_ASIA_REGION" />
+<element name="OD_SC_AS_VEND_NO" value="OD_SC_AS_VEND_NO" />
+<element name="OD_SC_AS_VEND_STATUS" value="OD_SC_AS_VEND_STATUS" />
+<element name="OD_SC_DEPARTMENT" value="OD_SC_DEPARTMENT" />
+<element name="OD_SC_MERCHANT" value="OD_SC_MERCHANT" />
+<element name="OD_SC_AUDIT_WAIVER" value="OD_SC_AUDIT_WAIVER" />
+<element name="OD_SC_AUDIT_WAIVER_STATUS" value="OD_SC_AUDIT_WAIVER_STATUS" />
+<element name="OD_SC_AUDTWAIV_APR_D" value="OD_SC_AUDTWAIV_APR_D" />
+<element name="OD_SC_VEND_REGION" value="OD_SC_VEND_REGION" />
+<element name="OD_SC_CIP" value="OD_SC_CIP" />
+<element name="OD_SC_PREAUDT_RESULT" value="OD_SC_PREAUDT_RESULT" />
+<element name="OD_SC_FZT_APRVL_D" value="OD_SC_FZT_APRVL_D" />
+<element name="OD_SC_STRAUDT_REQ_D" value="OD_SC_STRAUDT_REQ_D" />
+<element name="OD_SC_PAYMENT_RETAINER" value="OD_SC_PAYMENT_RETAINER" />
+<element name="OD_PB_PAYRTN_APRVL_DATE" value="OD_PB_PAYRTN_APRVL_DATE" />
+<element name="OD_SC_VENDPAY_RCVD_D" value="OD_SC_VENDPAY_RCVD_D" />
+<element name="OD_SC_STRAUDT_SCHD_D" value="OD_SC_STRAUDT_SCHD_D" />
+<element name="OD_SC_REQ_AUDIT_DATE" value="OD_SC_REQ_AUDIT_DATE" />
+<element name="OD_SC_STR_AUDIT_RESULT" value="OD_SC_STR_AUDIT_RESULT" />
+<element name="OD_SC_INSPECTION_TYPE" value="OD_SC_INSPECTION_TYPE" />
+<element name="OD_SC_SHARED_FACTORY" value="OD_SC_SHARED_FACTORY" />
+<element name="OD_SC_PENDING_STATUS_CHANGE" value="OD_SC_PENDING_STATUS_CHANGE" />
+<element name="OD_SC_AUDIT_STATUS_NOTIFY" value="OD_SC_AUDIT_STATUS_NOTIFY" />
+<element name="GSO_SUPPLIER_ID" value="GSO_SUPPLIER_ID" />
+<element name="GSO_FACTORY_ID" value="GSO_FACTORY_ID" />
+<element name="GSO_SUPPLIER_STATUS" value="GSO_SUPPLIER_STATUS" />
+</group>
+</dataStructure>
+</dataTemplate>

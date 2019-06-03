@@ -1,0 +1,263 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Wed Jun 01 15:50:54 EDT 2011
+  Author:  bala-edupuganti
+  Purpose: Asynchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="SCVendorAuditResults"
+         targetNamespace="http://xmlns.oracle.com/SCVendorAuditResults"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns4="ODError"
+         xmlns:ns7="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns5="http://xmlns.oracle.com/ScAudirResultsResponse"
+         xmlns:client="http://xmlns.oracle.com/SCVendorAuditResults"
+         xmlns:ns6="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_QA_SC_VEN_3PA_ADT_BPEL_PKG/VENDOR_AUDIT_RESULT/"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:ns9="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/apps/OASrvcAuditResult/"
+         xmlns:ns3="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:ns2="SCVendorAuditResults"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:ns8="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ns10="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions">
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <partnerLinks>
+        <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+        <partnerLink name="client" partnerLinkType="client:SCVendorAuditResults"
+                     myRole="SCVendorAuditResultsProvider"
+                     partnerRole="SCVendorAuditResultsRequester"/>
+        <partnerLink name="OASrvcAuditResult"
+                     partnerRole="OASrvcAuditResult_role"
+                     partnerLinkType="ns1:OASrvcAuditResult_plt"/>
+        <partnerLink myRole="ODErrorLoggerRequester" name="ODErrorLogger"
+                     partnerRole="ODErrorLoggerProvider"
+                     partnerLinkType="ns3:ODErrorLogger"/>
+    </partnerLinks>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        VARIABLES                                                        
+        List of messages and XML documents used within this BPEL process 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <variables>
+        <!-- Reference to the message passed as input during initiation -->
+        <variable name="inputVariable"
+                  messageType="client:SCVendorAuditResultsRequestMessage"/>
+        <!-- Reference to the message that will be sent back to the requester during callback -->
+        <variable name="outputVariable"
+                  messageType="client:SCVendorAuditResultsResponseMessage"/>
+        <variable name="OASrvcAuditResult_InputVariable"
+                  messageType="ns1:args_in_msg"/>
+        <variable name="OASrvcAuditResult_OutputVariable"
+                  messageType="ns1:args_out_msg"/>
+        <variable name="InvokeErrLogger_InputVariable"
+                  messageType="ns3:ODErrorLoggerRequestMessage"/>
+        <variable name="Variable_1"
+                  messageType="client:SCVendorAuditResultsRequestMessage"/>
+        <variable name="globalInspNo" type="xsd:string"/>
+        <variable name="globalResType" type="xsd:string"/>
+    </variables>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+       ORCHESTRATION LOGIC                                               
+       Set of activities coordinating the flow of messages across the    
+       services integrated within this business process                  
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <sequence name="SCAuditResults">
+        <!-- Receive input from requestor. (Note: This maps to operation defined in SCVendorAuditResults.wsdl) -->
+        <scope name="Scope_1_SCAuditResults">
+            <faultHandlers>
+                <catchAll>
+                    <sequence name="Seq_2_SCAudit_CatchAll">
+                        <assign name="AssignErrResponse">
+                            <copy>
+                                <from expression="'SC Vendor Audit'"/>
+                                <to variable="InvokeErrLogger_InputVariable"
+                                    part="payload"
+                                    query="/ns4:ErrorData/ns4:ProcessInfo/ns4:SystemName"/>
+                            </copy>
+                            <copy>
+                                <from expression="concat(ora:getProcessId(),ora:getProcessVersion())"/>
+                                <to variable="InvokeErrLogger_InputVariable"
+                                    part="payload"
+                                    query="/ns4:ErrorData/ns4:ProcessInfo/ns4:BusinessProcessName"/>
+                            </copy>
+                            <copy>
+                                <from expression="ora:getInstanceId()"/>
+                                <to variable="InvokeErrLogger_InputVariable"
+                                    part="payload"
+                                    query="/ns4:ErrorData/ns4:ProcessInfo/ns4:BusinessProcessId"/>
+                            </copy>
+                            <copy>
+                                <from expression="ora:getDomainId()"/>
+                                <to variable="InvokeErrLogger_InputVariable"
+                                    part="payload"
+                                    query="/ns4:ErrorData/ns4:ProcessInfo/ns4:BusinessProcessDomain"/>
+                            </copy>
+                            <copy>
+                                <from expression="ora:getCurrentDateTime()"/>
+                                <to variable="InvokeErrLogger_InputVariable"
+                                    part="payload"
+                                    query="/ns4:ErrorData/ns4:ErrorDetails/ns4:ErrorDateTime"/>
+                            </copy>
+                            <copy>
+                                <from expression="'System'"/>
+                                <to variable="InvokeErrLogger_InputVariable"
+                                    part="payload"
+                                    query="/ns4:ErrorData/ns4:ErrorDetails/ns4:ErrorType"/>
+                            </copy>
+                            <copy>
+                                <from expression="'Fatal'"/>
+                                <to variable="InvokeErrLogger_InputVariable"
+                                    part="payload"
+                                    query="/ns4:ErrorData/ns4:ErrorDetails/ns4:ErrorSeverity"/>
+                            </copy>
+                        </assign>
+                        <invoke name="InvokeErrLogger"
+                                partnerLink="ODErrorLogger"
+                                portType="ns3:ODErrorLogger"
+                                operation="initiate"
+                                inputVariable="InvokeErrLogger_InputVariable"/>
+                        <terminate name="TerminateProcess"/>
+                    </sequence>
+                </catchAll>
+            </faultHandlers>
+            <sequence name="Seq_1_SCAuditResults">
+                <receive name="receiveSCAuditResults" partnerLink="client"
+                         portType="client:SCVendorAuditResults"
+                         operation="initiate" variable="inputVariable"
+                         createInstance="yes"/>
+                <assign name="AssignPayload">
+                    <copy>
+                        <from variable="inputVariable" part="payload"/>
+                        <to variable="Variable_1" part="payload"/>
+                    </copy>
+                </assign>
+                <assign name="TransformAuditResult">
+                    <bpelx:annotation>
+                        <bpelx:pattern>transformation</bpelx:pattern>
+                    </bpelx:annotation>
+                    <copy>
+                        <from expression="ora:processXSLT('TransformMSG.xsl',bpws:getVariableData('Variable_1','payload'))"/>
+                        <to variable="OASrvcAuditResult_InputVariable"
+                            part="InputParameters"/>
+                    </copy>
+                </assign>
+                <assign name="AssignInstanceTitle">
+                    <copy>
+                        <from variable="OASrvcAuditResult_InputVariable"
+                              part="InputParameters"
+                              query="/ns6:InputParameters/ns6:P_AUDIT_REC/ns6:INSPECTION_NO"/>
+                        <to variable="globalInspNo"/>
+                    </copy>
+                    <copy>
+                        <from variable="OASrvcAuditResult_InputVariable"
+                              part="InputParameters"
+                              query="/ns6:InputParameters/ns6:P_AUDIT_REC/ns6:TRANSMISSION_STATUS"/>
+                        <to variable="globalResType"/>
+                    </copy>
+                </assign>
+                <bpelx:exec name="setInstanceTitle" language="java"
+                            version="1.3">
+                    <![CDATA[try {                               
+  String title1 = "SCAuditResult_Insp#";           
+  String title2 = (String)getVariableData("globalInspNo");           
+  String title3 = (String)getVariableData("globalResType");           
+  String title4 = "_Version_" ;        
+  String title = title1 + title2 +title4 +title3;           
+  setTitle(title);                               
+  addAuditTrailEntry(title) ;                               
+} catch (Exception ex) {                               
+  addAuditTrailEntry(ex.toString());                               
+  ex.printStackTrace();                               
+}]]>
+                </bpelx:exec>
+                <scope name="Scope_DBSrvc">
+                    <faultHandlers>
+                        <catchAll>
+                            <sequence name="Sequence_DBExcecption">
+                                <assign name="AssignDbErrResponse">
+                                    <copy>
+                                        <from expression="'SC Vendor Audit'"/>
+                                        <to variable="InvokeErrLogger_InputVariable"
+                                            part="payload"
+                                            query="/ns4:ErrorData/ns4:ProcessInfo/ns4:SystemName"/>
+                                    </copy>
+                                    <copy>
+                                        <from expression="concat(ora:getProcessId(),ora:getProcessVersion())"/>
+                                        <to variable="InvokeErrLogger_InputVariable"
+                                            part="payload"
+                                            query="/ns4:ErrorData/ns4:ProcessInfo/ns4:BusinessProcessName"/>
+                                    </copy>
+                                    <copy>
+                                        <from expression="ora:getInstanceId()"/>
+                                        <to variable="InvokeErrLogger_InputVariable"
+                                            part="payload"
+                                            query="/ns4:ErrorData/ns4:ProcessInfo/ns4:BusinessProcessId"/>
+                                    </copy>
+                                    <copy>
+                                        <from expression="ora:getDomainId()"/>
+                                        <to variable="InvokeErrLogger_InputVariable"
+                                            part="payload"
+                                            query="/ns4:ErrorData/ns4:ProcessInfo/ns4:BusinessProcessDomain"/>
+                                    </copy>
+                                    <copy>
+                                        <from expression="ora:getCurrentDateTime()"/>
+                                        <to variable="InvokeErrLogger_InputVariable"
+                                            part="payload"
+                                            query="/ns4:ErrorData/ns4:ErrorDetails/ns4:ErrorDateTime"/>
+                                    </copy>
+                                    <copy>
+                                        <from expression="'System'"/>
+                                        <to variable="InvokeErrLogger_InputVariable"
+                                            part="payload"
+                                            query="/ns4:ErrorData/ns4:ErrorDetails/ns4:ErrorType"/>
+                                    </copy>
+                                    <copy>
+                                        <from expression="'Fatal'"/>
+                                        <to variable="InvokeErrLogger_InputVariable"
+                                            part="payload"
+                                            query="/ns4:ErrorData/ns4:ErrorDetails/ns4:ErrorSeverity"/>
+                                    </copy>
+                                </assign>
+                                <invoke name="InvokeErrLogger"
+                                        partnerLink="ODErrorLogger"
+                                        portType="ns3:ODErrorLogger"
+                                        operation="initiate"
+                                        inputVariable="InvokeErrLogger_InputVariable"/>
+                                <terminate name="TerminateProcess"/>
+                            </sequence>
+                        </catchAll>
+                    </faultHandlers>
+                    <invoke name="InvokeOASrvc" partnerLink="OASrvcAuditResult"
+                            portType="ns1:OASrvcAuditResult_ptt"
+                            operation="OASrvcAuditResult"
+                            inputVariable="OASrvcAuditResult_InputVariable"
+                            outputVariable="OASrvcAuditResult_OutputVariable"/>
+                </scope>
+            </sequence>
+        </scope>
+        <!-- 
+          Asynchronous callback to the requester. (Note: the callback location and correlation id is transparently handled using WS-addressing.)
+        -->
+    </sequence>
+</process>

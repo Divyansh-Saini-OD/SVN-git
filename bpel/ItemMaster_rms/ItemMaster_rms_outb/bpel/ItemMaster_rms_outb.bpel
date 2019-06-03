@@ -1,0 +1,427 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Fri Jul 27 10:23:21 EDT 2007
+  Author:  Gavisiddappa-Belli
+  Purpose: Empty BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="ItemMaster_rms_outb"
+         targetNamespace="http://xmlns.oracle.com/ItemMaster_rms_outb"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns4="http://xmlns.oracle.com/ItemMaster_rms_confirm_inb"
+         xmlns:ns7="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:client="http://xmlns.oracle.com/ItemMaster_rms_outb"
+         xmlns:ns6="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:ns9="http://xmlns.oracle.com/ODErrorHandler"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/aq/ItemMasterAQ/"
+         xmlns:ns3="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+         xmlns:ns2="http://xmlns.oracle.com/ItemMaster_ebs_inb"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:ns8="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <partnerLink myRole="Dequeue_role" name="ItemMasterAQ"
+                 partnerLinkType="ns1:Dequeue_plt"/>
+    <partnerLink myRole="ItemMaster_ebs_inbProvider" name="ItemMaster_ebs_inb"
+                 partnerRole="ItemMaster_ebs_inbProvider"
+                 partnerLinkType="ns2:ItemMaster_ebs_inb"/>
+    <partnerLink myRole="ItemMaster_rms_confirm_inbProvider"
+                 name="ItemMaster_rms_confirm_inb"
+                 partnerRole="ItemMaster_rms_confirm_inbProvider"
+                 partnerLinkType="ns4:ItemMaster_rms_confirm_inb"/>
+    <partnerLink name="ODErrorHandler" partnerRole="ODErrorHandlerProvider"
+                 partnerLinkType="ns9:ODErrorHandler"
+                 myRole="ODErrorHandlerRequester"/>
+  </partnerLinks>
+  <variables>
+    <variable name="Receive_ItemMasterAQ_Dequeue_Input"
+              messageType="ns1:SYNC_ITEM_MASTER_msg"/>
+    <variable name="Invoke_ItemMaster_ebs_inb_Input"
+              messageType="ns2:ItemMaster_ebs_inbRequestMessage"/>
+    <variable name="var_bindingfault" messageType="bpelx:RuntimeFaultMessage"/>
+    <variable name="var_remotefault" messageType="bpelx:RuntimeFaultMessage"/>
+    <variable name="Invremote_ItemMas_rms_confirm_inb_Input"
+              messageType="ns4:ItemMaster_rms_confirm_inbRequestMessage"/>
+    <variable name="Invbind_ItemMas_rms_confirm_inb_Input"
+              messageType="ns4:ItemMaster_rms_confirm_inbRequestMessage"/>
+    <variable name="Invoke_catchall_Input"
+              messageType="ns4:ItemMaster_rms_confirm_inbRequestMessage"/>
+    <variable name="Invremote_ODErrorHandler_Input"
+              messageType="ns9:ODErrorHandlerRequestMessage"/>
+    <variable name="Invbind_ODErrorHandler_Input"
+              messageType="ns9:ODErrorHandlerRequestMessage"/>
+    <variable name="Invcatchall_ODErrorHandler_Input"
+              messageType="ns9:ODErrorHandlerRequestMessage"/>
+    <variable name="var_fatalerror_cd" type="xsd:integer"/>
+    <variable name="var_processname" type="xsd:string"/>
+    <variable name="var_sendtaskto" type="xsd:string"/>
+  </variables>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <receive name="Receive_ItemMasterAQ" partnerLink="ItemMasterAQ"
+             portType="ns1:Dequeue_ptt" operation="Dequeue"
+             variable="Receive_ItemMasterAQ_Dequeue_Input"
+             createInstance="yes"/>
+    <assign name="AsnRMStoEBS">
+      <copy>
+        <from variable="Receive_ItemMasterAQ_Dequeue_Input"
+              part="SYNC_ITEM_MASTER" query="/ns3:SYNC_ITEM_MASTER"/>
+        <to variable="Invoke_ItemMaster_ebs_inb_Input" part="payload"
+            query="/ns3:SYNC_ITEM_MASTER"/>
+      </copy>
+      <copy>
+        <from expression="-2"/>
+        <to variable="var_fatalerror_cd"/>
+      </copy>
+      <copy>
+        <from expression="'ItemMaster_rms_outb'"/>
+        <to variable="var_processname"/>
+      </copy>
+      <copy>
+        <from expression='ora:doc("${server_url}/xmllib/merch/ItemMasterConfig.xml","/BPELParameters/Common/TaskuserAssignee")'/>
+        <to variable="var_sendtaskto"/>
+      </copy>
+    </assign>
+    <scope name="Scope_ItemMas_ebs_inb">
+      <faultHandlers>
+        <catch faultName="bpelx:bindingFault" faultVariable="var_bindingfault">
+          <sequence name="Sequence_2">
+            <assign name="Asnbindfault">
+              <copy>
+                <from variable="Receive_ItemMasterAQ_Dequeue_Input"
+                      part="SYNC_ITEM_MASTER"
+                      query="/ns3:SYNC_ITEM_MASTER/ns3:VERB/ns3:PROCESS_NAME"/>
+                <to variable="Invbind_ItemMas_rms_confirm_inb_Input"
+                    part="payload"
+                    query="/ns3:SYNC_ITEM_MASTER_CONFIRM/ns3:VERB/ns3:PROCESS_NAME"/>
+              </copy>
+              <copy>
+                <from variable="Receive_ItemMasterAQ_Dequeue_Input"
+                      part="SYNC_ITEM_MASTER"
+                      query="/ns3:SYNC_ITEM_MASTER/ns3:VERB/ns3:PROCESS_ID"/>
+                <to variable="Invbind_ItemMas_rms_confirm_inb_Input"
+                    part="payload"
+                    query="/ns3:SYNC_ITEM_MASTER_CONFIRM/ns3:VERB/ns3:PROCESS_ID"/>
+              </copy>
+              <copy>
+                <from variable="var_fatalerror_cd"/>
+                <to variable="Invbind_ItemMas_rms_confirm_inb_Input"
+                    part="payload"
+                    query="/ns3:SYNC_ITEM_MASTER_CONFIRM/ns3:NOUN/ns3:ERROR/ns3:CODE"/>
+              </copy>
+              <copy>
+                <from expression="substring(concat(bpws:getVariableData('var_processname'), bpws:getVariableData('var_remotefault','code'),bpws:getVariableData('var_remotefault','summary')),1,250)"/>
+                <to variable="Invbind_ItemMas_rms_confirm_inb_Input"
+                    part="payload"
+                    query="/ns3:SYNC_ITEM_MASTER_CONFIRM/ns3:NOUN/ns3:ERROR/ns3:MESSAGE"/>
+              </copy>
+            </assign>
+            <invoke name="Invbind_ItemMas_rms_confirm_inb"
+                    partnerLink="ItemMaster_rms_confirm_inb"
+                    portType="ns4:ItemMaster_rms_confirm_inb"
+                    operation="initiate"
+                    inputVariable="Invbind_ItemMas_rms_confirm_inb_Input"/>
+            <assign name="AsnBindODError">
+              <copy>
+                <from expression="ora:getInstanceId()"/>
+                <to variable="Invbind_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ProcessInfo/ns9:BusinessProcessId"/>
+              </copy>
+              <copy>
+                <from expression="ora:getDomainId()"/>
+                <to variable="Invbind_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ProcessInfo/ns9:BusinessProcessDomain"/>
+              </copy>
+              <copy>
+                <from expression="ora:getProcessURL()"/>
+                <to variable="Invbind_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ProcessInfo/ns9:SystemName"/>
+              </copy>
+              <copy>
+                <from expression="bpws:getVariableData('var_remotefault','code')"/>
+                <to variable="Invbind_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ErrorDetails/ns9:ErrorCode"/>
+              </copy>
+              <copy>
+                <from expression="bpws:getVariableData('var_remotefault','summary')"/>
+                <to variable="Invbind_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ErrorDetails/ns9:ErrorDescription"/>
+              </copy>
+              <copy>
+                <from expression="bpws:getVariableData('var_remotefault','detail')"/>
+                <to variable="Invbind_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ErrorDetails/ns9:ErrorText"/>
+              </copy>
+              <copy>
+                <from expression="ora:getCurrentDateTime()"/>
+                <to variable="Invbind_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:MessageDetails/ns9:MessageDateTime"/>
+              </copy>
+              <copy>
+                <from expression="'Remote_Fault'"/>
+                <to variable="Invbind_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:MessageDetails/ns9:MessageType"/>
+              </copy>
+              <copy>
+                <from variable="var_processname"/>
+                <to variable="Invbind_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ProcessInfo/ns9:BusinessProcessName"/>
+              </copy>
+              <copy>
+                <from expression="true()"/>
+                <to variable="Invbind_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ErrorHandlingOptions/ns9:Retire"/>
+              </copy>
+              <copy>
+                <from variable="var_sendtaskto"/>
+                <to variable="Invbind_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ErrorHandlingOptions/ns9:TaskUserAssignee"/>
+              </copy>
+              <copy>
+                <from expression="true()"/>
+                <to variable="Invbind_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ErrorHandlingOptions/ns9:Task"/>
+              </copy>
+            </assign>
+            <invoke name="Invbind_ODErrorHandler" partnerLink="ODErrorHandler"
+                    portType="ns9:ODErrorHandler" operation="initiate"
+                    inputVariable="Invbind_ODErrorHandler_Input"/>
+          </sequence>
+        </catch>
+        <catch faultName="bpelx:remoteFault" faultVariable="var_remotefault">
+          <sequence name="Sequence_1">
+            <assign name="Asnremotefault">
+              <copy>
+                <from variable="Receive_ItemMasterAQ_Dequeue_Input"
+                      part="SYNC_ITEM_MASTER"
+                      query="/ns3:SYNC_ITEM_MASTER/ns3:VERB/ns3:PROCESS_NAME"/>
+                <to variable="Invremote_ItemMas_rms_confirm_inb_Input"
+                    part="payload"
+                    query="/ns3:SYNC_ITEM_MASTER_CONFIRM/ns3:VERB/ns3:PROCESS_NAME"/>
+              </copy>
+              <copy>
+                <from variable="Receive_ItemMasterAQ_Dequeue_Input"
+                      part="SYNC_ITEM_MASTER"
+                      query="/ns3:SYNC_ITEM_MASTER/ns3:VERB/ns3:PROCESS_ID"/>
+                <to variable="Invremote_ItemMas_rms_confirm_inb_Input"
+                    part="payload"
+                    query="/ns3:SYNC_ITEM_MASTER_CONFIRM/ns3:VERB/ns3:PROCESS_ID"/>
+              </copy>
+              <copy>
+                <from variable="var_fatalerror_cd"/>
+                <to variable="Invremote_ItemMas_rms_confirm_inb_Input"
+                    part="payload"
+                    query="/ns3:SYNC_ITEM_MASTER_CONFIRM/ns3:NOUN/ns3:ERROR/ns3:CODE"/>
+              </copy>
+              <copy>
+                <from expression="substring(concat(bpws:getVariableData('var_processname'), bpws:getVariableData('var_remotefault','code'),bpws:getVariableData('var_remotefault','summary')),1,250)"/>
+                <to variable="Invremote_ItemMas_rms_confirm_inb_Input"
+                    part="payload"
+                    query="/ns3:SYNC_ITEM_MASTER_CONFIRM/ns3:NOUN/ns3:ERROR/ns3:MESSAGE"/>
+              </copy>
+            </assign>
+            <invoke name="Invremote_ItemMas_rms_confirm_inb"
+                    partnerLink="ItemMaster_rms_confirm_inb"
+                    portType="ns4:ItemMaster_rms_confirm_inb"
+                    operation="initiate"
+                    inputVariable="Invremote_ItemMas_rms_confirm_inb_Input"/>
+            <assign name="AsnRemoteODError">
+              <copy>
+                <from expression="ora:getInstanceId()"/>
+                <to variable="Invremote_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ProcessInfo/ns9:BusinessProcessId"/>
+              </copy>
+              <copy>
+                <from expression="ora:getDomainId()"/>
+                <to variable="Invremote_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ProcessInfo/ns9:BusinessProcessDomain"/>
+              </copy>
+              <copy>
+                <from expression="ora:getProcessURL()"/>
+                <to variable="Invremote_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ProcessInfo/ns9:SystemName"/>
+              </copy>
+              <copy>
+                <from expression="bpws:getVariableData('var_remotefault','code')"/>
+                <to variable="Invremote_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ErrorDetails/ns9:ErrorCode"/>
+              </copy>
+              <copy>
+                <from expression="bpws:getVariableData('var_remotefault','summary')"/>
+                <to variable="Invremote_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ErrorDetails/ns9:ErrorDescription"/>
+              </copy>
+              <copy>
+                <from expression="bpws:getVariableData('var_remotefault','detail')"/>
+                <to variable="Invremote_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ErrorDetails/ns9:ErrorText"/>
+              </copy>
+              <copy>
+                <from expression="ora:getCurrentDateTime()"/>
+                <to variable="Invremote_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:MessageDetails/ns9:MessageDateTime"/>
+              </copy>
+              <copy>
+                <from expression="'Remote_Fault'"/>
+                <to variable="Invremote_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:MessageDetails/ns9:MessageType"/>
+              </copy>
+              <copy>
+                <from variable="var_processname"/>
+                <to variable="Invremote_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ProcessInfo/ns9:BusinessProcessName"/>
+              </copy>
+              <copy>
+                <from expression="true()"/>
+                <to variable="Invremote_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ErrorHandlingOptions/ns9:Retire"/>
+              </copy>
+              <copy>
+                <from variable="var_sendtaskto"/>
+                <to variable="Invremote_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ErrorHandlingOptions/ns9:TaskUserAssignee"/>
+              </copy>
+              <copy>
+                <from expression="true()"/>
+                <to variable="Invremote_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ErrorHandlingOptions/ns9:Task"/>
+              </copy>
+            </assign>
+            <invoke name="Invremote_ODErrorHandler" partnerLink="ODErrorHandler"
+                    portType="ns9:ODErrorHandler" operation="initiate"
+                    inputVariable="Invremote_ODErrorHandler_Input"/>
+          </sequence>
+        </catch>
+        <catchAll>
+          <sequence name="Sequence_3">
+            <assign name="Asncatchall">
+              <copy>
+                <from variable="Receive_ItemMasterAQ_Dequeue_Input"
+                      part="SYNC_ITEM_MASTER"
+                      query="/ns3:SYNC_ITEM_MASTER/ns3:VERB/ns3:PROCESS_NAME"/>
+                <to variable="Invoke_catchall_Input" part="payload"
+                    query="/ns3:SYNC_ITEM_MASTER_CONFIRM/ns3:VERB/ns3:PROCESS_NAME"/>
+              </copy>
+              <copy>
+                <from variable="Receive_ItemMasterAQ_Dequeue_Input"
+                      part="SYNC_ITEM_MASTER"
+                      query="/ns3:SYNC_ITEM_MASTER/ns3:VERB/ns3:PROCESS_ID"/>
+                <to variable="Invoke_catchall_Input" part="payload"
+                    query="/ns3:SYNC_ITEM_MASTER_CONFIRM/ns3:VERB/ns3:PROCESS_ID"/>
+              </copy>
+              <copy>
+                <from variable="var_fatalerror_cd"/>
+                <to variable="Invoke_catchall_Input" part="payload"
+                    query="/ns3:SYNC_ITEM_MASTER_CONFIRM/ns3:NOUN/ns3:ERROR/ns3:CODE"/>
+              </copy>
+              <copy>
+                <from expression="substring(concat(bpws:getVariableData('var_processname'), bpws:getVariableData('var_remotefault','code'),bpws:getVariableData('var_remotefault','summary')),1,250)"/>
+                <to variable="Invoke_catchall_Input" part="payload"
+                    query="/ns3:SYNC_ITEM_MASTER_CONFIRM/ns3:NOUN/ns3:ERROR/ns3:MESSAGE"/>
+              </copy>
+            </assign>
+            <invoke name="Invoke_catchall"
+                    partnerLink="ItemMaster_rms_confirm_inb"
+                    portType="ns4:ItemMaster_rms_confirm_inb"
+                    operation="initiate" inputVariable="Invoke_catchall_Input"/>
+            <assign name="AsnCatchAllODError">
+              <copy>
+                <from expression="ora:getInstanceId()"/>
+                <to variable="Invcatchall_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ProcessInfo/ns9:BusinessProcessId"/>
+              </copy>
+              <copy>
+                <from expression="ora:getDomainId()"/>
+                <to variable="Invcatchall_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ProcessInfo/ns9:BusinessProcessDomain"/>
+              </copy>
+              <copy>
+                <from expression="ora:getProcessURL()"/>
+                <to variable="Invcatchall_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ProcessInfo/ns9:SystemName"/>
+              </copy>
+              <copy>
+                <from expression="bpws:getVariableData('var_remotefault','code')"/>
+                <to variable="Invcatchall_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ErrorDetails/ns9:ErrorCode"/>
+              </copy>
+              <copy>
+                <from expression="bpws:getVariableData('var_remotefault','summary')"/>
+                <to variable="Invcatchall_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ErrorDetails/ns9:ErrorDescription"/>
+              </copy>
+              <copy>
+                <from expression="bpws:getVariableData('var_remotefault','detail')"/>
+                <to variable="Invcatchall_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ErrorDetails/ns9:ErrorText"/>
+              </copy>
+              <copy>
+                <from expression="ora:getCurrentDateTime()"/>
+                <to variable="Invcatchall_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:MessageDetails/ns9:MessageDateTime"/>
+              </copy>
+              <copy>
+                <from expression="'Remote_Fault'"/>
+                <to variable="Invcatchall_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:MessageDetails/ns9:MessageType"/>
+              </copy>
+              <copy>
+                <from variable="var_processname"/>
+                <to variable="Invcatchall_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ProcessInfo/ns9:BusinessProcessName"/>
+              </copy>
+              <copy>
+                <from expression="true()"/>
+                <to variable="Invcatchall_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ErrorHandlingOptions/ns9:Task"/>
+              </copy>
+              <copy>
+                <from expression="true()"/>
+                <to variable="Invcatchall_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ErrorHandlingOptions/ns9:Retire"/>
+              </copy>
+              <copy>
+                <from variable="var_sendtaskto"/>
+                <to variable="Invcatchall_ODErrorHandler_Input" part="payload"
+                    query="/ns9:ODErrorHandlerProcessRequest/ns9:ErrorHandlingOptions/ns9:TaskUserAssignee"/>
+              </copy>
+            </assign>
+            <invoke name="Invcatchall_ODErrorHandler"
+                    partnerLink="ODErrorHandler" portType="ns9:ODErrorHandler"
+                    operation="initiate"
+                    inputVariable="Invcatchall_ODErrorHandler_Input"/>
+          </sequence>
+        </catchAll>
+      </faultHandlers>
+      <invoke name="Invoke_ItemMaster_ebs_inb" partnerLink="ItemMaster_ebs_inb"
+              portType="ns2:ItemMaster_ebs_inb" operation="initiate"
+              inputVariable="Invoke_ItemMaster_ebs_inb_Input"/>
+    </scope>
+  </sequence>
+</process>

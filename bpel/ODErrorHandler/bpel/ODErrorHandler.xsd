@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<schema targetNamespace="http://xmlns.oracle.com/ODErrorHandler"  xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<element name="ODErrorHandlerProcessRequest">
+		<annotation>
+			<documentation>Error Data containing Error, Notification, Message, Business Process, System and Trading Partner details along with the same passed back from a sub-process </documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="ProcessInfo">
+					<annotation>
+						<documentation>Process information pertaining to process errored out </documentation>
+					</annotation>
+					<complexType>
+						<sequence>
+							<element name="BusinessProcessName" type="string">
+								<annotation>
+									<documentation>A globally unique identifier for the BPEL process.</documentation>
+								</annotation>
+							</element>
+							<element name="BusinessProcessId" type="string">
+								<annotation>
+									<documentation>System generated unique identifier for the process instance. </documentation>
+								</annotation>
+							</element>
+							<element name="BusinessProcessStep" type="string" minOccurs="0">
+								<annotation>
+									<documentation>Information that will help developers identify and localize the place of error in the BPEL code</documentation>
+								</annotation>
+							</element>
+							<element name="BusinessProcessDomain" type="string"
+                    minOccurs="0">
+								<annotation>
+									<documentation>The BPEL server domain under which the process is deployed</documentation>
+								</annotation>
+							</element>
+							<element name="SystemName" type="string" minOccurs="0">
+								<annotation>
+									<documentation>The system name where the BPEL server is running.</documentation>
+								</annotation>
+							</element>
+							<element name="TradingPartnerDetails" minOccurs="0">
+								<annotation>
+									<documentation>Trading Partner details pertaining to the business process</documentation>
+								</annotation>
+								<complexType>
+									<sequence>
+										<element name="TPFrom" type="string"/>
+										<element name="TPTo" type="string"/>
+										<element name="TPDocTypeName" type="string"/>
+										<element name="TPDocTypeRevision" type="string"/>
+									</sequence>
+								</complexType>
+							</element>
+						</sequence>
+					</complexType>
+				</element>
+				<element name="ErrorDetails" minOccurs="0">
+					<annotation>
+						<documentation>Error Details including error code, description, text and severity</documentation>
+					</annotation>
+					<complexType>
+						<sequence>
+							<element name="ErrorCode" type="string">
+								<annotation>
+									<documentation>A unique code for a type of error. E.g., ERR_RTK_DB_AUTH_FAIL</documentation>
+								</annotation>
+							</element>
+							<element name="ErrorDescription" type="string" minOccurs="0">
+								<annotation>
+									<documentation>Human-readable detailed description of the error</documentation>
+								</annotation>
+							</element>
+							<element name="ErrorText" type="string" minOccurs="0">
+								<annotation>
+									<documentation>Error information supplied to the process catch block. </documentation>
+								</annotation>
+							</element>
+							<element name="ErrorType" type="string" minOccurs="0">
+								<annotation>
+									<documentation>Type of error e.g., database connection error, ftp connection error, etc.</documentation>
+								</annotation>
+							</element>
+							<element name="ErrorSeverity" type="string" minOccurs="1">
+								<annotation>
+									<documentation>One of the specified codes for error severity levels</documentation>
+								</annotation>
+							</element>
+							<element name="ErrorDateTime" type="string" minOccurs="1">
+								<annotation>
+									<documentation>The date-time stamp of occurence of error</documentation>
+								</annotation>
+							</element>
+						</sequence>
+					</complexType>
+				</element>
+				<element name="MessageDetails" minOccurs="0">
+					<annotation>
+						<documentation>Message Details including message id, data, date, time and type </documentation>
+					</annotation>
+					<complexType>
+						<sequence>
+							<element name="MessageId" type="string" minOccurs="1">
+								<annotation>
+									<documentation>Unique record-level identifier for the message</documentation>
+								</annotation>
+							</element>
+							<element name="MessageDateTime" type="string" minOccurs="0">
+								<annotation>
+									<documentation>The creation date-time of the message</documentation>
+								</annotation>
+							</element>
+							<element name="MessageType" type="string" minOccurs="0">
+								<annotation>
+									<documentation>Type of Message Data, e.g., Purchase Order</documentation>
+								</annotation>
+							</element>
+							<element name="MessageVersion" type="string" minOccurs="0"/>
+							<element name="MessageOperation" type="string" minOccurs="0">
+								<annotation>
+									<documentation>Operation being carried out, e.g., Invoice Request</documentation>
+								</annotation>
+							</element>
+							<element name="MessageSourceSystem" type="string" minOccurs="0">
+								<annotation>
+									<documentation>Source System for Message Data, e.g., Retek</documentation>
+								</annotation>
+							</element>
+							<element name="MessageSourceSystemComponent" minOccurs="0"
+                    type="string">
+								<annotation>
+									<documentation>Source System Component for Message Data,  e.g., RMS</documentation>
+								</annotation>
+							</element>
+							<element name="MessageData" type="string" minOccurs="0">
+								<annotation>
+									<documentation>The payload of the message</documentation>
+								</annotation>
+							</element>
+						</sequence>
+					</complexType>
+				</element>
+				<element name="ErrorHandlingOptions" minOccurs="0">
+					<annotation>
+						<documentation>Options for Error Handling System.</documentation>
+					</annotation>
+					<complexType>
+							<sequence>
+								<element name="Retire" type="boolean" nillable="true" minOccurs="0">
+									<annotation>
+										<documentation>This option will be set to true if the developer wishes to retire the failed process</documentation>
+									</annotation>
+								</element>
+								<element name="Task" type="boolean" nillable="true" minOccurs="0">
+									<annotation>
+										<documentation>This option will be set to true if the developer wishes to create a Human Task</documentation>
+									</annotation>
+								</element>
+								<element name="TaskUserAssignee" type="string" minOccurs="0">
+									<annotation>
+										<documentation>This will set who the task belongs to in the worklist</documentation>
+									</annotation>
+								</element>
+								<element name="TaskGroupAssignee" type="string" minOccurs="0">
+									<annotation>
+										<documentation>This will set who the task belongs to in the worklist</documentation>
+									</annotation>
+								</element>
+							</sequence>
+					</complexType>
+				</element>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="ODErrorHandlerProcessResponse">
+			<complexType>
+				<sequence>
+					<element name="result" type="string"/>
+				</sequence>
+			</complexType>
+	</element>
+</schema>
+
+
+
+
+<!--
+
+<schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified"
+	targetNamespace="http://xmlns.oracle.com/ODErrorHandler"
+	xmlns="http://www.w3.org/2001/XMLSchema">
+	<element name="ODErrorHandlerProcessRequest">
+		<complexType>
+			<sequence>
+				<element name="InstanceId" type="string" nillable="true" minOccurs="0"/>
+				<element name="ProcessName" type="string" nillable="true" minOccurs="0"/>
+         			<element name="ErrorData" type="string" nillable="true" minOccurs="0"/> 
+         			<element name="Retire" type="boolean" nillable="true" minOccurs="0"/>
+         			<element name="Task" type="boolean" nillable="true" minOccurs="0"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="ODErrorHandlerProcessResponse">
+		<complexType>
+			<sequence>
+				<element name="result" type="string"/>
+			</sequence>
+		</complexType>
+	</element>
+	
+</schema> -->

@@ -1,0 +1,19 @@
+<schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified"
+	targetNamespace="http://xmlns.oracle.com/OrgHier_RMS_Outb"
+	xmlns="http://www.w3.org/2001/XMLSchema">
+	<element name="OrgHier_RMS_OutbProcessRequest">
+		<complexType>
+			<sequence>
+				<element name="input" type="string"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="OrgHier_RMS_OutbProcessResponse">
+		<complexType>
+			<sequence>
+				<element name="result" type="string"/>
+			</sequence>
+		</complexType>
+	</element>
+</schema>

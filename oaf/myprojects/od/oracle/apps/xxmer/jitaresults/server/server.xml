@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE JboPackage SYSTEM "jbo_03_01.dtd">
+
+<JboPackage
+   Name="server"
+   SeparateXMLFiles="true"
+   PackageName="od.oracle.apps.xxmer.jitaresults.server" >
+   <DesignTime>
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_ejbPackage" Value="false" />
+   </DesignTime>
+   <Containee
+      Name="JITAResultsAM"
+      FullName="od.oracle.apps.xxmer.jitaresults.server.JITAResultsAM"
+      ObjectType="AppModule" >
+   </Containee>
+   <Containee
+      Name="JITAResultsVO"
+      FullName="od.oracle.apps.xxmer.jitaresults.server.JITAResultsVO"
+      ObjectType="ViewObject" >
+   </Containee>
+</JboPackage>

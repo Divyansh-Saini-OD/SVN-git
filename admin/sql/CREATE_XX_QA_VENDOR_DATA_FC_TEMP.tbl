@@ -1,0 +1,42 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                             Office Depot                          |
+-- +===================================================================+
+-- | Name  :XXMER.XX_QA_VENDOR_DATA_FC_TEMP                            |
+-- | Description: TABLE for XX_QA_VENDOR_DATA_FC_TEMP                  |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |1.0      04-15-2008   Young MI Kwon    INITAL CODE                 |
+-- +===================================================================+
+CREATE TABLE XXMER.XX_QA_VENDOR_DATA_FC_TEMP
+(
+  TECH_REPORT_NUMBER  VARCHAR2(25 BYTE),
+  FILLER_1            VARCHAR2(25 BYTE),
+  OD_PROJ_NUMBER      VARCHAR2(25 BYTE),
+  OD_ITEM_NUMBER      VARCHAR2(25 BYTE),
+  FAILURE_CODE        VARCHAR2(100 BYTE)
+)
+TABLESPACE XXOD
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            MINEXTENTS       1
+            MAXEXTENTS       2147483645
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+EXIT;

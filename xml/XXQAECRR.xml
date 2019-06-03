@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXQAECRR" description="OD OB ECR Report" Version="1.0">
+<parameters>
+ <parameter name="P_VENDOR_NAME" datatype="character" />
+ <parameter name="P_FACTORY_NAME" datatype="character" />
+ <parameter name="P_SKU" datatype="character" />
+ <parameter name="P_DEPT_NAME" datatype="character" />
+ <parameter name="P_ECR_ID" datatype="character" />
+ <parameter name="P_REPORT_NO" datatype="character" />
+ <parameter name="P_SUBMITTER" datatype="character" />
+ <parameter name="P_APPROVER" datatype="character" />
+ <parameter name="P_APPROVAL_STATUS" datatype="character" /> 
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_ECR">
+<![CDATA[
+SELECT  
+	ecr.OD_PB_ECR_ID				    ,
+	ecr.OD_PB_DATE_REQUESTED			,
+	ecr.OD_OB_VENDOR_NAME		 	    ,
+	ecr.OD_OB_FACTORY_NUMBER			,
+	ecr.OD_SC_REGION			,
+	ecr.OD_SC_FACTORY_NAME			    ,
+	ecr.OD_PB_FACTORY_CONTACT		    ,
+	ecr.OD_PB_CHANGE_DESC			    ,
+	ecr.OD_PB_TECH_RPT_NUM			    ,
+	ecr.OD_PB_DATE_PROPOSED_PRODUCTION	,
+	ecr.OD_PB_CHG_CAT_AESTHETICS		,
+	ecr.OD_PB_CHG_CAT_DESIGN			,
+	ecr.OD_PB_CHG_CAT_LOCATION		    ,
+	ecr.OD_PB_CHG_CAT_PACKAGING		    ,
+	ecr.OD_PB_CHG_CAT_PERFORMANCE		,
+	ecr.OD_PB_CHG_CAT_SAFETY			,
+	ecr.OD_PB_CHG_CAT_SOFTWARE		    ,
+	ecr.OD_PB_CHG_CAT_SUBSTITUTION		,
+	ecr.OD_PB_QA_ENGINEER			    ,
+	ecr.OD_PB_QA_ENGR_EMAIL			    ,
+	ecr.OD_PB_APPROVAL_STATUS		    ,
+	ecr.OD_PB_ATTACHMENT			    ,
+	ecr.OD_PB_COMMENTS			        ,
+	esk.OD_OB_SKU				        ,
+	esk.OD_PB_ITEM_DESC		            ,
+	esk.OD_PB_SC_DEPT_NAME			
+  FROM  apps.q_od_ob_ecr_sku_v esk      ,
+	    apps.q_od_ob_ecr_v ecr
+ WHERE  esk.OD_OB_REF_ECR(+)=ecr.od_pb_ecr_id
+   AND  NVL(ecr.OD_OB_VENDOR_NAME,'X')=NVL(:p_vendor_name,NVL(ecr.OD_OB_VENDOR_NAME,'X'))
+   AND  NVL(ecr.OD_SC_FACTORY_NAME,'X')=NVL(:p_factory_name,NVL(ecr.OD_SC_FACTORY_NAME,'X'))
+   AND  NVL(esk.OD_OB_SKU,1)=NVL(:p_sku,NVL(esk.OD_OB_SKU,1))
+   AND  NVL(esk.OD_PB_SC_DEPT_NAME,'X')=NVL(:p_dept_name,NVL(esk.OD_PB_SC_DEPT_NAME,'X'))
+   AND  NVL(ecr.OD_PB_ECR_ID,'X')=NVL(:p_ecr_id,NVL(ecr.OD_PB_ECR_ID,'X'))
+   AND  NVL(ecr.OD_PB_TECH_RPT_NUM,'X')=NVL(:p_report_no,NVL(ecr.OD_PB_TECH_RPT_NUM,'X'))
+   AND  NVL(ecr.OD_PB_QA_ENGINEER,'X')=NVL(:p_submitter,NVL(ecr.OD_PB_QA_ENGINEER,'X'))
+   AND  NVL(ecr.OD_PB_QA_ENGR_EMAIL,'X')=NVL(:p_approver,NVL(ecr.OD_PB_QA_ENGR_EMAIL,'X'))
+   AND  NVL(ecr.OD_PB_APPROVAL_STATUS,'X')=NVL(:p_approval_status,NVL(ecr.OD_PB_APPROVAL_STATUS,'X'))
+ORDER BY ecr.OD_PB_ECR_ID,esk.OD_OB_SKU,ecr.OD_PB_DATE_REQUESTED desc
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_ECR" source="Q_ECR">
+<element name="OD_PB_ECR_ID" value="OD_PB_ECR_ID" />
+<element name="OD_PB_DATE_REQUESTED" value="OD_PB_DATE_REQUESTED" />
+<element name="OD_OB_VENDOR_NAME" value="OD_OB_VENDOR_NAME" />
+<element name="OD_OB_FACTORY_NUMBER" value="OD_OB_FACTORY_NUMBER" />
+<element name="OD_REGION" value="OD_SC_REGION" />
+<element name="OD_SC_FACTORY_NAME" value="OD_SC_FACTORY_NAME" />
+<element name="OD_PB_FACTORY_CONTACT" value="OD_PB_FACTORY_CONTACT" />
+<element name="OD_PB_CHANGE_DESC" value="OD_PB_CHANGE_DESC" />
+<element name="OD_PB_TECH_RPT_NUM" value="OD_PB_TECH_RPT_NUM" />
+<element name="OD_PB_DATE_PROPOSED_PRODUCTION" value="OD_PB_DATE_PROPOSED_PRODUCTION" />
+<element name="OD_PB_CHG_CAT_AESTHETICS" value="OD_PB_CHG_CAT_AESTHETICS" />
+<element name="OD_PB_CHG_CAT_DESIGN" value="OD_PB_CHG_CAT_DESIGN" />
+<element name="OD_PB_CHG_CAT_LOCATION" value="OD_PB_CHG_CAT_LOCATION" />
+<element name="OD_PB_CHG_CAT_PACKAGING" value="OD_PB_CHG_CAT_PACKAGING" />
+<element name="OD_PB_CHG_CAT_PERFORMANCE" value="OD_PB_CHG_CAT_PERFORMANCE" />
+<element name="OD_PB_CHG_CAT_SAFETY" value="OD_PB_CHG_CAT_SAFETY" />
+<element name="OD_PB_CHG_CAT_SOFTWARE" value="OD_PB_CHG_CAT_SOFTWARE" />
+<element name="OD_PB_CHG_CAT_SUBSTITUTION" value="OD_PB_CHG_CAT_SUBSTITUTION" />
+<element name="OD_PB_QA_ENGINEER" value="OD_PB_QA_ENGINEER" />
+<element name="OD_PB_QA_ENGR_EMAIL" value="OD_PB_QA_ENGR_EMAIL" />
+<element name="OD_PB_APPROVAL_STATUS" value="OD_PB_APPROVAL_STATUS" />
+<element name="OD_PB_ATTACHMENT" value="OD_PB_ATTACHMENT" />
+<element name="OD_PB_COMMENTS" value="OD_PB_COMMENTS" />
+<element name="OD_OB_SKU" value="OD_OB_SKU" />
+<element name="OD_PB_ITEM_DESC" value="OD_PB_ITEM_DESC" />
+<element name="OD_PB_SC_DEPT_NAME" value="OD_PB_SC_DEPT_NAME" />
+</group>
+</dataStructure>
+</dataTemplate>

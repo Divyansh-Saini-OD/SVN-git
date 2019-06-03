@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<PurchaseOrder xmlns="http://www.openapplications.org/oagis/9">
+   <PurchaseOrderHeader>
+      <BillToParty category=""/>
+      <CarrierParty category=""/>
+      <PayFromParty category=""/>
+      <PartialShipmentAllowedIndicator></PartialShipmentAllowedIndicator>
+      <DropShipmentAllowedIndicator></DropShipmentAllowedIndicator>
+      <EarlyShipmentAllowedIndicator></EarlyShipmentAllowedIndicator>
+      <LicenseIndicator name=""></LicenseIndicator>
+      <LicenseIndicator name=""></LicenseIndicator>
+      <LicenseIndicator name=""></LicenseIndicator>
+      <TaxExemptIndicator></TaxExemptIndicator>
+      <TransportationTerm/>
+      <TransportationTerm/>
+      <TransportationTerm/>
+      <PaymentTerm type=""/>
+      <PaymentTerm type=""/>
+      <PaymentTerm type=""/>
+      <DistributedCharge type="" sequence="1">
+         <BasisAmount currencyID="">2</BasisAmount>
+      </DistributedCharge>
+      <DistributedCharge type="" sequence="3">
+         <BasisAmount currencyID="">4</BasisAmount>
+      </DistributedCharge>
+      <DistributedCharge type="" sequence="5">
+         <BasisAmount currencyID="">6</BasisAmount>
+      </DistributedCharge>
+      <DistributedTax type="">
+         <BasisAmount currencyID="">7</BasisAmount>
+      </DistributedTax>
+      <DistributedTax type="">
+         <BasisAmount currencyID="">8</BasisAmount>
+      </DistributedTax>
+      <DistributedTax type="">
+         <BasisAmount currencyID="">9</BasisAmount>
+      </DistributedTax>
+      <Distribution/>
+      <Distribution/>
+      <Distribution/>
+      <SpecialPriceAuthorizationCode listID="listID10" listAgencyID="listAgencyID11" listAgencyName="listAgencyName12" listName="listName13" listVersionID="listVersionID14" name="name15" languageID="US" listURI="WWW.ORACLE.COM" listSchemeURI="WWW.ORACLE.COM">normalizedString16</SpecialPriceAuthorizationCode>
+      <EarliestShipDateTime></EarliestShipDateTime>
+      <RequestedShipDateTime></RequestedShipDateTime>
+      <PromisedShipDateTime></PromisedShipDateTime>
+      <PromisedDeliveryDateTime></PromisedDeliveryDateTime>
+      <PaymentMethodCode listID="listID17" listAgencyID="listAgencyID18" listAgencyName="listAgencyName19" listName="listName20" listVersionID="listVersionID21" name="name22" languageID="US" listURI="WWW.ORACLE.COM" listSchemeURI="WWW.ORACLE.COM">Cash</PaymentMethodCode>
+      <Payment>
+         <CashIndicator></CashIndicator>
+      </Payment>
+      <Payment>
+         <CashIndicator></CashIndicator>
+      </Payment>
+      <Payment>
+         <CashIndicator></CashIndicator>
+      </Payment>
+      <OrderDateTime></OrderDateTime>
+      <BuyerParty category="">
+         <RequesterContact languageCode=""/>
+         <PlannerContact languageCode=""/>
+         <BuyerContact languageCode=""/>
+         <ReceivingContact languageCode=""/>
+         <UserArea/>
+      </BuyerParty>
+      <AcceptByDateTime></AcceptByDateTime>
+      <ReleaseNumber schemeID="schemeID23" schemeName="schemeName24" schemeAgencyID="schemeAgencyID25" schemeAgencyName="schemeAgencyName26" schemeVersionID="schemeVersionID27" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString28</ReleaseNumber>
+      <RequisitionReference>
+         <DocumentDateTime></DocumentDateTime>
+         <StatusCode listID="listID29" listAgencyID="listAgencyID30" listAgencyName="listAgencyName31" listName="listName32" listVersionID="listVersionID33" name="name34" languageID="US" listURI="WWW.ORACLE.COM" listSchemeURI="WWW.ORACLE.COM">normalizedString35</StatusCode>
+         <ReleaseNumber schemeID="schemeID36" schemeName="schemeName37" schemeAgencyID="schemeAgencyID38" schemeAgencyName="schemeAgencyName39" schemeVersionID="schemeVersionID40" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString41</ReleaseNumber>
+         <LineNumber schemeID="schemeID42" schemeName="schemeName43" schemeAgencyID="schemeAgencyID44" schemeAgencyName="schemeAgencyName45" schemeVersionID="schemeVersionID46" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString47</LineNumber>
+         <ScheduleLineNumber schemeID="schemeID48" schemeName="schemeName49" schemeAgencyID="schemeAgencyID50" schemeAgencyName="schemeAgencyName51" schemeVersionID="schemeVersionID52" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString53</ScheduleLineNumber>
+         <SubLineNumber schemeID="schemeID54" schemeName="schemeName55" schemeAgencyID="schemeAgencyID56" schemeAgencyName="schemeAgencyName57" schemeVersionID="schemeVersionID58" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString59</SubLineNumber>
+         <UserArea/>
+      </RequisitionReference>
+      <QuoteReference>
+         <DocumentDateTime></DocumentDateTime>
+         <StatusCode listID="listID60" listAgencyID="listAgencyID61" listAgencyName="listAgencyName62" listName="listName63" listVersionID="listVersionID64" name="name65" languageID="US" listURI="WWW.ORACLE.COM" listSchemeURI="WWW.ORACLE.COM">normalizedString66</StatusCode>
+         <ReleaseNumber schemeID="schemeID67" schemeName="schemeName68" schemeAgencyID="schemeAgencyID69" schemeAgencyName="schemeAgencyName70" schemeVersionID="schemeVersionID71" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString72</ReleaseNumber>
+         <LineNumber schemeID="schemeID73" schemeName="schemeName74" schemeAgencyID="schemeAgencyID75" schemeAgencyName="schemeAgencyName76" schemeVersionID="schemeVersionID77" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString78</LineNumber>
+         <ScheduleLineNumber schemeID="schemeID79" schemeName="schemeName80" schemeAgencyID="schemeAgencyID81" schemeAgencyName="schemeAgencyName82" schemeVersionID="schemeVersionID83" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString84</ScheduleLineNumber>
+         <SubLineNumber schemeID="schemeID85" schemeName="schemeName86" schemeAgencyID="schemeAgencyID87" schemeAgencyName="schemeAgencyName88" schemeVersionID="schemeVersionID89" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString90</SubLineNumber>
+         <UserArea/>
+      </QuoteReference>
+      <UserArea>
+         <any_0 xmlns="##any">
+            <any_01>any content</any_01>
+         </any_0>
+         <any_1 xmlns="##any">
+            <any_11>any content</any_11>
+         </any_1>
+         <any_2 xmlns="##any">
+            <any_21>any content</any_21>
+         </any_2>
+      </UserArea>
+   </PurchaseOrderHeader>
+   <PurchaseOrderLine>
+      <PartialShipmentAllowedIndicator></PartialShipmentAllowedIndicator>
+      <DropShipmentAllowedIndicator></DropShipmentAllowedIndicator>
+      <EarlyShipmentAllowedIndicator></EarlyShipmentAllowedIndicator>
+      <LicenseIndicator name=""></LicenseIndicator>
+      <LicenseIndicator name=""></LicenseIndicator>
+      <LicenseIndicator name=""></LicenseIndicator>
+      <TransportationTerm/>
+      <PaymentTerm type=""/>
+      <PaymentTerm type=""/>
+      <PaymentTerm type=""/>
+      <DistributedCharge type="" sequence="91">
+         <BasisAmount currencyID="">92</BasisAmount>
+      </DistributedCharge>
+      <DistributedCharge type="" sequence="93">
+         <BasisAmount currencyID="">94</BasisAmount>
+      </DistributedCharge>
+      <DistributedCharge type="" sequence="95">
+         <BasisAmount currencyID="">96</BasisAmount>
+      </DistributedCharge>
+      <DistributedTax type="">
+         <BasisAmount currencyID="">97</BasisAmount>
+      </DistributedTax>
+      <DistributedTax type="">
+         <BasisAmount currencyID="">98</BasisAmount>
+      </DistributedTax>
+      <DistributedTax type="">
+         <BasisAmount currencyID="">99</BasisAmount>
+      </DistributedTax>
+      <Distribution/>
+      <Distribution/>
+      <Distribution/>
+      <FreightClassification/>
+      <SpecialPriceAuthorizationCode listID="listID100" listAgencyID="listAgencyID101" listAgencyName="listAgencyName102" listName="listName103" listVersionID="listVersionID104" name="name105" languageID="US" listURI="WWW.ORACLE.COM" listSchemeURI="WWW.ORACLE.COM">normalizedString106</SpecialPriceAuthorizationCode>
+      <SubstituteItemIndicator></SubstituteItemIndicator>
+      <RequisitionReference/>
+      <BackOrderedQuantity unitCode="">107</BackOrderedQuantity>
+      <ReceivedQuantity unitCode="">108</ReceivedQuantity>
+      <OpenQuantity unitCode="">109</OpenQuantity>
+      <QuoteReference>
+         <DocumentDateTime></DocumentDateTime>
+         <StatusCode listID="listID110" listAgencyID="listAgencyID111" listAgencyName="listAgencyName112" listName="listName113" listVersionID="listVersionID114" name="name115" languageID="US" listURI="WWW.ORACLE.COM" listSchemeURI="WWW.ORACLE.COM">normalizedString116</StatusCode>
+         <ReleaseNumber schemeID="schemeID117" schemeName="schemeName118" schemeAgencyID="schemeAgencyID119" schemeAgencyName="schemeAgencyName120" schemeVersionID="schemeVersionID121" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString122</ReleaseNumber>
+         <LineNumber schemeID="schemeID123" schemeName="schemeName124" schemeAgencyID="schemeAgencyID125" schemeAgencyName="schemeAgencyName126" schemeVersionID="schemeVersionID127" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString128</LineNumber>
+         <ScheduleLineNumber schemeID="schemeID129" schemeName="schemeName130" schemeAgencyID="schemeAgencyID131" schemeAgencyName="schemeAgencyName132" schemeVersionID="schemeVersionID133" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString134</ScheduleLineNumber>
+         <SubLineNumber schemeID="schemeID135" schemeName="schemeName136" schemeAgencyID="schemeAgencyID137" schemeAgencyName="schemeAgencyName138" schemeVersionID="schemeVersionID139" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString140</SubLineNumber>
+         <UserArea/>
+      </QuoteReference>
+      <SalesOrderReference>
+         <DocumentDateTime></DocumentDateTime>
+         <StatusCode listID="listID141" listAgencyID="listAgencyID142" listAgencyName="listAgencyName143" listName="listName144" listVersionID="listVersionID145" name="name146" languageID="US" listURI="WWW.ORACLE.COM" listSchemeURI="WWW.ORACLE.COM">normalizedString147</StatusCode>
+         <ReleaseNumber schemeID="schemeID148" schemeName="schemeName149" schemeAgencyID="schemeAgencyID150" schemeAgencyName="schemeAgencyName151" schemeVersionID="schemeVersionID152" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString153</ReleaseNumber>
+         <LineNumber schemeID="schemeID154" schemeName="schemeName155" schemeAgencyID="schemeAgencyID156" schemeAgencyName="schemeAgencyName157" schemeVersionID="schemeVersionID158" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString159</LineNumber>
+         <ScheduleLineNumber schemeID="schemeID160" schemeName="schemeName161" schemeAgencyID="schemeAgencyID162" schemeAgencyName="schemeAgencyName163" schemeVersionID="schemeVersionID164" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString165</ScheduleLineNumber>
+         <SubLineNumber schemeID="schemeID166" schemeName="schemeName167" schemeAgencyID="schemeAgencyID168" schemeAgencyName="schemeAgencyName169" schemeVersionID="schemeVersionID170" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString171</SubLineNumber>
+         <UserArea/>
+      </SalesOrderReference>
+      <BuyerParty category="">
+         <RequesterContact languageCode=""/>
+         <PlannerContact languageCode=""/>
+         <BuyerContact languageCode=""/>
+         <ReceivingContact languageCode=""/>
+         <UserArea/>
+      </BuyerParty>
+      <PurchaseOrderSubLine>
+         <UserArea/>
+      </PurchaseOrderSubLine>
+      <PurchaseOrderSubLine>
+         <UserArea/>
+      </PurchaseOrderSubLine>
+      <PurchaseOrderSubLine>
+         <UserArea/>
+      </PurchaseOrderSubLine>
+      <PurchaseOrderSchedule>
+         <RequiredDeliveryDateTime></RequiredDeliveryDateTime>
+         <UserArea/>
+      </PurchaseOrderSchedule>
+      <PurchaseOrderSchedule>
+         <RequiredDeliveryDateTime></RequiredDeliveryDateTime>
+         <UserArea/>
+      </PurchaseOrderSchedule>
+      <PurchaseOrderSchedule>
+         <RequiredDeliveryDateTime></RequiredDeliveryDateTime>
+         <UserArea/>
+      </PurchaseOrderSchedule>
+      <UserArea>
+         <any_0 xmlns="##any">
+            <any_01>any content</any_01>
+         </any_0>
+         <any_1 xmlns="##any">
+            <any_11>any content</any_11>
+         </any_1>
+         <any_2 xmlns="##any">
+            <any_21>any content</any_21>
+         </any_2>
+      </UserArea>
+   </PurchaseOrderLine>
+   <PurchaseOrderLine>
+      <PartialShipmentAllowedIndicator></PartialShipmentAllowedIndicator>
+      <DropShipmentAllowedIndicator></DropShipmentAllowedIndicator>
+      <EarlyShipmentAllowedIndicator></EarlyShipmentAllowedIndicator>
+      <LicenseIndicator name=""></LicenseIndicator>
+      <LicenseIndicator name=""></LicenseIndicator>
+      <LicenseIndicator name=""></LicenseIndicator>
+      <TransportationTerm/>
+      <PaymentTerm type=""/>
+      <PaymentTerm type=""/>
+      <PaymentTerm type=""/>
+      <DistributedCharge type="" sequence="172">
+         <BasisAmount currencyID="">173</BasisAmount>
+      </DistributedCharge>
+      <DistributedCharge type="" sequence="174">
+         <BasisAmount currencyID="">175</BasisAmount>
+      </DistributedCharge>
+      <DistributedCharge type="" sequence="176">
+         <BasisAmount currencyID="">177</BasisAmount>
+      </DistributedCharge>
+      <DistributedTax type="">
+         <BasisAmount currencyID="">178</BasisAmount>
+      </DistributedTax>
+      <DistributedTax type="">
+         <BasisAmount currencyID="">179</BasisAmount>
+      </DistributedTax>
+      <DistributedTax type="">
+         <BasisAmount currencyID="">180</BasisAmount>
+      </DistributedTax>
+      <Distribution/>
+      <Distribution/>
+      <Distribution/>
+      <FreightClassification/>
+      <SpecialPriceAuthorizationCode listID="listID181" listAgencyID="listAgencyID182" listAgencyName="listAgencyName183" listName="listName184" listVersionID="listVersionID185" name="name186" languageID="US" listURI="WWW.ORACLE.COM" listSchemeURI="WWW.ORACLE.COM">normalizedString187</SpecialPriceAuthorizationCode>
+      <SubstituteItemIndicator></SubstituteItemIndicator>
+      <RequisitionReference/>
+      <BackOrderedQuantity unitCode="">188</BackOrderedQuantity>
+      <ReceivedQuantity unitCode="">189</ReceivedQuantity>
+      <OpenQuantity unitCode="">190</OpenQuantity>
+      <QuoteReference>
+         <DocumentDateTime></DocumentDateTime>
+         <StatusCode listID="listID191" listAgencyID="listAgencyID192" listAgencyName="listAgencyName193" listName="listName194" listVersionID="listVersionID195" name="name196" languageID="US" listURI="WWW.ORACLE.COM" listSchemeURI="WWW.ORACLE.COM">normalizedString197</StatusCode>
+         <ReleaseNumber schemeID="schemeID198" schemeName="schemeName199" schemeAgencyID="schemeAgencyID200" schemeAgencyName="schemeAgencyName201" schemeVersionID="schemeVersionID202" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString203</ReleaseNumber>
+         <LineNumber schemeID="schemeID204" schemeName="schemeName205" schemeAgencyID="schemeAgencyID206" schemeAgencyName="schemeAgencyName207" schemeVersionID="schemeVersionID208" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString209</LineNumber>
+         <ScheduleLineNumber schemeID="schemeID210" schemeName="schemeName211" schemeAgencyID="schemeAgencyID212" schemeAgencyName="schemeAgencyName213" schemeVersionID="schemeVersionID214" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString215</ScheduleLineNumber>
+         <SubLineNumber schemeID="schemeID216" schemeName="schemeName217" schemeAgencyID="schemeAgencyID218" schemeAgencyName="schemeAgencyName219" schemeVersionID="schemeVersionID220" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString221</SubLineNumber>
+         <UserArea/>
+      </QuoteReference>
+      <SalesOrderReference>
+         <DocumentDateTime></DocumentDateTime>
+         <StatusCode listID="listID222" listAgencyID="listAgencyID223" listAgencyName="listAgencyName224" listName="listName225" listVersionID="listVersionID226" name="name227" languageID="US" listURI="WWW.ORACLE.COM" listSchemeURI="WWW.ORACLE.COM">normalizedString228</StatusCode>
+         <ReleaseNumber schemeID="schemeID229" schemeName="schemeName230" schemeAgencyID="schemeAgencyID231" schemeAgencyName="schemeAgencyName232" schemeVersionID="schemeVersionID233" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString234</ReleaseNumber>
+         <LineNumber schemeID="schemeID235" schemeName="schemeName236" schemeAgencyID="schemeAgencyID237" schemeAgencyName="schemeAgencyName238" schemeVersionID="schemeVersionID239" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString240</LineNumber>
+         <ScheduleLineNumber schemeID="schemeID241" schemeName="schemeName242" schemeAgencyID="schemeAgencyID243" schemeAgencyName="schemeAgencyName244" schemeVersionID="schemeVersionID245" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString246</ScheduleLineNumber>
+         <SubLineNumber schemeID="schemeID247" schemeName="schemeName248" schemeAgencyID="schemeAgencyID249" schemeAgencyName="schemeAgencyName250" schemeVersionID="schemeVersionID251" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString252</SubLineNumber>
+         <UserArea/>
+      </SalesOrderReference>
+      <BuyerParty category="">
+         <RequesterContact languageCode=""/>
+         <PlannerContact languageCode=""/>
+         <BuyerContact languageCode=""/>
+         <ReceivingContact languageCode=""/>
+         <UserArea/>
+      </BuyerParty>
+      <PurchaseOrderSubLine>
+         <UserArea/>
+      </PurchaseOrderSubLine>
+      <PurchaseOrderSubLine>
+         <UserArea/>
+      </PurchaseOrderSubLine>
+      <PurchaseOrderSubLine>
+         <UserArea/>
+      </PurchaseOrderSubLine>
+      <PurchaseOrderSchedule>
+         <RequiredDeliveryDateTime></RequiredDeliveryDateTime>
+         <UserArea/>
+      </PurchaseOrderSchedule>
+      <PurchaseOrderSchedule>
+         <RequiredDeliveryDateTime></RequiredDeliveryDateTime>
+         <UserArea/>
+      </PurchaseOrderSchedule>
+      <PurchaseOrderSchedule>
+         <RequiredDeliveryDateTime></RequiredDeliveryDateTime>
+         <UserArea/>
+      </PurchaseOrderSchedule>
+      <UserArea>
+         <any_0 xmlns="##any">
+            <any_01>any content</any_01>
+         </any_0>
+         <any_1 xmlns="##any">
+            <any_11>any content</any_11>
+         </any_1>
+         <any_2 xmlns="##any">
+            <any_21>any content</any_21>
+         </any_2>
+      </UserArea>
+   </PurchaseOrderLine>
+   <PurchaseOrderLine>
+      <PartialShipmentAllowedIndicator></PartialShipmentAllowedIndicator>
+      <DropShipmentAllowedIndicator></DropShipmentAllowedIndicator>
+      <EarlyShipmentAllowedIndicator></EarlyShipmentAllowedIndicator>
+      <LicenseIndicator name=""></LicenseIndicator>
+      <LicenseIndicator name=""></LicenseIndicator>
+      <LicenseIndicator name=""></LicenseIndicator>
+      <TransportationTerm/>
+      <PaymentTerm type=""/>
+      <PaymentTerm type=""/>
+      <PaymentTerm type=""/>
+      <DistributedCharge type="" sequence="253">
+         <BasisAmount currencyID="">254</BasisAmount>
+      </DistributedCharge>
+      <DistributedCharge type="" sequence="255">
+         <BasisAmount currencyID="">256</BasisAmount>
+      </DistributedCharge>
+      <DistributedCharge type="" sequence="257">
+         <BasisAmount currencyID="">258</BasisAmount>
+      </DistributedCharge>
+      <DistributedTax type="">
+         <BasisAmount currencyID="">259</BasisAmount>
+      </DistributedTax>
+      <DistributedTax type="">
+         <BasisAmount currencyID="">260</BasisAmount>
+      </DistributedTax>
+      <DistributedTax type="">
+         <BasisAmount currencyID="">261</BasisAmount>
+      </DistributedTax>
+      <Distribution/>
+      <Distribution/>
+      <Distribution/>
+      <FreightClassification/>
+      <SpecialPriceAuthorizationCode listID="listID262" listAgencyID="listAgencyID263" listAgencyName="listAgencyName264" listName="listName265" listVersionID="listVersionID266" name="name267" languageID="US" listURI="WWW.ORACLE.COM" listSchemeURI="WWW.ORACLE.COM">normalizedString268</SpecialPriceAuthorizationCode>
+      <SubstituteItemIndicator></SubstituteItemIndicator>
+      <RequisitionReference/>
+      <BackOrderedQuantity unitCode="">269</BackOrderedQuantity>
+      <ReceivedQuantity unitCode="">270</ReceivedQuantity>
+      <OpenQuantity unitCode="">271</OpenQuantity>
+      <QuoteReference>
+         <DocumentDateTime></DocumentDateTime>
+         <StatusCode listID="listID272" listAgencyID="listAgencyID273" listAgencyName="listAgencyName274" listName="listName275" listVersionID="listVersionID276" name="name277" languageID="US" listURI="WWW.ORACLE.COM" listSchemeURI="WWW.ORACLE.COM">normalizedString278</StatusCode>
+         <ReleaseNumber schemeID="schemeID279" schemeName="schemeName280" schemeAgencyID="schemeAgencyID281" schemeAgencyName="schemeAgencyName282" schemeVersionID="schemeVersionID283" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString284</ReleaseNumber>
+         <LineNumber schemeID="schemeID285" schemeName="schemeName286" schemeAgencyID="schemeAgencyID287" schemeAgencyName="schemeAgencyName288" schemeVersionID="schemeVersionID289" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString290</LineNumber>
+         <ScheduleLineNumber schemeID="schemeID291" schemeName="schemeName292" schemeAgencyID="schemeAgencyID293" schemeAgencyName="schemeAgencyName294" schemeVersionID="schemeVersionID295" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString296</ScheduleLineNumber>
+         <SubLineNumber schemeID="schemeID297" schemeName="schemeName298" schemeAgencyID="schemeAgencyID299" schemeAgencyName="schemeAgencyName300" schemeVersionID="schemeVersionID301" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString302</SubLineNumber>
+         <UserArea/>
+      </QuoteReference>
+      <SalesOrderReference>
+         <DocumentDateTime></DocumentDateTime>
+         <StatusCode listID="listID303" listAgencyID="listAgencyID304" listAgencyName="listAgencyName305" listName="listName306" listVersionID="listVersionID307" name="name308" languageID="US" listURI="WWW.ORACLE.COM" listSchemeURI="WWW.ORACLE.COM">normalizedString309</StatusCode>
+         <ReleaseNumber schemeID="schemeID310" schemeName="schemeName311" schemeAgencyID="schemeAgencyID312" schemeAgencyName="schemeAgencyName313" schemeVersionID="schemeVersionID314" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString315</ReleaseNumber>
+         <LineNumber schemeID="schemeID316" schemeName="schemeName317" schemeAgencyID="schemeAgencyID318" schemeAgencyName="schemeAgencyName319" schemeVersionID="schemeVersionID320" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString321</LineNumber>
+         <ScheduleLineNumber schemeID="schemeID322" schemeName="schemeName323" schemeAgencyID="schemeAgencyID324" schemeAgencyName="schemeAgencyName325" schemeVersionID="schemeVersionID326" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString327</ScheduleLineNumber>
+         <SubLineNumber schemeID="schemeID328" schemeName="schemeName329" schemeAgencyID="schemeAgencyID330" schemeAgencyName="schemeAgencyName331" schemeVersionID="schemeVersionID332" schemeDataURI="WWW.ORACLE.COM" schemeURI="WWW.ORACLE.COM">normalizedString333</SubLineNumber>
+         <UserArea/>
+      </SalesOrderReference>
+      <BuyerParty category="">
+         <RequesterContact languageCode=""/>
+         <PlannerContact languageCode=""/>
+         <BuyerContact languageCode=""/>
+         <ReceivingContact languageCode=""/>
+         <UserArea/>
+      </BuyerParty>
+      <PurchaseOrderSubLine>
+         <UserArea/>
+      </PurchaseOrderSubLine>
+      <PurchaseOrderSubLine>
+         <UserArea/>
+      </PurchaseOrderSubLine>
+      <PurchaseOrderSubLine>
+         <UserArea/>
+      </PurchaseOrderSubLine>
+      <PurchaseOrderSchedule>
+         <RequiredDeliveryDateTime></RequiredDeliveryDateTime>
+         <UserArea/>
+      </PurchaseOrderSchedule>
+      <PurchaseOrderSchedule>
+         <RequiredDeliveryDateTime></RequiredDeliveryDateTime>
+         <UserArea/>
+      </PurchaseOrderSchedule>
+      <PurchaseOrderSchedule>
+         <RequiredDeliveryDateTime></RequiredDeliveryDateTime>
+         <UserArea/>
+      </PurchaseOrderSchedule>
+      <UserArea>
+         <any_0 xmlns="##any">
+            <any_01>any content</any_01>
+         </any_0>
+         <any_1 xmlns="##any">
+            <any_11>any content</any_11>
+         </any_1>
+         <any_2 xmlns="##any">
+            <any_21>any content</any_21>
+         </any_2>
+      </UserArea>
+   </PurchaseOrderLine>
+</PurchaseOrder>

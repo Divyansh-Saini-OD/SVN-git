@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="ItemMaster_rms_confirm_inb_Synch"
+             targetNamespace="http://xmlns.oracle.com/ItemMaster_rms_confirm_inb_Synch"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:client="http://xmlns.oracle.com/ItemMaster_rms_confirm_inb_Synch"
+             xmlns:ns1="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/">
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	TYPE DEFINITION - List of services participating in this BPEL process
+	The default output of the BPEL designer uses strings as input and 
+	output to the BPEL Process. But you can define or import any XML 
+	Schema type and use them as part of the message types.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->   
+	<types>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema">
+			<import namespace="http://xmlns.oracle.com/ItemMaster_rms_confirm_inb_Synch" schemaLocation="ItemMaster_rms_confirm_inb_Synch.xsd" />
+		</schema>
+               
+		<schema xmlns="http://www.w3.org/2001/XMLSchema">
+			<import namespace="http://www.openapplications.org/officedepot/merchandising/foundation/1" schemaLocation="http://chilsoa01d.na.odcorp.net:7778/orabpel/xmllib/merchFndXml/officedepot/merchandising/foundation/v1/message/bod/ODSyncItemMasterConfirm.xsd" />
+		</schema>
+	</types>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	MESSAGE TYPE DEFINITION - Definition of the message types used as 
+	part of the port type defintions
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->      
+	<message name="ItemMaster_rms_confirm_inb_SynchRequestMessage">
+		<part name="payload" element="ns1:SYNC_ITEM_MASTER_CONFIRM" />
+	</message>
+	<message name="ItemMaster_rms_confirm_inb_SynchResponseMessage">
+		<part name="payload" element="client:ItemMaster_rms_confirm_inb_SynchProcessResponse"/>
+	</message>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PORT TYPE DEFINITION - A port type groups a set of operations into
+	a logical service unit.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+	<!-- portType implemented by the ItemMaster_rms_confirm_inb_Synch BPEL process -->
+	<portType name="ItemMaster_rms_confirm_inb_Synch">
+		<operation name="process">
+			<input  message="client:ItemMaster_rms_confirm_inb_SynchRequestMessage" />
+			<output message="client:ItemMaster_rms_confirm_inb_SynchResponseMessage"/>
+		</operation>
+	</portType>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PARTNER LINK TYPE DEFINITION
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --> 
+	<plnk:partnerLinkType name="ItemMaster_rms_confirm_inb_Synch">
+		<plnk:role name="ItemMaster_rms_confirm_inb_SynchProvider">
+			<plnk:portType name="client:ItemMaster_rms_confirm_inb_Synch"/>
+		</plnk:role>
+	</plnk:partnerLinkType>
+</definitions>

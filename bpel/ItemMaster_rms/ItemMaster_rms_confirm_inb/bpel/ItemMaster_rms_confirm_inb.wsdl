@@ -1,0 +1,47 @@
+<definitions
+     name="ItemMaster_rms_confirm_inb"
+     targetNamespace="http://xmlns.oracle.com/ItemMaster_rms_confirm_inb"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:ns1="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:client="http://xmlns.oracle.com/ItemMaster_rms_confirm_inb"
+    >
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:client="http://xmlns.oracle.com/ItemMaster_rms_confirm_inb">
+            <import namespace="http://xmlns.oracle.com/ItemMaster_rms_confirm_inb" schemaLocation="ItemMaster_rms_confirm_inb.xsd"/>
+        </schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:client="http://xmlns.oracle.com/ItemMaster_rms_confirm_inb">
+            <xsd:import namespace="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+                 schemaLocation="http://chilsoa01d.na.odcorp.net:7778/orabpel/xmllib/merchFndXml/officedepot/merchandising/foundation/v1/message/bod/ODSyncItemMasterConfirm.xsd"/>
+        </xsd:schema>
+    </types>
+    <message name="ItemMaster_rms_confirm_inbResponseMessage">
+        <part name="payload" element="client:ItemMaster_rms_confirm_inbProcessResponse"/>
+    </message>
+    <message name="ItemMas_confirmType">
+        <part name="ItemMas_confirmPart" element="ns1:SYNC_ITEM_MASTER_CONFIRM"/>
+    </message>
+    <message name="ItemMaster_rms_confirm_inbRequestMessage">
+        <part name="payload" element="ns1:SYNC_ITEM_MASTER_CONFIRM"/>
+    </message>
+    <portType name="ItemMaster_rms_confirm_inb">
+        <operation name="initiate">
+            <input message="client:ItemMaster_rms_confirm_inbRequestMessage"/>
+        </operation>
+    </portType>
+  <!--  <portType name="ItemMaster_rms_confirm_inbCallback">
+        <operation name="onResult">
+            <input message="client:ItemMaster_rms_confirm_inbResponseMessage"/>
+        </operation>
+    </portType>
+   --> <plnk:partnerLinkType name="ItemMaster_rms_confirm_inb">
+        <plnk:role name="ItemMaster_rms_confirm_inbProvider">
+            <plnk:portType name="client:ItemMaster_rms_confirm_inb"/>
+        </plnk:role>
+  <!--      <plnk:role name="ItemMaster_rms_confirm_inbRequester">
+            <plnk:portType name="client:ItemMaster_rms_confirm_inbCallback"/>
+        </plnk:role> -->
+    </plnk:partnerLinkType>
+</definitions>

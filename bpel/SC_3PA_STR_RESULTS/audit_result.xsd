@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://www.example.org"
+            targetNamespace="http://www.example.org"
+            elementFormDefault="qualified">
+  <xsd:element name="ComplainceReport">
+    <xsd:complexType>
+       <xsd:sequence>
+            <xsd:element name="Header" minOccurs="1" maxOccurs="1">
+               <xsd:complexType>
+                         <xsd:sequence>
+                             <xsd:element name="MessageInvokeFor" type="xsd:string" />
+                             <xsd:element name="VendorId" type="xsd:string"/>
+                             <xsd:element name="VendorName" type="xsd:string"/>
+                             <xsd:element name="DateTime" type="xsd:string"/>
+                          </xsd:sequence>                                         
+                         </xsd:complexType> 
+                        </xsd:element>                     
+            <xsd:element name="AuditRecord" minOccurs="1" maxOccurs="1">
+            <xsd:complexType>
+                    <xsd:sequence>
+                      <xsd:element name="TransmissionStatus" type="xsd:string" />
+                      <xsd:element name="Client" type="xsd:string"/>                      
+                      <xsd:element name="InspectionNo" type="xsd:string" />
+                      <xsd:element name="InspectionId" type="xsd:string"/>
+                      <xsd:element name="InspectionType" type="xsd:string" />
+                      <xsd:element name="ServiceType" type="xsd:string"/>
+                      <xsd:element name="QAProfile" type="xsd:string" />
+                      <xsd:element name="Status" type="xsd:string"/>
+                      <xsd:element name="CompleteByStartDate" type="xsd:string" />
+                      <xsd:element name="CompleteByEndDate" type="xsd:string"/>
+                      <xsd:element name="ScheduledDate" type="xsd:string" />
+                      <xsd:element name="InspectionDate" type="xsd:string"/>                                          
+                      <xsd:element name="TimeIn" type="xsd:string" />
+                      <xsd:element name="TimeOut" type="xsd:string"/>                      
+                      <xsd:element name="ScheduledTime" type="xsd:string" />
+                      <xsd:element name="InitialInspectionDate" type="xsd:string"/>
+                      <xsd:element name="Relationships" type="xsd:string" />
+                      <xsd:element name="NoInspectorsScheduled" type="xsd:string"/>
+                      <xsd:element name="InspectionMonth" type="xsd:string" />
+                      <xsd:element name="InspectionYear" type="xsd:string"/>
+                      <xsd:element name="RushAuditYN" type="xsd:string"/>
+                      <xsd:element name="Vendor" minOccurs="1" maxOccurs="1">
+                       <xsd:complexType>
+                         <xsd:sequence>
+                             <xsd:element name="ODVendorNo" type="xsd:string" />
+                             <xsd:element name="Vendor" type="xsd:string"/>
+                             <xsd:element name="VendorFullAddress" minOccurs="1" maxOccurs="1">
+                               <xsd:complexType>
+                                 <xsd:sequence>    
+                                  <xsd:element name="Address1" type="xsd:string"/>
+                                  <xsd:element name="Address2" type="xsd:string"/>
+                                  <xsd:element name="Address3" type="xsd:string"/>
+                                  <xsd:element name="Address4" type="xsd:string"/>
+                                  <xsd:element name="City" type="xsd:string"/>
+                                  <xsd:element name="State" type="xsd:string"/>
+                                  <xsd:element name="Country" type="xsd:string"/>                       
+                                  </xsd:sequence>                                         
+                               </xsd:complexType> 
+                               </xsd:element>
+                             <xsd:element name="VendorContacts" minOccurs="1" maxOccurs="1">
+                             <xsd:complexType>
+                                 <xsd:sequence>
+                                   <xsd:element name="VendorContact" minOccurs="1" maxOccurs="unbounded">
+                                     <xsd:complexType>
+                                       <xsd:sequence>
+                                    <xsd:element name="ContactName" type="xsd:string"/>                                    
+                                    <xsd:element name="Address1" type="xsd:string"/>
+                                    <xsd:element name="Address2" type="xsd:string"/>
+                                    <xsd:element name="Address3" type="xsd:string"/>
+                                    <xsd:element name="City" type="xsd:string"/>
+                                    <xsd:element name="State" type="xsd:string"/>
+                                    <xsd:element name="Country" type="xsd:string"/>
+                                    <xsd:element name="ContactPhones" minOccurs="1" maxOccurs="1">
+                                      <xsd:complexType>
+                                        <xsd:sequence>
+                                          <xsd:element name="ContactPhone" minOccurs="1" maxOccurs="unbounded">
+                                            <xsd:complexType>
+                                              <xsd:sequence>
+                                                <xsd:element name="ContactType" type="xsd:string"/>
+                                         <xsd:element name="ContactNo" type="xsd:string"/>
+                                           </xsd:sequence>                                         
+                                           </xsd:complexType> 
+                                        </xsd:element>
+                                  </xsd:sequence>                                         
+                               </xsd:complexType> 
+                               </xsd:element>
+                                 </xsd:sequence>
+                               </xsd:complexType>
+                             </xsd:element>
+                           </xsd:sequence>
+                         </xsd:complexType>
+                       </xsd:element>
+                       <xsd:element name="EntityID" type="xsd:string"/>                             
+                             <xsd:element name="ODFactoryNo" type="xsd:string" />
+                             <xsd:element name="Factory" type="xsd:string"/>
+                             <xsd:element name="BaseAddress" type="xsd:string" />
+                             <xsd:element name="City" type="xsd:string"/>
+                             <xsd:element name="StateProvince" type="xsd:string" />
+                             <xsd:element name="Country" type="xsd:string"/>                             
+                             <xsd:element name="FactoryContacts" minOccurs="1" maxOccurs="1">
+                             <xsd:complexType>
+                                 <xsd:sequence>
+                                   <xsd:element name="FactoryContact" minOccurs="1" maxOccurs="unbounded">
+                                     <xsd:complexType>
+                                       <xsd:sequence>
+                                         <xsd:element name="ContactName" type="xsd:string"/>                                    
+                                    <xsd:element name="Address1" type="xsd:string"/>
+                                    <xsd:element name="Address2" type="xsd:string"/>
+                                    <xsd:element name="Address3" type="xsd:string"/>
+                                    <xsd:element name="City" type="xsd:string"/>
+                                    <xsd:element name="State" type="xsd:string"/>
+                                    <xsd:element name="Country" type="xsd:string"/>
+                                    <xsd:element name="ContactPhones" minOccurs="1" maxOccurs="1">
+                                      <xsd:complexType>
+                                        <xsd:sequence>
+                                          <xsd:element name="ContactPhone" minOccurs="1" maxOccurs="unbounded">
+                                            <xsd:complexType>
+                                              <xsd:sequence>
+                                          <xsd:element name="ContactType" type="xsd:string"/>
+                                         <xsd:element name="ContactNo" type="xsd:string"/>
+                                              </xsd:sequence>
+                                            </xsd:complexType>
+                                          </xsd:element>
+                                              </xsd:sequence>                                         
+                                           </xsd:complexType> 
+                                        </xsd:element>
+                                  </xsd:sequence>                                         
+                               </xsd:complexType> 
+                               </xsd:element>
+                                 </xsd:sequence>
+                               </xsd:complexType>
+                             </xsd:element>
+                             <xsd:element name="FactoryStatus" type="xsd:string" />
+                             <xsd:element name="InvoiceNo" type="xsd:string"/>
+                             <xsd:element name="InvoiceDate" type="xsd:string" />
+                             <xsd:element name="InvoicedAmount" type="xsd:string"/>                             
+                             <xsd:element name="PaymentMethod" type="xsd:string" />
+                             <xsd:element name="PaymentDate" type="xsd:string"/>
+                             <xsd:element name="PaymentAmount" type="xsd:string" />
+                             <xsd:element name="Grade" type="xsd:string"/>
+                             <xsd:element name="Region" type="xsd:string" />
+                             <xsd:element name="SubRegion" type="xsd:string"/>
+                             <xsd:element name="AgentName" type="xsd:string"/>                             
+                          </xsd:sequence>                                         
+                     </xsd:complexType> 
+                     </xsd:element>                     
+                     <xsd:element name="Auditors" minOccurs="1" maxOccurs="1">
+                       <xsd:complexType>
+                         <xsd:sequence>                         
+                             <xsd:element name="Auditor" minOccurs="1" maxOccurs="unbounded" >
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="OD_SC_AuditorName" type="xsd:string"/>
+                                        <xsd:element name="OD_SC_AuditorLevel" type="xsd:string"/>
+                                     </xsd:sequence>                                         
+                                   </xsd:complexType> 
+                               </xsd:element>
+                          </xsd:sequence>                                         
+                     </xsd:complexType> 
+                     </xsd:element>
+                     <xsd:element name="Findings" minOccurs="0" maxOccurs="1">
+                       <xsd:complexType>
+                         <xsd:sequence>                         
+                             <xsd:element name="Finding" minOccurs="0" maxOccurs="unbounded" >
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="QuestionCode" type="xsd:string"/>
+                                        <xsd:element name="Section" type="xsd:string"/>
+                                        <xsd:element name="SubSection" type="xsd:string"/>
+                                        <xsd:element name="Question" type="xsd:string"/>
+                                        <xsd:element name="QuestionCode" type="xsd:string"/>
+                                        <xsd:element name="Answer" type="xsd:string"/>
+                                        <xsd:element name="NAYN" type="xsd:string"/>
+                                        <xsd:element name="AuditorComments" type="xsd:string"/>
+                                        </xsd:sequence>                                         
+                                   </xsd:complexType> 
+                               </xsd:element>
+                          </xsd:sequence>                                         
+                     </xsd:complexType> 
+                     </xsd:element>
+                    <xsd:element name="Violations" minOccurs="0" maxOccurs="1">
+                       <xsd:complexType>
+                         <xsd:sequence>                         
+                             <xsd:element name="violation" minOccurs="0" maxOccurs="unbounded" >
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="ViolationCode" type="xsd:string"/>
+                                        <xsd:element name="ViolationYN" type="xsd:string"/>
+                                        <xsd:element name="ViolationText" type="xsd:string"/>
+                                        <xsd:element name="Section" type="xsd:string"/>
+                                        <xsd:element name="SubSection" type="xsd:string"/>
+                                        <xsd:element name="Question" type="xsd:string"/>
+                                        <xsd:element name="AuditorComments" type="xsd:string"/>                                      
+                                         </xsd:sequence>                                         
+                                   </xsd:complexType> 
+                               </xsd:element>
+                          </xsd:sequence>                                         
+                     </xsd:complexType> 
+                     </xsd:element>                     
+                     </xsd:sequence>                                         
+               </xsd:complexType>    
+            </xsd:element>
+         </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>

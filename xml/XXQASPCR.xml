@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXQASPCR" description="OD Service Provider Complaint Report" Version="1.0">
+<parameters>
+ <parameter name="P_REGION" datatype="character" />
+ <parameter name="P_NAME" datatype="character" />
+ <parameter name="P_LOCATION" datatype="character" />
+ <parameter name="P_DEFECT_CLASS" datatype="character" />
+ <parameter name="P_DIVISION" datatype="character" />
+ <parameter name="P_DEPARTMENT" datatype="character" />
+ <parameter name="P_SUBMITTER" datatype="character" />
+ <parameter name="P_APPROVER" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_ODSPCR">
+<![CDATA[
+SELECT od_ob_spc_id, 
+       od_sc_region, 
+       od_pb_company, 
+       od_pb_service_location,
+       od_pb_tech_rpt_num, 
+       od_pb_defect_sum, 
+       od_pb_defect_code,
+       od_pb_division, 
+       od_pb_sc_dept_name, 
+       od_pb_auditor_name,
+       od_pb_qa_engr_email, 
+       od_pb_date_opened, 
+       od_pb_contact,
+       od_pb_contact_email, 
+       od_ob_ref_capid, 
+       od_pb_date_corr_impl,
+       od_pb_comments, 
+       od_pb_attachment
+  FROM q_od_ob_spc_v
+ WHERE NVL(od_sc_region,'X') = NVL (:p_region, NVL(od_sc_region,'X'))
+   AND NVL(od_pb_company,'X') = NVL (:p_name, NVL(od_pb_company,'X'))
+   AND NVL(od_pb_service_location,'X') = NVL (:p_location, NVL(od_pb_service_location,'X'))
+   AND NVL(od_pb_defect_code,'X') = NVL (:p_defect_class, NVL(od_pb_defect_code,'X'))
+   AND NVL(od_pb_division,'X') = NVL (:p_division, NVL(od_pb_division,'X'))
+   AND NVL(od_pb_sc_dept_name,'X') = NVL (:p_department, NVL(od_pb_sc_dept_name,'X'))
+   And NVL(Od_Pb_Auditor_Name,'X') = Nvl (:P_Submitter, NVL(Od_Pb_Auditor_Name,'X'))
+   AND NVL(od_pb_qa_engr_email,'X') = NVL (:p_approver, NVL(od_pb_qa_engr_email,'X'))
+ ORDER BY od_ob_spc_id
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_ODSPCR" source="Q_ODSPCR">
+<element name="OD_OB_SPC_ID" value="OD_OB_SPC_ID" />
+<element name="OD_SC_REGION" value="OD_SC_REGION" />
+<element name="OD_PB_COMPANY" value="OD_PB_COMPANY" />
+<element name="OD_PB_SERVICE_LOCATION" value="OD_PB_SERVICE_LOCATION" />
+<element name="OD_PB_TECH_RPT_NUM" value="OD_PB_TECH_RPT_NUM" />
+<element name="OD_PB_DEFECT_SUM" value="OD_PB_DEFECT_SUM" />
+<element name="OD_PB_DEFECT_CODE" value="OD_PB_DEFECT_CODE" />
+<element name="OD_PB_DIVISION" value="OD_PB_DIVISION" />
+<element name="OD_PB_SC_DEPT_NAME" value="OD_PB_SC_DEPT_NAME" />
+<element name="OD_PB_AUDITOR_NAME" value="OD_PB_AUDITOR_NAME" />
+<element name="OD_PB_QA_ENGR_EMAIL" value="OD_PB_QA_ENGR_EMAIL" />
+<element name="OD_PB_DATE_OPENED" value="OD_PB_DATE_OPENED" />
+<element name="OD_PB_CONTACT" value="OD_PB_CONTACT" />
+<element name="OD_PB_CONTACT_EMAIL" value="OD_PB_CONTACT_EMAIL" />
+<element name="OD_OB_REF_CAPID" value="OD_OB_REF_CAPID" />
+<element name="OD_PB_DATE_CORR_IMPL" value="OD_PB_DATE_CORR_IMPL" />
+<element name="OD_PB_COMMENTS" value="OD_PB_COMMENTS" />
+<element name="OD_PB_ATTACHMENT" value="OD_PB_ATTACHMENT" />
+</group>
+</dataStructure>
+</dataTemplate>

@@ -1,0 +1,42 @@
+<definitions
+     name="ShipStatusInterface"
+     targetNamespace="http://xmlns.oracle.com/ShipStatusInterface"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:ns1="http://www.openapplications.org/oagis/9"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+     xmlns:client="http://xmlns.oracle.com/ShipStatusInterface"
+    >
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/ShipStatusInterface" schemaLocation="ShipStatusInterface.xsd"/>
+        </schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://www.openapplications.org/oagis/9" schemaLocation="http://chilsoa01d.na.odcorp.net:7778/orabpel/xmllib/eaixml/oagis/v9/message/bod/ShowShipment.xsd"/>
+        </xsd:schema>
+    </types>
+    <message name="ShipStatusInterfaceResponseMessage">
+        <part name="payload" element="client:ShipStatusInterfaceProcessResponse"/>
+    </message>
+    <message name="ShipStatusInterfaceRequestMessage">
+        <part name="payload" element="ns1:ShowShipment"/>
+    </message>
+    <portType name="ShipStatusInterfaceCallback">
+        <operation name="onResult">
+            <input message="client:ShipStatusInterfaceResponseMessage"/>
+        </operation>
+    </portType>
+    <portType name="ShipStatusInterface">
+        <operation name="initiate">
+            <input message="client:ShipStatusInterfaceRequestMessage"/>
+        </operation>
+    </portType>
+    <plnk:partnerLinkType name="ShipStatusInterface">
+        <plnk:role name="ShipStatusInterfaceProvider">
+            <plnk:portType name="client:ShipStatusInterface"/>
+        </plnk:role>
+        <plnk:role name="ShipStatusInterfaceRequester">
+            <plnk:portType name="client:ShipStatusInterfaceCallback"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+</definitions>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions 
+    name="DBAdapterPolling"
+    targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/DBAdapterPolling/"
+    xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/DBAdapterPolling/"
+    xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+    xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+    xmlns:pc="http://xmlns.oracle.com/pcbpel/"
+    xmlns:top="http://xmlns.oracle.com/pcbpel/adapter/db/top/DBAdapterPolling"
+    xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/DBAdapterPolling"
+                schemaLocation="DBAdapterPolling_table.xsd"/>
+        </schema>
+    </types>
+
+    <message name="SubbuJitaAllocCollection_msg">
+        <part name="SubbuJitaAllocCollection" element="top:SubbuJitaAllocCollection"/>
+    </message>
+
+    <portType name="DBAdapterPolling_ptt">
+        <operation name="receive">
+            <input message="tns:SubbuJitaAllocCollection_msg"/>
+        </operation>
+    </portType>
+
+    <binding name="DBAdapterPolling_binding" type="tns:DBAdapterPolling_ptt">
+        <pc:inbound_binding/>
+        <operation name="receive">
+            <jca:operation
+                ActivationSpec="oracle.tip.adapter.db.DBActivationSpec"
+
+                DescriptorName="DBAdapterPolling.SubbuJitaAlloc"
+                QueryName="DBAdapterPolling"
+                PollingStrategyName="DeletePollingStrategy"
+                MarkReadFieldName=""
+                SequencingFieldName="WMOS_ID"
+                MaxRaiseSize="1"
+                MaxTransactionSize="unlimited"
+                PollingInterval="300"
+                NumberOfThreads="1"
+                UseBatchDestroy="false"
+                ReturnSingleResultSet="false"
+                MappingsMetaDataURL="DBAdapterPolling_toplink_mappings.xml" />
+        <input/>
+        </operation>
+    </binding>
+
+    <!-- Your runtime connection is declared in
+        J2EE_HOME/application-deployments/default/DbAdapter/oc4j-ra.xml
+        These 'mcf' properties here are from your design time connection and 
+        save you from having to edit that file and restart the application server
+        if eis/DB/GSIDEV03 is missing.
+        These 'mcf' properties are safe to remove.
+    -->
+    <service name="DBAdapterPolling">
+        <port name="DBAdapterPolling_pt" binding="tns:DBAdapterPolling_binding">
+            <jca:address location="eis/DB/GSIDEV03"
+                UIConnectionName="GSIDEV03"
+                ManagedConnectionFactory="oracle.tip.adapter.db.DBManagedConnectionFactory"
+                mcf.DriverClassName="oracle.jdbc.OracleDriver"
+                mcf.PlatformClassName="oracle.toplink.platform.database.oracle.Oracle10Platform"
+                mcf.ConnectionString="jdbc:oracle:thin:@choldbr18d.na.odcorp.net:1544:GSIDEV03"
+                mcf.UserName="apps"
+                mcf.Password="33249B2910CFF3FBCD9B834DF8560A56"
+            />
+        </port>
+    </service>
+
+    <plt:partnerLinkType name="DBAdapterPolling_plt" >
+        <plt:role name="DBAdapterPolling_role" >
+            <plt:portType name="tns:DBAdapterPolling_ptt" />
+        </plt:role>
+    </plt:partnerLinkType>
+
+</definitions>

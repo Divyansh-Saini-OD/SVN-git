@@ -1,0 +1,118 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_PA_PB_GENPRD_DTL.tbl                                             |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_PA_PB_GENPRD_DTL (OD PLM Enhancements table)                           |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              28-Jul-2010       Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_PA_PB_GENPRD_DTL......
+PROMPT
+
+
+Create table XX_PA_PB_GENPRD_DTL
+( prod_dtl_id		number,
+  project_id		number,
+  project_no		varchar2(30),
+  vpc 			varchar2(50),
+  line_no 		number,
+  Init_item_decision	varchar2(30),
+  final_item_decision   varchar2(30),
+  vendor_id		varchar2(30),
+  vendor_name		varchar2(100),
+  factory_id		varchar2(30),
+  factory_name		varchar2(100),
+  sourcing_agent	varchar2(50),
+  subclass		number,
+  subclass_name		varchar2(30),
+  class			number,
+  class_name		varchar2(30),
+  dept			number,
+  dept_name		varchar2(30),
+  division		number,
+  division_name		varchar2(30),
+  sku			varchar2(30),
+  product_image		varchar2(100),
+  existing_sku		varchar2(30),
+  product_desc		varchar2(240),
+  testing_group		varchar2(30),
+  brand			varchar2(30),
+  sell_unit 		number,
+  packaging_type	varchar2(30),
+  fob_amnt		number,
+  ddp_amnt		number,
+  projected_gm_pct	number,
+  projects_asp		number,
+  projected_gm		number,
+  no_of_stores		number,
+  pog_no		varchar2(50),
+  pog_date		date,
+  quote_date		date,
+  cost_val_period	number,
+  cost_val_date		date,
+  item_dimen		varchar2(100),
+  item_purpose		varchar2(2000),
+  prod_specs		varchar2(2000),
+  prod_construc		varchar2(2000),
+  addl_source_comments	varchar2(2000),
+  addl_di_comments	varchar2(2000),
+  attribute1		varchar2(150),
+  attribute2		varchar2(150),
+  attribute3		varchar2(150),
+  attribute4		varchar2(150),
+  attribute5		varchar2(150),
+  attribute6		varchar2(150),
+  attribute7		varchar2(150),
+  attribute8		varchar2(150),
+  attribute9		varchar2(150),
+  attribute10		varchar2(150),
+  attribute11		varchar2(150),
+  attribute12		varchar2(150),
+  attribute13		varchar2(150),
+  attribute14		varchar2(150),
+  attribute15		varchar2(150),
+  creation_date		date not null,
+  created_by		number not null,
+  last_update_date	date not null,
+  last_updated_by	number not null,
+  last_update_login	number);
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

@@ -1,0 +1,45 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : Item Purge Sequence                                                        |--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_INV_ITEM_PURGE_S.seq                                             |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Sequences                                                    |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              17-Aug-2010       Paddy Sanjeevi          No previous version              |--
+--+=============================================================================================+
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Creating Custom Sequence XX_INV_ITEM_PURGE_S ...
+PROMPT
+
+CREATE SEQUENCE XX_INV_ITEM_PURGE_S INCREMENT BY 1 START WITH 1 NOCACHE NOORDER;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

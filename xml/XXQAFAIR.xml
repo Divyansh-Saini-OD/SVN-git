@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXQAFAIR" description="OD OB FAI Report" Version="1.0">
+<parameters>
+ <parameter name="P_FAI_ID" datatype="character" />
+ <parameter name="P_PROJECT" datatype="character" />
+ <parameter name="P_SOURCING_AGENT" datatype="character" />
+ <parameter name="P_DEPARTMENT" datatype="character" />
+ <parameter name="P_SKU" datatype="number" />
+ <parameter name="P_VENDOR_NAME" datatype="character" />
+ <parameter name="P_FACTORY_NAME" datatype="character" />
+ <parameter name="P_OVERALL_AUDIT_GRADE" datatype="character" />
+ <parameter name="P_CAP" datatype="character" />
+ <parameter name="P_CAPID" datatype="character" />
+ <parameter name="P_SUBMITTER" datatype="character" />
+ <parameter name="P_APPROVER" datatype="character" />
+ <parameter name="P_APPROVAL_STATUS" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_FAI">
+<![CDATA[
+SELECT    QOOFV.OD_OB_FAI_ID                             AS     FAI_ID
+        , QOOFV.OD_PB_PROJ_NUM                           AS     PROJECT
+        , QOOFV.OD_SC_AUDIT_AGENT                        AS     SOURCING_AGENT
+        , QOOFSV.OD_PB_PROJ_NUM                          AS     SUB_PROJECT
+        , QOOFSV.OD_PB_SC_DEPT_NAME                      AS     DEPARTMENT
+        , QOOFSV.OD_PB_VENDOR_VPC                        AS     VPN
+        , QOOFSV.OD_OB_SKU                               AS     SKU
+        , QOOFSV.OD_PB_ITEM_DESC                         AS     SKU_DESCRIPTION
+        , QOOFSV.OD_PB_CAP_YN                            AS     SKU_CAP
+        , QOOFSV.OD_OB_REF_CAPID                         AS     SKU_CAPID
+        , QOOFV.OD_OB_VENDOR_NAME                        AS     VENDOR_NAME
+        , QOOFV.OD_OB_FACTORY_NAME                       AS     FACTORY_NAME
+        , QOOFV.OD_SC_FACTORY_ADDRESS                    AS     FACTORY_ADRESS
+        , QOOFV.OD_PB_FACTORY_CONTACT                    AS     FACTORY_CONTACT
+        , QOOFV.OD_SC_FACTORY_EMAIL                      AS     FACTORY_EMAIL
+        , QOOFV.OD_SC_REGION                             AS     REGION
+        , QOOFV.OD_PB_DATE_PROPOSED_PRODUCTION           AS     MASS_PRODUCTION_START_DATE
+        , QOOFV.OD_SC_SCHEDULED_DATE                     AS     PLANNED_FAI_DATE
+        , QOOFV.OD_SC_INSPECTION_DATE                    AS     ACTUAL_FAI_DATE
+        , QOOFV.OD_PB_ATTACHMENT                         AS     ATTACHMENT
+        , QOOFV.OD_OB_AUDIT_RESULT                       AS     OVERALL_AUDIT
+        , QOOFV.OD_OB_GENERAL_RESULT                     AS     GENERAL
+        , QOOFV.OD_OB_PROCESS_INSP_RESULT                AS     PROCESS_INSPECTION
+        , QOOFV.OD_OB_PROD_INSP_RESULT                   AS     PRODUCT_INSPECTION
+        , QOOFV.OD_OB_PKG_INSP_RESULT                    AS     PACKAGING_INSPECTION
+        , QOOFV.OD_OB_TESTING_INSP_RESULT                AS     TESTING_INSPECTION
+        , QOOFV.OD_OB_INSP_PROTOCOL_RESULT               AS     INSPECTION_PROTOCOL_VERIF
+        , QOOFV.OD_PB_CAP_YN                             AS     CAP
+        , QOOFV.OD_OB_REF_CAPID                          AS     CAPID
+        , QOOFV.OD_PB_AUDITOR_NAME                       AS     SUBMITTER
+        , QOOFV.OD_PB_QA_ENGR_EMAIL                      AS     APPROVER
+        , QOOFV.OD_PB_APPROVAL_STATUS                    AS     APPROVAL_STATUS
+        , QOOFV.OD_PB_COMMENTS                           AS     COMMENTS
+     FROM Q_OD_OB_FAI_V  QOOFV
+        , Q_OD_OB_FAI_SKU_V QOOFSV
+    WHERE QOOFV.OD_OB_FAI_ID    = QOOFSV.OD_OB_REF_REC_ID(+)
+      AND NVL(QOOFV.OD_OB_FAI_ID,'X')               = NVL(:P_FAI_ID,              NVL(QOOFV.OD_OB_FAI_ID,'X')            )
+      AND NVL(QOOFV.OD_PB_PROJ_NUM,'X')             = NVL(:P_PROJECT,             NVL(QOOFV.OD_PB_PROJ_NUM,'X')        )
+      AND NVL(QOOFV.OD_SC_AUDIT_AGENT,'X')          = NVL(:P_SOURCING_AGENT,      NVL(QOOFV.OD_SC_AUDIT_AGENT,'X')     )
+      AND NVL(QOOFSV.OD_PB_SC_DEPT_NAME,'X')        = NVL(:P_DEPARTMENT,          NVL(QOOFSV.OD_PB_SC_DEPT_NAME,'X')   )
+      AND NVL(QOOFSV.OD_OB_SKU,1)                   = NVL(:P_SKU,                 NVL(QOOFSV.OD_OB_SKU,1)            )
+      AND NVL(QOOFV.OD_OB_VENDOR_NAME,'X')          = NVL(:P_VENDOR_NAME,         NVL(QOOFV.OD_OB_VENDOR_NAME,'X')     )
+      AND NVL(QOOFV.OD_OB_FACTORY_NAME,'X')         = NVL(:P_FACTORY_NAME,        NVL(QOOFV.OD_OB_FACTORY_NAME,'X')    )
+      AND NVL(QOOFV.OD_OB_AUDIT_RESULT,'X')         = NVL(:P_OVERALL_AUDIT_GRADE, NVL(QOOFV.OD_OB_AUDIT_RESULT, 'X')    )
+      AND NVL(QOOFV.OD_PB_CAP_YN,'X')               = NVL(:P_CAP,                 NVL(QOOFV.OD_PB_CAP_YN,'X')            )
+      AND NVL(QOOFV.OD_OB_REF_CAPID,'X')            = NVL(:P_CAPID,               NVL(QOOFV.OD_OB_REF_CAPID,'X')         )
+      AND NVL(QOOFV.OD_PB_AUDITOR_NAME,'X')         = NVL(:P_SUBMITTER,           NVL(QOOFV.OD_PB_AUDITOR_NAME,'X')    )
+      AND NVL(QOOFV.OD_PB_QA_ENGR_EMAIL,'X')        = NVL(:P_APPROVER,            NVL(QOOFV.OD_PB_QA_ENGR_EMAIL,'X')   )
+      AND NVL(QOOFV.OD_PB_APPROVAL_STATUS,'X')      = NVL(:P_APPROVAL_STATUS,     NVL(QOOFV.OD_PB_APPROVAL_STATUS,'X') )
+ ORDER BY QOOFV.OD_OB_FAI_ID
+         ,QOOFSV.OD_PB_PROJ_NUM
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_FAI_R" source="Q_FAI">
+<element name="OD_OB_FAI_ID" value="FAI_ID" />
+<element name="OD_PB_PROJ_NUM" value="PROJECT" />
+<element name="OD_SC_AUDIT_AGENT" value="SOURCING_AGENT" />
+<element name="OD_OB_VENDOR_NAME" value="VENDOR_NAME" />
+<element name="OD_OB_FACTORY_NAME" value="FACTORY_NAME" />
+<element name="OD_SC_FACTORY_ADDRESS" value="FACTORY_ADRESS" />
+<element name="OD_PB_FACTORY_CONTACT" value="FACTORY_CONTACT" />
+<element name="OD_SC_FACTORY_EMAIL" value="FACTORY_EMAIL" />
+<element name="OD_SC_REGION" value="REGION" />
+<element name="OD_PB_DATE_PROPOSED_PRODUCTION" value="MASS_PRODUCTION_START_DATE" />
+<element name="OD_SC_SCHEDULED_DATE" value="PLANNED_FAI_DATE" />
+<element name="OD_SC_INSPECTION_DATE" value="ACTUAL_FAI_DATE" />
+<element name="OD_PB_ATTACHMENT" value="ATTACHMENT" />
+<element name="OD_OB_AUDIT_RESULT" value="OVERALL_AUDIT" />
+<element name="OD_OB_GENERAL_RESULT" value="GENERAL" />
+<element name="OD_OB_PROCESS_INSP_RESULT" value="PROCESS_INSPECTION" />
+<element name="OD_OB_PROD_INSP_RESULT" value="PRODUCT_INSPECTION" />
+<element name="OD_OB_PKG_INSP_RESULT" value="PACKAGING_INSPECTION" />
+<element name="OD_OB_TESTING_INSP_RESULT" value="TESTING_INSPECTION" />
+<element name="OD_OB_INSP_PROTOCOL_RESULT" value="INSPECTION_PROTOCOL_VERIF" />
+<element name="CAP" value="CAP" />
+<element name="CAPID" value="CAPID" />
+<element name="OD_PB_AUDITOR_NAME" value="SUBMITTER" />
+<element name="OD_PB_QA_ENGR_EMAIL" value="APPROVER" />
+<element name="OD_PB_APPROVAL_STATUS" value="APPROVAL_STATUS" />
+<element name="OD_PB_COMMENTS" value="COMMENTS" />
+<element name="OD_PB_PROJ_NUM" value="SUB_PROJECT" />
+<element name="OD_PB_SC_DEPT_NAME" value="DEPARTMENT" />
+<element name="OD_PB_VENDOR_VPC" value="VPN" />
+<element name="OD_OB_SKU" value="SKU" />
+<element name="OD_PB_ITEM_DESC" value="SKU_DESCRIPTION" />
+<element name="OD_PB_CAP_YN" value="SKU_CAP" />
+<element name="OD_OB_REF_CAPID" value="SKU_CAPID" />
+</group>
+</dataStructure>
+</dataTemplate>

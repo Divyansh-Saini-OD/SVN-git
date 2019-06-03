@@ -1,0 +1,38 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                             Office Depot                          |
+-- +===================================================================+
+-- | Name  : XXMER.XX_PO_ALLOCATION_HEADER                             |
+-- | Description: TABLE FOR EBS ALLOCAITON HEADER INFORMATION          |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |1.0      06-21-2007   K.CRAWFORD       INITAL CODE                 |
+-- +===================================================================+
+
+CREATE OR REPLACE TABLE XXMER.XX_PO_ALLOCATION_HEADER
+(
+  ALLOCATION_HEADER_ID  NUMBER,
+  ORG_ID                NUMBER,
+  BATCH_NO              NUMBER,
+  BATCH_DESC            VARCHAR2(240 BYTE),
+  ITEM_ID               NUMBER,
+  VENDOR_ID             NUMBER,
+  VENDOR_SITE_ID        NUMBER,
+  AGENT_ID              NUMBER,
+  LAST_UPDATE_DATE      DATE,
+  LAST_UPDATED_BY       NUMBER,
+  CREATION_DATE         DATE,
+  CREATED_BY            NUMBER,
+  LAST_UPDATE_LOGIN     NUMBER
+);
+
+ALTER TABLE XXMER.XX_PO_ALLOCATION_HEADER ADD (
+  PRIMARY KEY
+ (ALLOCATION_HEADER_ID)
+    USING INDEX 
+    );

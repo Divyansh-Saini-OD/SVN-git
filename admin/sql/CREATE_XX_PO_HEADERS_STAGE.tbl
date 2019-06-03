@@ -1,0 +1,129 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : I1220 Legacy Replen To Purchasing                                          |--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_PO_HEADERS_STAGE.tbl                                             |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                  1. XXMER.XX_PO_HEADERS_STAGE    (OD Headers Stage Table)                   |--
+--|                  2. XXMER.XX_PO_HEADERS_STAGE_I1 (Index for XX_PO_HEADERS_STAGE)            |--
+--|                  3. XX_PO_HEADERS_STAGE          (Synonym for XXMER.XX_PO_HEADERS_STAGE)    |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By        Description                            |--
+--|=============================================================================================|--
+--| 1.0              01-Aug-2007       Victor Costa      Original                               |--
+--|                                                                                             |--
+--+=============================================================================================|
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Existing Custom Tables......
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Table XXMER.XX_PO_HEADERS_STAGE
+PROMPT
+
+DROP TABLE XXMER.XX_PO_HEADERS_STAGE;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping SYNONYM XX_PO_HEADERS_STAGE in APPS
+PROMPT
+
+DROP SYNONYM XX_PO_HEADERS_STAGE;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating the Custom Table XX_PO_HEADERS_STAGE......
+PROMPT
+
+CREATE TABLE XXMER.XX_PO_HEADERS_STAGE (
+  					HEADER_SEQUENCE_ID 		NUMBER			NOT NULL,
+  					VALIDATE_THREAD_ID		NUMBER,
+  					REQUEST_ID			NUMBER,
+  					TOTAL_PO_LINES		  	NUMBER,  
+  					LEGACY_SUPPLIER_NO		NUMBER			NOT NULL,
+ 					LEGACY_LOCATION_ID		NUMBER			NOT NULL,
+  					PO_SOURCE			VARCHAR2(20),
+  					STATUS_CODE			VARCHAR2(20),
+  					ERROR_MESSAGE			VARCHAR2(1000),
+  					ORG_ID				NUMBER,
+  					SET_OF_BOOKS_ID			NUMBER,
+  					SHIP_TO_LOCATION_ID		NUMBER,
+  					CURRENCY_CODE			VARCHAR2(15),
+  					RATE_TYPE			VARCHAR2(30),
+  					RATE_DATE			DATE,
+  					VENDOR_ID			NUMBER,
+  					VENDOR_SITE_ID			NUMBER,
+  					APPROVAL_STATUS			VARCHAR2(30),
+  					BATCH_ID			NUMBER,
+  					AGENT_ID			NUMBER,
+  					BATCH_NO	    		NUMBER,
+  					ATTRIBUTE_CATEGORY		VARCHAR2(20),
+  					ATTRIBUTE6 			VARCHAR2(150),
+  					ATTRIBUTE7			VARCHAR2(150),
+  					ATTRIBUTE8			VARCHAR2(150),
+  					ATTRIBUTE9			VARCHAR2(150),
+  					COMMENTS			VARCHAR2(480),
+  					CREATION_DATE		    	DATE			NOT NULL,
+  					CREATED_BY		    	NUMBER			NOT NULL,
+  					LAST_UPDATE_DATE	    	DATE			NOT NULL,
+  					LAST_UPDATED_BY			NUMBER			NOT NULL
+                                       );
+
+PROMPT
+PROMPT Creating Index XX_PO_HEADERS_STAGE_I1...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+CREATE  INDEX XXMER.XX_PO_HEADERS_STAGE_I1 ON XXMER.XX_PO_HEADERS_STAGE
+	(HEADER_SEQUENCE_ID);
+
+PROMPT
+PROMPT Creating Synonym in APPS...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM XX_PO_HEADERS_STAGE
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_PO_HEADERS_STAGE FOR XXMER.XX_PO_HEADERS_STAGE ;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+
+EXIT;
+
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

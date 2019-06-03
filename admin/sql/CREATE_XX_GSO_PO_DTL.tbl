@@ -1,0 +1,134 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_GSO_PO_DTL.tbl                                                   |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_GSO_PO_DTL      (OD GSO PO Tracking table)                             |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              17-Aug-2010       Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_GSO_PO_DTL......
+PROMPT
+
+Create table XX_GSO_PO_DTL
+( po_header_id  		number not null,
+  po_line_id			number not null,
+  po_line_no			number not null,
+  line_status			varchar2(30),
+  bv_status			varchar2(30),
+  Item				varchar2(30),
+  description			varchar2(240),
+  Uom				varchar2(30),
+  VPC				varchar2(60),
+  category			varchar2(30),
+  od_merchant			varchar2(40),  
+  division			number,
+  dept				number,
+  Class				number,
+  Ordered_qty			number,
+  shipment_date			date,
+  batch_id			number,
+  Std_pack			number,
+  Carton_pack			number,
+  Carton_cube			number,
+  Carton_weight			number,
+  Master_carton			number,
+  retail_cost			number,
+  master_fob_cost		number,
+  fob_origin_cost		number,
+  est_land_cost			number,
+  act_land_cost			number,
+  Merch_dec_cost		number,
+  source_port_name		varchar2(100),
+  destn_port_name		varchar2(100),
+  original_po_shipdate		date,
+  changed_po_shipdate		date,
+  reason_code			varchar2(60),
+  remarks			varchar2(2000),
+  partial_line_flag		varchar2(1),
+  latest_line_flag		varchar2(1),
+  new_item_flag			varchar2(1),
+  over_shipped_flag		varchar2(1),
+  late_shipment_alert		varchar2(1),
+  kn_booking_alert		varchar2(1),
+  kn_receiving_alert		varchar2(1),
+  bv_booking_alert		varchar2(1),
+  insp_book_alert		varchar2(30),
+  attribute1			varchar2(150),
+  attribute2			varchar2(150),
+  attribute3			varchar2(150),
+  attribute4			varchar2(150),
+  attribute5			varchar2(150),
+  attribute6			varchar2(150),
+  attribute7			varchar2(150),
+  attribute8			varchar2(150),
+  attribute9			varchar2(150),
+  attribute10			varchar2(150),
+  attribute11			varchar2(150),
+  attribute12			varchar2(150),
+  attribute13			varchar2(150),
+  attribute14			varchar2(150),
+  attribute15			varchar2(150),
+  creation_date			date 	not null,
+  created_by			number 	not null,
+  last_update_date		date not null,
+  last_updated_by		number not null,
+  last_update_login		number,
+  fob_usd_cost			number,
+  insp_qty			number,
+  shipped_qty			number,
+  bv_code			varchar2(100),
+  bv_reason			varchar2(2000),
+  gso_dept_id			number,
+  origin			varchar2(60),
+  nb_flag			varchar2(1),
+  inline_flag			varchar2(1),
+  safety_stock_flag		varchar2(1),
+  bv_flag			varchar2(1),
+  first_shipment_flag		varchar2(1),
+  booked_qty			number,
+  received_qty			number,
+  gso_mo			varchar2(40),
+  delay_code			varchar2(60),
+  delay_reason			varchar2(2000),
+  diff_price			varchar2(1),
+  shipment_status		varchar2(30));
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

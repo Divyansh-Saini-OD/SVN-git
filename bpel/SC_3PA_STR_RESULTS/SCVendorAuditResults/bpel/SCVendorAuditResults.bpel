@@ -1,0 +1,101 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Tue May 31 20:39:39 EDT 2011
+  Author:  Bala-Edupuganti
+  Purpose: Asynchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="SCVendorAuditResults"
+         targetNamespace="http://xmlns.oracle.com/SCVendorAuditResults"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/apps/OASCAuditSrvc/"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:client="http://xmlns.oracle.com/SCVendorAuditResults"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc">
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <partnerLinks>
+        <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+        <partnerLink name="client" partnerLinkType="client:SCVendorAuditResults"
+                     myRole="SCVendorAuditResultsProvider"
+                     partnerRole="SCVendorAuditResultsRequester"/>
+        <partnerLink name="OASCAuditSrvc" partnerRole="OASCAuditSrvc_role"
+                     partnerLinkType="ns1:OASCAuditSrvc_plt"/>
+    </partnerLinks>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        VARIABLES                                                        
+        List of messages and XML documents used within this BPEL process 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <variables>
+        <!-- Reference to the message passed as input during initiation -->
+        <variable name="inputVariable"
+                  messageType="client:SCVendorAuditResultsRequestMessage"/>
+        <!-- Reference to the message that will be sent back to the requester during callback -->
+        <variable name="outputVariable"
+                  messageType="client:SCVendorAuditResultsResponseMessage"/>
+        <variable name="InvokeOASrvc_InputVariable"
+                  messageType="ns1:args_in_msg"/>
+        <variable name="InvokeOASrvc_OutputVariable"
+                  messageType="ns1:args_out_msg"/>
+    </variables>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+       ORCHESTRATION LOGIC                                               
+       Set of activities coordinating the flow of messages across the    
+       services integrated within this business process                  
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <sequence name="main">
+        <!-- Receive input from requestor. (Note: This maps to operation defined in SCVendorAuditResults.wsdl) -->
+        <receive name="receiveInput" partnerLink="client"
+                 portType="client:SCVendorAuditResults" operation="initiate"
+                 variable="inputVariable" createInstance="yes"/>
+        <!-- 
+          Asynchronous callback to the requester. (Note: the callback location and correlation id is transparently handled using WS-addressing.)
+        -->
+        <assign name="TransformAuditResult">
+            <bpelx:annotation>
+                <bpelx:pattern>transformation</bpelx:pattern>
+            </bpelx:annotation>
+            <copy>
+                <from expression="ora:processXSLT('TransformMSG.xsl',bpws:getVariableData('inputVariable','payload'))"/>
+                <to variable="InvokeOASrvc_InputVariable"
+                    part="InputParameters"/>
+            </copy>
+        </assign>
+        <invoke name="InvokeOASrvc" partnerLink="OASCAuditSrvc"
+                portType="ns1:OASCAuditSrvc_ptt" operation="OASCAuditSrvc"
+                inputVariable="InvokeOASrvc_InputVariable"
+                outputVariable="InvokeOASrvc_OutputVariable"/>
+        <assign name="TransformResponse">
+            <bpelx:annotation>
+                <bpelx:pattern>transformation</bpelx:pattern>
+            </bpelx:annotation>
+            <copy>
+                <from expression="ora:processXSLT('TransformResponse.xsl',bpws:getVariableData('InvokeOASrvc_OutputVariable','OutputParameters'))"/>
+                <to variable="outputVariable" part="payload"/>
+            </copy>
+        </assign>
+        <invoke name="callbackClient" partnerLink="client"
+                portType="client:SCVendorAuditResultsCallback"
+                operation="onResult" inputVariable="outputVariable"/>
+    </sequence>
+</process>

@@ -1,0 +1,38 @@
+<schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/RMS10/OD_BPEL_FND_SQL/GETITEMXRFMESSAGE/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/RMS10/OD_BPEL_FND_SQL/GETITEMXRFMESSAGE/">
+   <element name="InputParameters">
+      <complexType>
+         <sequence>
+            <element name="I_PROCESS_NAME" type="string" db:index="4" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <element name="OutputParameters">
+      <complexType>
+         <sequence>
+            <element name="O_RET_CODE" type="decimal" db:index="1" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_RET_MESSAGE" type="string" db:index="2" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_STOP_RUNNING_FLAG" type="string" db:index="3" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_XREF" type="string" db:index="5" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_ITEM" type="string" db:index="6" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_XREF_ITEM" type="string" db:index="7" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_CHANGE_CD" type="string" db:index="8" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_XREF_TYPE" type="string" db:index="9" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_MULTIPLIER" type="decimal" db:index="10" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_MULT_DIV_CD" type="string" db:index="11" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_PRODUCT_DESC" type="string" db:index="12" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_SUPPLIER" type="decimal" db:index="13" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_WHSLR_MULTIPLIER" type="decimal" db:index="14" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_WHSLR_MULT_DIV_CD" type="string" db:index="15" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_RETAIL_PRICE" type="decimal" db:index="16" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_WHSLR_UOM_CD" type="string" db:index="17" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_WHSLR_PROD_CATEGORY" type="string" db:index="18" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_GENL_LINE_CAT_PAGE_NBR" type="decimal" db:index="19" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_FURNITURE_CAT_PAGE_NBR" type="decimal" db:index="20" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_NIB_NISH_CAT_PAGE_NBR" type="decimal" db:index="21" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_PROGRAM_ELIG_FLG" type="string" db:index="22" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_BRANCH_ONLY_FLG" type="string" db:index="23" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_WHSLR_PRODUCT_DESC" type="string" db:index="24" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+</schema>

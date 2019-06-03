@@ -1,0 +1,110 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : I1220 Legacy Replen To Purchasing                                          |--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_PO_LINES_TEMP.tbl                                                |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                  1. XXMER.XX_PO_LINES_TEMP (OD Lines Temp Table)                            |--
+--|                  2. XX_PO_LINES_TEMP (Synonym for XXMER.XX_PO_LINES_TEMP)                   |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By        Description                            |--
+--|=============================================================================================|--
+--| 1.0              01-Aug-2007       Victor Costa      Original                               |--
+--|                                                                                             |--
+--+=============================================================================================|
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Existing Custom Tables......
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Table XXMER.XX_PO_LINES_TEMP
+PROMPT
+
+DROP TABLE XXMER.XX_PO_LINES_TEMP;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping SYNONYM XX_PO_LINES_TEMP in APPS
+PROMPT
+
+DROP SYNONYM XX_PO_LINES_TEMP;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating the Custom Table XX_PO_LINES_TEMP......
+PROMPT
+
+CREATE TABLE XXMER.XX_PO_LINES_TEMP (
+                      HEADER_SEQUENCE_ID    NUMBER,
+                      LINE_NUMBER           NUMBER,
+                      ITEM                  VARCHAR2(150),
+                      QUANTITY              NUMBER,
+                      LEGACY_PROMISE_DATE   DATE,
+                      LEGACY_LOCATION_ID    NUMBER,
+                      BATCH_NO              NUMBER,
+                      LEGACY_UNIT_PRICE     DECIMAL(10,3),
+                      PROCESS_CODE          VARCHAR2(10)    DEFAULT 'NEW',
+                      CREATION_DATE         DATE            NOT NULL,
+                      CREATED_BY            NUMBER          NOT NULL,
+                      LAST_UPDATE_DATE      DATE            NOT NULL,
+                      LAST_UPDATED_BY       NUMBER          NOT NULL
+                     );
+
+PROMPT
+PROMPT Creating Synonym in APPS...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM XX_PO_LINES_TEMP
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_PO_LINES_TEMP FOR XXMER.XX_PO_LINES_TEMP ;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating Primary Key XXMER.XX_PO_LINES_TEMP...
+PROMPT
+
+ALTER TABLE XXMER.XX_PO_LINES_TEMP ADD (
+      PRIMARY KEY
+     (HEADER_SEQUENCE_ID, LINE_NUMBER));
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

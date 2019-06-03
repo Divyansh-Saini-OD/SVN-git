@@ -1,0 +1,64 @@
+<schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/RMS10/OD_BPEL_FND_SQL/GETLOCATIONMESSAGE/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/RMS10/OD_BPEL_FND_SQL/GETLOCATIONMESSAGE/">
+   <element name="InputParameters">
+      <complexType>
+         <sequence>
+            <element name="I_PROCESS_NAME" type="string" db:index="1" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <element name="OutputParameters">
+      <complexType>
+         <sequence>
+            <element name="O_RTN_CODE" type="int" db:index="2" db:type="INTEGER" minOccurs="0" nillable="true"/>
+            <element name="O_RTN_MSG" type="string" db:index="3" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_STOP_RUNNING_FLG" type="string" db:index="4" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_ACTION_WS" type="string" db:index="5" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_LOC_TYPE_WS" type="string" db:index="6" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_LOC_ID_WS" type="decimal" db:index="7" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_ADDRESS1_WS" type="string" db:index="8" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_ADDRESS2_WS" type="string" db:index="9" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_AD_MKT_ID_WS" type="string" db:index="10" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_BTS_FLIGHT_ID_WS" type="string" db:index="11" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_CITY_WS" type="string" db:index="12" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_CITY_LIMITS_FLG_WS" type="string" db:index="13" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_CLOSE_DATE_WS" type="dateTime" db:index="14" db:type="DATE" minOccurs="0" nillable="true"/>
+            <element name="O_COUNTRY_ID_WS" type="string" db:index="15" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_COUNTY_WS" type="string" db:index="16" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_CROSS_DOCK_LEAD_TIME_WS" type="string" db:index="17" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_CROSS_STR_DIR_WS" type="string" db:index="18" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_CROSS_STR_DIR2_WS" type="string" db:index="19" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_CURRENCY_CODE_WS" type="string" db:index="20" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_DELIVERY_FLG_WS" type="string" db:index="21" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_DISTRICT_ID_WS" type="decimal" db:index="22" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_DIVISION_ID_WS" type="string" db:index="23" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_EMAIL_WS" type="string" db:index="24" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_FAX_NUMBER_WS" type="string" db:index="25" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_GEO_CD_WS" type="decimal" db:index="26" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_LOC_NAME_WS" type="string" db:index="27" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_MANAGER_NAME_WS" type="string" db:index="28" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_MODEL_TAX_LOC_WS" type="decimal" db:index="29" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_OPEN_DATE_WS" type="dateTime" db:index="30" db:type="DATE" minOccurs="0" nillable="true"/>
+            <element name="O_ORDER_CUTOFF_TM_WS" type="dateTime" db:index="31" db:type="DATE" minOccurs="0" nillable="true"/>
+            <element name="O_PHONE_NUMBER_WS" type="string" db:index="32" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_POSTAL_CODE_WS" type="string" db:index="33" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_RELOC_ID_WS" type="decimal" db:index="34" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_ROUTING_CD_WS" type="string" db:index="35" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_SISTER_LOC1_WS" type="decimal" db:index="36" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_SISTER_LOC2_WS" type="decimal" db:index="37" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_SISTER_LOC3_WS" type="decimal" db:index="38" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_STATE_WS" type="string" db:index="39" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_SUB_TYPE_CODE_WS" type="string" db:index="40" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_TIME_ZONE_WS" type="string" db:index="41" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_TYPE_CODE_WS" type="string" db:index="42" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_DEFAULT_WH_S" type="decimal" db:index="43" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_DEFAULT_WH_CSC_S" type="decimal" db:index="44" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_MARKET_OPEN_DATE_S" type="dateTime" db:index="45" db:type="DATE" minOccurs="0" nillable="true"/>
+            <element name="O_STORE_CLASS_S" type="string" db:index="46" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_STORE_FORMAT_S" type="decimal" db:index="47" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_BREAK_PACK_IND_W" type="string" db:index="48" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_DEFAULT_XDOCK_W" type="decimal" db:index="49" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_DELIVERY_POLICY_W" type="string" db:index="50" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+</schema>

@@ -1,0 +1,39 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="Location_rms_outb" src="Location_rms_outb.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="client">
+            <property name="wsdlLocation">Location_rms_outb.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="StartProcess">
+            <property name="wsdlLocation">StartProcess.wsdl</property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="NotificationService">
+            <property name="wsdlLocation">NotificationService.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="ODErrorLogger">
+            <property name="wsdlLocation">http://chilsoa01d.na.odcorp.net:7778/orabpel/default/ODErrorLogger/ODErrorLogger?wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="StopProcess">
+            <property name="wsdlLocation">StopProcess.wsdl</property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="GetNextMessage">
+            <property name="wsdlLocation">GetNextMessage.wsdl</property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="I1308_OrgCreationProcess_EBS_In">
+            <property name="wsdlLocation">http://chilsoa01d.na.odcorp.net:7778/orabpel/mrch/I1308_OrgCreationProcess_EBS_In/I1308_OrgCreationProcess_EBS_In?wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="LOC_POLL">
+            <property name="wsdlLocation">LOC_POLL.wsdl</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+      <activationAgents>
+         <activationAgent className="oracle.tip.adapter.fw.agent.jca.JCAActivationAgent" partnerLink="LOC_POLL">
+            <property name="portType">LOC_POLL_ptt</property>
+         </activationAgent>
+      </activationAgents>
+   </BPELProcess>
+</BPELSuitcase>

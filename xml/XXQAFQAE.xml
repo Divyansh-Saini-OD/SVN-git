@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXQAFQAE" description="OD OB Factory Quality Audit Report" Version="1.0">
+<parameters>
+ <parameter name="P_REQUESTED_BY" datatype="character" />
+ <parameter name="P_DIVISION" datatype="character" />
+ <parameter name="P_AGENT" datatype="character" />
+ <parameter name="P_GSO_OFFICE" datatype="character" />
+ <parameter name="P_VENDOR" datatype="character" />
+ <parameter name="P_FACTORY" datatype="character" />
+ <parameter name="P_AUDITOR" datatype="character" />
+ <parameter name="P_CAP" datatype="character" />
+ <parameter name="P_AUDIT_TYPE" datatype="character" />
+ <parameter name="P_APPROVER" datatype="character" />
+ <parameter name="P_APPROVAL_STATUS" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_FQA">
+<![CDATA[
+SELECT   od_fqa_id
+       , od_pb_fqa_requester
+       , od_pb_fqa_req_d
+       , od_pb_proj_num
+       , od_pb_division
+       , od_sc_audit_agent
+	 , od_sc_region
+       , od_pb_gso_office
+       , od_sc_vendor_number
+       , od_ob_vendor_name
+       , od_ob_factory_number
+       , od_sc_factory_name
+       , od_sc_factory_address
+       , od_pb_factory_contact
+       , od_sc_factory_email
+       , od_pb_fqa_assigned_date
+       , od_pb_audit_date
+       , od_pb_auditor_name
+       , od_pb_audit_type
+       , od_pb_attachment
+       , od_ob_fqa_general
+       , od_pb_design_control_score
+       , od_pb_purchase_control_score
+       , od_pb_storage_management_score
+       , od_pb_incoming_inspect_score
+       , od_pb_production_control_score
+       , od_pb_continuous_improve_score
+       , od_pb_fqa_score
+       , od_ob_audit_grade
+       , od_pb_cap_yn
+       , od_fqa_cap_id
+       , od_pb_qa_engr_email
+       , od_pb_approval_status
+       , od_pb_fqa_reaudit_type
+       , od_pb_fqa_reaudit_d
+       , od_pb_comments
+    FROM q_od_ob_fqa_v
+   WHERE NVL (od_pb_fqa_requester, 'X') = NVL (:p_requested_by, NVL (od_pb_fqa_requester, 'X'))
+     AND NVL (od_pb_division, 'X') = NVL (:p_division, NVL (od_pb_division, 'X'))
+     AND NVL (od_sc_audit_agent, 'X') = NVL (:p_agent, NVL (od_sc_audit_agent, 'X'))
+     AND NVL (od_pb_gso_office, 'X') = NVL (:p_gso_office, NVL (od_pb_gso_office, 'X'))
+     AND NVL (od_ob_vendor_name, 'X') = NVL (:p_vendor, NVL (od_ob_vendor_name, 'X'))
+     AND NVL (od_sc_factory_name, 'X') = NVL (:p_factory, NVL (od_sc_factory_name, 'X'))
+     AND NVL (od_pb_auditor_name, 'X') = NVL (:p_auditor, NVL (od_pb_auditor_name, 'X'))
+     AND NVL (od_pb_cap_yn, 'X') = NVL (:p_cap, NVL (od_pb_cap_yn, 'X'))
+     AND NVL (od_pb_audit_type, 'X') = NVL (:p_audit_type, NVL (od_pb_audit_type, 'X'))
+     AND NVL (od_pb_qa_engr_email, 'X') = NVL (:p_approver, NVL (od_pb_qa_engr_email, 'X'))
+     AND NVL (od_pb_approval_status, 'X') = NVL (:p_approval_status, NVL (od_pb_approval_status, 'X'))
+   ORDER BY 1
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_FQA" source="Q_FQA">
+<element name="OD_FQA_ID" value="OD_FQA_ID" />
+<element name="OD_PB_FQA_REQUESTER" value="OD_PB_FQA_REQUESTER" />
+<element name="OD_PB_FQA_REQ_D" value="OD_PB_FQA_REQ_D" />
+<element name="OD_PB_PROJ_NUM" value="OD_PB_PROJ_NUM" />
+<element name="OD_PB_DIVISION" value="OD_PB_DIVISION" />
+<element name="OD_SC_AUDIT_AGENT" value="OD_SC_AUDIT_AGENT" />
+<element name="OD_REGION" value="OD_SC_REGION" />
+<element name="OD_PB_GSO_OFFICE" value="OD_PB_GSO_OFFICE" />
+<element name="OD_SC_VENDOR_NUMBER" value="OD_SC_VENDOR_NUMBER" />
+<element name="OD_OB_VENDOR_NAME" value="OD_OB_VENDOR_NAME" />
+<element name="OD_OB_FACTORY_NUMBER" value="OD_OB_FACTORY_NUMBER" />
+<element name="OD_SC_FACTORY_NAME" value="OD_SC_FACTORY_NAME" />
+<element name="OD_SC_FACTORY_ADDRESS" value="OD_SC_FACTORY_ADDRESS" />
+<element name="OD_PB_FACTORY_CONTACT" value="OD_PB_FACTORY_CONTACT" />
+<element name="OD_SC_FACTORY_EMAIL" value="OD_SC_FACTORY_EMAIL" />
+<element name="OD_PB_FQA_ASSIGNED_DATE" value="OD_PB_FQA_ASSIGNED_DATE" />
+<element name="OD_PB_AUDIT_DATE" value="OD_PB_AUDIT_DATE" />
+<element name="OD_PB_AUDITOR_NAME" value="OD_PB_AUDITOR_NAME" />
+<element name="OD_PB_AUDIT_TYPE" value="OD_PB_AUDIT_TYPE" />
+<element name="OD_PB_ATTACHMENT" value="OD_PB_ATTACHMENT" />
+<element name="OD_OB_FQA_GENERAL" value="OD_OB_FQA_GENERAL" />
+<element name="OD_PB_DESIGN_CONTROL_SCORE" value="OD_PB_DESIGN_CONTROL_SCORE" />
+<element name="OD_PB_PURCHASE_CONTROL_SCORE" value="OD_PB_PURCHASE_CONTROL_SCORE" />
+<element name="OD_PB_STORAGE_MANAGEMENT_SCORE" value="OD_PB_STORAGE_MANAGEMENT_SCORE" />
+<element name="OD_PB_INCOMING_INSPECT_SCORE" value="OD_PB_INCOMING_INSPECT_SCORE" />
+<element name="OD_PB_PRODUCTION_CONTROL_SCORE" value="OD_PB_PRODUCTION_CONTROL_SCORE" />
+<element name="OD_PB_CONTINUOUS_IMPROVE_SCORE" value="OD_PB_CONTINUOUS_IMPROVE_SCORE" />
+<element name="OD_PB_FQA_SCORE" value="OD_PB_FQA_SCORE" />
+<element name="OD_OB_AUDIT_GRADE" value="OD_OB_AUDIT_GRADE" />
+<element name="OD_PB_CAP_YN" value="OD_PB_CAP_YN" />
+<element name="OD_FQA_CAP_ID" value="OD_FQA_CAP_ID" />
+<element name="OD_PB_QA_ENGR_EMAIL" value="OD_PB_QA_ENGR_EMAIL" />
+<element name="OD_PB_APPROVAL_STATUS" value="OD_PB_APPROVAL_STATUS" />
+<element name="OD_PB_FQA_REAUDIT_TYPE" value="OD_PB_FQA_REAUDIT_TYPE" />
+<element name="OD_PB_FQA_REAUDIT_D" value="OD_PB_FQA_REAUDIT_D" />
+<element name="OD_PB_COMMENTS" value="OD_PB_COMMENTS" />
+</group>
+</dataStructure>
+</dataTemplate>

@@ -1,0 +1,19 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="SyncPoAlloc" src="SyncPoAlloc.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="XX_PO_ALLOCATION_Q">
+            <property name="wsdlLocation">XX_PO_ALLOCATION_Q.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="POALLOC">
+            <property name="wsdlLocation">POALLOC.wsdl</property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+      <activationAgents>
+         <activationAgent className="oracle.tip.adapter.fw.agent.jca.JCAActivationAgent" partnerLink="XX_PO_ALLOCATION_Q">
+            <property name="portType">Dequeue_ptt</property>
+         </activationAgent>
+      </activationAgents>
+   </BPELProcess>
+</BPELSuitcase>

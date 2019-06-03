@@ -1,0 +1,38 @@
+<definitions
+     name="MerchHier_rms_outb"
+     targetNamespace="http://xmlns.oracle.com/MerchHier_rms_outb"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:ns1="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:client="http://xmlns.oracle.com/MerchHier_rms_outb"
+    >
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/MerchHier_rms_outb" schemaLocation="MerchHier_rms_outb.xsd"/>
+        </schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+                 schemaLocation="http://chilsoa01d.na.odcorp.net:7778/orabpel/xmllib/merchFndXml/officedepot/merchandising/foundation/v1/message/bod/MerchandisingHierarchy.xsd"/>
+        </xsd:schema>
+    </types>
+    <message name="MerchHier_rms_outbRequestMessage">
+        <part name="payload" element="client:MerchHier_rms_outbProcessRequest"/>
+    </message>
+    <message name="MerchHier_rms_outbResponseMessage">
+        <part name="payload" element="client:MerchHier_rms_outbProcessResponse"/>
+    </message>
+    <message name="msgtype_merchhier">
+        <part name="msgpart_merchhier" element="ns1:MerchandisingHierarchy"/>
+    </message>
+    <portType name="MerchHier_rms_outb">
+        <operation name="process">
+            <input message="client:MerchHier_rms_outbRequestMessage"/>
+            <output message="client:MerchHier_rms_outbResponseMessage"/>
+        </operation>
+    </portType>
+    <plnk:partnerLinkType name="MerchHier_rms_outb">
+        <plnk:role name="MerchHier_rms_outbProvider">
+            <plnk:portType name="client:MerchHier_rms_outb"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+</definitions>

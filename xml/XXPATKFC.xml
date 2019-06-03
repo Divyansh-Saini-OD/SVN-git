@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXPATKFC" description="OD Projects Task Forecasting Report" defaultPackage="XX_PA_XXPATKFC_PKG" Version="1.0">
+<parameters>
+ <parameter name="p_division" datatype="character" />
+ <parameter name="p_di_merchant" datatype="character" />
+ <parameter name="p_prj_mgr" datatype="character" />
+ <parameter name="p_tsk_mgr" datatype="character" />
+ <parameter name="p_dept" datatype="character" />
+ <parameter name="p_task1" datatype="character" />
+ <parameter name="p_task2" datatype="character" />
+ <parameter name="p_task3" datatype="character" />
+ <parameter name="p_task4" datatype="character" />
+ <parameter name="p_task5" datatype="character" />
+ <parameter name="p_task_status" datatype="character" />
+ <parameter name="p_start_date" datatype="character" />
+ <parameter name="p_end_date" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_TKFC">
+<![CDATA[
+SELECT   COALESCE(EEB1.C_EXT_ATTR5,'') AS DIVISION
+        ,COALESCE(EEB1.C_EXT_ATTR1,'') AS DEPARTMENT 
+        ,COALESCE(EEB1.C_EXT_ATTR6,'') AS DI_MERCHANT
+        ,pmgr.full_name Proj_manager
+        ,PPA1.SEGMENT1 AS PROJECT_NUMBER 
+        ,PPA1.NAME  AS PROJECT_NAME
+        ,PPS1.PROJECT_STATUS_NAME  AS PROJECT_STATUS 
+        ,APPS.XX_PA_XXPAPRJI_PKG.get_proj_progress_status(EEB1.C_EXT_ATTR4) AS PROJECT_PROGRESS_STATUS
+        ,tsk.element_name task_name
+        ,tsk.task_manager
+        ,tsk.task_status_meaning 
+        ,tsk.PROGRESS_STATUS_MEANING
+        ,COALESCE(EEB2.C_EXT_ATTR1,'') AS Tracker_type
+        ,ppa1.project_type
+        ,COALESCE(EEB3.C_EXT_ATTR2,'') AS Sourcing_agent
+        ,COALESCE(EEB1.C_EXT_ATTR3,'') AS BRAND
+        ,COALESCE(EEB3.C_EXT_ATTR3,'') AS COUNTRY
+        ,COALESCE(EEB3.C_EXT_ATTR4,'') AS Supplier
+   	  ,'Factory'
+        ,tsk.scheduled_start_date
+        ,tsk.scheduled_finish_date
+        ,tsk.remaining_duration
+        ,NVL(EEB1.N_EXT_ATTR1,0) AS no_of_skus
+        ,APPS.XX_PA_XXPAPRJI_PKG.get_curr_forecast(ppa1.project_id) sfcst
+  FROM apps.PA_PROJECT_STATUSES PPS1,
+       apps.PA_STRUCTURES_TASKS_V tsk,
+       (SELECT d.full_name,a.project_id
+          FROM apps.fnd_user e,
+          apps.per_all_people_f d,
+          apps.pa_project_role_types_vl c,
+          apps.pa_project_parties b,
+          apps.pa_projects_all a
+         WHERE b.project_id=a.project_id
+           AND c.project_role_id=b.project_role_id
+	     AND c.project_role_type='PROJECT MANAGER'
+           AND d.person_id=b.resource_source_id
+	     AND NVL(d.full_name,'X')=NVL(:p_prj_mgr,NVL(d.full_name,'X'))
+           AND e.employee_id=d.person_id ) pmgr,
+       APPS.PA_PROJECTS_ALL PPA1 LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB1 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND1 ON 
+                 EEB1.ATTR_GROUP_ID = FND1.ATTR_GROUP_ID AND
+                 FND1.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_GEN_INFO') ON
+                 PPA1.PROJECT_ID = EEB1.PROJECT_ID,
+       APPS.PA_PROJECTS_ALL PPA3 LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB3 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND3 ON 
+                 EEB3.ATTR_GROUP_ID = FND3.ATTR_GROUP_ID AND
+                 FND3.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_SOURCING') ON
+                 PPA3.PROJECT_ID = EEB3.PROJECT_ID,
+       APPS.PA_PROJECTS_ALL PPA2 LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB2 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND2 ON 
+                 EEB2.ATTR_GROUP_ID = FND2.ATTR_GROUP_ID AND
+                 FND2.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'RPB_TRACKER') ON
+                 PPA2.PROJECT_ID = EEB2.PROJECT_ID
+ WHERE PPA1.PROJECT_ID > 0
+   AND PPA1.TEMPLATE_FLAG = 'N'
+   AND PPA1.PROJECT_STATUS_CODE = PPS1.PROJECT_STATUS_CODE
+   AND PPA1.SEGMENT1 LIKE 'PB%' 
+   AND pmgr.project_id=ppa1.project_id
+   AND tsk.project_id=ppa1.project_id
+   AND tsk.latest_eff_published_flag='Y'
+   AND tsk.task_unpub_ver_status_code='PUBLISHED'
+   AND PPA1.project_id=PPA3.project_id
+   AND PPA1.project_id=PPA2.project_id
+   AND NVL(EEB1.C_EXT_ATTR5,'X')=NVL(:p_division,NVL(EEB1.C_EXT_ATTR5,'X'))
+   AND NVL(EEB1.C_EXT_ATTR1,'X')=NVL(:p_dept,NVL(EEB1.C_EXT_ATTR1,'X'))
+   AND NVL(EEB1.C_EXT_ATTR6,'X')=NVL(:p_di_merchant,NVL(EEB1.C_EXT_ATTR6,'X'))
+   AND NVL(tsk.task_manager,'X')=NVL(:p_tsk_mgr,NVL(tsk.task_manager,'X'))
+   AND LENGTH(tsk.element_number)<4
+   AND NVL(tsk.task_status_meaning,'X')=NVL(:p_task_status,NVL(tsk.task_status_meaning,'X'))
+   AND ( TRUNC(tsk.scheduled_start_date) BETWEEN TRUNC(apps.fnd_conc_date.string_to_date(NVL(:p_start_date,tsk.scheduled_start_date)))
+			AND  TRUNC(apps.fnd_conc_date.string_to_date(NVL(:p_end_date,tsk.scheduled_start_date)))
+       OR TRUNC(tsk.scheduled_finish_date) BETWEEN TRUNC(apps.fnd_conc_date.string_to_date(NVL(:p_start_date,tsk.scheduled_finish_date)))
+			AND  TRUNC(apps.fnd_conc_date.string_to_date(NVL(:p_end_date,tsk.scheduled_finish_date)))
+	 )
+   &p_tsk_where
+order by tsk.scheduled_finish_date]]>
+</sqlStatement>
+</dataQuery>
+<dataTrigger name="beforeReportTrigger" source="XX_PA_XXPATKFC_PKG.BeforeReportTrigger"/>
+<dataStructure>
+<group name="G_TKFC" source="Q_TKFC">
+<element name="DIVISION" value="DIVISION" />
+<element name="DEPARTMENT" value="DEPARTMENT" />
+<element name="DI_MERCHANT_NAME" value="DI_MERCHANT" />
+<element name="PROJ_MANAGER" value="PROJ_MANAGER" />
+<element name="PROJECT_NO" value="PROJECT_NUMBER" />
+<element name="PROJECT_NAME" value="PROJECT_NAME" />
+<element name="PROJECT_STATUS_NAME" value="PROJECT_STATUS" />
+<element name="PROGRESS_STATUS" value="PROJECT_PROGRESS_STATUS" />
+<element name="TASK_NAME" value="TASK_NAME" />
+<element name="TASK_MANAGER" value="TASK_MANAGER" />
+<element name="TASK_STATUS_MEANING" value="TASK_STATUS_MEANING" />
+<element name="TRACKER_TYPE" value="TRACKER_TYPE" />
+<element name="PROJECT_TYPE" value="PROJECT_TYPE" />
+<element name="SOURCING_AGENT" value="SOURCING_AGENT" />
+<element name="BRAND" value="BRAND" />
+<element name="COUNTRY" value="COUNTRY" />
+<element name="SUPPLIER" value="SUPPLIER" />
+<element name="TASK_START_DATE" value="SCHEDULED_START_DATE" />
+<element name="TASK_END_DATE" value="SCHEDULED_FINISH_DATE" />
+<element name="DURATION" value="REMAINING_DURATION" />
+<element name="NO_OF_SKUS" value="NO_OF_SKUS" />
+<element name="FORECAST" value="SFCST" />
+</group>
+</dataStructure>
+</dataTemplate>

@@ -1,0 +1,32 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                             Office Depot                          |
+-- +===================================================================+
+-- | Name  : XXCNV.XX_PO_ALOC_LEG_HDR_SRC_L                            |
+-- | Description: LANDING TABLE FOR ALLOCATION CONVERSION              |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |1.0      06-21-2007   K.CRAWFORD       INITAL CODE                 |
+-- +===================================================================+
+
+CREATE OR REPLACE TABLE XXCNV.XX_PO_ALOC_LEG_HDR_SRC_L
+(
+  BATCH_NBR       NUMBER,
+  DESCR           VARCHAR2(50 BYTE),
+  SKU             NUMBER,
+  VENDOR_ID       NUMBER,
+  USER_ID_ENT_BY  VARCHAR2(10 BYTE),
+  DT_ENT          DATE,
+  TM_ENT          VARCHAR2(10 BYTE),
+  USER_ID_CHG_BY  VARCHAR2(10 BYTE),
+  DT_CHG          DATE,
+  TM_CHG          VARCHAR2(10 BYTE),
+  AUDIT_ID        NUMBER(10),
+  STATUS_CODE     NUMBER(1),
+  RECORD_ID       NUMBER(10)
+);

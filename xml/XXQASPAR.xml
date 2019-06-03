@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXQASPAR" description="OD Service Provider Audit report" Version="1.0">
+<parameters>
+ <parameter name="P_REGION" datatype="character" />
+ <parameter name="P_AUDITOR_NAME" datatype="character" />
+ <parameter name="P_COMPANY_AUDITED" datatype="character" />
+ <parameter name="P_SP_LOCATION" datatype="character" />
+ <parameter name="P_INSPECTOR" datatype="character" />
+ <parameter name="P_AUDIT_TYPE" datatype="character" />
+ <parameter name="P_STATUS" datatype="character" />
+ <parameter name="P_VENDOR_NAME" datatype="character" />
+ <parameter name="P_FACTORY_NAME" datatype="character" />
+ <parameter name="P_DIVISION" datatype="character" />
+ <parameter name="P_DEPARTMENT" datatype="character" />
+ <parameter name="P_SUBMITTER" datatype="character" />
+ <parameter name="P_APPROVER" datatype="character" />
+ <parameter name="P_CAP" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_ODSPCR">
+<![CDATA[
+SELECT 
+qospav.OD_OB_SPA_ID,
+qospav.OD_SC_REGION,
+qospav.OD_PB_COMPANY,
+qospav.OD_PB_SERVICE_LOCATION,
+qospav.OD_PB_TECH_RPT_NUM,
+qospav.OD_PB_DIVISION,
+qospav.OD_PB_SC_DEPT_NAME,
+qospav.OD_PB_AUDITOR_NAME,
+qospav.OD_PB_QA_ENGR_EMAIL,
+qospav.OD_PB_CONTACT_EMAIL,
+qospav.OD_OB_REF_CAPID,
+qospav.OD_PB_DATE_CORR_IMPL,
+qospav.OD_PB_COMMENTS,
+qospav.OD_PB_ATTACHMENT,
+qospav.OD_PB_ITEM_DESC,
+qospav.OD_SC_COMPLETE_BY_START_DATE,
+qospav.OD_SC_COMPLETE_BY_END_DATE,
+qospav.OD_PB_FQA_REQUESTER,
+qospav.OD_PB_CAP_YN,
+qospav.OD_PB_PROJ_NUM,
+qospav.OD_PB_CASE_NUMBER,
+qospav.OD_OB_INSPECTOR,
+qospav.OD_PB_AUDIT_TYPE,
+qospav.OD_OB_SPA_STATUS,
+qospav.OD_OB_VENDOR_NAME,
+qospav.OD_OB_FACTORY_NAME,
+qospav.OD_SC_FACTORY_ADDRESS,
+qospav.OD_PB_PO_NUM,
+qospav.OD_PB_VENDOR_VPC,
+qospav.OD_OB_SKU
+FROM 
+Q_OD_OB_SPA_V qospav
+WHERE 1=1
+AND NVL(qospav.OD_SC_REGION,'X')           = NVL(:P_REGION, NVL(qospav.OD_SC_REGION,'X'))
+AND NVL(qospav.OD_PB_AUDITOR_NAME,'X')     = NVL(:P_AUDITOR_NAME,NVL(qospav.OD_PB_AUDITOR_NAME,'X'))
+AND NVL(qospav.OD_PB_COMPANY,'X')          = NVL(:P_COMPANY_AUDITED, NVL(qospav.OD_PB_COMPANY,'X'))
+AND NVL(qospav.OD_PB_SERVICE_LOCATION,'X') = NVL(:P_SP_LOCATION, NVL(qospav.OD_PB_SERVICE_LOCATION,'X'))
+AND NVL(qospav.OD_OB_INSPECTOR,'X')        = NVL(:P_INSPECTOR, NVL(qospav.OD_OB_INSPECTOR,'X'))
+AND NVL(qospav.OD_PB_AUDIT_TYPE,'X')       = NVL(:P_AUDIT_TYPE, NVL(qospav.OD_PB_AUDIT_TYPE,'X'))
+AND NVL(qospav.OD_OB_SPA_STATUS,'X')       = NVL(:P_STATUS, NVL(qospav.OD_OB_SPA_STATUS,'X'))
+AND NVL(qospav.OD_OB_VENDOR_NAME,'X')      = NVL(:P_VENDOR_NAME, NVL(qospav.OD_OB_VENDOR_NAME,'X'))
+AND NVL(qospav.OD_OB_FACTORY_NAME,'X')     = NVL(:P_FACTORY_NAME, NVL(qospav.OD_OB_FACTORY_NAME,'X'))
+AND NVL(qospav.OD_PB_DIVISION,'X')         = NVL(:P_DIVISION, NVL(qospav.OD_PB_DIVISION,'X'))
+AND NVL(qospav.OD_PB_SC_DEPT_NAME,'X')     = NVL(:P_DEPARTMENT, NVL(qospav.OD_PB_SC_DEPT_NAME,'X'))
+AND NVL(qospav.OD_PB_FQA_REQUESTER,'X')    = NVL(:P_SUBMITTER, NVL(qospav.OD_PB_FQA_REQUESTER,'X'))
+AND NVL(qospav.OD_PB_QA_ENGR_EMAIL,'X')    = NVL(:P_APPROVER, NVL(qospav.OD_PB_QA_ENGR_EMAIL,'X'))
+AND NVL(qospav.OD_PB_CAP_YN,'X')           = NVL(:P_CAP, NVL(qospav.OD_PB_CAP_YN,'X'))
+ORDER BY OD_OB_SPA_ID
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_ODSPCR" source="Q_ODSPCR">
+<element name="OD_OB_SPA_ID" value="OD_OB_SPA_ID" />
+<element name="OD_SC_REGION" value="OD_SC_REGION" />
+<element name="OD_PB_COMPANY" value="OD_PB_COMPANY" />
+<element name="OD_PB_SERVICE_LOCATION" value="OD_PB_SERVICE_LOCATION" />
+<element name="OD_PB_TECH_RPT_NUM" value="OD_PB_TECH_RPT_NUM" />
+<element name="OD_PB_DIVISION" value="OD_PB_DIVISION" />
+<element name="OD_PB_SC_DEPT_NAME" value="OD_PB_SC_DEPT_NAME" />
+<element name="OD_PB_AUDITOR_NAME" value="OD_PB_AUDITOR_NAME" />
+<element name="OD_PB_QA_ENGR_EMAIL" value="OD_PB_QA_ENGR_EMAIL" />
+<element name="OD_PB_DATE_OPENED" value="OD_PB_DATE_OPENED" />
+<element name="OD_PB_CONTACT" value="OD_PB_CONTACT" />
+<element name="OD_PB_CONTACT_EMAIL" value="OD_PB_CONTACT_EMAIL" />
+<element name="OD_OB_REF_CAPID" value="OD_OB_REF_CAPID" />
+<element name="OD_PB_DATE_CORR_IMPL" value="OD_PB_DATE_CORR_IMPL" />
+<element name="OD_PB_COMMENTS" value="OD_PB_COMMENTS" />
+<element name="OD_PB_ATTACHMENT" value="OD_PB_ATTACHMENT" />
+<element name="OD_PB_ITEM_DESC" value="OD_PB_ITEM_DESC" />
+<element name="OD_SC_COMPLETE_BY_START_DATE" value="OD_SC_COMPLETE_BY_START_DATE" />
+<element name="OD_SC_COMPLETE_BY_END_DATE" value="OD_SC_COMPLETE_BY_END_DATE" />
+<element name="OD_PB_FQA_REQUESTER" value="OD_PB_FQA_REQUESTER" />
+<element name="OD_PB_CAP_YN" value="OD_PB_CAP_YN" />
+<element name="OD_PB_PROJ_NUM" value="OD_PB_PROJ_NUM" />
+<element name="OD_PB_CASE_NUMBER" value="OD_PB_CASE_NUMBER" />
+<element name="OD_OB_INSPECTOR" value="OD_OB_INSPECTOR" />
+<element name="OD_PB_AUDIT_TYPE" value="OD_PB_AUDIT_TYPE" />
+<element name="OD_OB_SPA_STATUS" value="OD_OB_SPA_STATUS" />
+<element name="OD_OB_VENDOR_NAME" value="OD_OB_VENDOR_NAME" />
+<element name="OD_OB_FACTORY_NAME" value="OD_OB_FACTORY_NAME" />
+<element name="OD_SC_FACTORY_ADDRESS" value="OD_SC_FACTORY_ADDRESS" />
+<element name="OD_PB_PO_NUM" value="OD_PB_PO_NUM" />
+<element name="OD_PB_VENDOR_VPC" value="OD_PB_VENDOR_VPC" />
+<element name="OD_OB_SKU" value="OD_OB_SKU" />
+</group>
+</dataStructure>
+</dataTemplate>

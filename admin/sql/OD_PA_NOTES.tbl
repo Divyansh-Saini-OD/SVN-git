@@ -1,0 +1,43 @@
+-- +==========================================================================+
+-- |                       Office Depot - Project Simplify                    |
+-- |                          Office Depot                                    |
+-- +==========================================================================+
+-- | Name          : Notes Creation                                           |
+-- | Description   : Table which stores the status of the processed headers   |
+-- |                   and lines.                                             |
+-- |                                                                          |
+-- | SQL Script to create the following object                                |
+-- | Table         : OD_PA_NOTES		                              |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version     Date           Author                    Remarks              |
+-- |=======     ==========     =============             =====================|
+-- | V1.0       12-OCT-2011    Suraj Charan              Initial version      |
+-- +==========================================================================+
+ 
+SET SHOW          OFF
+SET VERIFY        OFF
+SET ECHO          OFF
+SET TAB           OFF
+SET FEEDBACK      ON
+SET TERM ON
+
+DROP TABLE xxmer.OD_PA_NOTES;
+
+WHENEVER SQLERROR CONTINUE;
+
+CREATE TABLE xxmer.OD_PA_NOTES(
+     NOTE_ID                   NUMBER(15,0) NOT NULL
+    ,NOTE_NUMBER               VARCHAR2(10)
+    ,PROJECT_ID                NUMBER(15,0)
+    ,TASK_ID	               NUMBER(15,0)
+    ,NOTE_DESC                 VARCHAR2(2000)
+    ,CREATION_DATE             DATE NOT NULL
+    ,CREATED_BY                NUMBER(15,0) NOT NULL
+    ,LAST_UPDATE_DATE          DATE NOT NULL
+    ,LAST_UPDATED_BY           NUMBER(15,0) NOT NULL
+    ,LAST_UPDATE_LOGIN         NUMBER(15,0) NOT NULL
+);
+ 
+SHOW ERROR

@@ -1,0 +1,103 @@
+============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : OD I1220 Legacy Replen To Purchasing                                       |--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_PO_HEADERS_TEMP.tbl                                              |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                  1. XXMER.XX_PO_HEADERS_TEMP (OD Header Temp Staging Table)                 |--
+--|                  2. XX_PO_HEADERS_TEMP (Synonym for XXMER.XX_PO_HEADERS_TEMP)               |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By        Description                            |--
+--|=============================================================================================|--
+--| 1.0              01-Aug-2007       Victor Costa      Original                               |--
+--|                                                                                             |--
+--+=============================================================================================|
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Existing Custom Tables......
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Table XXMER.XX_PO_HEADERS_TEMP
+PROMPT
+
+DROP TABLE XXMER.XX_PO_HEADERS_TEMP;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping SYNONYM XX_PO_HEADERS_TEMP in APPS
+PROMPT
+
+DROP SYNONYM XX_PO_HEADERS_TEMP;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating the Custom Table XX_PO_HEADERS_TEMP......
+PROMPT
+
+CREATE TABLE XXMER.XX_PO_HEADERS_TEMP (
+  					HEADER_SEQUENCE_ID	 NUMBER		PRIMARY KEY,
+                              LEGACY_SUPPLIER_NO	 NUMBER		NOT NULL,
+  					LEGACY_LOCATION_ID	 NUMBER,
+  					PO_SOURCE			 VARCHAR2(10),
+  					STATUS_CODE			 VARCHAR2(10),
+  					TOTAL_PO_LINES	 	 NUMBER,
+  					APPROVAL_STATUS		 VARCHAR2(30),
+  					BATCH_NO			 NUMBER,
+  					COMMENTS   			 VARCHAR(180),
+  					PROCESS_CODE		 VARCHAR2(10)	DEFAULT 'NEW',
+  					STAGE_HEADER_ID          NUMBER,		
+                              CREATION_DATE	    	 DATE			NOT NULL,
+  					CREATED_BY	   		 NUMBER		NOT NULL,
+  					LAST_UPDATE_DATE    	 DATE			NOT NULL,
+ 		    		      LAST_UPDATED_BY		 NUMBER		NOT NULL
+        			      );
+
+PROMPT
+PROMPT Creating Synonym in APPS...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM XX_PO_HEADERS_TEMP
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_PO_HEADERS_TEMP FOR XXMER.XX_PO_HEADERS_TEMP ;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+
+EXIT;
+
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

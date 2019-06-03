@@ -1,0 +1,38 @@
+<definitions
+     name="MerchErrorHandler"
+     targetNamespace="http://xmlns.oracle.com/MerchErrorHandler"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:client="http://xmlns.oracle.com/MerchErrorHandler"
+    >
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+             xmlns:client="http://xmlns.oracle.com/MerchErrorHandler">
+            <import namespace="http://xmlns.oracle.com/MerchErrorHandler" schemaLocation="MerchErrorHandler.xsd"/>
+        </schema>
+    </types>
+    <message name="MerchErrorHandlerResponseMessage">
+        <part name="payload" element="client:MerchErrorHandlerProcessResponse"/>
+    </message>
+    <message name="MerchErrorHandlerRequestMessage">
+        <part name="payload" element="client:MerchErrorHandlerProcessRequest"/>
+    </message>
+    <portType name="MerchErrorHandlerCallback">
+        <operation name="onResult">
+            <input message="client:MerchErrorHandlerResponseMessage"/>
+        </operation>
+    </portType>
+    <portType name="MerchErrorHandler">
+        <operation name="initiate">
+            <input message="client:MerchErrorHandlerRequestMessage"/>
+        </operation>
+    </portType>
+    <plnk:partnerLinkType name="MerchErrorHandler">
+        <plnk:role name="MerchErrorHandlerProvider">
+            <plnk:portType name="client:MerchErrorHandler"/>
+        </plnk:role>
+        <plnk:role name="MerchErrorHandlerRequester">
+            <plnk:portType name="client:MerchErrorHandlerCallback"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+</definitions>

@@ -1,0 +1,19 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="JITABatchBPEL1" src="JITABatchBPEL1.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="DBAdapterPolling">
+            <property name="wsdlLocation">DBAdapterPolling.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="WMoSMQ">
+            <property name="wsdlLocation">WMoSMQ.wsdl</property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+      <activationAgents>
+         <activationAgent className="oracle.tip.adapter.fw.agent.jca.JCAActivationAgent" partnerLink="DBAdapterPolling">
+            <property name="portType">DBAdapterPolling_ptt</property>
+         </activationAgent>
+      </activationAgents>
+   </BPELProcess>
+</BPELSuitcase>

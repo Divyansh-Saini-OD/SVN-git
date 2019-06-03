@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ +===========================================================================+
+ |                  Office Depot - Project Simplify                          |
+ |               BPEL Process Configuration Parameters                       |
+ +===========================================================================+
+ | Name         : ItemMasterConfig.xml                                       |
+ |                                                                           |
+ | Description  : This XML file is used to store and retrieve all            |
+ |                parameters that are used in the BPEL process               |
+ |                                                                           |
+ | Usage        : expression=                                                |
+ |                'ora:doc("${server_url}/xmllib/merch/ItemMasterConfig.xml",|
+ |                "/BPELParameters/Common/TaskuserAssignee")'                |
+ |                                                                           |
+ +===========================================================================+
+-->
+<BPELParameters>
+    <!-- Common ItemMaster Parameters -->
+        <Common>
+	    <TaskuserAssignee>Adrian-Macean</TaskuserAssignee>
+	    <TaskGroupAssignee>MerchandisingSupport</TaskGroupAssignee>
+        </Common>
+    <!-- Parameters specific to ItemMaster_rms_outb Process -->
+        <ItemMaster_rms_outb>
+        </ItemMaster_rms_outb>
+    <!-- Parameters specific to ItemMaster_ebs_inb Process -->
+        <ItemMaster_ebs_inb>
+        </ItemMaster_ebs_inb>
+    <!-- Parameters specific to ItemMaster_rms_confirm_inb Process -->
+        <ItemMaster_rms_confirm_inb>
+        </ItemMaster_rms_confirm_inb>
+</BPELParameters>

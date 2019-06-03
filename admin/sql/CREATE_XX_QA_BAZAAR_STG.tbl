@@ -1,0 +1,73 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_QA_BAZAAR_STG.tbl                                                |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_QA_BAZAAR_STG   (OD QA BAZAAR Staging table)                           |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              12-Aug-2011       Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_QA_BAZAAR_STG......
+PROMPT
+
+Create table xxmer.XX_QA_BAZAAR_STG
+(
+ OD_OB_REVIEW_ID	NUMBER,
+ OD_SC_ENTRY_DATE	DATE,
+ OD_OB_SKU		NUMBER,
+ OD_PB_ITEM_DESC	VARCHAR2(240),
+ OD_OB_OVERALL_RAT	NUMBER,
+ OD_OB_MEET_EXPECT	NUMBER,
+ OD_OB_QUALITY_RAT	NUMBER,
+ OD_OB_REC_FRND		VARCHAR2(25),
+ OD_OB_PROS		VARCHAR2(4000),
+ OD_OB_CONS		VARCHAR2(4000),
+ OD_PB_COMMENTS		VARCHAR2(4000),
+ load_batch_id		NUMBER,
+ process_flag		number,
+ creation_date		date,
+ created_by		number,
+ last_update_date	date,
+ last_updated_by	number);
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
+
+
+create synonym XX_QA_BAZAAR_STG for xxmer.XX_QA_BAZAAR_STG

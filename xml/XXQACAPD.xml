@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXQACAPD" description="OD OB CAP DS Report" Version="1.0">
+<parameters>
+ <parameter name="P_CAP_ID" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_CAP_DS">
+<![CDATA[
+SELECT
+    cap.OD_PB_CAR_ID         AS "CAPID"
+  , cap.OD_OB_QA_ID          AS "QA_Activity_ID"
+  , cap.OD_PB_VENDOR_VPC     AS "VPN"
+  , cap.OD_OB_SKU            AS "SKU"
+  , cap.OD_SC_VENDOR_NUMBER  AS "VENDOR_NUMBER"
+  , DECODE(cap.OD_OB_QA_ACT,'SPC',cap.OD_PB_COMPANY,cap.od_ob_vendor_name) VENDOR_NAME
+  , DECODE(cap.OD_OB_QA_ACT,'SPC',cap.OD_PB_SERVICE_LOCATION,cap.od_sc_factory_name) FACTORY_NAME
+  , cap.OD_PB_TECH_RPT_NUM   AS "REPORT_ID"
+  , cap.OD_PB_DATE_CAPA_SENT AS "DATE_CAP_SENT"
+  , cpd.OD_OB_DS_ID          AS "DSID"
+  , cpd.OD_PB_DEFECT_SUM     AS "DEFECT_SUMMARY"
+  , cap.OD_OB_CAP_RESPOND_BY AS "CAP_RESPOND_BY"
+FROM
+    q_od_ob_cap_defects_v cpd
+  , q_od_ob_cap_v cap
+WHERE
+    cpd.od_ob_ref_capid = cap.od_pb_car_id
+AND cap.od_pb_car_id    = NVL(:p_cap_id , cap.od_pb_car_id)
+ORDER BY
+    cpd.OD_OB_DS_ID
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_CAP_DS" source="Q_CAP_DS">
+<element name="OD_PB_CAR_ID" value="CAPID" />
+<element name="OD_OB_QA_ID" value="QA_ACTIVITY_ID" />
+<element name="OD_PB_VENDOR_VPC" value="VPN" />
+<element name="OD_OB_SKU" value="SKU" />
+<element name="OD_SC_VENDOR_NUMBER" value="VENDOR_NUMBER" />
+<element name="OD_OB_VENDOR_NAME" value="VENDOR_NAME" />
+<element name="OD_SC_FACTORY_NAME" value="FACTORY_NAME" />
+<element name="OD_PB_TECH_RPT_NUM" value="REPORT_ID" />
+<element name="OD_PB_DATE_CAPA_SENT" value="DATE_CAP_SENT" />
+<element name="OD_OB_CAP_RESPOND_BY" value="CAP_RESPOND_BY" />
+<group name="G_CAP_D" source="Q_CAP_DS">
+<element name="OD_OB_DS_ID" value="DSID" />
+<element name="OD_PB_DEFECT_SUM" value="DEFECT_SUMMARY" />
+</group>
+</group>
+</dataStructure>
+</dataTemplate>

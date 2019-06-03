@@ -1,0 +1,44 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_PA_PB_PRDUPLD_STG.tbl                                            |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_PA_PB_PRDUPLD_STG (OD PLM Enhancements table)                          |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              28-Jul-2010       Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Alter the Table XX_PA_PB_PRDUPLD_STG......
+PROMPT
+
+alter table xx_pa_pb_prdupld_stg add qty_20ft number;
+
+alter table xx_pa_pb_prdupld_stg add qty_40ft number;
+
+alter table xx_pa_pb_prdupld_stg add qty_40ft_htc number;
+
+alter table xx_pa_pb_prdupld_stg add qty_45ft number;
+

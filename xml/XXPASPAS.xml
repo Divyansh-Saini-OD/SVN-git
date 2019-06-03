@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXPASPAS" description="OD PB SC Pre Audit Status Report" Version="1.0">
+<parameters>
+ <parameter name="p_us_rgn" datatype="character" />
+ <parameter name="p_eu_rgn" datatype="character" />
+ <parameter name="p_mx_rgn" datatype="character" />
+ <parameter name="p_as_rgn" datatype="character" />
+ <parameter name="p_agent" datatype="character" />
+ <parameter name="p_auditor" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_PAS">
+<![CDATA[
+select od_sc_vendor_name,
+       od_sc_vend_type,
+	 od_sc_audit_agent,
+       od_sc_factory_name,
+       od_sc_europe_rgn,
+       od_sc_mexico_region,
+       od_sc_asia_region,
+       od_sc_department,
+	 od_sc_product,
+       od_sc_audit_required,
+       od_sc_vend_region,
+       od_sc_cnt_of_orgn,
+       od_sc_lead_auditor,
+	 od_sc_auditor,
+	 od_sc_preaudt_sched_d PreAudit_sched,
+       od_sc_preaudt_result  PreAudit_result,
+       od_sc_zt_status	PreAudit_CAP,
+       od_sc_zt_aprvl_d PreAudit_Apr_date,
+       od_sc_zt_approver PreAudit_Approver,
+       od_sc_fzt_approver PreAudit_FApprover,
+       od_sc_fzt_aprvl_d  PreAudit_FApr_date,
+       od_sc_preaudit_comments comments       
+  from Q_OD_PB_SC_VENDOR_MASTER_V
+ where od_sc_fzt_aprvl_d IS NULL
+   AND NVL(od_sc_audit_agent,'X')=NVL(:p_agent,NVL(od_sc_audit_agent,'X'))
+   AND NVL(od_sc_lead_auditor,'X')=NVL(:p_auditor,NVL(od_sc_lead_auditor,'X'))
+   AND NVL(od_sc_vend_region,'X')=NVL(:p_us_rgn,NVL(od_sc_vend_region,'X'))
+   AND NVL(od_sc_europe_rgn,'X')=NVL(:p_eu_rgn,NVL(od_sc_europe_rgn,'X'))
+   AND NVL(od_sc_mexico_region,'X')=NVL(:p_mx_rgn,NVL(od_sc_mexico_region,'X'))
+   AND NVL(od_sc_asia_region,'X')=NVL(:p_as_rgn,NVL(od_sc_asia_region,'X'))
+ORDER BY 1,2
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_PAS" source="Q_PAS">
+<element name="VENDOR_NAME" value="OD_SC_VENDOR_NAME" />
+<element name="VENDOR_TYPE" value="OD_SC_VEND_TYPE" />
+<element name="AGENT" value="OD_SC_AUDIT_AGENT" />
+<element name="FACTORY_NAME" value="OD_SC_FACTORY_NAME" />
+<element name="US_REGION" value="OD_SC_VEND_REGION" />
+<element name="EU_REGION" value="OD_SC_EUROPE_RGN" />
+<element name="MX_REGION" value="OD_SC_MEXICO_REGION" />
+<element name="AS_REGION" value="OD_SC_ASIA_REGION" />
+<element name="DEPT" value="OD_SC_DEPARTMENT" />
+<element name="PRODUCT" value="OD_SC_PRODUCT" />
+<element name="AUDIT_REQD" value="OD_SC_AUDIT_REQUIRED" />
+<element name="COO" value="OD_SC_CNT_OF_ORGN" />
+<element name="LEAD_AUDITOR" value="OD_SC_LEAD_AUDITOR" />
+<element name="AUDITOR" value="OD_SC_AUDITOR" />
+<element name="PREAUDIT_SCHED" value="PREAUDIT_SCHED" />
+<element name="PREAUDIT_RESULT" value="PREAUDIT_RESULT" />
+<element name="PREAUDIT_CAP" value="PREAUDIT_CAP" />
+<element name="PREAUDIT_APR_DATE" value="PREAUDIT_APR_DATE" />
+<element name="PREAUDIT_APPROVER" value="PREAUDIT_APPROVER" />
+<element name="PREAUDIT_FAPPROVER" value="PREAUDIT_FAPPROVER" />
+<element name="PREAUDIT_FAPR_DATE" value="PREAUDIT_FAPR_DATE" />
+<element name="COMMENTS" value="COMMENTS" />
+</group>
+</dataStructure>
+</dataTemplate>

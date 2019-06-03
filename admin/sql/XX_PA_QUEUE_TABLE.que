@@ -1,0 +1,34 @@
+/*======================================================================
+-- +===================================================================+
+-- |                  Office Depot - PA PROJECT - QUEUE TABLE          |
+-- |              Private Brand China Global Sourcing                  |
+-- +===================================================================+
+-- | Name       :  XX_PA_QUEUE_TABLE                                   |
+-- | Description:  AQ MESSAGE TYPE FOR trigger is Created for the PBCGS|
+-- |               to synchronize number of SKUS on a project with     |
+-- |               project item ids.                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |                                                                   | 
+-- |1.0      03-Apr-2008  Ian Bassaragh    Created This QUEUE TABLE    |
+-- |                                                                   |
+-- +===================================================================+
++======================================================================*/
+begin
+  dbms_aqadm.create_queue_table( 
+    queue_table        => 'XX_PA_QTAB',
+    queue_payload_type => 'XX_PA_MESSAGE_TYPE',
+    multiple_consumers => true);
+
+  dbms_aqadm.create_queue(
+    queue_name  => 'XX_PA_QUEUE',
+    queue_table => 'XX_PA_QTAB'); 
+
+  dbms_aqadm.start_queue(
+    queue_name => 'XX_PA_QUEUE');
+end;
+/

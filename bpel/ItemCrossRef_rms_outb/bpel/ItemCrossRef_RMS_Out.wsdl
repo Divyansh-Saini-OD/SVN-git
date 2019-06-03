@@ -1,0 +1,44 @@
+<definitions
+     name="ItemCrossRef_RMS_Out"
+     targetNamespace="http://xmlns.oracle.com/ItemCrossRef_RMS_Out"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:ns1="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:client="http://xmlns.oracle.com/ItemCrossRef_RMS_Out"
+    >
+    <import namespace="http://schemas.oracle.com/bpel/extension" location="RuntimeFault.wsdl"/>
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:client="http://xmlns.oracle.com/ItemCrossRef_RMS_Out">
+            <import namespace="http://xmlns.oracle.com/ItemCrossRef_RMS_Out" schemaLocation="ItemCrossRef_RMS_Out.xsd"/>
+        </schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:client="http://xmlns.oracle.com/ItemCrossRef_RMS_Out">
+            <xsd:import namespace="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+                 schemaLocation="http://chilsoa01d.na.odcorp.net:7778/orabpel/xmllib/merchFndXml/officedepot/merchandising/foundation/v1/message/bod/ItemCrossReference.xsd"/>
+        </xsd:schema>
+    </types>
+    <message name="ItemCrossRef_RMS_OutRequestMessage">
+        <part name="payload" element="client:ItemCrossRef_RMS_OutProcessRequest"/>
+    </message>
+    <message name="ItemCrossRef_RMS_OutResponseMessage">
+        <part name="payload" element="client:ItemCrossRef_RMS_OutProcessResponse"/>
+    </message>
+    <message name="MsgTypeXsdItemXrf">
+        <part name="MsgPartXsdItemXrf" element="ns1:ItemCrossReference"/>
+    </message>
+    <message name="msgtype_comresp">
+        <part name="msgpart_comresp" element="ns1:CommonResponse"/>
+    </message>
+    <portType name="ItemCrossRef_RMS_Out">
+        <operation name="process">
+            <input message="client:ItemCrossRef_RMS_OutRequestMessage"/>
+            <output message="client:ItemCrossRef_RMS_OutResponseMessage"/>
+        </operation>
+    </portType>
+    <plnk:partnerLinkType name="ItemCrossRef_RMS_Out">
+        <plnk:role name="ItemCrossRef_RMS_OutProvider">
+            <plnk:portType name="client:ItemCrossRef_RMS_Out"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+</definitions>

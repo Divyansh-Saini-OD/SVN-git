@@ -1,0 +1,72 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_INV_ITEM_PURGE_INT.tbl                                           |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_INV_ITEM_PURGE_INT                                                     |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              17-Aug-2010       Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_INV_ITEM_PURGE_INT......
+PROMPT
+
+create table xxmer.xx_inv_item_purge_int
+( segment1 			varchar2(50),
+  inventory_item_id		number,
+  loc				number,
+  organization_id		number,
+  process_Flag			number,
+  load_batch_id			number,
+  loc_process_flag		number,  
+  error_message			varchar2(4000),
+  error_flag			varchar2(1),
+  delete_flag			varchar2(1),
+  check_flag			varchar2(1),
+  del_grp_id			number,
+  request_id			number,
+  master_item_flag		varchar2(1),
+  extract_flag			varchar2(1),
+  delete_entity_sequence_id	number,
+  creation_date			date,
+  created_by			number,
+  last_update_date		date,
+  last_updated_by		number
+);
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXQACAPR" description="OD OB CAP Report" Version="1.0">
+<parameters>
+ <parameter name="P_AGENT" datatype="character" />
+ <parameter name="P_APPROVAL_STATUS" datatype="character" />
+ <parameter name="P_APPROVER" datatype="character" />
+ <parameter name="P_CAP_ID" datatype="character" />
+ <parameter name="P_DEPT_NAME" datatype="character" />
+ <parameter name="P_DS_ID" datatype="character" />
+ <parameter name="P_FACTORY_NAME" datatype="character" />
+ <parameter name="P_QA_ACTIVITY" datatype="character" />
+ <parameter name="P_SKU" datatype="number" />
+ <parameter name="P_SUBMITTER" datatype="character" />
+ <parameter name="P_VENDOR_NAME" datatype="character" />
+ <parameter name="P_VMETHOD" datatype="character" />
+ <parameter name="P_VN" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_CAP">
+<![CDATA[
+SELECT     cap.OD_PB_CAR_ID                  AS  CAPID
+         , cap.OD_OB_QA_ID                   AS  QA_ACTIVITY_ID
+         , cap.OD_OB_QA_ACT                  AS  QA_ACTIVITY
+         , cap.OD_PB_VENDOR_VPC              AS  VPN
+         , cap.OD_OB_SKU                     AS  SKU
+         , cap.OD_PB_ITEM_DESC               AS  ITEM_DESCRIPTION
+         , cap.OD_PB_SC_DEPT_NAME            AS  DEPARTMENT
+         , cap.OD_SC_VENDOR_NUMBER           AS  VENDOR_NUMBER
+         , DECODE(cap.OD_OB_QA_ACT,'SPC',cap.OD_PB_COMPANY,cap.od_ob_vendor_name) VENDOR_NAME
+         , cap.OD_OB_FACTORY_NUMBER          AS  FACTORY_NUMBER
+         , DECODE(cap.OD_OB_QA_ACT,'SPC',cap.OD_PB_SERVICE_LOCATION,cap.od_sc_factory_name) FACTORY_NAME
+         , cap.OD_SC_FACTORY_EMAIL           AS  FACTORY_EMAIL
+         , cap.OD_PB_TECH_RPT_NUM            AS  REPORT_ID
+         , cap.OD_SC_AUDIT_AGENT             AS  SOURCING_AGENT
+         , cap.OD_PB_AUDITOR_NAME            AS  GSO_ENGINEER
+         , cap.OD_PB_QA_ENGR_EMAIL           AS  QA_APPROVER
+         , cap.OD_PB_DATE_CAPA_SENT          AS  DATE_CAP_SENT
+         , cap.OD_PB_DATE_CAPA_RECEIVED      AS  DATE_CAP_RECEIVED
+         , cpd.OD_PB_COMMENTS                AS  COMMENTS
+         , cap.OD_PB_APPROVAL_STATUS         AS  CAP_APPROVAL_STATUS
+         , cap.OD_PB_DATE_APPROVED           AS  CAP_DATE_APPROVED
+         , cap.OD_PB_ATTACHMENT              AS  ATTACHMENTS
+         , cpd.OD_OB_DS_ID                   AS  DSID
+         , cpd.OD_PB_DEFECT_SUM              AS  DEFECT_SUMMARY
+         , cpd.OD_PB_ROOT_CAUSE              AS  ROOT_CAUSE
+         , cpd.OD_PB_CORR_ACTION	         AS  CORRECTIVE_ACTION
+         , cpd.OD_PB_PREVENTIVE_ACTION       AS  PREVENTATIVE_ACTION
+         , cpd.OD_PB_DATE_CORR_IMPL          AS  DATE_CAP_IMPLEMENTATION
+         , cpd.OD_OB_VN_ID                   AS  VNID
+         , cpd.OD_PB_ATTACHMENT              AS  VARIATION_NOTICE
+         , cpd.OD_PB_DATE_VERIFIED           AS  VERIFICATION_DATE
+         , cpd.OD_OB_VERIFICATION_METHOD     AS  VERIFICATION_METHOD
+         , cpd.OD_PB_APPROVAL_STATUS         AS  DAPPROVAL_STATUS
+         , cpd.OD_PB_DATE_APPROVED           AS  DATE_APPROVED
+    FROM   q_od_ob_cap_defects_v cpd
+         , q_od_ob_cap_v cap
+   WHERE cpd.od_ob_ref_capid                   = cap.od_pb_car_id
+  AND cap.od_pb_car_id                         = NVL(:p_cap_id , cap.od_pb_car_id)
+  AND cap.od_ob_qa_act                         = NVL(:p_qa_activity , cap.od_ob_qa_act)
+  AND NVL(cap.OD_OB_SKU , 1)                   = NVL(:p_sku , NVL(cap.OD_OB_SKU , 1))
+  AND NVL(cap.OD_PB_SC_DEPT_NAME , 'X')        = NVL(:p_dept_name , NVL(cap.OD_PB_SC_DEPT_NAME , 'X'))
+  AND NVL(cap.OD_OB_VENDOR_NAME , 'X')         = NVL(:p_vendor_name , NVL(cap.OD_OB_VENDOR_NAME , 'X'))
+  AND NVL(cap.OD_SC_FACTORY_NAME , 'X')        = NVL(:p_factory_name , NVL(cap.OD_SC_FACTORY_NAME , 'X'))
+  AND NVL(cap.OD_SC_AUDIT_AGENT , 'X')         = NVL(:p_agent , NVL(cap.OD_SC_AUDIT_AGENT , 'X'))
+  AND NVL(cpd.OD_OB_DS_ID , 'X')               = NVL(:p_ds_id , NVL(cpd.OD_OB_DS_ID , 'X'))
+  AND NVL(cap.OD_PB_AUDITOR_NAME , 'X')        = NVL(:p_submitter , NVL(cap.OD_PB_AUDITOR_NAME , 'X'))
+  AND NVL(cap.OD_PB_QA_ENGR_EMAIL , 'X')       = NVL(:p_approver , NVL(cap.OD_PB_QA_ENGR_EMAIL , 'X'))
+  AND NVL(cap.OD_PB_APPROVAL_STATUS , 'X')     = NVL(:p_approval_status , NVL(cap.OD_PB_APPROVAL_STATUS , 'X'))
+  AND NVL(cpd.OD_PB_ATTACHMENT ,'X')           = NVL(:p_vn , NVL(cpd.OD_PB_ATTACHMENT , 'X'))
+  AND NVL(cpd.OD_OB_VERIFICATION_METHOD , 'X') = NVL(:p_vmethod , NVL(cpd.OD_OB_VERIFICATION_METHOD , 'X'))
+  ORDER BY  cap.OD_PB_CAR_ID 
+          , cpd.OD_OB_DS_ID   
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_CAP" source="Q_CAP">
+<element name="OD_PB_CAR_ID" value="CAPID" />
+<element name="OD_OB_QA_ID" value="QA_ACTIVITY_ID" />
+<element name="OD_OB_QA_ACT" value="QA_ACTIVITY" />
+<element name="OD_PB_VENDOR_VPC" value="VPN" />
+<element name="OD_OB_SKU" value="SKU" />
+<element name="OD_PB_ITEM_DESC" value="ITEM_DESCRIPTION" />
+<element name="OD_PB_SC_DEPT_NAME" value="DEPARTMENT" />
+<element name="OD_SC_VENDOR_NUMBER" value="VENDOR_NUMBER" />
+<element name="OD_OB_VENDOR_NAME" value="VENDOR_NAME" />
+<element name="OD_OB_FACTORY_NUMBER" value="FACTORY_NUMBER" />
+<element name="OD_SC_FACTORY_NAME" value="FACTORY_NAME" />
+<element name="OD_SC_FACTORY_EMAIL" value="FACTORY_EMAIL" />
+<element name="OD_PB_TECH_RPT_NUM" value="REPORT_ID" />
+<element name="OD_SC_AUDIT_AGENT" value="SOURCING_AGENT" />
+<element name="OD_PB_AUDITOR_NAME" value="GSO_ENGINEER" />
+<element name="OD_PB_QA_ENGR_EMAIL" value="QA_APPROVER" />
+<element name="OD_PB_DATE_CAPA_SENT" value="DATE_CAP_SENT" />
+<element name="OD_PB_DATE_CAPA_RECEIVED" value="DATE_CAP_RECEIVED" />
+<element name="OD_PB_COMMENTS" value="COMMENTS" />
+<element name="OD_PB_APPROVAL_STATUS" value="CAP_APPROVAL_STATUS" />
+<element name="OD_PB_DATE_APPROVED" value="CAP_DATE_APPROVED" />
+<element name="OD_PB_ATTACHMENT" value="ATTACHMENTS" />
+<group name="G_DET" source="Q_CAP">
+<element name="OD_OB_DS_ID" value="DSID" />
+<element name="OD_PB_DEFECT_SUM" value="DEFECT_SUMMARY" />
+<element name="OD_PB_ROOT_CAUSE" value="ROOT_CAUSE" />
+<element name="OD_PB_CORRECTIVE_ACTION_TYPE" value="CORRECTIVE_ACTION" />
+<element name="OD_OB_PREVENTIVE_ACTION" value="PREVENTATIVE_ACTION" />
+<element name="OD_PB_DATE_CORR_IMPL" value="DATE_CAP_IMPLEMENTATION" />
+<element name="OD_OB_VN_ID" value="VNID" />
+<element name="OD_PB_ATTACHMENT" value="VARIATION_NOTICE" />
+<element name="OD_PB_DATE_VERIFIED" value="VERIFICATION_DATE" />
+<element name="OD_OB_VERIFICATION_METHOD" value="VERIFICATION_METHOD" />
+<element name="D_APPROVAL_STATUS" value="DAPPROVAL_STATUS" />
+<element name="OD_PB_DATE_APPROVED" value="DATE_APPROVED" />
+</group>
+</group>
+</dataStructure>
+</dataTemplate>

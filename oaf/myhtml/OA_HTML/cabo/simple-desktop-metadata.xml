@@ -1,0 +1,954 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<lookAndFeelMetadata xmlns="http://xmlns.oracle.com/uix/ui/laf/metadata"
+                     xmlns:html="http://www.w3.org/TR/REC-html40"
+                     id="simple.desktop"
+                     name="Simple Desktop Look And Feel"
+                     extends="base.desktop">
+
+  <componentMetadata>
+
+    <component name="button">
+      <description>
+        <html:p>
+        The Simple Look And Feel supports two very different button
+        implementations.  By default, standard browser buttons are
+        used.  However, the Simple Look And Feel also supports 
+        dynamic generation of image-based buttons.  In order to enable
+        image-based buttons, the following four button icon must be 
+        specified: buttonStart, buttonEnd, buttonTopBackground, 
+        buttonBottomBackground.  When these four icons are specified, 
+        UIX combines the images specified by these icons into a single 
+        button image.  (Note: These icons must be specified using
+        either context-image or resource-image icons.  Text-based icons are 
+        not allowed, and the other image icon types are not currently
+        supported.)
+        </html:p>
+        <html:p>
+        See the Image Generation chapter of the UIX Developer's Guide
+        for more information about UIX's image generation functionality.
+        </html:p>
+      </description>
+
+      <styles>
+        <namedStyle id="ButtonServerText">
+          <description>
+          This named style is used to provide the foreground color,
+          background color, and font information for server-side
+          generated buttons.
+          </description>
+        </namedStyle>
+
+        <namedStyle id="ButtonServerTextDisabled">
+          <description>
+          This named style is used to provide the foreground color,
+          background color, and font information for server-side
+          generated disabled buttons.          
+          </description>
+        </namedStyle>
+
+        <selector id="BUTTON">
+          <description>
+          The BUTTON selector is used to apply styles to browser-based
+          buttons.
+          </description>
+        </selector>
+      </styles>
+
+      <icons>
+
+        <icon id="buttonStart">
+          <description>
+          This icon is rendered at the starting side of the button.  That
+          is, this image appears on the left side of the button when the
+          reading direction is right-to-left, and the right side of the button
+          when the reading direction is left-to-right.
+          </description>
+        </icon>
+
+        <icon id="buttonEnd">
+          <description>
+          This icon is rendered at the ending side of the button.  That
+          is, this image appears on the right side of the button when the
+          reading direction is right-to-left, and the left side of the button
+          when the reading direction is left-to-right.
+          </description>
+        </icon>
+
+        <icon id="buttonTopBackground">
+          <description>
+          This image is tiled horizontally along the top of the button, 
+          providing the button's top border.
+          </description>
+        </icon>
+
+        <icon id="buttonBottomBackground">
+          <description>
+          This image is tiled horizontally along the bottom of the button,
+          providing the button's bottom border.
+          </description>
+        </icon>
+
+        <icon id="buttonDisabledStart">
+          <description>
+          This icon is rendered at the starting side of disabled buttons.
+          If this icon is not specified, the buttonStart icon will be
+          used instead.
+          </description>
+        </icon>
+
+        <icon id="buttonDisabledEnd">
+          <description>
+          This icon is rendered at the ending side of disabled button.
+          If this icon is not specified, the buttonEnd icon will be
+          used instead.
+          </description>
+        </icon>
+
+        <icon id="buttonDisabledTopBackground">
+          <description>
+          This icon is tiled horizontally along the top of disabled buttons.
+          If this icon is not specified, the buttonTopBackground icon will be
+          used instead.
+          </description>
+        </icon>
+
+        <icon id="buttonDisabledBottomBackground">
+          <description>
+          This icon is tiled horizontally along the bottom of the disabled
+          buttons.
+          If this icon is not specified, the buttonBottomBackground icon 
+          will be used instead.
+          </description>
+        </icon>
+
+      </icons>
+    </component>
+
+    <component name="messageBox">
+      <description>
+      <html:p>
+      This messageBox component is implemented using an inner table nested
+      within an outer table.  The outer container is used to lay out the
+      messageBox's icons.  The inner container contains the actual contents
+      of the messageBox.  If any transparent icons are used, style properties 
+      such as the background color should probably be set on the inner
+      table via the OraMessageBoxBody style class.
+      </html:p>
+      </description>
+      <styles>
+
+        <styleClass id="OraMessageBox">
+          <description>
+          This style class is rendered on the messageBox's outer table.
+          Since the messageBox's icons are rendered within the outer table,
+          the OraMessageBoxBody style class is probably a better choice
+          for specifying the messageBox's background color, padding, etc...
+          </description>
+        </styleClass>
+
+        <styleClass id="OraMessageBoxBody">
+          <description>
+          This style class is rendered on the messageBox's inner table, 
+          which does not include any outer icons.
+          </description>
+        </styleClass>
+
+      </styles>
+
+      <icons>
+        <icon id="messageBoxTopStart">
+          <description>
+          This icon is rendered at the top starting corner of the
+          messageBox (ie. at the top left corner for left to right
+          languages.)
+          </description>
+        </icon>
+
+        <icon id="messageBoxTopEnd">
+          <description>
+          This icon is rendered at the top ending corner of the
+          messageBox (ie. at the top right corner for left to right
+          languages.)
+          </description>
+        </icon>
+
+        <icon id="messageBoxTopBackground">
+          <description>
+          This icon is rendered in the background in between the
+          messageBoxTopStart and messageBoxTopEnd icons.
+          </description>
+        </icon>
+
+        <icon id="messageBoxBottomStart">
+          <description>
+          This icon is rendered at the bottom starting corner of the
+          messageBox (ie. at the bottom left corner for left to right
+          languages.)
+          </description>
+        </icon>
+
+        <icon id="messageBoxBottomEnd">
+          <description>
+          This icon is rendered at the bottom ending corner of the
+          messageBox (ie. at the bottom right corner for left to right
+          languages.)
+          </description>
+        </icon>
+
+        <icon id="messageBoxBottomBackground">
+          <description>
+          This icon is rendered in the background in between the
+          messageBoxBottomStart and messageBoxBottomEnd icons.
+          </description>
+        </icon>
+
+        <icon id="messageBoxStartBackground">
+          <description>
+          This icon is rendered in the background at the start of
+          the messageBox.
+          </description>
+        </icon>
+
+        <icon id="messageBoxEndBackground">
+          <description>
+          This icon is rendered in the background at the end of
+          the messageBox.
+          </description>
+        </icon>
+
+      </icons>
+    </component>
+
+    <component name="tabBar">
+      <icons>
+
+        <icon id="tabBarEnabledStart">
+          <description>
+          The tabBarEnabledStart icon is rendered at the start of
+          each enabled tabBar item.
+          </description>
+        </icon>
+
+        <icon id="tabBarEnabledEnd">
+          <description>
+          The tabBarEnabledEnd icon is rendered at the end of
+          each enabled tabBar item.
+          </description>
+        </icon>
+
+        <icon id="tabBarEnabledBackground">
+          <description>
+          The tabBarEnabledBacgkround icon is rendered in the background
+          each enabled tabBar item.
+          </description>
+        </icon>
+
+        <icon id="tabBarSelectedStart">
+          <description>
+          The tabBarSelectedStart icon is rendered at the start of
+          the selected tabBar item.
+          </description>
+        </icon>
+
+        <icon id="tabBarSelectedEnd">
+          <description>
+          The tabBarSelectedEnd icon is rendered at the end of
+          the selected tabBar item.
+          </description>
+        </icon>
+
+        <icon id="tabBarSelectedBackground">
+          <description>
+          The tabBarSelectedBacgkround icon is rendered in the background
+          the selected tabBar item.
+          </description>
+        </icon>
+
+        <icon id="tabBarEnabledJoin">
+          <description>
+          The tabBarEnabledJoin icon is rendered in between two
+          enabled tabBar items.
+          </description>
+        </icon>
+
+        <icon id="tabBarEnabledSelectedJoin">
+          <description>
+          The tabBarEnabledSelectedJoin icon is rendered in between 
+          an enabled tabBar item and the selected tabBar item.  That is,
+          when the reading direction is left to right, the join connects
+          an enabled item with a selected item to the right of the enabled
+          item.
+          </description>
+        </icon>
+
+        <icon id="tabBarSelectedEnabledJoin">
+          <description>
+          The tabBarSelectedEnabledJoin icon is rendered in between 
+          the selected tabBar item and an enabled tabBar item.  That is,
+          when the reading direction is left to right, the join connects
+          a selected item with an enabled item to the right of the selected
+          item.
+          </description>
+        </icon>
+
+
+      </icons>
+    </component>
+
+    <component name="globalHeader">
+
+      <description>
+        <html:p>
+        The Simple Look And Feel globalHeader is implemented using 
+        an inner table nested within an outer table.  The outer
+        table contains cells for the globalHeaderStart and globalHeaderEnd
+        icons, as well as a cell for the nested inner table.  The 
+        inner table contains the actual contents of the globalHeader - 
+        which includes the globalHeader items if any items exist, or
+        possibly the globalHeader title if no items are specified.
+        </html:p>
+        <html:p>
+        Style properties can be applied to either the outer table
+        or the inner table, depending on how the styles are meant
+        to be used.  The OraGlobalHeader style class can be used
+        to apply styles to the entire globalHeader - including the
+        globalHeaderStart/globalHeaderEnd icons.  Note, however, that
+        if these icons are transparent, then setting the background 
+        color or borders on the OraGlobalHeader style class itself
+        is probably not desirable, since the background color will
+        show through any transparent pixels in the icons.
+        </html:p>
+        <html:p>
+        Three other styles can be used to apply styles to the inner contents 
+        of the globalHeader (not including the globalHeaderStart and
+        globalHeaderEnd icons).  If the globalHeader contains any items, 
+        the OraGlobalHeaderBody style class is used to style the inner 
+        table which contains the items.  This is a good choice for 
+        specifying a background color for the globalHeader, since this
+        background color is not applied to the globalHeader's outer icons.
+        If no globalHeader items are present, but the globalHeader's
+        text attribute is specified, the OraGlobalHeaderTitle style
+        class is rendered on the inner table instead of OraGlobalHeaderBody.  
+        If no children are present and there is no title, the 
+        OraGlobalHeaderEmpty title is used.
+        </html:p>
+      </description>
+
+      <styles>
+
+        <styleClass id="OraGlobalHeaderBody">
+          <description>
+          This style class is rendered on the globalHeader's inner
+          table when the globalHeader contains child items.  
+          </description>
+        </styleClass>
+
+        <styleClass id="OraGlobalHeaderTitle">
+          <description>
+          This style class is rendered on the globalHeader's inner
+          table when the globalHeader does not contain any child
+          items but does have its text attribute set.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraGlobalHeaderEmpty">
+          <description>
+          This style class is used to style empty globalHeaders - that is,
+          globalHeaders which do not have any children or a title.
+          </description>
+        </styleClass>
+
+      </styles>
+
+      <icons>
+        <icon id="globalHeaderStart">
+          <description>
+          This icon is rendered at the start of the globalHeader.
+          </description>
+        </icon>
+
+        <icon id="globalHeaderEnd">
+          <description>
+          This icon is rendered at the end of the globalHeader.
+          </description>
+        </icon>
+
+        <icon id="globalHeaderLeadingSeparator">
+          <description>
+          This icon is rendered before the first item in the globalHeader.
+          </description>
+        </icon>
+
+        <icon id="globalHeaderTrailingSeparator">
+          <description>
+          This icon is rendered after the last item in the globalHeader.
+          </description>
+        </icon>
+
+        <icon id="globalHeaderBackground">
+          <description>
+          This icon is rendered as the background of the globalHeader.
+          </description>
+        </icon>
+
+      </icons>
+
+    </component>  
+
+    <component name="contentContainer">
+      <icons>
+
+        <description>
+        The contentContainer defines four sets of icons: one set for each
+        background type.  Customizers are not required to specify icons
+        for all of the different icon names.  If an icon is omitted, the
+        contentContainer will attempt to expand to fill any empty space.
+        </description>
+
+        <icon id="contentContainerDarkHeaderStart">
+          <description>
+          This icon is rendered at the start of the header region
+          for dark contentContainers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerDarkHeaderEnd">
+          <description>
+          This icon is rendered at the end of the header region
+          for dark contentContainers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerDarkHeaderBackground">
+          <description>
+          This icon is rendered in the background of the header region
+          for dark contentContainers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerDarkBottomStart">
+          <description>
+          This icon is rendered in the body region of dark 
+          contentContainers at the bottom starting corner
+          (ie. at the bottom left corner for left to right
+          languages.)
+          </description>
+        </icon>
+
+        <icon id="contentContainerDarkBottomEnd">
+          <description>
+          This icon is rendered in the body region of dark 
+          contentContainers at the bottom ending corner
+          (ie. at the bottom right corner for left to right
+          languages.)
+          </description>
+        </icon>
+
+        <icon id="contentContainerDarkBottomBackground">
+          <description>
+          This icon is rendered in the body region of dark 
+          contentContainers as the background in between 
+          the contentContainerDarkBottomStart and 
+          contentContainerDarkBottomEnd icons.
+          </description>
+        </icon>
+
+        <icon id="contentContainerDarkTopStart">
+          <description>
+          This icon is rendered in the body region of dark 
+          contentContainers at the top starting corner
+          (ie. at the top left corner for left to right
+          languages.)  Note: the top icons are only rendered
+          for contentContainers which do not have headers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerDarkTopEnd">
+          <description>
+          This icon is rendered in the body region of dark 
+          contentContainers at the top ending corner
+          (ie. at the top right corner for left to right
+          languages.) Note: the top icons are only rendered
+          for contentContainers which do not have headers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerDarkTopBackground">
+          <description>
+          This icon is rendered in the body region of dark 
+          contentContainers as the background in between 
+          the contentContainerTopStart and 
+          contentContainerDarkTopEnd icons.  Note: the top icons are only 
+          rendered for contentContainers which do not have headers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerDarkStartBackground">
+          <description>
+          This icon is rendered as the background image on the
+          starting side of the body region in dark 
+          contentContainers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerDarkEndBackground">
+          <description>
+          This icon is rendered as the background image on the
+          ending side of the body region in dark 
+          contentContainers.
+          </description>
+        </icon>
+
+
+        <icon id="contentContainerMediumHeaderStart">
+          <description>
+          This icon is rendered at the start of the header region
+          for medium contentContainers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerMediumHeaderEnd">
+          <description>
+          This icon is rendered at the end of the header region
+          for medium contentContainers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerMediumHeaderBackground">
+          <description>
+          This icon is rendered in the background of the header region
+          for medium contentContainers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerMediumBottomStart">
+          <description>
+          This icon is rendered in the body region of medium 
+          contentContainers at the bottom starting corner
+          (ie. at the bottom left corner for left to right
+          languages.)
+          </description>
+        </icon>
+
+        <icon id="contentContainerMediumBottomEnd">
+          <description>
+          This icon is rendered in the body region of medium 
+          contentContainers at the bottom ending corner
+          (ie. at the bottom right corner for left to right
+          languages.)
+          </description>
+        </icon>
+
+        <icon id="contentContainerMediumBottomBackground">
+          <description>
+          This icon is rendered in the body region of medium 
+          contentContainers as the background in between 
+          the contentContainerMediumBottomStart and 
+          contentContainerMediumBottomEnd icons.
+          </description>
+        </icon>
+
+        <icon id="contentContainerMediumTopStart">
+          <description>
+          This icon is rendered in the body region of medium 
+          contentContainers at the top starting corner
+          (ie. at the top left corner for left to right
+          languages.)  Note: the top icons are only rendered
+          for contentContainers which do not have headers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerMediumTopEnd">
+          <description>
+          This icon is rendered in the body region of medium 
+          contentContainers at the top ending corner
+          (ie. at the top right corner for left to right
+          languages.) Note: the top icons are only rendered
+          for contentContainers which do not have headers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerMediumTopBackground">
+          <description>
+          This icon is rendered in the body region of medium 
+          contentContainers as the background in between 
+          the contentContainerTopStart and 
+          contentContainerMediumTopEnd icons.  Note: the top icons are only 
+          rendered for contentContainers which do not have headers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerMediumStartBackground">
+          <description>
+          This icon is rendered as the background image on the
+          starting side of the body region in medium 
+          contentContainers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerMediumEndBackground">
+          <description>
+          This icon is rendered as the background image on the
+          ending side of the body region in medium 
+          contentContainers.
+          </description>
+        </icon>
+
+
+        <icon id="contentContainerLightHeaderStart">
+          <description>
+          This icon is rendered at the start of the header region
+          for light contentContainers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerLightHeaderEnd">
+          <description>
+          This icon is rendered at the end of the header region
+          for light contentContainers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerLightHeaderBackground">
+          <description>
+          This icon is rendered in the background of the header region
+          for light contentContainers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerLightBottomStart">
+          <description>
+          This icon is rendered in the body region of light 
+          contentContainers at the bottom starting corner
+          (ie. at the bottom left corner for left to right
+          languages.)
+          </description>
+        </icon>
+
+        <icon id="contentContainerLightBottomEnd">
+          <description>
+          This icon is rendered in the body region of light 
+          contentContainers at the bottom ending corner
+          (ie. at the bottom right corner for left to right
+          languages.)
+          </description>
+        </icon>
+
+        <icon id="contentContainerLightBottomBackground">
+          <description>
+          This icon is rendered in the body region of light 
+          contentContainers as the background in between 
+          the contentContainerLightBottomStart and 
+          contentContainerLightBottomEnd icons.
+          </description>
+        </icon>
+
+        <icon id="contentContainerLightTopStart">
+          <description>
+          This icon is rendered in the body region of light 
+          contentContainers at the top starting corner
+          (ie. at the top left corner for left to right
+          languages.)  Note: the top icons are only rendered
+          for contentContainers which do not have headers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerLightTopEnd">
+          <description>
+          This icon is rendered in the body region of light 
+          contentContainers at the top ending corner
+          (ie. at the top right corner for left to right
+          languages.) Note: the top icons are only rendered
+          for contentContainers which do not have headers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerLightTopBackground">
+          <description>
+          This icon is rendered in the body region of light 
+          contentContainers as the background in between 
+          the contentContainerTopStart and 
+          contentContainerLightTopEnd icons.  Note: the top icons are only 
+          rendered for contentContainers which do not have headers.w
+          </description>
+        </icon>
+
+        <icon id="contentContainerLightStartBackground">
+          <description>
+          This icon is rendered as the background image on the
+          starting side of the body region in light 
+          contentContainers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerLightEndBackground">
+          <description>
+          This icon is rendered as the background image on the
+          ending side of the body region in light 
+          contentContainers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerTransparentHeaderStart">
+          <description>
+          This icon is rendered at the start of the header region
+          for transparent contentContainers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerTransparentHeaderEnd">
+          <description>
+          This icon is rendered at the end of the header region
+          for transparent contentContainers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerTransparentHeaderBackground">
+          <description>
+          This icon is rendered in the background of the header region
+          for transparent contentContainers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerTransparentBottomStart">
+          <description>
+          This icon is rendered in the body region of transparent 
+          contentContainers at the bottom starting corner
+          (ie. at the bottom left corner for left to right
+          languages.)
+          </description>
+        </icon>
+
+        <icon id="contentContainerTransparentBottomEnd">
+          <description>
+          This icon is rendered in the body region of transparent 
+          contentContainers at the bottom ending corner
+          (ie. at the bottom right corner for left to right
+          languages.)
+          </description>
+        </icon>
+
+        <icon id="contentContainerTransparentBottomBackground">
+          <description>
+          This icon is rendered in the body region of transparent 
+          contentContainers as the background in between 
+          the contentContainerTransparentBottomStart and 
+          contentContainerTransparentBottomEnd icons.
+          </description>
+        </icon>
+
+        <icon id="contentContainerTransparentTopStart">
+          <description>
+          This icon is rendered in the body region of transparent 
+          contentContainers at the top starting corner
+          (ie. at the top left corner for left to right
+          languages.)  Note: the top icons are only rendered
+          for contentContainers which do not have headers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerTransparentTopEnd">
+          <description>
+          This icon is rendered in the body region of transparent 
+          contentContainers at the top ending corner
+          (ie. at the top right corner for left to right
+          languages.) Note: the top icons are only rendered
+          for contentContainers which do not have headers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerTransparentTopBackground">
+          <description>
+          This icon is rendered in the body region of transparent 
+          contentContainers as the background in between 
+          the contentContainerTopStart and 
+          contentContainerTransparentTopEnd icons.  Note: the top icons are 
+          only  rendered for contentContainers which do not have headers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerTransparentStartBackground">
+          <description>
+          This icon is rendered as the background image on the
+          starting side of the body region in transparent 
+          contentContainers.
+          </description>
+        </icon>
+
+        <icon id="contentContainerTransparentEndBackground">
+          <description>
+          This icon is rendered as the background image on the
+          ending side of the body region in transparent 
+          contentContainers.
+          </description>
+        </icon>
+
+
+      </icons>
+    </component>
+
+    <component name="sideBar">
+      <description>
+      <html:p>
+      This sideBar component is implemented using an inner table nested
+      within an outer table.  The outer container is used to lay out the
+      sideBar's icons.  The inner container contains the actual contents
+      of the sideBar.  If any transparent icons are used, style properties 
+      such as the background color should probably be set on the inner
+      table via the OraSideBarBody style class.
+      </html:p>
+      </description>
+      <styles>
+
+        <styleClass id="OraSideBar">
+          <description>
+          This style class is rendered on the sideBar's outer table.
+          Since the sideBar's icons are rendered within the outer table,
+          the OraSideBarBody style class is probably a better choice
+          for specifying the sideBar's background color, padding, etc...
+          </description>
+        </styleClass>
+
+        <styleClass id="OraSideBarBody">
+          <description>
+          This style class is rendered on the sideBar's inner table, 
+          which does not include any outer icons.
+          </description>
+        </styleClass>
+
+      </styles>
+
+      <icons>
+        <icon id="sideBarTopStart">
+          <description>
+          This icon is rendered at the top starting corner of the
+          sideBar (ie. at the top left corner for left to right
+          languages.)
+          </description>
+        </icon>
+
+        <icon id="sideBarTopEnd">
+          <description>
+          This icon is rendered at the top ending corner of the
+          sideBar (ie. at the top right corner for left to right
+          languages.)
+          </description>
+        </icon>
+
+        <icon id="sideBarTopBackground">
+          <description>
+          This icon is rendered in the background in between the
+          sideBarTopStart and sideBarTopEnd icons.
+          </description>
+        </icon>
+
+        <icon id="sideBarBottomStart">
+          <description>
+          This icon is rendered at the bottom starting corner of the
+          sideBar (ie. at the bottom left corner for left to right
+          languages.)
+          </description>
+        </icon>
+
+        <icon id="sideBarBottomEnd">
+          <description>
+          This icon is rendered at the bottom ending corner of the
+          sideBar (ie. at the bottom right corner for left to right
+          languages.)
+          </description>
+        </icon>
+
+        <icon id="sideBarBottomBackground">
+          <description>
+          This icon is rendered in the background in between the
+          sideBarBottomStart and sideBarBottomEnd icons.
+          </description>
+        </icon>
+
+        <icon id="sideBarStartBackground">
+          <description>
+          This icon is rendered in the background at the start of
+          the sideBar.
+          </description>
+        </icon>
+
+        <icon id="sideBarEndBackground">
+          <description>
+          This icon is rendered in the background at the end of
+          the sideBar.
+          </description>
+        </icon>
+
+      </icons>
+    </component>
+
+    <component name="shuttle">
+
+      <icons>
+
+        <icon id="shuttleMove">
+          <description>
+          The icon for the shuttle's "Move" action.
+          </description>
+        </icon>
+
+        <icon id="shuttleMoveAll">
+          <description>
+          The icon for the shuttle's "Move All" action.
+          </description>
+        </icon>
+
+        <icon id="shuttleRemove">
+          <description>
+          The icon for the shuttle's "Remove" action.
+          </description>
+        </icon>
+
+        <icon id="shuttleRemoveAll">
+          <description>
+          The icon for the shuttle's "Remove All" action.
+          </description>
+        </icon>
+
+        <icon id="shuttleReorderTop">
+          <description>
+          The icon for moving the currently selected item to the top.
+          </description>
+        </icon>
+
+        <icon id="shuttleReorderUp">
+          <description>
+          The icon for moving the currently selected item up by one item.
+          </description>
+        </icon>
+
+        <icon id="shuttleReorderDown">
+          <description>
+          The icon for moving the currently selected item down by one item.
+          </description>
+        </icon>
+
+        <icon id="shuttleReorderBottom">
+          <description>
+          The icon for moving the currently selected item to the bottom.
+          </description>
+        </icon>
+
+      </icons>
+    </component>
+  </componentMetadata>
+
+<!--
+        <styleClass id="">
+          <description>
+          </description>
+        </styleClass>
+
+        <icon id="">
+          <description>
+          </description>
+        </icon>
+
+-->
+
+</lookAndFeelMetadata>

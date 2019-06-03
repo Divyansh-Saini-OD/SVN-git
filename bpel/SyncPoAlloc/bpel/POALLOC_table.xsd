@@ -1,0 +1,68 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<xs:schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/POALLOC" xmlns="http://xmlns.oracle.com/pcbpel/adapter/db/top/POALLOC" elementFormDefault="qualified" attributeFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+   <xs:element name="PoallocCollection" type="PoallocCollection"/>
+   <xs:complexType name="PoallocCollection">
+      <xs:sequence>
+         <xs:element name="Poalloc" type="Poalloc" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Poalloc">
+      <xs:sequence>
+         <xs:element name="poNbr" type="xs:integer"/>
+         <xs:element name="locId" type="xs:short"/>
+         <xs:element name="sku" type="xs:integer"/>
+         <xs:element name="allocLocId" type="xs:short"/>
+         <xs:element name="prioritySeqNbr" type="xs:short" minOccurs="0"/>
+         <xs:element name="unitsAlloc" type="xs:integer" minOccurs="0"/>
+         <xs:element name="unitsAdneed" type="xs:integer" minOccurs="0"/>
+         <xs:element name="unitsRcvd" type="xs:integer" minOccurs="0"/>
+         <xs:element name="manOverrideFlg" minOccurs="0">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="1"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="postProcessFlg" minOccurs="0">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="1"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="allocQty" type="xs:integer" minOccurs="0"/>
+         <xs:element name="userIdEntBy" minOccurs="0">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="8"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="dtEnt" type="xs:dateTime" minOccurs="0"/>
+         <xs:element name="tmEnt" type="xs:dateTime" minOccurs="0"/>
+         <xs:element name="pgmEnt" minOccurs="0">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="8"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="userIdChgBy" minOccurs="0">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="8"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="dtChg" type="xs:dateTime" minOccurs="0" nillable="true"/>
+         <xs:element name="tmChg" type="xs:dateTime" minOccurs="0" nillable="true"/>
+         <xs:element name="pgmChg" minOccurs="0">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="8"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+</xs:schema>

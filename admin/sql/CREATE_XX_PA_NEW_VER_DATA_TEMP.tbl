@@ -1,0 +1,55 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                             Office Depot                          |
+-- +===================================================================+
+-- | Name  : XXMER.XX_PA_NEW_VER_DATA_TEMP                             |
+-- | Description: STAGING TABLE TO LOAD NEW VER  LINE INFO             |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |1.0      09-27-2007   Siva Boya        INITAL CODE                 |
+-- +===================================================================+
+CREATE TABLE XXMER.XX_PA_NEW_VER_DATA_TEMP
+(
+  NEW_VER_ID               NUMBER,
+  QUANTITY                 NUMBER,
+  REVENUE                  NUMBER,
+  PERIOD_NAME              VARCHAR2(50 BYTE),
+  PROJECT_REVENUE          NUMBER,
+  TXN_REVENUE              NUMBER,
+  TEMP_LINE_ID             VARCHAR2(50 BYTE),
+  BUDGET_LINE_ID           NUMBER,
+  LAST_UPDATE_DATE         DATE,
+  LAST_UPDATED_BY          NUMBER(15),
+  LAST_UPDATE_LOGIN        NUMBER(15),
+  CREATION_DATE            DATE,
+  CREATED_BY               NUMBER(15),
+  RESOURCE_ASSIGNMENT_ID   NUMBER,
+  START_DATE               DATE,
+  RESOURCE_LIST_MEMBER_ID  NUMBER,
+  ALIAS                    VARCHAR2(100 BYTE),
+  PROJECT_ID               NUMBER
+)
+TABLESPACE XXOD
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            MINEXTENTS       1
+            MAXEXTENTS       2147483645
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+EXIT;

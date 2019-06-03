@@ -1,0 +1,69 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Tue May 15 14:34:05 EDT 2007
+  Author:  subrahmanyam-saripal
+  Purpose: Empty BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="JITABatchBPEL1"
+         targetNamespace="http://xmlns.oracle.com/JITABatchBPEL1"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/DBAdapterPolling/"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/mq/headerWMoSMQ/"
+         xmlns:client="http://xmlns.oracle.com/JITABatchBPEL1"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <partnerLink myRole="DBAdapterPolling_role" name="DBAdapterPolling"
+                 partnerLinkType="ns1:DBAdapterPolling_plt"/>
+    <partnerLink name="WMoSMQ" partnerRole="Enqueue_role"
+                 partnerLinkType="ns2:Enqueue_plt"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <variable name="Receive_Data_receive_InputVariable"
+              messageType="ns1:SubbuJitaAllocCollection_msg"/>
+    <variable name="Invoke_1_Enqueue_InputVariable"
+              messageType="ns2:SubbuJitaAllocCollection_msg"/>
+  </variables>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <receive name="Receive_Data" partnerLink="DBAdapterPolling"
+             portType="ns1:DBAdapterPolling_ptt" operation="receive"
+             variable="Receive_Data_receive_InputVariable"
+             createInstance="yes"/>
+    <assign name="Assign_Distro"/>
+    <assign name="Transform_Manhattan_Distro">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation</bpelx:pattern>
+      </bpelx:annotation>
+    </assign>
+    <invoke name="Invoke_MQ" partnerLink="WMoSMQ" portType="ns2:Enqueue_ptt"
+            operation="Enqueue" inputVariable="Invoke_1_Enqueue_InputVariable"/>
+  </sequence>
+</process>

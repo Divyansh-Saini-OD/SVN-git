@@ -1,0 +1,97 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : OD I1074 Appointment Info                                                  |--
+--|                                                                                             |--
+--| Program Name   : XX_PO_APPOINTMENT_DATE_TEMP.tbl                                            |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                  1. XXMER.XX_PO_APPOINTMENT_DATE_TEMP (OD Appointment info temp table)      |--
+--|                  2. XX_PO_APPOINTMENT_DATE_TEMP (Syn for XXMER.XX_PO_APPOINTMENT_DATE_TEMP) |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By        Description                            |--
+--|=============================================================================================|--
+--| 1.0              19-Oct-2007       Victor Costa      Original                               |--
+--|                                                                                             |--
+--+=============================================================================================|
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Existing Custom Tables......
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Table XXMER.XX_PO_APPOINTMENT_DATE_TEMP
+PROMPT
+
+DROP TABLE XXMER.XX_PO_APPOINTMENT_DATE_TEMP;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping SYNONYM XX_PO_APPOINTMENT_DATE_TEMP in APPS
+PROMPT
+
+DROP SYNONYM XX_PO_APPOINTMENT_DATE_TEMP;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating the Custom Table XX_PO_APPOINTMENT_DATE_TEMP......
+PROMPT
+
+CREATE TABLE XXMER.XX_PO_APPOINTMENT_DATE_TEMP (
+  								PO_NUMBER               VARCHAR2(50), 
+			             			APPOINTMENT_NUMBER      VARCHAR2(50),
+             						LOC_NUMBER              VARCHAR2(16),
+             						APPOINTMENT_DATE        DATE, 
+             						CREATED_BY              NUMBER, 
+            						CREATION_DATE           DATE, 
+             						LAST_UPDATE_DATE        DATE, 
+             						LAST_UPDATED_BY         NUMBER,
+						            PROCESS_STATUS	      VARCHAR2(20) DEFAULT 'NEW'
+        			 		  );
+
+PROMPT
+PROMPT Creating Synonym in APPS...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM XX_PO_APPOINTMENT_DATE_TEMP
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_PO_APPOINTMENT_DATE_TEMP FOR XXMER.XX_PO_APPOINTMENT_DATE_TEMP ;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+
+EXIT;
+
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

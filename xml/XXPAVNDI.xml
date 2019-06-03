@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXPAVNDI" description="OD PB SC Vendor Request Form report" Version="1.0">
+<parameters>
+ <parameter name="p_plan_id" datatype="number" />
+ <parameter name="p_ocr" datatype="number" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_VR">
+<![CDATA[
+SELECT od_sc_vendor_name  VENDOR_NAME,
+	 od_sc_factory_number factory,
+       od_sc_vend_address  VENDOR_ADDRESS,
+       od_sc_vend_phone VENDOR_PHONE,
+       od_sc_vend_fax  VENDOR_FAX,
+       od_sc_vend_email VENDOR_EMAIL,
+       od_sc_audit_agent PRIMARY_MERCHANT,
+	 od_sc_vendor_tax_id vendor_tax_id
+ FROM q_od_pb_sc_vendor_master_v
+WHERE plan_id=:p_plan_id
+  AND occurrence=:p_ocr
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_VR" source="Q_VR">
+<element name="VENDOR_NAME" value="VENDOR_NAME" />
+<element name="FACTORY" value="FACTORY" />
+<element name="VENDOR_ADDRESS" value="VENDOR_ADDRESS" />
+<element name="VENDOR_PHONE" value="VENDOR_PHONE" />
+<element name="VENDOR_FAX" value="VENDOR_FAX" />
+<element name="VENDOR_EMAIL" value="VENDOR_EMAIL" />
+<element name="VENDOR_TAX_ID" value="VENDOR_TAX_ID" />
+<element name="PRIMARY_MERCHANT" value="PRIMARY_MERCHANT" />
+</group>
+</dataStructure>
+</dataTemplate>

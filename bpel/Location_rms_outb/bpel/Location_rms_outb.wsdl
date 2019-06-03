@@ -1,0 +1,40 @@
+<definitions
+     name="Location_rms_outb"
+     targetNamespace="http://xmlns.oracle.com/Location_rms_outb"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:ns1="http://schemas.oracle.com/bpel/extension"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:ns2="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+     xmlns:client="http://xmlns.oracle.com/Location_rms_outb"
+    >
+    <import namespace="http://schemas.oracle.com/bpel/extension" location="RuntimeFault.wsdl"/>
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/Location_rms_outb" schemaLocation="Location_rms_outb.xsd"/>
+        </schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+                 schemaLocation="http://chilsoa01d.na.odcorp.net:7778/orabpel/xmllib/merchFndXml/officedepot/merchandising/foundation/v1/message/bod/Location.xsd"/>
+        </xsd:schema>
+    </types>
+    <message name="Location_rms_outbRequestMessage">
+        <part name="payload" element="client:Location_rms_outbProcessRequest"/>
+    </message>
+    <message name="Location_rms_outbResponseMessage">
+        <part name="payload" element="client:Location_rms_outbProcessResponse"/>
+    </message>
+    <message name="msgtype_locoutb">
+        <part name="msgpart_locoutb" element="ns2:Location"/>
+    </message>
+    <portType name="Location_rms_outb">
+        <operation name="process">
+            <input message="client:Location_rms_outbRequestMessage"/>
+            <output message="client:Location_rms_outbResponseMessage"/>
+        </operation>
+    </portType>
+    <plnk:partnerLinkType name="Location_rms_outb">
+        <plnk:role name="Location_rms_outbProvider">
+            <plnk:portType name="client:Location_rms_outb"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+</definitions>

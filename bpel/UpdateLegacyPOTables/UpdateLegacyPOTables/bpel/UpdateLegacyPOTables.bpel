@@ -1,0 +1,103 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Thu Oct 04 13:51:40 EDT 2007
+  Author:  victor-costa
+  Purpose: Asynchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="UpdateLegacyPOTables"
+         targetNamespace="http://xmlns.oracle.com/UpdateLegacyPOTables"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns4="http://www.openapplications.org/oagis/9/officedepot/1"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns5="http://TargetNamespace.com/PO_EBS_UPLOAD_QUEUE"
+         xmlns:client="http://xmlns.oracle.com/UpdateLegacyPOTables"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ns1="http://www.openapplications.org/oagis/9"
+         xmlns:ehdr="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/opaque/"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/mq/headerPO_EBS_UPLOAD_QUEUE/"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc">
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <partnerLinks>
+        <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+        <partnerLink name="client" partnerLinkType="client:UpdateLegacyPOTables"
+                     myRole="UpdateLegacyPOTablesProvider"
+                     partnerRole="UpdateLegacyPOTablesRequester"/>
+        <partnerLink name="PO_EBS_UPLOAD_QUEUE" partnerRole="Enqueue_role"
+                     partnerLinkType="ns2:Enqueue_plt"/>
+    </partnerLinks>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        VARIABLES                                                        
+        List of messages and XML documents used within this BPEL process 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <variables>
+        <!-- Reference to the message passed as input during initiation -->
+        <variable name="inputVariable"
+                  messageType="client:UpdateLegacyPOTablesRequestMessage"/>
+        <!-- Reference to the message that will be sent back to the requester during callback -->
+        <variable name="outputVariable"
+                  messageType="client:UpdateLegacyPOTablesResponseMessage"/>
+        <variable name="Invoke_Legacy_MQ_Enqueue_InputVariable"
+                  messageType="ns2:Root-Element_msg"/>
+    </variables>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+       ORCHESTRATION LOGIC                                               
+       Set of activities coordinating the flow of messages across the    
+       services integrated within this business process                  
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <sequence name="main">
+        <!-- Receive input from requestor. (Note: This maps to operation defined in UpdateLegacyPOTables.wsdl) -->
+        <receive name="receiveInput" partnerLink="client"
+                 portType="client:UpdateLegacyPOTables" operation="initiate"
+                 variable="inputVariable" createInstance="yes"/>
+        <!-- 
+          Asynchronous callback to the requester. (Note: the callback location and correlation id is transparently handled using WS-addressing.)
+        -->
+        <assign name="Transform_PO_In">
+            <bpelx:annotation>
+                <bpelx:pattern>transformation</bpelx:pattern>
+            </bpelx:annotation>
+            <copy>
+                <from expression="ora:processXSLT('Transformation_1.xsl',bpws:getVariableData('inputVariable','payload'))"/>
+                <to variable="Invoke_Legacy_MQ_Enqueue_InputVariable"
+                    part="Root-Element"/>
+            </copy>
+        </assign>
+        <invoke name="Invoke_Legacy_MQ" partnerLink="PO_EBS_UPLOAD_QUEUE"
+                portType="ns2:Enqueue_ptt" operation="Enqueue"
+                inputVariable="Invoke_Legacy_MQ_Enqueue_InputVariable"/>
+        <assign name="Assign_Output">
+            <copy>
+                <from expression="xp20:current-dateTime()"/>
+                <to variable="outputVariable" part="payload"/>
+            </copy>
+        </assign>
+        <invoke name="callbackClient" partnerLink="client"
+                portType="client:UpdateLegacyPOTablesCallback"
+                operation="onResult" inputVariable="outputVariable"/>
+    </sequence>
+</process>

@@ -1,0 +1,69 @@
+<?xml version="1.0" ?>
+<definitions name="UpdateLifeCycle" targetNamespace="http://oracle.com"
+             xmlns:tns="http://oracle.com"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+             xmlns:format="http://schemas.xmlsoap.org/wsdl/formatbinding/"
+             xmlns:java="http://schemas.xmlsoap.org/wsdl/java/"
+             xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     TYPE DEFINITION - List of services participating in this BPEL process 
+     The default output of the BPELZ wizard uses Strings as input and 
+     output to the BPEL Process. But you can define or import any XML 
+     Schema type and us them as part of the message types.
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <types>
+    <schema attributeFormDefault="qualified" elementFormDefault="qualified"
+            targetNamespace="http://oracle.com"
+            xmlns="http://www.w3.org/2001/XMLSchema"></schema>
+  </types>
+  <message name="ProcessNameRetireMessage">
+    <part name="processName" type="xsd:string"/>
+  </message>
+  <message name="ProcessNameActivateMessage">
+    <part name="processName" type="xsd:string"/>
+  </message>
+  <portType name="UpdateLifeCycle">
+    <operation name="retireProcess">
+      <input name="ProcessNameRetireRequest"
+             message="tns:ProcessNameRetireMessage"/>
+    </operation>
+    <operation name="activateProcess">
+      <input name="ProcessNameActivateRequest"
+             message="tns:ProcessNameActivateMessage"/>
+    </operation>
+  </portType>
+  <binding name="JavaBinding" type="tns:UpdateLifeCycle">
+    <java:binding/>
+    <format:typeMapping encoding="Java" style="Java">
+      <format:typeMap typeName="xsd:string" formatType="java.lang.String"/>
+      <format:typeMap typeName="tns:ServerException"
+                      formatType="com.oracle.bpel.client.ServerException"/>
+      <format:typeMap typeName="tns:IOException"
+                      formatType="java.io.IOException"/>
+    </format:typeMapping>
+    <operation name="retireProcess">
+      <java:operation methodName="retireProcess"/>
+      <input name="ProcessNameRetireRequest"/>
+      <fault name="ServerException"/>
+      <fault name="IOException"/>
+    </operation>
+    <operation name="activateProcess">
+      <java:operation methodName="activateProcess"/>
+      <input name="ProcessNameActivateRequest"/>
+      <fault name="ServerException"/>
+      <fault name="IOException"/>
+    </operation>
+  </binding>
+  <service name="UpdateLifeCycle">
+    <documentation>UpdateLifeCycle</documentation>
+    <port name="JavaPort" binding="tns:JavaBinding">
+      <java:address className="com.officedepot.bpel.UpdateLifeCycle"/>
+    </port>
+  </service>
+  <plnk:partnerLinkType name="UpdateLifeCycle">
+    <plnk:role name="UpdateLifeCycleProvider">
+      <plnk:portType name="tns:UpdateLifeCycle"/>
+    </plnk:role>
+  </plnk:partnerLinkType>
+</definitions>

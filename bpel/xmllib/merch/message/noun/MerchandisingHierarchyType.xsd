@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+xmlns="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+xmlns:odmf="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+targetNamespace="http://www.openapplications.org/officedepot/merchandising/foundation/1" 
+elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+<xsd:include schemaLocation="../common/ApplicationArea.xsd" />
+
+<xsd:complexType name="MerchandisingHierarchyDataAreaType">
+  <xsd:sequence>
+       <xsd:element name="HierarchyLevel" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Identify the level of hierarchy. This field hold one of these values
+            - Division, Group, Dept, Class or Subclass
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+       <xsd:element name="HierarchyID" type="xsd:integer">
+        <xsd:annotation>
+          <xsd:documentation>
+            Hierarchy Number. This field hold one of these values - Division
+            Number, Group Number, Dept Number, Class Number or Subclass Number
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+       <xsd:element name="HierarchyName" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Hierarchy Description. This field hold one of these values -
+            Division Desc, Group Desc, Dept Desc, Class Desc or Subclass Desc
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+       <xsd:element name="ActionCriteria" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            This hold verb or action to be performed on the message. The value
+            will be one of these values - Add, delete or update
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:choice>
+        <xsd:sequence>
+          <xsd:element name="GroupAttributes">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="DivisionNo" type="xsd:integer">
+                  <xsd:annotation>
+                    <xsd:documentation>
+                      Indicates the numeric identification numbers assigned by
+                      Office Depot that represents a level within the
+                      Merchandise Hierarchy for the Division.
+                    </xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="DepartmentAttributes">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="GroupNo" type="xsd:integer">
+                  <xsd:annotation>
+                    <xsd:documentation>
+                      Indicates the numeric identification numbers assigned by
+                      Office Depot that represents a level within the
+                      Merchandise Hierarchy for the Department.
+                    </xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ForecastingIndicator" type="xsd:string">
+                  <xsd:annotation>
+                    <xsd:documentation>
+                      "Y"es when Office Depot plans the department in Retek
+                      Demand Forecasting (RDF) otherwise "N"o
+                    </xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="PlanningIndicator" type="xsd:string">
+                  <xsd:annotation>
+                    <xsd:documentation>
+                      Indicates if Department is Planned in TopPlan. It will be
+                      True when Office Depot plans the department in TopPlan
+                      otherwise false.
+                    </xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="NonCodeIndicator" type="xsd:string">
+                  <xsd:annotation>
+                    <xsd:documentation>
+                      Indicates a Special item. Item that will be ordered one
+                      time - will not be replanished. True indicates the SKU is
+                      a Non-Code item.
+                    </xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ProductProtectionPlanIndicator"
+                             type="xsd:string">
+                  <xsd:annotation>
+                    <xsd:documentation>
+                      Indicates if the product protection plans is offered on
+                      SKU. Added so that all SKUs created within these
+                      departments are routed to the business team responsible
+                      for associating product protection plans with SKUs. It's
+                      value is true when product protection plans is offered on
+                      SKU within the department. Default value is false within
+                      the Subclass.
+                    </xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="CalassAttributes">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="DepartmentNo" type="xsd:integer">
+                  <xsd:annotation>
+                    <xsd:documentation>
+                      Indicates the numeric identification number assigned by
+                      Office Depot that represents the level's parent within the
+                      Merchandise Hierarchy.
+                    </xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="MarkdownDuration" type="xsd:integer">
+                  <xsd:annotation>
+                    <xsd:documentation>
+                      This is the number of days from the day a SKU, within this
+                      class, would enter Auto Markdown (AMD) before coming off a
+                      planogram in retail.
+                    </xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="FifthMarkdownIndicator" type="xsd:string">
+                  <xsd:annotation>
+                    <xsd:documentation>
+                      Indicates if SKUs in the class were eligible for a fifth
+                      Markdown stream.
+                    </xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ZeroCostIndicato" type="xsd:string">
+                  <xsd:annotation>
+                    <xsd:documentation>
+                      Indicates if zero cost is allowed. True means the class
+                      will allow $0.00 to be entered as a cost..
+                    </xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ZeroRetailPriceIndicator" type="xsd:string">
+                  <xsd:annotation>
+                    <xsd:documentation>
+                      Indicates if zero Retail price is allowed. True means the
+                      class will allow $0.00 to be entered as a Retail Price.
+                    </xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ZeroListPriceIndicator" type="xsd:string">
+                  <xsd:annotation>
+                    <xsd:documentation>
+                      Indicates if zero List price is allowed. True means the
+                      class will allow $0.00 to be entered as a List Price.
+                    </xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="FurnitureDeliveryIndicator"
+                             type="xsd:string">
+                  <xsd:annotation>
+                    <xsd:documentation>
+                      Identifies a furniture class to present delivery options
+                      to user. Default = 'N'
+                    </xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="SubClassAttributes">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="DepartmentID" type="xsd:integer">
+                  <xsd:annotation>
+                    <xsd:documentation>
+                      Defines the number which uniquely identifies Department
+                      within Merchandise Hierarchy. Department is the next level
+                      below group in the merchandise hierarchy of a company. A
+                      group can have multiple departments. Key information about
+                      how inventory is tracked and reported is stored at the
+                      department level. For example, Department 103 (Office
+                      Furniture) belongs to Group 102 (Desk) which belongs
+                      Division 105 (Furniture)
+                    </xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ClassID" type="xsd:integer">
+                  <xsd:annotation>
+                    <xsd:documentation>
+                      Indicates the numeric identification number assigned by
+                      Office Depot that represents the level's parent (Class)
+                      within the Merchandise Hierarchy.
+                    </xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="TaxCategory" type="xsd:string">
+                  <xsd:annotation>
+                    <xsd:documentation>
+                      Represents the default tax category for the subclass. The
+                      type attribute identifies pre-defined list of types
+                      supported, with the ability to add new elements as needed.
+                      e.g. 0001 (Default), 0002 (Books), 0003 Dictionaries, 0004
+                      (Notebooks) etc. Default value = '0001'
+                    </xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ContentRequiredIndicator" type="xsd:string">
+                  <xsd:annotation>
+                    <xsd:documentation>
+                      Indicates if subclass should be entered in Global Content
+                      Management . It will be true when Content is required to
+                      be entered at time of Item Creation. Default value = false.
+                    </xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ProductProtectionPlanIndicator"
+                             type="xsd:string">
+                  <xsd:annotation>
+                    <xsd:documentation>
+                      Indicates if the product protection plans is offered on
+                      SKU. Added so that all SKUs created within these
+                      departments are routed to the business team responsible
+                      for associating product protection plans with SKUs. It's
+                      value is true when product protection plans is offered on
+                      SKU within the department. Default value is false within
+                      the Subclass.
+                    </xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:choice>
+    </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="ApplicationAreaAndMerchandisingHierarchyDataAreaType">
+  <xsd:sequence>
+    <xsd:element name="ApplicationArea" type="odmf:ApplicationAreaType">
+        <xsd:annotation>
+          <xsd:documentation>
+            Is where the information that the BOD message carries is provided,
+            in this case SyncMerchandiseHierarchy. The information consists of a
+            Verb and one or more Nouns. The verb (Sync) indicates the action to
+            be performed on the Noun (MerchandiseHierarchy).
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    <xsd:element name="DataArea" type="MerchandisingHierarchyDataAreaType">
+        <xsd:annotation>
+          <xsd:documentation>
+            Is where the information that the BOD message carries is provided,
+            in this case SyncMerchandiseHierarchy. The information consists of a
+            Verb and one or more Nouns. The verb (Sync) indicates the action to
+            be performed on the Noun (MerchandiseHierarchy).
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+  </xsd:sequence>
+</xsd:complexType>
+
+
+</xsd:schema>

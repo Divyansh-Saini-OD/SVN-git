@@ -1,0 +1,67 @@
+<definitions
+     name="XX_PO_ASL_API"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/XX_PO_ASL_API/"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/XX_PO_ASL_API/"
+     xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/BPEL_WRAPPER_XX_PO_ASL_IN_PKG/XX_PO_ASL_IN_PKG-24INTERFACE_AS/"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+     xmlns:hdr="http://xmlns.oracle.com/pcbpel/adapter/db/"
+    >
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/" location="DBAdapterOutboundHeader.wsdl"/>
+    <types>
+     <schema xmlns="http://www.w3.org/2001/XMLSchema">
+       <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/BPEL_WRAPPER_XX_PO_ASL_IN_PKG/XX_PO_ASL_IN_PKG-24INTERFACE_AS/"
+               schemaLocation="APPS_BPEL_WRAPPER_XX_PO_ASL_IN_PKG_XX_PO_ASL_IN_PKG-24INTERFACE_AS.xsd" />
+     </schema>
+    </types>
+    <message name="args_in_msg">
+        <part name="InputParameters" element="db:InputParameters"/>
+    </message>
+    <message name="args_out_msg">
+        <part name="OutputParameters" element="db:OutputParameters"/>
+    </message>
+    <portType name="XX_PO_ASL_API_ptt">
+        <operation name="XX_PO_ASL_API">
+            <input message="tns:args_in_msg"/>
+            <output message="tns:args_out_msg"/>
+        </operation>
+    </portType>
+    <binding name="XX_PO_ASL_API_binding" type="tns:XX_PO_ASL_API_ptt">
+    <jca:binding  />
+        <operation name="XX_PO_ASL_API">
+      <jca:operation
+          SchemaName="APPS"
+          PackageName="BPEL_WRAPPER_XX_PO_ASL_IN_PKG"
+          ProcedureName="XX_PO_ASL_IN_PKG$INTERFACE_AS"
+          InteractionSpec="oracle.tip.adapter.db.DBStoredProcedureInteractionSpec" >
+      </jca:operation>
+      <input>
+        <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+      </input>
+            <output/>
+        </operation>
+    </binding>
+    <service name="XX_PO_ASL_API">
+        <port name="XX_PO_ASL_API_pt" binding="tns:XX_PO_ASL_API_binding">
+<!--Your runtime connection is declared in 
+J2EE_HOME/application-deployments/default/DbAdapter/oc4j-ra.xml 
+These mcf properties here are from your design time connection and 
+save you from having to edit that file and restart the application server 
+if eis/DB/ebs_apps_gsidev02 is missing. 
+These mcf properties are safe to remove.-->
+      <jca:address location="eis/db/EBSApps" UIConnectionName="ebs_apps_gsidev02"
+          ManagedConnectionFactory="oracle.tip.adapter.db.DBManagedConnectionFactory"
+          mcf.DriverClassName="oracle.jdbc.OracleDriver"
+          mcf.PlatformClassName="oracle.toplink.internal.databaseaccess.Oracle9Platform"
+          mcf.ConnectionString="jdbc:oracle:thin:@//choldbr13d.na.odcorp.net:1541/gsidev02"
+          mcf.UserName="apps"
+          mcf.Password="589713C9226D58ECFC970AF706D8C533D62D1A19DF561D1E" />
+        </port>
+    </service>
+  <plt:partnerLinkType name="XX_PO_ASL_API_plt" >
+    <plt:role name="XX_PO_ASL_API_role" >
+      <plt:portType name="tns:XX_PO_ASL_API_ptt" />
+    </plt:role>
+  </plt:partnerLinkType>
+</definitions>

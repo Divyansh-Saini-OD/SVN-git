@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions 
+    name="LOC_POLL"
+    targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/LOC_POLL/"
+    xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/LOC_POLL/"
+    xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+    xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+    xmlns:pc="http://xmlns.oracle.com/pcbpel/"
+    xmlns:top="http://xmlns.oracle.com/pcbpel/adapter/db/top/LOCPOLL"
+    xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/LOCPOLL"
+                schemaLocation="LOCPOLL_table.xsd"/>
+        </schema>
+    </types>
+
+    <message name="OdIntLocControlCollection_msg">
+        <part name="OdIntLocControlCollection" element="top:OdIntLocControlCollection"/>
+    </message>
+
+    <portType name="LOC_POLL_ptt">
+        <operation name="receive">
+            <input message="tns:OdIntLocControlCollection_msg"/>
+        </operation>
+    </portType>
+
+    <binding name="LOC_POLL_binding" type="tns:LOC_POLL_ptt">
+        <pc:inbound_binding/>
+        <operation name="receive">
+            <jca:operation
+                ActivationSpec="oracle.tip.adapter.db.DBActivationSpec"
+
+                DescriptorName="LOCPOLL.OdIntLocControl"
+                QueryName="LOC_POLL"
+                PollingStrategyName="LogicalDeletePollingStrategy"
+                MarkReadFieldName="RUNNING_FLAG"
+                MarkReadValue="Y"
+                MarkUnreadValue="N"
+                SequencingFieldName="PROCESS_ID"
+                MaxRaiseSize="1"
+                MaxTransactionSize="unlimited"
+                PollingInterval="300"
+                NumberOfThreads="1"
+                UseBatchDestroy="false"
+                ReturnSingleResultSet="false"
+                MappingsMetaDataURL="LOCPOLL_toplink_mappings.xml" />
+        <input/>
+        </operation>
+    </binding>
+
+    <!-- Your runtime connection is declared in
+        J2EE_HOME/application-deployments/default/DbAdapter/oc4j-ra.xml
+        These 'mcf' properties here are from your design time connection and 
+        save you from having to edit that file and restart the application server
+        if eis/DB/ebs_apps_gsidev02 is missing.
+        These 'mcf' properties are safe to remove.
+    -->
+    <service name="LOC_POLL">
+        <port name="LOC_POLL_pt" binding="tns:LOC_POLL_binding">
+            <jca:address location="eis/DB/ebs_apps_gsidev02"
+                UIConnectionName="ebs_apps_gsidev02"
+                ManagedConnectionFactory="oracle.tip.adapter.db.DBManagedConnectionFactory"
+                mcf.DriverClassName="oracle.jdbc.OracleDriver"
+                mcf.PlatformClassName="oracle.toplink.platform.database.oracle.Oracle10Platform"
+                mcf.ConnectionString="jdbc:oracle:thin:@//choldbr13d.na.odcorp.net:1541/gsidev02"
+                mcf.UserName="apps"
+                mcf.Password="589713C9226D58ECFC970AF706D8C533D62D1A19DF561D1E"
+            />
+        </port>
+    </service>
+
+    <plt:partnerLinkType name="LOC_POLL_plt" >
+        <plt:role name="LOC_POLL_role" >
+            <plt:portType name="tns:LOC_POLL_ptt" />
+        </plt:role>
+    </plt:partnerLinkType>
+
+</definitions>

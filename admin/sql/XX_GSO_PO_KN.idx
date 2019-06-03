@@ -1,0 +1,164 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name        :XX_GSO_PO_KN.idx                                         |
+-- | Description : Non-Unique Index for Custom Table XX_GSO_PO_KN_STG      |
+-- |                                             and XX_GSO_PO_KN_DTL      |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      20-Jul-2010 Paddy Sanjeevi     Initial  Version               |
+-- +=======================================================================+
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+-- -------------------------------------------------
+-- Creating Index XX_GSO_PO_KN_STG_N1                                        
+-- -------------------------------------------------
+
+CREATE INDEX XX_GSO_PO_KN_STG_N1 ON xxmer.XX_GSO_PO_KN_STG
+(po_number)
+LOGGING
+TABLESPACE XXOD_TS_DATA
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       2147483645
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+-- -------------------------------------------------
+-- Creating Index XX_GSO_PO_KN_STG_N1                                        
+-- -------------------------------------------------
+
+CREATE INDEX XX_GSO_PO_KN_STG_N2 ON xxmer.XX_GSO_PO_KN_STG
+(SKU)
+LOGGING
+TABLESPACE XXOD_TS_DATA
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       2147483645
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+-- -------------------------------------------------
+-- Creating Index XX_GSO_PO_KN_STG_N1                                        
+-- -------------------------------------------------
+CREATE INDEX XX_GSO_PO_KN_STG_N3 ON xxmer.XX_GSO_PO_KN_STG
+(kn_reference)
+LOGGING
+TABLESPACE XXOD_TS_DATA
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       2147483645
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+-- -------------------------------------------------
+-- Creating Index XX_GSO_PO_KN_STG_N1                                        
+-- -------------------------------------------------
+CREATE INDEX XX_GSO_PO_KN_STG_N4 ON xxmer.XX_GSO_PO_KN_STG
+(process_flag,load_batch_id)
+LOGGING
+TABLESPACE XXOD_TS_DATA
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       2147483645
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+-- -------------------------------------------------
+-- Creating Index XX_GSO_PO_KN_STG_N1                                        
+-- -------------------------------------------------
+CREATE INDEX XX_GSO_PO_KN_DTL_N1 ON xxmer.XX_GSO_PO_KN_DTL
+(po_number,sku)
+LOGGING
+TABLESPACE XXOD_TS_DATA
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       2147483645
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+-- -------------------------------------------------
+-- Creating Index XX_GSO_PO_KN_STG_N1                                        
+-- -------------------------------------------------
+CREATE INDEX XX_GSO_PO_KN_DTL_N2 ON xxmer.XX_GSO_PO_KN_DTL
+(po_header_id,po_line_id)
+LOGGING
+TABLESPACE XXOD_TS_DATA
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       2147483645
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+-- -------------------------------------------------
+-- Creating Index XX_GSO_PO_KN_STG_N1                                        
+-- -------------------------------------------------
+CREATE INDEX XX_GSO_PO_KN_DTL_N3 ON xxmer.XX_GSO_PO_KN_DTL
+(kn_reference)
+LOGGING
+TABLESPACE XXOD_TS_DATA
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       2147483645
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;

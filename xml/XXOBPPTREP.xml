@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding = "WINDOWS-1252" ?>
+<dataTemplate name = "XXOBPPTREP" description = "OD: QA Pre-Purchase Testing Report" Version = "1.0">
+<parameters>
+ <parameter name = "p_ppt_id"          datatype = "character" />
+ <parameter name = "p_project_num"     datatype = "character" />
+ <parameter name = "p_project_name"    datatype = "character" />
+ <parameter name = "p_region"          datatype = "character" />
+ <parameter name = "p_testing"         datatype = "character" />
+ <parameter name = "p_direct_import"   datatype = "character" />
+ <parameter name = "p_agent"           datatype = "character" />
+ <parameter name = "p_vendor_name"     datatype = "character" />
+ <parameter name = "p_factory_name"    datatype = "character" />
+ <parameter name = "p_test_lab"        datatype = "character" />
+ <parameter name = "p_lab_location"    datatype = "character" />
+ <parameter name = "p_submitter"       datatype = "character" />
+ <parameter name = "p_approver"        datatype = "character" />
+ <parameter name = "p_vpc"             datatype = "character" />
+ <parameter name = "p_sku"             datatype = "character" />
+ <parameter name = "p_dept"            datatype = "character" />
+ <parameter name = "p_country_of_orig" datatype = "character" />
+ <parameter name = "p_protocol"        datatype = "character" />
+ <parameter name = "p_test_type"       datatype = "character" />
+ <parameter name = "p_report_num"      datatype = "character" />
+ <parameter name = "p_results"         datatype = "character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_XXOBPPTREP">
+<![CDATA[
+         SELECT a.od_ob_ppt_id						   od_ob_ppt_id
+		  , a.od_pb_proj_num                                     od_pb_proj_num                
+              , a.od_pb_project_name                                 od_pb_project_name              
+              , a.od_sc_region                                       od_sc_region               
+              , a.od_ob_testing                                      od_ob_testing                    
+              , a.od_ob_di_yn                                        od_ob_di_yn                         
+              , a.od_sc_audit_agent                                  od_sc_audit_agent               
+              , a.od_ob_vendor_name                                  od_ob_vendor_name                
+              , a.od_ob_factory_name                                 od_ob_factory_name               
+              , a.od_ob_factory_location                             od_ob_factory_location          
+              , a.od_sc_vendor_contacts                              vendor_contact_name     
+              , a.od_pb_contact_email                                vendor_email        
+              , a.od_pb_company                                      test_lab_name        
+              , a.od_ob_lab_location                                 test_lab_location    
+              , a.od_pb_auditor_name                                 submitter        
+              , a.od_pb_qa_engr_email                                approver        
+              , TO_CHAR(a.od_pb_date_verified,'DD-MON-YYYY')         vendor_contacted    
+              , b.od_ob_sku_status                                   sku_status        
+              , b.od_ob_sku_grp                                      sku_grouping        
+              , b.od_pb_vendor_vpc                                   vpn            
+              , b.od_ob_sku                                          sku            
+              , b.od_pb_item_desc                                    sku_description    
+              , b.od_pb_sc_dept_name                                 department        
+              , b.od_pb_country_of_origin                            coo             
+              , TO_CHAR(c.od_pb_date_sample_sent,'DD-MON-YYYY')      sample_est_lab    
+              , TO_CHAR(c.od_pb_date_sample_received,'DD-MON-YYYY')  sample_rcd        
+              , c.od_pb_protocol_number                              protocol      
+              , c.od_ob_test_type                                    test_type        
+              , c.od_pb_report_number                                report_no        
+              , TO_CHAR(c.od_pb_date_due,'DD-MON-YYYY')              expected_compl_date    
+              , c.od_ob_test_status                                  test_status        
+              , c.od_pb_verification_comments                        test_status_comment
+              , TO_CHAR(c.od_pb_date_verification_by,'DD-MON-YYYY')  status_timestamp
+              , c.od_ob_prod_insp_result                             test_results   
+              , TO_CHAR(c.od_pb_evaluation_date,'DD-MON-YYYY')       completion_date    
+              , d.od_pb_defect_code                                  defect_code        
+              , d.od_pb_defect_sum                                   defect_comments    
+              , d.od_pb_report_name                                  prev_report_no
+           FROM apps.q_od_ob_ppt_test_defects_v      d
+              , apps.q_od_ob_ppt_test_status_v       c
+              , apps.q_od_ob_ppt_sku_v               b
+              , apps.q_od_ob_ppt_v                   a
+          WHERE  b.od_ob_ref_pptid                   = a.od_ob_ppt_id
+            AND  c.od_ob_ref_pptid                   = a.od_ob_ppt_id
+            AND  c.od_ob_pptsku_refid                = b.od_ob_pptsku_id
+            AND  d.od_ob_ref_pptid(+)                = c.od_ob_ref_pptid 
+            AND  d.od_ob_test_refid(+)               = c.od_ob_test_id
+            AND  d.od_ob_pptsku_refid(+)             = c.od_ob_pptsku_refid
+            AND  NVL(a.od_ob_ppt_id,'-1')            = NVL(:p_ppt_id,NVL(a.od_ob_ppt_id,'-1'))
+            AND  NVL(a.od_pb_proj_num,'-1')          = NVL(:p_project_num,NVL(a.od_pb_proj_num,'-1'))
+            AND  UPPER(NVL(a.od_pb_project_name,'-1')) LIKE UPPER(NVL(:p_project_name,NVL(a.od_pb_project_name,'-1'))) ||'%'
+            AND  NVL(a.od_sc_region,'-1')            = NVL(:p_region,NVL(a.od_sc_region,'-1'))
+            AND  NVL(a.Od_ob_testing,'-1')           = NVL(:p_testing,NVL(a.od_ob_testing,'-1'))
+            AND  NVL(a.od_ob_di_yn,'-1')             = NVL(:p_direct_import,NVL(a.od_ob_di_yn,'-1'))
+            AND  NVL(a.od_sc_audit_agent,'-1')       = NVL(:p_agent,NVL(a.od_sc_audit_agent,'-1'))
+            AND  NVL(a.od_ob_vendor_name,'-1')       = NVL(:p_vendor_name,NVL(a.od_ob_vendor_name,'-1'))
+            AND  NVL(a.od_ob_factory_name,'-1')      = NVL(:p_factory_name,NVL(a.od_ob_factory_name,'-1'))
+            AND  NVL(a.od_pb_company,'-1')           = NVL(:p_test_lab,NVL(a.od_pb_company,'-1'))
+            AND  NVL(a.od_ob_lab_location,'-1')      = NVL(:p_lab_location,NVL(a.od_ob_lab_location,'-1'))
+            AND  NVL(a.od_pb_auditor_name,'-1')      = NVL(:p_submitter,NVL(a.od_pb_auditor_name,'-1'))
+            AND  NVL(a.od_pb_qa_engr_email,'-1')     = NVL(:p_approver,NVL(a.od_pb_qa_engr_email,'-1'))
+            AND  NVL(b.od_pb_vendor_vpc,'-1')        = NVL(:p_vpc,NVL(b.od_pb_vendor_vpc,'-1'))
+            AND  NVL(b.od_ob_sku,'-1')               = NVL(:p_sku,NVL(b.od_ob_sku,'-1'))
+            AND  NVL(b.od_pb_sc_dept_name,'-1')      = NVL(:p_dept,NVL(b.od_pb_sc_dept_name,'-1'))
+            AND  NVL(b.od_pb_country_of_origin,'-1') = NVL(:p_country_of_orig,NVL(b.od_pb_country_of_origin,'-1'))
+            AND  NVL(c.od_pb_protocol_number,'-1')   = NVL(:p_protocol,NVL(c.od_pb_protocol_number,'-1'))
+            AND  NVL(c.od_ob_test_type,'-1')         = NVL(:p_test_type,NVL(c.od_ob_test_type,'-1'))
+            AND  NVL(c.od_pb_report_number,'-1')     = NVL(:p_report_num,NVL(c.od_pb_report_number,'-1'))
+            AND  NVL(c.od_ob_prod_insp_result,'-1')  = NVL(:p_results,NVL(c.od_ob_prod_insp_result,'-1'))
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name = "G_XXOBPPTREP" source = "Q_XXOBPPTREP">
+<element name = "od_ob_ppt_id"         value = "od_ob_ppt_id"         />                
+<element name = "od_pb_proj_num"         value = "od_pb_proj_num"         />                
+<element name = "od_pb_project_name"     value = "od_pb_project_name"     />             
+<element name = "od_sc_region"           value = "od_sc_region"           />          
+<element name = "od_ob_testing"          value = "od_ob_testing"          />             
+<element name = "od_ob_di_yn"            value = "od_ob_di_yn"            />             
+<element name = "od_sc_audit_agent"      value = "od_sc_audit_agent"      />             
+<element name = "od_ob_vendor_name"      value = "od_ob_vendor_name"      />             
+<element name = "od_ob_factory_name"     value = "od_ob_factory_name"     />             
+<element name = "od_ob_factory_location" value = "od_ob_factory_location" />         
+<element name = "vendor_contact_name"    value = "vendor_contact_name"    />   
+<element name = "vendor_email"           value = "vendor_email"           /> 
+<element name = "test_lab_name"          value = "test_lab_name"          /> 
+<element name = "test_lab_location"      value = "test_lab_location"      /> 
+<element name = "submitter"              value = "submitter"              /> 
+<element name = "approver"               value = "approver"               /> 
+<element name = "vendor_contacted"       value = "vendor_contacted"       /> 
+<element name = "sku_status"             value = "sku_status"             /> 
+<element name = "sku_grouping"           value = "sku_grouping"           /> 
+<element name = "vpn"                    value = "vpn"                    /> 
+<element name = "sku"                    value = "sku"                    /> 
+<element name = "sku_description"        value = "sku_description"        /> 
+<element name = "department"             value = "department"             /> 
+<element name = "coo"                    value = "coo"                    /> 
+<element name = "sample_est_lab"         value = "sample_est_lab"         /> 
+<element name = "sample_rcd"             value = "sample_rcd"             /> 
+<element name = "protocol"               value = "protocol"               /> 
+<element name = "test_type"              value = "test_type"              /> 
+<element name = "report_no"              value = "report_no"              /> 
+<element name = "expected_compl_date"    value = "expected_compl_date"    />  
+<element name = "test_status"            value = "test_status"            /> 
+<element name = "test_status_comment"    value = "test_status_comment"    /> 
+<element name = "status_timestamp"       value = "status_timestamp"       /> 
+<element name = "test_results"           value = "test_results"           /> 
+<element name = "completion_date"        value = "completion_date"        /> 
+<element name = "defect_code"            value = "defect_code"            /> 
+<element name = "defect_comments"        value = "defect_comments"        /> 
+<element name = "prev_report_no"         value = "prev_report_no"         /> 
+</group>
+</dataStructure>
+</dataTemplate>

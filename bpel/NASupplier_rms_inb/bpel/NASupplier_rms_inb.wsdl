@@ -1,0 +1,66 @@
+<definitions name="NASupplier_rms_inb"
+             targetNamespace="http://xmlns.oracle.com/NASupplier_rms_inb"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:ns1="http://www.openapplications.org/oagis/9"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+             xmlns:ns3="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+             xmlns:ns2="http://schemas.oracle.com/bpel/extension"
+             xmlns:client="http://xmlns.oracle.com/NASupplier_rms_inb">
+    <import namespace="http://schemas.oracle.com/bpel/extension"
+            location="RuntimeFault.wsdl"/>
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema"
+                xmlns:ns1="http://www.openapplications.org/oagis/9"
+                xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+                xmlns:ns3="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+                xmlns:ns2="http://schemas.oracle.com/bpel/extension"
+                xmlns:client="http://xmlns.oracle.com/NASupplier_rms_inb">
+            <import namespace="http://xmlns.oracle.com/NASupplier_rms_inb"
+                    schemaLocation="NASupplier_rms_inb.xsd"/>
+        </schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                    xmlns:ns1="http://www.openapplications.org/oagis/9"
+                    xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+                    xmlns:ns2="http://schemas.oracle.com/bpel/extension"
+                    xmlns:client="http://xmlns.oracle.com/NASupplier_rms_inb">
+            <xsd:import namespace="http://www.openapplications.org/oagis/9"
+                        schemaLocation="http://chilsoa01d.na.odcorp.net:7778/orabpel/xmllib/eaixml/oagis/v91/message/bod/SyncSupplierPartyMaster.xsd"/>
+        </xsd:schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+                        schemaLocation="http://chilsoa01d.na.odcorp.net:7778/orabpel/xmllib/merch/CommonResponse.xsd"/>
+        </xsd:schema>
+    </types>
+    <message name="NASupplier_rms_inbRequestMessage">
+        <part name="payload" element="ns1:SyncSupplierPartyMaster"/>
+    </message>
+    <message name="NASupplier_rms_inbResponseMessage">
+        <part name="payload" element="ns3:CommonResponse"/>
+    </message>
+    <message name="msgtype_syncsuppartymaster">
+        <part name="msgpart_syncsuppartymaster"
+              element="ns1:SyncSupplierPartyMaster"/>
+    </message>
+    <portType name="NASupplier_rms_inb">
+        <operation name="initiate">
+            <input message="client:NASupplier_rms_inbRequestMessage"/>
+        </operation>
+        
+    </portType>
+    
+    <portType name="NASupplier_rms_inbCallback">
+<operation name="onResult">
+            <input message="client:NASupplier_rms_inbResponseMessage"/>
+        </operation>
+</portType>
+    
+    <plnk:partnerLinkType name="NASupplier_rms_inb">
+        <plnk:role name="NASupplier_rms_inbProvider">
+            <plnk:portType name="client:NASupplier_rms_inb"/>
+        </plnk:role>
+        <plnk:role name="NASupplier_rms_inbRequester">
+            <plnk:portType name="client:NASupplier_rms_inbCallback"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+</definitions>
+

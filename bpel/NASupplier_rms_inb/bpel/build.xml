@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<project default="compile" basedir=".">
+    <target name="compile">
+      <echo>
+--------------------------------------------------------------
+| Compiling bpel process ${process.name}, revision ${rev}
+--------------------------------------------------------------
+	</echo>
+	<bpelc rev="${rev}" input="${process.dir}/bpel/bpel.xml" out="${process.dir}/output" home="${bpel.home}">
+		
+	</bpelc>
+    </target>
+</project>

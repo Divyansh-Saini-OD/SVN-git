@@ -1,0 +1,232 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Tue Jun 26 14:53:40 EDT 2007
+  Author:  subrahmanyam-saripal
+  Purpose: Asynchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="JITAV2" targetNamespace="http://xmlns.oracle.com/JITAV2"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns4="http://xmlns.oracle.com/pcbpel/adapter/db/DBJITAAppt/"
+         xmlns:ns7="http://xmlns.oracle.com/pcbpel/adapter/mq/headerJITAMQWriteDistro/"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/db/DBGuardCheckin/"
+         xmlns:client="http://xmlns.oracle.com/JITAV2"
+         xmlns:ns6="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_MER_JITA_PKG/APPT_PROC/"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ns1="http://www.thiscompany.com/ns/sales"
+         xmlns:ehdr="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_MER_JITA_PKG/JITA_DISCREPANCY/"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/db/DBAdapter1/"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:ns8="http://xmlns.oracle.com/pcbpel/adapter/db/DBJITADiscrepancy/"
+         xmlns:ns10="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_MER_JITA_PKG/JITA_GUARD_CHECKIN/">
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <partnerLinks>
+        <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+        <partnerLink name="client" partnerLinkType="client:JITAV2"
+                     myRole="JITAV2Provider" partnerRole="JITAV2Requester"/>
+        <partnerLink name="DBJITAAppt" partnerRole="DBJITAAppt_role"
+                     partnerLinkType="ns4:DBJITAAppt_plt"/>
+        <partnerLink name="DBGuardCheckin" partnerRole="DBGuardCheckin_role"
+                     partnerLinkType="ns5:DBGuardCheckin_plt"/>
+        <partnerLink name="JITAMQWriteDistro" partnerRole="Enqueue_role"
+                     partnerLinkType="ns7:Enqueue_plt"/>
+        <partnerLink name="DBJITADiscrepancy"
+                     partnerRole="DBJITADiscrepancy_role"
+                     partnerLinkType="ns8:DBJITADiscrepancy_plt"/>
+    </partnerLinks>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        VARIABLES                                                        
+        List of messages and XML documents used within this BPEL process 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <variables>
+        <!-- Reference to the message passed as input during initiation -->
+        <variable name="inputVariable"
+                  messageType="client:JITAV2RequestMessage"/>
+        <!-- Reference to the message that will be sent back to the requester during callback -->
+        <variable name="outputVariable"
+                  messageType="client:JITAV2ResponseMessage"/>
+        <variable name="l_PIXType" type="xsd:string"/>
+        <variable name="l_PIXCode" type="xsd:string"/>
+        <variable name="Invoke_1_DBJITAAppt_InputVariable"
+                  messageType="ns4:args_in_msg"/>
+        <variable name="Invoke_2_DBGuardCheckin_InputVariable"
+                  messageType="ns5:args_in_msg"/>
+        <variable name="Invoke_2_DBGuardCheckin_OutputVariable"
+                  messageType="ns5:args_out_msg"/>
+        <variable name="JITAResultsXML" element="ns1:ROWSET"/>
+        <variable name="Invoke_1_Enqueue_InputVariable"
+                  messageType="ns7:StoreDistroBridge_msg"/>
+        <variable name="Invoke_2_DBJITADiscrepancy_InputVariable"
+                  messageType="ns8:args_in_msg"/>
+    </variables>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+       ORCHESTRATION LOGIC                                               
+       Set of activities coordinating the flow of messages across the    
+       services integrated within this business process                  
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <sequence name="main">
+        <!-- Receive input from requestor. (Note: This maps to operation defined in JITAV2.wsdl) -->
+        <receive name="receiveInput" partnerLink="client"
+                 portType="client:JITAV2" operation="initiate"
+                 variable="inputVariable" createInstance="yes"/>
+        <!-- 
+          Asynchronous callback to the requester. (Note: the callback location and correlation id is transparently handled using WS-addressing.)
+        -->
+        <assign name="Assign_PIX">
+            <copy>
+                <from variable="inputVariable" part="payload"
+                      query="/ns1:PIXBridge/PIX/TransactionType"/>
+                <to variable="l_PIXType"/>
+            </copy>
+            <copy>
+                <from variable="inputVariable" part="payload"
+                      query="/ns1:PIXBridge/PIX/TransactionCode"/>
+                <to variable="l_PIXCode"/>
+            </copy>
+        </assign>
+        <switch name="Switch_1">
+            <case condition="bpws:getVariableData('l_PIXType') = '620' and bpws:getVariableData('l_PIXCode') = '03'">
+                <sequence name="Sequence_3">
+                    <assign name="Assign_Discrepancy">
+                        <copy>
+                            <from expression="number(bpws:getVariableData('inputVariable','payload','/ns1:PIXBridge/PIX/PIXFields/Warehouse'))"/>
+                            <to variable="Invoke_2_DBJITADiscrepancy_InputVariable"
+                                part="InputParameters"
+                                query="/ns3:InputParameters/P_SOURCE_ORG_ID"/>
+                        </copy>
+                        <copy>
+                            <from expression="number(bpws:getVariableData('inputVariable','payload','/ns1:PIXBridge/PIX/SKUDefinition/SkuID'))"/>
+                            <to variable="Invoke_2_DBJITADiscrepancy_InputVariable"
+                                part="InputParameters"
+                                query="/ns3:InputParameters/P_SKU"/>
+                        </copy>
+                        <copy>
+                            <from expression="number(bpws:getVariableData('inputVariable','payload','/ns1:PIXBridge/PIX/PIXFields/Reference4'))"/>
+                            <to variable="Invoke_2_DBJITADiscrepancy_InputVariable"
+                                part="InputParameters"
+                                query="/ns3:InputParameters/P_DEST_ORG_ID"/>
+                        </copy>
+                        <copy>
+                            <from expression="number(bpws:getVariableData('inputVariable','payload','/ns1:PIXBridge/PIX/PIXFields/InvAdjustmentQty'))"/>
+                            <to variable="Invoke_2_DBJITADiscrepancy_InputVariable"
+                                part="InputParameters"
+                                query="/ns3:InputParameters/P_ADJ_QTY"/>
+                        </copy>
+                        <copy>
+                            <from variable="inputVariable" part="payload"
+                                  query="/ns1:PIXBridge/PIX/PIXFields/InvAdjustmentType"/>
+                            <to variable="Invoke_2_DBJITADiscrepancy_InputVariable"
+                                part="InputParameters"
+                                query="/ns3:InputParameters/P_ADJ_TYPE"/>
+                        </copy>
+                    </assign>
+                    <invoke name="Invoke_Discrepancy"
+                            partnerLink="DBJITADiscrepancy"
+                            portType="ns8:DBJITADiscrepancy_ptt"
+                            operation="DBJITADiscrepancy"
+                            inputVariable="Invoke_2_DBJITADiscrepancy_InputVariable"/>
+                </sequence>
+            </case>
+            <case condition="bpws:getVariableData('l_PIXType') = '611' and bpws:getVariableData('l_PIXCode') = '04'">
+                <sequence name="Sequence_2">
+                    <assign name="Assign_DBGuardChk">
+                        <copy>
+                            <from expression="number(bpws:getVariableData('inputVariable','payload','/ns1:PIXBridge/PIX/PIXFields/Reference1'))"/>
+                            <to variable="Invoke_2_DBGuardCheckin_InputVariable"
+                                part="InputParameters"
+                                query="/ns10:InputParameters/P_ASN"/>
+                        </copy>
+                        <copy>
+                            <from expression="120"/>
+                            <to variable="Invoke_2_DBGuardCheckin_InputVariable"
+                                part="InputParameters"
+                                query="/ns10:InputParameters/P_THRESHOLD"/>
+                        </copy>
+                    </assign>
+                    <invoke name="Invoke_DBGuardChk"
+                            partnerLink="DBGuardCheckin"
+                            portType="ns5:DBGuardCheckin_ptt"
+                            operation="DBGuardCheckin"
+                            inputVariable="Invoke_2_DBGuardCheckin_InputVariable"
+                            outputVariable="Invoke_2_DBGuardCheckin_OutputVariable"/>
+                    <assign name="Assign_JITAOut">
+                        <copy>
+                            <from expression="ora:parseEscapedXML(bpws:getVariableData('Invoke_2_DBGuardCheckin_OutputVariable','OutputParameters','/ns10:OutputParameters/P_XML_OUT'))"/>
+                            <to variable="JITAResultsXML"/>
+                        </copy>
+                    </assign>
+                    <assign name="Transform_StoreDistro">
+                        <bpelx:annotation>
+                            <bpelx:pattern>transformation</bpelx:pattern>
+                        </bpelx:annotation>
+                        <copy>
+                            <from expression="ora:processXSLT('Transformation_1.xsl',bpws:getVariableData('JITAResultsXML'))"/>
+                            <to variable="Invoke_1_Enqueue_InputVariable"
+                                part="StoreDistroBridge"/>
+                        </copy>
+                    </assign>
+                    <invoke name="Invoke_1" partnerLink="JITAMQWriteDistro"
+                            portType="ns7:Enqueue_ptt" operation="Enqueue"
+                            inputVariable="Invoke_1_Enqueue_InputVariable"/>
+                </sequence>
+            </case>
+            <case condition="(bpws:getVariableData('l_PIXType') = '611' and bpws:getVariableData('l_PIXCode') = '01') or (bpws:getVariableData('l_PIXType') = '611' and bpws:getVariableData('l_PIXCode') = '02')">
+                <sequence name="Sequence_1">
+                    <assign name="Assign_Appt">
+                        <copy>
+                            <from expression="number(bpws:getVariableData('inputVariable','payload','/ns1:PIXBridge/PIX/PIXFields/Reference1'))"/>
+                            <to variable="Invoke_1_DBJITAAppt_InputVariable"
+                                part="InputParameters"
+                                query="/ns6:InputParameters/P_ASN"/>
+                        </copy>
+                        <copy>
+                            <from variable="inputVariable" part="payload"
+                                  query="/ns1:PIXBridge/PIX/PIXFields/Reference5"/>
+                            <to variable="Invoke_1_DBJITAAppt_InputVariable"
+                                part="InputParameters"
+                                query="/ns6:InputParameters/P_APPT_TIME"/>
+                        </copy>
+                        <copy>
+                            <from variable="inputVariable" part="payload"
+                                  query="/ns1:PIXBridge/PIX/PIXFields/Warehouse"/>
+                            <to variable="Invoke_1_DBJITAAppt_InputVariable"
+                                part="InputParameters"
+                                query="/ns6:InputParameters/P_ORG_ID"/>
+                        </copy>
+                    </assign>
+                    <invoke name="Invoke_Appt" partnerLink="DBJITAAppt"
+                            portType="ns4:DBJITAAppt_ptt" operation="DBJITAAppt"
+                            inputVariable="Invoke_1_DBJITAAppt_InputVariable"/>
+                </sequence>
+            </case>
+            <otherwise/>
+        </switch>
+        <invoke name="callbackClient" partnerLink="client"
+                portType="client:JITAV2Callback" operation="onResult"
+                inputVariable="outputVariable"/>
+    </sequence>
+</process>

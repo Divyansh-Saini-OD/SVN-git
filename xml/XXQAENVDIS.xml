@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXQAENVDIS" description="OD: Environmental Discrepancy Report" Version="1.0">
+<parameters>
+ <parameter name="P_REGION" datatype="character" />
+ <parameter name="P_LOCATION" datatype="character" />
+ <parameter name="P_SECTION" datatype="character" />
+ <parameter name="P_ISSUE" datatype="character" />
+ <parameter name="P_CORRECTIVE_ACTION" datatype="character" />
+ <parameter name="P_VENDOR" datatype="character" />
+ <parameter name="P_INTERNAL_BUSINESS_OWNER" datatype="character" />
+ <parameter name="P_AFFIDAVIT" datatype="character" />
+ <parameter name="P_QA" datatype="character" />
+ <parameter name="P_CLASSIFICATION" datatype="character" />
+ <parameter name="P_SKU" datatype="character" />
+ <parameter name="P_DEPT_NO" datatype="character" />
+ <parameter name="P_CLASS_NO" datatype="character" />
+ <parameter name="P_SUBCLASS_NO" datatype="character" /> 
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_XXQAENVDIS">
+<![CDATA[
+SELECT OD_OB_EDID ,
+  OD_SC_ENTRY_DATE,
+  OD_SC_REGION ,
+  OD_OB_PICKUP_LOCATION ,
+  OD_SC_SECTION ,
+  OD_OB_ISSUE_TYPE ,
+  OD_PB_CORR_ACTION ,
+  OD_OB_VENDOR_NAME ,
+  OD_SC_VEND_CONT_NAME ,
+  OD_PB_FQA_REQUESTER ,
+  OD_PB_DATE_VERIFIED,
+  OD_OB_DISPUTE_YN ,
+  OD_PB_COMMENTS ,
+  OD_PB_QA_REQUESTER ,
+  OD_PB_DEFECT_CODE ,
+  OD_OB_SKU ,
+  OD_PB_ITEM_DESC ,
+  OD_OB_VPN ,
+  OD_OB_DEPT_ID ,
+  OD_PB_SC_DEPT_NAME ,
+  OD_OB_CLASS_ID ,
+  OD_OB_CLASS ,
+  OD_OB_SUBCLASS_ID ,
+  OD_OB_SUBCLASS ,
+  A.CREATED_BY ,
+  A.COLLECTION_ID ,
+  A.CREATION_DATE
+FROM Q_OD_OB_ED_V a ,
+  Q_OD_OB_ED_SKU_V B
+WHERE a.OD_OB_EDID       = B.OD_OB_REF_EDID(+)
+AND NVL(OD_SC_REGION,'X')         = NVL(:p_region,NVL(OD_SC_REGION,'X'))
+AND NVL(OD_OB_PICKUP_LOCATION,'X')= NVL (:p_location,NVL(OD_OB_PICKUP_LOCATION,'X'))
+AND NVL(OD_SC_SECTION,'X')        = NVL(:p_section,NVL(OD_SC_SECTION,'X'))
+AND NVL(OD_OB_ISSUE_TYPE,'X')    = NVL(:p_issue,NVL(OD_OB_ISSUE_TYPE,'X'))
+AND NVL(OD_PB_CORR_ACTION,'X')    = NVL(:p_corrective_action,NVL(OD_PB_CORR_ACTION,'X'))
+AND NVL(OD_OB_VENDOR_NAME,'X')    = NVL(:p_vendor,NVL(OD_OB_VENDOR_NAME,'X'))
+AND NVL(OD_SC_VEND_CONT_NAME,'X') = NVL(:p_internal_business_owner,NVL(OD_SC_VEND_CONT_NAME,'X'))
+AND NVL(OD_OB_DISPUTE_YN,'X')     = NVL(:p_affidavit,NVL(OD_OB_DISPUTE_YN,'X'))
+AND NVL(OD_PB_QA_REQUESTER,'X')   = NVL(:p_qa,NVL(OD_PB_QA_REQUESTER,'X'))
+AND NVL(OD_PB_DEFECT_CODE,'X')    = NVL(:p_classification,NVL(OD_PB_DEFECT_CODE,'X'))
+AND NVL(OD_OB_SKU,1)            = NVL (:p_sku,NVL(OD_OB_SKU,1))
+AND NVL(OD_OB_DEPT_ID ,1)    = NVL(:p_dept_no,NVL(OD_OB_DEPT_ID,1))
+AND NVL(OD_OB_CLASS_ID  ,1)     = NVL(:p_class_no,NVL(OD_OB_CLASS_ID,1))
+AND NVL(OD_OB_SUBCLASS_ID  ,1)  = NVL(:p_subclass_no,NVL(OD_OB_SUBCLASS_ID,1))
+ORDER BY 1,2
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_XXQAENVDIS" source="Q_XXQAENVDIS">
+<element name="od_ob_edid" value="od_ob_edid" />
+<element name="od_sc_entry_date" value="od_sc_entry_date" />
+<element name="od_sc_region" value="od_sc_region" />
+<element name="od_ob_pickup_location" value="od_ob_pickup_location" />
+<element name="od_sc_section" value="od_sc_section" />
+<element name="od_ob_issue_type" value="od_ob_issue_type" />
+<element name="od_pb_corr_action" value="od_pb_corr_action" />
+<element name="od_ob_vendor_name" value="od_ob_vendor_name" />
+<element name="od_sc_vend_cont_name" value="od_sc_vend_cont_name" />
+<element name="od_pb_fqa_requester" value="od_pb_fqa_requester" />
+<element name="od_pb_date_verified" value="od_pb_date_verified" />
+<element name="od_ob_dispute_yn" value="od_ob_dispute_yn" />
+<element name="od_pb_comments" value="od_pb_comments" />
+<element name="od_pb_qa_requester" value="od_pb_qa_requester" />
+<element name="od_pb_defect_code" value="od_pb_defect_code" />
+<element name="od_ob_sku" value="od_ob_sku" />
+<element name="od_pb_item_desc" value="od_pb_item_desc" />
+<element name="od_ob_vpn" value="od_ob_vpn" />
+<element name="od_ob_dept_id" value="od_ob_dept_id" />
+<element name="od_pb_sc_dept_name" value="od_pb_sc_dept_name" />
+<element name="od_ob_class_id" value="od_ob_class_id" />
+<element name="od_ob_class" value="od_ob_class" />
+<element name="od_ob_subclass_id" value="od_ob_subclass_id" />
+<element name="od_ob_subclass" value="od_ob_subclass" />
+<element name="created_by" value="created_by" />
+<element name="collection_id" value="collection_id" />
+<element name="creation_date" value="creation_date" />
+</group>
+</dataStructure>
+</dataTemplate>

@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXPANPRD" description="OD Product Information Change Status Notification Report" Version="1.0">
+<parameters>
+ <parameter name="p_proj" datatype="character" />
+ <parameter name="p_ttype" datatype="character" />
+ <parameter name="p_tyear" datatype="number" />
+ <parameter name="p_agent" datatype="character" />
+ <parameter name="p_vend" datatype="character" />
+ <parameter name="p_prj_mgr" datatype="character" />
+ <parameter name="p_dimer" datatype="character" />
+ <parameter name="p_domer" datatype="character" />
+ <parameter name="p_idesn" datatype="character" />
+ <parameter name="p_fdesn" datatype="character" />
+ <parameter name="p_div" datatype="character" />
+ <parameter name="p_dept" datatype="character" />
+ <parameter name="p_cls" datatype="character" />
+ <parameter name="p_scls" datatype="character" />
+ <parameter name="p_fd" datatype="character" />
+ <parameter name="p_td" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_PARAM">
+<![CDATA[
+ SELECT DECODE(:p_fd,NULL,'D','W') PDP
+  FROM DUAL
+]]>
+</sqlStatement>
+<sqlStatement name="Q_NPR">
+<![CDATA[
+select  gen.project_no,
+    apps.xx_pa_pb_prdupld_pkg.get_image_path||replace(gen.product_image,'/XXMER_HTML/') IMG,
+    apps.xx_pa_xxpascor_pkg.get_lu_namedate(gen.prod_dtl_id) LUNAME,
+    gen.INIT_ITEM_DECISION,
+    gen.final_iteM_decision,
+    gen.last_update_date,
+    gen.addl_di_comments,
+    gen.addl_source_comments,
+    gen.sku,
+    gen.vpc,
+    gen.product_desc,
+    gen.packaging_type,    
+    gen.sell_unit,
+    gen.fob_amnt,
+    gen.ddp_amnt,
+    l.duty_rate_pct,
+    q.status prd_testing,
+    t.revised_duty_pct,
+    pmgr.full_name Proj_manager,
+    COALESCE(EEB1.C_EXT_ATTR6,'') AS DI_MERCHANT,
+    COALESCE(EEB1.C_EXT_ATTR7,'') AS Domestic_MERCHANT,
+    gen.VENDOR_NAME VENDOR_NAME,
+    gen.division division,
+    gen.dept dept,
+    gen.class class,
+    gen.subclass subclass,
+    gen.sourcing_agent,
+    EEB2.c_ext_attr1 tracker_type,
+    EEB2.N_ext_attr1 tracker_year
+ from 
+       (SELECT d.full_name,a.project_id
+          FROM apps.fnd_user e,
+          apps.per_all_people_f d,
+          apps.pa_project_role_types_vl c,
+          apps.pa_project_parties b,
+          apps.pa_projects_all a
+         WHERE b.project_id=a.project_id
+           AND c.project_role_id=b.project_role_id
+	     AND c.project_role_type='PROJECT MANAGER'
+           AND d.person_id=b.resource_source_id
+	     AND NVL(d.full_name,'X')=NVL(:p_prj_mgr,NVL(d.full_name,'X'))
+           AND e.employee_id=d.person_id ) pmgr,
+    apps.XX_PA_PB_PRD_LOGISTICS l,
+    apps.XX_PA_PB_TARIFF_APRV t,
+    apps.xx_pa_pb_prd_qatstr q,
+    apps.xx_pa_pb_genprd_dtl gen LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB1 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND1 ON 
+                 EEB1.ATTR_GROUP_ID = FND1.ATTR_GROUP_ID AND
+		     NVL(EEB1.C_EXT_ATTR6,'X')=NVL(:p_dimer,NVL(EEB1.C_EXT_ATTR6,'X')) AND
+		     NVL(EEB1.C_EXT_ATTR7,'X')=NVL(:p_domer,NVL(EEB1.C_EXT_ATTR7,'X')) AND
+                 FND1.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_GEN_INFO') ON
+                 gen.PROJECT_ID = EEB1.PROJECT_ID,
+        APPS.PA_PROJECTS_ALL PPA2 LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB2 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND2 ON 
+                 EEB2.ATTR_GROUP_ID = FND2.ATTR_GROUP_ID AND
+		     NVL(EEB2.c_ext_attr1,'X')=NVL(:p_ttype,NVL(eeb2.c_ext_attr1,'X')) AND
+		     NVL(EEB2.N_ext_attr1,-1)=NVL(:p_tyear,NVL(eeb2.n_ext_attr1,-1)) AND
+                 FND2.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'RPB_TRACKER') ON
+                 PPA2.PROJECT_ID = EEB2.PROJECT_ID
+ where ppa2.project_id=gen.project_id
+--  and  :p_fd IS NULL
+  and gen.creation_date between 
+      to_date(trunc(sysdate-1)||' 00:00:00','dd-mon-rr hh24:mi:ss') and
+      to_date(trunc(sysdate-1)||' 23:59:59','dd-mon-rr hh24:mi:ss')
+    and l.prod_dtl_id=gen.prod_dtl_id
+   and t.prod_dtl_id=gen.prod_dtl_id
+   and q.prod_dtl_id=gen.prod_dtl_id
+   and q.task_description like 'Product Testing%'
+   AND pmgr.project_id=gen.project_id
+   AND gen.project_no=NVL(:p_proj,gen.project_no)
+   AND NVL(gen.sourcing_agent,'X')=NVL(:p_agent,NVL(gen.sourcing_agent,'X'))
+   AND NVL(gen.VENDOR_NAME,'X')=NVL(:p_vend,NVL(gen.vendor_name,'X'))
+   AND NVL(gen.init_item_decision,'X')=NVL(:p_idesn,NVL(gen.init_item_decision,'X'))
+   AND NVL(gen.final_item_decision,'X')=NVL(:p_fdesn,NVL(gen.final_item_decision,'X'))
+   AND NVL(gen.division,-1)=NVL(:p_div,NVL(gen.division,-1))
+   AND NVL(gen.dept,-1)=NVL(:p_dept,NVL(gen.dept,-1))
+   AND NVL(gen.class,-1)=NVL(:p_cls,NVL(gen.class,-1))
+   AND NVL(gen.subclass,-1)=NVL(:p_scls,NVL(gen.subclass,-1))
+ORDER BY 1,2
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CPR">
+<![CDATA[
+select  gen.project_no,
+    apps.xx_pa_pb_prdupld_pkg.get_image_path||replace(gen.product_image,'/XXMER_HTML/') IMG,
+    apps.xx_pa_xxpascor_pkg.get_lu_namedate(gen.prod_dtl_id) LUNAME,
+    gen.INIT_ITEM_DECISION,
+    gen.final_iteM_decision,
+    gen.last_update_date,
+    gen.addl_di_comments,
+    gen.addl_source_comments,
+    gen.sku,
+    gen.vpc,
+    gen.product_desc,
+    gen.packaging_type,    
+    gen.sell_unit,
+    gen.fob_amnt,
+    gen.ddp_amnt,
+    l.duty_rate_pct,
+    t.revised_duty_pct,
+    q.status prd_testing,
+    pmgr.full_name Proj_manager,
+    COALESCE(EEB1.C_EXT_ATTR6,'') AS DI_MERCHANT,
+    COALESCE(EEB1.C_EXT_ATTR7,'') AS Domestic_MERCHANT,
+    gen.VENDOR_NAME VENDOR_NAME,
+    gen.division division,
+    gen.dept dept,
+    gen.class class,
+    gen.subclass subclass,
+    gen.sourcing_agent,
+    EEB2.c_ext_attr1 tracker_type,
+    EEB2.N_ext_attr1 tracker_year
+ from 
+       (SELECT d.full_name,a.project_id
+          FROM apps.fnd_user e,
+          apps.per_all_people_f d,
+          apps.pa_project_role_types_vl c,
+          apps.pa_project_parties b,
+          apps.pa_projects_all a
+         WHERE b.project_id=a.project_id
+           AND c.project_role_id=b.project_role_id
+	     AND c.project_role_type='PROJECT MANAGER'
+           AND d.person_id=b.resource_source_id
+	     AND NVL(d.full_name,'X')=NVL(:p_prj_mgr,NVL(d.full_name,'X'))
+           AND e.employee_id=d.person_id ) pmgr,
+    apps.XX_PA_PB_PRD_LOGISTICS l,
+    apps.xx_pa_pb_prd_qatstr q,
+    apps.XX_PA_PB_TARIFF_APRV t,
+    apps.xx_pa_pb_genprd_dtl gen LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB1 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND1 ON 
+                 EEB1.ATTR_GROUP_ID = FND1.ATTR_GROUP_ID AND
+		     NVL(EEB1.C_EXT_ATTR6,'X')=NVL(:p_dimer,NVL(EEB1.C_EXT_ATTR6,'X')) AND
+		     NVL(EEB1.C_EXT_ATTR7,'X')=NVL(:p_domer,NVL(EEB1.C_EXT_ATTR7,'X')) AND
+                 FND1.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_GEN_INFO') ON
+                 gen.PROJECT_ID = EEB1.PROJECT_ID,
+        APPS.PA_PROJECTS_ALL PPA2 LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB2 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND2 ON 
+                 EEB2.ATTR_GROUP_ID = FND2.ATTR_GROUP_ID AND
+		     NVL(EEB2.c_ext_attr1,'X')=NVL(:p_ttype,NVL(eeb2.c_ext_attr1,'X')) AND
+		     NVL(EEB2.N_ext_attr1,-1)=NVL(:p_tyear,NVL(eeb2.n_ext_attr1,-1)) AND
+                 FND2.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'RPB_TRACKER') ON
+                 PPA2.PROJECT_ID = EEB2.PROJECT_ID
+ where ppa2.project_id=gen.project_id
+   and l.prod_dtl_id=gen.prod_dtl_id
+   and t.prod_dtl_id=gen.prod_dtl_id
+   and q.prod_dtl_id=gen.prod_dtl_id
+   and q.task_description like 'Product Testing%'
+   AND pmgr.project_id=gen.project_id
+   AND gen.project_no=NVL(:p_proj,gen.project_no)
+   AND NVL(gen.sourcing_agent,'X')=NVL(:p_agent,NVL(gen.sourcing_agent,'X'))
+   AND NVL(gen.VENDOR_NAME,'X')=NVL(:p_vend,NVL(gen.vendor_name,'X'))
+   AND NVL(gen.init_item_decision,'X')=NVL(:p_idesn,NVL(gen.init_item_decision,'X'))
+   AND NVL(gen.final_item_decision,'X')=NVL(:p_fdesn,NVL(gen.final_item_decision,'X'))
+   AND NVL(gen.division,-1)=NVL(:p_div,NVL(gen.division,-1))
+   AND NVL(gen.dept,-1)=NVL(:p_dept,NVL(gen.dept,-1))
+   AND NVL(gen.class,-1)=NVL(:p_cls,NVL(gen.class,-1))
+   AND NVL(gen.subclass,-1)=NVL(:p_scls,NVL(gen.subclass,-1))
+   AND  (  (TRUNC(gen.last_update_date) BETWEEN TRUNC(apps.fnd_conc_date.string_to_date(NVL(:p_fd,sysdate-1)))
+			AND  TRUNC(apps.fnd_conc_date.string_to_date(NVL(:p_td,sysdate-1)))
+           )
+       OR  (TRUNC(l.last_update_date) BETWEEN TRUNC(apps.fnd_conc_date.string_to_date(NVL(:p_fd,sysdate-1)))
+			AND  TRUNC(apps.fnd_conc_date.string_to_date(NVL(:p_td,sysdate-1)))
+           )
+       OR  (TRUNC(q.last_update_date) BETWEEN TRUNC(apps.fnd_conc_date.string_to_date(NVL(:p_fd,sysdate-1)))
+			AND  TRUNC(apps.fnd_conc_date.string_to_date(NVL(:p_td,sysdate-1)))
+           )
+        )
+ORDER BY 1,2
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_PARAM" source="Q_PARAM">
+<element name="PDP" value="PDP" />
+</group>
+<group name="G_NPR" source="Q_NPR">
+<element name="PROJECT_NO" value="PROJECT_NO" />
+<element name="IMG" value="IMG" />
+<element name="LUNAME" value="LUNAME" />
+<element name="INIT_ITEM_DECISION" value="INIT_ITEM_DECISION" />
+<element name="FINAL_ITEM_DECISION" value="FINAL_ITEM_DECISION" />
+<element name="LUDATE" value="LAST_UPDATE_DATE" />
+<element name="ADDL_DI_COMMENTS" value="ADDL_DI_COMMENTS" />
+<element name="ADDL_SOURCE_COMMENTS" value="ADDL_SOURCE_COMMENTS" />
+<element name="SKU" value="SKU" />
+<element name="VPC" value="VPC" />
+<element name="PRODUCT_DESC" value="PRODUCT_DESC" />
+<element name="PACKAGING_TYPE" value="PACKAGING_TYPE" />
+<element name="SELL_UNIT" value="SELL_UNIT" />
+<element name="FOB_AMNT" value="FOB_AMNT" />
+<element name="DDP_AMNT" value="DDP_AMNT" />
+<element name="DUTY_RATE_PCT" value="DUTY_RATE_PCT" />
+<element name="REVISED_DUTY_PCT" value="REVISED_DUTY_PCT" />
+<element name="PRD_TESTING" value="PRD_TESTING" />
+</group>
+<group name="G_CPR" source="Q_CPR">
+<element name="PROJECT_NO" value="PROJECT_NO" />
+<element name="IMG" value="IMG" />
+<element name="LUNAME" value="LUNAME" />
+<element name="INIT_ITEM_DECISION" value="INIT_ITEM_DECISION" />
+<element name="FINAL_ITEM_DECISION" value="FINAL_ITEM_DECISION" />
+<element name="LUDATE" value="LAST_UPDATE_DATE" />
+<element name="ADDL_DI_COMMENTS" value="ADDL_DI_COMMENTS" />
+<element name="ADDL_SOURCE_COMMENTS" value="ADDL_SOURCE_COMMENTS" />
+<element name="SKU" value="SKU" />
+<element name="VPC" value="VPC" />
+<element name="PRODUCT_DESC" value="PRODUCT_DESC" />
+<element name="PACKAGING_TYPE" value="PACKAGING_TYPE" />
+<element name="SELL_UNIT" value="SELL_UNIT" />
+<element name="FOB_AMNT" value="FOB_AMNT" />
+<element name="DDP_AMNT" value="DDP_AMNT" />
+<element name="DUTY_RATE_PCT" value="DUTY_RATE_PCT" />
+<element name="REVISED_DUTY_PCT" value="REVISED_DUTY_PCT" />
+<element name="PRD_TESTING" value="PRD_TESTING" />
+</group>
+</dataStructure>
+</dataTemplate>

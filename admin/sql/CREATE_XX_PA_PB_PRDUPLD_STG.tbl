@@ -1,0 +1,118 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_PA_PB_PRDUPLD_STG.tbl                                            |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_PA_PB_PRDUPLD_STG (OD PLM Enhancements table)                          |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              23-Sep-2010       Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Table XX_PA_PB_PRDUPLD_STG......
+PROMPT
+
+Create table xxmer.XX_PA_PB_PRDUPLD_STG
+(vend_quote_date	date,
+ project_no		varchar2(30),
+ project_id		number,
+ sourcing_agent		varchar2(50),
+ existing_sku		varchar2(30),
+ vpc 			varchar2(50),
+ picture1		varchar2(100),
+ product_desc		varchar2(240),
+ sell_unit_size		number,
+ package_type		varchar2(30),
+ brand			varchar2(30),
+ vendor_upc_no		varchar2(50),
+ item_dimen		varchar2(100),
+ item_purpose		varchar2(2000),
+ prod_specs		varchar2(2000),
+ prod_construc		varchar2(2000),
+ vendor_name		varchar2(100),
+ vendor_id		varchar2(30),
+ factory_name		varchar2(100),
+ factory_id		varchar2(30),
+ country_of_origin	varchar2(50),
+ port_of_shipping	varchar2(60),
+ sl_length		number,
+ sl_width		number,
+ sl_height		number,
+ sl_weight		number,
+ ic_qty			number,
+ ic_length		number,
+ ic_width		number,
+ ic_height		number,
+ ic_weight		number,
+ mc_qty			number,
+ mc_length		number,
+ mc_width		number,
+ mc_height		number,
+ mc_cmb			number,
+ mc_cuft		number,
+ mc_weight		number,
+ qty_20ft 		number,
+ qty_40ft 		number,
+ qty_40ft_htc 		number,
+ qty_45ft 		number,
+ tariff_no		varchar2(30),
+ duty_rate_pct		number,
+ quote_val_months	number,
+ fob			number,
+ moq			number,
+ landed_cost		number,
+ division		number,
+ division_name		varchar2(30),
+ dept			number,
+ dept_name		varchar2(30),
+ class			number,
+ class_name		varchar2(30),
+ subclass		number,
+ subclass_name		varchar2(30),
+ ddp_amount		number,
+ creation_date		date not null,
+ created_by		number not null,
+ process_flag		number,
+ item_process_Flag  number,
+ logis_process_flag	number,
+ tarif_process_Flag	number,
+ qatst_process_flag	number,
+ qatstr_process_flag	number,
+ qatdd_process_flag	number,
+ qatrdd_process_flag	number,
+ action_type		varchar2(1),
+ error_flag		varchar2(1),
+ error_message		varchar2(2000)
+);
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================

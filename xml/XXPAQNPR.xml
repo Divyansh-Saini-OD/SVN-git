@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXPAQNPR" description="OD Quarterly New Projects Sales Forecast Rollout Report" Version="1.0">
+<parameters>
+ <parameter name="p_year" datatype="number" />
+ <parameter name="p_division" datatype="character" />
+ <parameter name="p_dept" datatype="character" />
+ <parameter name="p_di_merchant" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="QNPR">
+<![CDATA[
+SELECT  ppa1.project_ID
+       ,COALESCE(EEB1.C_EXT_ATTR5,'') AS DIVISION
+       ,COALESCE(EEB1.C_EXT_ATTR1,'') AS DEPARTMENT
+       ,COALESCE(EEB1.C_EXT_ATTR6,'') AS DI_MERCHANT
+       ,COALESCE(EEB1.C_EXT_ATTR7,'') AS DOMESTIC_MERCHANT
+       ,PPA1.SEGMENT1 AS PROJECT_NUMBER 
+       ,PPA1.NAME  AS PROJECT_NAME
+       ,PPS1.PROJECT_STATUS_NAME  AS PROJECT_STATUS
+       ,COALESCE(EEB1.N_EXT_ATTR1,0) AS SKU_NUM
+       ,SLS.budget_year
+       ,SLS.sales_total
+       ,SUM(SLS.mon1+SLS.mon2+SLS.mon3) Q1
+       ,SUM(SLS.mon4+SLS.mon5+SLS.mon6) Q2
+       ,SUM(SLS.mon7+SLS.mon8+SLS.mon9) Q3
+       ,SUM(SLS.mon10+SLS.mon11+SLS.mon12) Q4
+  FROM APPS.PA_PROJECTS_ERP_EXT_B EEB1, 
+       APPS.EGO_FND_DSC_FLX_CTX_EXT FND1,
+       apps.PA_PROJECT_STATUSES PPS1,
+       apps.XX_PA_PROJECTS_RPT_MONTHSLS_V SLS, 
+       apps.PA_PROJECTS_ALL PPA1
+ WHERE PPA1.PROJECT_ID > 0
+   AND EEB1.ATTR_GROUP_ID = FND1.ATTR_GROUP_ID 
+   AND FND1.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_GEN_INFO'
+   AND PPA1.project_id(+)=EEB1.project_id
+   AND SLS.PROJECT_ID=PPA1.PROJECT_ID
+   AND PPA1.PROJECT_STATUS_CODE = PPS1.PROJECT_STATUS_CODE
+--   AND PPS1.PROJECT_STATUS_NAME NOT IN ('Cancelled', 'Closed', 'Rejected')
+   AND SLS.BUDGET_YEAR=:p_year
+   AND NVL(EEB1.C_EXT_ATTR5,'X')=NVL(:p_division,NVL(EEB1.C_EXT_ATTR5,'X'))
+   AND NVL(EEB1.C_EXT_ATTR1,'X')=NVL(:p_dept,NVL(EEB1.C_EXT_ATTR1,'X'))
+   AND NVL(EEB1.C_EXT_ATTR6,'X')=NVL(:p_di_merchant,NVL(EEB1.C_EXT_ATTR6,'X'))
+ GROUP BY    ppa1.project_ID    
+    ,COALESCE(EEB1.C_EXT_ATTR5,'') 
+       ,COALESCE(EEB1.C_EXT_ATTR1,'')
+       ,COALESCE(EEB1.C_EXT_ATTR6,'')
+       ,COALESCE(EEB1.C_EXT_ATTR7,'')
+       ,PPA1.SEGMENT1 
+       ,PPA1.NAME  
+       ,PPS1.PROJECT_STATUS_NAME 
+       ,COALESCE(EEB1.N_EXT_ATTR1,0)
+       ,SLS.budget_year
+       ,SLS.sales_total
+ORDER BY 1
+]]>
+</sqlStatement>
+<sqlStatement name="Q_TOT">
+<![CDATA[
+SELECT  SUM(SLS.sales_total) Total_sales
+       ,SUM(SLS.mon1+SLS.mon2+SLS.mon3) TQ1
+       ,SUM(SLS.mon4+SLS.mon5+SLS.mon6) TQ2
+       ,SUM(SLS.mon7+SLS.mon8+SLS.mon9) TQ3
+       ,SUM(SLS.mon10+SLS.mon11+SLS.mon12) TQ4
+  FROM APPS.PA_PROJECTS_ERP_EXT_B EEB1, 
+       APPS.EGO_FND_DSC_FLX_CTX_EXT FND1,
+       apps.PA_PROJECT_STATUSES PPS1,
+       apps.XX_PA_PROJECTS_RPT_MONTHSLS_V SLS, 
+       apps.PA_PROJECTS_ALL PPA1
+ WHERE PPA1.PROJECT_ID > 0
+   AND EEB1.ATTR_GROUP_ID = FND1.ATTR_GROUP_ID 
+   AND FND1.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_GEN_INFO'
+   AND PPA1.project_id(+)=EEB1.project_id
+   AND SLS.PROJECT_ID=PPA1.PROJECT_ID
+   AND PPA1.PROJECT_STATUS_CODE = PPS1.PROJECT_STATUS_CODE
+--   AND PPS1.PROJECT_STATUS_NAME NOT IN ('Cancelled', 'Closed', 'Rejected')
+   AND SLS.BUDGET_YEAR=:p_year
+   AND NVL(EEB1.C_EXT_ATTR5,'X')=NVL(:p_division,NVL(EEB1.C_EXT_ATTR5,'X'))
+   AND NVL(EEB1.C_EXT_ATTR1,'X')=NVL(:p_dept,NVL(EEB1.C_EXT_ATTR1,'X'))
+   AND NVL(EEB1.C_EXT_ATTR6,'X')=NVL(:p_di_merchant,NVL(EEB1.C_EXT_ATTR6,'X'))
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_QNPR" source="QNPR">
+<element name="DIVISION" value="DIVISION" />
+<element name="DEPARTMENT" value="DEPARTMENT" />
+<element name="DI_MERCHANT_NAME" value="DI_MERCHANT" />
+<element name="DOMESTIC_MERCHANT_NAME" value="DOMESTIC_MERCHANT" />
+<element name="PROJECT_NO" value="PROJECT_NUMBER" />
+<element name="PROJECT_NAME" value="PROJECT_NAME" />
+<element name="PROJECT_STATUS" value="PROJECT_STATUS" />
+<element name="SKU_NUM" value="SKU_NUM" />
+<element name="BUDGET_YEAR" value="BUDGET_YEAR" />
+<element name="Q1" value="Q1" />
+<element name="Q2" value="Q2" />
+<element name="Q3" value="Q3" />
+<element name="Q4" value="Q4" />
+<element name="TOTAL" value="SALES_TOTAL" />
+</group>
+<group name="G_TOT" source="Q_TOT">
+<element name="TQ1" value="TQ1" />
+<element name="TQ2" value="TQ2" />
+<element name="TQ3" value="TQ3" />
+<element name="TQ4" value="TQ4" />
+<element name="TOTAL_SALES" value="TOTAL_SALES" />
+</group>
+</dataStructure>
+</dataTemplate>

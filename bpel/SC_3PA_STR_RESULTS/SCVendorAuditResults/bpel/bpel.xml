@@ -1,0 +1,14 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="SCVendorAuditResults" src="SCVendorAuditResults.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="client">
+            <property name="wsdlLocation">SCVendorAuditResults.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="OASCAuditSrvc">
+            <property name="wsdlLocation">OASCAuditSrvc.wsdl</property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+   </BPELProcess>
+</BPELSuitcase>

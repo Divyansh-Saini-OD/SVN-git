@@ -1,0 +1,47 @@
+<definitions
+     name="UpdateLegacyPOTables"
+     targetNamespace="http://xmlns.oracle.com/UpdateLegacyPOTables"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:ns1="http://www.openapplications.org/oagis/9"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:ns2="http://TargetNamespace.com/PO_EBS_UPLOAD_QUEUE"
+     xmlns:client="http://xmlns.oracle.com/UpdateLegacyPOTables"
+    >
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://www.openapplications.org/oagis/9"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:client="http://xmlns.oracle.com/UpdateLegacyPOTables">
+            <import namespace="http://xmlns.oracle.com/UpdateLegacyPOTables" schemaLocation="UpdateLegacyPOTables.xsd"/>
+        </schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://www.openapplications.org/oagis/9"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:client="http://xmlns.oracle.com/UpdateLegacyPOTables">
+            <xsd:import namespace="http://www.openapplications.org/oagis/9" schemaLocation="http://chilsoa02d.na.odcorp.net:7777/orabpel/xmllib/eaixml/oagis/v91/message/bod/ProcessPurchaseOrder.xsd"/>
+        </xsd:schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://TargetNamespace.com/PO_EBS_UPLOAD_QUEUE" schemaLocation="PORecord_1.xsd"/>
+        </xsd:schema>
+    </types>
+    <message name="UpdateLegacyPOTablesRequestMessage">
+        <part name="payload" element="ns1:ProcessPurchaseOrder"/>
+    </message>
+    <message name="UpdateLegacyPOTablesResponseMessage">
+        <part name="payload" element="client:UpdateLegacyPOTablesProcessResponse"/>
+    </message>
+    <portType name="UpdateLegacyPOTables">
+        <operation name="initiate">
+            <input message="client:UpdateLegacyPOTablesRequestMessage"/>
+        </operation>
+    </portType>
+    <portType name="UpdateLegacyPOTablesCallback">
+        <operation name="onResult">
+            <input message="client:UpdateLegacyPOTablesResponseMessage"/>
+        </operation>
+    </portType>
+    <plnk:partnerLinkType name="UpdateLegacyPOTables">
+        <plnk:role name="UpdateLegacyPOTablesProvider">
+            <plnk:portType name="client:UpdateLegacyPOTables"/>
+        </plnk:role>
+        <plnk:role name="UpdateLegacyPOTablesRequester">
+            <plnk:portType name="client:UpdateLegacyPOTablesCallback"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+</definitions>

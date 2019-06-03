@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXQASAR" description="OD Sample Approval Report" Version="1.0">
+<parameters>
+ <parameter name="P_REGION" datatype="character" />
+ <parameter name="P_AUDIT_AGENT" datatype="character" />
+ <parameter name="P_VENDOR_NAME" datatype="character" />
+ <parameter name="P_FACTORY_NAME" datatype="character" />
+ <parameter name="P_DEPT_NAME" datatype="character" />
+ <parameter name="P_MERCHANT" datatype="character" />
+ <parameter name="P_SUBMITTER" datatype="character" />
+ <parameter name="P_APPROVER" datatype="character" />
+ <parameter name="P_SAMPLE_STAGE" datatype="character" />
+ <parameter name="P_SAMPLE_STATUS" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_XXQASAR">
+<![CDATA[
+SELECT od_ob_sa_id
+     , od_sc_region
+     , od_sc_audit_agent
+     , od_ob_vendor_name
+     , od_ob_factory_name
+     , od_ob_sku
+     , od_pb_item_desc
+     , od_pb_sc_dept_name
+     , od_sc_merchant
+     , od_pb_auditor_name
+     , od_pb_qa_engr_email
+     , od_pb_attachment
+     , od_ob_sample_stage
+     , od_pb_date_sample_sent
+     , od_ob_sample_status
+  FROM q_od_ob_sample_approval_v
+ WHERE NVL(od_sc_region,'X') = NVL (:p_region, NVL(od_sc_region,'X'))
+   AND NVL(od_sc_audit_agent,'X') = NVL (:p_audit_agent, NVL(od_sc_audit_agent,'X'))
+   AND NVL(od_ob_vendor_name,'X') = NVL (:p_vendor_name, NVL(od_ob_vendor_name,'X'))
+   AND NVL(od_ob_factory_name,'X') = NVL (:p_factory_name, NVL(od_ob_factory_name,'X'))
+   AND NVL(od_pb_sc_dept_name,'X') = NVL (:p_dept_name, NVL(od_pb_sc_dept_name,'X'))
+   AND NVL(od_sc_merchant,'X') = NVL (:p_merchant, NVL(od_sc_merchant,'X'))
+   AND NVL(od_pb_auditor_name,'X') = NVL (:p_submitter, NVL(od_pb_auditor_name,'X'))
+   AND NVL(od_pb_qa_engr_email,'X') = NVL (:p_approver, NVL(od_pb_qa_engr_email,'X'))
+   AND NVL(od_ob_sample_stage,'X') = NVL (:p_sample_stage, NVL(od_ob_sample_stage,'X'))
+   AND NVL(od_ob_sample_status,'X') = NVL (:p_sample_status, NVL(od_ob_sample_status,'X'))
+   ORDER BY 1
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_XXQASAR" source="Q_XXQASAR">
+<element name="OD_OB_SA_ID" value="OD_OB_SA_ID" />
+<element name="OD_SC_REGION" value="OD_SC_REGION" />
+<element name="OD_SC_AUDIT_AGENT" value="OD_SC_AUDIT_AGENT" />
+<element name="OD_OB_VENDOR_NAME" value="OD_OB_VENDOR_NAME" />
+<element name="OD_OB_FACTORY_NAME" value="OD_OB_FACTORY_NAME" />
+<element name="OD_OB_SKU" value="OD_OB_SKU" />
+<element name="OD_PB_ITEM_DESC" value="OD_PB_ITEM_DESC" />
+<element name="OD_PB_SC_DEPT_NAME" value="OD_PB_SC_DEPT_NAME" />
+<element name="OD_SC_MERCHANT" value="OD_SC_MERCHANT" />
+<element name="OD_PB_AUDITOR_NAME" value="OD_PB_AUDITOR_NAME" />
+<element name="OD_PB_QA_ENGR_EMAIL" value="OD_PB_QA_ENGR_EMAIL" />
+<element name="OD_PB_ATTACHMENT" value="OD_PB_ATTACHMENT" />
+<element name="OD_OB_SAMPLE_STAGE" value="OD_OB_SAMPLE_STAGE" />
+<element name="OD_PB_DATE_SAMPLE_SENT" value="OD_PB_DATE_SAMPLE_SENT" />
+<element name="OD_OB_SAMPLE_STATUS" value="OD_OB_SAMPLE_STATUS" />
+</group>
+</dataStructure>
+</dataTemplate>

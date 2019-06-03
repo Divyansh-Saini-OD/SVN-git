@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+xmlns="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+xmlns:odmf="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+targetNamespace="http://www.openapplications.org/officedepot/merchandising/foundation/1" 
+elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+<xsd:complexType name="CommonResponseDataAreaType">
+  <xsd:sequence>
+      <xsd:element name="ReturnCode" type="xsd:integer">
+        <xsd:annotation>
+          <xsd:documentation>
+            Returned code from called process. The value will be one of these values -1, 0 or 1.
+            Use -1 for error conditions that will force the calling program to terminate.
+            Use 0 to acknowledge successful processing.
+            Use 1 to acknowledge successful processing with warning message.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ReturnMessage" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Contains a detail error message of an error condition.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+  </xsd:sequence>
+</xsd:complexType>
+
+</xsd:schema>

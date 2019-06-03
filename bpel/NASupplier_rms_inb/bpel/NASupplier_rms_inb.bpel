@@ -1,0 +1,442 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Mon Jul 09 15:48:39 EDT 2007
+  Author:  Gavisiddappa-Belli
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="NASupplier_rms_inb"
+         targetNamespace="http://xmlns.oracle.com/NASupplier_rms_inb"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns4="http://xmlns.oracle.com/pcbpel/adapter/db/U488812/OD_EBS_UPDATE_SUPPLIER_SQL/VALIDATE_OPERATION/"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns16="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:ns5="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:ns9="http://xmlns.oracle.com/pcbpel/adapter/db/NASuppinb_OD_EBS_SUP_SQL/"
+         xmlns:ns17="ODError"
+         xmlns:ns1="http://www.openapplications.org/oagis/9"
+         xmlns:ns2="http://www.openapplications.org/oagis/9/officedepot/1"
+         xmlns:ns15="http://xmlns.oracle.com/ODErrorHandler"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:ns10="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns13="http://xmlns.oracle.com/pcbpel/adapter/db/DBAdapt_StartRunning/"
+         xmlns:ns7="http://xmlns.oracle.com/ias/pcbpel/NotificationService"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns12="http://xmlns.oracle.com/pcbpel/adapter/db/RMS10/OD_EBS_SUPPLIER_SQL/VALIDATE_OPERATION/"
+         xmlns:client="http://xmlns.oracle.com/NASupplier_rms_inb"
+         xmlns:ns6="http://xmlns.oracle.com/pcbpel/adapter/db/U488812/OD_EBS_SUPPLIER_SQL/VALIDATE_OPERATION/"
+         xmlns:ns11="http://xmlns.oracle.com/pcbpel/adapter/db/DBAdapter_OD_EBS_SUPPLIER_SQL/"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ehdr="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:ns14="http://xmlns.oracle.com/pcbpel/adapter/db/RMS10/OD_BPEL_FND_SQL/STARTRUNNING/"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/OD_EBD_UPD_SQL/"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:ns8="http://xmlns.oracle.com/pcbpel/adapter/db/API_OD_EBS_SUPPLIER_SQL/">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="client" partnerLinkType="client:NASupplier_rms_inb"
+                 myRole="NASupplier_rms_inbProvider"
+                 partnerRole="NASupplier_rms_inbRequester"/>
+    <partnerLink name="NotificationService"
+                 partnerRole="NotificationServiceProvider"
+                 partnerLinkType="ns7:NotificationServiceLink"/>
+    <partnerLink name="NASuppinb_OD_EBS_SUP_SQL"
+                 partnerLinkType="ns11:DBAdapter_OD_EBS_SUPPLIER_SQL_plt"
+                 partnerRole="DBAdapter_OD_EBS_SUPPLIER_SQL_role"/>
+    <partnerLink myRole="DBAdapt_StartRunning_role" name="DBAdapt_StartRunning"
+                 partnerRole="DBAdapt_StartRunning_role"
+                 partnerLinkType="ns13:DBAdapt_StartRunning_plt"/>
+    <partnerLink name="ODErrorLogger" myRole="ODErrorLoggerRequester"
+                 partnerRole="ODErrorLoggerProvider"
+                 partnerLinkType="ns16:ODErrorLogger"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable"
+              messageType="client:NASupplier_rms_inbRequestMessage"/>
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="var_payload_rec_cnt" type="xsd:integer"/>
+    <variable name="var_hdr_cnt" type="xsd:integer"/>
+    <variable name="var_syncsuppartymaster_1"
+              messageType="client:msgtype_syncsuppartymaster"/>
+    <variable name="var_syncsuppartymaster"
+              messageType="client:msgtype_syncsuppartymaster"/>
+    <variable name="var_channel_cd" type="xsd:string"/>
+    <variable name="var_detail_cnt" type="xsd:integer"/>
+    <variable name="var_processname" type="xsd:string"/>
+    <variable name="Inv_OD_EBS_SUP_SQL_Input" messageType="ns11:args_in_msg"/>
+    <variable name="Inv_OD_EBS_SUP_SQL_Output" messageType="ns11:args_out_msg"/>
+    <variable name="var_email_id" type="xsd:string"/>
+    <variable name="Invoke_GetEmailid_Input" messageType="ns13:args_in_msg"/>
+    <variable name="Invoke_GetEmailid_Output" messageType="ns13:args_out_msg"/>
+    <variable name="var_global_return_code" type="xsd:integer"/>
+    <variable name="Var_Error_Rec_Count" type="xsd:integer"/>
+    <variable name="Global_Output_Variable"
+              messageType="client:NASupplier_rms_inbResponseMessage"/>
+    <variable name="Invoke_Error_Logger"
+              messageType="ns16:ODErrorLoggerRequestMessage"/>
+    <variable name="ProcessHeader" type="xsd:string"/>
+    <variable name="Reply_to_EBS_onResult_OutPutVariable"
+              messageType="client:NASupplier_rms_inbResponseMessage"/>
+  </variables>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <!-- Receive input from requestor. (Note: This maps to operation defined in NASupplier_rms_inb.wsdl) -->
+    <receive name="receiveInput" partnerLink="client"
+             portType="client:NASupplier_rms_inb" operation="initiate"
+             variable="inputVariable" createInstance="yes"/>
+    <!-- Generate reply to synchronous request -->
+    <assign name="AsnEBStoRMS">
+      <copy>
+        <from expression="'NASupplier_rms_inb'"/>
+        <to variable="var_processname"/>
+      </copy>
+      <copy>
+        <from expression="1"/>
+        <to variable="var_hdr_cnt"/>
+      </copy>
+      <copy>
+        <from variable="inputVariable" part="payload"
+              query="/ns1:SyncSupplierPartyMaster"/>
+        <to variable="var_syncsuppartymaster_1"
+            part="msgpart_syncsuppartymaster"
+            query="/ns1:SyncSupplierPartyMaster"/>
+      </copy>
+      <copy>
+        <from expression="count(bpws:getVariableData('var_syncsuppartymaster_1','msgpart_syncsuppartymaster','/ns1:SyncSupplierPartyMaster/ns1:DataArea/ns1:SupplierPartyMaster'))"/>
+        <to variable="var_payload_rec_cnt"/>
+      </copy>
+      <copy>
+        <from variable="var_processname"/>
+        <to variable="Invoke_GetEmailid_Input" part="InputParameters"
+            query="/ns14:InputParameters/I_PROCESS_NAME"/>
+      </copy>
+      <copy>
+        <from expression="0"/>
+        <to variable="Var_Error_Rec_Count"/>
+      </copy>
+      <copy>
+        <from expression="0"/>
+        <to variable="Reply_to_EBS_onResult_OutPutVariable" part="payload"
+            query="/ns5:CommonResponse/ns5:ReturnCode"/>
+      </copy>
+    </assign>
+    <invoke name="Reply_to_EBS" partnerLink="client"
+            portType="client:NASupplier_rms_inbCallback" operation="onResult"
+            inputVariable="Reply_to_EBS_onResult_OutPutVariable"/>
+    <invoke name="Invoke_GetEmailid" partnerLink="DBAdapt_StartRunning"
+            portType="ns13:DBAdapt_StartRunning_ptt"
+            operation="DBAdapt_StartRunning"
+            inputVariable="Invoke_GetEmailid_Input"
+            outputVariable="Invoke_GetEmailid_Output"/>
+    <while name="WhileProcess_EachRec"
+           condition="bpws:getVariableData('var_hdr_cnt')&lt;=bpws:getVariableData('var_payload_rec_cnt')">
+      <sequence name="SeqProcess_EachRec">
+        <assign name="AsnProcess_EachRec">
+          <copy>
+            <from expression="ora:getElement('var_syncsuppartymaster_1','msgpart_syncsuppartymaster','/ns1:SyncSupplierPartyMaster/ns1:DataArea/ns1:SupplierPartyMaster',bpws:getVariableData('var_hdr_cnt'))"/>
+            <to variable="var_syncsuppartymaster"
+                part="msgpart_syncsuppartymaster"
+                query="/ns1:SyncSupplierPartyMaster/ns1:DataArea/ns1:SupplierPartyMaster"/>
+          </copy>
+          <copy>
+            <from expression="1"/>
+            <to variable="var_detail_cnt"/>
+          </copy>
+        </assign>
+        <assign name="TransformEBStoRMS">
+          <bpelx:annotation>
+            <bpelx:pattern>transformation</bpelx:pattern>
+          </bpelx:annotation>
+          <copy>
+            <from expression="ora:processXSLT('TransformEBStoRMS.xsl',bpws:getVariableData('var_syncsuppartymaster','msgpart_syncsuppartymaster'))"/>
+            <to variable="Inv_OD_EBS_SUP_SQL_Input" part="InputParameters"/>
+          </copy>
+        </assign>
+        <while name="WhileProcess_DetailRec"
+               condition="bpws:getVariableData('var_detail_cnt')&lt;3">
+          <sequence name="SeqPhoneFax">
+            <assign name="AsnChannel_cd">
+              <copy>
+                <from expression="ora:getElement('var_syncsuppartymaster','msgpart_syncsuppartymaster','/ns1:SyncSupplierPartyMaster/ns1:DataArea/ns1:SupplierPartyMaster/ns1:Contact/ns1:Communication/ns1:ChannelCode',bpws:getVariableData('var_detail_cnt'))"/>
+                <to variable="var_channel_cd"/>
+              </copy>
+            </assign>
+            <switch name="Switch_PhoneFax">
+              <case condition="bpws:getVariableData('var_channel_cd')='fax'">
+                <assign name="AsnFaxNo">
+                  <copy>
+                    <from expression="ora:getElement('var_syncsuppartymaster','msgpart_syncsuppartymaster','/ns1:SyncSupplierPartyMaster/ns1:DataArea/ns1:SupplierPartyMaster/ns1:Contact/ns1:Communication/ns1:DialNumber',bpws:getVariableData('var_detail_cnt'))"/>
+                    <to variable="Inv_OD_EBS_SUP_SQL_Input"
+                        part="InputParameters"
+                        query="/ns12:InputParameters/I_ADDR1_FAX"/>
+                  </copy>
+                </assign>
+              </case>
+              <case condition="bpws:getVariableData('var_channel_cd')='phone'">
+                <assign name="AsnPhoneNo">
+                  <copy>
+                    <from expression="ora:getElement('var_syncsuppartymaster','msgpart_syncsuppartymaster','/ns1:SyncSupplierPartyMaster/ns1:DataArea/ns1:SupplierPartyMaster/ns1:Contact/ns1:Communication/ns1:DialNumber',bpws:getVariableData('var_detail_cnt'))"/>
+                    <to variable="Inv_OD_EBS_SUP_SQL_Input"
+                        part="InputParameters"
+                        query="/ns12:InputParameters/I_ADDR1_PHONE"/>
+                  </copy>
+                </assign>
+              </case>
+              <otherwise/>
+            </switch>
+            <assign name="Increment_Detail_Cnt">
+              <copy>
+                <from expression="bpws:getVariableData('var_detail_cnt')+1"/>
+                <to variable="var_detail_cnt"/>
+              </copy>
+            </assign>
+          </sequence>
+        </while>
+        <sequence name="Sequence_12">
+          <scope name="Scope_OD_EBS_UPD_SQL">
+            <faultHandlers>
+              <catchAll>
+                <sequence name="Seq_catchAll">
+                  <assign name="Asn_catchAll">
+                    <copy>
+                      <from expression="ora:getInstanceId()"/>
+                      <to part="payload"
+                          query="/ns17:ErrorData/ns17:ProcessInfo/ns17:BusinessProcessId"
+                          variable="Invoke_Error_Logger"/>
+                    </copy>
+                    <copy>
+                      <from expression="ora:getDomainId()"/>
+                      <to part="payload"
+                          query="/ns17:ErrorData/ns17:ProcessInfo/ns17:BusinessProcessDomain"
+                          variable="Invoke_Error_Logger"/>
+                    </copy>
+                    <copy>
+                      <from expression="ora:getProcessURL()"/>
+                      <to part="payload"
+                          query="/ns17:ErrorData/ns17:ProcessInfo/ns17:SystemName"
+                          variable="Invoke_Error_Logger"/>
+                    </copy>
+                    <copy>
+                      <from expression="ora:getCurrentDateTime()"/>
+                      <to part="payload"
+                          query="/ns17:ErrorData/ns17:ErrorDetails/ns17:ErrorDateTime"
+                          variable="Invoke_Error_Logger"/>
+                    </copy>
+                    <copy>
+                      <from expression="'Error in Inv_OD_EBS_SUP_SQL'"/>
+                      <to part="payload"
+                          query="/ns17:ErrorData/ns17:ProcessInfo/ns17:BusinessProcessStep"
+                          variable="Invoke_Error_Logger"/>
+                    </copy>
+                    <copy>
+                      <from variable="var_processname"/>
+                      <to part="payload"
+                          query="/ns17:ErrorData/ns17:ProcessInfo/ns17:BusinessProcessName"
+                          variable="Invoke_Error_Logger"/>
+                    </copy>
+                    <copy>
+                      <from expression="ora:getFaultName()"/>
+                      <to variable="Invoke_Error_Logger" part="payload"
+                          query="/ns17:ErrorData/ns17:ErrorDetails/ns17:ErrorCode"/>
+                    </copy>
+                    <copy>
+                      <from expression="ora:getFaultAsString()"/>
+                      <to variable="Invoke_Error_Logger" part="payload"
+                          query="/ns17:ErrorData/ns17:ErrorDetails/ns17:ErrorText"/>
+                    </copy>
+                    <copy>
+                      <from expression="-1"/>
+                      <to variable="Inv_OD_EBS_SUP_SQL_Output"
+                          part="OutputParameters"
+                          query="/ns12:OutputParameters/L_RESULT"/>
+                    </copy>
+                    <copy>
+                      <from expression="ora:getFaultAsString()"/>
+                      <to variable="Inv_OD_EBS_SUP_SQL_Output"
+                          part="OutputParameters"
+                          query="/ns12:OutputParameters/O_ERROR_MESSAGE"/>
+                    </copy>
+                  </assign>
+                  <invoke name="Invoke_ODErrorLogger"
+                          partnerLink="ODErrorLogger"
+                          portType="ns16:ODErrorLogger" operation="initiate"
+                          inputVariable="Invoke_Error_Logger"/>
+                </sequence>
+              </catchAll>
+            </faultHandlers>
+            <sequence name="Seq_Inv_OD_EBS_SUP_SQL">
+              <invoke name="Inv_OD_EBS_SUP_SQL"
+                      partnerLink="NASuppinb_OD_EBS_SUP_SQL"
+                      portType="ns11:DBAdapter_OD_EBS_SUPPLIER_SQL_ptt"
+                      operation="DBAdapter_OD_EBS_SUPPLIER_SQL"
+                      inputVariable="Inv_OD_EBS_SUP_SQL_Input"
+                      outputVariable="Inv_OD_EBS_SUP_SQL_Output"/>
+            </sequence>
+          </scope>
+          <switch name="Set_Return_code">
+            <case condition="bpws:getVariableData('Inv_OD_EBS_SUP_SQL_Output','OutputParameters','/ns12:OutputParameters/L_RESULT')!=0">
+              <sequence name="Sequence_11">
+                <assign name="Assign_Global_Return_Code">
+                  <copy>
+                    <from expression="-1"/>
+                    <to variable="var_global_return_code"/>
+                  </copy>
+                  <copy>
+                    <from expression="bpws:getVariableData('Var_Error_Rec_Count') + 1"/>
+                    <to variable="Var_Error_Rec_Count"/>
+                  </copy>
+                  <copy>
+                    <from expression="concat(concat(bpws:getVariableData('Global_Output_Variable','payload','/ns5:CommonResponse/ns5:ReturnMessage'),'&lt;BR>'),concat(concat(bpws:getVariableData('var_syncsuppartymaster','msgpart_syncsuppartymaster','/ns1:SyncSupplierPartyMaster/ns1:DataArea/ns1:SupplierPartyMaster/ns1:PartyIDs/ns1:ID'),': '),bpws:getVariableData('Inv_OD_EBS_SUP_SQL_Output','OutputParameters','/ns12:OutputParameters/O_ERROR_MESSAGE')))"/>
+                    <to variable="Global_Output_Variable" part="payload"
+                        query="/ns5:CommonResponse/ns5:ReturnMessage"/>
+                  </copy>
+                </assign>
+              </sequence>
+            </case>
+            <otherwise>
+              <empty name="Success"/>
+            </otherwise>
+          </switch>
+          <assign name="Increment_var_Hdr">
+            <copy>
+              <from expression="bpws:getVariableData('var_hdr_cnt')+1"/>
+              <to variable="var_hdr_cnt"/>
+            </copy>
+          </assign>
+        </sequence>
+      </sequence>
+    </while>
+    <switch name="Switch_2">
+      <case condition="bpws:getVariableData('var_global_return_code')=-1">
+        <bpelx:annotation>
+          <bpelx:pattern>Non Fatal at first rec</bpelx:pattern>
+        </bpelx:annotation>
+        <sequence name="Sequence_13">
+          <scope name="Email_Error">
+            <bpelx:annotation>
+              <bpelx:pattern patternName="bpelx:email"></bpelx:pattern>
+            </bpelx:annotation>
+            <variables>
+              <variable name="varNotificationReq"
+                        messageType="ns7:EmailNotificationRequest"/>
+              <variable name="varNotificationResponse"
+                        messageType="ns7:ArrayOfResponse"/>
+              <variable name="NotificationServiceFaultVariable"
+                        messageType="ns7:NotificationServiceErrorMessage"/>
+            </variables>
+            <sequence name="Sequence_9">
+              <assign name="EmailParamsAssign">
+                <copy>
+                  <from expression="string('SOAEmailNotify')"/>
+                  <to variable="varNotificationReq" part="EmailPayload"
+                      query="/EmailPayload/ns7:FromAccountName"/>
+                </copy>
+                <copy>
+                  <from expression="string('')"/>
+                  <to variable="varNotificationReq" part="EmailPayload"
+                      query="/EmailPayload/ns7:Bcc"/>
+                </copy>
+                <copy>
+                  <from expression="string('')"/>
+                  <to variable="varNotificationReq" part="EmailPayload"
+                      query="/EmailPayload/ns7:Cc"/>
+                </copy>
+                <copy>
+                  <from expression="string('')"/>
+                  <to variable="varNotificationReq" part="EmailPayload"
+                      query="/EmailPayload/ns7:ReplyToAddress"/>
+                </copy>
+                <copy>
+                  <from expression="concat(bpws:getVariableData('var_processname'), string(' - Error Returned from OD EBS Supplier API'))"/>
+                  <to variable="varNotificationReq" part="EmailPayload"
+                      query="/EmailPayload/ns7:Subject"/>
+                </copy>
+                <copy>
+                  <from expression="bpws:getVariableData('Invoke_GetEmailid_Output','OutputParameters','/ns14:OutputParameters/O_EMAIL_TO')"/>
+                  <to variable="varNotificationReq" part="EmailPayload"
+                      query="/EmailPayload/ns7:To"/>
+                </copy>
+                <copy>
+                  <from expression="concat(string('Error Code: -1
+&lt;br>
+Error Count: '), bpws:getVariableData('Var_Error_Rec_Count'), string('
+&lt;br>
+Error Msg: '), bpws:getVariableData('Global_Output_Variable','payload','/ns5:CommonResponse/ns5:ReturnMessage'), string('
+'))"/>
+                  <to variable="varNotificationReq" part="EmailPayload"
+                      query="/EmailPayload/ns7:Content/ns7:ContentBody"/>
+                </copy>
+                <copy>
+                  <from expression="string('text/html; charset=UTF-8')"/>
+                  <to variable="varNotificationReq" part="EmailPayload"
+                      query="/EmailPayload/ns7:Content/ns7:MimeType"/>
+                </copy>
+              </assign>
+              <invoke name="InvokeNotificationService"
+                      partnerLink="NotificationService"
+                      portType="ns7:NotificationService"
+                      operation="sendEmailNotification"
+                      inputVariable="varNotificationReq"
+                      outputVariable="varNotificationResponse"/>
+            </sequence>
+          </scope>
+        </sequence>
+      </case>
+    </switch>
+    <scope name="SetProcessHeader">
+      <sequence name="Sequence_9">
+        <assign name="initializeInstanceTitle">
+          <copy>
+            <from expression="concat(concat('Input Records: ',bpws:getVariableData('var_payload_rec_cnt')),concat(' Error count: ',bpws:getVariableData('Var_Error_Rec_Count')))"/>
+            <to variable="ProcessHeader"/>
+          </copy>
+        </assign>
+        <bpelx:exec name="setTitleCode" language="java" version="1.5">
+          <![CDATA[try {                  
+  String title = (String)getVariableData("ProcessHeader");                  
+  setTitle(title);                  
+  addAuditTrailEntry(title) ;                  
+} catch (Exception ex) {                  
+  addAuditTrailEntry(ex.toString());                  
+  ex.printStackTrace();                  
+}]]>
+        </bpelx:exec>
+      </sequence>
+    </scope>
+    <switch name="Switch_3">
+      <case condition="bpws:getVariableData('var_global_return_code')!=0">
+        <terminate name="Terminate_There_were_errors"/>
+      </case>
+    </switch>
+  </sequence>
+</process>

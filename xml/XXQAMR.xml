@@ -1,0 +1,1821 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<dataTemplate name="XXQAMETRICSREP" description="QA METRICS Report" Version="1.0">
+	<parameters>
+	 <parameter name="P_DATE_FROM" datatype="date" />
+	 <parameter name="P_DATE_TO" datatype="date" />
+	 <parameter name="P_PROJECT_NUMBER" datatype="character" />
+	 <parameter name="P_REGION" datatype="character" />
+	 <parameter name="P_SERVICE_PROVIDER" datatype="character" />
+	 <parameter name="P_SOURCE_AGENT" datatype="character" />
+	 <parameter name="P_DIVISION" datatype="character" />
+	 <parameter name="P_DEPARTMENT" datatype="character" />
+	 <parameter name="P_VENDOR_NAME" datatype="character" />
+	 <parameter name="P_FACTORY_NAME" datatype="character" />
+	 <parameter name="P_SKU" datatype="character" />
+	 <parameter name="P_VPN" datatype="character" />
+	 <parameter name="P_APPROVAL_STATUS" datatype="character" />
+	 <parameter name="P_APPROVER" datatype="character" />
+	 <parameter name="P_SUBMITTER" datatype="character" />
+	<parameter name="p_psi_id" datatype="char"/>
+	<parameter name="p_re_inspection" datatype="char"/>
+	<parameter name="p_inspection_result" datatype="char"/>
+	<parameter name="p_paid_by" datatype="char"/>
+	<parameter name="p_failure_type" datatype="char"/>
+	<parameter name="p_defects_code" datatype="char"/>
+	<parameter name="p_inspection_report" datatype="char"/>
+	</parameters>
+	<dataQuery>
+
+	<sqlStatement name="Q_FQA_METRICSREP">
+		<![CDATA[
+		SELECT   OD_FQA_ID
+			   , OD_PB_DIVISION
+			   , OD_SC_REGION
+			   , OD_PB_AUDITOR_NAME
+			   , OD_PB_QA_ENGR_EMAIL
+			   , OD_OB_VENDOR_NAME
+			   , OD_SC_FACTORY_NAME
+			   , OD_PB_PROJ_NUM
+			   , OD_SC_AUDIT_AGENT
+			   , OD_PB_APPROVAL_STATUS
+			   , OD_FQA_CAP_ID
+			   , OD_PB_AUDIT_TYPE
+			   , OD_PB_AUDIT_DATE
+			   , OD_OB_FQA_GENERAL
+			   , OD_PB_DESIGN_CONTROL_SCORE
+			   , OD_PB_PURCHASE_CONTROL_SCORE
+			   , OD_PB_STORAGE_MANAGEMENT_SCORE
+			   , OD_PB_INCOMING_INSPECT_SCORE
+			   , OD_PB_PRODUCTION_CONTROL_SCORE
+			   , OD_PB_CONTINUOUS_IMPROVE_SCORE
+			   , OD_PB_FQA_SCORE
+			   , OD_OB_AUDIT_GRADE
+			   , OD_PB_FQA_REAUDIT_TYPE
+			   , OD_PB_FQA_REAUDIT_D
+		FROM q_od_ob_fqa_v qfqav
+		where
+		TRUNC(qfqav.creation_date) BETWEEN NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qfqav.creation_date)) 
+		         AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qfqav.creation_date))
+			 AND NVL(od_pb_proj_num,'X')=NVL( :P_PROJECT_NUMBER,NVL(od_pb_proj_num,'X'))
+			 AND NVL(od_sc_region,'X')=NVL( :P_REGION,NVL(od_sc_region,'X'))
+			 AND NVL(od_sc_audit_agent, 'X') = NVL ( :P_SOURCE_AGENT, NVL (od_sc_audit_agent, 'X'))
+			 AND NVL(od_pb_division,'X')=NVL( :P_DIVISION,NVL(od_pb_division,'X'))
+			 AND NVL (od_ob_vendor_name, 'X') = NVL ( :P_VENDOR_NAME, NVL (od_ob_vendor_name, 'X'))
+			 AND NVL (od_sc_factory_name, 'X') = NVL ( :P_FACTORY_NAME, NVL (od_sc_factory_name, 'X'))
+			 AND NVL (od_pb_approval_status, 'X') = NVL ( :P_APPROVAL_STATUS, NVL (od_pb_approval_status, 'X'))
+			 and NVL (OD_PB_AUDITOR_NAME, 'X') = NVL (:P_SUBMITTER, NVL (OD_PB_AUDITOR_NAME, 'X'))
+			 and NVL (OD_PB_QA_ENGR_EMAIL, 'X') = NVL (:P_APPROVER, NVL (OD_PB_QA_ENGR_EMAIL, 'X'))
+		]]>
+		</sqlStatement>
+
+		<sqlStatement name="Q_FAI_METRICSREP">
+		<![CDATA[
+			SELECT    
+				  QOOFV.OD_OB_FAI_ID                            
+				, QOOFV.OD_SC_REGION                            
+				, QOOFSV.OD_PB_SC_DEPT_NAME                     
+				, QOOFV.OD_PB_AUDITOR_NAME                      
+				, QOOFV.OD_PB_QA_ENGR_EMAIL                     
+				, QOOFV.OD_OB_VENDOR_NAME                       
+				, QOOFV.OD_OB_FACTORY_NAME                      
+				, QOOFV.OD_SC_AUDIT_AGENT                       
+				, QOOFV.OD_PB_PROJ_NUM                          
+				, QOOFSV.OD_OB_SKU                              
+				, QOOFSV.OD_PB_ITEM_DESC                        
+				, QOOFSV.OD_PB_VENDOR_VPC                       
+				, QOOFV.OD_PB_APPROVAL_STATUS                   
+				, QOOFV.OD_OB_REF_CAPID                         
+				, QOOFV.OD_SC_INSPECTION_DATE                   
+				, QOOFV.OD_OB_AUDIT_RESULT                      
+				, QOOFV.OD_OB_GENERAL_RESULT                    
+				, QOOFV.OD_OB_PROCESS_INSP_RESULT               
+				, QOOFV.OD_OB_PROD_INSP_RESULT                  
+				, QOOFV.OD_OB_PKG_INSP_RESULT                   
+				, QOOFV.OD_OB_TESTING_INSP_RESULT               
+				, QOOFV.OD_OB_INSP_PROTOCOL_RESULT              
+			FROM Q_OD_OB_FAI_V  QOOFV
+			, Q_OD_OB_FAI_SKU_V QOOFSV
+			WHERE QOOFV.OD_OB_FAI_ID    = QOOFSV.OD_OB_REF_REC_ID(+)
+				AND TRUNC(QOOFV.creation_date) BETWEEN  NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(QOOFV.creation_date)) 
+		         AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(QOOFV.creation_date))
+				AND NVL(QOOFV.OD_PB_PROJ_NUM,'X')             = NVL(:P_PROJECT_NUMBER,             NVL(QOOFV.OD_PB_PROJ_NUM,'X')        )
+				AND NVL(QOOFV.od_sc_region,'X')=NVL(:P_REGION,NVL(QOOFV.od_sc_region,'X'))
+				AND NVL(QOOFV.OD_SC_AUDIT_AGENT,'X')          = NVL(:P_SOURCE_AGENT,      NVL(QOOFV.OD_SC_AUDIT_AGENT,'X')     )
+				AND NVL(QOOFSV.OD_PB_SC_DEPT_NAME,'X')        = NVL(:P_DEPARTMENT,          NVL(QOOFSV.OD_PB_SC_DEPT_NAME,'X')   )
+				AND NVL(QOOFV.OD_OB_VENDOR_NAME,'X')          = NVL(:P_VENDOR_NAME,         NVL(QOOFV.OD_OB_VENDOR_NAME,'X')     )
+				AND NVL(QOOFV.OD_OB_FACTORY_NAME,'X')         = NVL(:P_FACTORY_NAME,        NVL(QOOFV.OD_OB_FACTORY_NAME,'X')    )
+				AND NVL(QOOFSV.OD_OB_SKU,1)                   = NVL(:P_SKU,                 NVL(QOOFSV.OD_OB_SKU,1)            )
+				AND NVL(QOOFSV.OD_PB_VENDOR_VPC,'X')          = NVL(:P_VPN,          NVL(QOOFSV.OD_PB_VENDOR_VPC,'X')   )
+				AND NVL(QOOFV.OD_PB_QA_ENGR_EMAIL,'X')        = NVL(:P_APPROVER,            NVL(QOOFV.OD_PB_QA_ENGR_EMAIL,'X')   )
+				AND NVL(QOOFV.OD_PB_APPROVAL_STATUS,'X')      = NVL(:P_APPROVAL_STATUS,     NVL(QOOFV.OD_PB_APPROVAL_STATUS,'X') )
+				AND NVL(QOOFV.OD_PB_AUDITOR_NAME,'X')         = NVL(:P_SUBMITTER,           NVL(QOOFV.OD_PB_AUDITOR_NAME,'X')    )
+			ORDER BY QOOFV.OD_OB_FAI_ID
+			 ,QOOFSV.OD_PB_PROJ_NUM
+		]]>
+		</sqlStatement>
+
+		<sqlStatement name="Q_PS_METRICSREP">
+		<![CDATA[
+			SELECT  QOV.OD_OB_PS_ID          
+				   ,QOSV.OD_PB_SC_DEPT_NAME  
+				   ,QOV.OD_SC_REGION         
+				   ,QOV.OD_PB_AUDITOR_NAME   
+				   ,QOV.OD_PB_QA_ENGR_EMAIL  
+				   ,Qov.OD_OB_VENDOR_NAME
+				   ,QOV.OD_OB_FACTORY_NAME
+				   ,QOV.OD_PB_PROJ_NUM       
+				   ,QOV.OD_SC_AUDIT_AGENT    
+				   ,QOSV.OD_PB_PROJ_NUM      
+				   ,QOSV.OD_PB_VENDOR_VPC    
+				   ,QOSV.OD_OB_SKU           
+				   ,QOSV.OD_PB_ITEM_DESC     
+				   ,QOV.OD_PB_DATE_REQUESTED 
+				   ,QOV.OD_PB_APPROVAL_STATUS
+				   ,QOV.OD_PB_DATE_REPORTED  
+			FROM    Q_OD_OB_PS_V QOV
+				   ,Q_OD_OB_PS_SKU_V QOSV
+			WHERE  QOV.OD_OB_PS_ID = QOSV.OD_OB_REF_PS_ID(+)
+			  AND  TRUNC(QOV.creation_date) BETWEEN NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qov.creation_date)) 
+			AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qov.creation_date))
+			  			  AND  NVL(QOV.OD_PB_PROJ_NUM,'X') = NVL(:P_PROJECT_NUMBER,NVL(QOV.OD_PB_PROJ_NUM,'X'))
+			  AND  NVL(QOV.od_sc_region,'X')=NVL(:P_REGION,NVL(QOV.od_sc_region,'X'))
+			  AND  NVL(QOV.OD_SC_AUDIT_AGENT,'X')=NVL(:P_SOURCE_AGENT,NVL(QOV.OD_SC_AUDIT_AGENT,'X'))                          
+			  AND  NVL(QOSV.OD_PB_SC_DEPT_NAME,'X')= NVL(:P_DEPARTMENT,NVL(QOSV.OD_PB_SC_DEPT_NAME,'X'))
+			  AND  NVL(QOV.OD_OB_VENDOR_NAME,'X')=  Nvl(:P_VENDOR_NAME,Nvl(Qov.Od_Ob_Vendor_Name,'X'))
+			  And  Nvl(Qov.Od_ob_Factory_Name,'X')= NVL(:P_FACTORY_NAME,NVL(QOV.OD_OB_FACTORY_NAME,'X'))
+			  AND  NVL(QOSV.OD_OB_SKU,1) = NVL(:P_SKU,NVL(QOSV.OD_OB_SKU,1))
+			  AND  NVL(QOSV.OD_PB_VENDOR_VPC,'X')          = NVL(:P_VPN,          NVL(QOSV.OD_PB_VENDOR_VPC,'X')   )
+			  AND  NVL(QOV.OD_PB_APPROVAL_STATUS,'X')= Nvl(:P_APPROVAL_STATUS,Nvl(Qov.Od_Pb_Approval_Status,'X'))
+			  AND  NVL(QOV.OD_PB_AUDITOR_NAME,'X')= NVL(:P_SUBMITTER,NVL(QOV.OD_PB_AUDITOR_NAME,'X'))
+			  AND  NVL(QOV.OD_PB_QA_ENGR_EMAIL,'X')= NVL(:P_APPROVER,NVL(QOV.OD_PB_QA_ENGR_EMAIL,'X'))
+		]]>
+		</sqlStatement>
+
+		<sqlStatement name="Q_PPT_METRICSREP">
+		<![CDATA[
+			SELECT 		
+				qopv.od_ob_ppt_id 		
+			  , qopsv.od_pb_sc_dept_name        
+			  , qopv.od_sc_region		
+			  , qopv.od_pb_auditor_name         
+			  , qopv.od_pb_qa_engr_email        
+			  , qopv.od_ob_vendor_name          
+			  , qopv.od_ob_factory_name         
+			  ,	qopv.od_pb_proj_num             
+			  , qopv.od_sc_audit_agent          
+			  , qopsv.od_ob_sku                 
+			  , qopsv.od_pb_item_desc           
+			  , qopsv.od_pb_vendor_vpc          
+			  , qotsv.OD_OB_PROD_INSP_RESULT	
+			  , qotsv.OD_PB_DATE_DUE		
+			  , qotsv.OD_PB_EVALUATION_DATE	
+			  , qotsv.OD_PB_DATE_KICKOFF	
+			  , qotsv.OD_PB_DATE_VERIFIED	
+			  , qotsv.OD_PB_DATE_SAMPLE_SENT	
+			  , qotsv.OD_PB_DATE_SAMPLE_RECEIVED
+			  , qopv.OD_PB_DATE_VERIFIED	 VERIFIED
+			  , qopsv.OD_OB_SKU_STATUS		
+			  , qopsv.OD_OB_SKU_GRP		
+			  , qotsv.OD_OB_TEST_TYPE		
+			  , qotsv.OD_OB_TEST_STATUS		
+			  , qotsv.OD_PB_VERIFICATION_COMMENTS 
+			  , qopv.OD_PB_COMPANY			
+			  , qopv.OD_OB_LAB_LOCATION			
+			  , qotsv.OD_PB_PROTOCOL_NUMBER		
+			  , qotsv.OD_PB_REPORT_NUMBER		
+           FROM apps.q_od_ob_ppt_test_status_v	    qotsv
+	          ,	apps.q_od_ob_ppt_sku_v              qopsv
+              , apps.q_od_ob_ppt_v                  qopv
+          WHERE qopsv.od_ob_ref_pptid = qopv.od_ob_ppt_id
+			AND qotsv.od_ob_ref_pptid = qopv.od_ob_ppt_id
+			AND qotsv.OD_OB_PPTSKU_REFID = qopsv.OD_OB_PPTSKU_ID
+			AND  TRUNC(qopv.creation_date) BETWEEN NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qopv.creation_date)) 
+			AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qopv.creation_date))
+			 AND  NVL(qopv.od_pb_proj_num,'-1')          = NVL(:P_PROJECT_NUMBER,NVL(qopv.od_pb_proj_num,'-1'))
+            AND  NVL(qopv.od_sc_region,'X')            = NVL(:P_REGION,NVL(qopv.od_sc_region,'X'))
+            AND  NVL(qopv.od_sc_audit_agent,'X')       = NVL(:P_SOURCE_AGENT,NVL(qopv.od_sc_audit_agent,'X'))
+            AND  NVL(qopsv.od_pb_sc_dept_name,'X')      = NVL(:P_DEPARTMENT,NVL(qopsv.od_pb_sc_dept_name,'X'))
+            AND  NVL(qopv.od_ob_vendor_name,'X')       = NVL(:P_VENDOR_NAME,NVL(qopv.od_ob_vendor_name,'X'))
+            AND  NVL(qopv.od_ob_factory_name,'X')      = NVL(:P_FACTORY_NAME,NVL(qopv.od_ob_factory_name,'X'))
+            AND  NVL(qopsv.od_ob_sku,1)               = NVL(:P_SKU,NVL(qopsv.od_ob_sku,1))
+            AND  NVL(qopsv.od_pb_vendor_vpc,'X')        = NVL(:P_VPN,NVL(qopsv.od_pb_vendor_vpc,'X'))
+            AND  NVL(qopv.od_pb_auditor_name,'X')      = NVL(:P_SUBMITTER,NVL(qopv.od_pb_auditor_name,'X'))
+            AND  NVL(qopv.od_pb_qa_engr_email,'X')     = NVL(:P_APPROVER,NVL(qopv.od_pb_qa_engr_email,'X'))
+		ORDER BY  qopv.creation_date
+		]]>
+		</sqlStatement>
+
+		<sqlStatement name="Q_CC_METRICSREP">
+		<![CDATA[
+			SELECT
+				QOOCCV.OD_PB_CUSTOMER_COMPLAINT_ID 
+			  , QOOCCV.OD_PB_SC_DEPT_NAME          
+			  , QOOCCV.OD_SC_REGION                
+			  , QOOCCV.OD_PB_AUDITOR_NAME          
+			  , QOOCCV.OD_PB_QA_ENGR_EMAIL         
+			  , QOOCCV.OD_OB_VENDOR_NAME           
+			  , QOOCCV.OD_OB_FACTORY_NAME          
+			  , QOOCCV.OD_SC_AUDIT_AGENT           
+			  , QOOCCV.OD_OB_SKU                   
+			  , QOOCCV.OD_PB_ITEM_DESC             
+			  , QOOCCV.OD_OB_REF_CAPID             
+			  , QOOCCV.OD_PB_DATE_OPENED           
+			  , QOOCCV.OD_PB_DATE_CLOSED           
+			  , QOOCCV.OD_PB_DATE_SAMPLE_SENT      
+			  , QOOCCV.OD_PB_DATE_SAMPLE_RECEIVED  
+			  , QOOCCV.OD_PB_DEFECT_SUM            
+			  , QOOCCV.OD_PB_DEFECT_CODE           
+			  , QOOCCV.OD_PB_ROOT_CAUSE_TYPE       
+			FROM
+				Q_OD_OB_CUSTOMER_COMPLAINTS_V QOOCCV
+			WHERE TRUNC(QOOCCV.creation_date) BETWEEN 
+			NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(QOOCCV.creation_date)) 
+			AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(QOOCCV.creation_date))
+			 AND NVL(QOOCCV.OD_SC_REGION , 'X')               = NVL(:P_REGION , NVL(QOOCCV.OD_SC_REGION , 'X') )
+			 AND NVL(QOOCCV.OD_SC_AUDIT_AGENT , 'X')          = NVL(:P_SOURCE_AGENT , NVL(QOOCCV.OD_SC_AUDIT_AGENT , 'X') )
+			 AND NVL(QOOCCV.OD_PB_SC_DEPT_NAME , 'X')         = NVL(:P_DEPARTMENT , NVL(QOOCCV.OD_PB_SC_DEPT_NAME , 'X') )
+			 AND NVL(QOOCCV.OD_OB_VENDOR_NAME , 'X')          = NVL(:P_VENDOR_NAME , NVL(QOOCCV.OD_OB_VENDOR_NAME , 'X') )
+			 AND NVL(QOOCCV.OD_OB_FACTORY_NAME , 'X')         = NVL(:P_FACTORY_NAME , NVL(QOOCCV.OD_OB_FACTORY_NAME , 'X') )
+			 AND NVL(QOOCCV.OD_OB_SKU , 1)                    = NVL(:P_SKU , NVL(QOOCCV.OD_OB_SKU , 1) )
+			 AND NVL(QOOCCV.OD_PB_AUDITOR_NAME , 'X')         = NVL(:P_SUBMITTER , NVL(QOOCCV.OD_PB_AUDITOR_NAME , 'X') )
+			 and NVL(QOOCCV.OD_PB_QA_ENGR_EMAIL , 'X')        = NVL(:P_APPROVER , NVL(QOOCCV.OD_PB_QA_ENGR_EMAIL , 'X') )
+			ORDER BY OD_PB_CUSTOMER_COMPLAINT_ID
+		]]>
+		</sqlStatement>
+
+		<sqlStatement name="Q_SPC_METRICSREP">
+		<![CDATA[
+			SELECT OD_OB_SPC_ID, 
+				   OD_PB_SC_DEPT_NAME, 
+				   OD_SC_REGION, 
+				   OD_PB_AUDITOR_NAME,
+				   OD_PB_QA_ENGR_EMAIL, 
+				   OD_OB_REF_CAPID, 
+				   OD_PB_DATE_OPENED, 
+				   OD_PB_DATE_CORR_IMPL,
+				   OD_PB_COMPANY, 
+				   OD_PB_SERVICE_LOCATION,
+				   OD_PB_TECH_RPT_NUM, 
+				   OD_PB_DEFECT_SUM, 
+				   OD_PB_DEFECT_CODE
+			  FROM q_od_ob_spc_v
+			 WHERE TRUNC(creation_date) BETWEEN 
+			 NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(creation_date)) 
+			 AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(creation_date))
+			  AND NVL(od_sc_region,'X')=NVL(:P_REGION,NVL(od_sc_region,'X'))
+			   AND NVL(od_pb_company,'X') = NVL (:P_SERVICE_PROVIDER, NVL(od_pb_company,'X'))
+			   AND NVL(od_pb_sc_dept_name,'X') = NVL (:P_DEPARTMENT, NVL(od_pb_sc_dept_name,'X'))
+			   And NVL(Od_Pb_Auditor_Name,'X') = Nvl (:P_SUBMITTER, NVL(Od_Pb_Auditor_Name,'X'))
+			   AND NVL(od_pb_qa_engr_email,'X') = NVL (:P_APPROVER, NVL(od_pb_qa_engr_email,'X'))
+			   and NVL(OD_PB_DIVISION,'X') = NVL (:P_DIVISION, NVL(OD_PB_DIVISION,'X'))
+			 order by OD_OB_SPC_ID
+		]]>
+		</sqlStatement>
+
+		<sqlStatement name="Q_SPA_METRICSREP">
+		<![CDATA[
+			 SELECT 
+				OD_OB_SPA_ID,
+				OD_PB_SC_DEPT_NAME,
+				OD_SC_REGION,
+				OD_PB_AUDITOR_NAME,
+				OD_PB_QA_ENGR_EMAIL,
+				OD_OB_VENDOR_NAME,
+				OD_OB_FACTORY_NAME,
+				OD_PB_PROJ_NUM,
+				OD_SC_AUDIT_AGENT,
+				OD_OB_SKU,
+				OD_PB_ITEM_DESC,
+				OD_PB_VENDOR_VPC,
+				OD_OB_SPA_STATUS,
+				OD_OB_REF_CAPID,
+				OD_PB_FQA_REQUESTER,
+				OD_PB_COMPANY,
+				OD_PB_SERVICE_LOCATION,
+				OD_PB_TECH_RPT_NUM,
+				OD_PB_CASE_NUMBER,
+				OD_PB_AUDIT_TYPE,
+				OD_PB_PO_NUM,
+				OD_SC_COMPLETE_BY_START_DATE,
+				OD_SC_COMPLETE_BY_END_DATE,
+				OD_PB_DATE_CORR_IMPL
+			  FROM  Q_OD_OB_SPA_V qospav
+			 WHERE TRUNC(creation_date) BETWEEN NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(creation_date)) 
+			 AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(creation_date))
+			    AND NVL(od_pb_proj_num,'X')=NVL(:P_PROJECT_NUMBER,NVL(od_pb_proj_num,'X'))
+			   AND NVL(OD_SC_REGION,'X')           = NVL(:P_REGION, NVL(OD_SC_REGION,'X'))
+			   AND NVL(OD_OB_VENDOR_NAME,'X')      = NVL(:P_VENDOR_NAME, NVL(OD_OB_VENDOR_NAME,'X'))
+			   AND NVL(OD_OB_FACTORY_NAME,'X')     = NVL(:P_FACTORY_NAME, NVL(OD_OB_FACTORY_NAME,'X'))
+			   AND NVL(OD_PB_SC_DEPT_NAME,'X')     = NVL(:P_DEPARTMENT, NVL(OD_PB_SC_DEPT_NAME,'X'))
+			   AND NVL(OD_PB_DIVISION,'X')         = NVL(:P_DIVISION, NVL(OD_PB_DIVISION,'X'))
+			   AND NVL(OD_OB_SKU,1)                = NVL(:P_SKU,NVL(OD_OB_SKU,1))
+			   AND NVL(OD_PB_VENDOR_VPC,'X')       = NVL(:P_VPN,NVL(OD_PB_VENDOR_VPC,'X'))
+			   AND NVL(OD_PB_AUDITOR_NAME,'X')     = NVL(:P_SUBMITTER,NVL(OD_PB_AUDITOR_NAME,'X'))
+			   AND NVL(OD_PB_QA_ENGR_EMAIL,'X')    = NVL(:P_APPROVER, NVL(OD_PB_QA_ENGR_EMAIL,'X'))
+			   and NVL(OD_SC_AUDIT_AGENT, 'X')	   = NVL (:P_SOURCE_AGENT, NVL (OD_SC_AUDIT_AGENT, 'X'))
+			order by OD_OB_SPA_ID
+		]]>
+		</sqlStatement>
+
+		<sqlStatement name="Q_SA_METRICSREP">
+		<![CDATA[
+			SELECT od_ob_sa_id
+				 , od_pb_sc_dept_name
+				 , od_sc_region
+				 , od_sc_audit_agent
+				 , od_pb_auditor_name
+				 , od_pb_qa_engr_email
+				 , od_ob_vendor_name
+				 , od_ob_factory_name
+				 , od_ob_sku
+				 , od_pb_item_desc
+				 , od_ob_sample_status
+				 , od_pb_date_sample_sent
+				 , od_ob_sample_stage
+			  FROM q_od_ob_sample_approval_v
+			 WHERE TRUNC(creation_date) BETWEEN NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(creation_date)) 
+			 AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(creation_date))
+			   AND NVL(OD_SC_REGION,'X')           = NVL(:P_REGION, NVL(OD_SC_REGION,'X'))
+			   AND NVL(od_sc_audit_agent, 'X') = NVL (:P_SOURCE_AGENT, NVL (od_sc_audit_agent, 'X'))
+			   AND NVL(OD_OB_VENDOR_NAME,'X')      = NVL(:P_VENDOR_NAME, NVL(OD_OB_VENDOR_NAME,'X'))
+			   AND NVL(OD_OB_FACTORY_NAME,'X')     = NVL(:P_FACTORY_NAME, NVL(OD_OB_FACTORY_NAME,'X'))
+			   AND NVL(OD_PB_SC_DEPT_NAME,'X')     = NVL(:P_DEPARTMENT, NVL(OD_PB_SC_DEPT_NAME,'X'))
+			   AND NVL(OD_PB_AUDITOR_NAME,'X')     = NVL(:P_SUBMITTER,NVL(OD_PB_AUDITOR_NAME,'X'))
+			   AND NVL(OD_PB_QA_ENGR_EMAIL,'X')    = NVL(:P_APPROVER, NVL(OD_PB_QA_ENGR_EMAIL,'X'))
+			   and NVL(OD_OB_SKU,1)                = NVL(:P_SKU,NVL(OD_OB_SKU,1))
+		]]>
+		</sqlStatement>
+
+		<sqlStatement name="Q_ECR_METRICSREP">
+		<![CDATA[
+			SELECT  
+			   ecr.OD_PB_ECR_ID				   
+			 , esk.OD_PB_SC_DEPT_NAME		
+			 , ecr.OD_SC_REGION			
+			 , ecr.OD_PB_QA_ENGINEER			   
+			 , ecr.OD_PB_QA_ENGR_EMAIL			   
+			 , ecr.OD_OB_VENDOR_NAME		 	   
+			 , ecr.OD_SC_FACTORY_NAME			   
+			 , esk.OD_OB_SKU				       
+			 , esk.OD_PB_ITEM_DESC		           
+			 , ecr.OD_PB_APPROVAL_STATUS		   
+			 , ecr.OD_PB_DATE_REQUESTED			
+			 , ecr.OD_PB_DATE_PROPOSED_PRODUCTION	
+			 , ecr.OD_PB_CHANGE_DESC			   
+			 , ecr.OD_PB_CHG_CAT_AESTHETICS		
+			 , ecr.OD_PB_CHG_CAT_DESIGN			
+			 , ecr.OD_PB_CHG_CAT_LOCATION		 
+			 , ecr.OD_PB_CHG_CAT_PACKAGING		 
+			 , ecr.OD_PB_CHG_CAT_PERFORMANCE	
+			 , ecr.OD_PB_CHG_CAT_SAFETY			
+			 , ecr.OD_PB_CHG_CAT_SOFTWARE		 
+			 , ecr.OD_PB_CHG_CAT_SUBSTITUTION		
+			 , ecr.OD_PB_TECH_RPT_NUM			   
+			FROM  apps.q_od_ob_ecr_sku_v esk     
+					,apps.q_od_ob_ecr_v ecr
+			WHERE  TRUNC(ecr.creation_date) BETWEEN 		 NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(ECR.creation_date)) 
+			 AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(ECR.creation_date))
+			   AND  esk.OD_OB_REF_ECR(+)=ecr.od_pb_ecr_id
+			   AND  NVL(ecr.OD_SC_REGION,'X')           = NVL(:P_REGION, NVL(ecr.OD_SC_REGION,'X'))
+			   AND  NVL(esk.OD_PB_SC_DEPT_NAME,'X')=NVL(:P_DEPARTMENT,NVL(esk.OD_PB_SC_DEPT_NAME,'X'))
+			   AND  NVL(ecr.OD_OB_VENDOR_NAME,'X')=NVL(:P_VENDOR_NAME,NVL(ecr.OD_OB_VENDOR_NAME,'X'))
+			   AND  NVL(ecr.OD_SC_FACTORY_NAME,'X')=NVL(:P_FACTORY_NAME,NVL(ecr.OD_SC_FACTORY_NAME,'X'))
+			   AND  NVL(esk.OD_OB_SKU,1)=NVL(:P_SKU,NVL(esk.OD_OB_SKU,1))
+  			   and NVL (OD_PB_QA_ENGINEER, 'X') = NVL (:P_SUBMITTER, NVL (OD_PB_QA_ENGINEER, 'X'))
+			   and NVL (OD_PB_QA_ENGR_EMAIL, 'X') = NVL (:P_APPROVER, NVL (OD_PB_QA_ENGR_EMAIL, 'X'))
+		    ORDER BY ECR.OD_PB_ECR_ID,ESK.OD_OB_SKU,ECR.OD_PB_DATE_REQUESTED desc
+		]]>
+		</sqlStatement>
+
+		<sqlStatement name="Q_CAP_METRICSREP">
+		<![CDATA[
+			SELECT     cap.OD_PB_CAR_ID                  
+					 , cap.OD_PB_SC_DEPT_NAME            
+					 , cap.od_sc_region		     
+					 , cap.OD_PB_AUDITOR_NAME
+					 , cap.OD_PB_QA_ENGR_EMAIL
+					 , DECODE(cap.OD_OB_QA_ACT,'SPC',cap.OD_PB_COMPANY,cap.od_ob_vendor_name) VENDOR_NAME
+					 , DECODE(cap.OD_OB_QA_ACT,'SPC',cap.OD_PB_SERVICE_LOCATION,cap.od_sc_factory_name) FACTORY_NAME
+					 , cap.OD_SC_AUDIT_AGENT             
+					 , cap.OD_OB_SKU                     
+					 , cap.OD_PB_ITEM_DESC               
+					 , cap.OD_PB_VENDOR_VPC              
+					 , cap.OD_PB_APPROVAL_STATUS         
+					 , cap.OD_OB_QA_ID                   
+					 , cap.OD_PB_DATE_CAPA_SENT          
+					 , cap.OD_PB_DATE_CAPA_RECEIVED      
+					 , cap.OD_PB_DATE_APPROVED           
+					 , cap.OD_PB_TECH_RPT_NUM            
+					 , cpd.OD_OB_DS_ID                   
+					 --, substr(cpd.OD_PB_DEFECT_SUM,1,10)      OD_PB_DEFECT_SUM 
+                      ,cpd.OD_PB_DEFECT_SUM 					 
+					 , cpd.OD_PB_ROOT_CAUSE              
+					 , cpd.OD_PB_CORR_ACTION	       
+				       , cpd.OD_PB_PREVENTIVE_ACTION	       
+					 , cpd.OD_PB_DATE_CORR_IMPL          
+					 , cpd.OD_PB_APPROVAL_STATUS     APP_STATUS  
+					 , cpd.OD_PB_DATE_APPROVED     DATE_APP      
+					 , cpd.OD_OB_VN_ID                   
+					 , cpd.OD_PB_DATE_VERIFIED           
+					 , cpd.OD_OB_VERIFICATION_METHOD     
+				FROM   q_od_ob_cap_defects_v cpd
+					 , q_od_ob_cap_v cap
+			   WHERE  TRUNC(cap.creation_date) BETWEEN 		 NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(cap.creation_date)) 
+			 AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(cap.creation_date))
+				 AND cpd.od_ob_ref_capid                   = cap.od_pb_car_id
+				 AND NVL(cap.OD_SC_REGION,'X')           = NVL(:P_REGION, NVL(cap.OD_SC_REGION,'X'))
+				 AND NVL(cap.OD_SC_AUDIT_AGENT , 'X')         = NVL(:P_SOURCE_AGENT , NVL(cap.OD_SC_AUDIT_AGENT , 'X'))
+				 AND NVL(cap.OD_PB_SC_DEPT_NAME , 'X')        = NVL(:P_DEPARTMENT , NVL(cap.OD_PB_SC_DEPT_NAME , 'X'))
+				 AND NVL(cap.OD_OB_VENDOR_NAME , 'X')         = NVL(:P_VENDOR_NAME , NVL(cap.OD_OB_VENDOR_NAME , 'X'))
+				 AND NVL(cap.OD_SC_FACTORY_NAME , 'X')        = NVL(:P_FACTORY_NAME , NVL(cap.OD_SC_FACTORY_NAME , 'X'))
+				 AND NVL(cap.OD_OB_SKU , 1)                   = NVL(:P_SKU , NVL(cap.OD_OB_SKU , 1))
+				 AND NVL(cap.OD_PB_VENDOR_VPC,'X')			  = NVL(:P_VPN,NVL(cap.OD_PB_VENDOR_VPC,'X'))
+				 AND NVL(cap.OD_PB_AUDITOR_NAME , 'X')        = NVL(:P_SUBMITTER , NVL(cap.OD_PB_AUDITOR_NAME , 'X'))
+				 AND NVL(cap.OD_PB_QA_ENGR_EMAIL , 'X')       = NVL(:P_APPROVER , NVL(cap.OD_PB_QA_ENGR_EMAIL , 'X'))
+				 AND NVL(cap.OD_PB_APPROVAL_STATUS , 'X')     = NVL(:P_APPROVAL_STATUS , NVL(cap.OD_PB_APPROVAL_STATUS , 'X'))
+			  ORDER BY  cap.OD_PB_CAR_ID 
+					  , cpd.OD_OB_DS_ID
+		]]>
+		</sqlStatement>
+
+
+		<sqlStatement name="Q_VN_METRICSREP">
+		<![CDATA[
+			SELECT 
+				  OD_OB_VNID	
+				 ,OD_PB_SC_DEPT_NAME
+				 ,OD_SC_REGION	
+				 ,OD_PB_AUDITOR_NAME	
+				 ,OD_PB_QA_ENGR_EMAIL	
+				 ,OD_OB_VENDOR_NAME	
+				 ,OD_OB_FACTORY_NAME	
+				 ,OD_PB_SOURCING_AGENT	
+				 ,OD_OB_SKU	
+				 ,OD_PB_ITEM_DESC
+				 ,OD_OB_VPN	
+				 ,OD_PB_APPROVAL_STATUS	
+				 ,OD_OB_VN_CAP_ID
+				 ,OD_OB_ACTIVITY_ID	
+				 ,OD_OB_VN_DATE	
+				 ,OD_PB_DATE_APPROVED
+				 ,OD_OB_VN_DS_ID
+				 ,OD_SC_VENDOR_STATUS	
+				 ,OD_PB_REPORT_NUMBER	
+				 ,OD_PB_VERIFICATION_REQUIRED	
+				 ,OD_PB_DATE_VERIFIED	
+				 ,OD_PB_DEFECT_SUM	
+				 ,OD_OB_REASON	
+			  FROM q_od_ob_vn_v
+			 WHERE TRUNC(creation_date) BETWEEN  NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(creation_date)) 
+			 AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(creation_date))
+			   AND NVL(OD_SC_REGION,'X') = NVL(:P_REGION,NVL(OD_SC_REGION,'X'))
+			   AND NVL(OD_PB_SOURCING_AGENT,'X') = NVL(:P_SOURCE_AGENT,NVL(OD_PB_SOURCING_AGENT,'X'))
+			   AND NVL(OD_PB_SC_DEPT_NAME,'X') = NVL(:P_DEPARTMENT,NVL(OD_PB_SC_DEPT_NAME,'X'))
+			   AND NVL(OD_OB_VENDOR_NAME,'X') = NVL(:P_VENDOR_NAME,NVL(OD_OB_VENDOR_NAME,'X'))
+			   AND NVL(OD_OB_FACTORY_NAME,'X') = NVL(:P_FACTORY_NAME,NVL(OD_OB_FACTORY_NAME,'X'))
+			   AND NVL(OD_OB_SKU,'1')  = NVL(:P_SKU,NVL(OD_OB_SKU,'1'))
+			   AND NVL(OD_OB_VPN,'X')  = NVL(:P_VPN,NVL(OD_OB_VPN,'X'))
+			   AND NVL(OD_PB_AUDITOR_NAME,'X')	= NVL(:P_SUBMITTER,NVL(OD_PB_AUDITOR_NAME,'X'))
+			   AND NVL(OD_PB_QA_ENGR_EMAIL,'X') = NVL(:P_APPROVER,NVL(OD_PB_QA_ENGR_EMAIL,'X'))
+			ORDER BY 1
+		]]>
+		</sqlStatement>
+
+		<sqlStatement name="Q_RGA_METRICSREP">
+		<![CDATA[
+			SELECT  
+				 OD_OB_RGA_ID		
+				,OD_PB_SC_DEPT_NAME	
+				,OD_SC_REGION		
+				,OD_PB_AUDITOR_NAME	
+				,OD_PB_QA_ENGR_EMAIL	
+				,OD_OB_VENDOR_NAME	
+				,OD_SC_AUDIT_AGENT		
+				,OD_OB_SKU			
+				,OD_PB_ITEM_DESC		
+				,OD_PB_APPROVAL_STATUS	
+				,OD_OB_REF_CAPID		
+				,OD_SC_SCHEDULED_DATE	
+				,OD_OB_PICKUP_LOCATION	
+				,OD_PB_VENDOR_COMMENTS	
+				,OD_PB_REASON_CODE	
+				,OD_OB_DISPUTE_YN			
+				,OD_PB_DEFECT_CODE		
+				,OD_PB_ENGINEER_FINDINGS	
+				,OD_PB_SAMPLE_DISPOSITION	
+			 FROM  Q_OD_OB_RGA_V
+			WHERE TRUNC(creation_date) BETWEEN 	 NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(creation_date)) 
+			 AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(creation_date))
+			  AND NVL(OD_SC_REGION,'X')                = NVL(:P_REGION,NVL(OD_SC_REGION,'X'))
+			  AND NVL(OD_SC_AUDIT_AGENT,'X')           = NVL(:P_SOURCE_AGENT,NVL(OD_SC_AUDIT_AGENT,'X'))
+			  AND NVL(OD_PB_SC_DEPT_NAME,'X')          = NVL(:P_DEPARTMENT,NVL(OD_PB_SC_DEPT_NAME,'X'))
+			  AND NVL(OD_OB_VENDOR_NAME,'X')           = NVL(:P_VENDOR_NAME,NVL(OD_OB_VENDOR_NAME,'X'))
+			  AND NVL(OD_OB_SKU,1)                     = NVL(:P_SKU,NVL(OD_OB_SKU,1))
+			  AND NVL(OD_PB_AUDITOR_NAME,'X')          = NVL(:P_SUBMITTER,NVL(OD_PB_AUDITOR_NAME,'X'))
+			  AND NVL(OD_PB_QA_ENGR_EMAIL,'X')         = NVL(:P_APPROVER,NVL(OD_PB_QA_ENGR_EMAIL,'X'))
+			ORDER BY  od_ob_rga_id, od_ob_sku
+		]]>
+		</sqlStatement>
+
+		<sqlStatement name="Q_W_METRICSREP">
+		<![CDATA[
+			 SELECT a.od_ob_withdrawal_id ,
+				  a.od_sc_region  ,
+				  a.od_pb_auditor_name   ,
+				  a.od_pb_qa_engr_email ,
+				  a.od_ob_vendor_name ,
+				  a.od_ob_factory_name ,
+				  a.od_sc_audit_agent ,
+				  a.od_ob_withdrawal_status ,
+				  b.od_ob_sku	,
+				  b.od_pb_item_desc 	,
+				  a.od_ob_withdrawal_type ,
+				  a.od_pb_defect_sum ,
+				  a.od_pb_entity 	,
+				  a.od_pb_cost_associated ,
+				  a.od_sc_pay_amount ,	
+				  a.od_sc_num_workers	
+			  FROM  q_od_ob_wd_sku_v b,
+				  q_od_ob_withdrawal_v a
+			  WHERE TRUNC(a.creation_date) BETWEEN 		 NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(a.creation_date)) 
+			 AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(a.creation_date))
+				AND b.od_ob_ref_wd_id=a.od_ob_withdrawal_id
+				AND NVL(a.OD_SC_REGION,'X')                = NVL(:P_REGION,NVL(a.OD_SC_REGION,'X'))
+				AND NVL(a.OD_SC_AUDIT_AGENT,'X')           = NVL(:P_SOURCE_AGENT,NVL(a.OD_SC_AUDIT_AGENT,'X'))
+				AND NVL(a.OD_OB_VENDOR_NAME,'X')           = NVL(:P_VENDOR_NAME,NVL(a.OD_OB_VENDOR_NAME,'X'))
+				AND NVL(b.OD_OB_SKU,1)                     = NVL(:P_SKU,NVL(b.OD_OB_SKU,1))
+				AND NVL(a.OD_PB_AUDITOR_NAME,'X')          = NVL(:P_SUBMITTER,NVL(a.OD_PB_AUDITOR_NAME,'X'))
+				AND NVL(a.OD_PB_QA_ENGR_EMAIL,'X')         = NVL(:P_APPROVER,NVL(a.OD_PB_QA_ENGR_EMAIL,'X'))
+			 ORDER BY a.creation_date,b.od_ob_sku
+		]]>
+		</sqlStatement>
+
+		<sqlStatement name="Q_FD_METRICSREP">
+		<![CDATA[
+			select 
+				 qfd.od_ob_fd_id   
+				,qfd.od_sc_region 
+				,qfd.od_pb_auditor_name	
+				,qfd.od_pb_qa_engr_email 
+				,qfd.od_ob_vendor_name	
+				,qfd.od_ob_factory_name	
+				,qfd.od_sc_audit_agent	
+				,qfd.od_ob_fd_date  
+				,qfd.od_ob_primary_products 
+				,qfd.od_ob_iqc_pass_pct			
+				,qfd.od_ob_iqc_sample_sz    	
+				,qfd.od_ob_iqc_defects      
+				,qfd.od_ob_qc_pass_pct	  
+				,qfd.od_ob_qc_sample_sz	  
+				,qfd.od_ob_qc_defects	  
+				,qfd.od_ob_fgi_pass_pct	  
+				,qfd.od_ob_fgi_qty        	
+				,qfd.od_ob_fqc_sample_sz  
+				,qfd.od_ob_fqc_defects    
+				,qfd.od_ob_qa_scope       	
+				,qfd.od_ob_fd_frequency	  
+				,qfdd.od_ob_inspection_type 	
+				,qfdd.od_pb_defect_sum	  
+				,qfdd.od_pb_defect_code	  
+				,qfdd.od_ob_defect_pct    
+			from  q_od_ob_factory_data_v qfd,
+				  q_od_ob_fact_data_defects_v  qfdd
+			WHERE TRUNC(qfd.creation_date) BETWEEN 		 NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qfd.creation_date)) 
+			 AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qfd.creation_date))
+			  AND	qfd.od_ob_fd_id = qfdd.od_ob_ref_fdid(+)
+			  and NVL(qfd.od_sc_region,'X') = nvl (:P_REGION,NVL(qfd.od_sc_region,'X'))
+			  and NVL(qfd.od_sc_audit_agent,'X') = nvl (:P_SOURCE_AGENT, NVL(qfd.od_sc_audit_agent,'X'))
+			  and NVL(qfd.od_ob_vendor_name,'X') = nvl (:P_VENDOR_NAME, NVL(qfd.od_ob_vendor_name,'X'))
+			  and NVL(qfd.od_ob_factory_name,'X') = nvl (:P_FACTORY_NAME, NVL(qfd.od_ob_factory_name,'X')) 
+			  and NVL(qfd.od_pb_auditor_name,'X') = nvl (:P_SUBMITTER, NVL(qfd.od_pb_auditor_name,'X'))
+			  and NVL(qfd.od_pb_qa_engr_email,'X') = nvl (:P_APPROVER, NVL(qfd.od_pb_qa_engr_email,'X'))
+			order by 1
+		]]>
+		</sqlStatement>
+
+		<sqlStatement name="Q_REG_CERT_METRICSREP">
+		<![CDATA[
+			SELECT 
+	 OD_OB_REG_ID
+	,OD_SC_REGION
+	,OD_PB_QA_ENGR_EMAIL
+	,OD_OB_VENDOR_NAME
+	,OD_SC_AUDIT_AGENT
+	,OD_OB_SKU
+	,OD_PB_ITEM_DESC
+	,OD_OB_REG_STATUS
+	,OD_OB_REG_DATE
+	,OD_OB_REG_DUE_DATE
+	,OD_OB_REG_TYPE
+	,OD_PB_DATE_RENEW
+	,OD_OB_REG_NO
+	,OD_PB_COST_ASSOCIATED
+ 	,OD_PB_ENTITY
+ FROM  q_od_ob_reg_cert_v
+WHERE TRUNC(creation_date) BETWEEN 		 NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(creation_date)) 
+			 AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(creation_date))
+  AND NVL(OD_SC_REGION,'X')          = NVL(:P_REGION,NVL(OD_SC_REGION,'X'))
+  AND NVL(OD_SC_AUDIT_AGENT,'X')     = NVL(:P_SOURCE_AGENT,NVL(OD_SC_AUDIT_AGENT,'X'))
+  AND NVL(OD_OB_VENDOR_NAME,'X')     = NVL(:P_VENDOR_NAME,NVL(OD_OB_VENDOR_NAME,'X'))
+  AND NVL(OD_OB_SKU,1)  = NVL(:P_SKU,NVL(OD_OB_SKU, 1))
+  AND NVL(OD_PB_QA_ENGR_EMAIL,'X')   = NVL(:P_APPROVER,NVL(OD_PB_QA_ENGR_EMAIL,'X'))
+ORDER BY od_ob_reg_id asc
+		]]>
+		</sqlStatement>
+
+		<sqlStatement name="Q_POS_METRICSREP">
+		<![CDATA[
+			SELECT od_pb_sc_dept_name ,
+				  od_ob_sku ,
+				  od_pb_item_desc ,
+				  od_ob_reg_date ,
+				  od_pb_resource_number ,
+				  od_pb_store_number ,
+				  od_pb_comments 
+			  FROM q_od_ob_pos_v
+			 WHERE TRUNC(od_ob_reg_date) BETWEEN  NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(od_ob_reg_date)) 
+			 AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(od_ob_reg_date))
+			 	   AND NVL(OD_PB_SC_DEPT_NAME,'X') = NVL(:P_DEPARTMENT,NVL(OD_PB_SC_DEPT_NAME,'X'))
+			   AND NVL(OD_OB_SKU,1)  = NVL(:P_SKU,NVL(OD_OB_SKU,1))
+		]]>
+		</sqlStatement>
+
+		<sqlStatement name="Q_QMR_CC_METRICSREP">
+		<![CDATA[
+			SELECT od_sc_entry_date		,
+				 od_pb_case_number	,
+				 od_ob_safety		,
+				 od_ob_source		,	
+				 od_ob_sku			,
+				 od_ob_mfg_date		,
+				 od_ob_pur_date		,
+				 od_ob_issue_type		,
+				 od_ob_reason		,
+				 od_ob_state		
+			  FROM q_od_ob_qmr_cc_v
+			 WHERE TRUNC(creation_date) BETWEEN NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(creation_date))
+			 AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(creation_date))
+			   AND NVL(OD_OB_SKU,1)  = NVL(:P_SKU,NVL(OD_OB_SKU,1))
+			   ORDER BY creation_date
+		]]>
+		</sqlStatement>
+
+		<sqlStatement name="Q_QMR_BAZ_METRICSREP">
+		<![CDATA[
+			SELECT od_ob_review_id		,
+				 od_sc_entry_date		,
+				 od_ob_sku			,
+				 od_pb_item_desc   	,
+				 od_ob_overall_rat	,
+				 od_ob_meet_expect	,
+				 od_ob_quality_rat	,
+				 od_ob_rec_frnd		,
+				 od_ob_pros			,
+				 od_ob_cons				 
+			  FROM q_od_ob_qmr_bazaar_v
+			 WHERE TRUNC(creation_date) BETWEEN NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(creation_date))
+			 AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(creation_date))
+			   AND NVL(OD_OB_SKU,1)  = NVL(:P_SKU,NVL(OD_OB_SKU,1))
+			   		]]>
+		</sqlStatement>
+
+		<sqlStatement name="Q_QMR_COG_METRICSREP">
+		<![CDATA[
+			SELECT od_sc_entry_date		,
+				 od_ob_sku			,
+				 od_pb_item_desc   	,
+				 od_ob_pb_yn		,
+				 od_ob_di_yn		,
+				 od_ob_division_id	,
+				 od_pb_division		,
+				 od_ob_dept_id		,
+				 od_pb_sc_dept_name	,
+				 od_ob_class_id		,
+				 od_ob_class		,
+				 od_ob_subclass_id	,
+				 od_ob_subclass		,
+				 od_ob_vendor_name	,
+				 od_ob_sale_amt		,
+				 od_ob_return_amt		,
+				 od_ob_dnc_amt		,
+				 od_ob_sale_units		,
+				 od_ob_return_units	,
+				 od_ob_dnc_units		
+			  FROM q_od_ob_qmr_cognos_v
+			 WHERE TRUNC(creation_date) BETWEEN NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(creation_date))
+			 AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(creation_date))
+			   AND NVL(OD_OB_SKU,1)  = NVL(:P_SKU,NVL(OD_OB_SKU,1))
+			   AND NVL (od_ob_vendor_name, 'X') = NVL (:P_VENDOR_NAME, NVL (od_ob_vendor_name, 'X'))
+			  
+		]]>
+		</sqlStatement>
+
+<sqlStatement name="Q_PSI">
+
+<![CDATA[ 
+select  				
+a.od_ob_psi_id	psi_id	,	
+	a.od_sc_region	region,		
+	a.od_pb_company	service_provider,		
+	a.od_pb_vendor_name	vendor_name,		
+	a.od_ob_vendor_number	vendor_id,		
+	a.od_pb_contact_email	vendor_email,		
+	a.od_pb_factory_name	factory_name,
+	a.od_pb_factory_id	factory_id	,
+	a.od_pb_odgso_qa_engineer	odgso_engineer,
+	a.od_pb_odc_qa_engineer	region_engineer	,
+	a.od_pb_po_num	po,		
+	a.od_sc_audit_agent sourcing_agent,
+	a.od_pb_attachment re_inspection,		
+	a.od_ob_sale_units	units_ordered	,	
+	a.od_sc_scheduled_date   booking_date,		
+	a.od_sc_init_inspection_date	requested_inspection_date,		
+	a.od_sc_inspect_date	actual_inspection_date,		
+	a.od_pb_man_days	mandays,		
+	a.od_ob_inspector	inspector_name,		
+	a.od_pb_sample_size	total_sample_size,		
+	a.od_pb_ship_booking_entry_date	ship_date,		
+	a.od_pb_report_name	inspection_fail_notice,		
+	a.od_pb_art_test_report_number	inspection_report,		
+	a.od_pb_inspection_result	inspection_result,		
+	a.od_pb_paid_by	 paid_by,		
+	a.od_sc_pay_amount	amount,
+	a.od_ob_ref_capid	cap_id,		
+	b.od_ob_sku	sku,		
+	b.od_pb_item_desc	item_description,		
+	b.od_pb_vendor_vpc	vpn,		
+	b.od_pb_division	division_name,		
+	b.od_pb_department||' '||b.od_ob_dept_name	department,		
+	b.od_pb_sample_size	sample_size,		
+	b.od_ob_sale_units	units_ordered1,		
+	b.od_ob_qc_defects	total_critical_defects,		
+	b.od_ob_fqc_defects	total_major_defects,		
+	b.od_ob_iqc_defects	total_minor_defects,		
+	c.od_pb_failure_codes	failure_type,		
+	c.od_ob_qc_defects	number_of_defects,		
+	c.od_pb_defect_code	defects_code,		
+	c.od_pb_defect_sum	defects_details,		
+	c.od_pb_comments	comments		
+from 	apps.q_od_ob_psi_defects_v c,			
+	apps.q_od_ob_psi_sku_v b,			
+	apps.q_od_ob_psi_v a			
+where 	trunc(a.creation_date) 			
+ 	    between nvl(to_date(:p_date_from,'yyyy/mm/dd hh24:mi:ss'),trunc(a.creation_date)) 			
+        and nvl( to_date(:p_date_to,'yyyy/mm/dd hh24:mi:ss'),trunc(a.creation_date))				
+  and   b.od_ob_ref_psid=a.od_ob_psi_id				
+  AND c.od_ob_ref_psid(+)=b.od_ob_ref_psid 
+  AND C.OD_OB_SKU(+)     =B.OD_OB_SKU       
+  AND   a.od_ob_psi_id=NVL(:p_psi_id,a.od_ob_psi_id)					
+  and   nvl(a.od_sc_region,'x') = nvl(:p_region,nvl(a.od_sc_region,'x'))				
+  and   nvl(a.od_sc_audit_agent,'x') = nvl(:p_source_agent, nvl(a.od_sc_audit_agent,'x'))				
+  and   nvl(a.od_pb_vendor_name,'x') = nvl(:p_vendor_name, nvl(a.od_pb_vendor_name,'x'))				
+  and   nvl(a.od_pb_factory_name,'x') = nvl(:p_factory_name, nvl(a.od_pb_factory_name,'x'))				
+  and   nvl(a.od_pb_company,'x') = nvl (:p_service_provider, nvl(a.od_pb_company,'x'))				
+  and   nvl(a.od_pb_attachment,'x') = nvl (:p_re_inspection, nvl(a.od_pb_attachment,'x'))				
+  and   nvl(a.od_pb_odgso_qa_engineer,'x') = nvl(:p_submitter, nvl(a.od_pb_odgso_qa_engineer,'x'))				
+  and   nvl(a.od_pb_odc_qa_engineer,'x') = nvl (:p_approver, nvl(a.od_pb_odc_qa_engineer,'x'))	
+  and   nvl(a.od_pb_art_test_report_number,'x')=nvl(:p_inspection_report,nvl(a.od_pb_art_test_report_number,'x'))	
+  and   nvl(a.od_pb_paid_by,'x') = nvl (:p_paid_by, nvl(a.od_pb_paid_by,'x'))				
+  and   nvl(b.od_ob_sku , 1)             = nvl(:p_sku , nvl(b.od_ob_sku , 1) )				
+  and   nvl(b.od_ob_dept_name,'x') = nvl (:p_department, nvl(b.od_ob_dept_name,'x'))				
+  and   nvl(b.od_pb_division,'x') = nvl (:P_DIVISION, nvl(b.od_pb_division,'x'))				
+  and   nvl(c.od_pb_failure_codes,'x')=nvl(:p_failure_type,nvl(c.od_pb_failure_codes,'x'))				
+  and   nvl(c.od_pb_defect_code,'x') = nvl (:p_defects_code, nvl(c.od_pb_defect_code,'x'))				
+  and   nvl(a.od_pb_inspection_result,'x') = nvl (:p_inspection_result,nvl(a.od_pb_inspection_result,'x'))
+order by a.od_ob_psi_id
+  ]]> 
+
+</sqlStatement>
+
+
+
+
+
+		<sqlStatement name="Q_FQA_COUNT">
+			<![CDATA[
+			 select count(distinct OD_FQA_ID)  "num1"
+			FROM q_od_ob_fqa_v qfqav
+		where
+		TRUNC(qfqav.creation_date) BETWEEN NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qfqav.creation_date)) 
+		         AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qfqav.creation_date))
+			 AND NVL(od_pb_proj_num,'X')=NVL( :P_PROJECT_NUMBER,NVL(od_pb_proj_num,'X'))
+			 AND NVL(od_sc_region,'X')=NVL( :P_REGION,NVL(od_sc_region,'X'))
+			 AND NVL(od_sc_audit_agent, 'X') = NVL ( :P_SOURCE_AGENT, NVL (od_sc_audit_agent, 'X'))
+			 AND NVL(od_pb_division,'X')=NVL( :P_DIVISION,NVL(od_pb_division,'X'))
+			 AND NVL (od_ob_vendor_name, 'X') = NVL ( :P_VENDOR_NAME, NVL (od_ob_vendor_name, 'X'))
+			 AND NVL (od_sc_factory_name, 'X') = NVL ( :P_FACTORY_NAME, NVL (od_sc_factory_name, 'X'))
+			 AND NVL (od_pb_approval_status, 'X') = NVL ( :P_APPROVAL_STATUS, NVL (od_pb_approval_status, 'X'))
+			 and NVL (OD_PB_AUDITOR_NAME, 'X') = NVL (:P_SUBMITTER, NVL (OD_PB_AUDITOR_NAME, 'X'))
+			 and NVL (OD_PB_QA_ENGR_EMAIL, 'X') = NVL (:P_APPROVER, NVL (OD_PB_QA_ENGR_EMAIL, 'X'))
+		
+			]]>
+</sqlStatement>
+<sqlStatement name="Q_FAI_COUNT">
+ <![CDATA[
+select count(distinct QOOFV.OD_OB_FAI_ID)  "num2"
+FROM Q_OD_OB_FAI_V  QOOFV
+			, Q_OD_OB_FAI_SKU_V QOOFSV
+			WHERE QOOFV.OD_OB_FAI_ID    = QOOFSV.OD_OB_REF_REC_ID(+)
+				AND TRUNC(QOOFV.creation_date) BETWEEN  NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(QOOFV.creation_date)) 
+		         AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(QOOFV.creation_date))
+				AND NVL(QOOFV.OD_PB_PROJ_NUM,'X')             = NVL(:P_PROJECT_NUMBER,             NVL(QOOFV.OD_PB_PROJ_NUM,'X')        )
+				AND NVL(QOOFV.od_sc_region,'X')=NVL(:P_REGION,NVL(QOOFV.od_sc_region,'X'))
+				AND NVL(QOOFV.OD_SC_AUDIT_AGENT,'X')          = NVL(:P_SOURCE_AGENT,      NVL(QOOFV.OD_SC_AUDIT_AGENT,'X')     )
+				AND NVL(QOOFSV.OD_PB_SC_DEPT_NAME,'X')        = NVL(:P_DEPARTMENT,          NVL(QOOFSV.OD_PB_SC_DEPT_NAME,'X')   )
+				AND NVL(QOOFV.OD_OB_VENDOR_NAME,'X')          = NVL(:P_VENDOR_NAME,         NVL(QOOFV.OD_OB_VENDOR_NAME,'X')     )
+				AND NVL(QOOFV.OD_OB_FACTORY_NAME,'X')         = NVL(:P_FACTORY_NAME,        NVL(QOOFV.OD_OB_FACTORY_NAME,'X')    )
+				AND NVL(QOOFSV.OD_OB_SKU,1)                   = NVL(:P_SKU,                 NVL(QOOFSV.OD_OB_SKU,1)            )
+				AND NVL(QOOFSV.OD_PB_VENDOR_VPC,'X')          = NVL(:P_VPN,          NVL(QOOFSV.OD_PB_VENDOR_VPC,'X')   )
+				AND NVL(QOOFV.OD_PB_QA_ENGR_EMAIL,'X')        = NVL(:P_APPROVER,            NVL(QOOFV.OD_PB_QA_ENGR_EMAIL,'X')   )
+				AND NVL(QOOFV.OD_PB_APPROVAL_STATUS,'X')      = NVL(:P_APPROVAL_STATUS,     NVL(QOOFV.OD_PB_APPROVAL_STATUS,'X') )
+				AND NVL(QOOFV.OD_PB_AUDITOR_NAME,'X')         = NVL(:P_SUBMITTER,           NVL(QOOFV.OD_PB_AUDITOR_NAME,'X')    )
+			
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PS_COUNT">
+<![CDATA[
+ select count(distinct QOV.OD_OB_PS_ID)  "num3"
+FROM    Q_OD_OB_PS_V QOV
+				   ,Q_OD_OB_PS_SKU_V QOSV
+			WHERE  QOV.OD_OB_PS_ID = QOSV.OD_OB_REF_PS_ID(+)
+			  AND  TRUNC(QOV.creation_date) BETWEEN NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qov.creation_date)) 
+			AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qov.creation_date))
+			  			  AND  NVL(QOV.OD_PB_PROJ_NUM,'X') = NVL(:P_PROJECT_NUMBER,NVL(QOV.OD_PB_PROJ_NUM,'X'))
+			  AND  NVL(QOV.od_sc_region,'X')=NVL(:P_REGION,NVL(QOV.od_sc_region,'X'))
+			  AND  NVL(QOV.OD_SC_AUDIT_AGENT,'X')=NVL(:P_SOURCE_AGENT,NVL(QOV.OD_SC_AUDIT_AGENT,'X'))                          
+			  AND  NVL(QOSV.OD_PB_SC_DEPT_NAME,'X')= NVL(:P_DEPARTMENT,NVL(QOSV.OD_PB_SC_DEPT_NAME,'X'))
+			  AND  NVL(QOV.OD_OB_VENDOR_NAME,'X')=  Nvl(:P_VENDOR_NAME,Nvl(Qov.Od_Ob_Vendor_Name,'X'))
+			  And  Nvl(Qov.Od_ob_Factory_Name,'X')= NVL(:P_FACTORY_NAME,NVL(QOV.OD_OB_FACTORY_NAME,'X'))
+			  AND  NVL(QOSV.OD_OB_SKU,1) = NVL(:P_SKU,NVL(QOSV.OD_OB_SKU,1))
+			  AND  NVL(QOSV.OD_PB_VENDOR_VPC,'X')          = NVL(:P_VPN,          NVL(QOSV.OD_PB_VENDOR_VPC,'X')   )
+			  AND  NVL(QOV.OD_PB_APPROVAL_STATUS,'X')= Nvl(:P_APPROVAL_STATUS,Nvl(Qov.Od_Pb_Approval_Status,'X'))
+			  AND  NVL(QOV.OD_PB_AUDITOR_NAME,'X')= NVL(:P_SUBMITTER,NVL(QOV.OD_PB_AUDITOR_NAME,'X'))
+			  AND  NVL(QOV.OD_PB_QA_ENGR_EMAIL,'X')= NVL(:P_APPROVER,NVL(QOV.OD_PB_QA_ENGR_EMAIL,'X'))
+			  ]]>
+</sqlStatement>
+<sqlStatement name="Q_PPT_COUNT">
+<![CDATA[
+ select count(distinct qotsv.od_ob_test_id)  "num4"
+ FROM apps.q_od_ob_ppt_test_status_v	    qotsv
+	          ,	apps.q_od_ob_ppt_sku_v              qopsv
+              , apps.q_od_ob_ppt_v                  qopv
+          WHERE qopsv.od_ob_ref_pptid = qopv.od_ob_ppt_id
+			AND qotsv.od_ob_ref_pptid = qopv.od_ob_ppt_id
+			AND qotsv.OD_OB_PPTSKU_REFID = qopsv.OD_OB_PPTSKU_ID
+			AND  TRUNC(qopv.creation_date) BETWEEN NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qopv.creation_date)) 
+			AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qopv.creation_date))
+			 AND  NVL(qopv.od_pb_proj_num,'-1')          = NVL(:P_PROJECT_NUMBER,NVL(qopv.od_pb_proj_num,'-1'))
+            AND  NVL(qopv.od_sc_region,'X')            = NVL(:P_REGION,NVL(qopv.od_sc_region,'X'))
+            AND  NVL(qopv.od_sc_audit_agent,'X')       = NVL(:P_SOURCE_AGENT,NVL(qopv.od_sc_audit_agent,'X'))
+            AND  NVL(qopsv.od_pb_sc_dept_name,'X')      = NVL(:P_DEPARTMENT,NVL(qopsv.od_pb_sc_dept_name,'X'))
+            AND  NVL(qopv.od_ob_vendor_name,'X')       = NVL(:P_VENDOR_NAME,NVL(qopv.od_ob_vendor_name,'X'))
+            AND  NVL(qopv.od_ob_factory_name,'X')      = NVL(:P_FACTORY_NAME,NVL(qopv.od_ob_factory_name,'X'))
+            AND  NVL(qopsv.od_ob_sku,1)               = NVL(:P_SKU,NVL(qopsv.od_ob_sku,1))
+            AND  NVL(qopsv.od_pb_vendor_vpc,'X')        = NVL(:P_VPN,NVL(qopsv.od_pb_vendor_vpc,'X'))
+            AND  NVL(qopv.od_pb_auditor_name,'X')      = NVL(:P_SUBMITTER,NVL(qopv.od_pb_auditor_name,'X'))
+            AND  NVL(qopv.od_pb_qa_engr_email,'X')     = NVL(:P_APPROVER,NVL(qopv.od_pb_qa_engr_email,'X'))
+			and  qotsv.OD_OB_PROD_INSP_RESULT is not null
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PPT1_COUNT">
+<![CDATA[
+ select count(distinct qotsv.od_ob_test_id)  "num5"
+FROM apps.q_od_ob_ppt_test_status_v	    qotsv
+	          ,	apps.q_od_ob_ppt_sku_v              qopsv
+              , apps.q_od_ob_ppt_v                  qopv
+          WHERE qopsv.od_ob_ref_pptid = qopv.od_ob_ppt_id
+			AND qotsv.od_ob_ref_pptid = qopv.od_ob_ppt_id
+			AND qotsv.OD_OB_PPTSKU_REFID = qopsv.OD_OB_PPTSKU_ID
+			AND  TRUNC(qopv.creation_date) BETWEEN NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qopv.creation_date)) 
+			AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qopv.creation_date))
+			 AND  NVL(qopv.od_pb_proj_num,'-1')          = NVL(:P_PROJECT_NUMBER,NVL(qopv.od_pb_proj_num,'-1'))
+            AND  NVL(qopv.od_sc_region,'X')            = NVL(:P_REGION,NVL(qopv.od_sc_region,'X'))
+            AND  NVL(qopv.od_sc_audit_agent,'X')       = NVL(:P_SOURCE_AGENT,NVL(qopv.od_sc_audit_agent,'X'))
+            AND  NVL(qopsv.od_pb_sc_dept_name,'X')      = NVL(:P_DEPARTMENT,NVL(qopsv.od_pb_sc_dept_name,'X'))
+            AND  NVL(qopv.od_ob_vendor_name,'X')       = NVL(:P_VENDOR_NAME,NVL(qopv.od_ob_vendor_name,'X'))
+            AND  NVL(qopv.od_ob_factory_name,'X')      = NVL(:P_FACTORY_NAME,NVL(qopv.od_ob_factory_name,'X'))
+            AND  NVL(qopsv.od_ob_sku,1)               = NVL(:P_SKU,NVL(qopsv.od_ob_sku,1))
+            AND  NVL(qopsv.od_pb_vendor_vpc,'X')        = NVL(:P_VPN,NVL(qopsv.od_pb_vendor_vpc,'X'))
+            AND  NVL(qopv.od_pb_auditor_name,'X')      = NVL(:P_SUBMITTER,NVL(qopv.od_pb_auditor_name,'X'))
+            AND  NVL(qopv.od_pb_qa_engr_email,'X')     = NVL(:P_APPROVER,NVL(qopv.od_pb_qa_engr_email,'X'))
+			and  qotsv.OD_OB_PROD_INSP_RESULT is not null
+and qotsv.OD_OB_TEST_TYPE='PRO'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PPT2_COUNT">
+<![CDATA[
+ select count(distinct qotsv.od_ob_test_id)  "num6"
+FROM apps.q_od_ob_ppt_test_status_v	    qotsv
+	          ,	apps.q_od_ob_ppt_sku_v              qopsv
+              , apps.q_od_ob_ppt_v                  qopv
+          WHERE qopsv.od_ob_ref_pptid = qopv.od_ob_ppt_id
+			AND qotsv.od_ob_ref_pptid = qopv.od_ob_ppt_id
+			AND qotsv.OD_OB_PPTSKU_REFID = qopsv.OD_OB_PPTSKU_ID
+			AND  TRUNC(qopv.creation_date) BETWEEN NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qopv.creation_date)) 
+			AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qopv.creation_date))
+			 AND  NVL(qopv.od_pb_proj_num,'-1')          = NVL(:P_PROJECT_NUMBER,NVL(qopv.od_pb_proj_num,'-1'))
+            AND  NVL(qopv.od_sc_region,'X')            = NVL(:P_REGION,NVL(qopv.od_sc_region,'X'))
+            AND  NVL(qopv.od_sc_audit_agent,'X')       = NVL(:P_SOURCE_AGENT,NVL(qopv.od_sc_audit_agent,'X'))
+            AND  NVL(qopsv.od_pb_sc_dept_name,'X')      = NVL(:P_DEPARTMENT,NVL(qopsv.od_pb_sc_dept_name,'X'))
+            AND  NVL(qopv.od_ob_vendor_name,'X')       = NVL(:P_VENDOR_NAME,NVL(qopv.od_ob_vendor_name,'X'))
+            AND  NVL(qopv.od_ob_factory_name,'X')      = NVL(:P_FACTORY_NAME,NVL(qopv.od_ob_factory_name,'X'))
+            AND  NVL(qopsv.od_ob_sku,1)               = NVL(:P_SKU,NVL(qopsv.od_ob_sku,1))
+            AND  NVL(qopsv.od_pb_vendor_vpc,'X')        = NVL(:P_VPN,NVL(qopsv.od_pb_vendor_vpc,'X'))
+            AND  NVL(qopv.od_pb_auditor_name,'X')      = NVL(:P_SUBMITTER,NVL(qopv.od_pb_auditor_name,'X'))
+            AND  NVL(qopv.od_pb_qa_engr_email,'X')     = NVL(:P_APPROVER,NVL(qopv.od_pb_qa_engr_email,'X'))
+			and  qotsv.OD_OB_PROD_INSP_RESULT is not null
+and qotsv.OD_OB_TEST_TYPE='ART'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PPT3_COUNT">
+<![CDATA[
+ select count(distinct qotsv.od_ob_test_id)  "num7"
+FROM apps.q_od_ob_ppt_test_status_v	    qotsv
+	          ,	apps.q_od_ob_ppt_sku_v              qopsv
+              , apps.q_od_ob_ppt_v                  qopv
+          WHERE qopsv.od_ob_ref_pptid = qopv.od_ob_ppt_id
+			AND qotsv.od_ob_ref_pptid = qopv.od_ob_ppt_id
+			AND qotsv.OD_OB_PPTSKU_REFID = qopsv.OD_OB_PPTSKU_ID
+			AND  TRUNC(qopv.creation_date) BETWEEN NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qopv.creation_date)) 
+			AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qopv.creation_date))
+			 AND  NVL(qopv.od_pb_proj_num,'-1')          = NVL(:P_PROJECT_NUMBER,NVL(qopv.od_pb_proj_num,'-1'))
+            AND  NVL(qopv.od_sc_region,'X')            = NVL(:P_REGION,NVL(qopv.od_sc_region,'X'))
+            AND  NVL(qopv.od_sc_audit_agent,'X')       = NVL(:P_SOURCE_AGENT,NVL(qopv.od_sc_audit_agent,'X'))
+            AND  NVL(qopsv.od_pb_sc_dept_name,'X')      = NVL(:P_DEPARTMENT,NVL(qopsv.od_pb_sc_dept_name,'X'))
+            AND  NVL(qopv.od_ob_vendor_name,'X')       = NVL(:P_VENDOR_NAME,NVL(qopv.od_ob_vendor_name,'X'))
+            AND  NVL(qopv.od_ob_factory_name,'X')      = NVL(:P_FACTORY_NAME,NVL(qopv.od_ob_factory_name,'X'))
+            AND  NVL(qopsv.od_ob_sku,1)               = NVL(:P_SKU,NVL(qopsv.od_ob_sku,1))
+            AND  NVL(qopsv.od_pb_vendor_vpc,'X')        = NVL(:P_VPN,NVL(qopsv.od_pb_vendor_vpc,'X'))
+            AND  NVL(qopv.od_pb_auditor_name,'X')      = NVL(:P_SUBMITTER,NVL(qopv.od_pb_auditor_name,'X'))
+            AND  NVL(qopv.od_pb_qa_engr_email,'X')     = NVL(:P_APPROVER,NVL(qopv.od_pb_qa_engr_email,'X'))
+			and  qotsv.OD_OB_PROD_INSP_RESULT is not null
+and qotsv.OD_OB_TEST_TYPE='TRA'
+]]>
+</sqlStatement>
+
+<sqlStatement name="Q_PPT_COUNT1">
+<![CDATA[
+ select count(distinct qotsv.od_ob_test_id)  "num41"
+ FROM apps.q_od_ob_ppt_test_status_v	    qotsv
+	          ,	apps.q_od_ob_ppt_sku_v              qopsv
+              , apps.q_od_ob_ppt_v                  qopv
+          WHERE qopsv.od_ob_ref_pptid = qopv.od_ob_ppt_id
+			AND qotsv.od_ob_ref_pptid = qopv.od_ob_ppt_id
+			AND qotsv.OD_OB_PPTSKU_REFID = qopsv.OD_OB_PPTSKU_ID
+			AND  TRUNC(qopv.creation_date) BETWEEN NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qopv.creation_date)) 
+			AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qopv.creation_date))
+			 AND  NVL(qopv.od_pb_proj_num,'-1')          = NVL(:P_PROJECT_NUMBER,NVL(qopv.od_pb_proj_num,'-1'))
+            AND  NVL(qopv.od_sc_region,'X')            = NVL(:P_REGION,NVL(qopv.od_sc_region,'X'))
+            AND  NVL(qopv.od_sc_audit_agent,'X')       = NVL(:P_SOURCE_AGENT,NVL(qopv.od_sc_audit_agent,'X'))
+            AND  NVL(qopsv.od_pb_sc_dept_name,'X')      = NVL(:P_DEPARTMENT,NVL(qopsv.od_pb_sc_dept_name,'X'))
+            AND  NVL(qopv.od_ob_vendor_name,'X')       = NVL(:P_VENDOR_NAME,NVL(qopv.od_ob_vendor_name,'X'))
+            AND  NVL(qopv.od_ob_factory_name,'X')      = NVL(:P_FACTORY_NAME,NVL(qopv.od_ob_factory_name,'X'))
+            AND  NVL(qopsv.od_ob_sku,1)               = NVL(:P_SKU,NVL(qopsv.od_ob_sku,1))
+            AND  NVL(qopsv.od_pb_vendor_vpc,'X')        = NVL(:P_VPN,NVL(qopsv.od_pb_vendor_vpc,'X'))
+            AND  NVL(qopv.od_pb_auditor_name,'X')      = NVL(:P_SUBMITTER,NVL(qopv.od_pb_auditor_name,'X'))
+            AND  NVL(qopv.od_pb_qa_engr_email,'X')     = NVL(:P_APPROVER,NVL(qopv.od_pb_qa_engr_email,'X'))
+			
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PPT1_COUNT1">
+<![CDATA[
+ select count(distinct qotsv.od_ob_test_id)  "num51"
+FROM apps.q_od_ob_ppt_test_status_v	    qotsv
+	          ,	apps.q_od_ob_ppt_sku_v              qopsv
+              , apps.q_od_ob_ppt_v                  qopv
+          WHERE qopsv.od_ob_ref_pptid = qopv.od_ob_ppt_id
+			AND qotsv.od_ob_ref_pptid = qopv.od_ob_ppt_id
+			AND qotsv.OD_OB_PPTSKU_REFID = qopsv.OD_OB_PPTSKU_ID
+			AND  TRUNC(qopv.creation_date) BETWEEN NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qopv.creation_date)) 
+			AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qopv.creation_date))
+			 AND  NVL(qopv.od_pb_proj_num,'-1')          = NVL(:P_PROJECT_NUMBER,NVL(qopv.od_pb_proj_num,'-1'))
+            AND  NVL(qopv.od_sc_region,'X')            = NVL(:P_REGION,NVL(qopv.od_sc_region,'X'))
+            AND  NVL(qopv.od_sc_audit_agent,'X')       = NVL(:P_SOURCE_AGENT,NVL(qopv.od_sc_audit_agent,'X'))
+            AND  NVL(qopsv.od_pb_sc_dept_name,'X')      = NVL(:P_DEPARTMENT,NVL(qopsv.od_pb_sc_dept_name,'X'))
+            AND  NVL(qopv.od_ob_vendor_name,'X')       = NVL(:P_VENDOR_NAME,NVL(qopv.od_ob_vendor_name,'X'))
+            AND  NVL(qopv.od_ob_factory_name,'X')      = NVL(:P_FACTORY_NAME,NVL(qopv.od_ob_factory_name,'X'))
+            AND  NVL(qopsv.od_ob_sku,1)               = NVL(:P_SKU,NVL(qopsv.od_ob_sku,1))
+            AND  NVL(qopsv.od_pb_vendor_vpc,'X')        = NVL(:P_VPN,NVL(qopsv.od_pb_vendor_vpc,'X'))
+            AND  NVL(qopv.od_pb_auditor_name,'X')      = NVL(:P_SUBMITTER,NVL(qopv.od_pb_auditor_name,'X'))
+            AND  NVL(qopv.od_pb_qa_engr_email,'X')     = NVL(:P_APPROVER,NVL(qopv.od_pb_qa_engr_email,'X'))
+			and qotsv.OD_OB_TEST_TYPE='PRO'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PPT2_COUNT1">
+<![CDATA[
+ select count(distinct qotsv.od_ob_test_id)  "num61"
+FROM apps.q_od_ob_ppt_test_status_v	    qotsv
+	          ,	apps.q_od_ob_ppt_sku_v              qopsv
+              , apps.q_od_ob_ppt_v                  qopv
+          WHERE qopsv.od_ob_ref_pptid = qopv.od_ob_ppt_id
+			AND qotsv.od_ob_ref_pptid = qopv.od_ob_ppt_id
+			AND qotsv.OD_OB_PPTSKU_REFID = qopsv.OD_OB_PPTSKU_ID
+			AND  TRUNC(qopv.creation_date) BETWEEN NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qopv.creation_date)) 
+			AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qopv.creation_date))
+			 AND  NVL(qopv.od_pb_proj_num,'-1')          = NVL(:P_PROJECT_NUMBER,NVL(qopv.od_pb_proj_num,'-1'))
+            AND  NVL(qopv.od_sc_region,'X')            = NVL(:P_REGION,NVL(qopv.od_sc_region,'X'))
+            AND  NVL(qopv.od_sc_audit_agent,'X')       = NVL(:P_SOURCE_AGENT,NVL(qopv.od_sc_audit_agent,'X'))
+            AND  NVL(qopsv.od_pb_sc_dept_name,'X')      = NVL(:P_DEPARTMENT,NVL(qopsv.od_pb_sc_dept_name,'X'))
+            AND  NVL(qopv.od_ob_vendor_name,'X')       = NVL(:P_VENDOR_NAME,NVL(qopv.od_ob_vendor_name,'X'))
+            AND  NVL(qopv.od_ob_factory_name,'X')      = NVL(:P_FACTORY_NAME,NVL(qopv.od_ob_factory_name,'X'))
+            AND  NVL(qopsv.od_ob_sku,1)               = NVL(:P_SKU,NVL(qopsv.od_ob_sku,1))
+            AND  NVL(qopsv.od_pb_vendor_vpc,'X')        = NVL(:P_VPN,NVL(qopsv.od_pb_vendor_vpc,'X'))
+            AND  NVL(qopv.od_pb_auditor_name,'X')      = NVL(:P_SUBMITTER,NVL(qopv.od_pb_auditor_name,'X'))
+            AND  NVL(qopv.od_pb_qa_engr_email,'X')     = NVL(:P_APPROVER,NVL(qopv.od_pb_qa_engr_email,'X'))
+			and qotsv.OD_OB_TEST_TYPE='ART'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PPT3_COUNT1">
+<![CDATA[
+ select count(distinct qotsv.od_ob_test_id)  "num71"
+FROM apps.q_od_ob_ppt_test_status_v	    qotsv
+	          ,	apps.q_od_ob_ppt_sku_v              qopsv
+              , apps.q_od_ob_ppt_v                  qopv
+          WHERE qopsv.od_ob_ref_pptid = qopv.od_ob_ppt_id
+			AND qotsv.od_ob_ref_pptid = qopv.od_ob_ppt_id
+			AND qotsv.OD_OB_PPTSKU_REFID = qopsv.OD_OB_PPTSKU_ID
+			AND  TRUNC(qopv.creation_date) BETWEEN NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qopv.creation_date)) 
+			AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qopv.creation_date))
+			 AND  NVL(qopv.od_pb_proj_num,'-1')          = NVL(:P_PROJECT_NUMBER,NVL(qopv.od_pb_proj_num,'-1'))
+            AND  NVL(qopv.od_sc_region,'X')            = NVL(:P_REGION,NVL(qopv.od_sc_region,'X'))
+            AND  NVL(qopv.od_sc_audit_agent,'X')       = NVL(:P_SOURCE_AGENT,NVL(qopv.od_sc_audit_agent,'X'))
+            AND  NVL(qopsv.od_pb_sc_dept_name,'X')      = NVL(:P_DEPARTMENT,NVL(qopsv.od_pb_sc_dept_name,'X'))
+            AND  NVL(qopv.od_ob_vendor_name,'X')       = NVL(:P_VENDOR_NAME,NVL(qopv.od_ob_vendor_name,'X'))
+            AND  NVL(qopv.od_ob_factory_name,'X')      = NVL(:P_FACTORY_NAME,NVL(qopv.od_ob_factory_name,'X'))
+            AND  NVL(qopsv.od_ob_sku,1)               = NVL(:P_SKU,NVL(qopsv.od_ob_sku,1))
+            AND  NVL(qopsv.od_pb_vendor_vpc,'X')        = NVL(:P_VPN,NVL(qopsv.od_pb_vendor_vpc,'X'))
+            AND  NVL(qopv.od_pb_auditor_name,'X')      = NVL(:P_SUBMITTER,NVL(qopv.od_pb_auditor_name,'X'))
+            AND  NVL(qopv.od_pb_qa_engr_email,'X')     = NVL(:P_APPROVER,NVL(qopv.od_pb_qa_engr_email,'X'))
+			and qotsv.OD_OB_TEST_TYPE='TRA'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PSI_COUNT">
+<![CDATA[
+select  count(distinct a.od_ob_psi_id) "num8"				
+from 	apps.q_od_ob_psi_defects_v c,			
+		apps.q_od_ob_psi_sku_v b,			
+		apps.q_od_ob_psi_v a			
+where 	trunc(a.creation_date) 			
+ 	    between nvl(to_date(:p_date_from,'yyyy/mm/dd hh24:mi:ss'),trunc(a.creation_date)) 			
+        and nvl( to_date(:p_date_to,'yyyy/mm/dd hh24:mi:ss'),trunc(a.creation_date))				
+  and   b.od_ob_ref_psid=a.od_ob_psi_id				
+	  AND c.od_ob_ref_psid(+)=b.od_ob_ref_psid  
+   AND C.OD_OB_SKU(+)     =B.OD_OB_SKU  
+  AND   a.od_ob_psi_id=NVL(:p_psi_id,a.od_ob_psi_id)					
+  and   nvl(a.od_sc_region,'x') = nvl(:p_region,nvl(a.od_sc_region,'x'))				
+  and   nvl(a.od_sc_audit_agent,'x') = nvl(:p_source_agent, nvl(a.od_sc_audit_agent,'x'))				
+  and   nvl(a.od_pb_vendor_name,'x') = nvl(:p_vendor_name, nvl(a.od_pb_vendor_name,'x'))				
+  and   nvl(a.od_pb_factory_name,'x') = nvl(:p_factory_name, nvl(a.od_pb_factory_name,'x'))				
+  and   nvl(a.od_pb_company,'x') = nvl (:p_service_provider, nvl(a.od_pb_company,'x'))				
+  and   nvl(a.od_pb_attachment,'x') = nvl (:p_re_inspection, nvl(a.od_pb_attachment,'x'))				
+  and   nvl(a.od_pb_odgso_qa_engineer,'x') = nvl(:p_submitter, nvl(a.od_pb_odgso_qa_engineer,'x'))				
+  and   nvl(a.od_pb_odc_qa_engineer,'x') = nvl (:p_approver, nvl(a.od_pb_odc_qa_engineer,'x'))	
+  and   nvl(a.od_pb_art_test_report_number,'x')=nvl(:p_inspection_report,nvl(a.od_pb_art_test_report_number,'x'))	
+  and   nvl(a.od_pb_paid_by,'x') = nvl (:p_paid_by, nvl(a.od_pb_paid_by,'x'))				
+  and   nvl(b.od_ob_sku , 1)             = nvl(:p_sku , nvl(b.od_ob_sku , 1) )				
+  and   nvl(b.od_ob_dept_name,'x') = nvl (:p_department, nvl(b.od_ob_dept_name,'x'))				
+  and   nvl(b.od_pb_division,'x') = nvl (:P_DIVISION, nvl(b.od_pb_division,'x'))				
+  and   nvl(c.od_pb_failure_codes,'x')=nvl(:p_failure_type,nvl(c.od_pb_failure_codes,'x'))				
+  and   nvl(c.od_pb_defect_code,'x') = nvl (:p_defects_code, nvl(c.od_pb_defect_code,'x'))				
+  and   nvl(a.od_pb_inspection_result,'x') = nvl (:p_inspection_result,nvl(a.od_pb_inspection_result,'x'))
+]]>
+</sqlStatement>
+
+
+<sqlStatement name="Q_FQA_APP">
+<![CDATA[
+select count(distinct OD_FQA_ID)  "app_num1"
+			FROM q_od_ob_fqa_v qfqav
+		where
+		TRUNC(qfqav.creation_date) BETWEEN NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qfqav.creation_date)) 
+		         AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qfqav.creation_date))
+			 AND NVL(od_pb_proj_num,'X')=NVL( :P_PROJECT_NUMBER,NVL(od_pb_proj_num,'X'))
+			 AND NVL(od_sc_region,'X')=NVL( :P_REGION,NVL(od_sc_region,'X'))
+			 AND NVL(od_sc_audit_agent, 'X') = NVL ( :P_SOURCE_AGENT, NVL (od_sc_audit_agent, 'X'))
+			 AND NVL(od_pb_division,'X')=NVL( :P_DIVISION,NVL(od_pb_division,'X'))
+			 AND NVL (od_ob_vendor_name, 'X') = NVL ( :P_VENDOR_NAME, NVL (od_ob_vendor_name, 'X'))
+			 AND NVL (od_sc_factory_name, 'X') = NVL ( :P_FACTORY_NAME, NVL (od_sc_factory_name, 'X'))
+			 AND NVL (od_pb_approval_status, 'X') = NVL ( :P_APPROVAL_STATUS, NVL (od_pb_approval_status, 'X'))
+			 and NVL (OD_PB_AUDITOR_NAME, 'X') = NVL (:P_SUBMITTER, NVL (OD_PB_AUDITOR_NAME, 'X'))
+			 and NVL (OD_PB_QA_ENGR_EMAIL, 'X') = NVL (:P_APPROVER, NVL (OD_PB_QA_ENGR_EMAIL, 'X'))
+and od_pb_approval_status like 'A%'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_FAI_APP">
+ <![CDATA[
+
+select count(distinct QOOFV.OD_OB_FAI_ID)  "app_num2"
+FROM Q_OD_OB_FAI_V  QOOFV
+			, Q_OD_OB_FAI_SKU_V QOOFSV
+			WHERE QOOFV.OD_OB_FAI_ID    = QOOFSV.OD_OB_REF_REC_ID(+)
+				AND TRUNC(QOOFV.creation_date) BETWEEN  NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(QOOFV.creation_date)) 
+		         AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(QOOFV.creation_date))
+				AND NVL(QOOFV.OD_PB_PROJ_NUM,'X')             = NVL(:P_PROJECT_NUMBER,             NVL(QOOFV.OD_PB_PROJ_NUM,'X')        )
+				AND NVL(QOOFV.od_sc_region,'X')=NVL(:P_REGION,NVL(QOOFV.od_sc_region,'X'))
+				AND NVL(QOOFV.OD_SC_AUDIT_AGENT,'X')          = NVL(:P_SOURCE_AGENT,      NVL(QOOFV.OD_SC_AUDIT_AGENT,'X')     )
+				AND NVL(QOOFSV.OD_PB_SC_DEPT_NAME,'X')        = NVL(:P_DEPARTMENT,          NVL(QOOFSV.OD_PB_SC_DEPT_NAME,'X')   )
+				AND NVL(QOOFV.OD_OB_VENDOR_NAME,'X')          = NVL(:P_VENDOR_NAME,         NVL(QOOFV.OD_OB_VENDOR_NAME,'X')     )
+				AND NVL(QOOFV.OD_OB_FACTORY_NAME,'X')         = NVL(:P_FACTORY_NAME,        NVL(QOOFV.OD_OB_FACTORY_NAME,'X')    )
+				AND NVL(QOOFSV.OD_OB_SKU,1)                   = NVL(:P_SKU,                 NVL(QOOFSV.OD_OB_SKU,1)            )
+				AND NVL(QOOFSV.OD_PB_VENDOR_VPC,'X')          = NVL(:P_VPN,          NVL(QOOFSV.OD_PB_VENDOR_VPC,'X')   )
+				AND NVL(QOOFV.OD_PB_QA_ENGR_EMAIL,'X')        = NVL(:P_APPROVER,            NVL(QOOFV.OD_PB_QA_ENGR_EMAIL,'X')   )
+				AND NVL(QOOFV.OD_PB_APPROVAL_STATUS,'X')      = NVL(:P_APPROVAL_STATUS,     NVL(QOOFV.OD_PB_APPROVAL_STATUS,'X') )
+				AND NVL(QOOFV.OD_PB_AUDITOR_NAME,'X')         = NVL(:P_SUBMITTER,           NVL(QOOFV.OD_PB_AUDITOR_NAME,'X')    )
+and qoofv.od_pb_approval_status like 'A%'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PS_APP">
+<![CDATA[
+select count(distinct QOV.OD_OB_PS_ID)  "app_num3"
+FROM    Q_OD_OB_PS_V QOV
+				   ,Q_OD_OB_PS_SKU_V QOSV
+			WHERE  QOV.OD_OB_PS_ID = QOSV.OD_OB_REF_PS_ID(+)
+			  AND  TRUNC(QOV.creation_date) BETWEEN NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qov.creation_date)) 
+			AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qov.creation_date))
+			  			  AND  NVL(QOV.OD_PB_PROJ_NUM,'X') = NVL(:P_PROJECT_NUMBER,NVL(QOV.OD_PB_PROJ_NUM,'X'))
+			  AND  NVL(QOV.od_sc_region,'X')=NVL(:P_REGION,NVL(QOV.od_sc_region,'X'))
+			  AND  NVL(QOV.OD_SC_AUDIT_AGENT,'X')=NVL(:P_SOURCE_AGENT,NVL(QOV.OD_SC_AUDIT_AGENT,'X'))                          
+			  AND  NVL(QOSV.OD_PB_SC_DEPT_NAME,'X')= NVL(:P_DEPARTMENT,NVL(QOSV.OD_PB_SC_DEPT_NAME,'X'))
+			  AND  NVL(QOV.OD_OB_VENDOR_NAME,'X')=  Nvl(:P_VENDOR_NAME,Nvl(Qov.Od_Ob_Vendor_Name,'X'))
+			  And  Nvl(Qov.Od_ob_Factory_Name,'X')= NVL(:P_FACTORY_NAME,NVL(QOV.OD_OB_FACTORY_NAME,'X'))
+			  AND  NVL(QOSV.OD_OB_SKU,1) = NVL(:P_SKU,NVL(QOSV.OD_OB_SKU,1))
+			  AND  NVL(QOSV.OD_PB_VENDOR_VPC,'X')          = NVL(:P_VPN,          NVL(QOSV.OD_PB_VENDOR_VPC,'X')   )
+			  AND  NVL(QOV.OD_PB_APPROVAL_STATUS,'X')= Nvl(:P_APPROVAL_STATUS,Nvl(Qov.Od_Pb_Approval_Status,'X'))
+			  AND  NVL(QOV.OD_PB_AUDITOR_NAME,'X')= NVL(:P_SUBMITTER,NVL(QOV.OD_PB_AUDITOR_NAME,'X'))
+			  AND  NVL(QOV.OD_PB_QA_ENGR_EMAIL,'X')= NVL(:P_APPROVER,NVL(QOV.OD_PB_QA_ENGR_EMAIL,'X'))
+and od_pb_approval_status like 'A%'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PPT_APP">
+<![CDATA[
+select count(distinct qotsv.od_ob_test_id)  "app_num4"
+ FROM apps.q_od_ob_ppt_test_status_v	    qotsv
+	          ,	apps.q_od_ob_ppt_sku_v              qopsv
+              , apps.q_od_ob_ppt_v                  qopv
+          WHERE qopsv.od_ob_ref_pptid = qopv.od_ob_ppt_id
+			AND qotsv.od_ob_ref_pptid = qopv.od_ob_ppt_id
+			AND qotsv.OD_OB_PPTSKU_REFID = qopsv.OD_OB_PPTSKU_ID
+			AND  TRUNC(qopv.creation_date) BETWEEN NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qopv.creation_date)) 
+			AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qopv.creation_date))
+			 AND  NVL(qopv.od_pb_proj_num,'-1')          = NVL(:P_PROJECT_NUMBER,NVL(qopv.od_pb_proj_num,'-1'))
+            AND  NVL(qopv.od_sc_region,'X')            = NVL(:P_REGION,NVL(qopv.od_sc_region,'X'))
+            AND  NVL(qopv.od_sc_audit_agent,'X')       = NVL(:P_SOURCE_AGENT,NVL(qopv.od_sc_audit_agent,'X'))
+            AND  NVL(qopsv.od_pb_sc_dept_name,'X')      = NVL(:P_DEPARTMENT,NVL(qopsv.od_pb_sc_dept_name,'X'))
+            AND  NVL(qopv.od_ob_vendor_name,'X')       = NVL(:P_VENDOR_NAME,NVL(qopv.od_ob_vendor_name,'X'))
+            AND  NVL(qopv.od_ob_factory_name,'X')      = NVL(:P_FACTORY_NAME,NVL(qopv.od_ob_factory_name,'X'))
+            AND  NVL(qopsv.od_ob_sku,1)               = NVL(:P_SKU,NVL(qopsv.od_ob_sku,1))
+            AND  NVL(qopsv.od_pb_vendor_vpc,'X')        = NVL(:P_VPN,NVL(qopsv.od_pb_vendor_vpc,'X'))
+            AND  NVL(qopv.od_pb_auditor_name,'X')      = NVL(:P_SUBMITTER,NVL(qopv.od_pb_auditor_name,'X'))
+            AND  NVL(qopv.od_pb_qa_engr_email,'X')     = NVL(:P_APPROVER,NVL(qopv.od_pb_qa_engr_email,'X'))
+and  qotsv.OD_OB_PROD_INSP_RESULT='PASS'
+
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PPT1_APP">
+<![CDATA[
+select count(distinct qotsv.od_ob_test_id)  "app_num5"
+FROM apps.q_od_ob_ppt_test_status_v	    qotsv
+	          ,	apps.q_od_ob_ppt_sku_v              qopsv
+              , apps.q_od_ob_ppt_v                  qopv
+          WHERE qopsv.od_ob_ref_pptid = qopv.od_ob_ppt_id
+			AND qotsv.od_ob_ref_pptid = qopv.od_ob_ppt_id
+			AND qotsv.OD_OB_PPTSKU_REFID = qopsv.OD_OB_PPTSKU_ID
+			AND  TRUNC(qopv.creation_date) BETWEEN NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qopv.creation_date)) 
+			AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qopv.creation_date))
+			 AND  NVL(qopv.od_pb_proj_num,'-1')          = NVL(:P_PROJECT_NUMBER,NVL(qopv.od_pb_proj_num,'-1'))
+            AND  NVL(qopv.od_sc_region,'X')            = NVL(:P_REGION,NVL(qopv.od_sc_region,'X'))
+            AND  NVL(qopv.od_sc_audit_agent,'X')       = NVL(:P_SOURCE_AGENT,NVL(qopv.od_sc_audit_agent,'X'))
+            AND  NVL(qopsv.od_pb_sc_dept_name,'X')      = NVL(:P_DEPARTMENT,NVL(qopsv.od_pb_sc_dept_name,'X'))
+            AND  NVL(qopv.od_ob_vendor_name,'X')       = NVL(:P_VENDOR_NAME,NVL(qopv.od_ob_vendor_name,'X'))
+            AND  NVL(qopv.od_ob_factory_name,'X')      = NVL(:P_FACTORY_NAME,NVL(qopv.od_ob_factory_name,'X'))
+            AND  NVL(qopsv.od_ob_sku,1)               = NVL(:P_SKU,NVL(qopsv.od_ob_sku,1))
+            AND  NVL(qopsv.od_pb_vendor_vpc,'X')        = NVL(:P_VPN,NVL(qopsv.od_pb_vendor_vpc,'X'))
+            AND  NVL(qopv.od_pb_auditor_name,'X')      = NVL(:P_SUBMITTER,NVL(qopv.od_pb_auditor_name,'X'))
+            AND  NVL(qopv.od_pb_qa_engr_email,'X')     = NVL(:P_APPROVER,NVL(qopv.od_pb_qa_engr_email,'X'))
+and qotsv.OD_OB_TEST_TYPE='PRO'
+and  qotsv.OD_OB_PROD_INSP_RESULT='PASS'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PPT2_APP">
+<![CDATA[
+select count(distinct qotsv.od_ob_test_id)  "app_num6"
+FROM apps.q_od_ob_ppt_test_status_v	    qotsv
+	          ,	apps.q_od_ob_ppt_sku_v              qopsv
+              , apps.q_od_ob_ppt_v                  qopv
+          WHERE qopsv.od_ob_ref_pptid = qopv.od_ob_ppt_id
+			AND qotsv.od_ob_ref_pptid = qopv.od_ob_ppt_id
+			AND qotsv.OD_OB_PPTSKU_REFID = qopsv.OD_OB_PPTSKU_ID
+			AND  TRUNC(qopv.creation_date) BETWEEN NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qopv.creation_date)) 
+			AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qopv.creation_date))
+			 AND  NVL(qopv.od_pb_proj_num,'-1')          = NVL(:P_PROJECT_NUMBER,NVL(qopv.od_pb_proj_num,'-1'))
+            AND  NVL(qopv.od_sc_region,'X')            = NVL(:P_REGION,NVL(qopv.od_sc_region,'X'))
+            AND  NVL(qopv.od_sc_audit_agent,'X')       = NVL(:P_SOURCE_AGENT,NVL(qopv.od_sc_audit_agent,'X'))
+            AND  NVL(qopsv.od_pb_sc_dept_name,'X')      = NVL(:P_DEPARTMENT,NVL(qopsv.od_pb_sc_dept_name,'X'))
+            AND  NVL(qopv.od_ob_vendor_name,'X')       = NVL(:P_VENDOR_NAME,NVL(qopv.od_ob_vendor_name,'X'))
+            AND  NVL(qopv.od_ob_factory_name,'X')      = NVL(:P_FACTORY_NAME,NVL(qopv.od_ob_factory_name,'X'))
+            AND  NVL(qopsv.od_ob_sku,1)               = NVL(:P_SKU,NVL(qopsv.od_ob_sku,1))
+            AND  NVL(qopsv.od_pb_vendor_vpc,'X')        = NVL(:P_VPN,NVL(qopsv.od_pb_vendor_vpc,'X'))
+            AND  NVL(qopv.od_pb_auditor_name,'X')      = NVL(:P_SUBMITTER,NVL(qopv.od_pb_auditor_name,'X'))
+            AND  NVL(qopv.od_pb_qa_engr_email,'X')     = NVL(:P_APPROVER,NVL(qopv.od_pb_qa_engr_email,'X'))
+and qotsv.OD_OB_TEST_TYPE='ART'
+ and  qotsv.OD_OB_PROD_INSP_RESULT='PASS'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PPT3_APP">
+<![CDATA[
+select count(distinct qotsv.od_ob_test_id)  "app_num7"
+FROM apps.q_od_ob_ppt_test_status_v	    qotsv
+	          ,	apps.q_od_ob_ppt_sku_v              qopsv
+              , apps.q_od_ob_ppt_v                  qopv
+          WHERE qopsv.od_ob_ref_pptid = qopv.od_ob_ppt_id
+			AND qotsv.od_ob_ref_pptid = qopv.od_ob_ppt_id
+			AND qotsv.OD_OB_PPTSKU_REFID = qopsv.OD_OB_PPTSKU_ID
+			AND  TRUNC(qopv.creation_date) BETWEEN NVL(To_Date(:P_DATE_FROM,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qopv.creation_date)) 
+			AND NVL( To_Date(:P_DATE_TO,'YYYY/MM/DD HH24:MI:SS'),TRUNC(qopv.creation_date))
+			 AND  NVL(qopv.od_pb_proj_num,'-1')          = NVL(:P_PROJECT_NUMBER,NVL(qopv.od_pb_proj_num,'-1'))
+            AND  NVL(qopv.od_sc_region,'X')            = NVL(:P_REGION,NVL(qopv.od_sc_region,'X'))
+            AND  NVL(qopv.od_sc_audit_agent,'X')       = NVL(:P_SOURCE_AGENT,NVL(qopv.od_sc_audit_agent,'X'))
+            AND  NVL(qopsv.od_pb_sc_dept_name,'X')      = NVL(:P_DEPARTMENT,NVL(qopsv.od_pb_sc_dept_name,'X'))
+            AND  NVL(qopv.od_ob_vendor_name,'X')       = NVL(:P_VENDOR_NAME,NVL(qopv.od_ob_vendor_name,'X'))
+            AND  NVL(qopv.od_ob_factory_name,'X')      = NVL(:P_FACTORY_NAME,NVL(qopv.od_ob_factory_name,'X'))
+            AND  NVL(qopsv.od_ob_sku,1)               = NVL(:P_SKU,NVL(qopsv.od_ob_sku,1))
+            AND  NVL(qopsv.od_pb_vendor_vpc,'X')        = NVL(:P_VPN,NVL(qopsv.od_pb_vendor_vpc,'X'))
+            AND  NVL(qopv.od_pb_auditor_name,'X')      = NVL(:P_SUBMITTER,NVL(qopv.od_pb_auditor_name,'X'))
+            AND  NVL(qopv.od_pb_qa_engr_email,'X')     = NVL(:P_APPROVER,NVL(qopv.od_pb_qa_engr_email,'X'))
+and qotsv.OD_OB_TEST_TYPE='TRA'
+ and  qotsv.OD_OB_PROD_INSP_RESULT='PASS'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PSI_APP">
+<![CDATA[
+select  count(distinct a.od_ob_psi_id) "app_num8"				
+from 	apps.q_od_ob_psi_defects_v c,			
+	apps.q_od_ob_psi_sku_v b,			
+	apps.q_od_ob_psi_v a			
+where 	trunc(a.creation_date) 			
+ 	    between nvl(to_date(:p_date_from,'yyyy/mm/dd hh24:mi:ss'),trunc(a.creation_date)) 			
+        and nvl( to_date(:p_date_to,'yyyy/mm/dd hh24:mi:ss'),trunc(a.creation_date))				
+  and   b.od_ob_ref_psid=a.od_ob_psi_id				
+	  AND c.od_ob_ref_psid(+)=b.od_ob_ref_psid  
+   AND C.OD_OB_SKU(+)     =B.OD_OB_SKU  
+  AND   a.od_ob_psi_id=NVL(:p_psi_id,a.od_ob_psi_id)					
+  and   nvl(a.od_sc_region,'x') = nvl(:p_region,nvl(a.od_sc_region,'x'))				
+  and   nvl(a.od_sc_audit_agent,'x') = nvl(:p_source_agent, nvl(a.od_sc_audit_agent,'x'))				
+  and   nvl(a.od_pb_vendor_name,'x') = nvl(:p_vendor_name, nvl(a.od_pb_vendor_name,'x'))				
+  and   nvl(a.od_pb_factory_name,'x') = nvl(:p_factory_name, nvl(a.od_pb_factory_name,'x'))				
+  and   nvl(a.od_pb_company,'x') = nvl (:p_service_provider, nvl(a.od_pb_company,'x'))				
+  and   nvl(a.od_pb_attachment,'x') = nvl (:p_re_inspection, nvl(a.od_pb_attachment,'x'))				
+  and   nvl(a.od_pb_odgso_qa_engineer,'x') = nvl(:p_submitter, nvl(a.od_pb_odgso_qa_engineer,'x'))				
+  and   nvl(a.od_pb_odc_qa_engineer,'x') = nvl (:p_approver, nvl(a.od_pb_odc_qa_engineer,'x'))	
+  and   nvl(a.od_pb_art_test_report_number,'x')=nvl(:p_inspection_report,nvl(a.od_pb_art_test_report_number,'x'))	
+  and   nvl(a.od_pb_paid_by,'x') = nvl (:p_paid_by, nvl(a.od_pb_paid_by,'x'))				
+  and   nvl(b.od_ob_sku , 1)             = nvl(:p_sku , nvl(b.od_ob_sku , 1) )				
+  and   nvl(b.od_ob_dept_name,'x') = nvl (:p_department, nvl(b.od_ob_dept_name,'x'))				
+  and   nvl(b.od_pb_division,'x') = nvl (:P_DIVISION, nvl(b.od_pb_division,'x'))				
+  and   nvl(c.od_pb_failure_codes,'x')=nvl(:p_failure_type,nvl(c.od_pb_failure_codes,'x'))				
+  and   nvl(c.od_pb_defect_code,'x') = nvl (:p_defects_code, nvl(c.od_pb_defect_code,'x'))				
+  and   nvl(a.od_pb_inspection_result,'x') = nvl (:p_inspection_result,nvl(a.od_pb_inspection_result,'x'))
+ and  UPPER(a.od_pb_inspection_result)='PASS'
+]]>
+</sqlStatement>
+
+
+
+	</dataQuery>
+
+	<dataStructure>
+	<group name="G_FQA_COUNT" source="Q_FQA_COUNT">
+			<element name="NUM1" value="NUM1" />
+	</group>		
+	<group name="G_FAI_COUNT" source="Q_FAI_COUNT">
+			<element name="NUM2" value="NUM2" />
+	</group>
+	<group name="G_PS_COUNT" source="Q_PS_COUNT">
+				<element name="NUM3" value="NUM3" />
+	</group>
+	<group name="G_PPT_COUNT" source="Q_PPT_COUNT">
+			<element name="NUM4" value="NUM4" />
+	</group>
+
+	<group name="G_PPT1_COUNT" source="Q_PPT1_COUNT">
+				<element name="NUM5" value="NUM5" />
+	</group>
+	<group name="G_PPT2_COUNT" source="Q_PPT2_COUNT">
+				<element name="NUM6" value="NUM6" />
+	</group>
+	<group name="G_PPT3_COUNT" source="Q_PPT3_COUNT">
+				<element name="NUM7" value="NUM7" />
+	</group>
+	
+	
+	<group name="G_PPT_COUNT1" source="Q_PPT_COUNT1">
+			<element name="NUM41" value="NUM41" />
+	</group>
+
+	<group name="G_PPT1_COUNT1" source="Q_PPT1_COUNT1">
+				<element name="NUM51" value="NUM51" />
+	</group>
+	<group name="G_PPT2_COUNT1" source="Q_PPT2_COUNT1">
+				<element name="NUM61" value="NUM61" />
+	</group>
+	<group name="G_PPT3_COUNT1" source="Q_PPT3_COUNT1">
+				<element name="NUM71" value="NUM71" />
+				</group>
+	<group name="G_PSI_COUNT" source="Q_PSI_COUNT">
+				<element name="NUM8" value="NUM8" />
+				</group>
+	<group name="G_FQA_APP" source="Q_FQA_APP">
+			<element name="APP_NUM1" value="APP_NUM1" />
+</group>
+<group name="G_FAI_APP" source="Q_FAI_APP">
+			<element name="APP_NUM2" value="APP_NUM2" />
+			</group>
+<group name="G_PS_APP" source="Q_PS_APP">
+			<element name="APP_NUM3" value="APP_NUM3" />
+</group>
+<group name="G_PPT_APP" source="Q_PPT_APP">
+			<element name="APP_NUM4" value="APP_NUM4" />
+</group>
+<group name="G_PPT1_APP" source="Q_PPT1_APP">
+			<element name="APP_NUM5" value="APP_NUM5" />
+</group>
+<group name="G_PPT2_APP" source="Q_PPT2_APP">
+			<element name="APP_NUM6" value="APP_NUM6" />
+</group>
+<group name="G_PPT3_APP" source="Q_PPT3_APP">
+			<element name="APP_NUM7" value="APP_NUM7" />
+</group>
+<group name="G_PSI_APP" source="Q_PSI_APP">
+			<element name="APP_NUM8" value="APP_NUM8" />
+</group>
+
+	<group name="G_FQA_METRICSREP" source="Q_FQA_METRICSREP">
+			<element name="OD_FQA_ID" value="OD_FQA_ID" />
+			<element name="OD_PB_DIVISION" value="OD_PB_DIVISION" />
+			<element name="OD_SC_REGION" value="OD_SC_REGION" />
+			<element name="OD_PB_AUDITOR_NAME" value="OD_PB_AUDITOR_NAME" />
+			<element name="OD_PB_QA_ENGR_EMAIL" value="OD_PB_QA_ENGR_EMAIL" />
+			<element name="OD_OB_VENDOR_NAME" value="OD_OB_VENDOR_NAME" />
+			<element name="OD_SC_FACTORY_NAME" value="OD_SC_FACTORY_NAME" />
+			<element name="OD_PB_PROJ_NUM" value="OD_PB_PROJ_NUM" />
+			<element name="OD_SC_AUDIT_AGENT" value="OD_SC_AUDIT_AGENT" />
+			<element name="OD_PB_APPROVAL_STATUS" value="OD_PB_APPROVAL_STATUS" />
+			<element name="OD_FQA_CAP_ID" value="OD_FQA_CAP_ID" />
+			<element name="OD_PB_AUDIT_TYPE" value="OD_PB_AUDIT_TYPE" />
+			<element name="OD_PB_AUDIT_DATE" value="OD_PB_AUDIT_DATE" />
+			<element name="OD_OB_FQA_GENERAL" value="OD_OB_FQA_GENERAL" />
+			<element name="OD_PB_DESIGN_CONTROL_SCORE" value="OD_PB_DESIGN_CONTROL_SCORE" />
+			<element name="OD_PB_PURCHASE_CONTROL_SCORE" value="OD_PB_PURCHASE_CONTROL_SCORE" />
+			<element name="OD_PB_STORAGE_MANAGEMENT_SCORE" value="OD_PB_STORAGE_MANAGEMENT_SCORE" />
+			<element name="OD_PB_INCOMING_INSPECT_SCORE" value="OD_PB_INCOMING_INSPECT_SCORE" />
+			<element name="OD_PB_PRODUCTION_CONTROL_SCORE" value="OD_PB_PRODUCTION_CONTROL_SCORE" />
+			<element name="OD_PB_CONTINUOUS_IMPROVE_SCORE" value="OD_PB_CONTINUOUS_IMPROVE_SCORE" />
+			<element name="OD_PB_FQA_SCORE" value="OD_PB_FQA_SCORE" />
+			<element name="OD_OB_AUDIT_GRADE" value="OD_OB_AUDIT_GRADE" />
+			<element name="OD_PB_FQA_REAUDIT_TYPE" value="OD_PB_FQA_REAUDIT_TYPE" />
+			<element name="OD_PB_FQA_REAUDIT_D" value="OD_PB_FQA_REAUDIT_D" />
+		</group>
+	
+		<group name="G_FAI_METRICSREP" source="Q_FAI_METRICSREP">
+			<element name="OD_OB_FAI_ID" value="OD_OB_FAI_ID" />
+			<element name="OD_SC_REGION" value="OD_SC_REGION" />
+			<element name="OD_PB_SC_DEPT_NAME" value="OD_PB_SC_DEPT_NAME" />
+			<element name="OD_PB_AUDITOR_NAME" value="OD_PB_AUDITOR_NAME" />
+			<element name="OD_PB_QA_ENGR_EMAIL" value="OD_PB_QA_ENGR_EMAIL" />
+			<element name="OD_OB_VENDOR_NAME" value="OD_OB_VENDOR_NAME" />
+			<element name="OD_OB_FACTORY_NAME" value="OD_OB_FACTORY_NAME" />
+			<element name="OD_PB_PROJ_NUM" value="OD_PB_PROJ_NUM" />
+			<element name="OD_SC_AUDIT_AGENT" value="OD_SC_AUDIT_AGENT" />
+			<element name="OD_OB_SKU" value="OD_OB_SKU" />
+			<element name="OD_PB_ITEM_DESC" value="OD_PB_ITEM_DESC" />
+			<element name="OD_PB_VENDOR_VPC" value="OD_PB_VENDOR_VPC" />
+			<element name="OD_PB_APPROVAL_STATUS" value="OD_PB_APPROVAL_STATUS" />
+               <element name="OD_SC_INSPECTION_DATE" value="OD_SC_INSPECTION_DATE" />
+			<element name="OD_OB_REF_CAPID" value="OD_OB_REF_CAPID" />
+			<element name="OD_OB_AUDIT_RESULT" value="OD_OB_AUDIT_RESULT" />
+			<element name="OD_OB_GENERAL_RESULT" value="OD_OB_GENERAL_RESULT" />
+			<element name="OD_OB_PROCESS_INSP_RESULT" value="OD_OB_PROCESS_INSP_RESULT" />
+			<element name="OD_OB_PROD_INSP_RESULT" value="OD_OB_PROD_INSP_RESULT" />
+			<element name="OD_OB_PKG_INSP_RESULT" value="OD_OB_PKG_INSP_RESULT" />
+			<element name="OD_OB_TESTING_INSP_RESULT" value="OD_OB_TESTING_INSP_RESULT" />
+			<element name="OD_OB_INSP_PROTOCOL_RESULT" value="OD_OB_INSP_PROTOCOL_RESULT" />
+		</group>
+
+		<group name="G_PS_METRICSREP" source="Q_PS_METRICSREP">
+			<element name="OD_OB_PS_ID" value="OD_OB_PS_ID" />
+			<element name="OD_PB_SC_DEPT_NAME" value="OD_PB_SC_DEPT_NAME" />
+			<element name="OD_SC_REGION" value="OD_SC_REGION" />
+			<element name="OD_PB_AUDITOR_NAME" value="OD_PB_AUDITOR_NAME" />
+<element name="OD_OB_VENDOR_NAME" value="OD_OB_VENDOR_NAME" />
+			<element name="OD_OB_FACTORY_NAME" value="OD_OB_FACTORY_NAME" />
+			<element name="OD_PB_QA_ENGR_EMAIL" value="OD_PB_QA_ENGR_EMAIL" />
+			<element name="OD_PB_PROJ_NUM" value="OD_PB_PROJ_NUM" />
+			<element name="OD_SC_AUDIT_AGENT" value="OD_SC_AUDIT_AGENT" />
+			<element name="OD_OB_SKU" value="OD_OB_SKU" />
+			<element name="OD_PB_ITEM_DESC" value="OD_PB_ITEM_DESC" />
+			<element name="OD_PB_VENDOR_VPC" value="OD_PB_VENDOR_VPC" />
+			<element name="OD_PB_APPROVAL_STATUS" value="OD_PB_APPROVAL_STATUS" />
+			<element name="OD_PB_DATE_REQUESTED" value="OD_PB_DATE_REQUESTED" />
+			<element name="OD_PB_DATE_REPORTED" value="OD_PB_DATE_REPORTED" />
+		</group>
+
+		<group name="G_PPT_METRICSREP" source="Q_PPT_METRICSREP">
+			<element name="OD_OB_PPT_ID" value="OD_OB_PPT_ID" />
+			<element name="OD_PB_SC_DEPT_NAME" value="OD_PB_SC_DEPT_NAME" />
+			<element name="OD_SC_REGION" value="OD_SC_REGION" />
+			<element name="OD_PB_QA_ENGR_EMAIL" value="OD_PB_QA_ENGR_EMAIL" />
+			<element name="OD_OB_VENDOR_NAME" value="OD_OB_VENDOR_NAME" />
+        <element name="OD_PB_AUDITOR_NAME" value="OD_PB_AUDITOR_NAME" />    
+			<element name="OD_OB_FACTORY_NAME" value="OD_OB_FACTORY_NAME" />
+			<element name="OD_PB_PROJ_NUM" value="OD_PB_PROJ_NUM" />
+			<element name="OD_SC_AUDIT_AGENT" value="OD_SC_AUDIT_AGENT" />
+			<element name="OD_OB_SKU" value="OD_OB_SKU" />
+			<element name="OD_PB_ITEM_DESC" value="OD_PB_ITEM_DESC" />
+			<element name="OD_PB_VENDOR_VPC" value="OD_PB_VENDOR_VPC" />
+			<element name="OD_OB_PROD_INSP_RESULT" value="OD_OB_PROD_INSP_RESULT" />
+			<element name="OD_PB_DATE_DUE" value="OD_PB_DATE_DUE" />
+			<element name="OD_PB_DATE_REPORTED" value="OD_PB_DATE_REPORTED" />
+			<element name="OD_PB_EVALUATION_DATE" value="OD_PB_EVALUATION_DATE" />
+			<element name="OD_PB_DATE_KICKOFF" value="OD_PB_DATE_KICKOFF" />
+			<element name="OD_PB_DATE_VERIFIED" value="OD_PB_DATE_VERIFIED" />
+			<element name="VERIFIED" value="VERIFIED" />
+			<element name="OD_PB_DATE_SAMPLE_SENT" value="OD_PB_DATE_SAMPLE_SENT" />
+			<element name="OD_PB_DATE_SAMPLE_RECEIVED" value="OD_PB_DATE_SAMPLE_RECEIVED" />
+			<element name="OD_PB_DATE_VERIFIED" value="OD_PB_DATE_VERIFIED" />
+			<element name="OD_OB_SKU_STATUS" value="OD_OB_SKU_STATUS" />
+			<element name="OD_OB_SKU_GRP" value="OD_OB_SKU_GRP" />
+			<element name="OD_OB_TEST_TYPE" value="OD_OB_TEST_TYPE" />
+			<element name="OD_OB_TEST_STATUS" value="OD_OB_TEST_STATUS" />
+			<element name="OD_PB_VERIFICATION_COMMENTS" value="OD_PB_VERIFICATION_COMMENTS" />
+			<element name="OD_PB_COMPANY" value="OD_PB_COMPANY" />
+			<element name="OD_OB_LAB_LOCATION" value="OD_OB_LAB_LOCATION" />
+			<element name="OD_PB_PROTOCOL_NUMBER" value="OD_PB_PROTOCOL_NUMBER" />
+			<element name="OD_PB_REPORT_NUMBER" value="OD_PB_REPORT_NUMBER" />
+		</group>
+
+		<group name="G_CC_METRICSREP" source="Q_CC_METRICSREP">
+			<element name="OD_PB_CUSTOMER_COMPLAINT_ID" value="OD_PB_CUSTOMER_COMPLAINT_ID" />
+			<element name="OD_PB_SC_DEPT_NAME" value="OD_PB_SC_DEPT_NAME" />
+			<element name="OD_SC_REGION" value="OD_SC_REGION" />
+			<element name="OD_PB_AUDITOR_NAME" value="OD_PB_AUDITOR_NAME" />
+			<element name="OD_PB_QA_ENGR_EMAIL" value="OD_PB_QA_ENGR_EMAIL" />
+			<element name="OD_OB_VENDOR_NAME" value="OD_OB_VENDOR_NAME" />
+			<element name="OD_OB_FACTORY_NAME" value="OD_OB_FACTORY_NAME" />
+			<element name="OD_SC_AUDIT_AGENT" value="OD_SC_AUDIT_AGENT" />
+			<element name="OD_OB_SKU" value="OD_OB_SKU" />
+			<element name="OD_PB_ITEM_DESC" value="OD_PB_ITEM_DESC" />
+			<element name="OD_OB_REF_CAPID" value="OD_OB_REF_CAPID" />
+			<element name="OD_PB_DATE_OPENED" value="OD_PB_DATE_OPENED" />
+			<element name="OD_PB_DATE_CLOSED" value="OD_PB_DATE_CLOSED" />
+			<element name="OD_PB_DATE_SAMPLE_SENT" value="OD_PB_DATE_SAMPLE_SENT" />
+			<element name="OD_PB_DATE_SAMPLE_RECEIVED" value="OD_PB_DATE_SAMPLE_RECEIVED" />
+			<element name="OD_PB_DEFECT_SUM" value="OD_PB_DEFECT_SUM" />
+			<element name="OD_PB_DEFECT_CODE" value="OD_PB_DEFECT_CODE" />
+			<element name="OD_PB_ROOT_CAUSE_TYPE" value="OD_PB_ROOT_CAUSE_TYPE" />
+		</group>
+				   
+		<group name="G_SPC_METRICSREP" source="Q_SPC_METRICSREP">
+			<element name="OD_OB_SPC_ID" value="OD_OB_SPC_ID" />
+			<element name="OD_PB_SC_DEPT_NAME" value="OD_PB_SC_DEPT_NAME" />
+			<element name="OD_SC_REGION" value="OD_SC_REGION" />
+			<element name="OD_PB_AUDITOR_NAME" value="OD_PB_AUDITOR_NAME" />
+			<element name="OD_PB_QA_ENGR_EMAIL" value="OD_PB_QA_ENGR_EMAIL" />
+			<element name="OD_OB_REF_CAPID" value="OD_OB_REF_CAPID" />
+			<element name="OD_PB_DATE_OPENED" value="OD_PB_DATE_OPENED" />
+			<element name="OD_PB_DATE_CORR_IMPL" value="OD_PB_DATE_CORR_IMPL" />
+			<element name="OD_PB_COMPANY" value="OD_PB_COMPANY" />
+			<element name="OD_PB_SERVICE_LOCATION" value="OD_PB_SERVICE_LOCATION" />
+			<element name="OD_PB_TECH_RPT_NUM" value="OD_PB_TECH_RPT_NUM" />
+			<element name="OD_PB_DEFECT_SUM" value="OD_PB_DEFECT_SUM" />
+			<element name="OD_PB_DEFECT_CODE" value="OD_PB_DEFECT_CODE" />
+		</group>
+
+		<group name="G_SPA_METRICSREP" source="Q_SPA_METRICSREP">
+			<element name="OD_OB_SPA_ID" value="OD_OB_SPA_ID" />
+			<element name="OD_PB_SC_DEPT_NAME" value="OD_PB_SC_DEPT_NAME" />
+			<element name="OD_SC_REGION" value="OD_SC_REGION" />
+			<element name="OD_PB_AUDITOR_NAME" value="OD_PB_AUDITOR_NAME" />
+			<element name="OD_PB_QA_ENGR_EMAIL" value="OD_PB_QA_ENGR_EMAIL" />
+			<element name="OD_OB_VENDOR_NAME" value="OD_OB_VENDOR_NAME" />
+			<element name="OD_OB_FACTORY_NAME" value="OD_OB_FACTORY_NAME" />
+			<element name="OD_PB_PROJ_NUM" value="OD_PB_PROJ_NUM" />
+			<element name="OD_SC_AUDIT_AGENT" value="OD_SC_AUDIT_AGENT" />
+			<element name="OD_OB_SKU" value="OD_OB_SKU" />
+			<element name="OD_PB_ITEM_DESC" value="OD_PB_ITEM_DESC" />
+			<element name="OD_PB_VENDOR_VPC" value="OD_PB_VENDOR_VPC" />
+			<element name="OD_OB_SPA_STATUS" value="OD_OB_SPA_STATUS" />
+			<element name="OD_OB_REF_CAPID" value="OD_OB_REF_CAPID" />
+			<element name="OD_PB_FQA_REQUESTER" value="OD_PB_FQA_REQUESTER" />
+			<element name="OD_PB_COMPANY" value="OD_PB_COMPANY" />
+			<element name="OD_OB_VENDOR_NAME" value="OD_OB_VENDOR_NAME" />
+			<element name="OD_PB_SERVICE_LOCATION" value="OD_PB_SERVICE_LOCATION" />
+			<element name="OD_PB_CASE_NUMBER" value="OD_PB_CASE_NUMBER" />
+			<element name="OD_PB_TECH_RPT_NUM" value="OD_PB_TECH_RPT_NUM" />
+			<element name="OD_PB_AUDIT_TYPE" value="OD_PB_AUDIT_TYPE" />
+			<element name="OD_PB_PO_NUM" value="OD_PB_PO_NUM" />
+			<element name="OD_SC_COMPLETE_BY_START_DATE" value="OD_SC_COMPLETE_BY_START_DATE" />
+			<element name="OD_SC_COMPLETE_BY_END_DATE" value="OD_SC_COMPLETE_BY_END_DATE" />
+			<element name="OD_PB_DATE_CORR_IMPL" value="OD_PB_DATE_CORR_IMPL" />
+		</group>
+
+		<group name="G_SA_METRICSREP" source="Q_SA_METRICSREP">
+			<element name="od_ob_sa_id" value="od_ob_sa_id" />
+			<element name="OD_PB_SC_DEPT_NAME" value="OD_PB_SC_DEPT_NAME" />
+			<element name="OD_SC_REGION" value="OD_SC_REGION" />
+			<element name="OD_SC_AUDIT_AGENT" value="OD_SC_AUDIT_AGENT" />
+			<element name="OD_PB_AUDITOR_NAME" value="OD_PB_AUDITOR_NAME" />
+			<element name="OD_PB_QA_ENGR_EMAIL" value="OD_PB_QA_ENGR_EMAIL" />
+			<element name="OD_OB_VENDOR_NAME" value="OD_OB_VENDOR_NAME" />
+			<element name="OD_OB_FACTORY_NAME" value="OD_OB_FACTORY_NAME" />
+			<element name="OD_OB_SKU" value="OD_OB_SKU" />
+			<element name="OD_PB_ITEM_DESC" value="OD_PB_ITEM_DESC" />
+			<element name="OD_OB_SAMPLE_STATUS" value="OD_OB_SAMPLE_STATUS" />
+			<element name="OD_PB_DATE_SAMPLE_SENT" value="OD_PB_DATE_SAMPLE_SENT" />
+			<element name="OD_OB_SAMPLE_STAGE" value="OD_OB_SAMPLE_STAGE" />
+		</group>
+
+		<group name="G_ECR_METRICSREP" source="Q_ECR_METRICSREP">
+			<element name="OD_PB_ECR_ID" value="OD_PB_ECR_ID" />
+			<element name="OD_PB_SC_DEPT_NAME" value="OD_PB_SC_DEPT_NAME" />
+			<element name="OD_SC_REGION" value="OD_SC_REGION" />
+			<element name="OD_PB_QA_ENGINEER" value="OD_PB_QA_ENGINEER" />
+			<element name="OD_PB_QA_ENGR_EMAIL" value="OD_PB_QA_ENGR_EMAIL" />
+			<element name="OD_OB_VENDOR_NAME" value="OD_OB_VENDOR_NAME" />
+			<element name="OD_OB_FACTORY_NAME" value="OD_OB_FACTORY_NAME" />
+			<element name="OD_OB_SKU" value="OD_OB_SKU" />
+			<element name="OD_PB_ITEM_DESC" value="OD_PB_ITEM_DESC" />
+			<element name="OD_PB_APPROVAL_STATUS" value="OD_PB_APPROVAL_STATUS" />
+			<element name="OD_PB_DATE_REQUESTED" value="OD_PB_DATE_REQUESTED" />
+			<element name="OD_PB_DATE_PROPOSED_PRODUCTION" value="OD_PB_DATE_PROPOSED_PRODUCTION" />
+			<element name="OD_PB_CHANGE_DESC" value="OD_PB_CHANGE_DESC" />
+			<element name="OD_PB_CHG_CAT_AESTHETICS" value="OD_PB_CHG_CAT_AESTHETICS" />
+			<element name="OD_PB_CHG_CAT_DESIGN" value="OD_PB_CHG_CAT_DESIGN" />
+			<element name="OD_PB_CHG_CAT_LOCATION" value="OD_PB_CHG_CAT_LOCATION" />
+			<element name="OD_PB_CHG_CAT_PACKAGING" value="OD_PB_CHG_CAT_PACKAGING" />
+			<element name="OD_PB_CHG_CAT_PERFORMANCE" value="OD_PB_CHG_CAT_PERFORMANCE" />
+			<element name="OD_PB_CHG_CAT_SAFETY" value="OD_PB_CHG_CAT_SAFETY" />
+			<element name="OD_PB_CHG_CAT_SOFTWARE" value="OD_PB_CHG_CAT_SOFTWARE" />
+			<element name="OD_PB_CHG_CAT_SUBSTITUTION" value="OD_PB_CHG_CAT_SUBSTITUTION" />
+			<element name="OD_PB_TECH_RPT_NUM" value="OD_PB_TECH_RPT_NUM" />
+		</group>
+
+		<group name="G_CAP_METRICSREP" source="Q_CAP_METRICSREP">
+			<element name="OD_PB_CAR_ID" value="OD_PB_CAR_ID" />
+			<element name="OD_PB_SC_DEPT_NAME" value="OD_PB_SC_DEPT_NAME" />
+			<element name="OD_SC_REGION" value="OD_SC_REGION" />
+			<element name="OD_PB_AUDITOR_NAME" value="OD_PB_AUDITOR_NAME" />
+			<element name="OD_PB_QA_ENGR_EMAIL" value="OD_PB_QA_ENGR_EMAIL" />
+			<element name="VENDOR_NAME" value="VENDOR_NAME" />
+			<element name="FACTORY_NAME" value="FACTORY_NAME" />
+			<element name="OD_SC_AUDIT_AGENT" value="OD_SC_AUDIT_AGENT" />
+			<element name="OD_OB_SKU" value="OD_OB_SKU" />
+			<element name="OD_PB_ITEM_DESC" value="OD_PB_ITEM_DESC" />
+			<element name="OD_PB_VENDOR_VPC" value="OD_PB_VENDOR_VPC" />
+			<element name="OD_PB_APPROVAL_STATUS" value="OD_PB_APPROVAL_STATUS" />
+			<element name="OD_OB_QA_ID" value="OD_OB_QA_ID" />
+			<element name="OD_PB_DATE_CAPA_SENT" value="OD_PB_DATE_CAPA_SENT" />
+			<element name="OD_PB_DATE_CAPA_RECEIVED" value="OD_PB_DATE_CAPA_RECEIVED" />
+			<element name="OD_PB_DATE_APPROVED" value="OD_PB_DATE_APPROVED" />
+			<element name="OD_PB_TECH_RPT_NUM" value="OD_PB_TECH_RPT_NUM" />
+			<element name="OD_OB_DS_ID" value="OD_OB_DS_ID" />
+			<element name="OD_PB_DEFECT_SUM" value="OD_PB_DEFECT_SUM" />
+			<element name="OD_PB_ROOT_CAUSE" value="OD_PB_ROOT_CAUSE" />
+			<element name="OD_PB_CORR_ACTION" value="OD_PB_CORR_ACTION" />
+			<element name="OD_PB_PREVENTIVE_ACTION" value="OD_PB_PREVENTIVE_ACTION" />
+<element name="OD_PB_DATE_CORR_IMPL" value="OD_PB_DATE_CORR_IMPL" />
+<element name="APP_STATUS" value="APP_STATUS" />
+<element name="DATE_APP" value="DATE_APP" />
+			<element name="OD_PB_APPROVAL_STATUS" value="OD_PB_APPROVAL_STATUS" />
+			<element name="OD_PB_DATE_APPROVED" value="OD_PB_DATE_APPROVED" />
+			<element name="OD_OB_VN_ID" value="OD_OB_VN_ID" />
+			<element name="OD_PB_DATE_VERIFIED" value="OD_PB_DATE_VERIFIED" />
+			<element name="OD_OB_VERIFICATION_METHOD" value="OD_OB_VERIFICATION_METHOD" />
+		</group>
+
+		<group name="G_VN_METRICSREP" source="Q_VN_METRICSREP">
+			<element name="OD_OB_VNID" value="OD_OB_VNID" />
+			<element name="OD_PB_SC_DEPT_NAME" value="OD_PB_SC_DEPT_NAME" />
+			<element name="OD_SC_REGION" value="OD_SC_REGION" />
+			<element name="OD_PB_AUDITOR_NAME" value="OD_PB_AUDITOR_NAME" />
+			<element name="OD_PB_QA_ENGR_EMAIL" value="OD_PB_QA_ENGR_EMAIL" />
+			<element name="OD_OB_VENDOR_NAME" value="OD_OB_VENDOR_NAME" />
+			<element name="OD_OB_FACTORY_NAME" value="OD_OB_FACTORY_NAME" />
+			<element name="OD_PB_SOURCING_AGENT" value="OD_PB_SOURCING_AGENT" />
+			<element name="OD_OB_SKU" value="OD_OB_SKU" />
+			<element name="OD_PB_ITEM_DESC" value="OD_PB_ITEM_DESC" />
+			<element name="OD_OB_VPN" value="OD_OB_VPN" />
+			<element name="OD_PB_APPROVAL_STATUS" value="OD_PB_APPROVAL_STATUS" />
+       	<element name="OD_OB_VN_CAP_ID" value="OD_OB_VN_CAP_ID" />
+			<element name="OD_OB_ACTIVITY_ID" value="OD_OB_ACTIVITY_ID" />
+		<element name="OD_OB_VN_DATE" value="OD_OB_VN_DATE" />  
+		<element name="OD_PB_DATE_APPROVED" value="OD_PB_DATE_APPROVED" />  
+		<element name="OD_OB_VN_DS_ID" value="OD_OB_VN_DS_ID" />  
+		<element name="OD_SC_VENDOR_STATUS" value="OD_SC_VENDOR_STATUS" /> 
+		<element name="OD_PB_REPORT_NUMBER" value="OD_PB_REPORT_NUMBER" />  
+		<element name="OD_PB_VERIFICATION_REQUIRED" value="OD_PB_VERIFICATION_REQUIRED" />  
+			<element name="OD_PB_DATE_VERIFIED" value="OD_PB_DATE_VERIFIED" /> 
+			<element name="OD_PB_DEFECT_SUM" value="OD_PB_DEFECT_SUM" />  
+			<element name="OD_OB_REASON" value="OD_OB_REASON" />  
+		</group>
+
+		
+		<group name="G_RGA_METRICSREP" source="Q_RGA_METRICSREP">
+			<element name="OD_OB_RGA_ID" value="OD_OB_RGA_ID" />
+			<element name="OD_PB_SC_DEPT_NAME" value="OD_PB_SC_DEPT_NAME" />
+			<element name="OD_SC_REGION" value="OD_SC_REGION" />
+			<element name="OD_PB_AUDITOR_NAME" value="OD_PB_AUDITOR_NAME" />
+			<element name="OD_PB_QA_ENGR_EMAIL" value="OD_PB_QA_ENGR_EMAIL" />
+			<element name="OD_OB_VENDOR_NAME" value="OD_OB_VENDOR_NAME" />
+			<element name="OD_SC_AUDIT_AGENT" value="OD_SC_AUDIT_AGENT" />
+			<element name="OD_OB_SKU" value="OD_OB_SKU" />
+			<element name="OD_PB_ITEM_DESC" value="OD_PB_ITEM_DESC" />
+			<element name="OD_PB_APPROVAL_STATUS" value="OD_PB_APPROVAL_STATUS" />
+			<element name="OD_OB_REF_CAPID" value="OD_OB_REF_CAPID" />
+			<element name="OD_SC_SCHEDULED_DATE" value="OD_SC_SCHEDULED_DATE" />
+			<element name="OD_OB_PICKUP_LOCATION" value="OD_OB_PICKUP_LOCATION" />
+			<element name="OD_PB_VENDOR_COMMENTS" value="OD_PB_VENDOR_COMMENTS" />
+			<element name="OD_PB_REASON_CODE" value="OD_PB_REASON_CODE" />
+			<element name="OD_OB_DISPUTE_YN" value="OD_OB_DISPUTE_YN" />
+			<element name="OD_PB_DEFECT_CODE" value="OD_PB_DEFECT_CODE" />
+			<element name="OD_PB_ENGINEER_FINDINGS" value="OD_PB_ENGINEER_FINDINGS" />
+			<element name="OD_PB_SAMPLE_DISPOSITION" value="OD_PB_SAMPLE_DISPOSITION" />
+		</group>
+
+		
+		<group name="G_W_METRICSREP" source="Q_W_METRICSREP">
+			<element name="OD_OB_WITHDRAWAL_ID" value="OD_OB_WITHDRAWAL_ID" />
+			<element name="OD_SC_REGION" value="OD_SC_REGION" />
+			<element name="OD_PB_AUDITOR_NAME" value="OD_PB_AUDITOR_NAME" />
+			<element name="OD_PB_QA_ENGR_EMAIL" value="OD_PB_QA_ENGR_EMAIL" />
+			<element name="od_ob_vendor_name" value="od_ob_vendor_name" />
+			<element name="OD_OB_FACTORY_NAME" value="OD_OB_FACTORY_NAME" />
+			<element name="OD_SC_AUDIT_AGENT" value="OD_SC_AUDIT_AGENT" />
+			<element name="OD_OB_WITHDRAWAL_STATUS" value="OD_OB_WITHDRAWAL_STATUS" />
+			<element name="OD_OB_SKU" value="OD_OB_SKU" />
+			<element name="OD_PB_ITEM_DESC" value="OD_PB_ITEM_DESC" />
+			<element name="OD_OB_WITHDRAWAL_TYPE" value="OD_OB_WITHDRAWAL_TYPE" />
+			<element name="OD_PB_DEFECT_SUM" value="OD_PB_DEFECT_SUM" />
+			<element name="OD_PB_ENTITY" value="OD_PB_ENTITY" />
+			<element name="OD_PB_COST_ASSOCIATED" value="OD_PB_COST_ASSOCIATED" />
+			<element name="OD_SC_PAY_AMOUNT" value="OD_SC_PAY_AMOUNT" />
+			<element name="OD_SC_NUM_WORKERS" value="OD_SC_NUM_WORKERS" />
+		</group>
+
+		<group name="G_FD_METRICSREP" source="Q_FD_METRICSREP">
+			<element name="OD_OB_FD_ID" value="OD_OB_FD_ID" />
+			<element name="OD_SC_REGION" value="OD_SC_REGION" />
+			<element name="OD_PB_AUDITOR_NAME" value="OD_PB_AUDITOR_NAME" />
+			<element name="OD_PB_QA_ENGR_EMAIL" value="OD_PB_QA_ENGR_EMAIL" />
+			<element name="OD_OB_VENDOR_NAME" value="OD_OB_VENDOR_NAME" />
+			<element name="OD_OB_FACTORY_NAME" value="OD_OB_FACTORY_NAME" />
+			<element name="OD_SC_AUDIT_AGENT" value="OD_SC_AUDIT_AGENT" />
+			<element name="OD_OB_FD_DATE" value="OD_OB_FD_DATE" />
+			<element name="OD_OB_PRIMARY_PRODUCTS" value="OD_OB_PRIMARY_PRODUCTS" />
+			<element name="OD_OB_IQC_PASS_PCT" value="OD_OB_IQC_PASS_PCT" />
+			<element name="OD_OB_IQC_SAMPLE_SZ" value="OD_OB_IQC_SAMPLE_SZ" />
+			<element name="OD_OB_IQC_DEFECTS" value="OD_OB_IQC_DEFECTS" />
+			<element name="OD_OB_QC_PASS_PCT" value="OD_OB_QC_PASS_PCT" />
+			<element name="OD_OB_QC_SAMPLE_SZ" value="OD_OB_QC_SAMPLE_SZ" />
+			<element name="OD_OB_QC_DEFECTS" value="OD_OB_QC_DEFECTS" />
+			<element name="OD_OB_FGI_PASS_PCT" value="OD_OB_FGI_PASS_PCT" />
+			<element name="OD_OB_FGI_QTY" value="OD_OB_FGI_QTY" />
+			<element name="OD_OB_FQC_SAMPLE_SZ" value="OD_OB_FQC_SAMPLE_SZ" />
+			<element name="OD_OB_FQC_DEFECTS" value="OD_OB_FQC_DEFECTS" />
+			<element name="OD_OB_QA_SCOPE" value="OD_OB_QA_SCOPE" />
+			<element name="OD_OB_FD_FREQUENCY" value="OD_OB_FD_FREQUENCY" />
+			<element name="OD_OB_INSPECTION_TYPE" value="OD_OB_INSPECTION_TYPE" />
+			<element name="OD_PB_DEFECT_SUM" value="OD_PB_DEFECT_SUM" />
+			<element name="OD_PB_DEFECT_CODE" value="OD_PB_DEFECT_CODE" />
+			<element name="OD_OB_DEFECT_PCT" value="OD_OB_DEFECT_PCT" />
+		</group>
+
+		<group name="G_REG_CERT_METRICSREP" source="Q_REG_CERT_METRICSREP">
+				<element name="OD_OB_REG_ID" value="OD_OB_REG_ID" />
+			<element name="OD_SC_REGION" value="OD_SC_REGION" />
+			<element name="OD_PB_AUDITOR_NAME" value="OD_PB_AUDITOR_NAME" />
+			<element name="OD_PB_QA_ENGR_EMAIL" value="OD_PB_QA_ENGR_EMAIL" />
+			<element name="OD_OB_VENDOR_NAME" value="OD_OB_VENDOR_NAME" />
+			<element name="OD_OB_FACTORY_NAME" value="OD_OB_FACTORY_NAME" />
+			<element name="OD_SC_AUDIT_AGENT" value="OD_SC_AUDIT_AGENT" />
+			<element name="OD_OB_SKU" value="OD_OB_SKU" />
+			<element name="OD_PB_ITEM_DESC" value="OD_PB_ITEM_DESC" />
+			
+			<element name="OD_OB_REG_STATUS" value="OD_OB_REG_STATUS" />
+			<element name="OD_OB_REG_DATE" value="OD_OB_REG_DATE" />
+			<element name="OD_OB_REG_DUE_DATE" value="OD_OB_REG_DUE_DATE" />
+			<element name="OD_OB_REG_TYPE" value="OD_OB_REG_TYPE" />
+			<element name="OD_PB_DATE_RENEW" value="OD_PB_DATE_RENEW" />
+			<element name="OD_OB_REG_NO" value="OD_OB_REG_NO" />
+			<element name="OD_PB_COST_ASSOCIATED" value="OD_PB_COST_ASSOCIATED" />
+			<element name="OD_PB_ENTITY" value="OD_PB_ENTITY" />
+					</group>
+
+		<group name="G_POS_METRICSREP" source="Q_POS_METRICSREP">
+			<element name="OD_PB_SC_DEPT_NAME" value="OD_PB_SC_DEPT_NAME" />
+			<element name="OD_OB_SKU" value="OD_OB_SKU" />
+			<element name="OD_PB_ITEM_DESC" value="OD_PB_ITEM_DESC" />
+			<element name="OD_OB_REG_DATE" value="OD_OB_REG_DATE" />
+			<element name="OD_PB_RESOURCE_NUMBER" value="OD_PB_RESOURCE_NUMBER" />
+			<element name="OD_PB_STORE_NUMBER" value="OD_PB_STORE_NUMBER" />
+			<element name="OD_PB_COMMENTS" value="OD_PB_COMMENTS" />
+		</group>
+
+		<group name="G_QMR_CC_METRICSREP" source="Q_QMR_CC_METRICSREP">
+			<element name="OD_SC_ENTRY_DATE" value="OD_SC_ENTRY_DATE" />
+			<element name="OD_PB_CASE_NUMBER" value="OD_PB_CASE_NUMBER" />
+			<element name="OD_OB_SAFETY" value="OD_OB_SAFETY" />
+			<element name="OD_OB_SOURCE" value="OD_OB_SOURCE" />
+			<element name="OD_OB_SKU" value="OD_OB_SKU" />
+			<element name="OD_OB_MFG_DATE" value="OD_OB_MFG_DATE" />
+			<element name="OD_OB_PUR_DATE" value="OD_OB_PUR_DATE" />
+			<element name="OD_OB_ISSUE_TYPE" value="OD_OB_ISSUE_TYPE" />
+			<element name="OD_OB_REASON" value="OD_OB_REASON" />
+			<element name="OD_OB_STATE" value="OD_OB_STATE" />
+		</group>
+
+		<group name="G_QMR_BAZ_METRICSREP" source="Q_QMR_BAZ_METRICSREP">
+			<element name="OD_OB_REVIEW_ID" value="OD_OB_REVIEW_ID" />
+			<element name="OD_SC_ENTRY_DATE" value="OD_SC_ENTRY_DATE" />
+			<element name="OD_OB_SKU" value="OD_OB_SKU" />
+			<element name="OD_PB_ITEM_DESC" value="OD_PB_ITEM_DESC" />
+			<element name="OD_OB_OVERALL_RAT" value="OD_OB_OVERALL_RAT" />
+			<element name="OD_OB_MEET_EXPECT" value="OD_OB_MEET_EXPECT" />
+			<element name="OD_OB_QUALITY_RAT" value="OD_OB_QUALITY_RAT" />
+			<element name="OD_OB_REC_FRND" value="OD_OB_REC_FRND" />
+			<element name="OD_OB_PROS" value="OD_OB_PROS" />
+			<element name="OD_OB_CONS" value="OD_OB_CONS" />
+		</group>
+
+		<group name="G_QMR_COG_METRICSREP" source="Q_QMR_COG_METRICSREP">
+			<element name="OD_SC_ENTRY_DATE" value="OD_SC_ENTRY_DATE" />
+			<element name="OD_OB_SKU" value="OD_OB_SKU" />
+			<element name="OD_PB_ITEM_DESC" value="OD_PB_ITEM_DESC" />
+			<element name="OD_OB_PB_YN" value="OD_OB_PB_YN" />
+			<element name="OD_OB_DI_YN" value="OD_OB_DI_YN" />
+			<element name="OD_OB_DIVISION_ID" value="OD_OB_DIVISION_ID" />
+			<element name="OD_PB_DIVISION" value="OD_PB_DIVISION" />
+			<element name="OD_OB_DEPT_ID" value="OD_OB_DEPT_ID" />
+			<element name="OD_PB_SC_DEPT_NAME" value="OD_PB_SC_DEPT_NAME" />
+			<element name="OD_OB_CLASS_ID" value="OD_OB_CLASS_ID" />
+			<element name="OD_OB_CLASS" value="OD_OB_CLASS" />
+			<element name="OD_OB_SUBCLASS_ID" value="OD_OB_SUBCLASS_ID" />
+			<element name="OD_OB_SUBCLASS" value="OD_OB_SUBCLASS" />
+			<element name="OD_OB_VENDOR_NAME" value="OD_OB_VENDOR_NAME" />
+			<element name="OD_OB_SALE_AMT" value="OD_OB_SALE_AMT" />
+			<element name="OD_OB_RETURN_AMT" value="OD_OB_RETURN_AMT" />
+			<element name="OD_OB_DNC_AMT" value="OD_OB_DNC_AMT" />
+			<element name="OD_OB_SALE_UNITS" value="OD_OB_SALE_UNITS" />
+			<element name="OD_OB_RETURN_UNITS" value="OD_OB_RETURN_UNITS" />
+			<element name="OD_OB_DNC_UNITS" value="OD_OB_DNC_UNITS" />
+		</group>
+
+<group name="G_MAIN" source="Q_PSI">
+
+		<element name="psi_id" value="psi_id"/>
+		<element name="region" value="region"/>
+		<element name="service_provider" value= "service_provider"/>
+		<element name="vendor_name" value="vendor_name"/>
+		<element name="vendor_id" value="vendor_id"/>
+		<element name="vendor_email" value="vendor_email"/>
+		<element name="factory_name" value="factory_name"/>
+		<element name="factory_id" value="factory_id"/>
+		<element name="odgso_engineer" value= "odgso_engineer"/>
+		<element name="region_engineer" value="region_engineer"/>
+		<element name="po" value="po"/>
+		<element name="sourcing_agent" value="sourcing_agent"/>		
+		<element name="re_inspection" value="re_inspection"/>
+		<element name="units_ordered" value="units_ordered"/>
+		<element name="booking_date" value="booking_date"/>
+		<element name="requested_inspection_date" value="requested_inspection_date"/>
+		<element name="actual_inspection_date" value="actual_inspection_date"/>
+		<element name="mandays" value="mandays"/>
+		<element name="inspector_name" value="inspector_name"/>
+		<element name="total_sample_size" value="total_sample_size"/>
+		<element name="ship_date" value="ship_date"/>
+		<element name="inspection_fail_notice" value="inspection_fail_notice"/>
+		<element name="inspection_report" value ="inspection_report"/>
+		<element name="inspection_result" value="inspection_result"/>
+		<element name="paid_by" value="paid_by"/>
+		<element name="amount" value="amount"/>
+		<element name="cap_id" value="cap_id"/>     
+	<element name="sku" value ="sku" />
+		<element name="item_description" value ="item_description"/>
+		<element name="vpn" value ="vpn"/>
+		<element name="division_name" value ="division_name"/>
+		<element name="department" value ="department"/>
+		<element name="sample_size" value ="sample_size"/>
+		<element name="units_ordered1" value ="units_ordered1"/>
+		<element name="total_critical_defects" value ="total_critical_defects"/>
+		<element name="total_major_defects" value ="total_major_defects"/>
+		<element name="total_minor_defects" value ="total_minor_defects"/>
+		<element name="failure_type" value ="failure_type" />
+		<element name="number_of_defects" value ="number_of_defects" />
+		<element name="defects_code" value ="defects_code"/>
+		<element name="defects_details" value ="defects_details" />
+		<element name="comments" value ="comments" />
+	 </group>
+
+    
+
+	</dataStructure>
+</dataTemplate>

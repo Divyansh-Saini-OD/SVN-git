@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<project default="compile" basedir=".">
+    <target name="compile">
+      <echo>
+--------------------------------------------------------------
+| Compiling bpel process ${process.name}, revision ${rev}
+--------------------------------------------------------------
+	</echo>
+	<bpelc rev="${rev}" input="${process.dir}/bpel/bpel.xml" out="${process.dir}/output" home="${bpel.home}">
+		<customize> 
+			<partnerLinkBinding name="ODErrorLogger">
+            			<property name="wsdlLocation">http://${hostname}:${http.port}/orabpel/${ODErrorLogger.domain}/ODErrorLogger/ODErrorLogger?wsdl</property>
+         		</partnerLinkBinding>
+			<partnerLinkBinding name="I0148_ItemXref_EBS_In">
+            			<property name="wsdlLocation">http://${hostname}:${http.port}/orabpel/${I0148_ItemXref_EBS_In.domain}/I0148_ItemXref_EBS_In/I0148_ItemXref_EBS_In?wsdl</property>
+         		</partnerLinkBinding>
+		</customize> 
+	</bpelc>
+    </target>
+</project>

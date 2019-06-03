@@ -1,0 +1,32 @@
+<schema targetNamespace="http://xmlns.oracle.com/xdb/APPS" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:APPS="http://xmlns.oracle.com/xdb/APPS" elementFormDefault="unqualified" attributeFormDefault="qualified">
+   <complexType name="XX_PO_ALLOCATION_T">
+      <sequence>
+         <element name="PO" nillable="true" minOccurs="0">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="50"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SKU" type="double" nillable="true" minOccurs="0"/>
+         <element name="SHIP_TO" type="double" nillable="true" minOccurs="0"/>
+         <element name="ALLOC_LOC" type="double" nillable="true" minOccurs="0"/>
+         <element name="QTY" type="double" nillable="true" minOccurs="0"/>
+         <element name="LOCKED_ID" nillable="true" minOccurs="0">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="1"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="ALLOCATION_TYPE" nillable="true" minOccurs="0">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="1"/>
+               </restriction>
+            </simpleType>
+         </element>
+      </sequence>
+   </complexType>
+   <element name="XX_PO_ALLOCATION_T" type="APPS:XX_PO_ALLOCATION_T" />
+</schema>

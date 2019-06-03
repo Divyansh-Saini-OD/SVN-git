@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXPATTSK" description="OD Projects Task Members To Do Lists Report" defaultPackage="XX_PA_XXPATTSK_PKG" Version="1.0">
+<parameters>
+ <parameter name="p_division" datatype="character" />
+ <parameter name="p_dept" datatype="character" />
+ <parameter name="p_tsk_res" datatype="character" />
+ <parameter name="p_tsk_res1" datatype="character" />
+ <parameter name="p_tsk_res2" datatype="character" />
+ <parameter name="p_tsk_res3" datatype="character" />
+ <parameter name="p_tsk_res4" datatype="character" />
+ <parameter name="p_tsk_res5" datatype="character" />
+ <parameter name="p_res" datatype="character" />
+ <parameter name="p_res1" datatype="character" />
+ <parameter name="p_res2" datatype="character" />
+ <parameter name="p_res3" datatype="character" />
+ <parameter name="p_res4" datatype="character" />
+ <parameter name="p_res5" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_LW">
+<![CDATA[
+SELECT  							
+	  tsk.project_id
+       ,tsk.proj_element_id task_id
+       ,COALESCE(EEB1.C_EXT_ATTR5,'') AS DIVISION							
+       ,COALESCE(EEB1.C_EXT_ATTR1,'') AS DEPARTMENT 							
+       ,COALESCE(EEB1.C_EXT_ATTR6,'') AS DI_MERCHANT
+       ,PPA1.SEGMENT1 AS PROJECT_NUMBER 
+       ,PPA1.NAME  AS PROJECT_NAME
+       ,PPS1.PROJECT_STATUS_NAME  AS PROJECT_STATUS 
+--     ,COALESCE(EEB1.C_EXT_ATTR4,'') AS PROJECT_PROGRESS_STATUS 
+	 ,APPS.XX_PA_XXPAPRJI_PKG.get_proj_progress_status(EEB1.C_EXT_ATTR4) AS PROJECT_PROGRESS_STATUS
+       ,tsk.element_name task_name
+       ,tsk.scheduled_start_date
+       ,tsk.scheduled_finish_date
+	 ,tsk.task_status_meaning 
+       ,tsk.deliverables
+       ,tsk.predecessors
+       ,sta.project_status_name AS TASK_STATUS_NAME
+       ,APPS.XX_PA_XXPAMTSK_PKG.get_pred_description(tsk.project_id,tsk.proj_element_id) description
+       ,tsk.task_manager
+      FROM 
+       (select a.project_id,a.name, c.project_status_name 
+          from apps.pa_project_statuses c,
+               apps.pa_proj_elements a
+         where c.project_status_code=a.status_code
+        ) sta,
+       apps.PA_STRUCTURES_TASKS_V tsk,
+       apps.PA_PROJECT_STATUSES PPS1,
+       apps.PA_PROJECTS_ALL PPA1,
+       apps.PA_PROJECTS_ERP_EXT_B EEB1,
+       apps.EGO_FND_DSC_FLX_CTX_EXT FND1       
+       WHERE PPA1.PROJECT_ID > 0
+         AND PPA1.TEMPLATE_FLAG = 'N'
+         AND PPA1.PROJECT_STATUS_CODE = PPS1.PROJECT_STATUS_CODE
+--         AND PPS1.PROJECT_STATUS_NAME NOT IN ('Cancelled', 'Closed', 'Rejected')
+         AND PPA1.SEGMENT1 LIKE 'PB%' 
+         AND tsk.project_id=ppa1.project_id
+	   AND tsk.latest_eff_published_flag='Y'
+         AND tsk.task_unpub_ver_status_code='PUBLISHED'
+         AND EEB1.ATTR_GROUP_ID = FND1.ATTR_GROUP_ID 
+         AND FND1.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_GEN_INFO'
+         AND PPA1.PROJECT_ID(+) = EEB1.PROJECT_ID
+         and tsk.project_id=sta.project_id(+)
+         and tsk.predecessors=sta.name(+)
+         and trunc(tsk.scheduled_finish_date) between 
+             trunc(decode(to_char(sysdate,'D'),7,sysdate-12,6,sysdate-11,5,sysdate-10,4,sysdate-9,3,sysdate-8,
+              2,sysdate-7,1,sysdate-6))
+             and 
+             trunc(decode(to_char(sysdate,'D'),7,sysdate-6,6,sysdate-5,5,sysdate-4,4,sysdate-3,3,sysdate-2,
+             2,sysdate-1,1,sysdate-7))
+         &p_reswhere
+	   &p_tskwhere
+	   &p_divwhere
+	   &p_deptwhere
+ORDER BY tsk.scheduled_finish_date desc
+	  ,tsk.scheduled_start_date asc
+]]>
+</sqlStatement>
+<sqlStatement name="Q_TW">
+<![CDATA[
+SELECT  
+	  tsk.project_id
+       ,tsk.proj_element_id task_id
+       ,COALESCE(EEB1.C_EXT_ATTR5,'') AS DIVISION
+       ,COALESCE(EEB1.C_EXT_ATTR1,'') AS DEPARTMENT 
+       ,COALESCE(EEB1.C_EXT_ATTR6,'') AS DI_MERCHANT
+       ,PPA1.SEGMENT1 AS PROJECT_NUMBER 
+       ,PPA1.NAME  AS PROJECT_NAME
+       ,PPS1.PROJECT_STATUS_NAME  AS PROJECT_STATUS 
+--     ,COALESCE(EEB1.C_EXT_ATTR4,'') AS PROJECT_PROGRESS_STATUS 
+	 ,APPS.XX_PA_XXPAPRJI_PKG.get_proj_progress_status(EEB1.C_EXT_ATTR4) AS PROJECT_PROGRESS_STATUS
+       ,tsk.element_name task_name
+       ,tsk.scheduled_start_date
+       ,tsk.scheduled_finish_date
+	 ,tsk.task_status_meaning 
+       ,tsk.deliverables
+       ,tsk.predecessors
+       ,sta.project_status_name AS TASK_STATUS_NAME
+       ,APPS.XX_PA_XXPAMTSK_PKG.get_pred_description(tsk.project_id,tsk.proj_element_id) description
+       ,tsk.task_manager
+      FROM 
+       (select a.project_id,a.name, c.project_status_name 
+          from apps.pa_project_statuses c,
+               apps.pa_proj_elements a
+         where c.project_status_code=a.status_code
+        ) sta,
+       apps.PA_STRUCTURES_TASKS_V tsk,
+       apps.PA_PROJECT_STATUSES PPS1,
+       apps.PA_PROJECTS_ALL PPA1,
+       apps.PA_PROJECTS_ERP_EXT_B EEB1,
+       apps.EGO_FND_DSC_FLX_CTX_EXT FND1       
+       WHERE PPA1.PROJECT_ID > 0
+         AND PPA1.TEMPLATE_FLAG = 'N'
+         AND PPA1.PROJECT_STATUS_CODE = PPS1.PROJECT_STATUS_CODE
+  --       AND PPS1.PROJECT_STATUS_NAME NOT IN ('Cancelled', 'Closed', 'Rejected')
+         AND PPA1.SEGMENT1 LIKE 'PB%' 
+	   AND tsk.latest_eff_published_flag='Y'
+         AND tsk.project_id=ppa1.project_id
+         AND tsk.task_unpub_ver_status_code='PUBLISHED'
+         AND EEB1.ATTR_GROUP_ID = FND1.ATTR_GROUP_ID 
+         AND FND1.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_GEN_INFO'
+         AND PPA1.PROJECT_ID(+) = EEB1.PROJECT_ID
+         and tsk.project_id=sta.project_id(+)
+         and tsk.predecessors=sta.name(+)
+         and ( trunc(tsk.scheduled_start_date) between
+                trunc(decode(to_char(sysdate,'D'),7,sysdate-5,6,sysdate-4,5,sysdate-3,4,sysdate-2,3,sysdate-1,
+                2,sysdate,1,sysdate-6))         
+              and
+              trunc(decode(to_char(sysdate,'D'),7,sysdate+1,6,sysdate+2,5,sysdate+3,4,sysdate+4,3,sysdate+5,
+              2,sysdate+6,1,sysdate+7))
+             OR 
+             trunc(tsk.scheduled_finish_date) between
+                trunc(decode(to_char(sysdate,'D'),7,sysdate-5,6,sysdate-4,5,sysdate-3,4,sysdate-2,3,sysdate-1,
+                2,sysdate,1,sysdate-6))         
+              and
+              trunc(decode(to_char(sysdate,'D'),7,sysdate+1,6,sysdate+2,5,sysdate+3,4,sysdate+4,3,sysdate+5,
+              2,sysdate+6,1,sysdate+7))
+           )         
+         &p_reswhere
+	   &p_tskwhere
+	   &p_divwhere
+	   &p_deptwhere
+ORDER BY tsk.scheduled_finish_date asc
+	  ,tsk.scheduled_start_date asc
+]]>
+</sqlStatement>
+</dataQuery>
+<dataTrigger name="beforeReportTrigger" source="XX_PA_XXPATTSK_PKG.BeforeReportTrigger"/>
+<dataStructure>
+<group name="G_LW" source="Q_LW">
+<element name="DIVISION" value="DIVISION" />
+<element name="DEPARTMENT" value="DEPARTMENT" />
+<element name="DI_MERCHANT_NAME" value="DI_MERCHANT" />
+<element name="PROJECT_NO" value="PROJECT_NUMBER" />
+<element name="PROJECT_NAME" value="PROJECT_NAME" />
+<element name="PROJECT_STATUS_NAME" value="PROJECT_STATUS" />
+<element name="PROGRESS_STATUS" value="PROJECT_PROGRESS_STATUS" />
+<element name="TASK_NAME" value="TASK_NAME" />
+<element name="TASK_MEMBER" value="TASK_MANAGER" />
+<element name="START_DATE" value="SCHEDULED_START_DATE" />
+<element name="FINISH_DATE" value="SCHEDULED_FINISH_DATE" />
+<element name="TASK_STATUS" value="TASK_STATUS_MEANING" />
+<element name="DELIVERABLE" value="DELIVERABLES" />
+<element name="PREDECESSOR" value="PREDECESSORS" />
+<element name="PRED_TASK_STATUS" value="TASK_STATUS_NAME" />
+<element name="COMMENTS" value="DESCRIPTION" />
+</group>
+<group name="G_TW" source="Q_TW">
+<element name="DIVISION" value="DIVISION" />
+<element name="DEPARTMENT" value="DEPARTMENT" />
+<element name="DI_MERCHANT_NAME" value="DI_MERCHANT" />
+<element name="PROJECT_NO" value="PROJECT_NUMBER" />
+<element name="PROJECT_NAME" value="PROJECT_NAME" />
+<element name="PROJECT_STATUS_NAME" value="PROJECT_STATUS" />
+<element name="PROGRESS_STATUS" value="PROJECT_PROGRESS_STATUS" />
+<element name="TASK_NAME" value="TASK_NAME" />
+<element name="TASK_MEMBER" value="TASK_MANAGER" />
+<element name="START_DATE" value="SCHEDULED_START_DATE" />
+<element name="FINISH_DATE" value="SCHEDULED_FINISH_DATE" />
+<element name="TASK_STATUS" value="TASK_STATUS_MEANING" />
+<element name="DELIVERABLE" value="DELIVERABLES" />
+<element name="PREDECESSOR" value="PREDECESSORS" />
+<element name="PRED_TASK_STATUS" value="TASK_STATUS_NAME" />
+<element name="COMMENTS" value="DESCRIPTION" />
+</group>
+</dataStructure>
+</dataTemplate>

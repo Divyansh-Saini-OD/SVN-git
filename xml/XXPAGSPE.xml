@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXPAGSPE" description="OD GSO PO Import Exceptions Report" Version="1.0">
+<parameters>
+ <parameter name="p_batch_id" datatype="number" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_VEND">
+<![CDATA[
+SELECT distinct 							
+	 vendor_no,
+	 vendor_name,
+	 po_number,
+	 country_cd,
+	 agent,
+	 dept
+  FROM xx_gso_po_stg
+ WHERE load_batch_id=:p_batch_id
+   AND vendor_process_flag=3
+ORDER BY vendor_name
+]]>
+</sqlStatement>
+<sqlStatement name="Q_DEPT">
+<![CDATA[
+SELECT distinct 							
+	 dept,
+	 vendor_no,
+	 vendor_name,
+	 po_number,
+	 country_cd,
+	 agent
+  FROM xx_gso_po_stg
+ WHERE load_batch_id=:p_batch_id
+   AND dept_process_flag=3
+ORDER BY dept,vendor_name
+]]>
+</sqlStatement>
+<sqlStatement name="Q_SKU">
+<![CDATA[
+SELECT distinct 							
+	 vendor_no,
+	 vendor_name,
+	 sku,
+	 description,
+	 po_number,
+	 country_cd,
+	 mo,
+	 agent,
+       dept
+  FROM xx_gso_po_stg
+ WHERE load_batch_id=:p_batch_id
+   AND sku_process_flag=3
+ORDER BY vendor_no,sku
+]]>
+</sqlStatement>
+<sqlStatement name="Q_EOF">
+<![CDATA[
+SELECT distinct 							
+	 vendor_no,
+	 vendor_name,
+	 sku,
+	 description,
+	 po_number,
+	 country_cd,
+	 mo,
+	 agent,
+	 dept
+  FROM xx_gso_po_stg
+ WHERE load_batch_id=:p_batch_id
+   AND eol_Flag='Y'
+ORDER BY vendor_no,sku
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_SKU" source="Q_SKU">
+<element name="VENDOR" value="VENDOR_NO" />
+<element name="VEND_NAME" value="VENDOR_NAME" />
+<element name="SKU" value="SKU" />
+<element name="SKU_DESCRIPTION" value="DESCRIPTION" />
+<element name="MO" value="MO" />
+<element name="COUNTRY" value="COUNTRY_CD" />
+<element name="AGENT" value="AGENT" />
+<element name="PO" value="PO_NUMBER" />
+<element name="SDEPT" value="DEPT" />
+</group>
+<group name="G_EOF" source="Q_EOF">
+<element name="VENDOR_NO" value="VENDOR_NO" />
+<element name="VENDOR_NAME" value="VENDOR_NAME" />
+<element name="SKU" value="SKU" />
+<element name="DESCRIPTION" value="DESCRIPTION" />
+<element name="MO" value="MO" />
+<element name="COUNTRY" value="COUNTRY_CD" />
+<element name="AGENT" value="AGENT" />
+<element name="PO" value="PO_NUMBER" />
+<element name="EDEPT" value="DEPT" />
+</group>
+<group name="G_VEND" source="Q_VEND">
+<element name="VENDOR_NO" value="VENDOR_NO" />
+<element name="VENDOR_NAME" value="VENDOR_NAME" />
+<element name="PO" value="PO_NUMBER" />
+<element name="COUNTRY" value="COUNTRY_CD" />
+<element name="AGENT" value="AGENT" />
+<element name="VDEPT" value="DEPT" />
+</group>
+<group name="G_DEPT" source="Q_DEPT">
+<element name="DEPT" value="DEPT" />
+<element name="VENDOR_NO" value="VENDOR_NO" />
+<element name="VENDOR_NAME" value="VENDOR_NAME" />
+<element name="PO" value="PO_NUMBER" />
+<element name="COUNTRY" value="COUNTRY_CD" />
+<element name="AGENT" value="AGENT" />
+</group>
+</dataStructure>
+</dataTemplate>

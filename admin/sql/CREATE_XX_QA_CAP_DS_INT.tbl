@@ -1,0 +1,67 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_QA_CAP_DS_INT.tbl                                                |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_QA_CAP_DS_INT   (OD QA CAP Defective Summary table)                    |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              22-Jul-2011       Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_QA_CAP_DS_INT......
+PROMPT
+
+Create table xxmer.XX_QA_CAP_DS_INT
+(capid 			varchar2(150),
+ ds_id			varchar2(50),
+ defect_summary		varchar2(2000),
+ rootcause		varchar2(2000),
+ corrective_action	varchar2(2000),
+ preventive_action	varchar2(2000),
+ ca_impl_date		date,
+ plan_id		number,
+ occurrence		number,
+ organization_id	number,
+ process_flag		number,
+ creation_date		date,
+ created_by		number,
+ last_update_date	date,
+ last_updated_by	number);
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

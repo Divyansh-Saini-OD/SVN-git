@@ -1,0 +1,286 @@
+<schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/BPEL_WRAPPER_XX_PO_ASL_IN_PKG/XX_PO_ASL_IN_PKG-24INTERFACE_AS/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/BPEL_WRAPPER_XX_PO_ASL_IN_PKG/XX_PO_ASL_IN_PKG-24INTERFACE_AS/" elementFormDefault="qualified">
+   <element name="InputParameters">
+      <complexType>
+         <sequence>
+            <element name="P_ACTIONEXPRESSION" type="string" db:index="1" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_REASON_CODE" type="string" db:index="2" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_RMS_TIMESTAMP" type="string" db:index="3" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="P_ITEM_SUPP_REC" type="db:XX_PO_ASL_IN_PKG_G_ITEM_SUPP_" db:index="4" db:type="Struct" minOccurs="0" nillable="true"/>
+            <element name="P_ITEM_SUPP_COO_REC" type="db:XX_PO_ASL_IN_PKG_G_ITEM_SUPP1" db:index="5" db:type="Struct" minOccurs="0" nillable="true"/>
+            <element name="P_ITEM_SUPP_UPC_REC" type="db:XX_PO_ASL_IN_PKG_G_ITEM_SUPP2" db:index="6" db:type="Struct" minOccurs="0" nillable="true"/>
+            <element name="P_ITEM_SUPP_COUNTRY_REC" type="db:XX_PO_ASL_IN_PKG_G_ITEM_SUPP3" db:index="7" db:type="Struct" minOccurs="0" nillable="true"/>
+            <element name="P_ITEM_SUPP_DIM_REC" type="db:XX_PO_ASL_IN_PKG_G_ITEM_SUPP4" db:index="8" db:type="Struct" minOccurs="0" nillable="true"/>
+            <element name="G_ITEM_SUPP_LOC_REC" type="db:XX_PO_ASL_IN_PKG_G_ITEM_SUPP5" db:index="9" db:type="Struct" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <element name="OutputParameters">
+      <complexType>
+         <sequence>
+            <element name="X_MESSAGE_CODE" type="decimal" db:index="10" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="X_MESSAGE_DATA" type="string" db:index="11" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <complexType name="XX_PO_ASL_IN_PKG_G_ITEM_SUPP5">
+      <sequence>
+         <element name="ITEM" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="40"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SUPPLIER" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="150"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="ORIGIN_COUNTRY_ID" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="9"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="LOC" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="150"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="OD_GSS_REPL_FLG" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="150"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="PICKUP_LEAD_TIME" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="150"/>
+               </restriction>
+            </simpleType>
+         </element>
+      </sequence>
+   </complexType>
+   <complexType name="XX_PO_ASL_IN_PKG_G_ITEM_SUPP3">
+      <sequence>
+         <element name="ITEM" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="40"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SUPPLIER" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="150"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="ORIGIN_COUNTRY_ID" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="9"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="HI" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="INNER_PACK_SIZE" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="MAX_ORDER_QTY" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="MIN_ORDER_QTY" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="SUPP_PACK_SIZE" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="TI" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="XX_PO_ASL_IN_PKG_G_ITEM_SUPP_">
+      <sequence>
+         <element name="ITEM" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="40"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SUPPLIER" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="150"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="PRIMARY_SUPP_IND" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="150"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="VPN" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="25"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="CARCINOGENIC_FLG" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="1"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="DROP_SHIP_CD" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="10"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="GOVT_COMPLIANCE_CD" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="6"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="HAZARDOUS_FLG" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="1"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="HS_TARIFF_NBR" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="MINORITY_BUS_FLG" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="3"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="NON_SHIPPABLE_INNER_QTY" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="VENDOR_DESIGN_ID" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="10"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="RANK_PRIORITY" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="BACKORDERS_ALLOWED" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="1"/>
+               </restriction>
+            </simpleType>
+         </element>
+      </sequence>
+   </complexType>
+   <complexType name="XX_PO_ASL_IN_PKG_G_ITEM_SUPP4">
+      <sequence>
+         <element name="ITEM" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="40"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SUPPLIER" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="150"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="ORIGIN_COUNTRY" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="9"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="DIM_OBJECT" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="6"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="HEIGHT" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="LENGTH" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="LWH_UOM" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="4"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="WEIGHT" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         <element name="WEIGHT_UOM" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="4"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="WIDTH" type="decimal" db:type="NUMBER" minOccurs="0" nillable="true"/>
+      </sequence>
+   </complexType>
+   <complexType name="XX_PO_ASL_IN_PKG_G_ITEM_SUPP2">
+      <sequence>
+         <element name="ITEM" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="40"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SUPPLIER" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="150"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="UPC" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="25"/>
+               </restriction>
+            </simpleType>
+         </element>
+      </sequence>
+   </complexType>
+   <complexType name="XX_PO_ASL_IN_PKG_G_ITEM_SUPP1">
+      <sequence>
+         <element name="ITEM" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="40"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="SUPPLIER" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="150"/>
+               </restriction>
+            </simpleType>
+         </element>
+         <element name="CNTRY_OF_ORIGIN_CD" db:type="VARCHAR2" minOccurs="0" nillable="true">
+            <simpleType>
+               <restriction base="string">
+                  <maxLength value="2"/>
+               </restriction>
+            </simpleType>
+         </element>
+      </sequence>
+   </complexType>
+</schema>

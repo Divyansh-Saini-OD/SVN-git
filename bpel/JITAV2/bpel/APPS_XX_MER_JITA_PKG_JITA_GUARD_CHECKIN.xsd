@@ -1,0 +1,17 @@
+<schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_MER_JITA_PKG/JITA_GUARD_CHECKIN/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_MER_JITA_PKG/JITA_GUARD_CHECKIN/">
+   <element name="InputParameters">
+      <complexType>
+         <sequence>
+            <element name="P_ASN" type="decimal" db:index="1" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="P_THRESHOLD" type="decimal" db:index="2" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <element name="OutputParameters">
+      <complexType>
+         <sequence>
+            <element name="P_XML_OUT" type="string" db:index="3" db:type="CLOB" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+</schema>

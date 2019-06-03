@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
+
+<AppModule
+   Name="WorkflowHierarchyAM"
+   ComponentClass="od.oracle.apps.xxmer.wfh.server.WorkflowHierarchyAMImpl"
+   LoadComponentsLazily="true" >
+   <Properties>
+      <Property Name ="RETENTION_LEVEL" Value ="MANAGE_STATE" />
+   </Properties>
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_deployType" Value="0" />
+   </DesignTime>
+   <ViewUsage
+      Name="DeletePlannerVO1"
+      ViewObjectName="od.oracle.apps.xxmer.wfh.server.DeletePlannerVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="NewPlannerVO1"
+      ViewObjectName="od.oracle.apps.xxmer.wfh.server.NewPlannerVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="PlannerVO1"
+      ViewObjectName="od.oracle.apps.xxmer.wfh.server.PlannerVO" >
+   </ViewUsage>
+   <ViewUsage
+      Name="PlannerVO2"
+      ViewObjectName="od.oracle.apps.xxmer.wfh.server.PlannerVO" >
+   </ViewUsage>
+   <ViewLinkUsage
+      Name="ManagerToPlannerVL1"
+      ViewLinkObjectName="od.oracle.apps.xxmer.wfh.server.ManagerToPlannerVL"
+      SrcViewUsageName="od.oracle.apps.xxmer.wfh.server.WorkflowHierarchyAM.PlannerVO1"
+      DstViewUsageName="od.oracle.apps.xxmer.wfh.server.WorkflowHierarchyAM.PlannerVO2" >
+      <DesignTime>
+         <Attr Name="_isCodegen" Value="true" />
+         <Attr Name="_version" Value="9.0.3.13.75" />
+      </DesignTime>
+   </ViewLinkUsage>
+</AppModule>

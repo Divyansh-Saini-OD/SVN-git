@@ -1,0 +1,66 @@
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_QA_POS_STG.tbl                                                   |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_QA_POS_STG   (OD QA POS Staging table)                                 |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              11-Nov-2011       Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_QA_POS_STG......
+PROMPT
+
+Create table xxmer.XX_QA_POS_STG
+(sku 		 	NUMBER,
+ sku_description	VARCHAR2(240),
+ dept_id		NUMBER,
+ dept_name		VARCHAR2(150),
+ Associate_id		VARCHAR2(100),
+ store_number		VARCHAR2(25),
+ transaction_date	DATE,
+ return_comments	VARCHAR2(2000),
+ process_flag		varchar2(1),
+ load_batch_id		NUMBER,
+ error_flag		varchar2(1),
+ error_message		varchar2(2000),
+ creation_date		date,
+ created_by		number,
+ last_update_date	date,
+ last_updated_by	number
+);
+
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

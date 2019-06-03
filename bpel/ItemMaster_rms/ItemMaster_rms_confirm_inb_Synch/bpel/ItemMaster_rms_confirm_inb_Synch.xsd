@@ -1,0 +1,12 @@
+<schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified"
+	targetNamespace="http://xmlns.oracle.com/ItemMaster_rms_confirm_inb_Synch"
+	xmlns="http://www.w3.org/2001/XMLSchema">
+	<element name="ItemMaster_rms_confirm_inb_SynchProcessResponse">
+		<complexType>
+			<sequence>
+				<element name="result" type="decimal"/>
+			</sequence>
+		</complexType>
+	</element>
+</schema>

@@ -1,0 +1,14 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="ShipStatusInterface" src="ShipStatusInterface.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="client">
+            <property name="wsdlLocation">ShipStatusInterface.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="ReadPO_Lib_Schema">
+            <property name="wsdlLocation">file:/U:/Simplify/Purchasing/BPel/CDrive/mywork/Application_TestMon/ShipStatusInterface/bpel/ReadPO_Lib_Schema.wsdl</property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+   </BPELProcess>
+</BPELSuitcase>

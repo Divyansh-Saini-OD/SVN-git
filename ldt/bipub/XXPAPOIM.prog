@@ -1,0 +1,80 @@
+#!/usr/bin/ksh
+# +===================================================================+
+# |                  Office Depot - Project Simplify                  |
+# |                     Office Depot                                  |
+# +===================================================================+
+# | Name  :       GSO PO Load (Shell Script)                          |
+# | Description : To Load the PO data from GSO                        |
+# |                                                                   |
+# |                                                                   |
+# |Change Record:                                                     |
+# |===============                                                    |
+# |Version   Date          Author              Remarks                |
+# |=======   ===========  =============        =======================|
+# |1.0       27-Oct-2010  Paddy Sanjeevi       Initial version        |
+# |-------------------------------------------------------------------|
+# |                                                                   |
+# +===================================================================+
+
+p_request_id=`echo $1|awk '{print(substr($2,11))}'`
+FILE_DIR="$XXMER_DATA/ftp/in/gsopo"
+FILE_ARCHIVE="$XXMER_DATA/archive/inbound"
+echo " Path  :" [$FILE_DIR]
+username=510093
+
+echo "Deleting old files" 
+
+if test -f  $XXMER_DATA/ftp/in/gsopo/*.log
+then
+   rm ${FILE_DIR}/*.log
+fi
+
+if test -f  $XXMER_DATA/ftp/in/gsopo/*.bad
+then
+  rm ${FILE_DIR}/*.bad
+fi
+
+cd $FILE_DIR
+echo $login
+echo $user_name
+for i in `ls pous*.txt`
+do
+echo $i
+sqlldr parfile=$HOME/parfile.apps data=$i control=$XXMER_TOP/bin/XX_PA_GSO_PO.ctl log=$i.log bad=$i.bad
+
+if [ $? -ne 0 ]
+then
+echo "Error in running sqlloader. Please Check log for Error Details "
+else 
+echo "Completed successfully "
+mv $i $FILE_ARCHIVE/$i
+fi
+
+cat $i.log >> $APPLCSF/log/l$p_request_id.req
+
+if test -f  $XXMER_DATA/ftp/in/gsopo/*.bad
+then
+   cat $i.bad >> $APPLCSF/log/l$p_request_id.req
+   mailx -s "Bad data for GSO PO Data $i.bad" it_merchebs_oncall@officedepot.com < $i.bad
+fi
+done
+# Exiting from the shell program.
+
+
+REQ=`CONCSUB $1 XXMER 'OD (US) GSO MO Team Member ' \
+        $username WAIT=N CONCURRENT XXMER XX_GSO_PO_IMP`
+
+REQ_ID=`echo $REQ | cut -f1 -d ' '`
+echo $REQ_ID
+echo "       "
+echo "       "
+
+cd $XXMER_DATA/outbound
+
+find . -name \*.PDF -mtime +7 | xargs rm -rf
+find . -name \*.csv -mtime +7 | xargs rm -rf
+find . -name \*.xls -mtime +7 | xargs rm -rf
+find . -name \*.CSV -mtime +7 | xargs rm -rf
+find . -name \*.XLS -mtime +7 | xargs rm -rf
+
+exit 0

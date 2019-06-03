@@ -1,0 +1,460 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1579" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="ODMyAssignmentsMAinRN" amDefName="od.oracle.apps.xxmer.plmpjrdashboard.server.OD_PLMPJRDashboardAM" windowTitle="PLM Projects Dashboard" title="My Assignments" controllerClass="od.oracle.apps.xxmer.plmpjrdashboard.webui.OD_MyAssignmentsCO" appMenu="OD_PLM_DASHBOARD_HOME_PAGE">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:tableLayout id="SearchButtonRN" hAlign="center">
+               <ui:contents>
+                  <oa:rowLayout id="SearchBtnRow">
+                     <ui:contents>
+                        <oa:cellFormat id="ShowTaskCell">
+                           <ui:contents>
+                              <oa:messageTextInput id="ShowTaskDays" prompt="Show Task Days"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="region21376">
+                           <ui:contents>
+                              <oa:messageCheckBox id="MyAssignments" checkedValue="" text="" prompt="" checked="false"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="region21377">
+                           <ui:contents>
+                              <oa:messageTextInput id="MyAssignmentsPro" prompt="My Team Assignments" readOnly="true"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="SearchBtnCell">
+                           <ui:contents>
+                              <oa:submitButton id="Search" text="Search" prompt="Search"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="Spacer_Cell">
+                           <ui:contents>
+                              <oa:spacer id="item2" width="25"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="ClearCell">
+                           <ui:contents>
+                              <oa:submitButton id="Clear" text="Clear" prompt="Clear"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:tableLayout>
+            <oa:rowLayout id="region21374" rendered="false">
+               <ui:contents>
+                  <oa:cellFormat id="SpacerCell13">
+                     <ui:contents>
+                        <oa:spacer id="Spacer13" width="50"/>
+                     </ui:contents>
+                  </oa:cellFormat>
+               </ui:contents>
+            </oa:rowLayout>
+            <oa:tableLayout id="SimpleSearch" rendered="true" hAlign="center">
+               <ui:contents>
+                  <oa:rowLayout id="SimpleSearchRow">
+                     <ui:contents>
+                        <oa:cellFormat id="SimleSearchCell">
+                           <ui:contents>
+                              <oa:messageComponentLayout id="SimpleSearchMCL" columns="2" rows="1"/>
+                              <oa:formValue id="ResourcePersonIDFV"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="region14" rendered="false">
+                           <ui:contents>
+                              <oa:messageComponentLayout id="region16">
+                                 <ui:contents>
+                                    <oa:messageCheckBox id="Self" text="Self Assigned Tasks" prompt="Self Assigned Tasks"/>
+                                 </ui:contents>
+                              </oa:messageComponentLayout>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:tableLayout>
+            <oa:header id="AdvancedSearchHDR" text="Advanced Search" rendered="true">
+               <ui:contents>
+                  <oa:hideShow id="AdvSearchShowHide" shortDesc="Advanced Search">
+                     <ui:contents>
+                        <oa:messageComponentLayout id="AdvSearchRN" columns="4" rows="3">
+                           <ui:contents>
+                              <oa:messageLovInput id="TaskName" prompt="Task Name" queryable="true">
+                                 <lovContents>
+                                    <oa:listOfValues id="TaskNameLOVRN" amDefName="od.oracle.apps.xxmer.plmpjrdashboard.lov.server.OD_PLMPJRDashboardLOVAM">
+                                       <ui:contents>
+                                          <oa:table name="TaskNameLOVRN" id="OD_TaskNameRN">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="TaskNameLOV" dataType="VARCHAR2" prompt="Task Name" viewName="OD_TaskNameLOVVO" viewAttr="TaskName" maximumLength="20" selectiveSearchCriteria="false" queryable="true"/>
+                                                <oa:formValue id="TaskIdLOV" viewName="OD_TaskNameLOVVO" viewAttr="TaskId" dataType="NUMBER" rendered="false"/>
+                                             </ui:contents>
+                                          </oa:table>
+                                       </ui:contents>
+                                    </oa:listOfValues>
+                                 </lovContents>
+                                 <lovMappings>
+                                    <lovMap id="lovMap1" lovItem="TaskNameLOV" resultTo="TaskName" criteriaFrom="TaskName"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageLovInput id="DivisionName" prompt="Division Name" queryable="true">
+                                 <lovContents>
+                                    <oa:listOfValues id="DivisionRN" amDefName="od.oracle.apps.xxmer.plmpjrdashboard.lov.server.OD_PLMPJRDashboardLOVAM">
+                                       <ui:contents>
+                                          <oa:table name="DivisionRN" id="OD_DivisionNameRN">
+                                             <ui:contents>
+                                                <oa:formValue id="FlexValueMeaning" dataType="VARCHAR2" prompt="FlexValueMeaning" viewName="OD_DivisionNameLOVVO" viewAttr="FlexValueMeaning"/>
+                                                <oa:messageStyledText id="Description" dataType="VARCHAR2" prompt="Division" viewName="OD_DivisionNameLOVVO" viewAttr="Description" maximumLength="240" queryable="true"/>
+                                             </ui:contents>
+                                          </oa:table>
+                                       </ui:contents>
+                                    </oa:listOfValues>
+                                 </lovContents>
+                                 <lovMappings>
+                                    <lovMap id="lovMap7" lovItem="Description" resultTo="DivisionName" criteriaFrom="DivisionName"/>
+                                    <lovMap id="lovMap8" lovItem="FlexValueMeaning" resultTo="DivisionID_FV"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageLovInput id="DepartmentName" prompt="Department Name" readOnly="false" queryable="true">
+                                 <lovContents>
+                                    <oa:listOfValues id="DepartmentRN" amDefName="od.oracle.apps.xxmer.plmpjrdashboard.lov.server.OD_PLMPJRDashboardLOVAM">
+                                       <ui:contents>
+                                          <oa:table name="DepartmentRN" id="OD_DepartmentRN">
+                                             <ui:contents>
+                                                <oa:formValue id="FlexValueMeaning1" dataType="VARCHAR2" prompt="FlexValueMeaning" viewName="OD_DepartmentLOVVO" viewAttr="FlexValueMeaning"/>
+                                                <oa:messageStyledText id="Description1" dataType="VARCHAR2" prompt="Department" viewName="OD_DepartmentLOVVO" viewAttr="Description" maximumLength="240" queryable="true"/>
+                                             </ui:contents>
+                                          </oa:table>
+                                       </ui:contents>
+                                    </oa:listOfValues>
+                                 </lovContents>
+                                 <lovMappings>
+                                    <lovMap id="lovMap9" lovItem="Description1" resultTo="DepartmentName" criteriaFrom="DepartmentName"/>
+                                    <lovMap id="lovMap10" lovItem="FlexValueMeaning1" resultTo="DivisionID_FV"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageLovInput id="ProjectName" prompt="Project Name" queryable="true">
+                                 <lovContents>
+                                    <oa:listOfValues id="ProjectNameLOVRN" amDefName="od.oracle.apps.xxmer.plmpjrdashboard.lov.server.OD_PLMPJRDashboardLOVAM">
+                                       <ui:contents>
+                                          <oa:table name="ProjectNameLOVRN" id="OD_ProjectNameRN">
+                                             <ui:contents>
+                                                <oa:formValue id="ProjectId" dataType="NUMBER" prompt="ProjectId" viewName="OD_ProjectNameNumberLOVVO" viewAttr="ProjectId"/>
+                                                <oa:messageStyledText id="ProjectNameLOV" dataType="VARCHAR2" prompt="Project Name" viewName="OD_ProjectNameNumberLOVVO" viewAttr="Name" maximumLength="30" queryable="true"/>
+                                                <oa:formValue id="Segment1" dataType="VARCHAR2" prompt="Segment1" viewName="OD_ProjectNameNumberLOVVO" viewAttr="Segment1"/>
+                                             </ui:contents>
+                                          </oa:table>
+                                       </ui:contents>
+                                    </oa:listOfValues>
+                                 </lovContents>
+                                 <lovMappings>
+                                    <lovMap id="lovMap3" lovItem="ProjectNameLOV" resultTo="ProjectName" criteriaFrom="ProjectName"/>
+                                    <lovMap id="lovMap4" lovItem="ProjectId" resultTo="ProjectId_NameFV"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageTextInput id="StartDate" prompt="Start Date" dataType="DATE"/>
+                              <oa:messageTextInput id="DueDate" prompt="Due Date" dataType="DATE"/>
+                              <oa:messageLovInput id="ProjectNumber" prompt="Project Number" queryable="true">
+                                 <lovContents>
+                                    <oa:listOfValues id="ProjectNumberLOVRN" amDefName="od.oracle.apps.xxmer.plmpjrdashboard.lov.server.OD_PLMPJRDashboardLOVAM">
+                                       <ui:contents>
+                                          <oa:table name="ProjectNumberLOVRN" id="OD_ProjectNumberRN">
+                                             <ui:contents>
+                                                <oa:formValue id="ProjectId1" dataType="NUMBER" prompt="ProjectId" viewName="OD_ProjectNameNumberLOVVO" viewAttr="ProjectId"/>
+                                                <oa:messageStyledText id="ProjectNumberLOV" dataType="VARCHAR2" prompt="Project Number" viewName="OD_ProjectNameNumberLOVVO" viewAttr="Segment1" queryable="true"/>
+                                             </ui:contents>
+                                          </oa:table>
+                                       </ui:contents>
+                                    </oa:listOfValues>
+                                 </lovContents>
+                                 <lovMappings>
+                                    <lovMap id="lovMap5" lovItem="ProjectNumberLOV" resultTo="ProjectNumber" criteriaFrom="ProjectNumber"/>
+                                    <lovMap id="lovMap6" lovItem="ProjectId1" resultTo="ProjectId_NumberFV"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageLovInput id="ClassName" prompt="Class Name" queryable="true">
+                                 <lovContents>
+                                    <oa:listOfValues id="ClassNameRN" amDefName="od.oracle.apps.xxmer.plmpjrdashboard.lov.server.OD_PLMPJRDashboardLOVAM">
+                                       <ui:contents>
+                                          <oa:table name="ClassNameRN" id="OD_ClassNameRN">
+                                             <ui:contents>
+                                                <oa:formValue id="FlexValueMeaning2" dataType="VARCHAR2" prompt="FlexValueMeaning" viewName="OD_ClassNameLOVVO" viewAttr="FlexValueMeaning"/>
+                                                <oa:messageStyledText id="Description2" dataType="VARCHAR2" prompt="Description" viewName="OD_ClassNameLOVVO" viewAttr="Description" maximumLength="240" queryable="true"/>
+                                             </ui:contents>
+                                          </oa:table>
+                                       </ui:contents>
+                                    </oa:listOfValues>
+                                 </lovContents>
+                                 <lovMappings>
+                                    <lovMap id="lovMap11" lovItem="Description2" resultTo="ClassName" criteriaFrom="ClassName"/>
+                                    <lovMap id="lovMap12" lovItem="FlexValueMeaning2" resultTo="ClassName_FV"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageLovInput id="Status" prompt="Status" queryable="true">
+                                 <lovContents>
+                                    <oa:listOfValues id="TaskStatusRN" amDefName="od.oracle.apps.xxmer.plmpjrdashboard.lov.server.OD_PLMPJRDashboardLOVAM">
+                                       <ui:contents>
+                                          <oa:table name="TaskStatusRN" id="OD_TaskStatusRN">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="ProjectStatusName" dataType="VARCHAR2" prompt="Status" viewName="OD_TaskStatusLOVVO" viewAttr="ProjectStatusName" maximumLength="80" queryable="true"/>
+                                                <oa:formValue id="ProjectStatusCode" dataType="VARCHAR2" prompt="ProjectStatusCode" viewName="OD_TaskStatusLOVVO" viewAttr="ProjectStatusCode"/>
+                                             </ui:contents>
+                                          </oa:table>
+                                       </ui:contents>
+                                    </oa:listOfValues>
+                                 </lovContents>
+                                 <lovMappings>
+                                    <lovMap id="lovMap13" lovItem="ProjectStatusName" resultTo="Status" criteriaFrom="Status"/>
+                                    <lovMap id="lovMap14" lovItem="ProjectStatusCode" resultTo="TaskStatus_FV"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:messageLovInput id="Resource" prompt="Resource" queryable="true">
+                                 <lovContents>
+                                    <oa:listOfValues id="region21373" amDefName="od.oracle.apps.xxmer.plmpjrdashboard.lov.server.OD_PLMPJRDashboardLOVAM">
+                                       <ui:contents>
+                                          <oa:table name="region21373" id="OD_ProjectResourceLOVVO">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="FullName1" dataType="VARCHAR2" prompt="FullName" viewName="OD_ProjectResourceLOVVO" viewAttr="FullName" maximumLength="301" queryable="true"/>
+                                                <oa:formValue id="PersonIdFV" viewName="OD_ProjectResourceLOVVO" viewAttr="PersonId" dataType="NUMBER"/>
+                                             </ui:contents>
+                                          </oa:table>
+                                       </ui:contents>
+                                    </oa:listOfValues>
+                                 </lovContents>
+                                 <lovMappings>
+                                    <lovMap id="NamelovMap" lovItem="FullName1" resultTo="Resource" criteriaFrom="Resource"/>
+                                    <lovMap id="PersonIdlovMap" lovItem="PersonIdFV" resultTo="ResourcePersonIDFV"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                           </ui:contents>
+                        </oa:messageComponentLayout>
+                        <oa:formValue id="TaskIDFV"/>
+                        <oa:formValue id="ProjectId_NameFV"/>
+                        <oa:formValue id="ProjectId_NumberFV"/>
+                        <oa:formValue id="DivisionID_FV"/>
+                        <oa:formValue id="DepartmentID_FV"/>
+                        <oa:formValue id="ClassName_FV"/>
+                        <oa:formValue id="TaskStatus_FV"/>
+                     </ui:contents>
+                  </oa:hideShow>
+               </ui:contents>
+            </oa:header>
+            <oa:spacer id="item4" height="5"/>
+            <oa:header id="MyAssignmentsResultHDR" text="Search Results">
+               <ui:contents>
+                  <oa:rowLayout id="ActionBtnRow">
+                     <ui:contents>
+                        <oa:cellFormat id="SpacerCell111">
+                           <ui:contents>
+                              <oa:spacer id="Spacer111" width="20"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="AssignUserCell">
+                           <ui:contents>
+                              <oa:messageLovInput id="AssignUser2" prompt="Re-Assign Resource" queryable="true">
+                                 <lovContents>
+                                    <oa:listOfValues id="region21372" amDefName="od.oracle.apps.xxmer.plmpjrdashboard.lov.server.OD_PLMPJRDashboardLOVAM">
+                                       <ui:contents>
+                                          <oa:table name="region21372" id="OD_AssingUserLOVVO">
+                                             <ui:contents>
+                                                <oa:messageStyledText id="FullName" dataType="VARCHAR2" prompt="FullName" viewName="OD_AssingUserLOVVO" viewAttr="FullName" maximumLength="301" queryable="true"/>
+                                                <oa:formValue id="AssignUserPersonIdFV" viewName="OD_AssingUserLOVVO" viewAttr="PersonId" dataType="NUMBER"/>
+                                             </ui:contents>
+                                          </oa:table>
+                                       </ui:contents>
+                                    </oa:listOfValues>
+                                 </lovContents>
+                                 <lovMappings>
+                                    <lovMap id="lovMap151" lovItem="FullName" resultTo="AssignUser2" criteriaFrom="AssignUser2"/>
+                                    <lovMap id="AssingUserPersonIdlovMap" lovItem="AssignUserPersonIdFV" resultTo="AssingUserPersonIDFV"/>
+                                 </lovMappings>
+                              </oa:messageLovInput>
+                              <oa:formValue id="AssingUserPersonIDFV" dataType="NUMBER"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="SpacerCell12">
+                           <ui:contents>
+                              <oa:spacer id="Spacer12" width="20"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="AssignUserBtnCell">
+                           <ui:contents>
+                              <oa:submitButton id="AssingtoUser" text="Re-Assign to User" prompt="Re-Assign to User"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="SpacerCell">
+                           <ui:contents>
+                              <oa:spacer id="Spacer" width="20"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="CompleteBtnCell">
+                           <ui:contents>
+                              <oa:submitButton id="Complete" text="Complete" prompt="Complete"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="SpacerCell1">
+                           <ui:contents>
+                              <oa:spacer id="Spacer1" width="20"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="UndoComleteBtnCell">
+                           <ui:contents>
+                              <oa:submitButton id="UndoComplete" text="Undo Complete" prompt="Undo Complete"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="SpacerCell11">
+                           <ui:contents>
+                              <oa:spacer id="Spacer11" width="20"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="SaveBtnCell">
+                           <ui:contents>
+                              <oa:submitButton id="SaveAttachment" text="Save Attachment" prompt="Save Attachment"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:query id="ResultsQueryRN" dispAdvanced="false" dispSimple="false" mode="resultsBasedSearch" defaultPanel="customized" dispCustomized="true">
+                     <ui:contents>
+                        <oa:advancedTable id="ODMyAssignmentsResultsRN" viewName="OD_MyAssignmentsVO" userCustomizable="true" width="100%">
+                           <ui:tableSelection>
+                              <oa:multipleSelection id="multipleSelection1" viewAttr="SelectCheckbox"/>
+                           </ui:tableSelection>
+                           <ui:contents>
+                              <oa:column id="TaskNamecolumn" userCustomizable="true" cellNoWrapFormat="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader1" prompt="Task Name" userCustomizable="true"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="TaskNAme" viewAttr="TaskName" prompt="" queryable="true" userCustomizable="true"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="ProjectNamecolumn" userCustomizable="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader2" prompt="Project Name"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="ProjName" viewAttr="ProjName" prompt="Project Name" queryable="true"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="ProjectNumbercolumn">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader4" prompt="Project Number"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="ProjectNo" viewAttr="ProjNumber"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="ScheduledStartDate" cellNoWrapFormat="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader5" prompt="Start Date"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="StartDate1" viewAttr="ScheduledStartDate"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="ScheduledEndDate" cellNoWrapFormat="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="ScheduledEndDateCol" prompt="Due Date"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="DueDate1" viewAttr="ScheduledFinishDate"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="TaskOwnerNamecolumn" cellNoWrapFormat="true">
+                                 <ui:contents>
+                                    <oa:messageStyledText id="OwnerName" viewAttr="OwnerName"/>
+                                 </ui:contents>
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="OwnerNamecolumnheader" prompt="Task Owner Name" cellNoWrapFormat="true"/>
+                                 </ui:columnHeader>
+                              </oa:column>
+                              <oa:column id="Attachmentscolumn" cellNoWrapFormat="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader3" prompt="Create / View Attachments"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:attachmentImage id="item1">
+                                       <oa:entityMappings>
+                                          <oa:entityMap id="entityMap1" entityId="TaskId">
+                                             <oa:primaryKeys>
+                                                <oa:primaryKey id="primaryKey1" viewAttr="TaskId"/>
+                                             </oa:primaryKeys>
+                                          </oa:entityMap>
+                                       </oa:entityMappings>
+                                    </oa:attachmentImage>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Notescolumn" columnDataFormat="iconButtonFormat" cellNoWrapFormat="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader7" prompt="Create / View Notes"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:switcher id="region2132" viewAttr="Notes">
+                                       <ui:case name="Enable">
+                                          <oa:image id="Enable" source="/OA_MEDIA/notesicon_enabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="notes">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyAssignmentsVO.ProjectId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyAssignmentsVO.TaskId}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                       <ui:case name="Disable">
+                                          <oa:image id="Disable" source="/OA_MEDIA/notesicon_disabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="writenotes">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyAssignmentsVO.ProjectId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyAssignmentsVO.TaskId}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                    </oa:switcher>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="StatusFlagcolumn" columnDataFormat="iconButtonFormat" cellNoWrapFormat="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader8" prompt="Status Flag"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:switcher id="StatusFlag" viewAttr="Statusflag">
+                                       <ui:case name="Green">
+                                          <oa:image id="Green" source="/OA_MEDIA/okind_active.gif"/>
+                                       </ui:case>
+                                       <ui:case name="Red">
+                                          <oa:image id="Red" source="/OA_MEDIA/criticaltask_status.gif"/>
+                                       </ui:case>
+                                    </oa:switcher>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="AddInfocolumn" columnDataFormat="iconButtonFormat" cellNoWrapFormat="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader9" prompt="Search Project"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:image id="item5" source="/OA_MEDIA/okind_active.gif" destination="" viewAttr="ProjectId">
+                                       <ui:primaryClientAction>
+                                          <ui:fireAction event="addinfo"/>
+                                       </ui:primaryClientAction>
+                                    </oa:image>
+                                 </ui:contents>
+                              </oa:column>
+                           </ui:contents>
+                        </oa:advancedTable>
+                     </ui:contents>
+                  </oa:query>
+               </ui:contents>
+            </oa:header>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

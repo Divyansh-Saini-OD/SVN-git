@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXPAPJOT" description="OD Projects Overview and Tracker Report" Version="1.0">
+<parameters>
+ <parameter name="p_division" datatype="character" />
+ <parameter name="p_dept" datatype="character" />
+ <parameter name="p_di_merchant" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_PJOT">
+<![CDATA[
+SELECT  ppa1.project_id,
+        COALESCE(EEB1.C_EXT_ATTR5,'') AS DIVISION
+       ,COALESCE(EEB1.C_EXT_ATTR1,'') AS DEPARTMENT 
+       ,COALESCE(EEB1.C_EXT_ATTR6,'') AS DI_MERCHANT
+       ,COALESCE(EEB1.C_EXT_ATTR7,'') AS Domestic_MERCHANT
+       ,apps.XX_PA_XXPASCOR_PKG.get_dmm(to_number(substr(EEB1.C_EXT_ATTR1,1,instr(EEB1.C_EXT_ATTR1,' ',1,1)-1))) DMM 
+       ,PPA1.SEGMENT1 AS PROJECT_NUMBER 
+       ,PPA1.NAME  AS PROJECT_NAME
+       ,PPS1.PROJECT_STATUS_NAME  AS PROJECT_STATUS 
+	 ,APPS.XX_PA_XXPAPRJI_PKG.get_proj_progress_status(EEB1.C_EXT_ATTR4) AS PROJECT_PROGRESS_STATUS 
+       ,'TBD' AS SYSTEM_STATUS
+       ,COALESCE(EEB2.C_EXT_ATTR1,'') AS Tracker_type
+       ,EEB2.N_EXT_ATTR1 AS Tracker_year
+       ,ppa1.project_type
+       ,COALESCE(EEB3.C_EXT_ATTR2,'') AS Sourcing_agent
+       ,COALESCE(EEB1.C_EXT_ATTR3,'') AS BRAND
+       ,COALESCE(EEB3.C_EXT_ATTR4,'') AS Supplier
+       ,EEB1.D_EXT_ATTR1 AS Init_launch_date
+       ,EEB1.D_EXT_ATTR2 AS Rev_launch_date
+       ,NVL(EEB1.N_EXT_ATTR1,0) AS no_of_skus
+       ,APPS.XX_PA_XXPAPRJI_PKG.get_curr_forecast(ppa1.project_id) sfcst
+  FROM apps.PA_PROJECT_STATUSES PPS1,
+   APPS.PA_PROJECTS_ALL PPA1 LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB1 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND1 ON 
+                 EEB1.ATTR_GROUP_ID = FND1.ATTR_GROUP_ID AND
+                 FND1.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_GEN_INFO') ON
+                 PPA1.PROJECT_ID = EEB1.PROJECT_ID,
+            APPS.PA_PROJECTS_ALL PPA2 LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB2 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND2 ON 
+                 EEB2.ATTR_GROUP_ID = FND2.ATTR_GROUP_ID AND
+                 FND2.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'RPB_TRACKER') ON
+                 PPA2.PROJECT_ID = EEB2.PROJECT_ID,
+            APPS.PA_PROJECTS_ALL PPA3 LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB3 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND3 ON 
+                 EEB3.ATTR_GROUP_ID = FND3.ATTR_GROUP_ID AND
+                 FND3.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_SOURCING') ON
+                 PPA3.PROJECT_ID = EEB3.PROJECT_ID
+ WHERE PPA1.PROJECT_ID > 0
+   AND PPA1.TEMPLATE_FLAG = 'N'
+   AND PPA1.PROJECT_STATUS_CODE = PPS1.PROJECT_STATUS_CODE
+   AND PPA1.SEGMENT1 LIKE 'PB%' 
+   AND PPA1.project_id=PPA2.project_id
+   AND PPA1.project_id=PPA3.project_id
+   AND NVL(EEB1.C_EXT_ATTR5,'X')=NVL(:p_division,NVL(EEB1.C_EXT_ATTR5,'X'))
+   AND NVL(EEB1.C_EXT_ATTR1,'X')=NVL(:p_dept,NVL(EEB1.C_EXT_ATTR1,'X'))
+   AND NVL(EEB1.C_EXT_ATTR6,'X')=NVL(:p_di_merchant,NVL(EEB1.C_EXT_ATTR6,'X'))
+order by 1]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_PJOT" source="Q_PJOT">
+<element name="DIVISION" value="DIVISION" />
+<element name="DEPARTMENT" value="DEPARTMENT" />
+<element name="DI_MERCHANT_NAME" value="DI_MERCHANT" />
+<element name="DOM_MERCHANT_NAME" value="Domestic_MERCHANT" />
+<element name="DMM" value="DMM" />
+<element name="PROJECT_NO" value="PROJECT_NUMBER" />
+<element name="PROJECT_NAME" value="PROJECT_NAME" />
+<element name="PROJECT_STATUS_NAME" value="PROJECT_STATUS" />
+<element name="PROGRESS_STATUS" value="PROJECT_PROGRESS_STATUS" />
+<element name="SYSTEM_STATUS" value="SYSTEM_STATUS" />
+<element name="TRACKER_TYPE" value="TRACKER_TYPE" />
+<element name="TRACKER_YEAR" value="TRACKER_YEAR" />
+<element name="PROJECT_TYPE" value="PROJECT_TYPE" />
+<element name="SOURCING_AGENT" value="SOURCING_AGENT" />
+<element name="BRAND" value="BRAND" />
+<element name="SUPPLIER" value="SUPPLIER" />
+<element name="INIT_LAUNCH_DATE" value="INIT_LAUNCH_DATE" />
+<element name="REV_LAUNCH_DATE" value="REV_LAUNCH_DATE" />
+<element name="NO_OF_SKUS" value="NO_OF_SKUS" />
+<element name="FORECAST" value="SFCST" />
+</group>
+</dataStructure>
+</dataTemplate>

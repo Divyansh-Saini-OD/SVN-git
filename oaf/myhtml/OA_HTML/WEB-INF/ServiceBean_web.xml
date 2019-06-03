@@ -1,0 +1,107 @@
+<?xml version = '1.0' encoding = 'windows-1252'?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+  <display-name>OA Framework web application deployment descriptor</display-name>
+  <description>web.xml file for OA Framework Applications</description>
+  <servlet>
+    <servlet-name>OAAppModPoolMonitor</servlet-name>
+    <display-name>Application module pool monitor</display-name>
+    <description>Tool to monitor all application modules in the JVM</description>
+    <servlet-class>oracle.apps.fnd.framework.webui.perf.OAAppModPoolMonitor</servlet-class>
+  </servlet>
+  <session-config>
+    <session-timeout>-1</session-timeout>
+  </session-config>
+  <mime-mapping>
+    <extension>html</extension>
+    <mime-type>text/html</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>txt</extension>
+    <mime-type>text/plain</mime-type>
+  </mime-mapping>
+  <welcome-file-list>
+    <welcome-file>test.jsp</welcome-file>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+  <taglib>
+    <taglib-uri>/webapp/DataTags.tld</taglib-uri>
+    <taglib-location>/WEB-INF/lib/datatags.jar</taglib-location>
+  </taglib>
+  <taglib>
+    <taglib-uri>http://xmlns.oracle.com/oa</taglib-uri>
+    <taglib-location>/WEB-INF/oa.tld</taglib-location>
+  </taglib>
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>Access to the entire application</web-resource-name>
+      <url-pattern>/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>OA_OC4J_USERS</role-name>
+    </auth-constraint>
+    <user-data-constraint>
+      <transport-guarantee>NONE</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+  <login-config>
+    <auth-method>BASIC</auth-method>
+    <realm-name>apps_realm</realm-name>
+  </login-config>
+  <security-role>
+    <description>The generic AO OC4J Users group</description>
+    <role-name>OA_OC4J_USERS</role-name>
+  </security-role>
+  <ejb-ref>
+    <ejb-ref-name>ServiceRemoteBMT</ejb-ref-name>
+    <ejb-ref-type>Session</ejb-ref-type>
+    <home>oracle.apps.fnd.framework.service.ejb.ServiceRemoteBMTHome</home>
+    <remote>oracle.apps.fnd.framework.service.ejb.ServiceRemoteBMT</remote>
+  </ejb-ref>
+  <ejb-ref>
+    <ejb-ref-name>ServiceRemoteCMT</ejb-ref-name>
+    <ejb-ref-type>Session</ejb-ref-type>
+    <home>oracle.apps.fnd.framework.service.ejb.ServiceRemoteCMTHome</home>
+    <remote>oracle.apps.fnd.framework.service.ejb.ServiceRemoteCMT</remote>
+  </ejb-ref>
+  <ejb-ref>
+    <ejb-ref-name>RequisitionStatelessEJB</ejb-ref-name>
+    <ejb-ref-type>Session</ejb-ref-type>
+    <home>oracle.apps.fnd.framework.service.test.requisition.ejb.RequisitionStatelessEJBHome</home>
+    <remote>oracle.apps.fnd.framework.service.test.requisition.ejb.RequisitionStatelessEJB</remote>
+  </ejb-ref>
+  <ejb-ref>
+    <ejb-ref-name>RequisitionEJB</ejb-ref-name>
+    <ejb-ref-type>Session</ejb-ref-type>
+    <home>oracle.apps.fnd.framework.service.test.requisition.ejb.RequisitionEJBHome</home>
+    <remote>oracle.apps.fnd.framework.service.test.requisition.ejb.RequisitionEJB</remote>
+  </ejb-ref>
+  <ejb-local-ref>
+    <ejb-ref-name>RequisitionLocalEJB</ejb-ref-name>
+    <ejb-ref-type>Session</ejb-ref-type>
+    <local-home>oracle.apps.fnd.framework.service.test.requisition.ejb.RequisitionLocalEJBHome</local-home>
+    <local>oracle.apps.fnd.framework.service.test.requisition.ejb.RequisitionLocalEJB</local>
+  </ejb-local-ref>
+  <ejb-local-ref>
+    <ejb-ref-name>RequisitionStatelessLocalEJB</ejb-ref-name>
+    <ejb-ref-type>Session</ejb-ref-type>
+    <local-home>oracle.apps.fnd.framework.service.test.requisition.ejb.RequisitionStatelessLocalEJBHome</local-home>
+    <local>oracle.apps.fnd.framework.service.test.requisition.ejb.RequisitionStatelessLocalEJB</local>
+  </ejb-local-ref>
+  <ejb-local-ref>
+    <ejb-ref-name>ServiceLocalBMT</ejb-ref-name>
+    <ejb-ref-type>Session</ejb-ref-type>
+    <local-home>oracle.apps.fnd.framework.service.ejb.ServiceLocalBMTHome</local-home>
+    <local>oracle.apps.fnd.framework.service.ejb.ServiceLocalBMT</local>
+  </ejb-local-ref>
+  <ejb-local-ref>
+    <ejb-ref-name>ServiceLocalCMT</ejb-ref-name>
+    <ejb-ref-type>Session</ejb-ref-type>
+    <local-home>oracle.apps.fnd.framework.service.ejb.ServiceLocalCMTHome</local-home>
+    <local>oracle.apps.fnd.framework.service.ejb.ServiceLocalCMT</local>
+  </ejb-local-ref>
+  <context-param> 
+    <param-name>JRAD_APPS</param-name> 
+    <param-value>ak;fnd;dem</param-value> 
+  </context-param>
+</web-app>

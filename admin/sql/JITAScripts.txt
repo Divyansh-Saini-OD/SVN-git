@@ -1,0 +1,434 @@
+create table SUBBU_OD_SOURCING(
+ITEM_ID	Number not null,
+DEST_ORGANIZATION_ID number not null,
+SOURCE_ORGANIZATION_ID number,
+SOURCE_SUPPLIER_SITE_ID number,
+START_DATE Date not null,
+END_DATE date not null,
+SPLIT_PERCENT number );
+
+-----------------------------------
+create table SUBBU_STOCK_IND(
+ITEM_ID	Number not null,
+ORGANIZATION_ID number not null,
+START_DATE Date not null,
+END_DATE date not null,
+STOCK_INDICATOR varchar2(10) not null 
+);
+
+-----------------------------------
+insert into SUBBU_OD_SOURCING 
+(ITEM_ID, DEST_ORGANIZATION_ID, SOURCE_ORGANIZATION_ID,
+SOURCE_SUPPLIER_SITE_ID, START_DATE, END_DATE,
+SPLIT_PERCENT )
+VALUES (123456, 1234, 3052, NULL, sysdate, sysdate+1000, 100);
+
+-----------------------------------
+
+SELECT t1.dest_organization_id as location_id, 
+    t2.attribute11 as store_open_date,
+    t3.attribute13 as reloc_id, 
+    t4.attribute14 as remerch_ind,
+    t2.type as loc_type_cd,
+    t2.attribute10 as loc_sub_type_cd    
+FROM SUBBU_OD_SOURCING t1, HR_ALL_ORGANIZATION_UNITS t2, MTL_PARAMETERS t3,
+    HR_ORGANIZATION_INFORMATION t4
+where t1.dest_organization_id = t2.organization_id
+AND  t1.dest_organization_id = t3.organization_id
+AND  t1.dest_organization_id = t4.organization_id
+AND  t1.source_organization_id = 3052
+AND t1.item_id = 123456
+AND sysdate between t1.start_date and t1.end_date;
+
+-----------------------------------
+
+create table SUBBU_JITA_ALLOC_PRIORITY
+(Allocation_code   varchar2(10) not null,
+Description	   varchar2(100),
+Priority	   number not null,
+CREATION_DATE	   date not null,
+CREATED_BY         number not null,
+LAST_UPDATE_DATE   date not null,
+LAST_UPDATED_BY    number not null);
+
+-- TO DO create index
+
+insert into SUBBU_JITA_ALLOC_PRIORITY
+(Allocation_code, Description, Priority,CREATION_DATE,
+CREATED_BY, LAST_UPDATE_DATE, LAST_UPDATED_BY)
+VALUES('LOCK','Planner locked in', 1, sysdate,
+123456, sysdate, 123456);
+
+insert into SUBBU_JITA_ALLOC_PRIORITY
+(Allocation_code, Description, Priority,CREATION_DATE,
+CREATED_BY, LAST_UPDATE_DATE, LAST_UPDATED_BY)
+VALUES('ATPSL','Seasonal or large order from ATP', 2, sysdate,
+123456, sysdate, 123456);
+
+insert into SUBBU_JITA_ALLOC_PRIORITY
+(Allocation_code, Description, Priority,CREATION_DATE,
+CREATED_BY, LAST_UPDATE_DATE, LAST_UPDATED_BY)
+VALUES('NSBOTTOM','New store bottom fill', 3, sysdate,
+123456, sysdate, 123456);
+
+insert into SUBBU_JITA_ALLOC_PRIORITY
+(Allocation_code, Description, Priority,CREATION_DATE,
+CREATED_BY, LAST_UPDATE_DATE, LAST_UPDATED_BY)
+VALUES('NSNEED','New store need', 4, sysdate,
+123456, sysdate, 123456);
+
+insert into SUBBU_JITA_ALLOC_PRIORITY
+(Allocation_code, Description, Priority,CREATION_DATE,
+CREATED_BY, LAST_UPDATE_DATE, LAST_UPDATED_BY)
+VALUES('ATP','ATP customer orders', 5, sysdate,
+123456, sysdate, 123456);
+
+insert into SUBBU_JITA_ALLOC_PRIORITY
+(Allocation_code, Description, Priority,CREATION_DATE,
+CREATED_BY, LAST_UPDATE_DATE, LAST_UPDATED_BY)
+VALUES('OUTS','Bottom fill for regular stores', 6, sysdate,
+123456, sysdate, 123456);
+
+insert into SUBBU_JITA_ALLOC_PRIORITY
+(Allocation_code, Description, Priority,CREATION_DATE,
+CREATED_BY, LAST_UPDATE_DATE, LAST_UPDATED_BY)
+VALUES('NEED','Dynamic allocation based on need', 7, sysdate,
+123456, sysdate, 123456);
+
+-------------------------------------------------------------------
+create global temporary table SUBBU_JITA_TEMP 
+(Location_id		number not null,
+Store_type		varchar(10) not null,
+New_store_flag		char(1) not null,
+Sellable_on_hand 	number,
+RUTL			number,
+In_transit_qty		number,
+Safety_stock		number,
+Avg_rate_of_sale	number(12,3),
+Need			number,
+Rounded_Need		number,
+need_pct		number(12,4),
+Prior_allocation_qty	number,
+Prior_lockin_qty	number,
+Prior_seasonal_lrg_qty	number,
+Prior_atp_cust_order_qty number,
+allocation_qty	        number,
+Lockin_alloc_qty	number,
+Seasonal_lrg_ord_qty	number,
+bottom_fill_qty 	number,
+dynamic_qty		number,
+ATP_customer_order_qty	number,
+can_receive		number,
+Overage_qty		number
+);
+
+
+
+------------------------------------------------------------------------------
+CREATE TABLE SUBBU_JITA_ALLOC
+(allocation_id		number not null,
+Ship_to_loc_id		number not null,
+Store_type		varchar(10) not null,
+New_store_flag		char(1) not null,
+Distribution_timestamp	date,
+Allocation_qty		number,
+Scan_picked_qty		number,
+Dynamic_alloc_qty	number,
+Lockin_alloc_qty	number,
+Seasonal_lrg_ord_qty	number,
+bottom_fill_qty 	number,
+ATP_customer_order_qty	number,
+RUTL			number,
+Sellable_on_hand	number,
+In_transit_qty		number,
+Avg_weekly_sales	number(12,3),
+Overage_qty		number,
+distro_type		number,
+Wmos_id			number,
+CREATION_DATE		date,
+CREATED_BY		number,
+LAST_UPDATE_DATE	date,
+LAST_UPDATED_BY		number );
+
+------------------------------------------------------------------------------
+CREATE TABLE SUBBU_JITA_ALLOC_OVERAGE
+(allocation_id		number not null,
+Ship_to_loc_id		number not null,
+Store_type		varchar(10) not null,
+New_store_flag		char(1) not null,
+Distribution_timestamp	date,
+Allocation_qty		number,
+Scan_picked_qty		number,
+Dynamic_alloc_qty	number,
+Lockin_alloc_qty	number,
+Seasonal_lrg_ord_qty	number,
+bottom_fill_qty 	number,
+ATP_customer_order_qty	number,
+RUTL			number,
+Sellable_on_hand	number,
+In_transit_qty		number,
+Avg_weekly_sales	number(12,3),
+distro_type		number,
+Wmos_id			number,
+CREATION_DATE		date,
+CREATED_BY		number,
+LAST_UPDATE_DATE	date,
+LAST_UPDATED_BY		number );
+
+------------------------------------------------------------------------------
+
+CREATE TABLE SUBBU_JITA_NS_CONTROL
+(store_type	varchar2(2)   not null,
+dist_type	varchar2(10)  not null,
+num_days number not null);
+
+
+-----------------------------------
+CREATE TABLE SUBBU_ALLOCATION_HEADER(
+PO_NUM		number not null,
+LINE_NUM	number not null,
+SKU		number not null,
+order_qty	number not null,
+source_org_id	number not null,
+allocation_key	number not null);	
+
+-----------------------------------
+CREATE TABLE SUBBU_ALLOCATION_LINES(
+allocation_key	number not null,
+dest_organization_id number not null,
+locked_in_flag varchar2(1) not null,
+lock_type varchar2(10),
+allocation_qty number);
+
+------------------------------------------
+-- populate sourcing information
+select distinct 'insert into SUBBU_OD_SOURCING (ITEM_ID, DEST_ORGANIZATION_ID, SOURCE_ORGANIZATION_ID, '
+|| ' SOURCE_SUPPLIER_SITE_ID, START_DATE, END_DATE, SPLIT_PERCENT ) VALUES (' 
+|| char(sku) || ', ' || char(ship_to_loc_id) || ', ' || char(ship_from_loc_id) || ', NULL, sysdate-1, sysdate+1000, 100);' as data
+from od.jitaloc where sku = 348037 and dt_ent = '2006-07-19'
+
+-------------------------------------------------------------
+
+CREATE TABLE SUBBU_INV
+(Location_id		number not null,
+Sellable_on_hand 	number,
+RUTL			number,
+In_transit_qty		number,
+Avg_rate_of_sale	number(12,3)
+);
+
+-------------------------------------------------------------------
+
+select distinct 'insert into SUBBU_INV (Location_id, Sellable_on_hand, RUTL, '
+|| ' In_transit_qty, Avg_rate_of_sale ) VALUES (' 
+|| char(ship_to_loc_id) || ', ' || char(sellable_on_hand) 
+|| ', ' || char(dist_target) || ',0, ' || char(avg_weekly_sales) || ');' as data
+from od.jitaloc where sku = 348037 and dt_ent = '2006-07-19'
+
+-----------------------------------------------------------------------------------------------
+
+
+create table SUBBU_JITA_ALLOC_HEADER (
+  process_name  varchar2(15) NOT NULL,
+  ASN    NUMBER,
+  po_nbr NUMBER,
+  sku NUMBER NOT NULL,
+  location_id NUMBER NOT NULL,
+  received_qty NUMBER NOT NULL,
+  allocation_id NUMBER NOT NULL
+  
+  );
+
+----------------------------------------------------------------------------------------------------
+
+create sequence JITA_SEQUENCE;
+
+-----------------------------------------------------------------------------------------------------
+
+create table SUBBU_JITA_DISTROS
+(allocation_id NUMBER NOT NULL,
+dest_location_id NUMBER NOT NULL,
+alloc_qty  NUMBER NOT NULL,
+alloc_type  varchar2(10) NOT NULL,   -- we should make this a number
+distro_num  NUMBER NOT NULL,
+distro_type  NUMBER NOT NULL);
+
+---------------------------------------------------------------------------------------------------
+
+create table SUBBU_JITA_APPT
+(asn	NUMBER NOT NULL, 
+org_id NUMBER NOT NULL, 
+appt_time DATE NOT NULL, 
+create_date DATE NOT NULL, 
+update_date DATE NOT NULL, 
+jita_proc_flag CHAR(1) NOT NULL);
+
+
+-------------------------------------------------------------------------------------------------------
+create table SUBBU_ORG_LOC_RMS_ATTRIBUTE (
+  COMBINATION_ID               		NUMBER  NOT NULL,
+  STRUCTURE_ID                  		NUMBER,
+  ENABLED_FLAG                  		VARCHAR2(1),
+  SUMMARY_FLAG                  		VARCHAR2(1),
+  START_DATE_ACTIVE             		DATE,
+  END_DATE_ACTIVE               		DATE,
+  LAST_UPDATE_DATE              		DATE,
+  LAST_UPDATED_BY               		NUMBER,
+  LOCATION_NUMBER_SW		NUMBER,
+  NAME_SW					VARCHAR2(50),
+  OD_TYPE_SW				VARCHAR2(6),
+  MGR_NAME_SW				VARCHAR2(50),
+  FAX_NUMBER_SW			VARCHAR2(20),
+  PHONE_NUMBER_SW			VARCHAR2(20),
+  EMAIL_SW					VARCHAR2(150),
+  COUNTRY_ID_SW				VARCHAR2(3),
+  OD_CROSS_STREET_DIR_1_SW	VARCHAR2(150),
+  OD_CROSS_STREET_DIR_2_SW	VARCHAR2(150),
+  TIME_ZONE_SW				VARCHAR2(50),
+  OD_CITY_LIMITS_FLG_S		VARCHAR2(1),
+  ORIG_CURRENCY_CODE		VARCHAR2(15),
+  STORE_CLASS_S				VARCHAR2(1),
+  FORMAT_S					NUMBER,
+  DISTRICT_SW				NUMBER,
+  OD_DIVISION_ID_SW			VARCHAR2(6),
+  OD_SUB_TYPE_CD_SW			VARCHAR2(6),
+  OPEN_DATE_SW				DATE,
+  CLOSE_DATE_SW				DATE,
+  DEFAULT_WH_SW			NUMBER,
+  OD_DEFAULT_WH_CSC_S		NUMBER,
+  OD_MKT_OPEN_DATE_S		DATE,
+  START_ORDER_DAYS_S			NUMBER,
+  STOP_ORDER_DAYS_S			NUMBER,
+  OD_CLOSING_STORE_IND_S		VARCHAR2(1),
+  OD_MODEL_TAX_LOC_SW		NUMBER,
+  OD_LOC_BRAND_CD_SW		VARCHAR2(6),
+  OD_GEO_CD_SW				NUMBER,
+  OD_BTS_FLIGHT_ID_SW			VARCHAR2(6),
+  OD_AD_MKT_ID_SW			VARCHAR2(6),
+  CHANNEL_ID_SW				NUMBER,
+  TRANSACTION_NO_GENERATED_S	VARCHAR2(6),
+  OD_REMERCH_IND_S			VARCHAR2(1),
+  OD_SISTER_STORE1_SW			NUMBER,
+  OD_SISTER_STORE2_SW			NUMBER,
+  OD_SISTER_STORE3_SW    		NUMBER,
+  OD_CROSS_DOCK_LEAD_TIME_SW   VARCHAR2(2),
+  OD_ORD_CUTOFF_TM_SW		DATE,
+  OD_DELIVERY_CD_SW			VARCHAR2(6),
+  OD_ROUTING_CD_SW			VARCHAR2(6),
+  OD_RELOC_ID_SW			NUMBER,
+  TOTAL_SQUARE_FEET_S		NUMBER,
+  BREAK_PACK_IND_W			VARCHAR2(1),
+  DELIVERY_POLICY_W			VARCHAR2(6),
+  OD_EXPANDED_MIX_FLG_W		VARCHAR2(1),
+  OD_DEFAULT_IMPORT_WH_W		VARCHAR2(20),
+  OD_EXTERNAL_WMS_SYSTEM_W	VARCHAR2(20),
+  PROTECTED_IND_W			VARCHAR2(1),
+  FORECAST_WH_IND_W			VARCHAR2(1),
+  REPL_IND_W				VARCHAR2(1),
+  REPL_SRS_ORD_W			NUMBER,
+  RESTRICTED_IND_W			VARCHAR2(1),
+  SEGMENT1	                			VARCHAR2(150),
+  SEGMENT2                    			VARCHAR2(150),
+  SEGMENT3                    			VARCHAR2(150),
+  SEGMENT4                    			VARCHAR2(150),
+  SEGMENT5                    			VARCHAR2(150),
+  SEGMENT6                    			VARCHAR2(150),
+  SEGMENT7                    			VARCHAR2(150),
+  SEGMENT8                    			VARCHAR2(150),
+  SEGMENT9                    			VARCHAR2(150),
+  SEGMENT10                   			VARCHAR2(150),
+  SEGMENT11                   			VARCHAR2(150),
+  SEGMENT12                   			VARCHAR2(150),
+  SEGMENT13                   			VARCHAR2(150),
+  SEGMENT14                   			VARCHAR2(150),
+  SEGMENT15                   			VARCHAR2(150),
+  SEGMENT16                   			VARCHAR2(150),
+  SEGMENT17                   			VARCHAR2(150),
+  SEGMENT18                   			VARCHAR2(150),
+  SEGMENT19                   			VARCHAR2(150),
+  SEGMENT20                   			VARCHAR2(150),
+  SEGMENT21                   			VARCHAR2(150),
+  SEGMENT22                   			VARCHAR2(150),
+  SEGMENT23                   			VARCHAR2(150),
+  SEGMENT24                   			VARCHAR2(150),
+  SEGMENT25                   			VARCHAR2(150),
+  SEGMENT26                   			VARCHAR2(150),
+  SEGMENT27                   			VARCHAR2(150),
+  SEGMENT28                   			VARCHAR2(150),
+  SEGMENT29                   			VARCHAR2(150),
+  SEGMENT30                   			VARCHAR2(150),
+  ORGANIZATION_ID			NUMBER);
+
+-------------------------------------------------------------------------------------------------------
+
+CREATE TYPE DISTRO_t AS OBJECT (
+PROCESS           VARCHAR2(15),
+ASN               NUMBER,
+PO_NBR            NUMBER,
+SKU               NUMBER,
+SHIP_FROM_LOC_ID  NUMBER,
+SHIP_TO_LOC_ID    NUMBER,
+ALLOCATION_QTY    NUMBER,
+DISTRO_NUM        NUMBER,
+DISTRO_TYPE       NUMBER );
+
+---------------------------------------------------------------------------------
+
+CREATE TYPE DISTRO_LISTt AS TABLE OF DISTRO_t;
+---------------------------------------------------------------------------------
+
+CREATE TYPE JITA_ALLOCATIONS_t AS OBJECT
+("@allocation_id" NUMBER,
+Distro_list DISTRO_LISTt );
+
+-------------------------------------------------------------------------------
+create table XX_MER_JITA_SCM_WAREHOUSE_SYS (
+org_id number not null,
+Active_date date not null,
+end_date date not null,
+Warehouse_sys_code varchar2(10) not null,
+Warehouse_type varchar2(10),
+CREATION_DATE date not null,
+CREATED_BY number not null,
+LAST_UPDATE_DATE date not null,
+LAST_UPDATED_BY number not null);
+
+CREATE SYNONYM XX_MER_JITA_SCM_WAREHOUSE_SYS FOR XXMER.XX_MER_JITA_SCM_WAREHOUSE_SYS;
+
+-------------------------------------------------------------------------------
+
+SELECT  org_id FROM XX_MER_JITA_SCM_WAREHOUSE_SYS
+  WHERE org_id IN('3071', '3072')
+  AND warehouse_sys_code = 'WMOS'
+  AND active_date < sysdate
+  AND end_date > sysdate;
+
+---------------------------------------------------------------------------------
+CREATE VIEW XX_MER_JITA_ALLOC_VIEW AS
+  SELECT allocation_id, Ship_to_loc_id, Store_type, New_store_flag,
+    Distribution_timestamp, Allocation_qty, Scan_picked_qty, Dynamic_alloc_qty,
+    Lockin_alloc_qty, Seasonal_lrg_ord_qty, bottom_fill_qty,
+    ATP_customer_order_qty, RUTL, Sellable_on_hand, In_transit_qty,
+    Avg_weekly_sales, Wmos_id, CREATION_DATE, CREATED_BY, LAST_UPDATE_DATE,
+    LAST_UPDATED_BY, distro_type, ROWNUM distro_num	
+  FROM XX_MER_JITA_ALLOC
+  UNION 
+  SELECT allocation_id, Ship_to_loc_id, Store_type, New_store_flag,
+    Distribution_timestamp, Allocation_qty, Scan_picked_qty, Dynamic_alloc_qty,
+    Lockin_alloc_qty, Seasonal_lrg_ord_qty, bottom_fill_qty,
+    ATP_customer_order_qty, RUTL, Sellable_on_hand, In_transit_qty,
+    Avg_weekly_sales, Wmos_id, CREATION_DATE, CREATED_BY, LAST_UPDATE_DATE,
+    LAST_UPDATED_BY, distro_type, (ROWNUM + 50000) distro_num	
+  FROM XX_MER_JITA_ALLOC_OVERAGE
+---------------------------------------------------------------------------------
+create table XX_MER_JITA_CONFIGURE
+(process_name varchar2(10),
+parameter_name varchar2(50),
+parameter_value varchar2(200),
+create_date date,
+created_by number,
+last_update_date date,
+last_updated_by number);
+
+CREATE SYNONYM XX_MER_JITA_CONFIGURE FOR XXMER.XX_MER_JITA_CONFIGURE;
+  

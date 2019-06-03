@@ -1,0 +1,58 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<graphics>
+   <partnerlink_locations>
+      <partnerlink name="client" x="15" y="30" side="left"/>
+      <partnerlink name="LOC_POLL" x="15" y="93" side="left" image="db_adapter_palette.png"/>
+      <partnerlink name="StartProcess" x="904" y="311" side="right" image="db_adapter_palette.png"/>
+      <partnerlink name="ODErrorLogger" x="904" y="20" side="right"/>
+      <partnerlink name="GetNextMessage" x="904" y="83" side="right" image="db_adapter_palette.png"/>
+      <partnerlink name="NotificationService" x="904" y="248" side="right"/>
+      <partnerlink name="StopProcess" x="904" y="743" side="right" image="db_adapter_palette.png"/>
+      <partnerlink name="I1308_OrgCreationProcess_EBS_In" x="904" y="146" side="right"/>
+   </partnerlink_locations>
+   <diagram popupeditor="false" fixed_width_swimlanes="true" rounded_partnerlinks="true" centerzoom="true" validateonload="true" confirmbeforedelete="true" SELECTED_PARTNERLINK_COLOR="0,0,153" SWIMLANE_BACKGROUND="240,240,240" SWIMLANE_DIVIDER_BACKGROUND="218,218,218" GRAPH_BACKGROUND="255,255,255" SELECTED_BORDER_BACKGROUND="0,153,153" CONNECTED_PARTNERLINK_COLOR="204,204,255" CONNECTABLE_PARTNERLINK_COLOR="0,0,255" UNCONNECTED_PARTNERLINK_COLOR="192,192,192"/>
+   <graph_layout viewport="112,159,646,366" show_swimlanes="true">
+      <layout_item collapsed="false" xpath="/process/process" type="Process" showhandlers="true"/>
+      <layout_item collapsed="true" xpath="/process/faultHandlers/catch" type="Catch"/>
+      <layout_item collapsed="false" xpath="/process/faultHandlers/catch/sequence" type="Sequence"/>
+      <layout_item collapsed="true" xpath="/process/faultHandlers/catchAll" type="CatchAll"/>
+      <layout_item collapsed="false" xpath="/process/faultHandlers/catchAll/sequence" type="Sequence"/>
+      <layout_item collapsed="false" xpath="/process/sequence" type="Sequence"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch" type="Switch"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/case" type="Case"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/case/sequence" type="Sequence"/>
+      <layout_item collapsed="true" xpath="/process/sequence/switch/case/sequence/while" type="While"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/case/sequence/while/sequence" type="Sequence"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/case/sequence/while/sequence/switch" type="Switch"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/case/sequence/while/sequence/switch/case[1]" type="Case"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/case/sequence/while/sequence/switch/case[1]/sequence" type="Sequence"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/case/sequence/while/sequence/switch/case[1]/sequence/switch" type="Switch"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/case/sequence/while/sequence/switch/case[1]/sequence/switch/case[1]" type="Case"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/case/sequence/while/sequence/switch/case[1]/sequence/switch/case[2]" type="Case"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/case/sequence/while/sequence/switch/case[1]/sequence/switch/otherwise" type="Default"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/case/sequence/while/sequence/switch/case[1]/sequence/scope" type="Scope" showhandlers="true"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/case/sequence/while/sequence/switch/case[1]/sequence/scope/faultHandlers/catch[1]" type="Catch"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/case/sequence/while/sequence/switch/case[1]/sequence/scope/faultHandlers/catch[1]/sequence" type="Sequence"/>
+      <layout_item collapsed="true" xpath="/process/sequence/switch/case/sequence/while/sequence/switch/case[1]/sequence/scope/faultHandlers/catch[1]/sequence/scope" type="Scope" showhandlers="true"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/case/sequence/while/sequence/switch/case[1]/sequence/scope/faultHandlers/catch[2]" type="Catch"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/case/sequence/while/sequence/switch/case[1]/sequence/scope/faultHandlers/catch[2]/sequence" type="Sequence"/>
+      <layout_item collapsed="true" xpath="/process/sequence/switch/case/sequence/while/sequence/switch/case[1]/sequence/scope/faultHandlers/catch[2]/sequence/scope" type="Scope" showhandlers="true"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/case/sequence/while/sequence/switch/case[1]/sequence/scope/sequence" type="Sequence"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/case/sequence/while/sequence/switch/case[1]/sequence/scope/sequence/switch" type="Switch"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/case/sequence/while/sequence/switch/case[1]/sequence/scope/sequence/switch/case" type="Case"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/case/sequence/while/sequence/switch/case[1]/sequence/scope/sequence/switch/case/sequence" type="Sequence"/>
+      <layout_item collapsed="true" xpath="/process/sequence/switch/case/sequence/while/sequence/switch/case[1]/sequence/scope/sequence/switch/case/sequence/scope" type="Scope" showhandlers="true"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/case/sequence/while/sequence/switch/case[1]/sequence/scope/sequence/switch/otherwise" type="Default"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/case/sequence/while/sequence/switch/case[2]" type="Case"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/case/sequence/while/sequence/switch/case[2]/switch" type="Switch"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/case/sequence/while/sequence/switch/case[2]/switch/case" type="Case"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/case/sequence/while/sequence/switch/case[2]/switch/otherwise" type="Default"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/case/sequence/while/sequence/switch/otherwise" type="Default"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/case/sequence/while/sequence/switch/otherwise/sequence" type="Sequence"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/case/sequence/while/sequence/switch/otherwise/sequence/scope" type="Scope" showhandlers="true"/>
+      <layout_item collapsed="true" xpath="/process/sequence/switch/case/sequence/while/sequence/switch/otherwise/sequence/scope/scope" type="Scope" showhandlers="true"/>
+      <layout_item collapsed="false" xpath="/process/sequence/switch/otherwise" type="Default"/>
+   </graph_layout>
+   <iconize assign="no" invoke="no" receive="no" reply="no" transform="no" terminate="no" wait="no" compensate="no" empty="no" java_embed="no" throw="no" validate="no" dropzones="no" sequences="no" scopes="no" picks="no" whiles="no" flows="no" optimize="no"/>
+   <bookmarks/>
+</graphics>

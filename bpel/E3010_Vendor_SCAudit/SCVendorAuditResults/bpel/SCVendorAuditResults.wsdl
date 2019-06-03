@@ -1,0 +1,51 @@
+<definitions
+     name="SCVendorAuditResults"
+     targetNamespace="http://xmlns.oracle.com/SCVendorAuditResults"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:ns1="http://xmlns.oracle.com/ScAudirResultsResponse"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:ns2="SCVendorAuditResults"
+     xmlns:client="http://xmlns.oracle.com/SCVendorAuditResults"
+    >
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://xmlns.oracle.com/ScAudirResultsResponse"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:ns2="SCVendorAuditResults"
+             xmlns:client="http://xmlns.oracle.com/SCVendorAuditResults">
+            <import namespace="http://xmlns.oracle.com/SCVendorAuditResults" schemaLocation="SCVendorAuditResults.xsd"/>
+        </schema>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://xmlns.oracle.com/ScAudirResultsResponse"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:ns2="SCVendorAuditResults"
+             xmlns:client="http://xmlns.oracle.com/SCVendorAuditResults">
+            <import namespace="http://xmlns.oracle.com/ScAudirResultsResponse" schemaLocation="ScAudirResultsResponse.xsd"/>
+        </schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://xmlns.oracle.com/ScAudirResultsResponse"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:ns2="SCVendorAuditResults"
+             xmlns:client="http://xmlns.oracle.com/SCVendorAuditResults">
+            <xsd:import namespace="SCVendorAuditResults" schemaLocation="http://esbdev01.na.odcorp.net/orabpel/xmllib/eaixml/officedepot/v1/native/B2B/EDI/SCAuditResults.xsd"/>
+        </xsd:schema>
+    </types>
+    <message name="SCVendorAuditResultsResponseMessage">
+        <part name="payload" element="ns1:ScAudirResultsResponse"/>
+    </message>
+    <message name="SCVendorAuditResultsRequestMessage">
+        <part name="payload" element="ns2:ComplianceReport"/>
+    </message>
+    <portType name="SCVendorAuditResultsCallback">
+        <operation name="onResult">
+            <input message="client:SCVendorAuditResultsResponseMessage"/>
+        </operation>
+    </portType>
+    <portType name="SCVendorAuditResults">
+        <operation name="initiate">
+            <input message="client:SCVendorAuditResultsRequestMessage"/>
+        </operation>
+    </portType>
+    <plnk:partnerLinkType name="SCVendorAuditResults">
+        <plnk:role name="SCVendorAuditResultsProvider">
+            <plnk:portType name="client:SCVendorAuditResults"/>
+        </plnk:role>
+        <plnk:role name="SCVendorAuditResultsRequester">
+            <plnk:portType name="client:SCVendorAuditResultsCallback"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+</definitions>

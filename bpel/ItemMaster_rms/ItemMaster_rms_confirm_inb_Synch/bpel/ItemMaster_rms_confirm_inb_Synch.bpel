@@ -1,0 +1,119 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Wed Jun 11 21:22:17 EDT 2008
+  Author:  Adrian-Macean
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="ItemMaster_rms_confirm_inb_Synch"
+         targetNamespace="http://xmlns.oracle.com/ItemMaster_rms_confirm_inb_Synch"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:client="http://xmlns.oracle.com/ItemMaster_rms_confirm_inb_Synch"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/ItemMasterConfirm/"
+         xmlns:ehdr="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/RMS10/OD_BPEL_FND_SQL/ITEM_WRITE_FND_LOG/"
+         xmlns:ns2="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="client"
+                 partnerLinkType="client:ItemMaster_rms_confirm_inb_Synch"
+                 myRole="ItemMaster_rms_confirm_inb_SynchProvider"/>
+    <partnerLink name="ItemMasterConfirm" partnerRole="ItemMasterConfirm_role"
+                 partnerLinkType="ns1:ItemMasterConfirm_plt"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable"
+              messageType="client:ItemMaster_rms_confirm_inb_SynchRequestMessage"/>
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable"
+              messageType="client:ItemMaster_rms_confirm_inb_SynchResponseMessage"/>
+    <variable name="Invoke_ItemWriteFNDLog_Input"
+              messageType="ns1:args_in_msg"/>
+    <variable name="Invoke_ItemWriteFNDLog_Output"
+              messageType="ns1:args_out_msg"/>
+  </variables>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <!-- Receive input from requestor. (Note: This maps to operation defined in ItemMaster_rms_confirm_inb_Synch.wsdl) -->
+    <receive name="receiveInput" partnerLink="client"
+             portType="client:ItemMaster_rms_confirm_inb_Synch"
+             operation="process" variable="inputVariable" createInstance="yes"/>
+    <!-- Generate reply to synchronous request -->
+    <assign name="AsnEBSinbtoFNDLog">
+      <copy>
+        <from variable="inputVariable" part="payload"
+              query="/ns2:SYNC_ITEM_MASTER_CONFIRM/ns2:VERB/ns2:PROCESS_NAME"/>
+        <to variable="Invoke_ItemWriteFNDLog_Input" part="InputParameters"
+            query="/ns3:InputParameters/ns3:I_PROCESS_NAME"/>
+      </copy>
+      <copy>
+        <from expression="number(bpws:getVariableData('inputVariable','payload','/ns2:SYNC_ITEM_MASTER_CONFIRM/ns2:VERB/ns2:PROCESS_ID'))"/>
+        <to variable="Invoke_ItemWriteFNDLog_Input" part="InputParameters"
+            query="/ns3:InputParameters/ns3:I_PROCESS_ID"/>
+      </copy>
+      <copy>
+        <from variable="inputVariable" part="payload"
+              query="/ns2:SYNC_ITEM_MASTER_CONFIRM/ns2:NOUN/ns2:ERROR/ns2:MESSAGE"/>
+        <to variable="Invoke_ItemWriteFNDLog_Input" part="InputParameters"
+            query="/ns3:InputParameters/ns3:IO_ERROR_MESSAGE"/>
+      </copy>
+      <copy>
+        <from variable="inputVariable" part="payload"
+              query="/ns2:SYNC_ITEM_MASTER_CONFIRM/ns2:NOUN/ns2:ERROR/ns2:CODE"/>
+        <to variable="Invoke_ItemWriteFNDLog_Input" part="InputParameters"
+            query="/ns3:InputParameters/ns3:IO_ERROR_CODE"/>
+      </copy>
+    </assign>
+    <invoke name="Invoke_ItemWriteFNDLog" partnerLink="ItemMasterConfirm"
+            portType="ns1:ItemMasterConfirm_ptt" operation="ItemMasterConfirm"
+            inputVariable="Invoke_ItemWriteFNDLog_Input"
+            outputVariable="Invoke_ItemWriteFNDLog_Output"/>
+    <assign name="IntializeResponse">
+      <copy>
+        <from variable="Invoke_ItemWriteFNDLog_Output" part="OutputParameters"
+              query="/ns3:OutputParameters/ns3:IO_ERROR_CODE"/>
+        <to variable="outputVariable" part="payload"
+            query="/client:ItemMaster_rms_confirm_inb_SynchProcessResponse/client:result"/>
+      </copy>
+    </assign>
+    <reply name="replyOutput" partnerLink="client"
+           portType="client:ItemMaster_rms_confirm_inb_Synch"
+           operation="process" variable="outputVariable"/>
+  </sequence>
+</process>

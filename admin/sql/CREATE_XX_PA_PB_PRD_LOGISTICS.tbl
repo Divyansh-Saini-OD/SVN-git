@@ -1,0 +1,115 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_PA_PB_PRD_LOGISTICS.tbl                                          |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_PA_PB_PRD_LOGISTICS (OD PLM Enhancements table)                        |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              28-Jul-2010       Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_PA_PB_PRD_LOGISTICS......
+PROMPT
+
+Create table XX_PA_PB_PRD_LOGISTICS
+( prod_dtl_id		number,
+  prd_logistics_id	number,
+  country_of_origin	varchar2(50),
+  port_of_shipping	varchar2(60),
+  moq			number,
+  mov			number,
+  first_ship_date	date,
+  sl_qty		number,
+  sl_length		number,
+  sl_width		number,
+  sl_height		number,
+  sl_weight		number,
+  sl_cmb		number,
+  sl_cuft		number,
+  sl_vend_upc_no	varchar2(50),
+  sl_od_upc_no		varchar2(50),
+  ic_qty		number,
+  ic_length		number,
+  ic_width		number,
+  ic_height		number,
+  ic_weight		number,
+  ic_cmb		number,
+  ic_cuft		number,
+  ic_vend_upc_no	varchar2(50),
+  ic_od_upc_no		varchar2(50),
+  mc_qty		number,
+  mc_length		number,
+  mc_width		number,
+  mc_height		number,
+  mc_weight		number,
+  mc_cmb		number,
+  mc_cuft		number,  
+  mc_vend_upc_no	varchar2(50),
+  mc_od_upc_no		varchar2(50),
+  qty_20ft		number,
+  qty_40ft		number,
+  qty_40ft_htc		number,
+  qty_45ft		number,
+  tariff_no		varchar2(30),
+  duty_rate_pct		number,
+  attribute1		varchar2(150),
+  attribute2		varchar2(150),
+  attribute3		varchar2(150),
+  attribute4		varchar2(150),
+  attribute5		varchar2(150),
+  attribute6		varchar2(150),
+  attribute7		varchar2(150),
+  attribute8		varchar2(150),
+  attribute9		varchar2(150),
+  attribute10		varchar2(150),
+  attribute11		varchar2(150),
+  attribute12		varchar2(150),
+  attribute13		varchar2(150),
+  attribute14		varchar2(150),
+  attribute15		varchar2(150),
+  creation_date		date not null,
+  created_by		number not null,
+  last_update_date	date not null,
+  last_updated_by	number not null,
+  last_update_login	number);
+
+   
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
+

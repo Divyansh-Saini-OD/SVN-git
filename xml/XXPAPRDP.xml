@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXPAPRDP" description="OD General Report Product Information Presentation" Version="1.0">
+<parameters>
+ <parameter name="p_proj" datatype="character" />
+ <parameter name="p_div" datatype="character" />
+ <parameter name="p_dept" datatype="character" />
+ <parameter name="p_cls" datatype="character" />
+ <parameter name="p_agent" datatype="character" />
+ <parameter name="p_ttype" datatype="character" />
+ <parameter name="p_tyear" datatype="number" />
+ <parameter name="p_vend" datatype="character" />
+ <parameter name="p_idesn" datatype="character" />
+ <parameter name="p_fdesn" datatype="character" />
+ <parameter name="p_dimer" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_UPL">
+<![CDATA[
+select  a.project_no,
+    a.line_no,
+    COALESCE(EEB1.C_EXT_ATTR6,'') AS DI_MERCHANT,
+    COALESCE(EEB2.C_EXT_ATTR1,'') AS Tracker_type,
+    EEB2.N_EXT_ATTR1  AS Tracker_year,
+    a.INIT_ITEM_DECISION,
+    a.final_iteM_decision,
+    a.VENDOR_ID||' '||a.VENDOR_NAME VENDOR_ID,
+    a.FACTORY_ID||' '||a.FACTORY_NAME FACTORY_ID,
+    a.sku,
+    a.product_desc,
+    apps.xx_pa_pb_prdupld_pkg.get_image_path||replace(a.product_image,'/XXMER_HTML/') IMG,
+    a.existing_sku,
+    a.vpc,
+    a.sourcing_agent,
+    a.sell_unit,
+    a.packaging_type,    
+    a.brand,
+    a.fob_amnt,
+    a.ddp_amnt,
+    a.projected_gm_pct,
+    a.projects_asp,
+    a.projected_gm,
+    a.quote_date,
+    a.cost_val_period,
+    a.cost_val_date,
+    a.no_of_stores,
+    a.pog_no||' '||to_char(a.pog_date) pog_no,
+    a.item_dimen,
+    a.item_purpose,
+    a.prod_specs,
+    a.prod_construc,
+    a.addl_source_comments,
+    a.addl_di_comments
+ from 
+    apps.xx_pa_pb_genprd_dtl a LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB1 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND1 ON 
+                 EEB1.ATTR_GROUP_ID = FND1.ATTR_GROUP_ID AND
+		     NVL(EEB1.C_EXT_ATTR6,'X')=NVL(:p_dimer,NVL(EEB1.C_EXT_ATTR6,'X')) AND
+                 FND1.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_GEN_INFO') ON
+                 a.PROJECT_ID = EEB1.PROJECT_ID,
+        APPS.PA_PROJECTS_ALL PPA2 LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB2 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND2 ON 
+                 EEB2.ATTR_GROUP_ID = FND2.ATTR_GROUP_ID AND
+		     NVL(EEB2.c_ext_attr1,'X')=NVL(:p_ttype,NVL(eeb2.c_ext_attr1,'X')) AND
+		     NVL(EEB2.N_ext_attr1,-1)=NVL(:p_tyear,NVL(eeb2.n_ext_attr1,-1)) AND
+                 FND2.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'RPB_TRACKER') ON
+                 PPA2.PROJECT_ID = EEB2.PROJECT_ID
+ where ppa2.project_id=a.project_id
+   AND a.project_no=NVL(:p_proj,a.project_no)
+   AND NVL(a.division,-1)=NVL(:p_div,NVL(a.division,-1))
+   AND NVL(a.VENDOR_NAME,'X')=NVL(:p_vend,NVL(a.vendor_name,'X'))
+   AND NVL(a.dept,-1)=NVL(:p_dept,NVL(a.dept,-1))
+   AND NVL(a.class,-1)=NVL(:p_cls,NVL(a.class,-1))
+   AND NVL(a.sourcing_agent,'X')=NVL(:p_agent,NVL(a.sourcing_agent,'X'))
+   AND NVL(a.init_item_decision,'X')=NVL(:p_idesn,NVL(a.init_item_decision,'X'))
+   AND NVL(a.final_item_decision,'X')=NVL(:p_fdesn,NVL(a.final_item_decision,'X'))
+ORDER BY 1,2
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_UPL" source="Q_UPL">
+<element name="PROJECT_NO" value="PROJECT_NO" />
+<element name="LINE_NO" value="LINE_NO" />
+<element name="SOURCING_AGENT" value="SOURCING_AGENT" />
+<element name="DI_MERCHANT" value="DI_MERCHANT" />
+<element name="TRACKER_TYPE" value="TRACKER_TYPE" />
+<element name="TRACKER_YEAR" value="TRACKER_YEAR" />
+<element name="INIT_ITEM_DECISION" value="INIT_ITEM_DECISION" />
+<element name="FINAL_ITEM_DECISION" value="FINAL_ITEM_DECISION" />
+<element name="VENDOR_ID" value="VENDOR_ID" />
+<element name="FACTORY_ID" value="FACTORY_ID" />
+<element name="SKU" value="SKU" />
+<element name="PRODUCT_DESC" value="PRODUCT_DESC" />
+<element name="IMG" value="IMG" />
+<element name="EXISTING_SKU" value="EXISTING_SKU" />
+<element name="VPC" value="VPC" />
+<element name="SELL_UNIT" value="SELL_UNIT" />
+<element name="PACKAGING_TYPE" value="PACKAGING_TYPE" />
+<element name="BRAND" value="BRAND" />
+<element name="FOB_AMNT" value="FOB_AMNT" />
+<element name="DDP_AMNT" value="DDP_AMNT" />
+<element name="PROJECTED_GM_PCT" value="PROJECTED_GM_PCT" />
+<element name="PROJECTS_ASP" value="PROJECTS_ASP" />
+<element name="PROJECTED_GM" value="PROJECTED_GM" />
+<element name="QUOTE_DATE" value="QUOTE_DATE" />
+<element name="COST_VAL_PERIOD" value="COST_VAL_PERIOD" />
+<element name="COST_VAL_DATE" value="COST_VAL_DATE" />
+<element name="NO_OF_STORES" value="NO_OF_STORES" />
+<element name="POG_NO" value="POG_NO" />
+<element name="ITEM_DIMEN" value="ITEM_DIMEN" />
+<element name="ITEM_PURPOSE" value="ITEM_PURPOSE" />
+<element name="PROD_SPECS" value="PROD_SPECS" />
+<element name="PROD_CONSTRUC" value="PROD_CONSTRUC" />
+<element name="ADDL_SOURCE_COMMENTS" value="ADDL_SOURCE_COMMENTS" />
+<element name="ADDL_DI_COMMENTS" value="ADDL_DI_COMMENTS" />
+<element name="ORGNSHIP" value="ORGNSHIP" />
+</group>
+</dataStructure>
+</dataTemplate>

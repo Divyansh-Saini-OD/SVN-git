@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXSCCAPTSR" description="OD SC CAP Tracking Log Summary Report" Version="1.0">
+<parameters>
+<parameter name="P_PROFILE_VALUE" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_XXSCCAPTSR">
+<![CDATA[
+ select 
+                OD_SC_CAP_ASSIGNMENT   CAP_ASSIGNMENT
+		,COUNT(OD_SC_CAP_ASSIGNMENT) TOTAL_CAP_ASSIGNMENT
+		,COUNT(OD_SC_CAP_SENT_D)  TOTAL_CAP_SENT_D
+		,COUNT(OD_SC_CAP_RECD_D) TOTAL_CAP_RECD_D
+		,COUNT(OD_SC_CAP_RESP_D)  TOTAL_CAP_RESP_D
+		,COUNT(OD_SC_STRAUDT_GSO_APR_D) TOTAL_GSO_APR_D
+		,COUNT(OD_SC_SRTAUDT_US_APR_D) TOTAL_US_APR_D
+,(COUNT(OD_SC_CAP_ASSIGNMENT) )+COUNT(OD_SC_CAP_SENT_D) + COUNT(OD_SC_CAP_RECD_D) + COUNT(OD_SC_CAP_RESP_D) + COUNT(OD_SC_STRAUDT_GSO_APR_D) +COUNT(OD_SC_SRTAUDT_US_APR_D)
+   TOTAL_ROWS
+FROM
+  (SELECT *
+  FROM q_od_pb_sc_vendor_master_v
+  WHERE (:P_PROFILE_VALUE  in ('ODGLB','ODUS'))
+  UNION
+  SELECT *
+  FROM Q_od_sc_eu_vendor_master_v
+  WHERE (:P_PROFILE_VALUE  in ('ODGLB','ODEU'))
+  UNION
+  SELECT *
+  FROM Q_od_sc_mx_vendor_master_v
+  WHERE (:P_PROFILE_VALUE  in ('ODGLB','ODMX'))
+  UNION
+  SELECT *
+  FROM Q_od_sc_asia_vendor_master_v
+  WHERE (:P_PROFILE_VALUE  in ('ODGLB','ODASIA'))
+  ) 
+where OD_SC_CAP_ASSIGNMENT is not null
+group by OD_SC_CAP_ASSIGNMENT
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_XXSCCAPTSR" source="Q_XXSCCAPTSR">
+<element name="CAP_ASSIGNMENT" value="CAP_ASSIGNMENT" />
+<element name="TOTAL_CAP_ASSIGNMENT" value="TOTAL_CAP_ASSIGNMENT" />
+<element name="TOTAL_CAP_SENT_D" value="TOTAL_CAP_SENT_D" />
+<element name="TOTAL_CAP_RECD_D" value="TOTAL_CAP_RECD_D" />
+<element name="TOTAL_CAP_RESP_D" value="TOTAL_CAP_RESP_D" />
+<element name="TOTAL_GSO_APR_D" value="TOTAL_GSO_APR_D" />
+<element name="TOTAL_US_APR_D" value="TOTAL_US_APR_D" />
+<element name="TOTAL_ROWS" value="TOTAL_ROWS" />
+</group>
+</dataStructure>
+</dataTemplate>

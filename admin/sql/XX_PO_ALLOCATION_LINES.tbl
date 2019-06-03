@@ -1,0 +1,47 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                             Office Depot                          |
+-- +===================================================================+
+-- | Name  : XXMER.XX_PO_ALLOCATION_LINES                              |
+-- | Description: TABLE FOR EBS ALLOCAITON LINES INFORMATION           |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |1.0      06-21-2007   K.CRAWFORD       INITAL CODE                 |
+-- +===================================================================+
+
+CREATE OR REPLACE TABLE XXMER.XX_PO_ALLOCATION_LINES
+(
+  ALLOCATION_HEADER_ID     NUMBER,
+  ALLOCATION_LINE_ID       NUMBER,
+  PO_HEADER_ID             NUMBER,
+  PO_LINE_ID               NUMBER,
+  LINE_LOCATION_ID         NUMBER,
+  LOCKED_IN                CHAR(1 BYTE),
+  ALLOC_ORGANIZATION_ID    NUMBER,
+  SHIP_TO_ORGANIZATION_ID  NUMBER,
+  ALLOCATION_QTY           NUMBER,
+  PO_LINE_SHIPMENT         VARCHAR2(20 BYTE),
+  JITA_QTY                 NUMBER,
+  WMOS_QTY                 NUMBER,
+  LAST_UPDATE_DATE         DATE,
+  LAST_UPDATED_BY          NUMBER,
+  CREATION_DATE            DATE,
+  CREATED_BY               NUMBER,
+  LAST_UPDATE_LOGIN        NUMBER,
+  ALLOCATION_TYPE          VARCHAR2(50 BYTE)
+);
+
+
+ALTER TABLE XXMER.XX_PO_ALLOCATION_LINES ADD (
+  PRIMARY KEY
+ (ALLOCATION_LINE_ID)
+    USING INDEX );
+
+ALTER TABLE XXMER.XX_PO_ALLOCATION_LINES ADD (
+  FOREIGN KEY (ALLOCATION_HEADER_ID) 
+ REFERENCES XXMER.XX_PO_ALLOCATION_HEADER (ALLOCATION_HEADER_ID));

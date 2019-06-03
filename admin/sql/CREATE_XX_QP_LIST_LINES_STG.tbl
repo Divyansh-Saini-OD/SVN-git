@@ -1,0 +1,194 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : OD C0225 Modifiers                                                         |--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_QP_LIST_LINES_STG.tbl                                            |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                  1. XX_QP_LIST_LINES_STG (OD Modifiers Line Staging Table)                  |--
+--|                  2. XX_QP_LIST_LINES_STG (Synonym for XX_QP_LIST_LINES_STG)                 |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By        Description                            |--
+--+=============================================================================================+--
+--| 1.0              18-May-2007      Abhradip Ghosh     Original                               |--
+--| 1.1              13-Jun-2007      Abhradip Ghosh     File name changed as per updated MD040 |--
+--| 1.2              13-Jun-2007      Parvez Siddiqui    TL Review                              |--
+--+=============================================================================================+--
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Existing Custom Tables......
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Table XXCNV.XX_QP_LIST_LINES_STG
+PROMPT
+
+DROP TABLE XXCNV.XX_QP_LIST_LINES_STG;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping SYNONYM XX_QP_LIST_LINES_STG in APPS
+PROMPT
+
+DROP SYNONYM XX_QP_LIST_LINES_STG;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating the Custom Table XX_QP_LIST_LINES_STG......
+PROMPT
+
+CREATE TABLE XXCNV.XX_QP_LIST_LINES_STG(
+                                        CONTROL_ID                    NUMBER NOT NULL,
+                                        PROCESS_FLAG                  NUMBER NOT NULL,
+                                        CONV_ACTION                   VARCHAR2(10) NOT NULL,
+                                        LOAD_BATCH_ID                 NUMBER,
+                                        EXTRACT_BATCH_ID              NUMBER,
+                                        SOURCE_SYSTEM_CODE            VARCHAR2(5) NOT NULL,
+                                        SOURCE_SYSTEM_REF             VARCHAR2(50) NOT NULL,
+                                        ERROR_CODE                    VARCHAR2(15),
+                                        ERROR_MESSAGE                 VARCHAR2(2000),
+                                        LIST_LINE_ID                  NUMBER,
+                                        CREATION_DATE                 DATE,
+                                        CREATED_BY                    NUMBER,
+                                        LAST_UPDATED_BY               NUMBER,
+                                        LAST_UPDATE_DATE              DATE,
+                                        LAST_UPDATE_LOGIN             NUMBER,
+                                        PROGRAM_APPLICATION_ID        NUMBER,
+                                        PROGRAM_ID                    NUMBER,
+                                        PROGRAM_UPDATE_DATE           DATE,
+                                        REQUEST_ID                    NUMBER,
+                                        LIST_HEADER_ID                NUMBER,
+                                        LIST_LINE_TYPE_CODE           VARCHAR2(30),
+                                        START_DATE_ACTIVE             DATE,
+                                        END_DATE_ACTIVE               DATE,
+                                        AUTOMATIC_FLAG                VARCHAR2(1),
+                                        MODIFIER_LEVEL_CODE           VARCHAR2(30),
+                                        PRICE_BY_FORMULA_ID           NUMBER,
+                                        LIST_PRICE                    NUMBER,
+                                        PRIMARY_UOM_FLAG              VARCHAR2(1),
+                                        INVENTORY_ITEM_ID             NUMBER,
+                                        ORGANIZATION_ID               NUMBER,
+                                        RELATED_ITEM_ID               NUMBER,
+                                        RELATIONSHIP_TYPE_ID          NUMBER,
+                                        SUBSTITUTION_CONTEXT          VARCHAR2(30),
+                                        SUBSTITUTION_ATTRIBUTE        VARCHAR2(30),
+                                        SUBSTITUTION_VALUE            VARCHAR2(240),
+                                        REVISION                      VARCHAR2(50),
+                                        REVISION_DATE                 DATE,
+                                        REVISION_REASON_CODE          VARCHAR2(30),
+                                        PRICE_BREAK_TYPE_CODE         VARCHAR2(30),
+                                        PERCENT_PRICE                 NUMBER,
+                                        NUMBER_EFFECTIVE_PERIODS      NUMBER,
+                                        EFFECTIVE_PERIOD_UOM          VARCHAR2(3),
+                                        ARITHMETIC_OPERATOR           VARCHAR2(30),
+                                        OPERAND                       NUMBER,
+                                        OVERRIDE_FLAG                 VARCHAR2(1),
+                                        PRINT_ON_INVOICE_FLAG         VARCHAR2(1),
+                                        REBATE_TRXN_TYPE_CODE         VARCHAR2(30),
+                                        ESTIM_ACCRUAL_RATE            NUMBER,
+                                        COMMENTS                      VARCHAR2(2000),
+                                        GENERATE_USING_FORMULA_ID     NUMBER,
+                                        REPRICE_FLAG                  VARCHAR2(1),
+                                        LIST_LINE_NO                  VARCHAR2(30),
+                                        ESTIM_GL_VALUE                NUMBER,
+                                        BENEFIT_PRICE_LIST_LINE_ID    NUMBER,
+                                        EXPIRATION_PERIOD_START_DATE  DATE,
+                                        NUMBER_EXPIRATION_PERIODS     NUMBER,
+                                        EXPIRATION_PERIOD_UOM         VARCHAR2(3),
+                                        EXPIRATION_DATE               DATE,
+                                        ACCRUAL_FLAG                  VARCHAR2(1),
+                                        PRICING_PHASE_ID              NUMBER,
+                                        PRICING_GROUP_SEQUENCE        NUMBER,
+                                        INCOMPATIBILITY_GRP_CODE      VARCHAR2(30),
+                                        PRODUCT_PRECEDENCE            NUMBER,
+                                        PRORATION_TYPE_CODE           VARCHAR2(30),
+                                        ACCRUAL_CONVERSION_RATE       NUMBER,
+                                        BENEFIT_QTY                   NUMBER,
+                                        BENEFIT_UOM_CODE              VARCHAR2(30),
+                                        BENEFIT_LIMIT                 NUMBER,
+                                        CHARGE_TYPE_CODE              VARCHAR2(30),
+                                        CHARGE_SUBTYPE_CODE           VARCHAR2(30),
+                                        CONTEXT                       VARCHAR2(30),
+                                        ATTRIBUTE1                    VARCHAR2(240),
+                                        ATTRIBUTE2                    VARCHAR2(240),
+                                        ATTRIBUTE3                    VARCHAR2(240),
+                                        ATTRIBUTE4                    VARCHAR2(240),
+                                        ATTRIBUTE5                    VARCHAR2(240),
+                                        ATTRIBUTE6                    VARCHAR2(240),
+                                        ATTRIBUTE7                    VARCHAR2(240),
+                                        ATTRIBUTE8                    VARCHAR2(240),
+                                        ATTRIBUTE9                    VARCHAR2(240),
+                                        ATTRIBUTE10                   VARCHAR2(240),
+                                        ATTRIBUTE11                   VARCHAR2(240),
+                                        ATTRIBUTE12                   VARCHAR2(240),
+                                        ATTRIBUTE13                   VARCHAR2(240),
+                                        ATTRIBUTE14                   VARCHAR2(240),
+                                        ATTRIBUTE15                   VARCHAR2(240),
+                                        INCLUDE_ON_RETURNS_FLAG       VARCHAR2(1),
+                                        QUALIFICATION_IND             NUMBER,
+                                        NET_AMOUNT_FLAG               VARCHAR2(1),
+                                        ACCUM_ATTRIBUTE               VARCHAR2(240),
+                                        RLTD_MODIFIER_ID              NUMBER,
+                                        FROM_RLTD_MODIFIER_ID         NUMBER,
+                                        TO_RLTD_MODIFIER_ID           NUMBER,
+                                        RLTD_MODIFIER_GRP_NO          NUMBER,
+                                        RLTD_MODIFIER_GRP_TYPE        VARCHAR2(30),
+                                        RETURN_STATUS                 VARCHAR2(1),
+                                        DB_FLAG                       VARCHAR2(1),
+                                        OPERATION                     VARCHAR2(30),
+                                        MODIFIER_PARENT_INDEX         NUMBER,
+                                        ORIG_SYS_HEADER_REF           VARCHAR2(50),
+                                        ORIG_SYS_LINE_REF             VARCHAR2(50),
+                                        ORG_ID                        NUMBER,
+                                        ORG_CODE                      VARCHAR2(10)
+                                       );
+
+PROMPT
+PROMPT Creating Synonym in APPS...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM XX_QP_LIST_LINES_STG
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_QP_LIST_LINES_STG FOR XXCNV.XX_QP_LIST_LINES_STG;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+
+EXIT;
+
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
+

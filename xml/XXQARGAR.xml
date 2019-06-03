@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXQARGAR" description="OD : Return Goods Analysis" Version="1.0">
+<parameters>
+ <parameter name="P_REGION" datatype="character" />
+ <parameter name="P_INVESTIGATION_STATUS" datatype="character" />
+ <parameter name="P_SUBMITTER" datatype="character" />
+ <parameter name="P_APPROVER" datatype="character" />
+ <parameter name="P_SKU" datatype="character" />
+ <parameter name="P_DEPARTMENT" datatype="character" />
+ <parameter name="P_VENDOR_NAME" datatype="character" />
+ <parameter name="P_SOURCING_AGENT" datatype="character" />
+ <parameter name="P_SAMPLE_PICKUP_DATE" datatype="DATE" />
+ <parameter name="P_PICKUP_LOCATION" datatype="character" />
+ <parameter name="P_DEFECT_CONFIRMED" datatype="character" />
+ <parameter name="P_DISPOSITION" datatype="character" />
+ <parameter name="P_CAP" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_MAIN">
+<![CDATA[
+SELECT  
+ OD_OB_RGA_ID
+,OD_SC_REGION
+,OD_PB_APPROVAL_STATUS
+,OD_PB_AUDITOR_NAME
+,OD_PB_QA_ENGR_EMAIL
+,OD_OB_SKU
+,OD_PB_ITEM_DESC
+,OD_PB_SC_DEPT_NAME
+,OD_OB_VENDOR_NAME
+,OD_SC_AUDIT_AGENT
+,OD_SC_SCHEDULED_DATE
+,OD_OB_PICKUP_LOCATION
+,OD_PB_VENDOR_COMMENTS
+,OD_PB_REASON_CODE
+,OD_OB_DISPUTE_YN
+,OD_PB_DEFECT_CODE
+,OD_PB_ENGINEER_FINDINGS
+,OD_PB_SAMPLE_DISPOSITION
+,OD_PB_CAP_YN
+,OD_OB_REF_CAPID
+,OD_PB_ATTACHMENT
+,OD_PB_COMMENTS
+FROM    Q_OD_OB_RGA_V
+WHERE    NVL(OD_SC_REGION,'X')                = NVL(:P_REGION,NVL(OD_SC_REGION,'X'))
+AND      NVL(OD_PB_APPROVAL_STATUS,'X')       = NVL(:P_INVESTIGATION_STATUS,NVL(OD_PB_APPROVAL_STATUS,'X'))
+AND      NVL(OD_PB_AUDITOR_NAME,'X')          = NVL(:P_SUBMITTER,NVL(OD_PB_AUDITOR_NAME,'X'))
+AND      NVL(OD_PB_QA_ENGR_EMAIL,'X')         = NVL(:P_APPROVER,NVL(OD_PB_QA_ENGR_EMAIL,'X'))
+AND      NVL(OD_OB_SKU,1)                     = NVL(:P_SKU,NVL(OD_OB_SKU,1))
+AND      NVL(OD_PB_SC_DEPT_NAME,'X')          = NVL(:P_DEPARTMENT,NVL(OD_PB_SC_DEPT_NAME,'X'))
+AND      NVL(OD_OB_VENDOR_NAME,'X')           = NVL(:P_VENDOR_NAME,NVL(OD_OB_VENDOR_NAME,'X'))
+AND      NVL(OD_SC_AUDIT_AGENT,'X')           = NVL(:P_SOURCING_AGENT,NVL(OD_SC_AUDIT_AGENT,'X'))
+AND      OD_SC_SCHEDULED_DATE                 = NVL(TO_DATE(:P_SAMPLE_PICKUP_DATE,'YYYY/MM/DD HH24:MI:SS'),OD_SC_SCHEDULED_DATE)
+AND      NVL(OD_OB_PICKUP_LOCATION,'X')       = NVL(:P_PICKUP_LOCATION,NVL(OD_OB_PICKUP_LOCATION,'X'))
+AND      NVL(OD_OB_DISPUTE_YN,'X')            = NVL(:P_DEFECT_CONFIRMED,NVL(OD_OB_DISPUTE_YN,'X'))
+AND      NVL(OD_PB_SAMPLE_DISPOSITION,'X')    = NVL(:P_DISPOSITION,NVL(OD_PB_SAMPLE_DISPOSITION,'X'))
+AND      NVL(OD_PB_CAP_YN,'X')                = NVL(:P_CAP,NVL(OD_PB_CAP_YN,'X'))
+ORDER BY  od_ob_rga_id, od_ob_sku
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_MAIN" source="Q_MAIN">
+<element name="OD_OB_RGA_ID" value="OD_OB_RGA_ID" />
+<element name="OD_SC_REGION" value="OD_SC_REGION" />
+<element name="OD_PB_APPROVAL_STATUS" value="OD_PB_APPROVAL_STATUS" />
+<element name="OD_PB_AUDITOR_NAME" value="OD_PB_AUDITOR_NAME" />
+<element name="OD_PB_QA_ENGR_EMAIL" value="OD_PB_QA_ENGR_EMAIL" />
+<element name="OD_OB_SKU" value="OD_OB_SKU" />
+<element name="OD_PB_ITEM_DESC" value="OD_PB_ITEM_DESC" />
+<element name="OD_PB_SC_DEPT_NAME" value="OD_PB_SC_DEPT_NAME" />
+<element name="OD_OB_VENDOR_NAME" value="OD_OB_VENDOR_NAME" />
+<element name="OD_SC_AUDIT_AGENT" value="OD_SC_AUDIT_AGENT" />
+<element name="OD_SC_SCHEDULED_DATE" value="OD_SC_SCHEDULED_DATE" />
+<element name="OD_OB_PICKUP_LOCATION" value="OD_OB_PICKUP_LOCATION" />
+<element name="OD_PB_VENDOR_COMMENTS" value="OD_PB_VENDOR_COMMENTS" />
+<element name="OD_PB_REASON_CODE" value="OD_PB_REASON_CODE" />
+<element name="OD_OB_DISPUTE_YN" value="OD_OB_DISPUTE_YN" />
+<element name="OD_PB_DEFECT_CODE" value="OD_PB_DEFECT_CODE" />
+<element name="OD_PB_ENGINEER_FINDINGS" value="OD_PB_ENGINEER_FINDINGS" />
+<element name="OD_PB_SAMPLE_DISPOSITION" value="OD_PB_SAMPLE_DISPOSITION" />
+<element name="OD_PB_CAP_YN" value="OD_PB_CAP_YN" />
+<element name="OD_OB_REF_CAPID" value="OD_OB_REF_CAPID" />
+<element name="OD_PB_ATTACHMENT" value="OD_PB_ATTACHMENT" />
+<element name="OD_PB_COMMENTS" value="OD_PB_COMMENTS" />
+</group>
+</dataStructure>
+</dataTemplate>

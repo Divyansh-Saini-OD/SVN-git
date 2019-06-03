@@ -1,0 +1,50 @@
+<definitions
+     name="JITAV2"
+     targetNamespace="http://xmlns.oracle.com/JITAV2"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:ns1="http://www.thiscompany.com/ns/sales"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:client="http://xmlns.oracle.com/JITAV2"
+    >
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://www.thiscompany.com/ns/sales"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:client="http://xmlns.oracle.com/JITAV2">
+            <import namespace="http://xmlns.oracle.com/JITAV2" schemaLocation="JITAV2.xsd"/>
+        </schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://www.thiscompany.com/ns/sales"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:client="http://xmlns.oracle.com/JITAV2">
+            <xsd:import namespace="http://www.thiscompany.com/ns/sales" schemaLocation="StoreDistroBridge.xsd"/>
+        </xsd:schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://www.thiscompany.com/ns/sales"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:client="http://xmlns.oracle.com/JITAV2">
+            <xsd:import namespace="http://www.thiscompany.com/ns/sales" schemaLocation="JITAOut.xsd"/>
+        </xsd:schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://www.thiscompany.com/ns/sales" schemaLocation="PIXBridge_2_1.xsd"/>
+        </xsd:schema>
+    </types>
+    <message name="JITAV2ResponseMessage">
+        <part name="payload" element="ns1:StoreDistroBridge"/>
+    </message>
+    <message name="JITAV2RequestMessage">
+        <part name="payload" element="ns1:PIXBridge"/>
+    </message>
+    <portType name="JITAV2">
+        <operation name="initiate">
+            <input message="client:JITAV2RequestMessage"/>
+        </operation>
+    </portType>
+    <portType name="JITAV2Callback">
+        <operation name="onResult">
+            <input message="client:JITAV2ResponseMessage"/>
+        </operation>
+    </portType>
+    <plnk:partnerLinkType name="JITAV2">
+        <plnk:role name="JITAV2Provider">
+            <plnk:portType name="client:JITAV2"/>
+        </plnk:role>
+        <plnk:role name="JITAV2Requester">
+            <plnk:portType name="client:JITAV2Callback"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+</definitions>

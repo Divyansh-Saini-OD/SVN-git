@@ -1,0 +1,19 @@
+<schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified"
+	targetNamespace="http://xmlns.oracle.com/ItemMaster_rms_confirm_inb"
+	xmlns="http://www.w3.org/2001/XMLSchema">
+	<element name="ItemMaster_rms_confirm_inbProcessRequest">
+		<complexType>
+			<sequence>
+				<element name="input" type="string"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="ItemMaster_rms_confirm_inbProcessResponse">
+		<complexType>
+			<sequence>
+				<element name="result" type="string"/>
+			</sequence>
+		</complexType>
+	</element>
+</schema>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+xmlns="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+xmlns:odmf="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+targetNamespace="http://www.openapplications.org/officedepot/merchandising/foundation/1" 
+elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+<xsd:complexType name="ApplicationAreaType">
+  <xsd:sequence>
+    <xsd:element name="MessageType" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Holds interface message type
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Sender" type="xsd:string"/>
+    <xsd:element name="CreationDateTime" type="xsd:dateTime"/>
+  </xsd:sequence>
+</xsd:complexType>
+
+
+</xsd:schema>

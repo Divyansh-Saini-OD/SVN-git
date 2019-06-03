@@ -1,0 +1,689 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXSCAUAR" description="OD: SC Audit Aging Report" Version="1.0">
+<parameters>
+<parameter name="P_REGION" datatype="character" /> 
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_TOTAL_DAYS_LE_365_IA_SM">
+<![CDATA[
+select COUNT(UNION_RES.vname) TOTAL_DAYS_LE_365_IA_SM
+FROM 
+(SELECT   ven_mas.od_sc_vendor_name vname 
+FROM    q_od_pb_sc_vendor_master_v ven_mas
+where 1=1
+and  VEN_MAS.OD_SC_STR_AUDIT_RESULT IN('Minor Progress Needed','Satisfactory')
+AND  ven_mas.od_sc_inspection_type='Initial Onsite'
+AND  ven_mas.od_sc_vendor_status = 'Active'
+and  (VEN_MAS.OD_SC_CIP = 'No' OR VEN_MAS.OD_SC_CIP IS NULL)
+and  VEN_MAS.OD_SC_AUDIT_REQUIRED IS NULL
+AND  ('ODUS' = :P_REGION OR :P_REGION = 'ODGLB')
+AND (SYSDATE - VEN_MAS.OD_SC_STRAUDT_SCHD_D) <= 365 
+UNION
+SELECT  ven_mas.od_sc_vendor_name vname
+FROM    Q_od_sc_asia_vendor_master_v ven_mas
+where 1=1
+AND  ven_mas.od_sc_str_audit_result IN('Minor Progress Needed','Satisfactory')
+AND  ven_mas.od_sc_inspection_type='Initial Onsite'
+AND  ven_mas.od_sc_vendor_status = 'Active'
+and  (VEN_MAS.OD_SC_CIP = 'No' OR VEN_MAS.OD_SC_CIP IS NULL)
+and  VEN_MAS.OD_SC_AUDIT_REQUIRED IS NULL
+AND  ('ODASIA' = :P_REGION OR :P_REGION = 'ODGLB')
+AND (SYSDATE - VEN_MAS.OD_SC_STRAUDT_SCHD_D) <= 365
+UNION
+SELECT  ven_mas.od_sc_vendor_name vname
+FROM    Q_od_sc_eu_vendor_master_v   ven_mas
+WHERE 1=1
+AND  ven_mas.od_sc_str_audit_result IN('Minor Progress Needed','Satisfactory')
+AND  ven_mas.od_sc_inspection_type='Initial Onsite'
+AND  ven_mas.od_sc_vendor_status = 'Active'
+and  (VEN_MAS.OD_SC_CIP = 'No' OR VEN_MAS.OD_SC_CIP IS NULL)
+and  VEN_MAS.OD_SC_AUDIT_REQUIRED IS NULL
+AND  ('ODEU' = :P_REGION OR :P_REGION = 'ODGLB')
+AND  (SYSDATE - VEN_MAS.OD_SC_STRAUDT_SCHD_D) <= 365 
+UNION
+SELECT  ven_mas.od_sc_vendor_name vname
+FROM    Q_od_sc_mx_vendor_master_v  ven_mas
+WHERE 1=1
+and  VEN_MAS.OD_SC_STR_AUDIT_RESULT in('Minor Progress Needed','Satisfactory')
+AND  ven_mas.od_sc_inspection_type='Initial Onsite'
+AND  ven_mas.od_sc_vendor_status = 'Active'
+AND  (ven_mas.od_sc_cip = 'No' OR VEN_MAS.OD_SC_CIP IS NULL)
+and  VEN_MAS.OD_SC_AUDIT_REQUIRED IS NULL
+AND  ('ODMX' = :P_REGION OR :P_REGION = 'ODGLB')
+and (sysdate - ven_mas.od_sc_straudt_schd_d) <= 365 
+) UNION_RES
+]]>
+</sqlStatement>
+
+<sqlStatement name="Q_TOTAL_DAYS_G_365_IA_SM">
+<![CDATA[
+select COUNT(UNION_RES.vname) TOTAL_DAYS_G_365_IA_SM
+FROM 
+(SELECT   ven_mas.od_sc_vendor_name vname
+FROM    q_od_pb_sc_vendor_master_v ven_mas
+where 1=1
+and  VEN_MAS.OD_SC_STR_AUDIT_RESULT IN('Minor Progress Needed','Satisfactory')
+AND  ven_mas.od_sc_inspection_type='Initial Onsite'
+AND  ven_mas.od_sc_vendor_status = 'Active'
+and  (VEN_MAS.OD_SC_CIP = 'No' OR VEN_MAS.OD_SC_CIP IS NULL)
+and  VEN_MAS.OD_SC_AUDIT_REQUIRED IS NULL
+AND  ('ODUS' = :P_REGION OR :P_REGION = 'ODGLB')
+AND (SYSDATE - VEN_MAS.OD_SC_STRAUDT_SCHD_D) > 365 
+UNION
+SELECT  ven_mas.od_sc_vendor_name vname
+FROM    Q_od_sc_asia_vendor_master_v ven_mas
+where 1=1
+AND  ven_mas.od_sc_str_audit_result IN('Minor Progress Needed','Satisfactory')
+AND  ven_mas.od_sc_inspection_type='Initial Onsite'
+AND  ven_mas.od_sc_vendor_status = 'Active'
+and  (VEN_MAS.OD_SC_CIP = 'No' OR VEN_MAS.OD_SC_CIP IS NULL)
+and  VEN_MAS.OD_SC_AUDIT_REQUIRED IS NULL
+AND  ('ODASIA' = :P_REGION OR :P_REGION = 'ODGLB')
+AND (SYSDATE - VEN_MAS.OD_SC_STRAUDT_SCHD_D) > 365
+UNION
+SELECT  ven_mas.od_sc_vendor_name vname
+FROM    Q_od_sc_eu_vendor_master_v   ven_mas
+WHERE 1=1
+AND  ven_mas.od_sc_str_audit_result IN('Minor Progress Needed','Satisfactory')
+AND  ven_mas.od_sc_inspection_type='Initial Onsite'
+AND  ven_mas.od_sc_vendor_status = 'Active'
+and  (VEN_MAS.OD_SC_CIP = 'No' OR VEN_MAS.OD_SC_CIP IS NULL)
+and  VEN_MAS.OD_SC_AUDIT_REQUIRED IS NULL
+AND  ('ODEU' = :P_REGION OR :P_REGION = 'ODGLB')
+AND  (SYSDATE - VEN_MAS.OD_SC_STRAUDT_SCHD_D) > 365 
+UNION
+SELECT  ven_mas.od_sc_vendor_name vname
+FROM    Q_od_sc_mx_vendor_master_v  ven_mas
+WHERE 1=1
+and  VEN_MAS.OD_SC_STR_AUDIT_RESULT in('Minor Progress Needed','Satisfactory')
+AND  ven_mas.od_sc_inspection_type='Initial Onsite'
+AND  ven_mas.od_sc_vendor_status = 'Active'
+AND  (ven_mas.od_sc_cip = 'No' OR VEN_MAS.OD_SC_CIP IS NULL)
+and  VEN_MAS.OD_SC_AUDIT_REQUIRED IS NULL
+AND  ('ODMX' = :P_REGION OR :P_REGION = 'ODGLB')
+and (sysdate - ven_mas.od_sc_straudt_schd_d) > 365 
+) UNION_RES
+]]>
+</sqlStatement>
+
+<sqlStatement name="Q_TOTAL_DAYS_LE_365_IA_NI">
+<![CDATA[
+select COUNT(union_res.vname) TOTAL_DAYS_LE_365_IA_NI
+FROM 
+(SELECT od_sc_vendor_name vname
+FROM q_od_pb_sc_vendor_master_v t1
+WHERE od_sc_str_audit_result IN('Needs Improvement','Zero Tolerance','Denied Entry')
+AND  od_sc_inspection_type  = 'Initial Onsite'
+AND  od_sc_vendor_status    = 'Active'
+AND  (od_sc_cip = 'No' OR OD_SC_CIP IS NULL)
+AND  od_sc_audit_required IS NULL
+AND  ('ODUS' = :P_REGION OR :P_REGION = 'ODGLB')
+AND (SYSDATE -
+  (SELECT MIN(od_sc_scheduled_date)
+  FROM q_od_sc_vendor_audit_v audit1
+  WHERE (audit1.od_sc_vendor      = t1.od_sc_vendor_name
+  OR audit1.od_sc_od_vendor_id    = t1.od_sc_vendor_number )
+  AND (audit1.od_sc_factory       = t1.od_sc_factory_name
+  OR audit1.od_sc_factory_id      = t1.od_sc_factory_number )
+  AND audit1.od_sc_scheduled_date >
+    (SELECT MAX(od_sc_scheduled_date)
+    FROM q_od_sc_vendor_audit_v audit2
+    WHERE audit2.od_sc_grade NOT IN('Needs Improvement','Zero Tolerance','Denied Entry')
+    AND (audit1.od_sc_vendor     = audit2.od_sc_vendor
+    OR audit1.od_sc_od_vendor_id = audit2.od_sc_od_vendor_id )
+    AND (audit1.od_sc_factory    =audit2.od_sc_factory
+    or AUDIT1.OD_SC_FACTORY_ID   = AUDIT2.OD_SC_FACTORY_ID)
+    ) 
+  ))<=365
+  UNION
+SELECT od_sc_vendor_name vname
+FROM Q_od_sc_asia_vendor_master_v t1
+WHERE od_sc_str_audit_result IN('Needs Improvement','Zero Tolerance','Denied Entry')
+AND  od_sc_inspection_type  = 'Initial Onsite'
+AND  od_sc_vendor_status    = 'Active'
+AND  (od_sc_cip = 'No' OR OD_SC_CIP IS NULL)
+AND  od_sc_audit_required IS NULL
+AND  ('ODASIA' = :P_REGION OR :P_REGION = 'ODGLB')
+AND (SYSDATE -
+  (SELECT MIN(od_sc_scheduled_date)
+  FROM q_od_sc_vendor_audit_v audit1
+  WHERE (audit1.od_sc_vendor      = t1.od_sc_vendor_name
+  OR audit1.od_sc_od_vendor_id    = t1.od_sc_vendor_number )
+  AND (audit1.od_sc_factory       = t1.od_sc_factory_name
+  OR audit1.od_sc_factory_id      = t1.od_sc_factory_number )
+  AND audit1.od_sc_scheduled_date >
+    (SELECT MAX(od_sc_scheduled_date)
+    FROM q_od_sc_vendor_audit_v audit2
+    WHERE audit2.od_sc_grade  NOT IN('Needs Improvement','Zero Tolerance','Denied Entry')
+    AND (audit1.od_sc_vendor     = audit2.od_sc_vendor
+    OR audit1.od_sc_od_vendor_id = audit2.od_sc_od_vendor_id )
+    AND (audit1.od_sc_factory    =audit2.od_sc_factory
+    OR audit1.od_sc_factory_id   = audit2.od_sc_factory_id)
+    )
+  ))<=365
+  UNION
+SELECT od_sc_vendor_name vname
+FROM Q_od_sc_eu_vendor_master_v t1
+WHERE od_sc_str_audit_result IN('Needs Improvement','Zero Tolerance','Denied Entry')
+AND  od_sc_inspection_type  = 'Initial Onsite'
+AND  od_sc_vendor_status    = 'Active'
+AND  (od_sc_cip = 'No' OR OD_SC_CIP IS NULL)
+AND  od_sc_audit_required IS NULL
+AND  ('ODEU' = :P_REGION OR :P_REGION = 'ODGLB')
+AND (SYSDATE -
+  (SELECT MIN(od_sc_scheduled_date)
+  FROM q_od_sc_vendor_audit_v audit1
+  WHERE (audit1.od_sc_vendor      = t1.od_sc_vendor_name
+  OR audit1.od_sc_od_vendor_id    = t1.od_sc_vendor_number )
+  AND (audit1.od_sc_factory       = t1.od_sc_factory_name
+  OR audit1.od_sc_factory_id      = t1.od_sc_factory_number )
+  AND audit1.od_sc_scheduled_date >
+    (SELECT MAX(od_sc_scheduled_date)
+    FROM q_od_sc_vendor_audit_v audit2
+    WHERE audit2.od_sc_grade NOT IN('Needs Improvement','Zero Tolerance','Denied Entry')
+    AND (audit1.od_sc_vendor     = audit2.od_sc_vendor
+    OR audit1.od_sc_od_vendor_id = audit2.od_sc_od_vendor_id )
+    AND (audit1.od_sc_factory    =audit2.od_sc_factory
+    OR audit1.od_sc_factory_id   = audit2.od_sc_factory_id)
+    )
+  ))<=365
+ UNION
+SELECT od_sc_vendor_name vname
+FROM Q_od_sc_mx_vendor_master_v t1
+WHERE od_sc_str_audit_result IN('Needs Improvement','Zero Tolerance','Denied Entry')
+AND  od_sc_inspection_type  = 'Initial Onsite'
+AND  od_sc_vendor_status    = 'Active'
+AND  (od_sc_cip = 'No' OR OD_SC_CIP IS NULL)
+AND  od_sc_audit_required IS NULL
+AND  ('ODMX' = :P_REGION OR :P_REGION = 'ODGLB')
+AND (SYSDATE -
+  (SELECT MIN(od_sc_scheduled_date)
+  FROM q_od_sc_vendor_audit_v audit1
+  WHERE (audit1.od_sc_vendor      = t1.od_sc_vendor_name
+  OR audit1.od_sc_od_vendor_id    = t1.od_sc_vendor_number )
+  AND (audit1.od_sc_factory       = t1.od_sc_factory_name
+  OR audit1.od_sc_factory_id      = t1.od_sc_factory_number )
+  AND audit1.od_sc_scheduled_date >
+    (SELECT MAX(od_sc_scheduled_date)
+    FROM q_od_sc_vendor_audit_v audit2
+    WHERE audit2.od_sc_grade NOT IN('Needs Improvement','Zero Tolerance','Denied Entry')
+    AND (audit1.od_sc_vendor     = audit2.od_sc_vendor
+    OR audit1.od_sc_od_vendor_id = audit2.od_sc_od_vendor_id )
+    AND (audit1.od_sc_factory    =audit2.od_sc_factory
+    OR audit1.od_sc_factory_id   = audit2.od_sc_factory_id)
+    )
+  ))<=365
+  ) UNION_RES
+]]>
+</sqlStatement>
+
+<sqlStatement name="Q_TOTAL_DAYS_G_365_IA_NI">
+<![CDATA[
+select COUNT(union_res.vname) TOTAL_DAYS_G_365_IA_NI
+FROM 
+(SELECT od_sc_vendor_name vname
+FROM q_od_pb_sc_vendor_master_v t1
+WHERE od_sc_str_audit_result IN('Needs Improvement','Zero Tolerance','Denied Entry')
+AND  od_sc_inspection_type  = 'Initial Onsite'
+AND  od_sc_vendor_status    = 'Active'
+AND  (od_sc_cip = 'No' OR OD_SC_CIP IS NULL)
+AND  od_sc_audit_required IS NULL
+AND  ('ODUS' = :P_REGION OR :P_REGION = 'ODGLB')
+AND (SYSDATE -
+  (SELECT MIN(od_sc_scheduled_date)
+  FROM q_od_sc_vendor_audit_v audit1
+  WHERE (audit1.od_sc_vendor      = t1.od_sc_vendor_name
+  OR audit1.od_sc_od_vendor_id    = t1.od_sc_vendor_number )
+  AND (audit1.od_sc_factory       = t1.od_sc_factory_name
+  OR audit1.od_sc_factory_id      = t1.od_sc_factory_number )
+  AND audit1.od_sc_scheduled_date >
+    (SELECT MAX(od_sc_scheduled_date)
+    FROM q_od_sc_vendor_audit_v audit2
+    WHERE audit2.od_sc_grade NOT IN('Needs Improvement','Zero Tolerance','Denied Entry')
+    AND (audit1.od_sc_vendor     = audit2.od_sc_vendor
+    OR audit1.od_sc_od_vendor_id = audit2.od_sc_od_vendor_id )
+    AND (audit1.od_sc_factory    =audit2.od_sc_factory
+    or AUDIT1.OD_SC_FACTORY_ID   = AUDIT2.OD_SC_FACTORY_ID)
+    ) 
+  ))> 365
+  UNION
+SELECT od_sc_vendor_name vname
+FROM Q_od_sc_asia_vendor_master_v t1
+WHERE od_sc_str_audit_result IN('Needs Improvement','Zero Tolerance','Denied Entry')
+AND  od_sc_inspection_type  = 'Initial Onsite'
+AND  od_sc_vendor_status    = 'Active'
+AND  (od_sc_cip = 'No' OR OD_SC_CIP IS NULL)
+AND  od_sc_audit_required IS NULL
+AND  ('ODASIA' = :P_REGION OR :P_REGION = 'ODGLB')
+AND (SYSDATE -
+  (SELECT MIN(od_sc_scheduled_date)
+  FROM q_od_sc_vendor_audit_v audit1
+  WHERE (audit1.od_sc_vendor      = t1.od_sc_vendor_name
+  OR audit1.od_sc_od_vendor_id    = t1.od_sc_vendor_number )
+  AND (audit1.od_sc_factory       = t1.od_sc_factory_name
+  OR audit1.od_sc_factory_id      = t1.od_sc_factory_number )
+  AND audit1.od_sc_scheduled_date >
+    (SELECT MAX(od_sc_scheduled_date)
+    FROM q_od_sc_vendor_audit_v audit2
+    WHERE audit2.od_sc_grade  NOT IN('Needs Improvement','Zero Tolerance','Denied Entry')
+    AND (audit1.od_sc_vendor     = audit2.od_sc_vendor
+    OR audit1.od_sc_od_vendor_id = audit2.od_sc_od_vendor_id )
+    AND (audit1.od_sc_factory    =audit2.od_sc_factory
+    OR audit1.od_sc_factory_id   = audit2.od_sc_factory_id)
+    )
+  ))> 365
+  UNION
+SELECT od_sc_vendor_name vname
+FROM Q_od_sc_eu_vendor_master_v t1
+WHERE od_sc_str_audit_result IN('Needs Improvement','Zero Tolerance','Denied Entry')
+AND  od_sc_inspection_type  = 'Initial Onsite'
+AND  od_sc_vendor_status    = 'Active'
+AND  (od_sc_cip = 'No' OR OD_SC_CIP IS NULL)
+AND  od_sc_audit_required IS NULL
+AND  ('ODEU' = :P_REGION OR :P_REGION = 'ODGLB')
+AND (SYSDATE -
+  (SELECT MIN(od_sc_scheduled_date)
+  FROM q_od_sc_vendor_audit_v audit1
+  WHERE (audit1.od_sc_vendor      = t1.od_sc_vendor_name
+  OR audit1.od_sc_od_vendor_id    = t1.od_sc_vendor_number )
+  AND (audit1.od_sc_factory       = t1.od_sc_factory_name
+  OR audit1.od_sc_factory_id      = t1.od_sc_factory_number )
+  AND audit1.od_sc_scheduled_date >
+    (SELECT MAX(od_sc_scheduled_date)
+    FROM q_od_sc_vendor_audit_v audit2
+    WHERE audit2.od_sc_grade NOT IN('Needs Improvement','Zero Tolerance','Denied Entry')
+    AND (audit1.od_sc_vendor     = audit2.od_sc_vendor
+    OR audit1.od_sc_od_vendor_id = audit2.od_sc_od_vendor_id )
+    AND (audit1.od_sc_factory    =audit2.od_sc_factory
+    OR audit1.od_sc_factory_id   = audit2.od_sc_factory_id)
+    )
+  ))> 365
+ UNION
+SELECT od_sc_vendor_name vname
+FROM Q_od_sc_mx_vendor_master_v t1
+WHERE od_sc_str_audit_result IN('Needs Improvement','Zero Tolerance','Denied Entry')
+AND  od_sc_inspection_type  = 'Initial Onsite'
+AND  od_sc_vendor_status    = 'Active'
+AND  (od_sc_cip = 'No' OR OD_SC_CIP IS NULL)
+AND  od_sc_audit_required IS NULL
+AND  ('ODMX' = :P_REGION OR :P_REGION = 'ODGLB')
+AND (SYSDATE -
+  (SELECT MIN(od_sc_scheduled_date)
+  FROM q_od_sc_vendor_audit_v audit1
+  WHERE (audit1.od_sc_vendor      = t1.od_sc_vendor_name
+  OR audit1.od_sc_od_vendor_id    = t1.od_sc_vendor_number )
+  AND (audit1.od_sc_factory       = t1.od_sc_factory_name
+  OR audit1.od_sc_factory_id      = t1.od_sc_factory_number )
+  AND audit1.od_sc_scheduled_date >
+    (SELECT MAX(od_sc_scheduled_date)
+    FROM q_od_sc_vendor_audit_v audit2
+    WHERE audit2.od_sc_grade NOT IN('Needs Improvement','Zero Tolerance','Denied Entry')
+    AND (audit1.od_sc_vendor     = audit2.od_sc_vendor
+    OR audit1.od_sc_od_vendor_id = audit2.od_sc_od_vendor_id )
+    AND (audit1.od_sc_factory    =audit2.od_sc_factory
+    OR audit1.od_sc_factory_id   = audit2.od_sc_factory_id)
+    )
+  ))> 365
+  ) UNION_RES
+]]>
+</sqlStatement>
+
+<sqlStatement name="Q_TOTAL_DAYS_LE_365_RA_SM">
+<![CDATA[
+select COUNT(union_res.vname) TOTAL_DAYS_LE_365_RA_SM
+FROM
+(SELECT  ven_mas.od_sc_vendor_name vname
+FROM    q_od_pb_sc_vendor_master_v ven_mas       
+where 1=1
+AND  ven_mas.od_sc_str_audit_result IN('Minor Progress Needed','Satisfactory')
+AND  ven_mas.od_sc_inspection_type IN('Re-Audit','Annual Onsite')
+AND  ven_mas.od_sc_vendor_status = 'Active'
+AND  (ven_mas.od_sc_cip = 'No' OR ven_mas.od_sc_cip IS NULL)
+AND  ven_mas.od_sc_audit_required IS NULL
+and ('ODUS' = :P_REGION or :P_REGION = 'ODGLB')
+and (sysdate - ven_mas.od_sc_straudt_schd_d) <= 365
+UNION
+SELECT  ven_mas.od_sc_vendor_name vname
+FROM    Q_od_sc_asia_vendor_master_v ven_mas       
+WHERE 1=1
+AND  ven_mas.od_sc_str_audit_result IN('Minor Progress Needed','Satisfactory')
+AND  ven_mas.od_sc_inspection_type IN('Re-Audit','Annual Onsite')
+AND  ven_mas.od_sc_vendor_status = 'Active'
+AND  (ven_mas.od_sc_cip = 'No' OR ven_mas.od_sc_cip IS NULL)
+AND  ven_mas.od_sc_audit_required IS NULL
+and ('ODASIA' = :P_REGION or :P_REGION = 'ODGLB')
+and (sysdate - ven_mas.od_sc_straudt_schd_d) <= 365
+UNION
+SELECT  ven_mas.od_sc_vendor_name vname
+FROM    Q_od_sc_eu_vendor_master_v ven_mas       
+where 1=1
+AND  ven_mas.od_sc_str_audit_result IN('Minor Progress Needed','Satisfactory')
+AND  ven_mas.od_sc_inspection_type IN('Re-Audit','Annual Onsite')
+AND  ven_mas.od_sc_vendor_status = 'Active'
+AND  (ven_mas.od_sc_cip = 'No' OR ven_mas.od_sc_cip IS NULL)
+AND  ven_mas.od_sc_audit_required IS NULL
+AND ('ODEU' = :P_REGION or :P_REGION = 'ODGLB')
+AND (sysdate - VEN_MAS.OD_SC_STRAUDT_SCHD_D) <= 365
+UNION
+SELECT  ven_mas.od_sc_vendor_name vname
+FROM    Q_od_sc_mx_vendor_master_v ven_mas       
+where 1=1
+AND  ven_mas.od_sc_str_audit_result IN('Minor Progress Needed','Satisfactory')
+AND  ven_mas.od_sc_inspection_type IN('Re-Audit','Annual Onsite')
+AND  ven_mas.od_sc_vendor_status = 'Active'
+AND  (ven_mas.od_sc_cip = 'No' OR ven_mas.od_sc_cip IS NULL)
+AND  ven_mas.od_sc_audit_required IS NULL
+AND ('ODMX' = :P_REGION OR :P_REGION = 'ODGLB')
+and (sysdate - ven_mas.od_sc_straudt_schd_d) <= 365
+) union_res
+]]>
+</sqlStatement>
+
+<sqlStatement name="Q_TOTAL_DAYS_G_365_RA_SM">
+<![CDATA[
+select COUNT(union_res.vname) TOTAL_DAYS_G_365_RA_SM
+FROM
+(SELECT  ven_mas.od_sc_vendor_name vname
+FROM    q_od_pb_sc_vendor_master_v ven_mas       
+where 1=1
+AND  ven_mas.od_sc_str_audit_result IN('Minor Progress Needed','Satisfactory')
+AND  ven_mas.od_sc_inspection_type IN('Re-Audit','Annual Onsite')
+AND  ven_mas.od_sc_vendor_status = 'Active'
+AND  (ven_mas.od_sc_cip = 'No' OR ven_mas.od_sc_cip IS NULL)
+AND  ven_mas.od_sc_audit_required IS NULL
+and ('ODUS' = :P_REGION or :P_REGION = 'ODGLB')
+and (sysdate - ven_mas.od_sc_straudt_schd_d) > 365
+UNION
+SELECT  ven_mas.od_sc_vendor_name vname
+FROM    Q_od_sc_asia_vendor_master_v ven_mas       
+WHERE 1=1
+AND  ven_mas.od_sc_str_audit_result IN('Minor Progress Needed','Satisfactory')
+AND  ven_mas.od_sc_inspection_type IN('Re-Audit','Annual Onsite')
+AND  ven_mas.od_sc_vendor_status = 'Active'
+AND  (ven_mas.od_sc_cip = 'No' OR ven_mas.od_sc_cip IS NULL)
+AND  ven_mas.od_sc_audit_required IS NULL
+and ('ODASIA' = :P_REGION or :P_REGION = 'ODGLB')
+and (sysdate - ven_mas.od_sc_straudt_schd_d) > 365
+UNION
+SELECT  ven_mas.od_sc_vendor_name vname
+FROM    Q_od_sc_eu_vendor_master_v ven_mas       
+where 1=1
+AND  ven_mas.od_sc_str_audit_result IN('Minor Progress Needed','Satisfactory')
+AND  ven_mas.od_sc_inspection_type IN('Re-Audit','Annual Onsite')
+AND  ven_mas.od_sc_vendor_status = 'Active'
+AND  (ven_mas.od_sc_cip = 'No' OR ven_mas.od_sc_cip IS NULL)
+AND  ven_mas.od_sc_audit_required IS NULL
+AND ('ODEU' = :P_REGION or :P_REGION = 'ODGLB')
+AND (sysdate - VEN_MAS.OD_SC_STRAUDT_SCHD_D) > 365
+UNION
+SELECT  ven_mas.od_sc_vendor_name vname
+FROM    Q_od_sc_mx_vendor_master_v ven_mas       
+where 1=1
+AND  ven_mas.od_sc_str_audit_result IN('Minor Progress Needed','Satisfactory')
+AND  ven_mas.od_sc_inspection_type IN('Re-Audit','Annual Onsite')
+AND  ven_mas.od_sc_vendor_status = 'Active'
+AND  (ven_mas.od_sc_cip = 'No' OR ven_mas.od_sc_cip IS NULL)
+AND  ven_mas.od_sc_audit_required IS NULL
+AND ('ODMX' = :P_REGION OR :P_REGION = 'ODGLB')
+and (sysdate - ven_mas.od_sc_straudt_schd_d) > 365
+) union_res
+]]>
+</sqlStatement>
+
+<sqlStatement name="Q_TOTAL_DAYS_LE_365_RA_NI">
+<![CDATA[
+SELECT COUNT(union_res.vname) TOTAL_DAYS_LE_365_RA_NI
+from
+(SELECT od_sc_vendor_name vname
+FROM q_od_pb_sc_vendor_master_v t1
+WHERE od_sc_str_audit_result IN('Needs Improvement','Zero Tolerance','Denied Entry')
+AND  od_sc_inspection_type IN('Re-Audit','Annual Onsite')
+AND  od_sc_vendor_status    = 'Active'
+AND  (od_sc_cip = 'No' OR od_sc_cip IS NULL)
+AND  od_sc_audit_required IS NULL
+AND  ('ODUS' = :P_REGION OR :P_REGION = 'ODGLB')
+AND (SYSDATE -
+  (SELECT MIN(od_sc_scheduled_date)
+  FROM q_od_sc_vendor_audit_v audit1
+  WHERE (audit1.od_sc_vendor      = t1.od_sc_vendor_name
+  OR audit1.od_sc_od_vendor_id    = t1.od_sc_vendor_number )
+  AND (audit1.od_sc_factory       = t1.od_sc_factory_name
+  OR audit1.od_sc_factory_id      = t1.od_sc_factory_number )
+  AND audit1.od_sc_scheduled_date >
+    (SELECT MAX(od_sc_scheduled_date)
+    FROM q_od_sc_vendor_audit_v audit2
+    WHERE audit2.od_sc_grade NOT IN('Needs Improvement','Zero Tolerance','Denied Entry')
+    AND (audit1.od_sc_vendor     = audit2.od_sc_vendor
+    OR audit1.od_sc_od_vendor_id = audit2.od_sc_od_vendor_id )
+    AND (audit1.od_sc_factory    =audit2.od_sc_factory
+    OR audit1.od_sc_factory_id   = audit2.od_sc_factory_id)
+    )
+  ))<=365
+UNION
+SELECT od_sc_vendor_name vname
+FROM Q_od_sc_asia_vendor_master_v t1
+WHERE od_sc_str_audit_result IN('Needs Improvement','Zero Tolerance','Denied Entry')
+AND  od_sc_inspection_type IN('Re-Audit','Annual Onsite')
+AND  od_sc_vendor_status    = 'Active'
+AND  (od_sc_cip = 'No' OR od_sc_cip IS NULL)
+AND  od_sc_audit_required IS NULL
+AND  ('ODASIA' = :P_REGION OR :P_REGION = 'ODGLB')
+AND (SYSDATE -
+  (SELECT MIN(od_sc_scheduled_date)
+  FROM q_od_sc_vendor_audit_v audit1
+  WHERE (audit1.od_sc_vendor      = t1.od_sc_vendor_name
+  OR audit1.od_sc_od_vendor_id    = t1.od_sc_vendor_number )
+  AND (audit1.od_sc_factory       = t1.od_sc_factory_name
+  OR audit1.od_sc_factory_id      = t1.od_sc_factory_number )
+  AND audit1.od_sc_scheduled_date >
+    (SELECT MAX(od_sc_scheduled_date)
+    FROM q_od_sc_vendor_audit_v audit2
+    WHERE audit2.od_sc_grade NOT IN('Needs Improvement','Zero Tolerance','Denied Entry')
+    AND (audit1.od_sc_vendor     = audit2.od_sc_vendor
+    OR audit1.od_sc_od_vendor_id = audit2.od_sc_od_vendor_id )
+    AND (audit1.od_sc_factory    =audit2.od_sc_factory
+    OR audit1.od_sc_factory_id   = audit2.od_sc_factory_id)
+    )
+  ))<=365
+UNION
+SELECT od_sc_vendor_name vname
+FROM Q_od_sc_eu_vendor_master_v t1
+WHERE od_sc_str_audit_result IN('Needs Improvement','Zero Tolerance','Denied Entry')
+AND  od_sc_inspection_type IN('Re-Audit','Annual Onsite')
+AND  od_sc_vendor_status    = 'Active'
+AND  (od_sc_cip = 'No' OR od_sc_cip IS NULL)
+AND  od_sc_audit_required IS NULL
+AND  ('ODEU' = :P_REGION OR :P_REGION = 'ODGLB')
+AND (SYSDATE -
+  (SELECT MIN(od_sc_scheduled_date)
+  FROM q_od_sc_vendor_audit_v audit1
+  WHERE (audit1.od_sc_vendor      = t1.od_sc_vendor_name
+  OR audit1.od_sc_od_vendor_id    = t1.od_sc_vendor_number )
+  AND (audit1.od_sc_factory       = t1.od_sc_factory_name
+  OR audit1.od_sc_factory_id      = t1.od_sc_factory_number )
+  AND audit1.od_sc_scheduled_date >
+    (SELECT MAX(od_sc_scheduled_date)
+    FROM q_od_sc_vendor_audit_v audit2
+    WHERE audit2.od_sc_grade NOT IN('Needs Improvement','Zero Tolerance','Denied Entry')
+    AND (audit1.od_sc_vendor     = audit2.od_sc_vendor
+    OR audit1.od_sc_od_vendor_id = audit2.od_sc_od_vendor_id )
+    AND (audit1.od_sc_factory    =audit2.od_sc_factory
+    OR audit1.od_sc_factory_id   = audit2.od_sc_factory_id)
+    )
+  ))<=365    
+UNION
+SELECT od_sc_vendor_name vname
+FROM Q_od_sc_mx_vendor_master_v t1
+WHERE od_sc_str_audit_result IN('Needs Improvement','Zero Tolerance','Denied Entry')
+AND  od_sc_inspection_type IN('Re-Audit','Annual Onsite')
+AND  od_sc_vendor_status    = 'Active'
+AND  (od_sc_cip = 'No' OR od_sc_cip IS NULL)
+AND  od_sc_audit_required IS NULL
+AND  ('ODMX' = :P_REGION OR :P_REGION = 'ODGLB')
+AND (SYSDATE -
+  (SELECT MIN(od_sc_scheduled_date)
+  FROM q_od_sc_vendor_audit_v audit1
+  WHERE (audit1.od_sc_vendor      = t1.od_sc_vendor_name
+  OR audit1.od_sc_od_vendor_id    = t1.od_sc_vendor_number )
+  AND (audit1.od_sc_factory       = t1.od_sc_factory_name
+  OR audit1.od_sc_factory_id      = t1.od_sc_factory_number )
+  AND audit1.od_sc_scheduled_date >
+    (SELECT MAX(od_sc_scheduled_date)
+    FROM q_od_sc_vendor_audit_v audit2
+    WHERE audit2.od_sc_grade NOT IN('Needs Improvement','Zero Tolerance','Denied Entry')
+    AND (audit1.od_sc_vendor     = audit2.od_sc_vendor
+    OR audit1.od_sc_od_vendor_id = audit2.od_sc_od_vendor_id )
+    AND (audit1.od_sc_factory    =audit2.od_sc_factory
+    OR audit1.od_sc_factory_id   = audit2.od_sc_factory_id)
+    )
+  ))<=365 
+  ) union_res
+]]>
+</sqlStatement>
+
+<sqlStatement name="Q_TOTAL_DAYS_G_365_RA_NI">
+<![CDATA[
+SELECT COUNT(union_res.vname) TOTAL_DAYS_G_365_RA_NI
+from
+(SELECT od_sc_vendor_name vname
+FROM q_od_pb_sc_vendor_master_v t1
+WHERE od_sc_str_audit_result IN('Needs Improvement','Zero Tolerance','Denied Entry')
+AND  od_sc_inspection_type IN('Re-Audit','Annual Onsite')
+AND  od_sc_vendor_status    = 'Active'
+AND  (od_sc_cip = 'No' OR od_sc_cip IS NULL)
+AND  od_sc_audit_required IS NULL
+AND  ('ODUS' = :P_REGION OR :P_REGION = 'ODGLB')
+AND (SYSDATE -
+  (SELECT MIN(od_sc_scheduled_date)
+  FROM q_od_sc_vendor_audit_v audit1
+  WHERE (audit1.od_sc_vendor      = t1.od_sc_vendor_name
+  OR audit1.od_sc_od_vendor_id    = t1.od_sc_vendor_number )
+  AND (audit1.od_sc_factory       = t1.od_sc_factory_name
+  OR audit1.od_sc_factory_id      = t1.od_sc_factory_number )
+  AND audit1.od_sc_scheduled_date >
+    (SELECT MAX(od_sc_scheduled_date)
+    FROM q_od_sc_vendor_audit_v audit2
+    WHERE audit2.od_sc_grade NOT IN('Needs Improvement','Zero Tolerance','Denied Entry')
+    AND (audit1.od_sc_vendor     = audit2.od_sc_vendor
+    OR audit1.od_sc_od_vendor_id = audit2.od_sc_od_vendor_id )
+    AND (audit1.od_sc_factory    =audit2.od_sc_factory
+    OR audit1.od_sc_factory_id   = audit2.od_sc_factory_id)
+    )
+  ))> 365
+UNION
+SELECT od_sc_vendor_name vname
+FROM Q_od_sc_asia_vendor_master_v t1
+WHERE od_sc_str_audit_result IN('Needs Improvement','Zero Tolerance','Denied Entry')
+AND  od_sc_inspection_type IN('Re-Audit','Annual Onsite')
+AND  od_sc_vendor_status    = 'Active'
+AND  (od_sc_cip = 'No' OR od_sc_cip IS NULL)
+AND  od_sc_audit_required IS NULL
+AND  ('ODASIA' = :P_REGION OR :P_REGION = 'ODGLB')
+AND (SYSDATE -
+  (SELECT MIN(od_sc_scheduled_date)
+  FROM q_od_sc_vendor_audit_v audit1
+  WHERE (audit1.od_sc_vendor      = t1.od_sc_vendor_name
+  OR audit1.od_sc_od_vendor_id    = t1.od_sc_vendor_number )
+  AND (audit1.od_sc_factory       = t1.od_sc_factory_name
+  OR audit1.od_sc_factory_id      = t1.od_sc_factory_number )
+  AND audit1.od_sc_scheduled_date >
+    (SELECT MAX(od_sc_scheduled_date)
+    FROM q_od_sc_vendor_audit_v audit2
+    WHERE audit2.od_sc_grade NOT IN('Needs Improvement','Zero Tolerance','Denied Entry')
+    AND (audit1.od_sc_vendor     = audit2.od_sc_vendor
+    OR audit1.od_sc_od_vendor_id = audit2.od_sc_od_vendor_id )
+    AND (audit1.od_sc_factory    =audit2.od_sc_factory
+    OR audit1.od_sc_factory_id   = audit2.od_sc_factory_id)
+    )
+  ))> 365
+UNION
+SELECT od_sc_vendor_name vname
+FROM Q_od_sc_eu_vendor_master_v t1
+WHERE od_sc_str_audit_result IN('Needs Improvement','Zero Tolerance','Denied Entry')
+AND  od_sc_inspection_type IN('Re-Audit','Annual Onsite')
+AND  od_sc_vendor_status    = 'Active'
+AND  (od_sc_cip = 'No' OR od_sc_cip IS NULL)
+AND  od_sc_audit_required IS NULL
+AND  ('ODEU' = :P_REGION OR :P_REGION = 'ODGLB')
+AND (SYSDATE -
+  (SELECT MIN(od_sc_scheduled_date)
+  FROM q_od_sc_vendor_audit_v audit1
+  WHERE (audit1.od_sc_vendor      = t1.od_sc_vendor_name
+  OR audit1.od_sc_od_vendor_id    = t1.od_sc_vendor_number )
+  AND (audit1.od_sc_factory       = t1.od_sc_factory_name
+  OR audit1.od_sc_factory_id      = t1.od_sc_factory_number )
+  AND audit1.od_sc_scheduled_date >
+    (SELECT MAX(od_sc_scheduled_date)
+    FROM q_od_sc_vendor_audit_v audit2
+    WHERE audit2.od_sc_grade NOT IN('Needs Improvement','Zero Tolerance','Denied Entry')
+    AND (audit1.od_sc_vendor     = audit2.od_sc_vendor
+    OR audit1.od_sc_od_vendor_id = audit2.od_sc_od_vendor_id )
+    AND (audit1.od_sc_factory    =audit2.od_sc_factory
+    OR audit1.od_sc_factory_id   = audit2.od_sc_factory_id)
+    )
+  ))> 365    
+UNION
+SELECT od_sc_vendor_name vname
+FROM Q_od_sc_mx_vendor_master_v t1
+WHERE od_sc_str_audit_result IN('Needs Improvement','Zero Tolerance','Denied Entry')
+AND  od_sc_inspection_type IN('Re-Audit','Annual Onsite')
+AND  od_sc_vendor_status    = 'Active'
+AND  (od_sc_cip = 'No' OR od_sc_cip IS NULL)
+AND  od_sc_audit_required IS NULL
+AND  ('ODMX' = :P_REGION OR :P_REGION = 'ODGLB')
+AND (SYSDATE -
+  (SELECT MIN(od_sc_scheduled_date)
+  FROM q_od_sc_vendor_audit_v audit1
+  WHERE (audit1.od_sc_vendor      = t1.od_sc_vendor_name
+  OR audit1.od_sc_od_vendor_id    = t1.od_sc_vendor_number )
+  AND (audit1.od_sc_factory       = t1.od_sc_factory_name
+  OR audit1.od_sc_factory_id      = t1.od_sc_factory_number )
+  AND audit1.od_sc_scheduled_date >
+    (SELECT MAX(od_sc_scheduled_date)
+    FROM q_od_sc_vendor_audit_v audit2
+    WHERE audit2.od_sc_grade NOT IN('Needs Improvement','Zero Tolerance','Denied Entry')
+    AND (audit1.od_sc_vendor     = audit2.od_sc_vendor
+    OR audit1.od_sc_od_vendor_id = audit2.od_sc_od_vendor_id )
+    AND (audit1.od_sc_factory    =audit2.od_sc_factory
+    OR audit1.od_sc_factory_id   = audit2.od_sc_factory_id)
+    )
+  ))> 365 
+  ) union_res
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+
+<group name="G_TOTAL_DAYS_LE_365_IA_SM" source="Q_TOTAL_DAYS_LE_365_IA_SM">
+ <element name="TOTAL_DAYS_LE_365_IA_SM" dataType="character" value="TOTAL_DAYS_LE_365_IA_SM"/>
+</group>
+
+<group name="G_TOTAL_DAYS_G_365_IA_SM" source="Q_TOTAL_DAYS_G_365_IA_SM">
+ <element name="TOTAL_DAYS_G_365_IA_SM" dataType="character" value="TOTAL_DAYS_G_365_IA_SM"/>
+</group>
+
+<group name="G_TOTAL_DAYS_LE_365_IA_NI" source="Q_TOTAL_DAYS_LE_365_IA_NI">
+  <element name="TOTAL_DAYS_LE_365_IA_NI" dataType="character" value="TOTAL_DAYS_LE_365_IA_NI"/>
+</group>
+
+<group name="G_TOTAL_DAYS_G_365_IA_NI" source="Q_TOTAL_DAYS_G_365_IA_NI">
+  <element name="TOTAL_DAYS_G_365_IA_NI" dataType="character" value="TOTAL_DAYS_G_365_IA_NI"/>
+</group>
+
+<group name="G_TOTAL_DAYS_LE_365_RA_SM" source="Q_TOTAL_DAYS_LE_365_RA_SM">
+  <element name="TOTAL_DAYS_LE_365_RA_SM" dataType="character" value="TOTAL_DAYS_LE_365_RA_SM"/>
+</group>
+
+<group name="G_TOTAL_DAYS_G_365_RA_SM" source="Q_TOTAL_DAYS_G_365_RA_SM">
+  <element name="TOTAL_DAYS_G_365_RA_SM" dataType="character" value="TOTAL_DAYS_G_365_RA_SM"/>
+</group>
+
+<group name="G_TOTAL_DAYS_LE_365_RA_NI" source="Q_TOTAL_DAYS_LE_365_RA_NI">
+  <element name="TOTAL_DAYS_LE_365_RA_NI" dataType="character" value="TOTAL_DAYS_LE_365_RA_NI"/>
+</group>
+
+<group name="G_TOTAL_DAYS_G_365_RA_NI" source="Q_TOTAL_DAYS_G_365_RA_NI">
+  <element name="TOTAL_DAYS_G_365_RA_NI" dataType="character" value="TOTAL_DAYS_G_365_RA_NI"/>
+</group>
+</dataStructure>
+</dataTemplate>

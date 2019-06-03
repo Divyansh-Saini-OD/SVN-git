@@ -1,0 +1,27 @@
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name        :XX_ZX_PARTY_TAX_PROFILE_N1                               |
+-- | Description : Index for Table ZX_PARTY_TAX_PROFILE                    |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      14-Feb-2014 Veronica           Initial  Version (Defect 28238)|
+-- +=======================================================================+
+
+
+CREATE  INDEX "XXMER"."ZX_PARTY_TAX_PROFILE_N1" ON "ZX"."ZX_PARTY_TAX_PROFILE" ("REP_REGISTRATION_NUMBER") 
+TABLESPACE "APPS_TS_TX_IDX_MIGR_16M" 
+NOLOGGING 
+parallel 32;
+alter index XXMER.ZX_PARTY_TAX_PROFILE_N1 noparallel;
+

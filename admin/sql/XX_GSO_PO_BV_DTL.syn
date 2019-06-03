@@ -1,0 +1,56 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+--+==============================================================================================+--
+--|                                                                                              |--
+--| Object Name    : PLM Enhancements                                                            |--
+--|                                                                                              |--
+--| Program Name   : XX_GSO_PO_BV_DTL.syn                                                        |--        
+--|                                                                                              |--   
+--| Purpose        : Create Custom synonyms                                                      |--
+--|                                                                                              |--
+--|                                                                                              |-- 
+--| Change History  :                                                                            |--
+--| Version           Date             Changed By              Description                       |--
+--+==============================================================================================+--
+--| 1.0            17-Aug-2010        Paddy Sanjeevi           Baselined                         |
+--+==============================================================================================+-- 
+                                     
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating Synonym in APPS...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM XX_GSO_PO_BV_DTL
+PROMPT
+
+CREATE OR REPLACE SYNONYM xx_gso_po_bv_dtl FOR xxmer.xx_gso_po_bv_dtl;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+
+EXIT;
+
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================
+

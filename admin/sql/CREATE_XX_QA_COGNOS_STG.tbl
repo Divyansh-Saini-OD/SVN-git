@@ -1,0 +1,129 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_QA_COGNOS_STG.tbl                                                |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_QA_COGNOS_STG   (OD QA COGNOS Staging table)                           |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              12-Aug-2011       Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_QA_COGNOS_STG......
+PROMPT
+
+Create table xxmer.XX_QA_COGNOS_STG
+(
+ OD_SC_ENTRY_DATE   	DATE,
+ OD_OB_SKU		NUMBER,
+ OD_PB_ITEM_DESC	VARCHAR2(240),
+ OD_OB_PB_YN		VARCHAR2(5),
+ OD_OB_DI_YN		VARCHAR2(1),
+ OD_OB_DIVISION_ID	NUMBER,
+ OD_PB_DIVISION		VARCHAR2(50),
+ OD_OB_DEPT_ID		NUMBER,
+ OD_PB_SC_DEPT_NAME	VARCHAR2(50),
+ OD_OB_CLASS_ID		NUMBER,
+ OD_OB_CLASS		VARCHAR2(50),
+ OD_OB_SUBCLASS_ID	NUMBER,
+ OD_OB_SUBCLASS		VARCHAR2(50),
+ OD_OB_VENDOR_NAME	VARCHAR2(100),
+ OD_OB_REPLEN_STATUS	VARCHAR2(50),
+ OD_OB_ONHAND_UNITS	NUMBER,
+ OD_OB_SALE_AMT		NUMBER,
+ OD_OB_RETURN_AMT	NUMBER,	
+ OD_OB_DNC_AMT		NUMBER,
+ OD_OB_SALE_UNITS	NUMBER,	
+ OD_OB_RETURN_UNITS	NUMBER,
+ OD_OB_DNC_UNITS	NUMBER,
+ OD_OB_RR_PCT		NUMBER,
+ OD_OB_DNC_PCT		NUMBER,
+ OD_OB_RRPCT_UNITS	NUMBER,
+ OD_OB_DNCPCT_UNITS	NUMBER,
+ load_batch_id		NUMBER,
+ process_flag		number,
+ creation_date		date,
+ created_by		number,
+ last_update_date	date,
+ last_updated_by	number);
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
+
+
+create synonym XX_QA_COGNOS_STG for xxmer.XX_QA_COGNOS_STG
+
+
+
+
+////////
+
+
+Create table xxmer.XX_QA_COGNOS_STG
+(
+ OD_SC_ENTRY_DATE   	DATE,
+ OD_OB_SKU		VARCHAR2(20),
+ OD_PB_ITEM_DESC	VARCHAR2(240),
+ OD_OB_PB_YN		VARCHAR2(5),
+ OD_OB_DI_YN		VARCHAR2(1),
+ OD_OB_DIVISION_ID	VARCHAR2(20),
+ OD_PB_DIVISION		VARCHAR2(50),
+ OD_OB_DEPT_ID		VARCHAR2(20),
+ OD_PB_SC_DEPT_NAME	VARCHAR2(50),
+ OD_OB_CLASS_ID		VARCHAR2(20),
+ OD_OB_CLASS		VARCHAR2(50),
+ OD_OB_SUBCLASS_ID	VARCHAR2(20),
+ OD_OB_SUBCLASS		VARCHAR2(50),
+ OD_OB_VENDOR_NAME	VARCHAR2(100),
+ OD_OB_REPLEN_STATUS	VARCHAR2(50),
+ OD_OB_ONHAND_UNITS	VARCHAR2(20),
+ OD_OB_SALE_AMT		VARCHAR2(20),
+ OD_OB_RETURN_AMT	VARCHAR2(20),	
+ OD_OB_DNC_AMT		VARCHAR2(20),
+ OD_OB_SALE_UNITS	VARCHAR2(20),	
+ OD_OB_RETURN_UNITS	VARCHAR2(20),
+ OD_OB_DNC_UNITS	VARCHAR2(20),
+ OD_OB_RR_PCT		VARCHAR2(20),
+ OD_OB_DNC_PCT		VARCHAR2(20),
+ OD_OB_RRPCT_UNITS	VARCHAR2(20),
+ OD_OB_DNCPCT_UNITS	VARCHAR2(20),
+ load_batch_id		NUMBER,
+ process_flag		number,
+ creation_date		date,
+ created_by		number,
+ last_update_date	date,
+ last_updated_by	number);

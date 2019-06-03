@@ -1,0 +1,45 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : GSO PO Tracking Sequences                                                  |--
+--|                                                                                             |--
+--| Program Name   : XX_GSO_PO_MILESTONES_S.seq                                                 |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Sequences                                                    |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              01-Mar-2011       Paddy Sanjeevi          No previous version              |--
+--+=============================================================================================+
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+
+WHENEVER SQLERROR EXIT 1
+
+PROMPT
+PROMPT Creating Custom Sequence XX_GSO_PO_MILESTONES_S...
+PROMPT
+
+CREATE SEQUENCE XX_GSO_PO_MILESTONES_S INCREMENT BY 1 START WITH 1 NOCACHE NOORDER;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://www.thiscompany.com/ns/sales" xmlns:xs="http://www.w3.org/2001/XMLSchema" >
+<xs:element name="ROWSET">
+  <xs:complexType>
+  <xs:sequence>
+    <xs:element name="ALLOCATION" minOccurs="1" maxOccurs="unbounded">
+      <xs:complexType>  
+	<xs:sequence>    
+        <xs:element name="DISTRO_LIST" minOccurs="1" maxOccurs="1">
+        <xs:complexType>  
+	  <xs:sequence>
+          <xs:element name="DISTRO_T" minOccurs="1" maxOccurs="unbounded">
+          <xs:complexType>  
+  	    <xs:sequence>    
+            <xs:element name="PROCESS" minOccurs="1" maxOccurs="1" type="xs:string"/>
+	      <xs:element name="ASN" minOccurs="1" maxOccurs="1" type="xs:string"/>
+	      <xs:element name="PO_NBR" minOccurs="1" maxOccurs="1" type="xs:string"/>
+            <xs:element name="SKU" minOccurs="1" maxOccurs="1" type="xs:string"/>
+	      <xs:element name="SHIP_FROM_LOC_ID" minOccurs="1" maxOccurs="1" type="xs:string"/>
+            <xs:element name="SHIP_TO_LOC_ID" minOccurs="1" maxOccurs="1" type="xs:string"/>
+            <xs:element name="ALLOCATION_QTY" minOccurs="1" maxOccurs="1" type="xs:string"/>        
+	      <xs:element name="DISTRO_NUM" minOccurs="1" maxOccurs="1" type="xs:string"/>
+	      <xs:element name="DISTRO_TYPE" minOccurs="1" maxOccurs="1" type="xs:string"/>        
+          </xs:sequence>
+          </xs:complexType>
+	    </xs:element>
+        </xs:sequence>
+        </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+	<xs:attribute name="id" use="optional" type="xs:string"/>
+      </xs:complexType>
+    </xs:element>
+  </xs:sequence>
+  </xs:complexType>
+</xs:element>
+</xs:schema>

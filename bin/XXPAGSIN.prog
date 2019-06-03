@@ -1,0 +1,74 @@
+#!/usr/bin/ksh
+# +===================================================================+
+# |                  Office Depot - Project Simplify                  |
+# |                     Office Depot                                  |
+# +===================================================================+
+# | Name  :       GSO BV Inspection Load (Shell Script)               |
+# | Description : To Load the inspection data from BV                 |
+# |                                                                   |
+# |                                                                   |
+# |Change Record:                                                     |
+# |===============                                                    |
+# |Version   Date          Author              Remarks                |
+# |=======   ===========  =============        =======================|
+# |1.0       27-Oct-2010  Paddy Sanjeevi       Initial version        |
+# |-------------------------------------------------------------------|
+# |                                                                   |
+# +===================================================================+
+
+p_request_id=`echo $1|awk '{print(substr($2,11))}'`
+FILE_DIR="$XXMER_DATA/ftp/in/bv"
+FILE_ARCHIVE="$XXMER_DATA/archive/inbound"
+echo " Path  :" [$FILE_DIR]
+
+echo "Deleting old files" 
+
+if test -f  $XXMER_DATA/ftp/in/bv/*.log
+then
+   rm ${FILE_DIR}/*.log
+fi
+
+if test -f  $XXMER_DATA/ftp/in/bv/*.bad
+then
+  rm ${FILE_DIR}/*.bad
+fi
+
+cd $FILE_DIR
+
+for i in `ls BV*.txt`
+do
+echo $i
+sqlldr parfile=$HOME/parfile.apps data=$i control=$XXMER_TOP/bin/XX_PA_GSO_BV.ctl log=$i.log bad=$i.bad
+
+if [ $? -ne 0 ]
+then
+echo "Error in running sqlloader. Please Check log for Error Details "
+else 
+echo "Completed successfully "
+
+fi
+
+mv $i $FILE_ARCHIVE/$i
+
+cat $i.log >> $APPLCSF/log/l$p_request_id.req
+
+if test -f  $XXMER_DATA/ftp/in/bv/*.bad
+then
+   cat $i.bad >> $APPLCSF/log/l$p_request_id.req
+   mailx -s "Bad data for Inspection Data $i.bad" it_merchebs_oncall@officedepot.com < $i.bad
+fi
+done
+# Exiting from the shell program.
+
+username=510093
+
+REQ=`CONCSUB $1 XXMER 'OD (US) GSO MO Team Member ' \
+        $username WAIT=N CONCURRENT XXMER XX_GSO_PO_BV_INT`
+
+REQ_ID=`echo $REQ | cut -f1 -d ' '`
+echo $REQ_ID
+echo "       "
+echo "       "
+
+exit 0
+

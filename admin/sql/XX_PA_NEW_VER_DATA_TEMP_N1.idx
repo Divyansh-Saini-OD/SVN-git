@@ -1,0 +1,33 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                             Office Depot                          |
+-- +===================================================================+
+-- | Name  :APPS.XX_PA_NEW_VER_DATA_TEMP_N1                            |
+-- | Description:Index for XX_PA_NEW_VER_DATA_TEMP                     |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |1.0      09-27-2007   Siva Boya        INITAL CODE                 |
+-- +===================================================================+
+
+CREATE INDEX XX_PA_NEW_VER_DATA_TEMP_N1 ON XX_PA_NEW_VER_DATA_TEMP
+(BUDGET_LINE_ID, NEW_VER_ID)
+LOGGING
+TABLESPACE XXOD
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            MINEXTENTS       1
+            MAXEXTENTS       2147483645
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+EXIT;

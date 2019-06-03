@@ -1,0 +1,14 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="UpdateLegacyPOTables" src="UpdateLegacyPOTables.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="client">
+            <property name="wsdlLocation">UpdateLegacyPOTables.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="PO_EBS_UPLOAD_QUEUE">
+            <property name="wsdlLocation">PO_EBS_UPLOAD_QUEUE.wsdl</property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+   </BPELProcess>
+</BPELSuitcase>

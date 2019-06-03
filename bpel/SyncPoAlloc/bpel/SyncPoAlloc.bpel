@@ -1,0 +1,123 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Thu Jun 21 11:14:26 EDT 2007
+  Author:  kenneth-crawford
+  Purpose: Empty BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="SyncPoAlloc"
+         targetNamespace="http://xmlns.oracle.com/SyncPoAlloc"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns4="http://xmlns.oracle.com/pcbpel/adapter/db/top/POALLOC"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:client="http://xmlns.oracle.com/SyncPoAlloc"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/aq/XX_PO_ALLOCATION_Q/"
+         xmlns:ehdr="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:ns3="http://xmlns.oracle.com/xdb/APPS"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/db/POALLOC/"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <partnerLink myRole="Dequeue_role" name="XX_PO_ALLOCATION_Q"
+                 partnerLinkType="ns1:Dequeue_plt"/>
+    <partnerLink name="POALLOC" partnerRole="POALLOC_role"
+                 partnerLinkType="ns2:POALLOC_plt"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <variable name="ReceiveAllocation_Dequeue_InputVariable"
+              messageType="ns1:XX_PO_ALLOCATION_T_msg"/>
+    <variable name="InvokeDeletePOALLOC_delete_InputVariable"
+              messageType="ns2:PoallocCollection_msg"/>
+    <variable name="Invoke_Update_InputVariable"
+              messageType="ns2:PoallocCollection_msg"/>
+    <variable name="Invoke_Insert_InputVariable"
+              messageType="ns2:PoallocCollection_msg"/>
+  </variables>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+    <receive name="ReceiveAllocation" partnerLink="XX_PO_ALLOCATION_Q"
+             portType="ns1:Dequeue_ptt" operation="Dequeue"
+             variable="ReceiveAllocation_Dequeue_InputVariable"
+             createInstance="yes"/>
+    <switch name="SwitchAllocationType">
+      <case condition="bpws:getVariableData('ReceiveAllocation_Dequeue_InputVariable','XX_PO_ALLOCATION_T','/ns3:XX_PO_ALLOCATION_T/ALLOCATION_TYPE')=&quot;U&quot;">
+        <sequence name="Sequence_2">
+          <assign name="Transform_Update_POALLOC">
+            <bpelx:annotation>
+              <bpelx:pattern>transformation</bpelx:pattern>
+            </bpelx:annotation>
+            <copy>
+              <from expression="ora:processXSLT('Transformation_Update_POALLOC.xsl',bpws:getVariableData('ReceiveAllocation_Dequeue_InputVariable','XX_PO_ALLOCATION_T'))"/>
+              <to variable="Invoke_Update_InputVariable"
+                  part="PoallocCollection"/>
+            </copy>
+          </assign>
+          <invoke name="Invoke_Update_POALLOC" partnerLink="POALLOC"
+                  portType="ns2:POALLOC_ptt" operation="update"
+                  inputVariable="Invoke_Update_InputVariable"/>
+        </sequence>
+      </case>
+      <case condition="bpws:getVariableData('ReceiveAllocation_Dequeue_InputVariable','XX_PO_ALLOCATION_T','/ns3:XX_PO_ALLOCATION_T/ALLOCATION_TYPE')=&quot;D&quot;">
+        <sequence name="Sequence_1">
+          <assign name="Transform_Delete_POALLOC">
+            <bpelx:annotation>
+              <bpelx:pattern>transformation</bpelx:pattern>
+            </bpelx:annotation>
+            <copy>
+              <from expression="ora:processXSLT('Transformation_Delete_POALLOC.xsl',bpws:getVariableData('ReceiveAllocation_Dequeue_InputVariable','XX_PO_ALLOCATION_T'))"/>
+              <to variable="InvokeDeletePOALLOC_delete_InputVariable"
+                  part="PoallocCollection"/>
+            </copy>
+          </assign>
+          <invoke name="InvokeDeletePOALLOC" partnerLink="POALLOC"
+                  portType="ns2:POALLOC_ptt" operation="delete"
+                  inputVariable="InvokeDeletePOALLOC_delete_InputVariable"/>
+        </sequence>
+      </case>
+      <otherwise>
+        <sequence name="Sequence_3">
+          <assign name="Transform_Insert_POALLOC">
+            <bpelx:annotation>
+              <bpelx:pattern>transformation</bpelx:pattern>
+            </bpelx:annotation>
+            <copy>
+              <from expression="ora:processXSLT('Transformation_Insert_POALLOC.xsl',bpws:getVariableData('ReceiveAllocation_Dequeue_InputVariable','XX_PO_ALLOCATION_T'))"/>
+              <to variable="Invoke_Insert_InputVariable"
+                  part="PoallocCollection"/>
+            </copy>
+          </assign>
+          <invoke name="Invoke_Insert_POALLOC" partnerLink="POALLOC"
+                  portType="ns2:POALLOC_ptt" operation="insert"
+                  inputVariable="Invoke_Insert_InputVariable"/>
+        </sequence>
+      </otherwise>
+    </switch>
+  </sequence>
+</process>

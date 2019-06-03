@@ -1,0 +1,560 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXPASCOR" description="OD Projects PLM Status Report" defaultPackage="XX_PA_XXPASCOR_PKG" Version="1.0">
+<parameters>
+ <parameter name="p_cancelled" datatype="character" />
+ <parameter name="p_year" datatype="number" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_MAIN">
+<![CDATA[
+SELECT COUNT(distinct ppa1.project_id) AS MPROJ,
+       COUNT(1) AS MSKU
+  FROM apps.PA_PROJECT_STATUSES PPS1,
+	 apps.xx_pa_pb_genprd_dtl dtl,
+       APPS.PA_PROJECTS_ALL PPA1 LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB1 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND1 ON 
+                 EEB1.ATTR_GROUP_ID = FND1.ATTR_GROUP_ID AND
+                 FND1.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_GEN_INFO') ON
+                 PPA1.PROJECT_ID = EEB1.PROJECT_ID
+ WHERE PPA1.PROJECT_ID > 0
+   AND PPA1.TEMPLATE_FLAG = 'N'
+   AND PPA1.PROJECT_STATUS_CODE = PPS1.PROJECT_STATUS_CODE
+   AND PPA1.SEGMENT1 LIKE 'PB%' 
+   AND DTL.project_id=ppa1.project_id
+   AND TO_CHAR(NVL(EEB1.D_EXT_ATTR2,EEB1.D_EXT_ATTR1),'YYYY')=NVL(:p_year,TO_CHAR(NVL(EEB1.D_EXT_ATTR2,EEB1.D_EXT_ATTR1),'YYYY'))
+   AND EEB1.C_EXT_ATTR5 IS NOT NULL
+   &p_status_where
+order by 1]]>
+</sqlStatement>
+<sqlStatement name="Q_DIV">
+<![CDATA[
+SELECT COALESCE(EEB1.C_EXT_ATTR5,'') AS DIVISION,
+       COUNT(distinct ppa1.project_id) No_of_proj,
+       ROUND((COUNT(distinct ppa1.project_id)/APPS.XX_PA_XXPASCOR_PKG.get_total_proj(:p_cancelled,:p_year))*100,0) PROJPER,
+       COUNT(1) AS no_of_skus,
+       ROUND((COUNT(1)/APPS.XX_PA_XXPASCOR_PKG.get_total_sku(:p_cancelled,:p_year))*100,0) skuper,
+       SUM(APPS.XX_PA_XXPAPRJI_PKG.get_curr_forecast(ppa1.project_id)) fcst,
+       ROUND((SUM(APPS.XX_PA_XXPAPRJI_PKG.get_curr_forecast(ppa1.project_id))/APPS.XX_PA_XXPASCOR_PKG.get_total_fcst(:p_cancelled,:p_year))*100,0) fcstper,
+       ROUND((SUM(APPS.XX_PA_XXPAPRJI_PKG.get_curr_forecast(ppa1.project_id))/APPS.XX_PA_XXPASCOR_PKG.get_fcst_sku(:p_cancelled,EEB1.C_EXT_ATTR5,:p_year)),2) fcstsku,
+       APPS.XX_PA_XXPASCOR_PKG.get_fcst_skuc(:p_cancelled,EEB1.C_EXT_ATTR5,:p_year) cntskufcst
+  FROM apps.PA_PROJECT_STATUSES PPS1,
+       apps.xx_pa_pb_genprd_dtl dtl,
+       APPS.PA_PROJECTS_ALL PPA1 LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB1 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND1 ON 
+                 EEB1.ATTR_GROUP_ID = FND1.ATTR_GROUP_ID AND
+                 FND1.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_GEN_INFO') ON
+                 PPA1.PROJECT_ID = EEB1.PROJECT_ID
+ WHERE PPA1.PROJECT_ID > 0
+   AND PPA1.TEMPLATE_FLAG = 'N'
+   AND PPA1.PROJECT_STATUS_CODE = PPS1.PROJECT_STATUS_CODE
+   AND PPA1.SEGMENT1 LIKE 'PB%'
+   AND dtl.project_id=ppa1.project_id 
+   AND EEB1.C_EXT_ATTR5 IS NOT NULL
+   AND TO_CHAR(NVL(EEB1.D_EXT_ATTR2,EEB1.D_EXT_ATTR1),'YYYY')=NVL(:p_year,TO_CHAR(NVL(EEB1.D_EXT_ATTR2,EEB1.D_EXT_ATTR1),'YYYY'))
+   &p_status_where
+ GROUP BY COALESCE(EEB1.C_EXT_ATTR5,''),
+APPS.XX_PA_XXPASCOR_PKG.get_fcst_sku(:p_cancelled,EEB1.C_EXT_ATTR5,:p_year),
+APPS.XX_PA_XXPASCOR_PKG.get_fcst_skuc(:p_cancelled,EEB1.C_EXT_ATTR5,:p_year)
+order by 1]]>
+</sqlStatement>
+<sqlStatement name="Q_DIM">
+<![CDATA[
+   SELECT EEB1.C_EXT_ATTR5 AS DI_DIVISION,
+          COALESCE(EEB1.C_EXT_ATTR6,'') AS DI_MERCHANT,
+          d.full_name DI_ASSOC_MERCHANT,
+          COUNT(distinct ppa1.project_id) DINO_of_proj,
+          ROUND((COUNT(distinct ppa1.project_id)/APPS.XX_PA_XXPASCOR_PKG.get_total_proj(:p_cancelled,:p_year))*100,0) DIPROJPER,
+          COUNT(1) AS DIno_of_skus,
+          ROUND((COUNT(1)/APPS.XX_PA_XXPASCOR_PKG.get_total_sku('N',2010))*100,0) DISKUPER,
+          NVL(SUM(APPS.XX_PA_XXPAPRJI_PKG.get_curr_forecast(ppa1.project_id)),0) DIfcst,
+       NVL(ROUND((SUM(APPS.XX_PA_XXPAPRJI_PKG.get_curr_forecast(ppa1.project_id))/APPS.XX_PA_XXPASCOR_PKG.get_total_fcst(:p_cancelled,:p_year))*100,0),0) DIfcstper,
+       NVL(ROUND((SUM(APPS.XX_PA_XXPAPRJI_PKG.get_curr_forecast(ppa1.project_id))/APPS.XX_PA_XXPASCOR_PKG.get_fcst_sku_di(:p_cancelled,EEB1.C_EXT_ATTR5,d.full_name,:p_year)),2),0) DIfcstsku,
+       NVL(APPS.XX_PA_XXPASCOR_PKG.get_fcst_sku_dic(:p_cancelled,EEB1.C_EXT_ATTR5,d.full_name,:p_year),0) DIcntskufcst
+     FROM apps.fnd_user e,
+          apps.per_all_people_f d,
+          apps.pa_project_role_types_vl c,
+          apps.pa_project_parties b,
+          apps.PA_PROJECT_STATUSES PPS1,
+          apps.xx_pa_pb_genprd_dtl dtl,
+          APPS.PA_PROJECTS_ALL PPA1 LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB1 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND1 ON 
+                 EEB1.ATTR_GROUP_ID = FND1.ATTR_GROUP_ID AND
+                 FND1.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_GEN_INFO') ON
+                 PPA1.PROJECT_ID = EEB1.PROJECT_ID
+    WHERE PPA1.PROJECT_ID > 0
+      AND PPA1.TEMPLATE_FLAG = 'N'
+      AND PPA1.PROJECT_STATUS_CODE = PPS1.PROJECT_STATUS_CODE
+      AND PPA1.SEGMENT1 LIKE 'PB%'
+      and dtl.project_id=ppa1.project_id 
+   AND TO_CHAR(NVL(EEB1.D_EXT_ATTR2,EEB1.D_EXT_ATTR1),'YYYY')=NVL(:p_year,TO_CHAR(NVL(EEB1.D_EXT_ATTR2,EEB1.D_EXT_ATTR1),'YYYY'))
+      AND EEB1.C_EXT_ATTR5 IS NOT NULL
+      AND b.project_id=ppa1.project_id
+      AND c.project_role_id=b.project_role_id
+      AND c.project_role_type='PROJECT MANAGER'
+      AND d.person_id=b.resource_source_id
+      AND e.employee_id=d.person_id
+      &p_status_where
+     GROUP BY EEB1.C_EXT_ATTR5,d.full_name,COALESCE(EEB1.C_EXT_ATTR6,''),
+	APPS.XX_PA_XXPASCOR_PKG.get_fcst_sku_di(:p_cancelled,EEB1.C_EXT_ATTR5,d.full_name,:p_year),
+	APPS.XX_PA_XXPASCOR_PKG.get_fcst_sku_dic(:p_cancelled,EEB1.C_EXT_ATTR5,d.full_name,:p_year)
+ORDER BY 1]]>
+</sqlStatement>
+<sqlStatement name="Q_TRACKER">
+<![CDATA[
+   SELECT  COALESCE(EEB2.C_EXT_ATTR1,'') AS Tracker_type
+	  ,COUNT(distinct ppa1.project_id) TRNO_OF_PROJ
+          ,NVL(ROUND((COUNT(distinct ppa1.project_id)/APPS.XX_PA_XXPASCOR_PKG.get_total_proj(:p_cancelled,:p_year))*100,0),0) TRPROJPER
+          ,COUNT(1) AS TRNO_OF_SKUS
+          ,NVL(ROUND((COUNT(1)/APPS.XX_PA_XXPASCOR_PKG.get_total_sku(:p_cancelled,:p_year))*100,0),0) TRSKUPER 
+          ,SUM(APPS.XX_PA_XXPAPRJI_PKG.get_curr_forecast(ppa1.project_id)) TRFCST
+          ,NVL(ROUND((SUM(APPS.XX_PA_XXPAPRJI_PKG.get_curr_forecast(ppa1.project_id))/APPS.XX_PA_XXPASCOR_PKG.get_total_fcst(:p_cancelled,:p_year))*100,0),0) TRFCSTPER
+          ,ROUND((SUM(APPS.XX_PA_XXPAPRJI_PKG.get_curr_forecast(ppa1.project_id))/APPS.XX_PA_XXPASCOR_PKG.get_fcst_sku_trk(:p_cancelled,EEB2.C_EXT_ATTR1,:p_year)),2) TRFCSTSKU
+          ,APPS.XX_PA_XXPASCOR_PKG.get_fcst_sku_trkc(:p_cancelled,EEB2.C_EXT_ATTR1,:p_year) TRCNTSKUFCST
+     FROM apps.PA_PROJECT_STATUSES PPS1,
+	    apps.xx_pa_pb_genprd_dtl dtl,
+          APPS.PA_PROJECTS_ALL PPA1 LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB1 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND1 ON 
+                 EEB1.ATTR_GROUP_ID = FND1.ATTR_GROUP_ID AND
+                 FND1.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_GEN_INFO') ON
+                 PPA1.PROJECT_ID = EEB1.PROJECT_ID,
+          APPS.PA_PROJECTS_ALL PPA2 LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB2 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND2 ON 
+                 EEB2.ATTR_GROUP_ID = FND2.ATTR_GROUP_ID AND
+                 FND2.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'RPB_TRACKER') ON
+                 PPA2.PROJECT_ID = EEB2.PROJECT_ID
+   WHERE PPA1.PROJECT_ID > 0
+     AND PPA1.TEMPLATE_FLAG = 'N'
+     AND PPA1.PROJECT_STATUS_CODE = PPS1.PROJECT_STATUS_CODE
+     AND PPA1.SEGMENT1 LIKE 'PB%' 
+     AND dtl.project_id=ppa1.project_id
+     AND TO_CHAR(NVL(EEB1.D_EXT_ATTR2,EEB1.D_EXT_ATTR1),'YYYY')=NVL(:p_year,TO_CHAR(NVL(EEB1.D_EXT_ATTR2,EEB1.D_EXT_ATTR1),'YYYY'))
+     AND PPA1.project_id=PPA2.project_id
+     AND pps1.project_status_name NOT IN ('Rejected','Cancelled')
+     AND EEB2.C_EXT_ATTR1 IS NOT NULL
+     &p_status_where
+   GROUP BY COALESCE(EEB2.C_EXT_ATTR1,''),APPS.XX_PA_XXPASCOR_PKG.get_fcst_sku_trk(:p_cancelled,EEB2.C_EXT_ATTR1,:p_year),
+   APPS.XX_PA_XXPASCOR_PKG.get_fcst_sku_trkc(:p_cancelled,EEB2.C_EXT_ATTR1,:p_year)
+   ORDER BY DECODE(COALESCE(EEB2.C_EXT_ATTR1,''),'BACK TO BUSINESS',1,'BACK TO SCHOOL',2,
+        'EBW Q1',3,'EBW Q2',4,'EBW Q3',5,'EBW Q4',6,'HOLIDAY',7,'Other Promotion',8,
+	'POG - JAN',9,'POG - FEB',10,'POG - MAR',11,'POG - APR',12,'POG - MAY',13,
+	'POG - JUN',14,'POG - JUL',15,'POG - AUG',16,'POG - SEP',17,'POG - OCT',18,
+        'POG - NOV',19,'POG - DEC',20) 
+]]>
+</sqlStatement>
+<sqlStatement name="Q_STATUS">
+<![CDATA[
+SELECT  PPS1.PROJECT_STATUS_NAME  AS PROJECT_STATUS, 
+        SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year)) AS SFDIVISION,
+        ROUND(SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year))/
+        (SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year)))*100,2) SFPER,        
+        SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year)) AS SSDIVISION,
+        ROUND(SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year))/
+        (SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year)))*100,2) SSPER,        
+        SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year)) AS STDIVISION,
+        ROUND(SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year))/
+        (SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year)))*100,2) STPER,        
+        SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year)) AS SPDIVISION,
+        ROUND(SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year))/
+        (SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year)))*100,2) SPPER,        
+        (SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year))) STotal,
+         SUM(APPS.XX_PA_XXPAPRJI_PKG.get_curr_forecast(ppa1.project_id)) Sfcst,
+         (SUM(APPS.XX_PA_XXPAPRJI_PKG.get_curr_forecast(ppa1.project_id))/APPS.XX_PA_XXPASCOR_PKG.get_total_fcst('Y',:p_year))*100 Sfcstper
+  FROM apps.PA_PROJECT_STATUSES PPS1,
+       APPS.PA_PROJECTS_ALL PPA1 LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB1 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND1 ON 
+                 EEB1.ATTR_GROUP_ID = FND1.ATTR_GROUP_ID AND
+                 FND1.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_GEN_INFO') ON
+                 PPA1.PROJECT_ID = EEB1.PROJECT_ID
+ WHERE PPA1.PROJECT_ID > 0
+   AND PPA1.TEMPLATE_FLAG = 'N'
+   AND PPA1.PROJECT_STATUS_CODE = PPS1.PROJECT_STATUS_CODE
+   AND PPA1.SEGMENT1 LIKE 'PB%'
+   AND EEB1.C_EXT_ATTR5 IS NOT NULL
+   AND EXISTS (SELECT 'X'
+             FROM apps.xx_pa_pb_genprd_dtl
+        WHERE project_id=ppa1.project_id)  
+ AND TO_CHAR(NVL(EEB1.D_EXT_ATTR2,EEB1.D_EXT_ATTR1),'YYYY')=NVL(:p_year,TO_CHAR(NVL(EEB1.D_EXT_ATTR2,EEB1.D_EXT_ATTR1),'YYYY'))
+GROUP BY PPS1.PROJECT_STATUS_NAME,APPS.XX_PA_XXPASCOR_PKG.get_total_fcst('Y',null)
+ORDER BY DECODE(PPS1.PROJECT_STATUS_NAME,'Unapproved',1,'Submitted',2,
+        'Approved',3,'Rejected',4,'In Progress',5,'Closed',6,'On Hold',7,'Cancelled',8)
+]]>
+</sqlStatement>
+<sqlStatement name="Q_STOTPER">
+<![CDATA[
+SELECT  SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year)) AS STOTFDIVISION,
+        SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year)) AS STOTSDIVISION,
+        SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year)) AS STOTTDIVISION,
+        SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year)) AS STOTPDIVISION,
+        ROUND(SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year))/
+        (SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year)))*100,2) STOTFPER,        
+        ROUND(SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year))/
+        (SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year)))*100,2) STOTSPER,        
+        ROUND(SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year))/
+        (SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year)))*100,2) STOTTPER,        
+        ROUND(SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year))/
+        (SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year)))*100,2) STOTPPER,
+        (SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year))) STOTTotal,
+         SUM(APPS.XX_PA_XXPAPRJI_PKG.get_curr_forecast(ppa1.project_id)) STOTfcst
+  FROM apps.PA_PROJECT_STATUSES PPS1,
+       APPS.PA_PROJECTS_ALL PPA1 LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB1 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND1 ON 
+                 EEB1.ATTR_GROUP_ID = FND1.ATTR_GROUP_ID AND
+                 FND1.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_GEN_INFO') ON
+                 PPA1.PROJECT_ID = EEB1.PROJECT_ID
+ WHERE PPA1.PROJECT_ID > 0
+   AND PPA1.TEMPLATE_FLAG = 'N'
+   AND PPA1.PROJECT_STATUS_CODE = PPS1.PROJECT_STATUS_CODE
+   AND PPA1.SEGMENT1 LIKE 'PB%'
+   AND EEB1.C_EXT_ATTR5 IS NOT NULL
+   AND TO_CHAR(NVL(EEB1.D_EXT_ATTR2,EEB1.D_EXT_ATTR1),'YYYY')=NVL(:p_year,TO_CHAR(NVL(EEB1.D_EXT_ATTR2,EEB1.D_EXT_ATTR1),'YYYY'))
+   AND EXISTS (SELECT 'X'
+             FROM apps.xx_pa_pb_genprd_dtl
+        WHERE project_id=ppa1.project_id)
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PRGSTATUS">
+<![CDATA[
+SELECT  APPS.XX_PA_XXPAPRJI_PKG.get_proj_progress_status(EEB1.C_EXT_ATTR4) AS PROJECT_PROGRESS_STATUS,
+        SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year)) AS PRFDIVISION,
+        ROUND(SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year))/
+        (SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year)))*100,2) PRFPER,        
+        SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year)) AS PRSDIVISION,
+        ROUND(SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year))/
+        (SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year)))*100,2) PRSPER,        
+        SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year)) AS PRTDIVISION,
+        ROUND(SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year))/
+        (SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year)))*100,2) PRTPER,        
+        SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year)) AS PRPDIVISION,
+        ROUND(SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year))/
+        (SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year)))*100,2) PRPPER,        
+        (SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year))) PRTotal,
+         SUM(APPS.XX_PA_XXPAPRJI_PKG.get_curr_forecast(ppa1.project_id)) PRfcst,
+(SUM(APPS.XX_PA_XXPAPRJI_PKG.get_curr_forecast(ppa1.project_id))/APPS.XX_PA_XXPASCOR_PKG.get_total_fcst('Y',:p_year))*100 PRfcstper
+  FROM apps.PA_PROJECT_STATUSES PPS1,
+       APPS.PA_PROJECTS_ALL PPA1 LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB1 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND1 ON 
+                 EEB1.ATTR_GROUP_ID = FND1.ATTR_GROUP_ID AND
+                 FND1.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_GEN_INFO') ON
+                 PPA1.PROJECT_ID = EEB1.PROJECT_ID
+ WHERE PPA1.PROJECT_ID > 0
+   AND PPA1.TEMPLATE_FLAG = 'N'
+   AND PPA1.PROJECT_STATUS_CODE = PPS1.PROJECT_STATUS_CODE
+   AND PPA1.SEGMENT1 LIKE 'PB%'
+   AND EEB1.C_EXT_ATTR5 IS NOT NULL
+   AND TO_CHAR(NVL(EEB1.D_EXT_ATTR2,EEB1.D_EXT_ATTR1),'YYYY')=NVL(:p_year,TO_CHAR(NVL(EEB1.D_EXT_ATTR2,EEB1.D_EXT_ATTR1),'YYYY'))
+   AND EXISTS (SELECT 'X'
+             FROM apps.xx_pa_pb_genprd_dtl
+        WHERE project_id=ppa1.project_id)
+   &p_status_where
+GROUP BY APPS.XX_PA_XXPAPRJI_PKG.get_proj_progress_status(EEB1.C_EXT_ATTR4)
+ORDER BY DECODE(APPS.XX_PA_XXPAPRJI_PKG.get_proj_progress_status(EEB1.C_EXT_ATTR4),'On Track',1,'At Risk',2,
+		'Delayed',3)
+]]>
+</sqlStatement>
+<sqlStatement name="Q_PRGTOTPER">
+<![CDATA[
+SELECT  SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year)) AS PRTOTFDIV,
+        ROUND(SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year))/
+        (SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year)))*100,2) PRTOTFPER,        
+        SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year)) AS PRTOTSDIV,
+        ROUND(SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year))/
+        (SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year)))*100,2) PRTOTSPER,        
+        SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year)) AS PRTOTTDIV,
+        ROUND(SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year))/
+        (SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year)))*100,2) PRTOTTPER,        
+        SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year)) AS PRTOTPDIV,
+        ROUND(SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year))/
+        (SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year)))*100,2) PRTOTPPER,        
+        (SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('FURT',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('SUPP',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('PHER',ppa1.project_id,:p_year))+
+         SUM(APPS.XX_PA_XXPASCOR_PKG.get_division('TECH',ppa1.project_id,:p_year))) PRTOTTotal,
+         SUM(APPS.XX_PA_XXPAPRJI_PKG.get_curr_forecast(ppa1.project_id)) PRTOTfcst
+  FROM apps.PA_PROJECT_STATUSES PPS1,
+       APPS.PA_PROJECTS_ALL PPA1 LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB1 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND1 ON 
+                 EEB1.ATTR_GROUP_ID = FND1.ATTR_GROUP_ID AND
+                 FND1.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_GEN_INFO') ON
+                 PPA1.PROJECT_ID = EEB1.PROJECT_ID
+ WHERE PPA1.PROJECT_ID > 0
+   AND PPA1.TEMPLATE_FLAG = 'N'
+   AND PPA1.PROJECT_STATUS_CODE = PPS1.PROJECT_STATUS_CODE
+   AND PPA1.SEGMENT1 LIKE 'PB%'
+   AND EEB1.C_EXT_ATTR5 IS NOT NULL
+   AND EXISTS (SELECT 'X'
+             FROM apps.xx_pa_pb_genprd_dtl
+        WHERE project_id=ppa1.project_id)
+   AND TO_CHAR(NVL(EEB1.D_EXT_ATTR2,EEB1.D_EXT_ATTR1),'YYYY')=NVL(:p_year,TO_CHAR(NVL(EEB1.D_EXT_ATTR2,EEB1.D_EXT_ATTR1),'YYYY'))
+   &p_status_where
+GROUP BY APPS.XX_PA_XXPAPRJI_PKG.get_proj_progress_status(EEB1.C_EXT_ATTR4)
+]]>
+</sqlStatement>
+<sqlStatement name="Q_CHART">
+<![CDATA[
+SELECT  COUNT(distinct ppa1.project_id) CNO_OF_PROJ
+       ,COUNT(1) AS Cno_of_skus
+       ,sum(NVL(fc.fcst,0)) Cfcst
+       ,glp.period_name cperiod_name,glp.start_date
+  FROM apps.PA_PROJECT_STATUSES PPS1,
+	 apps.xx_pa_pb_genprd_dtl dtl,
+      APPS.PA_PROJECTS_ALL PPA1 LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB1 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND1 ON 
+                 EEB1.ATTR_GROUP_ID = FND1.ATTR_GROUP_ID AND
+                 FND1.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_GEN_INFO') ON
+                 PPA1.PROJECT_ID = EEB1.PROJECT_ID,
+        APPS.PA_PROJECTS_ALL PPA2 LEFT OUTER JOIN
+             (  SELECT SUM(NVL(pbl.revenue,0)) fcst,
+                pra.project_id
+          FROM apps.pa_budget_lines pbl,
+                 apps.pa_resource_assignments pra,
+               apps.pa_budget_versions pbv
+           WHERE pbl.resource_assignment_id =pra.resource_assignment_id
+             AND pra.budget_version_id = pbv.budget_version_id
+             AND pbv.budget_status_code = 'B'
+             AND pbv.current_flag = 'Y'
+         GROUP BY pra.project_id ) fc ON
+         PPA2.PROJECT_ID = fc.PROJECT_ID,
+    ( select period_name,start_date,end_date,period_num,period_year  
+        from apps.gl_periods  
+       where period_set_name='OD 445 CALENDAR' 
+         and start_date>= (select start_date from apps.gl_periods
+                            where period_set_name='OD 445 CALENDAR' 
+                             and period_name=TO_CHAR(SYSDATE,'MON-YY')
+                  )
+         and end_date<=(select end_date
+                        from apps.gl_periods
+                      where period_name=(select TO_CHAR(start_date+180,'MON-YY') 
+                                      from apps.gl_periods
+                                   where period_set_name='OD 445 CALENDAR'  
+                                     and period_name=TO_CHAR(SYSDATE,'MON-YY')
+                               )
+                   )) glp
+ WHERE PPA1.PROJECT_ID > 0
+   AND PPA1.TEMPLATE_FLAG = 'N'
+   AND PPA1.PROJECT_STATUS_CODE = PPS1.PROJECT_STATUS_CODE
+   AND PPA1.SEGMENT1 LIKE 'PB%'
+   AND ppa1.project_id=ppa2.project_id
+   AND dtl.project_id=ppa1.project_id
+   and TRUNC(NVL(EEB1.D_EXT_ATTR2,EEB1.D_EXT_ATTR1)) between glp.start_date and glp.end_date
+   &p_status_where
+GROUP BY glp.period_name,glp.period_num,glp.start_date
+union
+SELECT  COUNT(distinct ppa1.project_id) CNO_OF_PROJ
+       ,COUNT(1) AS Cno_of_skus
+       ,sum(NVL(fc.fcst,0)) Cfcst
+       ,glp.period_name cperiod_name,glp.start_date
+  FROM apps.PA_PROJECT_STATUSES PPS1,
+	 apps.xx_pa_pb_genprd_dtl dtl,
+      APPS.PA_PROJECTS_ALL PPA1 LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB1 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND1 ON 
+                 EEB1.ATTR_GROUP_ID = FND1.ATTR_GROUP_ID AND
+                 FND1.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_GEN_INFO') ON
+                 PPA1.PROJECT_ID = EEB1.PROJECT_ID,
+        APPS.PA_PROJECTS_ALL PPA2 LEFT OUTER JOIN
+             (  SELECT SUM(NVL(pbl.revenue,0)) fcst,
+                pra.project_id
+          FROM apps.pa_budget_lines pbl,
+                 apps.pa_resource_assignments pra,
+               apps.pa_budget_versions pbv
+           WHERE pbl.resource_assignment_id =pra.resource_assignment_id
+             AND pra.budget_version_id = pbv.budget_version_id
+             AND pbv.budget_status_code = 'B'
+             AND pbv.current_flag = 'Y'
+         GROUP BY pra.project_id ) fc ON
+         PPA2.PROJECT_ID = fc.PROJECT_ID,
+    ( select period_name,start_date,end_date,period_num,period_year  
+        from apps.gl_periods  
+       where period_set_name='OD 445 CALENDAR' 
+         and end_date<(select end_date from apps.gl_periods
+                            where period_set_name='OD 445 CALENDAR' 
+                             and period_name=TO_CHAR(SYSDATE,'MON-YY')
+                      )
+         and start_date>=(select start_date-120
+                            from apps.gl_periods
+                           where period_set_name='OD 445 CALENDAR'  
+                             and period_name=TO_CHAR(SYSDATE,'MON-YY')
+                          )
+                   ) glp
+ WHERE PPA1.PROJECT_ID > 0
+   AND PPA1.TEMPLATE_FLAG = 'N'
+   AND PPA1.PROJECT_STATUS_CODE = PPS1.PROJECT_STATUS_CODE
+   AND PPA1.SEGMENT1 LIKE 'PB%'
+   AND pps1.project_status_name NOT IN ('Rejected','Cancelled')
+   AND ppa1.project_id=ppa2.project_id
+   AND dtl.project_id=ppa1.project_id
+   and TRUNC(NVL(EEB1.D_EXT_ATTR2,EEB1.D_EXT_ATTR1)) between glp.start_date and glp.end_date
+   &p_status_where
+GROUP BY glp.period_name,glp.period_num,glp.start_date
+order by 5
+]]>
+</sqlStatement>
+</dataQuery>
+<dataTrigger name="beforeReportTrigger" source="XX_PA_XXPASCOR_PKG.BeforeReportTrigger"/>
+<dataStructure>
+<group name="G_MAIN" source="Q_MAIN">
+<element name="MPROJ" value="MPROJ" />
+<element name="MSKU" value="MSKU" />
+</group>
+<group name="G_DIV" source="Q_DIV">
+<element name="DIVISION" value="DIVISION" />
+<element name="NO_OF_PROJ" value="NO_OF_PROJ" />
+<element name="PROJPER" value="PROJPER" />
+<element name="NO_OF_SKUS" value="NO_OF_SKUS" />
+<element name="SKUPER" value="SKUPER" />
+<element name="FCST" value="FCST" />
+<element name="FCSTPER" value="FCSTPER" />
+<element name="FCSTSKU" value="FCSTSKU" />
+<element name="SKUSFCST" value="CNTSKUFCST" />
+</group>
+<group name="G_DIM" source="Q_DIM">
+<element name="DI_DIVISION" value="DI_DIVISION" />
+<element name="DI_MERCHANT" value="DI_MERCHANT" />
+<element name="DI_ASSOC_MERCHANT" value="DI_ASSOC_MERCHANT" />
+<element name="DINO_OF_PROJ" value="DINO_OF_PROJ" />
+<element name="DIPROJPER" value="DIPROJPER" />
+<element name="DINO_OF_SKUS" value="DINO_OF_SKUS" />
+<element name="DISKUPER" value="DISKUPER" />
+<element name="DIFCST" value="DIFCST" />
+<element name="DIFCSTPER" value="DIFCSTPER" />
+<element name="DIFCSTSKU" value="DIFCSTSKU" />
+<element name="DISKUSFCST" value="DICNTSKUFCST" />
+</group>
+<group name="G_TRACKER" source="Q_TRACKER">
+<element name="TRACKER_TYPE" value="TRACKER_TYPE" />
+<element name="TRNO_OF_PROJ" value="TRNO_OF_PROJ" />
+<element name="TRPROJPER" value="TRPROJPER" />
+<element name="TRNO_OF_SKUS" value="TRNO_OF_SKUS" />
+<element name="TRSKUPER" value="TRSKUPER" />
+<element name="TRFCST" value="TRFCST" />
+<element name="TRFCSTPER" value="TRFCSTPER" />
+<element name="TRFCSTSKU" value="TRFCSTSKU" />
+<element name="TRSKUSFCST" value="TRCNTSKUFCST" />
+</group>
+<group name="G_STATUS" source="Q_STATUS">
+<element name="PROJECT_STATUS" value="PROJECT_STATUS" />
+<element name="SFDIVISION" value="SFDIVISION" />
+<element name="SFPER" value="SFPER" />
+<element name="SSDIVISION" value="SSDIVISION" />
+<element name="SSPER" value="SSPER" />
+<element name="STDIVISION" value="STDIVISION" />
+<element name="STPER" value="STPER" />
+<element name="SPDIVISION" value="SPDIVISION" />
+<element name="SPPER" value="SPPER" />
+<element name="STOTAL" value="STOTAL" />
+<element name="SFCST" value="SFCST" />
+<element name="SFCSTPER" value="SFCSTPER" />
+</group>
+<group name="G_STOTPER" source="Q_STOTPER">
+<element name="STOTFDIVISION" value="STOTFDIVISION" />
+<element name="STOTSDIVISION" value="STOTSDIVISION" />
+<element name="STOTTDIVISION" value="STOTTDIVISION" />
+<element name="STOTPDIVISION" value="STOTPDIVISION" />
+<element name="STOTFPER" value="STOTFPER" />
+<element name="STOTSPER" value="STOTSPER" />
+<element name="STOTTPER" value="STOTTPER" />
+<element name="STOTPPER" value="STOTPPER" />
+<element name="STOTTOTAL" value="STOTTOTAL" />
+<element name="STOTFCST" value="STOTFCST" />
+</group>
+<group name="G_PRGSTATUS" source="Q_PRGSTATUS">
+<element name="PROJECT_PROGRESS_STATUS" value="PROJECT_PROGRESS_STATUS" />
+<element name="PRFDIVISION" value="PRFDIVISION" />
+<element name="PRFPER" value="PRFPER" />
+<element name="PRSDIVISION" value="PRSDIVISION" />
+<element name="PRSPER" value="PRSPER" />
+<element name="PRTDIVISION" value="PRTDIVISION" />
+<element name="PRTPER" value="PRTPER" />
+<element name="PRPDIVISION" value="PRPDIVISION" />
+<element name="PRPPER" value="PRPPER" />
+<element name="PRTOTAL" value="PRTOTAL" />
+<element name="PRFCST" value="PRFCST" />
+<element name="PRFCSTPER" value="PRFCSTPER" />
+</group>
+<group name="G_PRGTOTPER" source="Q_PRGTOTPER">
+<element name="PRTOTFDIV" value="PRTOTFDIV" />
+<element name="PRTOTSDIV" value="PRTOTSDIV" />
+<element name="PRTOTTDIV" value="PRTOTTDIV" />
+<element name="PRTOTPDIV" value="PRTOTPDIV" />
+<element name="PRTOTFPER" value="PRTOTFPER" />
+<element name="PRTOTSPER" value="PRTOTSPER" />
+<element name="PRTOTTPER" value="PRTOTTPER" />
+<element name="PRTOTPPER" value="PRTOTPPER" />
+<element name="PRTOTTOTAL" value="PRTOTTOTAL" />
+<element name="PRTOTFCST" value="PRTOTFCST" />
+</group>
+<group name="G_CHART" source="Q_CHART">
+<element name="CNO_OF_PROJ" value="CNO_OF_PROJ" />
+<element name="CNO_OF_SKUS" value="CNO_OF_SKUS" />
+<element name="CPERIOD_NAME" value="CPERIOD_NAME" />
+<element name="CFCST" value="CFCST" />
+</group>
+</dataStructure>
+</dataTemplate>

@@ -1,0 +1,48 @@
+#!/usr/bin/ksh
+# +===================================================================+
+# |                  Office Depot - Project Simplify                  |
+# |                     Office Depot                                  |
+# +===================================================================+
+# | Name  :       SC Audit History Load (Shell Script)                |
+# | Description : To Load the SC Audit History data                   |
+# |                                                                   |
+# |                                                                   |
+# |Change Record:                                                     |
+# |===============                                                    |
+# |Version   Date          Author              Remarks                |
+# |=======   ===========  =============        =======================|
+# |1.0       18-Feb-2012  Paddy Sanjeevi       Initial version        |
+# |-------------------------------------------------------------------|
+# |                                                                   |
+# +===================================================================+
+
+p_request_id=`echo $1|awk '{print(substr($2,11))}'`
+FILE_DIR="$XXMER_DATA/ftp/in"
+FILE_ARCHIVE="$XXMER_DATA/archive/inbound"
+
+cd $FILE_DIR
+
+for i in `ls XXSCADTH.txt`
+do
+echo $i
+sqlldr parfile=$HOME/parfile.apps data=$i control=$XXMER_TOP/bin/XXSCAUDH.ctl log=$i.log bad=$i.bad
+
+if [ $? -ne 0 ]
+then
+echo "Error in running sqlloader. Please Check log for Error Details "
+else 
+echo "Completed successfully "
+fi
+cat $i.log >> $APPLCSF/log/l$p_request_id.req
+
+if test -f  $XXMER_DATA/ftp/in/*.bad
+then
+   cat $i.bad >> $APPLCSF/log/l$p_request_id.req
+   mailx -s "Bad data for OD SC Audit History Data $i.bad" padmanaban.sanjeevi@officedepot.com < $i.bad
+fi
+
+mv $i $FILE_ARCHIVE/$i
+
+done
+
+exit 0

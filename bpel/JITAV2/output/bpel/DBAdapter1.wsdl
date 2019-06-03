@@ -1,0 +1,61 @@
+<definitions
+     name="DBAdapter1"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/DBAdapter1/"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/DBAdapter1/"
+     xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/SUBBU_JITA_APPT_PROC/"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+     xmlns:hdr="http://xmlns.oracle.com/pcbpel/adapter/db/"
+    >
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/" location="DBAdapterOutboundHeader.wsdl"/>
+    <types>
+     <schema xmlns="http://www.w3.org/2001/XMLSchema">
+       <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/SUBBU_JITA_APPT_PROC/"
+               schemaLocation="APPS_SUBBU_JITA_APPT_PROC.xsd" />
+     </schema>
+    </types>
+    <message name="args_in_msg">
+        <part name="InputParameters" element="db:InputParameters"/>
+    </message>
+    <portType name="DBAdapter1_ptt">
+        <operation name="DBAdapter1">
+            <input message="tns:args_in_msg"/>
+        </operation>
+    </portType>
+    <binding name="DBAdapter1_binding" type="tns:DBAdapter1_ptt">
+    <jca:binding  />
+        <operation name="DBAdapter1">
+      <jca:operation
+          SchemaName="APPS"
+          ProcedureName="SUBBU_JITA_APPT_PROC"
+          InteractionSpec="oracle.tip.adapter.db.DBStoredProcedureInteractionSpec" >
+      </jca:operation>
+      <input>
+        <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+      </input>
+        </operation>
+    </binding>
+    <service name="DBAdapter1">
+        <port name="DBAdapter1_pt" binding="tns:DBAdapter1_binding">
+<!--Your runtime connection is declared in 
+J2EE_HOME/application-deployments/default/DbAdapter/oc4j-ra.xml 
+These mcf properties here are from your design time connection and 
+save you from having to edit that file and restart the application server 
+if eis/DB/GSIDEV03 is missing. 
+These mcf properties are safe to remove.-->
+      <jca:address location="eis/DB/GSIDEV03" UIConnectionName="GSIDEV03"
+          ManagedConnectionFactory="oracle.tip.adapter.db.DBManagedConnectionFactory"
+          mcf.DriverClassName="oracle.jdbc.OracleDriver"
+          mcf.PlatformClassName="oracle.toplink.internal.databaseaccess.Oracle9Platform"
+          mcf.ConnectionString="jdbc:oracle:thin:@choldbr18d.na.odcorp.net:1544:GSIDEV03"
+          mcf.UserName="apps"
+          mcf.Password="33249B2910CFF3FBCD9B834DF8560A56" />
+        </port>
+    </service>
+  <plt:partnerLinkType name="DBAdapter1_plt" >
+    <plt:role name="DBAdapter1_role" >
+      <plt:portType name="tns:DBAdapter1_ptt" />
+    </plt:role>
+  </plt:partnerLinkType>
+</definitions>

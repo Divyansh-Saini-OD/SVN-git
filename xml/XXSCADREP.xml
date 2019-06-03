@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXSCADR" description="OD: Environmental Product Information Report" Version="1.0">
+<parameters>
+ <parameter name="P_PROFILE_VALUE" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_XXSCADR">
+<![CDATA[
+SELECT   OD_SC_VENDOR_NUMBER
+	,OD_SC_VENDOR_NAME
+	,OD_SC_VEND_TYPE
+	,OD_SC_VENDOR_STATUS
+	,OD_SC_ACTIVATION_DATE
+	,OD_SC_INACTIVE_DATE
+	,OD_SC_REACTIVATE_DATE
+	,OD_SC_DOC_VAL_DATE
+	,OD_SC_FQA_APRVL_D
+	,OD_SC_AUDIT_AGENT
+	,OD_SC_VEND_CONT_NAME
+	,OD_SC_VEND_PHONE
+	,OD_SC_VEND_FAX
+	,OD_SC_VEND_EMAIL
+	,OD_SC_VEND_ADDRESS
+	,OD_SC_FACTORY_NUMBER
+	,OD_SC_FACTORY_NAME
+	,OD_SC_FACT_CONT_NAME
+	,OD_SC_FACTORY_EMAIL
+	,OD_SC_FACTORY_ADDRESS
+	,OD_SC_FACTORY_PHONE
+	,OD_SC_FACTORY_FAX
+	,OD_SC_EUROPE_RGN
+	,OD_SC_EU_SUB_RGN
+	,OD_SC_EU_VEND_NO
+	,OD_SC_EU_FACTORY_NO
+	,OD_SC_EU_VEND_STATUS
+	,OD_SC_EU_CONTACT
+	,OD_SC_MEXICO_REGION
+	,OD_SC_MX_SUB_RGN
+	,OD_SC_MX_VEND_NO
+	,OD_SC_MEX_FACTORY_NO
+	,OD_SC_MX_VEND_STATUS
+	,OD_SC_MX_CONTACT
+	,OD_SC_ASIA_REGION
+	,OD_SC_AS_SUB_RGN
+	,OD_SC_AS_VEND_NO
+	,OD_SC_ASIA_FACTORY_NO
+	,OD_SC_AS_VEND_STATUS
+	,OD_SC_ASIA_CONTACT
+	,OD_SC_DEPARTMENT
+	,OD_SC_PRODUCT
+	,OD_SC_MERCHANT
+	,OD_SC_AUDIT_REQUIRED
+	,OD_SC_AUDIT_WAIVER
+	,OD_SC_AUDIT_WAIVER_STATUS
+	,OD_SC_AUDTWAIV_APR_D
+	,OD_SC_VEND_REGION
+	,OD_SC_VEND_COMMENTS
+	,OD_SC_CNT_OF_ORGN
+	,OD_SC_CNT_OF_DESTN
+	,OD_SC_CIP
+	,OD_SC_POTRM_APR_D
+	,OD_SC_FOB_VALUE
+	,OD_SC_LEAD_AUDITOR
+	,OD_SC_AUDITOR
+	,OD_SC_PREAUDT_SCHED_D
+	,OD_SC_PREAUDT_RESULT
+	,OD_SC_ZT_STATUS
+	,OD_SC_ZT_APRVL_D
+	,OD_SC_ZT_APPROVER
+	,OD_SC_FZT_APPROVER
+	,OD_SC_FZT_APRVL_D
+	,OD_SC_PREAUDIT_COMMENTS
+	,OD_SC_STRAUDT_REQ_D
+	,OD_SC_PAYMENT_RETAINER
+	,OD_SC_STR_PAYMENT_APPROVER
+	,OD_SC_VENDPAY_RCVD_D
+	,OD_SC_STRAUDT_SCHD_D
+	,OD_SC_REQ_AUDIT_DATE
+	,OD_SC_STR_AUDIT_RESULT
+	,OD_SC_CAP_ASSIGNMENT
+	,OD_SC_CAP_SENT_D
+	,OD_SC_CAP_RECD_D
+	,OD_SC_STRAUDT_CAP_STATUS
+	,OD_SC_CAP_RESP_D
+	,OD_SC_CAP_REV_COMMENTS
+	,OD_SC_CAP_PREAPPROVER
+	,OD_SC_STRAUDT_GSO_APR_D
+	,OD_SC_CAP_FINAL_APPROVER
+	,OD_SC_SRTAUDT_US_APR_D
+	,OD_SC_VEND_INITIATE
+	,OD_SC_STRAUDT_GSO_APR_D OPEN_ACCOUNT_APPROVAL_DATE
+	,OD_SC_VENDOR_TAX_ID
+	,OD_SC_CIP_ACTIVE_DATE
+	,OD_SC_CIP_DEACTIVE_DATE
+	,OD_SC_INSPECTION_TYPE
+	,OD_SC_PROJ_NUM
+	,OD_SC_PROJ_STATUS
+	,OD_SC_VEND_DESK_REQ_DATE
+	,OD_SC_SHARED_FACTORY
+	,OD_SC_PENDING_STATUS_CHANGE
+	,OD_SC_SUB_CAT_PROD_CLASS_CODE
+	,OD_SC_DOCUMENT_COMMENTS
+	,OD_SC_AUDIT_STATUS_NOTIFY
+  ,OD_SC_EU_VEND_NO GSO_SUPPLIER_ID
+  ,OD_SC_EU_FACTORY_NO GSO_FACTORY_ID
+  ,OD_SC_EU_VEND_STATUS GSO_SUPPLIER_STATUS
+FROM
+  (SELECT *
+  FROM q_od_pb_sc_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODUS'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_eu_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODEU'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_mx_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODMX'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_asia_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODASIA' = :P_PROFILE_VALUE)
+  ) t1
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_XXSCADR" source="Q_XXSCADR">
+<element name="OD_SC_VENDOR_NUMBER" value="OD_SC_VENDOR_NUMBER" />
+<element name="OD_SC_VENDOR_NAME" value="OD_SC_VENDOR_NAME" />
+<element name="OD_SC_VEND_TYPE" value="OD_SC_VEND_TYPE" />
+<element name="OD_SC_VENDOR_STATUS" value="OD_SC_VENDOR_STATUS" />
+<element name="OD_SC_ACTIVATION_DATE" value="OD_SC_ACTIVATION_DATE" />
+<element name="OD_SC_INACTIVE_DATE" value="OD_SC_INACTIVE_DATE" />
+<element name="OD_SC_REACTIVATE_DATE" value="OD_SC_REACTIVATE_DATE" />
+<element name="OD_SC_DOC_VAL_DATE" value="OD_SC_DOC_VAL_DATE" />
+<element name="OD_SC_FQA_APRVL_D" value="OD_SC_FQA_APRVL_D" />
+<element name="OD_SC_AUDIT_AGENT" value="OD_SC_AUDIT_AGENT" />
+<element name="OD_SC_VEND_CONT_NAME" value="OD_SC_VEND_CONT_NAME" />
+<element name="OD_SC_VEND_PHONE" value="OD_SC_VEND_PHONE" />
+<element name="OD_SC_VEND_FAX" value="OD_SC_VEND_FAX" />
+<element name="OD_SC_VEND_EMAIL" value="OD_SC_VEND_EMAIL" />
+<element name="OD_SC_VEND_ADDRESS" value="OD_SC_VEND_ADDRESS" />
+<element name="OD_SC_FACTORY_NUMBER" value="OD_SC_FACTORY_NUMBER" />
+<element name="OD_SC_FACTORY_NAME" value="OD_SC_FACTORY_NAME" />
+<element name="OD_SC_FACT_CONT_NAME" value="OD_SC_FACT_CONT_NAME" />
+<element name="OD_SC_FACTORY_EMAIL" value="OD_SC_FACTORY_EMAIL" />
+<element name="OD_SC_FACTORY_ADDRESS" value="OD_SC_FACTORY_ADDRESS" />
+<element name="OD_SC_FACTORY_PHONE" value="OD_SC_FACTORY_PHONE" />
+<element name="OD_SC_FACTORY_FAX" value="OD_SC_FACTORY_FAX" />
+<element name="OD_SC_EUROPE_RGN" value="OD_SC_EUROPE_RGN" />
+<element name="OD_SC_EU_SUB_RGN" value="OD_SC_EU_SUB_RGN" />
+<element name="OD_SC_EU_VEND_NO" value="OD_SC_EU_VEND_NO" />
+<element name="OD_SC_EU_FACTORY_NO" value="OD_SC_EU_FACTORY_NO" />
+<element name="OD_SC_EU_VEND_STATUS" value="OD_SC_EU_VEND_STATUS" />
+<element name="OD_SC_EU_CONTACT" value="OD_SC_EU_CONTACT" />
+<element name="OD_SC_MEXICO_REGION" value="OD_SC_MEXICO_REGION" />
+<element name="OD_SC_MX_SUB_RGN" value="OD_SC_MX_SUB_RGN" />
+<element name="OD_SC_MX_VEND_NO" value="OD_SC_MX_VEND_NO" />
+<element name="OD_SC_MEX_FACTORY_NO" value="OD_SC_MEX_FACTORY_NO" />
+<element name="OD_SC_MX_VEND_STATUS" value="OD_SC_MX_VEND_STATUS" />
+<element name="OD_SC_MX_CONTACT" value="OD_SC_MX_CONTACT" />
+<element name="OD_SC_ASIA_REGION" value="OD_SC_ASIA_REGION" />
+<element name="OD_SC_AS_SUB_RGN" value="OD_SC_AS_SUB_RGN" />
+<element name="OD_SC_AS_VEND_NO" value="OD_SC_AS_VEND_NO" />
+<element name="OD_SC_ASIA_FACTORY_NO" value="OD_SC_ASIA_FACTORY_NO" />
+<element name="OD_SC_AS_VEND_STATUS" value="OD_SC_AS_VEND_STATUS" />
+<element name="OD_SC_ASIA_CONTACT" value="OD_SC_ASIA_CONTACT" />
+<element name="OD_SC_DEPARTMENT" value="OD_SC_DEPARTMENT" />
+<element name="OD_SC_PRODUCT" value="OD_SC_PRODUCT" />
+<element name="OD_SC_MERCHANT" value="OD_SC_MERCHANT" />
+<element name="OD_SC_AUDIT_REQUIRED" value="OD_SC_AUDIT_REQUIRED" />
+<element name="OD_SC_AUDIT_WAIVER" value="OD_SC_AUDIT_WAIVER" />
+<element name="OD_SC_AUDIT_WAIVER_STATUS" value="OD_SC_AUDIT_WAIVER_STATUS" />
+<element name="OD_SC_AUDTWAIV_APR_D" value="OD_SC_AUDTWAIV_APR_D" />
+<element name="OD_SC_VEND_REGION" value="OD_SC_VEND_REGION" />
+<element name="OD_SC_VEND_COMMENTS" value="OD_SC_VEND_COMMENTS" />
+<element name="OD_SC_CNT_OF_ORGN" value="OD_SC_CNT_OF_ORGN" />
+<element name="OD_SC_CNT_OF_DESTN" value="OD_SC_CNT_OF_DESTN" />
+<element name="OD_SC_CIP" value="OD_SC_CIP" />
+<element name="OD_SC_POTRM_APR_D" value="OD_SC_POTRM_APR_D" />
+<element name="OD_SC_FOB_VALUE" value="OD_SC_FOB_VALUE" />
+<element name="OD_SC_LEAD_AUDITOR" value="OD_SC_LEAD_AUDITOR" />
+<element name="OD_SC_AUDITOR" value="OD_SC_AUDITOR" />
+<element name="OD_SC_PREAUDT_SCHED_D" value="OD_SC_PREAUDT_SCHED_D" />
+<element name="OD_SC_PREAUDT_RESULT" value="OD_SC_PREAUDT_RESULT" />
+<element name="OD_SC_ZT_STATUS" value="OD_SC_ZT_STATUS" />
+<element name="OD_SC_ZT_APRVL_D" value="OD_SC_ZT_APRVL_D" />
+<element name="OD_SC_ZT_APPROVER" value="OD_SC_ZT_APPROVER" />
+<element name="OD_SC_FZT_APPROVER" value="OD_SC_FZT_APPROVER" />
+<element name="OD_SC_FZT_APRVL_D" value="OD_SC_FZT_APRVL_D" />
+<element name="OD_SC_PREAUDIT_COMMENTS" value="OD_SC_PREAUDIT_COMMENTS" />
+<element name="OD_SC_STRAUDT_REQ_D" value="OD_SC_STRAUDT_REQ_D" />
+<element name="OD_SC_PAYMENT_RETAINER" value="OD_SC_PAYMENT_RETAINER" />
+<element name="OD_SC_STR_PAYMENT_APPROVER" value="OD_SC_STR_PAYMENT_APPROVER" />
+<element name="OD_SC_VENDPAY_RCVD_D" value="OD_SC_VENDPAY_RCVD_D" />
+<element name="OD_SC_STRAUDT_SCHD_D" value="OD_SC_STRAUDT_SCHD_D" />
+<element name="OD_SC_REQ_AUDIT_DATE" value="OD_SC_REQ_AUDIT_DATE" />
+<element name="OD_SC_STR_AUDIT_RESULT" value="OD_SC_STR_AUDIT_RESULT" />
+<element name="OD_SC_CAP_ASSIGNMENT" value="OD_SC_CAP_ASSIGNMENT" />
+<element name="OD_SC_CAP_SENT_D" value="OD_SC_CAP_SENT_D" />
+<element name="OD_SC_CAP_RECD_D" value="OD_SC_CAP_RECD_D" />
+<element name="OD_SC_STRAUDT_CAP_STATUS" value="OD_SC_STRAUDT_CAP_STATUS" />
+<element name="OD_SC_CAP_RESP_D" value="OD_SC_CAP_RESP_D" />
+<element name="OD_SC_CAP_REV_COMMENTS" value="OD_SC_CAP_REV_COMMENTS" />
+<element name="OD_SC_CAP_PREAPPROVER" value="OD_SC_CAP_PREAPPROVER" />
+<element name="OD_SC_STRAUDT_GSO_APR_D" value="OD_SC_STRAUDT_GSO_APR_D" />
+<element name="OD_SC_CAP_FINAL_APPROVER" value="OD_SC_CAP_FINAL_APPROVER" />
+<element name="OD_SC_SRTAUDT_US_APR_D" value="OD_SC_SRTAUDT_US_APR_D" />
+<element name="OD_SC_VEND_INITIATE" value="OD_SC_VEND_INITIATE" />
+<element name="OPEN_ACCOUNT_APPROVAL_DATE" value="OPEN_ACCOUNT_APPROVAL_DATE" />
+<element name="OD_SC_VENDOR_TAX_ID" value="OD_SC_VENDOR_TAX_ID" />
+<element name="OD_SC_CIP_ACTIVE_DATE" value="OD_SC_CIP_ACTIVE_DATE" />
+<element name="OD_SC_CIP_DEACTIVE_DATE" value="OD_SC_CIP_DEACTIVE_DATE" />
+<element name="OD_SC_INSPECTION_TYPE" value="OD_SC_INSPECTION_TYPE" />
+<element name="OD_SC_PROJ_NUM" value="OD_SC_PROJ_NUM" />
+<element name="OD_SC_PROJ_STATUS" value="OD_SC_PROJ_STATUS" />
+<element name="OD_SC_VEND_DESK_REQ_DATE" value="OD_SC_VEND_DESK_REQ_DATE" />
+<element name="OD_SC_SHARED_FACTORY" value="OD_SC_SHARED_FACTORY" />
+<element name="OD_SC_PENDING_STATUS_CHANGE" value="OD_SC_PENDING_STATUS_CHANGE" />
+<element name="OD_SC_SUB_CAT_PROD_CLASS_CODE" value="OD_SC_SUB_CAT_PROD_CLASS_CODE" />
+<element name="OD_SC_DOCUMENT_COMMENTS" value="OD_SC_DOCUMENT_COMMENTS" />
+<element name="OD_SC_AUDIT_STATUS_NOTIFY" value="OD_SC_AUDIT_STATUS_NOTIFY" />
+<element name="GSO_SUPPLIER_ID" value="GSO_SUPPLIER_ID" />
+<element name="GSO_FACTORY_ID" value="GSO_FACTORY_ID" />
+<element name="GSO_SUPPLIER_STATUS" value="GSO_SUPPLIER_STATUS" />
+</group>
+</dataStructure>
+</dataTemplate>

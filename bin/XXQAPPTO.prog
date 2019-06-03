@@ -1,0 +1,45 @@
+#!/usr/bin/ksh
+# +===================================================================+
+# |                  Office Depot - Project Simplify                  |
+# |                     Office Depot                                  |
+# +===================================================================+
+# | Name  :       QA PPT Extract Outbound (Shell Script)              |
+# | Description : To extract QA PPT information from OD to BV         |
+# |                                                                   |
+# |                                                                   |
+# |Change Record:                                                     |
+# |===============                                                    |
+# |Version   Date          Author              Remarks                |
+# |=======   ===========  =============        =======================|
+# |1.0       03-Oct-2011  Paddy Sanjeevi       Initial version        |
+# |1.1       17-May-2012  Paddy Sanjeevi       Defect 18622 (chaged fileext|
+# |-------------------------------------------------------------------|
+# |                                                                   |
+# +===================================================================+
+
+
+OUT_DIR="$XXMER_DATA/ftp/out/PB_Quality"
+PRG_OUT="$XXMER_DATA/outbound"
+
+FILE_ARCHIVE="$XXMER_DATA/archive/outbound"
+
+cd $OUT_DIR
+
+mv ODPPT*.txt $FILE_ARCHIVE
+
+(sqlplus -s /nolog << end_of_sql
+conn $1
+ exec apps.XX_QA_PPT_PKG.XX_PPT_EXTRACT;
+exit
+end_of_sql
+)
+
+cd $PRG_OUT
+
+mv ODPPT*.txt $OUT_DIR
+
+echo "       "
+echo "       "
+
+exit 0
+

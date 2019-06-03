@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+xmlns="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+xmlns:odmf="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+targetNamespace="http://www.openapplications.org/officedepot/merchandising/foundation/1" 
+elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+<xsd:include schemaLocation="../common/ApplicationArea.xsd" />
+
+<xsd:complexType name="ItemCrossReferenceDataAreaType">
+    <xsd:annotation>
+      <xsd:documentation>
+        The purpose of the SyncItemCrossreferenceType is to synchronize Item
+        Cross Reference data with other external application that need to keep
+        their Item Cross Reference data in sync with RMS. RMS is the current
+        system of records for Item Cross Reference information.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+       <xsd:element name="CrossReferenceType" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Suppliers and customers may identify the same item in different
+            ways. Item Cross-Reference is designed to assist the supply chain in
+            situations where the methods used to identify items vary from
+            company to company. There are three types of item cross-references:
+            Office Depot Item to Office Depot Item, Office Depot Item to
+            Non-Office Depot Item and Wholesaler Cross Reference.
+            It contains one of the following values
+            1. ’XREF’
+            2. ‘PRDS’
+            3. ‘WHLS’
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+       <xsd:element name="Item" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Item Number. Number that uniquely identify Office Depot item.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ReferencedItemID" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            This field hold Cross Referenced Item number.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ActionCriteria" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            This hold verb or action to be performed on the message. The value
+            will be one of these values - Add, delete or update.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ItemCrossReferenceType" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Item cross-reference codes. This is item Cross-reference code list.  
+            -For item Cross reference ( OD SKU to OD SKU) type this field will
+            hold the Item Cross reference type such as Alternate, Consumable,
+            Required, Substitute etc. List of all valid values can be found in
+            codes_detail table where code_type = ‘XREF’
+            -For Product Cross reference (NON-OD SKU to NON-OD SKU)  type this
+            field will hold Product Cross reference type such as Albertsons,
+            Norwood, Staples etc. List of all valid values can be found in
+            codes_detail table where code_type = ‘PRDS’
+            -For Wholesaler Cross reference type this field will hold Wholesaler
+            Cross reference type such as SP Richards, SP Richards Canada, United
+            etc. List of all valid values can be found in codes_detail table
+            where code_type = ‘WHLS’
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:choice>
+        <xsd:element name="ProductXrefAttributes">
+          <xsd:annotation>
+            <xsd:documentation>
+              Product Cross Reference Specific attributes
+            </xsd:documentation>
+          </xsd:annotation>
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="Multiplier" type="xsd:integer">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    This field contains the Multiplier column in the
+                    OD_WHSLR_PRODXRF. Example 1, 12 etc
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element name="MultiplierDivisionCode" type="xsd:string">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    This field contains the Mult_Div_Cd column in the
+                    OD_WHSLR_PRODXRF. Valid values are 'M' for multiplier and
+                    'D' for Division
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element name="ProductDescription" type="xsd:string">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    This field contains the product description. Eg Adhesive Tape
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="WholesalerXrefAttributes">
+          <xsd:annotation>
+            <xsd:documentation>
+              Wholesaler Cross Reference Specific attributes
+            </xsd:documentation>
+          </xsd:annotation>
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="Supplier" type="xsd:integer">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    This field contains the supplier identification Number
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element name="Multiplier" type="xsd:integer">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    This field contains the Multiplier column in the
+                    OD_WHSLR_PRODXRF. Example 1, 12 etc
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element name="MultiplierDivisionCode" type="xsd:string">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    This field contains the Mult_Div_Cd column in the
+                    OD_WHSLR_PRODXRF. Valid values are 'M' for multiplier and
+                    'D' for Division
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element name="ProductDescription" type="xsd:string">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    This field contains the product description. Eg Adhesive Tape
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element name="RetailPrice" type="xsd:decimal">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Cross Reference item Retail Price. This field contains the
+                    RETAIL_PRICE column in the OD_WHSLR_PRODXRF
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element name="WholesalerUnitOfMeasureCode"
+                           type="xsd:string">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Unit Of Measure code. Eg 'BX' for Box. Valid values for this
+                    field are contained in uom field on uom_class table
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element name="WholesalerProductCategory" type="xsd:string">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Wholesaler Product category (e.g.. '0001' ) This field
+                    contains the WHSLR_PROD_CATEGORY column in the
+                    OD_WHSLR_PRODXRF
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element name="GeneralCatalogPageNumber" type="xsd:integer">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    General Catalog Page Number (e.g.. 1, 25, 35) This field
+                    contains the GENL_LINE_CAT_PAGE_NBR column in the
+                    OD_WHSLR_PRODXRF
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element name="FurnitureCatalogNumber" type="xsd:integer">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Furniture Catalog Number (e.g.. 2, 25 ) This field contains
+                    the FURNITURE_CAT_PAGE_NBR column in the OD_WHSLR_PRODXRF
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element name="NibNishCatalogNumber" type="xsd:integer">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Nib Nish Catalog Number. This field contains the
+                    NIB_NISH_CAT_PAGE_NBR column in the OD_WHSLR_PRODXRF
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element name="ProgramEligibleFlag" type="xsd:string">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Program Eligible Flag. 'Y' if eligible otherwise 'N'. This
+                    field contains the PROGRAM_ELIG_FLG column in the
+                    OD_WHSLR_PRODXRF
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element name="BranchOnlyFlag" type="xsd:string">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Branch Only Flag. Valid values are 'Y' or 'N'. This field
+                    contains the BRANCH_ONLY_FLG column in the OD_WHSLR_PRODXRF
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:choice>
+    </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="ApplicationAreaAndItemCsossReferenceyDataAreaType">
+  <xsd:sequence>
+    <xsd:element name="ApplicationArea" type="odmf:ApplicationAreaType">
+        <xsd:annotation>
+          <xsd:documentation>
+            Is where the information that the BOD message carries is provided,
+            in this case SyncMerchandiseHierarchy. The information consists of a
+            Verb and one or more Nouns. The verb (Sync) indicates the action to
+            be performed on the Noun (MerchandiseHierarchy).
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    <xsd:element name="DataArea" type="odmf:ItemCrossReferenceDataAreaType">
+        <xsd:annotation>
+          <xsd:documentation>
+            Is where the information that the BOD message carries is provided,
+            in this case SyncMerchandiseHierarchy. The information consists of a
+            Verb and one or more Nouns. The verb (Sync) indicates the action to
+            be performed on the Noun (MerchandiseHierarchy).
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+  </xsd:sequence>
+</xsd:complexType>
+
+
+</xsd:schema>

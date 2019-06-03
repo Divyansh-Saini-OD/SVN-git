@@ -1,0 +1,460 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Tue Jun 26 14:06:02 EDT 2007
+  Author:  kenneth-crawford
+  Purpose: Asynchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="ODErrorHandler"
+         targetNamespace="http://xmlns.oracle.com/ODErrorHandler"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:wfcommon="http://xmlns.oracle.com/bpel/workflow/common"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:wf="http://schemas.oracle.com/bpel/extension/workflow"
+         xmlns:client="http://xmlns.oracle.com/ODErrorHandler"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:taskservice="http://xmlns.oracle.com/bpel/workflow/taskService"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ns1="http://oracle.com" xmlns:ns3="ODError"
+         xmlns:ns2="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:task="http://xmlns.oracle.com/bpel/workflow/task"
+         xmlns:ODErrorHandlerdr="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc">
+    <bpelx:exec import="com.oracle.bpel.client.BPELProcessMetaData"/>
+    <bpelx:exec import="com.oracle.bpel.client.IBPELProcessConstants"/>
+    <bpelx:exec import="com.oracle.bpel.client.IBPELProcessHandle"/>
+    <bpelx:exec import="com.oracle.bpel.client.Locator"/>
+    <bpelx:exec import="com.oracle.bpel.client.ServerException"/>
+    <bpelx:exec import="com.collaxa.cube.util.CXPasswordUtils"/>
+    <bpelx:exec import="com.collaxa.cube.engine.CubeEngineDefs"/>
+    <bpelx:exec import="com.oracle.bpel.client.auth.DomainAuth"/>
+    <bpelx:exec import="com.oracle.bpel.client.auth.DomainAuthFactory"/>
+    <bpelx:exec import="com.oracle.bpel.client.BPELFault"/>
+    <bpelx:exec import="javax.xml.namespace.QName"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <partnerLinks>
+        <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+        <partnerLink name="client" partnerLinkType="client:ODErrorHandler"
+                     myRole="ODErrorHandlerProvider"
+                     partnerRole="ODErrorHandlerRequester"/>
+        <partnerLink myRole="TaskServiceCallbackListener" name="TaskService"
+                     partnerRole="TaskService"
+                     partnerLinkType="taskservice:TaskService"/>
+        <partnerLink myRole="ODErrorLoggerRequester" name="ODErrorLogger"
+                     partnerRole="ODErrorLoggerProvider"
+                     partnerLinkType="ns2:ODErrorLogger"/>
+    </partnerLinks>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        VARIABLES                                                        
+        List of messages and XML documents used within this BPEL process 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <variables>
+        <!-- Reference to the message passed as input during initiation -->
+        <variable name="inputVariable"
+                  messageType="client:ODErrorHandlerRequestMessage"/>
+        <!-- Reference to the message that will be sent back to the requester during callback -->
+        <variable name="outputVariable"
+                  messageType="client:ODErrorHandlerResponseMessage"/>
+        <variable name="RetryTask_1_globalVariable"
+                  messageType="taskservice:taskMessage"/>
+        <variable name="Invoke_Error_Logger_initiate_InputVariable"
+                  messageType="ns2:ODErrorLoggerRequestMessage"/>
+        <variable name="ProcessID" type="xsd:string"/>
+        <variable name="Domain" type="xsd:string"/>
+    </variables>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+       ORCHESTRATION LOGIC                                               
+       Set of activities coordinating the flow of messages across the    
+       services integrated within this business process                  
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <sequence name="main">
+        <!-- Receive input from requestor. (Note: This maps to operation defined in ODErrorHandler.wsdl) -->
+        <receive name="receiveInput" partnerLink="client"
+                 portType="client:ODErrorHandler" operation="initiate"
+                 variable="inputVariable" createInstance="yes"/>
+        <!-- 
+          Asynchronous callback to the requester. (Note: the callback location and correlation id is transparently handled using WS-addressing.)
+        -->
+        <assign name="Assign_ErrorLogger">
+            <copy>
+                <from variable="inputVariable" part="payload"
+                      query="/client:ODErrorHandlerProcessRequest/client:ProcessInfo"/>
+                <to variable="Invoke_Error_Logger_initiate_InputVariable"
+                    part="payload" query="/ns3:ErrorData/ns3:ProcessInfo"/>
+            </copy>
+            <copy>
+                <from variable="inputVariable" part="payload"
+                      query="/client:ODErrorHandlerProcessRequest/client:ErrorDetails"/>
+                <to variable="Invoke_Error_Logger_initiate_InputVariable"
+                    part="payload" query="/ns3:ErrorData/ns3:ErrorDetails"/>
+            </copy>
+            <copy>
+                <from variable="inputVariable" part="payload"
+                      query="/client:ODErrorHandlerProcessRequest/client:MessageDetails"/>
+                <to variable="Invoke_Error_Logger_initiate_InputVariable"
+                    part="payload" query="/ns3:ErrorData/ns3:MessageDetails"/>
+            </copy>
+        </assign>
+        <invoke name="Invoke_Error_Logger" partnerLink="ODErrorLogger"
+                portType="ns2:ODErrorLogger" operation="initiate"
+                inputVariable="Invoke_Error_Logger_initiate_InputVariable"/>
+        <switch name="Switch_Retire">
+            <case condition="bpws:getVariableData('inputVariable','payload','/client:ODErrorHandlerProcessRequest/client:ErrorHandlingOptions/client:Retire') = &quot;true&quot;">
+                <sequence name="Sequence_1">
+                    <assign name="Assign_ProcessName">
+                        <copy>
+                            <from variable="inputVariable" part="payload"
+                                  query="/client:ODErrorHandlerProcessRequest/client:ProcessInfo/client:BusinessProcessName"/>
+                            <to variable="ProcessID"/>
+                        </copy>
+                        <copy>
+                            <from variable="inputVariable" part="payload"
+                                  query="/client:ODErrorHandlerProcessRequest/client:ProcessInfo/client:BusinessProcessDomain"/>
+                            <to variable="Domain"/>
+                        </copy>
+                    </assign>
+                    <bpelx:exec name="Java_Embedding_Retire_Task"
+                                language="java" version="1.5">
+                        <![CDATA[try{     
+ String password = CXPasswordUtils.decrypt(CubeEngineDefs.AUTH_password);    
+  String domain = (String)getVariableData("Domain");   
+ DomainAuth mDomainAuth = DomainAuthFactory.authenticate(domain, password, null);     
+ //Locator locator = getLocator();                  
+ Locator locator = new Locator(mDomainAuth);      
+  String processid = (String)getVariableData("ProcessID");                    
+  IBPELProcessHandle process = locator.lookupProcess(processid);                             
+  BPELProcessMetaData  processMetaData = process.getMetaData();                             
+  processMetaData.setLifecycle(IBPELProcessConstants.LIFECYCLE_RETIRED);                           
+  process.updateMetaData(processMetaData);                 
+ }catch(ServerException e){          
+      QName qName = new QName("http://officeDepot.com/ErrorHandler","error");  
+      BPELFault fault = new BPELFault(qName);  
+      fault.setStackTrace(e.getStackTrace());  
+    throw new com.oracle.bpel.client.BPELFault(qName);  
+    }]]>
+                    </bpelx:exec>
+                </sequence>
+            </case>
+            <otherwise>
+                <empty name="Continue1"/>
+            </otherwise>
+        </switch>
+        <switch name="Switch_Task">
+            <case condition="bpws:getVariableData('inputVariable','payload','/client:ODErrorHandlerProcessRequest/client:ErrorHandlingOptions/client:Task') = &quot;true&quot;">
+                <sequence name="Sequence_2">
+                    <scope name="RetryScope">
+                        <sequence name="Sequence_3">
+                            <assign name="Assign_1">
+                                <copy>
+                                    <from variable="inputVariable"
+                                          part="payload"
+                                          query="/client:ODErrorHandlerProcessRequest/client:ErrorHandlingOptions/client:TaskUserAssignee"/>
+                                    <to variable="RetryTask_1_globalVariable"
+                                        part="payload"
+                                        query="/task:task/task:ownerUser"/>
+                                </copy>
+                            </assign>
+                            <scope name="RetryTask_1"
+                                   xmlns:wf="http://schemas.oracle.com/bpel/extension/workflow"
+                                   wf:key="RetryTask_1_globalVariable">
+                                <bpelx:annotation xmlns:bpelx="http://schemas.oracle.com/bpel/extension">
+                                    <bpelx:pattern patternName="bpelx:workflow"></bpelx:pattern>
+                                </bpelx:annotation>
+                                <variables>
+                                    <variable name="initiateTaskInput"
+                                              messageType="taskservice:initiateTaskMessage"/>
+                                    <variable name="initiateTaskResponseMessage"
+                                              messageType="taskservice:initiateTaskResponseMessage"/>
+                                </variables>
+                                <correlationSets>
+                                    <correlationSet name="WorkflowTaskIdCor"
+                                                    properties="taskservice:taskId"/>
+                                </correlationSets>
+                                <sequence>
+                                    <assign name="RetryTask_1_AssignTaskAttributes">
+                                        <copy>
+                                            <from expression="concat(ora:getProcessURL(), string('/RetryTask/RetryTask.task'))"/>
+                                            <to variable="initiateTaskInput"
+                                                part="payload"
+                                                query="/taskservice:initiateTask/task:task/task:taskDefinitionURI"/>
+                                        </copy>
+                                        <copy>
+                                            <from expression="number(3)"/>
+                                            <to variable="initiateTaskInput"
+                                                part="payload"
+                                                query="/taskservice:initiateTask/task:task/task:priority"/>
+                                        </copy>
+                                        <copy>
+                                            <from expression="concat(&quot;OD Error Handler - &quot;, bpws:getVariableData('inputVariable','payload','/client:ODErrorHandlerProcessRequest/client:ProcessInfo/client:BusinessProcessName'))"/>
+                                            <to variable="initiateTaskInput"
+                                                part="payload"
+                                                query="/taskservice:initiateTask/task:task/task:title"/>
+                                        </copy>
+                                        <bpelx:append>
+                                            <bpelx:from expression="ora:genEmptyElem('task:InstanceId')"/>
+                                            <bpelx:to variable="initiateTaskInput"
+                                                      part="payload"
+                                                      query="/taskservice:initiateTask/task:task/task:payload"/>
+                                        </bpelx:append>
+                                        <copy>
+                                            <from variable="inputVariable"
+                                                  part="payload"
+                                                  query="/client:ODErrorHandlerProcessRequest/client:ProcessInfo/client:BusinessProcessId"/>
+                                            <to variable="initiateTaskInput"
+                                                part="payload"
+                                                query="/taskservice:initiateTask/task:task/task:payload/task:InstanceId"/>
+                                        </copy>
+                                        <bpelx:append>
+                                            <bpelx:from expression="ora:genEmptyElem('task:ProcessName')"/>
+                                            <bpelx:to variable="initiateTaskInput"
+                                                      part="payload"
+                                                      query="/taskservice:initiateTask/task:task/task:payload"/>
+                                        </bpelx:append>
+                                        <copy>
+                                            <from variable="inputVariable"
+                                                  part="payload"
+                                                  query="/client:ODErrorHandlerProcessRequest/client:ProcessInfo/client:BusinessProcessName"/>
+                                            <to variable="initiateTaskInput"
+                                                part="payload"
+                                                query="/taskservice:initiateTask/task:task/task:payload/task:ProcessName"/>
+                                        </copy>
+                                        <bpelx:append>
+                                            <bpelx:from expression="ora:genEmptyElem('task:Error')"/>
+                                            <bpelx:to variable="initiateTaskInput"
+                                                      part="payload"
+                                                      query="/taskservice:initiateTask/task:task/task:payload"/>
+                                        </bpelx:append>
+                                        <copy>
+                                            <from variable="inputVariable"
+                                                  part="payload"
+                                                  query="/client:ODErrorHandlerProcessRequest/client:ErrorDetails/client:ErrorDescription"/>
+                                            <to variable="initiateTaskInput"
+                                                part="payload"
+                                                query="/taskservice:initiateTask/task:task/task:payload/task:Error"/>
+                                        </copy>
+                                        <bpelx:append>
+                                            <bpelx:from variable="inputVariable"
+                                                        part="payload"
+                                                        query="/client:ODErrorHandlerProcessRequest"/>
+                                            <bpelx:to variable="initiateTaskInput"
+                                                      part="payload"
+                                                      query="/taskservice:initiateTask/task:task/task:payload"/>
+                                        </bpelx:append>
+                                    </assign>
+                                    <assign name="RetryTask_1_AssignSystemTaskAttributes">
+                                        <copy>
+                                            <from expression="ora:getInstanceId()"/>
+                                            <to variable="initiateTaskInput"
+                                                part="payload"
+                                                query="/taskservice:initiateTask/task:task/task:processInfo/task:instanceId"/>
+                                        </copy>
+                                        <copy>
+                                            <from expression="ora:getProcessId()"/>
+                                            <to variable="initiateTaskInput"
+                                                part="payload"
+                                                query="/taskservice:initiateTask/task:task/task:processInfo/task:processName"/>
+                                        </copy>
+                                        <copy>
+                                            <from expression="ora:getProcessId()"/>
+                                            <to variable="initiateTaskInput"
+                                                part="payload"
+                                                query="/taskservice:initiateTask/task:task/task:processInfo/task:processId"/>
+                                        </copy>
+                                        <copy>
+                                            <from expression="ora:getProcessVersion()"/>
+                                            <to variable="initiateTaskInput"
+                                                part="payload"
+                                                query="/taskservice:initiateTask/task:task/task:processInfo/task:processVersion"/>
+                                        </copy>
+                                        <copy>
+                                            <from expression="ora:getDomainId()"/>
+                                            <to variable="initiateTaskInput"
+                                                part="payload"
+                                                query="/taskservice:initiateTask/task:task/task:processInfo/task:domainId"/>
+                                        </copy>
+                                        <copy>
+                                            <from expression="string('BPEL')"/>
+                                            <to variable="initiateTaskInput"
+                                                part="payload"
+                                                query="/taskservice:initiateTask/task:task/task:processInfo/task:processType"/>
+                                        </copy>
+                                    </assign>
+                                    <invoke name="initiateTask_RetryTask_1"
+                                            partnerLink="TaskService"
+                                            portType="taskservice:TaskService"
+                                            operation="initiateTask"
+                                            inputVariable="initiateTaskInput"
+                                            outputVariable="initiateTaskResponseMessage">
+                                        <correlations>
+                                            <correlation initiate="yes"
+                                                         set="WorkflowTaskIdCor"
+                                                         pattern="in"/>
+                                        </correlations>
+                                    </invoke>
+                                    <receive name="receiveCompletedTask_RetryTask_1"
+                                             partnerLink="TaskService"
+                                             portType="taskservice:TaskServiceCallback"
+                                             operation="onTaskCompleted"
+                                             variable="RetryTask_1_globalVariable"
+                                             createInstance="no">
+                                        <correlations>
+                                            <correlation initiate="no"
+                                                         set="WorkflowTaskIdCor"/>
+                                        </correlations>
+                                    </receive>
+                                </sequence>
+                            </scope>
+                            <switch name="taskSwitch">
+                                <case condition="bpws:getVariableData('RetryTask_1_globalVariable', 'payload', '/task:task/task:systemAttributes/task:state') = 'COMPLETED' and bpws:getVariableData('RetryTask_1_globalVariable', 'payload', '/task:task/task:systemAttributes/task:outcome') = 'Skip'">
+                                    <bpelx:annotation>
+                                        <bpelx:pattern>Task outcome is Skip</bpelx:pattern>
+                                    </bpelx:annotation>
+                                    <sequence>
+                                        <assign name="CopyPayloadFromTask">
+                                            <copy>
+                                                <from variable="RetryTask_1_globalVariable"
+                                                      part="payload"
+                                                      query="/task:task/task:payload/client:ODErrorHandlerProcessRequest"/>
+                                                <to variable="inputVariable"
+                                                    part="payload"
+                                                    query="/client:ODErrorHandlerProcessRequest"/>
+                                            </copy>
+                                        </assign>
+                                        <assign name="Assign_Skip">
+                                            <copy>
+                                                <from expression='"Skip"'/>
+                                                <to variable="outputVariable"
+                                                    part="payload"
+                                                    query="/client:ODErrorHandlerProcessResponse/client:result"/>
+                                            </copy>
+                                        </assign>
+                                    </sequence>
+                                </case>
+                                <case condition="bpws:getVariableData('RetryTask_1_globalVariable', 'payload', '/task:task/task:systemAttributes/task:state') = 'COMPLETED' and bpws:getVariableData('RetryTask_1_globalVariable', 'payload', '/task:task/task:systemAttributes/task:outcome') = 'Terminate'">
+                                    <bpelx:annotation>
+                                        <bpelx:pattern>Task outcome is Terminate</bpelx:pattern>
+                                    </bpelx:annotation>
+                                    <sequence>
+                                        <assign name="CopyPayloadFromTask">
+                                            <copy>
+                                                <from variable="RetryTask_1_globalVariable"
+                                                      part="payload"
+                                                      query="/task:task/task:payload/client:ODErrorHandlerProcessRequest"/>
+                                                <to variable="inputVariable"
+                                                    part="payload"
+                                                    query="/client:ODErrorHandlerProcessRequest"/>
+                                            </copy>
+                                        </assign>
+                                        <assign name="Assign_Terminate">
+                                            <copy>
+                                                <from expression='"Terminate"'/>
+                                                <to variable="outputVariable"
+                                                    part="payload"
+                                                    query="/client:ODErrorHandlerProcessResponse/client:result"/>
+                                            </copy>
+                                        </assign>
+                                    </sequence>
+                                </case>
+                                <case condition="bpws:getVariableData('RetryTask_1_globalVariable', 'payload', '/task:task/task:systemAttributes/task:state') = 'COMPLETED' and bpws:getVariableData('RetryTask_1_globalVariable', 'payload', '/task:task/task:systemAttributes/task:outcome') = 'Retry'">
+                                    <bpelx:annotation>
+                                        <bpelx:pattern>Task outcome is Retry</bpelx:pattern>
+                                    </bpelx:annotation>
+                                    <sequence>
+                                        <assign name="CopyPayloadFromTask">
+                                            <copy>
+                                                <from variable="RetryTask_1_globalVariable"
+                                                      part="payload"
+                                                      query="/task:task/task:payload/client:ODErrorHandlerProcessRequest"/>
+                                                <to variable="inputVariable"
+                                                    part="payload"
+                                                    query="/client:ODErrorHandlerProcessRequest"/>
+                                            </copy>
+                                        </assign>
+                                        <assign name="Assign_Retry">
+                                            <copy>
+                                                <from expression='"Retry"'/>
+                                                <to variable="outputVariable"
+                                                    part="payload"
+                                                    query="/client:ODErrorHandlerProcessResponse/client:result"/>
+                                            </copy>
+                                        </assign>
+                                    </sequence>
+                                </case>
+                                <otherwise>
+                                    <bpelx:annotation>
+                                        <bpelx:pattern>Task is outcome is EXPIRED, STALE, WITHDRAWN or ERRORED</bpelx:pattern>
+                                    </bpelx:annotation>
+                                    <sequence>
+                                        <assign name="CopyPayloadFromTask">
+                                            <copy>
+                                                <from variable="RetryTask_1_globalVariable"
+                                                      part="payload"
+                                                      query="/task:task/task:payload/client:ODErrorHandlerProcessRequest"/>
+                                                <to variable="inputVariable"
+                                                    part="payload"
+                                                    query="/client:ODErrorHandlerProcessRequest"/>
+                                            </copy>
+                                        </assign>
+                                    </sequence>
+                                </otherwise>
+                            </switch>
+                        </sequence>
+                    </scope>
+                </sequence>
+            </case>
+            <otherwise>
+                <empty name="Continue2"/>
+            </otherwise>
+        </switch>
+        <switch name="Switch_Activate">
+            <case condition="bpws:getVariableData('inputVariable','payload','/client:ODErrorHandlerProcessRequest/client:ErrorHandlingOptions/client:Retire') = &quot;true&quot;">
+                <bpelx:exec name="Java_Embedding_Activate" language="java"
+                            version="1.3">
+                    <![CDATA[try{         
+String password = CXPasswordUtils.decrypt(CubeEngineDefs.AUTH_password);   
+  String domain = (String)getVariableData("Domain");  
+ DomainAuth mDomainAuth = DomainAuthFactory.authenticate(domain, password, null);           
+ Locator locator = new Locator(mDomainAuth);           
+  String processid = (String)getVariableData("ProcessID");            
+  IBPELProcessHandle process = locator.lookupProcess(processid);                     
+  BPELProcessMetaData  processMetaData = process.getMetaData();                     
+  processMetaData.setLifecycle(IBPELProcessConstants.LIFECYCLE_ACTIVE);                   
+  process.updateMetaData(processMetaData);         
+   }catch(Exception e){    
+    QName qName = new QName("http://officeDepot.com/ErrorHandler","error");   
+      BPELFault fault = new BPELFault(qName);   
+      fault.setStackTrace(e.getStackTrace());   
+    throw new com.oracle.bpel.client.BPELFault(qName);   
+    }]]>
+                </bpelx:exec>
+            </case>
+            <otherwise>
+                <empty name="Continue3"/>
+            </otherwise>
+        </switch>
+        <invoke name="callbackClient" partnerLink="client"
+                portType="client:ODErrorHandlerCallback" operation="onResult"
+                inputVariable="outputVariable"/>
+    </sequence>
+</process>

@@ -1,0 +1,33 @@
+-- +==========================================================================+
+-- |                  Office Depot - Project Simplify                         |
+-- |                       WIPRO Technologies                                 |
+-- +==========================================================================+
+-- | Name        :      PO Mass Update                                        |
+-- | Description :To create synonymn in APPS for the table xx_po_mass_upd_    |
+-- |                po_newline_tmp in xxptp.                                  |
+-- |                                                                          |
+-- | SQL Script to create the following object                                |
+-- | Synonyms    : xx_po_mass_upd_po_newline_tmp                              |
+-- |                                                                          |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version     Date           Author                    Remarks              |
+-- |=======     ==========     =============             =====================|
+-- | V1.0       21-MAY-2007    MadanKumar J              Initial version      |
+-- | V1.1       08-JUN-2007    MadanKumar J              Updating of          |
+-- |                                                     description in the   |
+-- |                                                     File Header          |
+-- +==========================================================================+
+ 
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     ON
+ 
+DROP SYNONYM XX_PO_MASS_UPD_PO_NEWLINE_TMP;
+ 
+CREATE OR REPLACE SYNONYM xx_po_mass_upd_po_newline_tmp FOR xxptp.xx_po_mass_upd_po_newline_tmp;
+ 
+SHOW ERROR

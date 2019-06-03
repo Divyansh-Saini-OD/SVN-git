@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXSCNIAR" description="OD: SC Needs Improvement Alert Report" Version="1.0">
+<parameters>
+ <parameter name="P_PROFILE_VALUE" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_XXSCNIAR">
+<![CDATA[
+SELECT distinct OD_SC_VENDOR_NUMBER ,
+  OD_SC_VENDOR_NAME ,
+  OD_SC_VEND_TYPE ,
+  OD_SC_VENDOR_STATUS ,
+  OD_SC_AUDIT_AGENT ,
+  OD_SC_FACTORY_NUMBER ,
+  OD_SC_FACTORY_NAME ,
+  OD_SC_EUROPE_RGN ,
+  OD_SC_EU_SUB_RGN ,
+  OD_SC_MEXICO_REGION ,
+  OD_SC_MX_SUB_RGN ,
+  OD_SC_ASIA_REGION ,
+  OD_SC_AS_SUB_RGN ,
+  OD_SC_DEPARTMENT ,
+  OD_SC_PRODUCT ,
+  OD_SC_MERCHANT ,
+  OD_SC_AUDTWAIV_APR_D ,
+  OD_SC_VEND_REGION ,
+  OD_SC_CIP ,
+  OD_SC_FOB_VALUE ,
+  OD_SC_STRAUDT_SCHD_D ,
+  OD_SC_STR_AUDIT_RESULT ,
+  OD_SC_INSPECTION_TYPE,
+  OD_SC_EU_VEND_NO GSO_SUPPLIER_ID,
+  OD_SC_EU_FACTORY_NO GSO_FACTORY_ID,
+  OD_SC_EU_VEND_STATUS GSO_SUPPLIER_STATUS
+FROM
+  (SELECT *
+  FROM q_od_pb_sc_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODUS'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_eu_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODEU'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_mx_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODMX'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_asia_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODASIA' = :P_PROFILE_VALUE)
+  ) t1
+WHERE od_sc_str_audit_result = 'Needs Improvement'
+AND OD_SC_AUDTWAIV_APR_D    IS NULL
+AND OD_SC_AUDIT_AGENT       IN ('LF','ODGSO')
+AND OD_SC_VENDOR_STATUS      = 'Active'
+AND (OD_SC_CIP               IS NULL OR OD_SC_CIP = 'No') 
+AND (OD_SC_STRAUDT_SCHD_D - (nvl(XXSC_REP_PKG.get_schedule_date(t1.od_sc_vendor_name,t1.od_sc_vendor_number,t1.od_sc_factory_name,t1.od_sc_factory_number),OD_SC_STRAUDT_SCHD_D))) >540]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_XXSCNIAR" source="Q_XXSCNIAR">
+<element name="OD_SC_VENDOR_NUMBER" value="OD_SC_VENDOR_NUMBER" />
+<element name="OD_SC_VENDOR_NAME" value="OD_SC_VENDOR_NAME" />
+<element name="OD_SC_VEND_TYPE" value="OD_SC_VEND_TYPE" />
+<element name="OD_SC_VENDOR_STATUS" value="OD_SC_VENDOR_STATUS" />
+<element name="OD_SC_AUDIT_AGENT" value="OD_SC_AUDIT_AGENT" />
+<element name="OD_SC_FACTORY_NUMBER" value="OD_SC_FACTORY_NUMBER" />
+<element name="OD_SC_FACTORY_NAME" value="OD_SC_FACTORY_NAME" />
+<element name="OD_SC_EUROPE_RGN" value="OD_SC_EUROPE_RGN" />
+<element name="OD_SC_EU_SUB_RGN" value="OD_SC_EU_SUB_RGN" />
+<element name="OD_SC_MEXICO_REGION" value="OD_SC_MEXICO_REGION" />
+<element name="OD_SC_ASIA_REGION" value="OD_SC_ASIA_REGION" />
+<element name="OD_SC_AS_SUB_RGN" value="OD_SC_AS_SUB_RGN" />
+<element name="OD_SC_DEPARTMENT" value="OD_SC_DEPARTMENT" />
+<element name="OD_SC_PRODUCT" value="OD_SC_PRODUCT" />
+<element name="OD_SC_MERCHANT" value="OD_SC_MERCHANT" />
+<element name="OD_SC_AUDTWAIV_APR_D" value="OD_SC_AUDTWAIV_APR_D" />
+<element name="OD_SC_VEND_REGION" value="OD_SC_VEND_REGION" />
+<element name="OD_SC_CIP" value="OD_SC_CIP" />
+<element name="OD_SC_FOB_VALUE" value="OD_SC_FOB_VALUE" />
+<element name="OD_SC_STRAUDT_SCHD_D" value="OD_SC_STRAUDT_SCHD_D" />
+<element name="OD_SC_STR_AUDIT_RESULT" value="OD_SC_STR_AUDIT_RESULT" />
+<element name="OD_SC_INSPECTION_TYPE" value="OD_SC_INSPECTION_TYPE" />
+<element name="GSO_SUPPLIER_ID" value="GSO_SUPPLIER_ID" />
+<element name="GSO_FACTORY_ID" value="GSO_FACTORY_ID" />
+<element name="GSO_SUPPLIER_STATUS" value="GSO_SUPPLIER_STATUS" />
+<element name="OD_SC_MX_SUB_RGN" value="OD_SC_MX_SUB_RGN" />
+</group>
+</dataStructure>
+</dataTemplate>

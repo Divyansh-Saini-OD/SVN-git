@@ -1,0 +1,39 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name        :XX_RA_CUST_TRX_LINES_N5                                  |
+-- | Description : Non-Unique Index for ra.ra_customer_trx_lines_all       |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      02-Oct-2012 Paddy Sanjeevi     Initial  Version               |
+-- +=======================================================================+
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+
+CREATE INDEX XX_RA_CUST_TRX_LINES_N5 ON AR.ra_customer_trx_lines_all 
+(inventory_item_id) 
+NOLOGGING INVISIBLE TABLESPACE XXOD_TS_DATA parallel 8;
+
+alter index XX_RA_CUST_TRX_LINES_N5 noparallel;
+
+SHOW ERRORS;
+
+
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================

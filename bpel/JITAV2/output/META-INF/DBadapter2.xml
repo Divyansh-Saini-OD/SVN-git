@@ -1,0 +1,852 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toplink:object-persistence version="Oracle TopLink - 10g Release 3 (10.1.3.1.0) (Build 061004)" xmlns:opm="http://xmlns.oracle.com/ias/xsds/opm" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:toplink="http://xmlns.oracle.com/ias/xsds/toplink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <opm:name>DBadapter2</opm:name>
+   <opm:class-mapping-descriptors>
+      <opm:class-mapping-descriptor xsi:type="toplink:relational-class-mapping-descriptor">
+         <opm:class>DBadapter2.RcvShipmentHeaders</opm:class>
+         <opm:alias>RcvShipmentHeaders</opm:alias>
+         <opm:events xsi:type="toplink:event-policy"/>
+         <opm:querying xsi:type="toplink:query-policy">
+            <opm:queries>
+               <opm:query name="findAllRcvShipmentHeaders" xsi:type="toplink:read-all-query">
+                  <toplink:timeout>0</toplink:timeout>
+                  <toplink:reference-class>DBadapter2.RcvShipmentHeaders</toplink:reference-class>
+                  <toplink:cache-usage>primary-key</toplink:cache-usage>
+                  <toplink:lock-mode>none</toplink:lock-mode>
+                  <toplink:container xsi:type="toplink:list-container-policy">
+                     <toplink:collection-type>java.util.Vector</toplink:collection-type>
+                  </toplink:container>
+               </opm:query>
+            </opm:queries>
+            <toplink:does-exist-query xsi:type="toplink:does-exist-query">
+               <toplink:existence-check>check-database</toplink:existence-check>
+            </toplink:does-exist-query>
+         </opm:querying>
+         <opm:attribute-mappings>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shipmentHeaderId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="SHIPMENT_HEADER_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>lastUpdateDate</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="LAST_UPDATE_DATE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>lastUpdatedBy</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="LAST_UPDATED_BY" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>creationDate</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="CREATION_DATE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>createdBy</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="CREATED_BY" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>lastUpdateLogin</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="LAST_UPDATE_LOGIN" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>receiptSourceCode</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="RECEIPT_SOURCE_CODE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vendorId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="VENDOR_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vendorSiteId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="VENDOR_SITE_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>organizationId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="ORGANIZATION_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shipmentNum</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="SHIPMENT_NUM" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>receiptNum</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="RECEIPT_NUM" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shipToLocationId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="SHIP_TO_LOCATION_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>billOfLading</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="BILL_OF_LADING" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>packingSlip</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="PACKING_SLIP" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shippedDate</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="SHIPPED_DATE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>freightCarrierCode</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="FREIGHT_CARRIER_CODE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>expectedReceiptDate</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="EXPECTED_RECEIPT_DATE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>employeeId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="EMPLOYEE_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>numOfContainers</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="NUM_OF_CONTAINERS" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>waybillAirbillNum</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="WAYBILL_AIRBILL_NUM" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>comments</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="COMMENTS" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attributeCategory</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="ATTRIBUTE_CATEGORY" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute1</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="ATTRIBUTE1" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute2</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="ATTRIBUTE2" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute3</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="ATTRIBUTE3" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute4</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="ATTRIBUTE4" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute5</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="ATTRIBUTE5" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute6</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="ATTRIBUTE6" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute7</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="ATTRIBUTE7" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute8</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="ATTRIBUTE8" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute9</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="ATTRIBUTE9" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute10</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="ATTRIBUTE10" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute11</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="ATTRIBUTE11" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute12</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="ATTRIBUTE12" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute13</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="ATTRIBUTE13" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute14</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="ATTRIBUTE14" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute15</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="ATTRIBUTE15" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>ussglTransactionCode</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="USSGL_TRANSACTION_CODE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>governmentContext</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="GOVERNMENT_CONTEXT" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>requestId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="REQUEST_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>programApplicationId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="PROGRAM_APPLICATION_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>programId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="PROGRAM_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>programUpdateDate</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="PROGRAM_UPDATE_DATE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>asnType</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="ASN_TYPE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>ediControlNum</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="EDI_CONTROL_NUM" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>noticeCreationDate</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="NOTICE_CREATION_DATE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>grossWeight</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="GROSS_WEIGHT" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>grossWeightUomCode</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="GROSS_WEIGHT_UOM_CODE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>netWeight</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="NET_WEIGHT" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>netWeightUomCode</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="NET_WEIGHT_UOM_CODE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>tarWeight</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="TAR_WEIGHT" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>tarWeightUomCode</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="TAR_WEIGHT_UOM_CODE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>packagingCode</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="PACKAGING_CODE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>carrierMethod</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="CARRIER_METHOD" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>carrierEquipment</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="CARRIER_EQUIPMENT" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>carrierEquipmentNum</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="CARRIER_EQUIPMENT_NUM" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>carrierEquipmentAlpha</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="CARRIER_EQUIPMENT_ALPHA" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>specialHandlingCode</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="SPECIAL_HANDLING_CODE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>hazardCode</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="HAZARD_CODE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>hazardClass</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="HAZARD_CLASS" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>hazardDescription</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="HAZARD_DESCRIPTION" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>freightTerms</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="FREIGHT_TERMS" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>freightBillNumber</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="FREIGHT_BILL_NUMBER" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>invoiceNum</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="INVOICE_NUM" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>invoiceDate</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="INVOICE_DATE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>invoiceAmount</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="INVOICE_AMOUNT" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>taxName</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="TAX_NAME" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>taxAmount</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="TAX_AMOUNT" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>freightAmount</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="FREIGHT_AMOUNT" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>invoiceStatusCode</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="INVOICE_STATUS_CODE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>asnStatus</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="ASN_STATUS" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>currencyCode</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="CURRENCY_CODE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>conversionRateType</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="CONVERSION_RATE_TYPE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>conversionRate</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="CONVERSION_RATE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>conversionDate</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="CONVERSION_DATE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>paymentTermsId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="PAYMENT_TERMS_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>mrcConversionRateType</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="MRC_CONVERSION_RATE_TYPE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>mrcConversionDate</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="MRC_CONVERSION_DATE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>mrcConversionRate</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="MRC_CONVERSION_RATE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shipToOrgId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="SHIP_TO_ORG_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>customerId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="CUSTOMER_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>customerSiteId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="CUSTOMER_SITE_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>remitToSiteId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_HEADERS" name="REMIT_TO_SITE_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+         </opm:attribute-mappings>
+         <toplink:descriptor-type>independent</toplink:descriptor-type>
+         <toplink:caching>
+            <toplink:cache-type>weak-reference</toplink:cache-type>
+            <toplink:always-refresh>true</toplink:always-refresh>
+         </toplink:caching>
+         <toplink:remote-caching>
+            <toplink:cache-type>weak-reference</toplink:cache-type>
+         </toplink:remote-caching>
+         <toplink:instantiation/>
+         <toplink:copying xsi:type="toplink:instantiation-copy-policy"/>
+         <toplink:change-policy xsi:type="toplink:deferred-detection-change-policy"/>
+         <toplink:tables>
+            <toplink:table name="RCV_SHIPMENT_HEADERS"/>
+         </toplink:tables>
+      </opm:class-mapping-descriptor>
+      <opm:class-mapping-descriptor xsi:type="toplink:relational-class-mapping-descriptor">
+         <opm:class>DBadapter2.RcvShipmentLines</opm:class>
+         <opm:alias>RcvShipmentLines</opm:alias>
+         <opm:events xsi:type="toplink:event-policy"/>
+         <opm:querying xsi:type="toplink:query-policy">
+            <opm:queries>
+               <opm:query name="findAllRcvShipmentLines" xsi:type="toplink:read-all-query">
+                  <toplink:timeout>0</toplink:timeout>
+                  <toplink:reference-class>DBadapter2.RcvShipmentLines</toplink:reference-class>
+                  <toplink:cache-usage>primary-key</toplink:cache-usage>
+                  <toplink:lock-mode>none</toplink:lock-mode>
+                  <toplink:container xsi:type="toplink:list-container-policy">
+                     <toplink:collection-type>java.util.Vector</toplink:collection-type>
+                  </toplink:container>
+               </opm:query>
+               <opm:query name="DBadapter2Select" xsi:type="toplink:read-all-query">
+                  <toplink:timeout>0</toplink:timeout>
+                  <toplink:reference-class>DBadapter2.RcvShipmentLines</toplink:reference-class>
+                  <toplink:cache-usage>primary-key</toplink:cache-usage>
+                  <toplink:lock-mode>none</toplink:lock-mode>
+                  <toplink:container xsi:type="toplink:list-container-policy">
+                     <toplink:collection-type>java.util.Vector</toplink:collection-type>
+                  </toplink:container>
+               </opm:query>
+            </opm:queries>
+            <toplink:does-exist-query xsi:type="toplink:does-exist-query">
+               <toplink:existence-check>check-database</toplink:existence-check>
+            </toplink:does-exist-query>
+         </opm:querying>
+         <opm:attribute-mappings>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shipmentLineId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="SHIPMENT_LINE_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>lastUpdateDate</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="LAST_UPDATE_DATE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>lastUpdatedBy</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="LAST_UPDATED_BY" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>creationDate</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="CREATION_DATE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>createdBy</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="CREATED_BY" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>lastUpdateLogin</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="LAST_UPDATE_LOGIN" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shipmentHeaderId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="SHIPMENT_HEADER_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>lineNum</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="LINE_NUM" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>categoryId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="CATEGORY_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>quantityShipped</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="QUANTITY_SHIPPED" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>quantityReceived</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="QUANTITY_RECEIVED" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>unitOfMeasure</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="UNIT_OF_MEASURE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>itemDescription</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="ITEM_DESCRIPTION" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>itemId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="ITEM_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>itemRevision</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="ITEM_REVISION" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vendorItemNum</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="VENDOR_ITEM_NUM" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vendorLotNum</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="VENDOR_LOT_NUM" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>uomConversionRate</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="UOM_CONVERSION_RATE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shipmentLineStatusCode</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="SHIPMENT_LINE_STATUS_CODE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>sourceDocumentCode</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="SOURCE_DOCUMENT_CODE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>poHeaderId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="PO_HEADER_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>poReleaseId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="PO_RELEASE_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>poLineId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="PO_LINE_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>poLineLocationId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="PO_LINE_LOCATION_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>poDistributionId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="PO_DISTRIBUTION_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>requisitionLineId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="REQUISITION_LINE_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>reqDistributionId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="REQ_DISTRIBUTION_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>routingHeaderId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="ROUTING_HEADER_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>packingSlip</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="PACKING_SLIP" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>fromOrganizationId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="FROM_ORGANIZATION_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>deliverToPersonId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="DELIVER_TO_PERSON_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>employeeId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="EMPLOYEE_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>destinationTypeCode</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="DESTINATION_TYPE_CODE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>toOrganizationId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="TO_ORGANIZATION_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>toSubinventory</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="TO_SUBINVENTORY" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>locatorId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="LOCATOR_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>deliverToLocationId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="DELIVER_TO_LOCATION_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>chargeAccountId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="CHARGE_ACCOUNT_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>transportationAccountId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="TRANSPORTATION_ACCOUNT_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shipmentUnitPrice</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="SHIPMENT_UNIT_PRICE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>transferCost</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="TRANSFER_COST" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>transportationCost</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="TRANSPORTATION_COST" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>comments</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="COMMENTS" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attributeCategory</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="ATTRIBUTE_CATEGORY" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute1</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="ATTRIBUTE1" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute2</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="ATTRIBUTE2" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute3</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="ATTRIBUTE3" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute4</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="ATTRIBUTE4" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute5</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="ATTRIBUTE5" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute6</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="ATTRIBUTE6" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute7</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="ATTRIBUTE7" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute8</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="ATTRIBUTE8" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute9</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="ATTRIBUTE9" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute10</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="ATTRIBUTE10" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute11</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="ATTRIBUTE11" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute12</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="ATTRIBUTE12" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute13</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="ATTRIBUTE13" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute14</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="ATTRIBUTE14" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>attribute15</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="ATTRIBUTE15" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>reasonId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="REASON_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>ussglTransactionCode</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="USSGL_TRANSACTION_CODE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>governmentContext</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="GOVERNMENT_CONTEXT" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>requestId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="REQUEST_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>programApplicationId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="PROGRAM_APPLICATION_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>programId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="PROGRAM_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>programUpdateDate</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="PROGRAM_UPDATE_DATE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>destinationContext</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="DESTINATION_CONTEXT" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>primaryUnitOfMeasure</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="PRIMARY_UNIT_OF_MEASURE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>excessTransportReason</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="EXCESS_TRANSPORT_REASON" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>excessTransportResponsible</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="EXCESS_TRANSPORT_RESPONSIBLE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>excessTransportAuthNum</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="EXCESS_TRANSPORT_AUTH_NUM" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>asnLineFlag</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="ASN_LINE_FLAG" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>originalAsnParentLineId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="ORIGINAL_ASN_PARENT_LINE_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>originalAsnLineFlag</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="ORIGINAL_ASN_LINE_FLAG" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>vendorCumShippedQuantity</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="VENDOR_CUM_SHIPPED_QUANTITY" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>noticeUnitPrice</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="NOTICE_UNIT_PRICE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>taxName</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="TAX_NAME" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>taxAmount</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="TAX_AMOUNT" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>invoiceStatusCode</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="INVOICE_STATUS_CODE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>cumComparisonFlag</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="CUM_COMPARISON_FLAG" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>containerNum</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="CONTAINER_NUM" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>truckNum</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="TRUCK_NUM" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>barCodeLabel</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="BAR_CODE_LABEL" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>transferPercentage</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="TRANSFER_PERCENTAGE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>mrcShipmentUnitPrice</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="MRC_SHIPMENT_UNIT_PRICE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>mrcTransferCost</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="MRC_TRANSFER_COST" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>mrcTransportationCost</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="MRC_TRANSPORTATION_COST" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>mrcNoticeUnitPrice</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="MRC_NOTICE_UNIT_PRICE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>shipToLocationId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="SHIP_TO_LOCATION_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>countryOfOriginCode</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="COUNTRY_OF_ORIGIN_CODE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>oeOrderHeaderId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="OE_ORDER_HEADER_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>oeOrderLineId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="OE_ORDER_LINE_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>customerItemNum</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="CUSTOMER_ITEM_NUM" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>costGroupId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="COST_GROUP_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>secondaryQuantityShipped</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="SECONDARY_QUANTITY_SHIPPED" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>secondaryQuantityReceived</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="SECONDARY_QUANTITY_RECEIVED" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>secondaryUnitOfMeasure</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="SECONDARY_UNIT_OF_MEASURE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>qcGrade</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="QC_GRADE" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>mmtTransactionId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="MMT_TRANSACTION_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>asnLpnId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="ASN_LPN_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>amount</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="AMOUNT" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>amountReceived</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="AMOUNT_RECEIVED" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>jobId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="JOB_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>timecardId</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="TIMECARD_ID" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>timecardOvn</opm:attribute-name>
+               <opm:field table="RCV_SHIPMENT_LINES" name="TIMECARD_OVN" xsi:type="opm:column"/>
+            </opm:attribute-mapping>
+         </opm:attribute-mappings>
+         <toplink:descriptor-type>independent</toplink:descriptor-type>
+         <toplink:caching>
+            <toplink:cache-type>weak-reference</toplink:cache-type>
+            <toplink:always-refresh>true</toplink:always-refresh>
+         </toplink:caching>
+         <toplink:remote-caching>
+            <toplink:cache-type>weak-reference</toplink:cache-type>
+         </toplink:remote-caching>
+         <toplink:instantiation/>
+         <toplink:copying xsi:type="toplink:instantiation-copy-policy"/>
+         <toplink:change-policy xsi:type="toplink:deferred-detection-change-policy"/>
+         <toplink:tables>
+            <toplink:table name="RCV_SHIPMENT_LINES"/>
+         </toplink:tables>
+      </opm:class-mapping-descriptor>
+   </opm:class-mapping-descriptors>
+   <toplink:login xsi:type="toplink:database-login">
+      <toplink:platform-class>oracle.toplink.platform.database.oracle.Oracle10Platform</toplink:platform-class>
+      <toplink:user-name>apps</toplink:user-name>
+      <toplink:password>33249B2910CFF3FBCD9B834DF8560A56</toplink:password>
+      <toplink:driver-class>oracle.jdbc.OracleDriver</toplink:driver-class>
+      <toplink:connection-url>jdbc:oracle:thin:@choldbr18d.na.odcorp.net:1544:GSIDEV03</toplink:connection-url>
+   </toplink:login>
+</toplink:object-persistence>

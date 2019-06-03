@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<page xmlns="http://xmlns.oracle.com/uix/controller"
+      xmlns:ctrl="http://xmlns.oracle.com/uix/controller"
+      xmlns:bibeans="http://xmlns.oracle.com/bibeans"
+      xmlns:html="http://www.w3.org/TR/REC-html40" expressionLanguage="el" xmlns:ui="http://xmlns.oracle.com/uix/ui">
+
+  <!-- Defining all the BIThinSession related elements -->
+  <bibeans:biThinSession id="bisession_xxx"
+                         biConfiguration="/designerOLAPConfig1.xml" >
+    <!-- Defining the FindMember page element -->
+    <bibeans:findMemberDef id="findMember1" />
+  </bibeans:biThinSession>
+
+  <!-- There are no global buttons in the Find Member page.  Therefore, there
+       is no page template in the Find Member page. -->
+  <content>
+    <dataScope xmlns="http://xmlns.oracle.com/uix/ui"
+               xmlns:data="http://xmlns.oracle.com/uix/ui">
+      <contents>
+        <document>
+          <metaContainer>
+            <!-- Set the page title -->
+            <head title="Select Item"/>
+          </metaContainer>
+
+          <contents>        
+            <form name="form1">
+              <contents>
+                <!-- Displaying the FindMember page -->
+                <bibeans:findMember 
+                         biFindMember="${bibeans:data().bisession1.findMember1}" />
+              </contents>
+            </form>
+          </contents>
+       </document>
+     </contents>
+   </dataScope>
+  </content>
+
+  <handlers>
+    <!-- Add EventHandlers (<event> elements) here -->
+  </handlers>
+</page>

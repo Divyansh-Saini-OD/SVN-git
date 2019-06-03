@@ -1,0 +1,40 @@
+<definitions
+     name="OrgHier_RMS_Outb"
+     targetNamespace="http://xmlns.oracle.com/OrgHier_RMS_Outb"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:ns1="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:client="http://xmlns.oracle.com/OrgHier_RMS_Outb"
+    >
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:client="http://xmlns.oracle.com/OrgHier_RMS_Outb">
+            <import namespace="http://xmlns.oracle.com/OrgHier_RMS_Outb" schemaLocation="OrgHier_RMS_Outb.xsd"/>
+        </schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:client="http://xmlns.oracle.com/OrgHier_RMS_Outb">
+            <xsd:import namespace="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+                 schemaLocation="http://chilsoa01d.na.odcorp.net:7778/orabpel/xmllib/merchFndXml/officedepot/merchandising/foundation/v1/message/bod/OrganizationHierarchy.xsd"/>
+        </xsd:schema>
+    </types>
+    <message name="OrgHier_RMS_OutbRequestMessage">
+        <part name="payload" element="client:OrgHier_RMS_OutbProcessRequest"/>
+    </message>
+    <message name="OrgHier_RMS_OutbResponseMessage">
+        <part name="payload" element="client:OrgHier_RMS_OutbProcessResponse"/>
+    </message>
+    <message name="msgtype_orghier">
+        <part name="msgpart_orghier" element="ns1:OrganizationHierarchy"/>
+    </message>
+    <portType name="OrgHier_RMS_Outb">
+        <operation name="process">
+            <input message="client:OrgHier_RMS_OutbRequestMessage"/>
+            <output message="client:OrgHier_RMS_OutbResponseMessage"/>
+        </operation>
+    </portType>
+    <plnk:partnerLinkType name="OrgHier_RMS_Outb">
+        <plnk:role name="OrgHier_RMS_OutbProvider">
+            <plnk:portType name="client:OrgHier_RMS_Outb"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+</definitions>

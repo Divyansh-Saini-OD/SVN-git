@@ -1,0 +1,66 @@
+<definitions
+     name="GetOrgHierMsg"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/GetOrgHierMsg/"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/GetOrgHierMsg/"
+     xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/RMS10/OD_BPEL_FND_SQL/GETORGHIERMESSAGE/"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+     xmlns:hdr="http://xmlns.oracle.com/pcbpel/adapter/db/"
+    >
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/" location="DBAdapterOutboundHeader.wsdl"/>
+    <types>
+     <schema xmlns="http://www.w3.org/2001/XMLSchema">
+       <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/RMS10/OD_BPEL_FND_SQL/GETORGHIERMESSAGE/"
+               schemaLocation="RMS10_OD_BPEL_FND_SQL_GETORGHIERMESSAGE.xsd" />
+     </schema>
+    </types>
+    <message name="args_in_msg">
+        <part name="InputParameters" element="db:InputParameters"/>
+    </message>
+    <message name="args_out_msg">
+        <part name="OutputParameters" element="db:OutputParameters"/>
+    </message>
+    <portType name="GetOrgHierMsg_ptt">
+        <operation name="GetOrgHierMsg">
+            <input message="tns:args_in_msg"/>
+            <output message="tns:args_out_msg"/>
+        </operation>
+    </portType>
+    <binding name="GetOrgHierMsg_binding" type="tns:GetOrgHierMsg_ptt">
+    <jca:binding  />
+        <operation name="GetOrgHierMsg">
+      <jca:operation
+          PackageName="OD_BPEL_FND_SQL"
+          ProcedureName="GETORGHIERMESSAGE"
+          InteractionSpec="oracle.tip.adapter.db.DBStoredProcedureInteractionSpec" >
+      </jca:operation>
+      <input>
+        <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+      </input>
+            <output/>
+        </operation>
+    </binding>
+    <service name="GetOrgHierMsg">
+        <port name="GetOrgHierMsg_pt" binding="tns:GetOrgHierMsg_binding">
+<!--Your runtime connection is declared in 
+J2EE_HOME/application-deployments/default/DbAdapter/oc4j-ra.xml 
+These mcf properties here are from your design time connection and 
+save you from having to edit that file and restart the application server 
+if eis/db/rtk_rms10 is missing. 
+These mcf properties are safe to remove.-->
+      <jca:address location="eis/db/rtk_rms10" UIConnectionName="rtk_rms10_rmsdev02"
+          ManagedConnectionFactory="oracle.tip.adapter.db.DBManagedConnectionFactory"
+          mcf.DriverClassName="oracle.jdbc.OracleDriver"
+          mcf.PlatformClassName="oracle.toplink.internal.databaseaccess.Oracle9Platform"
+          mcf.ConnectionString="jdbc:oracle:thin:@//uschus0106.na.odcorp.net:1540/rmsdev02.na.odcorp.net"
+          mcf.UserName="rms10"
+          mcf.Password="53B2483DBDC7F7B8878987BFEF48E656D62D1A19DF561D1E" />
+        </port>
+    </service>
+  <plt:partnerLinkType name="GetOrgHierMsg_plt" >
+    <plt:role name="GetOrgHierMsg_role" >
+      <plt:portType name="tns:GetOrgHierMsg_ptt" />
+    </plt:role>
+  </plt:partnerLinkType>
+</definitions>

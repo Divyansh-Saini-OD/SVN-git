@@ -1,0 +1,49 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_PA_PB_PRD_LOGISTICS.tbl                                          |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_PA_PB_PRD_LOGISTICS (OD PLM Enhancements table)                        |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              28-Jul-2010       Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Alter the Table XX_PA_PB_PRD_LOGISTICS......
+PROMPT
+
+alter table XX_PA_PB_PRD_LOGISTICS add sl_vend_upc_no varchar2(50);
+
+alter table XX_PA_PB_PRD_LOGISTICS add sl_od_upc_no varchar2(50);
+
+alter table XX_PA_PB_PRD_LOGISTICS add ic_vend_upc_no varchar2(50);
+
+alter table XX_PA_PB_PRD_LOGISTICS add ic_od_upc_no varchar2(50);
+
+alter table XX_PA_PB_PRD_LOGISTICS add mc_vend_upc_no varchar2(50);
+
+alter table XX_PA_PB_PRD_LOGISTICS add mc_od_upc_no varchar2(50);
+
+alter table XX_PA_PB_PRD_QATSTR add result varchar2(30);

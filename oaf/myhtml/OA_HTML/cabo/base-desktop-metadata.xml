@@ -1,0 +1,1565 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<lookAndFeelMetadata xmlns="http://xmlns.oracle.com/uix/ui/laf/metadata"
+                     xmlns:html="http://www.w3.org/TR/REC-html40"
+                     id="base.desktop"
+                     name="Base Desktop Look And Feel">
+
+  <globalMetadata>
+    <styles>
+      <namedStyle id="DefaultFontFamily">
+        <description>
+        Specifies the default font family list ("font-family" property)
+        for the look and feel.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="DefaultFont">
+        <description>
+        Specifies the default font for the look and feel.  This
+        style defines both the default font family (as specified
+        by the DefaultFontFamily named style) and the default
+        font size.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="DefaultBoldFont">
+        <description>
+        A bold version of the default font.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="VerySmallFont">
+        <description>
+        A very small version of the default font.  This
+        style is used for very small text such as inline
+        messages, and copyright and privacy messages.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="SmallFont">
+        <description>
+        A small version of the default font.  This style is
+        used for text which is slightly smaller than the
+        default, such as breadCrumb links.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="MediumFont">
+        <description>
+        A version of the default font which is slightly
+        larger than the default size.  This is used for
+        medium sized text, such as level 2 headers.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="LargeFont">
+        <description>
+        A large version of the default font.  This is used
+        for large text, such as level 1 headers.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="VeryLargeFont">
+        <description>
+        A very large version of the default font.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="DarkBackground">
+        <description>
+        The primary background color in the core color ramp.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="VeryDarkBackground">
+        <description>
+        The darkest background color in the core color ramp.  This value is
+        computed relative to the DarkBackground color.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="MediumBackground">
+        <description>
+        A slightly lighter background color in the core color ramp.  This
+        value is computed relative to the DarkBackground color.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="LightBackground">
+        <description>
+        The lightest background color in the core color ramp.  This value is
+        computed relative to the DarkBackground color.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="DarkAccentBackground">
+        <description>
+        The primary background color in the accent color ramp.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="VeryDarkAccentBackground">
+        <description>
+        The darkest background color in the accent color ramp.  This value is
+        computed relative to the DarkAccentBackground color.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="MediumAccentBackground">
+        <description>
+        A slightly lighter background color in the accent color ramp.  This
+        value is computed relative to the DarkAccentBackground color.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="LightAccentBackground">
+        <description>
+        The lightest background color in the accent color ramp.  This value is
+        computed relative to the DarkAccentBackground color.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="TextBackground">
+        <description>
+        The default text background color (white).
+        </description>
+      </namedStyle>
+
+      <namedStyle id="DarkForeground">
+        <description>
+        The primary foreground color in the core color ramp.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="VeryDarkForeground">
+        <description>
+        The darkest foreground color in the core color ramp.  This value is
+        computed relative to the DarkForeground color.
+        </description>
+      </namedStyle>
+
+
+      <namedStyle id="MediumForeground">
+        <description>
+        A slightly lighter foreground color in the core color ramp.  This
+        value is computed relative to the DarkForeground color.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="LightForeground">
+        <description>
+        The lightest foreground color in the core color ramp.  This value is
+        computed relative to the DarkForeground color.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="DarkAccentForeground">
+        <description>
+        The primary foreground color in the accent color ramp.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="VeryDarkAccentForeground">
+        <description>
+        The darkest foreground color in the accent color ramp.  This value is
+        computed relative to the DarkAccentForeground color.
+        </description>
+      </namedStyle>
+
+
+      <namedStyle id="MediumAccentForeground">
+        <description>
+        A slightly lighter foreground color in the accent color ramp.  This
+        value is computed relative to the DarkAccentForeground color.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="LightAccentForeground">
+        <description>
+        The lightest foreground color in the accent color ramp.  This value is
+        computed relative to the DarkAccentForeground color.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="TextForeground">
+        <description>
+        The default text foreground color (black).
+        </description>
+      </namedStyle>
+
+      <namedStyle id="SelectedTextForeground">
+        <description>
+        The foreground color for selected/highlighted text, or text which 
+        is drawn on a dark background.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="ErrorTextForeground">
+        <description>
+        The foreground color for error text (red).
+        </description>
+      </namedStyle>
+
+
+  <!-- Link colors -->
+      <namedStyle id="LinkForeground">
+        <description>
+        The default foreground color for inactive, unvisited links.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="ActiveLinkForeground">
+        <description>
+        The default foreground color for active links.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="VisitedLinkForeground">
+        <description>
+        The default foreground color for visited links.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="DisabledLinkForeground">
+        <description>
+        The default foreground color for disabled links.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="DarkBorder">
+        <description>
+        The primary border color in the core color ramp.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="VeryDarkBorder">
+        <description>
+        The darkest border color in the core color ramp.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="MediumBorder">
+        <description>
+        A slightly lighter border color in the core color ramp.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="LightBorder">
+        <description>
+        The lightest border color in the core color ramp.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="DarkAccentBorder">
+        <description>
+        The primary border color in the accent color ramp.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="VeryDarkAccentBorder">
+        <description>
+        The darkest border color in the accent color ramp.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="MediumAccentBorder">
+        <description>
+        A slightly lighter border color in the accent color ramp.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="LightAccentBorder">
+        <description>
+        The lightest border color in the accent color ramp.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="StartTextAlign">
+        <description>
+        Sets the text-align property to "left" for left-to-right
+        reading direction and "right" for right-to-left reading
+        direction.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="EndTextAlign">
+        <description>
+        Sets the text-align property to "right" for left-to-right
+        reading direction and "left" for right-to-left reading
+        direction.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="LeftTextAlign">
+        <description>
+        Sets the text-align property to "left" regardless of 
+        the reading direction.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="RightTextAlign">
+        <description>
+        Sets the text-align property to "right" regardless of 
+        the reading direction.
+        </description>
+      </namedStyle>
+
+      <namedStyle id="CenterTextAlign">
+        <description>
+        Sets the text-align property to "center" regardless of 
+        the reading direction.
+        </description>
+      </namedStyle>
+
+      <styleClass id="OraInstructionText">
+        <description>
+        Style class for instruction-related text.
+        </description>
+      </styleClass>
+
+      <styleClass id="OraInstructionTextStrong">
+        <description>
+        Style class for emphasized instruction-related text.
+        </description>
+      </styleClass>
+
+      <styleClass id="OraFieldText">
+        <description>
+        Style class for text displayed in input field controls.
+        </description>
+      </styleClass>
+
+      <styleClass id="OraFieldTextDisabled">
+        <description>
+        Style class for text displayed in disabled input field controls.
+        </description>
+      </styleClass>
+
+      <styleClass id="OraFieldNumber">
+        <description>
+        Style class for (right aligned) numerical data displayed in 
+        input field controls.
+        </description>
+      </styleClass>
+
+      <styleClass id="OraFieldNumberDisabled">
+        <description>
+        Style class for (right aligned) numerical data displayed in 
+        disabled input field controls.
+        </description>
+      </styleClass>
+
+      <styleClass id="OraPromptText">
+        <description>
+        Style class for message prompts.
+        </description>
+      </styleClass>
+
+      <styleClass id="OraDataText">
+        <description>
+        Style class for message data.
+        </description>
+      </styleClass>
+
+      <styleClass id="OraDataNumber">
+        <description>
+        Style class for (right-aligned) numerical message data.
+        </description>
+      </styleClass>
+
+    </styles>
+
+    <icons>
+      <icon id="error">
+        <description>
+        The error icon is used by the inline message components
+        (eg. messagePrompt, messageTextInput, etc...) to indicate that an
+        error has occurred.
+        </description>
+      </icon>
+
+      <icon id="errorAnchor">
+        <description>
+        The errorAnchor icon is a version of the error icon that is
+        displayed when the icon is used as a link to additional information 
+        about the error.
+        </description>
+      </icon>
+
+      <icon id="info">
+        <description>
+        The info icon is used by the inline message components
+        (eg. messagePrompt, messageTextInput, etc...) to indicate that 
+        an informational message is being displayed to the user.
+        </description>
+      </icon>
+
+      <icon id="infoAnchor">
+        <description>
+        The infoAnchor icon is a version of the info icon that is
+        displayed when the icon is used as a link to additional information.
+        </description>
+      </icon>
+
+      <icon id="required">
+        <description>
+        The required icon is used by the inline message components
+        (eg. messagePrompt, messageTextInput, etc...) to indicate
+        that a value must be specified.
+        </description>
+      </icon>
+
+      <icon id="warning">
+        <description>
+        The warning icon is used by the inline message components
+        (eg. messagePrompt, messageTextInput, etc...) to indicate that 
+        an warning message is being displayed to the user.
+        </description>
+      </icon>
+
+      <icon id="warningAnchor">
+        <description>
+        The warningAnchor icon is a version of the warning icon that is
+        displayed when the icon is used as a link to additional information
+        about the warning.
+        </description>
+      </icon>
+
+    </icons>
+  </globalMetadata>
+
+  <componentMetadata>
+
+    <component name="applicationSwitcher">
+      <styles>
+        <styleClass id="OraApplicationSwitcherText">
+          <description>
+          Specifies the style information for the applicationSwitcher's
+          title text.
+          </description>
+        </styleClass>
+      </styles>
+    </component>
+
+    <component name="body">
+      <styles>
+        <styleClass id="OraBody">
+          <description>
+          Specifies the style information for the body content.
+          </description>
+        </styleClass>
+      </styles>
+    </component>
+
+    <component name="breadCrumbs">
+      <styles>
+        <styleClass id="OraBreadCrumbs">
+          <description>
+          Specifies the style information for the breadCrumbs content.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraBreadCrumbsSelected">
+          <description>
+          Specifies the style information for the selected breadCrumbs item.
+          </description>
+        </styleClass>
+
+        <selector id=".OraBreadCrumbs A">
+          <description>
+          Specifies the style information for breadCrumbs links.
+          </description>
+        </selector>
+      </styles>
+
+      <icons>
+        <icon id="breadCrumbsSeparator">
+          <description>
+          The separator icon that is rendered between breadCrumbs
+          links.  This is typically a text icon.
+          </description>
+        </icon>
+      </icons>
+    </component>
+
+    <component name="bulletedList">
+      <styles>
+        <styleClass id="OraBulletedList">
+          <description>
+          Specifies the style information for the bulletedList content.
+          </description>
+        </styleClass>
+
+        <selector id=".OraBulletedList A">
+          <description>
+          Specifies the style information for bulletedList links.
+          </description>
+        </selector>
+      </styles>
+    </component>
+
+    <component name="button">
+      <styles>
+        <selector id="BUTTON">
+          <description>
+          The BUTTON selector can be used to apply styles to buttons.
+          </description>
+        </selector>
+      </styles>
+    </component>
+
+    <component name="colorField">
+      <icons>
+        <icon id="colorFieldButton">
+          <description>
+          The button icon which is used to launch the secondary
+          color picker dialog.  Note:  This colorField's color
+          swatch is now used to launch the secondary dialog on
+          most browsers.  The colorFieldButton icon is only 
+          displayed on browsers which do not display the color
+          swatch, such as Netscape 4.x.
+          </description>
+        </icon>
+
+        <icon id="colorFieldSwatchOverlay">
+          <description>
+          The icon that is overlayed on top of the colorField's
+          color swatch to indicate that the color swatch is 
+          clickable.
+          </description>
+        </icon>
+      </icons>
+    </component>
+
+    <component name="contentContainer">
+
+      <description>
+        <html:p>
+        The contentContainer contains two main regions: the body region,
+        which contains the contentContainer's contents, and the header
+        region, which contains the contentCotainer's header text.  Styles
+        can be applied to the body region via the OraContentContainerBody
+        style class.  Similarly, styles for the header region are specified
+        via the OraContentContainerHeader style class.
+        </html:p>
+
+        <html:p>
+        These two regions are themselves rendered within an outer
+        container that can be styled as well.  There are two different
+        sets of style classes for the outer region, depending on whether
+        a header is present.  If a header is present, one of the following
+        style classes is used, depending on the contentContainer's background
+        color:
+        </html:p>
+
+        <html:ul>
+          <html:li>OraContentContainerDark</html:li>
+          <html:li>OraContentContainerMedium</html:li>
+          <html:li>OraContentContainerLight</html:li>
+          <html:li>OraContentContainerTransparent</html:li>
+        </html:ul>
+
+        <html:p>
+        If no header is present, the outer container instead uses the
+        following style classes:
+        </html:p>
+
+        <html:ul>
+          <html:li>OraContentContainerContentDark</html:li>
+          <html:li>OraContentContainerContentMedium</html:li>
+          <html:li>OraContentContainerContentLight</html:li>
+          <html:li>OraContentContainerContentTransparent</html:li>
+        </html:ul>
+
+        <html:p>
+        In order to apply a style to the contentContainer's body or 
+        header for a particular background type, a contextual selector
+        can be used.  For example, the following selectors can be used
+        to change the properties of dark contentContainer header and
+        body regions:
+        </html:p>
+
+        <html:pre>
+
+  &lt;style selector=".OraContentContainerDark .OraContentContainerHeader"&gt;
+    &lt;!-- Style properties for dark contentContainer header --&gt;
+  &lt;/style&gt;
+
+  &lt;style selector=".OraContentContainerDark .OraContentContainerBody"&gt;
+    &lt;!-- Style properties for dark contentContainer body --&gt;
+  &lt;/style&gt;
+
+        </html:pre>
+
+        <html:p>
+        And the following selector can be used to change the 
+        properties of the dark contentContainer's body for 
+        contentContainers which do not have a header:
+        </html:p>
+
+        <html:pre>
+  &lt;style selector=".OraContentContainerContentDark .OraContentContainerBody"&gt;
+    &lt;!-- Style properties for dark headerless contentContainer body --&gt;
+  &lt;/style&gt;
+        </html:pre>
+
+        <html:p>
+        In order to make it easier to apply common style properties 
+        across contentContainers of different background types, several
+        named styles are exposed.  For example, the 
+        ContentContainerDarkBackground named style provides a way to 
+        set the background color for all dark contentContainers.  This
+        named style is used regardless of whether the outer container
+        uses the OraContentContainerDark or OraContentContainerContentDark
+        style class (ie. whether or not a header is present).   See the named 
+        style section below for a list all of the available named styles.
+        </html:p>
+      </description>
+
+      <styles>
+        <styleClass id="OraContentContainerBody">
+          <description>
+          This style class is associated with the body region of the
+          contentContainer.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraContentContainerHeader">
+          <description>
+          This style class is associated with the header region of the
+          contentContainer.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraContentConatinerDark">
+          <description>
+          This style class is associated with the outer container 
+          of dark contentContainers.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraContentConatinerMedium">
+          <description>
+          This style class is associated with the outer container 
+          of medium contentContainers.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraContentConatinerLight">
+          <description>
+          This style class is associated with the outer container 
+          of light contentContainers.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraContentConatinerTransparent">
+          <description>
+          This style class is associated with the outer container 
+          of transparent contentContainers.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraContentConatinerContentDark">
+          <description>
+          This style class is used in place of the OraContentContainerDark
+          style class for contentContainers which do not have a header.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraContentConatinerContentMedium">
+          <description>
+          This style class is used in place of the OraContentContainerMedium
+          style class for contentContainers which do not have a header.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraContentConatinerContentLight">
+          <description>
+          This style class is used in place of the OraContentContainerLight
+          style class for contentContainers which do not have a header.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraContentConatinerContentTransparent">
+          <description>
+          This style class is used in place of the 
+          OraContentContainerTransparent style class for contentContainers 
+          which do not have a header.
+          </description>
+        </styleClass>
+
+        <namedStyle id="ContentContainer">
+          <description>
+          This named style can be used to specify common properties that
+          are shared by the OraContentContainerDark, OraContentContainerMedium,
+          OraContentContainerLight and OraContentContainerTransparent style
+          classes.
+          </description>
+        </namedStyle>
+
+        <namedStyle id="ContentContainerContent">
+          <description>
+          This named style can be used to specify common properties that
+          are shared by the OraContentContainerContentDark, 
+          OraContentContainerContentMedium, OraContentContainerContentLight 
+          and OraContentContainerContentTransparent style classes.
+          </description>
+        </namedStyle>
+
+        <namedStyle id="ContentContainerBody">
+          <description>
+          <html:p>
+          This named style class be used to specify common properties
+          that are shared by the four types of the 
+          OraContentContainer&lt;Background&gt;  body regions.  It is
+          included by the following selectors:
+          </html:p>
+          <html:ul>
+            <html:li>.OraContentContainerDark .OraContentContainerBody</html:li>
+            <html:li>.OraContentContainerMedium .OraContentContainerBody</html:li>
+            <html:li>.OraContentContainerLight .OraContentContainerBody</html:li>
+            <html:li>.OraContentContainerTransparent .OraContentContainerBody</html:li>
+          </html:ul>
+          </description>
+        </namedStyle>
+
+        <namedStyle id="ContentContainerContentBody">
+          <description>
+          <html:p>
+          This named style class be used to specify common properties
+          that are shared by the four types of the 
+          OraContentContainerContent&lt;Background&gt;  body regions.  It is
+          included by the following selectors:
+          </html:p>
+          <html:ul>
+            <html:li>.OraContentContainerContentDark .OraContentContainerBody</html:li>
+            <html:li>.OraContentContainerContentMedium .OraContentContainerBody</html:li>
+            <html:li>.OraContentContainerContentLight .OraContentContainerBody</html:li>
+            <html:li>.OraContentContainerContentTransparent .OraContentContainerBody</html:li>
+          </html:ul>
+          </description>
+        </namedStyle>
+
+        <namedStyle id="ContentContainerDarkBackground">
+          <description>
+          <html:p>
+          This named style is used to set the background color for 
+          dark contentContainers.  It is included by the following selectors:
+          </html:p>
+          <html:ul>
+            <html:li>.OraContentContainerDark .OraContentContainerBody</html:li>
+            <html:li>.OraContentContainerContentDark .OraContentContainerBody</html:li>
+
+          </html:ul>
+          </description>
+        </namedStyle>
+
+        <namedStyle id="ContentContainerMediumBackground">
+          <description>
+          <html:p>
+          This named style is used to set the background color for 
+          medium contentContainers.  It is included by the following selectors:
+          </html:p>
+          <html:ul>
+            <html:li>.OraContentContainerMedium .OraContentContainerBody</html:li>
+            <html:li>.OraContentContainerContentMedium .OraContentContainerBody</html:li>
+
+          </html:ul>
+          </description>
+        </namedStyle>
+
+        <namedStyle id="ContentContainerLightBackground">
+          <description>
+          <html:p>
+          This named style is used to set the background color for 
+          light contentContainers.  It is included by the following selectors:
+          </html:p>
+          <html:ul>
+            <html:li>.OraContentContainerLight .OraContentContainerBody</html:li>
+            <html:li>.OraContentContainerContentLight .OraContentContainerBody</html:li>
+
+          </html:ul>
+          </description>
+        </namedStyle>
+
+        <namedStyle id="ContentContainerTransparentBackground">
+          <description>
+          <html:p>
+          This named style is used to set the background color for 
+          transparent contentContainers.  It is included by the following 
+          selectors:
+          </html:p>
+          <html:ul>
+            <html:li>.OraContentContainerTransparent .OraContentContainerBody</html:li>
+            <html:li>.OraContentContainerContentTransparent .OraContentContainerBody</html:li>
+
+          </html:ul>
+          </description>
+        </namedStyle>
+
+      </styles>
+
+    </component>
+
+    <component name="dateField">
+      <icons>
+        <icon id="dateFieldButton">
+          <description>
+          The button icon which is used to launch the secondary
+          date picker dialog.
+          </description>
+        </icon>
+      </icons>
+    </component>
+
+    <component name="footer">
+      <styles>
+        <styleClass id="OraAbout">
+          <description>
+          Style class for the "about" named child.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraCopyright">
+          <description>
+          Style class for the "copyright" named child.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraPrivacy">
+          <description>
+          Style class for the "privacy" named child.             
+          </description>
+        </styleClass>
+
+        <selector id=".OraAbout A">
+          <description>
+          Selector for applying styles to links within the
+          "about" named child.
+          </description>
+        </selector>
+
+        <selector id=".OraCopyright A">
+          <description>
+          Selector for applying styles to links within the "copyright" 
+          named child.
+          </description>
+        </selector>
+
+        <selector id=".OraPrivacy A">
+          <description>
+          Selector for applying styles to links within the 
+          "privacy" named child.             
+          </description>
+        </selector>
+
+      </styles>
+    </component>
+
+    <component name="globalButton">
+      <styles>
+        <styleClass id="OraGlobalButtonText">
+          <description>
+          Style class used for enabled global button text.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraGlobalButtonTextSelected">
+          <description>
+          Style class used for selected global button text.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraGlobalButtonTextDisabled">
+          <description>
+          Style class used for disabled global button text.
+          </description>
+        </styleClass>
+      </styles>
+    </component>
+
+
+    <component name="globalHeader">
+
+      <styles>
+
+        <styleClass id="OraGlobalHeader">
+          <description>
+          The OraGlobalHeader style class is associated with the globalHeader
+          container itself.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraGlobalHeaderEnabled">
+          <description>
+          The OraGlobalHeaderEnabled style class is associated with
+          enabled items in the globalHeader.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraGlobalHeaderSelected">
+          <description>
+          The OraGlobalHeaderSelected style class is associated with
+          selected items in the globalHeader.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraGlobalHeaderSeparator">
+          <description>
+          The OraGlobalHeaderSeparator style class is associated with
+          the globalHeader separator items.
+          </description>
+        </styleClass>
+
+        <selector id=".OraGlobalHeaderEnabled A">
+          <description>
+          This selector is used to apply link-specific styles to
+          enabled links in the globalHeader.
+          </description>
+        </selector>
+
+        <selector id=".OraGlobalHeaderSelected A">
+          <description>
+          This selector is used to apply link-specific styles to
+          the selected link in the globalHeader.
+          </description>
+        </selector>
+
+        <namedStyle id="GlobalHeaderItem">
+          <description>
+          The GlobalHeaderItem named style defines style properties that are
+          shared by all globalHeader items.  This named styles is included by
+          the OraGlobalHeaderEnabled and OraGlobalHeaderSelected
+          style classes.
+          </description>
+        </namedStyle>
+
+        <namedStyle id="GlobalHeaderLink">
+          <description>
+          The GlobalHeaderLink named style defines style properties that are
+          shared by all links within the globalHeader.  This named style is 
+          included by the ".OraGlobalHeaderEnabled A" and 
+          ".OraGlobalHeaderSelected A" selectors.
+          </description>
+        </namedStyle>
+
+      </styles>
+
+      <icons>
+
+        <icon id="globalHeaderSeparator">
+          <description>
+          The globalHeaderSeparator icon is rendered between globalHeader
+          items.
+          </description>
+        </icon>
+      </icons>
+
+    </component>
+
+    <component name="hGrid">
+      <styles>
+
+        <styleClass id="OraHGridExpansionIcon">
+          <description>
+          This style class is used to style the HGrid's expanded
+          and collapsed icons.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraHGridFocusIcon">
+          <description>
+          This style class is used to style the HGrid's focus icon.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraHGridLocatorIcon">
+          <description>
+          This style class is used to style the HGrid's locator icon.
+          </description>
+        </styleClass>
+
+      </styles>
+
+      <icons>
+
+        <icon id="hGridExpanded">
+          <description>
+          This icon is displayed in expanded hGrid rows.
+          </description>
+        </icon>
+
+        <icon id="hGridCollapsed">
+          <description>
+          This icon is displayed in collapsed hGrid rows.
+          </description>
+        </icon>
+
+        <icon id="hGridFocus">
+          <description>
+          This icon is displayed in the focus column for focusable rows.
+          </description>
+        </icon>
+
+        <icon id="hGridLocator">
+          <description>
+          This icon is displayed next to the hGrid's locator bread 
+          crumbs which display the hGrid's focus path.
+          </description>
+        </icon>
+
+      </icons>
+
+    </component>
+
+    <component name="header">
+      <styles>
+
+        <styleClass id="OraHeader">
+          <description>
+          This style class is rendered for each header and can be
+          used to set common properties that are shared across
+          all header levels.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraHeaderIcon">
+          <description>
+          This style class is rendered on the header icon.
+          </description>
+        </styleClass>
+
+        <selector id="H1.OraHeader">
+          <description>
+          This selector is used for applying styles to 
+          level one headers.
+          </description>
+        </selector>
+
+        <selector id="H2.OraHeader">
+          <description>
+          This selector is used for applying styles to 
+          level two headers.
+          </description>
+        </selector>
+
+        <selector id="H3.OraHeader">
+          <description>
+          This selector is used for applying styles to 
+          level three headers.
+          </description>
+        </selector>
+
+        <selector id="H4.OraHeader">
+          <description>
+          This selector is used for applying styles to 
+          level four headers.
+          </description>
+        </selector>
+
+        <selector id="H5.OraHeader">
+          <description>
+          This selector is used for applying styles to 
+          level five headers.
+          </description>
+        </selector>
+
+        <selector id="H6.OraHeader">
+          <description>
+          This selector is used for applying styles to 
+          level six headers.
+          </description>
+        </selector>
+
+        <namedStyle id="HeaderText">
+          <description>
+          This named style is included by all of the H*.OraHeader
+          selectors (ie. "H1.OraHeader", "H2.OraHeader", etc...).
+          </description>
+        </namedStyle>
+      </styles>
+
+      <icons>
+
+        <icon id="headerError">
+          <description>
+          The icon that is displayed for headers with messageType "error".
+          </description>
+        </icon>
+
+        <icon id="headerWarning">
+          <description>
+          The icon that is displayed for headers with messageType "warning".
+          </description>
+        </icon>
+
+        <icon id="headerInfo">
+          <description>
+          The icon that is displayed for headers with messageType "info".
+          </description>
+        </icon>
+
+        <icon id="headerConfimation">
+          <description>
+          The icon that is displayed for headers with messageType 
+          "confirmation".
+          </description>
+        </icon>
+
+        <icon id="headerProcessing">
+          <description>
+          The icon that is displayed for headers with messageType "processing".
+          </description>
+        </icon>
+
+      </icons>
+    </component>
+
+    <component name="hideShow">
+    
+      <description>
+      The hideShow component allows the disclosure indicator icon to
+      be customized.
+      </description>
+
+      <icons>
+
+        <icon id="hideShowDisclosed">
+          <description>
+          The hideShowDisclosed icon is displayed when the hideShow
+          component is rendered in its disclosed state.
+          </description>
+        </icon>
+
+        <icon id="hideShowUndisclosed">
+          <description>
+          The hideShowUndisclosed icon is displayed when the hideShow
+          component is rendered in its undisclosed state.
+          </description>
+        </icon>
+
+      </icons>
+  
+    </component>
+
+    <component name="lovInput">
+      <icons>
+        <icon id="lovInputButton">
+          <description>
+          The button icon which is used to launch the secondary
+          list of values dialog.
+          </description>
+        </icon>
+      </icons>
+    </component>
+
+    <component name="messageBox">
+      <styles>
+
+        <styleClass id="OraMessageBox">
+          <description>
+          This style class is used to style the messageBox component.
+          The messageBox's background color, padding, borders, etc...
+          can be specified via this style class.
+          </description>
+        </styleClass>
+
+      </styles>
+    </component>
+
+    <component name="separator">
+      <styles>
+
+        <styleClass id="OraSeparator">
+          <description>
+          This style class is used to style the separator component.
+          </description>
+        </styleClass>
+
+      </styles>
+    </component>
+
+    <component name="sortableHeader">
+
+      <styles>
+        <styleClass id="OraSortableHeaderSortIcon">
+          <description>
+          This style class is used to style the sortableHeader's
+          sort icons.
+          </description>
+        </styleClass>
+      </styles>
+
+      <icons>
+        <icon id="sortableHeaderAscending">
+          <description>
+          This icon is used to indicate that the sortableHeader
+          is sorted in ascending order.
+          </description>
+        </icon>
+
+        <icon id="sortableHeaderDescending">
+          <description>
+          This icon is used to indicate that the sortableHeader
+          is sorted in descending order.
+          </description>
+        </icon>
+
+      </icons>
+
+    </component>
+
+    <component name="sideBar">
+      <styles>
+
+        <styleClass id="OraSideBar">
+          <description>
+          This style class is used to style the sideBar component.
+          The sideBar's background color, padding, borders, etc...
+          can be specified via this style class.
+          </description>
+        </styleClass>
+
+      </styles>
+    </component>
+  
+    <component name="tabBar">
+    
+      <description>
+      <html:p>
+      The tabBar can be customized via the styles
+      described below.
+      </html:p>
+      </description>
+
+      <styles>        
+        <styleClass id="OraTabBar">
+          <description>
+          The OraTabBar style class is associated with the tabBar container
+          itself.
+          </description>
+        </styleClass>
+        
+        <styleClass id="OraTabBarEnabled">
+          <description>
+          The OraTabBarEnabled style class is associated with 
+          enabled items in the tabBar.
+          </description>
+        </styleClass>
+        
+        <styleClass id="OraTabBarSelected">
+          <description>
+          The OraTabBarEnabled style class is associated with 
+          the selected item in the tabBar.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTabBarDisabled">
+          <description>
+          The OraTabBarEnabled style class is associated with 
+          disabled items in the tabBar.
+          </description>
+        </styleClass>
+        
+        <selector id=".OraTabBarEnabled A">
+          <description>
+          This selector is used to apply link-specific styles to
+          enabled links in the tabBar.
+          </description>
+        </selector>
+
+        <selector id=".OraTabBarSelected A">
+          <description>
+          This selector is used to apply link-specific styles to
+          the selected link in the tabBar.
+          </description>
+        </selector>
+
+        <namedStyle id="TabBarItem">
+          <description>
+          The TabBarItem named style defines style properties that are
+          shared by all tabBar items.  This named styles is included by
+          the OraTabBarEnabled, OraTabBarSelected and OraTabBarDisabled
+          style classes.
+          </description>
+        </namedStyle>
+        
+        <namedStyle id="TabBarLink">
+          <description>
+          The TabBarLink named style defines style properties that are
+          shared by all links within the tabBar.  This named style is included 
+          by the ".OraTabBarEnabled A" and ".OraTabBarSelected A" selectors.
+          </description>
+        </namedStyle>
+      </styles>
+    </component>
+
+    <component name="table">
+      <styles>
+
+        <namedStyle id="TableCellDataText">
+          <description>
+          Specifies the font family, font size and color for table
+          data text.
+          </description>
+        </namedStyle>
+
+        <namedStyle id="TableCellDataBackgroundColor">
+          <description>
+          Specifies the background color for data cells.
+          </description>
+        </namedStyle>
+
+        <namedStyle id="TableCellDataBandedBackgroundColor">
+          <description>
+          Specifies the background color for banded data cells.
+          </description>
+        </namedStyle>
+
+        <namedStyle id="TableCellDataBorderColor">
+          <description>
+          Specifies the border color for data cells.
+          </description>
+        </namedStyle>
+
+        <namedStyle id="TableCellDataVerticalAlign">
+          <description>
+          Specifies the vertical alignment for data cells.
+          </description>
+        </namedStyle>
+
+        <namedStyle id="TableCellHeaderBorderColor">
+          <description>
+          Specifies the border color for header cells.
+          </description>
+        </namedStyle>
+
+        <styleClass id="OraTableContent">
+          <description>
+          This style class is applied to the inner HTML table which
+          contains the table data (column headers,
+          row headers, and data cells).
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTableControlBarTop">
+          <description>
+          This style class is applied to the table's top control bar.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTableControlBarText">
+          <description>
+          This style class is applied to text in the table control bars.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTableControlBarBottom">
+          <description>
+          This style class is applied to the table's bottom control bar.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTableSubControlBar">
+          <description>
+          This style class is applied to the table's sub control bar.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTableCellText">
+          <description>
+          Specifies properties for text cells.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTableCellTextBand">
+          <description>
+          Specifies properties for banded text cells.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTableCellNumber">
+          <description>
+          Specifies properties for numeric cells.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTableCellNumberBand">
+          <description>
+          Specifies properties for banded numeric cells.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTableCellIconButton">
+          <description>
+          Specifies properties for icon cells.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTableCellIconButtonBand">
+          <description>
+          Specifies properties for banded icon cells.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTableColumnHeader">
+          <description>
+          Specifies properties for column headers.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTableColumnHeaderNumber">
+          <description>
+          Specifies properties for numeric column headers.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTableColumnHeaderIconButton">
+          <description>
+          Specifies properties for icon column headers.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTableRowHeader">
+          <description>
+          Specifies properties for row headers.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTableDetail">
+          <description>
+          Specifies properties for detail disclosure cells.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTableColumnFooter">
+          <description>
+          Specifies properties for column footers.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTableTotal">
+          <description>
+          Specifies properties for the totalRow's "Total" label.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTableTotalText">
+          <description>
+          Specifies properties for text total row cells.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTableTotalNumber">
+          <description>
+          Specifies properties for numeric total row cells.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTableSortableColumnHeader">
+          <description>
+          Specifies properties for sortable column headers.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTableSortableColumnHeaderNumber">
+          <description>
+          Specifies properties for numeric sortable column headers.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTableSortableColumnHeaderIconButton">
+          <description>
+          Specifies properties for icon sortable column headers.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTableSortableHeaderLink">
+          <description>
+          Specifies properties for sortable header links.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTableHeaderLink">
+          <description>
+          Specifies properties for sortable header links
+          for sortableHeaders which do not support sorting 
+          (ie. where sortable="no").
+          </description>
+        </styleClass>
+
+      </styles>
+    </component>
+
+    <component name="train">
+      <styles>
+
+        <styleClass id="OraTrainActive">
+          <description>
+          Style class for the active train station.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTrainVisited">
+          <description>
+          Style class for visited train stations.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTrainDisabled">
+          <description>
+          Style class for disabled train stations.
+          </description>
+        </styleClass>
+
+        <styleClass id="OraTrainUnvisited">
+          <description>
+          Style class for unvisited train stations.
+          </description>
+        </styleClass>
+
+        <namedStyle id="TrainStation">
+          <description>
+          Named style that is included by all of the OraTrain*
+          style classes.
+          </description>
+        </namedStyle>
+
+        <selector id=".OraTrainVisited A">
+          <description>
+          Style class for visited train stations links.
+          </description>
+        </selector>
+
+        <selector id=".OraTrainUnvisited A">
+          <description>
+          Style class for unvisited train stations links.
+          </description>
+        </selector>
+
+      </styles>
+    </component>
+
+  </componentMetadata>
+  
+
+<!--
+        <icon id="">
+          <description>
+          </description>
+        </icon>
+
+        <styleClass id="">
+          <description>
+          </description>
+        </styleClass>
+
+        <namedStyle id="">
+          <description>
+          </description>
+        </namedStyle>
+
+
+-->
+
+</lookAndFeelMetadata>

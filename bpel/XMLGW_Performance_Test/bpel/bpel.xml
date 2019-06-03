@@ -1,0 +1,15 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="dev03xmlgw" src="dev03xmlgw.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="XMLGateway">
+            <property name="wsdlLocation">XMLGateway.wsdl</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+      <activationAgents>
+         <activationAgent className="oracle.tip.adapter.fw.agent.jca.JCAActivationAgent" partnerLink="XMLGateway">
+            <property name="portType">Dequeue_ptt</property>
+         </activationAgent>
+      </activationAgents>
+   </BPELProcess>
+</BPELSuitcase>

@@ -1,0 +1,312 @@
+<?xml version="1.0"?>
+<!-- $Header: oa.xss 115.20 2005/04/19 08:41:38 gmallesh noship $ -->
+<styleSheetDocument xmlns="http://bali.us.oracle.com/cabo/ocelot">
+ 
+<!-- Fixed bug 4061442 - biaddins.xss imports both blaf.xss and bistyles.xss -->
+<import href="biaddins.xss"/>
+
+<styleSheet>
+
+  <!-- From the PA Team -->
+  <style selector=".TimeScaleText">
+    <includeStyle name="VerySmallFont"/>
+    <includeStyle name="CenterTextAlign"/>
+  </style>
+
+  <!-- From the PA Team -->
+  <style selector=".TimeScaleHeading">
+    <includeStyle name="DefaultFont"/>
+    <includeStyle name="CenterTextAlign"/>
+  </style>
+
+  <!-- From the PA Team -->
+  <style selector=".TimeScaleEndings">
+    <includeStyle name="VerySmallFont"/>
+    <includeStyle name="EndTextAlign"/>
+  </style>
+
+  <!-- From the PA Team -->
+  <style selector=".RowLabelsText">
+    <includeStyle name="DefaultFont"/>
+    <includeStyle name="EndTextAlign"/>
+    <property name="vertical-align">bottom</property>
+  </style>
+
+  <!-- From the PA Team -->
+  <style selector=".RowLabelsTitleText">
+    <includeStyle name="DefaultBoldFont"/>
+    <includeStyle name="EndTextAlign"/>
+  </style>
+
+  <!-- From the PA Team -->
+  <style selector=".LegendText">
+    <includeStyle name="DefaultFont"/>
+    <includeStyle name="StartTextAlign"/>
+  </style>
+
+  <!-- From the ITR team Naraynan Iyer  -->
+  <style selector=".ITRHomeWelcome">
+    <includeStyle name="DefaultBoldFont"/>
+    <includeStyle name="DarkForeground"/>    
+    <property name="font-size">15pt</property>    
+  </style>
+  
+  <!-- From the ITR team Naraynan Iyer  -->
+  <style selector=".ITRHomeUser">
+    <includeStyle name="DefaultFont"/>
+    <includeStyle name="DarkForeground"/>
+    <property name="font-size">13pt</property>   
+  </style>
+  
+  <!-- From the ITR team Naraynan Iyer  -->
+  <style selector=".ITRHomeTo">
+    <includeStyle name="DefaultBoldFont"/>
+    <includeStyle name="VeryDarkAccentForeground"/>    
+    <property name="font-size">15pt</property>   
+  </style>  
+
+  <!-- From the BSC Team Jui Wang -->
+  <!-- Added by Jui Wang at Jan 15, 2001 for BSC -->
+  <style selector=".OraGraphTitle">
+    <includeStyle name="LargeFont"/>
+    <includeStyle name="TextBackground"/>
+    <includeStyle name="DarkForeground"/>
+  </style>
+
+  <!-- From the BSC Team Jui Wang -->
+  <style selector=".OraSimTreeNodeText">
+    <includeStyle name="SmallFont"/>
+    <includeStyle name="TextForeground"/>
+  </style>
+
+  <!-- From the BSC Team Jui Wang -->
+  <style selector="A.OraSimTreeNodeLink:link">
+    <includeStyle name="SmallFont"/>
+    <includeStyle name="LinkForeground"/>
+  </style>
+
+  
+  <!-- From the BSC Team Jui Wang -->
+  <style selector="A.OraSimTreeNodeLink:active">
+    <includeStyle name="SmallFont"/>
+    <includeStyle name="ActiveLinkForeground"/>
+  </style>
+
+
+  <!-- From the BSC Team Jui Wang -->
+  <style selector="A.OraSimTreeNodeLink:visited">
+    <includeStyle name="SmallFont"/>
+    <includeStyle name="VisitedLinkForeground"/>
+  </style>
+  
+
+  <!-- From the BSC Team Jui Wang -->
+  <style selector=".BscKpiGroupNameText">
+    <includeStyle name="SmallFont"/>
+    <includeStyle name="TextForeground"/>
+    <property name="font-weight">bold</property>
+  </style>
+
+
+  <!-- From the BSC Team Jui Wang -->
+  <!-- Added by Henry Camacho at Jan 23, 2001 for BSC -->
+  <style selector=".BscDefaultFontFamily">
+    <includeStyle name="DefaultFontFamily"/>
+  </style>
+
+  <!-- From the BSC Team Jui Wang -->
+  <!-- Added by JXYU at Aug 22, 2001 for Bsc Portlet Style-->
+  <style selector=".OraPortletBodyText">
+    <includeStyle name="DefaultFontFamily"/>
+    <property name="font-size">9pt</property>
+    <property name="color">#003366</property>
+    <property name="text-indent">3px</property>
+  </style>
+
+  <!-- From the BSC Team Jui Wang -->
+  <style selector="A.OraPortletLink:link">
+    <includeStyle name="DefaultFontFamily"/>
+    <property name="font-size">9pt</property>
+    <property name="color">#003366</property>
+  </style>
+
+  <!-- From the BSC Team Jui Wang -->
+  <style selector="A.OraPortletLink:active">
+    <includeStyle name="DefaultFontFamily"/>
+    <property name="font-size">9pt</property>
+    <property name="color">#003366</property>
+  </style>
+
+  <!-- From the BSC Team Jui Wang -->
+  <style selector="A.OraPortletLink:visited">
+    <includeStyle name="DefaultFontFamily"/>
+    <property name="font-size">9pt</property>
+    <property name="color">#003366</property>
+  </style>
+
+  <!-- From the BSC Team Jui Wang -->
+  <!-- Added by JXYU at Aug 27, 2001 for Bsc Graph Portlet Style-->
+  <style selector=".OraPortletBodyTextDisabled">
+    <includeStyle name="DefaultFontFamily"/>
+    <property name="font-size">9pt</property>
+    <property name="color">#999999</property>
+    <property name="text-indent">3px</property>
+  </style>
+
+  <!-- From the BSC - Jui Wang  -->
+  <!-- Added by Peter Ho on Sep 18, 2001 for BSC -->
+  <style selector=".BscSimTreeMode">
+    <includeStyle name="DefaultFont"/>
+    <includeStyle name="MediumExtraAccentForeground"/>
+    <property name="font-size">15pt</property>
+  </style>
+
+  <!-- From the BSC - Jui Wang  -->
+  <style selector=".BscSimTreeNodeText">
+    <includeStyle name="SmallFont"/>
+    <includeStyle name="TextForeground"/>
+  </style>
+
+  <!-- From the BSC - Jui Wang  -->
+  <style selector="A.BscSimTreeNodeLink:link">
+    <includeStyle name="SmallFont"/>
+    <includeStyle name="LinkForeground"/>
+  </style>
+
+  <!-- From the BSC - Jui Wang  -->
+  <style selector="A.BscSimTreeNodeLink:active">
+    <includeStyle name="SmallFont"/>
+    <includeStyle name="ActiveLinkForeground"/>
+  </style>
+
+  <!-- From the BSC - Jui Wang  -->
+  <style selector="A.BscSimTreeNodeLink:visited">
+    <includeStyle name="SmallFont"/>
+    <includeStyle name="VisitedLinkForeground"/>
+  </style>
+
+  <!-- From the BSC - Jui Wang  -->
+  <style selector=".BscTabNameText">
+    <includeStyle name="LargeFont"/>
+    <includeStyle name="DarkForeground"/>
+    <property name="font-size">14pt</property>
+  </style>
+
+  <!-- From the BSC - Jui Wang  -->
+  <!-- Added by JXYU at Jul 27, 2001 for BSC Bug 1862865-->
+  <style selector=".BscTableCellText">
+    <includeStyle name="DefaultFont"/>
+    <includeStyle name="LightAccentBackground"/>
+    <includeStyle name="TextForeground"/>
+    <property name="vertical-align"/>
+  </style>
+
+  <!-- From the BSC - Jui Wang  -->
+  <!-- Added by JXYU at Aug 22, 2001 for Bsc Portlet Style-->
+  <style selector=".BscPortletBodyText">
+    <includeStyle name="DefaultFontFamily"/>
+    <property name="font-size">9pt</property>
+    <property name="color">#003366</property>
+    <property name="text-indent">3px</property>
+  </style>
+
+  <!-- From the BSC - Jui Wang  -->
+  <style selector="A.BscPortletLink:link">
+    <includeStyle name="DefaultFontFamily"/>
+    <property name="font-size">9pt</property>
+    <property name="color">#003366</property>
+  </style>
+
+  <!-- From the BSC - Jui Wang  -->
+  <style selector="A.BscPortletLink:active">
+    <includeStyle name="DefaultFontFamily"/>
+    <property name="font-size">9pt</property>
+    <property name="color">#003366</property>
+  </style>
+
+  <!-- From the BSC - Jui Wang  -->
+  <style selector="A.BscPortletLink:visited">
+    <includeStyle name="DefaultFontFamily"/>
+    <property name="font-size">9pt</property>
+    <property name="color">#003366</property>
+  </style>
+
+  <!-- From the BSC - Jui Wang  -->
+  <!-- Added by JXYU at Aug 27, 2001 for Bsc Graph Portlet Style-->
+  <style selector=".BscPortletBodyTextDisabled">
+    <includeStyle name="DefaultFontFamily"/>
+    <property name="font-size">9pt</property>
+    <property name="color">#999999</property>
+    <property name="text-indent">3px</property>
+  </style>
+
+  <!-- From the BSC Team - JXYU -->
+  <style selector=".BscPortletBodyTextBlack">
+    <includeStyle name="DefaultFontFamily"/>
+    <property name="font-size">9pt</property>
+    <property name="color">#000000</property>
+  </style>
+
+  <!-- BEGIN: Styles for Oracle Configurator -->
+  <!-- Received from Ivan Lazarov on Dec 5th, 2003 -->
+  <style selector=".p_OraWireFrame">   
+    <includeStyle name="WireFrameBorder"/>
+    <property name="border-color">#4482C6</property>
+    <property name="border-style">solid</property>
+    <property name="padding">0px 0px 0px 0px</property>
+    <property name="border-width">2px 2px 2px 2px</property>
+  </style>
+
+  <style selector=".p_OraConfiguratorPadding">   
+    <property name="padding">5px 5px 5px 5px</property>
+  </style>
+
+  <style selector=".p_OraWireFrameWithPadding">   
+    <includeStyle name="WireFrameBorder"/>
+    <property name="border-color">#4482C6</property>
+    <property name="border-style">solid</property>
+    <property name="padding">3px 3px 3px 3px</property>
+    <property name="border-width">1px 1px 1px 1px</property>
+  </style>
+
+  <style selector=".p_OraWireFrameBox">
+    <includeStyle name="LightAccentBackground"/>
+    <includeStyle name="WireFrameBorder"/>
+    <property name="border-color">#4482C6</property>
+    <property name="border-style">solid</property>
+    <property name="padding">5px 5px 5px 5px</property>
+    <property name="border-width">0px 0px 1px 0px</property>
+  </style>
+
+  <style selector=".p_OraWireFrameFill">
+    <includeStyle name="WireFrameBackground"/>
+    <includeStyle name="WireFrameBorder"/>
+  </style>
+
+  <style name="WireFrameBackground">
+    <property name="background-color">#4482C6</property>
+  </style>
+
+  <style name="WireFrameBorder">
+    <includeProperty name="WireFrameBackground"
+                    propertyName="background-color"
+                    localPropertyName="border-color"/>
+  </style>
+
+  <style selector=".InputColumnWidth">   
+    <includeStyle name="OraFieldText"/>
+    <property name="width">95%</property>
+  </style>
+  <!-- END: Styles for Oracle Configurator -->
+
+
+</styleSheet>
+
+<styleSheet locales="en">
+  <!-- Fixed bug 4061455 - override DefaultBIGraphFont in bistyles.xss -->
+  <style name="DefaultBIGraphFont">
+    <property name="font-family">Albany WT J,Dialog</property>
+  </style>
+</styleSheet>
+
+</styleSheetDocument>

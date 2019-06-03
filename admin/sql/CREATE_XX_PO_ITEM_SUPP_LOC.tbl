@@ -1,0 +1,4 @@
+delete from apps.qa_results
+where plan_id in (select plan_id
+from apps.qa_plans where name like 'OD%');
+commit;

@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+
+<Entity
+   Name="SubbuJitaResults"
+   DBObjectType="table"
+   DBObjectName="SUBBU_JITA_RESULTS"
+   AliasName="SubbuJitaResults"
+   BindingStyle="Oracle"
+   UseGlueCode="false"
+   CodeGenFlag="71"
+   RowClass="od.oracle.apps.xxmer.jitaresults.schema.server.SubbuJitaResultsImpl"
+   DefClass="oracle.apps.fnd.framework.server.OAEntityDefImpl"
+   CollClass="oracle.apps.fnd.framework.server.OAEntityCache" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <AttrArray Name="_publishEvents">
+      </AttrArray>
+   </DesignTime>
+   <Attribute
+      Name="PoNbr"
+      Precision="38"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="PO_NBR"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="SUBBU_JITA_RESULTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ReceiptNum"
+      Precision="38"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="RECEIPT_NUM"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="SUBBU_JITA_RESULTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="FromLocId"
+      Precision="38"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="FROM_LOC_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="SUBBU_JITA_RESULTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ToLocId"
+      Precision="38"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="TO_LOC_ID"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="SUBBU_JITA_RESULTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Sku"
+      Precision="38"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="SKU"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="SUBBU_JITA_RESULTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="AllocDt"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="ALLOC_DT"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="SUBBU_JITA_RESULTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="AllocTimestamp"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="ALLOC_TIMESTAMP"
+      ColumnType="DATE"
+      SQLType="TIMESTAMP"
+      TableName="SUBBU_JITA_RESULTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="7" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="AllocQty"
+      Precision="38"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="ALLOC_QTY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="SUBBU_JITA_RESULTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="DynamicQty"
+      Precision="38"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="DYNAMIC_QTY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="SUBBU_JITA_RESULTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="LockInQty"
+      Precision="38"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LOCK_IN_QTY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="SUBBU_JITA_RESULTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="AdtlNeedQty"
+      Precision="38"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="ADTL_NEED_QTY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="SUBBU_JITA_RESULTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="MarkOutQty"
+      Precision="38"
+      Scale="0"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="MARK_OUT_QTY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="SUBBU_JITA_RESULTS" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="22" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="RowID"
+      IsUpdateable="false"
+      Type="oracle.jbo.domain.RowID"
+      ColumnName="ROWID"
+      ColumnType="ROWID"
+      SQLType="VARCHAR"
+      PrimaryKey="true" >
+   </Attribute>
+   <Attribute
+      Name="LastUpdateLogin"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATE_LOGIN"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="SUBBU_JITA_RESULTS" >
+   </Attribute>
+   <Attribute
+      Name="LastUpdatedBy"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="LAST_UPDATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="SUBBU_JITA_RESULTS" >
+   </Attribute>
+   <Attribute
+      Name="LastUpdateDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="LAST_UPDATE_DATE"
+      ColumnType="DATE"
+      SQLType="DATE"
+      TableName="SUBBU_JITA_RESULTS" >
+   </Attribute>
+   <Attribute
+      Name="CreatedBy"
+      Type="oracle.jbo.domain.Number"
+      ColumnName="CREATED_BY"
+      ColumnType="NUMBER"
+      SQLType="NUMERIC"
+      TableName="SUBBU_JITA_RESULTS" >
+   </Attribute>
+   <Attribute
+      Name="CreationDate"
+      Type="oracle.jbo.domain.Date"
+      ColumnName="CREATION_DATE"
+      ColumnType="DATE"
+      SQLType="DATE"
+      TableName="SUBBU_JITA_RESULTS" >
+   </Attribute>
+</Entity>

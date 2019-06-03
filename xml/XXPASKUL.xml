@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXPASKUL" description="OD Projects SKU Launch List Report" Version="1.0">
+<parameters>
+ <parameter name="p_division" datatype="character" />
+ <parameter name="p_dept" datatype="character" />
+ <parameter name="p_di_merchant" datatype="character" />
+ <parameter name="p_project_no" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_SKUL">
+<![CDATA[
+SELECT  ppa1.project_id,
+        COALESCE(EEB1.C_EXT_ATTR5,'') AS DIVISION
+       ,COALESCE(EEB1.C_EXT_ATTR1,'') AS DEPARTMENT 
+       ,COALESCE(EEB1.C_EXT_ATTR6,'') AS DI_MERCHANT
+       ,PPA1.SEGMENT1 AS PROJECT_NUMBER 
+       ,PPA1.NAME  AS PROJECT_NAME
+       ,PPS1.PROJECT_STATUS_NAME  AS PROJECT_STATUS 
+       ,EEB1.D_EXT_ATTR1 AS Init_launch_date
+       ,EEB1.D_EXT_ATTR2 AS Rev_launch_date
+       ,COALESCE(EEB2.SKU,'NOSKU') AS SKU
+       ,COALESCE(EEB2.product_desc,'') AS SKU_DESC
+       ,COALESCE(EEB2.VPC,'') AS VPC
+       ,COALESCE(EEB1.C_EXT_ATTR3,'') AS BRAND
+       ,COALESCE(EEB3.C_EXT_ATTR4,'') AS Supplier
+  FROM apps.PA_PROJECT_STATUSES PPS1,
+       APPS.PA_PROJECTS_ALL PPA1 LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB1 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND1 ON 
+                 EEB1.ATTR_GROUP_ID = FND1.ATTR_GROUP_ID AND
+                 FND1.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_GEN_INFO') ON
+                 PPA1.PROJECT_ID = EEB1.PROJECT_ID,
+            APPS.PA_PROJECTS_ALL PPA2 LEFT OUTER JOIN 
+              ( APPS.XX_PA_PB_GENPRD_DTL EEB2) ON
+                 PPA2.PROJECT_ID = EEB2.PROJECT_ID,
+            APPS.PA_PROJECTS_ALL PPA3 LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB3 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND3 ON 
+                 EEB3.ATTR_GROUP_ID = FND3.ATTR_GROUP_ID AND
+                 FND3.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_SOURCING') ON
+                 PPA3.PROJECT_ID = EEB3.PROJECT_ID
+ WHERE PPA1.PROJECT_ID > 0
+   AND PPA1.TEMPLATE_FLAG = 'N'
+   AND PPA1.PROJECT_STATUS_CODE = PPS1.PROJECT_STATUS_CODE
+   AND PPA1.SEGMENT1 LIKE 'PB%' 
+   AND PPA1.project_id=PPA2.project_id
+   AND PPA1.project_id=PPA3.project_id
+   AND NVL(EEB1.C_EXT_ATTR5,'X')=NVL(:p_division,NVL(EEB1.C_EXT_ATTR5,'X'))
+   AND NVL(EEB1.C_EXT_ATTR1,'X')=NVL(:p_dept,NVL(EEB1.C_EXT_ATTR1,'X'))
+   AND NVL(EEB1.C_EXT_ATTR6,'X')=NVL(:p_di_merchant,NVL(EEB1.C_EXT_ATTR6,'X'))
+   AND ppa1.segment1=NVL(:p_project_no,ppa1.segment1)
+ORDER BY 1
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_SKUL" source="Q_SKUL">
+<element name="DIVISION" value="DIVISION" />
+<element name="DEPARTMENT" value="DEPARTMENT" />
+<element name="DI_MERCHANT_NAME" value="DI_MERCHANT" />
+<element name="PROJECT_NO" value="PROJECT_NUMBER" />
+<element name="PROJECT_NAME" value="PROJECT_NAME" />
+<element name="PROJECT_STATUS_NAME" value="PROJECT_STATUS" />
+<element name="INIT_LAUNCH_DATE" value="INIT_LAUNCH_DATE" />
+<element name="REV_LAUNCH_DATE" value="REV_LAUNCH_DATE" />
+<element name="SKU" value="SKU" />
+<element name="SKU_DESC" value="SKU_DESC" />
+<element name="VPC" value="VPC" />
+<element name="BRAND" value="BRAND" />
+<element name="SUPPLIER" value="SUPPLIER" />
+</group>
+</dataStructure>
+</dataTemplate>

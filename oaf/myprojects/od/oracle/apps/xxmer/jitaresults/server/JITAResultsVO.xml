@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding='windows-1252'?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+
+<ViewObject
+   Name="JITAResultsVO"
+   SelectList="SubbuJitaResults.PO_NBR, 
+       SubbuJitaResults.RECEIPT_NUM, 
+
+       SubbuJitaResults.FROM_LOC_ID, 
+       SubbuJitaResults.TO_LOC_ID, 
+
+       SubbuJitaResults.SKU, 
+       SubbuJitaResults.ALLOC_DT, 
+
+       SubbuJitaResults.ALLOC_TIMESTAMP, 
+       SubbuJitaResults.ALLOC_QTY, 
+
+       SubbuJitaResults.DYNAMIC_QTY, 
+       SubbuJitaResults.LOCK_IN_QTY, 
+
+       SubbuJitaResults.ADTL_NEED_QTY, 
+       SubbuJitaResults.MARK_OUT_QTY, 
+
+       SubbuJitaResults.ROWID"
+   FromList="SUBBU_JITA_RESULTS SubbuJitaResults"
+   BindingStyle="Oracle"
+   CustomQuery="false"
+   RowClass="od.oracle.apps.xxmer.jitaresults.server.JITAResultsVORowImpl"
+   ComponentClass="od.oracle.apps.xxmer.jitaresults.server.JITAResultsVOImpl"
+   MsgBundleClass="oracle.jbo.common.JboResourceBundle"
+   UseGlueCode="false" >
+   <DesignTime>
+      <Attr Name="_isCodegen" Value="true" />
+      <Attr Name="_version" Value="9.0.3.13.75" />
+      <Attr Name="_CodeGenFlagNew" Value="36" />
+   </DesignTime>
+   <EntityUsage
+      Name="SubbuJitaResults"
+      Entity="od.oracle.apps.xxmer.jitaresults.schema.server.SubbuJitaResults" >
+      <DesignTime>
+         <Attr Name="_EntireObjectTable" Value="false" />
+         <Attr Name="_queryClause" Value="false" />
+      </DesignTime>
+   </EntityUsage>
+   <ViewAttribute
+      Name="PoNbr"
+      EntityAttrName="PoNbr"
+      EntityUsage="SubbuJitaResults"
+      AliasName="PO_NBR"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ReceiptNum"
+      EntityAttrName="ReceiptNum"
+      EntityUsage="SubbuJitaResults"
+      AliasName="RECEIPT_NUM"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="FromLocId"
+      EntityAttrName="FromLocId"
+      EntityUsage="SubbuJitaResults"
+      AliasName="FROM_LOC_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="ToLocId"
+      EntityAttrName="ToLocId"
+      EntityUsage="SubbuJitaResults"
+      AliasName="TO_LOC_ID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="Sku"
+      EntityAttrName="Sku"
+      EntityUsage="SubbuJitaResults"
+      AliasName="SKU"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AllocDt"
+      EntityAttrName="AllocDt"
+      EntityUsage="SubbuJitaResults"
+      AliasName="ALLOC_DT"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AllocTimestamp"
+      EntityAttrName="AllocTimestamp"
+      EntityUsage="SubbuJitaResults"
+      AliasName="ALLOC_TIMESTAMP"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AllocQty"
+      EntityAttrName="AllocQty"
+      EntityUsage="SubbuJitaResults"
+      AliasName="ALLOC_QTY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="DynamicQty"
+      EntityAttrName="DynamicQty"
+      EntityUsage="SubbuJitaResults"
+      AliasName="DYNAMIC_QTY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="LockInQty"
+      EntityAttrName="LockInQty"
+      EntityUsage="SubbuJitaResults"
+      AliasName="LOCK_IN_QTY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="AdtlNeedQty"
+      EntityAttrName="AdtlNeedQty"
+      EntityUsage="SubbuJitaResults"
+      AliasName="ADTL_NEED_QTY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="MarkOutQty"
+      EntityAttrName="MarkOutQty"
+      EntityUsage="SubbuJitaResults"
+      AliasName="MARK_OUT_QTY"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+   <ViewAttribute
+      Name="RowID"
+      IsUpdateable="false"
+      EntityAttrName="RowID"
+      EntityUsage="SubbuJitaResults"
+      AliasName="ROWID"
+      ColumnType="VARCHAR2" >
+   </ViewAttribute>
+</ViewObject>

@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXPATSKS" description="OD General Project Task Status Report" Version="1.0">
+<parameters>
+ <parameter name="p_type" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_PARAM">
+<![CDATA[
+ SELECT DECODE(:p_type,'US','US','GSO','GSO','ALL','ALL') PDP
+  FROM DUAL
+]]>
+</sqlStatement>
+<sqlStatement name="Q_USP">
+<![CDATA[
+   SELECT COUNT(DECODE(a.task_status_meaning,'In Progress',1)) InProgress,
+	    COUNT(DECODE(a.task_status_meaning,'Completed',1)) compl,
+	    COUNT(DECODE(a.task_status_meaning,'Not Started',1)) NS,
+	    COUNT(DECODE(a.task_status_meaning,'On Hold',1)) OH,
+	    a.task_manager
+     FROM apps.fnd_user e,
+	    apps.PA_STRUCTURES_TASKS_V a,
+          apps.pa_project_statuses d, 
+          apps.pa_projects_all c 
+    where c.template_flag='N'
+      and d.project_status_code=c.project_status_code
+      and d.project_status_name not in ('Closed','Cancelled','Rejected','On Hold')
+      and a.project_id=c.project_id
+      and a.latest_eff_published_flag='Y'
+      AND a.object_type = 'PA_TASKS'
+      AND TRUNC(a.scheduled_finish_date)<=TRUNC(SYSDATE)
+      AND length(a.element_number)<=4
+      and e.employee_id=a.task_manager_id
+	and e.user_name NOT LIKE '8%'
+group by a.task_manager
+order by a.task_manager
+]]>
+</sqlStatement>
+<sqlStatement name="Q_USPR">
+<![CDATA[
+SELECT COUNT(DECODE(a.task_status_meaning,'In Progress',1)) InProgress,
+       COUNT(DECODE(a.task_status_meaning,'Completed',1)) compl,
+       COUNT(DECODE(a.task_status_meaning,'Not Started',1)) NS,
+       COUNT(DECODE(a.task_status_meaning,'On Hold',1)) OH,
+       COUNT(DECODE(a.task_status_meaning,'In Progress',1))+
+       COUNT(DECODE(a.task_status_meaning,'Completed',1))+
+       COUNT(DECODE(a.task_status_meaning,'Not Started',1))+
+       COUNT(DECODE(a.task_status_meaning,'On Hold',1)) total,
+      DECODE((COUNT(DECODE(a.task_status_meaning,'In Progress',1))+
+       COUNT(DECODE(a.task_status_meaning,'Completed',1))+
+       COUNT(DECODE(a.task_status_meaning,'Not Started',1))+
+       COUNT(DECODE(a.task_status_meaning,'On Hold',1))),0,1,
+       (COUNT(DECODE(a.task_status_meaning,'In Progress',1))+
+       COUNT(DECODE(a.task_status_meaning,'Completed',1))+
+       COUNT(DECODE(a.task_status_meaning,'Not Started',1))+
+       COUNT(DECODE(a.task_status_meaning,'On Hold',1)))) totalnew,
+       	ROUND((COUNT(DECODE(a.task_status_meaning,'In Progress',1))/
+      DECODE((COUNT(DECODE(a.task_status_meaning,'In Progress',1))+
+       COUNT(DECODE(a.task_status_meaning,'Completed',1))+
+       COUNT(DECODE(a.task_status_meaning,'Not Started',1))+
+       COUNT(DECODE(a.task_status_meaning,'On Hold',1))),0,1,
+       (COUNT(DECODE(a.task_status_meaning,'In Progress',1))+
+       COUNT(DECODE(a.task_status_meaning,'Completed',1))+
+       COUNT(DECODE(a.task_status_meaning,'Not Started',1))+
+       COUNT(DECODE(a.task_status_meaning,'On Hold',1)))))*100,2) inpr,
+       	ROUND((COUNT(DECODE(a.task_status_meaning,'Completed',1))/
+      DECODE((COUNT(DECODE(a.task_status_meaning,'In Progress',1))+
+       COUNT(DECODE(a.task_status_meaning,'Completed',1))+
+       COUNT(DECODE(a.task_status_meaning,'Not Started',1))+
+       COUNT(DECODE(a.task_status_meaning,'On Hold',1))),0,1,
+       (COUNT(DECODE(a.task_status_meaning,'In Progress',1))+
+       COUNT(DECODE(a.task_status_meaning,'Completed',1))+
+       COUNT(DECODE(a.task_status_meaning,'Not Started',1))+
+       COUNT(DECODE(a.task_status_meaning,'On Hold',1)))))*100,2) compr,
+	ROUND((COUNT(DECODE(a.task_status_meaning,'Not Started',1))/
+      DECODE((COUNT(DECODE(a.task_status_meaning,'In Progress',1))+
+       COUNT(DECODE(a.task_status_meaning,'Completed',1))+
+       COUNT(DECODE(a.task_status_meaning,'Not Started',1))+
+       COUNT(DECODE(a.task_status_meaning,'On Hold',1))),0,1,
+       (COUNT(DECODE(a.task_status_meaning,'In Progress',1))+
+       COUNT(DECODE(a.task_status_meaning,'Completed',1))+
+       COUNT(DECODE(a.task_status_meaning,'Not Started',1))+
+       COUNT(DECODE(a.task_status_meaning,'On Hold',1)))))*100,2) nspr,
+	ROUND((COUNT(DECODE(a.task_status_meaning,'On Hold',1))/
+      DECODE((COUNT(DECODE(a.task_status_meaning,'In Progress',1))+
+       COUNT(DECODE(a.task_status_meaning,'Completed',1))+
+       COUNT(DECODE(a.task_status_meaning,'Not Started',1))+
+       COUNT(DECODE(a.task_status_meaning,'On Hold',1))),0,1,
+       (COUNT(DECODE(a.task_status_meaning,'In Progress',1))+
+       COUNT(DECODE(a.task_status_meaning,'Completed',1))+
+       COUNT(DECODE(a.task_status_meaning,'Not Started',1))+
+       COUNT(DECODE(a.task_status_meaning,'On Hold',1)))))*100,2) ohpr               
+     FROM apps.fnd_user e,
+	    apps.PA_STRUCTURES_TASKS_V a,
+          apps.pa_project_statuses d, 
+          apps.pa_projects_all c 
+    where c.template_flag='N'
+      and d.project_status_code=c.project_status_code
+      and d.project_status_name not in ('Closed','Cancelled','Rejected','On Hold')
+      and a.project_id=c.project_id
+      and a.latest_eff_published_flag='Y'
+      AND a.object_type = 'PA_TASKS'
+      AND TRUNC(a.scheduled_finish_date)<=TRUNC(SYSDATE)
+      AND length(a.element_number)<=4
+      and e.employee_id=a.task_manager_id
+	and e.user_name NOT LIKE '8%'
+]]>
+</sqlStatement>
+<sqlStatement name="Q_GSP">
+<![CDATA[
+   SELECT COUNT(DECODE(a.task_status_meaning,'In Progress',1)) InProgress,
+	    COUNT(DECODE(a.task_status_meaning,'Completed',1)) compl,
+	    COUNT(DECODE(a.task_status_meaning,'Not Started',1)) NS,
+	    COUNT(DECODE(a.task_status_meaning,'On Hold',1)) OH,
+	    a.task_manager 
+     FROM apps.fnd_user e,
+	    apps.PA_STRUCTURES_TASKS_V a,
+          apps.pa_project_statuses d, 
+          apps.pa_projects_all c 
+    where c.template_flag='N'
+      and d.project_status_code=c.project_status_code
+      and d.project_status_name not in ('Closed','Cancelled','Rejected','On Hold')
+      and a.project_id=c.project_id
+      and a.latest_eff_published_flag='Y'
+      AND a.object_type = 'PA_TASKS'
+      AND TRUNC(a.scheduled_finish_date)<=TRUNC(SYSDATE)
+      AND length(a.element_number)<=4
+      and e.employee_id=a.task_manager_id
+	and e.user_name LIKE '8%'
+group by a.task_manager 
+order by a.task_manager
+]]>
+</sqlStatement>
+<sqlStatement name="Q_GSPR">
+<![CDATA[
+SELECT COUNT(DECODE(a.task_status_meaning,'In Progress',1)) InProgress,
+       COUNT(DECODE(a.task_status_meaning,'Completed',1)) compl,
+       COUNT(DECODE(a.task_status_meaning,'Not Started',1)) NS,
+       COUNT(DECODE(a.task_status_meaning,'On Hold',1)) OH,
+       COUNT(DECODE(a.task_status_meaning,'In Progress',1))+
+       COUNT(DECODE(a.task_status_meaning,'Completed',1))+
+       COUNT(DECODE(a.task_status_meaning,'Not Started',1))+
+       COUNT(DECODE(a.task_status_meaning,'On Hold',1)) total,
+      DECODE((COUNT(DECODE(a.task_status_meaning,'In Progress',1))+
+       COUNT(DECODE(a.task_status_meaning,'Completed',1))+
+       COUNT(DECODE(a.task_status_meaning,'Not Started',1))+
+       COUNT(DECODE(a.task_status_meaning,'On Hold',1))),0,1,
+       (COUNT(DECODE(a.task_status_meaning,'In Progress',1))+
+       COUNT(DECODE(a.task_status_meaning,'Completed',1))+
+       COUNT(DECODE(a.task_status_meaning,'Not Started',1))+
+       COUNT(DECODE(a.task_status_meaning,'On Hold',1)))) totalnew,
+       	ROUND((COUNT(DECODE(a.task_status_meaning,'In Progress',1))/
+      DECODE((COUNT(DECODE(a.task_status_meaning,'In Progress',1))+
+       COUNT(DECODE(a.task_status_meaning,'Completed',1))+
+       COUNT(DECODE(a.task_status_meaning,'Not Started',1))+
+       COUNT(DECODE(a.task_status_meaning,'On Hold',1))),0,1,
+       (COUNT(DECODE(a.task_status_meaning,'In Progress',1))+
+       COUNT(DECODE(a.task_status_meaning,'Completed',1))+
+       COUNT(DECODE(a.task_status_meaning,'Not Started',1))+
+       COUNT(DECODE(a.task_status_meaning,'On Hold',1)))))*100,2) inpr,
+       	ROUND((COUNT(DECODE(a.task_status_meaning,'Completed',1))/
+      DECODE((COUNT(DECODE(a.task_status_meaning,'In Progress',1))+
+       COUNT(DECODE(a.task_status_meaning,'Completed',1))+
+       COUNT(DECODE(a.task_status_meaning,'Not Started',1))+
+       COUNT(DECODE(a.task_status_meaning,'On Hold',1))),0,1,
+       (COUNT(DECODE(a.task_status_meaning,'In Progress',1))+
+       COUNT(DECODE(a.task_status_meaning,'Completed',1))+
+       COUNT(DECODE(a.task_status_meaning,'Not Started',1))+
+       COUNT(DECODE(a.task_status_meaning,'On Hold',1)))))*100,2) compr,
+	ROUND((COUNT(DECODE(a.task_status_meaning,'Not Started',1))/
+      DECODE((COUNT(DECODE(a.task_status_meaning,'In Progress',1))+
+       COUNT(DECODE(a.task_status_meaning,'Completed',1))+
+       COUNT(DECODE(a.task_status_meaning,'Not Started',1))+
+       COUNT(DECODE(a.task_status_meaning,'On Hold',1))),0,1,
+       (COUNT(DECODE(a.task_status_meaning,'In Progress',1))+
+       COUNT(DECODE(a.task_status_meaning,'Completed',1))+
+       COUNT(DECODE(a.task_status_meaning,'Not Started',1))+
+       COUNT(DECODE(a.task_status_meaning,'On Hold',1)))))*100,2) nspr,
+	ROUND((COUNT(DECODE(a.task_status_meaning,'On Hold',1))/
+      DECODE((COUNT(DECODE(a.task_status_meaning,'In Progress',1))+
+       COUNT(DECODE(a.task_status_meaning,'Completed',1))+
+       COUNT(DECODE(a.task_status_meaning,'Not Started',1))+
+       COUNT(DECODE(a.task_status_meaning,'On Hold',1))),0,1,
+       (COUNT(DECODE(a.task_status_meaning,'In Progress',1))+
+       COUNT(DECODE(a.task_status_meaning,'Completed',1))+
+       COUNT(DECODE(a.task_status_meaning,'Not Started',1))+
+       COUNT(DECODE(a.task_status_meaning,'On Hold',1)))))*100,2) ohpr               
+     FROM apps.fnd_user e,
+	    apps.PA_STRUCTURES_TASKS_V a,
+          apps.pa_project_statuses d, 
+          apps.pa_projects_all c 
+    where c.template_flag='N'
+      and d.project_status_code=c.project_status_code
+      and d.project_status_name not in ('Closed','Cancelled','Rejected','On Hold')
+      and a.project_id=c.project_id
+      and a.latest_eff_published_flag='Y'
+      AND a.object_type = 'PA_TASKS'
+      AND TRUNC(a.scheduled_finish_date)<=TRUNC(SYSDATE)
+      AND length(a.element_number)<=4
+      and e.employee_id=a.task_manager_id
+	and e.user_name LIKE '8%'
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_PARAM" source="Q_PARAM">
+<element name="PDP" value="PDP" />
+</group>
+<group name="G_USP" source="Q_USP">
+<element name="INPROGRESS" value="INPROGRESS" />
+<element name="COMPL" value="COMPL" />
+<element name="NS" value="NS" />
+<element name="OH" value="OH" />
+<element name="TASK_MANAGER" value="TASK_MANAGER" />
+</group>
+<group name="G_GSP" source="Q_GSP">
+<element name="INPROGRESS" value="INPROGRESS" />
+<element name="COMPL" value="COMPL" />
+<element name="NS" value="NS" />
+<element name="OH" value="OH" />
+<element name="TASK_MANAGER" value="TASK_MANAGER" />
+</group>
+<group name="G_USPR" source="Q_USPR">
+<element name="INPROGRESS" value="INPROGRESS" />
+<element name="COMPL" value="COMPL" />
+<element name="NS" value="NS" />
+<element name="OH" value="OH" />
+<element name="TOTAL" value="TOTAL" />
+<element name="INPR" value="INPR" />
+<element name="COMPR" value="COMPR" />
+<element name="NSPR" value="NSPR" />
+<element name="OHPR" value="OHPR" />
+</group>
+<group name="G_GSPR" source="Q_GSPR">
+<element name="INPROGRESS" value="INPROGRESS" />
+<element name="COMPL" value="COMPL" />
+<element name="NS" value="NS" />
+<element name="OH" value="OH" />
+<element name="TOTAL" value="TOTAL" />
+<element name="INPR" value="INPR" />
+<element name="COMPR" value="COMPR" />
+<element name="NSPR" value="NSPR" />
+<element name="OHPR" value="OHPR" />
+</group>
+</dataStructure>
+</dataTemplate>

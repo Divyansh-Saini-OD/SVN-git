@@ -1,0 +1,18 @@
+
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                             Office Depot                          |
+-- +===================================================================+
+-- | Name  : APPS.XX_PO_ALLOCATION_LINES                               |
+-- | Description: SYNONYM FOR EBS ALLOCAITON LINES TABLE               |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |1.0      06-21-2007   K.CRAWFORD       INITAL CODE                 |
+-- +===================================================================+
+
+CREATE OR REPLACE SYNONYM APPS.XX_PO_ALLOCATION_LINES FOR XXMER.XX_PO_ALLOCATION_LINES;

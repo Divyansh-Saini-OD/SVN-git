@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXQAINVDT" description="OD QA Invoice Detail Report" Version="1.0">
+<parameters>
+ <parameter name="P_Sp_Inv_No" datatype="character" />
+ <parameter name="P_Inv_Date_From" datatype="date" />
+ <parameter name="P_Inv_Date_To" datatype="date" />
+ <parameter name="P_Serv_Provider" datatype="character" />
+ <parameter name="P_Serv_Details" datatype="character" />
+ <parameter name="P_Serv_Period" datatype="character" />
+ <parameter name="P_Factory_Name" datatype="character" />
+ <parameter name="P_Payment_Status" datatype="character" />
+ <parameter name="P_Inv_Owner" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_XXQAINVDT">
+<![CDATA[
+Select  Rownum  Num
+       ,Qooiv.Od_Ob_Inv_Id          Invoice_Id
+       ,Qooiv.Od_Pb_Invoice_Num     Sp_Invoice_Number
+       ,Qooiv.Od_Pb_Date_Invoiced   Invoice_Date
+       ,Qooiv.Od_Pb_Company	        Service_Provider
+       ,Qooiv.Od_Ob_Service_Period  Service_Period
+       ,Qooiv.Od_Ob_Services	    Service_Details
+       ,Qooiv.Od_ob_Factory_Name	Factory_Name
+       ,Qooiv.Od_Pb_Payment_Method	Payment_Method
+       ,Qooiv.Od_Ob_Payment_Status	Payment_Status
+       ,Qooiv.Od_Ob_Invoice_Owner   Invoice_Owner
+       ,Qooiv.Od_Ob_Invoice_Amnt	Invoice_Amount_Us
+       ,Qooiv.Od_Pb_Cost_Associated	Cost_Us
+       ,Qooiv.Od_Pb_Tech_Rpt_Num	Report_Id
+       ,Qooiv.Od_Pb_Entity	        Paid_By
+       ,Qooiv.Od_Ob_Dispute_Yn	    Dispute
+       ,Qooiv.Od_Pb_Attachment	    Attachment
+       ,QOOIV.Od_Pb_Comments        Comments
+From    Q_Od_Ob_Invoicing_V Qooiv
+Where NVL(Qooiv.Od_Pb_Invoice_Num,'X') =NVL(:P_Sp_Inv_No,NVL(Qooiv.Od_Pb_Invoice_Num,'X'))
+  AND NVL(Qooiv.Od_Pb_Date_Invoiced,'01-JAN-1908') >= Decode(To_Date(:P_Inv_Date_From,'YYYY/MM/DD HH24:MI:SS'),Null,Nvl(Qooiv.Od_Pb_Date_Invoiced,'01-JAN-1908'),To_Date(:P_Inv_Date_From,'YYYY/MM/DD HH24:MI:SS'))
+  AND NVL(QOOIV.Od_Pb_Date_Invoiced,'01-JAN-1908') <= Decode(to_date(:P_Inv_Date_To,'YYYY/MM/DD HH24:MI:SS'),Null,nvl(QOOIV.Od_Pb_Date_Invoiced,'01-JAN-1908'),to_date(:P_Inv_Date_To,'YYYY/MM/DD HH24:MI:SS'))  
+  AND NVL(Qooiv.Od_Pb_Company,'X')=NVL(:P_Serv_Provider,NVL(Qooiv.Od_Pb_Company,'X'))
+  AND NVL(Qooiv.Od_Ob_Services,'X')=NVL(:P_Serv_Details,NVL(Qooiv.Od_Ob_Services,'X'))
+  AND NVL(Qooiv.Od_Ob_Service_Period,'X')=NVL(:P_Serv_Period,NVL(Qooiv.Od_Ob_Service_Period,'X'))
+  AND NVL(Qooiv.Od_ob_Factory_Name,'X')=NVL(:P_Factory_Name,NVL(Qooiv.Od_ob_Factory_Name,'X'))
+  AND NVL(Qooiv.Od_Ob_Payment_Status,'X')=NVL(:P_Payment_Status,NVL(Qooiv.Od_Ob_Payment_Status,'X'))
+  AND NVL(Qooiv.Od_Ob_Invoice_Owner,'X')=NVL(:P_Inv_Owner,NVL(Qooiv.Od_Ob_Invoice_Owner,'X'))
+Order By 1
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_XXQAINVDT" source="Q_XXQAINVDT">
+<element name="Num" value="Num" />
+<element name="Invoice_Id" value="Invoice_Id" />
+<element name="Sp_Invoice_Number" value="Sp_Invoice_Number" />
+<element name="Invoice_Date" value="Invoice_Date" />
+<element name="Service_Provider" value="Service_Provider" />
+<element name="Service_Period" value="Service_Period" />
+<element name="Service_Details" value="Service_Details" />
+<element name="Factory_Name" value="Factory_Name" />
+<element name="Payment_Method" value="Payment_Method" />
+<element name="Payment_Status" value="Payment_Status" />
+<element name="Invoice_Owner" value="Invoice_Owner" />
+<element name="Invoice_Amount_Us" value="Invoice_Amount_Us" />
+<element name="Cost_Us" value="Cost_Us" />
+<element name="Report_Id" value="Report_Id" />
+<element name="Paid_BY" value="Paid_BY" />
+<element name="Dispute" value="Dispute" />
+<element name="Attachment" value="Attachment" />
+<element name="COMMENTS" value="COMMENTS" />
+</group>
+</dataStructure>
+</dataTemplate>

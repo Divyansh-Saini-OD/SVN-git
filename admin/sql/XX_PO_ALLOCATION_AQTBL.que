@@ -1,0 +1,42 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                             Office Depot                          |
+-- +===================================================================+
+-- | Name  : APPS.XX_PO_ALLOCATION_AQTBL                               |
+-- | Description: CUSTOM AQ TABLE                                      |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |1.0      06-21-2007   K.CRAWFORD       INITAL CODE                 |
+-- +===================================================================+
+
+BEGIN
+  DBMS_AQADM.CREATE_QUEUE_TABLE
+  (
+    QUEUE_TABLE           =>        'XX_PO_ALLOCATION_AQTBL'
+   ,QUEUE_PAYLOAD_TYPE    =>        'XX_PO_ALLOCATION_T'
+   ,COMPATIBLE            =>        '10.0.0'
+   ,STORAGE_CLAUSE        =>        '
+                                     TABLESPACE APPS_TS_TX_DATA
+                                     PCTUSED    0
+                                     PCTFREE    10
+                                     INITRANS   1
+                                     MAXTRANS   255
+                                     STORAGE    (
+                                                 INITIAL          128K
+                                                 NEXT             128K
+                                                 MINEXTENTS       1
+                                                 MAXEXTENTS       2147483645
+                                                 PCTINCREASE      0
+                                                 BUFFER_POOL      DEFAULT
+                                                )'
+   ,SORT_LIST             =>        'ENQ_TIME'
+   ,MULTIPLE_CONSUMERS    =>         FALSE
+   ,MESSAGE_GROUPING      =>         0
+   ,SECURE                =>         FALSE
+   );
+End;

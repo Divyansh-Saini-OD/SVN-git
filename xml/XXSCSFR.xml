@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXSCSFR" description="OD: SC Shared Factory Report" Version="1.0">
+<parameters>
+ <parameter name="P_REGION" datatype="character" /> 
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_MAIN">
+<![CDATA[
+SELECT 
+ q.OD_SC_VENDOR_NUMBER
+,q.OD_SC_VENDOR_NAME
+,q.OD_SC_VEND_TYPE
+,q.OD_SC_VENDOR_STATUS
+,q.OD_SC_AUDIT_AGENT
+,q.OD_SC_VEND_ADDRESS
+,q.OD_SC_FACTORY_NUMBER
+,q.OD_SC_FACT_CONT_NAME
+,q.OD_SC_FACTORY_EMAIL
+,q.OD_SC_FACTORY_ADDRESS
+,q.OD_SC_FACTORY_PHONE
+,q.OD_SC_EUROPE_RGN
+,q.OD_SC_EU_SUB_RGN
+,q.OD_SC_EU_FACTORY_NO
+,q.OD_SC_EU_VEND_STATUS
+,q.OD_SC_EU_CONTACT
+,q.OD_SC_MEXICO_REGION
+,q.OD_SC_MX_SUB_RGN
+,q.OD_SC_MX_VEND_NO
+,q.OD_SC_MEX_FACTORY_NO
+,q.OD_SC_MX_VEND_STATUS
+,q.OD_SC_MX_CONTACT
+,q.OD_SC_ASIA_REGION
+,q.OD_SC_AS_SUB_RGN
+,q.OD_SC_AS_VEND_NO
+,q.OD_SC_ASIA_FACTORY_NO
+,q.OD_SC_AS_VEND_STATUS
+,q.OD_SC_ASIA_CONTACT
+,q.OD_SC_AUDIT_WAIVER
+,q.OD_SC_VEND_REGION
+,q.OD_SC_FOB_VALUE
+,q.OD_SC_STRAUDT_SCHD_D
+,q.OD_SC_REQ_AUDIT_DATE
+,q.OD_SC_STR_AUDIT_RESULT
+,q.OD_SC_SHARED_FACTORY
+,q.OD_SC_AUDIT_STATUS_NOTIFY
+,q.OD_SC_EU_VEND_NO
+,q.OD_SC_EU_VEND_STATUS
+FROM Q_od_pb_sc_vendor_master_v q
+WHERE 1=1
+AND ('ODUS'  = :P_REGION OR :P_REGION = 'ODGLB')
+AND  q.OD_SC_SHARED_FACTORY='Y'
+UNION
+SELECT 
+ q.OD_SC_VENDOR_NUMBER
+,q.OD_SC_VENDOR_NAME
+,q.OD_SC_VEND_TYPE
+,q.OD_SC_VENDOR_STATUS
+,q.OD_SC_AUDIT_AGENT
+,q.OD_SC_VEND_ADDRESS
+,q.OD_SC_FACTORY_NUMBER
+,q.OD_SC_FACT_CONT_NAME
+,q.OD_SC_FACTORY_EMAIL
+,q.OD_SC_FACTORY_ADDRESS
+,q.OD_SC_FACTORY_PHONE
+,q.OD_SC_EUROPE_RGN
+,q.OD_SC_EU_SUB_RGN
+,q.OD_SC_EU_FACTORY_NO
+,q.OD_SC_EU_VEND_STATUS
+,q.OD_SC_EU_CONTACT
+,q.OD_SC_MEXICO_REGION
+,q.OD_SC_MX_SUB_RGN
+,q.OD_SC_MX_VEND_NO
+,q.OD_SC_MEX_FACTORY_NO
+,q.OD_SC_MX_VEND_STATUS
+,q.OD_SC_MX_CONTACT
+,q.OD_SC_ASIA_REGION
+,q.OD_SC_AS_SUB_RGN
+,q.OD_SC_AS_VEND_NO
+,q.OD_SC_ASIA_FACTORY_NO
+,q.OD_SC_AS_VEND_STATUS
+,q.OD_SC_ASIA_CONTACT
+,q.OD_SC_AUDIT_WAIVER
+,q.OD_SC_VEND_REGION
+,q.OD_SC_FOB_VALUE
+,q.OD_SC_STRAUDT_SCHD_D
+,q.OD_SC_REQ_AUDIT_DATE
+,q.OD_SC_STR_AUDIT_RESULT
+,q.OD_SC_SHARED_FACTORY
+,q.OD_SC_AUDIT_STATUS_NOTIFY
+,q.OD_SC_EU_VEND_NO
+,q.OD_SC_EU_VEND_STATUS
+FROM Q_od_sc_eu_vendor_master_v q
+WHERE 1=1
+AND ('ODEU'  = :P_REGION OR :P_REGION = 'ODGLB')
+AND  q.OD_SC_SHARED_FACTORY='Y'
+UNION
+SELECT 
+ q.OD_SC_VENDOR_NUMBER
+,q.OD_SC_VENDOR_NAME
+,q.OD_SC_VEND_TYPE
+,q.OD_SC_VENDOR_STATUS
+,q.OD_SC_AUDIT_AGENT
+,q.OD_SC_VEND_ADDRESS
+,q.OD_SC_FACTORY_NUMBER
+,q.OD_SC_FACT_CONT_NAME
+,q.OD_SC_FACTORY_EMAIL
+,q.OD_SC_FACTORY_ADDRESS
+,q.OD_SC_FACTORY_PHONE
+,q.OD_SC_EUROPE_RGN
+,q.OD_SC_EU_SUB_RGN
+,q.OD_SC_EU_FACTORY_NO
+,q.OD_SC_EU_VEND_STATUS
+,q.OD_SC_EU_CONTACT
+,q.OD_SC_MEXICO_REGION
+,q.OD_SC_MX_SUB_RGN
+,q.OD_SC_MX_VEND_NO
+,q.OD_SC_MEX_FACTORY_NO
+,q.OD_SC_MX_VEND_STATUS
+,q.OD_SC_MX_CONTACT
+,q.OD_SC_ASIA_REGION
+,q.OD_SC_AS_SUB_RGN
+,q.OD_SC_AS_VEND_NO
+,q.OD_SC_ASIA_FACTORY_NO
+,q.OD_SC_AS_VEND_STATUS
+,q.OD_SC_ASIA_CONTACT
+,q.OD_SC_AUDIT_WAIVER
+,q.OD_SC_VEND_REGION
+,q.OD_SC_FOB_VALUE
+,q.OD_SC_STRAUDT_SCHD_D
+,q.OD_SC_REQ_AUDIT_DATE
+,q.OD_SC_STR_AUDIT_RESULT
+,q.OD_SC_SHARED_FACTORY
+,q.OD_SC_AUDIT_STATUS_NOTIFY
+,q.OD_SC_EU_VEND_NO
+,q.OD_SC_EU_VEND_STATUS
+FROM Q_od_sc_mx_vendor_master_v q
+WHERE 1=1
+AND ('ODMX'  = :P_REGION OR :P_REGION = 'ODGLB')
+AND  q.OD_SC_SHARED_FACTORY='Y'
+UNION
+SELECT 
+ q.OD_SC_VENDOR_NUMBER
+,q.OD_SC_VENDOR_NAME
+,q.OD_SC_VEND_TYPE
+,q.OD_SC_VENDOR_STATUS
+,q.OD_SC_AUDIT_AGENT
+,q.OD_SC_VEND_ADDRESS
+,q.OD_SC_FACTORY_NUMBER
+,q.OD_SC_FACT_CONT_NAME
+,q.OD_SC_FACTORY_EMAIL
+,q.OD_SC_FACTORY_ADDRESS
+,q.OD_SC_FACTORY_PHONE
+,q.OD_SC_EUROPE_RGN
+,q.OD_SC_EU_SUB_RGN
+,q.OD_SC_EU_FACTORY_NO
+,q.OD_SC_EU_VEND_STATUS
+,q.OD_SC_EU_CONTACT
+,q.OD_SC_MEXICO_REGION
+,q.OD_SC_MX_SUB_RGN
+,q.OD_SC_MX_VEND_NO
+,q.OD_SC_MEX_FACTORY_NO
+,q.OD_SC_MX_VEND_STATUS
+,q.OD_SC_MX_CONTACT
+,q.OD_SC_ASIA_REGION
+,q.OD_SC_AS_SUB_RGN
+,q.OD_SC_AS_VEND_NO
+,q.OD_SC_ASIA_FACTORY_NO
+,q.OD_SC_AS_VEND_STATUS
+,q.OD_SC_ASIA_CONTACT
+,q.OD_SC_AUDIT_WAIVER
+,q.OD_SC_VEND_REGION
+,q.OD_SC_FOB_VALUE
+,q.OD_SC_STRAUDT_SCHD_D
+,q.OD_SC_REQ_AUDIT_DATE
+,q.OD_SC_STR_AUDIT_RESULT
+,q.OD_SC_SHARED_FACTORY
+,q.OD_SC_AUDIT_STATUS_NOTIFY
+,q.OD_SC_EU_VEND_NO
+,q.OD_SC_EU_VEND_STATUS
+FROM Q_od_sc_asia_vendor_master_v q
+WHERE 1=1
+AND ('ODASIA'  = :P_REGION OR :P_REGION = 'ODGLB')
+AND  q.OD_SC_SHARED_FACTORY='Y'
+ORDER BY  14,2,31,12,24,18
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_MAIN" source="Q_MAIN">
+ <element name="OD_SC_VENDOR_NUMBER" dataType="character" value="OD_SC_VENDOR_NUMBER"/>
+ <element name="OD_SC_VENDOR_NAME" dataType="character" value="OD_SC_VENDOR_NAME"/>
+ <element name="OD_SC_VEND_TYPE" dataType="character" value="OD_SC_VEND_TYPE"/>
+ <element name="OD_SC_VENDOR_STATUS" dataType="character" value="OD_SC_VENDOR_STATUS"/>
+ <element name="OD_SC_AUDIT_AGENT" dataType="character" value="OD_SC_AUDIT_AGENT"/>
+ <element name="OD_SC_VEND_ADDRESS" dataType="character" value="OD_SC_VEND_ADDRESS"/>
+ <element name="OD_SC_FACTORY_NUMBER" dataType="character" value="OD_SC_FACTORY_NUMBER"/>
+ <element name="OD_SC_FACT_CONT_NAME" dataType="character" value="OD_SC_FACT_CONT_NAME"/>
+ <element name="OD_SC_FACTORY_EMAIL" dataType="character" value="OD_SC_FACTORY_EMAIL"/>
+ <element name="OD_SC_FACTORY_ADDRESS" dataType="character" value="OD_SC_FACTORY_ADDRESS"/>
+ <element name="OD_SC_FACTORY_PHONE" dataType="character" value="OD_SC_FACTORY_PHONE"/>
+ <element name="OD_SC_EUROPE_RGN" dataType="character" value="OD_SC_EUROPE_RGN"/> 
+ <element name="OD_SC_EU_SUB_RGN" dataType="character" value="OD_SC_EU_SUB_RGN"/>
+ <element name="OD_SC_EU_FACTORY_NO" dataType="character" value="OD_SC_EU_FACTORY_NO"/>
+ <element name="OD_SC_EU_VEND_STATUS" dataType="character" value="OD_SC_EU_VEND_STATUS"/>
+ <element name="OD_SC_EU_CONTACT" dataType="character" value="OD_SC_EU_CONTACT"/>
+ <element name="OD_SC_MEXICO_REGION" dataType="character" value="OD_SC_MEXICO_REGION"/>
+ <element name="OD_SC_MX_SUB_RGN" dataType="character" value="OD_SC_MX_SUB_RGN"/>
+ <element name="OD_SC_MX_VEND_NO" dataType="character" value="OD_SC_MX_VEND_NO"/>
+ <element name="OD_SC_MEX_FACTORY_NO" dataType="character" value="OD_SC_MEX_FACTORY_NO"/>
+ <element name="OD_SC_MX_VEND_STATUS" dataType="character" value="OD_SC_MX_VEND_STATUS"/>
+ <element name="OD_SC_MX_CONTACT" dataType="character" value="OD_SC_MX_CONTACT"/>
+ <element name="OD_SC_ASIA_REGION" dataType="character" value="OD_SC_ASIA_REGION"/>
+ <element name="OD_SC_AS_SUB_RGN" dataType="character" value="OD_SC_AS_SUB_RGN"/>
+ <element name="OD_SC_AS_VEND_NO" dataType="character" value="OD_SC_AS_VEND_NO"/>
+ <element name="OD_SC_ASIA_FACTORY_NO" dataType="character" value="OD_SC_ASIA_FACTORY_NO"/>
+ <element name="OD_SC_AS_VEND_STATUS" dataType="character" value="OD_SC_AS_VEND_STATUS"/>
+ <element name="OD_SC_ASIA_CONTACT" dataType="character" value="OD_SC_ASIA_CONTACT"/>
+ <element name="OD_SC_AUDIT_WAIVER" dataType="character" value="OD_SC_AUDIT_WAIVER"/>
+ <element name="OD_SC_VEND_REGION" dataType="character" value="OD_SC_VEND_REGION"/>
+ <element name="OD_SC_FOB_VALUE" dataType="character" value="OD_SC_FOB_VALUE"/>
+ <element name="OD_SC_STRAUDT_SCHD_D" dataType="character" value="OD_SC_STRAUDT_SCHD_D"/>
+ <element name="OD_SC_REQ_AUDIT_DATE" dataType="character" value="OD_SC_REQ_AUDIT_DATE"/>
+ <element name="OD_SC_STR_AUDIT_RESULT" dataType="character" value="OD_SC_STR_AUDIT_RESULT"/>
+ <element name="OD_SC_SHARED_FACTORY" dataType="character" value="OD_SC_SHARED_FACTORY"/>
+ <element name="OD_SC_AUDIT_STATUS_NOTIFY" dataType="character" value="OD_SC_AUDIT_STATUS_NOTIFY"/>
+ <element name="OD_SC_EU_VEND_NO" dataType="character" value="OD_SC_EU_VEND_NO"/>
+</group>
+</dataStructure>
+</dataTemplate>

@@ -1,0 +1,203 @@
+
+# +===================================================================+
+# |                  Office Depot - Project Simplify                  |
+# +===================================================================+
+# | Name  :               XXGIFTPSLANE                                 |
+# | Description:   The files in the folders -> documents and images in|
+# |                the database server of an instance should always be|
+# |                in sync with the corresponding folders in FTP      |
+# |                server. This program is used to sync the folders in| 
+# |                database server as in FTP server.                  |
+# |                The source directory, destination directory,       |
+# |                username, password are all stored in the           |
+# |                translation definition is OD_FTP_PROCESSES. The    |
+# |                process also updates the icx_cat_items_tlp to map  |
+# |                item numbers with corresponding images to be       |
+# |                rendered in iProcurement screens.                  |
+# |                                                                   |
+# |                                                                   |
+# |Change Record:                                                     |
+# |===============                                                    |
+# |Version   Date        Author           Remarks                     |
+# |=======   ==========  =============    ============================|
+# |Ver 1.0  23-JAN-2009  Rama Dwibhashyam Initial draft version       |
+# +===================================================================+
+
+#!/usr/bin/ksh
+
+FCP_REQID=$4
+
+EXECFILE=$XXMER_DATA/COM_FTP_${FCP_REQID}.$$    #Changed $HOME TO $XXFIN_DATA for the Defect# 11122
+>$EXECFILE;chmod 750 $EXECFILE
+
+echo "FTP Execution File = $EXECFILE"
+
+TMPFILE=$XXMER_DATA/COM_FTP_TMP_${FCP_REQID}.$$          #Changed $HOME TO $XXFIN_DATA for the Defect# 11122
+>$TMPFILE;chmod 750 $TMPFILE
+
+echo "Temp File = $TMPFILE"
+
+echo " "
+echo "Fetching parameters"
+
+#Start of Addition for the Defect# 9992
+
+#TMP_IMG_FILE_NAME=imgupdate_${FCP_REQID}.tmp.$$
+TMP_IMG_FILE_NAME=XDOC_DATA.TXT
+TMP_IMG_FILE=$XXMER_DATA/inbound/$TMP_IMG_FILE_NAME
+
+echo $TMP_IMG_FILE
+
+#Fetching the servername,username,password,source directory,target directory from the translation table 
+#for the chosen filetype.
+
+echo " "
+echo "Obtaining values from Translation"
+
+   val=OD_WMS_SHIP_LANE
+
+echo " "
+echo "Source Value in Translation = $val"
+echo " "
+echo "starting sql session"
+
+V_RESULT=`sqlplus -s /nolog <<EOF
+set linesize 255
+set sqlprompt " "
+set serveroutput on 
+set verify off
+
+SELECT  
+      xftv.Target_Value1 
+      || ' ' || xftv.Target_Value2
+      || ' ' || xftv.Target_Value3
+      || ' ' || xftv.Target_Value4
+      || ' ' || xftv.Target_Value5
+FROM  
+      xx_fin_translatedefinition XFTD,
+      xx_fin_translatevalues     XFTV
+WHERE 
+      XFTD.translate_id          = XFTV.translate_id
+      AND XFTD.translation_name   ='OD_FTP_PROCESSES'
+      AND XFTV.source_value1  ='$val';  
+
+exit
+EOF`
+
+echo "Parse output string into different variables"
+
+server=`echo $V_RESULT | awk '{print $1}'`
+user=`echo $V_RESULT | awk '{print $2 }'`
+passwd=`echo $V_RESULT | awk '{print $3}'`
+source1=`echo $V_RESULT | awk '{print $4}'`
+dest1=`echo $V_RESULT | awk '{print $5}'`
+
+eval source=$source1
+eval dest=$dest1
+
+echo " "
+echo "FTP Server            = $server "
+echo "Source Directory      = $source"
+echo "Target Directory      = $dest"
+
+echo " "
+echo "Removing all the files from the destination directory"
+
+cd  $dest
+echo "The current path is `pwd` "
+echo "rm *"
+#rm *
+rm XDOC_DATA.TXT
+echo "The number of files in destination directory now is `ls -1 $dest | wc -l` "
+echo " "
+ 
+#Copying the files from ftp server to the database server
+
+echo "verbose" >> $EXECFILE
+echo "open $server" >> $EXECFILE
+echo "open $server"
+echo "quote USER $user" >> $EXECFILE
+echo "quote USER $user"
+echo "quote PASS $passwd" >> $EXECFILE
+echo "quote PASS *****" 
+echo "lcd $dest" >> $EXECFILE
+echo "lcd $dest"
+echo "cd $source" >> $EXECFILE
+echo "cd $source"
+echo "bin" >> $EXECFILE
+echo "bin"
+
+echo "mget *.*" >> $EXECFILE
+echo "mget *.*" 
+
+
+echo "prompt off" >> $EXECFILE
+echo "prompt off"
+echo "quit" >> $EXECFILE
+echo "quit"
+
+
+#cat $EXECFILE   #Commented to hide FTP Login Credentials
+DAT_TIME_STAMP=`date '+%y%m%d%H%M%S'`
+echo "Time Stamp Before FTP(YYMMDDHHMISS): $DAT_TIME_STAMP"
+
+ftp -n < $EXECFILE > $TMPFILE
+
+DAT_TIME_STAMP=`date '+%y%m%d%H%M%S'`
+echo "Time Stamp After FTP(YYMMDDHHMISS) : $DAT_TIME_STAMP"
+
+echo " "
+echo "The number of files in destination directory now is `ls -1 $dest | wc -l`  "
+
+#Error Handling
+
+Server_check=`grep 'Not connected' $TMPFILE`
+User_passwd=`grep 'Please login with USER and PASS'  $TMPFILE`
+Local_directory_error=`grep '550 Failed to change directory' $TMPFILE`
+Success=`grep 'File receive OK'  $TMPFILE`
+Success1=`grep '226 '  $TMPFILE`
+
+if [ "$Server_check" != "" ]
+then
+    echo " "
+    echo "ERROR: Please check the server. Server provided is $server."
+	  # Added the Below Piece of Code for the Defect 12211.
+	 rm $EXECFILE
+	 rm $TMPFILE
+    exit 1
+
+ elif [ "$User_passwd" != "" ]
+then
+
+    echo " "
+    echo "ERROR: Please provide appropriate username and password."
+	  # Added the Below Piece of Code for the Defect 12211.
+	 rm $EXECFILE
+	 rm $TMPFILE
+    exit 1
+
+ elif [ "$Local_directory_error" != "" ]
+then
+
+    echo " "
+    echo "ERROR: Cannot change to $dest"
+	  # Added the Below Piece of Code for the Defect 12211.
+	 rm $EXECFILE
+	 rm $TMPFILE	 
+     exit 1
+
+ elif [ "$Success" != "" -o  "$Success1" != "" ]
+then 
+    echo " "
+    echo "SUCCESS: Successful transmission"
+
+fi
+
+#End of error handling
+	    echo "Deleting FTP Execution File"
+
+       rm $EXECFILE
+
+       echo "Deleting Temp File"
+
+       rm $TMPFILE

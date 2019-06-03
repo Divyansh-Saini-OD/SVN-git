@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--Native format was generated from COBOL copybook : C:\Temp\PORecord.txt-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:nxsd="http://xmlns.oracle.com/pcbpel/nxsd" xmlns:extn="http://xmlns.oracle.com/pcbpel/nxsd/extensions" targetNamespace="http://TargetNamespace.com/PO_EBS_UPLOAD_QUEUE" xmlns:tns="http://TargetNamespace.com/PO_EBS_UPLOAD_QUEUE" elementFormDefault="qualified" attributeFormDefault="unqualified" nxsd:version="NXSD" nxsd:encoding="cp037" nxsd:byteOrder="bigEndian" nxsd:stream="chars">
+   <xsd:element name="Root-Element">
+      <xsd:complexType>
+         <xsd:sequence>
+            <!--COBOL declaration : 01 PORECORD-->
+            <xsd:element name="PORECORD" minOccurs="1" maxOccurs="unbounded">
+               <xsd:complexType>
+                  <xsd:sequence>
+                     <!--COBOL declaration : 05 HEADER-->
+                     <xsd:element name="HEADER">
+                        <xsd:complexType>
+                           <xsd:sequence>
+                              <!--COBOL declaration : 10 PO-NBR PIC 9(09)-->
+                              <xsd:element name="PO-NBR" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="9"/>
+                              <!--COBOL declaration : 10 LOC-ID PIC 9(04)-->
+                              <xsd:element name="LOC-ID" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="4"/>
+                              <!--COBOL declaration : 10 VENDOR-ID PIC 9(09)-->
+                              <xsd:element name="VENDOR-ID" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="9"/>
+                              <!--COBOL declaration : 10 TOTAL-LINES pic 9(04)-->
+                              <xsd:element name="TOTAL-LINES" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="4"/>
+                              <!--COBOL declaration : 10 CURRENCY-CD PIC X(03)-->
+                              <xsd:element name="CURRENCY-CD" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="3"/>
+                              <!--COBOL declaration : 10 BUYER-ID PIC 9(04)-->
+                              <xsd:element name="BUYER-ID" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="4"/>
+                              <!--COBOL declaration : 10 ORDER-DT PIC X(10)-->
+                              <xsd:element name="ORDER-DT" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="10"/>
+                              <!--COBOL declaration : 10 SHIP-DT PIC X(10)-->
+                              <xsd:element name="SHIP-DT" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="10"/>
+                              <!--COBOL declaration : 10 ARRIVAL-DT PIC X(10)-->
+                              <xsd:element name="ARRIVAL-DT" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="10"/>
+                              <!--COBOL declaration : 10 CANCEL-DT PIC X(10)-->
+                              <xsd:element name="CANCEL-DT" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="10"/>
+                              <!--COBOL declaration : 10 ACTION-CODE PIC X(10)-->
+                              <xsd:element name="ACTION-CODE" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="10"/>
+                              <!--COBOL declaration : 10 CLOSE-CODE PIC X(10)-->
+                              <xsd:element name="CLOSE-CODE" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="10"/>
+                              <!--COBOL declaration : 10 RVSN-NUMBER PIC 9(04)-->
+                              <xsd:element name="RVSN-NUMBER" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="4"/>
+                              <!--COBOL declaration : 10 LAST-RVSN-DT PIC X(10)-->
+                              <xsd:element name="LAST-RVSN-DT" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="10"/>
+                              <!--COBOL declaration : 10 TERMS-DISC-PCT PIC 9(03)-->
+                              <xsd:element name="TERMS-DISC-PCT" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="3"/>
+                              <!--COBOL declaration : 10 TERMS-DISC-DAYS PIC 9(04)-->
+                              <xsd:element name="TERMS-DISC-DAYS" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="4"/>
+                              <!--COBOL declaration : 10 TERMS-NET-DAYS PIC 9(04)-->
+                              <xsd:element name="TERMS-NET-DAYS" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="4"/>
+                              <!--COBOL declaration : 10 ALLOW-BACKORD-FLG PIC X(01)-->
+                              <xsd:element name="ALLOW-BACKORD-FLG" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                              <!--COBOL declaration : 10 FREIGHT-CD PIC X(20)-->
+                              <xsd:element name="FREIGHT-CD" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="20"/>
+                              <!--COBOL declaration : 10 DISTRIBUTION-CD PIC X(02)-->
+                              <xsd:element name="DISTRIBUTION-CD" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="2"/>
+                              <!--COBOL declaration : 10 FOB-CD PIC X(20)-->
+                              <xsd:element name="FOB-CD" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="20"/>
+                              <!--COBOL declaration : 10 BATCH-NBR PIC 9(09)-->
+                              <xsd:element name="BATCH-NBR" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="9"/>
+                              <!--COBOL declaration : 10 COUNTRY-CD PIC X(03)-->
+                              <xsd:element name="COUNTRY-CD" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="3"/>
+                              <!--COBOL declaration : 10 TYPE-CD PIC X(20)-->
+                              <xsd:element name="TYPE-CD" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="20"/>
+                              <!--COBOL declaration : 10 DROP-SHIP-FLG PIC X(01)-->
+                              <xsd:element name="DROP-SHIP-FLG" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="1"/>
+                              <!--COBOL declaration : 10 CUST-ID PIC 9(09)-->
+                              <xsd:element name="CUST-ID" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="9"/>
+                              <!--COBOL declaration : 10 GSS-PO-NUMBER pic 9(10)-->
+                              <xsd:element name="GSS-PO-NUMBER" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="9"/>
+                              <!--COBOL declaration : 10 CUST-ORDER-NBR PIC 9(09)-->
+                              <xsd:element name="CUST-ORDER-NBR" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="9"/>
+                              <!--COBOL declaration : 10 USER-ID-ENT-BY PIC X(08)-->
+                              <xsd:element name="USER-ID-ENT-BY" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="8"/>
+                              <!--COBOL declaration : 10 USER-ID-CHG-BY PIC X(08)-->
+                              <xsd:element name="USER-ID-CHG-BY" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="8"/>
+                              <!--COBOL declaration : 10 NOTE-TO-VENDOR PIC X(480)-->
+                              <xsd:element name="NOTE-TO-VENDOR" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="480"/>
+                              <!--COBOL declaration : 10 NOTE-TO-RECEIVER PIC X(480)-->
+                              <xsd:element name="NOTE-TO-RECEIVER" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="480"/>
+                           </xsd:sequence>
+                        </xsd:complexType>
+                     </xsd:element>
+                     <!--COBOL declaration : 05 DETAIL OCCURS 1000 TIMES-->
+                     <xsd:element name="DETAIL" minOccurs="1" maxOccurs="unbounded">
+                        <xsd:complexType>
+                           <xsd:sequence>
+                              <!--COBOL declaration : 10 PO-LINE-NBR PIC 9(04)-->
+                              <xsd:element name="PO-LINE-NBR" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="4"/>
+                              <!--COBOL declaration : 10 SKU PIC 9(09)-->
+                              <xsd:element name="SKU" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="9"/>
+                              <!--COBOL declaration : 10 VENDOR-PRODUCT-CD PIC X(20)-->
+                              <xsd:element name="VENDOR-PRODUCT-CD" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="20"/>
+                              <!--COBOL declaration : 10 UOM-CD PIC X(10)-->
+                              <xsd:element name="UOM-CD" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="10"/>
+                              <!--COBOL declaration : 10 UNIT-COST PIC 9(07)V9(03)-->
+                              <xsd:element name="UNIT-COST" type="xsd:decimal" nxsd:style="virtualDecimal" extn:assumeDecimal="7" extn:picSize="10"/>
+                              <!--COBOL declaration : 10 UNITS-ORD PIC 9(09)-->
+                              <xsd:element name="UNITS-ORD" type="xsd:long" nxsd:style="fixedLength" nxsd:padStyle="head" nxsd:paddedBy="0" nxsd:length="9"/>
+                              <!--COBOL declaration : 10 LINE-CLOSE-CODE PIC X(10)-->
+                              <xsd:element name="LINE-CLOSE-CODE" type="xsd:string" nxsd:style="fixedLength" nxsd:padStyle="tail" nxsd:paddedBy=" " nxsd:length="10"/>
+                           </xsd:sequence>
+                        </xsd:complexType>
+                     </xsd:element>
+                  </xsd:sequence>
+               </xsd:complexType>
+            </xsd:element>
+         </xsd:sequence>
+      </xsd:complexType>
+   </xsd:element>
+</xsd:schema>

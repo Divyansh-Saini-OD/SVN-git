@@ -1,0 +1,66 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+--+==============================================================================================+--
+--|                                                                                              |--
+--| Object Name    : PLM Enhancements                                                            |--
+--|                                                                                              |--
+--| Program Name   : XX_PA_PB_CUSTOM_SEQUENCE.syn                                                |--        
+--|                                                                                              |--   
+--| Purpose        : Create Custom synonyms                                                      |--
+--|                                                                                              |--
+--|                                                                                              |-- 
+--| Change History  :                                                                            |--
+--| Version           Date             Changed By              Description                       |--
+--+==============================================================================================+--
+--| 1.0            28-Jul-2010        Paddy Sanjeevi           Baselined                         |
+--+==============================================================================================+-- 
+                                     
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating Synonym in APPS...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM XX_PA_PB_TARIFF_APRV
+PROMPT
+
+
+CREATE SYNONYM XX_PA_PB_TARIFF_APRV_S FOR xxmer.XX_PA_PB_TARIFF_APRV_S;
+
+CREATE SYNONYM XX_PA_PB_PROD_DTL_S FOR xxmer.XX_PA_PB_PROD_DTL_S;
+
+CREATE SYNONYM XX_PA_PB_PRD_TESTR_S FOR xxmer.XX_PA_PB_PRD_TESTR_S;
+
+CREATE SYNONYM XX_PA_PB_PRD_TEST_S FOR xxmer.XX_PA_PB_PRD_TEST_S;
+
+CREATE SYNONYM XX_PA_PB_PRD_LOGISTICS_S FOR xxmer.XX_PA_PB_PRD_LOGISTICS_S;
+
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+
+EXIT;
+
+
+REM=================================================================================================
+REM                                   End Of Script                                            
+REM=================================================================================================
+

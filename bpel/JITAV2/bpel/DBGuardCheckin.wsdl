@@ -1,0 +1,66 @@
+<definitions
+     name="DBGuardCheckin"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/DBGuardCheckin/"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/DBGuardCheckin/"
+     xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_MER_JITA_PKG/JITA_GUARD_CHECKIN/"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+     xmlns:hdr="http://xmlns.oracle.com/pcbpel/adapter/db/"
+    >
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/" location="DBAdapterOutboundHeader.wsdl"/>
+    <types>
+     <schema xmlns="http://www.w3.org/2001/XMLSchema">
+       <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_MER_JITA_PKG/JITA_GUARD_CHECKIN/"
+               schemaLocation="APPS_XX_MER_JITA_PKG_JITA_GUARD_CHECKIN.xsd" />
+     </schema>
+    </types>
+    <message name="args_in_msg">
+        <part name="InputParameters" element="db:InputParameters"/>
+    </message>
+    <message name="args_out_msg">
+        <part name="OutputParameters" element="db:OutputParameters"/>
+    </message>
+    <portType name="DBGuardCheckin_ptt">
+        <operation name="DBGuardCheckin">
+            <input message="tns:args_in_msg"/>
+            <output message="tns:args_out_msg"/>
+        </operation>
+    </portType>
+    <binding name="DBGuardCheckin_binding" type="tns:DBGuardCheckin_ptt">
+    <jca:binding  />
+        <operation name="DBGuardCheckin">
+      <jca:operation
+          PackageName="XX_MER_JITA_PKG"
+          ProcedureName="JITA_GUARD_CHECKIN"
+          InteractionSpec="oracle.tip.adapter.db.DBStoredProcedureInteractionSpec" >
+      </jca:operation>
+      <input>
+        <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+      </input>
+            <output/>
+        </operation>
+    </binding>
+    <service name="DBGuardCheckin">
+        <port name="DBGuardCheckin_pt" binding="tns:DBGuardCheckin_binding">
+<!--Your runtime connection is declared in 
+J2EE_HOME/application-deployments/default/DbAdapter/oc4j-ra.xml 
+These mcf properties here are from your design time connection and 
+save you from having to edit that file and restart the application server 
+if eis/DB/GSIDEV03 is missing. 
+These mcf properties are safe to remove.-->
+      <jca:address location="eis/DB/GSIDEV03" UIConnectionName="GSIDEV03"
+          ManagedConnectionFactory="oracle.tip.adapter.db.DBManagedConnectionFactory"
+          mcf.DriverClassName="oracle.jdbc.OracleDriver"
+          mcf.PlatformClassName="oracle.toplink.internal.databaseaccess.Oracle9Platform"
+          mcf.ConnectionString="jdbc:oracle:thin:@choldbr18d.na.odcorp.net:1544:GSIDEV03"
+          mcf.UserName="apps"
+          mcf.Password="33249B2910CFF3FBCD9B834DF8560A56" />
+        </port>
+    </service>
+  <plt:partnerLinkType name="DBGuardCheckin_plt" >
+    <plt:role name="DBGuardCheckin_role" >
+      <plt:portType name="tns:DBGuardCheckin_ptt" />
+    </plt:role>
+  </plt:partnerLinkType>
+</definitions>

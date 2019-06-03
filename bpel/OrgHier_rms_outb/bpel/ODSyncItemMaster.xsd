@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+            xmlns:odmf="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+            targetNamespace="http://www.openapplications.org/officedepot/merchandising/foundation/1" 
+            elementFormDefault="qualified" 
+            attributeFormDefault="unqualified">
+
+  <xsd:element name="SYNC_ITEM_MASTER">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="VERB">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="PROCESS_NAME" type="xsd:string"/>
+              <xsd:element name="PROCESS_ID" type="xsd:string"/>
+              <xsd:element name="CREATE_TIMESTAMP" type="xsd:string"/>
+              <xsd:element name="ACTION_TYPE" type="xsd:string"/>
+              <xsd:element name="ACTION_CODE" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="NOUN">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="ITEM_MASTER">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="ITEM" type="xsd:string"/>
+                    <xsd:element name="CLASS" type="xsd:string"/>
+                    <xsd:element name="DEPT" type="xsd:string"/>
+                    <xsd:element name="HANDLING_SENSITIVITY" type="xsd:string"/>
+                    <xsd:element name="ITEM_DESC" type="xsd:string"/>
+                    <xsd:element name="ITEM_NUMBER_TYPE" type="xsd:string"/>
+                    <xsd:element name="ORDER_AS_TYPE" type="xsd:string"/>
+                    <xsd:element name="ORDERABLE_IND" type="xsd:string"/>
+                    <xsd:element name="PACK_IND" type="xsd:string"/>
+                    <xsd:element name="PACK_TYPE" type="xsd:string"/>
+                    <xsd:element name="PACKAGE_SIZE" type="xsd:string"/>
+                    <xsd:element name="PACKAGE_UOM" type="xsd:string"/>
+                    <xsd:element name="SELLABLE_IND" type="xsd:string"/>
+                    <xsd:element name="SHIP_ALONE_IND" type="xsd:string"/>
+                    <xsd:element name="SHORT_DESC" type="xsd:string"/>
+                    <xsd:element name="SIMPLE_PACK_IND" type="xsd:string"/>
+                    <xsd:element name="STATUS" type="xsd:string"/>
+                    <xsd:element name="STORE_ORD_MULT" type="xsd:string"/>
+                    <xsd:element name="SUBCLASS" type="xsd:string"/>
+                    <xsd:element name="OD_ASSORTMENT_CD" type="xsd:string"/>
+                    <xsd:element name="OD_CALL_FOR_PRICE_CD" type="xsd:string"/>
+                    <xsd:element name="OD_COST_UP_FLG" type="xsd:string"/>
+                    <xsd:element name="OD_GIFT_CERTIF_FLG" type="xsd:string"/>
+                    <xsd:element name="OD_GSA_FLG" type="xsd:string"/>
+                    <xsd:element name="OD_IMPRINTED_ITEM_FLG" type="xsd:string"/>
+                    <xsd:element name="OD_LIST_OFF_FLG" type="xsd:string"/>
+                    <xsd:element name="OD_META_CD" type="xsd:string"/>
+                    <xsd:element name="OD_OFF_CAT_FLG" type="xsd:string"/>
+                    <xsd:element name="OD_OVRSIZE_DELVRY_FLG" type="xsd:string"/>
+                    <xsd:element name="OD_PRIVATE_BRAND_FLG" type="xsd:string"/>
+                    <xsd:element name="OD_MFG_CD" type="xsd:string"/>
+                    <xsd:element name="OD_PROD_PROTECT_CD" type="xsd:string"/>
+                    <xsd:element name="OD_READY_TO_ASSEMBLE_FLG" type="xsd:string"/>
+                    <xsd:element name="OD_RECYCLE_FLG" type="xsd:string"/>
+                    <xsd:element name="OD_RETAIL_PRICING_FLG" type="xsd:string"/>
+                    <xsd:element name="OD_SKU_TYPE_CD" type="xsd:string"/>
+                    <xsd:element name="OD_TAX_CATEGORY" type="xsd:string"/>
+                    <xsd:element name="MASTER_ITEM" type="xsd:string"/>
+                    <xsd:element name="SUBSELL_MASTER_QTY" type="xsd:string"/>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+              <xsd:element name="ITEM_LOCATION">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="LOC" type="xsd:string"/>
+                    <xsd:element name="LOCAL_ITEM_DESC" type="xsd:string"/>
+                    <xsd:element name="LOCAL_SHORT_DESC" type="xsd:string"/>
+                    <xsd:element name="PRIMARY_SUPP" type="xsd:string"/>
+                    <xsd:element name="STATUS" type="xsd:string"/>
+                    <xsd:element name="OD_ABC_CLASS" type="xsd:string"/>
+                    <xsd:element name="OD_CHANNEL_BLOCK" type="xsd:string"/>
+                    <xsd:element name="OD_DIST_TARGET" type="xsd:string"/>
+                    <xsd:element name="OD_EBW_QTY" type="xsd:string"/>
+                    <xsd:element name="OD_INFINITE_QTY_CD" type="xsd:string"/>
+                    <xsd:element name="OD_LOCK_UP_ITEM_FLG" type="xsd:string"/>
+                    <xsd:element name="OD_PROPRIETARY_TYPE_CD" type="xsd:string"/>
+                    <xsd:element name="OD_REPLEN_SUB_TYPE_CD" type="xsd:string"/>
+                    <xsd:element name="OD_REPLEN_TYPE_CD" type="xsd:string"/>
+                    <xsd:element name="OD_WHSE_ITEM_CD" type="xsd:string"/>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>

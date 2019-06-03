@@ -1,0 +1,107 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_ALTER_XX_GSO_KN.tbl                                                 |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              18-Jan-2011       Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Alter the Table XX_GSO_PO_KN_STG......
+PROMPT
+
+alter table xx_gso_po_kn_stg add po_line_no number;
+
+alter table xx_gso_po_kn_stg add upc varchar2(60);
+
+alter table xx_gso_po_kn_stg add dept varchar2(10);
+
+alter table xx_gso_po_kn_stg add final_destination varchar2(100);
+
+
+PROMPT
+PROMPT Alter the Table XX_GSO_PO_KN_DTL......
+PROMPT
+
+alter table xx_gso_po_kn_dtl add final_destination varchar2(100);
+
+PROMPT
+PROMPT Alter the Table XX_GSO_PO_DTL......
+PROMPT
+
+alter table xx_gso_po_dtl add total_carton_cube number;
+
+alter table xx_gso_po_dtl add total_retail_cost number;
+
+alter table xx_gso_po_dtl add total_estland_cost number;
+
+alter table xx_gso_po_dtl add total_actland_cost number;
+
+alter table xx_gso_po_dtl add total_merchdec_cost number;
+
+alter table xx_gso_po_dtl add line_total number;
+
+alter table xx_gso_po_dtl add shipped_fob number;
+
+PROMPT
+PROMPT Alter the Table XX_GSO_PO_BV_STG......
+PROMPT
+
+
+alter table xx_gso_po_bv_stg add actual_qty number;
+
+alter table xx_gso_po_bv_stg add announced varchar2(30);
+
+alter table xx_gso_po_bv_stg add FACTORY_ADDRESS varchar2(200);
+
+alter table xx_gso_po_bv_stg add invoice_no varchar2(30);
+
+alter table xx_gso_po_bv_stg add invoice_date date;
+
+alter table xx_gso_po_bv_stg add invoice_company varchar2(100);
+
+alter table xx_gso_po_bv_stg add invoice_contact varchar2(100);
+
+alter table xx_gso_po_bv_stg add OPRN_OFFICE_CNTRY varchar2(30);
+
+alter table xx_gso_po_bv_stg add bv_confirm_date date;
+
+alter table xx_gso_po_bv_stg add bv_service_date date;
+
+alter table xx_gso_po_bv_stg add final_book_entry_date
+
+alter table xx_gso_po_bv_stg add load_batch_id number;
+
+PROMPT
+PROMPT Alter the Table XX_GSO_PO_BV_DTL......
+PROMPT
+
+
+ alter table xx_gso_po_bv_dtl add final_book_entry_date date;
+
+ alter table xx_gso_po_bv_dtl modify bv_status varchar2(50);
+
+ alter table xx_gso_po_bv_dtl add ANNOUNCED varchar2(30);
+
+ alter table xx_gso_po_bv_dtl add bv_confirm_date date; 
+
+ alter table xx_gso_po_bv_dtl add bv_service_date date;

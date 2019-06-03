@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+            xmlns:odmf="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+            targetNamespace="http://www.openapplications.org/officedepot/merchandising/foundation/1" 
+            elementFormDefault="qualified" 
+            attributeFormDefault="unqualified">
+
+  <xsd:element name="SYNC_ITEM_MASTER_CONFIRM">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="VERB" minOccurs="1" maxOccurs="1">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="PROCESS_NAME" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+              <xsd:element name="PROCESS_ID" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+              <xsd:element name="CREATE_TIMESTAMP" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+              <xsd:element name="ACTION_TYPE" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+              <xsd:element name="ACTION_CODE" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="NOUN" minOccurs="1" maxOccurs="1">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="CONFIRM"  minOccurs="0" maxOccurs="1">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="CODE" type="xsd:integer" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="MESSAGE" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+              <xsd:element name="WARNING" minOccurs="0" maxOccurs="1">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="CODE" type="xsd:integer" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="MESSAGE" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+              <xsd:element name="ERROR" minOccurs="0" maxOccurs="1">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="CODE" type="xsd:integer" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="MESSAGE" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>

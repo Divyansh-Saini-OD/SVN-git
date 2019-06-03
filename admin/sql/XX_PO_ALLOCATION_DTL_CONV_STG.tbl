@@ -1,0 +1,37 @@
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                             Office Depot                          |
+-- +===================================================================+
+-- | Name  : XXCNV.XX_PO_ALLOCATION_DTL_CONV_STG                       |
+-- | Description: STAGING TABLE FOR ALLOCATION CONVERSION              |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |1.0      06-21-2007   K.CRAWFORD       INITAL CODE                 |
+-- +===================================================================+
+
+CREATE OR REPLACE TABLE XXCNV.XX_PO_ALLOCATION_DTL_CONV_STG
+(
+  PO_NBR                   NUMBER,
+  LOCKED_IN                CHAR(1 BYTE),
+  ALLOC_ORGANIZATION_ID    NUMBER,
+  SHIP_TO_ORGANIZATION_ID  NUMBER,
+  ALLOCATION_QTY           NUMBER,
+  LAST_UPDATE_DATE         DATE,
+  LAST_UPDATED_BY          NUMBER,
+  CREATION_DATE            DATE,
+  CREATED_BY               NUMBER,
+  LAST_UPDATE_LOGIN        NUMBER,
+  AUDIT_ID                 NUMBER,
+  RECORD_ID                NUMBER,
+  PARENT_RECORD_ID         NUMBER,
+  PROCESS_FLAG             NUMBER,
+  CONV_ACTION              VARCHAR2(15 BYTE),
+  CONTROL_ID               NUMBER,
+  SOURCE_SYSTEM_REF        VARCHAR2(100 BYTE),
+  SOURCE_SYSTEM_CODE       VARCHAR2(15 BYTE)    DEFAULT 'ODPO'
+);

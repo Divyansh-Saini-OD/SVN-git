@@ -1,0 +1,40 @@
+<definitions
+     name="ItemMaster_ebs_inb"
+     targetNamespace="http://xmlns.oracle.com/ItemMaster_ebs_inb"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:ns1="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:ns2="http://schemas.oracle.com/bpel/extension"
+     xmlns:client="http://xmlns.oracle.com/ItemMaster_ebs_inb"
+    >
+    <import namespace="http://schemas.oracle.com/bpel/extension" location="RuntimeFault.wsdl"/>
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:ns2="http://schemas.oracle.com/bpel/extension"
+             xmlns:client="http://xmlns.oracle.com/ItemMaster_ebs_inb">
+            <import namespace="http://xmlns.oracle.com/ItemMaster_ebs_inb" schemaLocation="ItemMaster_ebs_inb.xsd"/>
+        </schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:ns2="http://schemas.oracle.com/bpel/extension"
+             xmlns:client="http://xmlns.oracle.com/ItemMaster_ebs_inb">
+            <xsd:import namespace="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+                 schemaLocation="http://chilsoa01d.na.odcorp.net:7778/orabpel/xmllib/merchFndXml/officedepot/merchandising/foundation/v1/message/bod/ODSyncItemMaster.xsd"/>
+        </xsd:schema>
+    </types>
+    <message name="ItemMaster_ebs_inbRequestMessage">
+        <part name="payload" element="ns1:SYNC_ITEM_MASTER"/>
+    </message>
+    <message name="ItemMaster_ebs_inbResponseMessage">
+        <part name="payload" element="client:ItemMaster_ebs_inbProcessResponse"/>
+    </message>
+    <portType name="ItemMaster_ebs_inb">
+        <operation name="initiate">
+            <input message="client:ItemMaster_ebs_inbRequestMessage"/>
+        </operation>
+    </portType>
+    <plnk:partnerLinkType name="ItemMaster_ebs_inb">
+        <plnk:role name="ItemMaster_ebs_inbProvider">
+            <plnk:portType name="client:ItemMaster_ebs_inb"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+</definitions>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXPAUPCR" description="OD PB UPC Request Form Report" Version="1.0">
+<parameters>
+ <parameter name="p_proj" datatype="character" />
+ <parameter name="p_ttype" datatype="character" />
+ <parameter name="p_tyear" datatype="number" />
+ <parameter name="p_agent" datatype="character" />
+ <parameter name="p_vend" datatype="character" />
+ <parameter name="p_prj_mgr" datatype="character" />
+ <parameter name="p_dimer" datatype="character" />
+ <parameter name="p_domer" datatype="character" />
+ <parameter name="p_idesn" datatype="character" />
+ <parameter name="p_fdesn" datatype="character" />
+ <parameter name="p_div" datatype="character" />
+ <parameter name="p_dept" datatype="character" />
+ <parameter name="p_cls" datatype="character" />
+ <parameter name="p_scls" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_UPR">
+<![CDATA[
+select  
+    gen.dept dept,
+    gen.class class,
+    gen.subclass subclass,
+    gen.sku,
+    gen.sell_unit pack_size,
+    gen.brand,
+    gen.packaging_type,    
+    gen.VENDOR_NAME VENDOR_NAME,
+    gen.vendor_id,
+    gen.vpc,
+    gen.product_desc,
+    gen.FACTORY_ID||'/'||gen.FACTORY_NAME FACTORY_ID,
+    l.ic_qty,
+    l.mc_qty,
+    pmgr.full_name Proj_manager,
+    COALESCE(EEB1.C_EXT_ATTR6,'') AS DI_MERCHANT,
+    COALESCE(EEB1.C_EXT_ATTR7,'') AS Domestic_MERCHANT,
+    gen.division division,
+    gen.sourcing_agent,
+    EEB2.c_ext_attr1 tracker_type,
+    EEB2.N_ext_attr1 tracker_year
+ from 
+       (SELECT d.full_name,a.project_id
+          FROM apps.fnd_user e,
+          apps.per_all_people_f d,
+          apps.pa_project_role_types_vl c,
+          apps.pa_project_parties b,
+          apps.pa_projects_all a
+         WHERE b.project_id=a.project_id
+           AND c.project_role_id=b.project_role_id
+	     AND c.project_role_type='PROJECT MANAGER'
+           AND d.person_id=b.resource_source_id
+	     AND NVL(d.full_name,'X')=NVL(:p_prj_mgr,NVL(d.full_name,'X'))
+           AND e.employee_id=d.person_id ) pmgr,
+    apps.XX_PA_PB_PRD_LOGISTICS l,
+    apps.xx_pa_pb_genprd_dtl gen LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB1 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND1 ON 
+                 EEB1.ATTR_GROUP_ID = FND1.ATTR_GROUP_ID AND
+		     NVL(EEB1.C_EXT_ATTR6,'X')=NVL(:p_dimer,NVL(EEB1.C_EXT_ATTR6,'X')) AND
+		     NVL(EEB1.C_EXT_ATTR7,'X')=NVL(:p_domer,NVL(EEB1.C_EXT_ATTR7,'X')) AND
+                 FND1.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_GEN_INFO') ON
+                 gen.PROJECT_ID = EEB1.PROJECT_ID,
+        APPS.PA_PROJECTS_ALL PPA2 LEFT OUTER JOIN 
+              ( APPS.PA_PROJECTS_ERP_EXT_B EEB2 JOIN 
+                 APPS.EGO_FND_DSC_FLX_CTX_EXT FND2 ON 
+                 EEB2.ATTR_GROUP_ID = FND2.ATTR_GROUP_ID AND
+		     NVL(EEB2.c_ext_attr1,'X')=NVL(:p_ttype,NVL(eeb2.c_ext_attr1,'X')) AND
+		     NVL(EEB2.N_ext_attr1,-1)=NVL(:p_tyear,NVL(eeb2.n_ext_attr1,-1)) AND
+                 FND2.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'RPB_TRACKER') ON
+                 PPA2.PROJECT_ID = EEB2.PROJECT_ID
+ where ppa2.project_id=gen.project_id
+   and l.prod_dtl_id=gen.prod_dtl_id
+   AND pmgr.project_id=gen.project_id
+   AND l.sl_od_upc_no IS NULL
+   AND gen.project_no=NVL(:p_proj,gen.project_no)
+   AND NVL(gen.sourcing_agent,'X')=NVL(:p_agent,NVL(gen.sourcing_agent,'X'))
+   AND NVL(gen.VENDOR_NAME,'X')=NVL(:p_vend,NVL(gen.vendor_name,'X'))
+   AND NVL(gen.init_item_decision,'X')=NVL(:p_idesn,NVL(gen.init_item_decision,'X'))
+   AND NVL(gen.final_item_decision,'X')=NVL(:p_fdesn,NVL(gen.final_item_decision,'X'))
+   AND NVL(gen.division,-1)=NVL(:p_div,NVL(gen.division,-1))
+   AND NVL(gen.dept,-1)=NVL(:p_dept,NVL(gen.dept,-1))
+   AND NVL(gen.class,-1)=NVL(:p_cls,NVL(gen.class,-1))
+   AND NVL(gen.subclass,-1)=NVL(:p_scls,NVL(gen.subclass,-1))
+ORDER BY 1,2
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_UPR" source="Q_UPR">
+<element name="DEPT" value="DEPT" />
+<element name="CLASS" value="CLASS" />
+<element name="SUBCLASS" value="SUBCLASS" />
+<element name="SKU" value="SKU" />
+<element name="PACK_SIZE" value="PACK_SIZE" />
+<element name="BRAND" value="BRAND" />
+<element name="PACKAGING_TYPE" value="PACKAGING_TYPE" />
+<element name="VENDOR_NAME" value="VENDOR_NAME" />
+<element name="VENDOR_ID" value="VENDOR_ID" />
+<element name="VPC" value="VPC" />
+<element name="PRODUCT_DESC" value="PRODUCT_DESC" />
+<element name="FACTORY_ID" value="FACTORY_ID" />
+<element name="IC_QTY" value="IC_QTY" />
+<element name="MC_QTY" value="MC_QTY" />
+</group>
+</dataStructure>
+</dataTemplate>

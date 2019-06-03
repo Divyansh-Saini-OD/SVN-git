@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions 
+    name="POALLOC"
+    targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/POALLOC/"
+    xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/POALLOC/"
+    xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+    xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+    xmlns:pc="http://xmlns.oracle.com/pcbpel/"
+    xmlns:top="http://xmlns.oracle.com/pcbpel/adapter/db/top/POALLOC"
+    xmlns:hdr="http://xmlns.oracle.com/pcbpel/adapter/db/"
+    xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/" location="DBAdapterOutboundHeader.wsdl"/>
+
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/POALLOC"
+                schemaLocation="POALLOC_table.xsd"/>
+        </schema>
+    </types>
+
+    <message name="PoallocCollection_msg">
+        <part name="PoallocCollection" element="top:PoallocCollection"/>
+    </message>
+
+
+    <portType name="POALLOC_ptt">
+        <operation name="delete">
+            <input message="tns:PoallocCollection_msg"/>
+        </operation>
+        <operation name="insert">
+            <input message="tns:PoallocCollection_msg"/>
+        </operation>
+        <operation name="update">
+            <input message="tns:PoallocCollection_msg"/>
+        </operation>
+    </portType>
+
+    <binding name="POALLOC_binding" type="tns:POALLOC_ptt">
+        <jca:binding />
+        <operation name="delete">
+            <jca:operation
+                InteractionSpec="oracle.tip.adapter.db.DBWriteInteractionSpec"
+
+                DescriptorName="POALLOC.Poalloc"
+                DmlType="delete"
+                DetectOmissions="true"
+                OptimizeMerge="true"
+                MappingsMetaDataURL="POALLOC_toplink_mappings.xml" />
+            <input>
+                <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+            </input>
+        </operation>
+        <operation name="insert">
+            <jca:operation
+                InteractionSpec="oracle.tip.adapter.db.DBWriteInteractionSpec"
+
+                DescriptorName="POALLOC.Poalloc"
+                DmlType="insert"
+                DetectOmissions="true"
+                OptimizeMerge="true"
+                MappingsMetaDataURL="POALLOC_toplink_mappings.xml" />
+            <input>
+                <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+            </input>
+        </operation>
+        <operation name="update">
+            <jca:operation
+                InteractionSpec="oracle.tip.adapter.db.DBWriteInteractionSpec"
+
+                DescriptorName="POALLOC.Poalloc"
+                DmlType="update"
+                DetectOmissions="true"
+                OptimizeMerge="true"
+                MappingsMetaDataURL="POALLOC_toplink_mappings.xml" />
+            <input>
+                <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+            </input>
+        </operation>
+    </binding>
+
+    <!-- Your runtime connection is declared in
+        J2EE_HOME/application-deployments/default/DbAdapter/oc4j-ra.xml
+        These 'mcf' properties here are from your design time connection and 
+        save you from having to edit that file and restart the application server
+        if eis/DB/MRCHDB2QPBP is missing.
+        These 'mcf' properties are safe to remove.
+    -->
+    <service name="POALLOC">
+        <port name="POALLOC_pt" binding="tns:POALLOC_binding">
+            <jca:address location="eis/DB/MRCHDB2QPBP"
+                UIConnectionName="mrch_db2qpbp_odpdb2t"
+                ManagedConnectionFactory="oracle.tip.adapter.db.DBManagedConnectionFactory"
+                mcf.DriverClassName="com.ibm.db2.jcc.DB2Driver"
+                mcf.PlatformClassName="oracle.toplink.platform.database.DB2Platform"
+                mcf.ConnectionString="jdbc:db2://mvssysd.officedepot.com:4020/ODPDB2T"
+                mcf.UserName="DB2QPBP"
+                mcf.Password="C938CDF98F109D6BE9CAEAB824544A16"
+            />
+        </port>
+    </service>
+
+    <plt:partnerLinkType name="POALLOC_plt" >
+        <plt:role name="POALLOC_role" >
+            <plt:portType name="tns:POALLOC_ptt" />
+        </plt:role>
+    </plt:partnerLinkType>
+
+</definitions>

@@ -1,0 +1,13 @@
+<schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified"
+	targetNamespace="http://xmlns.oracle.com/ScAudirResultsResponse"
+	xmlns="http://www.w3.org/2001/XMLSchema">
+	<element name="ScAudirResultsResponse">
+		<complexType>
+			<sequence>
+				<element name="ReturnCode" type="string"/> 
+                                <element name="ReturnMsg" type="string" />
+			</sequence>
+		</complexType>
+	</element>
+</schema>

@@ -1,0 +1,74 @@
+-- +==========================================================================+
+-- |                       Office Depot - Project Simplify                    |
+-- |                         WIPRO Technologies                               |
+-- +==========================================================================+
+-- | Name          : PO Mass Update                                           |
+-- | Description   : Table which stores the status of the processed headers   |
+-- |                   and lines.                                             |
+-- |                                                                          |
+-- | SQL Script to create the following object                                |
+-- | Table         : XX_PO_MASS_UPD_PO_STATUS_ALL                             |
+-- |                                                                          |
+-- |Change Record:                                                            |
+-- |===============                                                           |
+-- |Version     Date           Author                    Remarks              |
+-- |=======     ==========     =============             =====================|
+-- | V1.0       21-MAY-2007    MadanKumar J              Initial version      |
+-- | V1.1       08-JUN-2007    MadanKumar J              Updating of          |
+-- |                                                     description in the   |
+-- |                                                     File Header          |
+-- +==========================================================================+
+ 
+SET SHOW          OFF
+SET VERIFY        OFF
+SET ECHO          OFF
+SET TAB           OFF
+SET FEEDBACK      ON
+ 
+DROP TABLE xxptp.xx_po_mass_upd_po_status_all;
+ 
+CREATE TABLE xxptp.xx_po_mass_upd_po_status_all(
+     mass_update_id            NUMBER NOT NULL PRIMARY KEY
+    ,batch_id                  NUMBER
+    ,po_header_id              NUMBER
+    ,po_line_id                NUMBER
+    ,org_id                    NUMBER NOT NULL
+    ,po_number                 VARCHAR2(20)
+    ,po_header_status          VARCHAR2(20)
+    ,revision_no               VARCHAR2(20)
+    ,po_type                   VARCHAR2(20)
+    ,approval_status           VARCHAR2(20)
+    ,mass_action_detail        VARCHAR2(50) 
+    ,item_id                   NUMBER
+    ,item_number               VARCHAR2(20)
+    ,line_type                 VARCHAR2(50)
+    ,line_status               VARCHAR2(20)
+    ,line_num                  NUMBER
+    ,price                     NUMBER
+    ,quantity                  NUMBER
+    ,process_status            VARCHAR2(20)
+    ,error_description         VARCHAR2(150)
+    ,promised_date             DATE
+    ,created_by                NUMBER(10)
+    ,creation_date             DATE
+    ,last_updated_by           NUMBER
+    ,last_updated_date         DATE
+    ,attribute_category        VARCHAR2(30)
+    ,attribute1                VARCHAR2(150)
+    ,attribute2                VARCHAR2(150)
+    ,attribute3                VARCHAR2(150)
+    ,attribute4                VARCHAR2(150)
+    ,attribute5                VARCHAR2(150)
+    ,attribute6                VARCHAR2(150)
+    ,attribute7                VARCHAR2(150)
+    ,attribute8                VARCHAR2(150)
+    ,attribute9                VARCHAR2(150)
+    ,attribute10               VARCHAR2(150)
+    ,attribute11               VARCHAR2(150)
+    ,attribute12               VARCHAR2(150)
+    ,attribute13               VARCHAR2(150)
+    ,attribute14               VARCHAR2(150)
+    ,attribute15               VARCHAR2(150)
+);
+ 
+SHOW ERROR

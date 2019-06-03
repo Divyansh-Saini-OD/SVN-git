@@ -1,0 +1,25 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="ItemMaster_rms_outb" src="ItemMaster_rms_outb.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="ItemMasterAQ">
+            <property name="wsdlLocation">ItemMasterAQ.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="ItemMaster_ebs_inb">
+            <property name="wsdlLocation">http://chilsoa01d.na.odcorp.net:7778/orabpel/mrch/ItemMaster_ebs_inb/ItemMaster_ebs_inb?wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="ItemMaster_rms_confirm_inb">
+            <property name="wsdlLocation">http://chilsoa01d.na.odcorp.net:7778/orabpel/mrch/ItemMaster_rms_confirm_inb/ItemMaster_rms_confirm_inb?wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="ODErrorHandler">
+            <property name="wsdlLocation">http://chilsoa01d.na.odcorp.net:7778/orabpel/mrch/ODErrorHandler/ODErrorHandler?wsdl</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+      <activationAgents>
+         <activationAgent className="oracle.tip.adapter.fw.agent.jca.JCAActivationAgent" partnerLink="ItemMasterAQ">
+            <property name="activationInstances">1</property>
+            <property name="portType">Dequeue_ptt</property>
+         </activationAgent>
+      </activationAgents>
+   </BPELProcess>
+</BPELSuitcase>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+xmlns="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+xmlns:odmf="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+targetNamespace="http://www.openapplications.org/officedepot/merchandising/foundation/1" 
+elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+<xsd:include schemaLocation="../common/ApplicationArea.xsd" />
+
+<xsd:complexType name="OrganizationHierarchyDataAreaType">
+  <xsd:sequence>
+       <xsd:element name="HierarchyLevel" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Identify the level of Organization Hierarchy. This field holds one
+            of these values - 'CHAIN', 'AREA', 'REGION' or 'DISTRICT'Subclass
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+       <xsd:element name="HierarchyID" type="xsd:integer">
+        <xsd:annotation>
+          <xsd:documentation>
+            Hierarchy Number. This field holds number that uniquely identifies
+            Chain number, Area number, Region number and District number
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+       <xsd:element name="HierarchyName" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Hierarchy Name. This field holds Hierarchy name (Description) - One
+            of the following
+            - Chain description
+            - Area description
+            - Region Description
+            - District description
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+       <xsd:element name="ActionCriteria" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            This hold verb or action to be performed on the message. The value
+            will be one of these values - Add, delete or update
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:choice>
+        <xsd:sequence>
+          <xsd:element name="ChaninAttributes">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="ManagerName" type="xsd:string">
+                  <xsd:annotation>
+                    <xsd:documentation>
+                      Name of the manager who is responsible for the chain
+                    </xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="AreaAttributes">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="ChainNo" type="xsd:integer">
+                  <xsd:annotation>
+                    <xsd:documentation>
+                      Indicates the numeric identification numbers assigned by
+                      Office Depot that represents a level within the
+                      Merchandise Hierarchy for the Department.
+                    </xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ManagerName" type="xsd:string">
+                  <xsd:annotation>
+                    <xsd:documentation>
+                      Name of the manager who is responsible for the chain
+                    </xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="RegionAttributes">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="AreaNo" type="xsd:integer">
+                  <xsd:annotation>
+                    <xsd:documentation>
+                      Indicates the numeric identification number assigned by
+                      Office Depot that represents the level's parent within the
+                      Merchandise Hierarchy.
+                    </xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ManagerName" type="xsd:string">
+                  <xsd:annotation>
+                    <xsd:documentation>
+                      Name of the manager who is responsible for the chain
+                    </xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="DistrictAttributes">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="RegionNo" type="xsd:integer">
+                  <xsd:annotation>
+                    <xsd:documentation>
+                      Defines the number which uniquely identifies Department
+                      within Merchandise Hierarchy. Department is the next level
+                      below group in the merchandise hierarchy of a company. A
+                      group can have multiple departments. Key information about
+                      how inventory is tracked and reported is stored at the
+                      department level. For example, Department 103 (Office
+                      Furniture) belongs to Group 102 (Desk) which belongs
+                      Division 105 (Furniture)
+                    </xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ManagerName" type="xsd:string">
+                  <xsd:annotation>
+                    <xsd:documentation>
+                      Name of the manager who is responsible for the chain
+                    </xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:choice>
+    </xsd:sequence>
+</xsd:complexType>
+  <xsd:complexType name="ApplicationAreaAndOrganizationHierarchyDataAreaType">
+    <xsd:sequence>
+      <xsd:element name="ApplicationArea" type="odmf:ApplicationAreaType">
+        <xsd:annotation>
+          <xsd:documentation>Is where the information that the BOD message
+                             carries is provided, in this case
+                             SyncMerchandiseHierarchy. The information consists
+                             of a Verb and one or more Nouns. The verb (Sync)
+                             indicates the action to be performed on the Noun
+                             (MerchandiseHierarchy).</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="DataArea"
+                   type="odmf:OrganizationHierarchyDataAreaType">
+        <xsd:annotation>
+          <xsd:documentation>Is where the information that the BOD message
+                             carries is provided, in this case
+                             SyncMerchandiseHierarchy. The information consists
+                             of a Verb and one or more Nouns. The verb (Sync)
+                             indicates the action to be performed on the Noun
+                             (MerchandiseHierarchy).</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

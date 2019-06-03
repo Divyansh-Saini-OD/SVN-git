@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXSCVENREP" description="OD: Environmental Product Information Report" Version="1.0">
+<parameters>
+ <parameter name="P_PROFILE_VALUE" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_XXSCVENREP">
+<![CDATA[
+SELECT OD_SC_VENDOR_NUMBER,
+  OD_SC_VENDOR_NAME,
+  OD_SC_VEND_TYPE,
+  OD_SC_VENDOR_STATUS,
+  OD_SC_ACTIVATION_DATE,
+  OD_SC_INACTIVE_DATE,
+  OD_SC_REACTIVATE_DATE,
+  OD_SC_AUDIT_AGENT,
+  OD_SC_VEND_ADDRESS,
+  OD_SC_FACTORY_NUMBER,
+  OD_SC_FACTORY_NAME,
+  OD_SC_FACTORY_ADDRESS,
+  OD_SC_EUROPE_RGN,
+  OD_SC_EU_SUB_RGN,
+  OD_SC_EU_VEND_NO,
+  OD_SC_EU_FACTORY_NO,
+  OD_SC_EU_VEND_STATUS,
+  OD_SC_EU_CONTACT,
+  OD_SC_MEXICO_REGION,
+  OD_SC_MX_SUB_RGN,
+  OD_SC_MX_VEND_NO,
+  OD_SC_MEX_FACTORY_NO,
+  OD_SC_MX_VEND_STATUS,
+  OD_SC_MX_CONTACT,
+  OD_SC_ASIA_REGION,
+  OD_SC_AS_SUB_RGN,
+  OD_SC_AS_VEND_NO,
+  OD_SC_ASIA_FACTORY_NO,
+  OD_SC_AS_VEND_STATUS,
+  OD_SC_ASIA_CONTACT,
+  OD_SC_VEND_REGION,
+  OD_SC_EU_VEND_NO GSO_SUPPLIER_ID,
+  OD_SC_EU_FACTORY_NO GSO_FACTORY_ID,
+  OD_SC_EU_VEND_STATUS GSO_SUPPLIER_STATUS
+FROM
+  (SELECT *
+  FROM q_od_pb_sc_vendor_master_v
+  WHERE od_sc_vendor_status in ('Active','Inactive')
+    AND ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODUS'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_eu_vendor_master_v
+  WHERE od_sc_vendor_status in ('Active','Inactive')
+    AND ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODEU'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_mx_vendor_master_v
+  WHERE od_sc_vendor_status in ('Active','Inactive')
+    AND ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODMX'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_asia_vendor_master_v
+  WHERE od_sc_vendor_status in ('Active','Inactive')
+    AND ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODASIA' = :P_PROFILE_VALUE)
+  ) t1
+  ORDER BY OD_SC_VENDOR_NAME
+  ,OD_SC_FACTORY_NAME
+  ,OD_SC_VENDOR_STATUS  
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_XXSCVENREP" source="Q_XXSCVENREP">
+<element name="OD_SC_VENDOR_NUMBER" value="OD_SC_VENDOR_NUMBER" />
+<element name="OD_SC_VENDOR_NAME" value="OD_SC_VENDOR_NAME" />
+<element name="OD_SC_VEND_TYPE" value="OD_SC_VEND_TYPE" />
+<element name="OD_SC_VENDOR_STATUS" value="OD_SC_VENDOR_STATUS" />
+<element name="OD_SC_ACTIVATION_DATE" value="OD_SC_ACTIVATION_DATE" />
+<element name="OD_SC_INACTIVE_DATE" value="OD_SC_INACTIVE_DATE" />
+<element name="OD_SC_REACTIVATE_DATE" value="OD_SC_REACTIVATE_DATE" />
+<element name="OD_SC_AUDIT_AGENT" value="OD_SC_AUDIT_AGENT" />
+<element name="OD_SC_VEND_ADDRESS" value="OD_SC_VEND_ADDRESS" />
+<element name="OD_SC_FACTORY_NUMBER" value="OD_SC_FACTORY_NUMBER" />
+<element name="OD_SC_FACTORY_NAME" value="OD_SC_FACTORY_NAME" />
+<element name="OD_SC_FACTORY_ADDRESS" value="OD_SC_FACTORY_ADDRESS" />
+<element name="OD_SC_EUROPE_RGN" value="OD_SC_EUROPE_RGN" />
+<element name="OD_SC_EU_SUB_RGN" value="OD_SC_EU_SUB_RGN" />
+<element name="OD_SC_EU_VEND_NO" value="OD_SC_EU_VEND_NO" />
+<element name="OD_SC_EU_FACTORY_NO" value="OD_SC_EU_FACTORY_NO" />
+<element name="OD_SC_EU_VEND_STATUS" value="OD_SC_EU_VEND_STATUS" />
+<element name="OD_SC_EU_CONTACT" value="OD_SC_EU_CONTACT" />
+<element name="OD_SC_MEXICO_REGION" value="OD_SC_MEXICO_REGION" />
+<element name="OD_SC_MX_SUB_RGN" value="OD_SC_MX_SUB_RGN" />
+<element name="OD_SC_MX_VEND_NO" value="OD_SC_MX_VEND_NO" />
+<element name="OD_SC_MEX_FACTORY_NO" value="OD_SC_MEX_FACTORY_NO" />
+<element name="OD_SC_MX_VEND_STATUS" value="OD_SC_MX_VEND_STATUS" />
+<element name="OD_SC_MX_CONTACT" value="OD_SC_MX_CONTACT" />
+<element name="OD_SC_ASIA_REGION" value="OD_SC_ASIA_REGION" />
+<element name="OD_SC_AS_SUB_RGN" value="OD_SC_AS_SUB_RGN" />
+<element name="OD_SC_AS_VEND_NO" value="OD_SC_AS_VEND_NO" />
+<element name="OD_SC_ASIA_FACTORY_NO" value="OD_SC_ASIA_FACTORY_NO" />
+<element name="OD_SC_AS_VEND_STATUS" value="OD_SC_AS_VEND_STATUS" />
+<element name="OD_SC_ASIA_CONTACT" value="OD_SC_ASIA_CONTACT" />
+<element name="OD_SC_VEND_REGION" value="OD_SC_VEND_REGION" />
+<element name="GSO_SUPPLIER_ID" value="GSO_SUPPLIER_ID" />
+<element name="GSO_FACTORY_ID" value="GSO_FACTORY_ID" />
+<element name="GSO_SUPPLIER_STATUS" value="GSO_SUPPLIER_STATUS" />
+</group>
+</dataStructure>
+</dataTemplate>

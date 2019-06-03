@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+xmlns="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+xmlns:odmf="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+targetNamespace="http://www.openapplications.org/officedepot/merchandising/foundation/1" 
+elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+<xsd:include schemaLocation="../common/ApplicationArea.xsd" />
+
+<xsd:complexType name="LocationDataAreaType">
+  <xsd:sequence>
+      <xsd:element name="LocationType" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Type of Location. This identifies whether the location is Store or
+            Wharehouse. This field contain 'WH' from wharehouse and 'STORE' for
+            Store
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ActionCriteria" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            This hold verb or action to be performed on the message. The value
+            will be one of these values - Add, delete or update
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="LocationID" type="xsd:integer">
+        <xsd:annotation>
+          <xsd:documentation>
+            Contains the number which uniquely identifies Location. When
+            LocationType is ‘STORE’ this field holds store location number and
+            when LoctionType is ‘WH’ this filed holds WH Location number.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="LocationName" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Contains Location name. When LocationType is ‘STORE’ this field
+            holds store name and when LoctionType is ‘WH’ this filed holds WH
+            Location name.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Address1" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Address Line 1
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Address2" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            The building or house name on the street that identifies where to
+            deliver mail
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="City" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Identifies the town or the city of the location
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="County" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            County where the physical location is located
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="State" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Qualifies the further division of the Country. These may be
+            Districts, Regions, States, Provinces etc. A possible list of values
+            is as specified in ISO 3166-2. The type attribute identifies the
+            type of this e.g. District, Region etc, and there is a pre-defined
+            list of types supported, with the ability to add new ones as
+            necessary
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="PostalCode" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Identifies a Postal Delivery Code such as Zip Code
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="CountryId" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Country where the physical location is located.  A possible list of
+            values is as specified in ISO 3166-2
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="CurrencyCode" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            This field contains the currency code under which the location
+            operates.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ManagerName" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Location Manager Name
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="FaxNumber" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Fax Number
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="PhoneNumber" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Phone Number
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Email" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Location primary e-mail
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ODCrossStreetDirections" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Indicates nearest cross streets to the location.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ODCrossStreetDirections2" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Indicates additional cross street details.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="TimeZone" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Location Time Zone
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="DistrictId" type="xsd:integer">
+        <xsd:annotation>
+          <xsd:documentation>
+            District within the Organization Hierarchy that the location belongs
+            to
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="OpenDate" type="xsd:date">
+        <xsd:annotation>
+          <xsd:documentation>
+            Location Open Date
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="CloseDate" type="xsd:date">
+        <xsd:annotation>
+          <xsd:documentation>
+            Location Close Date
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="DeliveryFlag" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Indicates that the facility delivers to customers
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ODDivisionId" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Division within Organization Hierarchy that the Location belongs to
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ODTypeCode" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Further defines the location, in conjunction with the Division-Id . 
+            Validated on Code Table: 
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ODSubTypeCode" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Further defines the location, in conjunction with Division-Id and
+            Type-Cd.  Validated on Code Table:  
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ODModelTaxLocation" type="xsd:integer">
+        <xsd:annotation>
+          <xsd:documentation>
+            Used to create tax information on the legacy system for new stores. 
+            This field contains a current store that will be used to model the
+            tax information for the new store.  This field can only be entered
+            on "Add".  Cannot be modified after the store attribute record has
+            been added to the system.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ODGeoCode" type="xsd:integer">
+        <xsd:annotation>
+          <xsd:documentation>
+            Indicates the geographic-code for the calculation of sales tax. 
+            Must be explicitly specified when a location spans more than one
+            county so that the Vertex tax calculation software uses the correct
+            (lower rate) code.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ODBtsFlightId" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Indicates the Back to School Flight for advertising and inventory
+            management
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ODAdMarketId" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Advertising Market Id.  Groups locations according to the
+            advertising market to which they are assigned. [A, B, C, N]
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ODRelocationId" type="xsd:integer">
+        <xsd:annotation>
+          <xsd:documentation>
+            For relocated facilities, indicates the location to which the
+            facility was relocated.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ODRoutingCode" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Indicates if delivery is routed based on sector or zip-code.
+            "S=sector "Z" = zip code
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ODOrderCutOffTime" type="xsd:dateTime"/>
+      <xsd:element name="ODSisterLocation1" type="xsd:integer">
+        <xsd:annotation>
+          <xsd:documentation>
+            This field will hold a location number which will be used to relate
+            the current location to the historical data of an existing location.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ODSisterLocation2" type="xsd:integer">
+        <xsd:annotation>
+          <xsd:documentation>
+            This field will hold a second location number which will be used to
+            relate the current location to the historical data of another
+            existing location.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ODSisterLocation3" type="xsd:integer">
+        <xsd:annotation>
+          <xsd:documentation>
+            This field will hold a third location number which will be used to
+            relate the current location to the historical data of another
+            existing location.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ODCrossDockLeadTime" type="xsd:string"/>
+      <xsd:element name="CityLimitsFlag" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            Indicates that the location is in the city limits.  Used for the
+            calculation of sales tax.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:choice>
+        <xsd:element name="StoreAttributes">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="StoreClass" type="xsd:string">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Contains the code letter indicating the class of which the
+                    store is a member. Valid values are A through E.
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element name="StoreFormat" type="xsd:integer">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Contains the number indicating the format of the store.
+                    Valid values are found on the store format table.
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element name="DefaultWarehouse" type="xsd:integer"/>
+              <xsd:element name="ODDefaultWhCSC" type="xsd:integer">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Default CSC Wharehouse for this Store
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element name="ODMarketOpenDate" type="xsd:date">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Indicates the store opening date for advertising purposes.
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="WhAttributes">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="ODDefaultCrossDock" type="xsd:integer">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Office Deopt Default Cros sDock
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element name="BreakPackInd" type="xsd:string">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Indicates whether or not the warehouse is capable of
+                    distributing less than the supplier case quantity.
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element name="DeliveryPolicy" type="xsd:string">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Contains the delivery policy of the warehouse. Next Day
+                    indicates that the if a location is closed, the warehouse
+                    will deliver on the next day. Next Valid Delivery Day
+                    indicates that the warehouse will wait until the next
+                    scheduled delivery day before delivering. Valid values come
+                    from the DLVY code on code_head/code_detail.
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:choice>
+    </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="ApplicationAreaAndLocationDataAreaType">
+  <xsd:sequence>
+    <xsd:element name="ApplicationArea" type="odmf:ApplicationAreaType">
+        <xsd:annotation>
+          <xsd:documentation>
+            Is where the information that the BOD message carries is provided,
+            in this case Location. The information consists of a Verb and one or
+            more Nouns. 
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    <xsd:element name="DataArea" type="odmf:LocationDataAreaType">
+        <xsd:annotation>
+          <xsd:documentation>
+            Is where the information that the BOD message carries is provided,
+            in this case Location. The information consists of a Verb and one or
+            more Nouns. 
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+  </xsd:sequence>
+</xsd:complexType>
+
+
+</xsd:schema>

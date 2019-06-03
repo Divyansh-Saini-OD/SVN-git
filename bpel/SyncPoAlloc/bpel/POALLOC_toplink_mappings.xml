@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toplink:object-persistence version="Oracle TopLink - 10g Release 3 (10.1.3.1.0) (Build 061004)" xmlns:opm="http://xmlns.oracle.com/ias/xsds/opm" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:toplink="http://xmlns.oracle.com/ias/xsds/toplink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <opm:name>POALLOC</opm:name>
+   <opm:class-mapping-descriptors>
+      <opm:class-mapping-descriptor xsi:type="toplink:relational-class-mapping-descriptor">
+         <opm:class>POALLOC.Poalloc</opm:class>
+         <opm:alias>Poalloc</opm:alias>
+         <opm:primary-key>
+            <opm:field table="POALLOC" name="ALLOC_LOC_ID" xsi:type="opm:column"/>
+            <opm:field table="POALLOC" name="LOC_ID" xsi:type="opm:column"/>
+            <opm:field table="POALLOC" name="PO_NBR" xsi:type="opm:column"/>
+            <opm:field table="POALLOC" name="SKU" xsi:type="opm:column"/>
+         </opm:primary-key>
+         <opm:events xsi:type="toplink:event-policy"/>
+         <opm:querying xsi:type="toplink:query-policy">
+            <opm:queries>
+               <opm:query name="findAllPoalloc" xsi:type="toplink:read-all-query">
+                  <toplink:timeout>0</toplink:timeout>
+                  <toplink:reference-class>POALLOC.Poalloc</toplink:reference-class>
+                  <toplink:cache-usage>primary-key</toplink:cache-usage>
+                  <toplink:lock-mode>none</toplink:lock-mode>
+                  <toplink:container xsi:type="toplink:list-container-policy">
+                     <toplink:collection-type>java.util.Vector</toplink:collection-type>
+                  </toplink:container>
+               </opm:query>
+            </opm:queries>
+            <toplink:does-exist-query xsi:type="toplink:does-exist-query">
+               <toplink:existence-check>check-database</toplink:existence-check>
+            </toplink:does-exist-query>
+         </opm:querying>
+         <opm:attribute-mappings>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>poNbr</opm:attribute-name>
+               <opm:field table="POALLOC" name="PO_NBR" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigInteger</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>locId</opm:attribute-name>
+               <opm:field table="POALLOC" name="LOC_ID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.Short</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>sku</opm:attribute-name>
+               <opm:field table="POALLOC" name="SKU" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigInteger</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>allocLocId</opm:attribute-name>
+               <opm:field table="POALLOC" name="ALLOC_LOC_ID" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.Short</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>prioritySeqNbr</opm:attribute-name>
+               <opm:field table="POALLOC" name="PRIORITY_SEQ_NBR" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.Short</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>unitsAlloc</opm:attribute-name>
+               <opm:field table="POALLOC" name="UNITS_ALLOC" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigInteger</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>unitsAdneed</opm:attribute-name>
+               <opm:field table="POALLOC" name="UNITS_ADNEED" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigInteger</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>unitsRcvd</opm:attribute-name>
+               <opm:field table="POALLOC" name="UNITS_RCVD" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigInteger</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>manOverrideFlg</opm:attribute-name>
+               <opm:field table="POALLOC" name="MAN_OVERRIDE_FLG" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>postProcessFlg</opm:attribute-name>
+               <opm:field table="POALLOC" name="POST_PROCESS_FLG" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>allocQty</opm:attribute-name>
+               <opm:field table="POALLOC" name="ALLOC_QTY" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.math.BigInteger</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>userIdEntBy</opm:attribute-name>
+               <opm:field table="POALLOC" name="USER_ID_ENT_BY" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>dtEnt</opm:attribute-name>
+               <opm:field table="POALLOC" name="DT_ENT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.sql.Timestamp</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>tmEnt</opm:attribute-name>
+               <opm:field table="POALLOC" name="TM_ENT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.sql.Time</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>pgmEnt</opm:attribute-name>
+               <opm:field table="POALLOC" name="PGM_ENT" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>userIdChgBy</opm:attribute-name>
+               <opm:field table="POALLOC" name="USER_ID_CHG_BY" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>dtChg</opm:attribute-name>
+               <opm:field table="POALLOC" name="DT_CHG" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.sql.Timestamp</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>tmChg</opm:attribute-name>
+               <opm:field table="POALLOC" name="TM_CHG" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.sql.Time</opm:attribute-classification>
+            </opm:attribute-mapping>
+            <opm:attribute-mapping xsi:type="toplink:direct-mapping">
+               <opm:attribute-name>pgmChg</opm:attribute-name>
+               <opm:field table="POALLOC" name="PGM_CHG" xsi:type="opm:column"/>
+               <opm:attribute-classification>java.lang.String</opm:attribute-classification>
+            </opm:attribute-mapping>
+         </opm:attribute-mappings>
+         <toplink:descriptor-type>independent</toplink:descriptor-type>
+         <toplink:caching>
+            <toplink:cache-type>weak-reference</toplink:cache-type>
+            <toplink:always-refresh>true</toplink:always-refresh>
+         </toplink:caching>
+         <toplink:remote-caching>
+            <toplink:cache-type>weak-reference</toplink:cache-type>
+         </toplink:remote-caching>
+         <toplink:instantiation/>
+         <toplink:copying xsi:type="toplink:instantiation-copy-policy"/>
+         <toplink:change-policy xsi:type="toplink:deferred-detection-change-policy"/>
+         <toplink:tables>
+            <toplink:table name="OD.POALLOC"/>
+         </toplink:tables>
+      </opm:class-mapping-descriptor>
+   </opm:class-mapping-descriptors>
+</toplink:object-persistence>

@@ -1,0 +1,21 @@
+/*======================================================================
+-- +===================================================================+
+-- |                  Office Depot - iSupplier-Project                 |
+-- |              Private Brand China Global Sourcing                  |
+-- +===================================================================+
+-- | Name       :  XX_POS_OID_DECRYPT_SYN synonym and grant execute    |
+-- | Description:  This function is Created for the PBCGS iSupplier    |
+-- |               registration worflow process to decrypt the staging |
+-- |               table password.                                     |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |1.0      07-Mar-2008  Ian Bassaragh    Original                    |
+-- +===================================================================+
++======================================================================*/
+CREATE OR REPLACE SYNONYM XXOIDSYNC.xx_pos_oid_decrypt FOR APPS.xx_pos_oid_decrypt;
+
+GRANT EXECUTE ON xx_pos_oid_decrypt TO XXOIDSYNC;
+
+EXIT;

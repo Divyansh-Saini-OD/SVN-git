@@ -1,0 +1,51 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<xs:schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/DBAdapterPolling" xmlns="http://xmlns.oracle.com/pcbpel/adapter/db/top/DBAdapterPolling" elementFormDefault="qualified" attributeFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+   <xs:element name="SubbuJitaAllocCollection" type="SubbuJitaAllocCollection"/>
+   <xs:complexType name="SubbuJitaAllocCollection">
+      <xs:sequence>
+         <xs:element name="SubbuJitaAlloc" type="SubbuJitaAlloc" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="SubbuJitaAlloc">
+      <xs:sequence>
+         <xs:element name="shipFromLocId" type="xs:decimal" minOccurs="0"/>
+         <xs:element name="receiptNbr" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="shipToLocId" type="xs:decimal" minOccurs="0"/>
+         <xs:element name="poNbr" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="sku" type="xs:decimal" minOccurs="0"/>
+         <xs:element name="allocSetSeqNbr" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="jitaProcess" minOccurs="0" nillable="true">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="10"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="distributionDate" type="xs:dateTime" minOccurs="0" nillable="true"/>
+         <xs:element name="distributionTimestamp" type="xs:dateTime" minOccurs="0" nillable="true"/>
+         <xs:element name="allocationQty" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="scanPickedQty" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="orderQty" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="standardPackQty" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="dynamicAllocQty" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="lockinAllocQty" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="seasonalLrgOrdQty" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="newStoreBottomFillQty" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="newStorePropNeedQty" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="atpCustomerOrderQty" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="storeOutsQty" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="storeNeedQty" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="backOrderQty" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="markOutQty" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="rutl" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="sellableOnHand" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="inTransitQty" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="avgWeeklySales" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="wmosId" type="xs:decimal" nillable="true"/>
+         <xs:element name="creationDate" type="xs:dateTime" minOccurs="0" nillable="true"/>
+         <xs:element name="createdBy" type="xs:decimal" minOccurs="0" nillable="true"/>
+         <xs:element name="lastUpdateDate" type="xs:dateTime" minOccurs="0" nillable="true"/>
+         <xs:element name="lastUpdatedBy" type="xs:decimal" minOccurs="0" nillable="true"/>
+      </xs:sequence>
+   </xs:complexType>
+</xs:schema>

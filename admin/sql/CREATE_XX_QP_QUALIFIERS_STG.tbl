@@ -1,0 +1,162 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Object Name    : OD C0225 Modifiers                                                         |--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_QP_QUALIFIERS_STG.tbl                                            |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                  1. XX_QP_QUALIFIERS_STG (OD Modifiers Qualifiers Staging Table)            |--
+--|                  2. XX_QP_QUALIFIERS_STG (Synonym for XX_QP_QUALIFIERS_STG)                 |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By        Description                            |--
+--+=============================================================================================+--
+--| 1.0              18-May-2007      Abhradip Ghosh     Original                               |--
+--| 1.1              13-Jun-2007      Abhradip Ghosh     File name changed as per updated MD040 |--
+--| 1.2              13-Jun-2007      Parvez Siddiqui    TL Review                              |--
+--+=============================================================================================+--
+
+SET VERIFY   OFF
+SET TERM     ON
+SET FEEDBACK OFF
+SET SHOW     OFF
+SET ECHO     OFF
+SET TAB      OFF
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Existing Custom Tables......
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping Table XXCNV.XX_QP_QUALIFIERS_STG
+PROMPT
+
+DROP TABLE XXCNV.XX_QP_QUALIFIERS_STG;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Dropping SYNONYM XX_QP_QUALIFIERS_STG in APPS
+PROMPT
+
+DROP SYNONYM XX_QP_QUALIFIERS_STG;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating the Custom Table XX_QP_QUALIFIERS_STG......
+PROMPT
+
+
+
+CREATE TABLE XXCNV.XX_QP_QUALIFIERS_STG(
+                                        CONTROL_ID                     NUMBER NOT NULL,
+                                        PROCESS_FLAG                   NUMBER NOT NULL,
+                                        CONV_ACTION                    VARCHAR2(10) NOT NULL,
+                                        LOAD_BATCH_ID                  NUMBER,
+                                        EXTRACT_BATCH_ID               NUMBER,
+                                        SOURCE_SYSTEM_CODE             VARCHAR2(5) NOT NULL,
+                                        SOURCE_SYSTEM_REF              VARCHAR2(50) NOT NULL,
+                                        ERROR_CODE                     VARCHAR2(15),
+                                        ERROR_MESSAGE                  VARCHAR2(2000),
+                                        QUALIFIER_ID                 NUMBER,
+                                        CREATION_DATE                DATE,
+                                        CREATED_BY                   NUMBER,
+                                        LAST_UPDATED_BY              NUMBER,
+                                        LAST_UPDATE_DATE             DATE,
+                                        LAST_UPDATE_LOGIN            NUMBER,
+                                        REQUEST_ID                   NUMBER,
+                                        PROGRAM_APPLICATION_ID       NUMBER,
+                                        PROGRAM_ID                   NUMBER,
+                                        PROGRAM_UPDATE_DATE          DATE,
+                                        QUALIFIER_GROUPING_NO        NUMBER,
+                                        QUALIFIER_CONTEXT            VARCHAR2(30),
+                                        COMPARISON_OPERATOR_CODE     VARCHAR2(30),
+                                        EXCLUDER_FLAG                VARCHAR2(1),
+                                        QUALIFIER_RULE_ID            NUMBER,
+                                        START_DATE_ACTIVE            DATE,
+                                        END_DATE_ACTIVE              DATE,
+                                        CREATED_FROM_RULE_ID         NUMBER,
+                                        QUALIFIER_PRECEDENCE         NUMBER,
+                                        LIST_HEADER_ID               NUMBER,
+                                        LIST_LINE_ID                 NUMBER,
+                                        QUALIFIER_ATTR_VALUE_TO      VARCHAR2(240),
+                                        QUALIFIER_DATATYPE           VARCHAR2(10),
+                                        CONTEXT                      VARCHAR2(30),
+                                        ATTRIBUTE1                   VARCHAR2(240),
+                                        ATTRIBUTE2                   VARCHAR2(240),
+                                        ATTRIBUTE3                   VARCHAR2(240),
+                                        ATTRIBUTE4                   VARCHAR2(240),
+                                        ATTRIBUTE5                   VARCHAR2(240),
+                                        ATTRIBUTE6                   VARCHAR2(240),
+                                        ATTRIBUTE7                   VARCHAR2(240),
+                                        ATTRIBUTE8                   VARCHAR2(240),
+                                        ATTRIBUTE9                   VARCHAR2(240),
+                                        ATTRIBUTE10                  VARCHAR2(240),
+                                        ATTRIBUTE11                  VARCHAR2(240),
+                                        ATTRIBUTE12                  VARCHAR2(240),
+                                        ATTRIBUTE13                  VARCHAR2(240),
+                                        ATTRIBUTE14                  VARCHAR2(240),
+                                        ATTRIBUTE15                  VARCHAR2(240),
+                                        LIST_TYPE_CODE               VARCHAR2(30),
+                                        QUAL_ATTR_VALUE_FROM_NUMBER  NUMBER,
+                                        QUAL_ATTR_VALUE_TO_NUMBER    NUMBER,
+                                        SEARCH_IND                   NUMBER,
+                                        QUALIFIER_GROUP_CNT          NUMBER,
+                                        HEADER_QUALS_EXIST_FLAG      VARCHAR2(1),
+                                        DISTINCT_ROW_COUNT           NUMBER,
+                                        QUALIFIER_ATTRIBUTE          VARCHAR2(30),
+                                        QUALIFIER_ATTR_VALUE         VARCHAR2(240),
+                                        ACTIVE_FLAG                  VARCHAR2(1),
+                                        RETURN_STATUS                VARCHAR2(1),
+                                        DB_FLAG                      VARCHAR2(1),
+                                        OPERATION                    VARCHAR2(30),
+                                        ORIG_SYS_QUALIFIER_REF       VARCHAR2(50),
+                                        ORIG_SYS_HEADER_REF          VARCHAR2(50),
+                                        ORIG_SYS_LINE_REF            VARCHAR2(50),
+                                        ORG_ID                       NUMBER,
+                                        ORG_CODE                     VARCHAR2(10)
+                                       );
+
+
+PROMPT
+PROMPT Creating Synonym in APPS...
+PROMPT
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Creating SYNONYM XX_QP_QUALIFIERS_STG
+PROMPT
+
+CREATE OR REPLACE SYNONYM XX_QP_QUALIFIERS_STG FOR XXCNV.XX_QP_QUALIFIERS_STG;
+
+WHENEVER SQLERROR CONTINUE
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+
+EXIT;
+
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
+
+
+

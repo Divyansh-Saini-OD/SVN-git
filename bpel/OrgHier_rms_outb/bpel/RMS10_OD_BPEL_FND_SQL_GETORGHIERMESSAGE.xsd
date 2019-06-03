@@ -1,0 +1,29 @@
+<schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/RMS10/OD_BPEL_FND_SQL/GETORGHIERMESSAGE/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/RMS10/OD_BPEL_FND_SQL/GETORGHIERMESSAGE/">
+   <element name="InputParameters">
+      <complexType>
+         <sequence>
+            <element name="I_PROCESS_NAME" type="string" db:index="4" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+   <element name="OutputParameters">
+      <complexType>
+         <sequence>
+            <element name="O_RET_CODE" type="decimal" db:index="1" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_RET_MESSAGE" type="string" db:index="2" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_STOP_RUNNING_FLAG" type="string" db:index="3" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_HIERARCHY" type="string" db:index="5" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_HIER_ID" type="decimal" db:index="6" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_HIER_NAME" type="string" db:index="7" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_CHANGE_CD" type="string" db:index="8" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_CHAIN_MGR" type="string" db:index="9" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_AREA_MGR" type="string" db:index="10" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_AREA_CHAIN" type="decimal" db:index="11" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_REGION_MGR" type="string" db:index="12" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_REGION_AREA" type="decimal" db:index="13" db:type="NUMBER" minOccurs="0" nillable="true"/>
+            <element name="O_DISTRICT_MGR" type="string" db:index="14" db:type="VARCHAR2" minOccurs="0" nillable="true"/>
+            <element name="O_DISTRICT_REGION" type="decimal" db:index="15" db:type="NUMBER" minOccurs="0" nillable="true"/>
+         </sequence>
+      </complexType>
+   </element>
+</schema>

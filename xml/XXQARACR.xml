@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXQARACR" description="OD : Regulatory and Certifications Report" Version="1.0">
+<parameters>
+ <parameter name="P_REGION" datatype="character" />
+ <parameter name="P_REGISTRATION_TYPE" datatype="character" />
+ <parameter name="P_VENDOR_NAME" datatype="character" />
+ <parameter name="P_SOURCING_AGENT" datatype="character" />
+ <parameter name="P_PAID_BY" datatype="character" />
+ <parameter name="P_REGISTRATION_STATUS" datatype="character" />
+ <parameter name="P_RENEWAL_NEEDED" datatype="character" />
+ <parameter name="P_RENEWAL_FREQUENCY" datatype="character" />
+ <parameter name="P_APPROVER" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_MAIN">
+<![CDATA[
+SELECT 
+ OD_OB_REG_ID
+,OD_SC_REGION
+,OD_OB_REG_TYPE
+,OD_OB_REG_NO
+,OD_OB_VENDOR_NAME
+,OD_SC_AUDIT_AGENT
+,OD_OB_SKU
+,OD_PB_ITEM_DESC
+,OD_PB_COST_ASSOCIATED
+,OD_PB_ENTITY
+,OD_OB_REG_DUE_DATE
+,OD_OB_REG_STATUS
+,OD_OB_REG_DATE
+,OD_PB_QA_ENGR_EMAIL
+,OD_OB_RENEW_YN
+,OD_OB_RENEW_FREQUENCY
+,OD_PB_DATE_RENEW
+,OD_PB_ATTACHMENT
+FROM
+q_od_ob_reg_cert_v
+WHERE   NVL(OD_SC_REGION,'X')          = NVL(:P_REGION,NVL(OD_SC_REGION,'X'))
+AND     NVL(OD_OB_REG_TYPE,'X')        = NVL(:P_REGISTRATION_TYPE,NVL(OD_OB_REG_TYPE,'X'))
+AND     NVL(OD_OB_VENDOR_NAME,'X')     = NVL(:P_VENDOR_NAME,NVL(OD_OB_VENDOR_NAME,'X'))
+AND     NVL(OD_SC_AUDIT_AGENT,'X')     = NVL(:P_SOURCING_AGENT,NVL(OD_SC_AUDIT_AGENT,'X'))
+AND     NVL(OD_PB_ENTITY,'X')          = NVL(:P_PAID_BY,NVL(OD_PB_ENTITY,'X'))
+AND     NVL(OD_OB_REG_STATUS,'X')      = NVL(:P_REGISTRATION_STATUS,NVL(OD_OB_REG_STATUS,'X'))
+AND     NVL(OD_OB_RENEW_YN,'X')        = NVL(:P_RENEWAL_NEEDED,NVL(OD_OB_RENEW_YN,'X'))
+AND     NVL(OD_OB_RENEW_FREQUENCY,'X') = NVL(:P_RENEWAL_FREQUENCY,NVL(OD_OB_RENEW_FREQUENCY,'X'))
+AND     NVL(OD_PB_QA_ENGR_EMAIL,'X')   = NVL(:P_APPROVER,NVL(OD_PB_QA_ENGR_EMAIL,'X'))
+ORDER BY od_ob_reg_id asc
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_MAIN" source="Q_MAIN">
+<element name="OD_OB_REG_ID" value="OD_OB_REG_ID" />
+<element name="OD_SC_REGION" value="OD_SC_REGION" />
+<element name="OD_OB_REG_TYPE" value="OD_OB_REG_TYPE" />
+<element name="OD_OB_REG_NO" value="OD_OB_REG_NO" />
+<element name="OD_OB_VENDOR_NAME" value="OD_OB_VENDOR_NAME" />
+<element name="OD_SC_AUDIT_AGENT" value="OD_SC_AUDIT_AGENT" />
+<element name="OD_OB_SKU" value="OD_OB_SKU" />
+<element name="OD_PB_ITEM_DESC" value="OD_PB_ITEM_DESC" />
+<element name="OD_PB_COST_ASSOCIATED" value="OD_PB_COST_ASSOCIATED" />
+<element name="OD_PB_ENTITY" value="OD_PB_ENTITY" />
+<element name="OD_OB_REG_DUE_DATE" value="OD_OB_REG_DUE_DATE" />
+<element name="OD_OB_REG_STATUS" value="OD_OB_REG_STATUS" />
+<element name="OD_OB_REG_DATE" value="OD_OB_REG_DATE" />
+<element name="OD_PB_QA_ENGR_EMAIL" value="OD_PB_QA_ENGR_EMAIL" />
+<element name="OD_OB_RENEW_YN" value="OD_OB_RENEW_YN" />
+<element name="OD_OB_RENEW_FREQUENCY" value="OD_OB_RENEW_FREQUENCY" />
+<element name="OD_PB_DATE_RENEW" value="OD_PB_DATE_RENEW" />
+<element name="OD_PB_ATTACHMENT" value="OD_PB_ATTACHMENT" />
+</group>
+</dataStructure>
+</dataTemplate>

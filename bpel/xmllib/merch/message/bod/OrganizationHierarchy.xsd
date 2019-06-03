@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+xmlns="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+xmlns:odmf="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+targetNamespace="http://www.openapplications.org/officedepot/merchandising/foundation/1" 
+elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+  <xsd:include schemaLocation="../noun/OrganizationHierarchyType.xsd" />
+
+  <xsd:element name="OrganizationHierarchy"
+               type="odmf:ApplicationAreaAndOrganizationHierarchyDataAreaType">
+    <xsd:annotation>
+      <xsd:documentation>
+        The purpose of the SyncMerchandiseHierarchyType is to synchronize
+        Merchandise Hierarchy data with other external application that need to
+        keep their Merch Hierarchy data in sync with RMS. RMS is the current
+        system of records for Merchandise Hierarchy information.
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+
+
+</xsd:schema>

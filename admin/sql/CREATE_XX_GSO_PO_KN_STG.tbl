@@ -1,0 +1,97 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_GSO_PO_KN_STG.tbl                                                |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_GSO_PO_KN_STG   (OD GSO PO Tracking table)                             |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              27-Aug-2010       Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_GSO_PO_KN_STG......
+PROMPT
+
+create table xxmer.XX_GSO_PO_KN_STG
+( supplier_name 		varchar2(100),
+  supplier_edi_code 		varchar2(30),
+  po_number			varchar2(50),
+  po_header_id			number,
+  po_line_id			number,
+  sku				varchar2(30),
+  vend_book_date 		date,
+  po_line_cfs_recd_d		date,
+  fcl_cntnr_cy_recd_d		date,
+  cargo_received_date		date,
+  shipment_type			varchar2(30),
+  kn_status			varchar2(25),
+  ship_window_start		date,
+  ship_window_end		date,
+  ets_ats_d			date,
+  date_shipped 			date,
+  container			varchar2(50),
+  container_movement		varchar2(30),
+  actual_quantity		number,
+  total_fob_shipped		number,
+  uom				varchar2(5),
+  volume			number,
+  grossweight			number,
+  kn_reference			varchar2(60),
+  eta_ata_d			date,
+  eta_place_delivery_d		date,
+  place_of_delivery		varchar2(60),
+  required_delivery_d		date,
+  delay_code			varchar2(60),
+  delay_reason			varchar2(2000),
+  loading_place			varchar2(60),
+  import_agent_flag		varchar2(10),
+  sh_arrival_place		varchar2(60),
+  load_batch_id			number,
+  error_flag			varchar2(1),
+  error_message			varchar2(2000),
+  process_flag			number,
+  kn_process_flag		number,
+  creation_date 		date,
+  created_by			number,
+  last_updated_by		number,
+  last_update_date		date,
+  last_update_login		number);
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
+
+

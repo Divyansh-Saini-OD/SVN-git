@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<page xmlns="http://xmlns.oracle.com/uix/controller"
+      xmlns:ctrl="http://xmlns.oracle.com/uix/controller"
+      xmlns:bibeans="http://xmlns.oracle.com/bibeans"
+      xmlns:html="http://www.w3.org/TR/REC-html40" expressionLanguage="el" xmlns:ui="http://xmlns.oracle.com/uix/ui">
+
+  <!-- Defining all the BIThinSession related elements -->
+  <bibeans:biThinSession id="bisession_XXX"
+                         biConfiguration="/designerOLAPConfig1.xml" >
+    <!-- Defining the LOV Container -->
+    <bibeans:lovContainerDef id="lov1" />
+  </bibeans:biThinSession>
+
+  <!-- There are no global buttons in the LOV page.  Therefore, there
+       is no page template in the LOV page. -->
+  <content>
+    <dataScope xmlns="http://xmlns.oracle.com/uix/ui"
+               xmlns:data="http://xmlns.oracle.com/uix/ui">
+      <contents>
+         <form name="form1">
+           <contents>
+             <!-- Displaying the LOVContainer page -->
+             <bibeans:lovContainer 
+                      biLovContainer="${bibeans:data().bisession1.lov1}" />
+         </contents>
+       </form>
+     </contents>
+   </dataScope>
+  </content>
+
+  <handlers>
+    <!-- Add EventHandlers (<event> elements) here -->
+  </handlers>
+</page>

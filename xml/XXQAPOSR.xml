@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXQAPOSR" description="OD OB POS Report" Version="1.0">
+<parameters>
+ <parameter name="p_from_date" datatype="character" />
+ <parameter name="p_to_date" datatype="character" />
+ <parameter name="p_sku" datatype="number" />
+ <parameter name="p_dept" datatype="number" />
+ <parameter name="p_associate" datatype="character" />
+ <parameter name="p_from_txn_date" datatype="character" />
+ <parameter name="p_to_txn_date" datatype="character" />
+ <parameter name="p_store" datatype="character" />
+ <parameter name="p_comments" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_POS">
+<![CDATA[
+SELECT  a.OD_OB_SKU                ,      
+  	  a.OD_PB_ITEM_DESC          ,      
+	  a.OD_OB_DEPT_ID            ,      
+	  a.OD_PB_SC_DEPT_NAME       ,      
+	  a.OD_PB_RESOURCE_NUMBER    ,      
+	  a.OD_PB_STORE_NUMBER       ,      
+	  a.OD_OB_REG_DATE           ,      
+	  a.OD_PB_COMMENTS           ,
+	  a.creation_date            ,
+	  apps.xx_qa_pos_pkg.xx_get_dept(a.od_ob_dept_id) dept_name
+  FROM apps.q_od_ob_pos_v a
+ WHERE a.od_ob_sku=NVL(:p_sku,od_ob_sku)
+   AND a.od_pb_comments LIKE '%'||:p_comments||'%'
+   AND NVL(a.od_ob_dept_id,-1)=NVL(:p_dept,NVL(a.od_ob_dept_id,-1))
+   AND NVL(a.od_pb_resource_number,'X')=NVL(:p_associate,NVL(a.od_pb_resource_number,'X'))
+   AND NVL(a.od_pb_store_number,'X')=NVL(:p_store,NVL(a.od_pb_store_number,'X')) 
+   AND ( TRUNC(a.creation_date) BETWEEN TRUNC(apps.fnd_conc_date.string_to_date(NVL(:p_from_date,a.creation_date)))
+			AND  TRUNC(apps.fnd_conc_date.string_to_date(NVL(:p_to_date,a.creation_date)))
+	 )
+   AND ( TRUNC(a.od_ob_reg_date) BETWEEN TRUNC(apps.fnd_conc_date.string_to_date(NVL(:p_from_txn_date,a.od_ob_reg_date)))
+	 	AND  TRUNC(apps.fnd_conc_date.string_to_date(NVL(:p_to_txn_date,a.od_ob_reg_date)))
+	 )
+ORDER BY creation_date
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_POS" source="Q_POS">
+<element name="CDATE" value="CREATION_DATE" />
+<element name="SKU" value="OD_OB_SKU" />
+<element name="SKU_DESCRIPTION" value="OD_PB_ITEM_DESC" />
+<element name="DEPT" value="OD_OB_DEPT_ID" />
+<element name="DEPT_NAME" value="DEPT_NAME" />
+<element name="ASSOCIATE_ID" value="OD_PB_RESOURCE_NUMBER" />
+<element name="STORE_NO" value="OD_PB_STORE_NUMBER" />
+<element name="TXN_DATE" value="OD_OB_REG_DATE" />
+<element name="RETURN_COMMENTS" value="OD_PB_COMMENTS" />
+</group>
+</dataStructure>
+</dataTemplate>

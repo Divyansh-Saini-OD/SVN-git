@@ -1,0 +1,1040 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Tue May 29 18:44:00 EDT 2007
+  Author:  Steve-Abbott
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="Location_rms_outb"
+         targetNamespace="http://xmlns.oracle.com/Location_rms_outb"
+         xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ns4="http://xmlns.oracle.com/ODErrorLogger"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns5="ODError"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:ns9="http://xmlns.oracle.com/pcbpel/adapter/db/RMS10/OD_BPEL_FND_SQL/GETLOCATIONMESSAGE/"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/StartProcess/"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/db/RMS10/OD_BPEL_FND_SQL/STARTRUNNING/"
+         xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:ns10="http://xmlns.oracle.com/pcbpel/adapter/ftp/FtpToEbs/"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns13="http://xmlns.oracle.com/I1308_OrgCreationProcess_EBS_In"
+         xmlns:ns7="http://xmlns.oracle.com/pcbpel/adapter/db/RMS10/OD_BPEL_FND_SQL/STOPRUNNING/"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns12="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+         xmlns:client="http://xmlns.oracle.com/Location_rms_outb"
+         xmlns:ns6="http://xmlns.oracle.com/pcbpel/adapter/db/StopProcess/"
+         xmlns:ns11="http://xmlns.oracle.com/I0142_Item_EBS_In"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ehdr="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions"
+         xmlns:ns3="http://xmlns.oracle.com/ias/pcbpel/NotificationService"
+         xmlns:ns14="http://xmlns.oracle.com/pcbpel/adapter/db/LOC_POLL/"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:ns8="http://xmlns.oracle.com/pcbpel/adapter/db/GetNextMessage/">
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <partnerLinks>
+        <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+        <partnerLink name="client" partnerLinkType="client:Location_rms_outb"
+                     myRole="Location_rms_outbProvider"
+                     partnerRole="Location_rms_outbProvider"/>
+        <partnerLink name="StartProcess" partnerRole="StartProcess_role"
+                     partnerLinkType="ns1:StartProcess_plt"/>
+        <partnerLink name="NotificationService"
+                     partnerRole="NotificationServiceProvider"
+                     partnerLinkType="ns3:NotificationServiceLink"/>
+        <partnerLink myRole="ODErrorLoggerRequester" name="ODErrorLogger"
+                     partnerRole="ODErrorLoggerProvider"
+                     partnerLinkType="ns4:ODErrorLogger"/>
+        <partnerLink name="StopProcess" partnerRole="StopProcess_role"
+                     partnerLinkType="ns6:StopProcess_plt"/>
+        <partnerLink name="GetNextMessage" partnerRole="GetNextMessage_role"
+                     partnerLinkType="ns8:GetNextMessage_plt"/>
+        <partnerLink name="I1308_OrgCreationProcess_EBS_In"
+                     partnerLinkType="ns13:I1308_OrgCreationProcess_EBS_In"
+                     partnerRole="I1308_OrgCreationProcess_EBS_InProvider"/>
+        <partnerLink myRole="LOC_POLL_role" name="LOC_POLL"
+                     partnerRole="LOC_POLL_role"
+                     partnerLinkType="ns14:LOC_POLL_plt"/>
+    </partnerLinks>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        VARIABLES                                                        
+        List of messages and XML documents used within this BPEL process 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <variables>
+        <!-- Reference to the message passed as input during initiation -->
+        <variable name="inputVariable"
+                  messageType="client:Location_rms_outbRequestMessage"/>
+        <!-- Reference to the message that will be sent back to the requester during callback -->
+        <variable name="outputVariable"
+                  messageType="client:Location_rms_outbResponseMessage"/>
+        <variable name="stopProcess" type="xsd:string"/>
+        <variable name="Invoke_StartProcess_StartProcess_InputVariable"
+                  messageType="ns1:args_in_msg"/>
+        <variable name="Invoke_StartProcess_StartProcess_OutputVariable"
+                  messageType="ns1:args_out_msg"/>
+        <variable name="exception" messageType="bpelx:RuntimeFaultMessage"/>
+        <variable name="xsd_locoutb" messageType="client:msgtype_locoutb"/>
+        <variable name="Invoke_Catch_BindingFault_initiate_InputVariable"
+                  messageType="ns4:ODErrorLoggerRequestMessage"/>
+        <variable name="Invoke_CatchAll_Exception_initiate_InputVariable"
+                  messageType="ns4:ODErrorLoggerRequestMessage"/>
+        <variable name="Invoke_StopProcess_StopProcess_InputVariable"
+                  messageType="ns6:args_in_msg"/>
+        <variable name="Invoke_StopProcess_StopProcess_OutputVariable"
+                  messageType="ns6:args_out_msg"/>
+        <variable name="Invoke_GetNextMessage_GetNextMessage_InputVariable"
+                  messageType="ns8:args_in_msg"/>
+        <variable name="Invoke_GetNextMessage_GetNextMessage_OutputVariable"
+                  messageType="ns8:args_out_msg"/>
+        <variable name="Invoke_I1308OrgCreationEBS_Input"
+                  messageType="ns13:I1308_OrgCreationProcess_EBS_InRequestMessage"/>
+        <variable name="Invoke_I1308OrgCreationEBS_Output"
+                  messageType="ns13:I1308_OrgCreationProcess_EBS_InResponseMessage"/>
+        <variable name="FaultVar_Binding"
+                  messageType="bpelx:RuntimeFaultMessage"/>
+        <variable name="FaultVar_Remote"
+                  messageType="bpelx:RuntimeFaultMessage"/>
+        <variable name="Invoke_RemoteFault_Input"
+                  messageType="ns4:ODErrorLoggerRequestMessage"/>
+        <variable name="Invoke_BindingFault_Input"
+                  messageType="ns4:ODErrorLoggerRequestMessage"/>
+        <variable name="bpelprocessname" type="xsd:string"/>
+        <variable name="Receive_1_receive_InputVariable"
+                  messageType="ns14:OdIntLocControlCollection_msg"/>
+        <variable name="v_record_count" type="xsd:int"/>
+    </variables>
+    <faultHandlers>
+        <catch faultName="bpelx:bindingFault" faultVariable="exception">
+            <sequence name="Sequence_BindingFault">
+                <assign name="Assign_Catch_BindingFault">
+                    <copy>
+                        <from expression="concat(ora:getProcessId(), ora:getProcessVersion())"/>
+                        <to variable="Invoke_Catch_BindingFault_initiate_InputVariable"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessName"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getInstanceId()"/>
+                        <to variable="Invoke_Catch_BindingFault_initiate_InputVariable"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessId"/>
+                    </copy>
+                    <copy>
+                        <from expression="'Location_rms_outb Catch BindingFault Exception'"/>
+                        <to variable="Invoke_Catch_BindingFault_initiate_InputVariable"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessStep"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getDomainId()"/>
+                        <to variable="Invoke_Catch_BindingFault_initiate_InputVariable"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessDomain"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getProcessURL()"/>
+                        <to variable="Invoke_Catch_BindingFault_initiate_InputVariable"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:SystemName"/>
+                    </copy>
+                    <copy>
+                        <from variable="exception" part="code"/>
+                        <to variable="Invoke_Catch_BindingFault_initiate_InputVariable"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorCode"/>
+                    </copy>
+                    <copy>
+                        <from variable="exception" part="summary"/>
+                        <to variable="Invoke_Catch_BindingFault_initiate_InputVariable"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorDescription"/>
+                    </copy>
+                    <copy>
+                        <from variable="exception" part="detail"/>
+                        <to variable="Invoke_Catch_BindingFault_initiate_InputVariable"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorText"/>
+                    </copy>
+                    <copy>
+                        <from expression="xp20:current-dateTime()"/>
+                        <to variable="Invoke_Catch_BindingFault_initiate_InputVariable"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorDateTime"/>
+                    </copy>
+                </assign>
+                <invoke name="Invoke_Catch_BindingFault"
+                        partnerLink="ODErrorLogger" portType="ns4:ODErrorLogger"
+                        operation="initiate"
+                        inputVariable="Invoke_Catch_BindingFault_initiate_InputVariable"/>
+            </sequence>
+        </catch>
+        <catchAll>
+            <sequence name="Sequence_CatchAll">
+                <assign name="Assign_CatchAll_Exception">
+                    <copy>
+                        <from expression="concat(ora:getProcessId(), ora:getProcessVersion())"/>
+                        <to variable="Invoke_CatchAll_Exception_initiate_InputVariable"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessName"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getInstanceId()"/>
+                        <to variable="Invoke_CatchAll_Exception_initiate_InputVariable"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessId"/>
+                    </copy>
+                    <copy>
+                        <from expression="'Location_rms_outb CatchAll Exception'"/>
+                        <to variable="Invoke_CatchAll_Exception_initiate_InputVariable"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessStep"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getDomainId()"/>
+                        <to variable="Invoke_CatchAll_Exception_initiate_InputVariable"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessDomain"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getProcessURL()"/>
+                        <to variable="Invoke_CatchAll_Exception_initiate_InputVariable"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ProcessInfo/ns5:SystemName"/>
+                    </copy>
+                    <copy>
+                        <from expression="ora:getFaultAsString()"/>
+                        <to variable="Invoke_CatchAll_Exception_initiate_InputVariable"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorText"/>
+                    </copy>
+                    <copy>
+                        <from expression="xp20:current-dateTime()"/>
+                        <to variable="Invoke_CatchAll_Exception_initiate_InputVariable"
+                            part="payload"
+                            query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorDateTime"/>
+                    </copy>
+                </assign>
+                <invoke name="Invoke_CatchAll_Exception"
+                        partnerLink="ODErrorLogger" portType="ns4:ODErrorLogger"
+                        operation="initiate"
+                        inputVariable="Invoke_CatchAll_Exception_initiate_InputVariable"/>
+            </sequence>
+        </catchAll>
+    </faultHandlers>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+       ORCHESTRATION LOGIC                                               
+       Set of activities coordinating the flow of messages across the    
+       services integrated within this business process                  
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <sequence name="main">
+        <!-- Receive input from requestor. (Note: This maps to operation defined in Location_rms_outb.wsdl) -->
+        <!-- 
+          Synchronous callback to the requester. (Note: the callback location and correlation id is transparently handled using WS-addressing.)
+        -->
+        <receive name="Receive_1" partnerLink="LOC_POLL"
+                 portType="ns14:LOC_POLL_ptt" operation="receive"
+                 variable="Receive_1_receive_InputVariable"
+                 createInstance="yes"/>
+        <assign name="Assign_Initial_Variables">
+            <copy>
+                <from expression="'N'"/>
+                <to variable="stopProcess"/>
+            </copy>
+            <copy>
+                <from expression="'Location_rms_outb'"/>
+                <to variable="outputVariable" part="payload"
+                    query="/client:Location_rms_outbProcessResponse/client:result"/>
+            </copy>
+            <copy>
+                <from expression="'Location_rms_outb'"/>
+                <to variable="Invoke_StartProcess_StartProcess_InputVariable"
+                    part="InputParameters"
+                    query="/ns2:InputParameters/I_PROCESS_NAME"/>
+            </copy>
+            <copy>
+                <from expression="'Location_rms_outb'"/>
+                <to variable="Invoke_GetNextMessage_GetNextMessage_InputVariable"
+                    part="InputParameters"
+                    query="/ns9:InputParameters/I_PROCESS_NAME"/>
+            </copy>
+            <copy>
+                <from expression="'Location_rms_outb'"/>
+                <to variable="Invoke_StopProcess_StopProcess_InputVariable"
+                    part="InputParameters"
+                    query="/ns7:InputParameters/I_PROCESS_NAME"/>
+            </copy>
+            <copy>
+                <from expression="'Location_rms_outb'"/>
+                <to variable="bpelprocessname"/>
+            </copy>
+            <copy>
+                <from expression="0"/>
+                <to variable="v_record_count"/>
+            </copy>
+        </assign>
+        <invoke name="Invoke_StartProcess" partnerLink="StartProcess"
+                portType="ns1:StartProcess_ptt" operation="StartProcess"
+                inputVariable="Invoke_StartProcess_StartProcess_InputVariable"
+                outputVariable="Invoke_StartProcess_StartProcess_OutputVariable"/>
+        <assign name="Assign_ReplyStartProcess">
+            <copy>
+                <from expression="concat(&quot;RC=&quot;,bpws:getVariableData('Invoke_StartProcess_StartProcess_OutputVariable','OutputParameters','/ns2:OutputParameters/O_RET_CODE'),&quot;, MSG=&quot;,bpws:getVariableData('Invoke_StartProcess_StartProcess_OutputVariable','OutputParameters','/ns2:OutputParameters/O_RET_MESSAGE'))"/>
+                <to variable="outputVariable" part="payload"
+                    query="/client:Location_rms_outbProcessResponse/client:result"/>
+            </copy>
+        </assign>
+        <switch name="Switch_StartProcess">
+            <case condition="bpws:getVariableData('Invoke_StartProcess_StartProcess_OutputVariable','OutputParameters','/ns2:OutputParameters/O_RET_CODE') = 0">
+                <bpelx:annotation>
+                    <bpelx:pattern>Start</bpelx:pattern>
+                </bpelx:annotation>
+                <sequence name="Sequence_CaseStart">
+                    <while name="While_1"
+                           condition="bpws:getVariableData('stopProcess') = 'N'">
+                        <sequence name="Sequence_WhileNotStopped">
+                            <invoke name="Invoke_GetNextMessage"
+                                    partnerLink="GetNextMessage"
+                                    portType="ns8:GetNextMessage_ptt"
+                                    operation="GetNextMessage"
+                                    inputVariable="Invoke_GetNextMessage_GetNextMessage_InputVariable"
+                                    outputVariable="Invoke_GetNextMessage_GetNextMessage_OutputVariable"/>
+                            <assign name="Assign_StopProcess">
+                                <copy>
+                                    <from variable="Invoke_GetNextMessage_GetNextMessage_OutputVariable"
+                                          part="OutputParameters"
+                                          query="/ns9:OutputParameters/O_STOP_RUNNING_FLG"/>
+                                    <to variable="stopProcess"/>
+                                </copy>
+                                <copy>
+                                    <from expression="bpws:getVariableData('v_record_count') +1"/>
+                                    <to variable="v_record_count"/>
+                                </copy>
+                            </assign>
+                            <switch name="Switch_ProcessMessage">
+                                <case condition="bpws:getVariableData('Invoke_GetNextMessage_GetNextMessage_OutputVariable','OutputParameters','/ns9:OutputParameters/O_RTN_CODE') = 0">
+                                    <bpelx:annotation>
+                                        <bpelx:pattern>GotMessage</bpelx:pattern>
+                                    </bpelx:annotation>
+                                    <sequence name="Sequence_GotMessage">
+                                        <switch name="Switch_Type">
+                                            <case condition="bpws:getVariableData('Invoke_GetNextMessage_GetNextMessage_OutputVariable','OutputParameters','/ns9:OutputParameters/O_LOC_TYPE_WS') = 'STORE'">
+                                                <bpelx:annotation>
+                                                    <bpelx:pattern>STORE</bpelx:pattern>
+                                                </bpelx:annotation>
+                                                <assign name="Transform_STORE">
+                                                    <bpelx:annotation>
+                                                        <bpelx:pattern>transformation</bpelx:pattern>
+                                                    </bpelx:annotation>
+                                                    <copy>
+                                                        <from expression="ora:processXSLT('Transformation_STORE.xsl',bpws:getVariableData('Invoke_GetNextMessage_GetNextMessage_OutputVariable','OutputParameters'))"/>
+                                                        <to variable="xsd_locoutb"
+                                                            part="msgpart_locoutb"/>
+                                                    </copy>
+                                                </assign>
+                                            </case>
+                                            <case condition="bpws:getVariableData('Invoke_GetNextMessage_GetNextMessage_OutputVariable','OutputParameters','/ns9:OutputParameters/O_LOC_TYPE_WS') = 'WH'">
+                                                <bpelx:annotation>
+                                                    <bpelx:pattern>WH</bpelx:pattern>
+                                                </bpelx:annotation>
+                                                <assign name="Transform_WH">
+                                                    <bpelx:annotation>
+                                                        <bpelx:pattern>transformation</bpelx:pattern>
+                                                    </bpelx:annotation>
+                                                    <copy>
+                                                        <from expression="ora:processXSLT('Transformation_WH.xsl',bpws:getVariableData('Invoke_GetNextMessage_GetNextMessage_OutputVariable','OutputParameters'))"/>
+                                                        <to variable="xsd_locoutb"
+                                                            part="msgpart_locoutb"/>
+                                                    </copy>
+                                                </assign>
+                                            </case>
+                                            <otherwise>
+                                                <assign name="Transform_All">
+                                                    <bpelx:annotation>
+                                                        <bpelx:pattern>transformation</bpelx:pattern>
+                                                    </bpelx:annotation>
+                                                    <copy>
+                                                        <from expression="ora:processXSLT('Transformation_All.xsl',bpws:getVariableData('Invoke_GetNextMessage_GetNextMessage_OutputVariable','OutputParameters'))"/>
+                                                        <to variable="xsd_locoutb"
+                                                            part="msgpart_locoutb"/>
+                                                    </copy>
+                                                </assign>
+                                            </otherwise>
+                                        </switch>
+                                        <assign name="AsnRMStoEBS">
+                                            <copy>
+                                                <from variable="xsd_locoutb"
+                                                      part="msgpart_locoutb"
+                                                      query="/ns12:Location"/>
+                                                <to variable="Invoke_I1308OrgCreationEBS_Input"
+                                                    part="payload"
+                                                    query="/ns12:Location"/>
+                                            </copy>
+                                        </assign>
+                                        <scope name="Scope_I0142_ItemEBS">
+                                            <faultHandlers>
+                                                <catch faultName="bpelx:remoteFault"
+                                                       faultVariable="FaultVar_Remote">
+                                                    <sequence name="Sequence_5">
+                                                        <assign name="AsnRemoteFault">
+                                                            <copy>
+                                                                <from expression="concat(ora:getProcessId(), ora:getProcessVersion())"/>
+                                                                <to variable="Invoke_RemoteFault_Input"
+                                                                    part="payload"
+                                                                    query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessName"/>
+                                                            </copy>
+                                                            <copy>
+                                                                <from expression="ora:getInstanceId()"/>
+                                                                <to variable="Invoke_RemoteFault_Input"
+                                                                    part="payload"
+                                                                    query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessId"/>
+                                                            </copy>
+                                                            <copy>
+                                                                <from expression="'Location_rms_outb Remote Fault'"/>
+                                                                <to variable="Invoke_RemoteFault_Input"
+                                                                    part="payload"
+                                                                    query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessStep"/>
+                                                            </copy>
+                                                            <copy>
+                                                                <from expression="ora:getDomainId()"/>
+                                                                <to variable="Invoke_RemoteFault_Input"
+                                                                    part="payload"
+                                                                    query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessDomain"/>
+                                                            </copy>
+                                                            <copy>
+                                                                <from expression="ora:getProcessURL()"/>
+                                                                <to variable="Invoke_RemoteFault_Input"
+                                                                    part="payload"
+                                                                    query="/ns5:ErrorData/ns5:ProcessInfo/ns5:SystemName"/>
+                                                            </copy>
+                                                            <copy>
+                                                                <from variable="FaultVar_Remote"
+                                                                      part="code"/>
+                                                                <to variable="Invoke_RemoteFault_Input"
+                                                                    part="payload"
+                                                                    query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorCode"/>
+                                                            </copy>
+                                                            <copy>
+                                                                <from variable="FaultVar_Remote"
+                                                                      part="summary"/>
+                                                                <to variable="Invoke_RemoteFault_Input"
+                                                                    part="payload"
+                                                                    query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorDescription"/>
+                                                            </copy>
+                                                            <copy>
+                                                                <from variable="FaultVar_Remote"
+                                                                      part="detail"/>
+                                                                <to variable="Invoke_RemoteFault_Input"
+                                                                    part="payload"
+                                                                    query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorText"/>
+                                                            </copy>
+                                                            <copy>
+                                                                <from expression="xp20:current-dateTime()"/>
+                                                                <to variable="Invoke_RemoteFault_Input"
+                                                                    part="payload"
+                                                                    query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorDateTime"/>
+                                                            </copy>
+                                                            <copy>
+                                                                <from expression="'Y'"/>
+                                                                <to variable="stopProcess"/>
+                                                            </copy>
+                                                        </assign>
+                                                        <scope name="Email_RemoteFault">
+                                                            <bpelx:annotation>
+                                                                <bpelx:pattern patternName="bpelx:email"></bpelx:pattern>
+                                                            </bpelx:annotation>
+                                                            <variables>
+                                                                <variable name="varNotificationReq"
+                                                                          messageType="ns3:EmailNotificationRequest"/>
+                                                                <variable name="varNotificationResponse"
+                                                                          messageType="ns3:ArrayOfResponse"/>
+                                                                <variable name="NotificationServiceFaultVariable"
+                                                                          messageType="ns3:NotificationServiceErrorMessage"/>
+                                                            </variables>
+                                                            <sequence name="Sequence_7">
+                                                                <assign name="EmailParamsAssign">
+                                                                    <copy>
+                                                                        <from expression="string('SOAEmailNotify')"/>
+                                                                        <to variable="varNotificationReq"
+                                                                            part="EmailPayload"
+                                                                            query="/EmailPayload/ns3:FromAccountName"/>
+                                                                    </copy>
+                                                                    <copy>
+                                                                        <from expression="string('')"/>
+                                                                        <to variable="varNotificationReq"
+                                                                            part="EmailPayload"
+                                                                            query="/EmailPayload/ns3:Bcc"/>
+                                                                    </copy>
+                                                                    <copy>
+                                                                        <from expression="string('')"/>
+                                                                        <to variable="varNotificationReq"
+                                                                            part="EmailPayload"
+                                                                            query="/EmailPayload/ns3:Cc"/>
+                                                                    </copy>
+                                                                    <copy>
+                                                                        <from expression="string('')"/>
+                                                                        <to variable="varNotificationReq"
+                                                                            part="EmailPayload"
+                                                                            query="/EmailPayload/ns3:ReplyToAddress"/>
+                                                                    </copy>
+                                                                    <copy>
+                                                                        <from expression="concat(bpws:getVariableData('bpelprocessname'), string(' notification - remote fault error while connecting to EBS.! '))"/>
+                                                                        <to variable="varNotificationReq"
+                                                                            part="EmailPayload"
+                                                                            query="/EmailPayload/ns3:Subject"/>
+                                                                    </copy>
+                                                                    <copy>
+                                                                        <from expression="bpws:getVariableData('Invoke_StartProcess_StartProcess_OutputVariable','OutputParameters','/ns2:OutputParameters/O_EMAIL_TO')"/>
+                                                                        <to variable="varNotificationReq"
+                                                                            part="EmailPayload"
+                                                                            query="/EmailPayload/ns3:To"/>
+                                                                    </copy>
+                                                                    <copy>
+                                                                        <from>
+                                                                            <Content xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">
+                                                                                <MimeType xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">multipart/mixed</MimeType>
+                                                                                <ContentBody xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">
+                                                                                    <MultiPart xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">
+                                                                                        <BodyPart xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">
+                                                                                            <MimeType xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/>
+                                                                                            <ContentBody xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/>
+                                                                                            <BodyPartName xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/>
+                                                                                        </BodyPart>
+                                                                                    </MultiPart>
+                                                                                </ContentBody>
+                                                                            </Content>
+                                                                        </from>
+                                                                        <to variable="varNotificationReq"
+                                                                            part="EmailPayload"
+                                                                            query="/EmailPayload/ns3:Content"/>
+                                                                    </copy>
+                                                                    <copy>
+                                                                        <from expression="string('text/html; charset=UTF-8')"/>
+                                                                        <to variable="varNotificationReq"
+                                                                            part="EmailPayload"
+                                                                            query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[1]/ns3:MimeType"/>
+                                                                    </copy>
+                                                                    <copy>
+                                                                        <from expression="string('NotificationAttachment1.html')"/>
+                                                                        <to variable="varNotificationReq"
+                                                                            part="EmailPayload"
+                                                                            query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[1]/ns3:BodyPartName"/>
+                                                                    </copy>
+                                                                    <copy>
+                                                                        <from expression="concat(string('Input Msg:
+'), bpws:getVariableData('Invoke_I1308OrgCreationEBS_Input','payload'), string('
+&lt;br>
+&lt;br>
+Error Code: '), bpws:getVariableData('FaultVar_Remote','code'), string('
+&lt;br>
+Error Desc: '), bpws:getVariableData('FaultVar_Remote','summary'), string('
+&lt;br>
+'))"/>
+                                                                        <to variable="varNotificationReq"
+                                                                            part="EmailPayload"
+                                                                            query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[1]/ns3:ContentBody"/>
+                                                                    </copy>
+                                                                </assign>
+                                                                <invoke name="InvokeNotificationService"
+                                                                        partnerLink="NotificationService"
+                                                                        portType="ns3:NotificationService"
+                                                                        operation="sendEmailNotification"
+                                                                        inputVariable="varNotificationReq"
+                                                                        outputVariable="varNotificationResponse"/>
+                                                            </sequence>
+                                                        </scope>
+                                                        <invoke name="Invoke_RemoteFault"
+                                                                partnerLink="ODErrorLogger"
+                                                                portType="ns4:ODErrorLogger"
+                                                                operation="initiate"
+                                                                inputVariable="Invoke_RemoteFault_Input"/>
+                                                    </sequence>
+                                                </catch>
+                                                <catch faultName="bpelx:bindingFault"
+                                                       faultVariable="FaultVar_Binding">
+                                                    <sequence name="Sequence_4">
+                                                        <assign name="AsnBindingFault">
+                                                            <copy>
+                                                                <from expression="concat(ora:getProcessId(), ora:getProcessVersion())"/>
+                                                                <to variable="Invoke_BindingFault_Input"
+                                                                    part="payload"
+                                                                    query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessName"/>
+                                                            </copy>
+                                                            <copy>
+                                                                <from expression="ora:getInstanceId()"/>
+                                                                <to variable="Invoke_BindingFault_Input"
+                                                                    part="payload"
+                                                                    query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessId"/>
+                                                            </copy>
+                                                            <copy>
+                                                                <from expression="'Location_rms_outb Binding Fault'"/>
+                                                                <to variable="Invoke_BindingFault_Input"
+                                                                    part="payload"
+                                                                    query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessStep"/>
+                                                            </copy>
+                                                            <copy>
+                                                                <from expression="ora:getDomainId()"/>
+                                                                <to variable="Invoke_BindingFault_Input"
+                                                                    part="payload"
+                                                                    query="/ns5:ErrorData/ns5:ProcessInfo/ns5:BusinessProcessDomain"/>
+                                                            </copy>
+                                                            <copy>
+                                                                <from expression="ora:getProcessURL()"/>
+                                                                <to variable="Invoke_BindingFault_Input"
+                                                                    part="payload"
+                                                                    query="/ns5:ErrorData/ns5:ProcessInfo/ns5:SystemName"/>
+                                                            </copy>
+                                                            <copy>
+                                                                <from variable="FaultVar_Binding"
+                                                                      part="code"/>
+                                                                <to variable="Invoke_BindingFault_Input"
+                                                                    part="payload"
+                                                                    query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorCode"/>
+                                                            </copy>
+                                                            <copy>
+                                                                <from variable="FaultVar_Binding"
+                                                                      part="summary"/>
+                                                                <to variable="Invoke_BindingFault_Input"
+                                                                    part="payload"
+                                                                    query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorDescription"/>
+                                                            </copy>
+                                                            <copy>
+                                                                <from variable="FaultVar_Binding"
+                                                                      part="detail"/>
+                                                                <to variable="Invoke_BindingFault_Input"
+                                                                    part="payload"
+                                                                    query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorText"/>
+                                                            </copy>
+                                                            <copy>
+                                                                <from expression="xp20:current-dateTime()"/>
+                                                                <to variable="Invoke_BindingFault_Input"
+                                                                    part="payload"
+                                                                    query="/ns5:ErrorData/ns5:ErrorDetails/ns5:ErrorDateTime"/>
+                                                            </copy>
+                                                            <copy>
+                                                                <from expression="'Y'"/>
+                                                                <to variable="stopProcess"/>
+                                                            </copy>
+                                                        </assign>
+                                                        <scope name="Email_BindingFault">
+                                                            <bpelx:annotation>
+                                                                <bpelx:pattern patternName="bpelx:email"></bpelx:pattern>
+                                                            </bpelx:annotation>
+                                                            <variables>
+                                                                <variable name="varNotificationReq"
+                                                                          messageType="ns3:EmailNotificationRequest"/>
+                                                                <variable name="varNotificationResponse"
+                                                                          messageType="ns3:ArrayOfResponse"/>
+                                                                <variable name="NotificationServiceFaultVariable"
+                                                                          messageType="ns3:NotificationServiceErrorMessage"/>
+                                                            </variables>
+                                                            <sequence name="Sequence_6">
+                                                                <assign name="EmailParamsAssign">
+                                                                    <copy>
+                                                                        <from expression="string('SOAEmailNotify')"/>
+                                                                        <to variable="varNotificationReq"
+                                                                            part="EmailPayload"
+                                                                            query="/EmailPayload/ns3:FromAccountName"/>
+                                                                    </copy>
+                                                                    <copy>
+                                                                        <from expression="string('')"/>
+                                                                        <to variable="varNotificationReq"
+                                                                            part="EmailPayload"
+                                                                            query="/EmailPayload/ns3:Bcc"/>
+                                                                    </copy>
+                                                                    <copy>
+                                                                        <from expression="string('')"/>
+                                                                        <to variable="varNotificationReq"
+                                                                            part="EmailPayload"
+                                                                            query="/EmailPayload/ns3:Cc"/>
+                                                                    </copy>
+                                                                    <copy>
+                                                                        <from expression="string('')"/>
+                                                                        <to variable="varNotificationReq"
+                                                                            part="EmailPayload"
+                                                                            query="/EmailPayload/ns3:ReplyToAddress"/>
+                                                                    </copy>
+                                                                    <copy>
+                                                                        <from expression="concat(bpws:getVariableData('bpelprocessname'), string(' notification - binding fault error while connecting to EBS.! '))"/>
+                                                                        <to variable="varNotificationReq"
+                                                                            part="EmailPayload"
+                                                                            query="/EmailPayload/ns3:Subject"/>
+                                                                    </copy>
+                                                                    <copy>
+                                                                        <from expression="bpws:getVariableData('Invoke_StartProcess_StartProcess_OutputVariable','OutputParameters','/ns2:OutputParameters/O_EMAIL_TO')"/>
+                                                                        <to variable="varNotificationReq"
+                                                                            part="EmailPayload"
+                                                                            query="/EmailPayload/ns3:To"/>
+                                                                    </copy>
+                                                                    <copy>
+                                                                        <from>
+                                                                            <Content xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">
+                                                                                <MimeType xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">multipart/mixed</MimeType>
+                                                                                <ContentBody xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">
+                                                                                    <MultiPart xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">
+                                                                                        <BodyPart xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">
+                                                                                            <MimeType xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/>
+                                                                                            <ContentBody xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/>
+                                                                                            <BodyPartName xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/>
+                                                                                        </BodyPart>
+                                                                                    </MultiPart>
+                                                                                </ContentBody>
+                                                                            </Content>
+                                                                        </from>
+                                                                        <to variable="varNotificationReq"
+                                                                            part="EmailPayload"
+                                                                            query="/EmailPayload/ns3:Content"/>
+                                                                    </copy>
+                                                                    <copy>
+                                                                        <from expression="string('text/html; charset=UTF-8')"/>
+                                                                        <to variable="varNotificationReq"
+                                                                            part="EmailPayload"
+                                                                            query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[1]/ns3:MimeType"/>
+                                                                    </copy>
+                                                                    <copy>
+                                                                        <from expression="string('NotificationAttachment1.html')"/>
+                                                                        <to variable="varNotificationReq"
+                                                                            part="EmailPayload"
+                                                                            query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[1]/ns3:BodyPartName"/>
+                                                                    </copy>
+                                                                    <copy>
+                                                                        <from expression="concat(string('Input Msg:
+'), bpws:getVariableData('Invoke_I1308OrgCreationEBS_Input','payload'), string('
+&lt;br>
+&lt;br>
+Error Code: '), bpws:getVariableData('FaultVar_Binding','code'), string('
+&lt;br>
+Error Desc: '), bpws:getVariableData('FaultVar_Binding','summary'), string('
+&lt;br>
+'))"/>
+                                                                        <to variable="varNotificationReq"
+                                                                            part="EmailPayload"
+                                                                            query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[1]/ns3:ContentBody"/>
+                                                                    </copy>
+                                                                </assign>
+                                                                <invoke name="InvokeNotificationService"
+                                                                        partnerLink="NotificationService"
+                                                                        portType="ns3:NotificationService"
+                                                                        operation="sendEmailNotification"
+                                                                        inputVariable="varNotificationReq"
+                                                                        outputVariable="varNotificationResponse"/>
+                                                            </sequence>
+                                                        </scope>
+                                                        <invoke name="Invoke_BindingFault"
+                                                                partnerLink="ODErrorLogger"
+                                                                portType="ns4:ODErrorLogger"
+                                                                operation="initiate"
+                                                                inputVariable="Invoke_BindingFault_Input"/>
+                                                    </sequence>
+                                                </catch>
+                                            </faultHandlers>
+                                            <sequence name="Seq_I1308OrgCreationEBS">
+                                                <invoke name="Invoke_I1308OrgCreationEBS"
+                                                        partnerLink="I1308_OrgCreationProcess_EBS_In"
+                                                        portType="ns13:I1308_OrgCreationProcess_EBS_In"
+                                                        operation="process"
+                                                        inputVariable="Invoke_I1308OrgCreationEBS_Input"
+                                                        outputVariable="Invoke_I1308OrgCreationEBS_Output"/>
+                                                <switch name="Switch_I1308OrgCreationEBS">
+                                                    <case condition="bpws:getVariableData('Invoke_I1308OrgCreationEBS_Output','payload','/ns12:CommonResponse/ns12:ReturnCode')=-1">
+                                                        <sequence name="Seq_Stopprocess">
+                                                            <assign name="Asnstopprocess">
+                                                                <copy>
+                                                                    <from expression="'Y'"/>
+                                                                    <to variable="stopProcess"/>
+                                                                </copy>
+                                                            </assign>
+                                                            <scope name="Email_I1308OrgCreationEBS">
+                                                                <bpelx:annotation>
+                                                                    <bpelx:pattern patternName="bpelx:email"></bpelx:pattern>
+                                                                </bpelx:annotation>
+                                                                <variables>
+                                                                    <variable name="varNotificationReq"
+                                                                              messageType="ns3:EmailNotificationRequest"/>
+                                                                    <variable name="varNotificationResponse"
+                                                                              messageType="ns3:ArrayOfResponse"/>
+                                                                    <variable name="NotificationServiceFaultVariable"
+                                                                              messageType="ns3:NotificationServiceErrorMessage"/>
+                                                                </variables>
+                                                                <sequence name="Sequence_3">
+                                                                    <assign name="EmailParamsAssign">
+                                                                        <copy>
+                                                                            <from expression="string('SOAEmailNotify')"/>
+                                                                            <to variable="varNotificationReq"
+                                                                                part="EmailPayload"
+                                                                                query="/EmailPayload/ns3:FromAccountName"/>
+                                                                        </copy>
+                                                                        <copy>
+                                                                            <from expression="string('')"/>
+                                                                            <to variable="varNotificationReq"
+                                                                                part="EmailPayload"
+                                                                                query="/EmailPayload/ns3:Bcc"/>
+                                                                        </copy>
+                                                                        <copy>
+                                                                            <from expression="string('')"/>
+                                                                            <to variable="varNotificationReq"
+                                                                                part="EmailPayload"
+                                                                                query="/EmailPayload/ns3:Cc"/>
+                                                                        </copy>
+                                                                        <copy>
+                                                                            <from expression="string('')"/>
+                                                                            <to variable="varNotificationReq"
+                                                                                part="EmailPayload"
+                                                                                query="/EmailPayload/ns3:ReplyToAddress"/>
+                                                                        </copy>
+                                                                        <copy>
+                                                                            <from expression="string('Location_rms_outb - Error while invoking EBS process')"/>
+                                                                            <to variable="varNotificationReq"
+                                                                                part="EmailPayload"
+                                                                                query="/EmailPayload/ns3:Subject"/>
+                                                                        </copy>
+                                                                        <copy>
+                                                                            <from expression="bpws:getVariableData('Invoke_StartProcess_StartProcess_OutputVariable','OutputParameters','/ns2:OutputParameters/O_EMAIL_TO')"/>
+                                                                            <to variable="varNotificationReq"
+                                                                                part="EmailPayload"
+                                                                                query="/EmailPayload/ns3:To"/>
+                                                                        </copy>
+                                                                        <copy>
+                                                                            <from>
+                                                                                <Content xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">
+                                                                                    <MimeType xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">multipart/mixed</MimeType>
+                                                                                    <ContentBody xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">
+                                                                                        <MultiPart xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">
+                                                                                            <BodyPart xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">
+                                                                                                <MimeType xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/>
+                                                                                                <ContentBody xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/>
+                                                                                                <BodyPartName xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/>
+                                                                                            </BodyPart>
+                                                                                        </MultiPart>
+                                                                                    </ContentBody>
+                                                                                </Content>
+                                                                            </from>
+                                                                            <to variable="varNotificationReq"
+                                                                                part="EmailPayload"
+                                                                                query="/EmailPayload/ns3:Content"/>
+                                                                        </copy>
+                                                                        <copy>
+                                                                            <from expression="string('text/html; charset=UTF-8')"/>
+                                                                            <to variable="varNotificationReq"
+                                                                                part="EmailPayload"
+                                                                                query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[1]/ns3:MimeType"/>
+                                                                        </copy>
+                                                                        <copy>
+                                                                            <from expression="string('NotificationAttachment1.html')"/>
+                                                                            <to variable="varNotificationReq"
+                                                                                part="EmailPayload"
+                                                                                query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[1]/ns3:BodyPartName"/>
+                                                                        </copy>
+                                                                        <copy>
+                                                                            <from expression="concat(string('Input Msg:
+'), bpws:getVariableData('Invoke_I1308OrgCreationEBS_Input','payload'), string('
+&lt;br>
+&lt;br>
+RC: '), bpws:getVariableData('Invoke_I1308OrgCreationEBS_Output','payload','/ns12:CommonResponse/ns12:ReturnCode'), string('
+&lt;br>
+MSG: '), bpws:getVariableData('Invoke_I1308OrgCreationEBS_Output','payload','/ns12:CommonResponse/ns12:ReturnMessage'), string('
+&lt;br>
+Loc Id: '), bpws:getVariableData('Invoke_GetNextMessage_GetNextMessage_OutputVariable','OutputParameters','/ns9:OutputParameters/O_LOC_ID_WS'), string('
+&lt;br>'))"/>
+                                                                            <to variable="varNotificationReq"
+                                                                                part="EmailPayload"
+                                                                                query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[1]/ns3:ContentBody"/>
+                                                                        </copy>
+                                                                    </assign>
+                                                                    <invoke name="InvokeNotificationService"
+                                                                            partnerLink="NotificationService"
+                                                                            portType="ns3:NotificationService"
+                                                                            operation="sendEmailNotification"
+                                                                            inputVariable="varNotificationReq"
+                                                                            outputVariable="varNotificationResponse"/>
+                                                                </sequence>
+                                                            </scope>
+                                                        </sequence>
+                                                    </case>
+                                                    <otherwise/>
+                                                </switch>
+                                            </sequence>
+                                        </scope>
+                                    </sequence>
+                                </case>
+                                <case condition="bpws:getVariableData('Invoke_GetNextMessage_GetNextMessage_OutputVariable','OutputParameters','/ns9:OutputParameters/O_RTN_CODE') = 1">
+                                    <bpelx:annotation>
+                                        <bpelx:pattern>NoMessage</bpelx:pattern>
+                                    </bpelx:annotation>
+                                    <sequence name="Sequence_8">
+                                        <assign name="Stop_Process">
+                                            <copy>
+                                                <from expression="'Y'"/>
+                                                <to variable="Invoke_GetNextMessage_GetNextMessage_OutputVariable"
+                                                    part="OutputParameters"
+                                                    query="/ns9:OutputParameters/O_STOP_RUNNING_FLG"/>
+                                            </copy>
+                                        </assign>
+                                        <switch name="Switch_NoMessageSleepStop">
+                                            <case condition="bpws:getVariableData('Invoke_GetNextMessage_GetNextMessage_OutputVariable','OutputParameters','/ns9:OutputParameters/O_STOP_RUNNING_FLG') = 'N'">
+                                                <bpelx:annotation>
+                                                    <bpelx:pattern>Sleep</bpelx:pattern>
+                                                </bpelx:annotation>
+                                                <wait name="Wait_NoMessge"
+                                                      for="concat('PT',bpws:getVariableData('Invoke_StartProcess_StartProcess_OutputVariable','OutputParameters','/ns2:OutputParameters/O_SLEEP_TIME'),'M')"/>
+                                            </case>
+                                            <otherwise/>
+                                        </switch>
+                                    </sequence>
+                                </case>
+                                <otherwise>
+                                    <sequence name="Sequence_StoppedProcess">
+                                        <assign name="Assign_StoppedProcess">
+                                            <copy>
+                                                <from expression="'Y'"/>
+                                                <to variable="stopProcess"/>
+                                            </copy>
+                                        </assign>
+                                        <bpelx:exec name="Java_Embedding_NoMessage"
+                                                    language="java"
+                                                    version="1.3">
+                                            <![CDATA[/*Write your java code below e.g.  
+	System.out.println("Hello, World"); 
+*/ 
+checkpoint();]]>
+                                        </bpelx:exec>
+                                        <scope name="Scope_StoppedProcess">
+                                            <scope name="Email_StoppedProcess">
+                                                <bpelx:annotation>
+                                                    <bpelx:pattern patternName="bpelx:email"></bpelx:pattern>
+                                                </bpelx:annotation>
+                                                <variables>
+                                                    <variable name="varNotificationReq"
+                                                              messageType="ns3:EmailNotificationRequest"/>
+                                                    <variable name="varNotificationResponse"
+                                                              messageType="ns3:ArrayOfResponse"/>
+                                                    <variable name="NotificationServiceFaultVariable"
+                                                              messageType="ns3:NotificationServiceErrorMessage"/>
+                                                </variables>
+                                                <sequence name="Sequence_EmailStoppedProcess">
+                                                    <assign name="EmailParamsAssign">
+                                                        <copy>
+                                                            <from expression="string('SOAEmailNotify')"/>
+                                                            <to variable="varNotificationReq"
+                                                                part="EmailPayload"
+                                                                query="/EmailPayload/ns3:FromAccountName"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from expression="string('')"/>
+                                                            <to variable="varNotificationReq"
+                                                                part="EmailPayload"
+                                                                query="/EmailPayload/ns3:Bcc"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from expression="string('')"/>
+                                                            <to variable="varNotificationReq"
+                                                                part="EmailPayload"
+                                                                query="/EmailPayload/ns3:Cc"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from expression="string('')"/>
+                                                            <to variable="varNotificationReq"
+                                                                part="EmailPayload"
+                                                                query="/EmailPayload/ns3:ReplyToAddress"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from expression="concat(string('Stopped Process = '), bpws:getVariableData('Invoke_GetNextMessage_GetNextMessage_InputVariable','InputParameters','/ns9:InputParameters/I_PROCESS_NAME'))"/>
+                                                            <to variable="varNotificationReq"
+                                                                part="EmailPayload"
+                                                                query="/EmailPayload/ns3:Subject"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from expression="concat(bpws:getVariableData('Invoke_StartProcess_StartProcess_OutputVariable','OutputParameters','/ns2:OutputParameters/O_EMAIL_TO'), string(','))"/>
+                                                            <to variable="varNotificationReq"
+                                                                part="EmailPayload"
+                                                                query="/EmailPayload/ns3:To"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from>
+                                                                <Content xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">
+                                                                    <MimeType xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">multipart/mixed</MimeType>
+                                                                    <ContentBody xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">
+                                                                        <MultiPart xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">
+                                                                            <BodyPart xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService">
+                                                                                <MimeType xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/>
+                                                                                <ContentBody xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/>
+                                                                                <BodyPartName xmlns="http://xmlns.oracle.com/ias/pcbpel/NotificationService"/>
+                                                                            </BodyPart>
+                                                                        </MultiPart>
+                                                                    </ContentBody>
+                                                                </Content>
+                                                            </from>
+                                                            <to variable="varNotificationReq"
+                                                                part="EmailPayload"
+                                                                query="/EmailPayload/ns3:Content"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from expression="string('text/html; charset=UTF-8')"/>
+                                                            <to variable="varNotificationReq"
+                                                                part="EmailPayload"
+                                                                query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[1]/ns3:MimeType"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from expression="string('NotificationAttachment1.html')"/>
+                                                            <to variable="varNotificationReq"
+                                                                part="EmailPayload"
+                                                                query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[1]/ns3:BodyPartName"/>
+                                                        </copy>
+                                                        <copy>
+                                                            <from expression="concat(string('Input Msg = 
+'), bpws:getVariableData('Invoke_GetNextMessage_GetNextMessage_OutputVariable','OutputParameters'), string('
+&lt;br>
+&lt;br>
+Stopped Process = '), bpws:getVariableData('Invoke_GetNextMessage_GetNextMessage_InputVariable','InputParameters','/ns9:InputParameters/I_PROCESS_NAME'), string('
+&lt;br>
+&lt;br>
+Return Code = '), bpws:getVariableData('Invoke_GetNextMessage_GetNextMessage_OutputVariable','OutputParameters','/ns9:OutputParameters/O_RTN_CODE'), string('
+&lt;br>
+&lt;br>
+Return Message = '), bpws:getVariableData('Invoke_GetNextMessage_GetNextMessage_OutputVariable','OutputParameters','/ns9:OutputParameters/O_RTN_MSG'))"/>
+                                                            <to variable="varNotificationReq"
+                                                                part="EmailPayload"
+                                                                query="/EmailPayload/ns3:Content/ns3:ContentBody/ns3:MultiPart/ns3:BodyPart[1]/ns3:ContentBody"/>
+                                                        </copy>
+                                                    </assign>
+                                                    <invoke name="InvokeNotificationService"
+                                                            partnerLink="NotificationService"
+                                                            portType="ns3:NotificationService"
+                                                            operation="sendEmailNotification"
+                                                            inputVariable="varNotificationReq"
+                                                            outputVariable="varNotificationResponse"/>
+                                                </sequence>
+                                            </scope>
+                                        </scope>
+                                    </sequence>
+                                </otherwise>
+                            </switch>
+                        </sequence>
+                    </while>
+                    <invoke name="Invoke_StopProcess" partnerLink="StopProcess"
+                            portType="ns6:StopProcess_ptt"
+                            operation="StopProcess"
+                            inputVariable="Invoke_StopProcess_StopProcess_InputVariable"
+                            outputVariable="Invoke_StopProcess_StopProcess_OutputVariable"/>
+                </sequence>
+            </case>
+            <otherwise/>
+        </switch>
+    </sequence>
+</process>

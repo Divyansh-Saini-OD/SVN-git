@@ -1,0 +1,14 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="ItemMaster_rms_confirm_inb" src="ItemMaster_rms_confirm_inb.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="client">
+            <property name="wsdlLocation">ItemMaster_rms_confirm_inb.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="ItemMasterConfirm">
+            <property name="wsdlLocation">ItemMasterConfirm.wsdl</property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+   </BPELProcess>
+</BPELSuitcase>

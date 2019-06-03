@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXQACCR" description="OD OB CC Report" Version="1.0">
+<parameters>
+ <parameter name="P_APPROVER" datatype="character" />
+ <parameter name="P_REGION" datatype="character" />
+ <parameter name="P_SKU" datatype="number" />
+ <parameter name="P_DEPARTMENT" datatype="character" />
+ <parameter name="P_GSO_CONTACT" datatype="character" />
+ <parameter name="P_SOURCING_AGENT" datatype="character" />
+ <parameter name="P_VENDOR_NAME" datatype="character" />
+ <parameter name="P_FACTORY_NAME" datatype="character" />
+ <parameter name="P_DEFECT_CLASSIFICATION" datatype="character" />
+ <parameter name="P_SAMPLE_AVAILABLE" datatype="character" />
+ <parameter name="P_FINDINGS" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_CC">
+<![CDATA[
+SELECT
+    QOOCCV.OD_PB_CUSTOMER_COMPLAINT_ID AS CUSTOMER_COMPLAINT_ID
+  , QOOCCV.OD_PB_QA_ENGR_EMAIL         AS APPROVER
+  , QOOCCV.OD_PB_DATE_REPORTED         AS CUSTOMER_PROBLEM_DATE
+  , QOOCCV.OD_PB_DATE_OPENED           AS DATE_REPORTED_TO_QA
+  , QOOCCV.OD_SC_REGION                AS REGION
+  , QOOCCV.OD_OB_SKU                   AS SKU
+  , QOOCCV.OD_PB_ITEM_DESC             AS ITEM_DESCRIPTION
+  , QOOCCV.OD_PB_SC_DEPT_NAME          AS DEPARTMENT
+  , QOOCCV.OD_PB_AUDITOR_NAME          AS GSO_CONTACT
+  , QOOCCV.OD_SC_AUDIT_AGENT           AS SOURCING_AGENT
+  , QOOCCV.OD_OB_VENDOR_NUMBER         AS VENDOR_NUMBER
+  , QOOCCV.OD_OB_VENDOR_NAME           AS VENDOR_NAME
+  , QOOCCV.OD_OB_FACTORY_NUMBER        AS FACTORY_NUMBER
+  , QOOCCV.OD_OB_FACTORY_NAME          AS FACTORY_NAME
+  , QOOCCV.OD_SC_FACTORY_EMAIL         AS FACTORY_EMAIL
+  , QOOCCV.OD_PB_DEFECT_SUM            AS DEFECT
+  , QOOCCV.OD_PB_DEFECT_CODE           AS DEFECT_CLASSIFICATION
+  , QOOCCV.OD_PB_DATE_SAMPLE_SENT      AS SAMPLE_REQUEST_DATE
+  , QOOCCV.OD_PB_SAMPLE_AVAILABLE      AS SAMPLE_AVAILABLE
+  , QOOCCV.OD_PB_DATE_SAMPLE_RECEIVED  AS SAMPLE_RECEIVE_DATE
+  , QOOCCV.OD_PB_ROOT_CAUSE_TYPE       AS FINDINGS
+  , QOOCCV.OD_OB_REF_CAPID             AS CAPID
+  , QOOCCV.OD_PB_COMMENTS              AS COMMENTS
+  , QOOCCV.OD_PB_ATTACHMENT            AS ATTACHMENTS
+  , QOOCCV.OD_PB_DATE_CLOSED           AS DATE_CLOSED
+FROM
+    Q_OD_OB_CUSTOMER_COMPLAINTS_V QOOCCV
+WHERE
+    NVL(QOOCCV.OD_PB_QA_ENGR_EMAIL , 'X')        = NVL(:P_APPROVER , NVL(QOOCCV.OD_PB_QA_ENGR_EMAIL , 'X') )
+AND NVL(QOOCCV.OD_SC_REGION , 'X')               = NVL(:P_REGION , NVL(QOOCCV.OD_SC_REGION , 'X') )
+AND NVL(QOOCCV.OD_OB_SKU , 1)                    = NVL(:P_SKU , NVL(QOOCCV.OD_OB_SKU , 1) )
+AND NVL(QOOCCV.OD_PB_SC_DEPT_NAME , 'X')         = NVL(:P_DEPARTMENT , NVL(QOOCCV.OD_PB_SC_DEPT_NAME , 'X') )
+AND NVL(QOOCCV.OD_PB_AUDITOR_NAME , 'X')         = NVL(:P_GSO_CONTACT , NVL(QOOCCV.OD_PB_AUDITOR_NAME , 'X') )
+AND NVL(QOOCCV.OD_SC_AUDIT_AGENT , 'X')          = NVL(:P_SOURCING_AGENT , NVL(QOOCCV.OD_SC_AUDIT_AGENT , 'X') )
+AND NVL(QOOCCV.OD_OB_VENDOR_NAME , 'X')          = NVL(:P_VENDOR_NAME , NVL(QOOCCV.OD_OB_VENDOR_NAME , 'X') )
+AND NVL(QOOCCV.OD_OB_FACTORY_NAME , 'X')         = NVL(:P_FACTORY_NAME , NVL(QOOCCV.OD_OB_FACTORY_NAME , 'X') )
+AND NVL(QOOCCV.OD_PB_DEFECT_CODE , 'X')          = NVL(:P_DEFECT_CLASSIFICATION , NVL(QOOCCV.OD_PB_DEFECT_CODE , 'X') )
+AND NVL(QOOCCV.OD_PB_SAMPLE_AVAILABLE , 'X')     = NVL(:P_SAMPLE_AVAILABLE , NVL(QOOCCV.OD_PB_SAMPLE_AVAILABLE , 'X') )
+AND NVL(QOOCCV.OD_PB_ROOT_CAUSE_TYPE, 'X')       = NVL(:P_FINDINGS , NVL(QOOCCV.OD_PB_ROOT_CAUSE_TYPE, 'X') )
+ORDER BY OD_PB_CUSTOMER_COMPLAINT_ID
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_CC" source="Q_CC">
+<element name="OD_PB_CUSTOMER_COMPLAINT_ID" value="CUSTOMER_COMPLAINT_ID" />
+<element name="OD_PB_QA_ENGR_EMAIL" value="APPROVER" />
+<element name="OD_PB_DATE_REPORTED" value="CUSTOMER_PROBLEM_DATE" />
+<element name="OD_PB_DATE_OPENED" value="DATE_REPORTED_TO_QA" />
+<element name="OD_SC_REGION" value="REGION" />
+<element name="OD_OB_SKU" value="SKU" />
+<element name="OD_PB_ITEM_DESC" value="ITEM_DESCRIPTION" />
+<element name="OD_PB_SC_DEPT_NAME" value="DEPARTMENT" />
+<element name="OD_PB_AUDITOR_NAME" value="GSO_CONTACT" />
+<element name="OD_SC_AUDIT_AGENT" value="SOURCING_AGENT" />
+<element name="OD_OB_VENDOR_NUMBER" value="VENDOR_NUMBER" />
+<element name="OD_OB_VENDOR_NAME" value="VENDOR_NAME" />
+<element name="OD_OB_FACTORY_NUMBER" value="FACTORY_NUMBER" />
+<element name="OD_OB_FACTORY_NAME" value="FACTORY_NAME" />
+<element name="OD_SC_FACTORY_EMAIL" value="FACTORY_EMAIL" />
+<element name="OD_PB_DEFECT_SUM" value="DEFECT" />
+<element name="OD_PB_DEFECT_CODE" value="DEFECT_CLASSIFICATION" />
+<element name="OD_PB_DATE_SAMPLE_SENT" value="SAMPLE_REQUEST_DATE" />
+<element name="OD_PB_SAMPLE_AVAILABLE" value="SAMPLE_AVAILABLE" />
+<element name="OD_PB_DATE_SAMPLE_RECEIVED" value="SAMPLE_RECEIVE_DATE" />
+<element name="OD_PB_ROOT_CAUSE_TYPE" value="FINDINGS" />
+<element name="OD_OB_REF_CAPID" value="CAPID" />
+<element name="OD_PB_COMMENTS" value="COMMENTS" />
+<element name="OD_PB_ATTACHMENT" value="ATTACHMENTS" />
+<element name="OD_PB_DATE_CLOSED" value="DATE_CLOSED" />
+</group>
+</dataStructure>
+</dataTemplate>

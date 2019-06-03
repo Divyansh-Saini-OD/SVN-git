@@ -1,0 +1,41 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name        :OE_ORDER_LINES_N3                                        |
+-- | Description : Non-Unique Index for ont.oe_order_lines_all             |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      02-Oct-2012 Paddy Sanjeevi     Initial  Version               |
+-- +=======================================================================+
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+
+drop index ONT.OE_ORDER_LINES_N3;
+
+create index ONT.OE_ORDER_LINES_N3 on ONT.OE_ORDER_LINES_ALL
+(INVENTORY_ITEM_ID, OPEN_FLAG, ORG_ID)  
+nologging tablespace APPS_TS_TX_OM_IDX_16M parallel 16;
+
+alter index ONT.OE_ORDER_LINES_N3 noparallel;
+
+SHOW ERRORS;
+
+
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================

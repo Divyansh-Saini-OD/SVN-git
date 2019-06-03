@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXPASCOA" description="OD PB SC Overdue Audit Report" Version="1.0">
+<parameters>
+ <parameter name="p_us_rgn" datatype="character" />
+ <parameter name="p_eu_rgn" datatype="character" />
+ <parameter name="p_mx_rgn" datatype="character" />
+ <parameter name="p_as_rgn" datatype="character" />
+ <parameter name="p_agent" datatype="character" />
+ <parameter name="p_merchant" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_ODA">
+<![CDATA[
+select od_sc_vendor_number,
+       od_sc_vendor_name,
+       od_sc_vend_type,
+       od_sc_vendor_status,
+       od_sc_activation_date,
+       OD_SC_REACTIVATE_DATE,
+	 od_sc_audit_agent,
+       od_sc_vend_address,
+       od_sc_factory_number,
+       od_sc_factory_name,
+       od_sc_factory_address,
+       od_sc_europe_rgn,
+       od_sc_mexico_region,
+       od_sc_asia_region,
+       od_sc_department,
+       od_sc_merchant,
+       od_sc_audit_required,
+       OD_SC_AUDIT_WAIVER,
+       OD_SC_AUDTWAIV_APR_D,
+       OD_SC_VEND_REGION,
+       OD_SC_STRAUDT_REQ_D,
+       OD_SC_PAYMENT_RETAINER,
+       OD_SC_VENDPAY_RCVD_D,
+       OD_SC_STRAUDT_SCHD_D,
+       OD_SC_REQ_AUDIT_DATE,
+       OD_SC_STR_AUDIT_RESULT
+  from Q_OD_PB_SC_VENDOR_MASTER_V
+ where od_sc_vendor_status='Active'
+   and OD_SC_STRAUDT_SCHD_D is null
+   and OD_SC_REQ_AUDIT_DATE<sysdate
+   AND NVL(od_sc_audit_agent,'X')=NVL(:p_agent,NVL(od_sc_audit_agent,'X'))
+   AND NVL(od_sc_merchant,'X')=NVL(:p_merchant,NVL(od_sc_merchant,'X'))
+   AND NVL(od_sc_vend_region,'X')=NVL(:p_us_rgn,NVL(od_sc_vend_region,'X'))
+   AND NVL(od_sc_europe_rgn,'X')=NVL(:p_eu_rgn,NVL(od_sc_europe_rgn,'X'))
+   AND NVL(od_sc_mexico_region,'X')=NVL(:p_mx_rgn,NVL(od_sc_mexico_region,'X'))
+   AND NVL(od_sc_asia_region,'X')=NVL(:p_as_rgn,NVL(od_sc_asia_region,'X'))
+ORDER BY 1,2
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_ODA" source="Q_ODA">
+<element name="VENDOR_NO" value="OD_SC_VENDOR_NUMBER" />
+<element name="VENDOR_NAME" value="OD_SC_VENDOR_NAME" />
+<element name="VENDOR_TYPE" value="OD_SC_VEND_TYPE" />
+<element name="VENDOR_STATUS" value="OD_SC_VENDOR_STATUS" />
+<element name="ACTIVATION_DATE" value="OD_SC_ACTIVATION_DATE" />
+<element name="REACTIVATE_DATE" value="OD_SC_REACTIVATE_DATE" />
+<element name="AGENT" value="OD_SC_AUDIT_AGENT" />
+<element name="VENDOR_ADDRESS" value="OD_SC_VEND_ADDRESS" />
+<element name="FACTORY_NO" value="OD_SC_FACTORY_NUMBER" />
+<element name="FACTORY_NAME" value="OD_SC_FACTORY_NAME" />
+<element name="FACTORY_ADDRESS" value="OD_SC_FACTORY_ADDRESS" />
+<element name="US_REGION" value="OD_SC_VEND_REGION" />
+<element name="EU_REGION" value="OD_SC_EUROPE_RGN" />
+<element name="MX_REGION" value="OD_SC_MEXICO_REGION" />
+<element name="AS_REGION" value="OD_SC_ASIA_REGION" />
+<element name="DEPT" value="OD_SC_DEPARTMENT" />
+<element name="MERCHANT" value="OD_SC_MERCHANT" />
+<element name="AUDIT_REQD" value="OD_SC_AUDIT_REQUIRED" />
+<element name="AUDIT_WAIVED" value="OD_SC_AUDIT_WAIVER" />
+<element name="AUDIT_APRVD_DATE" value="OD_SC_AUDTWAIV_APR_D" />
+<element name="AUDIT_REQ_DATE" value="OD_SC_STRAUDT_REQ_D" />
+<element name="PAYMENT_RETAINER" value="OD_SC_PAYMENT_RETAINER" />
+<element name="VENDPAY_RCVD" value="OD_SC_VENDPAY_RCVD_D" />
+<element name="AUDIT_SCHED_D" value="OD_SC_STRAUDT_SCHD_D" />
+<element name="NEXT_AUDIT_D" value="OD_SC_REQ_AUDIT_DATE" />
+<element name="AUDIT_RESULT" value="OD_SC_STR_AUDIT_RESULT" />
+</group>
+</dataStructure>
+</dataTemplate>

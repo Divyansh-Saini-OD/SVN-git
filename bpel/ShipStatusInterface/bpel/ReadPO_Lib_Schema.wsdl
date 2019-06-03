@@ -1,0 +1,67 @@
+<definitions
+     name="ReadPO_Lib_Schema"
+     targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/ReadPO_Lib_Schema/"
+     xmlns="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/ReadPO_Lib_Schema/"
+     xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_PO_SHIPSTATUS_PKG/XX_PO_SHIPSTATUS_UPDATE/"
+     xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/"
+     xmlns:hdr="http://xmlns.oracle.com/pcbpel/adapter/db/"
+    >
+    <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/" location="DBAdapterOutboundHeader.wsdl"/>
+    <types>
+     <schema xmlns="http://www.w3.org/2001/XMLSchema">
+       <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/APPS/XX_PO_SHIPSTATUS_PKG/XX_PO_SHIPSTATUS_UPDATE/"
+               schemaLocation="APPS_PO_LIB_XX_PO_SHIPSTATUS_UPDATE.xsd" />
+     </schema>
+    </types>
+    <message name="args_in_msg">
+        <part name="InputParameters" element="db:InputParameters"/>
+    </message>
+    <message name="args_out_msg">
+        <part name="OutputParameters" element="db:OutputParameters"/>
+    </message>
+    <portType name="ReadPO_Lib_Schema_ptt">
+        <operation name="ReadPO_Lib_Schema">
+            <input message="tns:args_in_msg"/>
+            <output message="tns:args_out_msg"/>
+        </operation>
+    </portType>
+    <binding name="ReadPO_Lib_Schema_binding" type="tns:ReadPO_Lib_Schema_ptt">
+    <jca:binding  />
+        <operation name="ReadPO_Lib_Schema">
+      <jca:operation
+          SchemaName="APPS"
+          PackageName="XX_PO_SHIPSTATUS_PKG"
+          ProcedureName="XX_PO_SHIPSTATUS_UPDATE"
+          InteractionSpec="oracle.tip.adapter.db.DBStoredProcedureInteractionSpec" >
+      </jca:operation>
+      <input>
+        <jca:header message="hdr:OutboundHeader_msg" part="outboundHeader"/>
+      </input>
+            <output/>
+        </operation>
+    </binding>
+    <service name="ReadPO_Lib_Schema">
+        <port name="ReadPO_Lib_Schema_pt" binding="tns:ReadPO_Lib_Schema_binding">
+<!--Your runtime connection is declared in 
+J2EE_HOME/application-deployments/default/DbAdapter/oc4j-ra.xml 
+These mcf properties here are from your design time connection and 
+save you from having to edit that file and restart the application server 
+if eis/DB/ebs_apps_gsidev03 is missing. 
+These mcf properties are safe to remove.-->
+      <jca:address location="eis/DB/ebs_apps_gsidev03" UIConnectionName="ebs_apps_gsidev03"
+          ManagedConnectionFactory="oracle.tip.adapter.db.DBManagedConnectionFactory"
+          mcf.DriverClassName="oracle.jdbc.OracleDriver"
+          mcf.PlatformClassName="oracle.toplink.internal.databaseaccess.Oracle9Platform"
+          mcf.ConnectionString="jdbc:oracle:thin:@choldbr18d.na.odcorp.net:1544:gsidev03"
+          mcf.UserName="apps"
+          mcf.Password="33249B2910CFF3FBCD9B834DF8560A56" />
+        </port>
+    </service>
+  <plt:partnerLinkType name="ReadPO_Lib_Schema_plt" >
+    <plt:role name="ReadPO_Lib_Schema_role" >
+      <plt:portType name="tns:ReadPO_Lib_Schema_ptt" />
+    </plt:role>
+  </plt:partnerLinkType>
+</definitions>

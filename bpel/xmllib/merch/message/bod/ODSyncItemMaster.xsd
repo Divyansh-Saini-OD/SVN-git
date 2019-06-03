@@ -1,0 +1,739 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+            xmlns:odmf="http://www.openapplications.org/officedepot/merchandising/foundation/1"
+            targetNamespace="http://www.openapplications.org/officedepot/merchandising/foundation/1" 
+            elementFormDefault="qualified" 
+            attributeFormDefault="unqualified">
+
+  <xsd:element name="SYNC_ITEM_MASTER">
+    <xsd:complexType>
+      <xsd:annotation>
+        <xsd:documentation>
+          The purpose of the ODSyncItemMaster is to synchronize Item Master data with other external application that need to keep their data in sync with RMS.
+          RMS is the system of records for Item Master information.
+        </xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+        <xsd:element name="VERB" minOccurs="1" maxOccurs="1">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="PROCESS_NAME" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    The BPEL process name that dequeues the RMS messages. 
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>  
+              <xsd:element name="PROCESS_ID" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    The RMS staging table sequence number of the data record.
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element name="CREATE_TIMESTAMP" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    RMS timestamp when the record was inserted in the staging table. Use to keep the chronological order of events.
+                    Format: DD-MON-RR HH.MI.SS.FF AM
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element name="ACTION_TYPE" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    Defines logical data subsets for RMS Item Master: 
+                      ITEM_MASTER 
+                      ITEM_LOC 
+                      ITEM_SUPP 
+                      ITEM_SUPP_COO 
+                      ITEM_SUPP_UPC 
+                      ITEM_SUPP_COUNTRY 
+                      ITEM_SUPP_COUNTRY_DIM 
+                      ITEM_SUPP_COUNTRY_LOC
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element name="ACTION_CODE" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                  <xsd:documentation>
+                    A=Add 
+                    C=Change 
+                    D=Delete 
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="NOUN" minOccurs="1" maxOccurs="1">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="ITEM_MASTER" minOccurs="1" maxOccurs="1">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="ITEM" type="xsd:string" minOccurs="1" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Unique alphanumeric value.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="CLASS" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Indicates the numeric identification numbers assigned by Office Depot that represents a level within the Merchandise Hierarchy.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="DEPT" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Indicates the numeric identification numbers assigned by Office Depot that represents a level within the Merchandise Hierarchy.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="HANDLING_SENSITIVITY" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          It is the code that provides information regarding the handling sensitivity of an item.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="ITEM_DESC" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Item description.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="ITEM_NUMBER_TYPE" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Type of item value. Used to identify non-code to regular SKUs.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="ORDER_AS_TYPE" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Indicates if pack item is receivable at the component level or at the pack level.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="ORDERABLE_IND" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Indicates if pack item is orderable.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="PACK_IND" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Indicates if the item is a pack.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="PACK_TYPE" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Indicates if pack item is a vendor pack or a buyer pack.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="PACKAGE_SIZE" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Holds the size number of units within a selling unit.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="PACKAGE_UOM" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Unit of measure associated with the package size.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="SELLABLE_IND" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Indicates if pack item may be sold as a unit.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="SHIP_ALONE_IND" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Indicates if an item should be shipped to the customer is a seperate package.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="SHORT_DESC" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Item short description
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="SIMPLE_PACK_IND" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Indicates if pack item is a simple pack vs complex pack.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="STATUS" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Status of an item within RMS. Only Active items are made available to external systems.
+                          A=Active
+                          W=Worksheet Status
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="STORE_ORD_MULT" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Merchandise shipped from the warehouses to the stores must be specified in this unit type. Indicates the shipping multiple in which the item is normally ordered into the stores.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="SUBCLASS" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Indicates the numeric identification numbers assigned by Office Depot that represents a level within the Merchandise Hierarchy.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_ASSORTMENT_CD" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Indicates if the item is proprietary at a specific location.
+                          P=Proprietary
+                          N=Non-Proprietary
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_CALL_FOR_PRICE_CD" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Used in catalog for SKUs that have frequent price changes.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_COST_UP_FLG" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Restrict from cost up pricing, overrides the agreement that a contract customer pays a negotiated amount above the AVG_COST on ITEMLOC.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_GIFT_CERTIF_FLG" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          If SKU a gift certificate.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_GSA_FLG" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Indicates if there are government restrictions. If Items are on the schehdule then they may be sold to the government. If not, they are flagged.
+                          Y=Yes
+                          N=No
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_IMPRINTED_ITEM_FLG" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          If checked, would indicate that this is an VW imprinted item (ie. business cards, etc).
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_LIST_OFF_FLG" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Restrict from off list pricing, overrides the agreement that a contract customer receives a negotiated % off the list price. Used for AOPS pricing for contract customers, sent to AOPS.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_META_CD" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Distinguishes code used within seating to distinguish frame from whole assembly.
+                          D=DESIGN SKU - FABRIC/STYLE 
+                          M=META SKU - FRAME
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_OFF_CAT_FLG" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Restrict from off catalog pricing, overrides the agreement that a contract customer receives a negotiated % off the catalog price.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_OVRSIZE_DELVRY_FLG" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Indicates that the item is oversized based on its dimensions.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_PRIVATE_BRAND_FLG" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Flag for our own brands.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_PRIVATE_BRAND_LABEL" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Manufacturer of the item.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_PROD_PROTECT_CD" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Indicates if the Item is a product protection plan or if the item is available for product protection.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_READY_TO_ASSEMBLE_FLG" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Select the Ready to Assemble flag if the item requires assembly. 
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_RECYCLE_FLG" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Flag - made from recycle material.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_RETAIL_PRICING_FLG" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Restrict from off retail pricing, overrides the agreement that a contract customer receives a negotiated % off the retail price.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_SKU_TYPE_CD" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          It is the type of item being created.
+                          01=MERCH 
+                          02=NON-MERCH 
+                          03=SPECIAL ORDER 
+                          04=SUB-SELLABLE 
+                          05=MISSHIP 
+                          06=CTO COMPONENT 
+                          07=CTO BASE 
+                          08=NON-CODE
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_TAX_CATEGORY" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Tax category SKU belongs in (candy, books etc).
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="MASTER_ITEM" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Used when an item is broken down below it's sellable level.  The 'Master' becomes what was the sellable unit. All of the individual units, or subsells, are created and linked to the master. 
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="SUBSELL_MASTER_QTY" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Number of units in the master item as related to subsell only. Every unit that was in the master item, then becomes a subsell.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+              <xsd:element name="ITEM_LOCATION" minOccurs="0" maxOccurs="1">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="LOC" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Location number.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="LOCAL_ITEM_DESC" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Local item description.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="LOCAL_SHORT_DESC" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Description of item that has been trunkated. Sent to POS.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="PRIMARY_SUPP" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Primary supplier for an item.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="STATUS" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Item is active or discontinue at that location.
+                          A=Active
+                          C=Discontinued
+                          D=Deleted
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_ABC_CLASS" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Replenishment classification for item/location combinations based on Sales information. EBS will calculate the correct category based on the forecasted units. Example, a classificatoin of 'A' means that the item is high sales in that location.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_CHANNEL_BLOCK" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Available for AOPS flag.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_DIST_TARGET" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Equivalent to the RUTL (receive up to level) in AIP. The maximum level of inventory that can be received for an item at a location.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_EBW_QTY" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          End-caps Bulks and Wings describe different types of promotional invnetory.  Used when calculating thedistribution target; Need to determine that the items are part of PROMOTIONAL INVENTORY and are NON SELLABLE.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_INFINITE_QTY_CD" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Flag indicating that we do not hold inventory on an item. Product is never 'OUT OF STOCK' ie: Warranties.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_LOCK_UP_ITEM_FLG" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Flag indicating that an item is locked up. High values items.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_PROPRIETARY_TYPE_CD" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Indicates which assortment the item belongs to: C,H,N,P,S,Z
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_REPLEN_SUB_TYPE_CD" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Replenishment type code are codes that are used for analysis and reporting functions. They further describe the RTCs.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_REPLEN_TYPE_CD" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Codes which determine how an item is replenished. For example an item with code, 'N' is nonreplenished. When its code is updated to 'A,' it will then start to be automatically replenished.
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="OD_WHSE_ITEM_CD" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+                        <xsd:documentation>
+                          Method of distribution:
+                          V=Vendor direct 
+                          X=Flow thru 
+                          W=Warehouse 
+                          D=Downtown 
+                          C=Central crossdock 
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+              <xsd:element name="ITEM_SUPP" minOccurs="0" maxOccurs="1">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="SUPPLIER" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+		        <xsd:documentation>
+		          Supplier number.
+		        </xsd:documentation>
+		      </xsd:annotation>
+		    </xsd:element>
+                    <xsd:element name="PRIMARY_SUPP_IND" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+		        <xsd:documentation>
+		          Indicates primary supplier of item.
+		        </xsd:documentation>
+		      </xsd:annotation>
+		    </xsd:element>
+                    <xsd:element name="VPN" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+		        <xsd:documentation>
+		          Vendor Product Code. Code assigned by the vendor identifying the item (unique within a vendor)
+		        </xsd:documentation>
+		      </xsd:annotation>
+		    </xsd:element>
+                    <xsd:element name="CARCINOGENIC_FLG" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+		        <xsd:documentation>
+		          Could this item be associated with cancer causing agents?
+		        </xsd:documentation>
+		      </xsd:annotation>
+		    </xsd:element>
+                    <xsd:element name="DROP_SHIP_CD" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+		        <xsd:documentation>
+		          Delivered directly from the vendor to the customer without being handled by OD.
+		        </xsd:documentation>
+		      </xsd:annotation>
+		    </xsd:element>
+                    <xsd:element name="GOVT_COMPLIANCE_CD" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+		        <xsd:documentation>
+		          Used to indicate a minority-owned company manufactured item.
+		        </xsd:documentation>
+		      </xsd:annotation>
+		    </xsd:element>
+                    <xsd:element name="HAZARDOUS_FLG" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+		        <xsd:documentation>
+		          Does the item contribute to a health risk or injury?
+		        </xsd:documentation>
+		      </xsd:annotation>
+		    </xsd:element>
+                    <xsd:element name="HS_TARIFF_NBR" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+		        <xsd:documentation>
+		          US production going to Canada through cross-dock.
+		        </xsd:documentation>
+		      </xsd:annotation>
+		    </xsd:element>
+                    <xsd:element name="MINORITY_BUS_FLG" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+		        <xsd:documentation>
+		          Is the item manufactured and/or distributed by a minority, women, or disabled veteran enterprise?
+		        </xsd:documentation>
+		      </xsd:annotation>
+		    </xsd:element>
+                    <xsd:element name="NON_SHIPPABLE_INNER_QTY" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+		        <xsd:documentation>
+		          Non shippable inner quantity.
+		        </xsd:documentation>
+		      </xsd:annotation>
+		    </xsd:element>
+                    <xsd:element name="VENDOR_DESIGN_ID" type="xsd:string" minOccurs="0" maxOccurs="1">
+                      <xsd:annotation>
+		        <xsd:documentation>
+		          Related to Metasku. Needed by eCommerce.
+		        </xsd:documentation>
+		      </xsd:annotation>
+		    </xsd:element>
+                    <xsd:element name="ITEM_SUPP_COO" minOccurs="0" maxOccurs="1">
+                      <xsd:complexType>
+                        <xsd:sequence>
+                          <xsd:element name="CNTRY_OF_ORIGIN_CD" type="xsd:string" minOccurs="0" maxOccurs="1">
+                            <xsd:annotation>
+			      <xsd:documentation>
+			        Country code where the item was made.
+			      </xsd:documentation>
+			    </xsd:annotation>
+			  </xsd:element>
+                        </xsd:sequence>
+                      </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="ITEM_SUPP_UPC" minOccurs="0" maxOccurs="1">
+                      <xsd:complexType>
+                        <xsd:sequence>
+                          <xsd:element name="UPC" type="xsd:string" minOccurs="0" maxOccurs="1">
+                            <xsd:annotation>
+			      <xsd:documentation>
+			        Universal Product Code (UPC) barcode.
+			      </xsd:documentation>
+			    </xsd:annotation>
+			  </xsd:element>
+                        </xsd:sequence>
+                      </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="ITEM_SUPP_COUNTRY" minOccurs="0" maxOccurs="1">
+                      <xsd:complexType>
+                        <xsd:sequence>
+                          <xsd:element name="ORIGIN_COUNTRY_ID" type="xsd:string" minOccurs="0" maxOccurs="1">
+                            <xsd:annotation>
+			      <xsd:documentation>
+			        Origin country code.
+			      </xsd:documentation>
+			    </xsd:annotation>
+			  </xsd:element>
+                          <xsd:element name="HI" type="xsd:string" minOccurs="0" maxOccurs="1">
+                            <xsd:annotation>
+			      <xsd:documentation>
+			        Number of tier in a pallet.
+			      </xsd:documentation>
+			    </xsd:annotation>
+			  </xsd:element>
+                          <xsd:element name="INNER_PACK_SIZE" type="xsd:string" minOccurs="0" maxOccurs="1">
+                            <xsd:annotation>
+			      <xsd:documentation>
+			        Standard pack, smaller than a case, bigger than an each.
+			      </xsd:documentation>
+			    </xsd:annotation>
+			  </xsd:element>
+                          <xsd:element name="MAX_ORDER_QTY" type="xsd:string" minOccurs="0" maxOccurs="1">
+                            <xsd:annotation>
+			      <xsd:documentation>
+			        Maximum customer order quantity allowed.
+			      </xsd:documentation>
+			    </xsd:annotation>
+			  </xsd:element>
+                          <xsd:element name="MIN_ORDER_QTY" type="xsd:string" minOccurs="0" maxOccurs="1">
+                            <xsd:annotation>
+			      <xsd:documentation>
+			        Minimum customer order quantity allowed.
+			      </xsd:documentation>
+			    </xsd:annotation>
+			  </xsd:element>
+                          <xsd:element name="SUPP_PACK_SIZE" type="xsd:string" minOccurs="0" maxOccurs="1">
+                            <xsd:annotation>
+			      <xsd:documentation>
+			        Master case quantity.
+			      </xsd:documentation>
+			    </xsd:annotation>
+			  </xsd:element>
+                          <xsd:element name="TI" type="xsd:string" minOccurs="0" maxOccurs="1">
+                            <xsd:annotation>
+			      <xsd:documentation>
+			        Number of cases on a pallet's tier.
+			      </xsd:documentation>
+			    </xsd:annotation>
+			  </xsd:element>
+                          <xsd:element name="ITEM_SUPP_COUNTRY_DIM" minOccurs="0" maxOccurs="1">
+                            <xsd:complexType>
+                              <xsd:sequence>
+                                <xsd:element name="DIM_OBJECT" type="xsd:string" minOccurs="0" maxOccurs="1">
+                                  <xsd:annotation>
+			            <xsd:documentation>
+			              Package for which dimension is being captured: each, inner, case, pallet.
+			            </xsd:documentation>
+			          </xsd:annotation>
+			        </xsd:element>
+                                <xsd:element name="HEIGHT" type="xsd:string" minOccurs="0" maxOccurs="1">
+                                  <xsd:annotation>
+			            <xsd:documentation>
+			              Height dimension of dim object.
+			            </xsd:documentation>
+			          </xsd:annotation>
+			        </xsd:element>
+                                <xsd:element name="LENGTH" type="xsd:string" minOccurs="0" maxOccurs="1">
+                                  <xsd:annotation>
+			            <xsd:documentation>
+			              Length dimension of dim object.
+			            </xsd:documentation>
+			          </xsd:annotation>
+			        </xsd:element>
+                                <xsd:element name="LWH_UOM" type="xsd:string" minOccurs="0" maxOccurs="1">
+                                  <xsd:annotation>
+			            <xsd:documentation>
+			              Unit Of Measure for dimension of dim object.
+			            </xsd:documentation>
+			          </xsd:annotation>
+			        </xsd:element>
+                                <xsd:element name="WEIGHT" type="xsd:string" minOccurs="0" maxOccurs="1">
+                                  <xsd:annotation>
+			            <xsd:documentation>
+			              Weight of package being weighed.
+			            </xsd:documentation>
+			          </xsd:annotation>
+			        </xsd:element>
+                                <xsd:element name="WEIGHT_UOM" type="xsd:string" minOccurs="0" maxOccurs="1">
+                                  <xsd:annotation>
+			            <xsd:documentation>
+			              Unit Of Measure for weight .
+			            </xsd:documentation>
+			          </xsd:annotation>
+			        </xsd:element>
+                                <xsd:element name="WIDTH" type="xsd:string" minOccurs="0" maxOccurs="1">
+                                  <xsd:annotation>
+			            <xsd:documentation>
+			              Width dimension of dim object.
+			            </xsd:documentation>
+			          </xsd:annotation>
+			        </xsd:element>
+                              </xsd:sequence>
+                            </xsd:complexType>
+                          </xsd:element>
+                          <xsd:element name="ITEM_SUPP_COUNTRY_LOC" minOccurs="0" maxOccurs="1">
+                            <xsd:complexType>
+                              <xsd:sequence>
+                                <xsd:element name="LOC" type="xsd:string" minOccurs="0" maxOccurs="1">
+                                  <xsd:annotation>
+			            <xsd:documentation>
+			              Location number.
+			            </xsd:documentation>
+			          </xsd:annotation>
+			        </xsd:element>
+                                <xsd:element name="OD_GSS_REPL_FLG" type="xsd:string" minOccurs="0" maxOccurs="1">
+                                  <xsd:annotation>
+			            <xsd:documentation>
+			              Is item being replenished from a globally sourced supplier.
+			            </xsd:documentation>
+			          </xsd:annotation>
+			        </xsd:element>
+                                <xsd:element name="PICKUP_LEAD_TIME" type="xsd:string" minOccurs="0" maxOccurs="1">
+                                  <xsd:annotation>
+			            <xsd:documentation>
+			              Supplier Lead time in days to get product to our location, used for AIP.
+			            </xsd:documentation>
+			          </xsd:annotation>
+			        </xsd:element>
+                              </xsd:sequence>
+                            </xsd:complexType>
+                          </xsd:element>
+                        </xsd:sequence>
+                      </xsd:complexType>
+                    </xsd:element>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>

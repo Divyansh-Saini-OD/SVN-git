@@ -1,0 +1,73 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_QA_CC_STG.tbl                                                |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_QA_CC_STG   (OD QA CC Staging table)                           |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              12-Aug-2011       Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_QA_CC_STG......
+PROMPT
+
+Create table xxmer.XX_QA_CC_STG
+(
+ OD_PB_CASE_NUMBER	NUMBER,
+ OD_OB_SAFETY		VARCHAR2(200),
+ OD_OB_SOURCE		VARCHAR2(50),
+ OD_SC_ENTRY_DATE	DATE,
+ OD_OB_SKU		NUMBER,
+ OD_OB_MFG_DATE		DATE,
+ OD_OB_PUR_DATE		DATE,
+ OD_OB_ISSUE_TYPE	VARCHAR2(50),
+ OD_OB_REASON		VARCHAR2(4000),
+ OD_PB_COMMENTS		VArchaR2(4000),
+ OD_OB_STATE		varchar2(50),
+ load_batch_id		NUMBER,
+ process_flag		number,
+ creation_date		date,
+ created_by		number,
+ last_update_date	date,
+ last_updated_by	number);
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
+
+
+create synonym XX_QA_CC_STG for xxmer.XX_QA_CC_STG

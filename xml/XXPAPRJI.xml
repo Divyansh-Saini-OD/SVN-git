@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXPAPRJI" description="OD PRJ Issues report" Version="1.0">
+<parameters>
+ <parameter name="p_division" datatype="character" />
+ <parameter name="p_dept" datatype="character" />
+ <parameter name="p_di_merchant" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_PJI">
+<![CDATA[
+SELECT COALESCE(EEB1.C_EXT_ATTR1,'') AS department ,
+       COALESCE(EEB1.C_EXT_ATTR2,'') AS class   ,
+       COALESCE(EEB1.C_EXT_ATTR3,'') AS brand   ,
+       COALESCE(EEB1.C_EXT_ATTR5,'') division,
+       COALESCE(EEB1.C_EXT_ATTR6,'') di_merchant_name,
+       pap.segment1 project_no,
+       pap.name project_name,
+       COALESCE(EEB1.N_EXT_ATTR1,0) AS sku_num   ,
+       pps.project_status_name pps_status_name,
+--     COALESCE(EEB1.C_EXT_ATTR4,'') AS progress_status   ,
+	 APPS.XX_PA_XXPAPRJI_PKG.get_proj_progress_status(EEB1.C_EXT_ATTR4) AS progress_status,
+       TRUNC(ppci.creation_date) ppci_creation_date,
+       ppci.created_by ppci_created_by,
+       ppci.summary ppci_summary,
+       ppci.description ppci_description,
+       pcc.class_code pcc_class_code,
+       pcc1.description reason_name,
+--     ppci.status_code ppci_status_code,
+	 APPS.XX_PA_XXPAPRJI_PKG.get_issue_status(ppci.status_code) ppci_status_code,
+       ppci.resolution ppci_resolution,
+       TRUNC(ppci.progress_as_of_date) progress_as_of_date,
+--     ppci.progress_status_code progress_status_code,
+	 APPS.XX_PA_XXPAPRJI_PKG.get_issue_progress_status(ppci.progress_status_code) progress_status_code,
+       emp.full_name created_by_name
+  FROM apps.fnd_user fu,
+	 apps.per_all_people_f emp,
+       apps.pa_class_codes pcc1,
+       apps.pa_projects_all pap,
+       APPS.PA_PROJECTS_ERP_EXT_B EEB1,
+       APPS.EGO_FND_DSC_FLX_CTX_EXT FND1,
+       apps.pa_project_statuses pps,
+       apps.PA_CONTROL_ITEMS PPCI,
+       apps.pa_class_codes pcc
+ WHERE EEB1.ATTR_GROUP_ID = FND1.ATTR_GROUP_ID
+   AND FND1.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_GEN_INFO'
+   AND pap.project_id(+)=eeb1.project_id
+   AND PAP.PROJECT_STATUS_CODE = PPS.PROJECT_STATUS_CODE
+   AND PPCI.PROJECT_ID = PAP.PROJECT_ID
+   AND pcc.class_code_id=ppci.classification_code_id
+   AND fu.user_id=ppci.created_by
+   AND emp.person_id=fu.employee_id
+   AND pcc1.class_category='Issue Reason'
+   AND pcc1.class_code_id=ppci.reason_code_id
+   AND ppci.status_code<>'CI_CLOSED'
+   AND NVL(eeb1.c_ext_attr1,'X') like NVL(:p_dept,NVL(eeb1.c_ext_attr1,'X'))
+   AND NVL(eeb1.c_ext_attr5,'X') like NVL(:p_division,NVL(eeb1.c_ext_attr5,'X'))
+   AND NVL(eeb1.c_ext_attr6,'X') like NVL(:p_di_merchant,NVL(eeb1.c_ext_attr6,'X'))
+UNION
+SELECT COALESCE(EEB1.C_EXT_ATTR1,'') AS department ,
+       COALESCE(EEB1.C_EXT_ATTR2,'') AS class   ,
+       COALESCE(EEB1.C_EXT_ATTR3,'') AS brand   ,
+       COALESCE(EEB1.C_EXT_ATTR5,'') division,
+       COALESCE(EEB1.C_EXT_ATTR6,'') di_merchant_name,
+       pap.segment1 project_no,
+       pap.name project_name,
+       COALESCE(EEB1.N_EXT_ATTR1,0) AS sku_num   ,
+       pps.project_status_name pps_status_name,
+--     COALESCE(EEB1.C_EXT_ATTR4,'') AS progress_status   ,
+	 APPS.XX_PA_XXPAPRJI_PKG.get_proj_progress_status(EEB1.C_EXT_ATTR4) AS progress_status,
+       TRUNC(ppci.creation_date) ppci_creation_date,
+       ppci.created_by ppci_created_by,
+       ppci.summary ppci_summary,
+       ppci.description ppci_description,
+       pcc.class_code pcc_class_code,
+       pcc1.description reason_name,
+--     ppci.status_code ppci_status_code,
+	 APPS.XX_PA_XXPAPRJI_PKG.get_issue_status(ppci.status_code) ppci_status_code,
+       ppci.resolution ppci_resolution,
+       TRUNC(ppci.progress_as_of_date) progress_as_of_date,
+--     ppci.progress_status_code progress_status_code,
+	 APPS.XX_PA_XXPAPRJI_PKG.get_issue_progress_status(ppci.progress_status_code) progress_status_code,
+       emp.full_name created_by_name
+  FROM apps.fnd_user fu,
+	 apps.per_all_people_f emp,
+       apps.pa_class_codes pcc1,
+       apps.pa_projects_all pap,
+       APPS.PA_PROJECTS_ERP_EXT_B EEB1,
+       APPS.EGO_FND_DSC_FLX_CTX_EXT FND1,
+       apps.pa_project_statuses pps,
+       apps.PA_CONTROL_ITEMS PPCI,
+       apps.pa_class_codes pcc
+ WHERE EEB1.ATTR_GROUP_ID = FND1.ATTR_GROUP_ID
+   AND FND1.DESCRIPTIVE_FLEX_CONTEXT_CODE = 'PB_GEN_INFO'
+   AND pap.project_id(+)=eeb1.project_id
+   AND PAP.PROJECT_STATUS_CODE = PPS.PROJECT_STATUS_CODE
+   AND PPCI.PROJECT_ID = PAP.PROJECT_ID
+   AND pcc.class_code_id=ppci.classification_code_id
+   AND fu.user_id=ppci.created_by
+   AND emp.person_id=fu.employee_id
+   AND pcc1.class_category='Issue Reason'
+   AND pcc1.class_code_id=ppci.reason_code_id
+   AND ppci.status_code='CI_CLOSED'
+   AND ppci.date_closed>SYSDATE-60
+   AND NVL(eeb1.c_ext_attr1,'X') like NVL(:p_dept,NVL(eeb1.c_ext_attr1,'X'))
+   AND NVL(eeb1.c_ext_attr5,'X') like NVL(:p_division,NVL(eeb1.c_ext_attr5,'X'))
+   AND NVL(eeb1.c_ext_attr6,'X') like NVL(:p_di_merchant,NVL(eeb1.c_ext_attr6,'X'))
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_PJI" source="Q_PJI">
+<element name="DIVISION" value="DIVISION" />
+<element name="DEPARTMENT" value="DEPARTMENT" />
+<element name="DI_MERCHANT_NAME" value="DI_MERCHANT_NAME" />
+<element name="PROJECT_NO" value="PROJECT_NO" />
+<element name="PROJECT_NAME" value="PROJECT_NAME" />
+<element name="PROJECT_STATUS_NAME" value="PPS_STATUS_NAME" />
+<element name="PROGRESS_STATUS" value="PROGRESS_STATUS" />
+<element name="ISSUE_DATE" value="PPCI_CREATION_DATE" />
+<element name="ISSUE_BY" value="CREATED_BY_NAME" />
+<element name="SUMMARY" value="PPCI_SUMMARY" />
+<element name="DESCRIPTION" value="PPCI_DESCRIPTION" />
+<element name="CLASS_CODE" value="PCC_CLASS_CODE" />
+<element name="REASON" value="REASON_NAME" />
+<element name="STATUS" value="PPCI_STATUS_CODE" />
+<element name="RESOLUTION" value="PPCI_RESOLUTION" />
+<element name="PROGRESS_DATE" value="PROGRESS_AS_OF_DATE" />
+<element name="PROGRESS_STATUS_CODE" value="PROGRESS_STATUS_CODE" />
+</group>
+</dataStructure>
+</dataTemplate>

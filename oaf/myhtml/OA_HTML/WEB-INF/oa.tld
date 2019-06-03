@@ -1,0 +1,30 @@
+<?xml version = "1.0" ?>
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN"  "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
+<!-- Tag library for the OA JSP tags.  -->
+
+<taglib xmlns="http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
+  <tlibversion>1.0</tlibversion>
+  <jspversion>1.1</jspversion>
+  <shortname>oa</shortname>
+  <uri>http://xmlns.oracle.com/oa</uri>
+  <info>The Oracle Applications Tag library</info>
+
+
+  <tag>
+    <name>component</name>
+    <tagclass>oracle.apps.fnd.framework.webui.tags.ComponentTag</tagclass>
+    <info>The Region tag supports rendering regions that
+          have been already defined either in XML or DB.
+    </info>
+    <attribute>
+      <name>region</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>appId</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+</taglib>

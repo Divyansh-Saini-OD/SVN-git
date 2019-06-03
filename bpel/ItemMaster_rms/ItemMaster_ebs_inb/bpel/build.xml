@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<project default="compile" basedir=".">
+    <target name="compile">
+       <echo>
+--------------------------------------------------------------
+
+| Compiling bpel process ${process.name}, revision ${rev}
+
+--------------------------------------------------------------
+        </echo>
+        <bpelc rev="${rev}" input="${process.dir}/bpel/bpel.xml" out="${process.dir}/output" home="${bpel.home}">
+           <customize>
+	         <partnerLinkBinding name="I0142_ItemEBSIn">
+	            <property name="wsdlLocation">I0142_ItemEBSIn.wsdl</property>
+	            <property name="skipDeepCopy">true</property>
+	         </partnerLinkBinding>   
+	         <partnerLinkBinding name="XX_PO_ASL_API">
+	            <property name="wsdlLocation">XX_PO_ASL_API.wsdl</property>
+	            <property name="skipDeepCopy">true</property>
+	         </partnerLinkBinding>           
+	         <partnerLinkBinding name="ItemMaster_rms_confirm_inb">
+	            <property name="wsdlLocation">http://${hostname}:${http.port}/orabpel/${ItemMaster_rms_confirm_inb.domain}/ItemMaster_rms_confirm_inb/ItemMaster_rms_confirm_inb?wsdl</property>
+	            <property name="skipDeepCopy">true</property>
+	         </partnerLinkBinding>
+	         <partnerLinkBinding name="ODErrorHandler">
+	            <property name="wsdlLocation">http://${hostname}:${http.port}/orabpel/${ODErrorHandler.domain}/ODErrorHandler/ODErrorHandler?wsdl</property>
+	            <property name="skipDeepCopy">true</property>
+	         </partnerLinkBinding>
+       </customize>
+        </bpelc>
+   </target>
+</project>

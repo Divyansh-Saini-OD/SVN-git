@@ -1,0 +1,44 @@
+#!/usr/bin/ksh
+# +===================================================================+
+# |                  Office Depot - Project Simplify                  |
+# |                     Office Depot                                  |
+# +===================================================================+
+# | Name  :       GSO BV Inspection Outbound (Shell Script)           |
+# | Description : To extract PO information from OD to BV             |
+# |                                                                   |
+# |                                                                   |
+# |Change Record:                                                     |
+# |===============                                                    |
+# |Version   Date          Author              Remarks                |
+# |=======   ===========  =============        =======================|
+# |1.0       27-Oct-2010  Paddy Sanjeevi       Initial version        |
+# |-------------------------------------------------------------------|
+# |                                                                   |
+# +===================================================================+
+
+
+OUT_DIR="$XXMER_DATA/ftp/out"
+PRG_OUT="$XXMER_DATA/outbound"
+
+FILE_ARCHIVE="$XXMER_DATA/archive/outbound"
+
+cd $OUT_DIR
+
+mv OD*.csv $FILE_ARCHIVE
+
+(sqlplus -s /nolog << end_of_sql
+conn $1
+ exec apps.XX_INV_PLM_BV_EXTRACT_PKG.BV_EXTRACT;
+exit
+end_of_sql
+)
+
+cd $PRG_OUT
+
+mv OD*.csv $OUT_DIR
+
+echo "       "
+echo "       "
+
+exit 0
+

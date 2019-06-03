@@ -1,0 +1,504 @@
+<?xml version="1.0"?>
+<styleSheetDocument xmlns="http://xmlns.oracle.com/uix/style"
+                    version="2.0">
+
+<!-- The base style sheet for BI Beans -->
+<styleSheet>
+
+  <!-- BI Beans Crosstab and Table Borders-->    
+  <style name="OraBIBorderWidth">
+    <property name="border-width">1px</property>
+  </style>
+
+  <style name="OraBIBorderStyle">
+    <property name="border-style">solid</property>
+  </style>
+
+  <style name="OraBIBorderLeft">
+    <property name="border-left">none</property>
+  </style>
+
+  <style name="OraBIBorderRightColor">
+    <includeProperty name="DarkAccentBackground" propertyName="background-color" localPropertyName="border-right-color"/>
+  </style>
+
+  <!-- BI Beans Crosstab and Table Gridlines-->    
+  <style name="OraBIHeaderGridlines">
+    <includeProperty name="LightAccentBackground" propertyName="background-color" localPropertyName="border-color"/>
+    <includeStyle name="OraBIBorderWidth"/>
+    <includeStyle name="OraBIBorderStyle"/>
+    <includeStyle name="OraBIBorderLeft"/>
+    <property name="border-top">none</property>
+  </style>
+
+  <style name="OraBIDatabodyGridlines">
+    <includeProperty name="DarkAccentBackground" propertyName="background-color" localPropertyName="border-color"/>
+    <includeStyle name="OraBIBorderWidth"/>
+    <includeStyle name="OraBIBorderStyle"/>
+    <includeStyle name="OraBIBorderLeft"/>
+    <property name="border-top">none</property>
+  </style>
+
+  <!-- BI Beans Crosstab and Table Cell Borders-->    
+  <style selector=".OraBIHeaderCellBorder">
+    <includeProperty name="LightAccentBackground" propertyName="background-color" localPropertyName="border-color"/>
+    <includeStyle name="OraBIBorderWidth"/>
+    <includeStyle name="OraBIBorderStyle"/>
+  </style>
+
+  <style selector=".OraBIDatabodyCellBorder">
+    <includeProperty name="DarkAccentBackground" propertyName="background-color" localPropertyName="border-color"/>
+    <includeStyle name="OraBIBorderWidth"/>
+    <includeStyle name="OraBIBorderStyle"/>
+  </style>
+    
+  <!-- BI Beans Crosstab and Table Components-->    
+  <style name="OraBIGridViewFont_small">
+    <includeStyle name="DefaultFont"/>
+  </style>
+
+
+  <style selector=".OraBICornerComponent">
+    <includeStyle selector=".OraTableColumnHeader"/>
+    <includeStyle name="OraBIHeaderGridlines"/>
+  </style>
+
+  <style selector=".OraBIColumnHeader">
+    <includeStyle selector=".OraTableColumnHeader"/>
+    <includeStyle name="OraBIHeaderGridlines"/>
+    <property name="text-indent">0</property>
+    <includeStyle name="StartTextAlign"/>
+  </style>
+
+  <style selector=".OraBIColumnHeader_small">
+    <includeStyle selector=".OraBIColumnHeader"/>
+    <includeStyle name="OraBIGridViewFont_small"/>
+  </style>
+
+  <style selector=".OraBIColumnHeaderRight">
+    <includeStyle selector=".OraBIColumnHeader"/>
+    <includeStyle name="OraBIBorderRightColor"/>
+  </style>
+
+  <style selector=".OraBIColumnHeaderRight_small">
+    <includeStyle selector=".OraBIColumnHeaderRight"/>
+    <includeStyle name="OraBIGridViewFont_small"/>
+  </style>
+
+  <style selector=".OraBIColumnHeaderBottom">
+    <includeStyle selector=".OraBIColumnHeader"/>
+    <includeProperty name="DarkAccentBackground" propertyName="background-color" localPropertyName="border-bottom-color"/>
+  </style>
+
+  <style selector=".OraBIColumnHeaderBottom_small">
+    <includeStyle selector=".OraBIColumnHeaderBottom"/>
+    <includeStyle name="OraBIGridViewFont_small"/>
+  </style>
+
+  <style selector=".OraBIColumnHeaderBottomRight">
+    <includeStyle selector=".OraBIColumnHeader"/>
+    <includeStyle name="OraBIBorderRightColor"/>
+    <includeProperty name="DarkAccentBackground" propertyName="background-color" localPropertyName="border-bottom-color"/>
+  </style>
+
+  <style selector=".OraBIColumnHeaderBottomRight_small">
+    <includeStyle selector=".OraBIColumnHeaderBottomRight"/>
+    <includeStyle name="OraBIGridViewFont_small"/>
+  </style>
+
+  <style selector=".OraBIRowHeader">
+    <includeStyle selector=".OraTableRowHeader"/>
+    <includeStyle name="OraBIHeaderGridlines"/>
+    <property name="text-indent">0</property>
+    <includeStyle name="StartTextAlign"/>
+  </style>
+
+  <style selector=".OraBIRowHeader_small">
+    <includeStyle selector=".OraBIRowHeader"/>
+    <includeStyle name="OraBIGridViewFont_small"/>
+  </style>
+
+  <style selector=".OraBIRowHeaderBottom">
+    <includeStyle selector=".OraBIRowHeader"/>
+    <includeProperty name="DarkAccentBackground" propertyName="background-color" localPropertyName="border-bottom-color"/>
+  </style>
+
+  <style selector=".OraBIRowHeaderBottom_small">
+    <includeStyle selector=".OraBIRowHeaderBottom"/>
+    <includeStyle name="OraBIGridViewFont_small"/>
+  </style>
+
+  <style selector=".OraBIRowHeaderRight">
+    <includeStyle selector=".OraBIRowHeader"/>
+    <includeStyle name="OraBIBorderRightColor"/>
+  </style>
+
+  <style selector=".OraBIRowHeaderRight_small">
+    <includeStyle selector=".OraBIRowHeaderRight"/>
+    <includeStyle name="OraBIGridViewFont_small"/>
+  </style>
+
+  <style selector=".OraBIRowHeaderBottomRight">
+    <includeStyle selector=".OraBIRowHeader"/>
+    <includeProperty name="DarkAccentBackground" propertyName="background-color" localPropertyName="border-bottom-color"/>
+    <includeStyle name="OraBIBorderRightColor"/>
+  </style>
+  
+  <style selector=".OraBIRowHeaderBottomRight_small">
+    <includeStyle selector=".OraBIRowHeaderBottomRight"/>
+    <includeStyle name="OraBIGridViewFont_small"/>
+  </style>
+
+  <style selector=".OraBIDatabody">
+    <includeStyle selector=".OraTableCellNumber"/>
+    <includeStyle name="OraBIDatabodyGridlines"/>
+  </style>
+
+  <style selector=".OraBIDatabody_small">
+    <includeStyle selector=".OraBIDatabody"/>
+    <includeStyle name="OraBIGridViewFont_small"/>
+  </style>
+
+  <style selector=".OraBIDatabodyBand">
+    <includeStyle selector=".OraTableCellNumberBand"/>
+    <includeStyle name="OraBIDatabodyGridlines"/>
+  </style>  
+
+  <style selector=".OraBIDatabodyBand_small">
+    <includeStyle selector=".OraBIDatabodyBand"/>
+    <includeStyle name="OraBIGridViewFont_small"/>
+  </style>
+
+  <style selector=".OraBIDatabodyText">
+    <includeStyle selector=".OraTableCellText"/>
+    <includeStyle name="OraBIDatabodyGridlines"/>
+  </style>
+
+  <style selector=".OraBIDatabodyText_small">
+    <includeStyle selector=".OraBIDatabodyText"/>
+    <includeStyle name="OraBIGridViewFont_small"/>
+  </style>
+
+  <style selector=".OraBIDatabodyTextBand">
+    <includeStyle selector=".OraTableCellTextBand"/>
+    <includeStyle name="OraBIDatabodyGridlines"/>
+  </style>  
+
+  <style selector=".OraBIDatabodyTextBand_small">
+    <includeStyle selector=".OraBIDatabodyTextBand"/>
+    <includeStyle name="OraBIGridViewFont_small"/>
+  </style>
+
+  <!-- BI Beans Crosstab Navigation Bar Cell Borders-->    
+  <style selector=".OraBITopNavBorder">
+    <includeProperty name="DarkAccentBackground" propertyName="background-color" localPropertyName="border-color"/>
+    <includeStyle name="OraBIBorderWidth"/>
+    <includeStyle name="OraBIBorderStyle"/>
+    <property name="border-bottom">none</property>
+  </style>
+
+  <style selector=".OraBIBottomNavBorder">
+    <includeProperty name="DarkAccentBackground" propertyName="background-color" localPropertyName="border-color"/>
+    <includeStyle name="OraBIBorderWidth"/>
+    <includeStyle name="OraBIBorderStyle"/>
+    <property name="border-top">none</property>
+  </style>
+
+  <style selector=".OraBINavBarViewOnly">
+    <includeStyle selector=".OraNavBarViewOnly"/>
+  </style>
+
+  <style selector=".OraBINavBarViewOnly_small">
+    <includeStyle selector=".OraBINavBarViewOnly"/>
+    <includeStyle name="OraBIGridViewFont_small"/>
+  </style>
+
+  <style selector=".OraBINavBarActiveLink">
+    <includeStyle selector=".OraNavBarActiveLink"/>
+  </style>
+
+  <style selector=".OraBINavBarActiveLink_small">
+    <includeStyle selector=".OraBINavBarActiveLink"/>
+    <includeStyle name="OraBIGridViewFont_small"/>
+  </style>
+
+  <style selector=".OraBINavBarInactiveLink">
+    <includeStyle selector=".OraNavBarInactiveLink"/>
+  </style>
+
+  <style selector=".OraBINavBarInactiveLink_small">
+    <includeStyle selector=".OraBINavBarInactiveLink"/>
+    <includeStyle name="OraBIGridViewFont_small"/>
+  </style>
+  
+  <!-- Styles Used in Gridview Selection -->
+  <style name="OraBIGrabberFont">
+    <property name="font-size">7px</property>
+  </style>
+  <style name="OraBIGrabber">
+    <property name="border-width">1px</property>
+    <property name="border-style">solid</property>
+    <includeProperty name="VeryDarkAccentBackground" propertyName="background-color" localPropertyName="border-right-color"/>
+    <includeProperty name="VeryDarkAccentBackground" propertyName="background-color" localPropertyName="border-bottom-color"/>
+    <includeProperty name="LightAccentBackground" propertyName="background-color" localPropertyName="border-top-color"/>
+    <includeProperty name="LightAccentBackground" propertyName="background-color" localPropertyName="border-left-color"/>
+  </style>
+  <style selector=".OraBIColGrabber">
+    <includeStyle name="OraBIGrabber"/>   
+    <includeStyle name="OraBIGrabberFont"/>
+  </style>
+
+  <style selector=".OraBIColGrabber_small">
+    <includeStyle selector=".OraBIColGrabber"/>   
+    <property name="font-size">4px</property>
+  </style>
+
+  <style selector=".OraBIRowGrabber">
+    <includeStyle name="OraBIGrabber"/>   
+  </style>
+  
+  <style selector=".OraBIExtraCornerComponent">
+    <includeStyle selector=".OraTableColumnHeader"/>
+    <includeStyle name="OraBIHeaderGridlines"/>
+    <includeStyle name="OraBIGrabberFont"/>
+  </style>
+
+  <style selector=".OraBIExtraCornerComponent_small">
+    <includeStyle selector=".OraBIExtraCornerComponent"/>   
+    <property name="font-size">4px</property>
+  </style>
+
+  <style selector=".OraBIFieldNumber">
+    <includeStyle selector=".OraFieldNumber"/>
+  </style>
+
+  <style selector=".OraBIFieldNumber_small">
+    <includeStyle selector=".OraBIFieldNumber"/>
+    <includeStyle name="OraBIGridViewFont_small"/>
+  </style>
+
+  <style selector=".OraBIFieldText">
+    <includeStyle selector=".OraFieldText"/>
+  </style>
+
+  <style selector=".OraBIFieldText_small">
+    <includeStyle selector=".OraBIFieldText"/>
+    <includeStyle name="OraBIGridViewFont_small"/>
+  </style>
+
+
+  <style name="BIGraphAntialiasing">
+    <property name="text-antialias">false</property>
+  </style>
+
+  <!-- Default Graph Font -->
+  <style name="DefaultBIGraphFont">
+    <!-- Base style defines "font-family" (typeface) property -->
+    <includeStyle name="DefaultServerFontFamily"/>
+    <property name="font-size">10pt</property>
+  </style>  
+  
+  <style name="BIGraphTitleFont">
+    <includeStyle name="DefaultBIGraphFont"/>
+    <property name="font-size">18pt</property>
+    <property name="font-weight">bold</property>
+  </style>
+  
+  <style name="BIGraphSubtitleFont">
+    <includeStyle name="DefaultBIGraphFont"/>
+    <property name="font-size">15pt</property>
+    <property name="font-weight">bold</property>
+  </style>
+  
+  <style name="BIGraphFootnoteFont">
+    <includeStyle name="DefaultBIGraphFont"/>
+  </style>
+  
+  <style name="BIGraphO1TitleFont">
+    <includeStyle name="DefaultBIGraphFont"/>
+    <property name="font-weight">bold</property>
+  </style>
+  
+  <style name="BIGraphX1TitleFont">
+    <includeStyle name="DefaultBIGraphFont"/>
+    <property name="font-weight">bold</property>
+  </style>
+  
+  <style name="BIGraphY1TitleFont">
+    <includeStyle name="DefaultBIGraphFont"/>
+    <property name="font-weight">bold</property>
+  </style>
+  
+  <style name="BIGraphY2TitleFont">
+    <includeStyle name="DefaultBIGraphFont"/>
+    <property name="font-weight">bold</property>
+  </style>
+  
+  <style name="BIGraphZTitleFont">
+    <includeStyle name="DefaultBIGraphFont"/>
+    <property name="font-weight">bold</property>
+  </style>
+  
+  <style name="BIGraphMarkerTextFont">
+    <includeStyle name="DefaultBIGraphFont"/>
+    <property name="font-weight">bold</property>
+  </style>
+  
+  <style name="BIGraphLegendTextFont">
+    <includeStyle name="DefaultBIGraphFont"/>
+  </style>
+  
+  <style name="BIGraphO1TickLabelFont">
+    <includeStyle name="DefaultBIGraphFont"/>
+  </style>
+
+  <style name="BIGraphPieLabelFont">
+    <includeStyle name="DefaultBIGraphFont"/>
+  </style>
+
+  <style name="BIGraphRingTotalLabelFont">
+    <includeStyle name="DefaultBIGraphFont"/>
+  </style>
+  
+  <style name="BIGraphSliceLabelFont">
+    <includeStyle name="DefaultBIGraphFont"/>
+  </style>
+  
+  <style name="BIGraphX1TickLabelFont">
+    <includeStyle name="DefaultBIGraphFont"/>
+  </style>
+  
+  <style name="BIGraphY1TickLabelFont">
+    <includeStyle name="DefaultBIGraphFont"/>
+  </style>
+  
+  <style name="BIGraphY2TickLabelFont">
+    <includeStyle name="DefaultBIGraphFont"/>
+  </style>
+  
+  <style name="BIGraphZTickLabelFont">
+    <includeStyle name="DefaultBIGraphFont"/>
+  </style>
+  <!--Tooltip Popup Style-->
+  <style selector=".OraBITooltipPopup">
+    <property name="border-style">solid</property>
+    <property name="border-color">black</property>
+    <property name="border-width">1px</property>
+    <property name="padding">2px</property>
+    <property name="background-color">#FFFFE0</property> 
+  </style>
+  <style name="OraBITooltipTextSize">
+    <property name="font-size">80%</property>
+  </style>
+  <!--Tooltip Text Style-->
+  <style selector=".OraBITooltipText">
+    <includeStyle name="OraBITooltipTextSize"/>
+  </style>
+
+  <!-- Gantt Properties -->
+  <!-- Calendar Axis Properties-->    
+  <style name="OraGanttCalendarAxis">
+    <includeStyle selector=".OraTableColumnHeader"/>
+    <includeStyle name="DefaultServerFontFamily"/>
+  </style>
+  
+  <style name="OraGanttTaskLabel">
+    <includeStyle name="DefaultServerFontFamily"/>
+    <property name="font-size">8pt</property>
+    <property name="color">#000000</property>
+  </style>
+  <style name="OraGanttDependLine">
+    <property name="color">#000000</property>
+  </style>
+  <style name="OraGanttNonworkingDay">
+    <property name="color">#E7E7E7</property>
+  </style>
+  <style name="OraGanttCurrentDate">
+    <property name="color">#996633</property>
+  </style>
+  <!-- End of Gantt Properties -->
+
+  <!-- AdvancedRotate Tool Styles -->
+  <style selector=".OraBICornerIconButton">
+    <includeStyle selector=".OraBIColumnHeader"/>
+    <includeStyle name="CenterTextAlign"/>
+  </style>
+
+  <style selector=".OraBIColumnHeaderIconButton">
+    <includeStyle selector=".OraTableColumnHeader"/>
+    <property name="text-indent">0</property>
+    <includeStyle name="CenterTextAlign"/>
+    <includeProperty name="LightAccentBackground" propertyName="background-color" localPropertyName="border-bottom-color"/>
+    <includeProperty name="DarkAccentBackground" propertyName="background-color" localPropertyName="border-left-color"/>
+    <includeProperty name="DarkAccentBackground" propertyName="background-color" localPropertyName="border-right-color"/>
+    <includeStyle name="OraBIBorderWidth"/>
+    <includeStyle name="OraBIBorderStyle"/>
+    <property name="border-top">none</property>
+  </style>
+
+  <style selector=".OraBIBorderDatabody">
+    <includeStyle selector=".OraTableCellText"/>
+    <includeProperty name="DarkAccentBackground" propertyName="background-color" localPropertyName="border-color"/>
+    <includeStyle name="OraBIBorderWidth"/>
+    <includeStyle name="OraBIBorderStyle"/>
+  </style>
+
+  <style selector=".OraBIBorderLeftDatabody">
+    <includeStyle selector=".OraBIBorderDatabody"/>
+    <includeStyle name="OraBIBorderLeft"/>
+  </style>
+
+  <!-- End AdvancedRotate Tool Styles -->
+
+</styleSheet>
+
+<!-- CJK style sheet -->
+<styleSheet locales="ja zh ko">
+
+  <style name="DefaultBIGraphFont">
+    <property name="font-size">13pt</property>
+  </style>
+  
+  <style name="BIGraphAntialiasing">
+    <property name="text-antialias">true</property>
+  </style>
+  
+</styleSheet>
+
+<!-- Netscape-specific BI stylesheet-->
+<styleSheet browsers="netscape">
+<!--Tooltip Text Style-->
+  <style selector=".OraBITooltipText">
+    <includeStyle name="OraBITooltipTextSize"/>
+    <property name="border-style">solid</property>
+    <property name="border-color">black</property>
+    <property name="border-width">1px</property>
+  </style>
+
+</styleSheet>
+
+<styleSheet direction="rtl">
+  <style name="OraBIBorderLeft">
+    <property name="border-left"/>
+    <property name="border-right">none</property>
+  </style>
+
+  <style name="OraBIBorderRightColor">
+    <property name="border-right-color"/>
+    <includeProperty name="DarkAccentBackground" propertyName="background-color" localPropertyName="border-left-color"/>
+  </style>    
+</styleSheet>
+
+<!-- IE-specific BI stylesheet-->
+<styleSheet browsers="ie">
+  <style selector=".OraBIFieldNumber">
+    <property name="font-size">100%</property>
+  </style>
+  
+  <style selector=".OraBIFieldNumber_small">
+    <property name="font-size">100%</property>
+  </style>
+</styleSheet>
+
+</styleSheetDocument>
+

@@ -1,0 +1,78 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.12_1330" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="PageLayoutRN" amDefName="od.oracle.apps.xxmer.jitaresults.server.JITAResultsAM" windowTitle="JITA Results" title="JITA Results">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:productBranding>
+            <oa:image id="ProdBrand" source="FNDTAPPBRAND.gif" shortDesc="Text Here"/>
+         </ui:productBranding>
+         <ui:contents>
+            <oa:query id="JITAResultsRN" mode="autoCustomizationCriteria" dispSimple="true" dispCustomized="false" dispAdvanced="false">
+               <ui:contents>
+                  <oa:table id="ResultaTable" shortDesc="JITA results" width="100%" userCustomizable="true">
+                     <ui:contents>
+                        <oa:messageStyledText id="PoNbr" dataType="NUMBER" prompt="PoNbr" viewName="JITAResultsVO1" viewAttr="PoNbr" maximumLength="38" queryable="true" sortState="no" rendered="false"/>
+                        <oa:messageStyledText id="ReceiptNum" dataType="NUMBER" prompt="ReceiptNum" viewName="JITAResultsVO1" viewAttr="ReceiptNum" maximumLength="38" queryable="true" rendered="false"/>
+                        <oa:messageStyledText id="FromLocId" dataType="NUMBER" prompt="FromLocId" viewName="JITAResultsVO1" viewAttr="FromLocId" maximumLength="38" queryable="true" rendered="false"/>
+                        <oa:messageStyledText id="ToLocId" dataType="NUMBER" prompt="To Location" viewName="JITAResultsVO1" viewAttr="ToLocId" maximumLength="38" queryable="true"/>
+                        <oa:rawText id="City" prompt="City" text="Penmbroke Pines"/>
+                        <oa:rawText id="State" prompt="State" text="FL"/>
+                        <oa:messageStyledText id="Sku" dataType="NUMBER" prompt="Sku" viewName="JITAResultsVO1" viewAttr="Sku" maximumLength="38" queryable="true" rendered="false"/>
+                        <oa:messageStyledText id="AllocDt" dataType="DATE" prompt="AllocDt" viewName="JITAResultsVO1" viewAttr="AllocDt" queryable="true" rendered="false"/>
+                        <oa:messageStyledText id="AllocTimestamp" dataType="DATE" prompt="Alloc Timestamp" viewName="JITAResultsVO1" viewAttr="AllocTimestamp"/>
+                        <oa:rawText id="ReceiptNbr" prompt="Receipt Nbr" text="1"/>
+                        <oa:messageStyledText id="AllocQty" dataType="NUMBER" prompt="Allocation Qty" viewName="JITAResultsVO1" viewAttr="AllocQty" maximumLength="38" sortState="yes"/>
+                        <oa:messageStyledText id="ShippedQty" dataType="NUMBER" prompt="Shipped Qty" viewName="JITAResultsVO1" viewAttr="AllocQty" maximumLength="38" sortState="yes"/>
+                        <oa:rawText id="POAdjQty" prompt="PO Adj QTY" text="0"/>
+                        <oa:rawText id="RUTL" prompt="RUTL" text="122"/>
+                        <oa:messageStyledText id="DynamicQty" dataType="NUMBER" prompt="Dynamic Qty" viewName="JITAResultsVO1" viewAttr="DynamicQty" maximumLength="38" sortState="yes"/>
+                        <oa:messageStyledText id="LockInQty" dataType="NUMBER" prompt="Lock In Qty" viewName="JITAResultsVO1" viewAttr="LockInQty" maximumLength="38" sortState="yes"/>
+                        <oa:messageStyledText id="AdtlNeedQty" dataType="NUMBER" prompt="Adtl Need Qty" viewName="JITAResultsVO1" viewAttr="AdtlNeedQty" maximumLength="38" sortState="yes"/>
+                        <oa:messageStyledText id="MarkOutQty" dataType="NUMBER" prompt="Mark Out Qty" viewName="JITAResultsVO1" viewAttr="MarkOutQty" maximumLength="38" sortState="yes"/>
+                        <oa:rawText id="BottomFillQty" prompt="Bottom Fill QTY" text="0" sortState="yes"/>
+                        <oa:rawText id="SOH" prompt="Sellable on Hand" text="63"/>
+                        <oa:rawText id="AWS" prompt="Avg Wkly Sales" text="41.2"/>
+                     </ui:contents>
+                  </oa:table>
+               </ui:contents>
+               <oa:simpleSearchPanel>
+                  <oa:header text="Simple Search" id="region2">
+                     <ui:contents>
+                        <oa:messageComponentLayout id="region1" columns="2" rows="1">
+                           <ui:contents>
+                              <oa:messageLayout id="messageLayout1">
+                                 <ui:contents>
+                                    <oa:contentContainer id="region3" width="50%">
+                                       <ui:contents>
+                                          <oa:messageTextInput id="item1" prompt="PO Number" required="yes"/>
+                                          <oa:messageTextInput id="item7" prompt="To Location"/>
+                                       </ui:contents>
+                                    </oa:contentContainer>
+                                 </ui:contents>
+                              </oa:messageLayout>
+                              <oa:messageLayout id="messageLayout2">
+                                 <ui:contents>
+                                    <oa:contentContainer id="region4" text="Or">
+                                       <ui:contents>
+                                          <oa:messageTextInput id="item2" prompt="Warehouse Location" required="yes"/>
+                                          <oa:messageTextInput id="item4" prompt="Dist. From Date" required="yes"/>
+                                          <oa:messageTextInput id="item5" prompt="Dist To Date" required="yes"/>
+                                          <oa:messageTextInput id="item6" prompt="SKU" required="yes"/>
+                                          <oa:messageTextInput id="item8" prompt="To Location"/>
+                                       </ui:contents>
+                                    </oa:contentContainer>
+                                 </ui:contents>
+                              </oa:messageLayout>
+                           </ui:contents>
+                        </oa:messageComponentLayout>
+                     </ui:contents>
+                  </oa:header>
+               </oa:simpleSearchPanel>
+            </oa:query>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

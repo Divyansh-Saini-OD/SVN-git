@@ -1,0 +1,108 @@
+#!/usr/bin/ksh
+# +===================================================================+
+# |                  Office Depot - Project Simplify                  |
+# |                     Office Depot                                  |
+# +===================================================================+
+# | Name  :       QA PLM PSI Load (Shell Script)                      |
+# | Description : To Load the PSI data from BV                        |
+# |                                                                   |
+# |                                                                   |
+# |Change Record:                                                     |
+# |===============                                                    |
+# |Version   Date          Author              Remarks                |
+# |=======   ===========  =============        =======================|
+# |1.0       03-Oct-2011  Paddy Sanjeevi       Initial version        |
+# |-------------------------------------------------------------------|
+# |                                                                   |
+# +===================================================================+
+
+p_request_id=`echo $1|awk '{print(substr($2,11))}'`
+FILE_DIR="$XXMER_DATA/ftp/in/qaresults"
+FILE_ARCHIVE="$XXMER_DATA/archive/inbound"
+echo " Path  :" [$FILE_DIR]
+username=510093
+
+echo "Deleting old files" 
+
+if test -f  $XXMER_DATA/ftp/in/qaresults/ODBVPSI*.log
+then
+   rm ${FILE_DIR}/ODBVPSI*.log
+fi
+
+if test -f  $XXMER_DATA/ftp/in/qaresults/ODBVPSI*.bad
+then
+  rm ${FILE_DIR}/ODBVPSI*.bad
+fi
+
+if test -f  $XXMER_DATA/archive/inbound/ODBVPSI*.log
+then
+   rm ${FILE_ARCHIVE}/ODBVPSI*.log
+fi
+
+if test -f  $XXMER_DATA/archive/inbound/ODBVPSI*.bad
+then
+  rm ${FILE_ARCHIVE}/ODBVPSI*.bad
+fi
+
+
+cd $FILE_DIR
+
+for i in `ls ODBVPSI*.txt`
+do
+echo $i
+sqlldr parfile=$HOME/parfile.apps data=$i control=$XXMER_TOP/bin/XX_QA_PSI.ctl log=$i.log bad=$i.bad
+
+if [ $? -ne 0 ]
+then
+echo "Error in running sqlloader. Please Check log for Error Details "
+else 
+echo "Completed successfully "
+fi
+cat $i.log >> $APPLCSF/log/l$p_request_id.req
+
+if test -f  $XXMER_DATA/ftp/in/qaresults/*.bad
+then
+   cat $i.bad >> $APPLCSF/log/l$p_request_id.req
+   mailx -s "Bad data for QA PLM PSI Data $i.bad" padmanaban.sanjeevi@officedepot.com < $i.bad
+fi
+
+mv $i $FILE_ARCHIVE/$i
+
+done
+
+#cd $FILE_DIR
+
+#mv *.* $XXMER_DATA/archive/inbound
+
+cd $XXMER_DATA/ftp/in/qadocs
+
+cp *.* $XXMER_DATA/outbound
+
+mv *.* $XXMER_DATA/archive/inbound
+
+REQ=`CONCSUB $1 QA 'OD (US) QA Superuser' \
+        $3 WAIT=N CONCURRENT XXMER XXQAPSIP`
+
+REQ_ID=`echo $REQ | cut -f1 -d ' '`
+echo $REQ_ID
+echo "       "
+echo "       "
+
+cd $XXMER_DATA/outbound
+
+find . -name \*.PDF -mtime +7 | xargs rm -rf
+find . -name \*.csv -mtime +7 | xargs rm -rf
+find . -name \*.xls -mtime +7 | xargs rm -rf
+find . -name \*.CSV -mtime +7 | xargs rm -rf
+find . -name \*.XLS -mtime +7 | xargs rm -rf
+
+cd $FILE_ARCHIVE
+
+find . -name \*.PDF -mtime +7 | xargs rm -rf
+find . -name \*.pdf -mtime +7 | xargs rm -rf
+find . -name \*.xls -mtime +7 | xargs rm -rf
+find . -name \*.XLS -mtime +7 | xargs rm -rf
+find . -name \*.doc -mtime +7 | xargs rm -rf
+find . -name \*.DOC -mtime +7 | xargs rm -rf
+
+exit 0

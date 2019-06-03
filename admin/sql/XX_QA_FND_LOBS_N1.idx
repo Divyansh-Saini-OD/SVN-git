@@ -1,0 +1,55 @@
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================
+SET SHOW         OFF
+SET VERIFY       OFF
+SET ECHO         OFF
+SET TAB          OFF
+SET FEEDBACK     OFF
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +=======================================================================+
+-- |               Office Depot - Project Simplify                         |
+-- +=======================================================================+
+-- | Name        :XX_QA_FND_LOBS_N1                                        |
+-- | Description : Non-Unique Index for Custom Table XX_QA_FND_LOBS        |
+-- |Change History:                                                        |
+-- |---------------                                                        |
+-- |                                                                       |
+-- |Version  Date        Author             Remarks                        |
+-- |-------  ----------- -----------------  -------------------------------|
+-- |1.0      20-Jul-2010 Paddy Sanjeevi     Initial  Version               |
+-- +=======================================================================+
+
+PROMPT
+PROMPT Creating Index....
+PROMPT
+-- -------------------------------------------------
+-- Creating Index XX_INV_ORG_LOC_DEF_STG_N3
+-- -------------------------------------------------
+
+
+CREATE INDEX XX_QA_FND_LOBS_N1 ON xxmer.XX_QA_FND_LOBS 
+(file_id)
+LOGGING
+TABLESPACE XXOD_TS_DATA
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       2147483645
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+SHOW ERRORS;
+
+
+REM================================================================================================
+REM                                 Start Of Script
+REM================================================================================================

@@ -1,0 +1,122 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1560" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="MilestonePLRN" windowTitle="GSO PO Milestone Tracking" title="GSO PO Milestone Tracking" quickLinksShown="false" controllerClass="od.oracle.apps.xxmer.gsopo.milestone.webui.ODGSOPOMilestoneCO" amDefName="od.oracle.apps.xxmer.gsopo.milestone.server.ODGSOPOMilestoneAM">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:pageButtonBar id="PageButtons" regionName="Page-Level Buttons">
+               <ui:contents>
+                  <oa:submitButton use="/oracle/apps/fnd/attributesets/Buttons/Cancel" destination="" shortDesc="Select to cancel this transaction." id="Cancel" warnAboutChanges="false" serverUnvalidated="true" unvalidated="true"/>
+                  <oa:submitButton use="/oracle/apps/fnd/attributesets/Buttons/Apply" shortDesc="Select to save this Milestone." id="Apply"/>
+               </ui:contents>
+            </oa:pageButtonBar>
+            <oa:advancedTable id="MilestoneAdvTab" text="PO Milestone Details" shortDesc="PO Milestone Details" width="100%" viewName="ODmilestoneInfoVO1" rendered="true">
+               <ui:contents>
+                  <oa:column id="MilestNameCol" width="20%">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="MilestoneNameSortHdr" prompt="Milestone Name" shortDesc="Milestone Name" abbreviation="Milestone Name" required="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageLovInput readOnly="${oa.ODmilestoneInfoVO1.milestone_name_b}" rows="1" viewAttr="MilestoneName" styleClass="OraFieldText" maximumLength="100" id="MilestoneName" rendered="true" required="no" prompt="Milestone Name">
+                           <lovMappings>
+                              <lovMap lovItem="MSName" criteriaFrom="MilestoneName" requiredForLOV="false" id="MSNameMap" resultTo="MilestoneName"/>
+                              <lovMap id="MSValueMap" lovItem="MSDescription" resultTo="MSValAttr"/>
+                           </lovMappings>
+                           <lovContents>
+                              <oa:listOfValues id="region56402" advancedSearchAllowed="false">
+                                 <ui:contents>
+                                    <oa:table name="region56402" id="region56403" text="Milestone Names" shortDesc="Milestone Names">
+                                       <ui:contents>
+                                          <oa:messageStyledText id="MSName" queryable="true" sortState="ascending" initSortSeq="first" selectiveSearchCriteria="false" viewName="MileStoneNameVO1" viewAttr="Value" prompt="Name" shortDesc="Name"/>
+                                          <oa:messageStyledText id="MSDescription" viewName="MileStoneNameVO1" viewAttr="Description" prompt="Description"/>
+                                       </ui:contents>
+                                    </oa:table>
+                                 </ui:contents>
+                              </oa:listOfValues>
+                           </lovContents>
+                        </oa:messageLovInput>
+                        <oa:formValue id="MSValAttr" viewAttr="Attribute9"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="MilestoneDateCol" width="10%">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="MilestoneDateHdr" prompt="Milestone Date" shortDesc="Milestone Date" abbreviation="Milestone Date" required="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageTextInput id="MilestoneDate" dataType="DATE" viewAttr="MilestoneDate" prompt="Milestone Date" shortDesc="Milestone Date" readOnly="${oa.ODmilestoneInfoVO1.milestone_date_b}" required="no" tipType="dateFormat"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="MilestoneRemarksCol" width="40%">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="MilestoneRemarksHdr" prompt="Milestone Remarks" shortDesc="Milestone Remarks" abbreviation="Milestone Remarks" required="yes"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:messageTextInput id="MilestoneRemarks" viewAttr="Remarks" prompt="Remarks" shortDesc="Remarks" readOnly="${oa.ODmilestoneInfoVO1.milestone_remarks_b}" required="no" columns="40" maximumLength="100"/>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="AttachmentsCol" width="20%">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="AttachmentsHdr" prompt="Attachments" shortDesc="Attachments" abbreviation="Attachments"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:attachmentImage id="AttachmentsItem" autoCommitEnabled="true">
+                           <oa:entityMappings>
+                              <oa:entityMap id="entityMap1" entityId="XX_GSO_PO_MILESTONES" showAll="false">
+                                 <oa:primaryKeys>
+                                    <oa:primaryKey id="primaryKey1" viewAttr="PoMilestoneId"/>
+                                 </oa:primaryKeys>
+                              </oa:entityMap>
+                           </oa:entityMappings>
+                        </oa:attachmentImage>
+                     </ui:contents>
+                  </oa:column>
+                  <oa:column id="UpdateCol" columnDataFormat="iconButtonFormat" width="10%">
+                     <ui:columnHeader>
+                        <oa:sortableHeader id="UpdateHdr" prompt="Update" shortDesc="Update" abbreviation="Update"/>
+                     </ui:columnHeader>
+                     <ui:contents>
+                        <oa:switcher id="UpdateSwitcher" viewAttr="UpdateSwitcher" use="/oracle/apps/fnd/attributesets/Buttons/Update">
+                           <ui:case name="UpdateEnabled">
+                              <oa:image id="UpdateEnabled" shortDesc="Update Enabled" source="updateicon_enabled.gif" imageHeight="24" imageWidth="24">
+                                 <ui:primaryClientAction>
+                                    <ui:fireAction event="upDate"/>
+                                 </ui:primaryClientAction>
+                              </oa:image>
+                           </ui:case>
+                           <ui:case name="UpdateDisabled">
+                              <oa:image id="UpdateDisabled" source="updateicon_disabled.gif" shortDesc="Update Disabled" imageHeight="24" imageWidth="24"/>
+                           </ui:case>
+                        </oa:switcher>
+                     </ui:contents>
+                  </oa:column>
+               </ui:contents>
+               <ui:tableActions>
+                  <oa:rowLayout id="region1">
+                     <ui:contents>
+                        <oa:cellFormat id="region5638">
+                           <ui:contents>
+                              <oa:button id="AddLineBtn" text="Add Record" prompt="Add Record" rendered="true">
+                                 <ui:primaryClientAction>
+                                    <ui:firePartialAction event="addLineAcion" id="firePartialAction1"/>
+                                 </ui:primaryClientAction>
+                              </oa:button>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:tableActions>
+            </oa:advancedTable>
+         </ui:contents>
+         <ui:pageStatus>
+            <oa:flowLayout id="region56404">
+               <ui:contents>
+                  <oa:tableLayout id="RequiredKey" extends="/oracle/apps/fnd/framework/webui/OAReqFieldDescRG" hAlign="center" width="100%"/>
+               </ui:contents>
+            </oa:flowLayout>
+         </ui:pageStatus>
+      </oa:pageLayout>
+   </content>
+</page>

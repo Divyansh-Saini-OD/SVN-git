@@ -1,0 +1,24 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BPELSuitcase>
+   <BPELProcess id="ItemMaster_ebs_inb" src="ItemMaster_ebs_inb.bpel">
+      <partnerLinkBindings>
+         <partnerLinkBinding name="client">
+            <property name="wsdlLocation">ItemMaster_ebs_inb.wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="ODErrorHandler">
+            <property name="wsdlLocation">http://chilsoa01d.na.odcorp.net:7778/orabpel/mrch/ODErrorHandler/ODErrorHandler?wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="ItemMaster_rms_confirm_inb">
+            <property name="wsdlLocation">http://chilsoa01d.na.odcorp.net:7778/orabpel/mrch/ItemMaster_rms_confirm_inb/ItemMaster_rms_confirm_inb?wsdl</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="I0142_ItemEBSIn">
+            <property name="wsdlLocation">I0142_ItemEBSIn.wsdl</property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+         <partnerLinkBinding name="XX_PO_ASL_API">
+            <property name="wsdlLocation">XX_PO_ASL_API.wsdl</property>
+            <property name="retryInterval">60</property>
+         </partnerLinkBinding>
+      </partnerLinkBindings>
+   </BPELProcess>
+</BPELSuitcase>

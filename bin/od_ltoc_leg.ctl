@@ -1,0 +1,14 @@
+LOAD DATA
+INTO TABLE xxmer.xx_po_lead_time_order_cyc_stg
+APPEND
+TRAILING NULLCOLS
+(
+  SOURCE_ID             POSITION(001:010)       CHAR,
+  DESTINATION_ID        POSITION(011:020)       CHAR,
+  OVERALL_LT            POSITION(062:064)       CHAR,
+  SHIP_LT               POSITION(053:055)       CHAR,
+  ORDER_CYCLE_DAYS      POSITION(067:073)       CHAR,
+  ORDERCYCLE_FREQUENCY  POSITION(065:066)       CHAR,
+  ITEM_ID               CONSTANT '0',
+  ORIGIN                CONSTANT 'LEG'
+ )

@@ -1,0 +1,1222 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1579" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="MainRN" controllerClass="od.oracle.apps.xxmer.plmpjrdashboard.webui.OD_MyProjectsPortfolioCO" amDefName="od.oracle.apps.xxmer.plmpjrdashboard.server.OD_PLMPJRDashboardAM" windowTitle="My Projects Portfolio">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:header id="AdvancedSearchHDR" text="Advanced Search" rendered="true">
+               <ui:contents>
+                  <oa:messageComponentLayout id="AdvSearchRN" columns="4" rows="3">
+                     <ui:contents>
+                        <oa:messageLovInput id="TaskName" prompt="Task Name" queryable="true">
+                           <lovContents>
+                              <oa:listOfValues id="TaskNameLOVRN" amDefName="od.oracle.apps.xxmer.plmpjrdashboard.lov.server.OD_PLMPJRDashboardLOVAM">
+                                 <ui:contents>
+                                    <oa:table name="TaskNameLOVRN" id="OD_TaskNameRN">
+                                       <ui:contents>
+                                          <oa:messageStyledText id="TaskNameLOV" dataType="VARCHAR2" prompt="Task Name" viewName="OD_TaskNameLOVVO" viewAttr="TaskName" maximumLength="20" selectiveSearchCriteria="false" queryable="true"/>
+                                          <oa:formValue id="TaskIdLOV" viewName="OD_TaskNameLOVVO" viewAttr="TaskId" dataType="NUMBER" rendered="false"/>
+                                       </ui:contents>
+                                    </oa:table>
+                                 </ui:contents>
+                              </oa:listOfValues>
+                           </lovContents>
+                           <lovMappings>
+                              <lovMap id="lovMap1" lovItem="TaskNameLOV" resultTo="TaskName" criteriaFrom="TaskName"/>
+                           </lovMappings>
+                        </oa:messageLovInput>
+                        <oa:messageLovInput id="DivisionName" prompt="Division Name" queryable="true">
+                           <lovContents>
+                              <oa:listOfValues id="DivisionRN" amDefName="od.oracle.apps.xxmer.plmpjrdashboard.lov.server.OD_PLMPJRDashboardLOVAM">
+                                 <ui:contents>
+                                    <oa:table name="DivisionRN" id="OD_DivisionNameRN">
+                                       <ui:contents>
+                                          <oa:formValue id="FlexValueMeaning" dataType="VARCHAR2" prompt="FlexValueMeaning" viewName="OD_DivisionNameLOVVO" viewAttr="FlexValueMeaning"/>
+                                          <oa:messageStyledText id="Description" dataType="VARCHAR2" prompt="Division" viewName="OD_DivisionNameLOVVO" viewAttr="Description" maximumLength="240" queryable="true"/>
+                                       </ui:contents>
+                                    </oa:table>
+                                 </ui:contents>
+                              </oa:listOfValues>
+                           </lovContents>
+                           <lovMappings>
+                              <lovMap id="lovMap7" lovItem="Description" resultTo="DivisionName" criteriaFrom="DivisionName"/>
+                              <lovMap id="lovMap8" lovItem="FlexValueMeaning" resultTo="DivisionID_FV"/>
+                           </lovMappings>
+                        </oa:messageLovInput>
+                        <oa:messageLovInput id="DepartmentName" prompt="Department Name" readOnly="false" queryable="true">
+                           <lovContents>
+                              <oa:listOfValues id="DepartmentRN" amDefName="od.oracle.apps.xxmer.plmpjrdashboard.lov.server.OD_PLMPJRDashboardLOVAM">
+                                 <ui:contents>
+                                    <oa:table name="DepartmentRN" id="OD_DepartmentRN">
+                                       <ui:contents>
+                                          <oa:formValue id="FlexValueMeaning1" dataType="VARCHAR2" prompt="FlexValueMeaning" viewName="OD_DepartmentLOVVO" viewAttr="FlexValueMeaning"/>
+                                          <oa:messageStyledText id="Description1" dataType="VARCHAR2" prompt="Department" viewName="OD_DepartmentLOVVO" viewAttr="Description" maximumLength="240" queryable="true"/>
+                                       </ui:contents>
+                                    </oa:table>
+                                 </ui:contents>
+                              </oa:listOfValues>
+                           </lovContents>
+                           <lovMappings>
+                              <lovMap id="lovMap9" lovItem="Description1" resultTo="DepartmentName" criteriaFrom="DepartmentName"/>
+                              <lovMap id="lovMap10" lovItem="FlexValueMeaning1" resultTo="DivisionID_FV"/>
+                           </lovMappings>
+                        </oa:messageLovInput>
+                        <oa:messageLovInput id="ProjectName" prompt="Project Name" queryable="true">
+                           <lovContents>
+                              <oa:listOfValues id="ProjectNameLOVRN" amDefName="od.oracle.apps.xxmer.plmpjrdashboard.lov.server.OD_PLMPJRDashboardLOVAM">
+                                 <ui:contents>
+                                    <oa:table name="ProjectNameLOVRN" id="OD_ProjectNameRN">
+                                       <ui:contents>
+                                          <oa:formValue id="ProjectId" dataType="NUMBER" prompt="ProjectId" viewName="OD_ProjectNameNumberLOVVO" viewAttr="ProjectId"/>
+                                          <oa:messageStyledText id="ProjectNameLOV" dataType="VARCHAR2" prompt="Project Name" viewName="OD_ProjectNameNumberLOVVO" viewAttr="Name" maximumLength="30" queryable="true"/>
+                                          <oa:formValue id="Segment1" dataType="VARCHAR2" prompt="Segment1" viewName="OD_ProjectNameNumberLOVVO" viewAttr="Segment1"/>
+                                       </ui:contents>
+                                    </oa:table>
+                                 </ui:contents>
+                              </oa:listOfValues>
+                           </lovContents>
+                           <lovMappings>
+                              <lovMap id="lovMap3" lovItem="ProjectNameLOV" resultTo="ProjectName" criteriaFrom="ProjectName"/>
+                              <lovMap id="lovMap4" lovItem="ProjectId" resultTo="ProjectId_NameFV"/>
+                           </lovMappings>
+                        </oa:messageLovInput>
+                        <oa:messageTextInput id="StartDate" prompt="Start Date" dataType="DATE"/>
+                        <oa:messageTextInput id="DueDate" prompt="Due Date" dataType="DATE"/>
+                        <oa:messageLovInput id="ProjectNumber" prompt="Project Number" queryable="true">
+                           <lovContents>
+                              <oa:listOfValues id="ProjectNumberLOVRN" amDefName="od.oracle.apps.xxmer.plmpjrdashboard.lov.server.OD_PLMPJRDashboardLOVAM">
+                                 <ui:contents>
+                                    <oa:table name="ProjectNumberLOVRN" id="OD_ProjectNumberRN">
+                                       <ui:contents>
+                                          <oa:formValue id="ProjectId1" dataType="NUMBER" prompt="ProjectId" viewName="OD_ProjectNameNumberLOVVO" viewAttr="ProjectId"/>
+                                          <oa:messageStyledText id="ProjectNumberLOV" dataType="VARCHAR2" prompt="Project Number" viewName="OD_ProjectNameNumberLOVVO" viewAttr="Segment1" queryable="true"/>
+                                       </ui:contents>
+                                    </oa:table>
+                                 </ui:contents>
+                              </oa:listOfValues>
+                           </lovContents>
+                           <lovMappings>
+                              <lovMap id="lovMap5" lovItem="ProjectNumberLOV" resultTo="ProjectNumber" criteriaFrom="ProjectNumber"/>
+                              <lovMap id="lovMap6" lovItem="ProjectId1" resultTo="ProjectId_NumberFV"/>
+                           </lovMappings>
+                        </oa:messageLovInput>
+                        <oa:messageLovInput id="ClassName" prompt="Class Name" queryable="true">
+                           <lovContents>
+                              <oa:listOfValues id="ClassNameRN" amDefName="od.oracle.apps.xxmer.plmpjrdashboard.lov.server.OD_PLMPJRDashboardLOVAM">
+                                 <ui:contents>
+                                    <oa:table name="ClassNameRN" id="OD_ClassNameRN">
+                                       <ui:contents>
+                                          <oa:formValue id="FlexValueMeaning2" dataType="VARCHAR2" prompt="FlexValueMeaning" viewName="OD_ClassNameLOVVO" viewAttr="FlexValueMeaning"/>
+                                          <oa:messageStyledText id="Description2" dataType="VARCHAR2" prompt="Description" viewName="OD_ClassNameLOVVO" viewAttr="Description" maximumLength="240" queryable="true"/>
+                                       </ui:contents>
+                                    </oa:table>
+                                 </ui:contents>
+                              </oa:listOfValues>
+                           </lovContents>
+                           <lovMappings>
+                              <lovMap id="lovMap11" lovItem="Description2" resultTo="ClassName" criteriaFrom="ClassName"/>
+                              <lovMap id="lovMap12" lovItem="FlexValueMeaning2" resultTo="ClassName_FV"/>
+                           </lovMappings>
+                        </oa:messageLovInput>
+                        <oa:messageLovInput id="Status" prompt="Status" queryable="true">
+                           <lovContents>
+                              <oa:listOfValues id="TaskStatusRN" amDefName="od.oracle.apps.xxmer.plmpjrdashboard.lov.server.OD_PLMPJRDashboardLOVAM">
+                                 <ui:contents>
+                                    <oa:table name="TaskStatusRN" id="OD_TaskStatusRN">
+                                       <ui:contents>
+                                          <oa:messageStyledText id="ProjectStatusName" dataType="VARCHAR2" prompt="Status" viewName="OD_TaskStatusLOVVO" viewAttr="ProjectStatusName" maximumLength="80" queryable="true"/>
+                                          <oa:formValue id="ProjectStatusCode" dataType="VARCHAR2" prompt="ProjectStatusCode" viewName="OD_TaskStatusLOVVO" viewAttr="ProjectStatusCode"/>
+                                       </ui:contents>
+                                    </oa:table>
+                                 </ui:contents>
+                              </oa:listOfValues>
+                           </lovContents>
+                           <lovMappings>
+                              <lovMap id="lovMap13" lovItem="ProjectStatusName" resultTo="Status" criteriaFrom="Status"/>
+                              <lovMap id="lovMap14" lovItem="ProjectStatusCode" resultTo="TaskStatus_FV"/>
+                           </lovMappings>
+                        </oa:messageLovInput>
+                        <oa:messageLovInput id="Resource" prompt="Resource" queryable="true">
+                           <lovContents>
+                              <oa:listOfValues id="region21373" amDefName="od.oracle.apps.xxmer.plmpjrdashboard.lov.server.OD_PLMPJRDashboardLOVAM">
+                                 <ui:contents>
+                                    <oa:table name="region21373" id="OD_ProjectResourceLOVVO">
+                                       <ui:contents>
+                                          <oa:messageStyledText id="FullName1" dataType="VARCHAR2" prompt="FullName" viewName="OD_ProjectResourceLOVVO" viewAttr="FullName" maximumLength="301" queryable="true"/>
+                                          <oa:formValue id="PersonIdFV" viewName="OD_ProjectResourceLOVVO" viewAttr="PersonId" dataType="NUMBER"/>
+                                       </ui:contents>
+                                    </oa:table>
+                                 </ui:contents>
+                              </oa:listOfValues>
+                           </lovContents>
+                           <lovMappings>
+                              <lovMap id="NamelovMap" lovItem="FullName1" resultTo="Resource" criteriaFrom="Resource"/>
+                              <lovMap id="PersonIdlovMap" lovItem="PersonIdFV" resultTo="ResourcePersonIDFV"/>
+                           </lovMappings>
+                        </oa:messageLovInput>
+                     </ui:contents>
+                  </oa:messageComponentLayout>
+                  <oa:formValue id="TaskIDFV"/>
+                  <oa:formValue id="ProjectId_NameFV"/>
+                  <oa:formValue id="ProjectId_NumberFV"/>
+                  <oa:formValue id="DivisionID_FV"/>
+                  <oa:formValue id="DepartmentID_FV"/>
+                  <oa:formValue id="ClassName_FV"/>
+                  <oa:formValue id="TaskStatus_FV"/>
+               </ui:contents>
+            </oa:header>
+            <oa:header id="SearchResultsHDR">
+               <ui:contents>
+                  <oa:advancedTable id="SearchResults" viewName="OD_MyProjectPortfolioResultsVO">
+                     <ui:contents>
+                        <oa:column id="ProjNumbercol" rendered="true">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="ProjNumbersortableHeader" prompt="Project Number"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageStyledText id="ProjNumber" viewAttr="ProjNumber"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:column id="ProjNamecol" rendered="true">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="ProjNamesortableHeader" prompt="Project Name"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:messageStyledText id="ProjName" viewAttr="ProjName"/>
+                           </ui:contents>
+                        </oa:column>
+                        <oa:columnGroup id="TaskNamecolumnGroup1">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="TaskNamesortableHeader1"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:column id="TaskNamecolumn1" cellNoWrapFormat="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader2" prompt="Due Date"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="TaskName1" viewAttr="Task1"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Notes1">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="NotessortableHeader1" prompt="Notes"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:switcher id="NotesSwitcherRN" viewAttr="Notes1">
+                                       <ui:case name="Enable1">
+                                          <oa:image id="Enable1" source="/OA_MEDIA/notesicon_enabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="notes" id="fireAction1">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId1}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                       <ui:case name="Disable1">
+                                          <oa:image id="Disable1" source="/OA_MEDIA/notesicon_disabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="writenotes" id="fireAction2">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId1}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                    </oa:switcher>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Attachmentscolumn1">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader3" prompt="Create / View Attachments"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:attachmentImage id="item1">
+                                       <oa:entityMappings>
+                                          <oa:entityMap id="entityMap1" entityId="TaskId">
+                                             <oa:primaryKeys>
+                                                <oa:primaryKey id="primaryKey1" viewAttr="TaskId1"/>
+                                             </oa:primaryKeys>
+                                          </oa:entityMap>
+                                       </oa:entityMappings>
+                                    </oa:attachmentImage>
+                                 </ui:contents>
+                              </oa:column>
+                           </ui:contents>
+                        </oa:columnGroup>
+                        <oa:columnGroup id="TaskNamecolumnGroup2">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="TaskNamesortableHeader2"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:column id="TaskNamecolumn2" cellNoWrapFormat="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader21" prompt="Due Date"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="TaskName2" viewAttr="Task2"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Notes2">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="NotessortableHeader11" prompt="Notes"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:switcher id="NotesSwitcherRN2" viewAttr="Notes2">
+                                       <ui:case name="Enable2">
+                                          <oa:image id="Enable2" source="/OA_MEDIA/notesicon_enabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="notes" id="fireAction11">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId2}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                       <ui:case name="Disable2">
+                                          <oa:image id="Disable2" source="/OA_MEDIA/notesicon_disabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="writenotes" id="fireAction21">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId2}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                    </oa:switcher>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Attachmentscolumn2">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader31" prompt="Create / View Attachments"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:attachmentImage id="item2">
+                                       <oa:entityMappings>
+                                          <oa:entityMap id="entityMap2" entityId="TaskId">
+                                             <oa:primaryKeys>
+                                                <oa:primaryKey id="primaryKey2" viewAttr="TaskId2"/>
+                                             </oa:primaryKeys>
+                                          </oa:entityMap>
+                                       </oa:entityMappings>
+                                    </oa:attachmentImage>
+                                 </ui:contents>
+                              </oa:column>
+                           </ui:contents>
+                        </oa:columnGroup>
+                        <oa:columnGroup id="TaskNamecolumnGroup3">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="TaskNamesortableHeader3"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:column id="TaskNamecolumn3" cellNoWrapFormat="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader211" prompt="Due Date"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="TaskName3" viewAttr="Task3"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Notes3">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="NotessortableHeader111" prompt="Notes"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:switcher id="NotesSwitcherRN3" viewAttr="Notes3">
+                                       <ui:case name="Enable3">
+                                          <oa:image id="Enable3" source="/OA_MEDIA/notesicon_enabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="notes" id="fireAction111">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId2}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                       <ui:case name="Disable3">
+                                          <oa:image id="Disable3" source="/OA_MEDIA/notesicon_disabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="writenotes" id="fireAction211">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId2}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                    </oa:switcher>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Attachmentscolumn3">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader311" prompt="Create / View Attachments"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:attachmentImage id="item3">
+                                       <oa:entityMappings>
+                                          <oa:entityMap id="entityMap3" entityId="TaskId">
+                                             <oa:primaryKeys>
+                                                <oa:primaryKey id="primaryKey3" viewAttr="TaskId3"/>
+                                             </oa:primaryKeys>
+                                          </oa:entityMap>
+                                       </oa:entityMappings>
+                                    </oa:attachmentImage>
+                                 </ui:contents>
+                              </oa:column>
+                           </ui:contents>
+                        </oa:columnGroup>
+                        <oa:columnGroup id="TaskNamecolumnGroup4">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="TaskNamesortableHeader4"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:column id="TaskNamecolumn4" cellNoWrapFormat="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader212" prompt="Due Date"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="TaskName4" viewAttr="Task4"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Notes4">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="NotessortableHeader112" prompt="Notes"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:switcher id="NotesSwitcherRN4" viewAttr="Notes4">
+                                       <ui:case name="Enable4">
+                                          <oa:image id="Enable4" source="/OA_MEDIA/notesicon_enabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="notes" id="fireAction112">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId4}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                       <ui:case name="Disable4">
+                                          <oa:image id="Disable4" source="/OA_MEDIA/notesicon_disabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="writenotes" id="fireAction212">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId4}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                    </oa:switcher>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Attachmentscolumn4">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader3111" prompt="Create / View Attachments"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:attachmentImage id="item4">
+                                       <oa:entityMappings>
+                                          <oa:entityMap id="entityMap4" entityId="TaskId">
+                                             <oa:primaryKeys>
+                                                <oa:primaryKey id="primaryKey4" viewAttr="TaskId4"/>
+                                             </oa:primaryKeys>
+                                          </oa:entityMap>
+                                       </oa:entityMappings>
+                                    </oa:attachmentImage>
+                                 </ui:contents>
+                              </oa:column>
+                           </ui:contents>
+                        </oa:columnGroup>
+                        <oa:columnGroup id="TaskNamecolumnGroup5">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="TaskNamesortableHeader5"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:column id="TaskNamecolumn5" cellNoWrapFormat="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader213" prompt="Due Date"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="TaskName5" viewAttr="Task5"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Notes5">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="NotessortableHeader113" prompt="Notes"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:switcher id="NotesSwitcherRN5" viewAttr="Notes5">
+                                       <ui:case name="Enable5">
+                                          <oa:image id="Enable5" source="/OA_MEDIA/notesicon_enabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="notes" id="fireAction113">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId5}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                       <ui:case name="Disable5">
+                                          <oa:image id="Disable5" source="/OA_MEDIA/notesicon_disabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="writenotes" id="fireAction213">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId5}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                    </oa:switcher>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Attachmentscolumn5">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader31111" prompt="Create / View Attachments"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:attachmentImage id="item5">
+                                       <oa:entityMappings>
+                                          <oa:entityMap id="entityMap5" entityId="TaskId">
+                                             <oa:primaryKeys>
+                                                <oa:primaryKey id="primaryKey5" viewAttr="TaskId5"/>
+                                             </oa:primaryKeys>
+                                          </oa:entityMap>
+                                       </oa:entityMappings>
+                                    </oa:attachmentImage>
+                                 </ui:contents>
+                              </oa:column>
+                           </ui:contents>
+                        </oa:columnGroup>
+                        <oa:columnGroup id="TaskNamecolumnGroup6">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="TaskNamesortableHeader6"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:column id="TaskNamecolumn6" cellNoWrapFormat="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader214" prompt="Due Date"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="TaskName6" viewAttr="Task6"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Notes6">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="NotessortableHeader114" prompt="Notes"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:switcher id="NotesSwitcherRN6" viewAttr="Notes6">
+                                       <ui:case name="Enable6">
+                                          <oa:image id="Enable6" source="/OA_MEDIA/notesicon_enabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="notes" id="fireAction114">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId6}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                       <ui:case name="Disable6">
+                                          <oa:image id="Disable6" source="/OA_MEDIA/notesicon_disabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="writenotes" id="fireAction214">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId6}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                    </oa:switcher>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Attachmentscolumn6">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader311111" prompt="Create / View Attachments"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:attachmentImage id="item6">
+                                       <oa:entityMappings>
+                                          <oa:entityMap id="entityMap6" entityId="TaskId">
+                                             <oa:primaryKeys>
+                                                <oa:primaryKey id="primaryKey6" viewAttr="TaskId6"/>
+                                             </oa:primaryKeys>
+                                          </oa:entityMap>
+                                       </oa:entityMappings>
+                                    </oa:attachmentImage>
+                                 </ui:contents>
+                              </oa:column>
+                           </ui:contents>
+                        </oa:columnGroup>
+                        <oa:columnGroup id="TaskNamecolumnGroup7">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="TaskNamesortableHeader7"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:column id="TaskNamecolumn7" cellNoWrapFormat="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader215" prompt="Due Date"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="TaskName7" viewAttr="Task7"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Notes7">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="NotessortableHeader115" prompt="Notes"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:switcher id="NotesSwitcherRN7" viewAttr="Notes7">
+                                       <ui:case name="Enable7">
+                                          <oa:image id="Enable7" source="/OA_MEDIA/notesicon_enabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="notes" id="fireAction115">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId7}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                       <ui:case name="Disable7">
+                                          <oa:image id="Disable7" source="/OA_MEDIA/notesicon_disabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="writenotes" id="fireAction215">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId7}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                    </oa:switcher>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Attachmentscolumn7">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader3111111" prompt="Create / View Attachments"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:attachmentImage id="item7">
+                                       <oa:entityMappings>
+                                          <oa:entityMap id="entityMap7" entityId="TaskId">
+                                             <oa:primaryKeys>
+                                                <oa:primaryKey id="primaryKey7" viewAttr="TaskId7"/>
+                                             </oa:primaryKeys>
+                                          </oa:entityMap>
+                                       </oa:entityMappings>
+                                    </oa:attachmentImage>
+                                 </ui:contents>
+                              </oa:column>
+                           </ui:contents>
+                        </oa:columnGroup>
+                        <oa:columnGroup id="TaskNamecolumnGroup8">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="TaskNamesortableHeader8"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:column id="TaskNamecolumn8" cellNoWrapFormat="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader216" prompt="Due Date"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="TaskName8" viewAttr="Task8"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Notes8">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="NotessortableHeader116" prompt="Notes"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:switcher id="NotesSwitcherRN8" viewAttr="Notes8">
+                                       <ui:case name="Enable8">
+                                          <oa:image id="Enable8" source="/OA_MEDIA/notesicon_enabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="notes" id="fireAction116">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId8}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                       <ui:case name="Disable8">
+                                          <oa:image id="Disable8" source="/OA_MEDIA/notesicon_disabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="writenotes" id="fireAction216">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId8}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                    </oa:switcher>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Attachmentscolumn8">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader31111111" prompt="Create / View Attachments"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:attachmentImage id="item8">
+                                       <oa:entityMappings>
+                                          <oa:entityMap id="entityMap8" entityId="TaskId">
+                                             <oa:primaryKeys>
+                                                <oa:primaryKey id="primaryKey8" viewAttr="TaskId8"/>
+                                             </oa:primaryKeys>
+                                          </oa:entityMap>
+                                       </oa:entityMappings>
+                                    </oa:attachmentImage>
+                                 </ui:contents>
+                              </oa:column>
+                           </ui:contents>
+                        </oa:columnGroup>
+                        <oa:columnGroup id="TaskNamecolumnGroup9">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="TaskNamesortableHeader9"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:column id="TaskNamecolumn9" cellNoWrapFormat="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader217" prompt="Due Date"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="TaskName9" viewAttr="Task9"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Notes9">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="NotessortableHeader117" prompt="Notes"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:switcher id="NotesSwitcherRN9" viewAttr="Notes9">
+                                       <ui:case name="Enable9">
+                                          <oa:image id="Enable9" source="/OA_MEDIA/notesicon_enabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="notes" id="fireAction117">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId9}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                       <ui:case name="Disable9">
+                                          <oa:image id="Disable9" source="/OA_MEDIA/notesicon_disabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="writenotes" id="fireAction217">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId9}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                    </oa:switcher>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Attachmentscolumn9">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader311111111" prompt="Create / View Attachments"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:attachmentImage id="item9">
+                                       <oa:entityMappings>
+                                          <oa:entityMap id="entityMap9" entityId="TaskId">
+                                             <oa:primaryKeys>
+                                                <oa:primaryKey id="primaryKey9" viewAttr="TaskId9"/>
+                                             </oa:primaryKeys>
+                                          </oa:entityMap>
+                                       </oa:entityMappings>
+                                    </oa:attachmentImage>
+                                 </ui:contents>
+                              </oa:column>
+                           </ui:contents>
+                        </oa:columnGroup>
+                        <oa:columnGroup id="TaskNamecolumnGroup10">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="TaskNamesortableHeader10"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:column id="TaskNamecolumn10" cellNoWrapFormat="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader218" prompt="Due Date"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="TaskName10" viewAttr="Task10"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Notes10">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="NotessortableHeader118" prompt="Notes"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:switcher id="NotesSwitcherRN10" viewAttr="Notes10">
+                                       <ui:case name="Enable10">
+                                          <oa:image id="Enable10" source="/OA_MEDIA/notesicon_enabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="notes" id="fireAction118">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId10}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                       <ui:case name="Disable10">
+                                          <oa:image id="Disable10" source="/OA_MEDIA/notesicon_disabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="writenotes" id="fireAction218">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId10}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                    </oa:switcher>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Attachmentscolumn10">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader3111111111" prompt="Create / View Attachments"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:attachmentImage id="item10">
+                                       <oa:entityMappings>
+                                          <oa:entityMap id="entityMap10" entityId="TaskId">
+                                             <oa:primaryKeys>
+                                                <oa:primaryKey id="primaryKey10" viewAttr="TaskId10"/>
+                                             </oa:primaryKeys>
+                                          </oa:entityMap>
+                                       </oa:entityMappings>
+                                    </oa:attachmentImage>
+                                 </ui:contents>
+                              </oa:column>
+                           </ui:contents>
+                        </oa:columnGroup>
+                        <oa:columnGroup id="TaskNamecolumnGroup11">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="TaskNamesortableHeader11"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:column id="TaskNamecolumn11" cellNoWrapFormat="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader219" prompt="Due Date"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="TaskName11" viewAttr="Task11"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Notes11">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="NotessortableHeader119" prompt="Notes"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:switcher id="NotesSwitcherRN11" viewAttr="Notes11">
+                                       <ui:case name="Enable11">
+                                          <oa:image id="Enable11" source="/OA_MEDIA/notesicon_enabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="notes" id="fireAction119">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId11}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                       <ui:case name="Disable11">
+                                          <oa:image id="Disable11" source="/OA_MEDIA/notesicon_disabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="writenotes" id="fireAction219">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId11}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                    </oa:switcher>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Attachmentscolumn11">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader31111111111" prompt="Create / View Attachments"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:attachmentImage id="item11">
+                                       <oa:entityMappings>
+                                          <oa:entityMap id="entityMap11" entityId="TaskId">
+                                             <oa:primaryKeys>
+                                                <oa:primaryKey id="primaryKey11" viewAttr="TaskId11"/>
+                                             </oa:primaryKeys>
+                                          </oa:entityMap>
+                                       </oa:entityMappings>
+                                    </oa:attachmentImage>
+                                 </ui:contents>
+                              </oa:column>
+                           </ui:contents>
+                        </oa:columnGroup>
+                        <oa:columnGroup id="TaskNamecolumnGroup12">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="TaskNamesortableHeader12"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:column id="TaskNamecolumn12" cellNoWrapFormat="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader2110" prompt="Due Date"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="TaskName12" viewAttr="Task12"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Notes12">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="NotessortableHeader1110" prompt="Notes"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:switcher id="NotesSwitcherRN12" viewAttr="Notes12">
+                                       <ui:case name="Enable12">
+                                          <oa:image id="Enable12" source="/OA_MEDIA/notesicon_enabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="notes" id="fireAction1110">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId12}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                       <ui:case name="Disable12">
+                                          <oa:image id="Disable12" source="/OA_MEDIA/notesicon_disabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="writenotes" id="fireAction2110">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId12}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                    </oa:switcher>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Attachmentscolumn12">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader311111111111" prompt="Create / View Attachments"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:attachmentImage id="item12">
+                                       <oa:entityMappings>
+                                          <oa:entityMap id="entityMap12" entityId="TaskId">
+                                             <oa:primaryKeys>
+                                                <oa:primaryKey id="primaryKey12" viewAttr="TaskId12"/>
+                                             </oa:primaryKeys>
+                                          </oa:entityMap>
+                                       </oa:entityMappings>
+                                    </oa:attachmentImage>
+                                 </ui:contents>
+                              </oa:column>
+                           </ui:contents>
+                        </oa:columnGroup>
+                        <oa:columnGroup id="TaskNamecolumnGroup13">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="TaskNamesortableHeader13"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:column id="TaskNamecolumn13" cellNoWrapFormat="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader2111" prompt="Due Date"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="TaskName13" viewAttr="Task13"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Notes13">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="NotessortableHeader1111" prompt="Notes"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:switcher id="NotesSwitcherRN13" viewAttr="Notes13">
+                                       <ui:case name="Enable13">
+                                          <oa:image id="Enable13" source="/OA_MEDIA/notesicon_enabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="notes" id="fireAction1111">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId13}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                       <ui:case name="Disable13">
+                                          <oa:image id="Disable13" source="/OA_MEDIA/notesicon_disabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="writenotes" id="fireAction2111">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId3}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                    </oa:switcher>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Attachmentscolumn13">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader3111111111111" prompt="Create / View Attachments"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:attachmentImage id="item13">
+                                       <oa:entityMappings>
+                                          <oa:entityMap id="entityMap13" entityId="TaskId">
+                                             <oa:primaryKeys>
+                                                <oa:primaryKey id="primaryKey13" viewAttr="TaskId13"/>
+                                             </oa:primaryKeys>
+                                          </oa:entityMap>
+                                       </oa:entityMappings>
+                                    </oa:attachmentImage>
+                                 </ui:contents>
+                              </oa:column>
+                           </ui:contents>
+                        </oa:columnGroup>
+                        <oa:columnGroup id="TaskNamecolumnGroup14">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="TaskNamesortableHeader14"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:column id="TaskNamecolumn14" cellNoWrapFormat="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader2112" prompt="Due Date"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="TaskName14" viewAttr="Task14"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Notes14">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="NotessortableHeader14" prompt="Notes"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:switcher id="NotesSwitcherRN14" viewAttr="Notes14">
+                                       <ui:case name="Enable14">
+                                          <oa:image id="Enable14" source="/OA_MEDIA/notesicon_enabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="notes" id="fireAction1112">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId14}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                       <ui:case name="Disable14">
+                                          <oa:image id="Disable14" source="/OA_MEDIA/notesicon_disabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="writenotes" id="fireAction2112">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId14}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                    </oa:switcher>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Attachmentscolumn14">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader31111111111111" prompt="Create / View Attachments"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:attachmentImage id="item14">
+                                       <oa:entityMappings>
+                                          <oa:entityMap id="entityMap14" entityId="TaskId">
+                                             <oa:primaryKeys>
+                                                <oa:primaryKey id="primaryKey14" viewAttr="TaskId14"/>
+                                             </oa:primaryKeys>
+                                          </oa:entityMap>
+                                       </oa:entityMappings>
+                                    </oa:attachmentImage>
+                                 </ui:contents>
+                              </oa:column>
+                           </ui:contents>
+                        </oa:columnGroup>
+                        <oa:columnGroup id="TaskNamecolumnGroup15">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="TaskNamesortableHeader15"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:column id="TaskNamecolumn15" cellNoWrapFormat="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader2113" prompt="Due Date"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="TaskName15" viewAttr="Task15"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Notes15">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="NotessortableHeader1113" prompt="Notes"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:switcher id="NotesSwitcherRN15" viewAttr="Notes15">
+                                       <ui:case name="Enable15">
+                                          <oa:image id="Enable15" source="/OA_MEDIA/notesicon_enabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="notes" id="fireAction1113">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId15}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                       <ui:case name="Disable15">
+                                          <oa:image id="Disable15" source="/OA_MEDIA/notesicon_disabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="writenotes" id="fireAction2113">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId15}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                    </oa:switcher>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Attachmentscolumn15">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader311111111111111" prompt="Create / View Attachments"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:attachmentImage id="item15">
+                                       <oa:entityMappings>
+                                          <oa:entityMap id="entityMap15" entityId="TaskId">
+                                             <oa:primaryKeys>
+                                                <oa:primaryKey id="primaryKey15" viewAttr="TaskId15"/>
+                                             </oa:primaryKeys>
+                                          </oa:entityMap>
+                                       </oa:entityMappings>
+                                    </oa:attachmentImage>
+                                 </ui:contents>
+                              </oa:column>
+                           </ui:contents>
+                        </oa:columnGroup>
+                        <oa:columnGroup id="TaskNamecolumnGroup16">
+                           <ui:columnHeader>
+                              <oa:sortableHeader id="TaskNamesortableHeader16"/>
+                           </ui:columnHeader>
+                           <ui:contents>
+                              <oa:column id="TaskNamecolumn16" cellNoWrapFormat="true">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader2114" prompt="Due Date"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:messageStyledText id="TaskName16" viewAttr="Task2"/>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Notes16">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="NotessortableHeader1114" prompt="Notes"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:switcher id="NotesSwitcherRN16" viewAttr="Notes16">
+                                       <ui:case name="Enable16">
+                                          <oa:image id="Enable16" source="/OA_MEDIA/notesicon_enabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="notes" id="fireAction1114">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId16}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                       <ui:case name="Disable16">
+                                          <oa:image id="Disable16" source="/OA_MEDIA/notesicon_disabled.gif">
+                                             <ui:primaryClientAction>
+                                                <ui:fireAction event="writenotes" id="fireAction2114">
+                                                   <ui:parameters>
+                                                      <ui:parameter key="projectId" value="${oa.OD_MyProjectPortfolioResultsVO.ProjId}"/>
+                                                      <ui:parameter key="taskId" value="${oa.OD_MyProjectPortfolioResultsVO.TaskId16}"/>
+                                                   </ui:parameters>
+                                                </ui:fireAction>
+                                             </ui:primaryClientAction>
+                                          </oa:image>
+                                       </ui:case>
+                                    </oa:switcher>
+                                 </ui:contents>
+                              </oa:column>
+                              <oa:column id="Attachmentscolumn16">
+                                 <ui:columnHeader>
+                                    <oa:sortableHeader id="sortableHeader3111111111111111" prompt="Create / View Attachments"/>
+                                 </ui:columnHeader>
+                                 <ui:contents>
+                                    <oa:attachmentImage id="item16">
+                                       <oa:entityMappings>
+                                          <oa:entityMap id="entityMap16" entityId="TaskId">
+                                             <oa:primaryKeys>
+                                                <oa:primaryKey id="primaryKey16" viewAttr="TaskId16"/>
+                                             </oa:primaryKeys>
+                                          </oa:entityMap>
+                                       </oa:entityMappings>
+                                    </oa:attachmentImage>
+                                 </ui:contents>
+                              </oa:column>
+                           </ui:contents>
+                        </oa:columnGroup>
+                     </ui:contents>
+                  </oa:advancedTable>
+               </ui:contents>
+            </oa:header>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>

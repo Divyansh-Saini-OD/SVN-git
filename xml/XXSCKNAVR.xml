@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXSCKNAVR" description="OD SC K &amp; N Active Vendor Report" Version="1.0">
+<dataQuery>
+<sqlStatement name="Q_XXSCKNAVR">
+<![CDATA[
+select OD_SC_VENDOR_NUMBER
+,OD_SC_VENDOR_NAME
+,OD_SC_VEND_TYPE
+,OD_SC_VENDOR_STATUS
+,OD_SC_ACTIVATION_DATE
+,OD_SC_INACTIVE_DATE
+,OD_SC_REACTIVATE_DATE
+,OD_SC_AUDIT_AGENT
+,OD_SC_VEND_ADDRESS
+,OD_SC_VEND_CONT_NAME 
+,OD_SC_VEND_PHONE        
+,OD_SC_VEND_FAX       
+,OD_SC_VEND_EMAIL 
+,OD_SC_FACTORY_NUMBER
+,OD_SC_FACTORY_NAME
+,OD_SC_FACTORY_ADDRESS
+ ,OD_SC_VEND_REGION         
+from
+Q_od_pb_sc_vendor_master_v
+where OD_SC_VEND_TYPE='DI'
+and OD_SC_VENDOR_STATUS='Active'
+ORDER BY 1
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_XXSCKNAVR" source="Q_XXSCKNAVR">
+<element name="OD_SC_VENDOR_NUMBER" value="OD_SC_VENDOR_NUMBER" />
+<element name="OD_SC_VENDOR_NAME" value="OD_SC_VENDOR_NAME" />
+<element name="OD_SC_VEND_TYPE" value="OD_SC_VEND_TYPE" />
+<element name="OD_SC_VENDOR_STATUS" value="OD_SC_VENDOR_STATUS" />
+<element name="OD_SC_ACTIVATION_DATE" value="OD_SC_ACTIVATION_DATE" />
+<element name="OD_SC_INACTIVE_DATE" value="OD_SC_INACTIVE_DATE" />
+<element name="OD_SC_REACTIVATE_DATE" value="OD_SC_REACTIVATE_DATE" />
+<element name="OD_SC_AUDIT_AGENT" value="OD_SC_AUDIT_AGENT" />
+<element name="OD_SC_VEND_ADDRESS" value="OD_SC_VEND_ADDRESS" />
+<element name="OD_SC_FACTORY_NUMBER" value="OD_SC_FACTORY_NUMBER" />
+<element name="OD_SC_FACTORY_NAME" value="OD_SC_FACTORY_NAME" />
+<element name="OD_SC_FACTORY_ADDRESS" value="OD_SC_FACTORY_ADDRESS" />
+<element name="OD_SC_VEND_REGION" value="OD_SC_VEND_REGION" />
+<element name="OD_SC_VEND_EMAIL" value="OD_SC_VEND_EMAIL" />
+<element name="OD_SC_VEND_CONT_NAME" value="OD_SC_VEND_CONT_NAME" />
+<element name="OD_SC_VEND_PHONE" value="OD_SC_VEND_PHONE" />
+<element name="OD_SC_VEND_FAX" value="OD_SC_VEND_FAX" />
+
+</group>
+</dataStructure>
+</dataTemplate>

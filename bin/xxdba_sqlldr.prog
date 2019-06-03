@@ -1,0 +1,128 @@
+#!/bin/ksh
+# Name: xxdba_sqlldr.prog
+#
+# Purpose
+# -------
+# Used to Upload sqlldr files to Database
+# 
+# Author
+# ------
+# Stacy
+#
+# Parameters
+# ----------
+# @5: APPLICATION_SHORT_NAME
+# @6: CONTROLFILE_NAME
+# 
+# Revision History
+# ----------------
+# 06/25/2007: Initial
+# 
+# Special Notes:
+# --------------
+# @6 name of the control file and data file without extension
+# It is assumed that the controlfile would be located in $XXCUST_TOP/bin
+# Directory and the datafile would be stored in $XXCUST_DATA/inbound
+# Directory.
+# 1. Control file must have an extension: ".ctl"
+# 2. Data file must have an extension: ".csv"
+# 3. Control file and the datafile must have the same name
+#
+# Parameter "DIE" Should remain 0 in case all the validations have passed
+# In case the parameter is set to 1 It means some or all the validations
+# have failed.
+# If any or all the validations fail. We would not run sqlldr.
+echo "-------------------------------------------------------------------"
+echo "Started ..........................................................."
+DIE=0
+CUSTAPP=${5}
+echo $CUSTAPP
+CTLFILE=${6}
+echo $CTLFILE
+V1=`env | grep -i $CUSTAPP\_TOP | cut -d "=" -f2`
+V2=`env | grep -i $CUSTAPP\_DATA | cut -d "=" -f2`
+echo $V1
+echo $V2
+# Here we check if the directories exist
+if [ "X${V1}" = "X" ]
+then
+	DIE=1;
+	echo "ERROR!!!!"
+	echo "CUSTOM top Requested does not exist"
+	echo "Please verify path if it exists"
+fi
+
+if [ "X${V2}" = "X" ] 
+then
+	DIE=1;
+
+	echo "CUSTOM datatop Requested does not exist"
+	echo "Please verify path if it exists"
+fi
+# Now we check if the control files exist
+# We do this only after ensuring that earlier validations
+# Have completed successfully, Which means variable DIE is
+# Still 0.
+
+if [ ${DIE} -eq 0 ]
+then
+  V3=$V1\/bin/$CTLFILE.ctl	
+  V4=$V2\/inbound/$CTLFILE.csv
+  if [ ! -f ${V3} ]
+  then
+	DIE=1
+	echo "ERROR!!!!"
+	echo "CONTROL FILE: ${V3} - Does not exist"
+	echo "Please verify and rerun the program"
+  fi;
+  if [ ! -f ${V4} ]
+  then
+	DIE=1
+	echo "ERROR!!!!"
+	echo "DATA FILE: ${V4} - Does not exist"
+	echo "Please verify and rerun the program"
+  fi
+  # Now we will check for the parameter file
+  # This would have the custom application's password
+  # If the file does not exists the program fails
+  if [ ! -f "$HOME/.parfile.${CUSTAPP}" ]
+  then
+	DIE=1
+	echo "ERROR!!!!"
+	echo "Custom Environment is not setup"
+	echo "Please contact SYSTEM ADMINISTRATOR"
+  fi
+fi
+
+if [ $DIE -eq 0 ]
+then
+  echo " SQLLOADER Program Scripts "
+  echo " Custom Application : " $CUSTAPP
+  echo " SQLLDR .ctl File : " $V3
+  echo " SQLLDR .csv File : " $V4
+#####################################
+#
+#-----------------------------------
+  sqlldr parfile=$HOME/.parfile.$CUSTAPP control=$V3 data=$V4
+  retcode=$?
+  #Checking error conditions
+  case "$retcode" in 
+	0) echo "SQL*Loader execution successful" ;; 
+	1) echo "SQL*Loader execution exited with EX_FAIL, see logfile" ;; 
+	2) echo "SQL*Loader exectuion exited with EX_WARN, see logfile" ;; 
+	3) echo "SQL*Loader execution encountered a fatal error" ;; 
+	*) echo "unknown return code";; 
+  esac 
+
+  # Mark successful completion if return code is either 0 or 2
+  if [ $retcode -eq 2 ]
+  then
+	retcode=0
+  fi
+  exit $retcode
+else
+  echo "ERROR!!!!"
+  echo "Program $progname: Failed Validations"
+  echo "Please review error messages and resubmit concurrent program"
+  exit $DIE
+fi

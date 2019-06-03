@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://www.thiscompany.com/ns/sales" xmlns:xs="http://www.w3.org/2001/XMLSchema" >
+
+	<xs:element name="PIXBridge">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="PIX" minOccurs="1" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="TransactionType" minOccurs="1" type="xs:string"/>
+							<xs:element name="TransactionCode" minOccurs="1" type="xs:string"/>
+							<xs:element name="TransactionNumber" minOccurs="1" type="xs:integer"/>
+							<xs:element name="SequenceNumber" minOccurs="1" type="xs:integer"/>
+							<xs:element name="SKUDefinition" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Company" minOccurs="0" type="xs:string"/>
+										<xs:element name="Division" minOccurs="0" type="xs:string"/>
+										<xs:element name="Season" minOccurs="0" type="xs:string"/>
+										<xs:element name="SeasonYear" minOccurs="0" type="xs:string"/>
+										<xs:element name="Style" minOccurs="0" type="xs:string"/>
+										<xs:element name="StyleSuffix" minOccurs="0" type="xs:string"/>
+										<xs:element name="Color" minOccurs="0" type="xs:string"/>
+										<xs:element name="ColorSuffix" minOccurs="0" type="xs:string"/>
+										<xs:element name="SecDimension" minOccurs="0" type="xs:string"/>
+										<xs:element name="Quality" minOccurs="0" type="xs:string"/>
+										<xs:element name="SizeRangeCode" minOccurs="0" type="xs:string"/>
+										<xs:element name="SizeRelPosninTable" minOccurs="0" type="xs:string"/>
+										<xs:element name="SizeDesc" minOccurs="0" type="xs:string"/>
+										<xs:element name="SkuID" minOccurs="0" type="xs:string"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="SubSKUFields" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="InventoryType" minOccurs="0" type="xs:string"/>
+										<xs:element name="ProductStatus" minOccurs="0" type="xs:string"/>
+										<xs:element name="BatchNumber" minOccurs="0" type="xs:string"/>
+										<xs:element name="SKUAttribute1" minOccurs="0" type="xs:string"/>
+										<xs:element name="SKUAttribute2" minOccurs="0" type="xs:string"/>
+										<xs:element name="SKUAttribute3" minOccurs="0" type="xs:string"/>
+										<xs:element name="SKUAttribute4" minOccurs="0" type="xs:string"/>
+										<xs:element name="SKUAttribute5" minOccurs="0" type="xs:string"/>
+										<xs:element name="CountryOfOrigin" minOccurs="0" type="xs:string"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="LocnDefinition" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Area" minOccurs="0" type="xs:string"/>
+										<xs:element name="Zone" minOccurs="0" type="xs:string"/>
+										<xs:element name="Aisle" minOccurs="0" type="xs:string"/>
+										<xs:element name="Bay" minOccurs="0" type="xs:string"/>
+										<xs:element name="Level" minOccurs="0" type="xs:string"/>
+										<xs:element name="Position" minOccurs="0" type="xs:string"/>
+										<xs:element name="LocationFileID" minOccurs="0" type="xs:string"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Error" minOccurs="0" type="xs:string"/>
+							<xs:element name="PIXFields" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="DateCreated" minOccurs="0" type="xs:dateTime"/>
+										<xs:element name="CaseNumber" minOccurs="0" type="xs:string"/>
+										<xs:element name="PackageBarcode" minOccurs="0" type="xs:string"/>
+										<xs:element name="InvAdjustmentQty" minOccurs="0" type="xs:decimal"/>
+										<xs:element name="UnitOfMeasure" minOccurs="0" type="xs:string"/>
+										<xs:element name="InvAdjustmentType" minOccurs="0" type="xs:string"/>
+										<xs:element name="ReceivedFrom" minOccurs="0" type="xs:string"/>
+										<xs:element name="Warehouse" minOccurs="0" type="xs:string"/>
+										<xs:element name="ReferenceWhse" minOccurs="0" type="xs:string"/>
+										<xs:element name="TransReasonCode" minOccurs="0" type="xs:string"/>
+										<xs:element name="ReceiptsVariance" minOccurs="0" type="xs:string"/>
+										<xs:element name="Weight" minOccurs="0" type="xs:decimal"/>
+										<xs:element name="ReceiptsCompleted" minOccurs="0" type="xs:string"/>
+										<xs:element name="CasesShipped" minOccurs="0" type="xs:integer"/>
+										<xs:element name="UnitsShipped" minOccurs="0" type="xs:decimal"/>
+										<xs:element name="CasesReceived" minOccurs="0" type="xs:integer"/>
+										<xs:element name="UnitsReceived" minOccurs="0" type="xs:decimal"/>
+										<xs:element name="ReferenceCode1" minOccurs="0" type="xs:string"/>
+										<xs:element name="Reference1" minOccurs="0" type="xs:string"/>
+										<xs:element name="ReferenceCode2" minOccurs="0" type="xs:string"/>
+										<xs:element name="Reference2" minOccurs="0" type="xs:string"/>
+										<xs:element name="ReferenceCode3" minOccurs="0" type="xs:string"/>
+										<xs:element name="Reference3" minOccurs="0" type="xs:string"/>
+										<xs:element name="ReferenceCode4" minOccurs="0" type="xs:string"/>
+										<xs:element name="Reference4" minOccurs="0" type="xs:string"/>
+										<xs:element name="ReferenceCode5" minOccurs="0" type="xs:string"/>
+										<xs:element name="Reference5" minOccurs="0" type="xs:string"/>
+										<xs:element name="PixReference1" minOccurs="0" type="xs:string"/>
+										<xs:element name="PixReference2" minOccurs="0" type="xs:string"/>
+										<xs:element name="PixReference3" minOccurs="0" type="xs:string"/>
+										<xs:element name="ActionCode" minOccurs="0" type="xs:string"/>
+										<xs:element name="CustomReference" minOccurs="0" type="xs:string"/>
+										<xs:element name="RecordExpansionField" minOccurs="0" type="xs:string"/>
+										<xs:element name="CustomRecExpansionField" minOccurs="0" type="xs:string"/>
+										<xs:element name="POLineNbr" minOccurs="0" type="xs:integer"/>
+										<xs:element name="PONbr" minOccurs="0" type="xs:string"/>
+										<xs:element name="ShipmentNbr" minOccurs="0" type="xs:string"/>
+										<xs:element name="VendorASNNbr" minOccurs="0" type="xs:string"/>
+										<xs:element name="ProgramID" minOccurs="0" type="xs:string"/>
+										<xs:element name="JobName" minOccurs="0" type="xs:string"/>
+										<xs:element name="JobNumber" minOccurs="0" type="xs:string"/>
+										<xs:element name="UserID" minOccurs="0" type="xs:string"/>
+										<xs:element name="As400UserID" minOccurs="0" type="xs:string"/>
+										<xs:element name="ErrorComment" minOccurs="0" type="xs:string"/>
+										<xs:element name="EntryNumber" minOccurs="0" type="xs:string"/>
+										<xs:element name="CrossReferenceSequence" minOccurs="0" type="xs:integer"/>
+										<xs:element name="WeightAdjustmentQuantity" minOccurs="0" type="xs:decimal"/>
+										<xs:element name="WeightAdjustmentType" minOccurs="0" type="xs:string"/>
+										<xs:element name="ModifyDateTime" minOccurs="0" type="xs:dateTime"/>
+										<xs:element name="MiscIns1" minOccurs="0" type="xs:string"/>
+										<xs:element name="MiscIns2" minOccurs="0" type="xs:string"/>
+										<xs:element name="MiscIns3" minOccurs="0" type="xs:string"/>
+										<xs:element name="MiscNum1" minOccurs="0" type="xs:decimal"/>
+										<xs:element name="MiscNum2" minOccurs="0" type="xs:decimal"/>
+										<xs:element name="MiscNum3" minOccurs="0" type="xs:decimal"/>
+										<xs:element name="ElectronicSignitureUser" minOccurs="0" type="xs:string">
+											<xs:annotation>
+												<xs:documentation>PXESIG - in PXSTYL00, iSeries</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="ListOfSerialNumbers" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="SerialNumber" minOccurs="1" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="SerialSeqNbr" minOccurs="1" type="xs:integer"/>
+													<xs:element name="SerialNbr" minOccurs="1" type="xs:string"/>
+													<xs:element name="SerialAdjType" minOccurs="0" type="xs:string"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="id" use="optional" type="xs:string"/>
+			<xs:attribute name="version" use="optional" type="xs:string" default="2.1"/>
+			<xs:attribute name="timestamp" use="optional" type="xs:dateTime"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

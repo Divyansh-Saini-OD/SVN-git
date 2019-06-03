@@ -1,0 +1,71 @@
+<?xml version = '1.0' encoding = 'windows-1252'?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN" "http://java.sun.com/j2ee/dtds/web-app_2_2.dtd">
+<web-app>
+   <display-name>OA Framework web application deployment descriptor</display-name>
+   <description>web.xml file for OA Framework Applications</description>
+   <context-param>
+      <param-name>OA_LOGIN_USERNAME</param-name>
+      <param-value>fwktester</param-value>
+   </context-param>
+   <context-param>
+      <param-name>OA_RESPONSIBILITY_KEY</param-name>
+      <param-value>FWK_TOOLBOX_TUTORIAL_LABS</param-value>
+   </context-param>
+   <context-param>
+      <param-name>JRAD_APPS</param-name>
+      <param-value>ak;fnd;dem</param-value>
+   </context-param>
+   <context-param>
+      <param-name>OA_LOGIN_PASSWORD</param-name>
+      <param-value>fwkdev</param-value>
+   </context-param>
+   <context-param>
+      <param-name>OA_RESPONSIBILITY_APPS_SHORT_NAME</param-name>
+      <param-value>AK</param-value>
+   </context-param>
+   <context-param>
+      <param-name>DBC_FULL_PATH_NAME</param-name>
+      <param-value>C:\jdeveloper-9i\jdevhome\jdev\dbc_files\secure\gsitsi01.dbc</param-value>
+   </context-param>
+   <context-param>
+      <param-name>JRAD_XML_PATH</param-name>
+      <param-value>C:\jdeveloper-9i\jdevhome\jdev\myclasses\JRADXML;C:\jdeveloper-9i\jdevhome\jdev\myprojects;C:\jdeveloper-9i\jdevbin\jdev\oamdsxml\fwk</param-value>
+   </context-param>
+   <servlet>
+      <servlet-name>OAAppModPoolMonitor</servlet-name>
+      <display-name>Application module pool monitor</display-name>
+      <description>Tool to monitor all application modules in the JVM</description>
+      <servlet-class>oracle.apps.fnd.framework.webui.perf.OAAppModPoolMonitor</servlet-class>
+   </servlet>
+   <servlet>
+      <servlet-name>BIExport</servlet-name>
+      <servlet-class>oracle.dss.thin.beans.dataView.excel.DatabaseStorageServlet</servlet-class>
+      <init-param>
+         <param-name>connprovider</param-name>
+         <param-value>oracle.apps.fnd.framework.ExportConnectionProvider</param-value>
+      </init-param>
+   </servlet>
+   <session-config>
+      <session-timeout>30</session-timeout>
+   </session-config>
+   <mime-mapping>
+      <extension>html</extension>
+      <mime-type>text/html</mime-type>
+   </mime-mapping>
+   <mime-mapping>
+      <extension>txt</extension>
+      <mime-type>text/plain</mime-type>
+   </mime-mapping>
+   <welcome-file-list>
+      <welcome-file>test.jsp</welcome-file>
+      <welcome-file>index.html</welcome-file>
+   </welcome-file-list>
+   <taglib>
+      <taglib-uri>/webapp/DataTags.tld</taglib-uri>
+      <taglib-location>/WEB-INF/lib/datatags.jar</taglib-location>
+   </taglib>
+   <taglib>
+      <taglib-uri>http://xmlns.oracle.com/oa</taglib-uri>
+      <taglib-location>/WEB-INF/oa.tld</taglib-location>
+   </taglib>
+</web-app>

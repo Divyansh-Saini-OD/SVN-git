@@ -1,0 +1,36 @@
+SET SHOW          OFF
+SET VERIFY        OFF
+SET ECHO          OFF
+SET TAB           OFF
+SET FEEDBACK      ON
+SET TERM ON
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+-- +===================================================================+
+-- |                  Office Depot - Project Simplify                  |
+-- |                             Office Depot                          |
+-- +===================================================================+
+-- | Name  : XXMER.OD_PA_NOTES_S                                       |
+-- | Description: SEQUENCE FOR Project Notes Allocation                |
+-- |                                                                   |
+-- |                                                                   |
+-- |                                                                   |
+-- |Change Record:                                                     |
+-- |===============                                                    |
+-- |Version   Date        Author           Remarks                     |
+-- |=======   ==========  =============    ============================|
+-- |1.0      12-OCT-2011   Suraj Charan     INITAL CODE                 |
+-- +===================================================================+
+
+DROP SEQUENCE XXMER.OD_PA_NOTES_S;
+
+WHENEVER SQLERROR CONTINUE;
+
+CREATE SEQUENCE XXMER.OD_PA_NOTES_S
+    MINVALUE 1
+    MAXVALUE 999999999999999999999999999
+    START WITH 1
+    INCREMENT BY 1
+    CACHE 20;
+
+SHOW ERRORS;
+EXIT;

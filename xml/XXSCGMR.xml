@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXSCGMR" description="OD: SC Grading Metric Report" Version="1.0">
+<parameters>
+<parameter name="P_DATE" datatype="date" />
+<parameter name="P_GRADE" datatype="character" />
+<parameter name="P_PROFILE_VALUE" datatype="character" />
+</parameters>
+  
+<dataQuery>
+<sqlStatement name="Q_XXSCGMR">
+<![CDATA[
+select OD_SC_VENDOR_NUMBER
+,OD_SC_VENDOR_NAME
+,OD_SC_VEND_TYPE
+,OD_SC_VENDOR_STATUS
+,OD_SC_AUDIT_AGENT
+,OD_SC_FACTORY_NUMBER
+,OD_SC_FACTORY_NAME
+,OD_SC_EUROPE_RGN
+,OD_SC_EU_SUB_RGN
+,OD_SC_EU_VEND_NO
+,OD_SC_EU_FACTORY_NO
+,OD_SC_EU_VEND_STATUS
+,OD_SC_MEXICO_REGION
+,OD_SC_MX_SUB_RGN
+,OD_SC_MX_VEND_NO
+,OD_SC_MEX_FACTORY_NO
+,OD_SC_MX_VEND_STATUS
+,OD_SC_ASIA_REGION
+,OD_SC_AS_SUB_RGN
+,OD_SC_AS_VEND_NO
+,OD_SC_ASIA_FACTORY_NO
+,OD_SC_AS_VEND_STATUS
+,OD_SC_VEND_REGION
+,OD_SC_CNT_OF_ORGN
+,OD_SC_CIP
+,OD_SC_STRAUDT_SCHD_D
+,OD_SC_STR_AUDIT_RESULT
+FROM
+  (SELECT *
+  FROM q_od_pb_sc_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODUS'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_eu_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODEU'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_mx_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODMX'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_asia_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODASIA' = :P_PROFILE_VALUE)
+  ) t1
+where   OD_SC_VENDOR_STATUS ='Active'
+and OD_SC_AUDTWAIV_APR_D is null
+and OD_SC_STR_AUDIT_RESULT is not null
+and nvl(OD_SC_STRAUDT_SCHD_D,'1-JAN-1900') = nvl(to_date(:p_date,'YYYY/MM/DD HH24:MI:SS'),nvl(OD_SC_STRAUDT_SCHD_D,'1-JAN-1900'))
+and nvl(OD_SC_STR_AUDIT_RESULT,'x') =nvl(:p_grade,nvl(OD_SC_STR_AUDIT_RESULT,'x'))
+]]>
+</sqlStatement>
+
+<sqlStatement name="Q_XXSCGMR1">
+<![CDATA[
+select ROUND(((select count(*)
+from (SELECT *
+  FROM q_od_pb_sc_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODUS'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_eu_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODEU'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_mx_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODMX'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_asia_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODASIA' = :P_PROFILE_VALUE)
+  ) 
+where   OD_SC_VENDOR_STATUS ='Active'
+and OD_SC_AUDTWAIV_APR_D is null
+and od_sc_str_audit_result='Needs Improvement') /
+( select count(*) from 
+(SELECT *
+  FROM q_od_pb_sc_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODUS'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_eu_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODEU'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_mx_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODMX'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_asia_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODASIA' = :P_PROFILE_VALUE)
+  ) 
+where   OD_SC_STR_AUDIT_RESULT is not null and OD_SC_AUDTWAIV_APR_D is null and OD_SC_VENDOR_STATUS ='Active')),2)*100 Needs_Improvement,
+ROUND(((select count(*)
+from (SELECT *
+  FROM q_od_pb_sc_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODUS'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_eu_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODEU'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_mx_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODMX'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_asia_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODASIA' = :P_PROFILE_VALUE)
+  ) 
+where   OD_SC_VENDOR_STATUS ='Active'
+and OD_SC_AUDTWAIV_APR_D is null
+and od_sc_str_audit_result='Satisfactory') /
+( select count(*) from 
+(SELECT *
+  FROM q_od_pb_sc_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODUS'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_eu_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODEU'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_mx_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODMX'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_asia_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODASIA' = :P_PROFILE_VALUE)
+  ) 
+where   OD_SC_STR_AUDIT_RESULT is not null and OD_SC_AUDTWAIV_APR_D is null and OD_SC_VENDOR_STATUS ='Active')),2)*100 Satisfactory, 
+ROUND(((select count(*)
+from (SELECT *
+  FROM q_od_pb_sc_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODUS'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_eu_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODEU'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_mx_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODMX'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_asia_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODASIA' = :P_PROFILE_VALUE)
+  ) 
+where   OD_SC_VENDOR_STATUS ='Active'
+and OD_SC_AUDTWAIV_APR_D is null
+and od_sc_str_audit_result='Minor Progress Needed') /
+( select count(*) from 
+(SELECT *
+  FROM q_od_pb_sc_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODUS'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_eu_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODEU'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_mx_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODMX'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_asia_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODASIA' = :P_PROFILE_VALUE)
+  ) 
+where    OD_SC_STR_AUDIT_RESULT is not null and OD_SC_AUDTWAIV_APR_D is null and OD_SC_VENDOR_STATUS ='Active')),2)*100 Minor_Progress_Needed,
+ROUND(((select count(*)
+from (SELECT *
+  FROM q_od_pb_sc_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODUS'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_eu_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODEU'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_mx_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODMX'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_asia_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODASIA' = :P_PROFILE_VALUE)
+  ) 
+where   OD_SC_VENDOR_STATUS ='Active'
+and OD_SC_AUDTWAIV_APR_D is null
+and od_sc_str_audit_result  in ('Zero Tolerance', 'Denied Entry')) /
+( select count(*) from 
+(SELECT *
+  FROM q_od_pb_sc_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODUS'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_eu_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODEU'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_mx_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODMX'   = :P_PROFILE_VALUE)
+  UNION
+  SELECT *
+  FROM Q_od_sc_asia_vendor_master_v
+  WHERE ( 'ODGLB' = :P_PROFILE_VALUE
+  OR 'ODASIA' = :P_PROFILE_VALUE)
+  ) 
+where    OD_SC_STR_AUDIT_RESULT is not null and OD_SC_AUDTWAIV_APR_D is null and OD_SC_VENDOR_STATUS ='Active')),2)*100 Zero_Tolerance_Denied
+from dual
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_XXSCGMR" source="Q_XXSCGMR">
+<element name="OD_SC_VENDOR_NUMBER" value="OD_SC_VENDOR_NUMBER"/>
+<element name="OD_SC_VENDOR_NAME" value="OD_SC_VENDOR_NAME"/>
+<element name="OD_SC_VEND_TYPE" value="OD_SC_VEND_TYPE"/>
+<element name="OD_SC_VENDOR_STATUS" value="OD_SC_VENDOR_STATUS"/>
+<element name="OD_SC_AUDIT_AGENT" value="OD_SC_AUDIT_AGENT"/>
+<element name="OD_SC_FACTORY_NUMBER" value="OD_SC_FACTORY_NUMBER"/>
+<element name="OD_SC_FACTORY_NAME" value="OD_SC_FACTORY_NAME"/>
+<element name="OD_SC_EUROPE_RGN" value="OD_SC_EUROPE_RGN"/>
+<element name="OD_SC_EU_SUB_RGN" value="OD_SC_EU_SUB_RGN"/>
+<element name="OD_SC_EU_VEND_NO" value="OD_SC_EU_VEND_NO"/>
+<element name="OD_SC_EU_FACTORY_NO" value="OD_SC_EU_FACTORY_NO"/>
+<element name="OD_SC_EU_VEND_STATUS" value="OD_SC_EU_VEND_STATUS"/>
+<element name="OD_SC_MEXICO_REGION" value="OD_SC_MEXICO_REGION"/>
+<element name="OD_SC_MX_SUB_RGN" value="OD_SC_MX_SUB_RGN"/>
+<element name="OD_SC_MX_VEND_NO" value="OD_SC_MX_VEND_NO"/>
+<element name="OD_SC_MEX_FACTORY_NO" value="OD_SC_MEX_FACTORY_NO"/>
+<element name="OD_SC_MX_VEND_STATUS" value="OD_SC_MX_VEND_STATUS"/>
+<element name="OD_SC_ASIA_REGION" value="OD_SC_ASIA_REGION"/>
+<element name="OD_SC_AS_SUB_RGN" value="OD_SC_AS_SUB_RGN"/>
+<element name="OD_SC_AS_VEND_NO" value="OD_SC_AS_VEND_NO"/>
+<element name="OD_SC_ASIA_FACTORY_NO" value="OD_SC_ASIA_FACTORY_NO"/>
+<element name="OD_SC_AS_VEND_STATUS" value="OD_SC_AS_VEND_STATUS"/>
+<element name="OD_SC_VEND_REGION" value="OD_SC_VEND_REGION"/>
+<element name="OD_SC_CNT_OF_ORGN" value="OD_SC_CNT_OF_ORGN"/>
+<element name="OD_SC_CIP" value="OD_SC_CIP"/>
+<element name="OD_SC_STRAUDT_SCHD_D" value="OD_SC_STRAUDT_SCHD_D"/>
+<element name="OD_SC_STR_AUDIT_RESULT" value="OD_SC_STR_AUDIT_RESULT"/>
+</group>
+<group name="G_XXSCGMR1" source="Q_XXSCGMR1">
+<element name="Needs_Improvement" value="Needs_Improvement"/>
+<element name="Satisfactory" value="Satisfactory"/>
+<element name="Minor_Progress_Needed" value="Minor_Progress_Needed"/>
+<element name="Zero_Tolerance_Denied" value="Zero_Tolerance_Denied"/>
+</group>
+</dataStructure>
+</dataTemplate>

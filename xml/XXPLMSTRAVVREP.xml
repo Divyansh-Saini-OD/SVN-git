@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXPLMSTRAVVREP" description="OD PLM STR Audit_Viol Validation Report" Version="1.0">
+<parameters>
+ <parameter name="P_VENDOR_NAME" datatype="character" />
+ <parameter name="P_FACTORY_NAME" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_STRAVVREP">
+<![CDATA[
+ SELECT od_sc_transmission_status
+     , od_sc_inspection_no
+     , d.od_sc_inspection_type od_sc_inspection_type
+     , od_sc_scheduled_date
+     , od_sc_inspection_month
+     , od_sc_inspection_year
+     , od_sc_od_vendor_id
+     , od_sc_vendor
+     , od_sc_factory_id
+     , od_sc_factory
+     , od_sc_grade
+     , od_sc_region
+     , od_sc_region_sub
+     , od_sc_agent
+     , od_sc_violation_text
+     , od_sc_violation_question
+     , od_sc_auditor_comments_viol
+     , od_sc_vendor_number
+     , od_sc_vendor_name
+     , od_sc_factory_number
+     , od_sc_factory_name
+     , od_sc_europe_rgn
+     , od_sc_eu_sub_rgn
+     , od_sc_mexico_region
+     , od_sc_mx_sub_rgn
+     , od_sc_asia_region
+     , od_sc_as_sub_rgn
+     , od_sc_vend_region
+     , od_sc_straudt_schd_d
+     , od_sc_str_audit_result
+     , od_sc_question_code
+     , od_sc_question_applicable
+     , od_sc_violation_code
+     , od_sc_violation_section
+     , od_sc_violation_sub_section
+     , od_sc_inspect_date
+  FROM q_od_pb_sc_vendor_master_v m
+     , q_od_sc_vendor_audit_v d
+WHERE upper(m.od_sc_vendor_name )= upper(d.od_sc_vendor)
+  AND upper(m.od_sc_factory_name) = upper(d.od_sc_factory)
+  AND d.od_sc_violation_code IS NOT NULL
+  AND m.od_sc_vendor_name = NVL (:P_VENDOR_NAME, od_sc_vendor_name)
+  AND m.od_sc_factory_name = NVL (:P_FACTORY_NAME, od_sc_factory_name)
+ORDER BY 1
+
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_STRAVVREP" source="Q_STRAVVREP">
+<element name="OD_SC_TRANSMISSION_STATUS"  value="OD_SC_TRANSMISSION_STATUS" />
+<element name="OD_SC_INSPECTION_NO" value="OD_SC_INSPECTION_NO" />
+<element name="OD_SC_INSPECTION_TYPE" value="OD_SC_INSPECTION_TYPE" />
+<element name="OD_SC_SCHEDULED_DATE" value="OD_SC_SCHEDULED_DATE" />
+<element name="OD_SC_INSPECTION_MONTH" value="OD_SC_INSPECTION_MONTH" />
+<element name="OD_SC_INSPECTION_YEAR" value="OD_SC_INSPECTION_YEAR" />
+<element name="OD_SC_OD_VENDOR_ID" value="OD_SC_OD_VENDOR_ID" />
+<element name="OD_SC_VENDOR" value="OD_SC_VENDOR" />
+<element name="OD_SC_FACTORY_ID" value="OD_SC_FACTORY_ID" />
+<element name="OD_SC_FACTORY" value="OD_SC_FACTORY" />
+<element name="OD_SC_GRADE" value="OD_SC_GRADE" />
+<element name="OD_SC_REGION" value="OD_SC_REGION" />
+<element name="OD_SC_REGION_SUB" value="OD_SC_REGION_SUB" />
+<element name="OD_SC_AGENT" value="OD_SC_AGENT" />
+<element name="OD_SC_VIOLATION_TEXT" value="OD_SC_VIOLATION_TEXT" />
+<element name="OD_SC_VIOLATION_QUESTION" value="OD_SC_VIOLATION_QUESTION" />
+<element name="OD_SC_AUDITOR_COMMENTS_VIOL" value="OD_SC_AUDITOR_COMMENTS_VIOL" />
+<element name="OD_SC_VENDOR_NUMBER" value="OD_SC_VENDOR_NUMBER" />
+<element name="OD_SC_VENDOR_NAME" value="OD_SC_VENDOR_NAME" />
+<element name="OD_SC_FACTORY_NUMBER" value="OD_SC_FACTORY_NUMBER" />
+<element name="OD_SC_FACTORY_NAME" value="OD_SC_FACTORY_NAME" />
+<element name="OD_SC_EUROPE_RGN" value="OD_SC_EUROPE_RGN" />
+<element name="OD_SC_EU_SUB_RGN" value="OD_SC_EU_SUB_RGN" />
+<element name="OD_SC_MEXICO_REGION" value="OD_SC_MEXICO_REGION" />
+<element name="OD_SC_MX_SUB_RGN" value="OD_SC_MX_SUB_RGN" />
+<element name="OD_SC_ASIA_REGION" value="OD_SC_ASIA_REGION" />
+<element name="OD_SC_AS_SUB_RGN" value="OD_SC_AS_SUB_RGN" />
+<element name="OD_SC_VEND_REGION" value="OD_SC_VEND_REGION" />
+<element name="OD_SC_STRAUDT_SCHD_D" value="OD_SC_STRAUDT_SCHD_D" />
+<element name="OD_SC_STR_AUDIT_RESULT" value="OD_SC_STR_AUDIT_RESULT" />
+<element name="OD_SC_QUESTION_CODE" value="OD_SC_QUESTION_CODE" />
+<element name="OD_SC_QUESTION_APPLICABLE" value="NAYN" />
+<element name="OD_SC_VIOLATION_CODE" value="OD_SC_VIOLATION_CODE" />
+<element name="OD_SC_VIOLATION_SECTION" value="OD_SC_VIOLATION_SECTION" />
+<element name="OD_SC_VIOLATION_SUB_SECTION" value="OD_SC_VIOLATION_SUB_SECTION" />
+<element name="OD_SC_INSPECT_DATE" value="OD_SC_INSPECT_DATE" />
+</group>
+</dataStructure>
+</dataTemplate>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXQAFDR" description="OD QA Factory Data Report" Version="1.0">
+<parameters>
+ <parameter name="P_FD" datatype="character" />
+ <parameter name="P_REF" datatype="character" />
+ <parameter name="P_REGION" datatype="character" />
+ <parameter name="P_VENDOR_NAME" datatype="character" />
+ <parameter name="P_FACTORY_NAME" datatype="character" />
+ <parameter name="P_SOUR_AGENT" datatype="character" />
+ <parameter name="P_PRIM_PROD" datatype="character" />
+ <parameter name="P_SCOPE" datatype="character" />
+ <parameter name="P_FREQ" datatype="character" />
+ <parameter name="P_SUBMITTER" datatype="character" />
+ <parameter name="P_APPROVER" datatype="character" />
+ <parameter name="P_INS_TYPE" datatype="character" />
+ <parameter name="P_DEF_CLASS" datatype="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_XXQAFDR">
+<![CDATA[
+select qfd.od_ob_fd_id od_ob_fd_id
+ 	,qfd.od_ob_ref_fdid od_ob_ref_fdid
+	,qfd.od_ob_fd_date od_ob_fd_date
+	,qfd.od_sc_region od_sc_region
+	,qfd.od_ob_vendor_name	od_ob_vendor_name
+	,qfd.od_ob_factory_name	od_ob_factory_name
+	,qfd.od_sc_factory_address od_sc_factory_address
+	,qfd.od_sc_audit_agent	od_sc_audit_agent
+	,qfd.od_ob_primary_products od_ob_primary_products
+	,qfd.od_ob_iqc_pass_pct	od_ob_iqc_pass_pct	
+	,qfd.od_ob_iqc_sample_sz od_ob_iqc_sample_sz	
+	,qfd.od_ob_iqc_defects od_ob_iqc_defects
+	,qfd.od_ob_qc_pass_pct	od_ob_qc_pass_pct
+	,qfd.od_ob_qc_sample_sz	od_ob_qc_sample_sz
+	,qfd.od_ob_qc_defects	od_ob_qc_defects
+	,qfd.od_ob_fgi_pass_pct	od_ob_fgi_pass_pct
+	,qfd.od_ob_fgi_qty od_ob_fgi_qty	
+	,qfd.od_ob_fqc_sample_sz od_ob_fqc_sample_sz
+	,qfd.od_ob_fqc_defects od_ob_fqc_defects
+	,qfd.od_ob_qa_scope od_ob_qa_scope	
+	,qfd.od_ob_fd_frequency	od_ob_fd_frequency
+	,qfd.od_pb_auditor_name	od_pb_auditor_name
+	,qfd.od_pb_qa_engr_email od_pb_qa_engr_email
+	,qfdd.od_ob_dc_id od_ob_dc_id
+	,qfdd.od_ob_inspection_type od_ob_inspection_type	
+	,qfdd.od_pb_defect_sum	od_pb_defect_sum
+	,qfdd.od_pb_defect_code	od_pb_defect_code
+	,qfdd.od_ob_defect_pct od_ob_defect_pct
+from  q_od_ob_factory_data_v qfd,
+      q_od_ob_fact_data_defects_v  qfdd
+where 
+	qfd.od_ob_fd_id = qfdd.od_ob_ref_fdid(+)  
+	and qfd.od_ob_fd_id	= nvl(:p_fd,qfd.od_ob_fd_id) 
+	and nvl(qfd.od_ob_ref_fdid,'X')= nvl(:p_ref, nvl(qfd.od_ob_ref_fdid,'X'))
+	and nvl(qfd.od_sc_region,'X') = nvl(:p_region,nvl(qfd.od_sc_region,'X'))
+	and nvl(qfd.od_sc_audit_agent,'X') = nvl(:p_sour_agent, nvl(qfd.od_sc_audit_agent,'X'))
+	and nvl(qfd.od_ob_vendor_name,'X') = nvl(:p_vendor_name, nvl(qfd.od_ob_vendor_name,'X'))
+	and nvl(qfd.od_ob_factory_name,'X') = nvl(:p_factory_name, nvl(qfd.od_ob_factory_name,'X'))
+	and nvl(qfd.od_ob_primary_products,'X') = nvl(:p_prim_prod, nvl(qfd.od_ob_primary_products,'X'))
+	and nvl(qfd.od_ob_qa_scope,'X') = nvl(:p_scope, nvl(qfd.od_ob_qa_scope,'X'))
+	and nvl(qfd.od_pb_auditor_name,'X') = nvl(:p_submitter, nvl(qfd.od_pb_auditor_name,'X'))
+	and nvl(qfd.od_pb_qa_engr_email,'X') = nvl (:p_approver, nvl(qfd.od_pb_qa_engr_email,'X'))
+	and nvl(qfd.od_ob_fd_frequency,'X') = nvl (:p_freq, NVL(qfd.od_ob_fd_frequency,'X'))
+	and nvl(qfdd.od_ob_inspection_type,'X') = nvl (:p_ins_type,nvl(qfdd.od_ob_inspection_type,'X'))
+	and nvl(qfdd.od_pb_defect_code,'X') = nvl (:p_def_class, nvl(qfdd.od_pb_defect_code,'X'))
+order by 1
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_XXQAFDR" source="Q_XXQAFDR">
+<element name="od_ob_fd_id" value="od_ob_fd_id" />
+<element name="od_ob_ref_fdid" value="od_ob_ref_fdid" />
+<element name="od_ob_fd_date" value="od_ob_fd_date" />
+<element name="od_sc_region" value="od_sc_region" />
+<element name="od_sc_audit_agent" value="od_sc_audit_agent" />
+<element name="od_ob_vendor_name" value="od_ob_vendor_name" />
+<element name="od_ob_factory_name" value="od_ob_factory_name" />
+<element name="od_sc_factory_address" value="od_sc_factory_address" />
+<element name="od_ob_primary_products" value="od_ob_primary_products" />
+<element name="od_ob_iqc_pass_pct" value="od_ob_iqc_pass_pct" />
+<element name="od_ob_iqc_sample_sz" value="od_ob_iqc_sample_sz" />
+<element name="od_ob_iqc_defects" value="od_ob_iqc_defects" />
+<element name="od_ob_qc_pass_pct" value="od_ob_qc_pass_pct" />
+<element name="od_ob_qc_sample_sz" value="od_ob_qc_sample_sz" />
+<element name="od_ob_qc_defects" value="od_ob_qc_defects" />
+<element name="od_ob_fgi_pass_pct" value="od_ob_fgi_pass_pct" />
+<element name="od_ob_fgi_qty" value="od_ob_fgi_qty" />
+<element name="od_ob_fqc_sample_sz" value="od_ob_fqc_sample_sz" />
+<element name="od_ob_fqc_defects" value="od_ob_fqc_defects" />
+<element name="od_ob_qa_scope" value="od_ob_qa_scope" />
+<element name="od_ob_fd_frequency" value="od_ob_fd_frequency" />
+<element name="od_pb_auditor_name" value="od_pb_auditor_name" />
+<element name="od_pb_qa_engr_email" value="od_pb_qa_engr_email" />
+<element name="od_ob_dc_id" value="od_ob_dc_id" />
+<element name="od_ob_inspection_type" value="od_ob_inspection_type" />
+<element name="od_pb_defect_sum" value="od_pb_defect_sum" />
+<element name="od_pb_defect_code" value="od_pb_defect_code" />
+<element name="od_ob_defect_pct" value="od_ob_defect_pct" />
+</group>
+</dataStructure>
+</dataTemplate>

@@ -1,0 +1,199 @@
+REM============================================================================================
+REM                                 Start Of Script
+REM============================================================================================
+
+--+=============================================================================================+--
+--|                                                                                             |--
+--| Program Name   : CREATE_XX_GSO_PO_DTL.tbl                                                   |--
+--|                                                                                             |--
+--| Purpose        : Create Custom Tables .                                                     |--
+--|                  The Objects created are:                                                   |--
+--|                                                                                             |--
+--|                1. XX_GSO_PO_BV_DTL   (OD GSO PO Tracking table)                             |--
+--|                                                                                             |--
+--| Change History  :                                                                           |--
+--| Version           Date             Changed By              Description                      |--
+--+=============================================================================================+--
+--| 1.0              17-Aug-2010       Paddy Sanjeevi          Original                         |--
+--+=============================================================================================+--
+
+SET VERIFY      OFF
+SET TERM        ON
+SET FEEDBACK    OFF
+SET SHOW        OFF
+SET ECHO        OFF
+SET TAB         OFF
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Creating the Custom Table ......
+PROMPT
+
+PROMPT
+PROMPT Creating the Table XX_GSO_PO_BV_DTL......
+PROMPT
+
+
+create table xxmer.xx_gso_po_bv_dtl
+( po_header_id          number,
+  po_line_id		number,
+  inspection_no		varchar2(50),
+  inspection_date	date,
+  inspection_qty	number,
+  insp_serv_type	varchar2(50),
+  inspection_result	varchar2(50),
+  disposition		varchar2(100),
+  re_insp_date		date,
+  re_insp_result	varchar2(50),
+  short_shipment	varchar2(5),
+  po_number		varchar2(500),
+  ordered_qty		number,
+  item_style_no		varchar2(500),
+  sku			varchar2(30),
+  description		varchar2(240),
+  vendor_ref		varchar2(100),
+  sku_upc_no		varchar2(100),
+  booking_date 		date,
+  bv_booking_alert	varchar2(1),
+  bv_sched_date		date,
+  bv_actl_date		date,
+  bv_status 		varchar2(25),
+  qa_contact		varchar2(50),
+  client_request_date	date,
+  operation_office	varchar2(50),
+  vendor_name		varchar2(100),
+  factory_name		varchar2(100),
+  factory_city		varchar2(50),
+  factory_country	varchar2(35),
+  country_origin	varchar2(35),
+  collection_no		varchar2(50),
+  client_dept_no	varchar2(5),
+  first_ship_date	date,
+  ship_destination	varchar2(50),
+  reason_code		varchar2(60),
+  remarks		varchar2(2000),
+  ic_issue_date		date,
+  creation_date 	date,
+  created_by		number,
+  last_update_date	date,
+  last_updated_by	number,
+  last_update_login	number,
+  po_line_no		number,
+  vendor_no		varchar2(30),
+  manufacturer_name	varchar2(100),
+  ship_date		date,
+  insp_booking_no	varchar2(30),
+  factory_address	varchar2(200),
+  invoice_no		varchar2(30),
+  invoice_date		date, 
+  invoice_contact	varchar2(100),
+  invoice_company	varchar2(100),
+  oprn_office_cntry	varchar2(30),
+  bv_id			number);
+
+
+WHENEVER SQLERROR CONTINUE;
+
+PROMPT
+PROMPT Exiting....
+PROMPT
+
+SET FEEDBACK ON
+
+EXIT;
+
+REM=================================================================================================
+REM                                   End Of Script
+REM=================================================================================================
+
+
+
+ declare
+  v_string varchar2(50):='315820 / 7-35854-78662-5';
+  v_sku varchar2(50);
+ begin
+  v_sku:=substr(v_string,1,(instr(v_string,'/')-2));
+  dbms_output.put_line(v_sku);
+ end;
+
+
+declare
+  v_string varchar2(500):='141354, 141352, 141351, 141349, 141348, 141347, 141346, 141345, 141344';
+  v_str_wrk varchar2(500);
+  v_ponum varchar2(20);
+  v_len number;
+  i number:=0;
+ begin
+   v_len:=instr(v_string,',');
+   v_ponum:=substr(v_string,1,v_len-1);
+   v_str_wrk:=substr(v_string,v_len+1);
+   dbms_output.put_line(v_string);
+   dbms_output.put_line(v_ponum);
+--   dbms_output.put_line('B :'||v_str_wrk);
+   for i in 1..100 loop
+--     dbms_output.put_line(v_str_wrk);
+     v_len:=instr(v_str_wrk,',');
+     v_ponum:=substr(v_str_wrk,1,v_len-1);
+     v_str_wrk:=substr(v_str_wrk,v_len+1);
+     dbms_output.put_line(v_ponum);
+     if v_len=0 then
+       dbms_output.put_line(v_str_wrk);
+       exit;
+     end if;
+   end loop;
+ end;
+/
+
+
+
+
+create table xxmer.xx_pa_pb_gso_insp_stg
+( inspection_id		number,
+  inspection_no		varchar2(30),
+  inspection_date	date,
+  po_number		varchar2(500),
+  ordered_qty		number,
+  item_style_no		varchar2(50),
+  sku			varchar2(25),
+  description		varchar2(100),
+  vendor_ref		varchar2(50),
+  sku_upc_no		varchar2(100),
+  bv_book_date		date,
+  bv_sched_date		date,
+  bv_act_date		date,
+  bv_status		varchar2(50),
+  qa_contact		varchar2(30),
+  client_request_date	date,
+  operation_office	varchar2(30),
+  vendor_name		varchar2(100),
+  factory_name		varchar2(100),
+  factory_city		varchar2(50),
+  factory_country	varchar2(35),
+  country_origin	varchar2(35),
+  collection_no		varchar2(30),
+  client_dept_no	varchar2(5),
+  first_ship_date	date,
+  ship_destination	varchar2(50),
+  insp_serv_type	varchar2(50),
+  inspection_result	varchar2(30),
+  disposition		varchar2(100),
+  re_insp_date		date,
+  re_insp_result	varchar2(30),
+  remarks		varchar2(2000),
+  short_shipment	varchar2(5),
+  ic_issue_date		date,
+  error_flag		varchar2(1),
+  error_message		varchar2(2000),
+  process_flag		number,
+  insp_process_flag	number,
+  creation_date 	date);
+
+
+create table xxmer.xx_pa_pb_gso_insp_stgd
+( inspection_id		number,
+  po_number    	        varchar2(30),
+  po_header_id		number,
+  po_line_id		number,
+  sku			varchar2(25),
+  creation_date 	date);

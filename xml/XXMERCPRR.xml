@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="WINDOWS-1252" ?>
+<dataTemplate name="XXMERCPRR" description="OD : Core Part Return Information Report" Version="1.0">
+<parameters>
+ <parameter name="P_FROM_DATE" datatype="character" />
+ <parameter name="P_TO_DATE" datatype="character" />
+ <parameter name="P_LOCATION" datatype="character" />
+ </parameters>
+<dataQuery>
+<sqlStatement name="Q_MAIN">
+<![CDATA[
+SELECT  xctp.request_number       REQUEST_NUMBER
+       ,ciab.creation_date        CREATION_DATE
+       ,xctp.item_description     ITEM_DESCRIPTION
+       ,cis.name                  NAME
+       ,(xctp.purchase_price - xctp.exchange_price) AMOUNT
+       ,haou.name                     STORE_NAME
+       ,LPAD(haou.attribute1,6,'0')   STORE_NUMBER
+FROM    xxom.xx_cs_tds_parts  xctp
+       ,cs_incidents_all_b    ciab     
+       ,cs_incident_statuses  cis       
+       ,hr_all_organization_units haou
+WHERE 1=1
+AND  xctp.request_number    = ciab.incident_number
+AND  cis.incident_status_id = ciab.incident_status_id
+AND  haou.organization_id = xctp.store_id
+AND  xctp.core_flag   = 'Y'
+AND  cis.incident_status_id = 2
+AND  ciab.creation_date BETWEEN  NVL(TO_DATE(:P_FROM_DATE,'YYYY/MM/DD HH24:MI:SS'),ciab.creation_date) AND NVL(TO_DATE(:P_TO_DATE,'YYYY/MM/DD HH24:MI:SS'),ciab.creation_date) 
+AND  haou.organization_id = NVL(:P_LOCATION,haou.organization_id)
+AND  NOT EXISTS ( SELECT 1
+                 FROM   ap_invoices_all ai
+                 WHERE  invoice_type_lookup_code='CREDIT'
+                 AND    xctp.request_number = ai.attribute6
+            )                           
+ORDER BY haou.name DESC
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_STORE" source="Q_MAIN">
+<element name="STORE_NAME" value="STORE_NAME" />
+<element name="STORE_TOTAL" value="G_MAIN.AMOUNT" function="SUM()" /> 
+<group name="G_MAIN" source="Q_MAIN">
+<element name="REQUEST_NUMBER" value="REQUEST_NUMBER" />
+<element name="CREATION_DATE" value="CREATION_DATE" />
+<element name="ITEM_DESCRIPTION" value="ITEM_DESCRIPTION" />
+<element name="NAME" value="NAME" />
+<element name="AMOUNT" value="AMOUNT" />
+<element name="STORE_NUMBER" value="STORE_NUMBER" />
+<element name="STORE_NAME" value="STORE_NAME" />
+</group>
+</group>
+</dataStructure>
+</dataTemplate>

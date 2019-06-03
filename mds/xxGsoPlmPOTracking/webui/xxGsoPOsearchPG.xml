@@ -1,0 +1,243 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!-- dbdrv: exec java oracle/jrad/tools/xml/importer XMLImporter.class java &phase=dat+24 checkfile:~PROD:~PATH:~FILE &fullpath:~PROD:~PATH:~FILE -username &un_apps -password &pw_apps -dbconnection &jdbc_db_addr  -userId "1" -rootPackage /oracle/apps/~PROD  -rootdir &fullpath:~PROD:mds:directory  -->
+<page xmlns:jrad="http://xmlns.oracle.com/jrad" xmlns:oa="http://xmlns.oracle.com/oa" xmlns:ui="http://xmlns.oracle.com/uix/ui" version="9.0.3.8.13_1579" xml:lang="en-US" xmlns:user="http://xmlns.oracle.com/jrad/user" xmlns="http://xmlns.oracle.com/jrad" file-version="$Header$">
+   <content>
+      <oa:pageLayout id="poShipmentSerachPGRN" amDefName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPlmPOTracking_AM" windowTitle="PO Search and Milestone Update" title="PO Search and Milestone Update" controllerClass="od.oracle.apps.xxmer.xxGsoPlmPOTracking.webui.xxGsoPOsearchPG_CO" quickLinksShown="true">
+         <ui:corporateBranding>
+            <oa:image id="corporateBrandingImage" source="/OA_MEDIA/FNDSSCORP.gif"/>
+         </ui:corporateBranding>
+         <ui:contents>
+            <oa:tableLayout id="poShipmentSearchPG_TBL1_RN" hAlign="center">
+               <ui:contents>
+                  <oa:rowLayout id="poShipmentSearch_SpaceRN1" userCustomizable="true">
+                     <ui:contents>
+                        <oa:cellFormat id="poShipmentSearch_SpaceCLRN1">
+                           <ui:contents>
+                              <oa:spacer id="xxSpacer1" height="60"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="poShipmentSearch_RowRN1" amDefName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPlmPOTracking_AM" userCustomizable="true">
+                     <ui:contents>
+                        <oa:cellFormat id="poShipmentSearchRN1_CELL2" vAlign="top" hAlign="left">
+                           <ui:contents>
+                              <oa:messageComponentLayout id="p_ShipmentSearch_hdr_RN2">
+                                 <ui:contents>
+                                    <oa:messageChoice id="moName" prompt="MO Name" pickListViewDef="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoMoNamePoplist" pickListViewName="xxGsoPoMoNamePoplist1" pickListDispAttr="ShortCode" pickListValAttr="ShortCode"/>
+                                    <oa:messageChoice id="BuyingAgent" dataType="VARCHAR2" prompt="Agent" pickListViewDef="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoBagentPoplist" pickListViewName="xxGsoPoBagentPoplist1" pickListDispAttr="BuyingAgent" pickListValAttr="BuyingAgent" defaultValue="" cellNoWrapFormat="true" userCustomizable="true"/>
+                                    <oa:messageChoice id="PoStatusCd" dataType="VARCHAR2" prompt="PO Status" pickListViewDef="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoStatusPoplist" pickListViewName="xxGsoPoStatusPoplist1" pickListDispAttr="PoStatusCd" pickListValAttr="PoStatusCd" defaultValue="-------SELECT----------"/>
+                                    <oa:messageChoice id="Category" dataType="VARCHAR2" prompt="Category" pickListViewDef="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoCategoryPoplist" pickListViewName="xxGsPoCategoryPoplist1" pickListDispAttr="Category" pickListValAttr="Category" defaultValue="" selectiveSearchCriteria="true" disabled="true" rendered="false"/>
+                                    <oa:messageChoice id="CountryCd" dataType="VARCHAR2" prompt="Country" pickListViewDef="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoCountryPoplist" pickListViewName="xxGsoPoCountryPoplist1" pickListValAttr="CountryCode" pickListDispAttr="CountryCode" defaultValue="" selectiveSearchCriteria="true"/>
+                                    <oa:messageTextInput id="Item" dataType="VARCHAR2" prompt="SKU#" maximumLength="35" styleClass="OraDataText" disabled="true" rendered="false"/>
+                                    <oa:messageChoice id="VendorNo" dataType="VARCHAR2" prompt="Vendor No" pickListViewDef="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPoVendorNoPoplist" pickListViewName="xxGsoPoVendorNoPoplist1" pickListDispAttr="VendorNo" pickListValAttr="VendorNo"/>
+                                    <oa:messageTextInput id="VendorName" dataType="VARCHAR2" prompt="Vendor Name" maximumLength="35"/>
+                                 </ui:contents>
+                              </oa:messageComponentLayout>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="poShipmentSearchRN1_CELL3" vAlign="top" hAlign="left">
+                           <ui:contents>
+                              <oa:messageComponentLayout id="p_ShipmentSearch_hdr_RN3">
+                                 <ui:contents>
+                                    <oa:messageCheckBox id="itemNotSendToVend" text="Not Send To Vendor" prompt="Not Send To Vendor" checkedValue="Y" unCheckedValue="N" defaultValue="N" dataType="BOOLEAN"/>
+                                    <oa:messageCheckBox id="itemNotConfirm" text="Not Confirm" prompt="Not Confirm"/>
+                                    <oa:messageCheckBox id="itemConfirmAlert" text="Confirm Alert" prompt="Confirm Alert"/>
+                                    <oa:messageCheckBox id="itemNoLateCode" text="No Late Code" prompt="No Late Code"/>
+                                    <oa:messageCheckBox id="itemNeedBV" text="Need BV" prompt="Need BV"/>
+                                 </ui:contents>
+                              </oa:messageComponentLayout>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="poShipmentSearchRN1_CELL1" vAlign="top" hAlign="left">
+                           <ui:contents>
+                              <oa:messageComponentLayout id="poShipmentSearch_Hdr_RN1">
+                                 <ui:contents>
+                                    <oa:messageTextInput id="itemPoNumber" dataType="VARCHAR2" prompt="PO Number From" maximumLength="25" columns="15"/>
+                                    <oa:messageTextInput id="itemPoDate" dataType="DATE" prompt="PO Date"/>
+                                    <oa:messageTextInput id="itemPoShipDate" dataType="DATE" prompt="PO Ship Date"/>
+                                    <oa:messageTextInput id="itemPoImportDate" dataType="DATE" prompt="PO Import Date"/>
+                                    <oa:messageTextInput id="itemPort" prompt="Port" columns="15"/>
+                                 </ui:contents>
+                              </oa:messageComponentLayout>
+                           </ui:contents>
+                        </oa:cellFormat>
+                        <oa:cellFormat id="poShipmentSearchRN1_CELL4" vAlign="top">
+                           <ui:contents>
+                              <oa:messageComponentLayout id="poShipmentSearch_Hdr_RN4">
+                                 <ui:contents>
+                                    <oa:messageTextInput id="itemPoNumberTo" prompt="To" maximumLength="25" columns="15"/>
+                                    <oa:messageTextInput id="itemPoDateTo" dataType="DATE" prompt="To"/>
+                                    <oa:messageTextInput id="itemPoShipDateTo" prompt="To" dataType="DATE"/>
+                                    <oa:messageTextInput id="itemPoImportDateTo" dataType="DATE" prompt="To"/>
+                                    <oa:messageTextInput id="itemLoc" prompt="Location" columns="15"/>
+                                 </ui:contents>
+                              </oa:messageComponentLayout>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:tableLayout>
+            <oa:tableLayout id="poShipmentSearchPG_TBL2_RN" hAlign="center">
+               <ui:contents>
+                  <oa:rowLayout id="region1" userCustomizable="true">
+                     <ui:contents>
+                        <oa:cellFormat id="region2">
+                           <ui:contents>
+                              <oa:spacer id="item1" height="3"/>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+                  <oa:rowLayout id="poShipmentSearch_RowRN2" amDefName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPlmPOTracking_AM" userCustomizable="true">
+                     <ui:contents>
+                        <oa:cellFormat id="poShipmentSearchRN2_CELL1" amDefName="od.oracle.apps.xxmer.xxGsoPlmPOTracking.server.xxGsoPlmPOTracking_AM">
+                           <ui:contents>
+                              <oa:button id="itemShipmentSearchButtonGO" text="Search" prompt="Search" hAlign="right">
+                                 <ui:primaryClientAction>
+                                    <ui:fireAction event="searchPO" id="fireAction1">
+                                       <ui:parameters>
+                                          <ui:parameter key="buyingAgent" value="${oa.xxGsoPO_dtlNkndtl_VO2.BuyingAgent}"/>
+                                          <ui:parameter key="poStatus" value="${oa.xxGsoPO_dtlNkndtl_VO2.PoStatusCd}"/>
+                                          <ui:parameter key="category" value="${oa.xxGsoPO_dtlNkndtl_VO2.Category}"/>
+                                          <ui:parameter key="countryCd" value="${oa.xxGsoPO_dtlNkndtl_VO2.CountryCode}"/>
+                                          <ui:parameter key="Item" value="${oa.xxGsoPO_dtlNkndtl_VO2.Item}"/>
+                                          <ui:parameter key="vendorNo" value="${oa.xxGsoPO_dtlNkndtl_VO2.VendorNo}"/>
+                                          <ui:parameter key="vendorName" value="${oa.xxGsoPO_dtlNkndtl_VO2.VendorName}"/>
+                                          <ui:parameter key="confirmLateAlert" value=""/>
+                                       </ui:parameters>
+                                    </ui:fireAction>
+                                 </ui:primaryClientAction>
+                              </oa:button>
+                              <oa:spacer id="item2" width="3"/>
+                              <oa:button id="itemShipmentSearchButtonClear" text="Clear" prompt="Clear" hAlign="right">
+                                 <ui:primaryClientAction>
+                                    <ui:fireAction event="ClearForm" id="fireAction2"/>
+                                 </ui:primaryClientAction>
+                              </oa:button>
+                           </ui:contents>
+                        </oa:cellFormat>
+                     </ui:contents>
+                  </oa:rowLayout>
+               </ui:contents>
+            </oa:tableLayout>
+            <oa:header id="poSearchReslut_HDR_RN">
+               <ui:contents>
+                  <oa:query id="region4" mode="resultsBasedSearch" dispCustomized="true" defaultPanel="customized">
+                     <ui:contents>
+                        <oa:table id="xxGsoPO_Hdr_VO1" detailViewAttr="setFlag" viewLinkName="xxGsoHdrDtl_VL1" userCustomizable="true">
+                           <ui:contents>
+                              <oa:link id="mileStone" text="Milestone" destination="OA.jsp?page=/od/oracle/apps/xxmer/gsopo/milestone/webui/ODGSOPOMilestonePG&amp;poHeaderId={@PoHeaderId}&amp;addBreadCrumb=Y"/>
+                              <oa:messageStyledText id="Version" dataType="NUMBER" prompt="Version" viewName="xxGsoPO_Hdr_VO1" viewAttr="Version" cellNoWrapFormat="true" totalValue="false" userCustomizable="true"/>
+                              <oa:messageStyledText id="PoStatusCd2" dataType="VARCHAR2" prompt="PO Status" viewName="xxGsoPO_Hdr_VO1" viewAttr="PoStatusCd" maximumLength="25" userCustomizable="true"/>
+                              <oa:messageStyledText id="EdiStatus1" dataType="VARCHAR2" prompt="EDI Status" viewName="xxGsoPO_Hdr_VO1" viewAttr="EdiStatus" maximumLength="25" userCustomizable="true"/>
+                              <oa:messageStyledText id="PoNumber" dataType="VARCHAR2" prompt="PO" viewName="xxGsoPO_Hdr_VO1" viewAttr="PoNumber" maximumLength="50" columns="20" sortState="yes" userCustomizable="true"/>
+                              <oa:messageStyledText id="PoDate1" dataType="DATE" prompt="Order Date" viewName="xxGsoPO_Hdr_VO1" viewAttr="PoDate" sortState="yes" userCustomizable="true"/>
+                              <oa:messageStyledText id="VendorNo1" dataType="VARCHAR2" viewName="xxGsoPO_Hdr_VO1" viewAttr="VendorNo" prompt="Vendor Id" totalValue="false" cellNoWrapFormat="true" sortState="yes" userCustomizable="true"/>
+                              <oa:messageTextInput id="VendorName1" dataType="VARCHAR2" prompt="Vendor Name" viewName="xxGsoPO_Hdr_VO1" viewAttr="VendorName" maximumLength="100" cellNoWrapFormat="true" readOnly="true" userCustomizable="true"/>
+                              <oa:messageStyledText id="LateCode" dataType="VARCHAR2" prompt="Late Code" viewName="xxGsoPO_Hdr_VO1" viewAttr="LateCode" maximumLength="60" userCustomizable="true" columns="30"/>
+                              <oa:messageStyledText id="BuyingAgent2" dataType="VARCHAR2" prompt="Agent" viewName="xxGsoPO_Hdr_VO1" viewAttr="BuyingAgent" maximumLength="40" userCustomizable="true"/>
+                              <oa:messageStyledText id="OdMerchant1" dataType="VARCHAR2" prompt="MO" viewName="xxGsoPO_Hdr_VO1" viewAttr="OdMerchant" maximumLength="40" userCustomizable="true" cellNoWrapFormat="true"/>
+                              <oa:messageStyledText id="PoShipDate" dataType="DATE" prompt="PO Ship Date" viewName="xxGsoPO_Hdr_VO1" viewAttr="PoShipDate" sortState="yes" userCustomizable="true"/>
+                              <oa:messageStyledText id="PoSentVendorDate" dataType="DATE" prompt="Sent To Vendor" viewName="xxGsoPO_Hdr_VO1" viewAttr="PoSentVendorDate" userCustomizable="true"/>
+                              <oa:messageStyledText id="PoConfmVendDate" dataType="DATE" prompt="Conf By Vendor" viewName="xxGsoPO_Hdr_VO1" viewAttr="PoConfmVendDate" userCustomizable="true"/>
+                              <oa:messageStyledText id="LeadTimePoConf" dataType="NUMBER" prompt="Require deliver date" viewName="xxGsoPO_Hdr_VO1" viewAttr="LeadTimePoConf" userCustomizable="true" rendered="false"/>
+                              <oa:messageStyledText id="PoConfOdaDate" dataType="DATE" prompt="Conf By ODA" viewName="xxGsoPO_Hdr_VO1" viewAttr="PoConfOdaDate" userCustomizable="true" rendered="false"/>
+                              <oa:messageStyledText id="PoType" dataType="VARCHAR2" prompt="PO Type" viewName="xxGsoPO_Hdr_VO1" viewAttr="PoType" maximumLength="30" columns="20" cellNoWrapFormat="true" userCustomizable="true"/>
+                              <oa:messageStyledText id="CompanySourceCode" dataType="VARCHAR2" prompt="Company Src Code" viewName="xxGsoPO_Hdr_VO1" viewAttr="CompanySourceCode" maximumLength="40" userCustomizable="true"/>
+                              <oa:messageStyledText id="CountryCode" dataType="VARCHAR2" prompt="Country" viewName="xxGsoPO_Hdr_VO1" viewAttr="CountryCode" maximumLength="25" userCustomizable="true"/>
+                              <oa:messageStyledText id="Remarks" dataType="VARCHAR2" prompt="PO Remark" viewName="xxGsoPO_Hdr_VO1" viewAttr="Remarks" maximumLength="60" userCustomizable="true"/>
+                              <oa:messageCheckBox id="NeedBv" dataType="VARCHAR2" prompt="Need BV" viewName="xxGsoPO_Hdr_VO1" viewAttr="NeedBv" defaultValue="N" checkedValue="Y" unCheckedValue="N" readOnly="true" userCustomizable="true"/>
+                              <oa:messageStyledText id="InspectionParty" dataType="VARCHAR2" prompt="Inspection Party" viewName="xxGsoPO_Hdr_VO1" viewAttr="InspectionParty" maximumLength="100" userCustomizable="true"/>
+                              <oa:messageStyledText id="ManufacturerName1" dataType="VARCHAR2" prompt="Manufact Name" viewName="xxGsoPO_Hdr_VO1" viewAttr="ManufacturerName" maximumLength="100" userCustomizable="true" rendered="false"/>
+                              <oa:messageStyledText id="LateReason" dataType="VARCHAR2" prompt="Late Reason" viewName="xxGsoPO_Hdr_VO1" viewAttr="LateReason" maximumLength="2000" userCustomizable="true"/>
+                              <oa:messageStyledText id="PoConfOdctodaDate" dataType="DATE" prompt="ODC To ODA" viewName="xxGsoPO_Hdr_VO1" viewAttr="PoConfOdctodaDate" userCustomizable="true" rendered="false"/>
+                              <oa:messageCheckBox id="PoConfrmAlert" dataType="VARCHAR2" prompt="Po Confrmt Alert" viewName="xxGsoPO_Hdr_VO1" viewAttr="PoConfrmAlert" defaultValue="N" checkedValue="Y" text="Po Confrmt Alert" readOnly="true" unCheckedValue="N" userCustomizable="true"/>
+                              <oa:messageCheckBox id="BookingAlert" dataType="VARCHAR2" prompt="Booking Alert" viewName="xxGsoPO_Hdr_VO1" viewAttr="BookingAlert" defaultValue="N" checkedValue="Y" unCheckedValue="N" readOnly="true" text="Booking Alert" userCustomizable="true"/>
+                              <oa:messageStyledText id="PoRecdJdaDate" dataType="DATE" prompt="From JDA" viewName="xxGsoPO_Hdr_VO1" viewAttr="PoRecdJdaDate" userCustomizable="true"/>
+                              <oa:messageStyledText id="VendComtShipDate" dataType="DATE" prompt="Vendor Comt Ship Date" viewName="xxGsoPO_Hdr_VO1" viewAttr="VendComtShipDate" userCustomizable="true" rendered="false"/>
+                              <oa:messageTextInput id="PoAmnt" dataType="NUMBER" prompt="Total PO Amount" viewName="xxGsoPO_Hdr_VO1" viewAttr="PoAmnt" userCustomizable="true" readOnly="true"/>
+                              <oa:messageTextInput id="ShipAmnt" dataType="NUMBER" prompt="Total Shipped Amount" viewName="xxGsoPO_Hdr_VO1" viewAttr="ShipAmnt" userCustomizable="true" readOnly="true"/>
+                              <oa:messageStyledText id="OriginCountryCd" dataType="VARCHAR2" prompt="Origin Country Code" viewName="xxGsoPO_Hdr_VO1" viewAttr="OriginCountryCd" maximumLength="25" userCustomizable="true" rendered="false"/>
+                              <oa:messageTextInput id="CreatedBy" dataType="NUMBER" prompt="Created By" viewName="xxGsoPO_Hdr_VO1" viewAttr="CreatedBy" readOnly="true" userCustomizable="true"/>
+                              <oa:messageTextInput id="CreationDate" dataType="DATETIME" prompt="Creation Date" viewName="xxGsoPO_Hdr_VO1" viewAttr="CreationDate" readOnly="true" userCustomizable="true"/>
+                              <oa:messageTextInput id="LastUpdatedBy" dataType="NUMBER" prompt="Last Updated By" viewName="xxGsoPO_Hdr_VO1" viewAttr="LastUpdatedBy" readOnly="true" userCustomizable="true"/>
+                              <oa:messageTextInput id="LastUpdateDate" dataType="DATE" prompt="Last Update Date" viewName="xxGsoPO_Hdr_VO1" viewAttr="LastUpdateDate" readOnly="true" userCustomizable="true"/>
+                              <oa:messageTextInput id="PoHeaderId" dataType="NUMBER" prompt="PO Header Id" viewName="xxGsoPO_Hdr_VO1" viewAttr="PoHeaderId" sortState="ascending" queryable="true" disabled="true" readOnly="true" userCustomizable="true" rendered="false"/>
+                              <oa:messageStyledText id="ChangeShipDate" dataType="DATE" viewName="xxGsoPO_Hdr_VO1" viewAttr="ChangedShipDate" prompt="Changed Ship Date"/>
+                              <oa:messageStyledText id="ReqdDeliverDate" dataType="DATE" viewName="xxGsoPO_Hdr_VO1" viewAttr="ReqdDeliverDate" prompt="Required Deliver Date"/>
+                              <oa:messageTextInput id="BatchId1" dataType="NUMBER" prompt="Batch Id" viewName="xxGsoPO_Hdr_VO1" viewAttr="BatchId" sortState="no" queryable="true" disabled="true" readOnly="true" userCustomizable="true" rendered="true"/>
+                              <oa:messageStyledText id="Port" dataType="VARCHAR2" prompt="Port" viewName="xxGsoPO_Hdr_VO1" viewAttr="Port" userCustomizable="true"/>
+                              <oa:messageStyledText id="Loc" dataType="VARCHAR2" prompt="Loc" viewName="xxGsoPO_Hdr_VO1" viewAttr="Loc" userCustomizable="true"/>
+                              <oa:messageStyledText id="CurrencyCode" dataType="VARCHAR2" prompt="Currency Code" viewName="xxGsoPO_Hdr_VO1" viewAttr="CurrencyCode" userCustomizable="true"/>
+                              <oa:messageTextInput id="PoQty" dataType="NUMBER" prompt="PO Quantity" viewName="xxGsoPO_Hdr_VO1" viewAttr="PoQty" userCustomizable="true" readOnly="true"/>
+                              <oa:messageTextInput id="InspQty" dataType="NUMBER" prompt="Insp Quantity" viewName="xxGsoPO_Hdr_VO1" viewAttr="InspQty" userCustomizable="true" readOnly="true"/>
+                              <oa:messageTextInput id="ShipQty" dataType="NUMBER" prompt="Ship Quantity" viewName="xxGsoPO_Hdr_VO1" viewAttr="ShipQty" userCustomizable="true" readOnly="true"/>
+                              <oa:messageTextInput id="InspAmnt" dataType="NUMBER" prompt="Insp Amount" viewName="xxGsoPO_Hdr_VO1" viewAttr="InspAmnt" userCustomizable="true" readOnly="true"/>
+                           </ui:contents>
+                           <ui:detail>
+                              <oa:header id="region3" text="PO Lines">
+                                 <ui:contents>
+                                    <oa:table id="xxGsoPO_Dtl_VO1" viewLinkName="xxGsoHdrDtl_VL1" blockSize="100">
+                                       <ui:contents>
+                                          <oa:messageStyledText id="PoLineNo1" dataType="NUMBER" prompt="Line No" viewName="xxGsoPO_Dtl_VO1" viewAttr="PoLineNo" sortState="no" initSortSeq="none" userCustomizable="true"/>
+                                          <oa:messageStyledText id="LineStatus" dataType="VARCHAR2" prompt="Status" viewName="xxGsoPO_Dtl_VO1" viewAttr="LineStatus" maximumLength="30" sortState="no" userCustomizable="true"/>
+                                          <oa:messageStyledText id="BvStatus1" dataType="VARCHAR2" prompt="Inspection Status" viewName="xxGsoPO_Dtl_VO1" viewAttr="BvStatus" maximumLength="30" userCustomizable="true"/>
+                                          <oa:messageStyledText id="Item1" dataType="VARCHAR2" prompt="Sku" viewName="xxGsoPO_Dtl_VO1" viewAttr="Item" maximumLength="30" sortState="no" userCustomizable="true"/>
+                                          <oa:messageStyledText id="Description" dataType="VARCHAR2" prompt="Description" viewName="xxGsoPO_Dtl_VO1" viewAttr="Description" maximumLength="240" cellNoWrapFormat="true" userCustomizable="true"/>
+                                          <oa:messageStyledText id="Uom" dataType="VARCHAR2" prompt="Uom" viewName="xxGsoPO_Dtl_VO1" viewAttr="Uom" maximumLength="30" userCustomizable="true"/>
+                                          <oa:messageStyledText id="Vpc" dataType="VARCHAR2" prompt="Vendor Product Cd" viewName="xxGsoPO_Dtl_VO1" viewAttr="Vpc" maximumLength="60" cellNoWrapFormat="true" userCustomizable="true"/>
+                                          <oa:messageStyledText id="LateShipmentAlert" dataType="VARCHAR2" prompt="Late Shipment Alert" viewName="xxGsoPO_Dtl_VO1" viewAttr="LateShipmentAlert" maximumLength="1" userCustomizable="true"/>
+                                          <oa:messageStyledText id="EstLandCost" dataType="NUMBER" prompt="Est Land Cost" viewName="xxGsoPO_Dtl_VO1" viewAttr="EstLandCost" userCustomizable="true"/>
+                                          <oa:messageCheckBox id="PartialLineFlag" dataType="VARCHAR2" prompt="Partial Line Flag" viewName="xxGsoPO_Dtl_VO1" viewAttr="PartialLineFlag" defaultValue="N" checkedValue="Y" unCheckedValue="N" text="Partial Line Flag" readOnly="true" userCustomizable="true"/>
+                                          <oa:messageStyledText id="RetailCost" dataType="NUMBER" prompt="Retail Cost" viewName="xxGsoPO_Dtl_VO1" viewAttr="RetailCost" userCustomizable="true"/>
+                                          <oa:messageStyledText id="ActLandCost" dataType="NUMBER" prompt="Act Land Cost" viewName="xxGsoPO_Dtl_VO1" viewAttr="ActLandCost" userCustomizable="true"/>
+                                          <oa:messageStyledText id="StdPack" dataType="NUMBER" prompt="STD Pack" viewName="xxGsoPO_Dtl_VO1" viewAttr="StdPack" userCustomizable="true"/>
+                                          <oa:messageStyledText id="CartonPack" dataType="NUMBER" prompt="Carton Pack" viewName="xxGsoPO_Dtl_VO1" viewAttr="CartonPack" userCustomizable="true"/>
+                                          <oa:messageStyledText id="OrderedQty" dataType="NUMBER" prompt="Ordered Quantity" viewName="xxGsoPO_Dtl_VO1" viewAttr="OrderedQty" userCustomizable="true"/>
+                                          <oa:messageStyledText id="CartonWeight" dataType="NUMBER" prompt="Carton Weight" viewName="xxGsoPO_Dtl_VO1" viewAttr="CartonWeight" userCustomizable="true"/>
+                                          <oa:messageStyledText id="Class11" dataType="NUMBER" prompt="Class" viewName="xxGsoPO_Dtl_VO1" viewAttr="Class11" userCustomizable="true"/>
+                                          <oa:messageStyledText id="Remarks1" dataType="VARCHAR2" prompt="Remarks" viewName="xxGsoPO_Dtl_VO1" viewAttr="Remarks" maximumLength="2000" userCustomizable="true"/>
+                                          <oa:messageStyledText id="Category1" dataType="VARCHAR2" prompt="Category" viewName="xxGsoPO_Dtl_VO1" viewAttr="Category" maximumLength="30" sortState="no" userCustomizable="true"/>
+                                          <oa:messageStyledText id="ChangedPoShipdate" dataType="DATE" prompt="Changed PO Ship Date" viewName="xxGsoPO_Dtl_VO1" viewAttr="ChangedPoShipdate" userCustomizable="true"/>
+                                          <oa:messageStyledText id="MerchDecCost" dataType="NUMBER" prompt="Merchent Dec Cost" viewName="xxGsoPO_Dtl_VO1" viewAttr="MerchDecCost"/>
+                                          <oa:messageCheckBox id="InspBookAlert" dataType="VARCHAR2" prompt="Insp Book Alert" viewName="xxGsoPO_Dtl_VO1" viewAttr="InspBookAlert" defaultValue="N" checkedValue="Y" unCheckedValue="N" text="Insp Book Alert" readOnly="true"/>
+                                          <oa:messageCheckBox id="BvBookingAlert" dataType="VARCHAR2" prompt="Insp Booking Alert" viewName="xxGsoPO_Dtl_VO1" viewAttr="BvBookingAlert" defaultValue="N" checkedValue="Y" unCheckedValue="N" text="Insp Booking Alert" readOnly="true"/>
+                                          <oa:messageCheckBox id="KnBookingAlert" dataType="VARCHAR2" prompt="Shipment Booking Alert" viewName="xxGsoPO_Dtl_VO1" viewAttr="KnBookingAlert" defaultValue="N" checkedValue="Y" unCheckedValue="N" text="Shipment Booking Alert" readOnly="true"/>
+                                          <oa:messageStyledText id="CartonCube" dataType="NUMBER" prompt="Carton Cube" viewName="xxGsoPO_Dtl_VO1" viewAttr="CartonCube"/>
+                                          <oa:messageStyledText id="SourcePortName" dataType="VARCHAR2" prompt="Source Port" viewName="xxGsoPO_Dtl_VO1" viewAttr="SourcePortName" maximumLength="100"/>
+                                          <oa:messageCheckBox id="KnReceivingAlert" dataType="VARCHAR2" prompt="Shipment Reciv Alert" viewName="xxGsoPO_Dtl_VO1" viewAttr="KnReceivingAlert" defaultValue="N" checkedValue="Y" unCheckedValue="N" text="Shipment Reciv Alert" readOnly="true"/>
+                                          <oa:messageCheckBox id="NewItemFlag" dataType="VARCHAR2" prompt="New Item Flag" viewName="xxGsoPO_Dtl_VO1" viewAttr="NewItemFlag" defaultValue="N" checkedValue="Y" unCheckedValue="N" readOnly="true" text="New Item Flag"/>
+                                          <oa:messageCheckBox id="OverShippedFlag" dataType="VARCHAR2" prompt="Over Shipped Flag" viewName="xxGsoPO_Dtl_VO1" viewAttr="OverShippedFlag" defaultValue="N" checkedValue="Y" unCheckedValue="N" text="Over Shipped Flag" readOnly="true"/>
+                                          <oa:messageStyledText id="Dept" dataType="NUMBER" prompt="Department" viewName="xxGsoPO_Dtl_VO1" viewAttr="Dept"/>
+                                          <oa:messageStyledText id="Division" dataType="NUMBER" prompt="Division" viewName="xxGsoPO_Dtl_VO1" viewAttr="Division"/>
+                                          <oa:messageStyledText id="OdMerchant" dataType="VARCHAR2" prompt="MO" viewName="xxGsoPO_Dtl_VO1" viewAttr="OdMerchant" maximumLength="40"/>
+                                          <oa:messageStyledText id="MasterCarton" dataType="NUMBER" prompt="Master Carton" viewName="xxGsoPO_Dtl_VO1" viewAttr="MasterCarton"/>
+                                          <oa:messageStyledText id="BatchId" dataType="NUMBER" prompt="Batch ID" viewName="xxGsoPO_Dtl_VO1" viewAttr="BatchId"/>
+                                          <oa:messageCheckBox id="LatestLineFlag" dataType="VARCHAR2" prompt="Latest Line Flag" viewName="xxGsoPO_Dtl_VO1" viewAttr="LatestLineFlag" defaultValue="N" checkedValue="Y" unCheckedValue="N" readOnly="true"/>
+                                          <oa:messageStyledText id="ShipmentDate1" dataType="DATE" prompt="Shipment Date" viewName="xxGsoPO_Dtl_VO1" viewAttr="ShipmentDate"/>
+                                          <oa:messageStyledText id="FobOriginCost" dataType="NUMBER" prompt="FOB Origin Cost" viewName="xxGsoPO_Dtl_VO1" viewAttr="FobOriginCost"/>
+                                          <oa:messageStyledText id="ReasonCode" dataType="VARCHAR2" prompt="Reason Code" viewName="xxGsoPO_Dtl_VO1" viewAttr="ReasonCode" maximumLength="60"/>
+                                          <oa:messageStyledText id="MasterFobCost" dataType="NUMBER" prompt="Master FOB Cost" viewName="xxGsoPO_Dtl_VO1" viewAttr="MasterFobCost"/>
+                                          <oa:messageStyledText id="DestnPortName" dataType="VARCHAR2" prompt="Destn Port" viewName="xxGsoPO_Dtl_VO1" viewAttr="DestnPortName" maximumLength="100"/>
+                                          <oa:messageStyledText id="OriginalPoShipdate1" dataType="DATE" prompt="Original PO Shipdate" viewName="xxGsoPO_Dtl_VO1" viewAttr="OriginalPoShipdate"/>
+                                          <oa:messageTextInput id="PoLineId1" dataType="NUMBER" prompt="Po Line Id" viewName="xxGsoPO_Dtl_VO1" viewAttr="PoLineId" disabled="true" readOnly="true" rendered="false"/>
+                                          <oa:messageTextInput id="PoHeaderId3" dataType="NUMBER" prompt="PoHeaderId" viewName="xxGsoPO_Dtl_VO1" viewAttr="PoHeaderId" disabled="true" readOnly="true" rendered="false"/>
+                                          <oa:messageStyledText id="LineTotal" viewName="xxGsoPO_Dtl_VO1" viewAttr="LineTotal" prompt="Line Total"/>
+                                       </ui:contents>
+                                    </oa:table>
+                                    <oa:separator id="item5"/>
+                                 </ui:contents>
+                              </oa:header>
+                           </ui:detail>
+                        </oa:table>
+                     </ui:contents>
+                  </oa:query>
+               </ui:contents>
+            </oa:header>
+            <oa:submitButton id="ExpBut" text="Export" viewName="xxGsoPO_Hdr_VO1" disabled="false" prompt="Export"/>
+         </ui:contents>
+      </oa:pageLayout>
+   </content>
+</page>
