@@ -47,6 +47,7 @@ AS
    |  2.3      18-Nov-2017	Sreedhar Mohan	     As part of VPS project VPS org|
    |                                             Open invoices to be prevented |     
    |                                             to be inserted into intrim tbl|
+   |  2.4      03-JUN-2019 	 Dinesh N        	 Replaced V$database with DB_Name for LNS|
    +=========================================================================+*/
    -- Global Variable Declarations here
    gn_limit                   xx_fin_translatevalues.target_value1%TYPE;
@@ -697,9 +698,15 @@ AS
            FROM xx_ar_recon_trans_stg;
    BEGIN
       xx_ar_wc_utility_pkg.location_and_log (GC_YES, CHR (10)||'Capture Instance Name');
-      SELECT substr(instance_name,4,5) 
+	  /*
+        SELECT substr(instance_name,4,5) 
         INTO lc_inst
         FROM v$instance;
+	*/
+	
+		SELECT SUBSTR(SYS_CONTEXT('USERENV','DB_NAME'),1,8) 		-- Changed from V$instance to DB_NAME
+		INTO lc_inst
+		FROM dual;
 
       p_errcode := 0;
       lc_filename := p_file || '_' || lc_inst || lc_file || '-' || ln_fno || '.dat';
