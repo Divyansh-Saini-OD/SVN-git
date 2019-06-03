@@ -29,6 +29,7 @@ CREATE OR REPLACE PACKAGE BODY XX_CDH_CONV_MASTER_PKG
 -- |1.3       18-NOV-15   Manikant Kasu      Removed schema alias as   | 
 -- |                                         part of GSCC R12.2.2      |
 -- |                                         Retrofit                  |
+-- |1.4      03-JUN-2018  Dinesh Nagapuri    Replaced V$database with DB_Name for LNS   			 |
 -- +===================================================================+
 AS
 gt_request_id                 fnd_concurrent_requests.request_id%TYPE
@@ -1738,9 +1739,15 @@ BEGIN
          ------------------------------------------------------------------------------------------
          -- Changed to v$database to account for RAC enabled system
          -- Added Parameter to program - Target Name (where files are FTPd)
-         SELECT name 
+         /*
+		 SELECT name 
          INTO   lv_instance_name
          FROM   v$database;
+		 */
+		 
+		SELECT SUBSTR(SYS_CONTEXT('USERENV','DB_NAME'),1,8) 		-- Added from V$database to DB_NAME
+		INTO lv_instance_name
+		FROM dual;
          
          lv_ftp_target_host := NVL(fnd_profile.value('XX_CDH_CONV_FTP_TARGET'), 'FTP target host not defined');
          
