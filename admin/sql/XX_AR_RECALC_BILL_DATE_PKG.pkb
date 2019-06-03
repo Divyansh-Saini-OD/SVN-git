@@ -1,26 +1,24 @@
 create or replace PACKAGE BODY XX_AR_RECALC_BILL_DATE_PKG
 AS
--- +================================================================================================================+
--- |  Office Depot - Project Simplify                                                           					|
--- |                                                                                            					|
--- +================================================================================================================+
--- |  Name	 :  XX_AR_RECALC_BILL_DATE_PKG                                                      					|
--- |  RICE ID 	 : I3126      			                                                        					|
--- |  Description:         								                                        					|
--- |  Change Record:                                                                            					|      
--- +================================================================================================================+
--- | Version     Date         Author          Remarks                                           					|
--- | =========   ===========  =============   ======================================================================|
--- | 1.0         18-OCT-2018  Havish Kasina   Initial version                                   					|  
--- | 1.1         21-JAN-2019  Havish Kasina   Added new parameter p_billing_date                					|
--- | 1.2         17-APR-2019  Dinesh Nagapuri Term Id is not null condition and inserting into signal table       	|
--- +================================================================================================================+
+-- +============================================================================================+
+-- |  Office Depot - Project Simplify                                                           |
+-- |                                                                                            |
+-- +============================================================================================+
+-- |  Name	 :  XX_AR_RECALC_BILL_DATE_PKG                                                      |
+-- |  RICE ID 	 : I3126      			                                                        |
+-- |  Description:         								                                        |
+-- |  Change Record:                                                                            |      
+-- +============================================================================================+
+-- | Version     Date         Author          Remarks                                           |
+-- | =========   ===========  =============   ==================================================|
+-- | 1.0         18-OCT-2018  Havish Kasina   Initial version                                   |  
+-- | 1.1         21-JAN-2019  Havish Kasina   Added new parameter p_billing_date                |
+-- +============================================================================================+
 
 gc_debug 	                VARCHAR2(2);
 gn_request_id               fnd_concurrent_requests.request_id%TYPE;
 gn_user_id                  fnd_concurrent_requests.requested_by%TYPE;
 gn_login_id    	            NUMBER;
-gn_bill_date				NUMBER;
 
 -- +============================================================================================+
 -- |  Name	 : Log Exception                                                                    |
@@ -115,127 +113,6 @@ THEN
     NULL;
 END print_out_msg;
 
--- +==============================================================================================================================================+
--- |  Name	 : insert_new_bill_signal                                                                           								  |                 	
--- |  Description: This procedure is to insert bill signal for bill complete transactions if no bill signal from SCM beyond threshold limit.      |
--- ===============================================================================================================================================|
-PROCEDURE insert_new_bill_signal(p_debug          IN   VARCHAR2
-							  ,p_billing_date   IN   DATE
-							  ,p_customer_id	IN   NUMBER
-							  )
-AS 
-
-				/* this cursor will pick up all transactions for given site/customer group by parent order number for Bill Complete */
-		CURSOR C_bill_comp_trx IS
-				  SELECT /*+  index(CT RA_CUSTOMER_TRX_U1)*/   -- Added for Defect # 35571
-					   ct.customer_trx_id              trx_id,
-					   ct.trx_date                     trx_date,
-					   ct.trx_number                   trx_number,
-					   ct.billing_date                 billing_date,
-					   xoha.bill_comp_flag			   bill_comp_flag,
-					   xoha.parent_order_num		   parent_order_num 		
-				FROM   ra_customer_trx   ct,
-					   ar_payment_schedules ps,
-					   xx_om_header_attributes_all xoha
-				WHERE  1=1
-				AND    PS.customer_id     = p_customer_id
-				--AND    CT.BILL_TO_CUSTOMER_ID     = :p_customer_id
-				AND    PS.cons_inv_id              IS NULL
-				AND    PS.invoice_currency_code    = nvl('USD', PS.invoice_currency_code)
-				AND    PS.class                    IN ('INV', 'DM', 'DEP', 'CB','CM')
-				AND    nvl(PS.exclude_from_cons_bill_flag, 'N') <> 'Y'
-				AND    CT.customer_trx_id          = PS.customer_trx_id
-				AND    CT.printing_option 		   = 'PRI'
-				AND TRUNC(NVL(CT.billing_date, CT.trx_date)-p_billing_date) >= gn_bill_date
-				AND    ct.attribute14              = xoha.header_id
-				AND    xoha.bill_comp_flag IN ('B','Y')
-				ORDER  BY 1;
-				
-	lc_error_loc                VARCHAR2(100) := 'XX_AR_RECALC_BILL_DATE_PKG.insert_new_bill_signal';   
-	lc_error_msg                VARCHAR2(1000);
-
-begin
-	
-	gc_debug	               := p_debug;
-	gn_user_id                 := fnd_global.user_id;
-	gn_login_id                := fnd_global.login_id;
-	print_debug_msg('=============================================================================================================================');
-	print_debug_msg('=============================================================================================================================');
-	print_debug_msg ('Processing the Eligible transactions for Bill Signal ',FALSE);
-    print_debug_msg ('Input Parameters', TRUE);
-	print_debug_msg ('Debug Flag :'|| gc_debug ,TRUE);
-	print_debug_msg ('Billing Date :'||p_billing_date, TRUE);
-	print_debug_msg ('Customer Id :'||p_customer_id, TRUE);
-	
-	 -- Added for Bill Complete Dinesh NAIT-86554
-	BEGIN
-		SELECT target_value1
-		INTO gn_bill_date
-		FROM xx_fin_translatedefinition xftd ,
-			 xx_fin_translatevalues xftv
-		WHERE xftv.translate_id          = xftd.translate_id
-		AND xftd.translation_name        ='OD_BC_BILLING_DATE'
-		AND source_value1                ='Bill Complete'
-		AND NVL (xftv.enabled_flag, 'N') = 'Y';
-	EXCEPTION
-	WHEN NO_DATA_FOUND THEN
-		gn_bill_date	:=30;
-	WHEN OTHERS THEN
-		gn_bill_date	:=30;
-	END;
-	
-	print_debug_msg ('Checking for difference between billing date and  OD_BC_BILLING_DATE  gn_bill_date : '||gn_bill_date, TRUE);
-	
-	FOR L_inv_trx IN C_bill_comp_trx LOOP	
-		
-		BEGIN
-			print_debug_msg('                          ');
-			print_debug_msg('Processing Trx Number :'||L_inv_trx.trx_number);
-			
-			INSERT
-			INTO xx_scm_bill_signal
-				(
-				Parent_Order_Number,
-				Child_Order_Number,
-				billing_date_flag,
-				Creation_Date,
-				Created_By,
-				Last_Update_Date,
-				Last_Updated_By,
-				Last_Update_Login
-				)
-				VALUES
-				(
-				L_inv_trx.parent_order_num,
-				L_inv_trx.trx_number,
-				'N',
-				SYSDATE,
-				gn_user_id,
-				SYSDATE,
-				gn_user_id,
-				gn_login_id
-				);
-		EXCEPTION
-		WHEN OTHERS
-		THEN
-			fnd_file.put_line(fnd_file.log,'Error Message :'||lc_error_msg); 
-			lc_error_msg := substr(sqlerrm,1,250);
-			print_debug_msg ('XX_AR_RECALC_BILL_DATE_PKG.insert_new_bill_signal - '||lc_error_msg,TRUE);
-		END;
-	END LOOP;
-
-EXCEPTION
-WHEN OTHERS
-THEN			   
-	fnd_file.put_line(fnd_file.log,'Error Message :'||lc_error_msg); 
-    lc_error_msg := substr(sqlerrm,1,250);
-    print_debug_msg ('XX_AR_RECALC_BILL_DATE_PKG.insert_new_bill_signal - '||lc_error_msg,TRUE);
-    log_exception ('XX_AR_RECALC_BILL_DATE_PKG.insert_new_bill_signal',
-	                lc_error_loc,
-		            lc_error_msg); 
-END insert_new_bill_signal;
-
-
 -- +==========================================================================================================+
 -- |  Name	 : update_new_bill_date                                                                           |                 	
 -- |  Description: This procedure is to update the new billing date for the Bill complete transactions        |
@@ -268,8 +145,8 @@ AS
        AND hcp.cons_inv_flag = 'Y' 
        AND hcp.status = 'A'
        AND hca.status = 'A'
-	   AND rct.term_id IS NOT NULL							-- Added Dinesh V1.2
        AND hcp.attribute6 IN ('B','Y')
+	   AND rct.term_id	IS NOT NULL
        AND hcp.cust_account_id = hca.cust_account_id
        AND hca.cust_account_id = rct.bill_to_customer_id
        AND rct.trx_number = xsbs.child_order_number;
