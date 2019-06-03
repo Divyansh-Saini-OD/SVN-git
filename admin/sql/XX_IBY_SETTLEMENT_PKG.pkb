@@ -128,7 +128,8 @@ PACKAGE BODY      xx_iby_settlement_pkg
 	-- |47.1       05-MAR-2018 M K Pramod Kumar    Code Change to process UnApplied Invoices for SERVICE-CONTRACTS |
 	-- |47.2       05-MAR-2018 M K Pramod Kumar    Modified to derive Invoice Num from ORDT |
 	-- |47.3       14-MAR-2018 M K Pramod Kumar    Modified to derive gc_ixreserved31 to default to *ECI for SERVICE-CONTRACTS  |
-	-- |47.4       10-MAY-2019 M K Pramod Kumar    Modified to to derive Instance Name for LNS3
+	-- |48.0       21-FEB-2019 M K Pramod Kumar    Modified  code for COF changes per NAIT-83065 |
+	-- |48.1       10-MAY-2019 M K Pramod Kumar    Modified to to derive Instance Name for LNS
 	-- +===========================================================================+
 
 		g_package_name              CONSTANT all_objects.object_name%TYPE                        := 'xx_iby_settlement_pkg';
@@ -1811,6 +1812,101 @@ PACKAGE BODY      xx_iby_settlement_pkg
 				x_order_payment_id := NULL;
 				x_error_message := NULL;
 		END xx_retrieve_order_pmt_id;
+		
+			-- +====================================================================+
+	-- | PROCEDURE  : XX_UPDATE_COF_TRANS                              |
+	-- |                                                                    |
+	-- | DESCRIPTION: Changes made for COF Transactions as per V48.0 |
+	-- |                                                                    |
+	-- | PARAMETERS : NONE
+    -- |
+	-- | PARAMETERS : NONE *** private package variables are used ***       |
+	-- |                                                                    |
+	-- | RETURNS    : NONE *** private package variables are used ***                   |
+	-- +====================================================================+
+		PROCEDURE XX_UPDATE_COF_TRANS
+		is
+		BEGIN
+			
+
+				if gc_ixwallet_type='1' then
+				
+					if gc_ixoptions is not null then
+						gc_ixoptions := gc_ixoptions||' '|| '*COF';
+						gc_ixreserved32:='<COF><Schedule>N</Schedule><Reason>Initial</Reason></COF>';
+					else
+						gc_ixoptions := gc_ixoptions||'*COF';
+						gc_ixreserved32:='<COF><Schedule>N</Schedule><Reason>Initial</Reason></COF>';
+					end if;
+						
+				end if;
+				
+				if gc_ixwallet_type='2' then		
+				
+					if gc_ixoptions is not null then
+						gc_ixoptions := gc_ixoptions||' '|| '*COF';
+						gc_ixreserved32:='<COF><Schedule>N</Schedule><Reason>Subsequent</Reason></COF>';
+					else
+						gc_ixoptions := gc_ixoptions||'*COF';
+						gc_ixreserved32:='<COF><Schedule>N</Schedule><Reason>Subsequent</Reason></COF>';
+					end if;
+				end if;
+				
+				if gc_ixwallet_type='3' then				
+					if gc_ixoptions is not null then
+						gc_ixoptions := gc_ixoptions||' '|| '*COF';
+						gc_ixreserved32:='<COF><Schedule>N</Schedule><Reason>Reauth</Reason></COF>';
+					else
+						gc_ixoptions := gc_ixoptions||'*COF';
+						gc_ixreserved32:='<COF><Schedule>N</Schedule><Reason>Reauth</Reason></COF>';
+					end if;
+				end if;
+				
+				if gc_ixwallet_type='4' then				
+					if gc_ixoptions is not null then
+						gc_ixoptions := gc_ixoptions||' '|| '*COF *Recurring_Payment';
+						gc_ixreserved32:='<COF><Schedule>Y</Schedule><Reason>Initial</Reason></COF>';
+					else
+						gc_ixoptions := gc_ixoptions||'*COF *Recurring_Payment';
+						gc_ixreserved32:='<COF><Schedule>Y</Schedule><Reason>Initial</Reason></COF>';
+					end if;
+				end if;
+				
+				if gc_ixwallet_type='5' then				
+					if gc_ixoptions is not null then
+						gc_ixoptions := gc_ixoptions||' '|| '*COF *Recurring_Payment';
+						gc_ixreserved32:='<COF><Schedule>Y</Schedule><Reason>Subsequent</Reason></COF>';
+					else
+						gc_ixoptions := gc_ixoptions||'*COF *Recurring_Payment';
+						gc_ixreserved32:='<COF><Schedule>Y</Schedule><Reason>Subsequent</Reason></COF>';
+					end if;
+				end if;
+				
+				if gc_ixwallet_type='6' then				
+					if gc_ixoptions is not null then
+						gc_ixoptions := gc_ixoptions||' '|| '*COF *Recurring_Payment';
+						gc_ixreserved32:='<COF><Schedule>Y</Schedule><Reason>Resubmit</Reason></COF>';
+					else
+						gc_ixoptions := gc_ixoptions||'*COF *Recurring_Payment';
+						gc_ixreserved32:='<COF><Schedule>Y</Schedule><Reason>Resubmit</Reason></COF>';
+					end if;
+				end if;
+				xx_location_and_log(g_log,
+								   'ixoptions   : '
+								|| gc_ixoptions);
+				xx_location_and_log(g_log,
+								   'ixreserved32: '
+								|| gc_ixreserved32);
+				
+				
+		EXCEPTION						
+			WHEN OTHERS 
+			THEN
+			 xx_location_and_log(g_loc,
+									'Entering OTHERS Exception in XX_UPDATE_COF_TRANS.' || ' '
+								  || SQLERRM);
+			gc_ixreserved32:=null;
+		END XX_UPDATE_COF_TRANS;
 
 	-- +====================================================================+
 	-- | FUNCTION   : XX_VALIDATE_DEPOSIT_RECEIPT                           |
@@ -7259,7 +7355,8 @@ PACKAGE BODY      xx_iby_settlement_pkg
 						 ixreserved39,       --Added new column, Version 26.5
 						 ixreserved56,       --Added new column, Version 27.0
 						 ixtokenflag,        --Added new column, Version 32.0
-						 ixcreditcardcode    --Added new column, Version 32.0
+						 ixcreditcardcode,    --Added new column, Version 32.0
+						 ixreserved32         --Added new column, Version 48.0
                         )
 			VALUES      (g_pre1,
 							'F'
@@ -7350,7 +7447,8 @@ PACKAGE BODY      xx_iby_settlement_pkg
 						 gc_ixreserved39,    --Version 26.5 
 						 gc_ixreserved56,    --Version 27.0
 						 gc_ixtokenflag,     --Version 32.0
-						 gc_ixcreditcardcode --Version 32.0
+						 gc_ixcreditcardcode, --Version 32.0
+						 gc_ixreserved32     --Version 48.0
                          );
 
 			ln_inserted_101_count := SQL%ROWCOUNT;
@@ -8882,6 +8980,18 @@ PACKAGE BODY      xx_iby_settlement_pkg
 	                   process_amex_data;
 	                END IF;
 	                --END Defect#38215 - amex to vantiv conv
+					
+					    --Start code Changes for V48.0
+			xx_location_and_log(g_log,
+								   'COF Transactions Update for Wallet Type            : '
+								|| gc_ixwallet_type);
+	                IF gc_ixwallet_type is not null 
+		        THEN
+			   xx_location_and_log(g_loc,
+								'***** Executing XX_UPDATE_COF_TRANS from XX_SINGLE_TRX_SETTLEMENT ***** ');
+	                   XX_UPDATE_COF_TRANS;
+	                END IF;
+	                --End code Changes for V48.0
 	                
 			xx_location_and_log(g_loc,
 								'***** Executing XX_CREATE_101_SETTLEMENT_REC from XX_SINGLE_TRX_SETTLEMENT ***** ');
@@ -9171,6 +9281,18 @@ PACKAGE BODY      xx_iby_settlement_pkg
 	                   process_amex_data;
 	                END IF;
 	                --END Defect#38215 - amex to vantiv conv
+					
+					  --Start code Changes for V48.0
+			xx_location_and_log(g_log,
+								   'COF Transactions Update for Wallet Type            : '
+								|| gc_ixwallet_type);
+	                IF gc_ixwallet_type is not null 
+		        THEN
+			   xx_location_and_log(g_loc,
+								'***** Executing XX_UPDATE_COF_TRANS from xx_irec_multi_trx_settlement ***** ');
+	                   XX_UPDATE_COF_TRANS;
+	                END IF;
+	                --End code Changes for V48.0
 	                
 			xx_location_and_log(g_loc,
 								'***** Executing XX_CREATE_101_SETTLEMENT_REC from XX_IREC_MULTI_TRX_SETTLEMENT ***** ');
@@ -10870,6 +10992,18 @@ PACKAGE BODY      xx_iby_settlement_pkg
 	                   process_amex_data;
 	                END IF;
 	                --END Defect#38215 - amex to vantiv conv
+					
+					--Start code Changes for V48.0
+			xx_location_and_log(g_log,
+								   'COF Transactions Update for Wallet Type            : '
+								|| gc_ixwallet_type);
+	                IF gc_ixwallet_type is not null 
+		        THEN
+			   xx_location_and_log(g_loc,
+								'***** Executing XX_UPDATE_COF_TRANS from xx_poe_sglpmt_multi_settlement ***** ');
+	                   XX_UPDATE_COF_TRANS;
+	                END IF;
+	                --End code Changes for V48.0
 	                
 			xx_location_and_log(g_loc,
 								'***** Executing XX_CREATE_101_SETTLEMENT_REC from XX_POE_SGLPMT_MULTI_SETTLEMENT ***** ');
@@ -13202,8 +13336,8 @@ BEGIN
 
 
 
-		--SELECT NAME  INTO lc_instance FROM v$database;--Commented for v47.4
-		select SUBSTR(sys_context('USERENV', 'DB_NAME'),1,8) into lc_instance  from dual;--Modified for v47.4
+		--SELECT NAME  INTO lc_instance FROM v$database;--Commented for v48.1
+		select SUBSTR(sys_context('USERENV', 'DB_NAME'),1,8) into lc_instance  from dual;--Modified for v48.1
 
 		--Modified for V42.0
         /*IF lc_instance = 'GSIPRDGB'
@@ -13409,8 +13543,8 @@ BEGIN
 
 
 
-		--SELECT NAME INTO lc_instance FROM v$database;--Commented for v47.4
-		select SUBSTR(sys_context('USERENV', 'DB_NAME'),1,8) into lc_instance  from dual;--Modified for v47.4
+		--SELECT NAME INTO lc_instance FROM v$database;--Commented for v48.1
+		select SUBSTR(sys_context('USERENV', 'DB_NAME'),1,8) into lc_instance  from dual;--Modified for v48.1
 
 		--Modified for V42.0
         /*IF lc_instance = 'GSIPRDGB'
@@ -13849,9 +13983,9 @@ END ORDT_RECORDS_MAIL;
 
 			/*SELECT NAME
 			INTO   lc_file_name_instance
-			FROM   v$database; */
+			FROM   v$database;*/
 			
-			select SUBSTR(sys_context('USERENV', 'DB_NAME'),1,8) into lc_file_name_instance  from dual;--Modified for v47.4
+			select SUBSTR(sys_context('USERENV', 'DB_NAME'),1,8) into lc_file_name_instance  from dual;--Modified for v48.1
 
 			lc_file_name_instance := REPLACE(lc_file_name_instance,
 											 'GSI',
@@ -16381,7 +16515,7 @@ END ORDT_RECORDS_MAIL;
 			end if;
 			
 			--SELECT NAME INTO lc_instance FROM v$database;
-			select SUBSTR(sys_context('USERENV', 'DB_NAME'),1,8) into lc_instance  from dual;--Modified for v47.4
+			select SUBSTR(sys_context('USERENV', 'DB_NAME'),1,8) into lc_instance  from dual;--Modified for v48.1
 
 			--Modified for V42.0
 			/*IF lc_instance = 'GSIPRDGB'
