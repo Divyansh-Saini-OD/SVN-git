@@ -16,17 +16,19 @@ AS
   -- +============================================================================================|
   -- |  Name:  XX_CE_MRKTPLC_LOAD_PKG                                                             |
   -- |                                                                                            |
-  -- |  Description: This package body is to Load MarketPlaces DataFiles |
-  -- |  RICE ID   :  I3123_CM MarketPlaces Expansion                |
-  -- |  Description:  Load Program for for all marketplaces            |
-  -- |                                                                                |
+  -- |  Description: This package body is to Load MarketPlaces DataFiles                          |
+  -- |  RICE ID   :  I3123_CM MarketPlaces Expansion                                              |
+  -- |  Description:  Load Program for for all marketplaces                                       |
+  -- |                                                                                            |
   -- |  Change Record:                                                                            |
   -- +============================================================================================|
   -- | Version     Date         Author               Remarks                                      |
   -- | =========   ===========  =============        =============================================|
   -- | 1.0         05/23/2018   M K Pramod Kumar     Initial version                              |
-  -- | 1.1         16-AUG-18   Priyam P              Request id parameter is added
-  ---|  1.2        17-AUG-2018  Priyam P            Added logic for Archive and Purge process
+  -- | 1.1         16-AUG-18   Priyam P              Request id parameter is added                |
+  ---| 1.2        17-AUG-2018  Priyam P            Added logic for Archive and Purge process      |
+  ---| 1.3        14-MAY-2019  sripal reddy mungi   NAIT-89187 -Added logic to discard            |
+  -- |                                              Comma',' in amount column                     |
   -- +============================================================================================+
   gc_package_name      CONSTANT all_objects.object_name%type := 'XX_CE_MRKTPLC_LOAD_PKG';
   gc_ret_success       CONSTANT VARCHAR2(20)                 := 'SUCCESS';
@@ -1221,8 +1223,9 @@ BEGIN
                 l_totalshippingtaxprice :=l_table(14);
                 l_totaltaxprice         :=l_table(15);
                 l_totalshippingprice    :=l_table(16);
-                l_ordertotal            :=REPLACE(REPLACE(l_table(17), chr(13), ''), chr(10), '');
-                ---l_ordertotal            :=l_table(17);
+               -- l_ordertotal          :=REPLACE(REPLACE(l_table(17), chr(13), ''), chr(10), '');  --Commented for NAIT-89187
+                   l_ordertotal         := to_number(REPLACE(REPLACE(REPLACE(l_table(17), chr(13), ''), chr(10), ''),chr(44), '')); --added for NAIT-89187
+                ---l_ordertotal         :=l_table(17);
                 ----to_number(replace(l_table(17),chr(10)||chr(13),''));
                 INSERT
                 INTO xx_ce_ebay_ca_dtl_stg
