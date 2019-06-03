@@ -56,6 +56,7 @@ AS
    |  2.0    06-Jul-2012  Jay Gupta               Defect 18389 - WC-TPS Insert |
    |  2.1    11-FEB-2016  Vasu Raparla            Removed Schema References for|
    |                                              for R.12.2                   |
+   |  2.2    03-JUN-2019  Dinesh N        	      Replaced V$database with DB_Name for LNS|
    +==========================================================================*/
    gn_limit                   NUMBER;
    gn_threads_delta           NUMBER;
@@ -943,9 +944,16 @@ AS
          location_and_log (GC_YES, 'Total Records in the Staging table Before Processing: ' || ln_cnt);
 
          location_and_log (GC_YES, CHR (10)||'Capture Instance Name');
+		 /*
          SELECT substr(instance_name,4,5) 
            INTO lc_inst
            FROM v$instance;
+		   */
+			SELECT SUBSTR(SYS_CONTEXT('USERENV','DB_NAME'),1,8) 		-- Changed from V$instance to DB_NAME
+			INTO lc_inst
+			FROM dual;
+	 
+		   
       END;
 
       location_and_log (GC_YES, '     Generate the nextvalue from xx_crmar_int_log_s ');
