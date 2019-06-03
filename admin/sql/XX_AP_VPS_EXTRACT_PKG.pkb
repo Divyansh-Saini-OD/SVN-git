@@ -568,9 +568,6 @@ BEGIN
 	SELECT SUBSTR(LOWER(SYS_CONTEXT('USERENV','DB_NAME')),1,8)
 	INTO lc_instance_name
 	FROM dual;
-	SELECT NAME
-	INTO   lc_file_name_instance
-	FROM   v$database;
 	OPEN  matched_inv_cur (ld_date);
 	FETCH matched_inv_cur BULK COLLECT INTO l_matched_tab;
 	CLOSE matched_inv_cur;
