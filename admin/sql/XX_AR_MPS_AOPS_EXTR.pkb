@@ -15,6 +15,7 @@ AS
  -- |1.0       04/23/2013   Ray Strauss          Initial version                              |
  -- |2.0       11/03/2015   Havish Kasina        Removed the Schema references in the existing|
  -- |                                            code as per R12.2 Retrofit Changes           |
+ -- |2.1       06/03/2019   Havish Kasina        Changed the v$database to DB_NAME            |
  -- +=========================================================================================+
 
    PROCEDURE EXTRACT_MPS    ( x_errbuf                       OUT NOCOPY   VARCHAR2
@@ -52,10 +53,17 @@ BEGIN
       INTO   lc_dba_dir_path
       FROM   dba_directories
       WHERE  directory_name = lc_file_path ;
-
+	  
+    -- Commented by Havish Kasina as per Version 2.1
+	/*
 	SELECT NAME
-      INTO   lc_instance_name
-	FROM   v$database;
+      INTO lc_instance_name
+	  FROM v$database;
+	*/
+	-- Added by Havish Kasina as per Version 2.1
+	SELECT SUBSTR(SYS_CONTEXT('USERENV','DB_NAME'),1,8)         -- Changed from V$database to DB_NAME
+	  INTO lc_instance_name
+      FROM dual; 
 
       lc_file_name   := 'XX_AR_MPS_AOPS_EXTRACT_'||lc_instance_name||'_'||TO_CHAR(SYSDATE,'MMDDYYYY')||'.txt';
 

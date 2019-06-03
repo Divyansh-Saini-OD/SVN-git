@@ -19,6 +19,7 @@ PACKAGE BODY XX_AR_CREDIT_CHECK_WRAPPER_PKG AS
 ---|    Version         DATE              AUTHOR            DESCRIPTION                                     |
 ---|    ------------    ----------------- ---------------   ---------------------                           |
 ---|    1.0             26-JUL-2012       Ray Strauss       Initial Version                                 |
+--_|    1.1             03-JUN-2019       Havish Kasina     Changed the v$database to DB_NAME               |
 ---+========================================================================================================+
 
 PROCEDURE CREDIT_CHECK_WRAPPER (errbuf          OUT NOCOPY VARCHAR2,
@@ -93,10 +94,16 @@ BEGIN
 ---|  REPORT parameters
 ---+===============================================================================================
       BEGIN
+	    -- Commented by Havish Kasina as per Version 1.1
+		/*
 		SELECT name
 		INTO	 lc_instance_name
 		FROM   v$database;
-
+        */
+		-- Added by Havish Kasina as per Version 1.1
+		SELECT SUBSTR(SYS_CONTEXT('USERENV','DB_NAME'),1,8)         -- Changed from V$database to DB_NAME
+		  INTO lc_instance_name
+          FROM dual;   
 		EXCEPTION
                WHEN NO_DATA_FOUND THEN
                     FND_FILE.PUT_LINE(fnd_file.log,'Error - instance name not found in v$database ');

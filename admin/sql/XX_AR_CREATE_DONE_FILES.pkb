@@ -46,10 +46,17 @@ BEGIN
     FND_FILE.PUT_LINE(FND_FILE.LOG, '      OUTPUT_FILE_PATH '||p_out_file);
 
     BEGIN
-        SELECT REPLACE(p_file_mask, 'xxxxx', (SELECT SUBSTR(name,4,5) FROM v$database))
+	    -- Commented by Havish Kasina 
+        /*
+		SELECT REPLACE(p_file_mask, 'xxxxx', (SELECT SUBSTR(name,4,5) FROM v$database))
         INTO lc_file_name_1
         FROM DUAL;
-
+        */
+		-- Added by Havish Kasina to changed from v$database to DB_NAME
+		SELECT REPLACE(p_file_mask, 'xxxxx', (SELECT SUBSTR(SYS_CONTEXT('USERENV','DB_NAME'),4,5) FROM dual))
+        INTO lc_file_name_1
+        FROM DUAL;
+		
         EXCEPTION
             WHEN OTHERS THEN
                  FND_FILE.PUT_LINE(FND_FILE.LOG, 'OTHERS - 1: ' || SQLERRM);

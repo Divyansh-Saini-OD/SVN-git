@@ -75,6 +75,8 @@ AS
    |  2.6    06-Jul-2012  Jay Gupta               Defect 18389 - WC-TPS Insert |
    |  2.7    11-FEB-2016  Vasu Raparla            Removed Schema References for|
    |                                              for R.12.2                   |
+   |  2.8    03-JUN-2019  Havish Kasina           Changed the v$database to    |
+   |                                              DB_NAME                      |
    +==========================================================================*/
    gc_error_loc               VARCHAR2 (2000)   := NULL;
    -- Variables for Interface Settings
@@ -1075,9 +1077,17 @@ AS
          location_and_log (GC_YES, 'Total Records in the Staging table Before Processing: ' || ln_cnt);
 
          location_and_log (GC_YES, CHR (10)||'Capture Instance Name');
-         SELECT substr(instance_name,4,5) 
-           INTO lc_inst
-           FROM v$instance;
+         -- Commented by Havish Kasina as per Version 2.8
+         /*		 
+			SELECT substr(instance_name,4,5) 
+              INTO lc_inst
+              FROM v$instance;
+		 */
+		 -- Added by Havish Kasina as per Version 2.8
+			SELECT SUBSTR(SYS_CONTEXT('USERENV','DB_NAME'),4,5) -- Changed from V$database to DB_NAME
+	          INTO lc_inst
+              FROM dual;   
+
       END;
 
       location_and_log (GC_YES, '     Generate the nextvalue from xx_crmar_int_log_s ');

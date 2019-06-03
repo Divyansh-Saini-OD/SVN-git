@@ -35,6 +35,7 @@ AS
 -- | 5.1         21-SEP-2015  John Wilson          Modified the code as per the defect 35802             |
 -- | 5.2         11-NOV-2015  Vasu Raparla          Removed Schema References for R12.2                  |
 -- | 5.2         08-MAR-2016  Shubhashree R        Modified the proc create_summary_receipt for QC 36905 |
+-- | 5.3         03-JUN-2019  Havish Kasina        Changed the v$database to DB_NAME                     |
 -- +=====================================================================================================+
     PROCEDURE create_summary_receipt(
         errbuf        OUT NOCOPY     VARCHAR2,
@@ -1136,9 +1137,17 @@ AS
                           ' ');
 
         BEGIN
+		    -- Commented by Havish Kasina as per Version 5.3
+			/*
             SELECT NAME
             INTO   ln_instance_name
             FROM   v$database;
+			*/
+			-- Added by Havish Kasina as per Version 5.3
+			SELECT SUBSTR(SYS_CONTEXT('USERENV','DB_NAME'),1,8) -- Changed from V$database to DB_NAME
+	          INTO ln_instance_name
+              FROM dual; 
+			  
         EXCEPTION
             WHEN NO_DATA_FOUND
             THEN
