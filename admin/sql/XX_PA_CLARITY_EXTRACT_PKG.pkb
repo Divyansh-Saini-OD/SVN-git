@@ -25,6 +25,7 @@ AS
   -- | 1.1         05-SEP-2013  S.Kirubha            Updated for defect #22892                    |
   -- | 1.2         17-NOV-2015  Harvinder Rakhra     Retrofit R12.2
   -- | 1.3         13-Jun-2018  Priyam Parmar        Updated for NAIT# 38285
+  -- | 1.4         03-JUN-2019 	Dinesh N        	 Replaced V$INSTANCE with DB_Name for LNS	  |
   -- +============================================================================================+
 
 FUNCTION get_exp_comment(p_exp_item_id IN NUMBER) 
@@ -354,7 +355,10 @@ IS
       FND_FILE.PUT_LINE(fnd_file.log,'                                                 DEBUG_FLAG     = '||p_debug_flag);
       FND_FILE.PUT_LINE(fnd_file.log,' ');
       BEGIN
-        SELECT name INTO lc_instance_name FROM v$database;
+        --SELECT name INTO lc_instance_name FROM v$database;
+		SELECT SUBSTR(SYS_CONTEXT('USERENV','DB_NAME'),1,8) 		-- Changed from V$instance to DB_NAME
+		INTO lc_instance_name
+		FROM dual;
       EXCEPTION
       WHEN NO_DATA_FOUND THEN
         lc_err_status := 'E';
