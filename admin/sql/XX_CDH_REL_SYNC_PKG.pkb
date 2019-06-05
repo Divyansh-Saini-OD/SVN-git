@@ -94,13 +94,13 @@ AS
       ln_set_limit   NUMBER   := fnd_profile.VALUE ('XX_CDH_RELS_LOAD_LIMIT');
       crlf           VARCHAR2 (20)       := UTL_TCP.crlf;
       ln_cnt         NUMBER              := 100;
-      LC_INSTANCE         varchar2(100)   := null;
+      LC_INSTANCE    VARCHAR2(100)   := NULL;
       
    begin
-    
-     SELECT instance_name
-          into LC_INSTANCE
-          from V$INSTANCE;
+		  
+     --SELECT instance_name INTO LC_INSTANCE FROM V$INSTANCE;--Commented for v47.4
+	 SELECT SUBSTR(SYS_CONTEXT('USERENV', 'DB_NAME'),1,8) INTO LC_INSTANCE FROM DUAL ;--Modified for v47.4
+		  
       
       LC_SUBJECT := LC_INSTANCE ||': '||LC_SUBJECT;
     
@@ -680,7 +680,7 @@ AS
          SELECT 1
            FROM xxod_cust_relate_temp
           where PARENT_ID = PID and CHILD_ID = CID and rownum <= 1;
--- USE_INVISIBLE_INDEX HINT ADDED AS RECOMMENDED BY ERP ENGINEERING TEAM -- Sreedhar Mohan 04-Sep-2015 -- USE_INVISIBLE_INDEXES
+      -- USE_INVISIBLE_INDEX HINT ADDED AS RECOMMENDED BY ERP ENGINEERING TEAM -- Sreedhar Mohan 04-Sep-2015 -- USE_INVISIBLE_INDEXES
       CURSOR c_oracle_rel
       is
          SELECT /*+ NO_BIND_AWARE USE_INVISIBLE_INDEXES */  TO_NUMBER (SUBSTR (a.orig_system_reference, 1, 8)) parent_id,
@@ -715,12 +715,13 @@ AS
 
       IF p_load_aops = 'Y'
       THEN
-         load_aops (x_retcode);
+	  -- Replacing dblink with data stage job for LNS
+      /* load_aops (x_retcode);
 
          IF (x_retcode <> 0)
          THEN
             RAISE e_load;
-         END IF;
+         END IF;*/
 
          OPEN c_oracle_rel;
 
