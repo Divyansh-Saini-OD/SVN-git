@@ -25,6 +25,8 @@ AS
 	  -- | 1.1         02/04/2019   M K Pramod Kumar     Code Changes to generate Files               |
 	  -- | 1.2         03/12/2019   Paddy Sanjeevi       Modified to add CC Averate and Month End     |
 	  -- | 1.3         04/18/2019   Paddy Sanjeevi       Modified to add GSO Requirements BEAC 12167  |
+	  -- | 1.4         06/04/2019   Narasimha S          Code change to get INSTANCE_NAME to DB_NAME  |
+	  -- | 1.4                                           for LNS Instance                        	  |
 	  -- +============================================================================================+
 	  lc_Saturday        VARCHAR2(1)   := TO_CHAR(to_date('20000101','RRRRMMDD'),'D');
 	  lc_Sunday          VARCHAR2(1)   := TO_CHAR(to_date('20000102','RRRRMMDD'),'D');
@@ -202,7 +204,7 @@ IS
 	  lc_message          VARCHAR2(100);
 	  ln_request_id       NUMBER;
 BEGIN
-  SELECT SUBSTR(LOWER(SYS_CONTEXT('USERENV', 'INSTANCE_NAME') ), 1, 8)
+  SELECT SUBSTR(LOWER(SYS_CONTEXT('USERENV', 'DB_NAME') ), 1, 8)
     INTO lc_instance_name
 	FROM DUAL;
   BEGIN
@@ -259,7 +261,7 @@ IS
 	  lc_message             VARCHAR2(100);
  	  lc_file                VARCHAR2(100):=p_file;
 BEGIN
-  SELECT SUBSTR(LOWER(SYS_CONTEXT('USERENV', 'INSTANCE_NAME') ), 1, 8)
+  SELECT SUBSTR(LOWER(SYS_CONTEXT('USERENV', 'DB_NAME') ), 1, 8)
     INTO lc_instance_name
     FROM DUAL;
 	  
