@@ -7070,11 +7070,12 @@ AS
       /***************************
       * Validate for authorization
       ***************************/
-      IF px_subscription_array(indx).auth_completed_flag NOT IN ('Y', 'E')
+	  -- Temporary comment to send mail for AVS decline
+      /*IF px_subscription_array(indx).auth_completed_flag NOT IN ('Y', 'E')
       THEN
         lc_error := 'Authorization is not completed';
         RAISE le_skip;
-      END IF;
+      END IF;*/
      
       /***********************************
       * Validate we are read to send email
@@ -8029,12 +8030,12 @@ AS
           lc_error := 'Receipt creation is not completed';
           RAISE le_skip;
         END IF;
-      ELSE
+     /* ELSE -- Temporary comment to send mail for AVS decline
         IF px_subscription_array(indx).auth_completed_flag NOT IN ('Y', 'E')
         THEN
           lc_error := 'Authorization is not completed';
           RAISE le_skip;
-        END IF;
+        END IF;*/
       END IF;
 
       /**************************************
