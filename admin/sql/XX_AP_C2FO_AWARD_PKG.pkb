@@ -29,6 +29,7 @@ PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
 *   1.0          9/2/2018         Antonio Morales               OD                OD Initial Customized Version     |
 *   1.1        11/26/2018         Vivek Kumar                                      Added XPTR option - NAIT -63055  |
 *   1.2        04/18/2019         Arun DSouza                                     Added Funding Partner Code        |
+*   1.3        06/07/2019         Arun DSouza                   OD                Added debit balance pay group     |
 *********************************************************************************************************************
 */
 
@@ -89,7 +90,8 @@ PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
 -----------------------Phase-2--------------------------------------------------------
  -- Funding Partner local variables Below 
 --------------------------------------------------------------------------------------
---        lv_c2fo_pay_group_lookup_code 	VARCHAR2(25) 	:= nvl(fnd_profile.value('XXC2FO_PAY_GROUP_LOOKUP_CODE'),'C2FO');
+        lv_c2fo_pay_group_lookup_code 	varchar2(50) 	:= 'US_OD_TRADE_SPECIAL_TERMS'; 
+        -- nvl(fnd_profile.value('XXC2FO_PAY_GROUP_LOOKUP_CODE'),'C2FO');
 --        lc_user_id                       NUMBER := fnd_global.user_id;
         lv_process_r_cnt                 NUMBER(9) DEFAULT 0;
 --        lv_file_name                     VARCHAR2(240);
@@ -536,7 +538,6 @@ PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
       FND_FILE.PUT_LINE(FND_FILE.log,'Step-4.1 Update Funding Source ');
 
  
--- arun
    begin
    
 		UPDATE XX_AP_C2FO_FP_FUNDING_SOURCE xcfst
@@ -1509,7 +1510,7 @@ PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
 
              FND_FILE.PUT_LINE(FND_FILE.log,'Step-22.5');
 
-      if  C1_BATCH_ALL_REC.AWARD_RECORD_ACTIVITIES='UPDATE_RD_AND_PG_TYPE' 
+      IF  C1_BATCH_ALL_REC.AWARD_RECORD_ACTIVITIES='UPDATE_RD_AND_PG_TYPE' 
           AND C1_BATCH_ALL_REC.FUND_TYPE IS NOT NULL then
 
             FND_FILE.PUT_LINE(FND_FILE.log,'Step-22.6');
@@ -1543,8 +1544,15 @@ PACKAGE BODY XX_AP_C2FO_AWARD_PKG AS
                     LV_ERR_MSG 		:= LV_ERR_MSG||'-'||'Ebs_Remit_to_Party_Id is Null, Invoice num:' ||'-' || C1_BATCH_ALL_REC.EBS_INVOICE_NUM;
               ELSIF  C1_batch_all_rEC.EBS_REMIT_TO_PARTY_SITE_ID is null then
                     LV_PROCESS_FLAG	:= 'E';
-                    LV_ERR_MSG 		:= LV_ERR_MSG||'-'||'Ebs_Remit_to_Party_Site_Id is Null, Invoice num:'||'-'|| C1_BATCH_ALL_REC.EBS_INVOICE_NUM; 
+                    lv_err_msg 		:= lv_err_msg||'-'||'Ebs_Remit_to_Party_Site_Id is Null, Invoice num:'||'-'|| c1_batch_all_rec.ebs_invoice_num; 
+              elsif  c1_batch_all_rec.ebs_ext_bank_account_id is null then
+                    lv_process_flag	:= 'E';
+                    lv_err_msg 		:= lv_err_msg||'-'||'FUNDING SOURCE Ebs_Ext_Bank_Account_Id is Null, Invoice num:'||'-'|| c1_batch_all_rec.ebs_invoice_num; 
+              elsif  c1_batch_all_rec.payment_method_code = 'CHECK' then
+                    lv_process_flag	:= 'E';
+                    lv_err_msg 		:= lv_err_msg||'-'||'FP AWARD cannot have Payment Method of CHECK, Invoice num:'||'-'|| c1_batch_all_rec.ebs_invoice_num; 
               end if;
+     
                      
           IF lv_process_flag = 'E' THEN
 
@@ -2224,7 +2232,8 @@ END IF;
                 SELECT COUNT(*)
                   INTO l_stg_table_record_count
                   FROM xx_ap_c2fo_award_data_staging xads
-                  where xads.award_file_batch_name = c_award_file_batch_name;
+                  where xads.award_file_batch_name = c_award_file_batch_name
+                    and xads.fund_type is null;
 
                 fnd_file.put_line(fnd_file.log,'Staging Table Record count FROM xx_ap_c2fo_award_data_staging is -  '|| l_stg_table_record_count|| '.');
             END;
@@ -2237,7 +2246,8 @@ END IF;
                   FROM xx_ap_c2fo_award_data_staging xads
                   where xads.award_file_batch_name = c_award_file_batch_name
                   AND xads.process_flag = 'Y'
-                  AND xads.process_status = 'PROCESSED';
+                  and xads.process_status = 'PROCESSED'
+                  and xads.fund_type is null;
 
                 fnd_file.put_line(fnd_file.log,'Successfully processed records is -  '|| l_stg_success_record_count|| '.');
             END;
@@ -2248,7 +2258,8 @@ END IF;
                   FROM xx_ap_c2fo_award_data_staging xads
                  WHERE xads.award_file_batch_name = c_award_file_batch_name
                    AND xads.process_flag != 'Y'
-                   AND xads.process_status != 'PROCESSED';
+                   and xads.process_status != 'PROCESSED'
+                   and xads.fund_type is null;
 
                 fnd_file.put_line(fnd_file.log,'Total Error Records is -  '|| l_stg_error_record_count|| '.');
 
@@ -2261,7 +2272,8 @@ END IF;
                   INTO l_possible_cm_record_count
                   FROM xx_ap_c2fo_award_data_staging xads
                  WHERE xads.award_file_batch_name = c_award_file_batch_name
-                   AND xads.award_record_activities = 'CREATE_CM_AND_UPDATE_DUE_DATE';
+                   and xads.award_record_activities = 'CREATE_CM_AND_UPDATE_DUE_DATE'
+                   and xads.fund_type is null;
 
                 fnd_file.put_line(fnd_file.log,'Posible credit memo record count - '|| l_possible_cm_record_count|| '.');
             END;
@@ -2273,7 +2285,8 @@ END IF;
                  WHERE xads.award_file_batch_name = c_award_file_batch_name
                    AND xads.award_record_activities = 'CREATE_CM_AND_UPDATE_DUE_DATE'
                    AND xads.process_status = 'PROCESSED'
-                   AND xads.process_flag = 'Y';
+                   and xads.process_flag = 'Y'
+                   and xads.fund_type is null;
 
                 fnd_file.put_line(fnd_file.log,'Created credit memo record count - '|| l_created_cm_record_count|| '.');
             END;
@@ -2287,7 +2300,8 @@ END IF;
                  WHERE xads.award_file_batch_name = c_award_file_batch_name
                    AND xads.award_record_activities = 'CREATE_CM_AND_UPDATE_DUE_DATE'
                    AND xads.process_status != 'PROCESSED'
-                   AND xads.process_flag = 'E';
+                   and xads.process_flag = 'E'
+                   and xads.fund_type is null;
 
                 fnd_file.put_line(fnd_file.log,'Errored credit memo record count - '|| l_erreored_cm_record_count|| '.');
             END;
@@ -2298,7 +2312,8 @@ END IF;
                   FROM xx_ap_c2fo_award_data_staging xads
                  WHERE xads.award_file_batch_name = c_award_file_batch_name
                    AND xads.process_status = 'PROCESSED'
-                   AND xads.process_flag = 'Y';
+                   and xads.process_flag = 'Y'
+                   and xads.fund_type is null;
 
                 fnd_file.put_line(fnd_file.log,'Updated (Invoices and Credit memo) due date record count - '|| l_dd_update_record_count|| '.');
             END;
@@ -2310,7 +2325,8 @@ END IF;
                   INTO l_duplicate_record_count
                   FROM xx_ap_c2fo_award_data_staging xads
                  WHERE xads.award_file_batch_name = c_award_file_batch_name
-                   AND xads.process_status = 'DUPLICATE';
+                   and xads.process_status = 'DUPLICATE'
+                   and xads.fund_type is null;
 
                     fnd_file.put_line(fnd_file.log,'Duplicate Record count - '|| l_duplicate_record_count|| '.');
             END;
@@ -2693,7 +2709,7 @@ END IF;
 
 					 UPDATE ap_invoices_all aia
 						set
-            --aia.pay_group_lookup_code = lv_c2fo_pay_group_lookup_code,
+              aia.pay_group_lookup_code = lv_c2fo_pay_group_lookup_code,
 							aia.remit_to_supplier_name = c_upd_fp_inv_rd_pg_dtls_rec.ebs_remit_to_supplier_name,
 							aia.remit_to_supplier_id = c_upd_fp_inv_rd_pg_dtls_rec.ebs_remit_to_vendor_id,
 							aia.remit_to_supplier_site = c_upd_fp_inv_rd_pg_dtls_rec.ebs_remit_to_supplier_site,
@@ -2909,10 +2925,11 @@ END IF;
         BEGIN
 
              UPDATE xx_ap_c2fo_award_data_staging xads
-                SET xads.process_stage = 'SUCCESSFULLY_PROCESSED',
-					xads.process_flag = 'Y',
-					xads.last_update_date = SYSDATE,
-					xads.last_updated_by = l_user_id
+                set xads.process_stage = 'SUCCESSFULLY_PROCESSED',
+                    process_status= 'PROCESSED',
+			          		xads.process_flag = 'Y',
+				          	xads.last_update_date = sysdate,
+			          		xads.last_updated_by = l_user_id
               WHERE 1 = 1
                 AND xads.award_file_batch_name = c_award_file_batch_name
 --              AND xads.processing_batch_name = gc_current_process_batch_name               
@@ -2945,10 +2962,10 @@ END IF;
 					AND xads.process_flag = 'Y'
 					AND xads.process_stage = 'SUCCESSFULLY_PROCESSED';
 
-					fnd_file.put_line(fnd_file.log,'Successfully processed record count is -  '|| lv_fp_stg_success_r_cnt|| '.');
+					fnd_file.put_line(fnd_file.log,'FP Successfully processed record count is -  '|| lv_fp_stg_success_r_cnt|| '.');
             END;	
 
-            BEGIN
+            begin
                  SELECT COUNT(*)
                    INTO lv_fp_stg_err_r_cnt
                    FROM xx_ap_c2fo_award_data_staging xads
@@ -2959,7 +2976,7 @@ END IF;
 					AND xads.process_flag != 'Y'
 					AND xads.process_stage != 'SUCCESSFULLY_PROCESSED';
 
-					fnd_file.put_line(fnd_file.log,'Total Error Records is -  '|| lv_fp_stg_err_r_cnt|| '.');
+					fnd_file.put_line(fnd_file.log,'FP Total Error Records is -  '|| lv_fp_stg_err_r_cnt|| '.');
             END;				
 
        fnd_file.put_line(fnd_file.log,'Step-66');
@@ -2967,7 +2984,7 @@ END IF;
 
             BEGIN
                  SELECT COUNT(*)
-                   INTO lv_fp_duplicate_r_cnt
+                   into lv_fp_duplicate_r_cnt
                    FROM xx_ap_c2fo_award_data_staging xads
 				  WHERE 1 = 1
 					AND xads.fund_type IS NOT NULL
@@ -2976,7 +2993,7 @@ END IF;
 --					AND xads.processing_batch_name = gc_current_process_batch_name
 					AND xads.process_stage = 'DUPLICATE';
 
-					fnd_file.put_line(fnd_file.log,'Duplicate Record count - '|| lv_fp_duplicate_r_cnt|| '.');
+					fnd_file.put_line(fnd_file.log,'FP Duplicate Record count - '|| lv_fp_duplicate_r_cnt|| '.');
             END;			
 
        FND_FILE.PUT_LINE(FND_FILE.LOG,'------SUBMITTED REMIT BANK EXTRACT PROGRAM-------');
@@ -3002,9 +3019,10 @@ END IF;
         fnd_file.put_line(fnd_file.log,'   ');
         fnd_file.put_line(fnd_file.LOG,'   ');
         FND_FILE.PUT_LINE(FND_FILE.LOG, 'File Award Process Errored with error below :');
-        fnd_file.put_line(fnd_file.LOG, substr(sqlerrm,1,100));
-        ROLLBACK;
- 
+        fnd_file.put_line(fnd_file.log, substr(sqlerrm,1,100));
+        retcode := 2;
+        rollback;
+        
     END process_award;
 
 END XX_AP_C2FO_AWARD_PKG;
