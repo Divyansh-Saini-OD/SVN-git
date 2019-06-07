@@ -1264,7 +1264,7 @@ END XX_AP_OTM_INVOICE;
 	  
 	  -- Start DL Addition for Duplicate Invoice for NAIT-51088
 	  BEGIN
-         SELECT SYS_CONTEXT ('USERENV', 'INSTANCE_NAME')
+         SELECT SUBSTR(SYS_CONTEXT('USERENV','DB_NAME'),1,8) 		-- Changed from V$instance to DB_NAME
            INTO lc_instance_name
            FROM DUAL;
       EXCEPTION
