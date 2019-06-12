@@ -64,7 +64,7 @@ FROM  xx_cdh_ebl_templ_dtl ODEBillTemplDtlEO
      ,xx_fin_translatedefinition xftd
      ,xx_fin_translatevalues xftv
 WHERE xftd.translate_id = xftv.translate_id
-  AND xftv.source_value1 = ODEBillTemplDtlEO.field_id
+  AND xftv.source_value1 = TO_CHAR(ODEBillTemplDtlEO.field_id)
   AND xftd.translation_name ='XX_CDH_EBILLING_FIELDS'
 UNION
 SELECT ODEBillTemplDtlEO.EBL_TEMPL_ID, 
@@ -116,13 +116,13 @@ SELECT ODEBillTemplDtlEO.EBL_TEMPL_ID,
 	   'C' target_value25,
 	   DECODE(LABEL,'', 'switch1','switch2') Xlslabelmethod,
        null enabledFlag
-FROM xx_cdh_ebl_templ_dtl ODEBillTemplDtlEO
-WHERE NOT EXISTS (SELECT 1 
+	FROM xx_cdh_ebl_templ_dtl ODEBillTemplDtlEO
+	WHERE NOT EXISTS (SELECT 1 
                     FROM xx_fin_translatedefinition xftd
                         ,xx_fin_translatevalues xftv
 				   WHERE xftd.translate_id = xftv.translate_id
 				     AND xftd.translation_name ='XX_CDH_EBILLING_FIELDS'
-				     AND xftv.source_value1 = ODEBillTemplDtlEO.field_id)
+				     AND xftv.source_value1 = TO_CHAR(ODEBillTemplDtlEO.field_id))
    ]]></SQLQuery>
    <DesignTime>
       <Attr Name="_isCodegen" Value="true" />
