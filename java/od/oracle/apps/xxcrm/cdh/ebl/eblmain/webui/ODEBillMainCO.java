@@ -107,7 +107,8 @@ import oracle.jbo.domain.Number;
   -- |4.9      23-May-2018 Reddy Sekhar K     Code Added for Defect# NAIT-27146  |
  --  |4.10     08-Jun-2018 Rafi Mohammed      Code Added for Defect# NAIT-40588  | 
  --  |4.11     14-Sep-2018 Reddy Sekhar K     Code Added for Defect# NAIT-60756  | 
- --  |4.12     15-Apr-2019 Rafi Mohammed      NAIT-91481 Rectify Billing Delivery Efficiency|
+ --  |4.12     15-Apr-2019 Rafi Mohammed      NAIT-91481 Rectify Billing Delivery Efficiency
+ --  |4.13     12-Jun-2019 Reddy Sekhar K     Code added for the Defect NAIT- 98962|
   -- |===========================================================================|
   -- | Subversion Info:                                                          |
   -- | $HeadURL$                                                               |
@@ -183,6 +184,7 @@ ODEBillMainCO extends OAControllerImpl {
                 custAccountId = 
                         custRow.getAttribute("CustAccountId").toString();
                 docType = custRow.getAttribute("DocType").toString();
+                System.out.println("Document type for page is"+docType);
                 Object o = custRow.getAttribute("IsParent");
                 status = custRow.getAttribute("StatusCode").toString();
                 directDoc = custRow.getAttribute("DirectDoc").toString();
@@ -4171,8 +4173,15 @@ pageContext.getApplicationModule(webBean).getOADBTransaction().getJdbcConnection
       Serializable inputParams1[] = {custAccountId };
       OAApplicationModule mainAM = pageContext.getApplicationModule(webBean);
       String bcFlag = (String)mainAM.invokeMethod("getBCFlag",inputParams1);
-       if(("B".equalsIgnoreCase(bcFlag) && "No".equalsIgnoreCase(payDoc)) || ("Y".equalsIgnoreCase(bcFlag) && "No".equalsIgnoreCase(payDoc)) 
+       /*if(("B".equalsIgnoreCase(bcFlag) && "No".equalsIgnoreCase(payDoc)) || ("Y".equalsIgnoreCase(bcFlag) && "No".equalsIgnoreCase(payDoc)) 
           || ("N".equalsIgnoreCase(bcFlag) && "Yes".equalsIgnoreCase(payDoc)) || ("P".equalsIgnoreCase(bcFlag) && "Yes".equalsIgnoreCase(payDoc)))
+          */
+           if(("B".equalsIgnoreCase(bcFlag) && "No".equalsIgnoreCase(payDoc) && "Consolidated Bill".equalsIgnoreCase(docuType)) 
+           || ("Y".equalsIgnoreCase(bcFlag) && "No".equalsIgnoreCase(payDoc) && "Consolidated Bill".equalsIgnoreCase(docuType)) 
+           || ("N".equalsIgnoreCase(bcFlag) && "Yes".equalsIgnoreCase(payDoc) && "Consolidated Bill".equalsIgnoreCase(docuType))
+           || ("P".equalsIgnoreCase(bcFlag) && "Yes".equalsIgnoreCase(payDoc)) && "Consolidated Bill".equalsIgnoreCase(docuType)
+           || ("N".equalsIgnoreCase(bcFlag) && "No".equalsIgnoreCase(payDoc) && "Consolidated Bill".equalsIgnoreCase(docuType))//Code added by Reddy Sekhar for Defect NAIT- 98962 on 12-Jun-2019
+           || ("P".equalsIgnoreCase(bcFlag) && "No".equalsIgnoreCase(payDoc)) && "Consolidated Bill".equalsIgnoreCase(docuType))//Code added by Reddy Sekhar for Defect NAIT- 98962 on 12-Jun-2019
        {
           OAMessageChoiceBean fileProcessMtd = 
             (OAMessageChoiceBean)webBean.findIndexedChildRecursive("FileProcessingMethod");
