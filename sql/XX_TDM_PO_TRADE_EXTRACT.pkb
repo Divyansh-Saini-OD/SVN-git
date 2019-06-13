@@ -197,7 +197,7 @@ create or replace PACKAGE BODY xx_tdm_po_trade_extract AS
                     fnd_file.put(fnd_file.output, 'A'|| outtable.col1 || outtable.col2 || 'N' || CHR(13) || CHR(10));
                 END IF;
                 utl_file.put_raw(v_file_handle,utl_raw.cast_to_raw(v_file_line));
-                countrow := countrow+1;
+                --countrow := countrow+1;
                 
             END IF;
 
@@ -205,10 +205,10 @@ create or replace PACKAGE BODY xx_tdm_po_trade_extract AS
         
         CLOSE tdm;
 		--Footer
-		v_file_line := (v_file_name||lpad(' ',11) || to_char(sysdate, 'YYYY-MM-DDHH24.MM.SS') || lpad(countrow,9,'0') || CHR(13) || CHR(10));--lpad(countrow,9,'0'));
-        utl_file.put_raw(v_file_handle,utl_raw.cast_to_raw(v_file_line));
-        v_file_line := (CHR(26));
-        utl_file.put_raw(v_file_handle,utl_raw.cast_to_raw(v_file_line));
+		--v_file_line := (v_file_name||lpad(' ',11) || to_char(sysdate, 'YYYY-MM-DDHH24.MM.SS') || lpad(countrow,9,'0') || CHR(13) || CHR(10));--lpad(countrow,9,'0'));
+        --utl_file.put_raw(v_file_handle,utl_raw.cast_to_raw(v_file_line));
+        --v_file_line := (CHR(26));
+        --utl_file.put_raw(v_file_handle,utl_raw.cast_to_raw(v_file_line));
             --Close Line
         utl_file.fclose(v_file_handle);
         --fnd_global.apps_initialize(3811837,50660,20043);
