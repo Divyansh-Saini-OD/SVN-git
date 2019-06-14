@@ -704,7 +704,7 @@ AS
         FROM v$instance;
 	*/
 	
-		SELECT SUBSTR(SYS_CONTEXT('USERENV','DB_NAME'),4,8) 		-- Changed from V$instance to DB_NAME
+		SELECT SUBSTR(SYS_CONTEXT('USERENV','DB_NAME'),4,5) 		-- Changed from V$instance to DB_NAME
 		INTO lc_inst
 		FROM dual;
 
