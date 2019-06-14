@@ -19,3 +19,4 @@ FUNCTION read_next_element (p_data IN OUT VARCHAR2
                           , p_encapsulator IN VARCHAR2)
       RETURN VARCHAR2;
 END XX_AR_FIN_READ_CSV_FORMAT ;
+/
