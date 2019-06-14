@@ -257,7 +257,9 @@ AS
                       UPDATE xx_ar_subscriptions XAS
                       SET    XAS.receipt_number       = lc_curr_receipt_num,
                              XAS.receipt_created_flag = lc_receipt_created_flag,
-                             XAS.ordt_staged_flag     = 'Y'
+                             XAS.ordt_staged_flag     = 'Y', 
+							 XAS.email_sent_flag      = 'Y', 
+							 XAS.history_sent_flag    = 'Y'
                       WHERE  XAS.contract_line_number = contract_lines_rec.contract_line_number 
                       AND    XAS.subscriptions_id     = contract_lines_rec.subscriptions_id;
                   END LOOP;
