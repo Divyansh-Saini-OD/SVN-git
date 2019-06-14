@@ -57,7 +57,9 @@ AS
    |                                              in LOG tables                |
    |  2.1    06-Jul-2012  Jay Gupta               Defect 18389 - WC-TPS Insert |
    |  2.2    17-Mar-2016  Vasu Raparla            Removed Schema References for|
-   |                                              for R.12.2                   
+   |                                              for R.12.2                   |
+   |  2.3    14-JUN-2019  Dinesh N        	      Replaced V$instacne with     |
+   |                                              DB_Name for LNS              |
    +==========================================================================*/
 
    -- Variables for Interface Settings
@@ -1131,9 +1133,13 @@ AS
          location_and_log (GC_YES, 'Total Records in the Staging table Before Processing: ' || ln_cnt);
       
          location_and_log (GC_YES, CHR (10)||'Capture Instance Name');
-         SELECT substr(instance_name,4,5) 
+         /*SELECT substr(instance_name,4,5) 
            INTO lc_inst
-           FROM v$instance;      
+           FROM v$instance; */
+
+          SELECT SUBSTR(SYS_CONTEXT('USERENV','DB_NAME'),4,5) 		-- Changed from V$instance to DB_NAME
+			INTO lc_inst
+			FROM dual;		   
       END;
 
       location_and_log (GC_YES, '     Generate the nextvalue from xx_crmar_int_log_s ');
