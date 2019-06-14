@@ -4181,7 +4181,13 @@ pageContext.getApplicationModule(webBean).getOADBTransaction().getJdbcConnection
            || ("N".equalsIgnoreCase(bcFlag) && "Yes".equalsIgnoreCase(payDoc) && "Consolidated Bill".equalsIgnoreCase(docuType))
            || ("P".equalsIgnoreCase(bcFlag) && "Yes".equalsIgnoreCase(payDoc)) && "Consolidated Bill".equalsIgnoreCase(docuType)
            || ("N".equalsIgnoreCase(bcFlag) && "No".equalsIgnoreCase(payDoc) && "Consolidated Bill".equalsIgnoreCase(docuType))//Code added by Reddy Sekhar for Defect NAIT- 98962 on 12-Jun-2019
-           || ("P".equalsIgnoreCase(bcFlag) && "No".equalsIgnoreCase(payDoc)) && "Consolidated Bill".equalsIgnoreCase(docuType))//Code added by Reddy Sekhar for Defect NAIT- 98962 on 12-Jun-2019
+           || ("P".equalsIgnoreCase(bcFlag) && "No".equalsIgnoreCase(payDoc)) && "Consolidated Bill".equalsIgnoreCase(docuType)//Code added by Reddy Sekhar for Defect NAIT- 98962 on 12-Jun-2019
+           || (bcFlag==null && "No".equalsIgnoreCase(payDoc) && "Consolidated Bill".equalsIgnoreCase(docuType))//Code added by Reddy Sekhar for Defect NAIT- 98962 on 12-Jun-2019
+           || (bcFlag==null && "Yes".equalsIgnoreCase(payDoc) && "Consolidated Bill".equalsIgnoreCase(docuType)) //Code added by Reddy Sekhar for Defect NAIT- 98962 on 12-Jun-2019   
+           
+           )
+           
+                              
        {
           OAMessageChoiceBean fileProcessMtd = 
             (OAMessageChoiceBean)webBean.findIndexedChildRecursive("FileProcessingMethod");
