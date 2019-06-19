@@ -1,7 +1,6 @@
 #!/bin/sh
 	 echo "Executing LFTP in Process LFTP File"
 	 echo "user $1"
-	 echo "passwd $2"
 	 echo "port $3"
 	 echo "server $4"
 	 echo "source Location $5"
@@ -16,14 +15,13 @@
 success=`/usr/bin/lftp -u $1,$2 -p $3 $4 <<EOF
 lcd $5
 cd  $6
-put $7
+mput $7
 ls $7 | wc -l
 quit
 EOF
 `
 echo success=$success
-if [ $success = 1 ]
+if [ $success -ge 1 ]
 then
 	echo " LFTP transfer completed successfully " > $8 
 fi
-
