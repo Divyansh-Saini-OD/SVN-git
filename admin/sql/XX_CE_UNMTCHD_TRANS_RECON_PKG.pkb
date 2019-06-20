@@ -11,7 +11,8 @@ PACKAGE BODY XX_CE_UNMTCHD_TRANS_RECON_PKG
   -- |===============                                                    |
   -- |Version   Date        Author             Remarks                   |
   -- |========  =========== ================== ==========================|
-  -- |1.0       31-Oct-2018 M K Pramod Kumar     Initial version           |
+  -- |1.0       31-Oct-2018 M K Pramod Kumar    Initial version           |
+  -- |1.1       14-Jun-2019 M K Pramod Kumar    Code Changes for NEWEGG MPL           |
   -- |                                                     |
   -- +===================================================================+
 AS
@@ -192,6 +193,16 @@ BEGIN
           IF dtl_Rec.price_type='Tax' AND dtl_Rec.price_amount<>order_line_Rec.tax_value THEN
             p_error_msg       :=p_error_msg||'Order and Transaction Tax Amount do not match for ordered item '||order_line_Rec.ordered_item||'.';
           END IF;
+		
+		 elsif p_mpl_name         ='NEWGG_MPL' THEN
+         
+          IF dtl_Rec.price_type='Principal' AND dtl_Rec.price_amount<>order_line_Rec.XX_LINE_TOTAL THEN
+            p_error_msg       :=p_error_msg||'Order and Transaction Principal Amount do not match for ordered item '||order_line_Rec.ordered_item||'.';
+          END IF;
+		 
+          IF dtl_Rec.price_type='Tax' AND dtl_Rec.price_amount<>order_line_Rec.tax_value THEN
+            p_error_msg       :=p_error_msg||'Order and Transaction Tax Amount do not match for ordered item '||order_line_Rec.ordered_item||'.';
+          END IF;
         END IF;
 		
       END LOOP;
@@ -265,7 +276,7 @@ BEGIN
     lv_error_flag:='N';
     
     BEGIN
-      SELECT DECODE(ajb998_rec.provider_type,'EBAY','EBAY_MPL','WALMART','WALMART_MPL','RAKUTEN','RAKUTEN_MPL',ajb998_rec.provider_type)
+      SELECT DECODE(ajb998_rec.provider_type,'EBAY','EBAY_MPL','WALMART','WALMART_MPL','RAKUTEN','RAKUTEN_MPL','NEWEGG','NEWEGG_MPL',ajb998_rec.provider_type)
       INTO lv_marketplace_name
       FROM dual;
     EXCEPTION

@@ -70,6 +70,7 @@ AS
   -- | 2.7.1   11-NOV-2017  M K Pramod Kumar    Defect# 43424 Code changes to default Status=NEW |
   -- | 2.8     21-MAY-2018  M K Pramod Kumar    Modified for processing External MarketPlaces NAIT-40753|
   -- | 2.9     21-MAY-2018  M K Pramod Kumar    Modified to derive Error Messages and derive ORDT information for External MPL- NAIT-74976|
+  -- | 2.10    10-JUN-2019  M K Pramod Kumar    Modified to derive Error Messages and derive ORDT information for NEWEGG External MPL- NAIT-83081|
   -- +=================================================================================+
   -- ----------------------------------------------
   -- Global Variables
@@ -108,8 +109,9 @@ IS
     WHERE 1                  = 1
     AND ajb998.org_id+0 = gn_org_id
     AND ajb998.status        = 'PREPROCESSED'
-    AND ajb998.processor_id IN ('EBAY','RAKUTEN','WALMART')
-	and store_num in ('010000','005910')
+    AND ajb998.processor_id IN ('EBAY','RAKUTEN','WALMART','NEWEGG')
+	--and store_num in ('005910')
+	and NVL(ajb998.invoice_num,'Z')='Z'
     AND NOT EXISTS
       (SELECT 1
       FROM xx_ce_999_interface
@@ -3025,7 +3027,7 @@ IS
       END;
 	  BEGIN
 	  fnd_file.put_line (fnd_file.LOG, ' ');
-      fnd_file.put_line (fnd_file.LOG,'Derive Order Details of Partial processed Transactions for External Marketplaces-EBAY,WALMART,RAKUTEN');
+      fnd_file.put_line (fnd_file.LOG,'Derive Order Details of Partial processed Transactions for External Marketplaces-EBAY,WALMART,RAKUTEN,NEWEGG');
 
 	  DERIVE_MPL_ORDER_INFO; 
 
@@ -3057,7 +3059,7 @@ IS
         )
       AND ajb998.org_id        = gn_org_id
       AND ajb998.status        = 'PREPROCESSED'
-      AND ajb998.processor_id  in ('AMAZON','EBAY','RAKUTEN','WALMART') --Modified for V2.9
+      AND ajb998.processor_id  in ('AMAZON','EBAY','RAKUTEN','WALMART','NEWEGG') --Modified for V2.9
       AND ajb998.ajb_file_name = NVL(p_ajb_file_name, ajb998.ajb_file_name)
       AND NOT EXISTS
         (SELECT 1
@@ -3094,7 +3096,7 @@ IS
         )
       AND ajb998.org_id        = gn_org_id
       AND ajb998.status        = 'PREPROCESSED'
-      AND ajb998.processor_id  in  ('AMAZON','EBAY','RAKUTEN','WALMART')--Modified for V2.9
+      AND ajb998.processor_id  in  ('AMAZON','EBAY','RAKUTEN','WALMART','NEWEGG')--Modified for V2.9
       AND ajb998.ajb_file_name = NVL(p_ajb_file_name, ajb998.ajb_file_name)
       AND NOT EXISTS
         (SELECT 1
