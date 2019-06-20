@@ -7,11 +7,14 @@
 	 echo "Destination Location  $6"
 	 echo "Source File $7"
 	 echo "Temp File $8"
+	 echo "Destination File $9"
 	 echo "-u $user,$passwd -p $server"
 	 echo "-u $1,$2 -p $3 $4"
 	 LFTPPARMS2="-u $1,$2 -p $3 $4"
 	 echo "LFTPPARMS2 $LFTPPARMS2"
 	 echo "Before lftp"
+if [ "$9" = "" ] 
+then
 success=`/usr/bin/lftp -u $1,$2 -p $3 $4 <<EOF
 lcd $5
 cd  $6
@@ -20,6 +23,17 @@ ls $7 | wc -l
 quit
 EOF
 `
+else
+success=`/usr/bin/lftp -u $1,$2 -p $3 $4 <<EOF
+lcd $5
+cd  $6
+mput $7
+ls $7 | wc -l
+rename $7 $9
+quit
+EOF
+`
+fi
 echo success=$success
 if [ $success -ge 1 ]
 then
