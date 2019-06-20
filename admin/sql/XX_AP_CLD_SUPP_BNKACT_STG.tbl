@@ -1,0 +1,68 @@
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+-- +==================================================================================+  
+-- | Office Depot - Project Simplify                                                  |
+-- |                                                              |
+-- +==================================================================================+
+-- | SQL Script to create the table:  XX_AP_CLD_SUPP_BNKACT_STG                         |
+-- |                                                                                  |
+-- |
+-- |                                                                                  |
+-- |                                                                                  |
+-- |Change Record:                                                                    |
+-- |===============                                                                   |
+-- |Version   Date          Author               Remarks                              |
+-- |=======   ===========   =============        =====================================|
+-- |1.0       18-JUN-2019   Priyam/Visu          Initial DRAFT version                |
+-- |                                                                                  |
+-- +==================================================================================+
+
+--+=====================================================================+
+--+               CREATE TABLE XX_AP_CLD_SUPP_BNKACT_STG
+--+=====================================================================+
+
+
+CREATE TABLE XX_AP_CLD_SUPP_BNKACT_STG
+  (
+    SUPPLIER_NUM        VARCHAR2(200),
+    SUPPLIER_NAME       VARCHAR2(200),
+    VENDOR_SITE_CODE    VARCHAR2(200),
+    BANK_NAME           VARCHAR2(200),
+    BRANCH_NAME         VARCHAR2(200),
+    COUNTRY_CODE        VARCHAR2(200),
+    BANK_ACCOUNT_NAME   VARCHAR2(200),
+    BANK_ACCOUNT_NUM    VARCHAR2(200),
+    CURRENCY_CODE       VARCHAR2(200),
+    PRIMARY_FLAG        VARCHAR2(200),
+    START_DATE          VARCHAR2(200),
+    END_DATE            VARCHAR2(200),
+    CREATE_FLAG         VARCHAR2(1),
+    PROCESS_FLAG        VARCHAR2(1),
+    BNKACT_PROCESS_FLAG NUMBER,
+    ERROR_FLAG          VARCHAR2(1),
+    ERROR_MSG           VARCHAR2(4000),
+    REQUEST_ID          NUMBER,
+    CREATED_BY          NUMBER,
+    CREATION_DATE       DATE,
+    LAST_UPDATED_BY     NUMBER,
+    LAST_UPDATE_DATE    DATE,
+    BANK_ID             NUMBER,
+    BRANCH_ID           NUMBER,
+    VENDOR_ID           NUMBER,
+    VENDOR_SITE_ID      NUMBER
+  );
+
+ 
+
+Grant  all on XX_AP_CLD_SUPP_BNKACT_STG to APPS;
+
+   /
+Show error
