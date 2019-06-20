@@ -15,6 +15,7 @@ SET FEEDBACK     ON
 -- |Version   Date         Author               Remarks                             |
 -- |=======   ==========   =============        ====================================|
 -- | V1.0     17-May-2019  Arun DSouza	    	Initial version                     |
+-- | V2.1     20-Jun-2019  Arun DSouza	    	Prodn version                       |
 -- +================================================================================+
 
 SET DEFINE OFF
@@ -23,8 +24,9 @@ SET DEFINE OFF
    (FUND_TYPE, FUND_OPERATING_UNIT, FUND_SUPPLIER_NAME, FUND_SUPPLIER_SITE, FUND_BANK_ACCOUNT_NAME
    )
 VALUES
-     ('C2FO_FUNDING_PARTNER','OU_US','C2FO BUYER TOGGLE','E1347118','TEST_C2FO');
- 
+     ('C2FO_FUNDING_PARTNER','OU_US','C2FO BUYER TOGGLE','E1374027','C2FO BUYER TOGGLE-1374027');
+
+
 COMMIT;
 /
 
