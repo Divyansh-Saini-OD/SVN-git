@@ -146,14 +146,11 @@ echo $archive >> tmpfile3
 perl -pe 's/\//\\\//g' tmpfile3 >> tmpfile4
 archive_internal=`cat tmpfile4`
 
-
-
  echo " "
  echo " "
  echo "Translationsource                      = $translationsource"
  echo "Server                                 = $server "
  echo "User name                              = $user"
- echo "Password                               = $passwd"
  echo "Source Directory                       = $source"
  echo "Destination Directory                  = $dest"
  echo "source filename                        = $filename"
@@ -240,7 +237,7 @@ elif [ "$lftpflag" = "Y" ]
  	 echo "user $user"
 	 echo "passwd $passwd"
 	 echo "server $server"
-	 $XXFIN_TOP/bin/./XXPROCESSLFTP.sh $user $passwd $server $source $dest $filename $TMPFILE
+	 $XXFIN_TOP/bin/./XXPROCESSLFTP.sh $user $passwd $server $source $dest $filename $TMPFILE $destfile
 else
      echo "Executing FTP"
 	 FTPPARMS="$server"
