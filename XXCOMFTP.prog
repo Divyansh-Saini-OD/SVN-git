@@ -235,9 +235,15 @@ elif [ "$lftpflag" = "Y" ]
   then
   	 echo "Executing LFTP"
  	 echo "user $user"
-	 echo "passwd $passwd"
 	 echo "server $server"
-	 $XXFIN_TOP/bin/./XXPROCESSLFTP.sh $user $passwd $server $source $dest $filename $TMPFILE $destfile
+	 if [ "$destfile" != "" ]
+	 then
+	 mv $source/$filename $source/$destfile
+	 $XXFIN_TOP/bin/./XXPROCESSLFTP.sh $user $passwd $server $source $dest $destfile $TMPFILE
+	 mv $source/$destfile $source/$filename
+	 else
+	 $XXFIN_TOP/bin/./XXPROCESSLFTP.sh $user $passwd $server $source $dest $filename $TMPFILE
+	 fi
 else
      echo "Executing FTP"
 	 FTPPARMS="$server"
