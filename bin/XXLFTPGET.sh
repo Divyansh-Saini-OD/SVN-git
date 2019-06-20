@@ -33,4 +33,3 @@ then
 	echo "LFTP_SUCCESSFUL"
 fi
 echo "Executiing XXLFTPGET is completed"
-
