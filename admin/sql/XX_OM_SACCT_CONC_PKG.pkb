@@ -5194,6 +5194,14 @@ AS
             */
         END IF;
 
+	    IF ln_debug_level > 0
+        THEN
+		  
+		  oe_debug_pub.ADD( 'start rev recognization changes for subscriptions ..');
+		  oe_debug_pub.ADD( 'invoicing_rule_id: '||g_header_rec.invoicing_rule_id(ln_hdr_ind));
+		  
+		END IF;  
+		
         IF g_header_rec.invoicing_rule_id(ln_hdr_ind) IS NOT NULL
         THEN
           BEGIN
@@ -5207,6 +5215,12 @@ AS
             EXCEPTION
               WHEN OTHERS 
               THEN 
+			    
+				IF ln_debug_level >0 
+				THEN 
+				  oe_debug_pub.ADD( 'No Contract details found SSB..');
+				END IF;
+				
                 g_line_rec.service_end_date(i) := null;
                 g_line_rec.service_start_date(i) := NULL;
             END;
