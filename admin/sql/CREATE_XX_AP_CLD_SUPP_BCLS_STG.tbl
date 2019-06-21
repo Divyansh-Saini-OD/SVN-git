@@ -1,0 +1,44 @@
+-- +===========================================================================+
+-- |                  Office Depot - Project Simplify                          |
+-- +===========================================================================+
+-- | Name :XXFIN.XX_AP_CLOUD_SUPP_BUS_CLASS_STG                                |
+-- | Description :   Script to create XX_AP_CLOUD_SUPP_BUS_CLASS_STG table     |
+-- |                                                                           |
+-- |                                                                           |
+-- |Change Record:                                                             |
+-- |===============                                                            |
+-- |Version      Date           Author                  Remarks                |
+-- |=======    ==========     =============             ====================== |
+-- | 1.0       06-JUN-2019    Dinesh Nagapuri           Initial draft version  |
+-- +===========================================================================+
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE XXFIN.XX_AP_CLOUD_SUPP_BUS_CLASS_STG';
+EXCEPTION
+ WHEN OTHERS THEN NULL;
+END;
+/
+
+CREATE TABLE XXFIN.XX_AP_CLD_SUPP_BCLS_STG 
+(SUPPLIER_NAME	  VARCHAR2(200),
+SUPPLIER_NUMBER	  VARCHAR2(200),
+CLASSIFICATION	  VARCHAR2(200),
+SUBCLASSIFICATION VARCHAR2(200),
+START_DATE        VARCHAR2(200),
+CONFIRMED_ON	  VARCHAR2(200),
+PROCESS_FLAG      VARCHAR2(1) DEFAULT 'I',
+BCLS_PROCESS_FLAG VARCHAR2(1) DEFAULT '1',
+CREATE_FLAG       VARCHAR2(10),
+ERROR_FLAG        VARCHAR2(5), 
+ERROR_MSG         VARCHAR2(4000), 
+REQUEST_ID        NUMBER, 
+CREATED_BY        NUMBER, 
+CREATION_DATE     TIMESTAMP DEFAULT systimestamp, 
+LAST_UPDATED_BY   NUMBER, 
+LAST_UPDATE_DATE  TIMESTAMP DEFAULT systimestamp,
+vendor_id		  NUMBER
+);
+
+
+
+
