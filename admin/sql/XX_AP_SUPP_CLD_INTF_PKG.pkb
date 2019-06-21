@@ -6039,6 +6039,35 @@ BEGIN
     print_debug_msg(p_message => 'Records to be processed from the table XX_AP_CLD_SUPP_BNKACT_STG are '||sql%rowcount , p_force => true);
     PRINT_OUT_MSG(P_MESSAGE => 'Total No. of Supplier records ready for validate and load are '||SQL%ROWCOUNT);
   END IF;
+  
+     UPDATE xx_ap_cld_site_dff_stg
+  SET DFF_process_flag   = gn_process_status_inprocess ,
+    REQUEST_ID              = gn_request_id ,
+    process_Flag            = 'P'
+  WHERE DFF_process_flag = '1'
+  AND process_Flag          ='N';
+  IF sql%notfound THEN
+    print_debug_msg(p_message => 'No records exist to process in the table XX_AP_CLD_SUPP_BNKACT_STG.' , p_force => true);
+    print_out_msg(p_message => 'Total No. of Supplier records ready for validate and load are 0');
+  elsif sql%found THEN
+    print_debug_msg(p_message => 'Records to be processed from the table XX_AP_CLD_SUPP_BNKACT_STG are '||sql%rowcount , p_force => true);
+    PRINT_OUT_MSG(P_MESSAGE => 'Total No. of Supplier records ready for validate and load are '||SQL%ROWCOUNT);
+  END IF;
+  
+  
+     UPDATE xx_ap_cld_supp_bcls_stg
+  SET bcls_process_flag   = gn_process_status_inprocess ,
+    REQUEST_ID              = gn_request_id ,
+    process_Flag            = 'P'
+  WHERE bcls_process_flag = '1'
+  AND process_Flag          ='N';
+  IF sql%notfound THEN
+    print_debug_msg(p_message => 'No records exist to process in the table xx_ap_cld_supp_bcls_stg.' , p_force => true);
+    print_out_msg(p_message => 'Total No. of Supplier records ready for validate and load are 0');
+  elsif sql%found THEN
+    print_debug_msg(p_message => 'Records to be processed from the table xx_ap_cld_supp_bcls_stg are '||sql%rowcount , p_force => true);
+    PRINT_OUT_MSG(P_MESSAGE => 'Total No. of Supplier records ready for validate and load are '||SQL%ROWCOUNT);
+  END IF;
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   print_debug_msg(p_message => 'Calling Supplier Wrapper' , p_force => true);
   main_prc_supplier( X_ERRBUF =>l_err_buff , X_RETCODE=> l_ret_code , P_RESET_FLAG =>'N' , p_debug_level =>'Y' );
