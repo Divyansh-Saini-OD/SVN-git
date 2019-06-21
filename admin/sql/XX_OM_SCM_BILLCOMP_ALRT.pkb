@@ -47,7 +47,7 @@ AS
      AND hca.party_id = hp.party_id
      AND hca.cust_account_id = b.sold_to_org_id
      AND a.bill_comp_flag IN ('Y', 'B')
-     AND b.last_update_date >= SYSDATE - 15
+     AND b.last_update_date >= SYSDATE - 60
      AND NOT EXISTS
             (SELECT 1
              FROM XX_SCM_BILL_SIGNAL
