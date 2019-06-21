@@ -1,20 +1,20 @@
 CREATE OR REPLACE PACKAGE BODY APPS.XX_OM_SCM_BILLCOMP_ALRT
 AS
--- +======================================================================+
--- |                  Office Depot - Project Simplify                     |
--- |                                                                      |
--- +======================================================================+
--- | Name             : XXEBSSCMBILLCOMPALRT.PKB                          |
--- | Description      : Package Body                                      |
--- |                                                                      |
--- |                                                                      |
--- |Change Record:                                                        |
--- |===============                                                       |
--- |Version    Date          Author           Remarks                     | 
--- |=======    ==========    =============    ============================|
--- |DRAFT 1A   09-03-2019    Arun Gannarapu   pending bill complete orders|
--- |                                                                      |
--- +======================================================================+
+-- +=======================================================================+
+-- |                  Office Depot - Project Simplify                      |
+-- |                                                                       |
+-- +=======================================================================+
+-- | Name             : XXEBSSCMBILLCOMPALRT.PKB                           |
+-- | Description      : Package Body                                       |
+-- |                                                                       |
+-- |                                                                       |
+-- |Change Record:                                                         |
+-- |===============                                                        |
+-- |Version    Date          Author           Remarks                      | 
+-- |=======    ==========    =============    =============================|
+-- |DRAFT 1A   09-03-2019    Arun Gannarapu   pending bill complete orders |
+-- |1B         06-21-2019    Shalu George     code to exclude return orders|
+-- +=======================================================================+
 -- procedure extract all pending order for bill complete
   PROCEDURE extract_pending_bc_orders (retcode        OUT   NUMBER,
                                      errbuf         OUT   VARCHAR2
@@ -42,12 +42,15 @@ AS
    FROM   xx_om_header_attributes_all a,
           oe_order_headers_all b,
           hz_cust_accounts hca,
-          hz_parties hp
+          hz_parties hp,
+		  apps.oe_transaction_types_tl ot
    WHERE a.header_id = b.header_id
      AND hca.party_id = hp.party_id
      AND hca.cust_account_id = b.sold_to_org_id
      AND a.bill_comp_flag IN ('Y', 'B')
      AND b.last_update_date >= SYSDATE - 60
+	 AND ot.transaction_type_id=b.order_type_id
+	 AND upper(ot.name) not like '%RETURN%'
      AND NOT EXISTS
             (SELECT 1
              FROM XX_SCM_BILL_SIGNAL
