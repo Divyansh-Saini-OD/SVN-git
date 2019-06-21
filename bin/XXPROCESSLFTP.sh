@@ -7,10 +7,6 @@
 	 echo "Destination Location  $6"
 	 echo "Source File $7"
 	 echo "Temp File $8"
-	 echo "-u $user,$passwd -p $server"
-	 echo "-u $1,$2 -p $3 $4"
-	 LFTPPARMS2="-u $1,$2 -p $3 $4"
-	 echo "LFTPPARMS2 $LFTPPARMS2"
 	 echo "Before lftp"
 success=`/usr/bin/lftp -u $1,$2 -p $3 $4 <<EOF
 lcd $5
