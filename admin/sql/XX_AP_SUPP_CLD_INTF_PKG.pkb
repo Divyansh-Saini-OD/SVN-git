@@ -5976,10 +5976,10 @@ BEGIN
   WHERE SUPP_PROCESS_FLAG = '1'
   AND PROCESS_FLAG        ='N' ;--
   IF sql%notfound THEN
-    print_debug_msg(p_message => 'No records exist to process in the table XXFIN.XX_AP_CLD_SUPPLIERS_STG.' , p_force => true);
+    print_debug_msg(p_message => 'No records exist to process in the table XX_AP_CLD_SUPPLIERS_STG.' , p_force => true);
     print_out_msg(p_message => 'Total No. of Supplier records ready for validate and load are 0');
   elsif sql%found THEN
-    print_debug_msg(p_message => 'Records to be processed from the table XXFIN.XX_AP_CLD_SUPPLIERS_STG are '||sql%rowcount , p_force => true);
+    print_debug_msg(p_message => 'Records to be processed from the table XX_AP_CLD_SUPPLIERS_STG are '||sql%rowcount , p_force => true);
     print_out_msg(p_message => 'Total No. of Supplier records ready for validate and load are '||sql%rowcount);
   END IF;
   --===============================================================
@@ -6033,10 +6033,10 @@ BEGIN
   WHERE bnkact_process_flag = '1'
   AND process_Flag          ='N';
   IF sql%notfound THEN
-    print_debug_msg(p_message => 'No records exist to process in the table XXFIN.XX_AP_CLD_SUPP_BNKACT_STG.' , p_force => true);
+    print_debug_msg(p_message => 'No records exist to process in the table XX_AP_CLD_SUPP_BNKACT_STG.' , p_force => true);
     print_out_msg(p_message => 'Total No. of Supplier records ready for validate and load are 0');
   elsif sql%found THEN
-    print_debug_msg(p_message => 'Records to be processed from the table XXFIN.XX_AP_CLD_SUPP_BNKACT_STG are '||sql%rowcount , p_force => true);
+    print_debug_msg(p_message => 'Records to be processed from the table XX_AP_CLD_SUPP_BNKACT_STG are '||sql%rowcount , p_force => true);
     PRINT_OUT_MSG(P_MESSAGE => 'Total No. of Supplier records ready for validate and load are '||SQL%ROWCOUNT);
   END IF;
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
