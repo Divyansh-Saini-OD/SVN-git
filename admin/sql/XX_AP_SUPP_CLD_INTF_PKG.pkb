@@ -14,15 +14,15 @@ PACKAGE body XX_AP_SUPP_CLD_INTF_PKG
   -- +=========================================================================+
   -- | Name             : XX_AP_SUPP_CLD_INTF_PKG                        |
   -- | Description      : This Program will do validations and load vendors to iface table from   |
-  -- |                    stagging table This process is defined for Cloud to EBS Supplier Interface. And also does the post updates       |
+  -- |                    staging table This process is defined for Cloud to EBS Supplier Interface. And also does the post updates       |
   -- |                                                                         |
   -- |                                                                         |
   -- |Change Record:                                                           |
   -- |===============                                                          |
   -- |Version    Date          Author            Remarks                       |
   -- |=======    ==========    =============     ==============================|
-  -- |    1.0    14-MAY-2019   Priyam Parmar       Initial code                  |
-  -- |  -- +=========================================================================+
+  -- |  1.0    14-MAY-2019     Priyam Parmar     Initial code                  |
+  -- |=========================================================================+
 AS
   /*********************************************************************
   * Procedure used to log based on gb_debug value or if p_force is TRUE.
@@ -476,6 +476,867 @@ BEGIN
   END;
   RETURN v_ccid;
 END get_cld_to_ebs_map;
+--+============================================================================+
+--| Name          : insert_bus_class                                    	   |
+--| Description   : This FUnction will insert Business Classifications		   |
+--|																			   |
+--|                                                                            |
+--| Parameters    : p_party_id,p_bus_code,p_attribute,p_vendor_id              |
+--|                                                                            |
+--| Returns       : N/A                                                        |
+--|                                                                            |
+--+============================================================================+
+  FUNCTION insert_bus_class ( p_party_id IN NUMBER
+                           ,p_bus_code IN VARCHAR2
+                           ,p_attribute IN VARCHAR2
+                           ,p_vendor_id IN NUMBER
+                          )
+    RETURN VARCHAR2
+                         
+    IS 
+    
+    v_class_id  NUMBER;
+    
+    BEGIN
+      
+     
+      SELECT POS_BUS_CLASS_ATTR_S.nextval
+        INTO v_class_id
+        FROM DUAL;
+    
+      INSERT
+        INTO pos_bus_class_attr
+           ( classification_id
+        ,party_id
+        ,lookup_type
+        ,lookup_code
+        ,start_date_active
+        ,status
+        ,ext_attr_1
+        ,class_status
+        ,created_by
+        ,creation_date
+        ,last_updated_by
+        ,last_update_date
+        ,vendor_id
+        )
+      VALUES
+          (  v_class_id
+        ,p_party_id
+        ,'POS_BUSINESS_CLASSIFICATIONS'
+        ,p_bus_code
+        ,SYSDATE
+        ,'A'
+        ,p_attribute
+        ,'APPROVED'
+        ,fnd_global.user_id
+        ,SYSDATE
+        ,fnd_global.user_id
+        ,SYSDATE
+        ,p_vendor_id
+          );
+          
+        g_ins_bus_class := 'Y';  -- -- This is used to check that if any record inserted or not.
+        
+      RETURN('Y');
+    EXCEPTION
+      WHEN others THEN
+        FND_FILE.PUT_LINE(FND_FILE.LOG,'Error in while inserting business classification :'||TO_CHAR(p_vendor_id)||','||p_bus_code||','||SQLERRM);
+		dbms_output.put_line('Error in while inserting business classification :'||TO_CHAR(p_vendor_id)||','||p_bus_code||','||SQLERRM);
+		RETURN('N');
+    END insert_bus_class;
+--+============================================================================+
+--| Name          : xx_custom_tolerance                                        |
+--| Description   : This FUnction will process Custom Supplier Tolerance	   |
+--|																			   |
+--|                                                                            |
+--| Parameters    : p_vendor_id,p_vendor_site_id                               |
+--|                                                                            |
+--| Returns       : N/A                                                        |
+--|                                                                            |
+--+============================================================================+
+	FUNCTION xx_custom_tolerance(p_vendor_id 	  IN NUMBER,
+								 p_vendor_site_id IN NUMBER
+								 )
+RETURN VARCHAR2
+IS
+  v_tst VARCHAR2(1);
+
+  ln_user_id NUMBER:=fnd_profile.value('USER_ID');
+  ln_org_id NUMBER := fnd_profile.value('ORG_ID');
+BEGIN
+  
+    INSERT
+    INTO xx_ap_custom_tolerances
+      (
+        SUPPLIER_ID,
+        SUPPLIER_SITE_ID,
+        ORG_ID,
+        FAVOURABLE_PRICE_PCT,
+        MAX_PRICE_AMT,
+        MIN_CHARGEBACK_AMT,
+        MAX_FREIGHT_AMT,
+        DIST_VAR_NEG_AMT,
+        DIST_VAR_POS_AMT,
+        CREATED_BY,
+        CREATION_DATE,
+        LAST_UPDATED_BY,
+        LAST_UPDATE_DATE
+      )
+      VALUES
+      (
+        p_vendor_id,
+        p_vendor_site_id,
+        ln_org_id,
+        30,
+        50,
+        2,
+        0,
+        1,
+        1,
+        ln_user_id,
+        SYSDATE,
+        ln_user_id,
+        SYSDATE
+      );
+  RETURN('Y');
+EXCEPTION
+WHEN OTHERS THEN
+  FND_FILE.PUT_LINE(FND_FILE.LOG,'Error in processing Custom Tolerance :'||SQLERRM);
+  RETURN('N');
+END xx_custom_tolerance; 
+
+--+============================================================================+
+--| Name          : xx_custom_sup_traits                                       |
+--| Description   : This FUnction will process Supplier Traits for Supplier    |
+--|																			   |
+--|                                                                            |
+--| Parameters    : p_sup_trait,p_sup_number	                               |
+--|                                                                            |
+--| Returns       : N/A                                                        |
+--|                                                                            |
+--+============================================================================+
+
+FUNCTION xx_custom_sup_traits
+(
+     p_sup_trait IN VARCHAR2 --This is a parameter that contains a delimited list of items
+	,p_sup_number IN VARCHAR2
+  )
+  RETURN VARCHAR2
+  IS
+  lc_sup_trait  		VARCHAR2(4000) := p_sup_trait || '|';
+  lc_sup_tair_value  	VARCHAR2(100);
+  ln_place				NUMBER;
+  ln_sup_trait_id		NUMBER;
+  ln_mat_count			NUMBER;
+  lc_description		VARCHAR2(100);
+  lc_enable_flag		VARCHAR2(100);
+  lc_sup_trait_id		VARCHAR2(100);
+  lc_master_sup_ind		VARCHAR2(100); 
+BEGIN
+  WHILE lc_sup_trait IS NOT NULL
+  LOOP
+		lc_description		:=NULL;
+		lc_enable_flag		:=NULL;
+		lc_sup_trait_id		:=NULL;
+		lc_master_sup_ind 	:=NULL;
+		ln_sup_trait_id		:=0;
+		ln_mat_count		:=0;
+    dbms_output.put_line('Test 1   : '||lc_sup_trait);
+    ln_place := instr(lc_sup_trait,'|');              -- find the first separator
+    dbms_output.put_line('Test 2   : '||ln_place);
+    lc_sup_tair_value  := SUBSTR(lc_sup_trait,1,ln_place - 1); -- extract item	
+	/*
+	First check in XX_AP_SUP_TRAITS for supplier trait
+	if exists  then	
+	   check if exists in trait matrix
+	   if not exists then 
+	      insert in trait matrix
+	   end if;	   
+	else
+	  insert XX_AP_SUP_TRAITS
+	  insert XX_AP_SUP_TRAITS_matrix	  
+	end if;
+	*/
+	
+	BEGIN
+		SELECT description,
+		  enable_flag,
+		  sup_trait_id,
+		  master_sup_ind
+		INTO  lc_description,
+		  lc_enable_flag,
+		  ln_sup_trait_id,
+		  lc_master_sup_ind 
+		FROM XX_AP_SUP_TRAITS
+		WHERE sup_trait =lc_sup_tair_value;
+	EXCEPTION
+	WHEN NO_DATA_FOUND
+    THEN
+		SELECT MAX(sup_trait_id)
+		INTO  ln_sup_trait_id
+		FROM XX_AP_SUP_TRAITS;
+		
+		ln_sup_trait_id	:=	ln_sup_trait_id+5;
+		
+		INSERT
+		INTO XX_AP_SUP_TRAITS
+		  (
+			SUP_TRAIT,
+			DESCRIPTION,
+			MASTER_SUP_IND,
+			CREATION_DATE,
+			CREATED_BY,
+			LAST_UPDATE_DATE,
+			LAST_UPDATED_BY,
+			LAST_UPDATE_LOGIN,
+			ENABLE_FLAG,
+			SUP_TRAIT_ID
+		  )
+		  VALUES
+		  (
+			lc_sup_tair_value,
+			lc_sup_tair_value,
+			'N',
+			SYSDATE,
+			fnd_global.user_id,
+			SYSDATE,
+			fnd_global.user_id,
+			fnd_global.user_id,
+			'Y',
+			ln_sup_trait_id
+		  );
+	WHEN OTHERS THEN
+	  FND_FILE.PUT_LINE(FND_FILE.LOG,'Error in processing Custom Tolerance :'||SQLERRM);
+	END; 
+	dbms_output.put_line('Test 21   : '||ln_sup_trait_id);
+
+	BEGIN
+		SELECT COUNT(*) 
+		INTO ln_mat_count
+		FROM xx_ap_sup_traits_matrix
+		WHERE supplier	=	p_sup_number
+		AND   SUP_TRAIT_ID	= ln_sup_trait_id;
+	EXCEPTION
+	WHEN OTHERS THEN
+	  FND_FILE.PUT_LINE(FND_FILE.LOG,'Error in processing Trait Matrix :'||SQLERRM);
+	END; 
+	
+	IF ln_mat_count =0
+	THEN
+		BEGIN	
+			INSERT
+			INTO XX_AP_SUP_TRAITS_MATRIX
+			(
+			SUPPLIER,
+			CREATION_DATE,
+			CREATED_BY,
+			LAST_UPDATE_DATE,
+			LAST_UPDATED_BY,
+			LAST_UPDATE_LOGIN,
+			ENABLE_FLAG,
+			SUP_TRAIT_ID
+			)
+			VALUES
+			(
+			p_sup_number,
+			SYSDATE,
+			fnd_global.user_id,
+			SYSDATE,
+			fnd_global.user_id,
+			fnd_global.user_id,
+			'Y',
+			ln_sup_trait_id
+			);
+		EXCEPTION
+		WHEN OTHERS THEN
+			FND_FILE.PUT_LINE(FND_FILE.LOG,'Error in processing Custom Tolerance :'||SQLERRM);
+		END;
+	END IF;
+    --your_procedure(lc_sup_tair_value);                      -- call procedure
+    lc_sup_trait := SUBSTR(lc_sup_trait,ln_place + 1);    -- chop list
+  END LOOP;
+  RETURN('Y');
+	EXCEPTION
+	WHEN OTHERS THEN
+		FND_FILE.PUT_LINE(FND_FILE.LOG,'Error in processing Custom Tolerance :'||SQLERRM);
+		 RETURN('N');
+END xx_custom_sup_traits;
+--+============================================================================+
+--| Name          : process_bus_class                                          |
+--| Description   : This procedure will Create Business Classification 		   |
+--|					for Supplier											   |
+--|                                                                            |
+--| Parameters    : gn_request_id				                               |
+--|                                                                            |
+--| Returns       : N/A                                                        |
+--|                                                                            |
+--+============================================================================+
+PROCEDURE process_bus_class (gn_request_id IN NUMBER)
+    IS    
+    CURSOR C1 
+    IS
+		SELECT bus.rowid drowid,
+		  bus.supplier_name,
+		  bus.classification,
+		  bus.supplier_number,
+		  bus.subclassification,
+		  bus.bcls_process_Flag,
+		  stg.party_id,
+		  stg.vendor_id		  
+		FROM XXFIN.XX_AP_CLD_SUPP_BCLS_STG bus,
+		XX_AP_CLD_SUPPLIERS_STG stg
+		WHERE 1                   =1
+		AND bus.process_Flag 	  ='P'
+		AND bus.request_id	 	  =	gn_request_id
+		AND stg.request_id	 	  =	bus.request_id
+		--AND bus.supplier_name     = stg.supplier_name
+		AND bus.supplier_number     = stg.segment1
+		AND stg.vendor_id	IS NOT NULL
+		AND stg.party_id	IS NOT NULL
+		--AND stg.create_flag		  = 'Y'					-- Considering Only Create Once
+		AND stg.supp_process_flag IN (7,8)
+		AND EXISTS	(SELECT 1 FROM apps.ap_suppliers
+		WHERE 1=1
+		AND vendor_id	=	stg.vendor_id
+		AND party_id	=	stg.party_id
+		)
+		;  
+
+	v_buss_flag 	VARCHAR2(1);
+    v_error_Flag 	VARCHAR2(1);
+	ln_vendor_id  	NUMBER;
+	ln_party_id  	NUMBER;
+	ln_cus_count 	NUMBER;
+    lc_error_msg 	VARCHAR2(2000);
+    BEGIN
+    
+      FOR cur IN C1 LOOP
+    
+        v_error_Flag	:= NULL;
+        g_ins_bus_class := 'N';
+		ln_vendor_id	:= NULL;
+		ln_party_id		:= NULL;
+		v_buss_Flag		:= NULL;
+		ln_cus_count	:= 0;		
+		print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
+		print_debug_msg(p_message => 'Input Parameters' , p_force => true);
+		print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
+		print_debug_msg(p_message => '  ' , p_force => true);
+		print_debug_msg(p_message => 'gn_request_id :                  '|| gn_request_id , p_force => true);
+		/*
+			BEGIN
+				SELECT vendor_id, party_id  -- check with Priyam, once new supplier is created, vendor_id is populated or not
+				INTO ln_vendor_id, ln_party_id
+				FROM apps.ap_suppliers
+				WHERE 1         =1
+				AND vendor_name = cur.supplier_name;--	'ALL THE RAGES INC TEST' ;
+			EXCEPTION
+			WHEN OTHERS THEN
+				v_error_flag	:='Y';
+				lc_error_msg	:=	'Error while validating against supplier';
+				FND_FILE.PUT_LINE(FND_FILE.LOG,'Error while validating against supplier :'||cur.supplier_name||''||SQLERRM);
+			END;
+		*/	
+			BEGIN
+				SELECT count(*)
+				INTO ln_cus_count
+				FROM apps.pos_bus_class_attr
+				WHERE 1           = 1
+				AND party_id      = cur.party_id
+				AND vendor_id     = cur.vendor_id
+				AND lookup_code   = cur.classification;
+				IF ln_cus_count >0
+				THEN
+					v_error_flag	:='Y';
+					lc_error_msg	:='Already Processed for this party and classificatoin combination';
+					print_debug_msg(p_message => 'Already Processed for this party and classificatoin combination Count '||ln_cus_count|| ' for Vendor '||cur.vendor_id||' classification : '||cur.classification , p_force => true);
+				END IF;
+			EXCEPTION
+			WHEN OTHERS THEN
+				ln_cus_count	:=-1;
+				v_error_flag	:='Y';
+				lc_error_msg	:=	'Error while validating against business classification';
+				print_debug_msg(p_message => 'Error while validating against business classification :'||cur.supplier_name||''||SQLERRM, p_force => true);
+			END;
+			print_debug_msg(p_message => 'Business Classification Count '||ln_cus_count|| ' for Vendor '||cur.vendor_id||' classification : '||cur.classification , p_force => true);	
+			-- check in pos table if this exists or not before insert
+		IF cur.classification IS NOT NULL AND ln_cus_count =0
+		THEN
+			IF cur.classification ='FOB' OR cur.classification = 'MINORITY_OWNED'
+			THEN
+			--===============================================================
+			-- Inserting into Business Classification    --
+			--===============================================================
+				print_debug_msg(p_message => 'Inserting into Business Classification for  '||cur.classification|| ' for Vendor '||cur.vendor_id||' classification : '||cur.classification , p_force => true);
+				v_buss_Flag:= insert_bus_class(cur.party_id,cur.classification,cur.subclassification,cur.vendor_id);
+			ELSE
+				print_debug_msg(p_message => 'Inserting into Business Classification for  '||cur.classification|| ' for Vendor '||cur.vendor_id||' classification : '||cur.classification , p_force => true);
+				v_buss_Flag:= insert_bus_class(cur.party_id,cur.classification,NULL,cur.vendor_id);
+			END IF;	
+			IF v_buss_Flag	='N' THEN
+				v_error_flag	:='Y';
+				lc_error_msg	:=	'Error while processing insert_bus_class';
+			ELSIF v_buss_Flag	 ='Y' THEN
+				v_error_flag	:='N';
+			END IF;
+		END IF;   
+	 
+       -- Added this code in SIT test -- 1.1
+        -- If any one record (using insert_bus_class()API above) inserted for A supplier then invoke this API.. 
+        IF g_ins_bus_class = 'Y' AND ln_cus_count =0 THEN
+            print_debug_msg(p_message => 'Invoking the API pos_supp_classification_pkg.synchronize_class_tca_to_po() to synch the Business Classifications', p_force => false);
+            BEGIN
+                pos_supp_classification_pkg.synchronize_class_tca_to_po(ln_party_id,ln_vendor_id);
+            END;        
+            print_debug_msg(p_message => 'Successfully completed the execution of API pos_supp_classification_pkg.synchronize_class_tca_to_po() to synch the Business Classifications', p_force => false);
+        END IF;
+    
+        IF v_error_flag='N' AND g_ins_bus_class = 'Y' THEN
+           UPDATE xxfin.XX_AP_CLD_SUPP_BCLS_STG
+		   SET bcls_process_Flag	= 7,
+ 			   vendor_id	= cur.vendor_id,
+			   process_Flag ='Y'
+		   WHERE rowid		= cur.drowid;
+        ELSE
+           UPDATE xxfin.xx_ap_cld_supp_bcls_stg
+           SET bcls_process_Flag=6,
+			   process_Flag ='Y',
+			   error_msg	= lc_error_msg,
+			   vendor_id	= cur.vendor_id
+           WHERE rowid=cur.drowid;
+        END IF;
+        COMMIT;
+    END LOOP;
+    EXCEPTION
+      WHEN others THEN
+        print_debug_msg(p_message =>'Error in processing business classification :', p_force => false);
+    END process_bus_class;   
+--+============================================================================+
+--| Name          : xx_supp_dff                                           	   |
+--| Description   : This procedure will Create Custom DFF Attributes to 3 groups|
+--|					Also it will create Custom Tolerance, Supplier Traits	   |
+--|                                                                            |
+--| Parameters    : gn_request_id				                               |
+--|                                                                            |
+--| Returns       : N/A                                                        |
+--|                                                                            |
+--+============================================================================+
+	  PROCEDURE xx_supp_dff(gn_request_id IN NUMBER)
+    IS
+    
+    v_tst varchar2(1);
+    
+    CURSOR C1 IS
+    SELECT	 dff.rowid drowid,
+			 dff.supplier_number
+			,dff.supplier_name
+			,dff.vendor_site_code
+			,dff.edi_distribution_code
+			,dff.sup_trait
+			,dff.back_order_flag
+			,dff.od_date_signed
+			,dff.vendor_date_signed
+			,dff.eft_settle_days
+			,dff.min_prepaid_code
+			,dff.supplier_ship_to
+			,dff.deduct_from_invoice_flag
+			,dff.rtv_freight_payment_method
+			,dff.payment_frequency
+			,dff.rtv_instructions
+			,dff.addl_rtv_instructions
+			,dff.rga_marked_flag
+			,dff.remove_price_sticker_flag
+			,dff.contact_supplier_for_rga_flag
+			,dff.destroy_flag
+			,dff.serial_num_required_flag
+			,dff.permanent_rga
+			,dff.lead_time
+			,dff.vendor_min_amount
+			,dff.master_vendor_id
+			,dff.rtv_option
+			,dff.destroy_allow_amount
+			,dff.min_return_qty
+			,dff.min_return_amount
+			,dff.damage_destroy_limit
+			,dff.rtv_related_site   
+			,dff.dff_process_flag
+			,site.create_flag
+			,site.vendor_id
+			,site.vendor_site_id
+     FROM xxfin.xx_ap_cld_site_dff_stg dff, 
+     		    xx_ap_cld_supp_sites_stg site
+     WHERE 1=1
+	 AND dff.process_Flag		=	'P'
+	 AND dff.request_id			=	gn_request_id
+	 AND dff.vendor_site_code	=	site.vendor_site_code
+	 AND site.site_process_flag	in (7,8)
+	 AND site.request_id		=	dff.request_id
+	 AND site.vendor_id			IS NOT NULL
+	 AND site.vendor_site_id 	IS NOT NULL
+	 AND EXISTS (
+	 SELECT 1 FROM ap_supplier_sites_all
+	 WHERE 1=1
+	 AND vendor_id				=	site.vendor_id
+	 AND vendor_site_id			=	site.vendor_site_id
+	 );
+
+    v_error_flag        VARCHAR2(1);
+    v_kff_id    		NUMBER;
+	ln_count			NUMBER;
+	ln_vendor_id		NUMBER;
+	ln_vendor_site_id	NUMBER;
+	ln_tol_count		NUMBER;
+	ln_bus_count		NUMBER;
+	lc_attribute10		VARCHAR2(100);
+	lc_attribute11		VARCHAR2(100);
+	lc_attribute12		VARCHAR2(100);
+	lc_error_msg 		VARCHAR2(2000);
+    BEGIN
+    
+      FOR cur IN C1 LOOP
+		v_error_Flag		:='N';
+		lc_attribute11		:=NULL;
+		lc_attribute12		:=NULL;
+		lc_attribute10		:=NULL;
+		ln_vendor_id		:=NULL;
+		ln_vendor_site_id 	:=NULL;
+		ln_tol_count		:=NULL;
+		ln_bus_count		:=NULL;
+		lc_error_msg		:=NULL;
+		print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
+		print_debug_msg(p_message => 'Input Parameters' , p_force => true);
+		print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
+		print_debug_msg(p_message => '  ' , p_force => true);
+		print_debug_msg(p_message => 'gn_request_id :                  '|| gn_request_id , p_force => true);
+		BEGIN
+			SELECT 	 attribute10
+			,attribute11
+			,attribute12
+			INTO   lc_attribute10,
+			lc_attribute11,
+			lc_attribute12
+			FROM  ap_supplier_sites_all
+			WHERE vendor_site_id	=	cur.vendor_site_id;
+		EXCEPTION
+		WHEN others THEN		
+			print_debug_msg(p_message => '  Error in Deriving Kff Values for site '||cur.vendor_site_id||' SQLERRM : '||SQLERRM , p_force => true);
+			v_error_flag :='Y';
+			lc_error_msg := lc_error_msg||'Error while extracting supplier site : '||cur.vendor_site_code;
+		END;
+		print_debug_msg(p_message => '  Derived Kff Values for site '||cur.vendor_site_id , p_force => true);
+		print_debug_msg(p_message => '  lc_attribute10 '||lc_attribute10 , p_force => true);
+		print_debug_msg(p_message => '  lc_attribute11 '||lc_attribute11 , p_force => true);
+		print_debug_msg(p_message => '  lc_attribute12 '||lc_attribute12 , p_force => true);
+		BEGIN
+			SELECT 	 COUNT(*)
+			INTO   ln_bus_count
+			FROM  xx_po_vendor_sites_kff
+			WHERE vs_kff_id	IN (lc_attribute10,lc_attribute11,lc_attribute12);
+		EXCEPTION
+		WHEN others THEN
+			ln_bus_count := -1;
+			print_debug_msg(p_message => '  Error in Deriving KFF : '||SQLERRM , p_force => true);
+			v_error_flag :='Y';
+			lc_error_msg := lc_error_msg||'Error while extracting custom dff information : '||cur.vendor_site_code;
+		END;		
+		print_debug_msg(p_message => '  Vendor Site KFF Count for attributes : '||ln_bus_count , p_force => true);
+        IF ln_bus_count = 0
+		THEN		
+			print_debug_msg(p_message => ' Inserting into group 1 KFF : ', p_force => true);
+			BEGIN
+			  SELECT xxfin.XX_PO_VENDOR_SITES_KFF_S.nextval INTO v_kff_id FROM DUAL;
+			  INSERT 
+				INTO xx_po_vendor_sites_kff
+			  (     VS_KFF_ID          ,
+					STRUCTURE_ID       ,
+					ENABLED_FLAG       ,
+					SUMMARY_FLAG       ,
+					START_DATE_ACTIVE  ,
+					CREATED_BY         ,
+					CREATION_DATE      ,
+					LAST_UPDATED_BY    ,
+					LAST_UPDATE_DATE   ,
+					SEGMENT1           ,
+					SEGMENT2           ,
+					SEGMENT4           ,
+					SEGMENT5           ,
+					SEGMENT6           ,
+					SEGMENT13          ,
+					SEGMENT15          ,
+					SEGMENT16          ,
+					SEGMENT17          
+			   )     
+			  VALUES  
+				(   v_kff_id ,
+					101,
+					'Y',
+					'N',
+					SYSDATE,
+					fnd_global.user_id,
+					SYSDATE,
+					fnd_global.user_id,
+					SYSDATE,
+					cur.LEAD_TIME,
+					cur.BACK_ORDER_FLAG,
+					cur.MIN_PREPAID_CODE,
+					cur.VENDOR_MIN_AMOUNT,
+					cur.SUPPLIER_SHIP_TO,
+					cur.MASTER_VENDOR_ID,
+					TO_CHAR(cur.OD_DATE_SIGNED,'DD-MON-YY'),
+					TO_CHAR(cur.VENDOR_DATE_SIGNED,'DD-MON-YY'),
+					cur.DEDUCT_FROM_INVOICE_FLAG
+					);
+		
+			UPDATE ap_supplier_sites_all
+			   SET attribute10=v_kff_id
+			 WHERE vendor_site_id=cur.vendor_site_id;
+			EXCEPTION
+			  WHEN others THEN
+			v_error_flag:='Y';
+			lc_error_msg := lc_error_msg||'Error in processing Custom DFF for Structure Id 101:';
+			END;
+			print_debug_msg(p_message => ' Inserting into group 2 KFF : ', p_force => true);
+			BEGIN
+			  SELECT xxfin.XX_PO_VENDOR_SITES_KFF_S.nextval INTO v_kff_id FROM DUAL;
+			  INSERT 
+				INTO xx_po_vendor_sites_kff
+			  (     VS_KFF_ID          ,
+					STRUCTURE_ID       ,
+					ENABLED_FLAG       ,
+					SUMMARY_FLAG       ,
+					START_DATE_ACTIVE  ,
+					CREATED_BY         ,
+					CREATION_DATE      ,
+					LAST_UPDATED_BY    ,
+					LAST_UPDATE_DATE   ,
+					SEGMENT37          
+			   )     
+			  VALUES  
+					(  v_kff_id,
+						50350,
+						'Y',
+						'N',
+						SYSDATE,
+						fnd_global.user_id,
+						SYSDATE,
+						fnd_global.user_id,
+						SYSDATE,
+						cur.edi_distribution_code
+					);
+			UPDATE ap_supplier_sites_all
+			   SET attribute11=v_kff_id
+			 WHERE vendor_site_id=cur.vendor_site_id;
+		
+			EXCEPTION
+			  WHEN others THEN
+			v_error_flag:='Y';
+			lc_error_msg := lc_error_msg||'Error in processing Custom DFF for Structure Id 50350:';
+			END;
+			print_debug_msg(p_message => ' Inserting into group 3 KFF : ', p_force => true);
+			BEGIN
+			  SELECT xxfin.XX_PO_VENDOR_SITES_KFF_S.nextval INTO v_kff_id FROM DUAL;
+			  INSERT 
+				INTO xx_po_vendor_sites_kff
+			  (     VS_KFF_ID          ,
+					STRUCTURE_ID       ,
+					ENABLED_FLAG       ,
+					SUMMARY_FLAG       ,
+					START_DATE_ACTIVE  ,
+					CREATED_BY         ,
+					CREATION_DATE      ,
+					LAST_UPDATED_BY    ,
+					LAST_UPDATE_DATE   ,
+					SEGMENT40          , 
+					SEGMENT41          ,
+					SEGMENT42          ,
+					SEGMENT43          ,
+					SEGMENT44          ,
+					SEGMENT45          ,
+					SEGMENT46          ,
+					SEGMENT47          ,
+					SEGMENT48          ,
+					SEGMENT49          ,
+					SEGMENT50          ,
+					SEGMENT51          ,
+					SEGMENT52          ,
+					SEGMENT53          ,
+					SEGMENT54          
+					--, SEGMENT56
+					--, SEGMENT57
+					, SEGMENT58
+			   )     
+			  VALUES  
+					(       v_kff_id,
+							50351,
+							'Y',
+							'N',
+							SYSDATE,
+							fnd_global.user_id,
+							SYSDATE,
+							fnd_global.user_id,
+							SYSDATE,
+							cur.RTV_OPTION,
+							cur.RTV_FREIGHT_PAYMENT_METHOD,
+							cur.PERMANENT_RGA,
+							cur.DESTROY_ALLOW_AMOUNT,
+							cur.PAYMENT_FREQUENCY,
+							cur.MIN_RETURN_QTY,
+							cur.MIN_RETURN_AMOUNT,
+							cur.DAMAGE_DESTROY_LIMIT,
+							cur.RTV_INSTRUCTIONS,
+							cur.ADDL_RTV_INSTRUCTIONS,
+							cur.RGA_MARKED_FLAG,
+							cur.REMOVE_PRICE_STICKER_FLAG,
+							cur.CONTACT_SUPPLIER_FOR_RGA_FLAG,
+							cur.DESTROY_FLAG,
+							cur.SERIAL_NUM_REQUIRED_FLAG,
+						   -- cur.OBSOLETE_ALLOW_PERNTG     , 
+							--cur.OBSOLETE_DAYS             ,          check this
+							cur.RTV_RELATED_SITE
+					);
+			UPDATE ap_supplier_sites_all
+			   SET attribute12=v_kff_id
+			 WHERE vendor_site_id=cur.vendor_site_id;
+		
+			EXCEPTION
+			  WHEN others THEN
+			v_error_flag:='Y';
+			lc_error_msg := lc_error_msg||'Error in processing Custom DFF for Structure Id 50351:';
+			END;			
+			--===============================================================
+			-- Inserting into Custom Supplier Traits    --
+			--===============================================================
+			print_debug_msg(p_message => ' Calling Cupplier Traits for Trait : '||cur.sup_trait||' cur.supplier_number : '||cur.supplier_number, p_force => true);
+			v_error_flag := xx_custom_sup_traits(cur.sup_trait, cur.supplier_number);			
+			-- Calling Custom Tolerance
+			BEGIN
+				select count(*)
+				INTO ln_tol_count
+				FROM xx_ap_custom_tolerances
+				WHERE 1=1
+				AND supplier_id			= cur.vendor_id	
+				AND supplier_site_id	= cur.vendor_site_id	;
+			EXCEPTION
+			WHEN others THEN
+			print_debug_msg(p_message => 'Error while extracting data from tolerance '||SQLERRM, p_force => true);
+			--v_error_flag:='Y';
+			--lc_error_msg := 'Error while extracting data from tolerance ';
+			END;			
+			--===============================================================
+			-- Processing Custom Tolerance    --
+			--===============================================================
+			print_debug_msg(p_message => 'Processing Custom Tolerance for vendor_id : '||cur.vendor_id||' cur.vendor_site_id : '||cur.vendor_site_id, p_force => true);
+			IF ln_tol_count = 0
+			THEN
+				v_error_flag := xx_custom_tolerance(cur.vendor_id, cur.vendor_site_id);
+			END IF;					
+			print_debug_msg(p_message => 'Updating records for Cloud Custom DFF ', p_force => true);
+			IF v_error_Flag='Y' THEN		
+			   UPDATE XXFIN.XX_AP_CLD_SITE_DFF_STG
+				  SET dff_process_Flag	= 7,
+					  process_Flag 		= 'Y',
+					  error_msg	  		= lc_error_msg,
+					  vendor_id	  		= cur.vendor_id,
+					  vendor_site_id	= cur.vendor_site_id,
+					  create_flag		= 'Y'
+				WHERE rowid=cur.drowid;
+			ELSE		
+			   UPDATE XXFIN.XX_AP_CLD_SITE_DFF_STG
+				  SET dff_process_Flag	= 6,
+					  process_Flag 		= 'Y',
+					  vendor_id	  		= cur.vendor_id,
+					  vendor_site_id	= cur.vendor_site_id,
+					  create_flag		= 'Y'
+				WHERE rowid=cur.drowid;
+			END IF;
+			COMMIT; 
+		ELSIF ln_bus_count >0 AND ( lc_attribute10 IS NOT NULL OR lc_attribute11 IS NOT NULL OR lc_attribute12 IS NOT NULL)
+		THEN
+			BEGIN
+				IF lc_attribute10 IS NOT NULL
+				THEN
+					UPDATE	xx_po_vendor_sites_kff
+					SET LAST_UPDATED_BY		= fnd_global.user_id,
+						LAST_UPDATE_DATE 	= SYSDATE,
+						SEGMENT1      		= cur.LEAD_TIME,
+						SEGMENT2      		= cur.BACK_ORDER_FLAG,
+						SEGMENT4      		= cur.MIN_PREPAID_CODE,
+						SEGMENT5      		= cur.VENDOR_MIN_AMOUNT,
+						SEGMENT6      		= cur.SUPPLIER_SHIP_TO,
+						SEGMENT13     		= cur.MASTER_VENDOR_ID,
+						SEGMENT15     		= TO_CHAR(cur.OD_DATE_SIGNED,'DD-MON-YY'),
+						SEGMENT16     		= TO_CHAR(cur.VENDOR_DATE_SIGNED,'DD-MON-YY'),
+						SEGMENT17     		= cur.DEDUCT_FROM_INVOICE_FLAG
+					WHERE VS_KFF_ID			= lc_attribute10
+					AND STRUCTURE_ID		= 101;				
+				ELSIF lc_attribute11 IS NOT NULL
+				THEN
+					UPDATE	xx_po_vendor_sites_kff
+					SET LAST_UPDATED_BY		= fnd_global.user_id,
+						LAST_UPDATE_DATE 	= SYSDATE,
+						SEGMENT37			= cur.edi_distribution_code
+					WHERE VS_KFF_ID		=	lc_attribute11
+					AND STRUCTURE_ID	=	50350;				
+				ELSIF lc_attribute12 IS NOT NULL
+				THEN
+					UPDATE	xx_po_vendor_sites_kff
+					SET LAST_UPDATED_BY		= fnd_global.user_id,
+						LAST_UPDATE_DATE 	= SYSDATE,
+						SEGMENT37			= cur.edi_distribution_code,
+						SEGMENT40           = cur.RTV_OPTION,
+						SEGMENT41           = cur.RTV_FREIGHT_PAYMENT_METHOD,
+						SEGMENT42           = cur.PERMANENT_RGA,
+						SEGMENT43           = cur.DESTROY_ALLOW_AMOUNT,
+						SEGMENT44           = cur.PAYMENT_FREQUENCY,
+						SEGMENT45           = cur.MIN_RETURN_QTY,
+						SEGMENT46           = cur.MIN_RETURN_AMOUNT,
+						SEGMENT47           = cur.DAMAGE_DESTROY_LIMIT,
+						SEGMENT48           = cur.RTV_INSTRUCTIONS,
+						SEGMENT49           = cur.ADDL_RTV_INSTRUCTIONS,
+						SEGMENT50           = cur.RGA_MARKED_FLAG,
+						SEGMENT51           = cur.REMOVE_PRICE_STICKER_FLAG,
+						SEGMENT52           = cur.CONTACT_SUPPLIER_FOR_RGA_FLAG,
+						SEGMENT53           = cur.DESTROY_FLAG,
+						SEGMENT54           = cur.SERIAL_NUM_REQUIRED_FLAG,
+						--, SEGMENT56       = - cur.OBSOLETE_ALLOW_PERNTG,
+						--, SEGMENT57       = --cur.OBSOLETE_DAYS,
+						SEGMENT58         = cur.RTV_RELATED_SITE
+					WHERE VS_KFF_ID		=	lc_attribute12
+					AND STRUCTURE_ID	=	50351;
+				END IF; 
+			--END LOOP;
+			EXCEPTION
+			  WHEN others THEN
+			print_debug_msg(p_message => 'Error in processing Custom DFF while updating'||SQLERRM, p_force => true);
+			v_error_flag :='Y';
+			lc_error_msg := lc_error_msg||'Error in processing Custom DFF while updating ';
+			END;
+			IF v_error_Flag='Y' THEN		
+				UPDATE XXFIN.XX_AP_CLD_SITE_DFF_STG
+				SET dff_process_Flag=7,
+					process_Flag 	='Y',
+					error_msg	  	= lc_error_msg,
+					vendor_id	  	= cur.vendor_id,
+					vendor_site_id  = cur.vendor_site_id,
+					create_flag		= 'N'
+				WHERE rowid			= cur.drowid;
+			ELSE		
+				UPDATE XXFIN.XX_AP_CLD_SITE_DFF_STG
+				SET dff_process_Flag  = 6,
+					process_Flag 	  ='Y',
+					vendor_id	  	  = cur.vendor_id,
+					vendor_site_id	  = cur.vendor_site_id,
+					create_flag		  = 'N'
+				WHERE rowid			  = cur.drowid;
+			END IF;
+		END IF;	
+		END LOOP;
+	EXCEPTION
+    WHEN others THEN
+		print_debug_msg(p_message => 'Error in processing xx_supp_dff '||SQLERRM, p_force => true);
+    END xx_supp_dff;
+	
 --+============================================================================+
 --| Name          : update_supplier                                           |
 --| Description   : This procedure will update supplier details using API  |
@@ -2307,6 +3168,8 @@ BEGIN
       WHERE upper(apsup.vendor_name)=upper(xasc.supplier_name)
       AND APSUP.SEGMENT1            =XASC.SUPPLIER_NUMBER
       );
+	--Commented per narasimha
+	/* 
     UPDATE XX_AP_CLD_SUPP_SITES_STG XASC
     SET site_process_flag = gn_process_status_error ,
       PROCESS_FLAG        = 'Y',
@@ -2320,6 +3183,7 @@ BEGIN
       WHERE upper(apsup.vendor_name)=upper(xasc.supplier_name)
       AND APSUP.SEGMENT1            =XASC.SUPPLIER_NUMBER
       );
+	  */
     L_SITE_UPD_CNT   := SQL%ROWCOUNT;
     IF L_SITE_UPD_CNT >0 THEN
       PRINT_DEBUG_MSG(P_MESSAGE => 'No Supplier Exists for this Site', P_FORCE => FALSE);
@@ -6073,6 +6937,10 @@ BEGIN
   main_prc_supplier( X_ERRBUF =>l_err_buff , X_RETCODE=> l_ret_code , P_RESET_FLAG =>'N' , p_debug_level =>'Y' );
   PRINT_DEBUG_MSG(P_MESSAGE => 'Exiting Supplier Wrapper' , P_FORCE => TRUE);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
+  print_debug_msg(p_message => 'Calling Business Classification' , p_force => true);
+  process_bus_class(gn_request_id);
+  PRINT_DEBUG_MSG(P_MESSAGE => 'Exiting Business Classification' , P_FORCE => TRUE);
+  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   print_debug_msg(p_message => 'Calling Supplier Site Wrapper' , p_force => true);
   main_prc_supplier_site( X_ERRBUF =>l_err_buff , X_RETCODE=> l_ret_code , P_RESET_FLAG =>'N' , p_debug_level =>'Y' );
   print_debug_msg(p_message => 'Exiting  Supplier Site Wrapper' , p_force => true);
@@ -6083,12 +6951,16 @@ BEGIN
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   print_debug_msg(p_message => 'Calling Supplier Contact Custom   Wrapper' , p_force => true);
   main_prc_supplier_cont_cust( X_ERRBUF =>l_err_buff , X_RETCODE=> l_ret_code , P_RESET_FLAG =>'N' , p_debug_level =>'Y' );
-  PRINT_DEBUG_MSG(P_MESSAGE => 'Existing Supplier Contact Custom  Wrapper' , P_FORCE => TRUE);
+  PRINT_DEBUG_MSG(P_MESSAGE => 'Exiting Supplier Contact Custom  Wrapper' , P_FORCE => TRUE);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   print_debug_msg(p_message => 'Calling  Supplier Bank Wrapper' , p_force => true);
   main_prc_supplier_bank( X_ERRBUF =>l_err_buff , X_RETCODE=> l_ret_code , P_RESET_FLAG =>'N' , p_debug_level =>'Y' );
-  print_debug_msg(p_message => 'Existing Supplier Bank  Wrapper' , p_force => true);
-  IF (L_RET_CODE IS NULL OR L_RET_CODE <> 0) THEN
+  print_debug_msg(p_message => 'Exiting Supplier Bank  Wrapper' , p_force => true);
+  print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true); 
+  print_debug_msg(p_message => 'Calling Custom DFF Process' , p_force => true);
+  xx_supp_dff(gn_request_id);
+  PRINT_DEBUG_MSG(P_MESSAGE => 'Exiting Custom DFF Process' , P_FORCE => TRUE);
+ IF (L_RET_CODE IS NULL OR L_RET_CODE <> 0) THEN
     x_retcode    := l_ret_code;
     x_errbuf     := l_err_buff;
     RETURN;
@@ -6099,7 +6971,5 @@ WHEN OTHERS THEN
   X_ERRBUF  := 'Exception in XX_AP_SUPP_CLD_INTF_PKG.main_prc_supplier_test() - '||SQLCODE||' - '||SUBSTR(SQLERRM,1,3500);
 END XX_AP_SUPP_CLD_INTF;
 END XX_AP_SUPP_CLD_INTF_PKG;
-
-
 /
 SHOW ERROR;
