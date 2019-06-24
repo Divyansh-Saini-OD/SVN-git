@@ -623,7 +623,7 @@ END xx_custom_tolerance;
 FUNCTION xx_custom_sup_traits
 (
      p_sup_trait IN VARCHAR2 --This is a parameter that contains a delimited list of items
-	,p_sup_number IN VARCHAR2
+	,p_sup_number IN NUMBER
   )
   RETURN VARCHAR2
   IS
@@ -984,29 +984,31 @@ PROCEDURE process_bus_class (gn_request_id IN NUMBER)
 	 AND vendor_site_id			=	site.vendor_site_id
 	 );
 
-    v_error_flag        VARCHAR2(1);
-    v_kff_id    		NUMBER;
-	ln_count			NUMBER;
-	ln_vendor_id		NUMBER;
-	ln_vendor_site_id	NUMBER;
-	ln_tol_count		NUMBER;
-	ln_bus_count		NUMBER;
-	lc_attribute10		VARCHAR2(100);
-	lc_attribute11		VARCHAR2(100);
-	lc_attribute12		VARCHAR2(100);
-	lc_error_msg 		VARCHAR2(2000);
+    v_error_flag             VARCHAR2(1);
+    v_kff_id    		     NUMBER;
+	ln_count			     NUMBER;
+	ln_vendor_id		     NUMBER;
+	ln_vendor_site_id	     NUMBER;
+	ln_tol_count		     NUMBER;
+	ln_bus_count		     NUMBER;
+	lc_attribute10		     VARCHAR2(100);
+	lc_attribute11		     VARCHAR2(100);
+	lc_attribute12		     VARCHAR2(100);
+	lc_error_msg 		     VARCHAR2(2000);
+	lc_vendor_site_code_alt  VARCHAR2(100);
     BEGIN
     
       FOR cur IN C1 LOOP
-		v_error_Flag		:='N';
-		lc_attribute11		:=NULL;
-		lc_attribute12		:=NULL;
-		lc_attribute10		:=NULL;
-		ln_vendor_id		:=NULL;
-		ln_vendor_site_id 	:=NULL;
-		ln_tol_count		:=NULL;
-		ln_bus_count		:=NULL;
-		lc_error_msg		:=NULL;
+		v_error_Flag		    :='N';
+		lc_attribute11		    :=NULL;
+		lc_attribute12		    :=NULL;
+		lc_attribute10		    :=NULL;
+		ln_vendor_id		    :=NULL;
+		ln_vendor_site_id 	    :=NULL;
+		ln_tol_count		    :=NULL;
+		ln_bus_count		    :=NULL;
+		lc_error_msg		    :=NULL;
+		lc_vendor_site_code_alt := NULL;
 		print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
 		print_debug_msg(p_message => 'Input Parameters' , p_force => true);
 		print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
@@ -1016,9 +1018,11 @@ PROCEDURE process_bus_class (gn_request_id IN NUMBER)
 			SELECT 	 attribute10
 			,attribute11
 			,attribute12
+			,vendor_site_code_alt
 			INTO   lc_attribute10,
 			lc_attribute11,
-			lc_attribute12
+			lc_attribute12,
+			lc_vendor_site_code_alt
 			FROM  ap_supplier_sites_all
 			WHERE vendor_site_id	=	cur.vendor_site_id;
 		EXCEPTION
@@ -1211,8 +1215,8 @@ PROCEDURE process_bus_class (gn_request_id IN NUMBER)
 			-- Inserting into Custom Supplier Traits    --
 			--===============================================================
 			print_debug_msg(p_message => ' Calling Cupplier Traits for Trait : '||cur.sup_trait||' cur.supplier_number : '||cur.supplier_number, p_force => true);
-			v_error_flag := xx_custom_sup_traits(cur.sup_trait, cur.supplier_number);			
-			-- Calling Custom Tolerance
+			v_error_flag := xx_custom_sup_traits(cur.sup_trait,NVL(TO_NUMBER(LTRIM(lc_vendor_site_code_alt,'0')),cur.vendor_site_id ) );
+			
 			BEGIN
 				select count(*)
 				INTO ln_tol_count
@@ -1307,6 +1311,12 @@ PROCEDURE process_bus_class (gn_request_id IN NUMBER)
 						SEGMENT58         = cur.RTV_RELATED_SITE
 					WHERE VS_KFF_ID		=	lc_attribute12
 					AND STRUCTURE_ID	=	50351;
+					
+					--===============================================================
+			        -- Inserting into Custom Supplier Traits    --
+			        --===============================================================
+			        print_debug_msg(p_message => ' Calling Cupplier Traits for Trait : '||cur.sup_trait||' cur.supplier_number : '||cur.supplier_number, p_force => true);
+			        v_error_flag := xx_custom_sup_traits(cur.sup_trait,NVL(TO_NUMBER(LTRIM(lc_vendor_site_code_alt,'0')),cur.vendor_site_id ) );
 				END IF; 
 			--END LOOP;
 			EXCEPTION
