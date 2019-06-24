@@ -1,4 +1,4 @@
-create or replace 
+CREATE OR REPLACE
 PACKAGE BODY XX_AP_XXAUNMATCHRECEIPT_PKG
   -- +===================================================================+
   -- |                  Office Depot - Project Simplify                  |
@@ -13,7 +13,8 @@ PACKAGE BODY XX_AP_XXAUNMATCHRECEIPT_PKG
   -- |========  =========== ================== ==========================|
   -- |1.0       14-Nov-2017 Ragni Gupta     Initial version              |
   -- |1.1       14-FEB-2018  Priyam         Code change for Reciept Correction  |
-  -- |1.2       23-Apr-2019  Shanti Sethuraj  Adding new procedure XX_AP_UNMATCH_WRAP_PROC for NAIT-27081 |
+  -- |1.2       23-Apr-2019  Shanti Sethuraj  Adding new procedure XX_AP_UNMATCH_WRAP_PROC and
+  -- |                                        XX_AP_UNMATCH_DETAIL_WRAP_PROC for NAIT-27081 |
   -- +===================================================================+
 AS
 FUNCTION BEFOREREPORT
@@ -332,7 +333,6 @@ EXCEPTION
 WHEN OTHERS THEN
   DBMS_OUTPUT.PUT_LINE('Exception caurght '||SQLERRM);
 END XX_AP_UNMATCH_DETAIL;
-
 FUNCTION CALCULATE_CST_REC_AMT(
     P_PO_DISTRIBUTION_ID NUMBER,
     P_PO_ACCRUAL_ID      NUMBER,
@@ -523,7 +523,7 @@ BEGIN
     END IF;
     --
     IF ((lc_dev_phase1 = 'COMPLETE') AND (lc_dev_status1 = 'NORMAL')) THEN
-	fnd_file.put_line(fnd_file.log,'Program OD: Unmatched Receipts Summary Report completed successfully');
+      fnd_file.put_line(fnd_file.log,'Program OD: Unmatched Receipts Summary Report completed successfully');
       fnd_file.put_line(fnd_file.log,'Submitting XML Report Publisher');
       lb_bool3:= FND_REQUEST.SET_PRINT_OPTIONS ('XPTR' --printer name
       ,'PORTRAIT'                                      --style
@@ -583,8 +583,6 @@ WHEN OTHERS THEN
   fnd_file.put_line(fnd_file.log,x_errbuf);
 END xx_ap_unmatch_wrap_proc;
 --end of new procedure(NAIT-27081)
-
-
 PROCEDURE XX_AP_UNMATCH_DETAIL_WRAP_PROC(
     x_errbuf OUT VARCHAR2,
     X_RETCODE OUT NUMBER,
@@ -676,7 +674,7 @@ BEGIN
     END IF;
     --
     IF ((lc_dev_phase1 = 'COMPLETE') AND (lc_dev_status1 = 'NORMAL')) THEN
-	fnd_file.put_line(fnd_file.log,'Program OD: Unmatched Receipts Detail Report completed successfully');
+      fnd_file.put_line(fnd_file.log,'Program OD: Unmatched Receipts Detail Report completed successfully');
       fnd_file.put_line(fnd_file.log,'Submitting XML Report Publisher');
       lb_bool3:= FND_REQUEST.SET_PRINT_OPTIONS ('XPTR' --printer name
       ,'PORTRAIT'                                      --style
@@ -689,12 +687,12 @@ BEGIN
       ,'N'                                                   --- Dummy for Data Security
       ,l_request_id                                          ---  Request_Id of Previous Program
       --,200
-      ,ln_application_id   ---  Template Application_id=20043
+      ,ln_application_id     ---  Template Application_id=20043
       ,'XXAPUNMATCHEDRTFRPT' --- Template Code
-      ,'en-US'             ---  Template Locale
-      , 'N'                ---  Debug Flag
-      ,'RTF'                --template_type,      --- Template Type
-      ,'EXCEL'              --output type         --- Output Type
+      ,'en-US'               ---  Template Locale
+      , 'N'                  ---  Debug Flag
+      ,'RTF'                  --template_type,      --- Template Type
+      ,'EXCEL'                --output type         --- Output Type
       ,chr(0) ,'','','','','','','','','','' ,'','','','','','','','','','' ,'','','','','','','','','','' ,'','','','','','','','','','' ,'','','','','','','','','','' ,'','','','','','','','','','' ,'','','','','','','','','','' ,'','','','','','','','','','' ,'','','','','','','','','','' ,'' );
       COMMIT;
     ELSE
