@@ -831,7 +831,7 @@ PROCEDURE process_bus_class (gn_request_id IN NUMBER)
 			BEGIN
 				SELECT vendor_id, party_id  -- check with Priyam, once new supplier is created, vendor_id is populated or not
 				INTO ln_vendor_id, ln_party_id
-				FROM apps.ap_suppliers
+				FROM ap_suppliers
 				WHERE 1         =1
 				AND vendor_name = cur.supplier_name;--	'ALL THE RAGES INC TEST' ;
 			EXCEPTION
@@ -1052,7 +1052,7 @@ PROCEDURE process_bus_class (gn_request_id IN NUMBER)
 		THEN		
 			print_debug_msg(p_message => ' Inserting into group 1 KFF : ', p_force => true);
 			BEGIN
-			  SELECT xxfin.XX_PO_VENDOR_SITES_KFF_S.nextval INTO v_kff_id FROM DUAL;
+			  SELECT XX_PO_VENDOR_SITES_KFF_S.nextval INTO v_kff_id FROM DUAL;
 			  INSERT 
 				INTO xx_po_vendor_sites_kff
 			  (     VS_KFF_ID          ,
@@ -1105,7 +1105,7 @@ PROCEDURE process_bus_class (gn_request_id IN NUMBER)
 			END;
 			print_debug_msg(p_message => ' Inserting into group 2 KFF : ', p_force => true);
 			BEGIN
-			  SELECT xxfin.XX_PO_VENDOR_SITES_KFF_S.nextval INTO v_kff_id FROM DUAL;
+			  SELECT XX_PO_VENDOR_SITES_KFF_S.nextval INTO v_kff_id FROM DUAL;
 			  INSERT 
 				INTO xx_po_vendor_sites_kff
 			  (     VS_KFF_ID          ,
@@ -1142,7 +1142,7 @@ PROCEDURE process_bus_class (gn_request_id IN NUMBER)
 			END;
 			print_debug_msg(p_message => ' Inserting into group 3 KFF : ', p_force => true);
 			BEGIN
-			  SELECT xxfin.XX_PO_VENDOR_SITES_KFF_S.nextval INTO v_kff_id FROM DUAL;
+			  SELECT XX_PO_VENDOR_SITES_KFF_S.nextval INTO v_kff_id FROM DUAL;
 			  INSERT 
 				INTO xx_po_vendor_sites_kff
 			  (     VS_KFF_ID          ,
@@ -1249,7 +1249,7 @@ PROCEDURE process_bus_class (gn_request_id IN NUMBER)
 					  create_flag		= 'Y'
 				WHERE rowid=cur.drowid;
 			ELSE		
-			   UPDATE XXFIN.XX_AP_CLD_SITE_DFF_STG
+			   UPDATE XX_AP_CLD_SITE_DFF_STG
 				  SET dff_process_Flag	= 6,
 					  process_Flag 		= 'Y',
 					  vendor_id	  		= cur.vendor_id,
@@ -1326,7 +1326,7 @@ PROCEDURE process_bus_class (gn_request_id IN NUMBER)
 			lc_error_msg := lc_error_msg||'Error in processing Custom DFF while updating ';
 			END;
 			IF v_error_Flag='Y' THEN		
-				UPDATE XXFIN.XX_AP_CLD_SITE_DFF_STG
+				UPDATE XX_AP_CLD_SITE_DFF_STG
 				SET dff_process_Flag=7,
 					process_Flag 	='Y',
 					error_msg	  	= lc_error_msg,
@@ -1335,7 +1335,7 @@ PROCEDURE process_bus_class (gn_request_id IN NUMBER)
 					create_flag		= 'N'
 				WHERE rowid			= cur.drowid;
 			ELSE		
-				UPDATE XXFIN.XX_AP_CLD_SITE_DFF_STG
+				UPDATE XX_AP_CLD_SITE_DFF_STG
 				SET dff_process_Flag  = 6,
 					process_Flag 	  ='Y',
 					vendor_id	  	  = cur.vendor_id,
@@ -1393,7 +1393,7 @@ IS
   l_sup_upd_error_cnt    NUMBER := 0;
   l_sup_val_not_load_cnt NUMBER := 0;
   l_sup_ready_process    NUMBER := 0;
-  lr_vendor_rec apps.ap_vendor_pub_pkg.r_vendor_rec_type;
+  lr_vendor_rec  ap_vendor_pub_pkg.r_vendor_rec_type;
   lr_existing_vendor_rec ap_suppliers%rowtype;
   v_api_version      NUMBER;
   v_init_msg_list    VARCHAR2(200);
@@ -1537,7 +1537,7 @@ IS
   x_msg_data     VARCHAR2(200);
   l_msg          VARCHAR2(2000);
   l_process_flag VARCHAR2(10);
-  lr_vendor_site_rec apps.ap_vendor_pub_pkg.r_vendor_site_rec_type;
+  lr_vendor_site_rec ap_vendor_pub_pkg.r_vendor_site_rec_type;
   lr_existing_vendor_site_rec ap_supplier_sites_all%rowtype;
   lr_location_rec hz_location_v2pub.location_rec_type;
   p_vendor_site_id NUMBER;
@@ -2078,9 +2078,9 @@ PROCEDURE attach_bank_assignments(
     x_return_status OUT VARCHAR2 ,
     x_err_buf OUT VARCHAR2)
 IS
-  x_bank_branch_rec apps.iby_ext_bankacct_pub.extbankacct_rec_type;
-  p_assignment_attribs apps.iby_fndcpt_setup_pub.pmtinstrassignment_rec_type;
-  p_payee apps.iby_disbursement_setup_pub.payeecontext_rec_type;
+  x_bank_branch_rec iby_ext_bankacct_pub.extbankacct_rec_type;
+  p_assignment_attribs iby_fndcpt_setup_pub.pmtinstrassignment_rec_type;
+  p_payee iby_disbursement_setup_pub.payeecontext_rec_type;
   lr_ext_bank_acct_dtl iby_ext_bank_accounts%rowtype;
  -- l_bank_party_id iby_ext_banks_v.bank_party_id%type;
  -- l_branch_party_id iby_ext_bank_branches_v.branch_party_id%type;
@@ -2104,7 +2104,7 @@ IS
   x_assign_id            NUMBER;
   l_fax_area_code hz_contact_points.phone_area_code%type;
   l_account_id NUMBER;
-  X_RESPONSE APPS.IBY_FNDCPT_COMMON_PUB.RESULT_REC_TYPE;
+  X_RESPONSE IBY_FNDCPT_COMMON_PUB.RESULT_REC_TYPE;
   L_ASSIGN_ID           NUMBER;
   l_joint_acct_owner_id NUMBER;
   CURSOR c_sup_bank
