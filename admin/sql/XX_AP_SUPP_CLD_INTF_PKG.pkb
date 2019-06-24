@@ -8,21 +8,24 @@ WHENEVER OSERROR EXIT FAILURE ROLLBACK;
 
 create or replace 
 PACKAGE body XX_AP_SUPP_CLD_INTF_PKG
-  -- +=========================================================================+
-  -- |                  Office Depot - Project Simplify                        |
-  -- |                  Office Depot                                           |
-  -- +=========================================================================+
-  -- | Name             : XX_AP_SUPP_CLD_INTF_PKG                        |
-  -- | Description      : This Program will do validations and load vendors to iface table from   |
-  -- |                    staging table This process is defined for Cloud to EBS Supplier Interface. And also does the post updates       |
-  -- |                                                                         |
-  -- |                                                                         |
-  -- |Change Record:                                                           |
-  -- |===============                                                          |
-  -- |Version    Date          Author            Remarks                       |
-  -- |=======    ==========    =============     ==============================|
-  -- |  1.0    14-MAY-2019     Priyam Parmar     Initial code                  |
-  -- |=========================================================================+
+  -- +==========================================================================+
+  -- |                  Office Depot - Project Simplify                         |
+  -- |                  Office Depot                                            |
+  -- +==========================================================================+
+  -- | Name             : XX_AP_SUPP_CLD_INTF_PKG                               |
+  -- | Description      : This Program will do validations and load vendors to  |
+  -- |                    iface table from staging table This process is defined|
+  -- |                    for Cloud to EBS Supplier Interface. And also does    |
+  -- |                    the post updates                                      |
+  -- |                                                                          |
+  -- |Change Record:                                                            |
+  -- |===============                                                           |
+  -- |Version    Date          Author            Remarks                        |
+  -- |=======    ==========    =============     ===============================|
+  -- |  1.0    14-MAY-2019     Priyam Parmar     Initial code                   |
+  -- |  1.1    21-JUN-2019     Dinesh Nagapuri   Added Business Classification  |
+  -- |                                           and Custom DFF                 |  
+  -- |==========================================================================+
 AS
   /*********************************************************************
   * Procedure used to log based on gb_debug value or if p_force is TRUE.
