@@ -195,8 +195,8 @@ CREATE or replace VIEW APPS.XX_AP_C2FO_INVOICE_V AS SELECT "COMPANY_ID", "DIVISI
    AND    apsa.payment_num = 1
    and    aia.invoice_id = apsa.invoice_id
 -- inv date range added by arun for uat test data gen for one day
-   and    aia.invoice_date > to_date('10-dec-2018','dd-mon-yyyy')
-   and    aia.invoice_date < TO_DATE('12-dec-2018','dd-mon-yyyy')  
+--   and    aia.invoice_date > to_date('10-dec-2018','dd-mon-yyyy')
+--   and    aia.invoice_date < TO_DATE('12-dec-2018','dd-mon-yyyy')  
    AND    aia.org_id = apsa.org_id
    AND    aia.approval_ready_flag = 'Y'
    AND    NVL (aia.prepay_flag, 'N') = 'N'
