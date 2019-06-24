@@ -787,7 +787,7 @@ PROCEDURE process_bus_class (gn_request_id IN NUMBER)
 		  bus.bcls_process_Flag,
 		  stg.party_id,
 		  stg.vendor_id		  
-		FROM XXFIN.XX_AP_CLD_SUPP_BCLS_STG bus,
+		FROM XX_AP_CLD_SUPP_BCLS_STG bus,
 		XX_AP_CLD_SUPPLIERS_STG stg
 		WHERE 1                   =1
 		AND bus.process_Flag 	  ='P'
@@ -799,7 +799,7 @@ PROCEDURE process_bus_class (gn_request_id IN NUMBER)
 		AND stg.party_id	IS NOT NULL
 		--AND stg.create_flag		  = 'Y'					-- Considering Only Create Once
 		AND stg.supp_process_flag IN (7,8)
-		AND EXISTS	(SELECT 1 FROM apps.ap_suppliers
+		AND EXISTS	(SELECT 1 FROM ap_suppliers
 		WHERE 1=1
 		AND vendor_id	=	stg.vendor_id
 		AND party_id	=	stg.party_id
@@ -844,7 +844,7 @@ PROCEDURE process_bus_class (gn_request_id IN NUMBER)
 			BEGIN
 				SELECT count(*)
 				INTO ln_cus_count
-				FROM apps.pos_bus_class_attr
+				FROM pos_bus_class_attr
 				WHERE 1           = 1
 				AND party_id      = cur.party_id
 				AND vendor_id     = cur.vendor_id
@@ -896,13 +896,13 @@ PROCEDURE process_bus_class (gn_request_id IN NUMBER)
         END IF;
     
         IF v_error_flag='N' AND g_ins_bus_class = 'Y' THEN
-           UPDATE xxfin.XX_AP_CLD_SUPP_BCLS_STG
+           UPDATE XX_AP_CLD_SUPP_BCLS_STG
 		   SET bcls_process_Flag	= 7,
  			   vendor_id	= cur.vendor_id,
 			   process_Flag ='Y'
 		   WHERE rowid		= cur.drowid;
         ELSE
-           UPDATE xxfin.xx_ap_cld_supp_bcls_stg
+           UPDATE xx_ap_cld_supp_bcls_stg
            SET bcls_process_Flag=6,
 			   process_Flag ='Y',
 			   error_msg	= lc_error_msg,
@@ -967,7 +967,7 @@ PROCEDURE process_bus_class (gn_request_id IN NUMBER)
 			,site.create_flag
 			,site.vendor_id
 			,site.vendor_site_id
-     FROM xxfin.xx_ap_cld_site_dff_stg dff, 
+     FROM xx_ap_cld_site_dff_stg dff, 
      		    xx_ap_cld_supp_sites_stg site
      WHERE 1=1
 	 AND dff.process_Flag		=	'P'
@@ -1240,7 +1240,7 @@ PROCEDURE process_bus_class (gn_request_id IN NUMBER)
 			END IF;					
 			print_debug_msg(p_message => 'Updating records for Cloud Custom DFF ', p_force => true);
 			IF v_error_Flag='Y' THEN		
-			   UPDATE XXFIN.XX_AP_CLD_SITE_DFF_STG
+			   UPDATE XX_AP_CLD_SITE_DFF_STG
 				  SET dff_process_Flag	= 7,
 					  process_Flag 		= 'Y',
 					  error_msg	  		= lc_error_msg,
@@ -4493,13 +4493,13 @@ IS
   CURSOR C_SUP_ASSIG_EXISTS( C_VENDOR_SITE_CODE VARCHAR2, C_BRANCH_NAME VARCHAR2, C_BANK_NAME VARCHAR2, C_VENDOR_ID NUMBER, c_vendor_site_id NUMBER)
   IS
     SELECT instrument.instrument_id
-    FROM apps.iby_pmt_instr_uses_all instrument,
-      apps.iby_account_owners owners,
-      apps.iby_external_payees_all payees,
-      apps.iby_ext_bank_accounts ieb,
-      apps.ap_supplier_sites_all asa,
-      apps.ap_suppliers asp,
-      apps.ce_bank_branches_v cbbv
+    FROM iby_pmt_instr_uses_all instrument,
+      iby_account_owners owners,
+      iby_external_payees_all payees,
+      iby_ext_bank_accounts ieb,
+      ap_supplier_sites_all asa,
+      ap_suppliers asp,
+      ce_bank_branches_v cbbv
     WHERE owners.primary_flag      = 'Y'
     AND owners.ext_bank_account_id = ieb.ext_bank_account_id
     AND owners.ext_bank_account_id = instrument.instrument_id
