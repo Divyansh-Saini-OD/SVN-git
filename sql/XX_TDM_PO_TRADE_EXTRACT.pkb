@@ -254,7 +254,7 @@ create or replace PACKAGE BODY xx_tdm_po_trade_extract AS
                 argument6 => ''--'$XXFIN_DATA/archive/outbounOD_TDM_LAST_RUN_POd/TDM_AMEX/'               --Archive File Path
                 );
                 --update last RUN    
-                lb_return := fnd_profile.save(x_name => 'OD_TDM_LAST_RUN_PO',x_value => SYSDATE,x_level_name => 'SITE');
+                lb_return := fnd_profile.save(x_name => 'OD_TDM_LAST_RUN_PO',x_value => to_char(SYSDATE, 'DD-MON-YYYY'),x_level_name => 'SITE');
                 COMMIT;
                 EXCEPTION
                     WHEN OTHERS THEN
