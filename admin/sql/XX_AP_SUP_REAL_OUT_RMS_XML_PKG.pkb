@@ -926,6 +926,7 @@ AS
   v_site_exists_flag VARCHAR2(1) := 'Y';
   v_telex ap_supplier_sites_all.telex%type; --V4.0
   xml_output CLOB;
+  lv_rtv_vendor_site_code varchar2(100); 
   /*-- Cursor to read the custom table
   CURSOR extsupplupdate_cur IS
   SELECT v.ext_system,
@@ -5068,6 +5069,11 @@ BEGIN
               v_discount_percent     :=0;
               v_discount_days        :=0;
               v_due_days             :=0;
+			  
+			  
+			  lv_rtv_vendor_site_code   :=SUBSTR(v_vendor_site_code,1,3);   ----- Added by Shanti for NAIT-90536
+                 IF lv_rtv_vendor_site_code <> 'RTV' THEN                   ----- Added by Shanti for NAIT-90536
+			  
               ----New query added by Sunil for NAIT-64249
               SELECT aph.name ,
                 aph.description ,
@@ -5085,6 +5091,13 @@ BEGIN
               AND aph.term_id                                  = apt.term_id
               AND aph.term_id                                  = v_site_terms
               AND aph.enabled_flag                             = 'Y';
+			  
+			  else
+			  v_discount_percent:='';
+			  v_discount_days:='';
+			  v_due_days:='';
+			  end if;
+			  
             EXCEPTION
             WHEN OTHERS THEN
               v_site_terms_name      := NULL;
@@ -5571,6 +5584,3 @@ BEGIN
   dbms_output.put_line('End of Program');
 END;
 END XX_AP_SUP_REAL_OUT_RMS_XML_PKG;
-/
-
---SHOW ERRORS;
