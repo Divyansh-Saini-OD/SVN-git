@@ -168,7 +168,7 @@ create or replace PACKAGE BODY xx_tdm_po_trade_extract AS
                     'RFQ',
                     'QUOTATION'
                 )
-                AND poh.creation_date BETWEEN TO_DATE(v_date||'00:00:00','DD-MON-YY hh24:mi:ss') AND TO_DATE(v_date||'23:59:59','DD-MON-YY hh24:mi:ss');
+                AND poh.creation_date BETWEEN TO_DATE(v_date||'00:00:00','DD-MON-YYYY hh24:mi:ss') AND TO_DATE(v_date||'23:59:59','DD-MON-YYYY hh24:mi:ss');
 
         END IF;
 
