@@ -3961,27 +3961,49 @@ AS
         ELSE
             g_header_rec.payment_term_id(i) := NULL;
         END IF;
-
-        -- Get Accounting Rule Id
+		
+		-- Get Accounting Rule Id
         IF NOT g_accounting_rule_id.EXISTS(g_header_rec.order_type_id(i))
         THEN
             BEGIN
-                SELECT accounting_rule_id, 
-                       invoicing_rule_id
-                INTO   g_accounting_rule_id(g_header_rec.order_type_id(i)),
-                       g_header_rec.invoicing_rule_id(i)
+                SELECT accounting_rule_id
+                INTO   g_accounting_rule_id(g_header_rec.order_type_id(i))
                 FROM   oe_order_types_v
                 WHERE  order_type_id = g_header_rec.order_type_id(i);
 
                 g_header_rec.accounting_rule_id(i) := g_accounting_rule_id(g_header_rec.order_type_id(i));
-
-             EXCEPTION
+            EXCEPTION
                 WHEN OTHERS
                 THEN
                     g_header_rec.accounting_rule_id(i) := NULL;
             END;
         ELSE
             g_header_rec.accounting_rule_id(i) := g_accounting_rule_id(g_header_rec.order_type_id(i));
+        END IF;
+
+        -- Get invoicing Rule Id
+		IF ln_debug_level > 0
+        THEN
+  		  oe_debug_pub.ADD(' deriving the invoicing rule for Order typd id: '||g_header_rec.order_type_id(i));
+		END IF; 
+  	    
+		IF g_header_rec.order_type_id(i) IS NOT NULL
+		THEN
+		  BEGIN
+            SELECT invoicing_rule_id
+            INTO g_header_rec.invoicing_rule_id(i)
+            FROM   oe_order_types_v
+            WHERE  order_type_id = g_header_rec.order_type_id(i);
+
+ 		    IF ln_debug_level > 0
+            THEN
+  		      oe_debug_pub.ADD(' Invoicing rule id :'||g_header_rec.invoicing_rule_id(i));
+         	END IF;  
+          EXCEPTION
+            WHEN OTHERS
+            THEN
+              g_header_rec.invoicing_rule_id(i) := NULL;
+          END;
         END IF;
 
         IF g_header_rec.sold_to_org_id(i) IS NOT NULL
