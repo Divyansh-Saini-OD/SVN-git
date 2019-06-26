@@ -17,10 +17,10 @@ AS
 -- +=======================================================================+
 -- procedure extract all pending order for bill complete
   PROCEDURE extract_pending_bc_orders (retcode        OUT   NUMBER,
-                                     errbuf         OUT   VARCHAR2
+                                       errbuf         OUT   VARCHAR2,
+                                       p_num_days     IN    NUMBER
     )
    IS
-   l_email_list        VARCHAR2(2000)  := 'arun.gannarapu@officedepot.com';
    lc_mail_from        varchar2 (100)  := 'noreply@officedepot.com';
    lc_instance         varchar2 (100);
    l_text              varchar2(2000)  := null;
@@ -43,14 +43,14 @@ AS
           oe_order_headers_all b,
           hz_cust_accounts hca,
           hz_parties hp,
-		  apps.oe_transaction_types_tl ot
+          oe_transaction_types_tl ot
    WHERE a.header_id = b.header_id
      AND hca.party_id = hp.party_id
      AND hca.cust_account_id = b.sold_to_org_id
      AND a.bill_comp_flag IN ('Y', 'B')
-     AND b.last_update_date >= SYSDATE - 60
-	 AND ot.transaction_type_id=b.order_type_id
-	 AND upper(ot.name) not like '%RETURN%'
+     AND b.last_update_date >= SYSDATE - p_num_days
+     AND ot.transaction_type_id=b.order_type_id
+     AND upper(ot.name) not like '%RETURN%'
      AND NOT EXISTS
             (SELECT 1
              FROM XX_SCM_BILL_SIGNAL
