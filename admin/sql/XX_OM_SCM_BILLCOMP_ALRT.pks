@@ -7,3 +7,4 @@ AS
    );
    
 END XX_OM_SCM_BILLCOMP_ALRT;
+/
