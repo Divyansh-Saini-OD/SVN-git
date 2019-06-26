@@ -35,6 +35,7 @@ AS
   --  1.7          19-Oct-18   Sunil Kalal       NAIT-64664  Added new query for the EBS addresses
   --  1.8          01-Nov-18   Sunil Kalal       NAIT-69405  Addeed attribute5 column instead of duns_num for DUNS_NUMBER
   --  1.9          05-Dec-18   Sunil Kalal       NAIT-74711  Added logic to check for Freight Terms PP and CC Only else NULL.
+  --  2.0          26-Jun-19   Shanti Sethuraj   NAIT-90627  Added new logic for RTV payment terms
   -- +============================================================================================+
   ------------------------------------------------------------
   ------------------------------------------------------------
@@ -926,8 +927,8 @@ AS
   v_site_exists_flag VARCHAR2(1) := 'Y';
   v_telex ap_supplier_sites_all.telex%type; --V4.0
   xml_output CLOB;
-  lv_rtv_vendor_site_code varchar2(100); 
-  /*-- Cursor to read the custom table
+  lv_rtv_vendor_site_code varchar2(100);                       ----- Added by Shanti for NAIT-90627  
+  /*-- Cursor to read the custom table            
   CURSOR extsupplupdate_cur IS
   SELECT v.ext_system,
   v.last_update_date,
@@ -5071,8 +5072,8 @@ BEGIN
               v_due_days             :=0;
 			  
 			  
-			  lv_rtv_vendor_site_code   :=SUBSTR(v_vendor_site_code,1,3);   ----- Added by Shanti for NAIT-90536
-                 IF lv_rtv_vendor_site_code <> 'RTV' THEN                   ----- Added by Shanti for NAIT-90536
+			  lv_rtv_vendor_site_code   :=SUBSTR(v_vendor_site_code,1,3);   ----- Added by Shanti for NAIT-90627
+                 IF lv_rtv_vendor_site_code <> 'RTV' THEN                   ----- Added by Shanti for NAIT-90627
 			  
               ----New query added by Sunil for NAIT-64249
               SELECT aph.name ,
@@ -5092,11 +5093,13 @@ BEGIN
               AND aph.term_id                                  = v_site_terms
               AND aph.enabled_flag                             = 'Y';
 			  
-			  else
-			  v_discount_percent:='';
-			  v_discount_days:='';
-			  v_due_days:='';
-			  end if;
+			  
+			  else                                 ----- Added by Shanti for NAIT-90627
+			  v_discount_percent:='';               ----- Added by Shanti for NAIT-90627
+			  v_discount_days:='';                  ----- Added by Shanti for NAIT-90627
+			  v_due_days:='';                         ----- Added by Shanti for NAIT-90627
+			  end if;                                 ----- Added by Shanti for NAIT-90627
+			  
 			  
             EXCEPTION
             WHEN OTHERS THEN
