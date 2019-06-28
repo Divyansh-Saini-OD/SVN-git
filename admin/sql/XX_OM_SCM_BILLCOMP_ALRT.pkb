@@ -14,6 +14,7 @@ AS
 -- |=======    ==========    =============    =============================|
 -- |DRAFT 1A   09-03-2019    Arun Gannarapu   pending bill complete orders |
 -- |1B         06-21-2019    Shalu George     code to exclude return orders|
+-- |1C		   06-28-2019    Arun Gannarapu	  exclude orders with SPC numbers|
 -- +=======================================================================+
 -- procedure extract all pending order for bill complete
   PROCEDURE extract_pending_bc_orders (retcode        OUT   NUMBER,
@@ -27,7 +28,7 @@ AS
    l_message           VARCHAR2(2000)  := 'Orders shipped but not in Bill signal table';
    lc_date             VARCHAR2 (200) := TO_CHAR (SYSDATE, 'MM/DD/YYYY');
 
-   v_filename          VARCHAR2(2000);
+   v_filename          VARCHAR2(2000):= 'ODSCMBILLSIGNALALERT'||TO_char(sysdate,'DDMMRRRRHH24MISS')||'.csv';
    v_filehandle        UTL_FILE.FILE_TYPE;
    lc_records_exists   boolean := FALSE;
     
@@ -46,6 +47,7 @@ AS
           oe_transaction_types_tl ot
    WHERE a.header_id = b.header_id
      AND hca.party_id = hp.party_id
+	 AND a.spc_card_number IS NULL
      AND hca.cust_account_id = b.sold_to_org_id
      AND a.bill_comp_flag IN ('Y', 'B')
      AND b.last_update_date >= SYSDATE - p_num_days
@@ -124,7 +126,7 @@ AS
 
    UTL_FILE.FCLOSE (v_filehandle);
 
-   IF lc_instance = 'GSIPRDGB'
+   IF lc_instance like 'CPRDEBS%'
    THEN
      l_text := 'Bill Complete pending order';
    ELSE
