@@ -6,7 +6,7 @@ SET FEEDBACK OFF;
 WHENEVER SQLERROR CONTINUE;
 WHENEVER OSERROR EXIT FAILURE ROLLBACK;
 
-CREATE OR REPLACE
+create or replace 
 PACKAGE body XX_AP_SUPP_CLD_INTF_PKG
   -- +==========================================================================+
   -- |                  Office Depot - Project Simplify                         |
@@ -24,7 +24,9 @@ PACKAGE body XX_AP_SUPP_CLD_INTF_PKG
   -- |=======    ==========    =============     ===============================|
   -- |  1.0    14-MAY-2019     Priyam Parmar     Initial code                   |
   -- |  1.1    21-JUN-2019     Dinesh Nagapuri   Added Business Classification  |
-  -- |                                           and Custom DFF                 |
+  -- |                                           and Custom DFF     
+  ---|  1.2    25-JUN-2019     Priyam Parmar     Added Telex update for Supplier Site (RMS)
+  ---|  1.3    27-JUN-2019     Priyam Parmar     Removed Bank staging table from 1.2 update
   -- |==========================================================================+
 AS
   /*********************************************************************
@@ -3405,7 +3407,7 @@ XXOD_OPERATING_UNIT_NULL: ORG ID cannot be NULL.' ,p_force=> true);
         OPEN c_ship_to_location(l_sup_site_type.ship_to_location);
         FETCH c_ship_to_location INTO l_ship_to_cnt;
         CLOSE c_ship_to_location;
-        IF l_ship_to_cnt            <=0 THEN
+        IF l_ship_to_cnt            =0 THEN
           gc_error_site_status_flag := 'Y';
           print_debug_msg(p_message=> gc_step||' ERROR: SHIP_TO_LOCATION:'||l_sup_site_type.ship_to_location||': XXOD_SHIP_TO_LOCATION_INVALID2: Ship to Location does not exist in the system.' ,p_force=> true);
           insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_SHIP_TO_LOCATION_INVALID2' ,p_error_message => 'Ship to Location '||l_sup_site_type.ship_to_location||' does not exist in the system' ,p_stage_col1 => 'SHIP_TO_LOCATION' ,p_stage_val1 => l_sup_site_type.ship_to_location ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
@@ -3418,11 +3420,11 @@ XXOD_OPERATING_UNIT_NULL: ORG ID cannot be NULL.' ,p_force=> true);
       -- Validating the Supplier Site - bill to Location Code
       --=============================================================================
       IF l_sup_site_type.bill_to_location IS NOT NULL THEN
-        l_ship_to_cnt                     := 0;
+        l_bill_to_cnt                     := 0;
         OPEN c_bill_to_location(l_sup_site_type.bill_to_location);
-        FETCH c_bill_to_location INTO l_ship_to_cnt;
-        CLOSE c_bill_to_location;
-        IF l_ship_to_cnt            <=0 THEN
+        FETCH c_bill_to_location INTO l_bill_to_cnt;
+        close c_bill_to_location;
+        IF l_bill_to_cnt            =0 THEN
           gc_error_site_status_flag := 'Y';
           print_debug_msg(p_message=> gc_step||' ERROR: SHIP_TO_LOCATION:'||l_sup_site_type.bill_to_location||': XXOD_SHIP_TO_LOCATION_INVALID2: Ship to Location does not exist in the system.' ,p_force=> true);
           insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_SHIP_TO_LOCATION_INVALID2' ,p_error_message => 'Ship to Location '||l_sup_site_type.bill_to_location||' does not exist in the system' ,p_stage_col1 => 'SHIP_TO_LOCATION' ,p_stage_val1 => l_sup_site_type.bill_to_location ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
@@ -3437,9 +3439,9 @@ XXOD_OPERATING_UNIT_NULL: ORG ID cannot be NULL.' ,p_force=> true);
       IF l_sup_site_type.fob_lookup_code IS NOT NULL THEN -- Derive the FOB Code
         l_fob_code_cnt                   := 0;
         OPEN c_get_fnd_lookup_code_cnt('FOB', l_sup_site_type.fob_lookup_code);
-        FETCH c_get_fnd_lookup_code_cnt INTO l_fob_code_cnt;
+        fetch c_get_fnd_lookup_code_cnt into l_fob_code_cnt;
         CLOSE c_get_fnd_lookup_code_cnt;
-        IF l_fob_code_cnt            < 0 THEN
+        IF l_fob_code_cnt=0 THEN
           gc_error_site_status_flag := 'Y';
           print_debug_msg(p_message=> gc_step||' ERROR: FOB:' ||l_sup_site_type.fob_lookup_code||': XXOD_FOB_INVALID: FOB does not exist in the system.' ,p_force=> true);
           insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_FOB_INVALID' , p_error_message => 'FOB '||l_sup_site_type.fob_lookup_code||' does not exist in the system' , p_stage_col1 => 'FOB' ,p_stage_val1 => l_sup_site_type.fob_lookup_code ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
@@ -3456,7 +3458,7 @@ XXOD_OPERATING_UNIT_NULL: ORG ID cannot be NULL.' ,p_force=> true);
         OPEN c_get_fnd_lookup_code_cnt('FREIGHT TERMS', l_sup_site_type.freight_terms_lookup_code);
         FETCH c_get_fnd_lookup_code_cnt INTO l_freight_terms_code_cnt;
         CLOSE c_get_fnd_lookup_code_cnt;
-        IF l_freight_terms_code_cnt  <0 THEN
+        IF l_freight_terms_code_cnt  =0 THEN
           gc_error_site_status_flag := 'Y';
           print_debug_msg(p_message=> gc_step||' ERROR: FREIGHT_TERMS:'||l_sup_site_type.freight_terms_lookup_code||': XXOD_FREIGHT_TERMS_INVALID: FREIGHT TERMS does not exist in the system.' ,p_force=> true);
           insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name , p_error_code => 'XXOD_FREIGHT_TERMS_INVALID' ,p_error_message => 'FREIGHT TERMS ' ||l_sup_site_type.freight_terms_lookup_code||' does not exist in the system' ,p_stage_col1 => 'Freight Terms' , p_stage_val1 => l_sup_site_type.freight_terms_lookup_code ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
@@ -3475,7 +3477,7 @@ XXOD_OPERATING_UNIT_NULL: ORG ID cannot be NULL.' ,p_force=> true);
         OPEN c_pay_method_exist(l_sup_site_type.payment_method_lookup_code);
         FETCH c_pay_method_exist INTO l_pay_method_cnt;
         CLOSE c_pay_method_exist;
-        IF l_pay_method_cnt         <= 0 THEN
+        IF l_pay_method_cnt         = 0 THEN
           gc_error_site_status_flag := 'Y';
           print_debug_msg(p_message=> gc_step||' ERROR: PAYMENT_METHOD:'||l_sup_site_type.payment_method_lookup_code||': XXOD_PAYMENT_METHOD_INVALID: Payment Method does not exist in the system.' ,p_force=> true);
           insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_PAYMENT_METHOD_INVALID' ,p_error_message => 'Payment Method does not exist in the system' ,p_stage_col1 => 'PAYMENT_METHOD' ,p_stage_val1 => l_sup_site_type.payment_method_lookup_code ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_table );
@@ -3497,7 +3499,7 @@ XXOD_OPERATING_UNIT_NULL: ORG ID cannot be NULL.' ,p_force=> true);
       OPEN c_get_tolerance(l_tolerance_name);
       FETCH c_get_tolerance INTO l_tolerance_cnt;
       CLOSE c_get_tolerance;
-      IF l_tolerance_cnt          <=0 THEN
+      IF l_tolerance_cnt          =0 THEN
         gc_error_site_status_flag := 'Y';
         print_debug_msg(p_message=> gc_step||' ERROR: INVOICE_TOLERANCE:'||l_sup_site_type.tolerance_name||': XXOD_INV_TOLERANCE_INVALID: Invoice Tolerance does not exist in the system.' ,p_force=> true);
         insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_INV_TOLERANCE_INVALID' ,p_error_message => 'Invoice Tolerance '||l_sup_site_type.tolerance_name||' does not exist in the system' ,p_stage_col1 => 'INVOICE_TOLERANCE' ,p_stage_val1 => l_sup_site_type.tolerance_name ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
@@ -3529,7 +3531,7 @@ XXOD_OPERATING_UNIT_NULL: ORG ID cannot be NULL.' ,p_force=> true);
         OPEN c_get_fnd_lookup_code_cnt('PAY GROUP', l_pay_group);
         FETCH c_get_fnd_lookup_code_cnt INTO l_pay_group_code_cnt;
         CLOSE c_get_fnd_lookup_code_cnt;
-        IF l_pay_group_code_cnt      < 0 THEN
+        IF l_pay_group_code_cnt      = 0 THEN
           gc_error_site_status_flag := 'Y';
           print_debug_msg(p_message=> gc_step||' ERROR: PAY_GROUP:'||l_sup_site_type.pay_group_lookup_code||': XXOD_PAY_GROUP_INVALID: Pay Group does not exist in the system.' ,p_force=> true);
           insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_PAY_GROUP_INVALID' ,p_error_message => 'Pay Group '||l_sup_site_type.pay_group_lookup_code||' does not exist in the system' ,p_stage_col1 => 'PAY_GROUP' ,p_stage_val1 => l_sup_site_type.pay_group_lookup_code ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
@@ -3553,7 +3555,7 @@ XXOD_OPERATING_UNIT_NULL: ORG ID cannot be NULL.' ,p_force=> true);
         OPEN c_get_fnd_lookup_code_cnt('TERMS DATE BASIS', l_terms_date_basis);
         FETCH c_get_fnd_lookup_code_cnt INTO l_terms_date_basis_code_cnt;
         CLOSE c_get_fnd_lookup_code_cnt;
-        IF l_terms_date_basis_code_cnt < 0 THEN
+        IF l_terms_date_basis_code_cnt = 0 THEN
           gc_error_site_status_flag   := 'Y';
           print_debug_msg(p_message=> gc_step||' ERROR: TERMS_DATE_BASIS:'||l_sup_site_type.terms_date_basis||': XXOD_TERMS_DATE_BASIS_INVALID: Terms Date Basis does not exist in the system.' ,p_force=> true);
           insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_TERMS_DATE_BASIS_INVALID' ,p_error_message => 'Terms Date Basis value '||l_sup_site_type.terms_date_basis||' does not exist in the system' ,p_stage_col1 => 'TERMS_DATE_BASIS' ,p_stage_val1 => l_sup_site_type.terms_date_basis ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
@@ -6721,8 +6723,8 @@ IS
   CURSOR c_sup
   IS
       
-      SELECT SITE.VENDOR_SITE_ID 
-      FROM XX_AP_CLD_SUPP_BCLS_STG BCLS,
+      select site.vendor_site_id 
+      FROM ---XX_AP_CLD_SUPP_BCLS_STG BCLS,
         XX_AP_CLD_SITE_DFF_STG DFF,
         XX_AP_CLD_SUPP_CONTACT_STG CONT,
         XX_AP_CLD_SUPP_SITES_STG SITE,
@@ -6733,20 +6735,20 @@ IS
       AND STG.REQUEST_ID           =GN_REQUEST_ID
       AND SITE.REQUEST_ID          =GN_REQUEST_ID
       AND CONT.REQUEST_ID          =GN_REQUEST_ID
-      AND DFF.REQUEST_ID           =GN_REQUEST_ID
-      AND bcls.request_id          =GN_REQUEST_ID
+      and dff.request_id           =gn_request_id
+     -- AND bcls.request_id          =GN_REQUEST_ID
       AND SITE.SUPPLIER_NUMBER     =STG.SEGMENT1
       AND CONT.SUPPLIER_NUMBER     =SITE.SUPPLIER_NUMBER
       AND CONT.VENDOR_SITE_CODE    =SITE.VENDOR_SITE_CODE
       AND DFF.VENDOR_SITE_CODE     =SITE.VENDOR_SITE_CODE
       AND DFF.SUPPLIER_NUMBER      =STG.SEGMENT1
-      AND dff.vendor_site_code     =site.vendor_site_code
-      AND bcls.supplier_number     =site.supplier_number
+      and dff.vendor_site_code     =site.vendor_site_code
+      --AND bcls.supplier_number     =site.supplier_number
       AND STG.SUPP_PROCESS_FLAG    ='7'
       AND SITE.SITE_PROCESS_FLAG   ='7'
-      AND CONT.CONTACT_PROCESS_FLAG='7'
-      AND DFF.DFF_PROCESS_FLAG     ='7'
-      AND BCLS.BCLS_PROCESS_FLAG   ='7';
+      and cont.contact_process_flag='7'
+      and dff.dff_process_flag     ='7';
+      --AND BCLS.BCLS_PROCESS_FLAG   ='7';
       
 BEGIN
   --================================================================
@@ -6969,6 +6971,5 @@ WHEN OTHERS THEN
   X_ERRBUF  := 'Exception in XX_AP_SUPP_CLD_INTF_PKG.main_prc_supplier_test() - '||SQLCODE||' - '||SUBSTR(SQLERRM,1,3500);
 END XX_AP_SUPP_CLD_INTF;
 END XX_AP_SUPP_CLD_INTF_PKG;
-
 /
 SHOW ERROR;
