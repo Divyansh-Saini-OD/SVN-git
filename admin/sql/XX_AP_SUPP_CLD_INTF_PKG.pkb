@@ -2382,7 +2382,8 @@ IS
     FROM fnd_lookup_values
     WHERE lookup_type = c_lookup_type
     AND lookup_code   = c_lookup_code
-    AND TRUNC(sysdate) BETWEEN TRUNC(start_date_active) AND TRUNC(NVL(end_date_active, sysdate+1));
+	and Enabled_flag='Y';
+   ---- AND TRUNC(sysdate) BETWEEN TRUNC(start_date_active) AND TRUNC(NVL(end_date_active, sysdate+1));
   --==============================================================================
   -- Cursor Declarations to get table statistics of Supplier Staging
   --==============================================================================
@@ -2879,7 +2880,8 @@ IS
     FROM fnd_lookup_values
     WHERE lookup_type = c_lookup_type
     AND lookup_code   = c_lookup_code
-    AND TRUNC(sysdate) BETWEEN TRUNC(start_date_active) AND TRUNC(NVL(end_date_active, sysdate+1));
+	and enabled_flag='Y';
+   ---- AND TRUNC(sysdate) BETWEEN TRUNC(start_date_active) AND TRUNC(NVL(end_date_active, sysdate+1));
   --==========================================================================================
   -- Cursor Declarations to get Bill To Location Id
   --==========================================================================================
