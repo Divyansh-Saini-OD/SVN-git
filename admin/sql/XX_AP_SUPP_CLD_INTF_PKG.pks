@@ -66,7 +66,7 @@ AS
   g_sup_bank_table      CONSTANT VARCHAR2 (30)            := 'XX_AP_CLD_SUPP_BNKACT_STG';
   g_user_id             NUMBER                            := fnd_global.user_id;
   G_LOGIN_ID            NUMBER                            := FND_GLOBAL.LOGIN_ID;
-  gc_site_country_code ap_supplier_sites_all.COUNTRY%TYPE := 'USA';
+  gc_site_country_code ap_supplier_sites_all.COUNTRY%TYPE := 'US';
   gc_process_error_flag VARCHAR2(1)                       := 'E';
   --=================================================================
   -- Declaring Table Types

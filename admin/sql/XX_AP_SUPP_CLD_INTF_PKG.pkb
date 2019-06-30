@@ -697,7 +697,7 @@ BEGIN
           ln_sup_trait_id
         );
     WHEN OTHERS THEN
-      FND_FILE.PUT_LINE(FND_FILE.LOG,'Error in processing Custom Tolerance :'||SQLERRM);
+      FND_FILE.PUT_LINE(FND_FILE.LOG,'Error in processing Traits :'||SQLERRM);
     END;
     dbms_output.put_line('Test 21   : '||ln_sup_trait_id);
     BEGIN
@@ -763,7 +763,7 @@ PROCEDURE process_bus_class
   (
     gn_request_id IN NUMBER
   )
-IS
+IS  
   CURSOR C1
   IS
     SELECT bus.rowid drowid,
@@ -772,9 +772,10 @@ IS
       bus.supplier_number,
       bus.subclassification,
       bus.bcls_process_Flag,
-      stg.party_id,
-      stg.vendor_id
-    FROM XX_AP_CLD_SUPP_BCLS_STG bus,
+      sup.party_id,
+      sup.vendor_id
+    FROM ap_suppliers sup,
+		 XX_AP_CLD_SUPP_BCLS_STG bus,
       XX_AP_CLD_SUPPLIERS_STG stg
     WHERE 1              =1
     AND bus.process_Flag ='P'
@@ -782,17 +783,8 @@ IS
     AND stg.request_id   = bus.request_id
       --AND bus.supplier_name     = stg.supplier_name
     AND bus.supplier_number = stg.segment1
-    AND stg.vendor_id      IS NOT NULL
-    AND stg.party_id       IS NOT NULL
-      --AND stg.create_flag    = 'Y'     -- Considering Only Create Once
     AND stg.supp_process_flag IN (7,8)
-    AND EXISTS
-      (SELECT 1
-      FROM ap_suppliers
-      WHERE 1       =1
-      AND vendor_id = stg.vendor_id
-      AND party_id  = stg.party_id
-      ) ;
+	AND sup.segment1=stg.segment1;
   v_buss_flag  VARCHAR2(1);
   v_error_Flag VARCHAR2(1);
   ln_vendor_id NUMBER;
@@ -800,6 +792,7 @@ IS
   ln_cus_count NUMBER;
   lc_error_msg VARCHAR2(2000);
 BEGIN
+
   FOR cur IN C1
   LOOP
     v_error_Flag    := NULL;
@@ -1199,7 +1192,9 @@ BEGIN
       -- Inserting into Custom Supplier Traits    --
       --===============================================================
       print_debug_msg(p_message => ' Calling Cupplier Traits for Trait : '||cur.sup_trait||' cur.supplier_number : '||cur.supplier_number, p_force => true);
-      v_error_flag := xx_custom_sup_traits(cur.sup_trait,NVL(TO_NUMBER(LTRIM(lc_vendor_site_code_alt,'0')),cur.vendor_site_id ) );
+      IF cur.sup_trait IS NOT NULL THEN	  
+         v_error_flag := xx_custom_sup_traits(cur.sup_trait,NVL(TO_NUMBER(LTRIM(lc_vendor_site_code_alt,'0')),cur.vendor_site_id ) );
+	  END IF;
       BEGIN
         SELECT COUNT(*)
         INTO ln_tol_count
@@ -1401,7 +1396,7 @@ BEGIN
     END;
     lr_vendor_rec.vendor_id              := lr_existing_vendor_rec.vendor_id;
     lr_vendor_rec.vendor_type_lookup_code:=c_sup.vendor_type_lookup_code;
-    lr_vendor_rec.end_date_active        :=c_sup.end_date_active;
+    lr_vendor_rec.end_date_active        :=TO_DATE(c_sup.end_date_active,'YYYY/MM/DD');
     lr_vendor_rec.one_time_flag          :=c_sup.one_time_flag;
     lr_vendor_rec.min_order_amount       :=c_sup.min_order_amount;
     lr_vendor_rec.customer_num           :=c_sup.customer_num;
@@ -1412,7 +1407,7 @@ BEGIN
     lr_vendor_rec.state_reportable_flag  :=c_sup.state_reportable_flag;
     lr_vendor_rec.tax_reporting_name     :=c_sup.tax_reporting_name;
     lr_vendor_rec.name_control           :=c_sup.name_control;
-    lr_vendor_rec.tax_verification_date  :=c_sup.tax_verification_date;
+    lr_vendor_rec.tax_verification_date  :=TO_DATE(c_sup.tax_verification_date,'YYYY/MM/DD');
     lr_vendor_rec.allow_awt_flag         :=c_sup.allow_awt_flag;
     --lr_vendor_rec.AUTO_TAX_CALC_OVERRIDE:=c_sup.AUTO_TAX_CALC_OVERRIDE;
     lr_vendor_rec.vat_code            :=c_sup.vat_code;
@@ -2350,7 +2345,7 @@ IS
   IS
     SELECT territory_code
     FROM fnd_territories_tl
-    WHERE territory_short_name = c_country
+    WHERE territory_code = c_country
     AND language               = userenv ('LANG');
   --==========================================================================================
   -- Cursor Declarations for Operating Unit
@@ -2744,10 +2739,10 @@ BEGIN
             party_id                = l_supplier_type (l_sup_idx).party_id ,
             object_version_no       = l_supplier_type (l_sup_idx).object_version_no ,
             CREATE_FLAG             = l_supplier_type (l_sup_idx).CREATE_FLAG ,
-            organization_type       = l_supplier_type(l_sup_idx).organization_type,
-            one_time_flag           = l_supplier_type(l_sup_idx).one_time_flag ,
-            FEDERAL_REPORTABLE_FLAG = L_SUPPLIER_TYPE(L_SUP_IDX).FEDERAL_REPORTABLE_FLAG ,
-            state_reportable_flag   = l_supplier_type(l_sup_idx).state_reportable_flag,
+            --organization_type       = l_supplier_type(l_sup_idx).organization_type,
+            --one_time_flag           = l_supplier_type(l_sup_idx).one_time_flag ,
+            --FEDERAL_REPORTABLE_FLAG = L_SUPPLIER_TYPE(L_SUP_IDX).FEDERAL_REPORTABLE_FLAG ,
+            --state_reportable_flag   = l_supplier_type(l_sup_idx).state_reportable_flag,
             LAST_UPDATE_DATE        =SYSDATE,
             LAST_UPDATED_BY         =g_user_id,
             ERROR_FLAG              = l_supplier_type(l_sup_idx).ERROR_FLAG ,
@@ -2847,30 +2842,22 @@ IS
   CURSOR c_get_country_code (c_country VARCHAR2)
   IS
     SELECT TERRITORY_CODE
-    FROM FND_TERRITORIES_VL
-    WHERE ISO_TERRITORY_CODE = C_COUNTRY;
-  -- AND language               = userenv ('LANG');
+    FROM FND_TERRITORIES_TL
+    WHERE TERRITORY_CODE = C_COUNTRY;
+     -- AND language               = userenv ('LANG');
   --==========================================================================================
   -- Cursor Declarations for Supplier Site existence
   --==========================================================================================
   --CURSOR C_SUP_SITE_EXIST (C_SUPPLIER_NAME VARCHAR2 ,C_SUPPLIER_NUMBER VARCHAR2,C_VENDOR_SITE_CODE VARCHAR2,C_ORG_ID NUMBER )
-  CURSOR c_sup_site_exist(c_supp_id NUMBER ,c_vendor_site_code VARCHAR2,c_org_id NUMBER)
+  CURSOR c_sup_site_exist(c_supp_id NUMBER ,c_vendor_site_code VARCHAR2,c_org_id VARCHAR2)
   IS
     SELECT COUNT(1)
     FROM ap_supplier_sites_all assa
     WHERE 1              =1
     AND VENDOR_SITE_CODE = C_VENDOR_SITE_CODE
-    AND ORG_ID           =C_ORG_ID
-    AND assa.vendor_id   =c_supp_id
-      --  and assa.vendor_id
-    AND EXISTS
-      (SELECT 1
-      FROM AP_SUPPLIERS APSUP
-      WHERE 1            =1
-      AND apsup.vendor_id=c_supp_id--apsup.vendor_name=c_supplier_name
-        ---  AND apsup.segment1     =c_supplier_number
-      AND apsup.vendor_id =assa.vendor_id
-      );
+    AND TO_CHAR(ORG_ID)  =C_ORG_ID
+    AND assa.vendor_id   =c_supp_id;
+   
   --==========================================================================================
   -- Cursor Declarations for any FND_LOOKUP value count giving lookup code
   --==========================================================================================
@@ -2889,7 +2876,7 @@ IS
   IS
     SELECT COUNT(1)
     FROM hr_locations_all
-    WHERE location_code   = c_bill_to_loc_code
+    WHERE location_code   = UPPER(c_bill_to_loc_code)
     AND bill_to_site_flag = 'Y'
     AND inactive_date    IS NULL
     OR inactive_date     >= sysdate;
@@ -2900,7 +2887,7 @@ IS
   IS
     SELECT COUNT(1)
     FROM hr_locations_all
-    WHERE location_code   = c_ship_to_loc_code
+    WHERE location_code   = UPPER(c_ship_to_loc_code)
     AND ship_to_site_flag = 'Y'
     AND inactive_date    IS NULL
     OR inactive_date     >= sysdate;
@@ -2982,7 +2969,8 @@ IS
   --=================================================================
   -- Cursor Declarations for Duplicate check of Suppliers site in Interface table
   --=================================================================
-  CURSOR c_dup_supplier_chk_int(c_vendor_site_code VARCHAR2,c_vendor_id NUMBER,c_org_id NUMBER)
+
+  CURSOR c_dup_supplier_chk_int(c_vendor_site_code VARCHAR2,c_vendor_id NUMBER,c_org_id VARCHAR2)
   IS
     SELECT xasi.vendor_site_code
       ---xasi.num_1099
@@ -2990,7 +2978,7 @@ IS
     WHERE xasi.status           ='NEW'
     AND UPPER(VENDOR_SITE_CODE) = UPPER(C_VENDOR_SITE_CODE)
     AND XASI.VENDOR_ID          =C_VENDOR_ID
-    AND xasi.org_id             =c_org_id;
+    AND TO_CHAR(xasi.org_id)             =c_org_id;
   ---   AND xasi.segment1      =c_segment1;
   --==========================================================================================
   -- Declaring Local variables
@@ -3083,6 +3071,7 @@ IS
   l_freight_terms_code_cnt    NUMBER;
   l_pay_group_code_cnt        NUMBER;
   l_terms_date_basis_code_cnt NUMBER;
+  ln_cnt NUMBER;
 BEGIN
   l_program_step := 'START';
   PRINT_DEBUG_MSG(P_MESSAGE=> L_PROGRAM_STEP||': Assigning Defaults' ,P_FORCE=>TRUE);
@@ -3200,11 +3189,20 @@ BEGIN
     -- Not Required
     --====================================================================
     L_INT_VEND_CODE:=NULL;
-    OPEN C_DUP_SUPPLIER_CHK_INT(TRIM(UPPER(L_SUP_SITE_TYPE.VENDOR_SITE_CODE)),L_SUP_SITE_TYPE.supp_id,L_SUP_SITE_TYPE.ORG_ID);
-    FETCH c_dup_supplier_chk_int INTO l_int_vend_code;
+	SELECT COUNT(1)
+	  INTO ln_cnt
+      FROM AP_SUPPLIER_SITES_INT XASI
+     WHERE xasi.status           ='NEW'
+       AND UPPER(VENDOR_SITE_CODE) = TRIM(UPPER(L_SUP_SITE_TYPE.VENDOR_SITE_CODE))
+       AND XASI.VENDOR_ID          =L_SUP_SITE_TYPE.supp_id
+       AND TO_CHAR(xasi.org_id)    =L_SUP_SITE_TYPE.ORG_ID;
+
+    --OPEN C_DUP_SUPPLIER_CHK_INT(TRIM(UPPER(L_SUP_SITE_TYPE.VENDOR_SITE_CODE)),L_SUP_SITE_TYPE.supp_id,L_SUP_SITE_TYPE.ORG_ID);
+    --FETCH c_dup_supplier_chk_int INTO l_int_vend_code;
     --   l_int_tax_payer_id;
-    CLOSE c_dup_supplier_chk_int;
-    IF l_int_vend_code     IS NOT NULL THEN
+    --CLOSE c_dup_supplier_chk_int;
+    --IF l_int_vend_code     IS NOT NULL THEN
+	IF ln_cnt<>0 THEN
       gc_error_status_flag := 'Y';
       print_debug_msg(p_message=> l_program_step||' : ERROR: XXOD_SUP_SITE_EXISTS_IN_INT : Suppiler ' ||l_sup_site_type.supplier_name||' already exist in Interface table with vendor_site_code as '||l_int_vend_code||' .' ,p_force=> true);
       insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_SUP_EXISTS_IN_INT' , p_error_message => 'Vendor Site Exists in interface' , p_stage_col1 => 'ADDRESS_LINE1' ,p_stage_val1 => l_sup_site_type.supplier_name ,p_table_name => g_sup_site_cont_table );
@@ -3623,19 +3621,22 @@ XXOD_OPERATING_UNIT_NULL: ORG ID cannot be NULL.' ,p_force=> true);
       print_debug_msg(p_message=> l_program_step||'gn_request_id ' ||gn_request_id ,p_force=> true);
       forall l_idxs IN l_sup_site_and_add.first .. l_sup_site_and_add.last
       UPDATE XX_AP_CLD_SUPP_SITES_STG
-      SET country                  = l_sup_site_and_add(l_idxs).country,
-        purchasing_site_flag       = l_sup_site_and_add(l_idxs).purchasing_site_flag ,
-        pay_site_flag              = l_sup_site_and_add(l_idxs).pay_site_flag ,
-        fob_lookup_code            = l_sup_site_and_add(l_idxs).fob_lookup_code ,
-        freight_terms_lookup_code  = l_sup_site_and_add(l_idxs).freight_terms_lookup_code ,
-        payment_method_lookup_code = l_sup_site_and_add(l_idxs).payment_method_lookup_code ,
-        match_option               = l_sup_site_and_add(l_idxs).match_option ,
-        payment_priority           = l_sup_site_and_add(l_idxs).payment_priority ,
-        pay_group_lookup_code      = l_sup_site_and_add(l_idxs).pay_group_lookup_code ,
-        bank_charge_deduction_type = l_sup_site_and_add(l_idxs).bank_charge_deduction_type ,
-        terms_date_basis           = l_sup_site_and_add(l_idxs).terms_date_basis ,
-        pay_date_basis_lookup_code = l_sup_site_and_add(l_idxs).pay_date_basis_lookup_code ,
-        always_take_disc_flag      = l_sup_site_and_add(l_idxs).always_take_disc_flag ,
+      SET 
+	    /*
+		  country                  = l_sup_site_and_add(l_idxs).country,
+          purchasing_site_flag       = l_sup_site_and_add(l_idxs).purchasing_site_flag ,
+          pay_site_flag              = l_sup_site_and_add(l_idxs).pay_site_flag ,
+          fob_lookup_code            = l_sup_site_and_add(l_idxs).fob_lookup_code ,
+          freight_terms_lookup_code  = l_sup_site_and_add(l_idxs).freight_terms_lookup_code ,
+          payment_method_lookup_code = l_sup_site_and_add(l_idxs).payment_method_lookup_code ,
+          match_option               = l_sup_site_and_add(l_idxs).match_option ,
+          payment_priority           = l_sup_site_and_add(l_idxs).payment_priority ,
+          pay_group_lookup_code      = l_sup_site_and_add(l_idxs).pay_group_lookup_code ,
+          bank_charge_deduction_type = l_sup_site_and_add(l_idxs).bank_charge_deduction_type ,
+          terms_date_basis           = l_sup_site_and_add(l_idxs).terms_date_basis ,
+          pay_date_basis_lookup_code = l_sup_site_and_add(l_idxs).pay_date_basis_lookup_code ,
+          always_take_disc_flag      = l_sup_site_and_add(l_idxs).always_take_disc_flag ,
+		*/  
         site_process_flag          = l_sup_site_and_add(l_idxs).site_process_flag ,
         ERROR_FLAG                 = l_sup_site_and_add(l_idxs).ERROR_FLAG ,
         ERROR_MSG                  = l_sup_site_and_add(l_idxs).ERROR_MSG,
@@ -4028,7 +4029,7 @@ BEGIN
     L_SUP_CONT(L_SUP_CONT_IDX).VENDOR_ID              :=L_SUP_SITE_CONT_TYPE.SUPP_ID;
     l_sup_cont(l_sup_cont_idx).vendor_site_id         :=l_sup_site_cont_type.supp_site_id;
     L_SUP_CONT(L_SUP_CONT_IDX).SUPPLIER_NUMBER        :=L_SUP_SITE_CONT_TYPE.SUPPLIER_NUMBER;
-    l_sup_cont(l_sup_cont_idx).first_name             :=l_sup_site_cont_type.last_name;
+    l_sup_cont(l_sup_cont_idx).first_name             :=l_sup_site_cont_type.first_name;
     l_sup_cont(l_sup_cont_idx).last_name              :=l_sup_site_cont_type.last_name;
     IF GC_ERROR_SITE_STATUS_FLAG                       = 'Y' THEN
       l_sup_cont(l_sup_cont_idx).contact_process_flag := gn_process_status_error;
@@ -4041,6 +4042,7 @@ BEGIN
       l_sup_cont(l_sup_cont_idx).contact_process_flag:= gn_process_status_validated;
       print_debug_msg(p_message=> gc_step||' ELSE l l_sup_cont(l_sup_cont_idx).contact_process_flag' || l_sup_cont(l_sup_cont_idx).contact_process_flag);
     END IF;
+	print_debug_msg(p_message=> gc_step||' ELSE l l_sup_cont(l_sup_cont_idx).contact_process_flag' || l_sup_cont(l_sup_cont_idx).contact_process_flag);
   END LOOP; --  FOR l_sup_site_type IN c_supplier_contact
   print_debug_msg(p_message=> gc_step ||' List of the contact failed prefixes is '||l_error_prefix_list ,p_force=> true);
   l_program_step := '';
@@ -4859,7 +4861,6 @@ IS
   l_party_id            NUMBER;
 BEGIN
   print_debug_msg(p_message=> gc_step||' load_Supplier_Interface() - BEGIN' ,p_force=> false);
-  set_step ('Start of Process Records Using API');
   --==============================================================================
   -- Default Process Status Flag as N means No Error Exists
   --==============================================================================
@@ -4894,7 +4895,7 @@ BEGIN
           --==============================================================================================
           SELECT ap_suppliers_int_s.nextval
           INTO l_vendor_intf_id
-          FROM sys.dual;
+          FROM dual;
           --==============================================================================
           -- Calling the Insertion of Data into standard interface table
           --==============================================================================
@@ -4909,7 +4910,6 @@ BEGIN
                   vendor_name ,
                   segment1 ,
                   vendor_type_lookup_code ,
-                  end_date_active ,
                   one_time_flag ,
                   min_order_amount ,
                   customer_num ,
@@ -4954,7 +4954,6 @@ BEGIN
                   l_supplier_type (l_idx).supplier_name ,
                   l_supplier_type (l_idx).segment1 ,
                   l_supplier_type (l_idx).vendor_type_lookup_code ,
-                  l_supplier_type (l_idx).end_date_active ,
                   l_supplier_type (l_idx).one_time_flag ,
                   l_supplier_type (l_idx).min_order_amount ,
                   l_supplier_type (l_idx).customer_num ,
@@ -4965,7 +4964,7 @@ BEGIN
                   l_supplier_type (l_idx).state_reportable_flag ,
                   l_supplier_type (l_idx).tax_reporting_name ,
                   l_supplier_type (l_idx).name_control ,
-                  l_supplier_type (l_idx).tax_verification_date ,
+				  TO_DATE(l_supplier_type (l_idx).tax_verification_date,'YYYY/MM/DD'),
                   l_supplier_type (l_idx).allow_awt_flag ,
                   l_supplier_type (l_idx).auto_tax_calc_override ,
                   l_supplier_type (l_idx).vat_code ,
@@ -5375,14 +5374,12 @@ BEGIN
                 l_sup_site_type(l_idx).terms_date_basis,--terms_date_basis_code ,
                 l_sup_site_type(l_idx).purchasing_site_flag ,
                 l_sup_site_type(l_idx).pay_site_flag ,
-                l_sup_site_type(l_idx).org_id ,
-                g_process_status_new
-                --  ,l_sup_site_type(l_idx).ship_via_code
-                ,
+                TO_NUMBER(l_sup_site_type(l_idx).org_id),
+                g_process_status_new,
                 l_sup_site_type(l_idx).freight_terms_lookup_code,--freight_terms ,
                 l_sup_site_type(l_idx).fob_lookup_code,          --fob ,
                 l_sup_site_type(l_idx).pay_group_lookup_code,    --pay_group_code ,
-                l_sup_site_type(l_idx).payment_priority ,
+                TO_NUMBER(l_sup_site_type(l_idx).payment_priority),
                 l_sup_site_type(l_idx).pay_date_basis_lookup_code ,
                 l_sup_site_type(l_idx).always_take_disc_flag ,
                 l_sup_site_type(l_idx).hold_all_payments_flag,--hold_from_payment
@@ -5391,8 +5388,8 @@ BEGIN
                 l_sup_site_type(l_idx).primary_pay_site_flag--primary_pay_flag
                 ,
                 l_sup_site_type(l_idx).tolerance_name,
-                l_sup_site_type(l_idx).bill_to_location,
-                l_sup_site_type(l_idx).ship_to_location,
+                UPPER(l_sup_site_type(l_idx).bill_to_location),
+                UPPER(l_sup_site_type(l_idx).ship_to_location),
                 g_user_id ,
                 sysdate ,
                 sysdate ,
@@ -6813,6 +6810,8 @@ BEGIN
   g_user_id     := fnd_global.user_id;
   g_login_id    := fnd_global.login_id;
   gc_debug      := p_debug_level;
+  
+    
   --================================================================
   --Adding parameters to the log file
   --================================================================
@@ -6932,7 +6931,7 @@ BEGIN
   END IF;
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   print_debug_msg(p_message => 'Calling Supplier Wrapper' , p_force => true);
-  main_prc_supplier( X_ERRBUF =>l_err_buff , X_RETCODE=> l_ret_code , P_RESET_FLAG =>'N' , p_debug_level =>'Y' );
+  --main_prc_supplier( X_ERRBUF =>l_err_buff , X_RETCODE=> l_ret_code , P_RESET_FLAG =>'N' , p_debug_level =>'Y' );
   PRINT_DEBUG_MSG(P_MESSAGE => 'Exiting Supplier Wrapper' , P_FORCE => TRUE);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   print_debug_msg(p_message => 'Calling Business Classification' , p_force => true);
@@ -6940,27 +6939,27 @@ BEGIN
   PRINT_DEBUG_MSG(P_MESSAGE => 'Exiting Business Classification' , P_FORCE => TRUE);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   print_debug_msg(p_message => 'Calling Supplier Site Wrapper' , p_force => true);
-  main_prc_supplier_site( X_ERRBUF =>l_err_buff , X_RETCODE=> l_ret_code , P_RESET_FLAG =>'N' , p_debug_level =>'Y' );
+  --main_prc_supplier_site( X_ERRBUF =>l_err_buff , X_RETCODE=> l_ret_code , P_RESET_FLAG =>'N' , p_debug_level =>'Y' );
   print_debug_msg(p_message => 'Exiting  Supplier Site Wrapper' , p_force => true);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   print_debug_msg(p_message => 'Calling  Supplier Contact Wrapper' , p_force => true);
-  MAIN_PRC_SUPPLIER_CONTACT( X_ERRBUF =>L_ERR_BUFF , X_RETCODE=> L_RET_CODE , P_RESET_FLAG =>'N' , P_DEBUG_LEVEL =>'Y' );
+  --MAIN_PRC_SUPPLIER_CONTACT( X_ERRBUF =>L_ERR_BUFF , X_RETCODE=> L_RET_CODE , P_RESET_FLAG =>'N' , P_DEBUG_LEVEL =>'Y' );
   PRINT_DEBUG_MSG(P_MESSAGE => 'Exiting  Supplier Contact Wrapper' , P_FORCE => TRUE);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   print_debug_msg(p_message => 'Calling Supplier Contact Custom   Wrapper' , p_force => true);
-  main_prc_supplier_cont_cust( X_ERRBUF =>l_err_buff , X_RETCODE=> l_ret_code , P_RESET_FLAG =>'N' , p_debug_level =>'Y' );
+  --main_prc_supplier_cont_cust( X_ERRBUF =>l_err_buff , X_RETCODE=> l_ret_code , P_RESET_FLAG =>'N' , p_debug_level =>'Y' );
   PRINT_DEBUG_MSG(P_MESSAGE => 'Exiting Supplier Contact Custom  Wrapper' , P_FORCE => TRUE);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   print_debug_msg(p_message => 'Calling  Supplier Bank Wrapper' , p_force => true);
-  main_prc_supplier_bank( X_ERRBUF =>l_err_buff , X_RETCODE=> l_ret_code , P_RESET_FLAG =>'N' , p_debug_level =>'Y' );
+  --main_prc_supplier_bank( X_ERRBUF =>l_err_buff , X_RETCODE=> l_ret_code , P_RESET_FLAG =>'N' , p_debug_level =>'Y' );
   print_debug_msg(p_message => 'Exiting Supplier Bank  Wrapper' , p_force => true);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   print_debug_msg(p_message => 'Calling Custom DFF Process' , p_force => true);
-  xx_supp_dff(gn_request_id);
+  --xx_supp_dff(gn_request_id);
   PRINT_DEBUG_MSG(P_MESSAGE => 'Exiting Custom DFF Process' , P_FORCE => TRUE);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   print_debug_msg(p_message => 'Calling  Update_supplier_telex' , p_force => true);
-  UPDATE_SUPPLIER_TELEX( X_ERRBUF =>L_ERR_BUFF , X_RETCODE=> L_RET_CODE);
+  --UPDATE_SUPPLIER_TELEX( X_ERRBUF =>L_ERR_BUFF , X_RETCODE=> L_RET_CODE);
   print_debug_msg(p_message => 'Exiting Update_supplier_telex' , p_force => true);
   IF (L_RET_CODE IS NULL OR L_RET_CODE <> 0) THEN
     x_retcode    := l_ret_code;
