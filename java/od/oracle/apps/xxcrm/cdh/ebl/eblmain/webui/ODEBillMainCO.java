@@ -1324,12 +1324,15 @@ ODEBillMainCO extends OAControllerImpl {
            String docuType = null;
            docuType = custDocVO.first().getAttribute("DocType").toString();
            OAMessageChoiceBean transmissionType = 
-              (OAMessageChoiceBean)webBean.findIndexedChildRecursive("EbillTransmission");            
+              (OAMessageChoiceBean)webBean.findIndexedChildRecursive("EbillTransmission"); 
+            String statusF= custDocVO.first().getAttribute("StatusCode").toString();
+            if ("IN_PROCESS".equals(statusF))  {
            if(("Email".equalsIgnoreCase(transmissionType.getValue(pageContext).toString())) && "ePDF".equalsIgnoreCase(deliveryMethod))
            {
               String custAccountId = custDocVO.first().getAttribute("CustAccountId").toString();
               validateFieProcMethod(pageContext,webBean,custAccountId,docuType,payDoc);                   
-            }            
+            } 
+                     }
          //Code added by Rafi for NAIT-91481 Rectify Billing Delivery Efficiency - END
           
                 if (deliveryMethod.equals("eXLS")) {
