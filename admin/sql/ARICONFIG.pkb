@@ -63,7 +63,6 @@ AS
   | Sridevi K 16/12/2014  Modified for iRec Enhancement changes                |
   | Vasu R    29/10/2015  Removed Schema References for R12.2                  |
   | Vasu R    29/08/2016  Retrofitted for 12.2.5 Upgrade                       |
-  | Dinesh N  14-MAY-2018 Retrofit OM tables with Views -NAIT-37762            |
   +===========================================================================*/
   
   FUNCTION IS_LARGE_CUSTOMER( 
@@ -923,7 +922,7 @@ BEGIN
               oha.desk_del_addr,
               oha.release_number
             FROM ra_customer_trx_all trx,
-              xx_om_header_attributes_v oha,									--Retrofit NAIT-37762
+              xx_om_header_attributes_all oha,
               ar_payment_schedules_all aps
             WHERE trx.bill_to_customer_id = ln_cust_account_id
             AND trx.attribute14           = oha.header_id
@@ -1010,7 +1009,7 @@ BEGIN
               oha.desk_del_addr,
               oha.release_number
             FROM ra_customer_trx_all trx,
-              xx_om_header_attributes_v oha,									--Retrofit NAIT-37762
+              xx_om_header_attributes_all oha,
               ar_payment_schedules_all aps
             WHERE trx.bill_to_customer_id = ln_cust_account_id
             AND trx.attribute14           = oha.header_id
@@ -1148,7 +1147,7 @@ BEGIN
               oha.desk_del_addr,
               oha.release_number
             FROM ra_customer_trx_all trx,
-              xx_om_header_attributes_v oha,									--Retrofit NAIT-37762
+              xx_om_header_attributes_all oha,
               ar_payment_schedules_all aps
             WHERE trx.bill_to_customer_id = ln_cust_account_id
             AND trx.attribute14           = oha.header_id
@@ -1232,7 +1231,7 @@ BEGIN
               oha.desk_del_addr,
               oha.release_number
             FROM ra_customer_trx_all trx,
-              xx_om_header_attributes_v oha,									--Retrofit NAIT-37762
+              xx_om_header_attributes_all oha,
               ar_payment_schedules_all aps
             WHERE trx.bill_to_customer_id = ln_cust_account_id
             AND trx.attribute14           = oha.header_id
@@ -1365,7 +1364,7 @@ BEGIN
               oha.desk_del_addr,
               oha.release_number
             FROM ra_customer_trx_all trx,
-              xx_om_header_attributes_v oha,									--Retrofit NAIT-37762
+              xx_om_header_attributes_all oha,
               ar_payment_schedules_all aps
             WHERE trx.bill_to_customer_id = ln_cust_account_id
             AND trx.attribute14           = oha.header_id
@@ -1452,7 +1451,7 @@ BEGIN
               oha.desk_del_addr,
               oha.release_number
             FROM ra_customer_trx_all trx,
-              xx_om_header_attributes_v oha,									--Retrofit NAIT-37762
+              xx_om_header_attributes_all oha,
               ar_payment_schedules_all aps
             WHERE trx.bill_to_customer_id = ln_cust_account_id
             AND trx.attribute14           = oha.header_id
@@ -1585,7 +1584,7 @@ BEGIN
               oha.desk_del_addr,
               oha.release_number
             FROM ra_customer_trx_all trx,
-              xx_om_header_attributes_v oha,									--Retrofit NAIT-37762
+              xx_om_header_attributes_all oha,
               ar_payment_schedules_all aps
             WHERE trx.bill_to_customer_id = ln_cust_account_id
             AND trx.attribute14           = oha.header_id
@@ -1671,7 +1670,7 @@ BEGIN
               oha.desk_del_addr,
               oha.release_number
             FROM ra_customer_trx_all trx,
-              xx_om_header_attributes_v oha,									--Retrofit NAIT-37762
+              xx_om_header_attributes_all oha,
               ar_payment_schedules_all aps
             WHERE trx.bill_to_customer_id = ln_cust_account_id
             AND trx.attribute14           = oha.header_id
@@ -1805,7 +1804,7 @@ BEGIN
                 oha.desk_del_addr,
                 oha.release_number
               FROM ra_customer_trx_all trx,
-                xx_om_header_attributes_v oha,									--Retrofit NAIT-37762
+                xx_om_header_attributes_all oha,									
                 ar_payment_schedules_all aps
               WHERE trx.bill_to_customer_id = ln_cust_account_id
               AND trx.attribute14           = oha.header_id
@@ -1891,7 +1890,7 @@ BEGIN
                 oha.desk_del_addr,
                 oha.release_number
               FROM ra_customer_trx_all trx,
-                xx_om_header_attributes_v oha,									--Retrofit NAIT-37762
+                xx_om_header_attributes_all oha,								
                 ar_payment_schedules_all aps
               WHERE trx.bill_to_customer_id = ln_cust_account_id
               AND trx.attribute14           = oha.header_id
