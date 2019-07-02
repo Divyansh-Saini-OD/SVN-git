@@ -1402,6 +1402,7 @@ BEGIN
     END;
     lr_vendor_rec.vendor_id              := lr_existing_vendor_rec.vendor_id;
     lr_vendor_rec.vendor_type_lookup_code:=c_sup.vendor_type_lookup_code;
+	lr_vendor_rec.organization_type_lookup_code:=c_sup.organization_type;
     lr_vendor_rec.end_date_active        :=TO_DATE(c_sup.end_date_active,'YYYY/MM/DD');
     lr_vendor_rec.one_time_flag          :=c_sup.one_time_flag;
     lr_vendor_rec.min_order_amount       :=c_sup.min_order_amount;
@@ -1628,13 +1629,11 @@ BEGIN
     lr_vendor_site_rec.attribute4                   :=c_sup_site.attribute4;
     lr_vendor_site_rec.attribute5                   :=c_sup_site.attribute5;
     lr_vendor_site_rec.attribute6                   :=c_sup_site.attribute6;
+	lr_vendor_site_rec.attribute7                   :=c_sup_site.attribute7;
     lr_vendor_site_rec.attribute8                   :=c_sup_site.attribute8;
     lr_vendor_site_rec.attribute9                   :=c_sup_site.attribute9;
-    lr_vendor_site_rec.attribute10                  :=c_sup_site.attribute10;
-    lr_vendor_site_rec.attribute11                  :=c_sup_site.attribute11;
-    lr_vendor_site_rec.attribute12                  :=c_sup_site.attribute12;
-    lr_vendor_site_rec.attribute14                  :=c_sup_site.attribute14;
-    lr_vendor_site_rec.attribute15                  :=c_sup_site.attribute15;
+    lr_vendor_site_rec.attribute13                  :=c_sup_site.attribute13;
+	lr_vendor_site_rec.attribute14                  :=c_sup_site.attribute14;
     lr_vendor_site_rec.phone                        :=c_sup_site.phone_number;
     lr_vendor_site_rec.area_code                    :=c_sup_site.phone_area_code;
     lr_vendor_site_rec.province                     :=c_sup_site.province;
@@ -1892,6 +1891,7 @@ BEGIN
         lv_vendor_contact_rec.fax_phone        :=r_cont.fax;
         lv_vendor_contact_rec.fax_area_code    :=r_cont.fax_area_code;
         lv_vendor_contact_rec.area_code        :=r_cont.area_code;
+        lv_vendor_contact_rec.person_title     :=r_cont.title;		
         FND_MSG_PUB.INITIALIZE; --to make msg_count 0
         X_RETURN_STATUS:=NULL;
         X_MSG_COUNT    :=NULL;
@@ -6961,7 +6961,7 @@ BEGIN
   PRINT_DEBUG_MSG(P_MESSAGE => 'Exiting Supplier Contact Custom  Wrapper' , P_FORCE => TRUE);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   print_debug_msg(p_message => 'Calling  Supplier Bank Wrapper' , p_force => true);
-  main_prc_supplier_bank( X_ERRBUF =>l_err_buff , X_RETCODE=> l_ret_code , P_RESET_FLAG =>'N' , p_debug_level =>'Y' );
+  --main_prc_supplier_bank( X_ERRBUF =>l_err_buff , X_RETCODE=> l_ret_code , P_RESET_FLAG =>'N' , p_debug_level =>'Y' );
   print_debug_msg(p_message => 'Exiting Supplier Bank  Wrapper' , p_force => true);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   print_debug_msg(p_message => 'Calling Custom DFF Process' , p_force => true);
