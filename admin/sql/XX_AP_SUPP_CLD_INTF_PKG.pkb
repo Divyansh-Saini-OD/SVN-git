@@ -2559,7 +2559,7 @@ BEGIN
         --=============================================================================
         -- Validating the Supplier Site - Organization Type
         --=============================================================================
-        print_debug_msg(p_message=> gc_step||' Organization type value is '||l_supplier_type(l_sup_idx).organization_type ,p_force=> false);
+       /* print_debug_msg(p_message=> gc_step||' Organization type value is '||l_supplier_type(l_sup_idx).organization_type ,p_force=> false);
         IF l_supplier_type(l_sup_idx).organization_type IS NULL THEN
           l_organization_type                           := 'Individual';
         ELSE
@@ -2577,6 +2577,7 @@ BEGIN
           print_debug_msg(p_message=> gc_step||' Organization Type Code of Organization Type - '||l_supplier_type(l_sup_idx).organization_type||' is '||l_org_type_code ,p_force=> false);
           l_supplier_type(l_sup_idx).organization_type := l_org_type_code;
         END IF; -- IF l_org_type_code IS NULL
+		*/
         --==============================================================
         -- Validating the SUPPLIER NAME
         --==============================================================
@@ -2739,7 +2740,7 @@ BEGIN
             party_id                = l_supplier_type (l_sup_idx).party_id ,
             object_version_no       = l_supplier_type (l_sup_idx).object_version_no ,
             create_flag             = l_supplier_type (l_sup_idx).create_flag ,
-           organization_type       = l_supplier_type(l_sup_idx).organization_type,
+         --  organization_type       = l_supplier_type(l_sup_idx).organization_type,
             --one_time_flag           = l_supplier_type(l_sup_idx).one_time_flag ,
             --FEDERAL_REPORTABLE_FLAG = L_SUPPLIER_TYPE(L_SUP_IDX).FEDERAL_REPORTABLE_FLAG ,
             --state_reportable_flag   = l_supplier_type(l_sup_idx).state_reportable_flag,
