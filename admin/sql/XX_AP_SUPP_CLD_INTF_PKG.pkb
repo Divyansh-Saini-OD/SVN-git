@@ -2738,8 +2738,8 @@ BEGIN
             vendor_id               = l_supplier_type (l_sup_idx).vendor_id ,
             party_id                = l_supplier_type (l_sup_idx).party_id ,
             object_version_no       = l_supplier_type (l_sup_idx).object_version_no ,
-            CREATE_FLAG             = l_supplier_type (l_sup_idx).CREATE_FLAG ,
-            --organization_type       = l_supplier_type(l_sup_idx).organization_type,
+            create_flag             = l_supplier_type (l_sup_idx).create_flag ,
+           organization_type       = l_supplier_type(l_sup_idx).organization_type,
             --one_time_flag           = l_supplier_type(l_sup_idx).one_time_flag ,
             --FEDERAL_REPORTABLE_FLAG = L_SUPPLIER_TYPE(L_SUP_IDX).FEDERAL_REPORTABLE_FLAG ,
             --state_reportable_flag   = l_supplier_type(l_sup_idx).state_reportable_flag,
@@ -3509,11 +3509,12 @@ XXOD_OPERATING_UNIT_NULL: ORG ID cannot be NULL.' ,p_force=> true);
       --==============================================================================================================
       -- Validating the Supplier Site - Invoice Match Option
       --==============================================================================================================
-      l_inv_match_option              := NULL;
+    /*  l_inv_match_option              := NULL;
       IF l_sup_site_type.match_option IS NULL THEN
         l_inv_match_option            := 'P';
         print_debug_msg(p_message=> gc_step||' Default value set for l_inv_match_option is '||l_inv_match_option ,p_force=> false);
       END IF; -- IF l_sup_site_type.INVOICE_MATCH_OPTION IS NULL
+      */--Commnetd after review commnets from business
       --=============================================================================
       -- Defaulting the Supplier Site - Payment Priority
       --=============================================================================
@@ -3579,7 +3580,7 @@ XXOD_OPERATING_UNIT_NULL: ORG ID cannot be NULL.' ,p_force=> true);
       l_sup_site_and_add(l_sup_site_idx).pay_site_flag              := l_pay_site_flag;
       l_sup_site_and_add(l_sup_site_idx).payment_method_lookup_code := l_payment_method;
       l_sup_site_and_add(l_sup_site_idx).tolerance_name             := l_tolerance_name;
-      l_sup_site_and_add(l_sup_site_idx).match_option               := l_inv_match_option;
+   --   l_sup_site_and_add(l_sup_site_idx).match_option               := l_inv_match_option;
       l_sup_site_and_add(l_sup_site_idx).payment_priority           := l_payment_priority;
       l_sup_site_and_add(l_sup_site_idx).pay_group_lookup_code      := l_pay_group_code;
       l_sup_site_and_add(l_sup_site_idx).bank_charge_deduction_type := l_deduct_bank_chrg;
@@ -5745,7 +5746,8 @@ BEGIN
                   created_by ,
                   creation_date ,
                   last_update_date ,
-                  last_updated_by
+                  last_updated_by,
+                  title
                 )
                 VALUES
                 (
@@ -5760,15 +5762,16 @@ BEGIN
                   l_supplier_cont_type (l_idx).contact_name_alt ,
                   --   l_supplier_cont_type (l_idx).cont_department ,
                   l_supplier_cont_type (l_idx).email_address ,
-                  l_supplier_cont_type (l_idx).area_code
-                  ||TO_CHAR(xx_ap_suppliers_phone_extn_s.nextval) ,
+                  l_supplier_cont_type (l_idx).area_code,
+                 -- ||TO_CHAR(xx_ap_suppliers_phone_extn_s.nextval) ,
                   l_supplier_cont_type (l_idx).phone ,
                   l_supplier_cont_type (l_idx).fax_area_code ,
                   l_supplier_cont_type (l_idx).fax,
                   g_user_id ,
                   sysdate ,
                   sysdate ,
-                  g_user_id
+                  g_user_id,
+                  l_supplier_cont_type (l_idx).title
                 );
               set_step ( 'Supplier contact Interface Inserted' || l_cont_process_error_flag);
               print_debug_msg(p_message=> gc_step||' - After successfully inserted the record for the supplier -' ||l_supplier_cont_type (l_idx).supplier_name ,p_force=> false);
@@ -6972,5 +6975,6 @@ WHEN OTHERS THEN
   X_ERRBUF  := 'Exception in XX_AP_SUPP_CLD_INTF_PKG.main_prc_supplier_test() - '||SQLCODE||' - '||SUBSTR(SQLERRM,1,3500);
 END XX_AP_SUPP_CLD_INTF;
 END XX_AP_SUPP_CLD_INTF_PKG;
+
 /
 SHOW ERROR;
