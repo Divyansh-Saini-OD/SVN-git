@@ -950,7 +950,7 @@ IS
       site.create_flag ,
       site.vendor_id ,
       site.vendor_site_id
-    FROM xx_ap_cld_site_dff_stg dff,
+   FROM xx_ap_cld_site_dff_stg dff,
       xx_ap_cld_supp_sites_stg site
     WHERE 1                     =1
     AND dff.process_Flag        = 'P'
@@ -1076,8 +1076,8 @@ BEGIN
             cur.VENDOR_MIN_AMOUNT,
             cur.SUPPLIER_SHIP_TO,
             cur.MASTER_VENDOR_ID,
-            TO_CHAR(cur.OD_DATE_SIGNED,'DD-MON-YY'),
-            TO_CHAR(cur.VENDOR_DATE_SIGNED,'DD-MON-YY'),
+            TO_CHAR(TO_DATE(cur.OD_DATE_SIGNED,'YYYY/MM/DD'),'DD-MON-RRRR'),
+            TO_CHAR(TO_DATE(cur.VENDOR_DATE_SIGNED,'YYYY/MM/DD'),'DD-MON-RRRR'),
             cur.DEDUCT_FROM_INVOICE_FLAG
           );
         UPDATE ap_supplier_sites_all
@@ -1224,21 +1224,21 @@ BEGIN
       print_debug_msg(p_message => 'Updating records for Cloud Custom DFF ', p_force => true);
       IF v_error_Flag='Y' THEN
         UPDATE XX_AP_CLD_SITE_DFF_STG
-        SET dff_process_Flag = 7,
-          process_Flag       = 'Y',
-          error_msg          = lc_error_msg,
-          vendor_id          = cur.vendor_id,
-          vendor_site_id     = cur.vendor_site_id,
-          create_flag        = 'Y'
+           SET dff_process_Flag = 6,
+               process_Flag       = 'Y',
+               error_msg          = lc_error_msg,
+               vendor_id          = cur.vendor_id,
+               vendor_site_id     = cur.vendor_site_id,
+               error_flag        = 'Y'
         WHERE rowid          =cur.drowid;
       ELSE
         UPDATE XX_AP_CLD_SITE_DFF_STG
-        SET dff_process_Flag = 6,
-          process_Flag       = 'Y',
-          vendor_id          = cur.vendor_id,
-          vendor_site_id     = cur.vendor_site_id,
-          create_flag        = 'Y'
-        WHERE rowid          =cur.drowid;
+           SET dff_process_Flag = 7,
+               process_Flag       = 'Y',
+               vendor_id          = cur.vendor_id,
+               vendor_site_id     = cur.vendor_site_id,
+               error_flag         = 'N'
+         WHERE rowid          =cur.drowid;
       END IF;
       COMMIT;
     ELSIF ln_bus_count >0 AND ( lc_attribute10 IS NOT NULL OR lc_attribute11 IS NOT NULL OR lc_attribute12 IS NOT NULL) THEN
@@ -1249,12 +1249,13 @@ BEGIN
             LAST_UPDATE_DATE  = SYSDATE,
             SEGMENT1          = cur.LEAD_TIME,
             SEGMENT2          = cur.BACK_ORDER_FLAG,
+			SEGMENT3		  = cur.delivery_policy,
             SEGMENT4          = cur.MIN_PREPAID_CODE,
             SEGMENT5          = cur.VENDOR_MIN_AMOUNT,
             SEGMENT6          = cur.SUPPLIER_SHIP_TO,
             SEGMENT13         = cur.MASTER_VENDOR_ID,
-            SEGMENT15         = TO_CHAR(cur.OD_DATE_SIGNED,'DD-MON-YY'),
-            SEGMENT16         = TO_CHAR(cur.VENDOR_DATE_SIGNED,'DD-MON-YY'),
+            SEGMENT15         = TO_CHAR(TO_DATE(cur.OD_DATE_SIGNED,'YYYY/MM/DD'),'DD-MON-RRRR'),
+            SEGMENT16         = TO_CHAR(TO_DATE(cur.VENDOR_DATE_SIGNED,'YYYY/MM/DD'),'DD-MON-RRRR'),
             SEGMENT17         = cur.DEDUCT_FROM_INVOICE_FLAG
           WHERE VS_KFF_ID     = lc_attribute10
           AND STRUCTURE_ID    = 101;
@@ -1305,24 +1306,27 @@ BEGIN
       END;
       IF v_error_Flag='Y' THEN
         UPDATE XX_AP_CLD_SITE_DFF_STG
-        SET dff_process_Flag=7,
-          process_Flag      ='Y',
-          error_msg         = lc_error_msg,
-          vendor_id         = cur.vendor_id,
-          vendor_site_id    = cur.vendor_site_id,
-          create_flag       = 'N'
-        WHERE rowid         = cur.drowid;
+           SET dff_process_Flag=6,
+               process_Flag      ='Y',
+               error_msg         = lc_error_msg,
+               vendor_id         = cur.vendor_id,
+               vendor_site_id    = cur.vendor_site_id,
+               error_flag        = 'N',
+			   create_flag		 = 'N'
+         WHERE rowid         = cur.drowid;
       ELSE
         UPDATE XX_AP_CLD_SITE_DFF_STG
-        SET dff_process_Flag = 6,
-          process_Flag       ='Y',
-          vendor_id          = cur.vendor_id,
-          vendor_site_id     = cur.vendor_site_id,
-          create_flag        = 'N'
+           SET dff_process_Flag = 7,
+               process_Flag       ='Y',
+               vendor_id          = cur.vendor_id,
+               vendor_site_id     = cur.vendor_site_id,
+			   error_flag		  = 'N',
+               create_flag        = 'N'
         WHERE rowid          = cur.drowid;
       END IF;
     END IF;
   END LOOP;
+  COMMIT;
 EXCEPTION
 WHEN OTHERS THEN
   print_debug_msg(p_message => 'Error in processing xx_supp_dff '||SQLERRM, p_force => true);
@@ -6957,7 +6961,7 @@ BEGIN
   PRINT_DEBUG_MSG(P_MESSAGE => 'Exiting  Supplier Contact Wrapper' , P_FORCE => TRUE);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   print_debug_msg(p_message => 'Calling Supplier Contact Custom   Wrapper' , p_force => true);
-  main_prc_supplier_cont_cust( X_ERRBUF =>l_err_buff , X_RETCODE=> l_ret_code , P_RESET_FLAG =>'N' , p_debug_level =>'Y' );
+  --main_prc_supplier_cont_cust( X_ERRBUF =>l_err_buff , X_RETCODE=> l_ret_code , P_RESET_FLAG =>'N' , p_debug_level =>'Y' );
   PRINT_DEBUG_MSG(P_MESSAGE => 'Exiting Supplier Contact Custom  Wrapper' , P_FORCE => TRUE);
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   print_debug_msg(p_message => 'Calling  Supplier Bank Wrapper' , p_force => true);
