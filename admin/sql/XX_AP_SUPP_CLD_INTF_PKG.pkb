@@ -6,6 +6,14 @@ SET FEEDBACK OFF;
 WHENEVER SQLERROR CONTINUE;
 WHENEVER OSERROR EXIT FAILURE ROLLBACK;
 
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
 create or replace 
 PACKAGE body XX_AP_SUPP_CLD_INTF_PKG
   -- +==========================================================================+
@@ -910,6 +918,7 @@ IS
       dff.supplier_name ,
       dff.vendor_site_code ,
       dff.edi_distribution_code ,
+	  dff.delivery_policy,
       dff.sup_trait ,
       dff.back_order_flag ,
       dff.od_date_signed ,
@@ -1040,6 +1049,7 @@ BEGIN
             LAST_UPDATE_DATE ,
             SEGMENT1 ,
             SEGMENT2 ,
+			SEGMENT3,
             SEGMENT4 ,
             SEGMENT5 ,
             SEGMENT6 ,
@@ -1061,6 +1071,7 @@ BEGIN
             SYSDATE,
             cur.LEAD_TIME,
             cur.BACK_ORDER_FLAG,
+			cur.delivery_policy,
             cur.MIN_PREPAID_CODE,
             cur.VENDOR_MIN_AMOUNT,
             cur.SUPPLIER_SHIP_TO,
@@ -1144,10 +1155,7 @@ BEGIN
             SEGMENT51 ,
             SEGMENT52 ,
             SEGMENT53 ,
-            SEGMENT54
-            --, SEGMENT56
-            --, SEGMENT57
-            ,
+            SEGMENT54,
             SEGMENT58
           )
           VALUES
@@ -1176,8 +1184,6 @@ BEGIN
             cur.CONTACT_SUPPLIER_FOR_RGA_FLAG,
             cur.DESTROY_FLAG,
             cur.SERIAL_NUM_REQUIRED_FLAG,
-            -- cur.OBSOLETE_ALLOW_PERNTG     ,
-            --cur.OBSOLETE_DAYS             ,          check this
             cur.RTV_RELATED_SITE
           );
         UPDATE ap_supplier_sites_all
@@ -4960,7 +4966,7 @@ BEGIN
                   l_supplier_type (l_idx).min_order_amount ,
                   l_supplier_type (l_idx).customer_num ,
                   l_supplier_type (l_idx).standard_industry_class ,
-                  l_supplier_type (l_idx).num_1099 ,
+                  l_supplier_type (l_idx).num_1099,
                   l_supplier_type (l_idx).federal_reportable_flag ,
                   l_supplier_type (l_idx).type_1099 ,
                   l_supplier_type (l_idx).state_reportable_flag ,
@@ -5339,13 +5345,13 @@ BEGIN
                 attribute4 ,
                 attribute5 ,
                 attribute6 ,
-                --- ATTRIBUTE7 ,
+                ATTRIBUTE7 ,
                 attribute8 ,
                 attribute9 ,
                 attribute10 ,
                 attribute11 ,
                 attribute12 ,
-                --  ATTRIBUTE13 ,
+                ATTRIBUTE13 ,
                 attribute14 ,
                 attribute15,
                 vendor_site_code_alt
@@ -5404,13 +5410,13 @@ BEGIN
                 l_sup_site_type(l_idx).attribute4 ,
                 l_sup_site_type(l_idx).attribute5 ,
                 l_sup_site_type(l_idx).attribute6 ,
-                --  l_sup_site_type(l_idx).ATTRIBUTE7 ,
+                l_sup_site_type(l_idx).ATTRIBUTE7 ,
                 l_sup_site_type(l_idx).attribute8 ,
                 l_sup_site_type(l_idx).attribute9 ,
-                l_sup_site_type(l_idx).attribute10 ,
-                l_sup_site_type(l_idx).attribute11 ,
-                l_sup_site_type(l_idx).attribute12 ,
-                ---   l_sup_site_type(l_idx).ATTRIBUTE13 ,
+                NULL ,
+                NULL ,
+                NULL ,
+                l_sup_site_type(l_idx).ATTRIBUTE13 ,
                 l_sup_site_type(l_idx).attribute14 ,
                 L_SUP_SITE_TYPE(L_IDX).ATTRIBUTE15,
                 l_sup_site_type(l_idx).vendor_site_code_alt
@@ -6976,6 +6982,5 @@ WHEN OTHERS THEN
   X_ERRBUF  := 'Exception in XX_AP_SUPP_CLD_INTF_PKG.main_prc_supplier_test() - '||SQLCODE||' - '||SUBSTR(SQLERRM,1,3500);
 END XX_AP_SUPP_CLD_INTF;
 END XX_AP_SUPP_CLD_INTF_PKG;
-
 /
 SHOW ERROR;
