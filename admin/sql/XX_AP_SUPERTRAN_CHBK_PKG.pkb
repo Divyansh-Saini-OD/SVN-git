@@ -1,3 +1,13 @@
+SET VERIFY OFF
+SET ECHO OFF
+SET TAB OFF
+SET FEEDBACK OFF
+SET TERM ON
+
+PROMPT Creating PACKAGE BODY XX_AP_SUPERTRAN_CHBK_PKG
+
+PROMPT Program exits IF the creation IS NOT SUCCESSFUL
+
 CREATE OR REPLACE PACKAGE BODY XX_AP_SUPERTRAN_CHBK_PKG
 AS
 -- +============================================================================================+
@@ -22,7 +32,9 @@ AS
 -- | 1.7         03/15/2018   Paddy Sanjeevi   Modified to populate attribute10 in header       |
 -- | 1.8         04/13/2018   Paddy Sanjeevi   Modified to exclude held invoices                |
 -- | 1.9         05/22/2018   Paddy Sanjeevi   Modified for defect NAIT-42780                   |
--- | 2.0         12/11/2018   Vivek Kumar      Modified for defect NAIT 64576                   |
+-- | 2.0         03/22/2019   Vivek Kumar      Modified for defect NAIT-64472 - Added Supplier  |
+-- |                                           Supplier Tolerance logic while creating          |
+-- |                                           Chargeback                                       |  
 -- +============================================================================================+
 
 -- +============================================================================================+
@@ -246,6 +258,18 @@ SELECT a.invoice_id,
                   AND cv.inv_line_num=a.line_number
                   AND cv.answer_code='P O'
               );
+
+
+  l_invoice_tab inv_hdr%ROWTYPE;			  
+			  
+CURSOR get_min_chargeback_amt(p_vendor_id NUMBER, p_vendor_site_id NUMBER, p_org_id NUMBER)
+  IS
+    SELECT min_chargeback_amt
+    FROM xx_ap_custom_tolerances
+    WHERE supplier_id    = p_vendor_id
+    AND supplier_site_id = p_vendor_site_id
+    AND org_id           = p_org_id;
+
 			  
 ln_invoice_id 				NUMBER;
 lc_price_desc          		VARCHAR2(200):=NULL;
@@ -254,22 +278,41 @@ ln_line_chargeback_amt 		NUMBER:=0;
 ln_ins_cnt					NUMBER:=0;
 lc_line_status				VARCHAR2(10):='SUCCESS';
 lc_hdr_status				VARCHAR2(10):='SUCCESS';
-
+ln_min_chargeback_amt       NUMBER:=0;    --Added for NAIT-64472           
+ 
 BEGIN
-
-  SELECT AP_INVOICES_INTERFACE_S.nextval
+ --Commented for NAIT -64472
+/*SELECT AP_INVOICES_INTERFACE_S.nextval
 	INTO ln_invoice_id
-	FROM DUAL;
-
+	FROM DUAL;*/
+ ---Changes for NAIT-64472 --
   FOR cur IN chbk_line(p_invoice_id) LOOP
+  
+	 OPEN inv_hdr(p_invoice_id);
+      FETCH inv_hdr
+      INTO l_invoice_tab;
+	
+	  OPEN get_min_chargeback_amt(l_invoice_tab.vendor_id,l_invoice_tab.vendor_site_id,l_invoice_tab.org_id); --discuss no data found here
+        FETCH get_min_chargeback_amt
+        INTO ln_min_chargeback_amt;
+        CLOSE get_min_chargeback_amt;
+	--Changes Ends for NAIT-64472--
   
      FOR crl IN inv_lines(cur.invoice_id,cur.line_number) LOOP
 
   	   ln_line_chargeback_amt	:=0;
 	   ln_line_chargeback_amt 	:= ROUND(((crl.inv_price - crl.po_price) * crl.quantity_invoiced),2);
        lc_price_desc     		:= 'Price: (BP '|| crl.inv_price||' - PO PR '|| crl.po_price ||' )* BQ '|| crl.quantity_invoiced||'';	 
-	 
-	   BEGIN
+		
+		--Added for NAIT-64472 --
+		IF ln_line_chargeback_amt>ln_min_chargeback_amt THEN 
+	  
+	  BEGIN
+	 -- Added for NAIT - 64472--
+         SELECT AP_INVOICES_INTERFACE_S.nextval
+	     INTO ln_invoice_id
+	     FROM DUAL;
+         
          INSERT
            INTO ap_invoice_lines_interface
                   (
@@ -310,19 +353,23 @@ BEGIN
                     cur.line_number
                   );
 	     ln_ins_cnt:=ln_ins_cnt+1;
+		 print_debug_msg('After Inserting Invoice Line',FALSE);
 	   EXCEPTION
 	     WHEN others THEN
 	       lc_line_status:='ERROR';
 	   END;
-	   ln_total_chbk_amt:=ln_total_chbk_amt+ln_line_chargeback_amt;	 
-	 END LOOP;
-  
+	   END IF;
+	   ln_total_chbk_amt:=ln_total_chbk_amt+ln_line_chargeback_amt;
   END LOOP;
-
+  CLOSE inv_hdr;
+  END LOOP;
+  
+  
+  
   IF lc_line_status='SUCCESS' AND ln_ins_cnt<>0 THEN
 
      FOR hdr IN inv_hdr(p_invoice_id) LOOP
-
+      print_debug_msg('Before Inserting Invoice In Header',FALSE);
        BEGIN
          INSERT  
 	       INTO ap_invoices_interface
@@ -384,9 +431,11 @@ BEGIN
 			  hdr.attribute8,hdr.attribute9,hdr.attribute10,hdr.attribute11,hdr.attribute13,
 			  hdr.attribute14,hdr.attribute15
 		     );
+			 print_debug_msg('After  Inserting Invoice In Header',FALSE);
 		UPDATE ap_invoices_all
 		   SET attribute3=hdr.invoice_num||'DM'
 		 WHERE invoice_id=hdr.invoice_id;
+		 print_debug_msg('Before Inserting Invoice Into supertran_stg',FALSE);
 		BEGIN
 	     INSERT
 	       INTO xx_ap_supertran_stg
@@ -413,6 +462,7 @@ BEGIN
 			   sysdate,
 			   fnd_global.user_id
 			  );
+			  print_debug_msg('After Inserting Invoice Into supertran_stg',FALSE);
         EXCEPTION
 		  WHEN others THEN
           NULL;
@@ -797,7 +847,7 @@ BEGIN
 	   AND NOT EXISTS (SELECT 'x'
 	                     FROM xx_ap_cost_variance
 						WHERE invoice_id=a.invoice_id
-						  AND answer_code IN ('OTH','PP')  ---NAIT 64576
+						  AND answer_code='OTH'
 					   );					   
     IF ln_pay_po_exists<>0 THEN
 
@@ -856,3 +906,5 @@ END process_supertran;
 END XX_AP_SUPERTRAN_CHBK_PKG;
 /
 SHOW ERRORS;
+
+WHENEVER SQLERROR CONTINUE
