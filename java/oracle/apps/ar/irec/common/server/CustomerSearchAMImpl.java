@@ -1,5 +1,5 @@
 /*===========================================================================+
- |      Copyright (c) 2005, 2014 Oracle Corporation, Redwood Shores, CA, USA |
+ |      Copyright (c) 2005, 2019 Oracle Corporation, Redwood Shores, CA, USA |
  |                         All rights reserved.                              |
  +===========================================================================+
  |  HISTORY                                                                  |
@@ -31,6 +31,9 @@
  |                                iReceivables Customer Search Page          |
  |       25-Apr-14   melapaku    Bug 18645381 - In Customer search,all       |
  |                               locations shouldn't show ShipTo locations   |
+ |       03-Jul-19  smohan       retrofitted after patch p29990996_R12.OIR.C_R12_GENERIC
+ |                               Please refer to JIRA NAIT-100772 -
+ |                               Customer search is being cached and other users search is showing
  +===========================================================================*/
 /**
  * Application Module: This AM is for the Customer Search Process. The AM
@@ -74,7 +77,7 @@ import oracle.jbo.RowSetIterator;
 
 public class CustomerSearchAMImpl extends IROARootApplicationModuleImpl {
 
-  public static final String RCS_ID="$Header: CustomerSearchAMImpl.java 120.11.12020000.2 2014/04/25 16:06:23 melapaku ship $";
+  public static final String RCS_ID="$Header: CustomerSearchAMImpl.java 120.11.12020000.4 2019/07/01 14:42:20 yreddy ship $";
   public static final boolean RCS_ID_RECORDED =
         VersionInfo.recordClassVersion(RCS_ID, "oracle.apps.ar.irec.common.server");
 
@@ -178,6 +181,7 @@ public class CustomerSearchAMImpl extends IROARootApplicationModuleImpl {
     boolean isInternal = (isInternalCustomer()).booleanValue();
     String sPersonId = null;
     OAViewObjectImpl resultsVO = null;
+    OADBTransaction txn = (OADBTransaction)this.getOADBTransaction();
     
     if ( (sSearchType != null && sSearchType.equals("CUSTOMER_NAME")) ||  sCustomerId != null)
     {
@@ -198,6 +202,11 @@ public class CustomerSearchAMImpl extends IROARootApplicationModuleImpl {
         {
           // Performing an external user customer search
           resultsVO = getExternalUserSearchResultsVO();
+		  //[earao]bug# 29990996 : Clearing the vo before executing the query.
+		  resultsVO.clearCache();
+            if (txn.isLoggingEnabled(OAFwkConstants.STATEMENT))
+              txn.writeDiagnostics(this, "Cleared Cache..External", OAFwkConstants.STATEMENT );
+                                   
           ((ExternalUserSearchResultsVOImpl)resultsVO).initQuery(sKeyWord, getPersonId(), sCustomerId, showAllSites, acctGroupOption, fromAllLoc, excludeContactInfo, hideAcctSitesOption, isSingleCustomer);
         }
     }
@@ -533,21 +542,21 @@ public class CustomerSearchAMImpl extends IROARootApplicationModuleImpl {
           strLargeCust = isLargeCustomer( custID.toString());
         /*
         if( "N".equals(strLargeCust)) {          
-          try {
-            if(isAccountGroup.equals("Y") || (custIDnum!=null)){
-             ArwSearchCustomers.CustsiteRec rec= new ArwSearchCustomers.CustsiteRec();
-             rec.setCustomerid(custIDnum);
-             rec.setSiteuseid(siteIDnum);
-             custsiteRecArray = new ArwSearchCustomers.CustsiteRec[] {rec};
-            }else{
-              custsiteRecArray=getCustsiteRecArray();
-               }
-              OADBTransaction tx = (OADBTransaction)this.getDBTransaction();
-              ArwSearchCustomers.initializeAccountSites(tx,custsiteRecArray,partyIDnum,sessionIDnum,userIDnum,orgIDnum,isInternalCustomer);
-            }catch(Exception e){
-                    throw OAException.wrapperException(e);
-            }
+     try {
+        if(isAccountGroup.equals("Y") || (custIDnum!=null)){
+         ArwSearchCustomers.CustsiteRec rec= new ArwSearchCustomers.CustsiteRec();
+         rec.setCustomerid(custIDnum);
+         rec.setSiteuseid(siteIDnum);
+         custsiteRecArray = new ArwSearchCustomers.CustsiteRec[] {rec};
+        }else{
+        custsiteRecArray=getCustsiteRecArray();
+         }
+    OADBTransaction tx = (OADBTransaction)this.getDBTransaction();
+    ArwSearchCustomers.initializeAccountSites(tx,custsiteRecArray,partyIDnum,sessionIDnum,userIDnum,orgIDnum,isInternalCustomer);
+        }catch(Exception e){
+                throw OAException.wrapperException(e);
         }
+     }
         */
      }
   /**
