@@ -532,6 +532,7 @@ BEGIN
     fnd_log.STRING (log_level => fnd_log.level_statement, module => 'ari_config.search_custom_customer', MESSAGE => 'p_user_name' || p_user_name || 'p_is_external_user' || p_is_external_user || 'p_search_attribute' || p_search_attribute || 'p_search_keyword' || p_search_keyword || 'p_org_id' || p_org_id );
   END IF;
   --DELETE FROM ar_irec_custom_cust_gt;
+  delete from ar_cust_search_gt;
   DELETE FROM ar_irec_cstm_cust_gt_all;
   IF p_search_attribute                   = 'XX_AOPS_CUST_NO' THEN
     lc_search_keyword                    := trim(p_search_keyword)|| '-00001-A0';
