@@ -83,6 +83,7 @@ EXCEPTION
 WHEN OTHERS THEN
   NULL;
 END print_out_msg;
+
 -- +============================================================================+
 -- | Procedure Name : insert_error                                              |
 -- |                                                                            |
@@ -5848,6 +5849,15 @@ IS
   l_bflag               BOOLEAN;
   l_req_err_msg         VARCHAR2 (4000);
   lc_boolean            BOOLEAN;
+  ln_request_id         NUMBER;
+  lb_complete           BOOLEAN;
+  lc_phase              VARCHAR2 (100);
+  lc_status             VARCHAR2 (100);
+  lc_dev_phase          VARCHAR2 (100);
+  lc_dev_status         VARCHAR2 (100);
+  lc_message            VARCHAR2 (100);
+  lb_layout             BOOLEAN;
+  
 BEGIN
   --================================================================
   --Initializing Global variables
@@ -6022,6 +6032,43 @@ BEGIN
   print_debug_msg(p_message => 'Calling  Update_supplier_telex' , p_force => true);
   update_supplier_telex(x_errbuf =>l_err_buff , x_retcode=> l_ret_code);
   print_debug_msg(p_message => 'Exiting Update_supplier_telex' , p_force => true);
+        
+  print_debug_msg(p_message => 'Submitting the Report Program to generate the Excel File', p_force => true);
+  lb_layout := fnd_request.add_layout('XXFIN',
+                                      'XXAPCLDINTR',
+                                      'en',
+                                      'US',
+                                      'EXCEL'
+									  );
+  ln_request_id := fnd_request.submit_request (
+                                               application   => 'XXFIN',     -- Application short name
+                                               program       => 'XXAPCLDINTR', --- conc program short name
+                                               description   => NULL,
+                                               start_time    => SYSDATE,
+                                               sub_request   => FALSE,
+                                               argument1     => gn_request_id
+											   );
+
+  IF ln_request_id > 0
+  THEN
+  COMMIT;
+	 print_debug_msg(p_message => 'Able to submit the Report Program', p_force => true);
+  ELSE
+     print_debug_msg(p_message => 'Failed to submit the Report Program to generate the output file - ' || SQLERRM , p_force => true);
+  END IF;
+     print_debug_msg(p_message => 'While Waiting Report Request to Finish');
+
+  -- wait for request to finish
+     lb_complete :=fnd_concurrent.wait_for_request (
+	                                                 request_id   => ln_request_id,
+                                                     interval     => 15,
+                                                     max_wait     => 0,
+                                                     phase        => lc_phase,
+                                                     status       => lc_status,
+                                                     dev_phase    => lc_dev_phase,
+                                                     dev_status   => lc_dev_status,
+                                                     message      => lc_message
+												   );
 
   display_status;
   
