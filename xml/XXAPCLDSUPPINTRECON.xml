@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataTemplate name="XXAPCLDINTR" defaultPackage="" dataSourceRef="1.0">
+	<properties>
+		<property name="include_parameters" value="true"/>
+		<property name="include_null_Element" value="true"/>
+		<property name="db_fetch_size" value="300"/>
+	</properties>
+	<parameters>
+		<parameter name="P_REQUEST_ID" dataType="number" defaultValue=""/>
+	</parameters>
+<dataQuery>
+<sqlStatement name="Q1" dataSourceRef="">
+<![CDATA[ SELECT 'SUPPLIER' ENTITY,
+                 (SELECT COUNT(*)
+                    FROM XX_AP_CLD_SUPPLIERS_STG
+                   WHERE 1 =1
+                     -- AND SUPP_PROCESS_FLAG <> '7'
+                     AND request_id = :P_REQUEST_ID
+                 ) TOTAL_COUNT,
+                 (SELECT COUNT(*)
+                    FROM XX_AP_CLD_SUPPLIERS_STG
+                   WHERE 1 = 1
+                     AND SUPP_PROCESS_FLAG = '7'
+                     AND request_id = :P_REQUEST_ID
+                 ) SUCCESS_COUNT,
+                 (SELECT COUNT(*)
+                    FROM XX_AP_CLD_SUPPLIERS_STG
+                   WHERE 1 =1
+                     AND SUPP_PROCESS_FLAG IN (3,6)
+                     AND request_id = :P_REQUEST_ID
+                 ) FAILURE_COUNT
+            FROM DUAL
+           UNION
+          SELECT 'SITE' ENTITY,
+                 (SELECT COUNT(*)
+                    FROM XX_AP_CLD_SUPP_SITES_STG
+                   WHERE 1 =1
+                     -- AND SITE_PROCESS_FLAG <> '7'
+                     AND request_id = :P_REQUEST_ID
+                 ) TOTAL_COUNT,
+                 (SELECT COUNT(*)
+                    FROM XX_AP_CLD_SUPP_SITES_STG
+                   WHERE 1 = 1
+                     AND SITE_PROCESS_FLAG = '7'
+                     AND request_id = :P_REQUEST_ID
+                 ) SUCCESS_COUNT,
+                 (SELECT COUNT(*)
+                    FROM XX_AP_CLD_SUPP_SITES_STG
+                   WHERE 1 = 1
+                    AND SITE_PROCESS_FLAG IN (3,6)
+                    AND request_id = :P_REQUEST_ID
+                 ) FAILURE_COUNT
+            FROM DUAL
+           UNION
+          SELECT 'CONTACT' ENTITY,
+                 (SELECT COUNT(*)
+                    FROM XX_AP_CLD_SUPP_CONTACT_STG
+                   WHERE 1 =1
+                     -- AND CONTACT_PROCESS_FLAG <> '7'
+                     AND request_id = :P_REQUEST_ID
+                 ) TOTAL_COUNT,
+                 (
+                 SELECT COUNT(*)
+                   FROM XX_AP_CLD_SUPP_CONTACT_STG
+                  WHERE 1 = 1
+                    AND CONTACT_PROCESS_FLAG = '7'
+                    AND request_id = :P_REQUEST_ID
+                 ) SUCCESS_COUNT,
+                 (SELECT COUNT(*)
+                    FROM XX_AP_CLD_SUPP_CONTACT_STG
+                   WHERE 1 = 1
+                     AND CONTACT_PROCESS_FLAG IN (3,6)
+                     AND request_id = :P_REQUEST_ID
+                 ) FAILURE_COUNT
+            FROM DUAL
+           UNION
+          SELECT 'CUSTOM DFF' ENTITY,
+                 (SELECT COUNT(*)
+                    FROM XX_AP_CLD_SITE_DFF_STG
+                   WHERE 1 =1
+                     -- AND DFF_PROCESS_FLAG <> '7'
+                     AND request_id = :P_REQUEST_ID
+                 ) TOTAL_COUNT,
+                 (SELECT COUNT(*)
+                    FROM XX_AP_CLD_SITE_DFF_STG
+                   WHERE 1 = 1
+                     AND DFF_PROCESS_FLAG = '7'
+                     AND request_id = :P_REQUEST_ID
+                 ) SUCCESS_COUNT,
+                 (SELECT COUNT(*)
+                    FROM XX_AP_CLD_SITE_DFF_STG
+                   WHERE 1 = 1
+                     AND DFF_PROCESS_FLAG IN (3,6)
+                     AND request_id = :P_REQUEST_ID
+                 ) FAILURE_COUNT
+            FROM DUAL
+           UNION
+          SELECT 'BANK ACCOUNTS' ENTITY,
+                 (SELECT COUNT(*)
+                    FROM XX_AP_CLD_SUPP_BNKACT_STG
+                   WHERE 1 =1
+                     -- AND BNKACT_PROCESS_FLAG <> '7'
+                     AND request_id = :P_REQUEST_ID
+                 ) TOTAL_COUNT,
+                 (
+                 SELECT COUNT(*)
+                   FROM XX_AP_CLD_SUPP_BNKACT_STG
+                  WHERE 1 = 1
+                    AND BNKACT_PROCESS_FLAG = '7'
+                    AND request_id = :P_REQUEST_ID
+                 ) SUCCESS_COUNT,
+                 (SELECT COUNT(*)
+                    FROM XX_AP_CLD_SUPP_BNKACT_STG
+                   WHERE 1 = 1
+                     AND BNKACT_PROCESS_FLAG IN (3,6)
+                     AND request_id = :P_REQUEST_ID
+                 ) FAILURE_COUNT
+            FROM DUAL
+           UNION
+          SELECT 'BUS CLASSIFICATION' ENTITY,
+                 (SELECT COUNT(*)
+                    FROM XX_AP_CLD_SUPP_BCLS_STG
+                   WHERE 1 =1
+                     -- AND BCLS_PROCESS_FLAG <> '7'
+                     AND request_id = :P_REQUEST_ID
+                 ) TOTAL_COUNT,
+                 (
+                 SELECT COUNT(*)
+                   FROM XX_AP_CLD_SUPP_BCLS_STG
+                  WHERE 1 = 1
+                    AND BCLS_PROCESS_FLAG = '7'
+                    AND request_id = :P_REQUEST_ID
+                 ) SUCCESS_COUNT,
+                 (SELECT COUNT(*)
+                    FROM XX_AP_CLD_SUPP_BCLS_STG
+                   WHERE 1 = 1
+                     AND BCLS_PROCESS_FLAG IN (3,6)
+                     AND request_id = :P_REQUEST_ID
+                 ) FAILURE_COUNT
+            FROM DUAL
+]]>
+</sqlStatement>
+<sqlStatement name="Q2" dataSourceRef="">
+<![CDATA[ 
+          SELECT ENTITY,
+		         SUPPLIER_NAME,
+				 SITE,
+				 CONTACT,
+				 BANK_ACCOUNT,
+				 BUS_CLASSIFICATION,
+				 ERROR_MESSAGE
+			FROM
+                 ( SELECT 'SUPPLIER' ENTITY,
+                           SUPPLIER_NAME,
+                           NULL SITE,
+                           NULL CONTACT,
+                           NULL BANK_ACCOUNT,
+                           NULL BUS_CLASSIFICATION,
+                           SUBSTR(ERROR_MSG,1,100) ERROR_MESSAGE
+                      FROM XX_AP_CLD_SUPPLIERS_STG supp
+                     WHERE 1=1
+                       AND request_id = :P_REQUEST_ID
+                       AND SUPP_PROCESS_FLAG IN (3,6) 
+                     UNION
+                    SELECT 'SITE' ENTITY,
+                           SUPPLIER_NAME,
+                           VENDOR_SITE_CODE SITE,
+                           NULL CONTACT,
+                           NULL BANK_ACCOUNT,
+                           NULL BUS_CLASSIFICATION,
+                           SUBSTR(ERROR_MSG,1,100) ERROR_MESSAGE
+                      FROM XX_AP_CLD_SUPP_SITES_STG SITE
+                     WHERE 1=1
+                       AND request_id = :P_REQUEST_ID
+                       AND SITE_PROCESS_FLAG IN (3,6)  
+                     UNION
+                    SELECT 'CONTACT' ENTITY,
+                           SUPPLIER_NAME,
+                           VENDOR_SITE_CODE SITE,  
+                           FIRST_NAME||' '||LAST_NAME CONTACT,
+                           NULL BANK_ACCOUNT,
+                           NULL BUS_CLASSIFICATION,
+                           SUBSTR(ERROR_MSG,1,100) ERROR_MESSAGE
+                      FROM XX_AP_CLD_SUPP_CONTACT_STG CONTACT
+                     WHERE 1=1
+                       AND request_id = :P_REQUEST_ID
+                       AND CONTACT_PROCESS_FLAG IN (3,6)
+                     UNION 
+                    SELECT 'BANK ACCOUNT' ENTITY,
+                           SUPPLIER_NAME,
+                           VENDOR_SITE_CODE SITE,
+                           NULL CONTACT,
+                           BRANCH_NAME BANK_ACCOUNT,
+                           NULL BUS_CLASSIFICATION,
+                           SUBSTR(ERROR_MSG,1,100) ERROR_MESSAGE
+                      FROM XX_AP_CLD_SUPP_BNKACT_STG BNKACT
+                     WHERE 1=1
+                       AND BNKACT_PROCESS_FLAG IN (3,6)
+                       AND request_id = :P_REQUEST_ID
+                     UNION
+                    SELECT 'SUPPLIER' ENTITY,
+                           SUPPLIER_NAME,
+                           NULL SITE,
+                           NULL CONTACT,
+                           NULL BANK_ACCOUNT,
+                           NULL BUS_CLASSIFICATION,
+                           SUBSTR(ERROR_MSG,1,100) ERROR_MESSAGE
+                      FROM XX_AP_CLD_SITE_DFF_STG DFF
+                     WHERE 1=1
+                       AND request_id = :P_REQUEST_ID
+                       AND DFF_PROCESS_FLAG IN (3,6)  
+                     UNION  
+                    SELECT 'BUS_CLASSIFICATION' ENTITY,
+                           SUPPLIER_NAME,
+                           NULL SITE,
+                           NULL CONTACT,
+                           NULL BANK_ACCOUNT,
+                           CLASSIFICATION BUS_CLASSIFICATION,
+                           SUBSTR(ERROR_MSG,1,100) ERROR_MESSAGE
+                      FROM XX_AP_CLD_SUPP_BCLS_STG  BCLS
+                     WHERE 1=1
+                       AND BCLS_PROCESS_FLAG IN (3,6)
+                       AND request_id = :P_REQUEST_ID
+				    )
+		      ORDER BY ENTITY
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G1" source="Q1" groupFilter="">
+	 <element name="ENTITY" value="ENTITY" function=""/>
+	 <element name="TOTAL_COUNT" value="TOTAL_COUNT" function=""/>
+	 <element name="SUCCESS_COUNT" value="SUCCESS_COUNT" function=""/>
+	 <element name="FAILURE_COUNT" value="FAILURE_COUNT" function=""/>
+</group>
+<group name="G2" source="Q2" groupFilter="">
+     <element name="ENTITY1" value="ENTITY" function=""/>
+     <element name="SUPPLIER_NAME"  value="SUPPLIER_NAME" function=""/>
+     <element name="SITE"    value="SITE" function=""/>
+	 <element name="CONTACT"    value="CONTACT" function=""/>
+	 <element name="BANK_ACCOUNT"    value="BANK_ACCOUNT" function=""/>
+	 <element name="BUS_CLASSIFICATION"    value="BUS_CLASSIFICATION" function=""/>
+	 <element name="ERROR_MESSAGE"    value="ERROR_MESSAGE" function=""/>
+</group>
+</dataStructure>
+</dataTemplate>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
