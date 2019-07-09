@@ -21,7 +21,11 @@ AS
 -- |1.4        03-OCT-2017   Suresh Naragam   Changes for the defect#43330            |
 -- |1.5        04-MAR-2018   Venkateshwar Panduga ITEM ERROR Report should show all   |
 -- |            |                                    RMS-EBS ITEM Interface Error for the Defect # 44629       |
--- |1.6        03-JUN-2019 	  Dinesh N        Replaced V$INSTANCE with DB_Name for LNS|
+-- |2.0     08-JUL-2019   Venkateshwar Panduga    Change output files generation path     |
+-- |                                               for LNS                        |
+ 
+-- |            |
+-- |                                                                   |
 -- +===================================================================+
 
 -- int_interface procedure will extract the items based on orders stuck in interface
@@ -60,7 +64,8 @@ AS
     V_FILENAME3      VARCHAR2(2000);
     v_filename4       VARCHAR2(2000);
     V_FILEHANDLE      UTL_FILE.FILE_TYPE;
-    V_LOCATION        VARCHAR2 (200) := 'XXFIN_OUTBOUND_GLEXTRACT';
+--    V_LOCATION        VARCHAR2 (200) := 'XXFIN_OUTBOUND_GLEXTRACT';   ---Commented for V2.0
+    V_LOCATION        VARCHAR2 (200); ---Added for V2.0
     V_MODE            VARCHAR2 (1)       := 'W'; 
     L_MASTER_CNT NUMBER := 0;
     L_CHILD_CNT NUMBER := 0;
@@ -121,24 +126,39 @@ AS
 
 --- End for Defect#44629
 
-   BEGIN
+   begin
+ ---Below code commented for V2.0  
    /*
-    SELECT NAME
-	  INTO LC_INSTANCE
-    FROM v$database; 
-	*/
-	
-	SELECT SUBSTR(SYS_CONTEXT('USERENV','DB_NAME'),1,8) 		-- Changed from V$instance to DB_NAME
-	INTO LC_INSTANCE
-	FROM dual;
+--    SELECT NAME
+--	  INTO LC_INSTANCE
+--    FROM v$database;
+  ---*/
+ --- End for V2.0 
+   --- Added for V2.0   
+     select SYS_CONTEXT('userenv','DB_NAME')
+		into LC_INSTANCE
+		from DUAL; 
+ ----   End For V2.0  
     
     V_FILENAME1   :=  'HVOP_Master_Item_Creation_Error_'||LC_INSTANCE||'.txt' ;  
     V_FILENAME2   :=  'HVOP_Item_Location_Assignment_Error_'||LC_INSTANCE||'.txt' ;
     V_FILENAME3   :=  'RMS_Item_Creation_Error_'||LC_INSTANCE||'.txt' ;
     V_FILENAME4   :=  'RMS_Item_Location_Error_'||LC_INSTANCE||'.txt' ;
     
-      L_MASTER_ITEM := NULL;
-      
+      L_MASTER_ITEM := null;
+ --Below code is added for V2.0     
+  begin    
+   	  select TARGET_VALUE1 ,TARGET_VALUE10
+    INTO l_email_list ,V_LOCATION
+	    FROM xx_fin_translatedefinition def,xx_fin_translatevalues val
+	   WHERE def.translate_id=val.translate_id
+	     AND   def.translation_name = 'XX_OM_INV_NOTIFICATION';
+	  EXCEPTION 
+    when OTHERS then
+	     V_LOCATION := 'XXFIN_OUT';
+       
+          end;   
+-------- End  for V2.0    
 
       FOR order_stuck_rec IN order_stuck
       LOOP
@@ -318,14 +338,17 @@ l_child_cnt  := 1;
 --      IF L_CHECK='N' 
 --         OR L_ITEM_CREATION_CHECK = 'N'  --
 --      THEN
-         BEGIN      
-	  SELECT target_value1 INTO l_email_list
+-----Below code is commented for V2.0
+/*         begin      
+	  select TARGET_VALUE1
+    INTO l_email_list 
 	    FROM xx_fin_translatedefinition def,xx_fin_translatevalues val
 	   WHERE def.translate_id=val.translate_id
 	     AND   def.translation_name = 'XX_OM_INV_NOTIFICATION';
 	  EXCEPTION WHEN NO_DATA_FOUND THEN
 	                 NULL;
-          END;
+          end; */
+----End code for V2.0          
         FND_FILE.PUT_LINE(FND_FILE.LOG,' Before calling Email Notification ' );
               
               
@@ -373,7 +396,38 @@ l_child_cnt  := 1;
 --      END IF;
 
       retcode := 0;
-      errbuf := 'Y';
+      ERRBUF := 'Y';
+
+---- Added logic for 2.0
+begin
+FND_FILE.PUT_LINE(FND_FILE.log,' Before removing files ' ); 
+
+UTL_FILE.FREMOVE (
+location => V_LOCATION       ,    -----in varchar2,
+FILENAME =>V_FILENAME1         -----IN VARCHAR2
+);
+
+UTL_FILE.FREMOVE (
+location => V_LOCATION       ,    -----in varchar2,
+FILENAME =>V_FILENAME2         -----IN VARCHAR2
+);
+
+UTL_FILE.FREMOVE (
+location => V_LOCATION       ,    -----in varchar2,
+FILENAME =>V_FILENAME3         -----IN VARCHAR2
+);
+
+UTL_FILE.FREMOVE (
+location => V_LOCATION       ,    -----in varchar2,
+FILENAME =>V_FILENAME4         -----IN VARCHAR2
+);
+FND_FILE.PUT_LINE(FND_FILE.log,' After removing files ' ); 
+exception
+when OTHERS then
+FND_FILE.PUT_LINE(FND_FILE.log,'Error while removing file: '||SQLERRM);
+end;
+
+--- End logic for 2.0      
    EXCEPTION
       WHEN NO_DATA_FOUND
       THEN
