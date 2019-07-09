@@ -32,10 +32,10 @@ AS
       P_BOOK_TYPE_CODE VARCHAR2,
       p_book_class     varchar2);
       
-/*  FUNCTION xx_gl_beacon_mapping_f1(
+ FUNCTION xx_gl_beacon_mapping_f1(
       p_source VARCHAR2,
       p_type   varchar2,
-      p_flag   varchar2) return varchar2;*/
+      p_flag   varchar2) return varchar2;
 END XX_OD_FA_CON_SCRIPT_PSTGB;
 /
 
