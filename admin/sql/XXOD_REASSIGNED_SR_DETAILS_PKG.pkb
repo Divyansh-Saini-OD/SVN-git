@@ -14,6 +14,8 @@ CHANGE HISTORY:
 VERSION DATE        AUTHOR         		DESCRIPTION
 ------- ---------   -------------- 		-------------------------------------
 1.0     29-MAR-2019   Venkateshwar Panduga    Initial version
+2.0     08-JUL-2019   Venkateshwar Panduga    Change file generation path
+                                               for LNS
 
 **************************************************************************/
  e_error                    EXCEPTION;
@@ -128,7 +130,7 @@ is
   L_ITEM        varchar2(50);
   l_qty         varchar2(10);
   V_FILEHANDLE      UTL_FILE.FILE_TYPE;
-V_LOCATION        VARCHAR2 (200) := 'XXFIN_OUTBOUND_GLEXTRACT';
+V_LOCATION        VARCHAR2 (200) ;--------- := 'XXFIN_OUTBOUND_GLEXTRACT';
 V_MODE            varchar2 (1)       := 'W'; 
 V_FILENAME        varchar2(100) := 'REASSIGNED_SR_DETAILS' ;
 L_SUBJECT         varchar2(2000) ;
@@ -164,10 +166,16 @@ log('Problem Code : '|| P_PROBLEM_CODE);
 --L_TO_DATE :=FND_DATE.CANONICAL_TO_DATE(P_TO_DATE);
 --log('L_TO_DATE: '|| L_TO_DATE); 
 
-BEGIN
-    SELECT NAME
-	  into LC_INSTANCE
-    from V$DATABASE; 
+begin
+--- Commented for V2.0
+ /*   SELECT NAME
+--	  into LC_INSTANCE
+--    from V$DATABASE; 
+--    */
+ --- Added for V2.0
+ SELECT sys_context('userenv','DB_NAME')
+		into LC_INSTANCE
+		FROM dual;   
  end; 
   IF lc_instance = 'GSIPRDGB' 
         then
@@ -175,9 +183,9 @@ BEGIN
         else
         L_SUBJECT :=lc_instance||' Please Ignore this email: Case Management Weekly DOB Report ';
  end if;
- BEGIN
-     SELECT target_value1 
-     INTO l_email_list
+ begin
+     select TARGET_VALUE1 ,TARGET_VALUE10
+     INTO l_email_list ,V_LOCATION
 	   FROM xx_fin_translatedefinition def,xx_fin_translatevalues val
 	   where DEF.TRANSLATE_ID=VAL.TRANSLATE_ID
 	     AND   def.translation_name = 'XX_OD_REASSIGN_LIST' ;
@@ -191,6 +199,9 @@ BEGIN
 --V_FILENAME := V_FILENAME||'_'||LC_INSTANCE||'_'||TO_CHAR(sysdate,'DD-MON-YYYY')||'.csv';
 
 log('File Name : '|| V_FILENAME);
+------Added for V2.0
+log('File location : '||V_LOCATION);
+-----End for V2.0
 
  V_FILEHANDLE :=UTL_FILE.FOPEN (RTRIM (V_LOCATION, '/'), V_FILENAME, V_MODE);
  
@@ -280,6 +291,22 @@ log('Before sending mail');
    
 log(' After calling Email Notification ' ); 
 
+---- Added logic for 2.0
+begin
+log(' Before removing file ' ); 
+
+UTL_FILE.FREMOVE (
+location => V_LOCATION       ,    -----in varchar2,
+FILENAME =>V_FILENAME         -----IN VARCHAR2
+);
+
+log(' After removing file ' ); 
+exception
+when OTHERS then
+log('Error while removing file: '||SQLERRM);
+end;
+
+--- End logic for 2.0
 	  
 EXCEPTION
 when OTHERS then
