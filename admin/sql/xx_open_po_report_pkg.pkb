@@ -17,6 +17,9 @@ AS
   -- |
   -- |1.0       17-JAN-2019   Veera Reddy  Automation of OPEN PO Report  |
   -- |                        to notify the Requestors to Receive the PO |
+  -- |2.0     08-JUL-2019   Venkateshwar Panduga    Change file generation path
+  -- |                                               for LNS
+  -- |
   -- +===================================================================+
   --open_po_report
 PROCEDURE open_po_report_procedure(
@@ -27,7 +30,7 @@ IS
   LC_MAIL_FROM VARCHAR2 (100) := 'noreply@officedepot.com';
   LC_MAIL_CONN UTL_SMTP.CONNECTION;
   LC_INSTANCE           VARCHAR2 (100);
-  L_TEXT                VARCHAR2(2000) := NULL;
+  L_TEXT                varchar2(2000) := null;
   l_email_list          VARCHAR2(2000) :='svc-rpa5@officedepot.com';
   L_MESSAGE             VARCHAR2(2000) := 'Attached are the OPEN Standard PO and Open BPA PO Reports';
   V_FILENAME1           VARCHAR2(2000) :='STANDARD_PO';
@@ -40,7 +43,7 @@ IS
   V_email_address       VARCHAR2(100);
   V_invoice_num         VARCHAR2(100);
   V_FILEHANDLE UTL_FILE.FILE_TYPE;
-  V_LOCATION VARCHAR2 (200) := 'XXFIN_OUTBOUND_GLEXTRACT';
+  V_LOCATION VARCHAR2 (200) ;-----:= 'XXFIN_OUTBOUND_GLEXTRACT';
   V_MODE     VARCHAR2 (1)   := 'W';
   v_connection UTL_SMTP.connection;
   c_mime_boundary CONSTANT VARCHAR2(256) := 'the boundary can be almost anything'; --'-----AABCDEFBBCCC0123456789DE';
@@ -236,12 +239,31 @@ AND plla.closed_code NOT              IN ('CLOSED','CLOSED FOR RECEIVING','CLOSE
 AND pra.creation_date    >= NVL(sysdate-P_number_of_days,sysdate-30)
 ORDER BY pra.creation_date,
   pha.segment1,
-  pra.release_num,
-  pla.line_num DESC ;
-  BEGIN
-    SELECT NAME INTO LC_INSTANCE FROM v$database;
+  PRA.RELEASE_NUM,
+  PLA.LINE_NUM desc ;
+  begin
+--    select name into LC_INSTANCE from V$DATABASE;   ---Commented for V2.0  
+ 
+ --- Added for V2.0   
+     select SYS_CONTEXT('userenv','DB_NAME')
+		into LC_INSTANCE
+		from DUAL; 
+ ----   End For V2.0
     V_FILENAME1 := V_FILENAME1||'_'||LC_INSTANCE||'.csv' ;
-   
+ ----- Below code is Added for V2.0   
+     begin
+     select TARGET_VALUE10
+     INTO V_LOCATION
+	   FROM xx_fin_translatedefinition def,xx_fin_translatevalues val
+	   where DEF.TRANSLATE_ID=VAL.TRANSLATE_ID
+	     and   DEF.TRANSLATION_NAME = 'XX_OD_REASSIGN_LIST' ;
+
+ fnd_file.put_line(fnd_file.log,'File Location :  '||V_LOCATION);       
+ EXCEPTION
+ when OTHERS then
+	 V_LOCATION := 'XXFIN_OUT';
+  end;
+  ----- End code is Added for V2.0   
    /* Started Program logic to creafte file for standard report*/
     V_FILEHANDLE :=UTL_FILE.FOPEN (RTRIM (V_LOCATION, '/'), V_FILENAME1, 'W');
     UTL_FILE.PUT_LINE (V_FILEHANDLE, 'po_number'||','||'po_type'||','||'invoice_num'||','||'requisition_number'||','||'invoice_hold_reason'||','||'preparer_name'||','||'email_address'||','||'buyer_name'||','||'supplier_name'||','||'po_date'||','||'matching_type'||','||'need_by_date'||','||'line_num'||','||'quantity'||','||'quantity_received'||','||'final_line_amount'||','||'amount_received'||','||'matched_amount'||','||'final_po_amount'||','||'header_closed_code'||','||'line_closed_code' );
@@ -422,7 +444,29 @@ ORDER BY pra.creation_date,
     SEND_MAIL_PRC ( LC_MAIL_FROM , l_email_list, L_TEXT, L_MESSAGE || CHR (13), V_FILENAME1||','||V_FILENAME2, V_LOCATION --default null
     ) ;
     fnd_file.put_line(fnd_file.log,' After calling Email Notification ' );
-    FND_FILE.PUT_LINE(FND_FILE.LOG,'Email Notification Successfully Sent To:' || NVL(L_EMAIL_LIST,'NO MAIL ADDRESS SETUP'));
+    FND_FILE.PUT_LINE(FND_FILE.log,'Email Notification Successfully Sent To:' || NVL(L_EMAIL_LIST,'NO MAIL ADDRESS SETUP'));
+  
+---- Added logic for 2.0
+begin
+FND_FILE.PUT_LINE(FND_FILE.log,' Before removing files ' ); 
+
+UTL_FILE.FREMOVE (
+location => V_LOCATION       ,    -----in varchar2,
+FILENAME =>V_FILENAME1         -----IN VARCHAR2
+);
+
+UTL_FILE.FREMOVE (
+location => V_LOCATION       ,    -----in varchar2,
+FILENAME =>V_FILENAME2         -----IN VARCHAR2
+);
+FND_FILE.PUT_LINE(FND_FILE.log,' After removing files ' ); 
+exception
+when OTHERS then
+FND_FILE.PUT_LINE(FND_FILE.log,'Error while removing file: '||SQLERRM);
+end;
+
+--- End logic for 2.0
+    
   EXCEPTION
   WHEN NO_DATA_FOUND THEN
     fnd_file.put_line (fnd_file.LOG,'No Data found');
