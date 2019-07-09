@@ -8,10 +8,11 @@ CREATE OR REPLACE PACKAGE BODY XX_AR_VENDOR_COMP_INV_EXTRACT
 -- +============================================================================================+
 -- | Version     Date         Author           Remarks                                          |
 -- | =========   ===========  =============    ===============================================  |
--- | 1.0         012918       Dinesh Nagapuri  Initial version                                  |
+-- | 1.0         1/29/2018    Dinesh Nagapuri  Initial version                                  |
+-- | 1.1         7/9/2019     Havish Kasina    Changed the INSTANCE_NAME to DB_NAME             | 
 -- +============================================================================================+
 AS
-    gc_debug       VARCHAR2(2)                                 := 'N';
+    gc_debug       VARCHAR2(2)                               := 'N';
     gn_request_id  fnd_concurrent_requests.request_id%TYPE;
     gn_user_id     fnd_concurrent_requests.requested_by%TYPE;
     gn_login_id    NUMBER;
@@ -171,7 +172,7 @@ AS
         CLOSE get_dir_path;
 
         SELECT SUBSTR(LOWER(SYS_CONTEXT('USERENV',
-                                        'INSTANCE_NAME') ),
+                                        'DB_NAME') ),
                       1,
                       8)
         INTO   lc_instance_name
