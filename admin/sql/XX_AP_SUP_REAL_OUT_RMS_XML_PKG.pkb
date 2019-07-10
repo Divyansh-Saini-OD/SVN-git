@@ -36,6 +36,7 @@ AS
   --  1.8          01-Nov-18   Sunil Kalal       NAIT-69405  Addeed attribute5 column instead of duns_num for DUNS_NUMBER
   --  1.9          05-Dec-18   Sunil Kalal       NAIT-74711  Added logic to check for Freight Terms PP and CC Only else NULL.
   --  2.0          26-Jun-19   Shanti Sethuraj   NAIT-90627  Added new logic for RTV payment terms
+  --  2.1          10-Jul-19   Shanti Sethuraj   NAIT-101583 Removed space
   -- +============================================================================================+
   ------------------------------------------------------------
   ------------------------------------------------------------
@@ -4331,7 +4332,7 @@ BEGIN
         INTO l_v_addrfaxareacode
         FROM dual;
       ELSE
-        l_v_addrfaxareacode := ' ';
+        l_v_addrfaxareacode := '';    -- removed space by shanti for Jira NAIT-101583
       END IF;
 
       l_v_site_con_addrfaxareacd_tn := dbms_xmldom.appendchild( l_v_site_con_addrfaxareacd_n , dbms_xmldom.makenode(dbms_xmldom.createtextnode(l_domdoc, l_v_addrfaxareacode ))--
