@@ -14,19 +14,18 @@
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SUPPLIERS_STG
                    WHERE 1 =1
-                     -- AND SUPP_PROCESS_FLAG <> '7'
                      AND request_id = :P_REQUEST_ID
                  ) TOTAL_COUNT,
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SUPPLIERS_STG
                    WHERE 1 = 1
-                     AND SUPP_PROCESS_FLAG = '7'
+                     AND SUPP_PROCESS_FLAG IN (7,8)
                      AND request_id = :P_REQUEST_ID
                  ) SUCCESS_COUNT,
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SUPPLIERS_STG
                    WHERE 1 =1
-                     AND SUPP_PROCESS_FLAG IN (3,6)
+                     AND SUPP_PROCESS_FLAG IN (2,3,6)
                      AND request_id = :P_REQUEST_ID
                  ) FAILURE_COUNT
             FROM DUAL
@@ -35,19 +34,18 @@
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SUPP_SITES_STG
                    WHERE 1 =1
-                     -- AND SITE_PROCESS_FLAG <> '7'
                      AND request_id = :P_REQUEST_ID
                  ) TOTAL_COUNT,
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SUPP_SITES_STG
                    WHERE 1 = 1
-                     AND SITE_PROCESS_FLAG = '7'
+                     AND SITE_PROCESS_FLAG IN (7,8)
                      AND request_id = :P_REQUEST_ID
                  ) SUCCESS_COUNT,
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SUPP_SITES_STG
                    WHERE 1 = 1
-                    AND SITE_PROCESS_FLAG IN (3,6)
+                    AND SITE_PROCESS_FLAG IN (2,3,6)
                     AND request_id = :P_REQUEST_ID
                  ) FAILURE_COUNT
             FROM DUAL
@@ -56,20 +54,19 @@
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SUPP_CONTACT_STG
                    WHERE 1 =1
-                     -- AND CONTACT_PROCESS_FLAG <> '7'
                      AND request_id = :P_REQUEST_ID
                  ) TOTAL_COUNT,
                  (
                  SELECT COUNT(*)
                    FROM XX_AP_CLD_SUPP_CONTACT_STG
                   WHERE 1 = 1
-                    AND CONTACT_PROCESS_FLAG = '7'
+                    AND CONTACT_PROCESS_FLAG IN (7,8)
                     AND request_id = :P_REQUEST_ID
                  ) SUCCESS_COUNT,
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SUPP_CONTACT_STG
                    WHERE 1 = 1
-                     AND CONTACT_PROCESS_FLAG IN (3,6)
+                     AND CONTACT_PROCESS_FLAG IN (2,3,6)
                      AND request_id = :P_REQUEST_ID
                  ) FAILURE_COUNT
             FROM DUAL
@@ -78,19 +75,18 @@
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SITE_DFF_STG
                    WHERE 1 =1
-                     -- AND DFF_PROCESS_FLAG <> '7'
                      AND request_id = :P_REQUEST_ID
                  ) TOTAL_COUNT,
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SITE_DFF_STG
                    WHERE 1 = 1
-                     AND DFF_PROCESS_FLAG = '7'
+                     AND DFF_PROCESS_FLAG IN (7,8)
                      AND request_id = :P_REQUEST_ID
                  ) SUCCESS_COUNT,
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SITE_DFF_STG
                    WHERE 1 = 1
-                     AND DFF_PROCESS_FLAG IN (3,6)
+                     AND DFF_PROCESS_FLAG IN (2,3,6)
                      AND request_id = :P_REQUEST_ID
                  ) FAILURE_COUNT
             FROM DUAL
@@ -99,20 +95,19 @@
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SUPP_BNKACT_STG
                    WHERE 1 =1
-                     -- AND BNKACT_PROCESS_FLAG <> '7'
                      AND request_id = :P_REQUEST_ID
                  ) TOTAL_COUNT,
                  (
                  SELECT COUNT(*)
                    FROM XX_AP_CLD_SUPP_BNKACT_STG
                   WHERE 1 = 1
-                    AND BNKACT_PROCESS_FLAG = '7'
+                    AND BNKACT_PROCESS_FLAG IN (7,8)
                     AND request_id = :P_REQUEST_ID
                  ) SUCCESS_COUNT,
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SUPP_BNKACT_STG
                    WHERE 1 = 1
-                     AND BNKACT_PROCESS_FLAG IN (3,6)
+                     AND BNKACT_PROCESS_FLAG IN (2,3,6)
                      AND request_id = :P_REQUEST_ID
                  ) FAILURE_COUNT
             FROM DUAL
@@ -121,20 +116,19 @@
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SUPP_BCLS_STG
                    WHERE 1 =1
-                     -- AND BCLS_PROCESS_FLAG <> '7'
                      AND request_id = :P_REQUEST_ID
                  ) TOTAL_COUNT,
                  (
                  SELECT COUNT(*)
                    FROM XX_AP_CLD_SUPP_BCLS_STG
                   WHERE 1 = 1
-                    AND BCLS_PROCESS_FLAG = '7'
+                    AND BCLS_PROCESS_FLAG IN (7,8)
                     AND request_id = :P_REQUEST_ID
                  ) SUCCESS_COUNT,
                  (SELECT COUNT(*)
                     FROM XX_AP_CLD_SUPP_BCLS_STG
                    WHERE 1 = 1
-                     AND BCLS_PROCESS_FLAG IN (3,6)
+                     AND BCLS_PROCESS_FLAG IN (2,3,6)
                      AND request_id = :P_REQUEST_ID
                  ) FAILURE_COUNT
             FROM DUAL
@@ -160,7 +154,7 @@
                       FROM XX_AP_CLD_SUPPLIERS_STG supp
                      WHERE 1=1
                        AND request_id = :P_REQUEST_ID
-                       AND SUPP_PROCESS_FLAG IN (3,6) 
+                       AND SUPP_PROCESS_FLAG IN (2,3,6) 
                      UNION
                     SELECT 'SITE' ENTITY,
                            SUPPLIER_NAME,
@@ -172,7 +166,7 @@
                       FROM XX_AP_CLD_SUPP_SITES_STG SITE
                      WHERE 1=1
                        AND request_id = :P_REQUEST_ID
-                       AND SITE_PROCESS_FLAG IN (3,6)  
+                       AND SITE_PROCESS_FLAG IN (2,3,6)  
                      UNION
                     SELECT 'CONTACT' ENTITY,
                            SUPPLIER_NAME,
@@ -184,7 +178,7 @@
                       FROM XX_AP_CLD_SUPP_CONTACT_STG CONTACT
                      WHERE 1=1
                        AND request_id = :P_REQUEST_ID
-                       AND CONTACT_PROCESS_FLAG IN (3,6)
+                       AND CONTACT_PROCESS_FLAG IN (2,3,6)
                      UNION 
                     SELECT 'BANK ACCOUNT' ENTITY,
                            SUPPLIER_NAME,
@@ -195,7 +189,7 @@
                            SUBSTR(ERROR_MSG,1,100) ERROR_MESSAGE
                       FROM XX_AP_CLD_SUPP_BNKACT_STG BNKACT
                      WHERE 1=1
-                       AND BNKACT_PROCESS_FLAG IN (3,6)
+                       AND BNKACT_PROCESS_FLAG IN (2,3,6)
                        AND request_id = :P_REQUEST_ID
                      UNION
                     SELECT 'SUPPLIER' ENTITY,
@@ -208,7 +202,7 @@
                       FROM XX_AP_CLD_SITE_DFF_STG DFF
                      WHERE 1=1
                        AND request_id = :P_REQUEST_ID
-                       AND DFF_PROCESS_FLAG IN (3,6)  
+                       AND DFF_PROCESS_FLAG IN (2,3,6)  
                      UNION  
                     SELECT 'BUS_CLASSIFICATION' ENTITY,
                            SUPPLIER_NAME,
@@ -219,7 +213,7 @@
                            SUBSTR(ERROR_MSG,1,100) ERROR_MESSAGE
                       FROM XX_AP_CLD_SUPP_BCLS_STG  BCLS
                      WHERE 1=1
-                       AND BCLS_PROCESS_FLAG IN (3,6)
+                       AND BCLS_PROCESS_FLAG IN (2,3,6)
                        AND request_id = :P_REQUEST_ID
 				    )
 		      ORDER BY ENTITY
