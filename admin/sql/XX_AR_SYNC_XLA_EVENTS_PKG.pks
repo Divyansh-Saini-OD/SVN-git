@@ -21,6 +21,7 @@ AS
 -- | 1.0         06/11/2014   Avinash Baddam   Initial version                                  |
 -- | 1.1         11/11/2014   Madhan Sanjeevi  Adjustment recurring issue permanent fix added   |
 -- | 1.3         11/16/2018   Bhargavi Ankolekar  Modified as per the Jira #NAIT-62249          |
+-- | 1.4         07/11/2019   Bhargavi Ankolekar  Modified as per the Jira #NAIT-76213          |
 -- +============================================================================================+
 
 PROCEDURE update_cash_rcpt_hist_ts(p_org_id 	 NUMBER
