@@ -199,16 +199,29 @@ PROCEDURE Extract_Journal(p_ret_code OUT NUMBER
 -- |                    for the first open period                              |
 -- +===========================================================================+
 AS
-    l_data            VARCHAR2(4000);
-    l_period_name_begin    VARCHAR2(30);
+        l_data            VARCHAR2(4000);
+        l_period_name_begin    VARCHAR2(30);
         l_period_name_end    VARCHAR2(30);
         l_out_cnt               NUMBER;
-       ln_buffer       BINARY_INTEGER  := 32767;
+        ln_buffer       BINARY_INTEGER  := 32767;
         lt_file         utl_file.file_type;
         lc_filename  VARCHAR2(4000);
         ln_req_id NUMBER;
         l_saved_company    gl_code_combinations.segment1%TYPE := '-1';
-        
+        l_timestamp     varchar2(30) :=  to_char(sysdate,'YYYY_MM_DD_HHMISS');
+
+      l_company_ctr  NUMBER := 0;
+
+       TYPE company_tab_type IS TABLE OF VARCHAR2(50) 
+             INDEX BY BINARY_INTEGER; 
+
+       all_company_tab company_tab_type;
+
+       company_files_tab company_tab_type;
+       
+       l_company_file_missing BOOLEAN;
+              
+ 
   cursor journal_cursor 
   is
           SELECT GJH.je_header_id  gl_je_hdr_id,
@@ -296,15 +309,13 @@ AS
 
 
 --               ORDER BY GJH.je_header_id;
-        
-
-        
+            
 BEGIN
    gc_file_path := p_file_path;
     write_log(p_debug_flag,'Extracting the Journal Details');
         ln_req_id:= fnd_profile.value('CONC_REQUEST_ID');
 --        lc_filename:= ln_req_id||'.out';
---        lc_filename:= 'new_gl_jrnl_detail_irs_1001.txt';
+--        lc_filename:= 'gl_jrnl_detail_irs_1001.txt';
 --         lt_file  := UTL_FILE.fopen(gc_file_path,lc_filename ,'w',ln_buffer);
          l_period_name_begin:=p_period_name_begin;
          L_period_name_end:=p_period_name_end;
@@ -397,6 +408,8 @@ x018800     05  JRLD-ACCOUNTED-CR   PIC  X(020).                         0000870
 018900     05  FILLER              PIC  X(058).
 */
 
+    l_company_ctr := 1;
+
     IF l_period_name_end  IS NOT NULL  and l_period_name_begin IS NOT NULL THEN
     
         FOR Journal_Cur IN Journal_cursor
@@ -404,12 +417,17 @@ x018800     05  JRLD-ACCOUNTED-CR   PIC  X(020).                         0000870
               IF (l_saved_company != Journal_Cur.company) then
 
                IF l_saved_company != '-1' THEN
-                UTL_FILE.fclose(lt_file);
+                 UTL_FILE.fclose(lt_file);
+
                END IF;
 
                l_saved_company := Journal_Cur.company;
-               
-               lc_filename:= 'new_gl_jrnl_detail_irs_' || LTRIM(RTRIM(l_saved_company)) || '.txt';
+
+                company_files_tab(l_company_ctr) :=  l_saved_company;
+                l_company_ctr := l_company_ctr + 1; 
+
+                            
+               lc_filename:= 'gl_jrnl_detail_irs_' || LTRIM(RTRIM(l_saved_company)) || '_' || l_timestamp || '.txt';
                lt_file  := UTL_FILE.fopen(gc_file_path,lc_filename ,'w',ln_buffer);
                write_log(p_debug_flag,'Writing to File :' || lc_filename);
 
@@ -467,12 +485,82 @@ x018800     05  JRLD-ACCOUNTED-CR   PIC  X(020).                         0000870
                IF l_saved_company != '-1' THEN
                 UTL_FILE.fclose(lt_file);
                END IF;
-           
+
+/*     
+               all_company_tab := company_tab_type('1000E','1001','1002','1003','1005',
+                                                   '1012','1014','1015','1015E','1016',
+                                                   '1017','1020','1021','1032','1039',
+                                                   '1041','1043','1044','1049','1051',
+                                                   '1052','1053','1055','1055P','1056',
+                                                   '1057','1058','1059','1060','5010',
+                                                   '5020','5030','5040','5050','5060');
+*/
+
+      all_company_tab(1)   :=   '1000E';
+      all_company_tab(2)   :=   '1001';
+      all_company_tab(3)   :=   '1002';
+      all_company_tab(4)   :=   '1003';
+      all_company_tab(5)   :=   '1005';
+      all_company_tab(6)   :=   '1012';
+      all_company_tab(7)   :=   '1014';
+      all_company_tab(8)   :=   '1015';
+      all_company_tab(9)   :=   '1015E';
+      all_company_tab(10)   :=   '1016';
+      all_company_tab(11)   :=   '1017';
+      all_company_tab(12)   :=   '1020';
+      all_company_tab(13)   :=   '1021';
+      all_company_tab(14)   :=   '1032';
+      all_company_tab(15)   :=   '1039';
+      all_company_tab(16)   :=   '1041';
+      all_company_tab(17)   :=   '1043';
+      all_company_tab(18)   :=   '1044';
+      all_company_tab(19)   :=   '1049';
+      all_company_tab(20)   :=   '1051';
+      all_company_tab(21)   :=   '1052';
+      all_company_tab(22)   :=   '1053';
+      all_company_tab(23)   :=   '1055';
+      all_company_tab(24)   :=   '1055P';
+      all_company_tab(25)   :=   '1056';
+      all_company_tab(26)   :=   '1057';
+      all_company_tab(27)   :=   '1058';
+      all_company_tab(28)   :=   '1059';
+      all_company_tab(29)   :=   '1060';
+      all_company_tab(30)   :=   '5010';
+      all_company_tab(31)   :=   '5020';
+      all_company_tab(32)   :=   '5030';
+      all_company_tab(33)   :=   '5040';
+      all_company_tab(34)   :=   '5050';
+      all_company_tab(35)   :=   '5060';
+
+
+               FOR i in all_company_tab.FIRST..all_company_tab.LAST LOOP
+
+                 l_company_file_missing := TRUE;
+
+                  FOR j in company_files_tab.FIRST..company_files_tab.LAST LOOP
+                     IF company_files_tab(j) = all_company_tab(i) THEN
+                       l_company_file_missing := FALSE;
+                       EXIT;
+                     END IF;
+                  END LOOP;
+
+                  IF l_company_file_missing 
+                    THEN
+                       lc_filename:= 'gl_jrnl_detail_irs_' || LTRIM(RTRIM(all_company_tab(i))) || '_' || l_timestamp || '.txt';
+                       lt_file  := UTL_FILE.fopen(gc_file_path,lc_filename ,'w',ln_buffer);
+                       write_log(p_debug_flag,'Writing to Missing Array File :' || lc_filename);
+                       l_data:= 'COMP  | LOCATION | CSTCTR     | LOB        | ACCOUNT    | SRC                  | PERIOD | DESC                           | JOURNAL ID | LINE   | AMOUNT            |CUR | EFF DT     | INVOICE ID                     | VENDOR     | VENDOR NAME1                             | INVC DT    | VOUCHER  | AP CO | VOUCHER DESC                   |                                                                                 ' || chr(13);
+                       UTL_FILE.PUT_LINE(lt_file,l_data);
+                       UTL_FILE.fclose(lt_file);
+                  END IF;
+               END LOOP;
+
+      
                 write_log(p_debug_flag,'Not Calling XPTR Program');
 --                generate_file(p_directory,p_file_name,fnd_profile.value('CONC_REQUEST_ID'));
                 write_log(p_debug_flag,'Journal extract has been completed');
                 write_log(p_debug_flag,l_out_cnt||' Total Records Written');
-        END IF;
+        END IF;  -- l_period_name beg_end  IS NOT NULL
         
         
 END Extract_Journal;
@@ -499,6 +587,7 @@ AS
     lt_file         utl_file.file_type;
     lc_filename  VARCHAR2(4000);
     ln_req_id NUMBER;
+    l_timestamp     varchar2(30) :=  to_char(sysdate,'YYYY_MM_DD_HHMISS');
 
 --005100 01  COA-RECORD.
 --005200     05  COA-ACCOUNT         PIC  X(008).
@@ -511,7 +600,7 @@ BEGIN
     write_log(p_debug_flag,'Extracting the Chart of Accounts Begins');
         ln_req_id:= fnd_profile.value('CONC_REQUEST_ID');
 --        lc_filename:= ln_req_id||'.out';
-          lc_filename:= 'new_gl_coa_irs.txt';
+          lc_filename:= 'gl_coa_irs_' || l_timestamp || '.txt';
 
         lt_file  := UTL_FILE.fopen(gc_file_path,lc_filename ,'w',ln_buffer);
         l_out_cnt := 0;
@@ -564,15 +653,23 @@ PROCEDURE Extract_Balances(p_ret_code OUT NUMBER
 AS
     l_data            VARCHAR2(4000);
     l_period_name_begin    VARCHAR2(30);
-        l_period_name_end    VARCHAR2(30);
-        l_out_cnt               NUMBER;
-       ln_buffer       BINARY_INTEGER  := 32767;
-        lt_file         utl_file.file_type;
-        lc_filename  VARCHAR2(4000);
-        ln_req_id NUMBER;
-        l_created     DATE;
-   l_last_compiled  VARCHAR2(30);
-   l_status VARCHAR2(20);
+    l_period_name_end    VARCHAR2(30);
+    l_out_cnt               NUMBER;
+    ln_buffer       BINARY_INTEGER  := 32767;
+    lt_file         utl_file.file_type;
+    lc_filename  VARCHAR2(4000);
+    ln_req_id NUMBER;
+    l_created     DATE;
+    l_last_compiled  VARCHAR2(30);
+    l_status VARCHAR2(20);
+    v_report_count VARCHAR2(50);
+    v_all_accts_net   number;
+    v_all_accts_net_fmt VARCHAR2(50);
+    l_account_from  varchar2(8);
+    l_account_to    varchar2(8); 
+    l_country       varchar2(30);
+    l_timestamp     varchar2(30) :=  to_char(sysdate,'YYYY_MM_DD_HHMISS');
+   
    
    cursor canada_cur (cp_period_name_end in varchar2)
    is
@@ -685,7 +782,7 @@ AS
          WHERE cc.code_combination_id=gb.code_combination_id
 --           AND gb.period_name=p_period_name_end
              AND gb.period_name = cp_period_name_end  -- 'JAN-16' 
-             AND cc.SEGMENT1  NOT IN ('1003','1055','1055P')            
+--             AND cc.SEGMENT1  NOT IN ('1003','1055','1055P')            
              AND cc.SEGMENT1
             in ('1000E','1001','1002','1005',
                 '1012','1014','1015','1015E','1016',
@@ -707,6 +804,295 @@ AS
 --      ORDER BY cc_id;    
 
 
+ cursor usa_report_cur(cp_period_name_end in varchar2,
+                       cp_account_from in varchar2,
+                       cp_account_to in varchar2)
+  is
+      SELECT   'COMPANY ', cc.SEGMENT1  company,'NET =',
+--                gb.period_year perd_year,
+--                lpad(gb.period_num,2,'0')  perd_num,                 
+                 sum((NVL(gb.begin_balance_dr,0) - NVL(gb.begin_balance_cr,0))
+                      +
+                    (NVL(gb.period_net_dr,0) - NVL(gb.period_net_cr,0))
+                     )  sum_net_amount,
+                 count(*) total_record_count,
+                to_char(
+                    sum((NVL(gb.begin_balance_dr,0) - NVL(gb.begin_balance_cr,0))
+                      +
+                    (NVL(gb.period_net_dr,0) - NVL(gb.period_net_cr,0))
+                     )
+                     ,'999,999,999,999.99S') formatted_sum_net_amount
+                FROM gl_balances gb, 
+                     gl_code_combinations cc
+         WHERE cc.code_combination_id=gb.code_combination_id
+             AND gb.period_name =   cp_period_name_end  -- 'JAN-16' 
+             AND cc.SEGMENT1
+             IN ('1000E','1001','1002','1005',
+                '1012','1014','1015','1015E','1016',
+                '1017','1020','1021','1032','1039',
+                '1041','1043','1044','1049','1051',
+                '1052','1053','1056',
+                '1057','1058','1059','1060','5010',
+                '5020','5030','5040','5050','5060') 
+             and cc.segment3 between  cp_account_from and  cp_account_to -- '10000000' AND '39999999'
+             AND gb.currency_code =  'USD'
+             AND gb.actual_flag   =  'A'
+          group by 
+          --gb.period_year,gb.period_num,
+                cc.SEGMENT1
+          having                  sum((NVL(gb.begin_balance_dr,0) - NVL(gb.begin_balance_cr,0))
+                      +
+                    (NVL(gb.period_net_dr,0) - NVL(gb.period_net_cr,0))
+                     )  != 0
+        ORDER BY cc.segment1; -- company
+ 
+
+ cursor usa_rep_count(cp_period_name_end in varchar2)
+  is
+     SELECT      to_char(count(*),'999,999,999') total_record_count,
+                 sum((NVL(gb.begin_balance_dr,0) - NVL(gb.begin_balance_cr,0))
+                      +
+                    (NVL(gb.period_net_dr,0) - NVL(gb.period_net_cr,0))
+                     )  sum_net_amount,
+                to_char(
+                    sum((NVL(gb.begin_balance_dr,0) - NVL(gb.begin_balance_cr,0))
+                      +
+                    (NVL(gb.period_net_dr,0) - NVL(gb.period_net_cr,0))
+                     )
+                     ,'099,999,999.99S') formatted_sum_net_amount
+                FROM gl_balances gb, 
+                     gl_code_combinations cc
+         WHERE cc.code_combination_id=gb.code_combination_id
+             AND gb.period_name =  cp_period_name_end  -- 'JAN-16' 
+             AND cc.SEGMENT1
+            in ('1000E','1001','1002','1005',
+                '1012','1014','1015','1015E','1016',
+                '1017','1020','1021','1032','1039',
+                '1041','1043','1044','1049','1051',
+                '1052','1053','1056',
+                '1057','1058','1059','1060','5010',
+                '5020','5030','5040','5050','5060') 
+             and cc.segment3 between '10000000' AND '99999999'
+             AND gb.currency_code =  'USD'
+             AND gb.actual_flag   =  'A';
+ 
+------- Canada --------------
+
+cursor can_report_cur(cp_period_name_end in varchar2,
+                       cp_account_from in varchar2,
+                       cp_account_to in varchar2)
+  is
+      SELECT   'COMPANY ', cc.SEGMENT1  company,'NET =',
+--                gb.period_year perd_year,
+--                lpad(gb.period_num,2,'0')  perd_num,                 
+                 sum((NVL(gb.begin_balance_dr,0) - NVL(gb.begin_balance_cr,0))
+                      +
+                    (NVL(gb.period_net_dr,0) - NVL(gb.period_net_cr,0))
+                     )  sum_net_amount,
+                 count(*) total_record_count,
+                to_char(
+                    sum((NVL(gb.begin_balance_dr,0) - NVL(gb.begin_balance_cr,0))
+                      +
+                    (NVL(gb.period_net_dr,0) - NVL(gb.period_net_cr,0))
+                     )
+                     ,'999,999,999,999.99S') formatted_sum_net_amount
+                FROM gl_balances gb, 
+                     gl_code_combinations cc
+         WHERE cc.code_combination_id=gb.code_combination_id
+             AND gb.period_name =   cp_period_name_end  -- 'JAN-16' 
+             AND cc.SEGMENT1  in ('1003','1055','1055P')
+             and cc.segment3 between  cp_account_from and  cp_account_to -- '10000000' AND '39999999'
+             AND gb.currency_code =  'CAD'
+             AND gb.actual_flag   =  'A'
+          group by 
+          --gb.period_year,gb.period_num,
+                cc.SEGMENT1
+          having                  sum((NVL(gb.begin_balance_dr,0) - NVL(gb.begin_balance_cr,0))
+                      +
+                    (NVL(gb.period_net_dr,0) - NVL(gb.period_net_cr,0))
+                     )  != 0
+        ORDER BY cc.segment1; -- company
+
+ 
+
+ cursor can_rep_count(cp_period_name_end in varchar2)
+  is
+     SELECT      to_char(count(*),'999,999,999') total_record_count,
+                 sum((NVL(gb.begin_balance_dr,0) - NVL(gb.begin_balance_cr,0))
+                      +
+                    (NVL(gb.period_net_dr,0) - NVL(gb.period_net_cr,0))
+                     )  sum_net_amount,
+                to_char(
+                    sum((NVL(gb.begin_balance_dr,0) - NVL(gb.begin_balance_cr,0))
+                      +
+                    (NVL(gb.period_net_dr,0) - NVL(gb.period_net_cr,0))
+                     )
+                     ,'099,999,999.99S') formatted_sum_net_amount
+                FROM gl_balances gb, 
+                     gl_code_combinations cc
+         WHERE cc.code_combination_id=gb.code_combination_id
+             AND gb.period_name =  cp_period_name_end  -- 'JAN-16' 
+             AND cc.SEGMENT1  in ('1003','1055','1055P')
+             and cc.segment3 between '10000000' AND '99999999'
+             AND gb.currency_code =  'CAD'
+             AND gb.actual_flag   =  'A';
+ 
+-------------------------------------------------------------- 
+----------- Journal Report Cursors below ---------------------
+--------------------------------------------------------------
+
+    cursor jrnl_usa_rep_cur(cp_period_name_begin in varchar2,
+                            cp_period_name_end in varchar2,
+                            cp_account_from in varchar2,
+                            cp_account_to in varchar2)
+    is
+      SELECT    gcc.SEGMENT1  company,
+                 sum(                 
+                       NVL(GJL.accounted_dr,0) - NVL(GJL.accounted_cr,0)                    
+                     )  sum_net_amount,
+                 count(*) total_record_count,
+                to_char(
+                sum(                 
+                      NVL(GJL.accounted_dr,0) - NVL(GJL.accounted_cr,0)                    
+                   )                     
+                     ,'999,999,999,999.99S') formatted_sum_net_amount
+        FROM
+             gl_je_headers GJH
+            ,gl_je_lines GJL
+            ,gl_code_combinations GCC
+            ,gl_je_sources  GJS
+            ,gl_je_categories GJC
+        WHERE
+                GJH.je_header_id=GJL.je_header_id
+            AND GJL.code_combination_id=GCC.code_combination_id
+--            AND to_date(GJH.period_name,'MON-YY') BETWEEN to_date(l_period_name_begin,'MON-YY') AND to_date(l_period_name_end,'MON-YY')
+--            AND gjh.period_name =   cp_period_name_end  -- 'JAN-16' 
+            AND to_date(GJH.period_name,'MON-YY') BETWEEN to_date(cp_period_name_begin,'MON-YY') AND to_date(cp_period_name_end,'MON-YY')
+            AND gcc.segment3 between  cp_account_from and  cp_account_to -- '10000000' AND '39999999'
+            AND GJH.status  =  'P'
+            AND GJH.je_source=GJS.je_source_name
+            AND GJH.je_category=GJC.je_category_name
+--          AND gcc.SEGMENT1 NOT in ('1003','1055','1055P')
+            AND gcc.SEGMENT1
+            in ('1000E','1001','1002','1005',
+                '1012','1014','1015','1015E','1016',
+                '1017','1020','1021','1032','1039',
+                '1041','1043','1044','1049','1051',
+                '1052','1053','1056',
+                '1057','1058','1059','1060','5010',
+                '5020','5030','5040','5050','5060')
+group by  gcc.SEGMENT1
+order by gcc.SEGMENT1;
+
+ cursor jrnl_usa_rep_count (cp_period_name_begin varchar2,cp_period_name_end varchar2,
+                           cp_account_from varchar2,cp_account_to varchar2)
+  is
+     SELECT      to_char(count(*),'999,999,999') total_record_count,
+                 sum(                 
+                       NVL(GJL.accounted_dr,0) - NVL(GJL.accounted_cr,0)                    
+                     )   sum_net_amount,
+                to_char(
+                 sum(                 
+                       NVL(GJL.accounted_dr,0) - NVL(GJL.accounted_cr,0)                    
+                     )                     
+                     ,'099,999,999.99S') formatted_sum_net_amount
+        FROM
+             gl_je_headers GJH
+            ,gl_je_lines GJL
+            ,gl_code_combinations GCC
+            ,gl_je_sources  GJS
+            ,gl_je_categories GJC
+        WHERE
+                GJH.je_header_id=GJL.je_header_id
+            AND GJL.code_combination_id=GCC.code_combination_id
+            AND to_date(GJH.period_name,'MON-YY') BETWEEN to_date(cp_period_name_begin,'MON-YY') AND to_date(cp_period_name_end,'MON-YY')
+            AND gcc.segment3 between  cp_account_from and  cp_account_to -- '10000000' AND '39999999'
+--            AND GJH.period_name = cp_period_name_end
+            AND GJH.status  =  'P'
+            AND gjh.currency_code =  'USD'
+            AND GJH.je_source=GJS.je_source_name
+            AND GJH.je_category=GJC.je_category_name
+--          AND gcc.SEGMENT1 NOT in ('1003','1055','1055P')
+            AND gcc.SEGMENT1
+            in ('1000E','1001','1002','1005',
+                '1012','1014','1015','1015E','1016',
+                '1017','1020','1021','1032','1039',
+                '1041','1043','1044','1049','1051',
+                '1052','1053','1056',
+                '1057','1058','1059','1060','5010',
+                '5020','5030','5040','5050','5060');
+
+
+
+
+/*
+
+  cursor jrnl_can_rep_cur(cp_period_name_end in varchar2,
+                       cp_account_from in varchar2,
+                       cp_account_to in varchar2)
+    is
+      SELECT    gcc.SEGMENT1  company,
+                 sum(                 
+                       NVL(GJL.accounted_dr,0) - NVL(GJL.accounted_cr,0)                    
+                     )  sum_net_amount,
+                 count(*) total_record_count,
+                to_char(
+                sum(                 
+                      NVL(GJL.accounted_dr,0) - NVL(GJL.accounted_cr,0)                    
+                   )                     
+                     ,'999,999,999,999.99S') formatted_sum_net_amount
+        FROM
+             gl_je_headers GJH
+            ,gl_je_lines GJL
+            ,gl_code_combinations GCC
+            ,gl_je_sources  GJS
+            ,gl_je_categories GJC
+        WHERE
+                GJH.je_header_id=GJL.je_header_id
+            AND GJL.code_combination_id=GCC.code_combination_id
+--            AND to_date(GJH.period_name,'MON-YY') BETWEEN to_date(l_period_name_begin,'MON-YY') AND to_date(l_period_name_end,'MON-YY')
+            AND gjh.period_name =   cp_period_name_end  -- 'JAN-16' 
+            AND gcc.segment3 between  cp_account_from and  cp_account_to -- '10000000' AND '39999999'
+            AND GJH.status  =  'P'
+            AND GJH.je_source=GJS.je_source_name
+            AND GJH.je_category=GJC.je_category_name
+            AND gcc.SEGMENT1  in ('1003','1055','1055P')
+            AND gjh.currency_code =  'CAD'
+group by  gcc.SEGMENT1
+order by gcc.SEGMENT1;
+
+
+ cursor jrnl_can_rep_count(cp_period_name_end in varchar2)
+  is
+     SELECT      to_char(count(*),'999,999,999') total_record_count,
+                 sum(                 
+                       NVL(GJL.accounted_dr,0) - NVL(GJL.accounted_cr,0)                    
+                     )   sum_net_amount,
+                to_char(
+                 sum(                 
+                       NVL(GJL.accounted_dr,0) - NVL(GJL.accounted_cr,0)                    
+                     )                     
+                     ,'099,999,999.99S') formatted_sum_net_amount
+        FROM
+             gl_je_headers GJH
+            ,gl_je_lines GJL
+            ,gl_code_combinations GCC
+            ,gl_je_sources  GJS
+            ,gl_je_categories GJC
+        WHERE
+                GJH.je_header_id=GJL.je_header_id
+            AND GJL.code_combination_id=GCC.code_combination_id
+--            AND to_date(GJH.period_name,'MON-YY') BETWEEN to_date(l_period_name_begin,'MON-YY') AND to_date(l_period_name_end,'MON-YY')
+            AND GJH.period_name = cp_period_name_end
+            AND GJH.status  =  'P'
+            AND GJH.je_source=GJS.je_source_name
+            AND GJH.je_category=GJC.je_category_name
+            AND gcc.SEGMENT1  in ('1003','1055','1055P')
+            AND gjh.currency_code =  'CAD';
+
+*/
+
+-- arun3
    
 BEGIN
   select timestamp, status, created  INTO l_last_compiled, l_status, l_created from dba_objects
@@ -819,7 +1205,7 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
     write_log(p_debug_flag,'-------Extracting CANADA COMPANY BALANCES-------------');
     write_log(p_debug_flag,'------------------------------------------------------');
 
-       lc_filename:= 'new_gl_balances_irs_can.txt';
+       lc_filename:= 'gl_balances_irs_can_' || l_timestamp || '.txt';
        lt_file  := UTL_FILE.fopen(gc_file_path,lc_filename ,'w',ln_buffer);
 
         l_data := 'COMP  | LOCATION | CSTCTR     | LOB        | ACCOUNT    |      | PER | AMOUNT            | CUR |                                             ' || chr(13);
@@ -857,7 +1243,7 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
     write_log(p_debug_flag,'----------Extracting USA COMPANY BALANCES-------------');
     write_log(p_debug_flag,'------------------------------------------------------');
 
-       lc_filename:= 'new_gl_balances_irs_usa.txt';
+       lc_filename:= 'gl_balances_irs_usa_' || l_timestamp || '.txt';
        lt_file  := UTL_FILE.fopen(gc_file_path,lc_filename ,'w',ln_buffer);
 
         l_data := 'COMP  | LOCATION | CSTCTR     | LOB        | ACCOUNT    |      | PER | AMOUNT            | CUR |                                             ' || chr(13);
@@ -867,6 +1253,7 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
 
         FOR Balance_Cur IN usa_cur(p_period_name_end)
                 LOOP
+
 
                  l_data := rpad(balance_cur.company,5)           || ' | ' ||
                            rpad(balance_cur.location,8)          || ' | ' ||
@@ -894,8 +1281,507 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
 
         END IF; -- Period end name not null 
 
+    write_log(p_debug_flag,'------------------------------------------------------');
+    write_log(p_debug_flag,'----------Creating USA Balance Report-------------');
+    write_log(p_debug_flag,'------------------------------------------------------');
 
+       lc_filename:= 'gl_irs_reports_' || l_timestamp || '.txt';
+       lt_file  := UTL_FILE.fopen(gc_file_path,lc_filename ,'w',ln_buffer);
+
+       l_country := 'USA';
+       
+       l_data := '  EBSCLOUD     IRS ACCOUNT BALANCES BALANCING REPORT' || chr(13);
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+
+       l_data := '  DATE OF REPORT:' || TO_CHAR(SYSDATE,'YYYY/MM/DD') || '  TIME: ' || TO_CHAR(SYSDATE,'HH:MI:SS') || chr(13);
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                     
+
+       l_data := '   PERIOD= ' || TO_CHAR(TO_DATE(p_period_name_end,'MON-YY'),'YYYYMM') || chr(13);
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+
+       l_data := '   CURRENCY     : USD' || chr(13);                                                                                                               
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13)); 
+       
+       l_account_from := '10000000';
+       l_account_to   := '39999999';
+                                                                                                                                     
+       l_data := '   ACCOUNT RANGE: ' || l_account_from || ' THRU ' || l_account_to || chr(13);                                                                                           
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                                                            
+       l_out_cnt := 0;
+
+        FOR usa_rep_rec IN usa_report_cur(p_period_name_end,l_account_from,l_account_to)
+           LOOP
+                  l_data := '   COMPANY ' || lpad(usa_rep_rec.company,8,' ') || ' NET =      ' ||  usa_rep_rec.formatted_sum_net_amount;  
+
+                  UTL_FILE.PUT_LINE(lt_file,l_data);
+
+                  l_out_cnt := l_out_cnt + 1;
+           END LOOP;
+
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+
+                 v_report_count        := '0';
+                 v_all_accts_net       :=  0;
+                 v_all_accts_net_fmt   := '0.00';
+
+                 OPEN usa_rep_count(p_period_name_end);   
+                    FETCH usa_rep_count INTO v_report_count,v_all_accts_net,v_all_accts_net_fmt;
+                  CLOSE usa_rep_count; 
+
+                  l_data := '   ALL ACCOUNTS  NET =             ' || v_all_accts_net_fmt;
+                  UTL_FILE.PUT_LINE(lt_file,l_data);
+
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                                                                                                                                                         
+                  l_data := '   TOTAL RECORD COUNT=    ' || v_report_count;                                                                                                  
+                  UTL_FILE.PUT_LINE(lt_file,l_data);
+                                                                                                                                     
+                                                                                                                                     
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                  l_data := '   ****  END  OF  REPORT   *****';
+                  UTL_FILE.PUT_LINE(lt_file,l_data);
+
+                
+--                UTL_FILE.fclose(lt_file);
+--                write_log(p_debug_flag,'NOT Calling USA XPTR Program');
+--                generate_file(p_directory,p_file_name,fnd_profile.value('CONC_REQUEST_ID'));
+
+                write_log(p_debug_flag,l_country || ' Balances Report ' || l_account_from || ' thru ' || l_account_to ||  ' is completed');
+                write_log(p_debug_flag,l_out_cnt ||' Total ' || l_country || ' Records Written');
+ 
+
+    write_log(p_debug_flag,'------------------------------------------------------');
+    write_log(p_debug_flag,'----------Creating CANADA Balance Report-------------');
+    write_log(p_debug_flag,'------------------------------------------------------');
+
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+
+       l_data := '  EBSCLOUD     IRS ACCOUNT BALANCES BALANCING REPORT' || chr(13);
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+
+       l_country := 'CANADA';
+
+       l_data := '  DATE OF REPORT:' || TO_CHAR(SYSDATE,'YYYY/MM/DD') || '  TIME: ' || TO_CHAR(SYSDATE,'HH:MI:SS') || chr(13);
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                     
+
+       l_data := '   PERIOD= ' || TO_CHAR(TO_DATE(p_period_name_end,'MON-YY'),'YYYYMM') || chr(13);
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+
+       l_data := '   CURRENCY     : CAD' || chr(13);                                                                                                               
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13)); 
+       
+       l_account_from := '10000000';
+       l_account_to   := '39999999';
+                                                                                                                                     
+       l_data := '   ACCOUNT RANGE: ' || l_account_from || ' THRU ' || l_account_to || chr(13);                                                                                           
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                                                            
+       l_out_cnt := 0;
+
+        FOR can_rep_rec IN can_report_cur(p_period_name_end,l_account_from,l_account_to)
+           LOOP
+                  l_data := '   COMPANY ' || lpad(can_rep_rec.company,8,' ') || ' NET =      ' ||  can_rep_rec.formatted_sum_net_amount;  
+
+                  UTL_FILE.PUT_LINE(lt_file,l_data);
+
+                  l_out_cnt := l_out_cnt + 1;
+           END LOOP;
+
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+
+                 v_report_count        := '0';
+                 v_all_accts_net       :=  0;
+                 v_all_accts_net_fmt   := '0.00';
+
+                 OPEN can_rep_count(p_period_name_end);   
+                    FETCH can_rep_count INTO v_report_count,v_all_accts_net,v_all_accts_net_fmt;
+                  CLOSE can_rep_count; 
+
+                  l_data := '   ALL ACCOUNTS  NET =             ' || v_all_accts_net_fmt;
+                  UTL_FILE.PUT_LINE(lt_file,l_data);
+
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                                                                                                                                                         
+                  l_data := '   TOTAL RECORD COUNT=    ' || v_report_count;                                                                                                  
+                  UTL_FILE.PUT_LINE(lt_file,l_data);
+                                                                                                                                     
+                                                                                                                                     
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                  l_data := '   ****  END  OF  REPORT   *****';
+                  UTL_FILE.PUT_LINE(lt_file,l_data);
+
+                
+--                UTL_FILE.fclose(lt_file);
+--                write_log(p_debug_flag,'NOT Calling USA XPTR Program');
+--                generate_file(p_directory,p_file_name,fnd_profile.value('CONC_REQUEST_ID'));
+
+                write_log(p_debug_flag,'Canada Balances Report ' || l_account_from || ' thru ' || l_account_to ||  ' is completed');
+                write_log(p_debug_flag,l_out_cnt ||' Total Canada Records Written');
+
+
+    write_log(p_debug_flag,'----------------------------------------------------------------------------');
+    write_log(p_debug_flag,'----------Creating USA Balance Report Expenses 40000 and Above -------------');
+    write_log(p_debug_flag,'----------------------------------------------------------------------------');
+
+    UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                     
+    UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                     
+
+
+-- x      lc_filename:= 'gl_irs_reports.txt';
+--       lt_file  := UTL_FILE.fopen(gc_file_path,lc_filename ,'w',ln_buffer);
+
+       l_country := 'USA';
+       
+       l_data := '  EBSCLOUD     IRS ACCOUNT BALANCES BALANCING REPORT' || chr(13);
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+
+       l_data := '  DATE OF REPORT:' || TO_CHAR(SYSDATE,'YYYY/MM/DD') || '  TIME: ' || TO_CHAR(SYSDATE,'HH:MI:SS') || chr(13);
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                     
+
+       l_data := '   PERIOD= ' || TO_CHAR(TO_DATE(p_period_name_end,'MON-YY'),'YYYYMM') || chr(13);
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+
+       l_data := '   CURRENCY     : USD' || chr(13);                                                                                                               
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13)); 
+       
+       l_account_from := '40000000';
+       l_account_to   := '99999999';
+                                                                                                                                     
+       l_data := '   ACCOUNT RANGE: ' || l_account_from || ' THRU ' || l_account_to || chr(13);                                                                                           
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                                                            
+       l_out_cnt := 0;
+
+        FOR usa_rep_rec IN usa_report_cur(p_period_name_end,l_account_from,l_account_to)
+           LOOP
+                  l_data := '   COMPANY ' || lpad(usa_rep_rec.company,8,' ') || ' NET =      ' ||  usa_rep_rec.formatted_sum_net_amount;  
+
+                  UTL_FILE.PUT_LINE(lt_file,l_data);
+
+                  l_out_cnt := l_out_cnt + 1;
+           END LOOP;
+
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+
+                 v_report_count        := '0';
+                 v_all_accts_net       :=  0;
+                 v_all_accts_net_fmt   := '0.00';
+
+                 OPEN usa_rep_count(p_period_name_end);   
+                    FETCH usa_rep_count INTO v_report_count,v_all_accts_net,v_all_accts_net_fmt;
+                  CLOSE usa_rep_count; 
+
+                  l_data := '   ALL ACCOUNTS  NET =             ' || v_all_accts_net_fmt;
+                  UTL_FILE.PUT_LINE(lt_file,l_data);
+
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                                                                                                                                                         
+                  l_data := '   TOTAL RECORD COUNT=    ' || v_report_count;                                                                                                  
+                  UTL_FILE.PUT_LINE(lt_file,l_data);
+                                                                                                                                     
+                                                                                                                                     
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                  l_data := '   ****  END  OF  REPORT   *****';
+                  UTL_FILE.PUT_LINE(lt_file,l_data);
+
+                
+--                UTL_FILE.fclose(lt_file);
+--                write_log(p_debug_flag,'NOT Calling USA XPTR Program');
+--                generate_file(p_directory,p_file_name,fnd_profile.value('CONC_REQUEST_ID'));
+
+                write_log(p_debug_flag,l_country || ' Balances Report ' || l_account_from || ' thru ' || l_account_to ||  ' is completed');
+                write_log(p_debug_flag,l_out_cnt ||' Total ' || l_country || ' Records Written');
+ 
+
+    write_log(p_debug_flag,'-----------------------------------------------------------------------------');
+    write_log(p_debug_flag,'----------Creating CANADA Balance Expenses Report 40000 onwards -------------');
+    write_log(p_debug_flag,'-----------------------------------------------------------------------------');
+
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+
+        l_data := '  EBSCLOUD     IRS ACCOUNT BALANCES BALANCING REPORT' || chr(13);
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+
+       l_country := 'CANADA';
+
+       l_data := '  DATE OF REPORT:' || TO_CHAR(SYSDATE,'YYYY/MM/DD') || '  TIME: ' || TO_CHAR(SYSDATE,'HH:MI:SS') || chr(13);
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                     
+
+       l_data := '   PERIOD= ' || TO_CHAR(TO_DATE(p_period_name_end,'MON-YY'),'YYYYMM') || chr(13);
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+
+       l_data := '   CURRENCY     : CAD' || chr(13);                                                                                                               
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13)); 
+       
+       l_account_from := '40000000';
+       l_account_to   := '99999999';
+                                                                                                                                     
+       l_data := '   ACCOUNT RANGE: ' || l_account_from || ' THRU ' || l_account_to || chr(13);                                                                                           
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                                                            
+       l_out_cnt := 0;
+
+        FOR can_rep_rec IN can_report_cur(p_period_name_end,l_account_from,l_account_to)
+           LOOP
+                  l_data := '   COMPANY ' || lpad(can_rep_rec.company,8,' ') || ' NET =      ' ||  can_rep_rec.formatted_sum_net_amount;  
+
+                  UTL_FILE.PUT_LINE(lt_file,l_data);
+
+                  l_out_cnt := l_out_cnt + 1;
+           END LOOP;
+
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+
+                 v_report_count        := '0';
+                 v_all_accts_net       :=  0;
+                 v_all_accts_net_fmt   := '0.00';
+
+                 OPEN can_rep_count(p_period_name_end);   
+                    FETCH can_rep_count INTO v_report_count,v_all_accts_net,v_all_accts_net_fmt;
+                  CLOSE can_rep_count; 
+
+                  l_data := '   ALL ACCOUNTS  NET =             ' || v_all_accts_net_fmt;
+                  UTL_FILE.PUT_LINE(lt_file,l_data);
+
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                                                                                                                                                         
+                  l_data := '   TOTAL RECORD COUNT=    ' || v_report_count;                                                                                                  
+                  UTL_FILE.PUT_LINE(lt_file,l_data);
+                                                                                                                                     
+                                                                                                                                     
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                  l_data := '   ****  END  OF  REPORT   *****';
+                  UTL_FILE.PUT_LINE(lt_file,l_data);
+
+                
+--                UTL_FILE.fclose(lt_file);
+--                write_log(p_debug_flag,'NOT Calling USA XPTR Program');
+--                generate_file(p_directory,p_file_name,fnd_profile.value('CONC_REQUEST_ID'));
+
+                write_log(p_debug_flag, l_country || ' Balances Report ' || l_account_from || ' thru ' || l_account_to ||  ' is completed');
+                write_log(p_debug_flag,l_out_cnt ||' Total ' || l_country || ' Records Written');
+
+
+-- arun4
+
+    write_log(p_debug_flag,'------------------------------------------------------------------------------------');
+    write_log(p_debug_flag,'----------Creating Journal US Detail Balancing Report 10000 thru 399999--------------');
+    write_log(p_debug_flag,'-------------------------------------------------------------------------------------');
+
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+
+--       lc_filename:= 'gl_irs_reports_' || l_timestamp || '.txt';
+--       lt_file  := UTL_FILE.fopen(gc_file_path,lc_filename ,'w',ln_buffer);
+
+    write_log(p_debug_flag,'----1');
+    
+       l_country := 'USA';
+       
+       l_data := '  EBSCLOUD     IRS JOURNAL DETAIL BALANCING REPORT' || chr(13);
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+
+       l_data := '  DATE OF REPORT:' || TO_CHAR(SYSDATE,'YYYY/MM/DD') || '  TIME: ' || TO_CHAR(SYSDATE,'HH:MI:SS') || chr(13);
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                     
+
+       l_data := '   DATE OF REPORT: ' || TO_CHAR(SYSDATE,'YYYY/MM/DD'); --2019/05/31 
+--       l_data := '   PERIOD= ' || TO_CHAR(TO_DATE(p_period_name_end,'MON-YY'),'YYYYMM') || chr(13);
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+
+    write_log(p_debug_flag,'----2');
+
+       l_data := '   CURRENCY     : USD' || chr(13);                                                                                                               
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13)); 
+       
+       l_account_from := '10000000';
+       l_account_to   := '39999999';
+                                                                                                                                     
+       l_data := '   ACCOUNT RANGE: ' || l_account_from || ' THRU ' || l_account_to || chr(13);                                                                                           
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+
+    write_log(p_debug_flag,'----3');
+
+                                                            
+       l_out_cnt := 0;
+
+        FOR usa_jrnl_rep_rec IN jrnl_usa_rep_cur(p_period_name_begin,p_period_name_end,l_account_from,l_account_to)
+           LOOP
+                  l_data := '   COMPANY ' || lpad(usa_jrnl_rep_rec.company,8,' ') || ' NET =      ' ||  usa_jrnl_rep_rec.formatted_sum_net_amount;  
+
+                  UTL_FILE.PUT_LINE(lt_file,l_data);
+
+                  l_out_cnt := l_out_cnt + 1;
+           END LOOP;
+
+    write_log(p_debug_flag,'----4');
+
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+
+--                 v_report_count        := '0';
+--                 v_all_accts_net       :=  0;
+--                 v_all_accts_net_fmt   := '0.00';
+
+    write_log(p_debug_flag,'----5');
+
+                 OPEN jrnl_usa_rep_count(p_period_name_begin,p_period_name_end,l_account_from,l_account_to); 
+                    FETCH jrnl_usa_rep_count INTO v_report_count,v_all_accts_net,v_all_accts_net_fmt;
+                  CLOSE jrnl_usa_rep_count; 
+
+                  l_data := '   ALL ACCOUNTS  NET =             ' || v_all_accts_net_fmt;
+                  UTL_FILE.PUT_LINE(lt_file,l_data);
+
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                                                                                                                                                         
+                  l_data := '   TOTAL RECORD COUNT=    ' || v_report_count;                                                                                                  
+                  UTL_FILE.PUT_LINE(lt_file,l_data);
+                                                                                                                                     
+    write_log(p_debug_flag,'----6');
+                                                                                                                                     
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                  l_data := '   ****  END  OF  REPORT   *****';
+                  UTL_FILE.PUT_LINE(lt_file,l_data);
+
+                
+--                UTL_FILE.fclose(lt_file);
+--                write_log(p_debug_flag,'NOT Calling USA XPTR Program');
+--                generate_file(p_directory,p_file_name,fnd_profile.value('CONC_REQUEST_ID'));
+
+                write_log(p_debug_flag,l_country || ' Journal Detail Report ' || l_account_from || ' thru ' || l_account_to ||  ' is completed');
+                write_log(p_debug_flag,l_out_cnt ||' Total ' || l_country || ' Records Written');
+ --arun5
+ 
+    write_log(p_debug_flag,'------------------------------------------------------------------------------------');
+    write_log(p_debug_flag,'----------Creating Journal US Detail Balancing Report 40000 thru 99999--------------');
+    write_log(p_debug_flag,'-------------------------------------------------------------------------------------');
+
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+
+--       lc_filename:= 'gl_irs_reports_' || l_timestamp || '.txt';
+--       lt_file  := UTL_FILE.fopen(gc_file_path,lc_filename ,'w',ln_buffer);
+
+    write_log(p_debug_flag,'----7');
+
+
+       l_country := 'USA';
+       
+       l_data := '  EBSCLOUD     IRS JOURNAL DETAIL BALANCING REPORT' || chr(13);
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+
+       l_data := '  DATE OF REPORT:' || TO_CHAR(SYSDATE,'YYYY/MM/DD') || '  TIME: ' || TO_CHAR(SYSDATE,'HH:MI:SS') || chr(13);
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                     
+
+       l_data := '   DATE OF REPORT: ' || TO_CHAR(SYSDATE,'YYYY/MM/DD'); --2019/05/31 
+--       l_data := '   PERIOD= ' || TO_CHAR(TO_DATE(p_period_name_end,'MON-YY'),'YYYYMM') || chr(13);
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+
+       l_data := '   CURRENCY     : USD' || chr(13);                                                                                                               
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13)); 
+       
+       l_account_from := '40000000';
+       l_account_to   := '99999999';
+                                 
+    write_log(p_debug_flag,'----8');
+                                                                                                                                     
+       l_data := '   ACCOUNT RANGE: ' || l_account_from || ' THRU ' || l_account_to || chr(13);                                                                                           
+       UTL_FILE.PUT_LINE(lt_file,l_data);
+       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                                                            
+       l_out_cnt := 0;
+
+        FOR usa_jrnl_rep_rec IN jrnl_usa_rep_cur(p_period_name_begin,p_period_name_end,l_account_from,l_account_to)
+           LOOP
+                  l_data := '   COMPANY ' || lpad(usa_jrnl_rep_rec.company,8,' ') || ' NET =      ' ||  usa_jrnl_rep_rec.formatted_sum_net_amount;  
+
+                  UTL_FILE.PUT_LINE(lt_file,l_data);
+
+                  l_out_cnt := l_out_cnt + 1;
+           END LOOP;
+
+    write_log(p_debug_flag,'----9');
+
+
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+
+                 v_report_count        := '0';
+                 v_all_accts_net       :=  0;
+                 v_all_accts_net_fmt   := '0.00';
+
+    write_log(p_debug_flag,'----10');
+
+
+                 OPEN jrnl_usa_rep_count(p_period_name_begin,p_period_name_end,l_account_from,l_account_to); 
+                    FETCH jrnl_usa_rep_count INTO v_report_count,v_all_accts_net,v_all_accts_net_fmt;
+                  CLOSE jrnl_usa_rep_count; 
+
+                  l_data := '   ALL ACCOUNTS  NET =             ' || v_all_accts_net_fmt;
+                  UTL_FILE.PUT_LINE(lt_file,l_data);
+
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+
+    write_log(p_debug_flag,'----11');
+
+                                                                                                                                                         
+                  l_data := '   TOTAL RECORD COUNT=    ' || v_report_count;                                                                                                  
+                  UTL_FILE.PUT_LINE(lt_file,l_data);
+                                                                                                                                     
+                                                                                                                                     
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                 UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
+                  l_data := '   ****  END  OF  REPORT   *****';
+                  UTL_FILE.PUT_LINE(lt_file,l_data);
+
+    write_log(p_debug_flag,'----12');
+
+                
+                  UTL_FILE.fclose(lt_file);
+--                write_log(p_debug_flag,'NOT Calling USA XPTR Program');
+--                generate_file(p_directory,p_file_name,fnd_profile.value('CONC_REQUEST_ID'));
+
+                write_log(p_debug_flag,l_country || ' Journal Detail Report ' || l_account_from || ' thru ' || l_account_to ||  ' is completed');
+                write_log(p_debug_flag,l_out_cnt ||' Total ' || l_country || ' Records Written');
+ 
 
 END Extract_Balances;
 END XXOD_GL_IRS_QTRLY_EXTRACT_PKG;
-/
