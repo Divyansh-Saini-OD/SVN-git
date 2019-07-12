@@ -603,6 +603,8 @@ BEGIN
           lc_filename:= 'gl_coa_irs_' || l_timestamp || '.txt';
 
         lt_file  := UTL_FILE.fopen(gc_file_path,lc_filename ,'w',ln_buffer);
+        write_log(p_debug_flag,'Writing to File :' || lc_filename );
+
         l_out_cnt := 0;
 
           UTL_FILE.PUT_LINE(lt_file,'ACCOUNT  | DESCRIPTION                                        |      ' ||chr(13));
@@ -662,14 +664,14 @@ AS
     l_created     DATE;
     l_last_compiled  VARCHAR2(30);
     l_status VARCHAR2(20);
-    v_report_count VARCHAR2(50);
-    v_all_accts_net   number;
-    v_all_accts_net_fmt VARCHAR2(50);
+    l_report_count VARCHAR2(50);
+    l_all_accts_net   number;
+    l_all_accts_net_fmt VARCHAR2(50);
     l_account_from  varchar2(8);
     l_account_to    varchar2(8); 
     l_country       varchar2(30);
     l_timestamp     varchar2(30) :=  to_char(sysdate,'YYYY_MM_DD_HHMISS');
-    v_all_range_net NUMBER  := 0;
+    l_all_range_net NUMBER  := 0;
    
    cursor canada_cur (cp_period_name_end in varchar2)
    is
@@ -1023,7 +1025,8 @@ order by gcc.SEGMENT1;
                 GJH.je_header_id=GJL.je_header_id
             AND GJL.code_combination_id=GCC.code_combination_id
             AND to_date(GJH.period_name,'MON-YY') BETWEEN to_date(cp_period_name_begin,'MON-YY') AND to_date(cp_period_name_end,'MON-YY')
-            AND gcc.segment3 between  cp_account_from and  cp_account_to -- '10000000' AND '39999999'
+--           AND gcc.segment3 between  cp_account_from and  cp_account_to -- '10000000' AND '39999999'
+             and gcc.segment3 between '10000000' AND '99999999'
 --            AND GJH.period_name = cp_period_name_end
             AND GJH.status  =  'P'
             AND gjh.currency_code =  'USD'
@@ -1043,76 +1046,6 @@ order by gcc.SEGMENT1;
                 '1093','5070','5080','5110','5120',
                 '5140','5180','5190','6010','6020'                                
                 );
-
-
-
-
-/*
-
-  cursor jrnl_can_rep_cur(cp_period_name_end in varchar2,
-                       cp_account_from in varchar2,
-                       cp_account_to in varchar2)
-    is
-      SELECT    gcc.SEGMENT1  company,
-                 sum(                 
-                       NVL(GJL.accounted_dr,0) - NVL(GJL.accounted_cr,0)                    
-                     )  sum_net_amount,
-                 count(*) total_record_count,
-                to_char(
-                sum(                 
-                      NVL(GJL.accounted_dr,0) - NVL(GJL.accounted_cr,0)                    
-                   )                     
-                     ,'999,999,999,999.99S') formatted_sum_net_amount
-        FROM
-             gl_je_headers GJH
-            ,gl_je_lines GJL
-            ,gl_code_combinations GCC
-            ,gl_je_sources  GJS
-            ,gl_je_categories GJC
-        WHERE
-                GJH.je_header_id=GJL.je_header_id
-            AND GJL.code_combination_id=GCC.code_combination_id
---            AND to_date(GJH.period_name,'MON-YY') BETWEEN to_date(l_period_name_begin,'MON-YY') AND to_date(l_period_name_end,'MON-YY')
-            AND gjh.period_name =   cp_period_name_end  -- 'JAN-16' 
-            AND gcc.segment3 between  cp_account_from and  cp_account_to -- '10000000' AND '39999999'
-            AND GJH.status  =  'P'
-            AND GJH.je_source=GJS.je_source_name
-            AND GJH.je_category=GJC.je_category_name
-            AND gcc.SEGMENT1  in ('1003','1055','1055P')
-            AND gjh.currency_code =  'CAD'
-group by  gcc.SEGMENT1
-order by gcc.SEGMENT1;
-
-
- cursor jrnl_can_rep_count(cp_period_name_end in varchar2)
-  is
-     SELECT      to_char(count(*),'999,999,999') total_record_count,
-                 sum(                 
-                       NVL(GJL.accounted_dr,0) - NVL(GJL.accounted_cr,0)                    
-                     )   sum_net_amount,
-                to_char(
-                 sum(                 
-                       NVL(GJL.accounted_dr,0) - NVL(GJL.accounted_cr,0)                    
-                     )                     
-                     ,'099,999,999.99S') formatted_sum_net_amount
-        FROM
-             gl_je_headers GJH
-            ,gl_je_lines GJL
-            ,gl_code_combinations GCC
-            ,gl_je_sources  GJS
-            ,gl_je_categories GJC
-        WHERE
-                GJH.je_header_id=GJL.je_header_id
-            AND GJL.code_combination_id=GCC.code_combination_id
---            AND to_date(GJH.period_name,'MON-YY') BETWEEN to_date(l_period_name_begin,'MON-YY') AND to_date(l_period_name_end,'MON-YY')
-            AND GJH.period_name = cp_period_name_end
-            AND GJH.status  =  'P'
-            AND GJH.je_source=GJS.je_source_name
-            AND GJH.je_category=GJC.je_category_name
-            AND gcc.SEGMENT1  in ('1003','1055','1055P')
-            AND gjh.currency_code =  'CAD';
-
-*/
 
    
 BEGIN
@@ -1228,6 +1161,8 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
 
        lc_filename:= 'gl_balances_irs_can_' || l_timestamp || '.txt';
        lt_file  := UTL_FILE.fopen(gc_file_path,lc_filename ,'w',ln_buffer);
+       write_log(p_debug_flag,'Writing to File :' || lc_filename );
+
 
         l_data := 'COMP  | LOCATION | CSTCTR     | LOB        | ACCOUNT    |      | PER | AMOUNT            | CUR |                                             ' || chr(13);
         UTL_FILE.PUT_LINE(lt_file,l_data);
@@ -1266,6 +1201,7 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
 
        lc_filename:= 'gl_balances_irs_usa_' || l_timestamp || '.txt';
        lt_file  := UTL_FILE.fopen(gc_file_path,lc_filename ,'w',ln_buffer);
+       write_log(p_debug_flag,'Writing to File :' || lc_filename );
 
         l_data := 'COMP  | LOCATION | CSTCTR     | LOB        | ACCOUNT    |      | PER | AMOUNT            | CUR |                                             ' || chr(13);
         UTL_FILE.PUT_LINE(lt_file,l_data);
@@ -1308,6 +1244,7 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
 
        lc_filename:= 'gl_irs_reports_' || l_timestamp || '.txt';
        lt_file  := UTL_FILE.fopen(gc_file_path,lc_filename ,'w',ln_buffer);
+       write_log(p_debug_flag,'Writing to File :' || lc_filename );
 
        l_country := 'USA';
        
@@ -1334,7 +1271,7 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
        UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
                                                             
        l_out_cnt := 0;
-       v_all_range_net := 0;
+       l_all_range_net := 0;
        
         FOR usa_rep_rec IN usa_report_cur(p_period_name_end,l_account_from,l_account_to)
            LOOP
@@ -1342,28 +1279,28 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
 
                   UTL_FILE.PUT_LINE(lt_file,l_data);
 
-                  v_all_range_net := nvl(v_all_range_net,0) +  nvl(usa_rep_rec.sum_net_amount,0);
+                  l_all_range_net := nvl(l_all_range_net,0) +  nvl(usa_rep_rec.sum_net_amount,0);
                   l_out_cnt := l_out_cnt + 1;
            END LOOP;
 
-                 l_data := '   ALL IN RANGE NET =              ' || to_char(v_all_range_net,'999,999,999,999.99S') || chr(13);
+                 l_data := '   ALL IN RANGE NET =          ' || to_char(l_all_range_net,'999,999,999,999.99S') || chr(13);
                  UTL_FILE.PUT_LINE(lt_file,l_data);         
                  UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
 
-                 v_report_count        := '0';
-                 v_all_accts_net       :=  0;
-                 v_all_accts_net_fmt   := '0.00';
+                 l_report_count        := '0';
+                 l_all_accts_net       :=  0;
+                 l_all_accts_net_fmt   := '0.00';
 
                  OPEN usa_rep_count(p_period_name_end);   
-                    FETCH usa_rep_count INTO v_report_count,v_all_accts_net,v_all_accts_net_fmt;
+                    FETCH usa_rep_count INTO l_report_count,l_all_accts_net,l_all_accts_net_fmt;
                   CLOSE usa_rep_count; 
 
-                  l_data := '   ALL ACCOUNTS  NET =             ' || v_all_accts_net_fmt || chr(13);
+                  l_data := '   ALL ACCOUNTS  NET =             ' || l_all_accts_net_fmt || chr(13);
                   UTL_FILE.PUT_LINE(lt_file,l_data);
 
                  UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
                                                                                                                                                          
-                  l_data := '   TOTAL RECORD COUNT=    ' || v_report_count || chr(13);                                                                                                  
+                  l_data := '   TOTAL RECORD COUNT=    ' || l_report_count || chr(13);                                                                                                  
                   UTL_FILE.PUT_LINE(lt_file,l_data);
                                                                                                                                      
                                                                                                                                      
@@ -1414,37 +1351,37 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
        UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
                                                             
        l_out_cnt := 0;
-       v_all_range_net := 0;
+       l_all_range_net := 0;
         FOR can_rep_rec IN can_report_cur(p_period_name_end,l_account_from,l_account_to)
            LOOP
                   l_data := '   COMPANY ' || lpad(can_rep_rec.company,8,' ') || ' NET =      ' ||  can_rep_rec.formatted_sum_net_amount || chr(13);  
 
                   UTL_FILE.PUT_LINE(lt_file,l_data);
                   
-                  v_all_range_net := nvl(v_all_range_net,0) +  nvl(can_rep_rec.sum_net_amount,0);
+                  l_all_range_net := nvl(l_all_range_net,0) +  nvl(can_rep_rec.sum_net_amount,0);
 
                   l_out_cnt := l_out_cnt + 1;
            END LOOP;
 
-                 l_data := '   ALL IN RANGE NET =              ' || to_char(v_all_range_net,'999,999,999,999.99S') || chr(13);
+                 l_data := '   ALL IN RANGE NET =          ' || to_char(l_all_range_net,'999,999,999,999.99S') || chr(13);
                   UTL_FILE.PUT_LINE(lt_file,l_data);
           
                  UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
 
-                 v_report_count        := '0';
-                 v_all_accts_net       :=  0;
-                 v_all_accts_net_fmt   := '0.00';
+                 l_report_count        := '0';
+                 l_all_accts_net       :=  0;
+                 l_all_accts_net_fmt   := '0.00';
 
                  OPEN can_rep_count(p_period_name_end);   
-                    FETCH can_rep_count INTO v_report_count,v_all_accts_net,v_all_accts_net_fmt;
+                    FETCH can_rep_count INTO l_report_count,l_all_accts_net,l_all_accts_net_fmt;
                   CLOSE can_rep_count; 
 
-                  l_data := '   ALL ACCOUNTS  NET =             ' || v_all_accts_net_fmt || chr(13);
+                  l_data := '   ALL ACCOUNTS  NET =             ' || l_all_accts_net_fmt || chr(13);
                   UTL_FILE.PUT_LINE(lt_file,l_data);
 
                  UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
                                                                                                                                                          
-                  l_data := '   TOTAL RECORD COUNT=    ' || v_report_count || chr(13);                                                                                                  
+                  l_data := '   TOTAL RECORD COUNT=    ' || l_report_count || chr(13);                                                                                                  
                   UTL_FILE.PUT_LINE(lt_file,l_data);
                                                                                                                                      
                                                                                                                                      
@@ -1498,35 +1435,35 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
        UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
                                                             
        l_out_cnt := 0;
-       v_all_range_net := 0;
+       l_all_range_net := 0;
         FOR usa_rep_rec IN usa_report_cur(p_period_name_end,l_account_from,l_account_to)
            LOOP
                   l_data := '   COMPANY ' || lpad(usa_rep_rec.company,8,' ') || ' NET =      ' ||  usa_rep_rec.formatted_sum_net_amount || chr(13);  
 
                   UTL_FILE.PUT_LINE(lt_file,l_data);
 
-                  v_all_range_net := nvl(v_all_range_net,0) +  nvl(usa_rep_rec.sum_net_amount,0);
+                  l_all_range_net := nvl(l_all_range_net,0) +  nvl(usa_rep_rec.sum_net_amount,0);
                   l_out_cnt := l_out_cnt + 1;
            END LOOP;
 
-                 l_data := '   ALL IN RANGE NET =              ' || to_char(v_all_range_net,'999,999,999,999.99S') || chr(13);
+                 l_data := '   ALL IN RANGE NET =          ' || to_char(l_all_range_net,'999,999,999,999.99S') || chr(13);
                  UTL_FILE.PUT_LINE(lt_file,l_data);         
                  UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
 
-                 v_report_count        := '0';
-                 v_all_accts_net       :=  0;
-                 v_all_accts_net_fmt   := '0.00';
+                 l_report_count        := '0';
+                 l_all_accts_net       :=  0;
+                 l_all_accts_net_fmt   := '0.00';
 
                  OPEN usa_rep_count(p_period_name_end);   
-                    FETCH usa_rep_count INTO v_report_count,v_all_accts_net,v_all_accts_net_fmt;
+                    FETCH usa_rep_count INTO l_report_count,l_all_accts_net,l_all_accts_net_fmt;
                   CLOSE usa_rep_count; 
 
-                  l_data := '   ALL ACCOUNTS  NET =             ' || v_all_accts_net_fmt || chr(13);
+                  l_data := '   ALL ACCOUNTS  NET =             ' || l_all_accts_net_fmt || chr(13);
                   UTL_FILE.PUT_LINE(lt_file,l_data);
 
                  UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
                                                                                                                                                          
-                  l_data := '   TOTAL RECORD COUNT=    ' || v_report_count || chr(13);                                                                                                  
+                  l_data := '   TOTAL RECORD COUNT=    ' || l_report_count || chr(13);                                                                                                  
                   UTL_FILE.PUT_LINE(lt_file,l_data);
                                                                                                                                      
                                                                                                                                      
@@ -1577,7 +1514,7 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
        UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
                                                             
        l_out_cnt := 0;
-       v_all_range_net := 0;
+       l_all_range_net := 0;
 
         FOR can_rep_rec IN can_report_cur(p_period_name_end,l_account_from,l_account_to)
            LOOP
@@ -1585,28 +1522,28 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
 
                   UTL_FILE.PUT_LINE(lt_file,l_data);
 
-                  v_all_range_net := nvl(v_all_range_net,0) +  nvl(can_rep_rec.sum_net_amount,0);
+                  l_all_range_net := nvl(l_all_range_net,0) +  nvl(can_rep_rec.sum_net_amount,0);
                   l_out_cnt := l_out_cnt + 1;
            END LOOP;
 
-                 l_data := '   ALL IN RANGE NET =              ' || to_char(v_all_range_net,'999,999,999,999.99S') || chr(13);
+                 l_data := '   ALL IN RANGE NET =          ' || to_char(l_all_range_net,'999,999,999,999.99S') || chr(13);
                  UTL_FILE.PUT_LINE(lt_file,l_data);         
                  UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
 
-                 v_report_count        := '0';
-                 v_all_accts_net       :=  0;
-                 v_all_accts_net_fmt   := '0.00';
+                 l_report_count        := '0';
+                 l_all_accts_net       :=  0;
+                 l_all_accts_net_fmt   := '0.00';
 
                  OPEN can_rep_count(p_period_name_end);   
-                    FETCH can_rep_count INTO v_report_count,v_all_accts_net,v_all_accts_net_fmt;
+                    FETCH can_rep_count INTO l_report_count,l_all_accts_net,l_all_accts_net_fmt;
                   CLOSE can_rep_count; 
 
-                  l_data := '   ALL ACCOUNTS  NET =             ' || v_all_accts_net_fmt || chr(13);
+                  l_data := '   ALL ACCOUNTS  NET =             ' || l_all_accts_net_fmt || chr(13);
                   UTL_FILE.PUT_LINE(lt_file,l_data);
 
                  UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
                                                                                                                                                          
-                  l_data := '   TOTAL RECORD COUNT=    ' || v_report_count || chr(13);                                                                                                  
+                  l_data := '   TOTAL RECORD COUNT=    ' || l_report_count || chr(13);                                                                                                  
                   UTL_FILE.PUT_LINE(lt_file,l_data);
                                                                                                                                      
                                                                                                                                      
@@ -1668,7 +1605,7 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
 
                                                             
        l_out_cnt := 0;
-       v_all_range_net := 0;
+       l_all_range_net := 0;
 
         FOR usa_jrnl_rep_rec IN jrnl_usa_rep_cur(p_period_name_begin,p_period_name_end,l_account_from,l_account_to)
            LOOP
@@ -1676,32 +1613,32 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
 
                   UTL_FILE.PUT_LINE(lt_file,l_data);
 
-                  v_all_range_net := nvl(v_all_range_net,0) +  nvl(usa_jrnl_rep_rec.sum_net_amount,0);
+                  l_all_range_net := nvl(l_all_range_net,0) +  nvl(usa_jrnl_rep_rec.sum_net_amount,0);
                   l_out_cnt := l_out_cnt + 1;
            END LOOP;
 
-                 l_data := '   ALL IN RANGE NET =              ' || to_char(v_all_range_net,'999,999,999,999.99S') || chr(13);
+                 l_data := '   ALL IN RANGE NET =          ' || to_char(l_all_range_net,'999,999,999,999.99S') || chr(13);
                  UTL_FILE.PUT_LINE(lt_file,l_data);         
                  UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
 
     write_log(p_debug_flag,'----4');
 
-                 v_report_count        := '0';
-                 v_all_accts_net       :=  0;
-                 v_all_accts_net_fmt   := '0.00';
+                 l_report_count        := '0';
+                 l_all_accts_net       :=  0;
+                 l_all_accts_net_fmt   := '0.00';
 
     write_log(p_debug_flag,'----5');
 
                  OPEN jrnl_usa_rep_count(p_period_name_begin,p_period_name_end,l_account_from,l_account_to); 
-                    FETCH jrnl_usa_rep_count INTO v_report_count,v_all_accts_net,v_all_accts_net_fmt;
+                    FETCH jrnl_usa_rep_count INTO l_report_count,l_all_accts_net,l_all_accts_net_fmt;
                   CLOSE jrnl_usa_rep_count; 
 
-                  l_data := '   ALL ACCOUNTS  NET =             ' || v_all_accts_net_fmt || chr(13);
+                  l_data := '   ALL ACCOUNTS  NET =             ' || l_all_accts_net_fmt || chr(13);
                   UTL_FILE.PUT_LINE(lt_file,l_data);
 
                  UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
                                                                                                                                                          
-                  l_data := '   TOTAL RECORD COUNT=    ' || v_report_count || chr(13);                                                                                                  
+                  l_data := '   TOTAL RECORD COUNT=    ' || l_report_count || chr(13);                                                                                                  
                   UTL_FILE.PUT_LINE(lt_file,l_data);
                                                                                                                                      
     write_log(p_debug_flag,'----6');
@@ -1762,7 +1699,7 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
        UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
                                                             
        l_out_cnt := 0;
-       v_all_range_net := 0;
+       l_all_range_net := 0;
 
         FOR usa_jrnl_rep_rec IN jrnl_usa_rep_cur(p_period_name_begin,p_period_name_end,l_account_from,l_account_to)
            LOOP
@@ -1770,28 +1707,28 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
 
                   UTL_FILE.PUT_LINE(lt_file,l_data);
 
-                  v_all_range_net := nvl(v_all_range_net,0) +  nvl(usa_jrnl_rep_rec.sum_net_amount,0);
+                  l_all_range_net := nvl(l_all_range_net,0) +  nvl(usa_jrnl_rep_rec.sum_net_amount,0);
                   l_out_cnt := l_out_cnt + 1;
            END LOOP;
 
-                 l_data := '   ALL IN RANGE NET =              ' || to_char(v_all_range_net,'999,999,999,999.99S') || chr(13);
+                 l_data := '   ALL IN RANGE NET =          ' || to_char(l_all_range_net,'999,999,999,999.99S') || chr(13);
                  UTL_FILE.PUT_LINE(lt_file,l_data);         
                  UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
 
     write_log(p_debug_flag,'----9');
 
-                 v_report_count        := '0';
-                 v_all_accts_net       :=  0;
-                 v_all_accts_net_fmt   := '0.00';
+                 l_report_count        := '0';
+                 l_all_accts_net       :=  0;
+                 l_all_accts_net_fmt   := '0.00';
 
     write_log(p_debug_flag,'----10');
 
 
                  OPEN jrnl_usa_rep_count(p_period_name_begin,p_period_name_end,l_account_from,l_account_to); 
-                    FETCH jrnl_usa_rep_count INTO v_report_count,v_all_accts_net,v_all_accts_net_fmt;
+                    FETCH jrnl_usa_rep_count INTO l_report_count,l_all_accts_net,l_all_accts_net_fmt;
                   CLOSE jrnl_usa_rep_count; 
 
-                  l_data := '   ALL ACCOUNTS  NET =             ' || v_all_accts_net_fmt || chr(13);
+                  l_data := '   ALL ACCOUNTS  NET =             ' || l_all_accts_net_fmt || chr(13);
                   UTL_FILE.PUT_LINE(lt_file,l_data);
 
                  UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
@@ -1799,7 +1736,7 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
     write_log(p_debug_flag,'----11');
 
                                                                                                                                                          
-                  l_data := '   TOTAL RECORD COUNT=    ' || v_report_count || chr(13);                                                                                                  
+                  l_data := '   TOTAL RECORD COUNT=    ' || l_report_count || chr(13);                                                                                                  
                   UTL_FILE.PUT_LINE(lt_file,l_data);
                                                                                                                                      
                                                                                                                                      
