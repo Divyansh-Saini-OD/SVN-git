@@ -35,6 +35,8 @@ CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
   ---|  1.2    25-JUN-2019     Priyam Parmar     Added Telex update for Supplier Site (RMS)
   ---|  1.3    27-JUN-2019     Priyam Parmar     Removed Bank staging table from 1.2 update
   -- |  1.4    05-JUL-2019     Paddy Sanjeevi    Fix the flags and fine tuned   |
+  -- |  1.5    07-JUL-2019     Paddy Sanjeevi    Added for tolerance            |
+  -- |  1.6    11-JUL-2019     Havish Kasina     Added for Services Tolerance   |
   -- |==========================================================================+
 AS
   /*********************************************************************
@@ -1623,6 +1625,7 @@ BEGIN
     lr_vendor_site_rec.supplier_notif_method        :=c_sup_site.supplier_notif_method;
     lr_vendor_site_rec.email_address                :=c_sup_site.email_address;
     lr_vendor_site_rec.tolerance_name               :=c_sup_site.tolerance_name;
+	lr_vendor_site_rec.services_tolerance_name      :=c_sup_site.service_tolerance; -- Added as per Version 1.6
     lr_vendor_site_rec.gapless_inv_num_flag         :=c_sup_site.gapless_inv_num_flag;
     lr_vendor_site_rec.selling_company_identifier   :=c_sup_site.selling_company_identifier;
     lr_vendor_site_rec.bank_charge_bearer           :=c_sup_site.bank_charge_bearer;
@@ -2036,14 +2039,10 @@ IS
   p_assignment_attribs iby_fndcpt_setup_pub.pmtinstrassignment_rec_type;
   p_payee iby_disbursement_setup_pub.payeecontext_rec_type;
   lr_ext_bank_acct_dtl iby_ext_bank_accounts%rowtype;
-  -- l_bank_party_id iby_ext_banks_v.bank_party_id%type;
-  -- l_branch_party_id iby_ext_bank_branches_v.branch_party_id%type;
-  --
-  p_api_version      NUMBER;
-  p_init_msg_list    VARCHAR2(200);
-  p_commit           VARCHAR2(200);
-  p_validation_level NUMBER;
-  ---x_return_status    VARCHAR2(200);
+  p_api_version          NUMBER;
+  p_init_msg_list        VARCHAR2(200);
+  p_commit               VARCHAR2(200);
+  p_validation_level     NUMBER;
   x_msg_count            NUMBER;
   x_msg_data             VARCHAR2(200);
   p_calling_prog         VARCHAR2(200);
@@ -2058,17 +2057,17 @@ IS
   x_assign_id            NUMBER;
   l_fax_area_code hz_contact_points.phone_area_code%type;
   l_account_id NUMBER;
-  X_RESPONSE IBY_FNDCPT_COMMON_PUB.RESULT_REC_TYPE;
-  L_ASSIGN_ID           NUMBER;
+  x_response iby_fndcpt_common_pub.result_rec_type;
+  l_assign_id           NUMBER;
   l_joint_acct_owner_id NUMBER;
   CURSOR c_sup_bank
   IS
     SELECT *
-    FROM XX_AP_CLD_SUPP_BNKACT_STG xas
-    where 1                     =1
-    AND xas.CREATE_FLAG         in ('N','Y')
-    AND XAS.BNKACT_PROCESS_FLAG =GN_PROCESS_STATUS_VALIDATED
-    AND xas.REQUEST_ID          = gn_request_id;
+    FROM xx_ap_cld_supp_bnkact_stg xas
+    WHERE 1                     =1
+    AND xas.create_flag         ='Y'
+    AND xas.bnkact_process_flag =gn_process_status_validated
+    AND xas.request_id          = gn_request_id;
   ----
 BEGIN
   -- Initialize apps session
@@ -2090,18 +2089,19 @@ BEGIN
       INTO lv_supp_site_id,
         lv_supp_party_site_id,
         lv_acct_owner_party_id,
-        LV_ORG_ID
+        lv_org_id
       FROM ap_suppliers aps,
         ap_supplier_sites_all assa
       WHERE aps.vendor_id     = assa.vendor_id
-      AND APS.VENDOR_ID       =R_SUP_BANK.VENDOR_ID
+      AND aps.vendor_id       =r_sup_bank.vendor_id
       AND assa.vendor_site_id = r_sup_bank.vendor_site_id;
       ---  AND assa.vendor_site_code = r_sup_bank.vendor_site_code;
     EXCEPTION
     WHEN OTHERS THEN
-      PRINT_DEBUG_MSG(P_MESSAGE=> L_PROGRAM_STEP||'Error- Get supp_site_id and supp_party_site_id' || SQLCODE || SQLERRM, P_FORCE=>TRUE);
+      print_debug_msg(p_message=> l_program_step||'Error- Get supp_site_id and supp_party_site_id' || SQLCODE || sqlerrm, p_force=>true);
     END;
-    IF R_SUP_BANK.account_id IS NOT NULL AND R_SUP_BANK.INSTRUMENT_USES_ID IS NULL THEN--Joint Owner pending
+   
+    IF r_sup_bank.account_id >0 AND r_sup_bank.instrument_uses_id IS NULL THEN
       ----------------------Assigning Attributes
       p_payee.supplier_site_id := lv_supp_site_id;
       p_payee.party_id         := lv_acct_owner_party_id;
@@ -2110,46 +2110,47 @@ BEGIN
       p_payee.org_id           := lv_org_id;
       p_payee.org_type         := 'OPERATING_UNIT';
       -- Assignment Values
-      P_ASSIGNMENT_ATTRIBS.INSTRUMENT.INSTRUMENT_TYPE := 'BANKACCOUNT';
-      L_ACCOUNT_ID                                    :=R_SUP_BANK.ACCOUNT_ID;
-      print_debug_msg(p_message=> l_program_step||'L_ACCOUNT_ID '||L_ACCOUNT_ID, p_force=>true);
+      p_assignment_attribs.instrument.instrument_type := 'BANKACCOUNT';
+      l_account_id                                    :=r_sup_bank.account_id;
+      print_debug_msg(p_message=> l_program_step||'L_ACCOUNT_ID '||l_account_id, p_force=>true);
       p_assignment_attribs.instrument.instrument_id:=l_account_id;
       -- External Bank Account ID
       p_assignment_attribs.priority   := 1;
-      P_ASSIGNMENT_ATTRIBS.START_DATE := SYSDATE;
+      p_assignment_attribs.start_date := sysdate;
       ------------------Calling API to check Joint Owner exists or no
-      FND_MSG_PUB.INITIALIZE; --to make msg_count 0
-      X_RETURN_STATUS:=NULL;
-      X_MSG_COUNT    :=NULL;
-      X_MSG_DATA     :=NULL;
-      X_RESPONSE     :=NULL;
-      IBY_EXT_BANKACCT_PUB.check_bank_acct_owner ( P_API_VERSION =>P_API_VERSION, P_INIT_MSG_LIST=>P_INIT_MSG_LIST, p_bank_acct_id=>L_ACCOUNT_ID, P_ACCT_OWNER_PARTY_ID =>LV_ACCT_OWNER_PARTY_ID,
-      --  X_JOINT_ACCT_OWNER_ID=>L_JOINT_ACCT_OWNER_ID,
-      X_RETURN_STATUS=>X_RETURN_STATUS, X_MSG_COUNT=>X_MSG_COUNT, X_MSG_DATA=>X_MSG_DATA, X_RESPONSE=>X_RESPONSE );
-      IF X_RETURN_STATUS <>'S' THEN --------------No join owner exists
-        FND_MSG_PUB.INITIALIZE;                 --to make msg_count 0
-        X_RETURN_STATUS:=NULL;
-        X_MSG_COUNT    :=NULL;
-        X_MSG_DATA     :=NULL;
-        X_RESPONSE     :=NULL;
+      fnd_msg_pub.initialize; --to make msg_count 0
+      x_return_status:=NULL;
+      x_msg_count    :=NULL;
+      x_msg_data     :=NULL;
+      x_response     :=NULL;
+      iby_ext_bankacct_pub.check_bank_acct_owner ( p_api_version =>p_api_version, p_init_msg_list=>p_init_msg_list, p_bank_acct_id=>l_account_id, p_acct_owner_party_id =>lv_acct_owner_party_id,
+    
+      x_return_status=>x_return_status, x_msg_count=>x_msg_count, x_msg_data=>x_msg_data, x_response=>x_response );
+      IF x_return_status <>'S' THEN --------------No join owner exists
+        fnd_msg_pub.initialize;                 --to make msg_count 0
+        x_return_status:=NULL;
+        x_msg_count    :=NULL;
+        x_msg_data     :=NULL;
+        x_response     :=NULL;
         -------------------------Calling Joint Account Owner API
-        IBY_EXT_BANKACCT_PUB.ADD_JOINT_ACCOUNT_OWNER ( P_API_VERSION =>P_API_VERSION, P_INIT_MSG_LIST=>P_INIT_MSG_LIST, P_BANK_ACCOUNT_ID=>L_ACCOUNT_ID, P_ACCT_OWNER_PARTY_ID =>LV_ACCT_OWNER_PARTY_ID, X_JOINT_ACCT_OWNER_ID=>L_JOINT_ACCT_OWNER_ID, X_RETURN_STATUS=>X_RETURN_STATUS, X_MSG_COUNT=>X_MSG_COUNT, X_MSG_DATA=>X_MSG_DATA, X_RESPONSE=>X_RESPONSE );
-        PRINT_DEBUG_MSG(P_MESSAGE=> L_PROGRAM_STEP||'L_JOINT_ACCT_OWNER_ID = ' || L_JOINT_ACCT_OWNER_ID, P_FORCE=>TRUE);
+        iby_ext_bankacct_pub.add_joint_account_owner ( p_api_version =>p_api_version, p_init_msg_list=>p_init_msg_list, p_bank_account_id=>l_account_id, p_acct_owner_party_id =>lv_acct_owner_party_id, x_joint_acct_owner_id=>l_joint_acct_owner_id, x_return_status=>x_return_status, x_msg_count=>x_msg_count, x_msg_data=>x_msg_data, x_response=>x_response );
+        print_debug_msg(p_message=> l_program_step||'L_JOINT_ACCT_OWNER_ID = ' || l_joint_acct_owner_id, p_force=>true);
         print_debug_msg(p_message=> l_program_step||' ADD_JOINT_ACCOUNT_OWNER X_RETURN_STATUS = ' || x_return_status, p_force=>true);
-        PRINT_DEBUG_MSG(P_MESSAGE=> L_PROGRAM_STEP||'ADD_JOINT_ACCOUNT_OWNER fnd_api.g_ret_sts_success ' || FND_API.G_RET_STS_SUCCESS , P_FORCE=>TRUE);
-        PRINT_DEBUG_MSG(P_MESSAGE=> L_PROGRAM_STEP||'ADD_JOINT_ACCOUNT_OWNER X_MSG_COUNT = ' || X_MSG_COUNT, P_FORCE=>TRUE);
+        print_debug_msg(p_message=> l_program_step||'ADD_JOINT_ACCOUNT_OWNER fnd_api.g_ret_sts_success ' || fnd_api.g_ret_sts_success , p_force=>true);
+        print_debug_msg(p_message=> l_program_step||'ADD_JOINT_ACCOUNT_OWNER X_MSG_COUNT = ' || x_msg_count, p_force=>true);
       END IF;
-      FND_MSG_PUB.INITIALIZE; --to make msg_count 0
-      X_RETURN_STATUS:=NULL;
-      X_MSG_COUNT    :=NULL;
-      X_MSG_DATA     :=NULL;
-      X_RESPONSE     :=NULL;
+      fnd_msg_pub.initialize; --to make msg_count 0
+      x_return_status:=NULL;
+      x_msg_count    :=NULL;
+      x_msg_data     :=NULL;
+      x_response     :=NULL;
       --------------------Call the API for istr assignemtn
-      IBY_DISBURSEMENT_SETUP_PUB.SET_PAYEE_INSTR_ASSIGNMENT (P_API_VERSION => P_API_VERSION, P_INIT_MSG_LIST => P_INIT_MSG_LIST, P_COMMIT => P_COMMIT, X_RETURN_STATUS => X_RETURN_STATUS, X_MSG_COUNT => X_MSG_COUNT, X_MSG_DATA => X_MSG_DATA, P_PAYEE => P_PAYEE, P_ASSIGNMENT_ATTRIBS => P_ASSIGNMENT_ATTRIBS, X_ASSIGN_ID => l_ASSIGN_ID, x_response => x_response );
+      iby_disbursement_setup_pub.set_payee_instr_assignment (p_api_version => p_api_version,
+														     p_init_msg_list => p_init_msg_list, p_commit => p_commit, x_return_status => x_return_status, x_msg_count => x_msg_count, x_msg_data => x_msg_data, p_payee => p_payee, p_assignment_attribs => p_assignment_attribs, x_assign_id => l_assign_id, x_response => x_response );
       COMMIT;
-      print_debug_msg(p_message=> l_program_step||' SET_PAYEE_INSTR_ASSIGNMENT X_ASSIGN_ID = ' || l_ASSIGN_ID, p_force=>true);
+      print_debug_msg(p_message=> l_program_step||' SET_PAYEE_INSTR_ASSIGNMENT X_ASSIGN_ID = ' || l_assign_id, p_force=>true);
       print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT X_RETURN_STATUS = ' || x_return_status, p_force=>true);
-      PRINT_DEBUG_MSG(P_MESSAGE=> L_PROGRAM_STEP||'SET_PAYEE_INSTR_ASSIGNMENT fnd_api.g_ret_sts_success ' || FND_API.G_RET_STS_SUCCESS , P_FORCE=>TRUE);
+      print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT fnd_api.g_ret_sts_success ' || fnd_api.g_ret_sts_success , p_force=>true);
       print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT X_MSG_COUNT = ' || x_msg_count, p_force=>true);
       IF x_return_status = 'E' THEN
         print_debug_msg(p_message=> l_program_step||'x_return_status ' || x_return_status , p_force=>true);
@@ -2161,34 +2162,32 @@ BEGIN
         END LOOP;
         l_process_flag:='E';
       ELSE
-        PRINT_DEBUG_MSG(P_MESSAGE=> L_PROGRAM_STEP||'The API call ended with SUCESSS status' , P_FORCE=>TRUE);
+        print_debug_msg(p_message=> l_program_step||'The API call ended with SUCESSS status' , p_force=>true);
         l_process_flag:='Y';
-        L_MSG         :='';
+        l_msg         :='';
       END IF;
     END IF;--R_SUP_BANK.account_id IS NOT NULL AND R_SUP_BANK.INSTRUMENT_USES_ID IS NULL
     ------------------------------When Account ID is null create new Account and instrumnets
-    IF R_SUP_BANK.account_id IS NULL THEN
-      -- L_BRANCH_PARTY_ID                    :=R_SUP_BANK.BRANCH_ID;
-      -- l_bank_party_id                      :=R_SUP_BANK.bank_id;
+    IF r_sup_bank.account_id IS NULL OR r_sup_bank.account_id=-1 THEN
       x_bank_branch_rec.currency           :=r_sup_bank.currency_code;
-      x_bank_branch_rec.branch_id          :=R_SUP_BANK.BRANCH_ID;
-      x_bank_branch_rec.bank_id            :=R_SUP_BANK.bank_id;
+      x_bank_branch_rec.branch_id          :=r_sup_bank.branch_id;
+      x_bank_branch_rec.bank_id            :=r_sup_bank.bank_id;
       x_bank_branch_rec.acct_owner_party_id:=lv_acct_owner_party_id;
-      x_bank_branch_rec.country_code       :=r_sup_bank.country_code;--'US';
+      x_bank_branch_rec.country_code       :=r_sup_bank.country_code;
       x_bank_branch_rec.bank_account_name  := r_sup_bank.bank_account_name;
-      X_BANK_BRANCH_REC.BANK_ACCOUNT_NUM   :=R_SUP_BANK.BANK_ACCOUNT_NUM;
-      FND_MSG_PUB.INITIALIZE; --to make msg_count 0
-      X_RETURN_STATUS:=NULL;
-      X_MSG_COUNT    :=NULL;
-      X_MSG_DATA     :=NULL;
-      X_RESPONSE     :=NULL;
-      IBY_EXT_BANKACCT_PUB.CREATE_EXT_BANK_ACCT ( P_API_VERSION => 1.0, P_INIT_MSG_LIST => FND_API.G_TRUE, p_ext_bank_acct_rec => x_bank_branch_rec, P_ASSOCIATION_LEVEL => 'SS', p_supplier_site_id => lv_supp_site_id, P_PARTY_SITE_ID => LV_SUPP_PARTY_SITE_ID, p_org_id => lv_org_id, p_org_type => 'OPERATING_UNIT', X_ACCT_ID => L_ACCOUNT_ID, x_return_status => x_return_status, X_MSG_COUNT => X_MSG_COUNT, x_msg_data =>x_msg_data, x_response => x_response );
-      PRINT_DEBUG_MSG(P_MESSAGE=> L_PROGRAM_STEP||'create_ext_bank_acct l_account_id = ' || L_ACCOUNT_ID, P_FORCE=>TRUE);
+      x_bank_branch_rec.bank_account_num   :=r_sup_bank.bank_account_num;
+      fnd_msg_pub.initialize; --to make msg_count 0
+      x_return_status:=NULL;
+      x_msg_count    :=NULL;
+      x_msg_data     :=NULL;
+      x_response     :=NULL;
+      iby_ext_bankacct_pub.create_ext_bank_acct ( p_api_version => 1.0, p_init_msg_list => fnd_api.g_true, p_ext_bank_acct_rec => x_bank_branch_rec, p_association_level => 'SS', p_supplier_site_id => lv_supp_site_id, p_party_site_id => lv_supp_party_site_id, p_org_id => lv_org_id, p_org_type => 'OPERATING_UNIT', x_acct_id => l_account_id, x_return_status => x_return_status, x_msg_count => x_msg_count, x_msg_data =>x_msg_data, x_response => x_response );
+      print_debug_msg(p_message=> l_program_step||'create_ext_bank_acct l_account_id = ' || l_account_id, p_force=>true);
       print_debug_msg(p_message=> l_program_step||'create_ext_bank_acct X_RETURN_STATUS = ' || x_return_status, p_force=>true);
-      PRINT_DEBUG_MSG(P_MESSAGE=> L_PROGRAM_STEP||'create_ext_bank_acct fnd_api.g_ret_sts_success ' || FND_API.G_RET_STS_SUCCESS , P_FORCE=>TRUE);
-      PRINT_DEBUG_MSG(P_MESSAGE=> L_PROGRAM_STEP||'create_ext_bank_acct X_MSG_COUNT = ' || X_MSG_COUNT, P_FORCE=>TRUE);
+      print_debug_msg(p_message=> l_program_step||'create_ext_bank_acct fnd_api.g_ret_sts_success ' || fnd_api.g_ret_sts_success , p_force=>true);
+      print_debug_msg(p_message=> l_program_step||'create_ext_bank_acct X_MSG_COUNT = ' || x_msg_count, p_force=>true);
       COMMIT;
-      IF X_RETURN_STATUS = 'E' THEN
+      IF x_return_status = 'E' THEN
         print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT x_return_status ' || x_return_status , p_force=>true);
         print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT fnd_api.g_ret_sts_success ' || fnd_api.g_ret_sts_success , p_force=>true);
         FOR i IN 1 .. x_msg_count--fnd_msg_pub.count_msg
@@ -2198,29 +2197,24 @@ BEGIN
         END LOOP;
         l_process_flag:='E';
       ELSE
-        PRINT_DEBUG_MSG(P_MESSAGE=> L_PROGRAM_STEP||'The API call ended with SUCESSS status' , P_FORCE=>TRUE);
+        print_debug_msg(p_message=> l_program_step||'The API call ended with SUCESSS status' , p_force=>true);
         l_process_flag:='Y';
         l_msg         :='';
       END IF;
-      /*  ELSE
-      l_process_flag:='E';---IF l_account_id            IS NOT NULL
-      END IF;    */
-      ---IF R_SUP_BANK.account_id
     END IF; ---IF R_SUP_BANK.account_id
     BEGIN
-      UPDATE XX_AP_CLD_SUPP_BNKACT_STG XAS
-      SET XAS.BNKACT_PROCESS_FLAG =DECODE (L_PROCESS_FLAG,'Y',GN_PROCESS_STATUS_IMPORTED ,'E',GN_PROCESS_STATUS_IMP_FAIL),---6
-        xas.ERROR_FLAG            =DECODE( l_process_flag,'Y',NULL,'E','Y'),
-        XAS.ERROR_MSG             = L_MSG,
-        --  xas.instrument_uses_id=l_ASSIGN_ID,
-        XAS.ACCOUNT_ID               =L_ACCOUNT_ID,
-        process_Flag                 =l_process_flag
-      WHERE XAS.BNKACT_PROCESS_FLAG  =GN_PROCESS_STATUS_VALIDATED
-      AND XAS.REQUEST_ID             = GN_REQUEST_ID
+      UPDATE xx_ap_cld_supp_bnkact_stg xas
+      SET xas.bnkact_process_flag =DECODE (l_process_flag,'Y',gn_process_status_imported ,'E',gn_process_status_imp_fail),---6
+        xas.error_flag            =DECODE( l_process_flag,'Y',NULL,'E','Y'),
+        xas.error_msg             = l_msg,
+        xas.account_id               =l_account_id,
+        process_flag                 =l_process_flag
+      WHERE xas.bnkact_process_flag  =gn_process_status_validated
+      AND xas.request_id             =gn_request_id
       AND xas.supplier_num           =r_sup_bank.supplier_num
-      AND TRIM(XAS.VENDOR_SITE_CODE) =TRIM(R_SUP_BANK.VENDOR_SITE_CODE)
-      AND BANK_ACCOUNT_NUM           =R_SUP_BANK.BANK_ACCOUNT_NUM
-      AND BANK_NAME                  =R_SUP_BANK.BANK_NAME
+      AND trim(xas.vendor_site_code) =trim(r_sup_bank.vendor_site_code)
+      AND bank_account_num           =r_sup_bank.bank_account_num
+      AND bank_name                  =r_sup_bank.bank_name
       AND branch_name                =r_sup_bank.branch_name;
       COMMIT;
     EXCEPTION
@@ -2232,6 +2226,7 @@ EXCEPTION
 WHEN OTHERS THEN
   fnd_file.put_line(fnd_file.log,SQLCODE||','||sqlerrm);
 END attach_bank_assignments;
+
 --+===============================================================================+
 --| Name          : validate_Supplier_records                                     |
 --| Description   : This procedure will validate supplier records in staging table|
@@ -2881,6 +2876,7 @@ l_sup_site_and_add l_sup_site_and_add_tab;
   l_freight_terms_code fnd_lookup_values.lookup_code%type;
   l_pay_method_cnt NUMBER;
   l_tolerance_name ap_tolerance_templates.tolerance_name%type;
+  l_service_tolerance_name ap_tolerance_templates.tolerance_name%type;
   l_deduct_bank_chrg VARCHAR2(5);
   l_inv_match_option VARCHAR2(25);
   l_inv_cur_code fnd_currencies_vl.currency_code%type;
@@ -2918,6 +2914,7 @@ l_sup_site_and_add l_sup_site_and_add_tab;
   l_bill_to_cnt               NUMBER :=0;
   l_terms_cnt                 NUMBER :=0;
   l_tolerance_cnt             NUMBER :=0;
+  l_service_tolerance_cnt     NUMBER :=0;
   l_int_vend_code             VARCHAR2(100);
   l_fob_code_cnt              NUMBER ;
   l_freight_terms_code_cnt    NUMBER;
@@ -3312,6 +3309,28 @@ BEGIN
         END IF; -- IF l_pay_method_cnt < 1
       END IF;   -- IF l_sup_site_type.PAYMENT_METHOD IS NULL
 
+      --=============================================================================
+      -- Validating the Supplier Site - Service Tolerance
+      --=============================================================================
+      IF l_sup_site_type.service_tolerance IS NULL THEN
+         l_service_tolerance_name                := 'US_OD_TOLERANCES_Default';
+      ELSE
+         l_service_tolerance_name := l_sup_site_type.service_tolerance;
+      END IF;
+      l_service_tolerance_cnt := 0;
+  
+       OPEN c_get_tolerance(l_service_tolerance_name);
+      FETCH c_get_tolerance INTO l_service_tolerance_cnt;
+      CLOSE c_get_tolerance;
+      IF l_service_tolerance_cnt          =0 THEN
+         gc_error_site_status_flag := 'Y';
+         print_debug_msg(p_message=> gc_step||' ERROR: Service Tolerance :'||l_sup_site_type.service_tolerance||': XXOD_SERVICE_TOLERANCE_INVALID: Service Tolerance does not exist in the system.' ,p_force=> true);
+         insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_SERVICE_TOLERANCE_INVALID' ,p_error_message => 'Service Tolerance '||l_sup_site_type.service_tolerance||' does not exist in the system' ,p_stage_col1 => 'SERVICE_TOLERANCE' ,p_stage_val1 => l_sup_site_type.service_tolerance ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
+      ELSE
+         print_debug_msg(p_message=> gc_step||' Service Tolerance Id is available' ,p_force=> false);
+      END IF; -- IF l_service_tolerance_id IS NULL
+	  
+	  
       --=============================================================================
       -- Validating the Supplier Site - Invoice Tolerance
       --=============================================================================
@@ -3968,6 +3987,149 @@ THEN
   x_return_status := 'E';
   x_err_buf       := l_err_buff;
 END validate_supp_contact_records;
+--+============================================================================+
+--| Name          : Update_bank_assignment_date                                |
+--| Description   : This procedure will Update_bank_acct_date using API        |
+--|                                                                            |
+--| Parameters    : x_ret_code OUT NUMBER ,                                    |
+--|                 x_return_status OUT VARCHAR2 ,                             |
+--|                 x_err_buf OUT VARCHAR2                                     |
+--|                                                                            |
+--| Returns       : N/A                                                        |
+--|                                                                            |
+--+============================================================================+
+PROCEDURE Update_bank_assignment_date(
+    x_ret_code OUT NUMBER ,
+    x_return_status OUT VARCHAR2 ,
+    x_err_buf OUT VARCHAR2)
+IS
+  x_bank_branch_rec iby_ext_bankacct_pub.extbankacct_rec_type;
+  p_assignment_attribs iby_fndcpt_setup_pub.pmtinstrassignment_rec_type;
+  p_payee iby_disbursement_setup_pub.payeecontext_rec_type;
+  lr_ext_bank_acct_dtl iby_ext_bank_accounts%rowtype;
+  p_api_version          NUMBER;
+  p_init_msg_list        VARCHAR2(200);
+  p_commit               VARCHAR2(200);
+  p_validation_level     NUMBER;
+  x_msg_count            NUMBER;
+  x_msg_data             VARCHAR2(200);
+  p_calling_prog         VARCHAR2(200);
+  l_program_step         VARCHAR2 (100) := '';
+  ln_msg_index_num       NUMBER;
+  l_msg                  VARCHAR2(2000);
+  l_process_flag         VARCHAR2(10);
+  lv_supp_site_id        VARCHAR2(100);
+  lv_supp_party_site_id  VARCHAR2(100);
+  lv_acct_owner_party_id VARCHAR2(100);
+  lv_org_id              NUMBER;
+  x_assign_id            NUMBER;
+  l_fax_area_code hz_contact_points.phone_area_code%type;
+  l_account_id NUMBER;
+  x_response iby_fndcpt_common_pub.result_rec_type;
+  l_assign_id           NUMBER;
+  l_joint_acct_owner_id NUMBER;
+  CURSOR c_sup_bank
+  IS
+    SELECT *
+    FROM xx_ap_cld_supp_bnkact_stg xas
+    WHERE 1                     =1
+    AND xas.create_flag         ='N'
+    AND xas.bnkact_process_flag =gn_process_status_validated
+    AND xas.request_id          = gn_request_id;
+  ----
+BEGIN
+  p_api_version      := 1.0;
+  p_init_msg_list    := fnd_api.g_false;
+  p_commit           := fnd_api.g_false;
+  p_validation_level := fnd_api.g_valid_level_full;
+  p_calling_prog     := 'XXCUSTOM';
+  l_program_step     := 'START';
+  FOR r_sup_bank IN c_sup_bank
+  LOOP
+    print_debug_msg(p_message=> l_program_step||'Inside Cursor', p_force=>true);
+    BEGIN
+      SELECT assa.vendor_site_id,
+        assa.party_site_id,
+        aps.party_id,
+        assa.org_id
+      INTO lv_supp_site_id,
+        lv_supp_party_site_id,
+        lv_acct_owner_party_id,
+        lv_org_id
+      FROM ap_suppliers aps,
+        ap_supplier_sites_all assa
+      WHERE aps.vendor_id     = assa.vendor_id
+      AND aps.vendor_id       =r_sup_bank.vendor_id
+      AND assa.vendor_site_id = r_sup_bank.vendor_site_id;
+    EXCEPTION
+    WHEN OTHERS THEN
+      print_debug_msg(p_message=> l_program_step||'Error- Get supp_site_id and supp_party_site_id' || SQLCODE || sqlerrm, p_force=>true);
+    END;
+    p_payee.supplier_site_id := lv_supp_site_id;
+    p_payee.party_id         := lv_acct_owner_party_id;
+    p_payee.party_site_id    := lv_supp_party_site_id;
+    p_payee.payment_function := 'PAYABLES_DISB';
+    p_payee.org_id           := lv_org_id;
+    p_payee.org_type         := 'OPERATING_UNIT';
+    -- Assignment Values
+    p_assignment_attribs.instrument.instrument_type := 'BANKACCOUNT';
+    l_account_id                                    :=r_sup_bank.account_id;
+    print_debug_msg(p_message=> l_program_step||'L_ACCOUNT_ID '||l_account_id, p_force=>true);
+    p_assignment_attribs.instrument.instrument_id:=l_account_id;
+    p_assignment_attribs.Assignment_Id           :=r_sup_bank.instrument_uses_id;
+    p_assignment_attribs.priority                := 1;
+    p_assignment_attribs.start_date              := TO_DATE(r_sup_bank.start_date,'YYYY/MM/DD');
+    p_assignment_attribs.end_date                := TO_DATE(r_sup_bank.end_date,'YYYY/MM/DD');
+    fnd_msg_pub.initialize; --to make msg_count 0
+    x_return_status:=NULL;
+    x_msg_count    :=NULL;
+    x_msg_data     :=NULL;
+    x_response     :=NULL;
+    --------------------Call the API for istr assignemtn
+    iby_disbursement_setup_pub.set_payee_instr_assignment (p_api_version => p_api_version, p_init_msg_list => p_init_msg_list, p_commit => p_commit, x_return_status => x_return_status, x_msg_count => x_msg_count, x_msg_data => x_msg_data, p_payee => p_payee, p_assignment_attribs => p_assignment_attribs, x_assign_id => l_assign_id, x_response => x_response );
+    COMMIT;
+    print_debug_msg(p_message=> l_program_step||' SET_PAYEE_INSTR_ASSIGNMENT END_DATE X_ASSIGN_ID = ' || l_assign_id, p_force=>true);
+    print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT END_DATE X_RETURN_STATUS = ' || x_return_status, p_force=>true);
+    print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT END_DATE fnd_api.g_ret_sts_success ' || fnd_api.g_ret_sts_success , p_force=>true);
+    print_debug_msg(p_message=> l_program_step||'SET_PAYEE_INSTR_ASSIGNMENT END_DATE X_MSG_COUNT = ' || x_msg_count, p_force=>true);
+    IF x_return_status = 'E' THEN
+      print_debug_msg(p_message=> l_program_step||'x_return_status ' || x_return_status , p_force=>true);
+      print_debug_msg(p_message=> l_program_step||'fnd_api.g_ret_sts_success ' || fnd_api.g_ret_sts_success , p_force=>true);
+      FOR i IN 1 .. x_msg_count--fnd_msg_pub.count_msg
+      LOOP
+        fnd_msg_pub.get ( p_msg_index => i , p_encoded => 'F' , p_data => l_msg , p_msg_index_out => ln_msg_index_num );
+        print_debug_msg(p_message=> l_program_step||'The API SET_PAYEE_INSTR_ASSIGNMENT END_DATE call failed with error ' || l_msg , p_force=>true);
+      END LOOP;
+      l_process_flag:='E';
+    ELSE
+      print_debug_msg(p_message=> l_program_step||'The API SET_PAYEE_INSTR_ASSIGNMENT END_DATE call ended with SUCESSS status' , p_force=>true);
+      l_process_flag:='Y';
+      l_msg         :='';
+    END IF;
+    BEGIN
+      UPDATE xx_ap_cld_supp_bnkact_stg xas
+      SET xas.bnkact_process_flag    =DECODE (l_process_flag,'Y',gn_process_status_imported ,'E',gn_process_status_imp_fail),---6
+        xas.error_flag               =DECODE( l_process_flag,'Y',NULL,'E','Y'),
+        xas.error_msg                = l_msg,
+        xas.account_id               =l_account_id,
+        process_flag                 ='Y'
+      WHERE xas.bnkact_process_flag  =gn_process_status_validated
+      AND xas.request_id             = gn_request_id
+      AND xas.supplier_num           =r_sup_bank.supplier_num
+      AND trim(xas.vendor_site_code) =trim(r_sup_bank.vendor_site_code)
+      AND bank_account_num           =r_sup_bank.bank_account_num
+      AND bank_name                  =r_sup_bank.bank_name
+      AND branch_name                =r_sup_bank.branch_name;
+      COMMIT;
+    EXCEPTION
+    WHEN OTHERS THEN
+      print_debug_msg(p_message=> l_program_step||'In Exception to update Bank Assignment records', p_force=>true);
+    END ;
+  END LOOP;
+EXCEPTION
+WHEN OTHERS THEN
+  fnd_file.put_line(fnd_file.log,SQLCODE||','||sqlerrm);
+END Update_bank_assignment_date;
 
 --+============================================================================+
 --| Name          : validate_bank_records                                      |
@@ -3978,69 +4140,66 @@ END validate_supp_contact_records;
 --| Returns       : N/A                                                        |
 --|                                                                            |
 --+============================================================================+
-PROCEDURE validate_bank_records( x_ret_code OUT NUMBER,
-                                 x_return_status OUT VARCHAR2,
-                                 x_err_buf OUT VARCHAR2
-                               )
+PROCEDURE validate_bank_records(
+    x_ret_code OUT NUMBER,
+    x_return_status OUT VARCHAR2,
+    x_err_buf OUT VARCHAR2 )
 IS
---==========================================================================================
+  --==========================================================================================
   -- Variables Declaration used for getting the data into PL/SQL Table for Processing the API
---==========================================================================================
-TYPE l_sup_bank_tab IS TABLE OF XX_AP_CLD_SUPP_BNKACT_STG%rowtype INDEX BY binary_integer;
-l_sup_bank l_sup_bank_tab;
-
---==========================================================================================
--- Cursor Declarations for Supplier Sites
---==========================================================================================
-CURSOR c_supplier_bank
+  --==========================================================================================
+TYPE l_sup_bank_tab
 IS
-SELECT xasc.*,
-       apsup.vendor_id supp_id,
-       apsup.vendor_site_code supp_site_code,
-       apsup.vendor_site_id supp_site_id,
-       apsup.party_site_id party_site_id
-  FROM ap_suppliers assi,
-       ap_supplier_sites_all apsup,
-       xx_ap_cld_supp_bnkact_stg xasc
- WHERE xasc.request_id             = gn_request_id
-   AND xasc.bnkact_process_flag in (gn_process_status_inprocess)
-   AND apsup.vendor_site_code      =xasc.vendor_site_code
-   AND assi.vendor_id              =apsup.vendor_id
-   AND assi.segment1               =xasc.supplier_num;
-
-   
-CURSOR c_bank_branch(p_bank_name VARCHAR2, p_country VARCHAR2,p_branch VARCHAR2)
-IS
-select b.bank_party_id,
-       b.branch_party_id
-  from ce_bank_branches_v b,
-       hz_parties a
- where a.party_name=p_bank_name
-   and b.bank_party_id=a.party_id
-   and b.bank_branch_name=p_branch
-   AND b.country=p_country
-   and SYSDATE BETWEEN b.start_date AND NVL(end_date,sysdate+1);
-   
-  
---==========================================================================================
- -- Declaring Local variables
---==========================================================================================
-  
-  l_sup_bank_idx              NUMBER := 0;
-  l_procedure                 VARCHAR2 (30)  := 'validate_bank_records';
-  l_program_step              VARCHAR2 (100) := '';
-  l_ret_code                  NUMBER;
-  l_return_status             VARCHAR2 (100);
-  l_err_buff                  VARCHAR2 (4000);
-  l_error_message             VARCHAR2(4000) := '';
-  l_site_cnt_for_bank         NUMBER;
-  l_bank_upd_cnt              NUMBER       :=0;
-  l_bank_create_flag          VARCHAR2(10) := '';
-  l_sup_bank_id               NUMBER;
-  l_sup_bank_branch_id        NUMBER;
-  l_bank_account_id           NUMBER;
-  l_instrument_id             NUMBER;
-  
+  TABLE OF XX_AP_CLD_SUPP_BNKACT_STG%rowtype INDEX BY binary_integer;
+  l_sup_bank l_sup_bank_tab;
+  --==========================================================================================
+  -- Cursor Declarations for Supplier Sites
+  --==========================================================================================
+  CURSOR c_supplier_bank
+  IS
+    SELECT xasc.*,
+      apsup.vendor_id supp_id,
+      apsup.vendor_site_code supp_site_code,
+      apsup.vendor_site_id supp_site_id,
+      apsup.party_site_id party_site_id
+    FROM ap_suppliers assi,
+      ap_supplier_sites_all apsup,
+      xx_ap_cld_supp_bnkact_stg xasc
+    WHERE xasc.request_id         = gn_request_id
+    AND xasc.bnkact_process_flag IN (gn_process_status_inprocess)
+    AND apsup.vendor_site_code    =xasc.vendor_site_code
+    AND assi.vendor_id            =apsup.vendor_id
+    AND assi.segment1             =xasc.supplier_num;
+  CURSOR c_bank_branch(p_bank_name VARCHAR2, p_country VARCHAR2,p_branch VARCHAR2)
+  IS
+    SELECT b.bank_party_id,
+      b.branch_party_id
+    FROM ce_bank_branches_v b,
+      hz_parties a
+    WHERE a.party_name    =p_bank_name
+    AND b.bank_party_id   =a.party_id
+    AND b.bank_branch_name=p_branch
+    AND b.country         =p_country
+    AND SYSDATE BETWEEN b.start_date AND NVL(end_date,sysdate+1);
+  --==========================================================================================
+  -- Declaring Local variables
+  --==========================================================================================
+  l_sup_bank_idx         NUMBER         := 0;
+  l_procedure            VARCHAR2 (30)  := 'validate_bank_records';
+  l_program_step         VARCHAR2 (100) := '';
+  l_ret_code             NUMBER;
+  l_return_status        VARCHAR2 (100);
+  l_err_buff             VARCHAR2 (4000);
+  l_error_message        VARCHAR2(4000) := '';
+  l_site_cnt_for_bank    NUMBER;
+  l_bank_upd_cnt         NUMBER       :=0;
+  l_bank_create_flag     VARCHAR2(10) := '';
+  l_sup_bank_id          NUMBER;
+  l_sup_bank_branch_id   NUMBER;
+  l_bank_account_id      NUMBER;
+  l_instrument_id        NUMBER;
+  l_bank_acct_end_date   DATE;
+  l_bank_acct_start_date VARCHAR2(50);
 BEGIN
   l_program_step := 'START';
   print_debug_msg(p_message=> 'Begin Validate Bank Records Procedure ',p_force=>true);
@@ -4053,7 +4212,6 @@ BEGIN
   l_ret_code                := 0;
   l_return_status           := 'S';
   l_err_buff                := NULL;
-
   --====================================================================
   -- Check and Update the staging table for the Duplicate bank accounts
   --====================================================================
@@ -4061,49 +4219,50 @@ BEGIN
     print_debug_msg(p_message => 'Check and udpate the staging table for the Duplicate bank', p_force => false);
     l_bank_upd_cnt := 0;
     UPDATE xx_ap_cld_supp_bnkact_stg xassc1
-       SET xassc1.bnkact_process_flag   = gn_process_status_error ,
-           xassc1.error_flag              = gc_process_error_flag ,
-           xassc1.error_msg               = 'error: duplicate bank assignment in staging table'
-     WHERE xassc1.bnkact_process_flag = gn_process_status_inprocess
-       AND xassc1.REQUEST_ID            = gn_request_id
-       AND 2 <=( SELECT COUNT(1)
-                   FROM xx_ap_cld_supp_bnkact_stg xassc2
-                  WHERE xassc2.bnkact_process_flag        in (gn_process_status_inprocess)
-                    AND xassc2.request_id                    = gn_request_id
-                    AND trim(upper(xassc2.supplier_num))     = trim(upper(xassc1.supplier_num))
-                    AND trim(upper(xassc2.vendor_site_code)) = trim(upper(xassc1.vendor_site_code))
-                    AND trim(upper(xassc2.bank_name))        = trim(upper(xassc1.bank_name))
-                    AND trim(upper(xassc2.branch_name))      = trim(upper(xassc1.branch_name))
-                    AND xassc2.bank_account_num              = xassc1.bank_account_num
-                );
+    SET xassc1.bnkact_process_flag   = gn_process_status_error ,
+      xassc1.error_flag              = gc_process_error_flag ,
+      xassc1.error_msg               = 'error: duplicate bank assignment in staging table'
+    WHERE xassc1.bnkact_process_flag = gn_process_status_inprocess
+    AND xassc1.REQUEST_ID            = gn_request_id
+    AND 2                           <=
+      (SELECT COUNT(1)
+      FROM xx_ap_cld_supp_bnkact_stg xassc2
+      WHERE xassc2.bnkact_process_flag        IN (gn_process_status_inprocess)
+      AND xassc2.request_id                    = gn_request_id
+      AND trim(upper(xassc2.supplier_num))     = trim(upper(xassc1.supplier_num))
+      AND trim(upper(xassc2.vendor_site_code)) = trim(upper(xassc1.vendor_site_code))
+      AND trim(upper(xassc2.bank_name))        = trim(upper(xassc1.bank_name))
+      AND trim(upper(xassc2.branch_name))      = trim(upper(xassc1.branch_name))
+      AND xassc2.bank_account_num              = xassc1.bank_account_num
+      );
     l_bank_upd_cnt := sql%rowcount;
-    print_debug_msg(p_message => 'Check and updated '||l_bank_upd_cnt||' records as error in the staging table for the Duplicate Conatct', p_force => false);
+    print_debug_msg(p_message => 'Check and updated '||l_bank_upd_cnt||' records as error in the staging table for the Duplicate Bank', p_force => false);
   EXCEPTION
-    WHEN OTHERS THEN
-      l_err_buff := SQLCODE || ' - '|| SUBSTR (sqlerrm,1,3500);
-      print_debug_msg(p_message => 'ERROR EXCEPTION: Updating the Duplicate bank assignment in Staging table - '|| l_err_buff , p_force => false);
+  WHEN OTHERS THEN
+    l_err_buff := SQLCODE || ' - '|| SUBSTR (sqlerrm,1,3500);
+    print_debug_msg(p_message => 'ERROR EXCEPTION: Updating the Duplicate bank assignment in Staging table - '|| l_err_buff , p_force => false);
   END;
   --=====================================================================================
-  -- Check and Update the contact Process Flag to '7' if all contact values are NULL
+  -- Check and Update the Bank process flag to '7' if all Bank Information are NULL
   --=====================================================================================
-  ----Commneted by Priyam as this check will go at contact level
   BEGIN
     l_bank_upd_cnt := 0;
     UPDATE xx_ap_cld_supp_bnkact_stg xassc
-       SET xassc.bnkact_process_flag = gn_process_status_error ,
-           xassc.error_flag            = gc_process_error_flag ,
-           xassc.error_msg             = error_msg||',bank or branch information is null'
-     WHERE xassc.bnkact_process_flag in (gn_process_status_inprocess)
-       AND xassc.request_id             = gn_request_id
-       AND ( xassc.bank_name             IS NULL  OR xassc.branch_name            IS NULL ) ;
+    SET xassc.bnkact_process_flag = gn_process_status_error ,
+      xassc.error_flag            = gc_process_error_flag ,
+      xassc.error_msg             = error_msg
+      ||',bank or branch information is null'
+    WHERE xassc.bnkact_process_flag IN (gn_process_status_inprocess)
+    AND xassc.request_id             = gn_request_id
+    AND ( xassc.bank_name           IS NULL
+    OR xassc.branch_name            IS NULL ) ;
     l_bank_upd_cnt                  := sql%rowcount;
     print_debug_msg(p_message => 'After Bank or branch information is null', p_force => false);
   EXCEPTION
-    WHEN OTHERS THEN
-      l_err_buff := SQLCODE || ' - '|| SUBSTR (sqlerrm,1,3500);
-      print_debug_msg(p_message => 'ERROR-EXCEPTION: Bank or branch information is null - '|| l_err_buff , p_force => false);
+  WHEN OTHERS THEN
+    l_err_buff := SQLCODE || ' - '|| SUBSTR (sqlerrm,1,3500);
+    print_debug_msg(p_message => 'ERROR-EXCEPTION: Bank or branch information is null - '|| l_err_buff , p_force => false);
   END;
-  
   --====================================================================
   -- Call the Bank Account Validations
   --====================================================================
@@ -4117,118 +4276,108 @@ BEGIN
     gc_error_site_status_flag := 'N';
     gc_step                   := 'BANK_ASSI_CONT';
     gc_error_msg              := '';
-    
     --====================================================================
     -- Checking Required Columns validation
     --====================================================================
-    
     IF l_sup_bank_type.supplier_name IS NULL THEN
-       gc_error_site_status_flag      := 'Y';
-       gc_error_msg:=gc_error_msg||' Supplier Name is NULL';
-       print_debug_msg(p_message=> gc_step||' ERROR: supplier_name:' ||l_sup_bank_type.supplier_name|| ': XXOD_supplier_NAME_NULL:FIRST_NAME cannot be NULL',
-                       p_force=> false);
-       insert_error (p_program_step => gc_step ,p_primary_key => l_sup_bank_type.supplier_name , 
-                     p_error_code => 'XXOD_supplier_NAME_NULL' ,p_error_message => 'supplier_name cannot be NULL' , 
-                     p_stage_col1 => 'XXOD_supplier_NAME_NULL' ,p_stage_val1 => l_sup_bank_type.supplier_name ,
-                     p_table_name => g_sup_bank_table );
+      gc_error_site_status_flag      := 'Y';
+      gc_error_msg                   :=gc_error_msg||' Supplier Name is NULL';
+      print_debug_msg(p_message=> gc_step||' ERROR: supplier_name:' ||l_sup_bank_type.supplier_name|| ': XXOD_supplier_NAME_NULL:FIRST_NAME cannot be NULL', p_force=> false);
+      insert_error (p_program_step => gc_step ,p_primary_key => l_sup_bank_type.supplier_name , p_error_code => 'XXOD_supplier_NAME_NULL' ,p_error_message => 'supplier_name cannot be NULL' , p_stage_col1 => 'XXOD_supplier_NAME_NULL' ,p_stage_val1 => l_sup_bank_type.supplier_name , p_table_name => g_sup_bank_table );
     END IF;
-    
     IF l_sup_bank_type.supplier_num IS NULL THEN
-       gc_error_site_status_flag     := 'Y';
-       gc_error_msg:=gc_error_msg||', Supplier Number is NULL';
-       print_debug_msg(p_message=> gc_step||' ERROR: supplier_num:' ||l_sup_bank_type.supplier_num|| ': XXOD_supplier_num_NULL:LAST_NAME cannot be NULL' ,p_force=> false);
-       insert_error (p_program_step => gc_step ,p_primary_key => l_sup_bank_type.supplier_num ,p_error_code => 'XXOD_supplier_num_NULL' , p_error_message => 'supplier Num cannot be NULL' ,p_stage_col1 => 'XXOD_supplier_num_NULL' , p_stage_val1 => l_sup_bank_type.supplier_num ,p_table_name => g_sup_bank_table );
+      gc_error_site_status_flag     := 'Y';
+      gc_error_msg                  :=gc_error_msg||', Supplier Number is NULL';
+      print_debug_msg(p_message=> gc_step||' ERROR: supplier_num:' ||l_sup_bank_type.supplier_num|| ': XXOD_supplier_num_NULL:LAST_NAME cannot be NULL' ,p_force=> false);
+      insert_error (p_program_step => gc_step ,p_primary_key => l_sup_bank_type.supplier_num ,p_error_code => 'XXOD_supplier_num_NULL' , p_error_message => 'supplier Num cannot be NULL' ,p_stage_col1 => 'XXOD_supplier_num_NULL' , p_stage_val1 => l_sup_bank_type.supplier_num ,p_table_name => g_sup_bank_table );
     END IF;
-    
     IF l_sup_bank_type.vendor_site_code IS NULL THEN
-       gc_error_site_status_flag         := 'Y';
-       gc_error_msg:=gc_error_msg||', Vendor Site Code is NULL';
-       print_debug_msg(p_message=> gc_step||' ERROR: vendor_site_code:' ||l_sup_bank_type.vendor_site_code|| ': XXOD_vendor_site_code_NULL:LAST_NAME cannot be NULL' ,p_force=> false);
-       insert_error (p_program_step => gc_step ,p_primary_key => l_sup_bank_type.vendor_site_code ,p_error_code => 'XXOD_vendor_site_code_NULL' , p_error_message => 'vendor_site_code cannot be NULL' ,p_stage_col1 => 'XXOD_vendor_site_code_NULL' , p_stage_val1 => l_sup_bank_type.vendor_site_code ,p_table_name => g_sup_bank_table );
+      gc_error_site_status_flag         := 'Y';
+      gc_error_msg                      :=gc_error_msg||', Vendor Site Code is NULL';
+      print_debug_msg(p_message=> gc_step||' ERROR: vendor_site_code:' ||l_sup_bank_type.vendor_site_code|| ': XXOD_vendor_site_code_NULL:LAST_NAME cannot be NULL' ,p_force=> false);
+      insert_error (p_program_step => gc_step ,p_primary_key => l_sup_bank_type.vendor_site_code ,p_error_code => 'XXOD_vendor_site_code_NULL' , p_error_message => 'vendor_site_code cannot be NULL' ,p_stage_col1 => 'XXOD_vendor_site_code_NULL' , p_stage_val1 => l_sup_bank_type.vendor_site_code ,p_table_name => g_sup_bank_table );
     END IF;
-    
     --==============================================================================================================
     -- Validating the Supplier Site - Address Details -  Address Line 2
     --==============================================================================================================
-    
     print_debug_msg(p_message=> gc_step||' After basic validation of Contact - gc_error_site_status_flag is '||gc_error_site_status_flag ,p_force=> false);
-    l_bank_CREATE_FLAG :='';
-    
+    l_bank_CREATE_FLAG          :='';
     IF gc_error_site_status_flag = 'N' THEN
       print_debug_msg(p_message=> gc_step||' l_sup_bank_type.update_flag is '||l_sup_bank_type.CREATE_FLAG ,p_force=> false);
-      print_debug_msg(p_message=> gc_step||' upper(l_sup_bank_type.supplier_name) is '||upper(l_sup_bank_type.supplier_name) ,p_force=> false);
-      print_debug_msg(p_message=> gc_step||' upper(l_sup_bank_type.supplier_number) is '||upper(l_sup_bank_type.supplier_num) ,p_force=> false);
       print_debug_msg(p_message=> gc_step||' upper(l_sup_bank_type.vendor_site_code) is '||upper(l_sup_bank_type.vendor_site_code) ,p_force=> false);
-   
       OPEN c_bank_branch(l_sup_bank_type.bank_name, l_sup_bank_type.country_code,l_sup_bank_type.branch_name);
-        FETCH c_bank_branch 
-       INTO l_sup_bank_id,l_sup_bank_branch_id;
+      FETCH c_bank_branch INTO l_sup_bank_id,l_sup_bank_branch_id;
       CLOSE c_bank_branch;
-      
-      IF ( l_sup_bank_id IS NULL OR l_sup_bank_branch_id IS NULL ) THEN
-           gc_error_site_status_flag := 'Y';
-           gc_error_msg:=gc_error_msg||', Bank OR Branch does not exists';
-           INSERT_ERROR (P_PROGRAM_STEP => GC_STEP , P_PRIMARY_KEY => L_SUP_BANK_TYPE.BANK_NAME , P_ERROR_CODE => 'XXOD_BANK_NULL' , P_ERROR_MESSAGE => 'Bank Information is null ' ||L_SUP_BANK_TYPE.BANK_NAME,P_STAGE_COL1 => 'XXOD_BANK_NULL' , P_STAGE_VAL1 => L_SUP_BANK_TYPE.BANK_NAME , P_TABLE_NAME => G_SUP_BANK_TABLE );
+      IF ( l_sup_bank_id          IS NULL OR l_sup_bank_branch_id IS NULL ) THEN
+        gc_error_site_status_flag := 'Y';
+        gc_error_msg              :=gc_error_msg||', Bank OR Branch does not exists';
+        INSERT_ERROR (P_PROGRAM_STEP => GC_STEP , P_PRIMARY_KEY => L_SUP_BANK_TYPE.BANK_NAME , P_ERROR_CODE => 'XXOD_BANK_NULL' , P_ERROR_MESSAGE => 'Bank Information is null ' ||L_SUP_BANK_TYPE.BANK_NAME,P_STAGE_COL1 => 'XXOD_BANK_NULL' , P_STAGE_VAL1 => L_SUP_BANK_TYPE.BANK_NAME , P_TABLE_NAME => G_SUP_BANK_TABLE );
       ELSE
-        l_sup_bank_type.bank_id :=l_sup_bank_id;
+        l_sup_bank_type.bank_id   :=l_sup_bank_id;
         l_sup_bank_type.branch_id :=l_sup_bank_branch_id;
+        l_instrument_id           :=NULL;
+        l_bank_acct_start_date    :=NULL;
+        l_bank_account_id         :=NULL;
         BEGIN
           SELECT ext_bank_account_id
-            INTO l_bank_account_id
-            FROM iby_ext_bank_accounts
-           WHERE bank_id=l_sup_bank_id
-                AND branch_id=l_sup_bank_branch_id
-             AND bank_account_name=l_sup_bank_type.bank_account_name
-             AND SYSDATE BETWEEN NVL(start_date,SYSDATE-1) AND NVL(end_date,SYSDATE+1);
+          INTO l_bank_account_id
+          FROM iby_ext_bank_accounts
+          WHERE bank_id       =l_sup_bank_id
+          AND branch_id       =l_sup_bank_branch_id
+          AND bank_account_num=l_sup_bank_type.bank_account_num
+          AND SYSDATE BETWEEN NVL(start_date,SYSDATE-1) AND NVL(end_date,SYSDATE+1);
           l_sup_bank_type.account_id :=l_bank_account_id;
         EXCEPTION
-          WHEN others THEN
-            l_bank_account_id:=-1;
+        WHEN OTHERS THEN
+          l_bank_account_id           :=-1;
+          l_bank_create_flag          :='Y';--Insert for Bank
+          l_sup_bank_type.create_flag :=l_bank_create_flag;
         END;
-
-        if l_bank_account_id > 0 then
-        l_bank_create_flag:='N';
-           l_sup_bank_type.create_flag:=l_bank_create_flag;
-           BEGIN        
-             SELECT uses.instrument_id
-               INTO l_instrument_id
-               FROM iby_pmt_instr_uses_all uses,
-                    iby_external_payees_all payee,
-                    iby_ext_bank_accounts accts,
-                    hz_parties bank,
-                    hz_organization_profiles bankprofile,
-                    ce_bank_branches_v branch
-              WHERE bank.party_name=l_sup_bank_type.bank_name
-                AND uses.instrument_type = 'BANKACCOUNT'
-                AND payee.ext_payee_id = uses.ext_pmt_party_id
-                AND payee.payment_function = 'PAYABLES_DISB'
-                AND payee.party_site_id = l_sup_bank_type.party_site_id
-                AND uses.instrument_id = accts.ext_bank_account_id
-                AND SYSDATE BETWEEN NVL(accts.start_date,SYSDATE) AND NVL(accts.end_date,SYSDATE)
-                AND accts.bank_id = bank.party_id(+)
-                AND accts.bank_id = bankprofile.party_id(+)
-                AND accts.branch_id = branch.branch_party_id(+)
-                AND accts.bank_account_name=l_sup_bank_type.bank_account_name
-                AND branch.bank_branch_name=l_sup_bank_type.branch_name
-                AND SYSDATE BETWEEN TRUNC (bankprofile.effective_start_date(+)) 
-                                AND NVL(TRUNC(bankprofile.effective_end_date(+)),SYSDATE+ 1);        
-           EXCEPTION
-             WHEN others THEN
-               l_instrument_id:=NULL;
-           END;
-           l_sup_bank_type.instrument_uses_id :=l_instrument_id;
-        ELSE
-          l_bank_create_flag         :='Y';--Create the Account and Instrument
-          l_sup_bank_type.create_flag:=l_bank_create_flag;
+        IF l_bank_account_id > 0 THEN
+          BEGIN
+            SELECT uses.instrument_payment_use_id,
+                   TO_CHAR(uses.start_date,'YYYY/MM/DD')
+              INTO l_instrument_id,
+                   l_bank_acct_start_date
+              FROM iby_pmt_instr_uses_all uses,
+                   iby_external_payees_all payee,
+                   iby_ext_bank_accounts accts,
+              hz_parties bank,
+              hz_organization_profiles bankprofile,
+              ce_bank_branches_v branch
+            WHERE bank.party_name      =l_sup_bank_type.bank_name
+            AND uses.instrument_type   = 'BANKACCOUNT'
+            AND payee.ext_payee_id     = uses.ext_pmt_party_id
+            AND payee.payment_function = 'PAYABLES_DISB'
+            AND payee.party_site_id    = l_sup_bank_type.party_site_id
+            AND uses.instrument_id     = accts.ext_bank_account_id
+            AND SYSDATE BETWEEN NVL(accts.start_date,SYSDATE) AND NVL(accts.end_date,SYSDATE)
+            AND accts.bank_id            = bank.party_id(+)
+            AND accts.bank_id            = bankprofile.party_id(+)
+            AND accts.branch_id          = branch.branch_party_id(+)
+            AND accts.bank_account_name  =l_sup_bank_type.bank_account_name
+            AND branch.bank_branch_name  =l_sup_bank_type.branch_name
+            AND accts.ext_bank_account_id=l_bank_account_id
+            AND SYSDATE BETWEEN TRUNC (bankprofile.effective_start_date(+)) AND NVL(TRUNC(bankprofile.effective_end_date(+)),sysdate+ 1);
+          EXCEPTION
+          WHEN OTHERS THEN
+            l_instrument_id             :=NULL;
+            l_bank_create_flag          :='Y';--Insert for Bank
+            l_sup_bank_type.create_flag :=l_bank_create_flag;
+          END;
+          l_sup_bank_type.instrument_uses_id :=l_instrument_id;
         END IF;
-      END IF;    
-
+      END IF;
+      IF l_instrument_id    > 0 AND l_sup_bank_type.end_date IS NOT NULL THEN
+         l_bank_create_flag :='N';--Update for Bank assignment end Date
+	  ELSE
+         l_bank_acct_start_date:=l_sup_bank_type.start_date;
+       END IF;
       print_debug_msg(p_message=> gc_step||' After Bank Validation, Error Status Flag is : '||gc_error_site_status_flag ,p_force=> false);
       print_debug_msg(p_message=> gc_step||' After Bank Validation, Bank Create  Flag is : '||l_bank_CREATE_FLAG ,p_force=> false);
-
       ------------------------Assigning values
-
       l_sup_bank(l_sup_bank_idx).create_flag        :=l_bank_create_flag;
+      l_sup_bank(l_sup_bank_idx).start_date         :=l_bank_acct_start_date;
       l_sup_bank(l_sup_bank_idx).vendor_site_code   :=l_sup_bank_type.vendor_site_code;
       l_sup_bank(l_sup_bank_idx).supplier_name      :=l_sup_bank_type.supplier_name;
       l_sup_bank(l_sup_bank_idx).supplier_num       :=l_sup_bank_type.supplier_num;
@@ -4241,62 +4390,61 @@ BEGIN
       l_sup_bank(l_sup_bank_idx).bank_id            :=l_sup_bank_id;
       l_sup_bank(l_sup_bank_idx).branch_id          :=l_sup_bank_branch_id;
       l_sup_bank(l_sup_bank_idx).account_id         :=l_bank_account_id;
-
     END IF;
-    print_debug_msg(p_message=> 'Bank Status Flag : '|| l_sup_bank(l_sup_bank_idx).bnkact_process_flag,p_force=> false);  
     IF gc_error_site_status_flag                      = 'Y' THEN
       l_sup_bank(l_sup_bank_idx).bnkact_process_flag := gn_process_status_error;
       l_sup_bank(l_sup_bank_idx).ERROR_FLAG          := gc_process_error_flag;
       l_sup_bank(l_sup_bank_idx).ERROR_MSG           := gc_error_msg;
     ELSE
       l_sup_bank(l_sup_bank_idx).bnkact_process_flag := gn_process_status_validated;
+      print_debug_msg(p_message=> 'Process Flag ' ||gn_process_status_validated, p_force=> false);
+      print_debug_msg(p_message=> 'Bank Status Flag : '|| l_sup_bank(l_sup_bank_idx).bnkact_process_flag,p_force=> false);
     END IF;
-  END LOOP; 
-
+  END LOOP;
   print_debug_msg(p_message=> 'Do Bulk Update for all BANK Records ' ,p_force=> false);
   print_debug_msg(p_message=> 'l_sup_bank.COUNT : '|| l_sup_bank.count ,p_force=> false);
-  
   IF l_sup_bank.count > 0 THEN
     BEGIN
       FORALL l_idxs IN l_sup_bank.FIRST .. l_sup_bank.LAST
-       UPDATE xx_ap_cld_supp_bnkact_stg
-          SET bnkact_process_flag          = l_sup_bank(l_idxs).bnkact_process_flag ,
-              error_flag                     = l_sup_bank(l_idxs).error_flag ,
-              error_msg                      = l_sup_bank(l_idxs).error_msg,
-              create_flag                    =l_sup_bank(l_idxs).create_flag,
-              last_updated_by                =g_user_id,
-              last_update_date               =SYSDATE,
-              vendor_id                      =l_sup_bank(l_idxs).vendor_id,
-              vendor_site_id                 =l_sup_bank(l_idxs).vendor_site_id,
-              instrument_uses_id             =l_sup_bank(l_idxs).instrument_uses_id,
-              bank_id                        =l_sup_bank(l_idxs).bank_id,
-              branch_id                      =l_sup_bank(l_idxs).branch_id,
-              account_id                     =l_sup_bank(l_idxs).account_id
-        WHERE 1                          =1
-          AND TRIM(UPPER(vendor_site_code))=TRIM(UPPER(l_sup_bank(l_idxs).vendor_site_code))
-          AND UPPER(supplier_num)          =UPPER(l_sup_bank(l_idxs).supplier_num)
-          AND UPPER(bank_name)             =UPPER(l_sup_bank(l_idxs).bank_name)
-          AND UPPER(BRANCH_NAME)           =UPPER(l_sup_bank(l_idxs).branch_name)
-          AND bank_account_num             =l_sup_bank(l_idxs).bank_account_num
-          AND request_id                   =gn_request_id;
-       COMMIT;
+      UPDATE xx_ap_cld_supp_bnkact_stg
+      SET bnkact_process_flag          = l_sup_bank(l_idxs).bnkact_process_flag ,
+        error_flag                     = l_sup_bank(l_idxs).error_flag ,
+        error_msg                      = l_sup_bank(l_idxs).error_msg,
+        create_flag                    =l_sup_bank(l_idxs).create_flag,
+        last_updated_by                =g_user_id,
+        last_update_date               =SYSDATE,
+        vendor_id                      =l_sup_bank(l_idxs).vendor_id,
+        vendor_site_id                 =l_sup_bank(l_idxs).vendor_site_id,
+        instrument_uses_id             =l_sup_bank(l_idxs).instrument_uses_id,
+        bank_id                        =l_sup_bank(l_idxs).bank_id,
+        branch_id                      =l_sup_bank(l_idxs).branch_id,
+        account_id                     =l_sup_bank(l_idxs).account_id ,
+        start_date                     =l_sup_bank(l_idxs).start_date
+      WHERE 1                          =1
+      AND TRIM(UPPER(vendor_site_code))=TRIM(UPPER(l_sup_bank(l_idxs).vendor_site_code))
+      AND UPPER(supplier_num)          =UPPER(l_sup_bank(l_idxs).supplier_num)
+      AND UPPER(bank_name)             =UPPER(l_sup_bank(l_idxs).bank_name)
+      AND UPPER(BRANCH_NAME)           =UPPER(l_sup_bank(l_idxs).branch_name)
+      AND bank_account_num             =l_sup_bank(l_idxs).bank_account_num
+      AND request_id                   =gn_request_id;
+      COMMIT;
     EXCEPTION
-      WHEN OTHERS THEN
-        l_error_message := 'When Others Exception  during the bulk update of site staging table' || SQLCODE || ' - ' || SUBSTR (sqlerrm ,1 ,3800 );
-        insert_error (p_program_step => 'SITE_BANK' ,p_primary_key => NULL ,p_error_code => 'XXOD_BULK_UPD_SITE' ,p_error_message => 'When Others Exception during the bulk update of site staging table' ,p_stage_col1 => NULL ,p_stage_val1 => NULL ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_bank_table );
-        print_debug_msg(p_message=> l_program_step||': '||l_error_message ,p_force=> false);
+    WHEN OTHERS THEN
+      l_error_message := 'When Others Exception  during the bulk update of Bank staging table' || SQLCODE || ' - ' || SUBSTR (sqlerrm ,1 ,3800 );
+      insert_error (p_program_step => 'SITE_BANK' ,p_primary_key => NULL ,p_error_code => 'XXOD_BULK_UPD_SITE' ,p_error_message => 'When Others Exception during the bulk update of bank staging table' ,p_stage_col1 => NULL ,p_stage_val1 => NULL ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_bank_table );
+      print_debug_msg(p_message=> l_program_step||': '||l_error_message ,p_force=> false);
     END;
   END IF;
   x_ret_code      := l_ret_code;
   x_return_status := l_return_status;
   x_err_buf       := l_err_buff;
 EXCEPTION
-  WHEN OTHERS THEN
-    l_err_buff := SQLCODE || ' - '|| SUBSTR (sqlerrm,1,3500);
-    print_debug_msg(p_message => 'ERROR: Exception in validate_bank_records() API - '|| l_err_buff , p_force => true);
-    x_ret_code      := '2';
-    x_return_status := 'E';
-    x_err_buf       := l_err_buff;
+WHEN OTHERS THEN
+  l_err_buff := SQLCODE || ' - '|| SUBSTR (sqlerrm,1,3500);
+  print_debug_msg(p_message => 'ERROR: Exception in validate_bank_records() API - '|| l_err_buff , p_force => true);
+  x_ret_code      := '2';
+  x_return_status := 'E';
+  x_err_buf       := l_err_buff;
 END validate_bank_records;
 --+============================================================================+
 --| Name          : load_Supplier_Interface                                        |
@@ -4804,6 +4952,7 @@ BEGIN
 						email_address ,
 						primary_pay_site_flag ,
 						tolerance_name,
+						services_tolerance_name,
 						bill_to_location_code ,
 						ship_to_location_code ,
 						created_by ,
@@ -4869,6 +5018,7 @@ BEGIN
 						l_sup_site_type(l_idx).primary_pay_site_flag--primary_pay_flag
 						,
 						l_sup_site_type(l_idx).tolerance_name,
+						l_sup_site_type(l_idx).service_tolerance,
 						UPPER(l_sup_site_type(l_idx).bill_to_location),
 						UPPER(l_sup_site_type(l_idx).ship_to_location),
 						g_user_id ,
@@ -5606,9 +5756,9 @@ END main_prc_supplier_contact;
 --|                   x_errbuf                  OUT      VARCHAR2              |
 --|                   x_retcode                 OUT      NUMBER                |
 --+============================================================================+
-PROCEDURE main_prc_supplier_bank(x_errbuf OUT nocopy  VARCHAR2 ,
-								 x_retcode OUT nocopy NUMBER  
-  							    )
+PROCEDURE main_prc_supplier_bank(
+    x_errbuf OUT nocopy  VARCHAR2 ,
+    x_retcode OUT nocopy NUMBER )
 IS
   --================================================================
   --Declaring local variables
@@ -5642,28 +5792,28 @@ BEGIN
   l_ret_code      := 0;
   l_return_status := 'S';
   l_err_buff      := NULL;
-
   print_debug_msg(p_message => '+---------------------------------------------------------------------------+' , p_force => true);
   print_debug_msg(p_message => 'Invoking the procedure validate_bank_records()' , p_force => true);
- 
   validate_bank_records(x_ret_code => l_ret_code ,x_return_status => l_return_status ,x_err_buf => l_err_buff);
-   
   print_debug_msg(p_message => '===========================================================================' , p_force => true);
   print_debug_msg(p_message => 'Completion of validate_bank_records' , p_force => true);
   print_debug_msg(p_message => '===========================================================================' , p_force => true);
- 
-  print_debug_msg(P_MESSAGE => 'Invoking the procedure attach_bank_assignments()' , P_FORCE => TRUE);
-  
+  print_debug_msg(p_message => 'Invoking the procedure Update_bank_assignment_date()' , p_force => true);
+  update_bank_assignment_date( x_ret_code => l_ret_code , x_return_status => l_return_status , x_err_buf => l_err_buff);
+  Print_debug_msg(p_message => '===========================================================================' , p_force => true);
+  print_debug_msg(p_message => 'Completion of Update_bank_assignment_date' , p_force => true);
+  print_debug_msg(p_message => '===========================================================================' , p_force => true);
+  print_debug_msg(p_message => 'Invoking the procedure attach_bank_assignments()' , p_force => true);
   attach_bank_assignments( x_ret_code => l_ret_code , x_return_status => l_return_status , x_err_buf => l_err_buff);
-  
   print_debug_msg(p_message => '===========================================================================' , p_force => true);
   print_debug_msg(p_message => 'Completion of attach_bank_assignments' , p_force => true);
   print_debug_msg(p_message => '===========================================================================' , p_force => true);
 EXCEPTION
-  WHEN others THEN
-    x_retcode := 2;
-    x_errbuf  := 'Exception in XX_AP_SUPP_CLD_INTF_PKG.main_prc_supplier_bank() - '||SQLCODE||' - '||SUBSTR(sqlerrm,1,3500);
+WHEN OTHERS THEN
+  x_retcode := 2;
+  x_errbuf  := 'Exception in XX_AP_SUPP_CLD_INTF_PKG.main_prc_supplier_bank() - '||SQLCODE||' - '||SUBSTR(sqlerrm,1,3500);
 END main_prc_supplier_bank;
+
 
 --+============================================================================+
 --| Name          : update_supplier_telex                                      |
