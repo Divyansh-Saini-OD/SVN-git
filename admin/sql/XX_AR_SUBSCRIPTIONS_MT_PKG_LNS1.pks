@@ -24,6 +24,7 @@ AS
 -- | 6.0         22-APR-2019  Dattatray Bachate   Added New Procedure - NAIT-83868 |
 -- | 7.0         03-MAY-2019  Kayeed / Arvind     Added New Procedure - NAIT-93356 |
 -- | 8.0         03-MAY-2019  Dattatray Bachate   Added New Procedure - NAIT-93356 |
+-- | 9.0         20-JUN-2019  Punit Gupta         Added New Procedure - NAIT-72201 |
 -- +===============================================================================+
 
   /******
@@ -107,6 +108,13 @@ AS
   PROCEDURE xx_relocation_store_vald_prc(errbuff        OUT       VARCHAR2,
                                          retcode        OUT       NUMBER
                                         );
+
+  /*********************************************************
+  * Procedure to update the receipt number for AB customers
+  **********************************************************/
+  PROCEDURE txn_receiptnum_update(errbuff      OUT VARCHAR2,
+                                  retcode      OUT VARCHAR2,
+                                  p_debug_flag IN  VARCHAR2);
 
 END;
 /
