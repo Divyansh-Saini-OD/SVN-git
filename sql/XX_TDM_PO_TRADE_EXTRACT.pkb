@@ -143,7 +143,7 @@ create or replace PACKAGE BODY xx_tdm_po_trade_extract AS
                     'RFQ',
                     'QUOTATION'
                 )
-                AND TRUNC(poh.approval_date) > TRUNC(SYSDATE-p_num_days);
+                AND TRUNC(poh.approved_date) >= TRUNC(SYSDATE-p_num_days);
                 
         ELSE
             OPEN tdm FOR SELECT
@@ -168,7 +168,7 @@ create or replace PACKAGE BODY xx_tdm_po_trade_extract AS
                     'RFQ',
                     'QUOTATION'
                 )
-                AND poh.approval_date BETWEEN TO_DATE(v_date||'00:00:00','DD-MON-YYYY hh24:mi:ss') AND TO_DATE(v_date||'23:59:59','DD-MON-YYYY hh24:mi:ss');
+                AND poh.approved_date BETWEEN TO_DATE(v_date||'00:00:00','DD-MON-YYYY hh24:mi:ss') AND TO_DATE(v_date||'23:59:59','DD-MON-YYYY hh24:mi:ss');
 
         END IF;
 
