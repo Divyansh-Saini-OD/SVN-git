@@ -143,7 +143,7 @@ create or replace PACKAGE BODY xx_tdm_po_trade_extract AS
                     'RFQ',
                     'QUOTATION'
                 )
-                AND poh.creation_date > TO_DATE((SYSDATE-p_num_days),'dd-mon-rrrr');
+                AND poh.creation_date > TO_DATE((SYSDATE-p_num_days),'dd-mon-rrrr hh24:mm:ss');
                 
         ELSE
             OPEN tdm FOR SELECT
