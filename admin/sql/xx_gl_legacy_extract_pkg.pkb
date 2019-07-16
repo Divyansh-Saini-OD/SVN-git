@@ -23,7 +23,8 @@ AS
   -- |Version   Date         Authors            Remarks                                |
   -- |========  ===========  ===============    ============================           |
   -- |1.0      29-JAN-2019   Priyam P        Creation                               |
-  -- |  1.1   13-MAR-2019     Priyam P      Removed FTP program and zip to .dat common file copy                                                                               |
+  -- |  1.1   13-MAR-2019     Priyam P      Removed FTP program and zip to .dat common file copy  
+--   |1.2     16-JUL-19      NS		        Changed the code to zip only fccs files |
   ---+=================================================================================+
 
 -- +=================================================================================+
@@ -395,7 +396,7 @@ BEGIN
       fnd_file.put_line (fnd_file.log, '');
       fnd_file.put_line (fnd_file.LOG, 'The Created File Name     : ' || lc_source_file_name );
       fnd_file.put_line (fnd_file.LOG, 'The File Copied  Path    : ' || lc_dest_file_name );
-      ln_req_id1 := fnd_request.submit_request ('xxfin', 'XXCOMFILCOPY', '', '', FALSE, lc_source_file_name, lc_dest_file_name, NULL, NULL );
+      ln_req_id1 := fnd_request.submit_request ('xxfin', 'XXCOMFILCOPY', '', '', FALSE, lc_source_file_name||'/LegacyODP*', lc_dest_file_name, NULL, NULL );
       fnd_file.put_line (fnd_file.LOG, '');
       fnd_file.put_line (fnd_file.LOG, 'The File was Copied into ' || lc_dest_file_path || '. Request id : ' || ln_req_id1 );
       COMMIT;
@@ -419,46 +420,6 @@ BEGIN
   ln_req_id2 := fnd_request.submit_request ('xxfin', 'XXODDIRZIP', '', '', FALSE, lc_source_file_name, lc_dest_file_name, NULL, NULL );
   COMMIT;
   fnd_file.put_line (fnd_file.log, '');
-  ---fnd_file.put_line (fnd_file.LOG, 'The File was Archived into ' || lc_archive_file_path || '. Request id : ' || ln_req_id2 );
-  /*lb_req_status2 := fnd_concurrent.wait_for_request (request_id => ln_req_id2, INTERVAL => '2', max_wait => '', phase => lc_phase, status => lc_status, dev_phase => lc_devphase, dev_status => lc_devstatus, MESSAGE => lc_message );
-  fnd_file.put_line (fnd_file.LOG, '*************************************************************' );
-  --------------- Call the Common file copy Program to copy .zip file to .dat file-------------
-  fnd_file.put_line (fnd_file.LOG, '');
-  fnd_file.put_line (fnd_file.LOG, '*************************************************************');
-  fnd_file.put_line (fnd_file.LOG, 'Copying .zip file to .dat file');
-  lc_source_file_name := lc_dest_file_name || '.zip';
-  lc_dest_file_name   := 'GL_NAGL_' || TO_CHAR (SYSDATE, 'YYYYMMDDHH24miss') || '.dat';
-  fnd_file.put_line (fnd_file.LOG, '');
-  fnd_file.put_line (fnd_file.LOG, 'Source Path and File Name     : ' || lc_source_file_name );
-  fnd_file.put_line (fnd_file.LOG, 'Copied Path and File Name     : ' || lc_archive_file_path || '/' || lc_dest_file_name );
-  ln_req_id1 := fnd_request.submit_request ('xxfin', 'XXCOMFILCOPY', '', '', FALSE, lc_source_file_name, lc_archive_file_path || '/' || lc_dest_file_name, NULL, NULL );
-  fnd_file.put_line (fnd_file.LOG, '');
-  fnd_file.put_line (fnd_file.LOG, 'OD: Common File Copy submitted to copy file.  Request id : ' || ln_req_id1 );
-  COMMIT;
-  ----------- Wait for the Common file copy Program to Complete -----------
-  lb_req_status1 := fnd_concurrent.wait_for_request (request_id => ln_req_id1, INTERVAL => '2', max_wait => '', phase => lc_phase, status => lc_status, dev_phase => lc_devphase, dev_status => lc_devstatus, MESSAGE => lc_message );
-  fnd_file.put_line (fnd_file.LOG, '*************************************************************' );
-  --------------- Call the OD: Common Put Program to FTP .dat file to HFM, then rename it back to .zip, then delete source .dat file
-  fnd_file.put_line (fnd_file.LOG, '');
-  fnd_file.put_line (fnd_file.LOG, '*************************************************************');
-  fnd_file.put_line (fnd_file.LOG, 'FTPing zip file to SFTP server');
-  lc_dest_file_rename := REPLACE(lc_dest_file_name,'.dat','.zip');
-  fnd_file.put_line (fnd_file.LOG, 'Dest file rename     : ' || lc_dest_file_rename );
-  ln_req_id1 := FND_REQUEST.SUBMIT_REQUEST(application => 'XXFIN' ,program => 'XXCOMFTP' ,description => 'GL Balances File FTP PUT' ,sub_request => FALSE ,argument1 => 'OD_EPM_GL_BAL' -- Row from OD_FTP_PROCESSES translation
-  ,argument2 => lc_dest_file_name                                                                                                                                                       -- Source file name
-  ,argument3 => NULL                                                                                                                                                                    -- Dest file name
-  ,argument4 => 'Y'                                                                                                                                                                     -- Delete source file
-  ,argument5 => lc_dest_file_rename                                                                                                                                                     -- New name after file is FTP'd
-  );
-  COMMIT;
-  IF ln_req_id1 = 0 THEN
-    fnd_file.put_line (fnd_file.LOG,'Error : Unable to submit FTP program to send GL Balances file');
-  ELSE
-    fnd_file.put_line (fnd_file.LOG, 'OD: Common Put Program submitted to FTP file to SFTP server.  Request id : ' || ln_req_id1 );
-  END IF;
-  --------------- END of FTP'ing .dat file
-  
-  */
 EXCEPTION
 WHEN OTHERS THEN
   IF UTL_FILE.is_open (g_lt_file) THEN
