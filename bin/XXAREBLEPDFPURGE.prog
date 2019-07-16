@@ -12,12 +12,13 @@
 # |Version   Date          Author              Remarks                |
 # |=======   ==========   =============        =======================|
 # |1.0       10-AUG-2010  Ranjith Thangasamy   Initial version        |
+# |1.1       16-JUL-2019  Suresh Ponnambalam   Excluded MERGE_BC      |
 # |                                                                   |
 # +===================================================================+
 eval lc_path=$XXFIN_DATA
 echo $lc_path
 echo "Deleting from: ${lc_path}/outbound/CONS"
-find $lc_path/outbound/CONS/* -mtime +0 -print0 | xargs -0 rm -rfv
+find $lc_path/outbound/CONS/* -mtime +0 -print0 | grep -v $lc_path/outbound/CONS/MERGE_BC | xargs -0 rm -rfv
 echo "Deleting from: ${lc_path}/outbound/IND"
 find ${lc_path}/outbound/IND/* -mtime +0 -print0 | xargs -0 rm -rfv
 exit 0
