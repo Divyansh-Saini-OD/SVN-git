@@ -192,7 +192,7 @@
                        AND BNKACT_PROCESS_FLAG IN (2,3,6)
                        AND request_id = :P_REQUEST_ID
                      UNION
-                    SELECT 'SUPPLIER' ENTITY,
+                    SELECT 'CUSTOM DFF' ENTITY,
                            SUPPLIER_NAME,
                            NULL SITE,
                            NULL CONTACT,
