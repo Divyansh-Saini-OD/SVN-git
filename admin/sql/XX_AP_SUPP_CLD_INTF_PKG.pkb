@@ -288,7 +288,7 @@ BEGIN
   v_string := ltrim(rtrim(upper(p_string)));
   BEGIN
     print_debug_msg(p_message=> ' find_special_chars() - p_string '||p_string ,p_force=> false);
-    SELECT LENGTH(trim(TRANSLATE(v_string, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', ' ')))
+    SELECT LENGTH(trim(TRANSLATE(v_string, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&-', ' ')))
     INTO v_out_string
     FROM dual;
   EXCEPTION
@@ -2373,7 +2373,7 @@ BEGIN
           -- Skip the validation of this iteration/this supplier
           CONTINUE;
         END IF;
-        IF ((find_special_chars(l_supplier_type(l_sup_idx).supplier_name) = 'JUNK_CHARS_EXIST') OR (LENGTH(l_supplier_type(l_sup_idx).supplier_name) > 30 )) THEN
+        IF ((find_special_chars(l_supplier_type(l_sup_idx).supplier_name) = 'JUNK_CHARS_EXIST')) THEN
           gc_error_status_flag                                           := 'Y';
           print_debug_msg(p_message=> l_program_step||' : ERROR: Supplier Name'||l_supplier_type(l_sup_idx).supplier_name||' cannot contain junk characters and length must be less than 31' ,p_force=> false);
           insert_error (p_program_step => gc_step ,p_primary_key => l_supplier_type (l_sup_idx).supplier_name ,p_error_code => 'XXOD_SUPPLIER_NAME_INVALID' ,p_error_message => 'Supplier Name'||l_supplier_type(l_sup_idx).supplier_name||' cannot contain junk characters and length must be less than 32' ,p_stage_col1 => 'SUPPLIER_NAME' ,p_stage_val1 => l_supplier_type (l_sup_idx).supplier_name ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_table );
@@ -2839,18 +2839,6 @@ BEGIN
       gc_error_site_status_flag      := 'Y';
       print_debug_msg(p_message=> gc_step||' ERROR: ADDRESS_LINE1:'||l_sup_site_type.address_line1||': XXOD_SITE_ADDR_LINE1_NULL:Vendor Site Address Line 1 cannot be NULL' ,p_force=> false);
       insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_SITE_ADDR_LINE1_NULL' ,p_error_message => 'Vendor Site Address Line 1 cannot be NULL' ,p_stage_col1 => 'ADDRESS_LINE1' ,p_stage_val1 => l_sup_site_type.address_line1 ,p_table_name => g_sup_site_cont_table );
-    ELSIF ((find_special_chars(l_sup_site_type.address_line1) = 'JUNK_CHARS_EXIST') OR (LENGTH(TRIM(l_sup_site_type.address_line1)) > 38 )) THEN
-      gc_error_site_status_flag                              := 'Y';
-      print_debug_msg(p_message=> gc_step||' ERROR: XXOD_SITE_ADDR_LINE1_INVALID: ADDRESS_LINE1:'||l_sup_site_type.address_line1||' cannot contain junk characters and length must be less than 32' ,p_force=> false);
-      insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_SITE_ADDR_LINE1_INVALID' ,p_error_message => 'Vendor Site Address Line 1 cannot contain junk characters and length must be less than 32' ,p_stage_col1 => 'ADDRESS_LINE1' ,p_stage_val1 => l_sup_site_type.address_line1 ,p_table_name => g_sup_site_cont_table );
-    END IF;
-    --==============================================================================================================
-    -- Validating the Supplier Site - Address Details -  Address Line 2
-    --==============================================================================================================
-    IF ((find_special_chars(l_sup_site_type.address_line2) = 'JUNK_CHARS_EXIST') OR (LENGTH(TRIM(l_sup_site_type.address_line2)) > 38 )) THEN
-      gc_error_site_status_flag                           := 'Y';
-      print_debug_msg(p_message=> gc_step||' ERROR: XXOD_SITE_ADDR_LINE2_INVALID: ADDRESS_LINE2:'||l_sup_site_type.address_line2||' cannot contain junk characters and length must be less than 32' ,p_force=> false);
-      insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_SITE_ADDR_LINE2_INVALID' ,p_error_message => 'Vendor Site Address Line 2 cannot contain junk characters and length must be less than 32' ,p_stage_col1 => 'ADDRESS_LINE2' ,p_stage_val1 => l_sup_site_type.address_line2 ,p_table_name => g_sup_site_cont_table );
     END IF;
     --==============================================================================================================
     -- Validating the Supplier Site - Address Details -  City
@@ -2859,10 +2847,6 @@ BEGIN
       gc_error_site_status_flag := 'Y';
       print_debug_msg(p_message=> gc_step||' ERROR: CITY:'||l_sup_site_type.city||': XXOD_SITE_ADDR_CITY_NULL:Vendor Site Address Details City cannot be NULL' ,p_force=> false);
       insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_SITE_ADDR_CITY_NULL' ,p_error_message => 'Vendor Site Address Details City cannot be NULL' ,p_stage_col1 => 'CITY' ,p_stage_val1 => l_sup_site_type.city ,p_table_name => g_sup_site_cont_table );
-    ELSIF ((find_special_chars(l_sup_site_type.city) = 'JUNK_CHARS_EXIST') OR (LENGTH(TRIM(l_sup_site_type.city)) > 22 )) THEN
-      gc_error_site_status_flag                     := 'Y';
-      print_debug_msg(p_message=> gc_step||' ERROR: XXOD_SITE_ADDR_CITY_INVALID: CITY:'||l_sup_site_type.city||' cannot contain junk characters and length must be less than 22' ,p_force=> false);
-      insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_SITE_ADDR_CITY_INVALID' ,p_error_message => 'Vendor Site Address Details - City - cannot contain junk characters and length must be less than 22' ,p_stage_col1 => 'CITY' ,p_stage_val1 => l_sup_site_type.city ,p_table_name => g_sup_site_cont_table );
     END IF;
     --==============================================================================================================
     -- Validating the Supplier Site - Country
@@ -2888,10 +2872,6 @@ BEGIN
         gc_error_site_status_flag := 'Y';
         print_debug_msg(p_message=> gc_step||' ERROR: STATE:'||l_sup_site_type.state||': XXOD_SITE_ADDR_STATE_NULL:Vendor Site Address Details State cannot be NULL' ,p_force=> false);
         insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_SITE_ADDR_STATE_NULL' ,p_error_message => 'Vendor Site Address Details State cannot be NULL' ,p_stage_col1 => 'STATE' ,p_stage_val1 => l_sup_site_type.state ,p_table_name => g_sup_site_cont_table );
-      ELSIF (NOT (isalpha(l_sup_site_type.state)) OR (LENGTH(trim(l_sup_site_type.state)) <> 2 )) THEN
-        gc_error_site_status_flag                                                         := 'Y';
-        print_debug_msg(p_message=> gc_step||' ERROR: XXOD_SITE_ADDR_STATE_INVALID: STATE:'||l_sup_site_type.state||' should contain only alpha characters and length must be equal to 2' ,p_force=> false);
-        insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_SITE_ADDR_STATE_INVALID' ,p_error_message => 'Vendor Site Address Details - STATE - should contain only alpha characters and length must be equal to 2' ,p_stage_col1 => 'STATE' ,p_stage_val1 => l_sup_site_type.state ,p_table_name => g_sup_site_cont_table );
       ELSIF l_sup_site_type.province IS NOT NULL THEN
         gc_error_site_status_flag    := 'Y';
         print_debug_msg(p_message=> gc_step||' ERROR: XXOD_SITE_ADDR_PROVINCE_INVALID: PROVINCE:'||l_sup_site_type.province||': should be NULL for the country '||l_sup_site_type.country ,p_force=> false);
@@ -2902,10 +2882,6 @@ BEGIN
         gc_error_site_status_flag := 'Y';
         print_debug_msg(p_message=> gc_step||' ERROR: PROVINCE:'||l_sup_site_type.province||': XXOD_SITE_ADDR_PROVINCE_NULL:Vendor Site Address Details - Province - cannot be NULL' ,p_force=> false);
         insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_SITE_ADDR_PROVINCE_NULL' ,p_error_message => 'Vendor Site Address Details - Province - cannot be NULL' ,p_stage_col1 => 'PROVINCE' ,p_stage_val1 => l_sup_site_type.province ,p_table_name => g_sup_site_cont_table );
-      ELSIF (NOT (isalpha(l_sup_site_type.province)) OR (LENGTH(trim(l_sup_site_type.province)) <> 2 )) THEN
-        gc_error_site_status_flag                                                               := 'Y';
-        print_debug_msg(p_message=> gc_step||' ERROR: XXOD_SITE_ADDR_PROVINCE_INVALID: PROVINCE:'||l_sup_site_type.province||' should contain only alpha characters and length must be equal to 2' ,p_force=> false);
-        insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_SITE_ADDR_PROVINCE_INVALID' ,p_error_message => 'Vendor Site Address Details - PROVINCE - should contain only alpha characters and length must be equal to 2' ,p_stage_col1 => 'PROVINCE' ,p_stage_val1 => l_sup_site_type.province ,p_table_name => g_sup_site_cont_table );
       ELSIF l_sup_site_type.state IS NOT NULL THEN
         gc_error_site_status_flag := 'Y';
         print_debug_msg(p_message=> gc_step||' ERROR: XXOD_SITE_ADDR_STATE_INVALID: STATE:'||l_sup_site_type.state||': should be NULL for the country '||l_sup_site_type.country ,p_force=> false);
@@ -2958,7 +2934,7 @@ BEGIN
         print_debug_msg(p_message=> gc_step||' ERROR: POSTAL_CODE:'||l_sup_site_type.postal_code ||': XXOD_SITE_ADDR_POSTAL_CODE_NULL: Vendor Site Address Details - Postal Code - cannot be NULL' ,p_force=> false);
         insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_SITE_ADDR_POSTAL_CODE_NULL' ,p_error_message => 'Vendor Site Address Details - Postal Code - cannot be NULL' ,p_stage_col1 => 'POSTAL_CODE' ,p_stage_val1 => l_sup_site_type.postal_code ,p_table_name => g_sup_site_cont_table );
       ELSE
-        IF l_site_country_code                                                                         = 'US' THEN
+        IF l_site_country_code = 'US' THEN
           IF (NOT (ispostalcode(l_sup_site_type.postal_code )) OR (LENGTH(l_sup_site_type.postal_code) > 10 )) THEN
             gc_error_site_status_flag                                                                 := 'Y';
             print_debug_msg(p_message=> gc_step||' ERROR: POSTAL_CODE:'||l_sup_site_type.postal_code ||': XXOD_SITE_ADDR_POSTAL_CODE_INVA: For country '||l_sup_site_type.country||',Vendor Site Address Details - Postal Code - should contain only numeric and hypen(-) and length must be maximum upto 10' ,p_force=> false);
