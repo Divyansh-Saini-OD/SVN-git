@@ -189,7 +189,7 @@ IS
              lc_excp_msg_cnt 			      NUMBER :=1;
              lv_invoice_sum             NUMBER;
              lv_row_cnt                 NUMBER := 0;
-			 lv_Insatnce_name    		VARCHAR2(100); --Added for this JIRA NAIT-93555 to add the instance name to the subject
+			 lv_Instance_name    		VARCHAR2(100); --Added for this JIRA NAIT-93555 to add the instance name to the subject
    BEGIN  
           
         BEGIN
@@ -269,12 +269,12 @@ IS
           dbms_lob.append(lc_file_data,lc_src_data); 
           lc_record:= lc_record+1;
         END IF;
-		Select instance_name 		into LV_Insatnce_name		from v$instance; --Added for this JIRA NAIT-93555 to add the instance name to the subject
+		Select instance_name 		into lv_Instance_name		from v$instance; --Added for this JIRA NAIT-93555 to add the instance name to the subject
         lc_conn := xx_pa_pb_mail.begin_mail
                                (sender             => lc_mail_from,
                                 recipients         => lc_mail_to,
                                 cc_recipients      => NULL,
-                                subject            => lv_Insatnce_name ||': '||'AP_AR Daily Netting Status Report '||to_char(sysdate,'MM/DD/YYYY hh24:mi:ss'),    --Added for this JIRA NAIT-93555 to add the instance name to the subject   
+                                subject            => lv_Instance_name ||': '||'AP_AR Daily Netting Status Report '||to_char(sysdate,'MM/DD/YYYY hh24:mi:ss'),    --Added for this JIRA NAIT-93555 to add the instance name to the subject   
                                 mime_type          => xx_pa_pb_mail.multipart_mime_type
                                );
 
