@@ -287,6 +287,7 @@ AS
             AND GJH.status='P'
             AND GJH.je_source=GJS.je_source_name
             AND GJH.je_category=GJC.je_category_name
+            AND GJH.currency_code != 'STAT'
             AND gcc.SEGMENT1
             in ('1000E','1001','1002','1003','1005',
                 '1012','1014','1015','1015E','1016',
@@ -427,7 +428,7 @@ x018800     05  JRLD-ACCOUNTED-CR   PIC  X(020).                         0000870
                 l_company_ctr := l_company_ctr + 1; 
 
                             
-               lc_filename:= 'gl_jrnl_detail_irs_' || LTRIM(RTRIM(l_saved_company)) || '_' || l_timestamp || '.txt';
+               lc_filename:= 'gl_irs_jrnl_detail_' || LTRIM(RTRIM(l_saved_company)) || '_' || l_timestamp || '.txt';
                lt_file  := UTL_FILE.fopen(gc_file_path,lc_filename ,'w',ln_buffer);
                write_log(p_debug_flag,'Writing to File :' || lc_filename);
 
@@ -546,7 +547,7 @@ x018800     05  JRLD-ACCOUNTED-CR   PIC  X(020).                         0000870
 
                   IF l_company_file_missing 
                     THEN
-                       lc_filename:= 'gl_jrnl_detail_irs_' || LTRIM(RTRIM(all_company_tab(i))) || '_' || l_timestamp || '.txt';
+                       lc_filename:= 'gl_irs_jrnl_detail_' || LTRIM(RTRIM(all_company_tab(i))) || '_' || l_timestamp || '.txt';
                        lt_file  := UTL_FILE.fopen(gc_file_path,lc_filename ,'w',ln_buffer);
                        write_log(p_debug_flag,'Writing to Missing Array File :' || lc_filename);
                        l_data:= 'COMP  | LOCATION | CSTCTR     | LOB        | ACCOUNT    | SRC                  | PERIOD | DESC                           | JOURNAL ID | LINE   | AMOUNT            |CUR | EFF DT     | INVOICE ID                     | VENDOR     | VENDOR NAME1                             | INVC DT    | VOUCHER  | AP CO | VOUCHER DESC                   |                                                                                 ' || chr(13);
@@ -600,7 +601,7 @@ BEGIN
     write_log(p_debug_flag,'Extracting the Chart of Accounts Begins');
         ln_req_id:= fnd_profile.value('CONC_REQUEST_ID');
 --        lc_filename:= ln_req_id||'.out';
-          lc_filename:= 'gl_coa_irs_' || l_timestamp || '.txt';
+          lc_filename:= 'gl_irs_coa_' || l_timestamp || '.txt';
 
         lt_file  := UTL_FILE.fopen(gc_file_path,lc_filename ,'w',ln_buffer);
         write_log(p_debug_flag,'Writing to File :' || lc_filename );
@@ -986,6 +987,7 @@ cursor can_report_cur(cp_period_name_end in varchar2,
             AND GJH.status  =  'P'
             AND GJH.je_source=GJS.je_source_name
             AND GJH.je_category=GJC.je_category_name
+            AND GJH.currency_code != 'STAT'
 --          AND gcc.SEGMENT1 NOT in ('1003','1055','1055P')
             AND gcc.SEGMENT1
             in ('1000E','1001','1002','1005',
@@ -1029,9 +1031,10 @@ order by gcc.SEGMENT1;
              and gcc.segment3 between '10000000' AND '99999999'
 --            AND GJH.period_name = cp_period_name_end
             AND GJH.status  =  'P'
-            AND gjh.currency_code =  'USD'
+--            AND gjh.currency_code =  'USD'
             AND GJH.je_source=GJS.je_source_name
             AND GJH.je_category=GJC.je_category_name
+            AND GJH.currency_code != 'STAT'
 --          AND gcc.SEGMENT1 NOT in ('1003','1055','1055P')
             AND gcc.SEGMENT1
             in ('1000E','1001','1002','1005',
@@ -1046,8 +1049,7 @@ order by gcc.SEGMENT1;
                 '1093','5070','5080','5110','5120',
                 '5140','5180','5190','6010','6020'                                
                 );
-
-   
+  
 BEGIN
   select timestamp, status, created  INTO l_last_compiled, l_status, l_created from dba_objects
   where object_type = 'PACKAGE BODY'
@@ -1159,7 +1161,7 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
     write_log(p_debug_flag,'-------Extracting CANADA COMPANY BALANCES-------------');
     write_log(p_debug_flag,'------------------------------------------------------');
 
-       lc_filename:= 'gl_balances_irs_can_' || l_timestamp || '.txt';
+       lc_filename:= 'gl_irs_balances_can_' || l_timestamp || '.txt';
        lt_file  := UTL_FILE.fopen(gc_file_path,lc_filename ,'w',ln_buffer);
        write_log(p_debug_flag,'Writing to File :' || lc_filename );
 
@@ -1199,7 +1201,7 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
     write_log(p_debug_flag,'----------Extracting USA COMPANY BALANCES-------------');
     write_log(p_debug_flag,'------------------------------------------------------');
 
-       lc_filename:= 'gl_balances_irs_usa_' || l_timestamp || '.txt';
+       lc_filename:= 'gl_irs_balances_usa_' || l_timestamp || '.txt';
        lt_file  := UTL_FILE.fopen(gc_file_path,lc_filename ,'w',ln_buffer);
        write_log(p_debug_flag,'Writing to File :' || lc_filename );
 
