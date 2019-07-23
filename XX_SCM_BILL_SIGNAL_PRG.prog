@@ -1,24 +1,25 @@
 #!/usr/bin/ksh
-# +========================================================================+
-# |            Office Depot                                                |
-# +========================================================================+
-# | Name  :      XX_SCM_BILL_SIGNAL_PRG (Shell Script)                     |
-# | Description : Importing information from SCM to EBS staging table      |
-# |                                                                        |
-# |Change Record:                                                          |
-# |===============                                                         |
-# |Version  Date         Author     Remarks                                |
-# |=======  ===========  =========  =======================================|
-# |1.0      08-OCT-2018  Havish K   Initial version                        |
-# |1.1      05-JUL-2019  Havish K   Added Debug logs                       |
-# +========================================================================+
+# +=============================================================================+
+# |            Office Depot                                                     |
+# +=============================================================================+
+# | Name  :      XX_SCM_BILL_SIGNAL_PRG (Shell Script)                          |
+# | Description : Importing information from SCM to EBS staging table           |
+# |                                                                             |
+# |Change Record:                                                               |
+# |===============                                                              |
+# |Version  Date         Author     Remarks                                     |
+# |=======  ===========  =========  ============================================|
+# |1.0      08-OCT-2018  Havish K   Initial version                             |
+# |1.1      05-JUL-2019  Havish K   Added Debug logs                            |
+# |1.2      23-JUL-2019  Yashwanth  Commenting line#21 as suggested by Engg Team|
+# +=============================================================================+
 
 p_request_id=`echo $1|awk '{print(substr($2,11))}'`
 FILE_DIR=$XXFIN_DATA/inbound/SCM/BC
 FILE_ARCHIVE="$XXFIN_DATA/archive/inbound"
 echo " Data File path is  :" [$FILE_DIR]
 control_file="XX_SCM_BILL_SIGNAL_CTL.ctl"
-echo " Control File name is  :" [$control_file]
+#echo " Control File name is  :" [$control_file]
 
 cd $FILE_DIR
 
