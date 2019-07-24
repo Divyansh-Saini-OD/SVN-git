@@ -1574,27 +1574,25 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
 --       lc_filename:= 'gl_irs_reports_' || l_timestamp || '.txt';
 --       lt_file  := UTL_FILE.fopen(gc_file_path,lc_filename ,'w',ln_buffer);
 
-    write_log(p_debug_flag,'----1');
     
        l_country := 'USA';
        
        l_data := '  EBSCLOUD     IRS JOURNAL DETAIL BALANCING REPORT' || chr(13);
        UTL_FILE.PUT_LINE(lt_file,l_data);
 
-       l_data := '  DATE OF REPORT:' || TO_CHAR(SYSDATE,'YYYY/MM/DD') || '  TIME: ' || TO_CHAR(SYSDATE,'HH:MI:SS') || chr(13);
-       UTL_FILE.PUT_LINE(lt_file,l_data);
-       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                     
+--       l_data := '  DATE OF REPORT:' || TO_CHAR(SYSDATE,'YYYY/MM/DD') || '  TIME: ' || TO_CHAR(SYSDATE,'HH:MI:SS') || chr(13);
+--       UTL_FILE.PUT_LINE(lt_file,l_data);
+--       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                     
 
        l_data := '   DATE OF REPORT: ' || TO_CHAR(SYSDATE,'YYYY/MM/DD') || chr(13); --2019/05/31 
 --       l_data := '   PERIOD= ' || TO_CHAR(TO_DATE(p_period_name_end,'MON-YY'),'YYYYMM') || chr(13);
        UTL_FILE.PUT_LINE(lt_file,l_data);
        UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
 
-    write_log(p_debug_flag,'----2');
 
-       l_data := '   CURRENCY     : USD' || chr(13);                                                                                                               
-       UTL_FILE.PUT_LINE(lt_file,l_data);
-       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13)); 
+--       l_data := '   CURRENCY     : USD' || chr(13);                                                                                                               
+--       UTL_FILE.PUT_LINE(lt_file,l_data);
+--       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13)); 
        
        l_account_from := '10000000';
        l_account_to   := '39999999';
@@ -1602,8 +1600,6 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
        l_data := '   ACCOUNT RANGE: ' || l_account_from || ' THRU ' || l_account_to || chr(13);                                                                                           
        UTL_FILE.PUT_LINE(lt_file,l_data);
        UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
-
-    write_log(p_debug_flag,'----3');
 
                                                             
        l_out_cnt := 0;
@@ -1623,13 +1619,11 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
                  UTL_FILE.PUT_LINE(lt_file,l_data);         
                  UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
 
-    write_log(p_debug_flag,'----4');
 
                  l_report_count        := '0';
                  l_all_accts_net       :=  0;
                  l_all_accts_net_fmt   := '0.00';
 
-    write_log(p_debug_flag,'----5');
 
                  OPEN jrnl_usa_rep_count(p_period_name_begin,p_period_name_end,l_account_from,l_account_to); 
                     FETCH jrnl_usa_rep_count INTO l_report_count,l_all_accts_net,l_all_accts_net_fmt;
@@ -1643,7 +1637,6 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
                   l_data := '   TOTAL RECORD COUNT=    ' || l_report_count || chr(13);                                                                                                  
                   UTL_FILE.PUT_LINE(lt_file,l_data);
                                                                                                                                      
-    write_log(p_debug_flag,'----6');
                                                                                                                                      
                  UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
                  UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
@@ -1670,32 +1663,27 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
 --       lc_filename:= 'gl_irs_reports_' || l_timestamp || '.txt';
 --       lt_file  := UTL_FILE.fopen(gc_file_path,lc_filename ,'w',ln_buffer);
 
-    write_log(p_debug_flag,'----7');
-
-
        l_country := 'USA';
        
        l_data := '  EBSCLOUD     IRS JOURNAL DETAIL BALANCING REPORT' || chr(13);
        UTL_FILE.PUT_LINE(lt_file,l_data);
 
-       l_data := '  DATE OF REPORT:' || TO_CHAR(SYSDATE,'YYYY/MM/DD') || '  TIME: ' || TO_CHAR(SYSDATE,'HH:MI:SS') || chr(13);
-       UTL_FILE.PUT_LINE(lt_file,l_data);
-       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                     
+--       l_data := '  DATE OF REPORT:' || TO_CHAR(SYSDATE,'YYYY/MM/DD') || '  TIME: ' || TO_CHAR(SYSDATE,'HH:MI:SS') || chr(13);
+--       UTL_FILE.PUT_LINE(lt_file,l_data);
+--       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                     
 
        l_data := '   DATE OF REPORT: ' || TO_CHAR(SYSDATE,'YYYY/MM/DD'); --2019/05/31 
 --       l_data := '   PERIOD= ' || TO_CHAR(TO_DATE(p_period_name_end,'MON-YY'),'YYYYMM') || chr(13);
        UTL_FILE.PUT_LINE(lt_file,l_data);
        UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
 
-       l_data := '   CURRENCY     : USD' || chr(13);                                                                                                               
-       UTL_FILE.PUT_LINE(lt_file,l_data);
-       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13)); 
+--       l_data := '   CURRENCY     : USD' || chr(13);                                                                                                               
+--       UTL_FILE.PUT_LINE(lt_file,l_data);
+--       UTL_FILE.PUT_LINE(lt_file,' ' || chr(13)); 
        
        l_account_from := '40000000';
        l_account_to   := '99999999';
-                                 
-    write_log(p_debug_flag,'----8');
-                                                                                                                                     
+                                                                                                                                                                    
        l_data := '   ACCOUNT RANGE: ' || l_account_from || ' THRU ' || l_account_to || chr(13);                                                                                           
        UTL_FILE.PUT_LINE(lt_file,l_data);
        UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
@@ -1717,13 +1705,10 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
                  UTL_FILE.PUT_LINE(lt_file,l_data);         
                  UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
 
-    write_log(p_debug_flag,'----9');
 
                  l_report_count        := '0';
                  l_all_accts_net       :=  0;
                  l_all_accts_net_fmt   := '0.00';
-
-    write_log(p_debug_flag,'----10');
 
 
                  OPEN jrnl_usa_rep_count(p_period_name_begin,p_period_name_end,l_account_from,l_account_to); 
@@ -1734,10 +1719,7 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
                   UTL_FILE.PUT_LINE(lt_file,l_data);
 
                  UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
-
-    write_log(p_debug_flag,'----11');
-
-                                                                                                                                                         
+                
                   l_data := '   TOTAL RECORD COUNT=    ' || l_report_count || chr(13);                                                                                                  
                   UTL_FILE.PUT_LINE(lt_file,l_data);
                                                                                                                                      
@@ -1746,11 +1728,9 @@ x016200     05  ACCTB-FILLER-09     PIC  X(003).
                  UTL_FILE.PUT_LINE(lt_file,' ' || chr(13));                                                                                                                                                                                                                                                                        
                   l_data := '   ****  END  OF  REPORT   *****' || chr(13);
                   UTL_FILE.PUT_LINE(lt_file,l_data);
-
-    write_log(p_debug_flag,'----12');
-
-                
+               
                   UTL_FILE.fclose(lt_file);
+
 --                write_log(p_debug_flag,'NOT Calling USA XPTR Program');
 --                generate_file(p_directory,p_file_name,fnd_profile.value('CONC_REQUEST_ID'));
 
