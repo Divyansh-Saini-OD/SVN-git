@@ -723,7 +723,7 @@ AS
          WHERE cc.code_combination_id=gb.code_combination_id
 --           AND gb.period_name=p_period_name_end
              AND gb.period_name = cp_period_name_end  -- 'JAN-16' 
---             AND cc.SEGMENT1  in ('1003','1055','1055P')  cleared_filter
+             AND cc.SEGMENT1  in ('1003','1055','1055P')  --cleared_filter
              AND gb.currency_code =  'CAD'
              AND gb.actual_flag   =  'A'
         --V1.4   AND gb.ledger_id = p_ledger_id -- V1.3
@@ -785,7 +785,7 @@ AS
          WHERE cc.code_combination_id=gb.code_combination_id
 --           AND gb.period_name=p_period_name_end
              AND gb.period_name = cp_period_name_end  -- 'JAN-16' 
---             AND cc.SEGMENT1  NOT IN ('1003','1055','1055P')
+             AND cc.SEGMENT1  NOT IN ('1003','1055','1055P')
 /*
              AND cc.SEGMENT1
             in ('1000E','1001','1002','1005',
@@ -835,6 +835,7 @@ AS
                      gl_code_combinations cc
          WHERE cc.code_combination_id=gb.code_combination_id
              AND gb.period_name =   cp_period_name_end  -- 'JAN-16' 
+             AND cc.SEGMENT1  NOT IN ('1003','1055','1055P')
 /*
              AND cc.SEGMENT1
              IN ('1000E','1001','1002','1005',
@@ -880,6 +881,7 @@ cleared_filter
                      gl_code_combinations cc
          WHERE cc.code_combination_id=gb.code_combination_id
              AND gb.period_name =  cp_period_name_end  -- 'JAN-16' 
+             AND cc.SEGMENT1  NOT IN ('1003','1055','1055P')
 /*
              AND cc.SEGMENT1
             in ('1000E','1001','1002','1005',
@@ -923,7 +925,7 @@ cursor can_report_cur(cp_period_name_end in varchar2,
                      gl_code_combinations cc
          WHERE cc.code_combination_id=gb.code_combination_id
              AND gb.period_name =   cp_period_name_end  -- 'JAN-16' 
---             AND cc.SEGMENT1  in ('1003','1055','1055P') cleared_filter
+             AND cc.SEGMENT1  in ('1003','1055','1055P') -- cleared_filter
              and cc.segment3 between  cp_account_from and  cp_account_to -- '10000000' AND '39999999'
              AND gb.currency_code =  'CAD'
              AND gb.actual_flag   =  'A'
@@ -955,7 +957,7 @@ cursor can_report_cur(cp_period_name_end in varchar2,
                      gl_code_combinations cc
          WHERE cc.code_combination_id=gb.code_combination_id
              AND gb.period_name =  cp_period_name_end  -- 'JAN-16' 
---             AND cc.SEGMENT1  in ('1003','1055','1055P')  cleared_filter
+             AND cc.SEGMENT1  in ('1003','1055','1055P') -- cleared_filter
              and cc.segment3 between '10000000' AND '99999999'
              AND gb.currency_code =  'CAD'
              AND gb.actual_flag   =  'A';
