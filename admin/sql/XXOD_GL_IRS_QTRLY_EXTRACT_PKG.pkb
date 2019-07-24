@@ -723,7 +723,7 @@ AS
          WHERE cc.code_combination_id=gb.code_combination_id
 --           AND gb.period_name=p_period_name_end
              AND gb.period_name = cp_period_name_end  -- 'JAN-16' 
-             AND cc.SEGMENT1  in ('1003','1055','1055P')
+--             AND cc.SEGMENT1  in ('1003','1055','1055P')  cleared_filter
              AND gb.currency_code =  'CAD'
              AND gb.actual_flag   =  'A'
         --V1.4   AND gb.ledger_id = p_ledger_id -- V1.3
@@ -785,7 +785,8 @@ AS
          WHERE cc.code_combination_id=gb.code_combination_id
 --           AND gb.period_name=p_period_name_end
              AND gb.period_name = cp_period_name_end  -- 'JAN-16' 
---             AND cc.SEGMENT1  NOT IN ('1003','1055','1055P')            
+--             AND cc.SEGMENT1  NOT IN ('1003','1055','1055P')
+/*
              AND cc.SEGMENT1
             in ('1000E','1001','1002','1005',
                 '1012','1014','1015','1015E','1016',
@@ -798,6 +799,7 @@ AS
                 '1093','5070','5080','5110','5120',
                 '5140','5180','5190','6010','6020'                
                 )             
+ cleared_filter  */
              AND gb.currency_code =  'USD'
              AND gb.actual_flag   =  'A'
         --V1.4   AND gb.ledger_id = p_ledger_id -- V1.3
@@ -833,6 +835,7 @@ AS
                      gl_code_combinations cc
          WHERE cc.code_combination_id=gb.code_combination_id
              AND gb.period_name =   cp_period_name_end  -- 'JAN-16' 
+/*
              AND cc.SEGMENT1
              IN ('1000E','1001','1002','1005',
                 '1012','1014','1015','1015E','1016',
@@ -845,6 +848,8 @@ AS
                 '1093','5070','5080','5110','5120',
                 '5140','5180','5190','6010','6020'                                
                 ) 
+cleared_filter 
+*/
              and cc.segment3 between  cp_account_from and  cp_account_to -- '10000000' AND '39999999'
              AND gb.currency_code =  'USD'
              AND gb.actual_flag   =  'A'
@@ -875,6 +880,7 @@ AS
                      gl_code_combinations cc
          WHERE cc.code_combination_id=gb.code_combination_id
              AND gb.period_name =  cp_period_name_end  -- 'JAN-16' 
+/*
              AND cc.SEGMENT1
             in ('1000E','1001','1002','1005',
                 '1012','1014','1015','1015E','1016',
@@ -887,6 +893,8 @@ AS
                 '1093','5070','5080','5110','5120',
                 '5140','5180','5190','6010','6020'                                               
                 ) 
+cleared_filter
+*/
              and cc.segment3 between '10000000' AND '99999999'
              AND gb.currency_code =  'USD'
              AND gb.actual_flag   =  'A';
@@ -915,7 +923,7 @@ cursor can_report_cur(cp_period_name_end in varchar2,
                      gl_code_combinations cc
          WHERE cc.code_combination_id=gb.code_combination_id
              AND gb.period_name =   cp_period_name_end  -- 'JAN-16' 
-             AND cc.SEGMENT1  in ('1003','1055','1055P')
+--             AND cc.SEGMENT1  in ('1003','1055','1055P') cleared_filter
              and cc.segment3 between  cp_account_from and  cp_account_to -- '10000000' AND '39999999'
              AND gb.currency_code =  'CAD'
              AND gb.actual_flag   =  'A'
@@ -947,7 +955,7 @@ cursor can_report_cur(cp_period_name_end in varchar2,
                      gl_code_combinations cc
          WHERE cc.code_combination_id=gb.code_combination_id
              AND gb.period_name =  cp_period_name_end  -- 'JAN-16' 
-             AND cc.SEGMENT1  in ('1003','1055','1055P')
+--             AND cc.SEGMENT1  in ('1003','1055','1055P')  cleared_filter
              and cc.segment3 between '10000000' AND '99999999'
              AND gb.currency_code =  'CAD'
              AND gb.actual_flag   =  'A';
@@ -989,6 +997,7 @@ cursor can_report_cur(cp_period_name_end in varchar2,
             AND GJH.je_category=GJC.je_category_name
             AND GJH.currency_code != 'STAT'
 --          AND gcc.SEGMENT1 NOT in ('1003','1055','1055P')
+/*
             AND gcc.SEGMENT1
             in ('1000E','1001','1002','1005',
                 '1003', --added to match report
@@ -1002,6 +1011,7 @@ cursor can_report_cur(cp_period_name_end in varchar2,
                 '1093','5070','5080','5110','5120',
                 '5140','5180','5190','6010','6020'                 
                 )
+cleared_filter */
 group by  gcc.SEGMENT1
 order by gcc.SEGMENT1;
 
@@ -1036,6 +1046,7 @@ order by gcc.SEGMENT1;
             AND GJH.je_category=GJC.je_category_name
             AND GJH.currency_code != 'STAT'
 --          AND gcc.SEGMENT1 NOT in ('1003','1055','1055P')
+/*
             AND gcc.SEGMENT1
             in ('1000E','1001','1002','1005',
                 '1003', --added to match report
@@ -1048,7 +1059,10 @@ order by gcc.SEGMENT1;
 --             Added as missing in report                
                 '1093','5070','5080','5110','5120',
                 '5140','5180','5190','6010','6020'                                
-                );
+                )
+cleared_filter
+*/
+;
   
 BEGIN
   select timestamp, status, created  INTO l_last_compiled, l_status, l_created from dba_objects
