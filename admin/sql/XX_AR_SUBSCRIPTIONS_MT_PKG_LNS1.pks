@@ -4,28 +4,29 @@ WHENEVER OSERROR EXIT FAILURE ROLLBACK;
 
 create or replace PACKAGE xx_ar_subscriptions_mt_pkg 
 AS
--- +===============================================================================+
--- |  Office Depot                                                                 |
--- +===============================================================================+
--- |  Name:  XX_AR_SUBSCRIPTIONS_MT_PKG                                            |
--- |                                                                               |
--- |  Description:  This package body is to process subscription billing           |
--- |                                                                               |
--- |  Change Record:                                                               |
--- +===============================================================================+
--- | Version     Date         Author              Remarks                          |
--- | =========   ===========  =============       =================================|
--- | 1.0         11-DEC-2017  Sreedhar Mohan      Initial version                  |
--- | 2.0         03-JAN-2018  Jai Shankar Kumar   Changed incorporated as per MD70 |
--- | 3.0         07-MAR-2018  Sahithi Kunnuru     Modified PACKAGE                 |
--- | 4.0         16-JAN-2019  Punit Gupta         Changed for NAIT-78415           |
--- | 5.0         26-MAR-2019  Sahithi K           Update SCM with trans_id for     |
--- |                                              existing contracts NAIT-89231    |
--- | 6.0         22-APR-2019  Dattatray Bachate   Added New Procedure - NAIT-83868 |
--- | 7.0         03-MAY-2019  Kayeed / Arvind     Added New Procedure - NAIT-93356 |
--- | 8.0         03-MAY-2019  Dattatray Bachate   Added New Procedure - NAIT-93356 |
--- | 9.0         20-JUN-2019  Punit Gupta         Added New Procedure - NAIT-72201 |
--- +===============================================================================+
+-- +================================================================================+
+-- |  Office Depot                                                                  |
+-- +================================================================================+
+-- |  Name:  XX_AR_SUBSCRIPTIONS_MT_PKG                                             |
+-- |                                                                                |
+-- |  Description:  This package body is to process subscription billing            |
+-- |                                                                                |
+-- |  Change Record:                                                                |
+-- +================================================================================+
+-- | Version     Date         Author              Remarks                           |
+-- | =========   ===========  =============       ==================================|
+-- | 1.0         11-DEC-2017  Sreedhar Mohan      Initial version                   |
+-- | 2.0         03-JAN-2018  Jai Shankar Kumar   Changed incorporated as per MD70  |
+-- | 3.0         07-MAR-2018  Sahithi Kunnuru     Modified PACKAGE                  |
+-- | 4.0         16-JAN-2019  Punit Gupta         Changed for NAIT-78415            |
+-- | 5.0         26-MAR-2019  Sahithi K           Update SCM with trans_id for      |
+-- |                                              existing contracts NAIT-89231     |
+-- | 6.0         22-APR-2019  Dattatray Bachate   Added New Procedure - NAIT-83868  |
+-- | 7.0         03-MAY-2019  Kayeed / Arvind     Added New Procedure - NAIT-93356  |
+-- | 8.0         03-MAY-2019  Dattatray Bachate   Added New Procedure - NAIT-93356  |
+-- | 9.0         20-JUN-2019  Punit Gupta         Added New Procedure - NAIT-72201  |
+-- | 10.0        25-JUL-2019  Sahithi K           Added New Procedure - NAIT-101994 |
+-- +================================================================================+
 
   /******
   * MAIN
@@ -116,5 +117,12 @@ AS
                                   retcode      OUT VARCHAR2,
                                   p_debug_flag IN  VARCHAR2);
 
+  /***********************************************************************************
+  * Procedure to write off invoice related to TERMINATED AND CLOSED contracts in SCM *
+  ***********************************************************************************/
+  PROCEDURE process_adjustments(errbuff        OUT VARCHAR2
+                               ,retcode        OUT NUMBER
+                               ,p_debug_flag   IN  VARCHAR2 DEFAULT 'N'
+                               );
 END;
 /
