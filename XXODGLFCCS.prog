@@ -113,9 +113,25 @@ eval lc_zip_file_name=$V_RESULT2
 
 echo "lc_zip_file_name= $lc_zip_file_name"
 
-echo "$XXFIN_DATA/ftp/out/hyperion"
+#Getting FTP out path
 
-eval FILE_OUT_FOLDER=$XXFIN_DATA/ftp/out/hyperion
+V_RESULT2=`sqlplus -s /nolog <<EOF
+     set pagesize 0
+     set linesize 255
+     set sqlprompt " "
+     set serveroutput on 
+     set verify off
+
+
+select directory_path||'/'||'hyperion' a from dba_directories WHERE directory_name ='XXFIN_OUT'; 
+ 
+
+     COMMIT;
+
+     exit
+EOF`
+
+eval FILE_OUT_FOLDER=$V_RESULT2
 
 echo "FILE_OUT_FOLDER=$FILE_OUT_FOLDER"
 
