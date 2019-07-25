@@ -13593,12 +13593,12 @@ AS
 
     CURSOR c_inv_adjustment
     IS
-    SELECT rct.customer_trx_id, aps.payment_schedule_id, aps.amount_due_remaining,rct.trx_number,xas.auth_completed_flag,xac.contract_status,xas.contract_status sub_status,xacl.close_date,aps.status
-    FROM   apps.xx_ar_contracts xac
-          ,apps.xx_ar_subscriptions xas
-          ,apps.xx_ar_contract_lines xacl
-          ,apps.ra_customer_trx_all rct
-          ,apps.ar_payment_schedules_all aps
+    SELECT rct.customer_trx_id, aps.payment_schedule_id, aps.amount_due_remaining,rct.trx_number,aps.status
+    FROM   xx_ar_contracts xac
+          ,xx_ar_subscriptions xas
+          ,xx_ar_contract_lines xacl
+          ,ra_customer_trx_all rct
+          ,ar_payment_schedules_all aps
     WHERE xac.contract_id              = xas.contract_id
     AND   xac.contract_id              = xacl.contract_id
     AND   xacl.contract_line_number    = xas.contract_line_number
@@ -13611,12 +13611,12 @@ AS
     AND   aps.STATUS                   = 'OP'
     AND   (xas.contract_status= 'TERMINATE' OR NVL(xacl.close_date,SYSDATE+1) < sysdate)
     UNION
-    SELECT rct.customer_trx_id, aps.payment_schedule_id, aps.amount_due_remaining,rct.trx_number,xas.auth_completed_flag,xac.contract_status,xas.contract_status sub_status,xacl.close_date,aps.status
-    FROM   apps.xx_ar_contracts xac
-          ,apps.xx_ar_subscriptions xas
-          ,apps.xx_ar_contract_lines xacl
-          ,apps.ra_customer_trx_all rct
-          ,apps.ar_payment_schedules_all aps
+    SELECT rct.customer_trx_id, aps.payment_schedule_id, aps.amount_due_remaining,rct.trx_number,aps.status
+    FROM   xx_ar_contracts xac
+          ,xx_ar_subscriptions xas
+          ,xx_ar_contract_lines xacl
+          ,ra_customer_trx_all rct
+          ,ar_payment_schedules_all aps
     WHERE xac.contract_id              = xas.contract_id
     AND   xac.contract_id              = xacl.contract_id
     AND   xacl.contract_line_number    = xas.contract_line_number
