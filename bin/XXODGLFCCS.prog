@@ -163,9 +163,25 @@ echo "lc_file=$lc_file"
 
 
   zip   -r  $lc_zip_file_name.zip $lc_file*.*
+  
+if [ $? -gt 0 ]
+then
+echo
+echo "Failed to create the zip file "
+else
+echo
+echo ${FILE_IN_FOLDER} "has been successfully zipped "
 chmod 755 ${lc_zip_file_name}.zip
+touch ${lc_zip_file_name}.zip
+fi
+
 mv $lc_zip_file_name.zip  ${FILE_OUT_FOLDER}
 rm -f $lc_file*.*
+if [ $? -ne 0 ]; then
+echo "Failure in Deleting the Source file"  
+else
+echo "The Files in "${FILE_IN_FOLDER} "have been deleted."
+fi
 
         #  zip -rj ${FILE_OUT_FOLDER} ${FILE_IN_FOLDER}
             #if [ $? -gt 0 ]
