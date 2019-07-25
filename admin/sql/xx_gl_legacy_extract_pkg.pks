@@ -8,7 +8,7 @@ WHENEVER SQLERROR CONTINUE;
  
 WHENEVER OSERROR EXIT FAILURE ROLLBACK;
 
-CREATE OR REPLACE
+create or replace 
 PACKAGE xx_gl_legacy_extract_pkg
 AS
   -- +=================================================================================+
@@ -68,6 +68,13 @@ AS
       -- p_acc_rolup_grp   IN              VARCHAR2,
       --- p_cc_rolup_grp    IN              VARCHAR2
     );
+    
+    
+    procedure gl_ytd_wrapper(  
+    p_sob_name    IN VARCHAR2,
+    p_company     IN VARCHAR2,
+    p_year        in varchar2,
+    p_period_name in varchar2);
 END xx_gl_legacy_extract_pkg;
 /
 
