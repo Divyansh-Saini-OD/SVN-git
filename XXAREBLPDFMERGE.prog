@@ -36,7 +36,8 @@
    set serveroutput on 
    set verify off
 
-   SELECT LISTAGG(REPLACE(file_name,'.PDF','_'||file_id||'.PDF'), ' ') within GROUP (ORDER BY file_name) AS file_names 
+   SELECT rtrim(xmlagg(xmlelement(e,REPLACE(file_name,'.PDF','_'||file_id||'.PDF'),' ').extract('//text()') order by file_name).GetClobVal(),',')
+--LISTAGG(REPLACE(file_name,'.PDF','_'||file_id||'.PDF'), ' ') within GROUP (ORDER BY file_name) AS file_names 
 	 FROM xx_ar_ebl_file XAEF
 	WHERE cust_account_id = $v_cust_account_id
 	  AND cust_doc_id = $v_cust_doc_id
