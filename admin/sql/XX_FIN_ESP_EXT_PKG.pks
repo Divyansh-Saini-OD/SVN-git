@@ -49,6 +49,9 @@ PROCEDURE LOAD_ESP_RUNS(errbuf                   OUT NOCOPY VARCHAR2,
 PROCEDURE LOAD_ESP_PARMS(errbuf                   OUT NOCOPY VARCHAR2,
                          retcode                  OUT NOCOPY NUMBER);
 
+PROCEDURE UPDT_ESP_STATS(errbuf                   OUT NOCOPY VARCHAR2,
+                         retcode                  OUT NOCOPY NUMBER);
+
 PROCEDURE PRINT_ESP_RPT(errbuf                   OUT NOCOPY VARCHAR2,
                         retcode                  OUT NOCOPY NUMBER,
                         p_application             IN VARCHAR2,
