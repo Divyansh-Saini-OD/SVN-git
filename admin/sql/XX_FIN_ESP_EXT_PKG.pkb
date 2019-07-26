@@ -607,7 +607,7 @@ BEGIN
 
                       FND_FILE.PUT_LINE(FND_FILE.LOG, '    Creating Definition values id '||lc_translate_value_id);
 
-                      INSERT INTO xx_fin_translatevalues 
+                      INSERT INTO xxfin.xx_fin_translatevalues 
                                  (TRANSLATE_ID
                                  ,SOURCE_VALUE1
                                  ,SOURCE_VALUE2
@@ -916,7 +916,7 @@ BEGIN
 
     FND_FILE.PUT_LINE(FND_FILE.LOG, 'Deleting XX_FIN_ESP_DETAILS data - ');
 
-    DELETE xx_fin_esp_details;
+    DELETE XXFIN.xx_fin_esp_details;
     COMMIT;
 
     FND_FILE.PUT_LINE(FND_FILE.LOG, 'Start Loading Data - ');
@@ -988,11 +988,11 @@ BEGIN
 
             BEGIN
 
-                SELECT XX_FIN_ESP_DETAILS_S.NEXTVAL 
+                SELECT XXFIN.XX_FIN_ESP_DETAILS_S.NEXTVAL 
 		    INTO   lc_seq_num
 		    FROM DUAL;
 
-                   INSERT INTO XX_FIN_ESP_DETAILS
+                   INSERT INTO XXFIN.XX_FIN_ESP_DETAILS
                            (ESP_DETAIL_ID
                            ,ESP_APPLICATION
                            ,ESP_JOB_NAME_1
@@ -1144,7 +1144,7 @@ BEGIN
 
     FND_FILE.PUT_LINE(FND_FILE.LOG, 'Deleting XX_FIN_ESP_LINK data - ');
 
-    DELETE xx_fin_esp_link;
+    DELETE XXFIN.xx_fin_esp_link;
     COMMIT;
 
     FND_FILE.PUT_LINE(FND_FILE.LOG, 'Start Loading Data - ');
@@ -1191,12 +1191,12 @@ BEGIN
                BEGIN
                    SELECT ESP_DETAIL_ID
                    INTO   lc_detail_id
-                   FROM   XX_FIN_ESP_DETAILS
+                   FROM   XXFIN.XX_FIN_ESP_DETAILS
                    WHERE  ESP_JOB_NAME_1 = lc_rel_name_1
                    AND    ESP_JOB_NAME_2 = lc_rel_name_2
                    AND    ROWNUM = 1;
 
-                   INSERT INTO XX_FIN_ESP_LINK
+                   INSERT INTO XXFIN.XX_FIN_ESP_LINK
                            (ESP_DETAIL_ID
                            ,ESP_PGM_LINK_TYPE
                            ,ESP_PGM_LINK_APPL
@@ -1238,12 +1238,12 @@ BEGIN
 
                    SELECT ESP_DETAIL_ID
                    INTO   lc_detail_id
-                   FROM   XX_FIN_ESP_DETAILS
+                   FROM   XXFIN.XX_FIN_ESP_DETAILS
                    WHERE  ESP_JOB_NAME_1 = lc_job_name_1
                    AND    ESP_JOB_NAME_2 = lc_job_name_2
                    AND    ROWNUM = 1;
 
-                   INSERT INTO XX_FIN_ESP_LINK
+                   INSERT INTO XXFIN.XX_FIN_ESP_LINK
                            (ESP_DETAIL_ID
                            ,ESP_PGM_LINK_TYPE
                            ,ESP_PGM_LINK_APPL
@@ -1302,12 +1302,12 @@ BEGIN
 
                    SELECT ESP_DETAIL_ID
                    INTO   lc_detail_id
-                   FROM   XX_FIN_ESP_DETAILS
+                   FROM   XXFIN.XX_FIN_ESP_DETAILS
                    WHERE  ESP_JOB_NAME_1 = lc_job_name_1
                    AND    ESP_JOB_NAME_2 = lc_job_name_2
                    AND    ROWNUM = 1;
 
-                   INSERT INTO XX_FIN_ESP_LINK
+                   INSERT INTO XXFIN.XX_FIN_ESP_LINK
                            (ESP_DETAIL_ID
                            ,ESP_PGM_LINK_TYPE
                            ,ESP_PGM_LINK_APPL
@@ -1357,12 +1357,12 @@ BEGIN
 
                    SELECT ESP_DETAIL_ID
                    INTO   lc_detail_id
-                   FROM   XX_FIN_ESP_DETAILS
+                   FROM   XXFIN.XX_FIN_ESP_DETAILS
                    WHERE  ESP_JOB_NAME_1 = lc_rel_name_1
                    AND    ESP_JOB_NAME_2 = lc_rel_name_2
                    AND    ROWNUM = 1;
 
-                   INSERT INTO XX_FIN_ESP_LINK
+                   INSERT INTO XXFIN.XX_FIN_ESP_LINK
                            (ESP_DETAIL_ID
                            ,ESP_PGM_LINK_TYPE
                            ,ESP_PGM_LINK_APPL
@@ -1489,10 +1489,10 @@ BEGIN
 
     FND_FILE.PUT_LINE(FND_FILE.LOG, 'Deleting XX_FIN_ESP_SCHEDULE data - ');
 
-    DELETE xx_fin_esp_schedule;
+    DELETE XXFIN.xx_fin_esp_schedule;
     COMMIT;
 
-    DELETE xx_fin_esp_invoke;
+    DELETE XXFIN.xx_fin_esp_invoke;
     COMMIT;
 
     FND_FILE.PUT_LINE(FND_FILE.LOG, 'Start Loading Data - ');
@@ -1526,11 +1526,11 @@ BEGIN
 
             IF lc_member_flg = 'I' THEN
                BEGIN
-                   SELECT XX_FIN_ESP_INVOKE_S.NEXTVAL 
+                   SELECT XXFIN.XX_FIN_ESP_INVOKE_S.NEXTVAL 
        		    INTO   lc_seq_num
 		    FROM DUAL;
 
-                   INSERT INTO XX_FIN_ESP_INVOKE
+                   INSERT INTO XXFIN.XX_FIN_ESP_INVOKE
                            (ESP_DETAIL_ID
                            ,ESP_EVENT
                            ,ESP_PREFIX
@@ -1581,11 +1581,11 @@ BEGIN
             ELSE
                BEGIN
 
-                   SELECT XX_FIN_ESP_SCHEDULE_S.NEXTVAL 
+                   SELECT XXFIN.XX_FIN_ESP_SCHEDULE_S.NEXTVAL 
        		    INTO   lc_seq_num
 		    FROM DUAL;
 
-                   INSERT INTO XX_FIN_ESP_SCHEDULE
+                   INSERT INTO XXFIN.XX_FIN_ESP_SCHEDULE
                            (ESP_SCHED_ID
                            ,ESP_EVENT
                            ,ESP_PREFIX
@@ -1709,7 +1709,7 @@ BEGIN
 
     FND_FILE.PUT_LINE(FND_FILE.LOG, 'Deleting XX_FIN_ESP_RUNS data - ');
 
-    DELETE xx_fin_esp_runs;
+    DELETE XXFIN.xx_fin_esp_runs;
     COMMIT;
 
     FND_FILE.PUT_LINE(FND_FILE.LOG, 'Start Loading Data - ');
@@ -1741,16 +1741,16 @@ BEGIN
                BEGIN
                    SELECT ESP_DETAIL_ID
                    INTO   lc_detail_id
-                   FROM   XX_FIN_ESP_DETAILS
+                   FROM   XXFIN.XX_FIN_ESP_DETAILS
                    WHERE  ESP_JOB_NAME_1 = lc_job_name_1
                    AND    ESP_JOB_NAME_2 = lc_job_name_2
                    AND    ROWNUM = 1;
 
-                   SELECT XX_FIN_ESP_runs_S.NEXTVAL 
+                   SELECT XXFIN.XX_FIN_ESP_runs_S.NEXTVAL 
        		    INTO   lc_seq_num
 		    FROM DUAL;
 
-                   INSERT INTO XX_FIN_ESP_RUNS
+                   INSERT INTO XXFIN.XX_FIN_ESP_RUNS
                            (ESP_RUNS_ID
                            ,ESP_APPLICATION
                            ,ESP_JOB_NAME_1
@@ -1857,7 +1857,7 @@ CURSOR esp_parameters IS
                   THEN REPLACE(REPLACE(D1.ESP_PGM_ARG_VALUES,',,',',(null),'),',,',',(null),')||'(null)'
                   ELSE REPLACE(REPLACE(D1.ESP_PGM_ARG_VALUES,',,',',(null),'),',,',',(null),')
               END         AS ESP_PGM_ARG_VALUES
-       FROM   xx_fin_esp_details D1
+       FROM   xxfin.xx_fin_esp_details D1
        WHERE  D1.ESP_PGM_ARGS       IS NOT NULL
        AND    D1.esp_pgm_arg_values IS NOT NULL
        ORDER BY 2,3,4;
@@ -1874,7 +1874,7 @@ BEGIN
     FND_FILE.PUT_LINE(FND_FILE.LOG, 'XX_RJS_ESP_EXT_8_PKG Begin:');
     FND_FILE.PUT_LINE(FND_FILE.LOG, 'Deleting XX_FIN_ESP_PARAMETERS data - ');
 
-    DELETE xx_fin_esp_parameters;
+    DELETE XXFIN.xx_fin_esp_parameters;
     COMMIT;
 
     FND_FILE.PUT_LINE(FND_FILE.LOG, 'Start Loading Data - ');
@@ -1897,11 +1897,11 @@ BEGIN
                            lc_parm_value := parse_rec.parm_value;
                            lc_seq        := lc_seq + 1;
 
-                           SELECT XX_FIN_ESP_DETAILS_S.NEXTVAL 
+                           SELECT XXFIN.XX_FIN_ESP_DETAILS_S.NEXTVAL 
 	                      INTO   lc_seq_num
 		                 FROM DUAL;
 
-                    INSERT INTO XX_FIN_ESP_PARAMETERS
+                    INSERT INTO XXFIN.XX_FIN_ESP_PARAMETERS
                             (ESP_DETAIL_ID
                             ,ESP_PARAMETER_ID
                             ,ESP_APPLICATION
@@ -1970,6 +1970,324 @@ EXCEPTION
 
 END LOAD_ESP_PARMS;
 
+-- +===================================================================+
+-- | PROCEDURE: UPDT_ESP_STATS                                         |
+-- |                                                                   |
+-- | Concurrent Program : Update ESP Execution Statistics              |
+-- | Short_name         : XX_RJS_ESP_UPDT_1                            |
+-- | Executable         : XX_FIN_ESP_EXT_PKG.UPDT_ESP_STATS            |
+-- |                                                                   |
+-- | Description      : This Procedure will Update the ESP execution   |
+-- |                    Statistics for each job                        |
+-- |                                                                   |
+-- | Parameters      none                                              |
+-- +===================================================================+
+PROCEDURE UPDT_ESP_STATS(errbuf       OUT NOCOPY VARCHAR2,
+                         retcode      OUT NOCOPY NUMBER)
+IS
+lc_esp_job_1             VARCHAR2(08);
+lc_esp_job_2             VARCHAR2(08);
+lc_esp_stat              VARCHAR2(50);
+lc_msg                   VARCHAR2(300);
+ld_from_date             DATE;
+
+
+CURSOR esp_update_stats IS
+
+SELECT R.request_id,
+       R.phase_code,
+       R.status_code,
+       R.actual_start_date,
+       R.actual_completion_date,
+       TO_CHAR(CEIL(((R.actual_start_date - R.actual_completion_date) * 1440) + .01),'99999') AS ELAP_MIN
+FROM   apps.fnd_concurrent_requests R,
+       xxfin.xx_fin_esp_stats       S
+WHERE  R.request_id = S.esp_dly_req_id
+AND    S.esp_dly_phase_code <> 'C'
+AND    S.esp_dly_phase_code IS NOT NULL;
+
+CURSOR esp_dly_stats IS
+
+SELECT SUBSTR(ESP_JOB,1,INSTR(ESP_JOB,'.')-1)                                    AS ESP_JOB_NAME_1,
+       SUBSTR(ESP_JOB,INSTR(ESP_JOB,'.')+1,(LENGTH(ESP_JOB)-INSTR(ESP_JOB,'.'))) AS ESP_JOB_NAME_2,
+       request_id, phase_code,status_code, str_date, end_date, elap_min
+    FROM  (
+       SELECT NVL(SUBSTR(desc1,(INSTR(desc1, '(')+1),(INSTR(desc1, ')')-(INSTR(desc1, '(')+1))),desc1) AS ESP_JOB,
+              request_id, phase_code,status_code, str_date, end_date,
+              TO_CHAR(CEIL(((end_date - str_date) * 1440) + .01),'99999')                        AS ELAP_MIN
+       FROM  (SELECT R.description                                           AS desc1,
+                     R.request_id,
+                     R.phase_code,
+                     R.status_code,
+                     R.ACTUAL_START_DATE                                     AS STR_DATE,
+                    (SELECT MAX(R1.actual_completion_date)
+                     FROM   apps.fnd_concurrent_requests    R1
+                     START WITH        r1.request_id = r.request_id
+                     CONNECT BY PRIOR  r1.request_id = r1.parent_request_id) AS END_DATE
+              FROM   apps.fnd_concurrent_requests    R,
+                     apps.fnd_concurrent_programs_vl P
+              WHERE  R.concurrent_program_id = p.concurrent_program_id
+              AND    R.actual_start_date > ld_from_date
+              AND    NVL(SUBSTR(R.description, 
+                        (INSTR(R.description, '(')+1), 
+                        (INSTR(R.description, ')')-(INSTR(R.description, '(')+1))),
+                        R.description) in (SELECT ESP_JOB_NAME_1||'.'||ESP_JOB_NAME_2 
+                                           FROM   apps.xx_fin_esp_details)))
+            ORDER BY 1,4;
+
+CURSOR esp_exec_stats IS
+
+SELECT ESP_JOB,
+       SUBSTR(ESP_JOB,1,INSTR(ESP_JOB,'.')-1)                                                          AS job_name_1,
+       SUBSTR(ESP_JOB,INSTR(ESP_JOB,'.')+1,(LENGTH(ESP_JOB)-INSTR(ESP_JOB,'.')))                       AS job_name_2,
+       JOB_CNT, MIN_MIN, MAX_MIN, AVG_MIN, STDDEV_MIN, MIN_STR_TM, MAX_STR_TM, AVG_STR_TM
+       FROM (
+       SELECT NVL(SUBSTR(desc1,(INSTR(desc1, '(')+1),(INSTR(desc1, ')')-(INSTR(desc1, '(')+1))),desc1) AS ESP_JOB,
+              TO_CHAR(COUNT(*), '999999999')                                                           AS JOB_CNT, 
+              TO_CHAR(MIN(CEIL(((end_date - str_date) * 1440) + .01)),'9999.9')                        AS MIN_MIN,
+              TO_CHAR(MAX(CEIL(((end_date - str_date) * 1440) + .01)),'9999.9')                        AS MAX_MIN,
+              TO_CHAR(AVG(CEIL(((end_date - str_date) * 1440) + .01)),'9999.9')                        AS AVG_MIN,
+              TO_CHAR(STDDEV(CEIL(((end_date - str_date) * 1440) + .01)),'9999.9')                     AS stddev_MIN,
+              TO_CHAR(TRUNC(sysdate) + ((1/1440)*(MIN(ABS(CEIL(((TRUNC(end_date) - str_date) * 1440) + .01))))),'hh24:mi') AS MIN_STR_tm,
+              TO_CHAR(TRUNC(sysdate) + ((1/1440)*(MAX(ABS(CEIL(((TRUNC(end_date) - str_date) * 1440) + .01))))),'hh24:mi') AS MAX_STR_tm,
+              TO_CHAR(TRUNC(sysdate) + ((1/1440)*(TO_CHAR(AVG(ABS(CEIL(((TRUNC(end_date) - str_date) * 1440) + .01))),'99999'))),'hh24:mi') AS AVG_STR_tm
+       FROM  (SELECT R.description                                           AS desc1,
+                     R.ACTUAL_START_DATE                                     AS STR_DATE,
+                    (SELECT MAX(R1.actual_completion_date)
+                     FROM   apps.fnd_concurrent_requests    R1
+                     START WITH        r1.request_id = r.request_id
+                     CONNECT BY PRIOR  r1.request_id = r1.parent_request_id) AS END_DATE
+              FROM   apps.fnd_concurrent_requests    R,
+                     apps.fnd_concurrent_programs_vl P
+              WHERE  R.concurrent_program_id = p.concurrent_program_id
+              AND    NVL(SUBSTR(R.description, 
+                        (INSTR(R.description, '(')+1), 
+                        (INSTR(R.description, ')')-(INSTR(R.description, '(')+1))),
+                        R.description) in (SELECT ESP_JOB_NAME_1||'.'||ESP_JOB_NAME_2 
+                                           FROM   apps.xx_fin_esp_details))
+       GROUP BY NVL(SUBSTR(desc1,(INSTR(desc1, '(')+1),(INSTR(desc1, ')')-(INSTR(desc1, '(')+1))),desc1),
+                SUBSTR(desc1,1,INSTR(desc1,'.')-1),
+                SUBSTR(desc1,INSTR(desc1,'.')+1,(LENGTH(desc1)-INSTR(desc1,'.')))
+                )
+       ORDER BY 1;
+
+BEGIN
+
+    FND_FILE.PUT_LINE(FND_FILE.LOG, 'XX_RJS_ESP_UPDT_1_PKG Begin:');
+
+    FND_FILE.PUT_LINE(FND_FILE.LOG, '1. Updating non completed stats - ');
+
+    BEGIN
+        FOR update_rec IN esp_update_stats
+            LOOP
+                BEGIN
+                    UPDATE xxfin.xx_fin_esp_stats
+                    SET    ESP_DLY_PHASE_CODE  = update_rec.phase_code  
+                          ,ESP_DLY_STATUS_CODE = update_rec.status_code
+                          ,ESP_DLY_STR_DATE    = update_rec.actual_start_date
+                          ,ESP_DLY_END_DATE    = update_rec.actual_completion_date
+                          ,ESP_DLY_ELAP_MIN    = update_rec.elap_min
+                    WHERE  ESP_DLY_REQ_ID      = update_rec.request_id;
+
+                    EXCEPTION
+                        WHEN OTHERS THEN
+                             FND_FILE.PUT_LINE(FND_FILE.LOG, '1. Error - Loop Others '||SQLERRM);
+                END;
+        END LOOP;
+
+         EXCEPTION
+              WHEN NO_DATA_FOUND THEN
+                   FND_FILE.PUT_LINE(FND_FILE.LOG, '1. Error - no_data_found '||SQLERRM);
+              WHEN OTHERS THEN
+                   FND_FILE.PUT_LINE(FND_FILE.LOG, '1. Error - Others '||SQLERRM);
+    END;
+------------------------------------------------------------------------------------------------
+
+    FND_FILE.PUT_LINE(FND_FILE.LOG, '2. Getting from_date - ');
+
+    BEGIN
+         SELECT MAX(esp_stats_date)
+         INTO   ld_from_date
+         FROM   xxfin.xx_fin_esp_stats
+         WHERE  esp_dly_str_date IS NOT NULL;
+
+         IF ld_from_date IS NULL THEN
+            ld_from_date := sysdate-45;
+         END IF;
+  
+         EXCEPTION
+              WHEN NO_DATA_FOUND THEN
+                   ld_from_date := sysdate-45;
+              WHEN OTHERS THEN
+                   FND_FILE.PUT_LINE(FND_FILE.LOG, '2. Error - Others '||SQLERRM);
+    END;
+------------------------------------------------------------------------------------------------
+
+    FND_FILE.PUT_LINE(FND_FILE.LOG,'3. Creating ESP DLY stats - ' || 'from ' || ld_from_date);
+
+    BEGIN
+        FOR dly_rec IN esp_dly_stats
+            LOOP
+                BEGIN
+                    INSERT INTO xxfin.xx_fin_esp_stats
+                           (ESP_JOB_NAME_1
+                           ,ESP_JOB_NAME_2
+                           ,ESP_STATS_DATE
+                           ,ESP_DLY_REQ_ID
+                           ,ESP_DLY_PHASE_CODE
+                           ,ESP_DLY_STATUS_CODE
+                           ,ESP_DLY_STR_DATE
+                           ,ESP_DLY_END_DATE
+                           ,ESP_DLY_ELAP_MIN
+                           ,ESP_STATS_JOB_CNT
+                           ,ESP_STATS_MIN
+                           ,ESP_STATS_MAX
+                           ,ESP_STATS_AVG
+                           ,ESP_STATS_STDDEV
+                           ,ESP_STATS_MIN_TM
+                           ,ESP_STATS_MAX_TM
+                           ,ESP_STATS_AVG_TM
+                           ,ATTRIBUTE1
+                           ,ATTRIBUTE2
+                           ,ATTRIBUTE3
+                           ,ATTRIBUTE4
+                           ,ATTRIBUTE5
+                           ,ATTRIBUTE6
+                           ,ATTRIBUTE7
+                           ,ATTRIBUTE8
+                           ,ATTRIBUTE9
+                           ,CREATION_DATE
+                           ,CREATED_BY
+                           ,LAST_UPDATED_BY
+                           ,LAST_UPDATE_DATE
+                           ,LAST_UPDATE_LOGIN)
+                     VALUES(dly_rec.esp_job_name_1
+                           ,dly_rec.esp_job_name_2
+                           ,dly_rec.str_date
+                           ,dly_rec.request_id
+                           ,dly_rec.phase_code
+                           ,dly_rec.status_code
+                           ,dly_rec.str_date
+                           ,dly_rec.end_date
+                           ,dly_rec.elap_min
+                           ,NULL
+                           ,NULL
+                           ,NULL
+                           ,NULL
+                           ,NULL
+                           ,NULL
+                           ,NULL
+                           ,NULL
+                           ,NULL
+                           ,NULL
+                           ,NULL
+                           ,NULL
+                           ,NULL
+                           ,NULL
+                           ,NULL
+                           ,NULL
+                           ,NULL
+                           ,SYSDATE
+                           ,-1
+                           ,-1
+                           ,SYSDATE
+                           ,-1);
+                    COMMIT;
+
+                    EXCEPTION
+                        WHEN OTHERS THEN
+                             FND_FILE.PUT_LINE(FND_FILE.LOG, '3. Error - Others '||SQLERRM);
+                END;
+        END LOOP;
+    END;
+    COMMIT;
+------------------------------------------------------------------------------------------------
+
+    FND_FILE.PUT_LINE(FND_FILE.LOG, '4. Creating ESP execution stats - ');
+
+    BEGIN
+        FOR stats_rec IN esp_exec_stats
+            LOOP
+                BEGIN
+                    INSERT INTO xxfin.xx_fin_esp_stats
+                           (ESP_JOB_NAME_1
+                           ,ESP_JOB_NAME_2
+                           ,ESP_STATS_DATE
+                           ,ESP_DLY_REQ_ID
+                           ,ESP_DLY_PHASE_CODE
+                           ,ESP_DLY_STATUS_CODE
+                           ,ESP_DLY_STR_DATE
+                           ,ESP_DLY_END_DATE
+                           ,ESP_DLY_ELAP_MIN
+                           ,ESP_STATS_JOB_CNT
+                           ,ESP_STATS_MIN
+                           ,ESP_STATS_MAX
+                           ,ESP_STATS_AVG
+                           ,ESP_STATS_STDDEV
+                           ,ESP_STATS_MIN_TM
+                           ,ESP_STATS_MAX_TM
+                           ,ESP_STATS_AVG_TM
+                           ,ATTRIBUTE1
+                           ,ATTRIBUTE2
+                           ,ATTRIBUTE3
+                           ,ATTRIBUTE4
+                           ,ATTRIBUTE5
+                           ,ATTRIBUTE6
+                           ,ATTRIBUTE7
+                           ,ATTRIBUTE8
+                           ,ATTRIBUTE9
+                           ,CREATION_DATE
+                           ,CREATED_BY
+                           ,LAST_UPDATED_BY
+                           ,LAST_UPDATE_DATE
+                           ,LAST_UPDATE_LOGIN)
+                     VALUES(stats_rec.job_name_1
+                           ,stats_rec.job_name_2
+                           ,SYSDATE
+                           ,NULL
+                           ,NULL
+                           ,NULL
+                           ,NULL
+                           ,NULL
+                           ,NULL
+                           ,stats_rec.job_cnt
+                           ,stats_rec.min_min
+                           ,stats_rec.max_min
+                           ,stats_rec.avg_min
+                           ,stats_rec.stddev_min
+                           ,stats_rec.min_str_tm
+                           ,stats_rec.max_str_tm
+                           ,stats_rec.avg_str_tm
+                           ,NULL
+                           ,NULL
+                           ,NULL
+                           ,NULL
+                           ,NULL
+                           ,NULL
+                           ,NULL
+                           ,NULL
+                           ,NULL
+                           ,SYSDATE
+                           ,-1
+                           ,-1
+                           ,SYSDATE
+                           ,-1);
+                    COMMIT;
+
+                    EXCEPTION
+                        WHEN OTHERS THEN
+                             FND_FILE.PUT_LINE(FND_FILE.LOG, '4. Error - Others ' || SQLERRM);
+                END;
+        END LOOP;
+    END;
+    COMMIT;
+
+EXCEPTION
+    WHEN OTHERS THEN
+         FND_FILE.PUT_LINE(FND_FILE.LOG, 'XX_RJS_ESP_UPDT_1_PKG OTHERS ERROR'||SQLERRM);
+         RETCODE := 2;
+
+END UPDT_ESP_STATS;
 
 -- +===================================================================+
 -- | PROCEDURE: PRINT_ESP_RPT                                          |
@@ -2006,7 +2324,7 @@ lc_section              VARCHAR2(30);
                 D.esp_pgm_short_name,
                 D.esp_pgm_user_name,
                 D.esp_responsibility
-         FROM   xx_fin_esp_details  D
+         FROM   xxfin.xx_fin_esp_details  D
          WHERE  D.esp_application = NVL(p_application,D.esp_application)
          AND    D.esp_job_name_1  = NVL(p_job_name_1, D.esp_job_name_1)
          AND    D.esp_job_name_2  = NVL(p_job_name_2,D.esp_job_name_2)
@@ -2026,7 +2344,7 @@ lc_section              VARCHAR2(30);
                           THEN REPLACE(REPLACE(D1.ESP_PGM_ARG_VALUES,',,',',(null),'),',,',',(null),')||'(null)'
                           ELSE REPLACE(REPLACE(D1.ESP_PGM_ARG_VALUES,',,',',(null),'),',,',',(null),')
                           END         AS ESP_PGM_ARG_VALUES
-                FROM   xx_fin_esp_details D1
+                FROM   xxfin.xx_fin_esp_details D1
                 WHERE  D1.esp_application = NVL(lc_application,D1.esp_application) 
                 AND    D1.esp_job_name_1  = NVL(lc_job_name_1, D1.esp_job_name_1)
                 AND    D1.esp_job_name_2  = NVL(lc_job_name_2, D1.esp_job_name_2)
@@ -2039,12 +2357,12 @@ lc_section              VARCHAR2(30);
          SELECT S.esp_prefix,
                 S.esp_system,
                 S.esp_schedule
-         FROM   xx_fin_esp_schedule   S
+         FROM   xxfin.xx_fin_esp_schedule   S
          WHERE  S.esp_event = NVL(lc_application,S.esp_event);
 
   CURSOR esp_pgm_runs IS
          SELECT R.esp_pgm_runs
-         FROM   xx_fin_esp_runs R
+         FROM   xxfin.xx_fin_esp_runs R
          WHERE  R.esp_application = NVL(lc_application,R.esp_application)
          AND    R.esp_job_name_1  = NVL(lc_job_name_1, R.esp_job_name_1)
          AND    R.esp_job_name_2  = NVL(lc_job_name_2,R.esp_job_name_2);
@@ -2060,8 +2378,8 @@ lc_section              VARCHAR2(30);
                      END    AS esp_pgm_link_type,
                 L.esp_pgm_link_appl,
                 L.esp_pgm_link_job
-         FROM   xx_fin_esp_details D,
-                xx_fin_esp_LINK    L
+         FROM   xxfin.xx_fin_esp_details D,
+                xxfin.xx_fin_esp_LINK    L
          WHERE  D.esp_detail_id   = L.esp_detail_id  
          AND    D.esp_application = 'EFAR1AI2'
          AND    D.esp_job_name_1 = 'EFAR1AI2'
