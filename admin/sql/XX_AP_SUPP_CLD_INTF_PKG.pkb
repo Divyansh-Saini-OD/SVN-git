@@ -34,6 +34,7 @@ CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- |  1.4    05-JUL-2019     Paddy Sanjeevi    Fix the flags and fine tuned                    |
 -- |  1.5    07-JUL-2019     Paddy Sanjeevi    Added for tolerance                             |
 -- |  1.6    11-JUL-2019     Havish Kasina     Added for Services Tolerance                    |
+-- |  1.7    27-JUL-2019     Paddy Sanjeevi    Added for import error messages                 |
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -931,8 +932,8 @@ BEGIN
             cur.vendor_min_amount,
             cur.supplier_ship_to,
             cur.master_vendor_id,
-            TO_CHAR(TO_DATE(cur.od_date_signed,'YYYY/MM/DD'),'DD-MON-RRRR'),
-            TO_CHAR(TO_DATE(cur.vendor_date_signed,'YYYY/MM/DD'),'DD-MON-RRRR'),
+            TO_CHAR(TO_DATE(cur.od_date_signed,'YYYY/MM/DD'),'DD-MON-RR'),
+            TO_CHAR(TO_DATE(cur.vendor_date_signed,'YYYY/MM/DD'),'DD-MON-RR'),
             cur.deduct_from_invoice_flag
           );
         UPDATE ap_supplier_sites_all
@@ -1091,8 +1092,8 @@ BEGIN
           segment5          = cur.vendor_min_amount,
           segment6          = cur.supplier_ship_to,
           segment13         = cur.master_vendor_id,
-          segment15         = TO_CHAR(to_date(cur.od_date_signed,'yyyy/mm/dd'),'dd-mon-rrrr'),
-          segment16         = TO_CHAR(TO_DATE(cur.VENDOR_DATE_SIGNED,'YYYY/MM/DD'),'DD-MON-RRRR'),
+          segment15         = TO_CHAR(TO_DATE(cur.od_date_signed,'YYYY/MM/DD'),'DD-MON-RR'),
+          segment16         = TO_CHAR(TO_DATE(cur.vendor_date_signed,'YYYY/MM/DD'),'DD-MON-RR'),
           segment17         = cur.deduct_from_invoice_flag
         WHERE vs_kff_id     = lc_attribute10
         AND structure_id    = 101;
@@ -1144,8 +1145,8 @@ BEGIN
               cur.vendor_min_amount,
               cur.supplier_ship_to,
               cur.master_vendor_id,
-              TO_CHAR(TO_DATE(cur.od_date_signed,'YYYY/MM/DD'),'DD-MON-RRRR'),
-              TO_CHAR(TO_DATE(cur.vendor_date_signed,'YYYY/MM/DD'),'DD-MON-RRRR'),
+              TO_CHAR(TO_DATE(cur.od_date_signed,'YYYY/MM/DD'),'DD-MON-RR'),
+              TO_CHAR(TO_DATE(cur.vendor_date_signed,'YYYY/MM/DD'),'DD-MON-RR'),
               cur.deduct_from_invoice_flag
             );
           UPDATE ap_supplier_sites_all
@@ -1543,7 +1544,7 @@ BEGIN
     lr_vendor_site_rec.terms_date_basis             :=c_sup_site.terms_date_basis;
     lr_vendor_site_rec.pay_group_lookup_code        :=c_sup_site.pay_group_lookup_code;
     lr_vendor_site_rec.payment_priority             :=c_sup_site.payment_priority;
-    lr_vendor_site_rec.terms_name                   :=c_sup_site.terms_name;
+    lr_vendor_site_rec.terms_id                     :=c_sup_site.terms_id;
     lr_vendor_site_rec.invoice_amount_limit         :=c_sup_site.invoice_amount_limit;
     lr_vendor_site_rec.pay_date_basis_lookup_code   :=c_sup_site.pay_date_basis_lookup_code;
     lr_vendor_site_rec.always_take_disc_flag        :=c_sup_site.always_take_disc_flag;
@@ -2546,6 +2547,28 @@ WHEN OTHERS THEN
   x_return_status := 'E';
   x_err_buf       := l_err_buff;
 END validate_supplier_records;
+
+FUNCTION xx_get_terms(p_cloud_terms IN VARCHAR2)
+RETURN VARCHAR2
+IS
+v_terms VARCHAR2(50);
+BEGIN
+  SELECT LTRIM(RTRIM(tv.target_value1))
+    INTO v_terms
+    FROM xx_fin_translatevalues tv,
+         xx_fin_translatedefinition td
+   WHERE tv.translate_id  = td.translate_id
+     AND translation_name = 'XX_AP_CLOUD_PAYMENT_TERMS';  
+	 AND SYSDATE BETWEEN NVL(tv.start_date_active,SYSDATE) AND NVL(tv.end_date_active,SYSDATE + 1)
+     AND SYSDATE BETWEEN NVL(td.start_date_active,SYSDATE) AND NVL(td.end_date_active,SYSDATE + 1)
+     AND tv.enabled_flag = 'Y'
+     AND td.enabled_flag = 'Y';
+  RETURN(v_terms);
+EXCEPTION
+  WHEN others THEN
+    RETURN('X');
+END;
+
 --+============================================================================+
 --| Name          : validate_supplie_site_reocords                                           |
 --| Description   : This procedure will validate  supplier sites details using valdiation  |
@@ -2660,11 +2683,11 @@ IS
   --==========================================================================================
   CURSOR c_get_term_id (c_term_name VARCHAR2)
   IS
-    SELECT COUNT(1)
-    FROM ap_terms_vl
-    WHERE name       = c_term_name
-    AND enabled_flag = 'Y'
-    AND TRUNC(SYSDATE) BETWEEN TRUNC(NVL(start_date_active, SYSDATE-1)) AND TRUNC(NVL(end_date_active, SYSDATE+1));
+    SELECT terms_id
+      FROM ap_terms_vl
+     WHERE name       = c_term_name
+       AND enabled_flag = 'Y'
+       AND TRUNC(SYSDATE) BETWEEN TRUNC(NVL(start_date_active, SYSDATE-1)) AND TRUNC(NVL(end_date_active, SYSDATE+1));
   --==================================================================================================
   -- Cursor Declarations to check the existence of the Tax Reporting Site for the existed supplier
   --==================================================================================================
@@ -2738,8 +2761,9 @@ IS
   l_terms_date_basis_code_cnt NUMBER;
   ln_cnt                      NUMBER;
   ln_vendor_site_id           NUMBER;
- l_service_tolerance_name ap_tolerance_templates.tolerance_name%type;
- l_service_tolerance_cnt      NUMBER :=0;
+  l_service_tolerance_name ap_tolerance_templates.tolerance_name%type;
+  l_service_tolerance_cnt      NUMBER :=0;
+  ln_terms_id				   NUMBER;
 BEGIN
   l_program_step := 'START';
   print_debug_msg(p_message=> l_program_step||': assigning defaults' ,p_force=>true);
@@ -2818,6 +2842,7 @@ BEGIN
     gc_error_site_status_flag := 'N';
     gc_step                   := 'SITE';
     gc_error_msg              := '';
+	ln_terms_id				  :=NULL;
     ln_vendor_site_id         := NULL;
     --l_int_vend_code           :=NULL;
     SELECT COUNT(1)
@@ -3024,6 +3049,26 @@ BEGIN
         END IF; -- IF l_ship_to_location_id IS NULL
       END IF;
       --=============================================================================
+      -- Validating Terms 
+      --=============================================================================
+      IF l_sup_site_type.terms_name IS NOT NULL THEN	  
+	      OPEN c_get_term_id(xx_get_terms(l_sup_site_type.terms_name));
+         FETCH c_get_term_id INTO ln_terms_id;
+         CLOSE c_get_term_id;
+         IF ln_terms_id IS NULL THEN
+            gc_error_site_status_flag := 'Y';
+            print_debug_msg(p_message=> gc_step||' ERROR: TERMS :'||l_sup_site_type.terms_name||': Terms does not exist in the system.' ,p_force=> true);
+            insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.vendor_site_code,
+						  p_error_code => 'XXOD_TERMS_INVALID',
+						  p_error_message => 'Terms :'||l_sup_site_type.terms_name||' does not exist in the system' ,
+						  p_stage_col1 => 'TERMS' ,p_stage_val1 => l_sup_site_type.terms_name,p_stage_col2 => NULL ,
+						  p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
+         ELSE paddu
+            print_debug_msg(p_message=> gc_step||' Terms is avilable ' ,p_force=> false);
+         END IF; 
+      END IF;
+	  
+      --=============================================================================
       -- Validating the Supplier Site - FOB Lookup value
       --=============================================================================
       l_fob_code_cnt                     := NULL;
@@ -3178,6 +3223,7 @@ BEGIN
     l_sup_site_and_add(l_sup_site_idx).supplier_number     := l_sup_site_type.supplier_number;
     l_sup_site_and_add(l_sup_site_idx).vendor_site_code    := l_sup_site_type.vendor_site_code;
     l_sup_site_and_add(l_sup_site_idx).vendor_id           := l_sup_site_type.supp_id;
+    l_sup_site_and_add(l_sup_site_idx).terms_id            := ln_terms_id;	
     IF gc_error_site_status_flag                            = 'Y' THEN
       l_sup_site_and_add(l_sup_site_idx).site_process_flag := gn_process_status_error;
       l_sup_site_and_add(l_sup_site_idx).error_flag        := gc_process_error_flag;
@@ -3205,7 +3251,8 @@ BEGIN
         last_update_date    =SYSDATE,
         process_flag        ='P',
         vendor_id           =l_sup_site_and_add(l_idxs).vendor_id,
-        vendor_site_id      =l_sup_site_and_add (l_sup_site_idx).vendor_site_id
+        vendor_site_id      =l_sup_site_and_add (l_sup_site_idx).vendor_site_id,
+		terms_id	        =l_sup_site_and_add (l_sup_site_idx).terms_id
       WHERE 1               =1
       AND vendor_site_code  =l_sup_site_and_add(l_idxs).vendor_site_code
       AND supplier_number   = l_sup_site_and_add(l_idxs).supplier_number
@@ -4100,6 +4147,22 @@ IS
     AND xas.create_flag         = 'Y';
 
 	l_process_status_flag VARCHAR2(1);
+	
+  CURSOR c_error
+  IS
+  SELECT a.rowid drowid,
+         c.reject_lookup_code
+    FROM ap_supplier_int_rejections c,
+         ap_suppliers_int b,
+         xx_ap_cld_suppliers_stg a 
+   WHERE a.request_id=gn_request_id
+     AND a.supp_process_flag=gn_process_status_validated
+     AND a.create_flag='Y'
+     AND b.vendor_interface_id=a.vendor_interface_id
+	 AND b.status='REJECTED'
+     AND c.parent_id=b.vendor_interface_id
+     AND c.parent_table='AP_SUPPLIERS_INT';
+  
 BEGIN
   print_debug_msg(p_message=> gc_step||' load_Supplier_Interface() - BEGIN' ,p_force=> false);
   --==============================================================================
@@ -4357,6 +4420,15 @@ BEGIN
          WHERE request_id=gn_request_id
            AND create_flag ='Y';
         COMMIT;
+		FOR cur IN c_error LOOP
+          UPDATE XX_AP_CLD_SUPPLIERS_STG stg
+             SET supp_process_flag = gn_process_status_imp_fail,
+                 process_flag        ='Y',
+                 error_flag          ='E',
+                 error_msg           =error_msg||','||cur.reject_lookup_code
+           WHERE rowid=cur.drowid;		
+		END LOOP;
+		COMMIT;
      END IF;
   END IF;
 EXCEPTION
@@ -4418,10 +4490,26 @@ IS
   CURSOR c_supplier_site
   IS
     SELECT xsup_site.*
-    FROM XX_AP_CLD_SUPP_SITES_STG xsup_site
-    WHERE xsup_site.site_process_flag = gn_process_status_validated
-    AND xsup_site.REQUEST_ID          = gn_request_id
-    AND create_flag                   ='Y';
+      FROM xx_ap_cld_supp_sites_stg xsup_site
+     WHERE xsup_site.site_process_flag = gn_process_status_validated
+       AND xsup_site.request_id          = gn_request_id
+       AND create_flag                   ='Y';
+
+  CURSOR c_error
+  IS
+  SELECT a.rowid drowid,
+         c.reject_lookup_code
+    FROM ap_supplier_int_rejections c,
+         ap_suppliers_int b,
+         xx_ap_cld_supp_sites_stg a 
+   WHERE a.request_id=gn_request_id
+     AND a.site_process_flag = gn_process_status_validated
+     AND a.create_flag='Y'
+     AND b.vendor_site_interface_id=a.vendor_site_interface_id
+	 AND b.status='REJECTED'
+     AND c.parent_id=b.vendor_site_interface_id
+     AND c.parent_table='AP_SUPPLIER_SITES_INT';
+	
   l_process_site_error_flag VARCHAR2(1) DEFAULT 'N';
   l_vendor_id               NUMBER;
   l_vendor_site_id          NUMBER;
@@ -4481,7 +4569,7 @@ BEGIN
                 fax_area_code ,
                 area_code ,
                 tax_reporting_site_flag ,
-                terms_name ,
+                terms_id ,
                 invoice_currency_code ,
                 payment_currency_code ,
                 accts_pay_code_combination_id ,
@@ -4546,7 +4634,7 @@ BEGIN
                 l_sup_site_type(l_idx).fax_area_code ,
                 l_sup_site_type(l_idx).phone_area_code ,
                 l_sup_site_type(l_idx).tax_reporting_site_flag,--income_tax_rep_site
-                l_sup_site_type(l_idx).terms_name ,
+                l_sup_site_type(l_idx).terms_id,
                 l_sup_site_type(l_idx).invoice_currency_code, --invoice_currency ,
                 l_sup_site_type(l_idx).payment_currency_code, --,payment_currency ,
                 v_acct_pay,
@@ -4701,29 +4789,15 @@ BEGIN
       WHEN OTHERS THEN
         print_debug_msg(p_message => ' Error in update after import', p_force => true);
       END ;
-      BEGIN
+	  FOR cur IN c_error LOOP
         UPDATE XX_AP_CLD_SUPP_SITES_STG stg
-        SET SITE_PROCESS_FLAG = gn_process_status_imp_fail,
-          PROCESS_FLAG        ='Y',
-          ERROR_FLAG          ='E',
-          ERROR_MSG           =ERROR_MSG
-          ||',Import Error'
-        WHERE 1=1--REQUEST_ID = gn_request_id
-        AND EXISTS
-          (SELECT 1
-          FROM ap_supplier_sites_int aint
-          WHERE aint.vendor_site_code      = stg.vendor_site_code
-          AND AINT.VENDOR_ID               =STG.VENDOR_ID
-          AND aint.org_id                  =stg.org_id
-          AND aint.status                  = 'REJECTED'
-          AND aint.vendor_site_interface_id=stg.vendor_site_interface_id
-          )
-        AND REQUEST_ID = gn_request_id;
-        COMMIT;
-      EXCEPTION
-      WHEN OTHERS THEN
-        print_debug_msg(p_message => ' Error in update after import', p_force => true);
-      END ;
+           SET site_process_flag = gn_process_status_imp_fail,
+               process_flag        ='Y',
+               error_flag          ='E',
+               error_msg           =error_msg||','||cur.reject_lookup_code
+	     WHERE rowid=cur.drowid;				   
+	  END LOOP;
+      COMMIT;	  
     END IF;
   END IF;
   x_return_status := l_return_status;
@@ -4792,6 +4866,22 @@ IS
     AND xas.request_id            = gn_request_id
     AND create_flag               ='Y'
     AND cont_target               ='EBS';
+	
+  CURSOR c_error 
+  IS   
+  SELECT a.rowid drowid,
+         c.reject_lookup_code
+    FROM ap_supplier_int_rejections c,
+         ap_sup_site_contact_int b,
+         xx_ap_cld_supp_contact_stg a 
+   WHERE a.request_id=gn_request_id
+     AND a.site_process_flag = gn_process_status_validated
+     AND a.create_flag='Y'
+     AND b.vendor_contact_interface_id=a.vendor_contact_interface_id
+	 AND b.status='REJECTED'
+     AND c.parent_id=b.vendor_contact_interface_id
+     AND c.parent_table='AP_SUPP_SITE_CONTACT_INT';
+	
   l_sup_rec_exists          NUMBER (10) DEFAULT 0;
   l_cont_process_error_flag VARCHAR2(1);
   l_vendor_id               NUMBER;
@@ -4996,33 +5086,17 @@ BEGIN
       WHEN OTHERS THEN
         print_debug_msg(p_message => ' Error in update after import', p_force => true);
       END ;
-      BEGIN
-        l_error_message := 'Problem in calling Supplier Contact Open Interface Import';
-        print_debug_msg(p_message => ' l_error_message :'||l_error_message, p_force => true);
-        UPDATE XX_AP_CLD_SUPP_CONTACT_STG stg
-        SET contact_process_flag= gn_process_status_imp_fail,
-          PROCESS_FLAG          ='Y',
-          ERROR_FLAG            ='E',
-          ERROR_MSG             = ERROR_MSG
-          ||',Import Error'
-        WHERE REQUEST_ID    = gn_request_id
-        AND stg.cont_target ='EBS'
-        AND EXISTS
-          (SELECT 1
-          FROM ap_sup_site_contact_int aint
-          WHERE upper(aint.last_name)         = upper(stg.last_name)
-          AND upper(aint.first_name)          = upper(stg.first_name)
-          AND aint.vendor_id                  =stg.vendor_id
-          AND aint.vendor_site_id             =stg.vendor_site_id
-          AND aint.status                     = 'REJECTED'
-          AND aint.vendor_contact_interface_id=stg.vendor_contact_interface_id
-          )
-        AND REQUEST_ID = GN_REQUEST_ID;
-        COMMIT;
-      EXCEPTION
-      WHEN OTHERS THEN
-        print_debug_msg(p_message => ' Error in update after import', p_force => true);
-      END ;
+	  BEGIN
+	    FOR cur IN c_error LOOP
+		  UPDATE xx_ap_cld_supp_contact_stg stg
+             SET contact_process_flag= gn_process_status_imp_fail,
+                 process_flag          ='Y',
+                 error_flag            ='E',
+				 error_msg             = error_msg||','||cur.reject_lookup_code
+           WHERE rowid=cur.drowid;				 
+		END LOOP;
+	    COMMIT;
+	  END;
     END IF;
   END IF;
   x_ret_code      := l_ret_code;
