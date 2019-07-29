@@ -2558,7 +2558,7 @@ BEGIN
     FROM xx_fin_translatevalues tv,
          xx_fin_translatedefinition td
    WHERE tv.translate_id  = td.translate_id
-     AND translation_name = 'XX_AP_CLOUD_PAYMENT_TERMS';  
+     AND translation_name = 'XX_AP_CLOUD_PAYMENT_TERMS'  
 	 AND SYSDATE BETWEEN NVL(tv.start_date_active,SYSDATE) AND NVL(tv.end_date_active,SYSDATE + 1)
      AND SYSDATE BETWEEN NVL(td.start_date_active,SYSDATE) AND NVL(td.end_date_active,SYSDATE + 1)
      AND tv.enabled_flag = 'Y'
@@ -2683,7 +2683,7 @@ IS
   --==========================================================================================
   CURSOR c_get_term_id (c_term_name VARCHAR2)
   IS
-    SELECT terms_id
+    SELECT term_id
       FROM ap_terms_vl
      WHERE name       = c_term_name
        AND enabled_flag = 'Y'
@@ -3055,7 +3055,7 @@ BEGIN
 	      OPEN c_get_term_id(xx_get_terms(l_sup_site_type.terms_name));
          FETCH c_get_term_id INTO ln_terms_id;
          CLOSE c_get_term_id;
-         IF ln_terms_id IS NULL THEN
+         IF NVL(ln_terms_id,0) <> 0 THEN
             gc_error_site_status_flag := 'Y';
             print_debug_msg(p_message=> gc_step||' ERROR: TERMS :'||l_sup_site_type.terms_name||': Terms does not exist in the system.' ,p_force=> true);
             insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.vendor_site_code,
@@ -3063,7 +3063,7 @@ BEGIN
 						  p_error_message => 'Terms :'||l_sup_site_type.terms_name||' does not exist in the system' ,
 						  p_stage_col1 => 'TERMS' ,p_stage_val1 => l_sup_site_type.terms_name,p_stage_col2 => NULL ,
 						  p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
-         ELSE paddu
+         ELSE 
             print_debug_msg(p_message=> gc_step||' Terms is avilable ' ,p_force=> false);
          END IF; 
       END IF;
@@ -3251,8 +3251,8 @@ BEGIN
         last_update_date    =SYSDATE,
         process_flag        ='P',
         vendor_id           =l_sup_site_and_add(l_idxs).vendor_id,
-        vendor_site_id      =l_sup_site_and_add (l_sup_site_idx).vendor_site_id,
-		terms_id	        =l_sup_site_and_add (l_sup_site_idx).terms_id
+        vendor_site_id      =l_sup_site_and_add (l_idxs).vendor_site_id,
+		terms_id	        =l_sup_site_and_add (l_idxs).terms_id
       WHERE 1               =1
       AND vendor_site_code  =l_sup_site_and_add(l_idxs).vendor_site_code
       AND supplier_number   = l_sup_site_and_add(l_idxs).supplier_number
@@ -4500,7 +4500,7 @@ IS
   SELECT a.rowid drowid,
          c.reject_lookup_code
     FROM ap_supplier_int_rejections c,
-         ap_suppliers_int b,
+         ap_supplier_sites_int b,
          xx_ap_cld_supp_sites_stg a 
    WHERE a.request_id=gn_request_id
      AND a.site_process_flag = gn_process_status_validated
@@ -4875,7 +4875,7 @@ IS
          ap_sup_site_contact_int b,
          xx_ap_cld_supp_contact_stg a 
    WHERE a.request_id=gn_request_id
-     AND a.site_process_flag = gn_process_status_validated
+     AND a.contact_process_flag = gn_process_status_validated
      AND a.create_flag='Y'
      AND b.vendor_contact_interface_id=a.vendor_contact_interface_id
 	 AND b.status='REJECTED'
