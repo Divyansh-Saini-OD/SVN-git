@@ -37,6 +37,7 @@ AS
   --  1.9          05-Dec-18   Sunil Kalal       NAIT-74711  Added logic to check for Freight Terms PP and CC Only else NULL.
   --  2.0          26-Jun-19   Shanti Sethuraj   NAIT-90627  Added new logic for RTV payment terms
   --  2.1          10-Jul-19   Shanti Sethuraj   NAIT-101583 Removed space
+  --  2.1          27-Jul-19   Paddy Sanjeevi    Modified to derive vendor site id based on attribute13
   -- +============================================================================================+
   ------------------------------------------------------------
   ------------------------------------------------------------
@@ -656,6 +657,7 @@ AS
   v_attribute12 VARCHAR2(500);
   --po_vendor_sites_all.attribute12%TYPE;
   v_attribute13 VARCHAR2(500);
+  v_attr13		VARCHAR2(500);
   --po_vendor_sites_all.attribute13%TYPE;
   v_attribute15 VARCHAR2(500);
   v_attribute16 VARCHAR2(500);
@@ -1059,6 +1061,7 @@ BEGIN
   v_attribute11             := NULL;
   v_attribute12             := NULL;
   v_attribute13             := NULL;
+  v_attr13					:= NULL;
   v_attribute15             := NULL;
   v_attribute16             := NULL;
   v_site_contact_name       := NULL;
@@ -4774,7 +4777,8 @@ BEGIN
       FETCH mainsupplupdate_cur
       INTO v_vendor_site_id,
         v_attribute8,
-        v_attribute13,
+        --v_attribute13,
+		v_attr13,			-- added for cloud change
         v_vendor_site_code,
         v_vendor_site_code_alt, --NAIT-64664 Added by Sunil
         v_site_last_update,
@@ -4914,7 +4918,19 @@ BEGIN
         WHEN OTHERS THEN
           fnd_file.put_line(fnd_file.log, 'Error retreiving Bank Code for Site ID:' || v_vendor_site_id || ' ' || v_payment_method_lookup_code || ' ' || v_payment_currency_code || v_country);
         END;
-
+		-- BEGIN Added to derive vendor_site_id for the pay site vendor site code for cloud change
+		IF v_attr13 IS NOT NULL THEN
+		   BEGIN
+		     SELECT vendor_site_id
+			   INTO v_attribute13
+			   FROM ap_supplier_sites_all
+			  WHERE vendor_site_code=v_attr13;
+		   EXCEPTION
+		     WHEN others THEN
+			   v_attribute13:=NULL;
+		   END;
+		END IF;
+		-- END Added to derive vendor_site_id for the pay site vendor site code for Cloud change	
         -- end of Defect 7007 CR395
         -- Purchase Site with Paysite specified.
         --check attribute13 for Purchase sites to get the Pay site
@@ -5589,3 +5605,4 @@ BEGIN
 END;
 END XX_AP_SUP_REAL_OUT_RMS_XML_PKG;
 /
+SHOW ERROR;
