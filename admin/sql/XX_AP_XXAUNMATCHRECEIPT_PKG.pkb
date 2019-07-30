@@ -1,4 +1,14 @@
-CREATE OR REPLACE
+SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+ 
+WHENEVER SQLERROR CONTINUE;
+ 
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+
+create or replace 
 PACKAGE BODY XX_AP_XXAUNMATCHRECEIPT_PKG
   -- +===================================================================+
   -- |                  Office Depot - Project Simplify                  |
@@ -12,9 +22,9 @@ PACKAGE BODY XX_AP_XXAUNMATCHRECEIPT_PKG
   -- |Version   Date        Author             Remarks                   |
   -- |========  =========== ================== ==========================|
   -- |1.0       14-Nov-2017 Ragni Gupta     Initial version              |
-  -- |1.1       14-FEB-2018  Priyam         Code change for Reciept Correction  |
-  -- |1.2       23-Apr-2019  Shanti Sethuraj  Adding new procedure XX_AP_UNMATCH_WRAP_PROC and
-  -- |                                        XX_AP_UNMATCH_DETAIL_WRAP_PROC for NAIT-27081 |
+  -- |1.1       14-FEB-2018  Priyam         Code change for Reciept Correction   |
+  -- |1.2       30-July-2019 Shanti         Adding new procedure XX_AP_UNMATCH_WRAP_PROC and|
+  -- |                                      XX_AP_UNMATCH_DETAIL_WRAP_PROC for NAIT-27081 |  
   -- +===================================================================+
 AS
 FUNCTION BEFOREREPORT
@@ -347,7 +357,7 @@ IS
   L_INV_AMT          NUMBER :=0;
   L_RETURN_AMT       NUMBER := 0;
   L_MAX_RCV_TRANS_ID NUMBER;
-  L_REC_CORR_AMT     NUMBER :=0;
+  L_REC_CORR_AMT NUMBER :=0;
 BEGIN
   SELECT NVL(SUM(AMOUNT),0)
   INTO L_INV_AMT
@@ -362,9 +372,11 @@ BEGIN
   AND ACCRUAL_ACCOUNT_ID    = P_PO_ACCRUAL_ID
   AND RCV_TRANSACTION_ID    = P_RCV_TRANS_ID
   AND TRANSACTION_TYPE_CODE = 'RECEIVE';
+    
   -----Added for defect NAIT-27043
-  SELECT NVL(SUM((CAPR.AMOUNT*-1)),0)
-  INTO L_REC_CORR_AMT
+
+   SELECT NVL(SUM((CAPR.AMOUNT*-1)),0)
+       INTO L_REC_CORR_AMT
   FROM CST_AP_PO_RECONCILIATION CAPR,
     RCV_TRANSACTIONS RT,
     RCV_SHIPMENT_HEADERS RSH
@@ -376,10 +388,13 @@ BEGIN
   AND RSH.RECEIPT_NUM            =
     (SELECT RSHS.RECEIPT_NUM
     FROM RCV_TRANSACTIONS RTS,
-      RCV_SHIPMENT_HEADERS RSHS
+     RCV_SHIPMENT_HEADERS RSHS
     WHERE RTS.TRANSACTION_ID    = P_RCV_TRANS_ID
     AND RSHS.SHIPMENT_HEADER_ID = RTS.SHIPMENT_HEADER_ID
     );
+  
+  
+  
   SELECT NVL(SUM((CAPR.AMOUNT)),0)
   INTO L_RETURN_AMT
   FROM CST_AP_PO_RECONCILIATION CAPR,
@@ -397,6 +412,7 @@ BEGIN
     WHERE RTS.TRANSACTION_ID    = P_RCV_TRANS_ID
     AND RSHS.SHIPMENT_HEADER_ID = RTS.SHIPMENT_HEADER_ID
     );
+    
   L_REC_AMT := L_REC_AMT - L_RETURN_AMT;
   BEGIN
     SELECT (AMOUNT*-1)
@@ -734,4 +750,7 @@ WHEN OTHERS THEN
   fnd_file.put_line(fnd_file.log,x_errbuf);
 END XX_AP_UNMATCH_DETAIL_WRAP_PROC;
 --end of new procedures(NAIT-27081)
-END xx_ap_xxaunmatchreceipt_pkg;
+END XX_AP_XXAUNMATCHRECEIPT_PKG;
+
+/
+
