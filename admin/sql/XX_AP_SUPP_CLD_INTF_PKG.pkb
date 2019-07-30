@@ -3043,10 +3043,10 @@ BEGIN
         CLOSE c_bill_to_location;
         IF l_bill_to_cnt             =0 THEN
           gc_error_site_status_flag := 'Y';
-          print_debug_msg(p_message=> gc_step||' ERROR: SHIP_TO_LOCATION:'||l_sup_site_type.bill_to_location||': XXOD_SHIP_TO_LOCATION_INVALID2: Ship to Location does not exist in the system.' ,p_force=> true);
-          insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_SHIP_TO_LOCATION_INVALID2' ,p_error_message => 'Ship to Location '||l_sup_site_type.bill_to_location||' does not exist in the system' ,p_stage_col1 => 'SHIP_TO_LOCATION' ,p_stage_val1 => l_sup_site_type.bill_to_location ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
+          print_debug_msg(p_message=> gc_step||' ERROR: BILL_TO_LOCATION:'||l_sup_site_type.bill_to_location||': XXOD_BILL_TO_LOCATION_INVALID2: Bill to Location does not exist in the system.' ,p_force=> true);
+          insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_BILL_TO_LOCATION_INVALID2' ,p_error_message => 'Bill to Location '||l_sup_site_type.bill_to_location||' does not exist in the system' ,p_stage_col1 => 'SHIP_TO_LOCATION' ,p_stage_val1 => l_sup_site_type.bill_to_location ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
         ELSE
-          print_debug_msg(p_message=> gc_step||' Ship to Location Id is avilable ' ,p_force=> false);
+          print_debug_msg(p_message=> gc_step||' Bill to Location Id is avilable ' ,p_force=> false);
         END IF; -- IF l_ship_to_location_id IS NULL
       END IF;
       --=============================================================================
@@ -3056,7 +3056,8 @@ BEGIN
 	      OPEN c_get_term_id(xx_get_terms(l_sup_site_type.terms_name));
          FETCH c_get_term_id INTO ln_terms_id;
          CLOSE c_get_term_id;
-         IF NVL(ln_terms_id,0) <> 0 THEN
+         IF NVL(ln_terms_id,0) = 0
+		 THEN
             gc_error_site_status_flag := 'Y';
             print_debug_msg(p_message=> gc_step||' ERROR: TERMS :'||l_sup_site_type.terms_name||': Terms does not exist in the system.' ,p_force=> true);
             insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.vendor_site_code,
@@ -3065,7 +3066,7 @@ BEGIN
 						  p_stage_col1 => 'TERMS' ,p_stage_val1 => l_sup_site_type.terms_name,p_stage_col2 => NULL ,
 						  p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
          ELSE 
-            print_debug_msg(p_message=> gc_step||' Terms is avilable ' ,p_force=> false);
+            print_debug_msg(p_message=> gc_step||' Terms is available ' ,p_force=> false);
          END IF; 
       END IF;
 	  
