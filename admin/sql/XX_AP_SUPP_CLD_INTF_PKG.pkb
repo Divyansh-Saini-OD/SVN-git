@@ -2561,6 +2561,7 @@ BEGIN
      AND translation_name = 'XX_AP_CLOUD_PAYMENT_TERMS'  
 	 AND SYSDATE BETWEEN NVL(tv.start_date_active,SYSDATE) AND NVL(tv.end_date_active,SYSDATE + 1)
      AND SYSDATE BETWEEN NVL(td.start_date_active,SYSDATE) AND NVL(td.end_date_active,SYSDATE + 1)
+	 AND tv.source_value1 = p_cloud_terms
      AND tv.enabled_flag = 'Y'
      AND td.enabled_flag = 'Y';
   RETURN(v_terms);
