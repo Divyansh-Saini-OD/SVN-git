@@ -127,6 +127,7 @@ AS
 -- |     40.0     18-JAN-2018  Arun G     Made changes for TECHZONE project to derive the Order type Defect#44139           | 
 -- |     41.0     14-NOV-2018  Arun G     Made changes for Bill Complete Project                                            |
 -- |     42.0     19-MAY-2019  Arun G     Made changes for Service contract project  JIRA 90510                             |  
+-- |     43.0     31-JUL-2019  Arun G     Made changes to fix Service contract project bug                                  |
 -- +========================================================================================================================+
     PROCEDURE process_current_order(
         p_order_tbl   IN  order_tbl_type,
@@ -3982,23 +3983,23 @@ AS
         END IF;
 
         -- Get invoicing Rule Id
-		IF ln_debug_level > 0
+	IF ln_debug_level > 0
         THEN
-  		  oe_debug_pub.ADD(' deriving the invoicing rule for Order typd id: '||g_header_rec.order_type_id(i));
-		END IF; 
-  	    
-		IF g_header_rec.order_type_id(i) IS NOT NULL
-		THEN
-		  BEGIN
+  	  oe_debug_pub.ADD(' deriving the invoicing rule for Order typd id: '||g_header_rec.order_type_id(i));
+	END IF; 
+  	
+        IF g_header_rec.order_type_id(i) IS NOT NULL
+	THEN
+	  BEGIN
             SELECT invoicing_rule_id
             INTO g_header_rec.invoicing_rule_id(i)
             FROM   oe_order_types_v
             WHERE  order_type_id = g_header_rec.order_type_id(i);
 
- 		    IF ln_debug_level > 0
+	    IF ln_debug_level > 0
             THEN
-  		      oe_debug_pub.ADD(' Invoicing rule id :'||g_header_rec.invoicing_rule_id(i));
-         	END IF;  
+	      oe_debug_pub.ADD(' Invoicing rule id :'||g_header_rec.invoicing_rule_id(i));
+            END IF;  
           EXCEPTION
             WHEN OTHERS
             THEN
@@ -5215,14 +5216,11 @@ AS
             END IF;
             */
         END IF;
-
-	    IF ln_debug_level > 0
+        IF ln_debug_level > 0
         THEN
-		  
-		  oe_debug_pub.ADD( 'start rev recognization changes for subscriptions ..');
-		  oe_debug_pub.ADD( 'invoicing_rule_id: '||g_header_rec.invoicing_rule_id(ln_hdr_ind));
-		  
-		END IF;  
+	  oe_debug_pub.ADD( 'start rev recognization changes for subscriptions ..');
+	  oe_debug_pub.ADD( 'invoicing_rule_id: '||g_header_rec.invoicing_rule_id(ln_hdr_ind));
+	END IF;  
 		
         IF g_header_rec.invoicing_rule_id(ln_hdr_ind) IS NOT NULL
         THEN
@@ -5230,20 +5228,18 @@ AS
             SELECT add_months(sysdate,od_contract_length)
             INTO g_line_rec.service_end_date(i)
             FROM xx_rms_mv_ssb
-            WHERE item =  g_line_rec.inventory_item(i);
+            WHERE item =  lc_item; --g_line_rec.inventory_item(i);
 
             g_line_rec.service_start_date(i) := g_line_rec.ordered_date(i);
 
             EXCEPTION
               WHEN OTHERS 
               THEN 
-			    
-				IF ln_debug_level >0 
-				THEN 
-				  oe_debug_pub.ADD( 'No Contract details found SSB..');
-				END IF;
-				
-                g_line_rec.service_end_date(i) := null;
+         	IF ln_debug_level >0 
+		THEN 
+		  oe_debug_pub.ADD( 'No Contract details found SSB for Item..'||lc_item);
+		END IF;
+	        g_line_rec.service_end_date(i) := null;
                 g_line_rec.service_start_date(i) := NULL;
             END;
         END IF;
@@ -5254,7 +5250,7 @@ AS
         THEN
             oe_debug_pub.ADD(   'Line Type = '
                              || g_line_rec.line_type_id(i));
-            oe_debug_pub.ADD(   'Item = '
+            oe_debug_pub.ADD(   'Item id = '
                              || g_line_rec.inventory_item_id(i));
             oe_debug_pub.ADD(   'Item = '
                              || g_line_rec.inventory_item(i));
@@ -9420,7 +9416,8 @@ EXCEPTION
                              tax_exempt_flag,
                              tax_exempt_number,
                              tax_exempt_reason_code,
-                             ineligible_for_hvop)
+                             ineligible_for_hvop,
+                             invoicing_rule_id)
                      VALUES (g_header_rec.orig_sys_document_ref(i_hed),
                              g_header_rec.order_source_id(i_hed),
                              g_org_id,
@@ -9467,7 +9464,8 @@ EXCEPTION
                              g_header_rec.tax_exempt_flag(i_hed),
                              g_header_rec.tax_exempt_number(i_hed),
                              g_header_rec.tax_exempt_reason(i_hed),
-                             g_header_rec.ineligible_for_hvop(i_hed));
+                             g_header_rec.ineligible_for_hvop(i_hed),
+                             g_header_rec.invoicing_rule_id(i_hed));
         EXCEPTION
             WHEN OTHERS
             THEN
