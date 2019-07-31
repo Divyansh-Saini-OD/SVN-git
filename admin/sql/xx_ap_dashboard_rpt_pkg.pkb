@@ -1,5 +1,11 @@
-﻿create or replace 
-PACKAGE body xx_ap_dashboard_rpt_pkg
+﻿SET VERIFY OFF;
+SET SHOW OFF;
+SET ECHO OFF;
+SET TAB OFF;
+SET FEEDBACK OFF;
+WHENEVER SQLERROR CONTINUE;
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+CREATE OR REPLACE PACKAGE body xx_ap_dashboard_rpt_pkg
 AS
   -- +============================================================================================+
   -- |  Office Depot - Project Simplify                                                           |
@@ -800,24 +806,24 @@ BEGIN
   --Code commented based on NAIT-52933
   /*FOR i IN sitran (l_start_date,l_end_date)
   LOOP
-    l_ap_trade_rtv_recon(n).APPLICATION := i.APPLICATION;
-    L_Ap_Trade_Rtv_Recon(N).Country     := I.Country;
-    l_ap_trade_rtv_recon(n).DY_73_AMT   := i.DY_73_AMT;
-    l_ap_trade_rtv_recon(n).wy_73_amt   := i.wy_73_amt;
-    l_ap_trade_rtv_recon(n).my_73_amt   := i.my_73_amt;
-    L_Ap_Trade_Rtv_Recon(N).Qy_73_Amt   := I.Qy_73_Amt;
-    -- l_ap_trade_rtv_recon(n).INVOICE_NUM        := i.INVOICE_NUM;
-    -- l_ap_trade_rtv_recon(n).INVOICE_DATE       := i.INVOICE_DATE;
-    -- l_ap_trade_rtv_recon(n).RTV_NUMBER         := i.RTV_NUMBER;
-    -- L_Ap_Trade_Rtv_Recon(N).Sku                := I.Sku;
-    -- l_ap_trade_rtv_recon(n).RETURN_CODE        := i.RETURN_CODE;
-    --  l_ap_trade_rtv_recon(n).RETURN_DESCRIPTION := i.RETURN_DESCRIPTION;
-    -- l_ap_trade_rtv_recon(n).FREQUENCY_CODE     := i.FREQUENCY_CODE;
-    --l_ap_trade_rtv_recon(n).DY_OTH_AMT         := i.DY_OTH_AMT;
-    --l_ap_trade_rtv_recon(n).wy_oth_amt         := i.wy_oth_amt;
-    --l_ap_trade_rtv_recon(n).my_oth_amt         := i.my_oth_amt;
-    --l_ap_trade_rtv_recon(n).qy_oth_amt         := i.qy_oth_amt;
-    N := N+1;
+  l_ap_trade_rtv_recon(n).APPLICATION := i.APPLICATION;
+  L_Ap_Trade_Rtv_Recon(N).Country     := I.Country;
+  l_ap_trade_rtv_recon(n).DY_73_AMT   := i.DY_73_AMT;
+  l_ap_trade_rtv_recon(n).wy_73_amt   := i.wy_73_amt;
+  l_ap_trade_rtv_recon(n).my_73_amt   := i.my_73_amt;
+  L_Ap_Trade_Rtv_Recon(N).Qy_73_Amt   := I.Qy_73_Amt;
+  -- l_ap_trade_rtv_recon(n).INVOICE_NUM        := i.INVOICE_NUM;
+  -- l_ap_trade_rtv_recon(n).INVOICE_DATE       := i.INVOICE_DATE;
+  -- l_ap_trade_rtv_recon(n).RTV_NUMBER         := i.RTV_NUMBER;
+  -- L_Ap_Trade_Rtv_Recon(N).Sku                := I.Sku;
+  -- l_ap_trade_rtv_recon(n).RETURN_CODE        := i.RETURN_CODE;
+  --  l_ap_trade_rtv_recon(n).RETURN_DESCRIPTION := i.RETURN_DESCRIPTION;
+  -- l_ap_trade_rtv_recon(n).FREQUENCY_CODE     := i.FREQUENCY_CODE;
+  --l_ap_trade_rtv_recon(n).DY_OTH_AMT         := i.DY_OTH_AMT;
+  --l_ap_trade_rtv_recon(n).wy_oth_amt         := i.wy_oth_amt;
+  --l_ap_trade_rtv_recon(n).my_oth_amt         := i.my_oth_amt;
+  --l_ap_trade_rtv_recon(n).qy_oth_amt         := i.qy_oth_amt;
+  N := N+1;
   END LOOP;*/
   FOR j IN ORCL ( l_start_date,l_end_date)
   LOOP
@@ -845,9 +851,9 @@ BEGIN
   FOR i IN 1..2
   LOOP
     --Code commented based on NAIT-52933
-	/*IF i                                   = 1 THEN
-      l_ap_trade_rtv_recon(n).application := 'SITRAN';
-      l_ap_trade_rtv_recon(n).country     := 'OU_US';
+    /*IF i                                   = 1 THEN
+    l_ap_trade_rtv_recon(n).application := 'SITRAN';
+    l_ap_trade_rtv_recon(n).country     := 'OU_US';
     END IF;*/
     IF i                                   = 1 THEN
       L_Ap_Trade_Rtv_Recon(N).Application := 'Oracle AP';
@@ -857,10 +863,10 @@ BEGIN
       l_ap_trade_rtv_recon(n).application := 'Oracle AP';
       l_ap_trade_rtv_recon(n).country     :='OU_CA';
     END IF;
-	 --Code commented based on NAIT-52933
+    --Code commented based on NAIT-52933
     /*IF i                                   = 4 THEN
-      l_ap_trade_rtv_recon(n).application := 'SITRAN';
-      l_ap_trade_rtv_recon(n).country     :='OU_CA';
+    l_ap_trade_rtv_recon(n).application := 'SITRAN';
+    l_ap_trade_rtv_recon(n).country     :='OU_CA';
     END IF;*/
     l_ap_trade_rtv_recon(n).dy_73_amt := 0;
     l_ap_trade_rtv_recon(n).wy_73_amt := 0;
@@ -1012,8 +1018,8 @@ IS
           )
         ) H,
         Ap_Invoices_All Ai
-      WHERE 1=1
-      and ai.invoice_type_lookup_code='STANDARD'
+      WHERE 1                        =1
+      AND ai.invoice_type_lookup_code='STANDARD'
       AND H.LAST_UPDATE_DATE BETWEEN TO_DATE(TO_CHAR(P_DT_FROM)
         ||' 00:00:00','DD-MON-RR HH24:MI:SS')
       AND TO_DATE(TO_CHAR(P_DT_TO)
@@ -1124,8 +1130,8 @@ IS
       FROM AP_SUPPLIER_SITES_ALL SIT,
         AP_SUPPLIERS SUP,
         AP_INVOICES_ALL AI
-      WHERE 1=1
-      and ai.invoice_type_lookup_code='STANDARD'
+      WHERE 1                        =1
+      AND ai.invoice_type_lookup_code='STANDARD'
       AND AI.LAST_UPDATE_DATE BETWEEN TO_DATE(TO_CHAR(P_DT_FROM)
         ||' 00:00:00','DD-MON-RR HH24:MI:SS')
       AND TO_DATE(TO_CHAR(P_DT_TO)
@@ -1284,8 +1290,8 @@ IS
             )
           ) H,
           Ap_Invoices_All Ai
-        WHERE 1=1
-        and ai.invoice_type_lookup_code='STANDARD'
+        WHERE 1                        =1
+        AND ai.invoice_type_lookup_code='STANDARD'
         AND H.LAST_UPDATE_DATE BETWEEN TO_DATE(TO_CHAR(P_DT_FROM)
           ||' 00:00:00','DD-MON-RR HH24:MI:SS')
         AND TO_DATE(TO_CHAR(P_DT_TO)
@@ -1396,8 +1402,8 @@ IS
         FROM AP_SUPPLIER_SITES_ALL SIT,
           AP_SUPPLIERS SUP,
           AP_INVOICES_ALL AI
-        WHERE 1=1
-        and ai.invoice_type_lookup_code='STANDARD'
+        WHERE 1                        =1
+        AND ai.invoice_type_lookup_code='STANDARD'
         AND AI.LAST_UPDATE_DATE BETWEEN TO_DATE(TO_CHAR(P_DT_FROM)
           ||' 00:00:00','DD-MON-RR HH24:MI:SS')
         AND TO_DATE(TO_CHAR(P_DT_TO)
@@ -1653,5 +1659,4 @@ IS
   END Xx_Ap_Trade_Match_Analysis;
 END xx_ap_dashboard_rpt_pkg;
 /
-
 SHOW ERRORS;
