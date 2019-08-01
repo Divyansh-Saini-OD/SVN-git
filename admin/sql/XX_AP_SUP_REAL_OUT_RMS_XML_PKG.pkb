@@ -38,6 +38,7 @@ AS
   --  2.0          26-Jun-19   Shanti Sethuraj   NAIT-90627  Added new logic for RTV payment terms
   --  2.1          10-Jul-19   Shanti Sethuraj   NAIT-101583 Removed space
   --  2.1          27-Jul-19   Paddy Sanjeevi    Modified to derive vendor site id based on attribute13
+  --  2.2          31-Jul-19   Paddy Sanjeevi    Modified to derive rtv site based on segment58 from xx_po_vendor_sites_kff
   -- +============================================================================================+
   ------------------------------------------------------------
   ------------------------------------------------------------
@@ -877,6 +878,7 @@ AS
   v_861_damage_shortage xx_po_vendor_sites_kff_v.blank99%type;
   v_852_sales xx_po_vendor_sites_kff_v.blank99%type;
   v_rtv_related_siteid xx_po_vendor_sites_kff_v.blank99%type;
+  v_rtv_related_site   xx_po_vendor_sites_kff_v.blank99%type;
   v_od_ven_sig_name xx_po_vendor_sites_kff_v.blank99%type;
   v_od_ven_sig_title xx_po_vendor_sites_kff_v.blank99%type;
   v_rms_count  NUMBER := 0;
@@ -5300,7 +5302,8 @@ BEGIN
               v_820_eft,
               v_861_damage_shortage,
               v_852_sales,
-              v_rtv_related_siteid,
+              --v_rtv_related_siteid,
+			  v_rtv_related_site,
               v_od_ven_sig_name,
               v_od_ven_sig_title,
               v_gss_mfg_id,
@@ -5463,7 +5466,21 @@ BEGIN
       IF(v_rms_flag = 'Y') THEN
 
         v_rms_count := v_rms_count + 1;
-
+		-- BEGIN Added to derive vendor_site_id for the rtv site for cloud change		
+		IF v_rtv_related_site IS NOT NULL THEN  
+		   BEGIN
+		     SELECT vendor_site_id
+			   INTO v_rtv_related_siteid
+			   FROM ap_supplier_sites_all
+			  WHERE vendor_site_code=v_rtv_related_site;
+		   EXCEPTION
+		     WHEN others THEN
+			   v_rtv_related_siteid:=NULL;
+		   END;
+		ELSE
+		  v_rtv_related_siteid:=NULL;
+		END IF;
+		-- END Added to derive vendor_site_id for the rtv site for cloud change		
         IF((v_rtv_related_siteid IS NOT NULL) AND(v_pay_site_flag = 'Y')) THEN
 
           BEGIN
