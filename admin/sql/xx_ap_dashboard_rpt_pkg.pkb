@@ -2,7 +2,7 @@
 
 create or replace 
 PACKAGE body xx_ap_dashboard_rpt_pkg
-AS
+ AS
   -- +============================================================================================+
   -- |  Office Depot - Project Simplify                                                           |
   -- |                                                                                            |
