@@ -38,6 +38,8 @@
 # |      9  20-Jul-2018 Ramya Venkatesh   Defect#43812 -  EFGL1300    |
 # |                                       failing for OD: Common Put  |
 # |                                       Program                     |
+# |      9  01-Aug-2019 Arun DSouza       Replaced ls command with    |
+# |                                       echo cmd for performance    |
 # +===================================================================+
 
 # Displaying program arguments
@@ -349,7 +351,7 @@ then
 
 START=1;
 WORDCNT=`echo $filename | wc -w`;
-#echo "Word Count :  $WORDCNT";
+echo "Word Count :  $WORDCNT";
 
 > ARCHTEMP
 
@@ -406,7 +408,7 @@ then
 
 START=1;
 WORDCNT=`echo $filename | wc -w`;
-#echo "Word Count :  $WORDCNT";
+echo "Word Count :  $WORDCNT";
 
 > ARCHTEMP
 
@@ -463,7 +465,7 @@ then
 
 START=1;
 WORDCNT=`echo $filename | wc -w`;
-#echo "Word Count :  $WORDCNT";
+echo "Word Count :  $WORDCNT";
 
 > ARCHTEMP
 
