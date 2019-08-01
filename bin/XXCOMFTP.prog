@@ -162,4 +162,187 @@ archive_internal=`cat tmpfile4`
  echo "LFTP flag                              = $lftpflag" 
  echo "Transmission Mode                      = $transmitmode"
 
-exit 1
+#echo "verbose" >> $EXECFILE
+#echo "open $server" >> $EXECFILE
+#echo "quote USER $user" >> $EXECFILE
+#echo "quote PASS $passwd" >> $EXECFILE
+#echo "lcd $source" >> $EXECFILE
+#echo "cd $dest" >> $EXECFILE
+#echo "prompt off" >> $EXECFILE
+
+if [ "$sftpflag" = "Y" -o "$lftpflag" = "Y" ]
+  then
+   echo "lcd $source" >> $EXECFILE
+   echo "progress" >> $EXECFILE
+   if [ "$dest" != "" ]
+      then
+        echo "cd $dest" >> $EXECFILE
+   fi
+elif [ "$scpflag" = "Y" ]
+  then
+   echo " "
+else
+   echo "verbose" >> $EXECFILE
+   echo "open $server" >> $EXECFILE
+   echo "quote USER $user" >> $EXECFILE
+   echo "quote PASS $passwd" >> $EXECFILE
+   echo "epsv4" >> $EXECFILE
+   echo "lcd $source" >> $EXECFILE
+   echo "cd $dest" >> $EXECFILE
+   echo "$transmitmode" >> $EXECFILE
+   echo "prompt off" >> $EXECFILE
+fi
+
+if [ "$scpflag" = "" -o "$scpflag" = "N" ] 
+then
+   if [ "$as400flag" = "Y" ] # for AS/400
+     then
+       echo "put $filename $destfile" >> $EXECFILE 
+   elif [ "$mframeflag" = "Y" ]               # For ftp to Mainframes
+    then
+        echo "put $filename $destfile" >> $EXECFILE # AB Removed quotes for destfile, fix for mainframe
+   elif [ "$destfile" != "" ]               # For ftp with a different destination file name
+    then
+        echo "put  $filename $destfile" >> $EXECFILE
+        if [ "$rename_tgt_file" != "" ] 
+        then
+           echo "rename $destfile $rename_tgt_file" >> $EXECFILE
+        fi
+   else                                     # For ftp with destination filename parameter blank, multiple files can be sent.
+        echo "mput $filename" >> $EXECFILE
+        if [ "$rename_tgt_file" != "" ] 
+        then
+           echo "rename $filename $rename_tgt_file" >> $EXECFILE
+        fi
+   fi
+fi
+
+echo "quit" >> $EXECFILE
+
+echo "Ready for command execution"
+ 
+if [ "$sftpflag" = "Y" ]
+  then
+     echo "Executing SFTP"
+     SFTPSIGNON="$user@$server"
+     echo $SFTPSIGNON
+     sftp -b $EXECFILE $SFTPSIGNON > $TMPFILE
+	 script -qc "sftp -b $EXECFILE $SFTPSIGNON" $TMPFILE
+elif [ "$scpflag" = "Y" ]
+  then
+  	 echo "Executing SCP"
+  	 SCPPARMS="$source/$filename $user@$server:$dest/$destfile"
+     scp $SCPPARMS > $TMPFILE
+elif [ "$lftpflag" = "Y" ]
+  then
+  	 echo "Executing LFTP"
+ 	 echo "user $user"
+	 echo "server $server"
+	 if [ "$destfile" != "" ]
+	 then
+	 mv $source$filename $source$destfile
+	 $XXFIN_TOP/bin/./XXPROCESSLFTP.sh $user $passwd $server $source $dest $destfile $TMPFILE
+	 mv $source$destfile $source$filename
+	 else
+	 $XXFIN_TOP/bin/./XXPROCESSLFTP.sh $user $passwd $server $source $dest $filename $TMPFILE
+	 fi
+else
+     echo "Executing FTP"
+	 FTPPARMS="$server"
+     echo "Execution string = $EXECFILE = $TMPFILE"
+	 echo $FTPPARMS
+     ftp -n $FTPPARMS > $TMPFILE
+	 echo "Execution string for FTP = $TMPFILE"
+fi
+
+#to wait for the TEMPFILE to be populated with the result for the commands
+#BIAS added this as part of OCI migration
+#ftp -n < $EXECFILE > $TMPFILE
+Server_check=`grep 'Not connected' $TMPFILE`
+User_passwd=`grep 'Please login with USER and PASS'  $TMPFILE`
+Local_directory_error=`grep '550 Failed to change directory' $TMPFILE`
+Rem_dir_access_error=`grep '^550.*Access is denied' $TMPFILE`   # Added for defect 9215
+Success=`grep 'File receive OK'  $TMPFILE`
+Success1=`grep '226 '  $TMPFILE`
+SFTPSuccess=`egrep -i '(Uploading)|(100%)' $TMPFILE`
+SFTPCheck=`egrep -i '(Permission denied)|(Connection refused)|(host key verification failed)' $TMPFILE`
+Mframesuccess=`grep 'Transfer completed successfully'  $TMPFILE`
+AS400success=`grep 'transfer completed successfully'  $TMPFILE`
+LFTPSuccess=`grep 'LFTP'  $TMPFILE`
+
+if [ "$Server_check" != "" ]
+then
+    echo " "
+    echo "ERROR: Please check the server. Server provided is $server."
+    rm $TMPFILE
+    rm $EXECFILE
+    rm $ARCHFILE1
+    rm $ARCHFILE2
+    rm $ARCHEXEC
+    rm $tmpfile3  # Added for Defect 12210
+    rm $tmpfile4  # Added for Defect 12210
+    exit 1
+
+elif [ "$User_passwd" != "" ]
+then
+    echo " "
+    echo "ERROR: Please provide appropriate username and password."
+    rm $TMPFILE
+    rm $EXECFILE
+    rm $ARCHFILE1
+    rm $ARCHFILE2
+    rm $ARCHEXEC
+    rm $tmpfile3  # Added for Defect 12210
+    rm $tmpfile4  # Added for Defect 12210
+    exit 1
+
+elif [ "$Local_directory_error" != "" ]
+then
+    echo " "
+    echo "ERROR: Cannot change to $dest"
+    rm $TMPFILE
+    rm $EXECFILE
+    rm $ARCHFILE1
+    rm $ARCHFILE2
+    rm $ARCHEXEC
+    rm $tmpfile3  # Added for Defect 12210
+    rm $tmpfile4  # Added for Defect 12210 
+    exit 1
+
+elif [ "$Rem_dir_access_error" != "" ]  # This block added for defect 9215
+then
+    echo " "
+    echo "ERROR: Access denied to remote directory: $dest"
+    rm $TMPFILE
+    rm $EXECFILE
+    rm $ARCHFILE1
+    rm $ARCHFILE2
+    rm $ARCHEXEC
+    rm $tmpfile3  # Added for Defect 12210
+    rm $tmpfile4  # Added for Defect 12210 
+    exit 1
+    
+elif [ "$SFTPCheck" != "" ]
+then
+    echo " "
+    echo "ERROR: Please provide appropriate username and password."
+    rm $TMPFILE
+    rm $EXECFILE
+    rm $ARCHFILE1
+    rm $ARCHFILE2
+    rm $ARCHEXEC
+    rm $tmpfile3  # Added for Defect 12210
+    rm $tmpfile4  # Added for Defect 12210
+    exit 1    
+
+elif [ "$Success" != "" -o  "$Success1" != "" -o "$SFTPSuccess" != "" -o "$LFTPSuccess" != "" ]
+then 
+    echo " "
+    cat $TMPFILE
+    echo "SUCCESS: Successful transmission"
+    rm $TMPFILE
+    rm $EXECFILE
+    cd $source
+    # Added time style to make the date format mon dd
+
+exit 0;
