@@ -68,7 +68,9 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
    -- |                                               SPC Invoices in eXLS Bills. Changed |
    -- |                                               logic to populate 'productcdentered'|   
    -- |1.15		 11-OCT-2018  Dinesh Nagapuri         Made Changes for Bill Complete      |
-   -- |                                               NAIT-61963                          |  
+   -- |                                               NAIT-61963                          | 
+   -- |1.16      25-JUL-2019  Abhishek Kumar          Made changes for NAIT - 79913 for   |
+   -- |                                               remit page issue                    |
    -- +===================================================================================+
    PROCEDURE cons_data_extract_main(x_errbuff     OUT VARCHAR2
                                    ,x_retcode     OUT NUMBER
@@ -4297,7 +4299,7 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                      ln_cons_inv_id := NULL;
                      lc_payment_terms := NULL;
                END;
-               gc_debug_msg := 'Insert into FILE tables for transmissio id = ' || trans_id.transmission_id || ' File ID =;' || file_rec.file_id;
+               gc_debug_msg := 'Insert into FILE tables for transmission_id = ' || trans_id.transmission_id || ' File ID =;' || file_rec.file_id;
 
                INSERT INTO xx_ar_ebl_file
                   (file_id
@@ -4484,20 +4486,42 @@ PACKAGE BODY xx_ar_ebl_cons_invoices AS
                                                ,aops_account_number
                                                ,customer_name
 											   ,consolidated_bill_number --Added consolidated_bill_number for Defect#NAIT-70500 by Thilak --NAIT-61963
-                                FROM   xx_ar_ebl_cons_hdr_main hdr
+                                FROM   xx_ar_ebl_cons_hdr_main hdr, xx_cdh_cust_acct_ext_b caeb  -- join for changes for jira NAIT - 79913 
                                 WHERE  hdr.parent_cust_doc_id = trans_id.parent_cust_doc_id
+								AND    caeb.n_ext_attr2 = trans_id.parent_cust_doc_id
+								
                                 AND    hdr.transmission_id = trans_id.transmission_id
                                 AND    hdr.extract_batch_id = p_batch_id
 								-- Added below check for file split criteria defect # NAIT-29918
 								-- start 
-								 AND NOT EXISTS (SELECT 1
+							
+								AND NOT EXISTS (SELECT 1
                                                     FROM xx_ar_ebl_file eb
                                                     WHERE eb.cons_billing_number = hdr.consolidated_bill_number
                                                     AND eb.paydoc_flag IS NULL  
                                                     AND eb.file_type             = 'STUB'
                                                     AND eb.status                = 'RENDER'
                                                     )
-								--End					
+								--End
+								-- start of changes for jira NAIT - 79913 - Adding check to only pick those cust_docs which has transactions in  XX_AR_EBL_CONS_HDR_MAIN
+								-- so that transmission id of only those records should be picked to update transmission_id of stub files.
+								AND 1 <= ( CASE WHEN caeb.c_ext_attr13 = 'DB' THEN(SELECT count(1) 
+													FROM XX_AR_EBL_CONS_HDR_MAIN hdr1
+													WHERE 1=1    
+													AND hdr1.parent_cust_doc_id = trans_id.parent_cust_doc_id
+													AND hdr1.transaction_class IN ('Invoice','Debit Memo')
+													AND hdr1.cons_inv_id = hdr.cons_inv_id)
+												WHEN caeb.c_ext_attr13 = 'CR' THEN(SELECT count(1) 
+													FROM XX_AR_EBL_CONS_HDR_MAIN hdr1
+													WHERE 1=1    
+													AND hdr1.parent_cust_doc_id = trans_id.parent_cust_doc_id
+													AND hdr1.transaction_class IN ('Credit Memo')
+													AND hdr1.cons_inv_id = hdr.cons_inv_id)	
+												ELSE    1 
+                                            END
+										 )
+							-- End of changes for jira NAIT -79913
+	
 								)
                LOOP
                     --Module 4B Release 1 Start
