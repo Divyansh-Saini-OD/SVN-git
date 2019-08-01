@@ -27,12 +27,24 @@ AS
    l_text              varchar2(2000)  := null;
    l_message           VARCHAR2(2000)  := 'Orders shipped but not in Bill signal table';
    lc_date             VARCHAR2 (200) := TO_CHAR (SYSDATE, 'MM/DD/YYYY');
-
    v_filename          VARCHAR2(2000):= 'ODSCMBILLSIGNALALERT'||TO_char(sysdate,'DDMMRRRRHH24MISS')||'.csv';
    v_filehandle        UTL_FILE.FILE_TYPE;
    lc_records_exists   boolean := FALSE;
     
-   CURSOR order_stuck
+
+     
+   vl_hdr_message   varchar2(2000);
+   vl_line_message  varchar2(32000);
+   lc_conn          UTL_SMTP.connection;
+   lc_dirpath       VARCHAR2 (2000) := 'XX_UTL_FILE_OUT_DIR';
+   lc_mode          VARCHAR2 (1)    := 'W';
+   ln_max_linesize  BINARY_INTEGER  := 32767;
+   v_translation_info xx_fin_translatevalues%ROWTYPE := NULL;
+             
+ BEGIN
+ --xx_ar_rcc_extract
+ 
+    CURSOR order_stuck
    IS
    SELECT a.parent_order_num,
           TO_CHAR (B.ORDER_NUMBER) CHILD_ODR,
@@ -57,17 +69,6 @@ AS
             (SELECT 1
              FROM XX_SCM_BILL_SIGNAL
               WHERE CHILD_ORDER_NUMBER = B.ORDER_NUMBER);
-     
-   vl_hdr_message   varchar2(2000);
-   vl_line_message  varchar2(32000);
-   lc_conn          UTL_SMTP.connection;
-   lc_dirpath        VARCHAR2 (2000) := 'XX_UTL_FILE_OUT_DIR';
-   lc_mode           VARCHAR2 (1)    := 'W';
-   ln_max_linesize   BINARY_INTEGER  := 32767;
-   v_translation_info xx_fin_translatevalues%ROWTYPE := NULL;
-             
- BEGIN
- --xx_ar_rcc_extract
  
    SELECT instance_name
    INTO  lc_instance
