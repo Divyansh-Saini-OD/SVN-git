@@ -241,10 +241,11 @@ elif [ "$lftpflag" = "Y" ]
 	 if [ "$destfile" != "" ]
 	 then
 	 mv $source$filename $source$destfile
-	 $XXFIN_TOP/bin/./XXPROCESSLFTP.sh $user $passwd $server $source $dest $destfile $TMPFILE
+#	 $XXFIN_TOP/bin/./XXPROCESSLFTP.sh $user $passwd $server $source $dest $destfile $TMPFILE
 	 mv $source$destfile $source$filename
 	 else
-	 $XXFIN_TOP/bin/./XXPROCESSLFTP.sh $user $passwd $server $source $dest $filename $TMPFILE
+          echo "Null"
+#         $XXFIN_TOP/bin/./XXPROCESSLFTP.sh $user $passwd $server $source $dest $filename $TMPFILE
 	 fi
 else
      echo "Executing FTP"
