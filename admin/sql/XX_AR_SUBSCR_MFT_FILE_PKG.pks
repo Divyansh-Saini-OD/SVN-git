@@ -25,7 +25,8 @@ AS
 
   PROCEDURE mft_generate_file(p_errbuf        OUT VARCHAR2,
                               p_retcode       OUT VARCHAR2,
-                              p_debug_flag  IN  VARCHAR2);
+                              p_debug_flag  IN  VARCHAR2,
+                              p_as_of_date  IN  VARCHAR2);
 END;
 /
 SHOW ERRORS;
