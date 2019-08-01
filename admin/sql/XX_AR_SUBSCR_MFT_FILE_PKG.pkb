@@ -17,6 +17,9 @@ AS
   -- | Version     Date         Author           Remarks                                          |
   -- | =========   ===========  =============    ===============================================  |
   -- | 1.0         05-JUN-2019  PUNIT_CG         Initial version  for Defect# NAIT-95909          |
+  -- | 2.0         01-AUG-2019  Deepak_CG        changes in c_get_mft_data cursor,                |
+  -- |                                           initial_auth_attempt_date clause                 |
+  -- |                                                                                            |
   -- +============================================================================================+
 
   gc_package_name        CONSTANT all_objects.object_name%TYPE   := 'XX_AR_SUBSCR_MFT_FILE_PKG';
@@ -91,7 +94,8 @@ AS
   **********************************************************/
   PROCEDURE mft_generate_file(p_errbuf       OUT VARCHAR2,
                               p_retcode       OUT VARCHAR2,
-                              p_debug_flag  IN  VARCHAR2)
+                              p_debug_flag  IN  VARCHAR2,
+                              p_as_of_date  IN  VARCHAR2)
   AS
     CURSOR c_get_mft_data
     IS
@@ -109,7 +113,7 @@ AS
                TO_CHAR(XAS.last_auth_attempt_date,'DDMMYYYY') error_date
       FROM     xx_ar_subscriptions XAS,
                xx_ar_contracts XAC
-      WHERE    XAS.auth_completed_flag IN ('E','U')
+      WHERE    XAS.auth_completed_flag = 'E'
       AND      XAC.contract_id         = XAS.contract_id
       AND      XAS.billing_sequence_number IN (SELECT MAX(XAS1.billing_sequence_number) 
                                                FROM   xx_ar_subscriptions XAS1
@@ -118,7 +122,8 @@ AS
       AND      XAS.contract_line_number IN (SELECT MAX(XAS2.contract_line_number) 
                                             FROM   xx_ar_subscriptions XAS2
                                             WHERE  XAS2.contract_id = XAS.contract_id
-                                            );                                            
+                                            )                                            
+      AND      TRUNC(XAS.initial_auth_attempt_date) = TRUNC(fnd_date.canonical_to_date(NVL(p_as_of_date,SYSDATE))); 
       
       
     TYPE LC_MFT_DATA_TAB
