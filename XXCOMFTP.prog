@@ -342,7 +342,31 @@ then
     rm $EXECFILE
     cd $source
     # Added time style to make the date format mon dd
-    ls -l --time-style="+%h %d %H:%M" $filename > ARCHFILE1
+
+############################################################################
+#    ls -l --time-style="+%h %d %H:%M" $filename > ARCHFILE1
+######### Replacement Code for ls command above ############################
+
+START=1;
+WORDCNT=`echo $filename | wc -w`;
+#echo "Word Count :  $WORDCNT";
+
+> ARCHTEMP
+
+for (( c=$START; c<=$WORDCNT; c++ ))
+do
+     echo $filename |  cut -f"$c" -d" " | paste -s >> ARCHTEMP;
+done
+
+DATE_TIME=`date +"%h %d %H:%M"`;
+PREFIX="-rw-r--r--  1 u912043 wheel       676  $DATE_TIME ";
+
+#echo $PREFIX
+
+sed "s/^/$PREFIX  /" ARCHTEMP > ARCHFILE1;
+
+#############################################################################
+
     perl -pe 's/-/'$archive_internal" "'/' ARCHFILE1 > ARCHFILE2
 
     if [ "$archive" != "" ]
@@ -375,7 +399,31 @@ then
     rm $EXECFILE
     cd $source
     # Added time style to make the date format mon dd
-    ls -l --time-style="+%h %d %H:%M" $filename > ARCHFILE1
+
+############################################################################
+#    ls -l --time-style="+%h %d %H:%M" $filename > ARCHFILE1
+######### Replacement Code for ls command above ############################
+
+START=1;
+WORDCNT=`echo $filename | wc -w`;
+#echo "Word Count :  $WORDCNT";
+
+> ARCHTEMP
+
+for (( c=$START; c<=$WORDCNT; c++ ))
+do
+     echo $filename |  cut -f"$c" -d" " | paste -s >> ARCHTEMP;
+done
+
+DATE_TIME=`date +"%h %d %H:%M"`;
+PREFIX="-rw-r--r--  1 u912043 wheel       676  $DATE_TIME ";
+
+#echo $PREFIX
+
+sed "s/^/$PREFIX  /" ARCHTEMP > ARCHFILE1;
+
+############################################################################
+
     perl -pe 's/-/'$archive_internal" "'/' ARCHFILE1 > ARCHFILE2
     if [ "$archive" != "" ]
     then
@@ -408,7 +456,31 @@ then
     rm $EXECFILE
     cd $source
     # Added time style to make the date format mon dd
-    ls -l --time-style="+%h %d %H:%M" $filename > ARCHFILE1
+
+############################################################################
+#    ls -l --time-style="+%h %d %H:%M" $filename > ARCHFILE1
+######### Replacement Code for ls command above ############################
+
+START=1;
+WORDCNT=`echo $filename | wc -w`;
+#echo "Word Count :  $WORDCNT";
+
+> ARCHTEMP
+
+for (( c=$START; c<=$WORDCNT; c++ ))
+do
+     echo $filename |  cut -f"$c" -d" " | paste -s >> ARCHTEMP;
+done
+
+DATE_TIME=`date +"%h %d %H:%M"`;
+PREFIX="-rw-r--r--  1 u912043 wheel       676  $DATE_TIME ";
+
+#echo $PREFIX
+
+sed "s/^/$PREFIX  /" ARCHTEMP > ARCHFILE1;
+
+###############################################################################
+
     perl -pe 's/-/'$archive_internal" "'/' ARCHFILE1 > ARCHFILE2
     if [ "$archive" != "" ]
     then
