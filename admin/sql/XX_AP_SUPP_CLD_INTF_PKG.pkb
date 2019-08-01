@@ -37,6 +37,8 @@ CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- |  1.7    27-JUL-2019     Paddy Sanjeevi    Added for import error messages                 |
 -- |  1.8    31-JUL-2019     Havish Kasina     Added FND_API.G_MISS_CHAR if any attribute value|
 -- |                                           is NULL for all Update APIs                     |
+-- |  1.9    01-AUG-2019     Havish Kasina     Added DUNS_NUMBER in update_supplier_sites      |
+-- |                                           procedure                                       |
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -1595,6 +1597,7 @@ BEGIN
     lr_vendor_site_rec.address_line2                :=NVL(c_sup_site.address_line2, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.address_line1                :=NVL(c_sup_site.address_line1, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.country                      :=NVL(c_sup_site.country, FND_API.G_MISS_CHAR);
+	lr_vendor_site_rec.duns_number                  :=NVL(c_sup_site.attribute5, FND_API.G_MISS_CHAR); -- Added as per Version 1.9 by Havish Kasina
 
     fnd_msg_pub.initialize; --to make msg_count 0
     x_return_status:=NULL;
