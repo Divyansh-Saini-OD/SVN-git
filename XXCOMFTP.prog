@@ -38,8 +38,6 @@
 # |      9  20-Jul-2018 Ramya Venkatesh   Defect#43812 -  EFGL1300    |
 # |                                       failing for OD: Common Put  |
 # |                                       Program                     |
-# |      9  01-Aug-2019 Arun DSouza       Replaced ls command with    |
-# |                                       echo cmd for performance    |
 # +===================================================================+
 
 # Displaying program arguments
@@ -244,8 +242,7 @@ elif [ "$lftpflag" = "Y" ]
 	 $XXFIN_TOP/bin/./XXPROCESSLFTP.sh $user $passwd $server $source $dest $destfile $TMPFILE
 	 mv $source$destfile $source$filename
 	 else
-          echo "Null"
-         $XXFIN_TOP/bin/./XXPROCESSLFTP.sh $user $passwd $server $source $dest $filename $TMPFILE
+	 $XXFIN_TOP/bin/./XXPROCESSLFTP.sh $user $passwd $server $source $dest $filename $TMPFILE
 	 fi
 else
      echo "Executing FTP"
@@ -255,5 +252,195 @@ else
      ftp -n $FTPPARMS > $TMPFILE
 	 echo "Execution string for FTP = $TMPFILE"
 fi
+#to wait for the TEMPFILE to be populated with the result for the commands
+#BIAS added this as part of OCI migration
+sleep 60s
+#ftp -n < $EXECFILE > $TMPFILE
+Server_check=`grep 'Not connected' $TMPFILE`
+User_passwd=`grep 'Please login with USER and PASS'  $TMPFILE`
+Local_directory_error=`grep '550 Failed to change directory' $TMPFILE`
+Rem_dir_access_error=`grep '^550.*Access is denied' $TMPFILE`   # Added for defect 9215
+Success=`grep 'File receive OK'  $TMPFILE`
+Success1=`grep '226 '  $TMPFILE`
+SFTPSuccess=`egrep -i '(Uploading)|(100%)' $TMPFILE`
+SFTPCheck=`egrep -i '(Permission denied)|(Connection refused)|(host key verification failed)' $TMPFILE`
+Mframesuccess=`grep 'Transfer completed successfully'  $TMPFILE`
+AS400success=`grep 'transfer completed successfully'  $TMPFILE`
+LFTPSuccess=`grep 'LFTP'  $TMPFILE`
 
-exit 0;
+if [ "$Server_check" != "" ]
+then
+    echo " "
+    echo "ERROR: Please check the server. Server provided is $server."
+    rm $TMPFILE
+    rm $EXECFILE
+    rm $ARCHFILE1
+    rm $ARCHFILE2
+    rm $ARCHEXEC
+    rm $tmpfile3  # Added for Defect 12210
+    rm $tmpfile4  # Added for Defect 12210
+    exit 1
+
+elif [ "$User_passwd" != "" ]
+then
+    echo " "
+    echo "ERROR: Please provide appropriate username and password."
+    rm $TMPFILE
+    rm $EXECFILE
+    rm $ARCHFILE1
+    rm $ARCHFILE2
+    rm $ARCHEXEC
+    rm $tmpfile3  # Added for Defect 12210
+    rm $tmpfile4  # Added for Defect 12210
+    exit 1
+
+elif [ "$Local_directory_error" != "" ]
+then
+    echo " "
+    echo "ERROR: Cannot change to $dest"
+    rm $TMPFILE
+    rm $EXECFILE
+    rm $ARCHFILE1
+    rm $ARCHFILE2
+    rm $ARCHEXEC
+    rm $tmpfile3  # Added for Defect 12210
+    rm $tmpfile4  # Added for Defect 12210 
+    exit 1
+
+elif [ "$Rem_dir_access_error" != "" ]  # This block added for defect 9215
+then
+    echo " "
+    echo "ERROR: Access denied to remote directory: $dest"
+    rm $TMPFILE
+    rm $EXECFILE
+    rm $ARCHFILE1
+    rm $ARCHFILE2
+    rm $ARCHEXEC
+    rm $tmpfile3  # Added for Defect 12210
+    rm $tmpfile4  # Added for Defect 12210 
+    exit 1
+    
+elif [ "$SFTPCheck" != "" ]
+then
+    echo " "
+    echo "ERROR: Please provide appropriate username and password."
+    rm $TMPFILE
+    rm $EXECFILE
+    rm $ARCHFILE1
+    rm $ARCHFILE2
+    rm $ARCHEXEC
+    rm $tmpfile3  # Added for Defect 12210
+    rm $tmpfile4  # Added for Defect 12210
+    exit 1    
+
+elif [ "$Success" != "" -o  "$Success1" != "" -o "$SFTPSuccess" != "" -o "$LFTPSuccess" != "" ]
+then 
+    echo " "
+    cat $TMPFILE
+    echo "SUCCESS: Successful transmission"
+    rm $TMPFILE
+    rm $EXECFILE
+    cd $source
+    # Added time style to make the date format mon dd
+    ls -l --time-style="+%h %d %H:%M" $filename > ARCHFILE1
+    perl -pe 's/-/'$archive_internal" "'/' ARCHFILE1 > ARCHFILE2
+
+    if [ "$archive" != "" ]
+    then
+       if [ "$delete_src_file" = "Y" -o "$delete_src_file" = "y" ]
+       then
+           cat ARCHFILE2 | awk '{ split($0,MODULE," "); print "mv " ,MODULE[10],MODULE[1] "/" MODULE[10] strftime("%y%m%d%H%M%S") }' >> $ARCHEXEC 
+       else
+           cat ARCHFILE2 | awk '{ split($0,MODULE," "); print "cp " ,MODULE[10],MODULE[1] "/" MODULE[10] strftime("%y%m%d%H%M%S") }' >> $ARCHEXEC 
+       fi
+    else 
+       if [ "$delete_src_file" = "Y" -o "$delete_src_file" = "y" ]
+       then
+           cat ARCHFILE1 | awk '{ split($0,MODULE," "); print "rm " ,MODULE[9] }' >> $ARCHEXEC 
+       fi
+    fi
+    sh $ARCHEXEC
+    rm $ARCHFILE1
+    rm $ARCHFILE2
+    rm $ARCHEXEC
+    rm $tmpfile3   # Added for Defect 12210
+    rm $tmpfile4   # Added for Defect 12210
+    exit 0
+
+elif [ "$Mframesuccess" != "" ]
+then 
+    echo " "
+    echo "SUCCESS: Successful transmission to Mainframe"
+    rm $TMPFILE
+    rm $EXECFILE
+    cd $source
+    # Added time style to make the date format mon dd
+    ls -l --time-style="+%h %d %H:%M" $filename > ARCHFILE1
+    perl -pe 's/-/'$archive_internal" "'/' ARCHFILE1 > ARCHFILE2
+    if [ "$archive" != "" ]
+    then
+       if [ "$delete_src_file" = "Y" -o "$delete_src_file" = "y" ]
+       then
+           cat ARCHFILE2 | awk '{ split($0,MODULE," "); print "mv " ,MODULE[10],MODULE[1] "/" MODULE[10] strftime("%y%m%d%H%M%S") }' >> $ARCHEXEC 
+       else
+           cat ARCHFILE2 | awk '{ split($0,MODULE," "); print "cp " ,MODULE[10],MODULE[1] "/" MODULE[10] strftime("%y%m%d%H%M%S") }' >> $ARCHEXEC 
+       fi
+    else 
+       if [ "$delete_src_file" = "Y" -o "$delete_src_file" = "y" ]
+       then
+           cat ARCHFILE1 | awk '{ split($0,MODULE," "); print "rm " ,MODULE[9] }' >> $ARCHEXEC 
+       fi
+
+    fi
+    sh $ARCHEXEC
+    rm $ARCHFILE1
+    rm $ARCHFILE2
+    rm $ARCHEXEC
+	 rm $tmpfile3  # Added for Defect 12210
+    rm $tmpfile4	# Added for Defect 12210
+    exit 0
+elif [ "$AS400success" != "" ]
+then 
+    echo " "
+    echo "SUCCESS: Successful transmission to AS400"
+    cat $TMPFILE
+    rm $TMPFILE
+    rm $EXECFILE
+    cd $source
+    # Added time style to make the date format mon dd
+    ls -l --time-style="+%h %d %H:%M" $filename > ARCHFILE1
+    perl -pe 's/-/'$archive_internal" "'/' ARCHFILE1 > ARCHFILE2
+    if [ "$archive" != "" ]
+    then
+       if [ "$delete_src_file" = "Y" -o "$delete_src_file" = "y" ]
+       then
+           cat ARCHFILE2 | awk '{ split($0,MODULE," "); print "mv " ,MODULE[10],MODULE[1] "/" MODULE[10] strftime("%y%m%d%H%M%S") }' >> $ARCHEXEC 
+       else
+           cat ARCHFILE2 | awk '{ split($0,MODULE," "); print "cp " ,MODULE[10],MODULE[1] "/" MODULE[10] strftime("%y%m%d%H%M%S") }' >> $ARCHEXEC 
+       fi
+    else 
+       if [ "$delete_src_file" = "Y" -o "$delete_src_file" = "y" ]
+       then
+           cat ARCHFILE1 | awk '{ split($0,MODULE," "); print "rm " ,MODULE[9] }' >> $ARCHEXEC 
+       fi
+
+    fi
+    sh $ARCHEXEC
+    rm $ARCHFILE1
+    rm $ARCHFILE2
+    rm $ARCHEXEC
+    rm $tmpfile3  # Added for Defect 12210
+    rm $tmpfile4	# Added for Defect 12210
+    exit 0
+fi
+
+echo "ERROR: Please refer below for error details"
+cat $TMPFILE
+rm $TMPFILE
+rm $EXECFILE
+rm $ARCHFILE1
+rm $ARCHFILE2
+rm $ARCHEXEC
+rm $tmpfile3    # Added for Defect 12210
+rm $tmpfile4    # Added for Defect 12210
+exit 1
