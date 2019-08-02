@@ -41,7 +41,8 @@ CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- |                                           procedure                                       |
 -- |  2.0    02-AUG-2019     Havish Kasina     Added a condition to check the Tolerance exists |
 -- |                                           for Trade Suppliers. Removed the Phone Area code|
--- |                                           and Fax code validations in Supplier Sites      |
+-- |                                           and Fax code validations in Supplier Sites and  |
+-- |                                           Contacts                                        |
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -3487,6 +3488,8 @@ BEGIN
     print_debug_msg(p_message=> gc_step||' After supplier site existence check - gc_error_site_status_flag is '||gc_error_site_status_flag , p_force => FALSE);
     print_debug_msg(p_message=> gc_step||' After supplier site existence check - l_sup_create_flag is '||l_sup_CREATE_FLAG , p_force => FALSE);
     set_step('Supplier Contact Existence Check Completed');
+	/*  -- Commented as per Version 2.0
+	
     IF gc_error_site_status_flag = 'N' THEN -- After Supplier Site Existence Check Completed
       --===============================================================================================
       -- Validating the Supplier Site - Address Details - Phone area code
@@ -3529,6 +3532,7 @@ BEGIN
         END IF; -- IF (NOT (isNumeric(l_sup_site_type.FAX_NUMBER))
       END IF;   -- IF l_sup_site_type.FAX_NUMBER IS NOT NULL
     END IF;     -- IF  gc_error_site_status_flag = 'N' -- After Supplier Contact Existence Check Completed
+	*/ -- 
     ------------------------Assigning values
     l_sup_cont(l_sup_cont_idx).create_flag            :=l_sup_create_flag;
     l_sup_cont(l_sup_cont_idx).vendor_site_code       :=l_sup_site_cont_type.vendor_site_code;
