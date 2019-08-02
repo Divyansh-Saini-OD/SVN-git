@@ -39,6 +39,9 @@ CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- |                                           is NULL for all Update APIs                     |
 -- |  1.9    01-AUG-2019     Havish Kasina     Added DUNS_NUMBER in update_supplier_sites      |
 -- |                                           procedure                                       |
+-- |  2.0    02-AUG-2019     Havish Kasina     Added a condition to check the Tolerance exists |
+-- |                                           for Trade Suppliers. Removed the Phone Area code|
+-- |                                           and Fax code validations in Supplier Sites      |
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -567,7 +570,7 @@ FUNCTION xx_custom_sup_traits
   )
   RETURN VARCHAR2
 IS
-  lc_sup_trait      VARCHAR2(4000) := p_sup_trait || '|';
+  lc_sup_trait      VARCHAR2(4000) := p_sup_trait || '-';
   lc_sup_tair_value VARCHAR2(100);
   ln_place          NUMBER;
   ln_sup_trait_id   NUMBER;
@@ -585,7 +588,7 @@ BEGIN
     lc_master_sup_ind :=NULL;
     ln_sup_trait_id   :=0;
     ln_mat_count      :=0;
-    ln_place          := instr(lc_sup_trait,'|');             -- find the first separator
+    ln_place          := instr(lc_sup_trait,'-');             -- find the first separator
     lc_sup_tair_value := SUBSTR(lc_sup_trait,1,ln_place - 1); -- extract item
     BEGIN
       SELECT description,
@@ -828,9 +831,10 @@ IS
       site.create_flag ,
       site.vendor_id ,
       site.vendor_site_id,
-      site.org_id
+      site.org_id,
+	  site.attribute8   -- Added as per Version 2.0
     FROM xx_ap_cld_site_dff_stg dff,
-      xx_ap_cld_supp_sites_stg site
+         xx_ap_cld_supp_sites_stg site
     WHERE 1                     =1
     AND dff.process_Flag        = 'P'
     AND dff.dff_process_Flag    = 2
@@ -1073,17 +1077,19 @@ BEGIN
       --===============================================================
       -- Processing Custom Tolerance    --
       --===============================================================
-      SELECT COUNT(1)
-      INTO ln_tol_count
-      FROM xx_ap_custom_tolerances
-      WHERE 1              =1
-      AND supplier_id      = cur.vendor_id
-      AND supplier_site_id = cur.vendor_site_id ;
-      print_debug_msg(p_message => 'Custom Tolerance for the vendor : '||cur.supplier_number||', Site : '||cur.vendor_site_code, p_force => false);
-      IF ln_tol_count = 0 THEN
-        v_tol_flag   := xx_custom_tolerance(cur.vendor_id, cur.vendor_site_id,cur.org_id);
-      END IF;
-      COMMIT;
+	  IF cur.attribute8 LIKE 'TR%' THEN   -- Added as per Version 2.0
+         SELECT COUNT(1)
+         INTO ln_tol_count
+         FROM xx_ap_custom_tolerances
+         WHERE 1              =1
+         AND supplier_id      = cur.vendor_id
+         AND supplier_site_id = cur.vendor_site_id ;
+         print_debug_msg(p_message => 'Custom Tolerance for the vendor : '||cur.supplier_number||', Site : '||cur.vendor_site_code, p_force => false);
+         IF ln_tol_count = 0 THEN
+            v_tol_flag   := xx_custom_tolerance(cur.vendor_id, cur.vendor_site_id,cur.org_id);
+         END IF;
+         COMMIT;
+	  END IF;
     ELSIF ln_kff_count   >0 AND ( lc_attribute10 IS NOT NULL OR lc_attribute11 IS NOT NULL OR lc_attribute12 IS NOT NULL) THEN
       IF lc_attribute10 IS NOT NULL THEN
         UPDATE xx_po_vendor_sites_kff
@@ -2982,46 +2988,6 @@ BEGIN
           print_debug_msg(p_message=> gc_step||' ERROR: thrown already - COUNTRY:'||l_sup_site_type.country||': XXOD_SITE_COUNTRY_INVALID :Vendor Site Country is Invalid' ,p_force=> false);
         END IF; -- IF IF l_sup_site_type.COUNTRY_CODE = 'US'
       END IF;   -- IF l_sup_site_type.POSTAL_CODE IS NULL
-      --===============================================================================================
-      -- Validating the Supplier Site - Address Details - Phone area code
-      --===============================================================================================
-      IF l_sup_site_type.phone_area_code                                                                 IS NOT NULL THEN
-        IF (NOT (isnumeric(l_sup_site_type.phone_area_code)) OR (LENGTH(l_sup_site_type.phone_area_code) <> 3 )) THEN
-          gc_error_site_status_flag                                                                      := 'Y';
-          print_debug_msg(p_message=> gc_step||' ERROR: PHONE_AREA_CODE:'||l_sup_site_type.phone_area_code||': XXOD_PHONE_AREA_CODE_INVALID: Phone Area Code '||l_sup_site_type.phone_area_code||' should be numeric and 3 digits.' ,p_force=> true);
-          insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_PHONE_AREA_CODE_INVALID' ,p_error_message => 'Phone Area Code '||l_sup_site_type.phone_area_code||' should be numeric and 3 digits.' ,p_stage_col1 => 'PHONE_AREA_CODE' ,p_stage_val1 => l_sup_site_type.phone_area_code ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
-        END IF; -- IF (NOT (isNumeric(l_sup_site_type.PHONE_AREA_CODE))
-      END IF;   -- IF l_sup_site_type.PHONE_AREA_CODE IS NOT NULL THEN
-      --===============================================================================================
-      -- Validating the Supplier Site - Address Details - Phone Number
-      --===============================================================================================
-      IF l_sup_site_type.phone_number IS NOT NULL THEN
-        IF (LENGTH(l_sup_site_type.phone_number) NOT IN (7,8) ) THEN -- Phone Number length is 7 and 1 digit count for '-'
-          gc_error_site_status_flag := 'Y';
-          print_debug_msg(p_message=> gc_step||' ERROR: PHONE_NUMBER:'||l_sup_site_type.phone_number||': XXOD_PHONE_NUMBER_INVALID: Phone Number '||l_sup_site_type.phone_number||' should be 7 digits.' ,p_force=> true);
-          insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_PHONE_NUMBER_INVALID' ,p_error_message => 'Phone Number '||l_sup_site_type.phone_number||' should be 7 digits.' ,p_stage_col1 => 'PHONE_NUMBER' ,p_stage_val1 => l_sup_site_type.phone_number ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
-        END IF; -- IF (NOT (isNumeric(l_sup_site_type.PHONE_NUMBER))
-      END IF;   -- IF l_sup_site_type.PHONE_NUMBER IS NOT NULL THEN
-      --===============================================================================================
-      -- Validating the Supplier Site - Address Details - Fax area code
-      --===============================================================================================
-      IF l_sup_site_type.fax_area_code                                                               IS NOT NULL THEN
-        IF (NOT (isnumeric(l_sup_site_type.fax_area_code)) OR (LENGTH(l_sup_site_type.fax_area_code) <> 3 )) THEN
-          gc_error_site_status_flag                                                                  := 'Y';
-          print_debug_msg(p_message=> gc_step||' ERROR: FAX_AREA_CODE:'||l_sup_site_type.fax_area_code||': XXOD_FAX_AREA_CODE_INVALID: Fax Area Code '||l_sup_site_type.fax_area_code||' should be numeric and 3 digits.' ,p_force=> true);
-          insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_FAX_AREA_CODE_INVALID' ,p_error_message => 'Fax Area Code '||l_sup_site_type.fax_area_code||' should be numeric and 3 digits.' ,p_stage_col1 => 'FAX_AREA_CODE' ,p_stage_val1 => l_sup_site_type.fax_area_code ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
-        END IF; -- IF (NOT (isNumeric(l_sup_site_type.FAX_AREA_CODE))
-      END IF;   -- IF l_sup_site_type.FAX_AREA_CODE IS NOT NULL THEN
-      --===============================================================================================
-      -- Validating the Supplier Site - Address Details - Fax Number/FAX updated by Priyam
-      --===============================================================================================
-      IF l_sup_site_type.fax IS NOT NULL THEN
-        IF (LENGTH(l_sup_site_type.fax) NOT IN (7,8) ) THEN -- Fax Number length is 7 and 1 digit count for '-'
-          gc_error_site_status_flag := 'Y';
-          print_debug_msg(p_message=> gc_step||' ERROR: FAX_NUMBER:'||l_sup_site_type.fax||': XXOD_FAX_NUMBER_INVALID: Fax Number '||l_sup_site_type.fax||' should be 7 digits.' ,p_force=> true);
-          insert_error (p_program_step => gc_step ,p_primary_key => l_sup_site_type.supplier_name ,p_error_code => 'XXOD_FAX_NUMBER_INVALID' ,p_error_message => 'Fax Number '||l_sup_site_type.fax||' should be 7 digits.' ,p_stage_col1 => 'FAX_NUMBER' ,p_stage_val1 => l_sup_site_type.fax ,p_stage_col2 => NULL ,p_stage_val2 => NULL ,p_table_name => g_sup_site_cont_table );
-        END IF; -- IF (NOT (isNumeric(l_sup_site_type.FAX_NUMBER))
-      END IF;   -- IF l_sup_site_type.FAX_NUMBER IS NOT NULL THEN
       --=============================================================================
       -- Validating the Supplier Site - Ship to Location Code
       --=============================================================================
