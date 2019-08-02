@@ -546,6 +546,8 @@ AS
         g_line_rec.kit_seqnum.DELETE(p_idx);
         g_line_rec.service_end_date.DELETE(p_idx);
         g_line_rec.service_start_date.DELETE(p_idx);
+        g_line_rec.invoicing_rule_id.DELETE(p_idx);
+        g_line_rec.accounting_rule_id.DELETE(p_idx);
 
     EXCEPTION
         WHEN OTHERS
@@ -4803,6 +4805,8 @@ AS
          g_line_rec.kit_seqnum(i)      := NULL;
          g_line_rec.service_end_date(i) := NULL;
          g_line_rec.service_start_date(i) := NULL;
+         g_line_rec.accounting_rule_id(i) := NULL;
+         g_line_rec.invoicing_rule_id(i)  := NULL;
 
 
      /*     Commented   as per defect 36885 ver 25.0
@@ -5231,6 +5235,8 @@ AS
             WHERE item =  lc_item; --g_line_rec.inventory_item(i);
 
             g_line_rec.service_start_date(i) := g_line_rec.ordered_date(i);
+            g_line_rec.accounting_rule_id(i) := g_header_rec.accounting_rule_id(ln_hdr_ind);
+            g_line_rec.invoicing_rule_id(i)  := g_header_rec.invoicing_rule_id(ln_hdr_ind);
 
             EXCEPTION
               WHEN OTHERS 
@@ -5241,6 +5247,9 @@ AS
 		END IF;
 	        g_line_rec.service_end_date(i) := null;
                 g_line_rec.service_start_date(i) := NULL;
+                g_line_rec.accounting_rule_id(i) := NULL;
+                g_line_rec.invoicing_rule_id(i)  := NULL;
+ 
             END;
         END IF;
 
@@ -5262,6 +5271,10 @@ AS
                              || g_line_rec.service_start_date(i));
             oe_debug_pub.ADD(   'Service End date '
                              || g_line_rec.service_end_date(i));
+            oe_debug_pub.ADD(   'accounting rule id '
+                             || g_line_rec.accounting_rule_id(i));
+            oe_debug_pub.ADD(   'Invoicing rule id '
+                             || g_line_rec.invoicing_rule_id(i));
         END IF;
 
         -- Increment the global Line counter used in determining batch size
@@ -6300,6 +6313,8 @@ AS
         g_line_rec.kit_seqnum(p_line_idx) := NULL;
         g_line_rec.service_end_date(p_line_idx) := NULL;
         g_line_rec.service_start_date(p_line_idx) := NULL;
+        g_line_rec.accounting_rule_id(p_line_idx) := NULL;
+        g_line_rec.invoicing_rule_id(p_line_idx) := NULL;
 
         IF g_header_rec.order_category(p_hdr_idx) = 'ORDER'
         THEN
@@ -9239,6 +9254,8 @@ EXCEPTION
         g_line_rec.kit_seqnum.DELETE;
         g_line_rec.service_end_date.DELETE;
         g_line_rec.service_start_date.DELETE;
+        g_line_rec.invoicing_rule_id.DELETE;
+        g_line_rec.accounting_rule_id.DELETE;
 
 /* Discount Record */
         g_line_adj_rec.orig_sys_document_ref.DELETE;
@@ -9655,7 +9672,7 @@ EXCEPTION
                              tax_code,
                              tax_value,
                              tax_date,
-                 --            shipping_method_code,
+                 --          shipping_method_code,
                              return_reason_code,
                              customer_po_number,
                              operation_code,
@@ -9684,7 +9701,9 @@ EXCEPTION
                              customer_line_number,
                              attribute3,
                              service_start_date,
-                             service_end_date)
+                             service_end_date,
+                             invoicing_rule_id,
+                             accounting_rule_id)
                      VALUES (g_line_rec.orig_sys_document_ref(i_lin),
                              g_line_rec.order_source_id(i_lin),
                              g_line_rec.change_sequence(i_lin),
@@ -9693,9 +9712,8 @@ EXCEPTION
                              g_line_rec.line_number(i_lin),
                              g_line_rec.line_type_id(i_lin),
                              g_line_rec.inventory_item_id(i_lin),
-                             g_line_rec.inventory_item(i_lin)
-                                                             --, G_line_rec.source_type_code(i_lin)
-                ,
+                             g_line_rec.inventory_item(i_lin),
+                             --, G_line_rec.source_type_code(i_lin),
                              g_line_rec.schedule_ship_date(i_lin),
                              g_line_rec.actual_ship_date(i_lin),
                              g_line_rec.salesrep_id(i_lin),
@@ -9745,7 +9763,9 @@ EXCEPTION
                              g_line_rec.customer_line_number(i_lin),
                              g_line_rec.core_type_indicator(i_lin),
                              g_line_rec.service_start_date(i_lin),
-                             g_line_rec.service_end_date(i_lin)
+                             g_line_rec.service_end_date(i_lin),
+                             g_line_rec.invoicing_rule_id(i_lin),
+                             g_line_rec.accounting_rule_id(i_lin)
                              );
         EXCEPTION
             WHEN OTHERS
