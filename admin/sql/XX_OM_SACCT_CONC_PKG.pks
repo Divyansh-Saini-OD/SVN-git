@@ -507,7 +507,9 @@ AS
         kit_seqnum               t_num,
         kit_parent               t_v1,
         service_end_date         t_date,
-        service_start_date       t_date
+        service_start_date       t_date,
+        accounting_rule_id       t_num,
+        invoicing_rule_id        t_num
     );
 
 /* Global Record Declaration for  Line */
