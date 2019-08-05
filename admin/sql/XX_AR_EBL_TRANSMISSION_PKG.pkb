@@ -1483,13 +1483,6 @@ BEGIN
 		END LOOP;
 		CLOSE get_file_length;
 		put_log_line('  --Total file length sum : ' || ln_total_file_length);
-		put_log_line('  --ln_max_size_file : ' || ln_max_size_file);
-		put_log_line('  --ln_max_size_transmission : ' || ln_max_size_transmission);
-     
-	 IF ln_total_file_length IS NULL THEN
-	 ln_total_file_length := 0;
-	 END IF;
-
 	 -- End Loop through transmission ids of given customer
      IF (((ln_total_file_length IS NOT NULL) AND (ln_total_file_length <= ln_max_size_file))
 	 AND ((ln_total_file_length IS NOT NULL) AND (ln_total_file_length <= ln_max_size_transmission)))
@@ -1678,8 +1671,6 @@ BEGIN
 		ln_trans_id := NULL;
 		ls_parent_email_addr := NULL;
 		
-		put_log_line('lmr.transmission_id before child loop: '||lmr.transmission_id);
-		
 		OPEN get_parent_docs FOR SELECT XAE.transmission_id, XAE.dest_email_addr
 								  FROM XX_AR_EBL_TRANSMISSION XAE
 								 WHERE XAE.status='SEND' AND XAE.transmission_type='EMAIL'
@@ -1747,7 +1738,6 @@ BEGIN
 		  END IF;
 		END LOOP;
 		CLOSE get_parent_docs;
-		put_log_line('ls_trans_ids: tranmission ids at the end of child loop'||ls_trans_ids);
 		IF ln_trans_id IS NULL
 		THEN	
 		  ls_trans_ids := ls_trans_ids || lmr.transmission_id || ',';
@@ -3062,7 +3052,7 @@ BEGIN
 	  IF ln_request_id = 0 THEN
 		FND_FILE.put_line(FND_FILE.LOG,'Request Not Submitted due to "' || fnd_message.get || '". Cust doc id:'||lcr.cust_doc_id);
 	  ELSE
-		FND_FILE.put_line(FND_FILE.LOG,'The Program PROGRAM_1 submitted successfully – Request id :' || ln_request_id||'. Cust doc id:'||lcr.cust_doc_id);
+		FND_FILE.put_line(FND_FILE.LOG,'The Program PROGRAM_1 submitted successfully â€“ Request id :' || ln_request_id||'. Cust doc id:'||lcr.cust_doc_id);
 	  END IF;
 	  IF ln_request_id > 0 THEN
 		LOOP
@@ -3228,7 +3218,7 @@ BEGIN
 		 FOR lmr IN (SELECT X.* FROM ( SELECT  DISTINCT T.dest_email_addr, T.billing_dt_from, T.billing_dt,
 														 D.email_subject, D.email_std_message, D.email_custom_message, D.email_signature,
 														 D.email_std_disclaimer, D.email_logo_required, D.email_logo_file_name, M.zip_required,
-														 H.account_number, H.account_name, SUBSTR(H.orig_system_reference,1,8) aops_number,T.transmission_id
+														 H.account_number, H.account_name, SUBSTR(H.orig_system_reference,1,8) aops_number
 													FROM XX_AR_EBL_TRANSMISSION T
 													JOIN XX_CDH_EBL_TRANSMISSION_DTL D
 													  ON T.customer_doc_id=D.cust_doc_id
@@ -3366,9 +3356,9 @@ BEGIN
 	     END IF;
          --NAIT-96849 end
 		 BEGIN
-		  IF nvl(ls_file_too_big,'N') = 'Y' THEN NULL;
+		  IF nvl(ls_file_too_big,'N') = 'Y' THEN
 		    SEND_SIMPLE_EMAIL(p_smtp_server, p_smtp_port, p_from_name, ls_send_toobig_notif, ls_subject_toobig, ls_message_toobig);
-		  ELSE NULL;
+		  ELSE 
 		    TRANSMIT_MERGE_PDF_EMAIL(ln_merge_file_id, p_smtp_server, p_smtp_port, p_from_name, ls_dest_email_addr, ls_subject, ls_message_html, ls_message_text, ls_zip_required, ls_status_detail);
 		  END IF;
 		  FND_FILE.put_line(FND_FILE.LOG,'After calling mail program');  
