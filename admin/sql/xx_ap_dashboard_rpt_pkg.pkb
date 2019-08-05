@@ -1,4 +1,4 @@
-ï»¿SET VERIFY OFF;
+SET VERIFY OFF;
 SET SHOW OFF;
 SET ECHO OFF;
 SET TAB OFF;
@@ -131,7 +131,7 @@ BEGIN
 END;
 --
 ------------------------------------------------------------
--- AP Trade â€“ Charge Back Summary
+-- AP Trade – Charge Back Summary
 -- Solution ID:214
 -- RICE_ID : E3522
 ------------------------------------------------------------
@@ -689,7 +689,7 @@ IS
       END LOOP;
     END xx_ap_trade_chbk_summary;
     ------------------------------------------------------------
-    -- Ap Trade AP Trade â€“ RTV Reconcilation
+    -- Ap Trade AP Trade – RTV Reconcilation
     -- Solution ID: 217.0
     -- RICE_ID : E3522
     ------------------------------------------------------------
@@ -905,7 +905,7 @@ WHEN ex_dml_errors THEN
   END LOOP;
 END xx_ap_trade_rtv_reconcilation;
 ------------------------------------------------------------
--- AP Trade â€“ Match Analysis
+-- AP Trade – Match Analysis
 -- Solution ID: 215.0
 -- RICE_ID : E3522
 ------------------------------------------------------------
