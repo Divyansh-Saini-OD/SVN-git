@@ -1406,8 +1406,8 @@ BEGIN
 		  lr_vendor_rec.name_control                 :=NVL(c_sup.name_control, FND_API.G_MISS_CHAR);
 		  lr_vendor_rec.tax_verification_date        :=NVL(TO_DATE(c_sup.tax_verification_date,'YYYY/MM/DD'),FND_API.G_MISS_DATE);
 		  lr_vendor_rec.allow_awt_flag               :=NVL(c_sup.allow_awt_flag, FND_API.G_MISS_CHAR);
-		  lr_vendor_rec.vat_code                     :=NVL(c_sup.vat_code, FND_API.G_MISS_CHAR);
-		  lr_vendor_rec.vat_registration_num         :=NVL(c_sup.vat_registration_num, FND_API.G_MISS_CHAR);
+		  lr_vendor_rec.vat_code                     :=c_sup.vat_code;
+		  lr_vendor_rec.vat_registration_num         :=c_sup.vat_registration_num;
 		  lr_vendor_rec.attribute_category           :=NVL(c_sup.attribute_category, FND_API.G_MISS_CHAR);
 		  lr_vendor_rec.attribute3                   :=NVL(c_sup.attribute3, FND_API.G_MISS_CHAR);
 		  lr_vendor_rec.attribute2                   :=NVL(c_sup.attribute2, FND_API.G_MISS_CHAR);
@@ -4591,7 +4591,8 @@ BEGIN
                 ATTRIBUTE13 ,
                 attribute14 ,
                 attribute15,
-                vendor_site_code_alt
+                vendor_site_code_alt,
+				duns_number -- Added as per Version 1.9
               )
               VALUES
               (
@@ -4657,8 +4658,8 @@ BEGIN
                 l_sup_site_type(l_idx).ATTRIBUTE13 ,
                 l_sup_site_type(l_idx).attribute14 ,
                 L_SUP_SITE_TYPE(L_IDX).ATTRIBUTE15,
-                l_sup_site_type(l_idx).vendor_site_code_alt
-                -- ltrim(regexp_replace(l_sup_site_type(l_idx).vendor_site_code, '[^0-9]'),0)
+                l_sup_site_type(l_idx).vendor_site_code_alt,
+                l_sup_site_type(l_idx).attribute5  -- Added as per Version 1.9
               );
           EXCEPTION
           WHEN OTHERS THEN
