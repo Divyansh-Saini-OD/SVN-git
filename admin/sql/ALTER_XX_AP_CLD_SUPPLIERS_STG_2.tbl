@@ -5,13 +5,13 @@
 -- | Name        :  Table Alter for Suppliers table                           |
 -- |                                                                          |
 -- | SQL Script to create the following object                                |
--- |             Table       : XX_AP_CLD_SUPP_SITES_STG                       |
+-- |             Table       : XX_AP_CLD_SUPPLIERS_STG                        |
 -- |                                                                          |
 -- |Change Record:                                                            |
 -- |===============                                                           |
 -- |Version   Date         Author               Remarks                       |
 -- |=======   ==========   =============        ==============================|
--- | 1.0      26-JUL-2019  Havish Kasina        Added new columns             |
+-- | 1.0      06-JUL-2019  Havish Kasina        Added new columns             |
 -- +==========================================================================+
 
 SET SHOW         OFF
@@ -20,13 +20,18 @@ SET ECHO         OFF
 SET TAB          OFF
 SET FEEDBACK     ON
 
-ALTER TABLE XXFIN.XX_AP_CLD_SUPP_SITES_STG
-MODIFY SUPPLIER_NUMBER VARCHAR2(200);
-
-ALTER TABLE XXFIN.XX_AP_CLD_SUPP_SITES_STG
-  ADD (QTY_RCV_TOLERANCE          VARCHAR2(200),
-       INSPECTION_REQUIRED_FLAG   VARCHAR2(200),
-       RECEIPT_REQUIRED_FLAG      VARCHAR2(200)
-      );
+ALTER TABLE XXFIN.XX_AP_CLD_SUPPLIERS_STG
+ADD (ALLOW_SUBSTITUTE_RECEIPTS_FLAG	VARCHAR2(200),	
+     ALLOW_UNORDERED_RECEIPTS_FLAG	VARCHAR2(200),	
+     ENFORCE_SHIP_TO_LOCATION_CODE	VARCHAR2(200),	
+     QTY_RCV_EXCEPTION_CODE	        VARCHAR2(200),	
+     RECEIPT_DAYS_EXCEPTION_CODE	VARCHAR2(200),	
+     INSPECTION_REQUIRED_FLAG	    VARCHAR2(200),	
+     RECEIPT_REQUIRED_FLAG	        VARCHAR2(200),	
+     QTY_RCV_TOLERANCE	            VARCHAR2(200),	
+     DAYS_EARLY_RECEIPT_ALLOWED	    VARCHAR2(200),	
+     DAYS_LATE_RECEIPT_ALLOWED	    VARCHAR2(200),	
+     RECEIVING_ROUTING_ID	        VARCHAR2(200)
+	) ;
   
 SHOW ERROR;
