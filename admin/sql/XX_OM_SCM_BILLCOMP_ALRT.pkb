@@ -14,7 +14,8 @@ AS
 -- |=======    ==========    =============    =============================|
 -- |DRAFT 1A   09-03-2019    Arun Gannarapu   pending bill complete orders |
 -- |1B         06-21-2019    Shalu George     code to exclude return orders|
--- |1C		   06-28-2019    Arun Gannarapu	  exclude orders with SPC numbers|
+-- |1C		     06-28-2019    Arun Gannarapu	  exclude orders with SPC numbers|
+-- |1D         06-Aug-2019   Arun Gannarapu   fixed the email issue.
 -- +=======================================================================+
 -- procedure extract all pending order for bill complete
   PROCEDURE extract_pending_bc_orders (retcode        OUT   NUMBER,
@@ -60,7 +61,7 @@ CURSOR order_stuck
    vl_hdr_message   varchar2(2000);
    vl_line_message  varchar2(32000);
    lc_conn          UTL_SMTP.connection;
-   lc_dirpath       VARCHAR2 (2000) := 'XX_UTL_FILE_OUT_DIR';
+   lc_dirpath       VARCHAR2 (2000) := 'XX_UTL_FILE_OUT_DIR' ;--'XXMER_OUTBOUND';
    lc_mode          VARCHAR2 (1)    := 'W';
    ln_max_linesize  BINARY_INTEGER  := 32767;
    v_translation_info xx_fin_translatevalues%ROWTYPE := NULL;
@@ -144,7 +145,8 @@ CURSOR order_stuck
                           subject            => lc_instance||': '||'EBS BILL SIGNAL ALERT :'|| ' '|| lc_date,
                           mime_type          => xx_pa_pb_mail.multipart_mime_type
                           );
-            xx_pa_pb_mail.xx_attach_excel (lc_conn, v_filename);
+            --xx_pa_pb_mail.xx_attach_excel (lc_conn, v_filename);
+            xx_pa_pb_mail.xx_email_excel(lc_conn,lc_dirpath, v_filename); 
             xx_pa_pb_mail.end_attachment (conn => lc_conn);
             xx_pa_pb_mail.attach_text (conn => lc_conn, DATA => l_message);
             xx_pa_pb_mail.end_mail (conn => lc_conn);
