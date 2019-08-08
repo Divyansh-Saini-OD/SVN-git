@@ -43,6 +43,7 @@ CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- |                                           for Trade Suppliers. Removed the Phone Area code|
 -- |                                           and Fax code validations in Supplier Sites and  |
 -- |                                           Contacts                                        |
+-- |  2.1    07-AUG-2019     Havish Kasina     Receiving Changes added                         | 
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -435,15 +436,84 @@ BEGIN
   END;
   RETURN v_ccid;
 END get_cld_to_ebs_map;
+
+/* Added as per Version 2.1 by Havish Kasina */
 --+============================================================================+
---| Name          : insert_bus_class                                        |
---| Description   : This FUnction will insert Business Classifications     |
---|                      |
+--| Name          : get_receiving_details                                      |
+--| Description   : This procedure will get the receiving details from the     |
+--|                 Cloud Supplier Sites Staging table                         |
+--| Parameters    :                                                            |
+--|                                                                            |
+--| Returns       : N/A                                                        |
+--|                                                                            |
+--+============================================================================+
+PROCEDURE get_receiving_details(p_supplier_num                    IN  VARCHAR2,
+                                o_inspection_required_flag        OUT VARCHAR2,	    
+								o_receipt_required_flag           OUT VARCHAR2,	        
+								o_qty_rcv_tolerance               OUT NUMBER,	            
+								o_qty_rcv_exception_code          OUT VARCHAR2,    
+								o_enforce_ship_to_loc_code        OUT VARCHAR2, 
+								o_days_early_receipt_allowed      OUT NUMBER, 
+								o_days_late_receipt_allowed       OUT NUMBER,	    
+								o_receipt_days_exception_code     OUT VARCHAR2,	
+								o_receiving_routing_id            OUT NUMBER,        
+								o_allow_substitute_rcpts_flag     OUT VARCHAR2,
+								o_allow_unordered_rcpts_flag      OUT VARCHAR2
+                               )
+IS 
+
+BEGIN
+    
+  SELECT inspection_required_flag,	     
+         receipt_required_flag,	         
+         TO_NUMBER(qty_rcv_tolerance),	             
+         qty_rcv_exception_code,     
+         enforce_ship_to_location_code, 
+         TO_NUMBER(days_early_receipt_allowed), 
+         TO_NUMBER(days_late_receipt_allowed),	     
+         receipt_days_exception_code,	 
+         TO_NUMBER(receiving_routing_id),	         
+         allow_substitute_receipts_flag,
+         allow_unordered_receipts_flag
+    INTO o_inspection_required_flag,      		 
+         o_receipt_required_flag,          
+         o_qty_rcv_tolerance,              
+         o_qty_rcv_exception_code,         
+         o_enforce_ship_to_loc_code, 
+         o_days_early_receipt_allowed,     
+         o_days_late_receipt_allowed,      
+         o_receipt_days_exception_code,   
+         o_receiving_routing_id,           
+         o_allow_substitute_rcpts_flag,
+         o_allow_unordered_rcpts_flag 
+    FROM xx_ap_cld_supp_sites_stg
+   WHERE request_id        = gn_request_id
+     AND purchasing_site_flag = 'Y'
+	 AND supplier_number = p_supplier_num
+     AND rownum < 2;
+EXCEPTION
+WHEN OTHERS
+THEN
+   o_inspection_required_flag       := NULL;
+   o_receipt_required_flag          := NULL;
+   o_qty_rcv_tolerance              := NULL;   
+   o_qty_rcv_exception_code         := NULL;
+   o_enforce_ship_to_loc_code       := NULL;
+   o_days_early_receipt_allowed     := NULL;   
+   o_days_late_receipt_allowed      := NULL;  
+   o_receipt_days_exception_code    := NULL;
+   o_receiving_routing_id           := NULL; 
+   o_allow_substitute_rcpts_flag    := NULL;
+   o_allow_unordered_rcpts_flag     := NULL;
+END get_receiving_details;
+
+--+============================================================================+
+--| Name          : insert_bus_class                                           |
+--| Description   : This Function will insert Business Classifications         |
 --|                                                                            |
 --| Parameters    : p_party_id,p_bus_code,p_attribute,p_vendor_id              |
 --|                                                                            |
 --| Returns       : N/A                                                        |
---|                                                                            |
 --+============================================================================+
 FUNCTION insert_bus_class(
     p_party_id  IN NUMBER ,
@@ -1360,15 +1430,26 @@ SELECT *
 
   lr_vendor_rec ap_vendor_pub_pkg.r_vendor_rec_type;
   lr_existing_vendor_rec ap_suppliers%rowtype;
-  v_api_version      NUMBER;
-  v_init_msg_list    VARCHAR2(200);
-  v_commit           VARCHAR2(200);
-  v_validation_level NUMBER;
-  l_msg              VARCHAR2(200);
-  l_program_step     VARCHAR2 (100) := '';
-  x_msg_count        NUMBER;
-  x_msg_data         VARCHAR2(200);
-  l_process_flag     VARCHAR2(10);
+  v_api_version                     NUMBER;
+  v_init_msg_list                   VARCHAR2(200);
+  v_commit                          VARCHAR2(200);
+  v_validation_level                NUMBER;
+  l_msg                             VARCHAR2(200);
+  l_program_step                    VARCHAR2 (100) := '';
+  x_msg_count                       NUMBER;
+  x_msg_data                        VARCHAR2(200);
+  l_process_flag                    VARCHAR2(10);
+  lc_inspection_required_flag	    VARCHAR2(200);
+  lc_receipt_required_flag	        VARCHAR2(200);
+  ln_qty_rcv_tolerance	            NUMBER;
+  lc_qty_rcv_exception_code	        VARCHAR2(200);
+  lc_enforce_ship_to_loc_code	    VARCHAR2(200);
+  ln_days_early_receipt_allowed	    NUMBER;
+  ln_days_late_receipt_allowed	    NUMBER;
+  lc_receipt_days_exception_code	VARCHAR2(200);
+  ln_receiving_routing_id	        NUMBER;
+  lc_allow_substitute_rcpts_flag	VARCHAR2(200);
+  lc_allow_unordered_rcpts_flag	    VARCHAR2(200);
 
 BEGIN
   /*Intializing Values**/
@@ -1381,6 +1462,18 @@ BEGIN
 
   FOR c_sup IN c_supplier
   LOOP
+    lc_inspection_required_flag	     := NULL;    
+    lc_receipt_required_flag	     := NULL;     
+    ln_qty_rcv_tolerance	         := NULL;         
+    lc_qty_rcv_exception_code	     := NULL;     
+    lc_enforce_ship_to_loc_code      := NULL;	
+    ln_days_early_receipt_allowed	 := NULL;   
+    ln_days_late_receipt_allowed	 := NULL;  
+    lc_receipt_days_exception_code	 := NULL;
+    ln_receiving_routing_id	         := NULL; 
+    lc_allow_substitute_rcpts_flag	 := NULL;
+    lc_allow_unordered_rcpts_flag	 := NULL;
+	
     BEGIN
       SELECT *
         INTO lr_existing_vendor_rec
@@ -1423,6 +1516,74 @@ BEGIN
 		  lr_vendor_rec.attribute13                  :=NVL(c_sup.attribute13, FND_API.G_MISS_CHAR);
 		  lr_vendor_rec.attribute14                  :=NVL(c_sup.attribute14, FND_API.G_MISS_CHAR);
 		  lr_vendor_rec.attribute15                  :=NVL(c_sup.attribute15, FND_API.G_MISS_CHAR);
+		  
+		  /* Added as per Version 2.1 by Havish Kasina */
+		  --==============================================================================
+		  -- To get the Receiving details from the Supplier Sites Staging table
+		  --==============================================================================
+		  print_debug_msg(p_message=> l_program_step||': Fetching the Receiving Information for the Supplier ' ||c_sup.segment1 , p_force=>true);
+
+		  get_receiving_details(p_supplier_num                 => c_sup.segment1 ,
+                                o_inspection_required_flag     => lc_inspection_required_flag	   , 
+								o_receipt_required_flag        => lc_receipt_required_flag	       ,     
+								o_qty_rcv_tolerance            => ln_qty_rcv_tolerance	           ,         
+								o_qty_rcv_exception_code       => lc_qty_rcv_exception_code	       ,     
+								o_enforce_ship_to_loc_code     => lc_enforce_ship_to_loc_code      ,	 
+								o_days_early_receipt_allowed   => ln_days_early_receipt_allowed	   ,
+								o_days_late_receipt_allowed    => ln_days_late_receipt_allowed	   , 
+								o_receipt_days_exception_code  => lc_receipt_days_exception_code   ,
+								o_receiving_routing_id         => ln_receiving_routing_id          ,	     
+								o_allow_substitute_rcpts_flag  => lc_allow_substitute_rcpts_flag   ,
+								o_allow_unordered_rcpts_flag   => lc_allow_unordered_rcpts_flag	 
+                               );
+							   
+		  UPDATE xx_ap_cld_suppliers_stg
+             SET inspection_required_flag       =  lc_inspection_required_flag,	     
+                 receipt_required_flag          =  lc_receipt_required_flag,	         
+                 qty_rcv_tolerance              =  ln_qty_rcv_tolerance,	             
+                 qty_rcv_exception_code         =  lc_qty_rcv_exception_code,     
+                 enforce_ship_to_location_code  =  lc_enforce_ship_to_loc_code, 
+                 days_early_receipt_allowed     =  ln_days_early_receipt_allowed, 
+                 days_late_receipt_allowed      =  ln_days_late_receipt_allowed,	     
+                 receipt_days_exception_code    =  lc_receipt_days_exception_code,	 
+                 receiving_routing_id           =  ln_receiving_routing_id,	         
+                 allow_substitute_receipts_flag =  lc_allow_substitute_rcpts_flag,
+                 allow_unordered_receipts_flag  =  lc_allow_unordered_rcpts_flag,	       		 
+                 last_updated_by     = g_user_id,
+                 last_update_date    = SYSDATE
+           WHERE 1 = 1
+             AND segment1          = c_sup.segment1
+             AND request_id        = gn_request_id;
+			 
+		   print_debug_msg(p_message=> l_program_step||': Successfully loaded the Receiving Information to the xx_ap_cld_suppliers_stgStaging Table ', p_force=>true);
+		  
+		  IF lc_inspection_required_flag IS NOT NULL OR 
+		     lc_receipt_required_flag    IS NOT NULL OR     
+			 ln_qty_rcv_tolerance IS NOT NULL OR	        
+			 lc_qty_rcv_exception_code   IS NOT NULL OR    
+			 lc_enforce_ship_to_loc_code IS NOT NULL OR
+			 ln_days_early_receipt_allowed IS NOT NULL OR 
+			 ln_days_late_receipt_allowed IS NOT NULL OR	
+			 lc_receipt_days_exception_code IS NOT NULL OR	
+			 ln_receiving_routing_id IS NOT NULL OR        
+			 lc_allow_substitute_rcpts_flag IS NOT NULL OR
+			 lc_allow_unordered_rcpts_flag IS NOT NULL	
+		  THEN
+		      lr_vendor_rec.inspection_required_flag        :=  lc_inspection_required_flag;    
+			  lr_vendor_rec.receipt_required_flag           :=  lc_receipt_required_flag;	    
+			  lr_vendor_rec.qty_rcv_tolerance               :=  ln_qty_rcv_tolerance;	        
+			  lr_vendor_rec.qty_rcv_exception_code          :=  lc_qty_rcv_exception_code;    
+			  lr_vendor_rec.enforce_ship_to_location_code   :=  lc_enforce_ship_to_loc_code; 
+			  lr_vendor_rec.days_early_receipt_allowed      :=  ln_days_early_receipt_allowed;
+			  lr_vendor_rec.days_late_receipt_allowed       :=  ln_days_late_receipt_allowed;
+			  lr_vendor_rec.receipt_days_exception_code     :=  lc_receipt_days_exception_code;	
+			  lr_vendor_rec.receiving_routing_id            :=  ln_receiving_routing_id;	        
+			  lr_vendor_rec.allow_substitute_receipts_flag  :=  lc_allow_substitute_rcpts_flag;
+			  lr_vendor_rec.allow_unordered_receipts_flag   :=  lc_allow_unordered_rcpts_flag;
+          END IF;			  
+			
+          /* End of Changes Added for Version 2.1 by Havish Kasina */			
+			 		  
 		  fnd_msg_pub.initialize; --to make msg_count 0
 		  x_return_status:=NULL;
 		  x_msg_count    :=NULL;
@@ -4093,25 +4254,36 @@ IS
   -- Declaring Local variables
   --=================================================================
   l_supplier_type l_sup_tab;
-  l_vendor_intf_id       NUMBER DEFAULT 0;
-  l_error_message        VARCHAR2 (2000) DEFAULT NULL;
-  l_procedure            VARCHAR2 (30) := 'load_Supplier_Interface';
-  l_sup_processed_recs   NUMBER        := 0;
-  l_sup_unprocessed_recs NUMBER        := 0;
-  l_ret_code             NUMBER;
-  l_return_status        VARCHAR2 (100);
-  l_err_buff             VARCHAR2 (4000);
-  l_sup_val_load_cnt     NUMBER := 0;
-  l_user_id              NUMBER := fnd_global.user_id;
-  l_resp_id              NUMBER := fnd_global.resp_id;
-  l_resp_appl_id         NUMBER := fnd_global.resp_appl_id;
-  l_rept_req_id          NUMBER;
-  l_phas_out             VARCHAR2 (60);
-  l_status_out           VARCHAR2 (60);
-  l_dev_phase_out        VARCHAR2 (60);
-  l_dev_status_out       VARCHAR2 (60);
-  l_message_out          VARCHAR2 (200);
-  l_bflag                BOOLEAN;
+  l_vendor_intf_id                       NUMBER DEFAULT 0;
+  l_error_message                        VARCHAR2 (2000) DEFAULT NULL;
+  l_procedure                            VARCHAR2 (30) := 'load_Supplier_Interface';
+  l_sup_processed_recs                   NUMBER        := 0;
+  l_sup_unprocessed_recs                 NUMBER        := 0;
+  l_ret_code                             NUMBER;
+  l_return_status                        VARCHAR2 (100);
+  l_err_buff                             VARCHAR2 (4000);
+  l_sup_val_load_cnt                     NUMBER := 0;
+  l_user_id                              NUMBER := fnd_global.user_id;
+  l_resp_id                              NUMBER := fnd_global.resp_id;
+  l_resp_appl_id                         NUMBER := fnd_global.resp_appl_id;
+  l_rept_req_id                          NUMBER;
+  l_phas_out                             VARCHAR2 (60);
+  l_status_out                           VARCHAR2 (60);
+  l_dev_phase_out                        VARCHAR2 (60);
+  l_dev_status_out                       VARCHAR2 (60);
+  l_message_out                          VARCHAR2 (200);
+  l_bflag                                BOOLEAN;
+  lc_inspection_required_flag	         VARCHAR2(200);
+  lc_receipt_required_flag	             VARCHAR2(200);
+  ln_qty_rcv_tolerance	                 NUMBER;
+  lc_qty_rcv_exception_code	             VARCHAR2(200);
+  lc_enforce_ship_to_loc_code	         VARCHAR2(200);
+  ln_days_early_receipt_allowed	         NUMBER;
+  ln_days_late_receipt_allowed	         NUMBER;
+  lc_receipt_days_exception_code	     VARCHAR2(200);
+  ln_receiving_routing_id	             NUMBER;
+  lc_allow_substitute_rcpts_flag	     VARCHAR2(200);
+  lc_allow_unordered_rcpts_flag	         VARCHAR2(200);
   --==============================================================================
   -- Cursor Declarations for Suppliers
   --==============================================================================
@@ -4157,20 +4329,72 @@ BEGIN
       print_debug_msg(p_message=> gc_step||' l_supplier_type records processing.' ,p_force=> false);
       FOR l_idx IN l_supplier_type.first .. l_supplier_type.last
       LOOP
+	    lc_inspection_required_flag	     := NULL;    
+        lc_receipt_required_flag	     := NULL;     
+        ln_qty_rcv_tolerance	         := NULL;         
+        lc_qty_rcv_exception_code	     := NULL;     
+        lc_enforce_ship_to_loc_code      := NULL;	
+        ln_days_early_receipt_allowed	 := NULL;   
+        ln_days_late_receipt_allowed	 := NULL;  
+        lc_receipt_days_exception_code	 := NULL;
+        ln_receiving_routing_id	         := NULL; 
+        lc_allow_substitute_rcpts_flag	 := NULL;
+        lc_allow_unordered_rcpts_flag	 := NULL;
         --==============================================================================
         -- Initialize the Variable to N for Each Supplier
         --==============================================================================
         l_process_status_flag := 'N';
         l_error_message       := NULL;
         gc_step               := 'SUPINTF';
-        print_debug_msg(p_message=> gc_step||' Create Flag of the supplier '||l_supplier_type (l_idx).supplier_name||' is - '||l_supplier_type (l_idx).CREATE_FLAG ,p_force=> false);
-        IF l_supplier_type (l_idx).CREATE_FLAG = 'Y' THEN
+        print_debug_msg(p_message=> gc_step||' Create Flag of the supplier '||l_supplier_type (l_idx).supplier_name||' is - '||l_supplier_type (l_idx).create_flag ,p_force=> false);
+        IF l_supplier_type (l_idx).create_flag = 'Y' THEN
           --==============================================================================================
           -- Calling the Vendor Interface Id for Passing it to Interface Table - Supplier Does Not Exists
           --==============================================================================================
           SELECT ap_suppliers_int_s.nextval
           INTO l_vendor_intf_id
           FROM dual;
+		  /* Added as per Version 2.1 by Havish Kasina */
+		  --==============================================================================
+		  -- To get the Receiving details from the Supplier Sites Staging table
+		  --==============================================================================
+		  print_debug_msg(p_message=> 'Fetching the Receiving Information for the Supplier ' ||l_supplier_type (l_idx).segment1 , p_force=>true);
+
+		  get_receiving_details(p_supplier_num                 => l_supplier_type (l_idx).segment1 ,
+                                o_inspection_required_flag     => lc_inspection_required_flag	   , 
+								o_receipt_required_flag        => lc_receipt_required_flag	       ,     
+								o_qty_rcv_tolerance            => ln_qty_rcv_tolerance	           ,         
+								o_qty_rcv_exception_code       => lc_qty_rcv_exception_code	       ,     
+								o_enforce_ship_to_loc_code     => lc_enforce_ship_to_loc_code      ,	 
+								o_days_early_receipt_allowed   => ln_days_early_receipt_allowed	   ,
+								o_days_late_receipt_allowed    => ln_days_late_receipt_allowed	   , 
+								o_receipt_days_exception_code  => lc_receipt_days_exception_code   ,
+								o_receiving_routing_id         => ln_receiving_routing_id          ,	     
+								o_allow_substitute_rcpts_flag  => lc_allow_substitute_rcpts_flag   ,
+								o_allow_unordered_rcpts_flag   => lc_allow_unordered_rcpts_flag	 
+                               );
+							   
+		  UPDATE xx_ap_cld_suppliers_stg
+             SET inspection_required_flag       =  lc_inspection_required_flag,	     
+                 receipt_required_flag          =  lc_receipt_required_flag,	         
+                 qty_rcv_tolerance              =  ln_qty_rcv_tolerance,	             
+                 qty_rcv_exception_code         =  lc_qty_rcv_exception_code,     
+                 enforce_ship_to_location_code  =  lc_enforce_ship_to_loc_code, 
+                 days_early_receipt_allowed     =  ln_days_early_receipt_allowed, 
+                 days_late_receipt_allowed      =  ln_days_late_receipt_allowed,	     
+                 receipt_days_exception_code    =  lc_receipt_days_exception_code,	 
+                 receiving_routing_id           =  ln_receiving_routing_id,	         
+                 allow_substitute_receipts_flag =  lc_allow_substitute_rcpts_flag,
+                 allow_unordered_receipts_flag  =  lc_allow_unordered_rcpts_flag,	       		 
+                 last_updated_by     = g_user_id,
+                 last_update_date    = SYSDATE
+           WHERE 1 = 1
+             AND segment1          = l_supplier_type (l_idx).segment1
+             AND request_id        = gn_request_id;
+			 
+		  print_debug_msg(p_message=>'Successfully loaded the Receiving Information into xx_ap_cld_suppliers_stg staging table', p_force=>true);
+
+		  /* End of Changes Added for Version 2.1 by Havish Kasina */
           --==============================================================================
           -- Calling the Insertion of Data into standard interface table
           --==============================================================================
@@ -4220,7 +4444,18 @@ BEGIN
                   creation_date ,
                   last_update_date ,
                   last_updated_by,
-                  organization_type_lookup_code
+                  organization_type_lookup_code,  
+				  inspection_required_flag,           -- Added as per Version 2.1 by Havish Kasina
+				  receipt_required_flag ,             -- Added as per Version 2.1 by Havish Kasina
+				  qty_rcv_tolerance,                  -- Added as per Version 2.1 by Havish Kasina
+				  qty_rcv_exception_code ,            -- Added as per Version 2.1 by Havish Kasina
+				  enforce_ship_to_location_code ,     -- Added as per Version 2.1 by Havish Kasina
+				  days_early_receipt_allowed ,        -- Added as per Version 2.1 by Havish Kasina
+				  days_late_receipt_allowed ,         -- Added as per Version 2.1 by Havish Kasina
+				  receipt_days_exception_code ,       -- Added as per Version 2.1 by Havish Kasina
+				  receiving_routing_id ,              -- Added as per Version 2.1 by Havish Kasina
+				  allow_substitute_receipts_flag,     -- Added as per Version 2.1 by Havish Kasina
+				  allow_unordered_receipts_flag       -- Added as per Version 2.1 by Havish Kasina
                 )
                 VALUES
                 (
@@ -4264,7 +4499,18 @@ BEGIN
                   SYSDATE ,
                   SYSDATE ,
                   g_user_id,
-                  l_supplier_type (l_idx).organization_type
+                  l_supplier_type (l_idx).organization_type,
+				  lc_inspection_required_flag,	   --Added as per Version 2.1 by Havish Kasina
+				  lc_receipt_required_flag,	       --Added as per Version 2.1 by Havish Kasina
+				  ln_qty_rcv_tolerance,	           --Added as per Version 2.1 by Havish Kasina
+				  lc_qty_rcv_exception_code,       --Added as per Version 2.1 by Havish Kasina
+				  lc_enforce_ship_to_loc_code,     --Added as per Version 2.1 by Havish Kasina
+				  ln_days_early_receipt_allowed,   --Added as per Version 2.1 by Havish Kasina
+				  ln_days_late_receipt_allowed,	   --Added as per Version 2.1 by Havish Kasina
+				  lc_receipt_days_exception_code,  --Added as per Version 2.1 by Havish Kasina
+				  ln_receiving_routing_id,	       --Added as per Version 2.1 by Havish Kasina
+				  lc_allow_substitute_rcpts_flag,  --Added as per Version 2.1 by Havish Kasina
+				  lc_allow_unordered_rcpts_flag	   --Added as per Version 2.1 by Havish Kasina
                 );
               print_debug_msg(p_message=> 'After successfully inserted the record for the supplier -'||l_supplier_type (l_idx).supplier_name ,p_force=> false);
             EXCEPTION
