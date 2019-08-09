@@ -1,4 +1,24 @@
-create or replace PACKAGE BODY XX_AR_EBL_TRANSMISSION_PKG AS
+SET SHOW OFF
+SET VERIFY OFF
+SET ECHO OFF
+SET TAB OFF
+SET FEEDBACK OFF
+SET TERM ON
+SET SCAN OFF
+
+PROMPT Creating Package Body XX_AR_EBL_TRANSMISSION_PKG
+
+PROMPT Program exits if the creation is not successful
+REM Added for ARU db drv auto generation
+REM dbdrv: sql ~PROD ~PATH ~FILE none none none package &phase=plb \
+REM dbdrv: checkfile:~PROD:~PATH:~FILE
+
+WHENEVER OSERROR EXIT FAILURE ROLLBACK;
+WHENEVER SQLERROR EXIT FAILURE ROLLBACK;
+
+
+create or replace
+PACKAGE BODY XX_AR_EBL_TRANSMISSION_PKG AS
 
 /*
 -- +====================================================================================================+
@@ -1166,7 +1186,7 @@ PROCEDURE TRANSMIT_EMAIL_C (
 )
 IS
   ls_error_message      VARCHAR2(4000);
-  ls_subject            VARCHAR2(5000); 
+  ls_subject            VARCHAR2(5000); -- NAIT-96849
   ls_message_html       VARCHAR2(14000) := '<html><head></head><body>';
   ls_message_text       VARCHAR2(14000);
   ln_thread_id          NUMBER := p_thread_id-1; -- switch to zero-based thread id for use in mod function
@@ -1462,7 +1482,6 @@ BEGIN
 	  ls_billing_dt := TO_CHAR(lcmr.billing_dt, 'MM/DD/RRRR');
       ls_account_number := lcmr.account_number;
 	  ls_billing_dt_from := TO_CHAR(lcmr.billing_dt_from, 'MM/DD/RRRR');
-
  
     END LOOP;
 	--NAIT-96849
@@ -1800,7 +1819,6 @@ BEGIN
        ls_filenames_length := NULL;	   
        --NAIT-96849 end		  
 		  ------------------
-   		  put_log_line('ls_trans_ids: tranmission ids inside child loop'||ls_trans_ids);
 		  ls_trans_ids := ls_trans_ids || lmr.transmission_id || ',' || ln_trans_id || ',';
 		  IF ls_parent_email_addr != lmr.dest_email_addr AND ls_parent_email_addr IS NOT NULL
 		  THEN
@@ -3148,7 +3166,7 @@ BEGIN
 	LOOP
 	  FND_FILE.put_line(FND_FILE.LOG,' Processing for Customer  '||lcr.customer_id);
 	  ls_dest_email_addr   := NULL;            
---	  ls_file_names        := NULL;  
+	  ls_file_names        := NULL;  
 	  ls_merge_file_name   := NULL;
 	  ln_request_id        :=0;
 	  dst_file             := EMPTY_BLOB();
@@ -3417,7 +3435,6 @@ BEGIN
 		  ' for account ' || lmr.account_number || ': ' || lmr.account_name ||'  to "' || lmr.dest_email_addr || '"'||' and Cust Doc Id: ' ||lcr.cust_doc_id);
 		  ls_message_html := '';
 		  ls_status_detail := '';
---		         ls_file_names         := NULL;
 
 		  ls_dest_email_addr := lmr.dest_email_addr||';'||ls_dest_email_addr;
 		  
@@ -3764,3 +3781,7 @@ BEGIN
 END TRANSMIT_MERGE_PDF_EMAIL;
 
 END XX_AR_EBL_TRANSMISSION_PKG;
+/
+
+SHOW ERROR;
+EXIT;
