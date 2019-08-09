@@ -1777,6 +1777,7 @@ BEGIN
     lr_vendor_site_rec.address_line1                :=NVL(c_sup_site.address_line1, FND_API.G_MISS_CHAR);
 	lr_vendor_site_rec.address_line3                :=NVL(c_sup_site.address_line3, FND_API.G_MISS_CHAR);  -- Added as per Version 2.2
     lr_vendor_site_rec.address_line4                :=NVL(c_sup_site.address_line4, FND_API.G_MISS_CHAR);  -- Added as per Version 2.2
+	lr_vendor_site_rec.county                       :=NVL(c_sup_site.county, FND_API.G_MISS_CHAR);         -- Added as per Version 2.2
     lr_vendor_site_rec.country                      :=NVL(c_sup_site.country, FND_API.G_MISS_CHAR);
 	lr_vendor_site_rec.duns_number                  :=NVL(c_sup_site.attribute5, FND_API.G_MISS_CHAR); -- Added as per Version 1.9 by Havish Kasina
 
@@ -4796,6 +4797,7 @@ BEGIN
                 address_line2 ,
 				address_line3 ,   -- Added as per Version 2.2
                 address_line4 ,   -- Added as per Version 2.2
+				county,           -- Added as per Version 2.2
                 city ,
                 state ,
                 zip ,
@@ -4865,6 +4867,7 @@ BEGIN
                 -- l_sup_site_type(l_idx).vendor_site_code,-- TO_CHAR(l_sup_site_type(l_idx).site_number) ,  -- Commented as per Version 2.2
 				ltrim(rtrim(upper(l_sup_site_type(l_idx).address_line3))) ,  -- Added as per Version 2.2
 				ltrim(rtrim(upper(l_sup_site_type(l_idx).address_line4))) ,  -- Added as per Version 2.2
+				ltrim(rtrim(upper(l_sup_site_type(l_idx).county))) ,  -- Added as per Version 2.2
                 ltrim(rtrim(upper(l_sup_site_type(l_idx).city))) ,
                 ltrim(rtrim(upper(l_sup_site_type(l_idx).state))) ,
                 ltrim(rtrim(upper(l_sup_site_type(l_idx).postal_code))) ,
