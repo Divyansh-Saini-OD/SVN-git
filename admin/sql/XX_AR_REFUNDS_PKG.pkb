@@ -3637,183 +3637,185 @@ SELECT   SOURCE
     END;
 
 --------------------------------------------------------------------------------
--- Procedure to insert record into ap_suppliers_int table
-PROCEDURE insert_supplier_interface(
-    p_refund_hdr_rec IN xx_ar_refund_trx_tmp%ROWTYPE,
-    p_sob_name       IN VARCHAR2,
-    x_vendor_interface_id OUT NOCOPY NUMBER,
-    x_err_mesg OUT NOCOPY            VARCHAR2)
-IS
-  lc_vendor_number VARCHAR2(30); -- Added variable for #6.8
-BEGIN
-  lc_vendor_number := NULL;      -- Initialize variable for #6.8
-  -- Generate sequence for vendor_interface_id
-  SELECT ap_suppliers_int_s.NEXTVAL
-  INTO x_vendor_interface_id
-  FROM DUAL;
+
+    -- Procedure to insert record into ap_suppliers_int table
+    PROCEDURE insert_supplier_interface(
+        p_refund_hdr_rec       IN             xx_ar_refund_trx_tmp%ROWTYPE,
+        p_sob_name             IN             VARCHAR2,
+        x_vendor_interface_id  OUT NOCOPY     NUMBER,
+        x_err_mesg             OUT NOCOPY     VARCHAR2)
+    IS
+		lc_vendor_number VARCHAR2(30); -- Added variable for #6.8
+    BEGIN
+		lc_vendor_number := NULL;      -- Initialize variable for #6.8
+-- Generate sequence for vendor_interface_id
+        SELECT ap_suppliers_int_s.NEXTVAL
+        INTO   x_vendor_interface_id
+        FROM   DUAL;
   lc_vendor_number    := xx_update_product_setup; -- assigned vendor number for #6.8
-  IF lc_vendor_number IS NOT NULL THEN
-    -- Insert a record into ap_suppliers_int table
-    INSERT
-    INTO ap_suppliers_int
-      (
-        vendor_interface_id,
-        vendor_name,
-        segment1,							-- Added column segment1 for #6.8
-        customer_num,
-        vendor_type_lookup_code,
-        one_time_flag,
-        terms_name,
-        pay_date_basis_lookup_code,
-        pay_group_lookup_code,
-        start_date_active,
-        end_date_active,
-        status,
-        terms_date_basis,
-        last_update_date,
-        last_updated_by,
-        creation_date,
-        created_by,
-        last_update_login
-      )
-      VALUES
-      (
-        x_vendor_interface_id,
-        p_refund_hdr_rec.payee_name,
-        lc_vendor_number,						-- assigned vendor number for #6.8
-        p_refund_hdr_rec.customer_number,
-        'CUSTOMER',
-        'Y',
-        '00',
-        'DISCOUNT'
-        --Defect 2418 - Use US_ID_EXP_NON_DISC for Canada also.
-        --, DECODE (p_sob_name
-        --        , 'US_USD_P', 'US_OD_EXP_NON_DISC'
-        --        , 'CA_CAD_P', 'CA_OD_EXP_NON_DISC'
-        --        , NULL
-        --         )
+		IF lc_vendor_number IS NOT NULL THEN      -- Added IF condition for #6.8
+  -- Insert a record into ap_suppliers_int table
+        INSERT INTO ap_suppliers_int
+                    (vendor_interface_id,
+                     vendor_name,
+					 segment1,							-- Added column segment1 for #6.8
+                     customer_num,
+                     vendor_type_lookup_code,
+                     one_time_flag,
+                     terms_name,
+                     pay_date_basis_lookup_code,
+                     pay_group_lookup_code,
+                     start_date_active,
+                     end_date_active,
+                     status,
+                     terms_date_basis,
+                     last_update_date,
+                     last_updated_by,
+                     creation_date,
+                     created_by,
+                     last_update_login)
+             VALUES (x_vendor_interface_id,
+                     p_refund_hdr_rec.payee_name,
+					 lc_vendor_number,						-- assigned vendor number for #6.8
+                     p_refund_hdr_rec.customer_number,
+                     'CUSTOMER',
+                     'Y',
+                     '00',
+                     'DISCOUNT'
+                               --Defect 2418 - Use US_ID_EXP_NON_DISC for Canada also.
+                               --, DECODE (p_sob_name
+                               --        , 'US_USD_P', 'US_OD_EXP_NON_DISC'
+                               --        , 'CA_CAD_P', 'CA_OD_EXP_NON_DISC'
+                               --        , NULL
+                               --         )
         ,
-        'US_OD_EXP_NON_DISC' -- Pay Group
+                     'US_OD_EXP_NON_DISC'                                                                   -- Pay Group
+                                         ,
+                     SYSDATE,
+                     NULL,
+                     'NEW',
+                     'Invoice',
+                     SYSDATE,
+                     fnd_global.user_id,
+                     SYSDATE,
+                     fnd_global.user_id,
+                     fnd_global.conc_login_id);
+		 END IF;  -- Added ENDIF for #6.8
+    EXCEPTION
+        WHEN OTHERS
+        THEN
+            x_err_mesg :=    'E:'
+                          || SQLCODE
+                          || SQLERRM;
+    END;
+
+    -- Procedure to insert a record into ap_supplier_sites_int table
+    -- Either vendor_interface_id or vendor_id will be populated deoending on whether vendor already exists or not
+    -- If vendor exists in PO_VENDORS table, vendor_id will be passed else vendor_interface_id will be passed
+    PROCEDURE insert_supplier_site_int(
+        p_refund_hdr_rec       IN             xx_ar_refund_trx_tmp%ROWTYPE,
+        p_vendor_interface_id  IN             NUMBER,
+        p_vendor_id            IN             NUMBER,
+        p_sob_name             IN             VARCHAR2,
+        x_sitecode             OUT NOCOPY     VARCHAR2,
+        x_err_mesg             OUT NOCOPY     VARCHAR2)
+    IS
+	  lc_site_category VARCHAR2(100);				-- Added Variable for #6.8
+    BEGIN
+        -- Generate site code as 'RF' || sequence number
+        --SELECT 'RF' || LPAD (xx_ar_refund_sitecode_s.NEXTVAL, 5, '0')    -- Commented for defect# 6311
+        SELECT    'RF'
+               || LPAD(xx_ar_refund_sitecode_s.NEXTVAL,
+                       13,
+                       '0')                                                                    -- Added for defect# 6311
+        INTO   x_sitecode
+        FROM   DUAL;
+		  lc_site_category                                := NULL;  -- Initialize Variable for #6.8
+		  IF NVL(p_refund_hdr_rec.identification_type,'x') = 'OM' THEN   -- Checked the identification type for #6.8
+			lc_site_category                              := 'EX-RMC';
+		  ELSE
+			lc_site_category := 'EX-REF';
+		  END IF;
+
+        -- Insert a record into ap_supplier_sites_int table
+        INSERT INTO ap_supplier_sites_int
+                    (vendor_interface_id,
+                     vendor_id,
+                     vendor_site_code,
+                     address_line1,
+                     address_line2,
+                     address_line3,
+                     city,
+                     state,
+                     province,
+                     country,
+                     zip,
+                     terms_name,
+                     purchasing_site_flag,
+                     pay_site_flag,
+                     org_id,
+                     status,
+                     terms_date_basis,
+                     pay_date_basis_lookup_code,
+                     pay_group_lookup_code,
+                     payment_method_lookup_code,
+                     attribute8                                                                        -- Site Category.
+                               ,
+                     last_update_date,
+                     last_updated_by,
+                     creation_date,
+                     created_by,
+                     last_update_login,
+					 vendor_site_interface_id -- Added for the defect 34346
+					 )
+             VALUES (p_vendor_interface_id,
+                     p_vendor_id,
+                     x_sitecode,
+                     UPPER(p_refund_hdr_rec.alt_address1),
+                     UPPER(p_refund_hdr_rec.alt_address2),
+                     UPPER(p_refund_hdr_rec.alt_address3),
+                     SUBSTR(UPPER(p_refund_hdr_rec.alt_city),
+                            1,
+                            25)                                                                 -- substr added for v5.1
+                               ,
+                     UPPER(p_refund_hdr_rec.alt_state),
+                     UPPER(p_refund_hdr_rec.alt_province),
+                     NVL(UPPER(p_refund_hdr_rec.alt_country),
+                         (SELECT default_country
+                          FROM   ar_system_parameters)),
+                     UPPER(p_refund_hdr_rec.alt_postal_code),
+                     '00',
+                     'N',
+                     'Y',
+                     fnd_global.org_id,
+                     'NEW',
+                     'Invoice',
+                     'DISCOUNT'
+                               -- Defect 2418 Use 'US_OD_EXP_NON_DISC' for Canada also
+                               --, DECODE (p_sob_name
+                               --        , 'US_USD_P', 'US_OD_EXP_NON_DISC'
+                               --        , 'CA_CAD_P', 'CA_OD_EXP_NON_DISC'
+                               --        , NULL
+                               --         )
         ,
-        SYSDATE,
-        NULL,
-        'NEW',
-        'Invoice',
-        SYSDATE,
-        fnd_global.user_id,
-        SYSDATE,
-        fnd_global.user_id,
-        fnd_global.conc_login_id
-      );
-  END IF;
-EXCEPTION
-WHEN OTHERS THEN
-  x_err_mesg := 'E:' || SQLCODE || SQLERRM;
-END;
--- Procedure to insert a record into ap_supplier_sites_int table
--- Either vendor_interface_id or vendor_id will be populated deoending on whether vendor already exists or not
--- If vendor exists in PO_VENDORS table, vendor_id will be passed else vendor_interface_id will be passed
-PROCEDURE insert_supplier_site_int
-  (
-    p_refund_hdr_rec      IN xx_ar_refund_trx_tmp%ROWTYPE,
-    p_vendor_interface_id IN NUMBER,
-    p_vendor_id           IN NUMBER,
-    p_sob_name            IN VARCHAR2,
-    x_sitecode OUT NOCOPY VARCHAR2,
-    x_err_mesg OUT NOCOPY VARCHAR2
-  )
-IS
-  lc_site_category VARCHAR2(100);				-- Added Variable for #6.8
-BEGIN
-  -- Generate site code as 'RF' || sequence number
-  --SELECT 'RF' || LPAD (xx_ar_refund_sitecode_s.NEXTVAL, 5, '0')    -- Commented for defect# 6311
-  SELECT 'RF'
-    || LPAD(xx_ar_refund_sitecode_s.NEXTVAL, 13, '0') -- Added for defect# 6311
-  INTO x_sitecode
-  FROM DUAL;
-  lc_site_category                                := NULL;  -- Initialize Variable for #6.8
-  IF NVL(p_refund_hdr_rec.identification_type,'x') = 'OM' THEN   -- Checked the identification type for #6.8
-    lc_site_category                              := 'EX-RMC';
-  ELSE
-    lc_site_category := 'EX-REF';
-  END IF;
-  -- Insert a record into ap_supplier_sites_int table
-  INSERT
-  INTO ap_supplier_sites_int
-    (
-      vendor_interface_id,
-      vendor_id,
-      vendor_site_code,
-      address_line1,
-      address_line2,
-      address_line3,
-      city,
-      state,
-      province,
-      country,
-      zip,
-      terms_name,
-      purchasing_site_flag,
-      pay_site_flag,
-      org_id,
-      status,
-      terms_date_basis,
-      pay_date_basis_lookup_code,
-      pay_group_lookup_code,
-      payment_method_lookup_code,
-      attribute8 -- Site Category.
-      ,
-      last_update_date,
-      last_updated_by,
-      creation_date,
-      created_by,
-      last_update_login,
-      vendor_site_interface_id -- Added for the defect 34346
-    )
-    VALUES
-    (
-      p_vendor_interface_id,
-      p_vendor_id,
-      x_sitecode,
-      UPPER(p_refund_hdr_rec.alt_address1),
-      UPPER(p_refund_hdr_rec.alt_address2),
-      UPPER(p_refund_hdr_rec.alt_address3),
-      SUBSTR(UPPER(p_refund_hdr_rec.alt_city), 1, 25) -- substr added for v5.1
-      ,
-      UPPER(p_refund_hdr_rec.alt_state),
-      UPPER(p_refund_hdr_rec.alt_province),
-      NVL(UPPER(p_refund_hdr_rec.alt_country),
-      (SELECT default_country FROM ar_system_parameters
-      )),
-      UPPER(p_refund_hdr_rec.alt_postal_code),
-      '00',
-      'N',
-      'Y',
-      fnd_global.org_id,
-      'NEW',
-      'Invoice',
-      'DISCOUNT'
-      -- Defect 2418 Use 'US_OD_EXP_NON_DISC' for Canada also
-      --, DECODE (p_sob_name
-      --        , 'US_USD_P', 'US_OD_EXP_NON_DISC'
-      --        , 'CA_CAD_P', 'CA_OD_EXP_NON_DISC'
-      --        , NULL
-      --         )
-      ,
-      'US_OD_EXP_NON_DISC',
-      'CHECK',
-      lc_site_category,							-- Assigned Site Category for #6.8
-      SYSDATE,
-      fnd_global.user_id,
-      SYSDATE,
-      fnd_global.user_id,
-      fnd_global.user_id,
-      AP_SUPPLIER_SITES_INT_S.NextVal -- Added for the defect 34346
-    );
-EXCEPTION
-WHEN OTHERS THEN
-  x_err_mesg := 'E:' || SQLCODE || SQLERRM;
-END;
+                     'US_OD_EXP_NON_DISC',
+                     'CHECK',
+                     lc_site_category,							-- Assigned Site Category for #6.8
+                         ,
+                     SYSDATE,
+                     fnd_global.user_id,
+                     SYSDATE,
+                     fnd_global.user_id,
+                     fnd_global.user_id,
+					 AP_SUPPLIER_SITES_INT_S.NextVal -- Added for the defect 34346
+					 );
+    EXCEPTION
+        WHEN OTHERS
+        THEN
+            x_err_mesg :=    'E:'
+                          || SQLCODE
+                          || SQLERRM;
+    END;
 
     -- Procedure to insert a record into ap_invoices_interface table
     PROCEDURE insert_invoice_interface(
