@@ -50,6 +50,7 @@ CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- |                                           Added settle days in the Custom Tolerance       | 
 -- |                                           Added a new condition to exclude RTV sites to   |
 -- |                                           create custom tolerance                         |
+-- |  2.3    09-AUG-2019     Havish Kasina     Added supplier_notif_method                     |
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -4828,6 +4829,7 @@ BEGIN
                 hold_all_payments_flag ,
                 match_option ,
                 email_address ,
+				supplier_notif_method,
                 primary_pay_site_flag ,
                 tolerance_name,
                 services_tolerance_name,
@@ -4898,8 +4900,8 @@ BEGIN
                 l_sup_site_type(l_idx).hold_all_payments_flag,--hold_from_payment
                 l_sup_site_type(l_idx).match_option,          --invoice_match_option ,
                 l_sup_site_type(l_idx).email_address ,
-                l_sup_site_type(l_idx).primary_pay_site_flag--primary_pay_flag
-                ,
+				l_sup_site_type(l_idx).supplier_notif_method,  -- Added as per Version 2.3
+                l_sup_site_type(l_idx).primary_pay_site_flag, --primary_pay_flag
                 l_sup_site_type(l_idx).tolerance_name,
                 l_sup_site_type(l_idx).service_tolerance,
                 UPPER(l_sup_site_type(l_idx).bill_to_location),
