@@ -44,6 +44,12 @@ CREATE OR REPLACE PACKAGE BODY xx_ap_supp_cld_intf_pkg
 -- |                                           and Fax code validations in Supplier Sites and  |
 -- |                                           Contacts                                        |
 -- |  2.1    07-AUG-2019     Havish Kasina     Receiving Changes added                         | 
+-- |  2.2    09-AUG-2019     Havish Kasina     Added columns address_line3 and address line4 in|
+-- |                                           load_supplier_sites and update_supplier_sites   |
+-- |                                           Added rfq_only_site_flag in the load supp sites |
+-- |                                           Added settle days in the Custom Tolerance       | 
+-- |                                           Added a new condition to exclude RTV sites to   |
+-- |                                           create custom tolerance                         |
 -- |===========================================================================================+
 AS
   /*********************************************************************
@@ -991,7 +997,8 @@ BEGIN
             segment13 ,
             segment15 ,
             segment16 ,
-            segment17
+            segment17 ,
+			segment11
           )
           VALUES
           (
@@ -1013,7 +1020,8 @@ BEGIN
             cur.master_vendor_id,
             TO_CHAR(TO_DATE(cur.od_date_signed,'YYYY/MM/DD'),'DD-MON-RR'),
             TO_CHAR(TO_DATE(cur.vendor_date_signed,'YYYY/MM/DD'),'DD-MON-RR'),
-            cur.deduct_from_invoice_flag
+            cur.deduct_from_invoice_flag,
+			cur.eft_settle_days  -- Added as per Version 2.2
           );
         UPDATE ap_supplier_sites_all
         SET attribute10     =v_kff_id
@@ -1021,7 +1029,7 @@ BEGIN
       EXCEPTION
       WHEN OTHERS THEN
         v_error_flag :='Y';
-        lc_error_msg := lc_error_msg||'Error in processing Custom DFF for Structure Id 101:';
+        lc_error_msg := lc_error_msg||SUBSTR(SQLERRM,1,50)||', Error in processing RMS PI PACK Custom DFF';
       END;
       print_debug_msg(p_message => ' Inserting group 2 KFF ', p_force => true);
       BEGIN
@@ -1059,7 +1067,7 @@ BEGIN
       EXCEPTION
       WHEN OTHERS THEN
         v_error_flag :='Y';
-        lc_error_msg := lc_error_msg||'Error in processing Custom DFF for Structure Id 50350:';
+        lc_error_msg := lc_error_msg||SUBSTR(SQLERRM,1,50)||', Error in processing RMS Special Terms Custom DFF';
       END;
       print_debug_msg(p_message => ' Inserting group 3 KFF ', p_force => true);
       BEGIN
@@ -1127,7 +1135,7 @@ BEGIN
       EXCEPTION
       WHEN OTHERS THEN
         v_error_flag :='Y';
-        lc_error_msg := lc_error_msg||'Error in processing Custom DFF for Structure Id 50351:';
+        lc_error_msg := lc_error_msg||SUBSTR(SQLERRM,1,50)||', Error in processing RMS RTV Custom DFF';
       END;
       print_debug_msg(p_message => 'After insert, Updating flags in xx_ap_cld_site_dff_stg ', p_force => true);
       UPDATE xx_ap_cld_site_dff_stg
@@ -1148,7 +1156,7 @@ BEGIN
       --===============================================================
       -- Processing Custom Tolerance    --
       --===============================================================
-	  IF cur.attribute8 LIKE 'TR%' THEN   -- Added as per Version 2.0
+	  IF (cur.attribute8 LIKE 'TR%' AND cur.attribute8 NOT LIKE '%RTV%' ) THEN   -- Added as per Version 2.2
          SELECT COUNT(1)
          INTO ln_tol_count
          FROM xx_ap_custom_tolerances
@@ -1175,12 +1183,13 @@ BEGIN
           segment13         = cur.master_vendor_id,
           segment15         = TO_CHAR(TO_DATE(cur.od_date_signed,'YYYY/MM/DD'),'DD-MON-RR'),
           segment16         = TO_CHAR(TO_DATE(cur.vendor_date_signed,'YYYY/MM/DD'),'DD-MON-RR'),
-          segment17         = cur.deduct_from_invoice_flag
+          segment17         = cur.deduct_from_invoice_flag,
+		  segment11         = cur.eft_settle_days  -- Added as per Version 2.2
         WHERE vs_kff_id     = lc_attribute10
         AND structure_id    = 101;
         IF SQL%ROWCOUNT     =0 THEN
           v_error_Flag     :='Y';
-          lc_error_msg     :=lc_error_msg||' No Record exists for the structure_id 101';
+        lc_error_msg := lc_error_msg||SUBSTR(SQLERRM,1,50)||', Error in processing RMS PI PACK Custom DFF';
         END IF;
       ELSIF lc_attribute10 IS NULL THEN
         BEGIN
@@ -1206,7 +1215,8 @@ BEGIN
               segment13 ,
               segment15 ,
               segment16 ,
-              segment17
+              segment17 ,
+			  segment11
             )
             VALUES
             (
@@ -1228,7 +1238,8 @@ BEGIN
               cur.master_vendor_id,
               TO_CHAR(TO_DATE(cur.od_date_signed,'YYYY/MM/DD'),'DD-MON-RR'),
               TO_CHAR(TO_DATE(cur.vendor_date_signed,'YYYY/MM/DD'),'DD-MON-RR'),
-              cur.deduct_from_invoice_flag
+              cur.deduct_from_invoice_flag,
+			  cur.eft_settle_days  -- Added as per Version 2.2
             );
           UPDATE ap_supplier_sites_all
              SET attribute10     =v_kff_id
@@ -1236,7 +1247,7 @@ BEGIN
         EXCEPTION
         WHEN OTHERS THEN
           v_error_flag :='Y';
-          lc_error_msg := lc_error_msg||'Error in processing Custom DFF for Structure Id 101:';
+          lc_error_msg := lc_error_msg||SUBSTR(SQLERRM,1,50)||', Error in processing RMS PI PACK Custom DFF';
         END;
       END IF;
       IF lc_attribute11 IS NOT NULL THEN
@@ -1248,7 +1259,7 @@ BEGIN
             AND structure_id    = 50350;
          IF SQL%ROWCOUNT     =0 THEN
            v_error_Flag     :='Y';
-           lc_error_msg     :=lc_error_msg||' No Record exists for the structure_id 50350';
+           lc_error_msg := lc_error_msg||SUBSTR(SQLERRM,1,50)||', Error in processing RMS Special Terms DFF';
          END IF;
       ELSIF lc_attribute11 IS NULL THEN
         BEGIN
@@ -1286,7 +1297,7 @@ BEGIN
         EXCEPTION
           WHEN OTHERS THEN
             v_error_flag :='Y';
-            lc_error_msg := lc_error_msg||'Error in processing Custom DFF for Structure Id 50350:';
+			lc_error_msg := lc_error_msg||SUBSTR(SQLERRM,1,50)||', Error in processing RMS Special Terms Custom DFF';
         END;
       END IF;
       IF lc_attribute12 IS NOT NULL THEN
@@ -1314,7 +1325,7 @@ BEGIN
            AND structure_id    = 50351;
         IF SQL%ROWCOUNT     =0 THEN
            v_error_Flag     :='Y';
-           lc_error_msg     :=lc_error_msg||' No Record exists for the structure_id 50351';
+           lc_error_msg := lc_error_msg||SUBSTR(SQLERRM,1,50)||', Error in processing RMS RTV Custom DFF';
         END IF;
       ELSIF lc_attribute12 IS NULL THEN
         BEGIN
@@ -1382,7 +1393,7 @@ BEGIN
         EXCEPTION
           WHEN OTHERS THEN
             v_error_flag :='Y';
-            lc_error_msg := lc_error_msg||'Error in processing Custom DFF for Structure Id 50351:';
+            lc_error_msg := lc_error_msg||SUBSTR(SQLERRM,1,50)||', Error in processing RMS RTV Custom DFF';
         END;
       END IF;
       --===============================================================
@@ -1764,6 +1775,8 @@ BEGIN
     lr_vendor_site_rec.city                         :=NVL(c_sup_site.city, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.address_line2                :=NVL(c_sup_site.address_line2, FND_API.G_MISS_CHAR);
     lr_vendor_site_rec.address_line1                :=NVL(c_sup_site.address_line1, FND_API.G_MISS_CHAR);
+	lr_vendor_site_rec.address_line3                :=NVL(c_sup_site.address_line3, FND_API.G_MISS_CHAR);  -- Added as per Version 2.2
+    lr_vendor_site_rec.address_line4                :=NVL(c_sup_site.address_line4, FND_API.G_MISS_CHAR);  -- Added as per Version 2.2
     lr_vendor_site_rec.country                      :=NVL(c_sup_site.country, FND_API.G_MISS_CHAR);
 	lr_vendor_site_rec.duns_number                  :=NVL(c_sup_site.attribute5, FND_API.G_MISS_CHAR); -- Added as per Version 1.9 by Havish Kasina
 
@@ -4781,7 +4794,8 @@ BEGIN
                 vendor_site_code ,
                 address_line1 ,
                 address_line2 ,
-                address_line4 ,
+				address_line3 ,   -- Added as per Version 2.2
+                address_line4 ,   -- Added as per Version 2.2
                 city ,
                 state ,
                 zip ,
@@ -4799,6 +4813,7 @@ BEGIN
                 prepay_code_combination_id,
                 terms_date_basis ,
                 purchasing_site_flag ,
+				rfq_only_site_flag,     -- Added as per Version 2.2
                 pay_site_flag ,
                 org_id ,
                 status ,
@@ -4847,7 +4862,9 @@ BEGIN
                 l_sup_site_type(l_idx).vendor_site_code,--address_line1 ,
                 ltrim(rtrim(upper(l_sup_site_type(l_idx).address_line1))) ,
                 ltrim(rtrim(upper(l_sup_site_type(l_idx).address_line2))) ,
-                l_sup_site_type(l_idx).vendor_site_code,-- TO_CHAR(l_sup_site_type(l_idx).site_number) ,
+                -- l_sup_site_type(l_idx).vendor_site_code,-- TO_CHAR(l_sup_site_type(l_idx).site_number) ,  -- Commented as per Version 2.2
+				ltrim(rtrim(upper(l_sup_site_type(l_idx).address_line3))) ,  -- Added as per Version 2.2
+				ltrim(rtrim(upper(l_sup_site_type(l_idx).address_line4))) ,  -- Added as per Version 2.2
                 ltrim(rtrim(upper(l_sup_site_type(l_idx).city))) ,
                 ltrim(rtrim(upper(l_sup_site_type(l_idx).state))) ,
                 ltrim(rtrim(upper(l_sup_site_type(l_idx).postal_code))) ,
@@ -4865,6 +4882,7 @@ BEGIN
                 v_prepay_cde,
                 l_sup_site_type(l_idx).terms_date_basis,--terms_date_basis_code ,
                 l_sup_site_type(l_idx).purchasing_site_flag ,
+				l_sup_site_type(l_idx).rfq_only_site_flag,   -- Added as per Version 2.2
                 l_sup_site_type(l_idx).pay_site_flag ,
                 TO_NUMBER(l_sup_site_type(l_idx).org_id),
                 g_process_status_new,
