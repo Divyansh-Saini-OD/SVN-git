@@ -131,6 +131,7 @@ IS
       --Changes for defect 22892 end here
       --Changes for Defect 38285 Starts here
       NULL AS supplier_name,
+      NULL AS supplier_number, ---Added by Narendra NAIT-101969
       null as invoice_num,
       NULL as Invoice_Line_Num,
       null as invoice_date,
@@ -188,6 +189,7 @@ IS
       --Changes for Defect 38285 Starts here
       -- ai.invoice_num,s.segment1,s.vendor_name,pex.expenditure_comment,
       s.vendor_name           AS supplier_name,
+      s.segment1              AS supplier_number, ---Added by Narendra NAIT-101969
       ai.invoice_num          as invoice_num,
       ail.line_number         as Invoice_Line_Num,
       TO_CHAR(ai.invoice_date,'YYYY-MM-DD')   as invoice_date,
@@ -400,8 +402,9 @@ IS
         'EXPENDITURE_TYPE' ||'|'|| 'EXPENDITURE_CATEGORY' ||'|'|| 'PROJECT_NAME' ||'|'|| 'TASK_NAME'||'|'||
         --Changes for defect #22892 ends here
         --Changes for Defect 38285
-        'SUPPLIER_NAME'||'|'|| 'INVOICE_DATE'||'|'|| 'INVOICE#'||'|'||'INVOICE_LINE_NUM'||'|'||'EXPENDITURE_ITEM_ID'||'|'||
+        'SUPPLIER_NAME'||'|'|| 'SUPPLIER_NUMBER'||'|'|| 'INVOICE_DATE'||'|'|| 'INVOICE#'||'|'||'INVOICE_LINE_NUM'||'|'||'EXPENDITURE_ITEM_ID'||'|'||
         'EXPENDITURE_COMMENTS'||'|'||'ACCOUNT'||'|'||'LOCATION'||'|'||'LOB';
+        ---Added by Narendra NAIT-101969
         --Changes for Defect 38285
         UTL_FILE.PUT_LINE(lc_file_handle, lc_file_rec);
       EXCEPTION
@@ -428,7 +431,8 @@ IS
             project_rec.Task_name||'|'||
             --Changes for defect #22892 ends here
             --Changes for Defect 38285 Starts here
-            project_rec.supplier_name||'|'|| 
+            project_rec.supplier_name||'|'||
+            project_rec.supplier_number||'|'|| ---Added by Narendra NAIT-101969
             project_rec.invoice_date||'|'|| 
             project_rec.invoice_num||'|'|| 
             project_rec.invoice_line_num||'|'||
@@ -456,7 +460,8 @@ IS
           rpad(project_rec.task_name,30,' ')||'|'||
           --Changes for defect #22892 ends here
           --Changes for Defect 38285 Starts here
-          rpad(project_rec.supplier_name,30,' ')||'|'|| 
+          rpad(project_rec.supplier_name,30,' ')||'|'||
+          rpad(project_rec.supplier_number,30,' ')||'|'|| ---Added by Narendra NAIT-101969
           rpad(project_rec.invoice_date,30,' ')||'|'|| 
           rpad(project_rec.invoice_num,30,' ')||'|'||
           rpad(project_rec.invoice_line_num,10,' ')||'|'||
@@ -491,7 +496,8 @@ IS
             project_dtl.Task_name||'|'||
             --Changes for defect #22892 ends here
             --Changes for Defect 38285 Starts here
-            project_dtl.supplier_name||'|'|| 
+            project_dtl.supplier_name||'|'||
+            project_dtl.supplier_number||'|'||---Added by Narendra NAIT-101969 
             project_dtl.invoice_date||'|'|| 
             project_dtl.invoice_num||'|'|| 
             project_dtl.invoice_line_num||'|'|| 
@@ -508,6 +514,7 @@ IS
           --Changes for defect #22892 ends here
           --Changes for Defect 38285 Starts here
           rpad(project_dtl.supplier_name,30,' ')||'|'|| 
+          rpad(project_dtl.supplier_number,30,' ')||'|'||---Added by Narendra NAIT-101969
           rpad(project_dtl.invoice_date,30,' ')||'|'|| 
           rpad(project_dtl.invoice_num,30,' ')||'|'|| 
           rpad(project_dtl.invoice_line_num,10,' ')||'|'||
